@@ -37,39 +37,39 @@
             android:id="@+id/txtRecommendation"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="REKOMENDASI"
+            android:text="@string/topads_common_recommended_list"
+            android:textAllCaps="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="body_3"
-            app:typographyWeight="bold"
-            tools:text="REKOMENDASI" />
+            app:typographyWeight="bold" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/txtRange"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp_30"
-            android:text="PENCARIAN"
+            android:text="@string/topads_common_keyword_pencarian"
+            android:textAllCaps="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/txtkeyCompetition"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="body_3"
-            app:typographyWeight="bold"
-            tools:text="Pencarian" />
+            app:typographyWeight="bold" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/txtkeyCompetition"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp_36"
-            android:text="KOMPETISI"
+            android:text="@string/topads_common_keyword_competition"
+            android:textAllCaps="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/checkBox"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="body_3"
-            app:typographyWeight="bold"
-            tools:text="KOMPETISI" />
+            app:typographyWeight="bold"/>
 
         <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
             android:id="@+id/checkBox"

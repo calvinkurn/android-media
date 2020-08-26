@@ -15,7 +15,6 @@
         app:layout_constraintTop_toTopOf="@+id/title"
         app:srcCompat="@drawable/topads_common_ic_close" />
 
-
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title"
         android:layout_width="0dp"
@@ -31,9 +30,8 @@
 
     <ImageButton
         android:id="@+id/btnDeleteKeyword"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
-        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:background="@color/transparent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -45,21 +43,22 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_20"
         android:text="@string/topads_common_keyword_edit_bid_sheet_biaya_sheet_title"
-        app:typographyWeight="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title"
-        app:typographyType="body_1" />
+        app:typographyType="body_1"
+        app:typographyWeight="bold" />
 
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/budget"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/txtTypeKey"
+        app:layout_constraintBottom_toTopOf="@id/divider"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/biayaTitle"
         app:text_field_input_type="number"
+        app:text_field_label_static="false"
         app:text_field_prepend_text="Rp"
-        tools:layout_height="@dimen/dp_100" />
+        tools:layout_height="@dimen/dp_50" />
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/divider"
@@ -71,13 +70,14 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txtTypeKey"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_24"
         android:text="@string/topads_common_keyword_edit_info_sheet_sub_title"
-        app:typographyWeight="bold"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/divider"
-        app:typographyType="body_1" />
+        app:typographyType="body_1"
+        app:typographyWeight="bold" />
 
     <RadioGroup
         android:id="@+id/radio_group"
@@ -86,15 +86,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/txtTypeKey">
 
-        <RadioButton
+        <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
             android:id="@+id/title_1"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_10"
-            android:gravity="start"
+            android:layout_height="@dimen/dp_56"
+            android:gravity="start|center_vertical"
             android:layoutDirection="rtl"
+            android:padding="@dimen/dp_16"
             android:text="@string/topads_common_keyword_edit_info_sheet_title_1"
-            android:textAlignment="textStart" />
+            android:textAlignment="textStart"
+            app:bold="true" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/desc_1"
@@ -110,15 +111,17 @@
             android:layout_height="@dimen/dp_2"
             android:layout_marginTop="@dimen/dp_16" />
 
-        <RadioButton
+        <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
             android:id="@+id/title_2"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_16"
-            android:gravity="start"
+            android:layout_height="@dimen/dp_56"
+            android:gravity="start|center_vertical"
             android:layoutDirection="rtl"
+            android:padding="@dimen/dp_16"
             android:text="@string/topads_common_keyword_edit_info_sheet_title_2"
-            android:textAlignment="textStart" />
+            android:textAlignment="textStart"
+            app:bold="true" />
+
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/desc_2"
@@ -132,6 +135,7 @@
     </RadioGroup>
 
     <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider1"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_2"
         android:layout_marginTop="@dimen/dp_16"
@@ -144,7 +148,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_16"
         android:text="@string/topads_common_simpan"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/divider1"
         app:unifyButtonSize="medium"
         app:unifyButtonVariant="filled" />
 

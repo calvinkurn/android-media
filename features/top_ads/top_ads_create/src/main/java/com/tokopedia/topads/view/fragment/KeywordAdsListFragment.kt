@@ -29,14 +29,9 @@ import com.tokopedia.topads.view.adapter.keyword.KeywordListAdapterTypeFactoryIm
 import com.tokopedia.topads.view.adapter.keyword.viewmodel.KeywordEmptyViewModel
 import com.tokopedia.topads.view.adapter.keyword.viewmodel.KeywordItemViewModel
 import com.tokopedia.topads.view.adapter.keyword.viewmodel.KeywordSelectedAdapter
-import com.tokopedia.topads.view.adapter.keyword.viewmodel.KeywordViewModel
 import com.tokopedia.topads.view.model.KeywordAdsViewModel
 import kotlinx.android.synthetic.main.topads_create_layout_keyword_list.*
-import java.util.*
 import javax.inject.Inject
-import kotlin.Comparator
-import kotlin.collections.ArrayList
-import kotlin.collections.HashSet
 
 /**
  * Author errysuprayogi on 29,October,2019
@@ -54,7 +49,6 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     private lateinit var keywordSelectedAdapter: KeywordSelectedAdapter
     private var STAGE = 0
     private var selectedKeyFromSearch: ArrayList<SearchData>? = arrayListOf()
-    private val keywordList = HashSet<String>()
 
     companion object {
 
@@ -87,6 +81,12 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         keywordListAdapter.items.add(KeywordItemViewModel(KeywordDataItem(keywordSelectedAdapter.items[pos].bidSuggest, keywordSelectedAdapter.items[pos].totalSearch, keywordSelectedAdapter.items[pos].keyword, keywordSelectedAdapter.items[pos].competition, keywordSelectedAdapter.items[pos].source)))
         keywordSelectedAdapter.items.removeAt(pos)
         keywordSelectedAdapter.notifyItemRemoved(pos)
+        if(keywordSelectedAdapter.items.isEmpty()){
+            setStepLayout(View.GONE)
+            btn_next?.text = resources.getString(R.string.topads_common_keyword_list_step)
+            txtRecommendation?.text = resources.getString(R.string.topads_common_recommended_list)
+            STAGE = 0
+        }
         sortList()
         showSelectMessage()
     }
@@ -104,11 +104,9 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         STAGE = stepperModel?.STAGE ?: 0
-        if (stepperModel?.STAGE == 1) {
-            restorePrevState()
-        }
         val list = stepperModel?.selectedProductIds!!
         val productId = list.joinToString(",")
+        keywordListAdapter.items.clear()
         viewModel.getSuggestionKeyword(productId, 0, this::onSuccessSuggestion, this::onEmptySuggestion)
     }
 
@@ -118,21 +116,25 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         keywordSelectedAdapter.items.clear()
         keywordSelectedAdapter.items.addAll(stepperModel?.selectedKeywordStage?.asIterable()!!)
         keywordSelectedAdapter.notifyDataSetChanged()
-
-        val iterator = keywordListAdapter.items.iterator()
-        while (iterator.hasNext()) {
-            val key = iterator.next()
-            stepperModel?.selectedKeywords?.forEach { selected ->
-                if ((key as KeywordItemViewModel).data.keyword == selected) {
-                    iterator.remove()
-                }
-            }
-        }
-        keywordListAdapter.notifyDataSetChanged()
+        removeFromRecommended()
         showSelectMessage()
 
     }
 
+    private fun removeFromRecommended() {
+        val ids: MutableList<Int> = mutableListOf()
+        keywordListAdapter.items.forEachIndexed { index, key ->
+            if (stepperModel?.selectedKeywordStage?.find { item -> (key as KeywordItemViewModel).
+                    data.keyword == item.keyword } != null) {
+                ids.add(index)
+            }
+        }
+        ids.forEach {
+            keywordListAdapter.items.removeAt(it)
+        }
+
+        keywordListAdapter.notifyDataSetChanged()
+    }
     private fun onKeywordSelected(pos: Int) {
         if (pos != -1 && keywordListAdapter.items[pos] is KeywordItemViewModel && STAGE == 1) {
             keywordSelectedAdapter.items.add((keywordListAdapter.items[pos] as KeywordItemViewModel).data)
@@ -158,18 +160,22 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         keywords.forEach { key ->
             key.keywordData.forEach { index ->
                 keywordListAdapter.items.add(KeywordItemViewModel(index))
-                keywordList.add(KeywordItemViewModel(index).data.keyword)
             }
         }
         tip_btn.visibility = View.VISIBLE
         keywordListAdapter.notifyDataSetChanged()
+        if (stepperModel?.STAGE == 1) {
+            restorePrevState()
+        }
         showSelectMessage()
     }
 
     private fun onEmptySuggestion() {
         keywordListAdapter.items = mutableListOf(KeywordEmptyViewModel())
-        tip_btn.visibility = View.INVISIBLE
+        keywordListAdapter.notifyDataSetChanged()
+        tip_btn.visibility = View.GONE
         headlineList.visibility = View.GONE
+        btn_next?.text = resources.getString(R.string.lanjutkan)
         showSelectMessage()
     }
 
@@ -249,6 +255,7 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     private fun gotoNextStage() {
         setStepLayout(View.VISIBLE)
         btn_next?.text = resources.getString(R.string.lanjutkan)
+        txtRecommendation?.text = resources.getString(R.string.topads_common_label_top_ads_keyword)
         keywordSelectedAdapter.items.clear()
         keywordSelectedAdapter.items.addAll(getTotalChosenKeywords())
         sortListSelected()

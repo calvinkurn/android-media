@@ -235,9 +235,6 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
             TipSheetBudgetList.newInstance(it.context).show()
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_TIPS_BIAYA_IKLAN, "")
         }
-        btn_info.setOnClickListener {
-            InfoSheetBudgetList.newInstance(it.context).show()
-        }
 
         budget.textFieldInput.addTextChangedListener(object : NumberTextWatcher(budget.textFieldInput, "0") {
             override fun onNumberChanged(number: Double) {
@@ -260,7 +257,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
                     }
                     else -> {
                         isEnable = true
-                        setMessageErrorField(getString(R.string.recommendated_bid_message), suggestBidPerClick, false)
+                        setMessageErrorField(getString(R.string.recommendated_bid_message_new), suggestBidPerClick, false)
                     }
                 }
                 actionEnable()

@@ -16,30 +16,18 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible" />
 
-
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txtInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
         android:text="@string/topads_common_non_key_budget"
         android:textColor="@color/topads_heading_color"
-        app:layout_constraintBottom_toBottomOf="@+id/btn_info"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/btn_info"
+        app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_2"
         app:typographyWeight="bold" />
-
-    <ImageView
-        android:id="@+id/btn_info"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
-        android:contentDescription="INFO"
-        android:padding="@dimen/dp_5"
-        app:layout_constraintStart_toEndOf="@+id/txtInfo"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/topads_create_ic_information" />
 
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/budget"
@@ -49,6 +37,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/txtInfo"
         app:text_field_input_type="number"
+        app:text_field_placeholder="false"
         app:text_field_prepend_text="Rp"
         tools:layout_height="100dp" />
 
@@ -140,7 +129,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/headlineList"
-        tools:itemCount="2"
+        tools:itemCount="4"
         tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/topads_create_layout_budget_list_item"
         tools:visibility="visible">

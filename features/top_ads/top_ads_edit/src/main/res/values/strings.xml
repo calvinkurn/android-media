@@ -46,6 +46,8 @@
     <string name="topads_edit_duplicate_group_name_error">Nama grup iklan telah digunakan</string>
     <string name="topads_edit_duplicate_group_name_error_wrong">Nama Grup Anda telah digunakan</string>
     <string name="pencarian_bulan">Pencarian / bulan</string>
+    <string name="topads_Edit_green_dot">\u25CF</string>
+    <string name="topads_edit_keyword_duplicate_toast">Kata Kunci sudah digunakan. Coba cari dengan kata kunci yang berbeda.</string>
 
 
 </resources>

@@ -54,6 +54,7 @@ data class KeywordDataItem(
 
         @field:SerializedName("competition")
         val competition: String = "",
+
         var onChecked: Boolean = false
 
 ) : Parcelable

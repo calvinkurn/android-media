@@ -61,7 +61,7 @@
     <string name="topads_common_kata_kunci_neg">Kata Kunci Negatif (%d)</string>
     <string name="topads_dash_group_item_progress_status"> dari Rp %d</string>
 
-    
+
     <!--keyword -->
     <string name="topads_common_keyword_info_sheet_title">Info tips kata kunci</string>
     <string name="topads_common_keyword_info_sheet_desc_1">Pilih kata kunci yang sesuai dengan produkmu. Kata kunci memungkinkan iklanmu tampil sesuai dengan kata yang dicari oleh calon pembeli.</string>
@@ -75,12 +75,8 @@
     <string name="topads_common_keyword_competition_low">Rendah</string>
     <string name="topads_common_keyword_pencarian">Pencarian</string>
     <string name="topads_common_keyword_competition">Kompetisi</string>
-<string name="topads_common_keyword_recom">REKOMENDASI</string>
     <string name="topads_common_kata_kunci_dipilih">%d kata kunci dipilih</string>
     <string name="topads_common_tip_memilih_kata_kunci">Tip memilih kata kunci</string>
-
-
-
     <string name="topads_common_keyword_empty_title">Belum ada kata kunci dicari</string>
     <string name="topads_common_keyword_empty_desc">Cari kata kunci yang sesuai dengan produkmu</string>
     <string name="topads_common_keyword_edit_bid_sheet_title">Celana Panjang</string>
@@ -94,13 +90,6 @@
     <string name="topads_common_selanjutnya">Selanjutnya</string>
     <string name="topads_common_keyword_jenis">Jenis</string>
     <string name="topads_common_keyword_budget">Biaya</string>
-
-
-
-
-
-
-
     <string name="topads_common_non_key_budget">Biaya non kata kunci</string>
     <string name="topads_common_error_multiple_50">Biaya harus kelipatan %d</string>
     <string name="topads_common_simpan">Simpan</string>
@@ -111,6 +100,7 @@
     <string name="topads_common_keyword_list_step">Pilih Kata Kunci</string>
     <string name="topads_common_selected_list">Kata Kunci Pilihan</string>
     <string name="topads_common_recommended_list">Rekomendasi</string>
+    <string name="topads_common_text_ok">Oke</string>
 
 
 </resources>

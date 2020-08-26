@@ -9,12 +9,13 @@
         android:id="@+id/keywordName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_2"
         android:layout_marginTop="@dimen/dp_18"
         android:layout_marginBottom="@dimen/dp_18"
         android:gravity="center_vertical"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/keywordType"
+        app:layout_constraintStart_toEndOf="@id/dotImg"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3"
         tools:text="@tools:sample/first_names" />
@@ -31,6 +32,19 @@
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3"
         tools:text="Specific" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/dotImg"
+        android:layout_width="@dimen/dp_6"
+        android:layout_height="@dimen/dp_6"
+        android:layout_marginStart="@dimen/dp_16"
+        android:background="@drawable/topads_green_dot"
+        android:textColor="@color/topads_common_select_color_checked"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/keywordBudget"
@@ -50,12 +64,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp_16"
-        android:gravity="center_vertical"
         android:background="@color/transparent"
-        app:srcCompat = "@drawable/ic_arrow_right_grey"
+        android:gravity="center_vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_arrow_right_grey" />
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/line"

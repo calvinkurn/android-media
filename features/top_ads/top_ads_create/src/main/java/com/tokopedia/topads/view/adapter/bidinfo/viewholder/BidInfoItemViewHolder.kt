@@ -31,7 +31,7 @@ class BidInfoItemViewHolder(val view: View, var selectedKeywords: MutableList<St
                 }
 
                 if (selectedSuggestBid[adapterPosition] != 0) {
-                    view.keywordBudget.text = selectedSuggestBid[adapterPosition].toString()
+                    view.keywordBudget.text = "Rp "+ selectedSuggestBid[adapterPosition].toString()
                 }
             }
         }

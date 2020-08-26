@@ -24,7 +24,6 @@ import com.tokopedia.topads.edit.data.response.GetKeywordResponse
 import com.tokopedia.topads.edit.data.response.ResponseBidInfo
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
 import com.tokopedia.topads.edit.utils.Constants.CURRENT_KEY_TYPE
-import com.tokopedia.topads.edit.utils.Constants.FAVOURED_DATA
 import com.tokopedia.topads.edit.utils.Constants.GROUP_ID
 import com.tokopedia.topads.edit.utils.Constants.ITEM_POSITION
 import com.tokopedia.topads.edit.utils.Constants.KEYWORD_EXISTS
@@ -67,6 +66,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     private var addedKeywords: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
     private var editedKeywords: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
     private var initialBudget: MutableList<Int> = mutableListOf()
+    private var isnewlyAddded:MutableList<Boolean> = mutableListOf()
     private var originalKeyList: MutableList<String> = arrayListOf()
     private var selectedData: ArrayList<KeywordDataItem>? = arrayListOf()
     private var selectedDataOriginal: ArrayList<KeywordDataItem>? = arrayListOf()
@@ -206,7 +206,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         intent.putExtra(PRODUCT_ID, productIds)
         intent.putExtra(GROUP_ID, groupId)
         intent.putStringArrayListExtra(ORIGINAL_LIST, ArrayList(originalKeyList))
-        intent.putParcelableArrayListExtra(SELECTED_DATA, selectedDataOriginal)
+        intent.putParcelableArrayListExtra(SELECTED_DATA, selectedData)
         startActivityForResult(intent, 1)
     }
 
@@ -237,6 +237,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             }
         }
         adapter.items.removeAt(position)
+        isnewlyAddded.removeAt(position)
         initialBudget.removeAt(position)
         if (adapter.items.isEmpty()) {
             setEmptyView()
@@ -281,6 +282,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             data.forEach { result ->
                 if ((result.type == KEYWORD_TYPE_EXACT || result.type == KEYWORD_TYPE_PHRASE) && result.status != -1) {
                     adapter.items.add(EditKeywordItemViewModel(result))
+                    isnewlyAddded.add(false)
                     initialBudget.add(result.priceBid)
                     originalKeyList.add(result.tag)
                 } else if (result.status != -1) {
@@ -296,7 +298,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             }
             updateItemCount()
             recyclerviewScrollListener.updateStateAfterGetData()
-            adapter.getBidData(initialBudget)
+            adapter.getBidData(initialBudget,isnewlyAddded)
         }
     }
 
@@ -333,12 +335,13 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             if (adapter.items.find { item -> it.keyword == (item as EditKeywordItemViewModel).data.tag } == null) {
                 adapter.items.add(EditKeywordItemViewModel(GetKeywordResponse.KeywordsItem(KEYWORD_TYPE_PHRASE, KEYWORD_EXISTS, "0", it.bidSuggest, false, it.keyword, it.source)))
                 initialBudget.add(it.bidSuggest)
+                isnewlyAddded.add(true)
                 if (!isExistsOriginal(it.keyword)) {
                     addedKeywords?.add(GetKeywordResponse.KeywordsItem(KEYWORD_TYPE_PHRASE, KEYWORD_EXISTS, "0", it.bidSuggest, false, it.keyword, it.source))
                 }
             }
         }
-        adapter.getBidData(initialBudget)
+        adapter.getBidData(initialBudget, isnewlyAddded)
         setVisibilityOperation(View.VISIBLE)
         updateItemCount()
     }

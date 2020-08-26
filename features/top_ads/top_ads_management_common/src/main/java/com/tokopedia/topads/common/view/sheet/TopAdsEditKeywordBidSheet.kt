@@ -49,7 +49,7 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
                     }
 
                     else -> {
-                        setMessageErrorField(getString(R.string.recommendated_bid_message), suggestedBid, false)
+                        setMessageErrorField(getString(R.string.recommendated_bid_message_new), suggestedBid, false)
                         btnSave.isEnabled = true
                     }
                 }
@@ -106,7 +106,7 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
             title_1.isChecked = true
 
         budget.textFieldInput.setText(suggestedBid.toString())
-        setMessageErrorField(getString(R.string.recommendated_bid_message), suggestedBid, false)
+        setMessageErrorField(getString(R.string.recommendated_bid_message_new), suggestedBid, false)
         title?.text = name
     }
 

@@ -27,13 +27,14 @@ import com.tokopedia.topads.edit.utils.Constants.ORIGINAL_LIST
 import com.tokopedia.topads.edit.utils.Constants.PRODUCT_ID
 import com.tokopedia.topads.edit.utils.Constants.SELECTED_DATA
 import com.tokopedia.topads.edit.view.activity.KeywordSearchActivity
+import com.tokopedia.topads.edit.view.adapter.keyword.viewmodel.KeywordEmptyViewModel
 import com.tokopedia.topads.edit.view.adapter.keyword.KeywordListAdapter
 import com.tokopedia.topads.edit.view.adapter.keyword.KeywordListAdapterTypeFactoryImpl
 import com.tokopedia.topads.edit.view.adapter.keyword.KeywordSelectedAdapter
 import com.tokopedia.topads.edit.view.adapter.keyword.viewmodel.KeywordItemViewModel
 import com.tokopedia.topads.edit.view.model.KeywordAdsViewModel
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.topads_edit_select_layout_keyword_list.*
-import java.util.*
 import javax.inject.Inject
 import kotlin.Comparator
 import kotlin.collections.ArrayList
@@ -116,6 +117,12 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
         keywordListAdapter.items.add(KeywordItemViewModel(KeywordDataItem(keywordSelectedAdapter.items[pos].bidSuggest, keywordSelectedAdapter.items[pos].totalSearch, keywordSelectedAdapter.items[pos].keyword, keywordSelectedAdapter.items[pos].competition, keywordSelectedAdapter.items[pos].source)))
         keywordSelectedAdapter.items.removeAt(pos)
         keywordSelectedAdapter.notifyItemRemoved(pos)
+        if (keywordSelectedAdapter.items.isEmpty()) {
+            setStepLayout(View.GONE)
+            btn_next?.text = resources.getString(R.string.topads_common_keyword_list_step)
+            txtRecommendation?.text = resources.getString(R.string.topads_common_recommended_list)
+            STAGE = 0
+        }
         sortList()
         showSelectMessage()
     }
@@ -129,11 +136,24 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
                 for (item in dataFromSearch!!) {
                     selectedKeyFromSearch?.add(item)
                 }
+                checkifExist()
                 if (STAGE == 0)
                     gotoNextStage()
                 else {
                     addSearchItems()
                 }
+            }
+        }
+    }
+
+    private fun checkifExist() {
+        selectedKeyFromSearch?.forEach lit@{
+            if (keywordSelectedAdapter.items.find { item -> item.keyword == it.keyword } != null) {
+                view?.run {
+                    Toaster.make(this, getString(R.string.topads_edit_keyword_duplicate_toast), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, getString(com.tokopedia.topads.common.R.string.topads_common_text_ok), View.OnClickListener {
+                    })
+                }
+                return@lit
             }
         }
     }
@@ -163,8 +183,17 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
                 keywordList.add(KeywordItemViewModel(it).data.keyword)
             }
         }
+        if (keywords.isEmpty()) {
+            setEmptyView()
+        }
         keywordListAdapter.notifyDataSetChanged()
         showSelectMessage()
+    }
+
+    private fun setEmptyView() {
+        setStepLayout(View.GONE)
+        headlineList.visibility = View.GONE
+        keywordListAdapter.items.add(KeywordEmptyViewModel())
     }
 
     override fun getScreenName(): String {
@@ -241,6 +270,7 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
     private fun gotoNextStage() {
         setStepLayout(View.VISIBLE)
         btn_next?.text = resources.getString(R.string.lanjutkan)
+        txtRecommendation?.text = resources.getString(R.string.topads_common_label_top_ads_keyword)
         keywordSelectedAdapter.items.clear()
         keywordSelectedAdapter.items.addAll(getTotalChosenKeywords())
         sortListSelected()
@@ -282,11 +312,13 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
     }
 
     private fun fetchData() {
-        val intent = Intent(context, KeywordSearchActivity::class.java).apply {
-            putExtra(PRODUCT_IDS_SELECTED, arguments?.getString(PRODUCT_ID) ?: "")
-            putExtra(SEARCH_QUERY, searchBar.searchBarTextField.text.toString())
+        if (searchBar.searchBarTextField.text.toString().isNotEmpty()) {
+            val intent = Intent(context, KeywordSearchActivity::class.java).apply {
+                putExtra(PRODUCT_IDS_SELECTED, arguments?.getString(PRODUCT_ID) ?: "")
+                putExtra(SEARCH_QUERY, searchBar.searchBarTextField.text.toString())
+            }
+            startActivityForResult(intent, REQUEST_CODE_SEARCH)
         }
-        startActivityForResult(intent, REQUEST_CODE_SEARCH)
     }
 
     private fun makeToast(s: String) {
