@@ -6,6 +6,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -43,33 +44,36 @@ class ValidatorListFragment : Fragment() {
         }
 
         val searchBar = view.findViewById<SearchBarUnify>(R.id.search_bar)
-//        searchBar.searchBarTextField.setOnEditorActionListener { v, _, _ ->
-//            searchBar.clearFocus()
-//            val filteredListTests = listTests.filter { it.contains(v.text) }
-//            listingAdapter.setItems(filteredListTests)
-//            true
-//        }
-        searchBar.searchBarTextField.addTextChangedListener(object: TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                searchInputJob?.cancel()
-                searchInputJob = CoroutineScope(Dispatchers.Main).launch {
-                    delay(searchTextChangeDelay)
-                    // Filter test cases based on search query
-                    val filteredListTests = listTests.filter { it.contains(s.toString()) }
-                    listingAdapter.setItems(filteredListTests)
+        with(searchBar.searchBarTextField) {
+            setOnEditorActionListener { _, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    searchBar.clearFocus()
+                    true
+                } else false
+            }
+            addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                    searchInputJob?.cancel()
+                    searchInputJob = CoroutineScope(Dispatchers.Main).launch {
+                        delay(searchTextChangeDelay)
+                        // Filter test cases based on search query
+                        val filteredListTests = listTests.filter { it.contains(s.toString()) }
+                        listingAdapter.setItems(filteredListTests)
+                    }
                 }
-            }
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                    /* do nothing */
+                }
 
-            }
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    /* do nothing */
+                }
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
-            }
-
-        })
+            })
+        }
         searchBar.clearListener = {
+            searchBar.clearFocus()
             listingAdapter.setItems(listTests)
         }
 
