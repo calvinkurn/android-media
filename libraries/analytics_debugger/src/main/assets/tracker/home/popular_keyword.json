@@ -1,5 +1,5 @@
 {
-  "readme": "Home Page Banner, view, click, and click all",
+  "readme": "Popular keyword impression, click, and reload",
   "mode": "exact",
   "query": [
     {
@@ -12,7 +12,7 @@
       }],
       "eventCategory": "homepage",
       "event": "view_item",
-      "eventAction": "slider banner impression",
+      "eventAction": "impression on popular keyword banner",
       "sessionIris": "{{.*}}",
       "eventLabel": "{{.*}}"
     },
@@ -25,23 +25,19 @@
         "creative_url": "{{.*}}"
       }],
       "eventCategory": "homepage",
-      "affinityLabel": "{{.*}}",
-      "attribution": "{{.*}}",
-      "shopId": "{{.*}}",
       "event": "select_content",
-      "eventAction": "slider banner click",
+      "eventAction": "click on popular keyword banner",
       "sessionIris": "{{.*}}",
       "eventLabel": "{{.*}}",
-      "categoryId": "{{.*}}",
-      "channelId": "{{.*}}",
-      "campaignCode": "{{.*}}"
+      "channelId": "{{.*}}"
     },
     {
       "eventCategory": "homepage",
       "event": "clickHomepage",
-      "eventAction": "slider banner click view all",
+      "eventAction": "click view all on popular keyword banner",
       "sessionIris": "{{.*}}",
-      "eventLabel": "{{.*}}"
+      "eventLabel": "{{.*}}",
+      "channelId": "{{.*}}"
     }
   ]
 }
