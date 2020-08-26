@@ -38,7 +38,6 @@ import com.tokopedia.product.detail.usecase.*
 import com.tokopedia.product.detail.view.util.DynamicProductDetailDispatcherProvider
 import com.tokopedia.product.detail.view.util.asFail
 import com.tokopedia.product.detail.view.util.asSuccess
-import com.tokopedia.product.detail.view.util.asThrowable
 import com.tokopedia.purchase_platform.common.feature.helpticket.data.request.SubmitHelpTicketRequest
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
@@ -399,8 +398,9 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         withContext(dispatcher.io()) {
             val result = addToCartOccUseCase.createObservable(requestParams).toBlocking().single()
             if (result.isDataError()) {
-                _addToCartLiveData.postValue(arrayListOf(result.getAtcErrorMessage()
-                        ?: "").asThrowable().asFail())
+                // todo change to message exception
+                _addToCartLiveData.postValue(MessageErrorException(result.getAtcErrorMessage()
+                        ?: "").asFail())
 
             } else {
                 _addToCartLiveData.postValue(result.asSuccess())
