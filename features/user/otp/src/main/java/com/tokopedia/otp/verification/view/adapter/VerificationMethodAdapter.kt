@@ -60,24 +60,18 @@ class VerificationMethodAdapter(
             val indexNewlineN = otpListTextHtml.indexOf("\n")
             val indexNewlineBr = otpListTextHtml.indexOf("<br>")
             spannable = SpannableString(otpListTextHtml)
+            val clickableSpan = object : ClickableSpan() {
+                override fun onClick(widget: View) {}
+
+                override fun updateDrawState(ds: TextPaint) {
+                    ds.color = MethodChecker.getColor(itemView.context, R.color.Neutral_N700)
+                    ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+                }
+            }
             if(indexNewlineN > -1) {
-                spannable.setSpan(object : ClickableSpan() {
-                    override fun onClick(widget: View) {}
-
-                    override fun updateDrawState(ds: TextPaint) {
-                        ds.color = MethodChecker.getColor(itemView.context, R.color.Neutral_N700)
-                        ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
-                    }
-                }, 0, indexNewlineN, 0)
+                spannable.setSpan(clickableSpan, 0, indexNewlineN, 0)
             } else if(indexNewlineBr > -1) {
-                spannable.setSpan(object : ClickableSpan() {
-                    override fun onClick(widget: View) {}
-
-                    override fun updateDrawState(ds: TextPaint) {
-                        ds.color = MethodChecker.getColor(itemView.context, R.color.Neutral_N700)
-                        ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
-                    }
-                }, 0, indexNewlineBr, 0)
+                spannable.setSpan(clickableSpan, 0, indexNewlineBr, 0)
             }
             itemView.method_text.setText(spannable, TextView.BufferType.SPANNABLE)
         }
