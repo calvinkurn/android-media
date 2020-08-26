@@ -17,6 +17,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addpin.data.StatusPinData
 import com.tokopedia.profilecompletion.addpin.viewmodel.AddChangePinViewModel
+import com.tokopedia.profilecompletion.common.LoadingDialog
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinConstant
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinUtil
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
@@ -33,7 +34,7 @@ import javax.inject.Inject
  * ade.hadian@tokopedia.com
  */
 
-class PinOnboardingFragment: BaseDaggerFragment(){
+class PinOnboardingFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var trackingPinUtil: TrackingPinUtil
@@ -41,6 +42,9 @@ class PinOnboardingFragment: BaseDaggerFragment(){
     lateinit var userSession: UserSessionInterface
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var loadingDialog: LoadingDialog
+
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val addChangePinViewModel by lazy { viewModelProvider.get(AddChangePinViewModel::class.java) }
 
@@ -63,16 +67,12 @@ class PinOnboardingFragment: BaseDaggerFragment(){
             goToAddPin()
         }
 
-        btnIgnore.setOnClickListener {
-            trackingPinUtil.trackClickLaterButton()
-            activity?.finish()
-        }
-
         initObserver()
 
-        if(!userSession.isMsisdnVerified){
+        if (!userSession.isMsisdnVerified) {
             goToAddPhone()
-        }else{
+        } else {
+            showLoading()
             addChangePinViewModel.getStatusPin()
         }
     }
@@ -88,9 +88,9 @@ class PinOnboardingFragment: BaseDaggerFragment(){
         getComponent(ProfileCompletionSettingComponent::class.java).inject(this)
     }
 
-    private fun initObserver(){
+    private fun initObserver() {
         addChangePinViewModel.getStatusPinResponse.observe(this, Observer {
-            when(it){
+            when (it) {
                 is Success -> onSuccessGetStatusPin(it.data)
                 is Fail -> onErrorGetStatusPin(it.throwable)
             }
@@ -99,36 +99,36 @@ class PinOnboardingFragment: BaseDaggerFragment(){
 
     private fun initVar() {
         val isSkipOtp = arguments?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, false)
-        if(isSkipOtp != null)
+        if (isSkipOtp != null)
             this.isSkipOtp = isSkipOtp
     }
 
-    private fun onSuccessGetStatusPin(statusPinData: StatusPinData){
-        if(statusPinData.isRegistered){
+    private fun onSuccessGetStatusPin(statusPinData: StatusPinData) {
+        if (statusPinData.isRegistered) {
             goToChangePin()
-        }else{
+        } else {
             dismissLoading()
         }
     }
 
-    private fun goToChangePin(){
+    private fun goToChangePin() {
         RouteManager.route(activity, ApplinkConstInternalGlobal.CHANGE_PIN)
         activity?.finish()
     }
 
-    private fun onErrorGetStatusPin(throwable: Throwable){
-        view?.run{
+    private fun onErrorGetStatusPin(throwable: Throwable) {
+        view?.run {
             val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
             Toaster.showError(this, errorMessage, Snackbar.LENGTH_LONG)
         }
     }
 
-    private fun goToAddPhone(){
+    private fun goToAddPhone() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE)
         startActivityForResult(intent, REQUEST_CODE_ADD_PHONE)
     }
 
-    private fun goToAddPin(){
+    private fun goToAddPin() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, isSkipOtp)
         intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
@@ -136,14 +136,14 @@ class PinOnboardingFragment: BaseDaggerFragment(){
         activity?.finish()
     }
 
-    private fun onSuccessAddPhoneNumber(){
+    private fun onSuccessAddPhoneNumber() {
         dismissLoading()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when(requestCode){
+        when (requestCode) {
             REQUEST_CODE_ADD_PHONE -> {
-                when(resultCode) {
+                when (resultCode) {
                     Activity.RESULT_OK -> {
                         onSuccessAddPhoneNumber()
                     }
@@ -156,13 +156,11 @@ class PinOnboardingFragment: BaseDaggerFragment(){
     }
 
     private fun showLoading() {
-        mainView.visibility = View.GONE
-        progressBar.visibility = View.VISIBLE
+        loadingDialog.show()
     }
 
     private fun dismissLoading() {
-        mainView.visibility = View.VISIBLE
-        progressBar.visibility = View.GONE
+        loadingDialog.dismiss()
     }
 
     override fun onDestroy() {
@@ -171,7 +169,7 @@ class PinOnboardingFragment: BaseDaggerFragment(){
         addChangePinViewModel.flush()
     }
 
-    fun onBackPressed(){
+    fun onBackPressed() {
         trackingPinUtil.trackClickBackButtonWelcome()
     }
 
@@ -179,7 +177,7 @@ class PinOnboardingFragment: BaseDaggerFragment(){
 
         const val REQUEST_CODE_ADD_PHONE = 100
 
-        const val ONBOARD_PICT_URL = "https://ecs7.tokopedia.net/img/android/others/onboard_add_pin.png"
+        const val ONBOARD_PICT_URL = "https://ecs7.tokopedia.net/android/user/image_pin_two_factor.png"
 
         fun createInstance(bundle: Bundle): PinOnboardingFragment {
             val fragment = PinOnboardingFragment()
