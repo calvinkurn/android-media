@@ -20,6 +20,8 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -36,13 +38,15 @@ import com.tokopedia.kyc_centralized.view.activity.UserIdentificationCameraActiv
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivity
 import com.tokopedia.kyc_centralized.view.listener.UserIdentificationUploadImage
 import com.tokopedia.kyc_centralized.view.model.UserIdentificationStepperModel
+import com.tokopedia.kyc_centralized.view.viewmodel.UserIdentificationViewModel
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user_identification_common.KYCConstant
 import com.tokopedia.user_identification_common.KycCommonUrl
 import com.tokopedia.user_identification_common.KycUrl
 import com.tokopedia.user_identification_common.analytics.UserIdentificationCommonAnalytics
-import com.tokopedia.user_identification_common.subscriber.GetKtpStatusSubscriber.GetKtpStatusListener
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
@@ -50,7 +54,7 @@ import javax.inject.Inject
 /**
  * @author by alvinatin on 15/11/18.
  */
-class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentificationUploadImage.View, GetKtpStatusListener, UserIdentificationFormActivity.Listener {
+class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentificationUploadImage.View, UserIdentificationFormActivity.Listener {
     private var loadingLayout: ConstraintLayout? = null
     private var mainLayout: ConstraintLayout? = null
     private var resultImageKtp: ImageView? = null
@@ -68,6 +72,11 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
 
     @Inject
     lateinit var presenter: UserIdentificationUploadImage.Presenter
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
+    private val viewModel by lazy { viewModelFragmentProvider.get(UserIdentificationViewModel::class.java) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -103,6 +112,24 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
         super.onViewCreated(view, savedInstanceState)
         hideLoading()
         analytics?.eventViewFinalForm()
+        initObserver()
+    }
+
+    private fun initObserver() {
+        viewModel.ktpStatus.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            when(it) {
+                is Success -> {
+                    if (it.data.ktpStatus.bypass || it.data.ktpStatus.valid) {
+                        onKtpValid()
+                    } else {
+                        onKtpInvalid()
+                    }
+                }
+                is Fail -> {
+                    onErrorGetKtpStatus(it.throwable)
+                }
+            }
+        })
     }
 
     override fun initInjector() {
@@ -111,7 +138,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
                     .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
                     .build()
             daggerUserIdentificationComponent.inject(this)
-            presenter?.attachView(this)
+            presenter.attachView(this)
         }
     }
 
@@ -257,7 +284,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
 
     private fun checkKtp() {
         showLoading()
-        presenter.checkKtp(stepperModel?.ktpFile)
+        viewModel.getStatusKtp(stepperModel?.ktpFile?: "")
     }
 
     private fun uploadImage() {
@@ -371,9 +398,6 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
         }
     }
 
-    override val ktpStatusListener: GetKtpStatusListener
-        get() = this
-
     override fun showLoading() {
         mainLayout?.visibility = View.GONE
         loadingLayout?.visibility = View.VISIBLE
@@ -386,7 +410,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
 
     override fun onDestroy() {
         super.onDestroy()
-        presenter?.detachView()
+        presenter.detachView()
     }
 
     private fun showKtpInvalidView() {
@@ -435,18 +459,19 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
     }
 
     override fun trackOnBackPressed() {}
-    override fun onErrorGetKtpStatus(throwable: Throwable) {
+
+    private fun onErrorGetKtpStatus(throwable: Throwable) {
         hideLoading()
         val errMsg = ErrorHandler.getErrorMessage(activity, throwable)
         (activity as UserIdentificationFormActivity).showError(errMsg, NetworkErrorHelper.RetryClickedListener { checkKtp() })
     }
 
-    override fun onKtpInvalid(message: String?) {
+    private fun onKtpInvalid() {
         hideLoading()
         showKtpInvalidView()
     }
 
-    override fun onKtpValid() {
+    private fun onKtpValid() {
         hideLoading()
         uploadImage()
     }

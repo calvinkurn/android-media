@@ -17,14 +17,14 @@ interface UserIdentificationUploadImage {
         val getContext: Context?
         fun onSuccessUpload()
         fun onErrorUpload(error: String?)
-        val ktpStatusListener: GetKtpStatusSubscriber.GetKtpStatusListener?
+//        val ktpStatusListener: GetKtpStatusSubscriber.GetKtpStatusListener?
         fun showLoading()
         fun hideLoading()
     }
 
     interface Presenter : CustomerPresenter<View?> {
         fun uploadImage(model: UserIdentificationStepperModel?, projectid: Int)
-        fun checkKtp(image: String?)
+//        fun checkKtp(image: String?)
         fun uploadImageUseCase(imageUploadModel: ImageUploadModel?): Observable<ImageUploadModel?>?
         fun uploadIdentificationUseCase(imageUploadModels: List<ImageUploadModel?>?, projectId: Int): Observable<ImageUploadModel?>?
         fun registerIdentificationUseCase(projectId: Int): Observable<Boolean?>?

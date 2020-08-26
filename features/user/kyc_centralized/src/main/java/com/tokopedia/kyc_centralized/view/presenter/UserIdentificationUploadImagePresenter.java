@@ -109,7 +109,7 @@ public class UserIdentificationUploadImagePresenter extends
                                 ), (imageUploadModel1, graphqlResponse) -> {
                                     UploadIdentificationPojo pojo = graphqlResponse.getData(UploadIdentificationPojo.class);
                                     imageUploadModel1.setError(pojo != null ? pojo.getKycUpload().getError() : null);
-                                    imageUploadModel1.setSuccess(pojo != null ? pojo.getKycUpload().getIsSuccess() : 0);
+                                    imageUploadModel1.setSuccess(pojo != null ? pojo.getKycUpload().isSuccess() : 0);
                                     return imageUploadModel1;
                                 }));
 
@@ -121,7 +121,7 @@ public class UserIdentificationUploadImagePresenter extends
                 RegisterIdentificationUseCase.getRequestParam(projectId)
         ).flatMap((Func1<GraphqlResponse, Observable<Boolean>>) graphqlResponse -> {
             RegisterIdentificationPojo pojo = graphqlResponse.getData(RegisterIdentificationPojo.class);
-            return Observable.just(pojo != null && pojo.getKycRegister() != null && pojo.getKycRegister().getIsSuccess() == 1);
+            return Observable.just(pojo != null && pojo.getKycRegister() != null && pojo.getKycRegister().isSuccess() == 1);
         });
     }
 
@@ -214,10 +214,10 @@ public class UserIdentificationUploadImagePresenter extends
         return list;
     }
 
-    @Override
-    public void checkKtp(String image) {
-        cekKtpStatusUseCase.execute(cekKtpStatusUseCase.getRequestParam(image), new GetKtpStatusSubscriber(getView().getKtpStatusListener()));
-    }
+//    @Override
+//    public void checkKtp(String image) {
+//        cekKtpStatusUseCase.execute(cekKtpStatusUseCase.getRequestParam(image), new GetKtpStatusSubscriber(getView().getKtpStatusListener()));
+//    }
 
     @Override
     public void detachView() {

@@ -148,6 +148,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
 
     private fun onSuccessGetUserProjectInfo(status: Int, reasons: List<String>) {
         hideLoading()
+        hideRejectedReason()
         statusCode = status
         when (status) {
             KYCConstant.STATUS_REJECTED -> showStatusRejected(reasons)
@@ -226,11 +227,9 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
         title?.setText(R.string.kyc_failed_title)
         if (reasons.isNotEmpty()) {
             text?.setText(R.string.kyc_failed_text_with_reason)
-            clReason?.visibility = View.VISIBLE
             showRejectedReason(reasons)
         } else {
             text?.setText(R.string.kyc_failed_text)
-            clReason?.visibility = View.GONE
         }
         button?.setText(R.string.kyc_failed_button)
         button?.visibility = View.VISIBLE
@@ -239,6 +238,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
     }
 
     private fun showRejectedReason(reasons: List<String>) {
+        clReason?.visibility = View.VISIBLE
         reasonOne?.visibility = View.VISIBLE
         iconOne?.visibility = View.VISIBLE
         reasonOne?.text = reasons[0]
@@ -250,6 +250,14 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
             reasonTwo?.visibility = View.GONE
             iconTwo?.visibility = View.GONE
         }
+    }
+
+    private fun hideRejectedReason() {
+        clReason?.visibility = View.GONE
+        reasonOne?.visibility = View.GONE
+        iconOne?.visibility = View.GONE
+        reasonTwo?.visibility = View.GONE
+        iconTwo?.visibility = View.GONE
     }
 
     private fun showStatusBlacklist() {

@@ -9,17 +9,38 @@ import com.tokopedia.kyc_centralized.util.DispatcherProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user_identification_common.domain.pojo.CheckKtpStatusPojo
 import com.tokopedia.user_identification_common.domain.pojo.KycUserProjectInfoPojo
+import com.tokopedia.user_identification_common.domain.pojo.RegisterIdentificationPojo
+import com.tokopedia.user_identification_common.domain.pojo.UploadIdentificationPojo
+import com.tokopedia.user_identification_common.domain.usecase.GetStatusKtpUseCase
+import com.tokopedia.user_identification_common.domain.usecase.RegisterKycUseCase
+import com.tokopedia.user_identification_common.domain.usecase.UploadUserIdentificationUseCase
 import javax.inject.Inject
 
 class UserIdentificationViewModel @Inject constructor (
         private val getUserProjectInfoUseCase: GetUserProjectInfoUseCase,
+        private val getStatusKtpUseCase: GetStatusKtpUseCase,
+        private val registerKycUseCase: RegisterKycUseCase,
+        private val uploadUserIdentificationUseCase: UploadUserIdentificationUseCase,
         dispatcher: DispatcherProvider
 ): BaseViewModel(dispatcher.io()) {
 
     private val _userProjectInfo = MutableLiveData<Result<KycUserProjectInfoPojo>>()
     val userProjectInfo: LiveData<Result<KycUserProjectInfoPojo>>
         get() = _userProjectInfo
+
+    private val _ktpStatus = MutableLiveData<Result<CheckKtpStatusPojo>>()
+    val ktpStatus: LiveData<Result<CheckKtpStatusPojo>>
+        get() = _ktpStatus
+
+    private val _registerKyc = MutableLiveData<Result<RegisterIdentificationPojo>>()
+    val registerKyc: LiveData<Result<RegisterIdentificationPojo>>
+        get() = _registerKyc
+
+    private val _uploadKyc = MutableLiveData<Result<UploadIdentificationPojo>>()
+    val uploadKyc: LiveData<Result<UploadIdentificationPojo>>
+        get() = _uploadKyc
 
     fun getUserProjectInfo(projectId: Int) {
         launchCatchError(block = {
@@ -29,5 +50,42 @@ class UserIdentificationViewModel @Inject constructor (
         }, onError = {
             _userProjectInfo.postValue(Fail(it))
         })
+    }
+
+    fun getStatusKtp(img: String) {
+        launchCatchError(block = {
+            getStatusKtpUseCase.params = GetStatusKtpUseCase.createParam(img)
+            val statusKtp = getStatusKtpUseCase.executeOnBackground()
+            _ktpStatus.postValue(Success(statusKtp))
+        }, onError = {
+            _ktpStatus.postValue(Fail(it))
+        })
+    }
+
+    fun registerKyc(projectId: Int) {
+        launchCatchError(block = {
+            registerKycUseCase.params = RegisterKycUseCase.createParam(projectId)
+            val registerKtp = registerKycUseCase.executeOnBackground()
+            _registerKyc.postValue(Success(registerKtp))
+        }, onError = {
+            _registerKyc.postValue(Fail(it))
+        })
+    }
+
+    fun uploadUserIdentification(kycType: Int, picObjKyc: String, projectId: Int) {
+        launchCatchError(block = {
+            uploadUserIdentificationUseCase.params = UploadUserIdentificationUseCase.createParam(kycType, picObjKyc, projectId)
+            val uploadUserIdentification = uploadUserIdentificationUseCase.executeOnBackground()
+            _uploadKyc.postValue(Success(uploadUserIdentification))
+        }, onError = {
+            _uploadKyc.postValue(Fail(it))
+        })
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        getUserProjectInfoUseCase.cancelJobs()
+        getStatusKtpUseCase.cancelJobs()
+        registerKycUseCase.cancelJobs()
     }
 }

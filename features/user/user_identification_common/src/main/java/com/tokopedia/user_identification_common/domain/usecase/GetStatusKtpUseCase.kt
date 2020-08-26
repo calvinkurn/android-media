@@ -1,4 +1,4 @@
-package com.tokopedia.kyc_centralized.domain
+package com.tokopedia.user_identification_common.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
@@ -7,41 +7,42 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user_identification_common.KYCConstant
-import com.tokopedia.user_identification_common.domain.pojo.KycUserProjectInfoPojo
+import com.tokopedia.user_identification_common.domain.pojo.CheckKtpStatusPojo
 import javax.inject.Inject
 
-class GetUserProjectInfoUseCase @Inject constructor(
+class GetStatusKtpUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
         private val rawQueries: Map<String, String>
-): UseCase<KycUserProjectInfoPojo>() {
+): UseCase<CheckKtpStatusPojo>() {
 
     var params: HashMap<String, Any> = HashMap()
 
-    override suspend fun executeOnBackground(): KycUserProjectInfoPojo {
-        val rawQuery = rawQueries[KYCConstant.QUERY_GET_KYC_PROJECT_INFO]
+    override suspend fun executeOnBackground(): CheckKtpStatusPojo {
+        val rawQuery = rawQueries[KYCConstant.QUERY_IS_KTP]
         val gqlRequest = GraphqlRequest(rawQuery,
-                KycUserProjectInfoPojo::class.java, params)
+                CheckKtpStatusPojo::class.java, params)
         val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
-        val errors = gqlResponse.getError(KycUserProjectInfoPojo::class.java)
+        val errors = gqlResponse.getError(CheckKtpStatusPojo::class.java)
         if (!errors.isNullOrEmpty()) {
             throw MessageErrorException(errors[0].message)
         } else {
-            return gqlResponse.getData(KycUserProjectInfoPojo::class.java)
+            return gqlResponse.getData(CheckKtpStatusPojo::class.java)
         }
     }
 
     companion object {
-        private const val PROJECT_ID = "projectId"
+        private const val IMAGE = "image"
+        private const val IDENTIFIER = "id"
+        private const val SOURCE = "src"
 
-        fun createParam(projectId: Int): HashMap<String, Any> {
-            var id = projectId
-            if(id < 0) {
-                id = KYCConstant.KYC_PROJECT_ID
-            }
+        fun createParam(img: String): HashMap<String, Any> {
             return hashMapOf(
-                    PROJECT_ID to id
+                    IMAGE to img,
+                    IDENTIFIER to "",
+                    SOURCE to "kyc"
             )
         }
     }
+
 }

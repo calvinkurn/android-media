@@ -38,5 +38,9 @@ interface KYCConstant {
         const val USER_EXIT = -9
         const val KYC_OVERLAY_COLOR = "#ae000000"
         const val KYC_AB_KEYWORD = "Liveness Detection 2"
+        const val QUERY_GET_KYC_PROJECT_INFO = "get_kyc_project_info"
+        const val QUERY_IS_KTP = "is_ktp"
+        const val QUERY_REGISTER_KYC = "register_kyc"
+        const val QUERY_UPLOAD_KYC = "upload_kyc"
     }
 }

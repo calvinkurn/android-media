@@ -13,7 +13,6 @@ import com.tokopedia.imageuploader.domain.GenerateHostRepository
 import com.tokopedia.imageuploader.domain.UploadImageRepository
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.utils.ImageUploaderUtils
-import com.tokopedia.kyc_centralized.KycConstants
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.util.AppDispatcherProvider
 import com.tokopedia.kyc_centralized.util.DispatcherProvider
@@ -22,6 +21,7 @@ import com.tokopedia.kyc_centralized.view.presenter.UserIdentificationUploadImag
 import com.tokopedia.kyc_centralized.view.model.AttachmentImageModel
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.user_identification_common.KYCConstant
 import com.tokopedia.user_identification_common.domain.usecase.GetKtpStatusUseCase
 import com.tokopedia.user_identification_common.domain.usecase.RegisterIdentificationUseCase
 import com.tokopedia.user_identification_common.domain.usecase.UploadIdentificationUseCase
@@ -101,9 +101,30 @@ class UserIdentificationCommonModule {
     @UserIdentificationCommonScope
     @Provides
     @IntoMap
-    @StringKey(KycConstants.QUERY_GET_KYC_PROJECT_INFO)
+    @StringKey(KYCConstant.QUERY_GET_KYC_PROJECT_INFO)
     fun provideRawQueryGetKycProjectInfo(@UserIdentificationCommonScope context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_get_kyc_project_info)
+
+    @UserIdentificationCommonScope
+    @Provides
+    @IntoMap
+    @StringKey(KYCConstant.QUERY_IS_KTP)
+    fun provideRawQueryIsKtp(@UserIdentificationCommonScope context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.query_is_ktp)
+
+    @UserIdentificationCommonScope
+    @Provides
+    @IntoMap
+    @StringKey(KYCConstant.QUERY_REGISTER_KYC)
+    fun provideRawQueryRegisterKyc(@UserIdentificationCommonScope context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.mutation_register_kyc)
+
+    @UserIdentificationCommonScope
+    @Provides
+    @IntoMap
+    @StringKey(KYCConstant.QUERY_UPLOAD_KYC)
+    fun provideRawQueryUploadKyc(@UserIdentificationCommonScope context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.mutation_upload_kyc)
 
     @UserIdentificationCommonScope
     @Provides

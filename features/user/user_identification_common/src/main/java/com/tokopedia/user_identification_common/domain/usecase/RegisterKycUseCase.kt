@@ -1,4 +1,4 @@
-package com.tokopedia.kyc_centralized.domain
+package com.tokopedia.user_identification_common.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
@@ -7,32 +7,32 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user_identification_common.KYCConstant
-import com.tokopedia.user_identification_common.domain.pojo.KycUserProjectInfoPojo
+import com.tokopedia.user_identification_common.domain.pojo.RegisterIdentificationPojo
 import javax.inject.Inject
 
-class GetUserProjectInfoUseCase @Inject constructor(
+class RegisterKycUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
         private val rawQueries: Map<String, String>
-): UseCase<KycUserProjectInfoPojo>() {
+): UseCase<RegisterIdentificationPojo>() {
 
     var params: HashMap<String, Any> = HashMap()
 
-    override suspend fun executeOnBackground(): KycUserProjectInfoPojo {
-        val rawQuery = rawQueries[KYCConstant.QUERY_GET_KYC_PROJECT_INFO]
+    override suspend fun executeOnBackground(): RegisterIdentificationPojo {
+        val rawQuery = rawQueries[KYCConstant.QUERY_REGISTER_KYC]
         val gqlRequest = GraphqlRequest(rawQuery,
-                KycUserProjectInfoPojo::class.java, params)
+                RegisterIdentificationPojo::class.java, params)
         val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
-        val errors = gqlResponse.getError(KycUserProjectInfoPojo::class.java)
+        val errors = gqlResponse.getError(RegisterIdentificationPojo::class.java)
         if (!errors.isNullOrEmpty()) {
             throw MessageErrorException(errors[0].message)
         } else {
-            return gqlResponse.getData(KycUserProjectInfoPojo::class.java)
+            return gqlResponse.getData(RegisterIdentificationPojo::class.java)
         }
     }
 
     companion object {
-        private const val PROJECT_ID = "projectId"
+        private const val PROJECT_ID = "projectID"
 
         fun createParam(projectId: Int): HashMap<String, Any> {
             var id = projectId
@@ -44,4 +44,5 @@ class GetUserProjectInfoUseCase @Inject constructor(
             )
         }
     }
+
 }
