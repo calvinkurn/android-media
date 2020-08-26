@@ -1,8 +1,10 @@
 package com.tokopedia.contactus.common.analytics;
 
+import android.content.Context;
+
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
-import com.tokopedia.core.app.MainApplication;
+
 
 /**
  * Created by baghira on 16/07/18.
@@ -10,8 +12,8 @@ import com.tokopedia.core.app.MainApplication;
 
 public class ContactUsTracking extends UnifyTracking {
 
-    public static void eventInboxClick() {
-        sendGTMEvent(MainApplication.getAppContext(), new EventTracking(
+    public static void eventInboxClick(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 ContactUsEventTracking.Event.GenericClickBantuanEvent,
                 ContactUsEventTracking.Category.EventNewBantuan,
                 String.format(ContactUsEventTracking.Action.EventClickTicket, "Inbox"),
@@ -19,8 +21,8 @@ public class ContactUsTracking extends UnifyTracking {
         ).getEvent());
     }
 
-    public static void eventPopularArticleClick(String label) {
-        sendGTMEvent(MainApplication.getAppContext(), new EventTracking(
+    public static void eventPopularArticleClick(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 ContactUsEventTracking.Event.GenericClickBantuanEvent,
                 ContactUsEventTracking.Category.EventNewBantuan,
                 ContactUsEventTracking.Action.EventClickArticle,
@@ -28,8 +30,8 @@ public class ContactUsTracking extends UnifyTracking {
         ).getEvent());
     }
 
-    public static void eventLihatBantuanClick() {
-        sendGTMEvent(MainApplication.getAppContext(), new EventTracking(
+    public static void eventLihatBantuanClick(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 ContactUsEventTracking.Event.GenericClickBantuanEvent,
                 ContactUsEventTracking.Category.EventNewBantuan,
                 String.format(ContactUsEventTracking.Action.EventClickLihat, "Bantuan"),
@@ -37,8 +39,8 @@ public class ContactUsTracking extends UnifyTracking {
         ).getEvent());
     }
 
-    public static void eventHomeInvoiceClick(String action, String label) {
-        sendGTMEvent(MainApplication.getAppContext(), new EventTracking(
+    public static void eventHomeInvoiceClick(Context context,String action, String label) {
+        sendGTMEvent(context, new EventTracking(
                 ContactUsEventTracking.Event.GenericClickBantuanEvent,
                 ContactUsEventTracking.Category.EventNewBantuan,
                 String.format(ContactUsEventTracking.Action.EventClickInvoice, action),
@@ -46,8 +48,8 @@ public class ContactUsTracking extends UnifyTracking {
         ).getEvent());
     }
 
-    public static void eventLihatTransaksiClick() {
-        sendGTMEvent(MainApplication.getAppContext(), new EventTracking(
+    public static void eventLihatTransaksiClick(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 ContactUsEventTracking.Event.GenericClickBantuanEvent,
                 ContactUsEventTracking.Category.EventNewBantuan,
                 String.format(ContactUsEventTracking.Action.EventClickLihat, "Transaksi"),
@@ -55,8 +57,8 @@ public class ContactUsTracking extends UnifyTracking {
         ).getEvent());
     }
 
-    public static void eventHomeHubungiKamiClick() {
-        sendGTMEvent(MainApplication.getAppContext(), new EventTracking(
+    public static void eventHomeHubungiKamiClick(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 ContactUsEventTracking.Event.GenericClickBantuanEvent,
                 ContactUsEventTracking.Category.EventNewBantuan,
                 ContactUsEventTracking.Action.EventClickHubungi,
@@ -64,8 +66,8 @@ public class ContactUsTracking extends UnifyTracking {
         ).getEvent());
     }
 
-    public static void eventArticleHubungiKamiClick() {
-        sendGTMEvent(MainApplication.getAppContext(), new EventTracking(
+    public static void eventArticleHubungiKamiClick(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 ContactUsEventTracking.Event.GenericClickBantuanEvent,
                 ContactUsEventTracking.Category.EventNewBantuan,
                 ContactUsEventTracking.Action.EventClickHubungi,
@@ -73,8 +75,8 @@ public class ContactUsTracking extends UnifyTracking {
         ).getEvent());
     }
 
-    public static void eventSuccessClick(String labelInvoice) {
-        sendGTMEvent(MainApplication.getAppContext(), new EventTracking(
+    public static void eventSuccessClick(Context context, String labelInvoice) {
+        sendGTMEvent(context, new EventTracking(
                 ContactUsEventTracking.Event.GenericClickBantuanEvent,
                 ContactUsEventTracking.Category.EventNewBantuan,
                 String.format(ContactUsEventTracking.Action.EventClickTicket, "Submit"),
@@ -82,8 +84,8 @@ public class ContactUsTracking extends UnifyTracking {
         ).getEvent());
     }
 
-    public static void eventOkClick() {
-        sendGTMEvent(MainApplication.getAppContext(), new EventTracking(
+    public static void eventOkClick(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 ContactUsEventTracking.Event.GenericClickBantuanEvent,
                 ContactUsEventTracking.Category.EventNewBantuan,
                 String.format(ContactUsEventTracking.Action.EventClickTicket, "Inbox"),
@@ -91,8 +93,8 @@ public class ContactUsTracking extends UnifyTracking {
         ).getEvent());
     }
 
-    public static void eventChatBotOkClick() {
-        sendGTMEvent(MainApplication.getAppContext(), new EventTracking(
+    public static void eventChatBotOkClick(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 ContactUsEventTracking.Event.GenericClickBantuanEvent,
                 ContactUsEventTracking.Category.EventNewBantuan,
                 ContactUsEventTracking.Action.EventClickChatBot,
@@ -100,7 +102,7 @@ public class ContactUsTracking extends UnifyTracking {
         ).getEvent());
     }
 
-    public static void sendGTMInboxTicket(String event, String category, String action, String label) {
-        sendGTMEvent(MainApplication.getAppContext(), new EventTracking(event, category, action, label).getEvent());
+    public static void sendGTMInboxTicket(Context context, String event, String category, String action, String label) {
+        sendGTMEvent(context, new EventTracking(event, category, action, label).getEvent());
     }
 }

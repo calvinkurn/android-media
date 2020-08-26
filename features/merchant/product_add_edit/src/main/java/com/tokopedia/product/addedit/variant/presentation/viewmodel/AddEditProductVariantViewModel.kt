@@ -243,10 +243,15 @@ class AddEditProductVariantViewModel @Inject constructor(
         }
     }
 
-    fun updateSizechartFieldVisibility(variantDetail: VariantDetail, isVisible: Boolean) {
-        if (variantDetail.identifier == VARIANT_IDENTIFIER_HAS_SIZECHART) {
-            mIsVariantSizechartVisible.value = isVisible
+    fun updateSizechartFieldVisibility() {
+        val isSizeUnit = this.selectedVariantDetails.any {
+            it.identifier == VARIANT_IDENTIFIER_HAS_SIZECHART
         }
+        val isVariantValueNotEmpty = selectedVariantUnitValuesMap.any {
+            it.value.isNotEmpty()
+        }
+
+        mIsVariantSizechartVisible.value = isSizeUnit && isVariantValueNotEmpty
     }
 
     fun clearProductVariant() {
