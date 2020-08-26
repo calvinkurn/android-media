@@ -31,6 +31,7 @@ import com.tokopedia.shop.open.R
 import com.tokopedia.shop.open.analytic.ShopOpenRevampTracking
 import com.tokopedia.shop.open.common.ExitDialog
 import com.tokopedia.shop.open.common.PageNameConstant.FINISH_SPLASH_SCREEN_PAGE
+import com.tokopedia.shop.open.common.ScreenNameTracker
 import com.tokopedia.shop.open.di.DaggerShopOpenRevampComponent
 import com.tokopedia.shop.open.di.ShopOpenRevampComponent
 import com.tokopedia.shop.open.di.ShopOpenRevampModule
@@ -113,6 +114,7 @@ class ShopOpenRevampQuisionerFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        shopOpenRevampTracking?.sendScreenNameTracker(ScreenNameTracker.SCREEN_SHOP_SURVEY)
         setupPreconditions()
         showLoader()
         loadDataSurvey()

@@ -101,7 +101,6 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
 
     override fun onClickOvoIncentiveTickerDescription(productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain) {
         val bottomSheet: BottomSheetUnify = IncentiveOvoBottomSheet(productRevIncentiveOvoDomain, ReviewInboxTrackingConstants.PENDING_TAB)
-        bottomSheet.isFullpage = true
         fragmentManager?.let { bottomSheet.show(it, bottomSheet.tag)}
         bottomSheet.setCloseClickListener {
             ReviewTracking.onClickDismissIncentiveOvoBottomSheetTracker(ReviewInboxTrackingConstants.PENDING_TAB)
