@@ -7,6 +7,7 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.cart.data.model.request.RemoveCartRequest
+import com.tokopedia.cart.data.model.request.UndoDeleteCartRequest
 import com.tokopedia.cart.data.model.request.UpdateCartRequest
 import com.tokopedia.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.cart.domain.model.cartlist.CartListData
@@ -43,6 +44,7 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
 import java.util.*
 import javax.inject.Inject
@@ -257,6 +259,21 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             compositeSubscription.add(deleteCartUseCase?.createObservable(requestParams)
                     ?.subscribe(DeleteCartItemSubscriber(view, this, toBeDeletedCartIds,
                             removeAllItem, removeInsurance)))
+        }
+    }
+
+    override fun processUndoDeleteCartItem(cartIds: List<String>) {
+        view?.let {
+            it.showProgressLoading()
+
+            val undoDeleteCartRequest = UndoDeleteCartRequest()
+            undoDeleteCartRequest.cartIds = cartIds
+
+            val requestParams = RequestParams.create()
+            requestParams.putObject(UndoDeleteCartUseCase.PARAM_UNDO_REMOVE_CART_REQUEST, undoDeleteCartRequest)
+
+            compositeSubscription.add(undoDeleteCartUseCase?.createObservable(requestParams)
+                    ?.subscribe(UndoDeleteCartItemSubscriber(it)))
         }
     }
 

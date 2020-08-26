@@ -6,6 +6,5 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class UndoDeleteCartData(
         var isSuccess: Boolean = false,
-        var message: String? = null,
-        var cartCounter: Int = 0
+        var message: String? = null
 ) : Parcelable

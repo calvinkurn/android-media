@@ -13,7 +13,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.*
+import android.widget.CheckBox
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -41,10 +44,7 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.cart.R
 import com.tokopedia.cart.data.model.response.recentview.RecentView
-import com.tokopedia.cart.domain.model.cartlist.CartItemData
-import com.tokopedia.cart.domain.model.cartlist.CartListData
-import com.tokopedia.cart.domain.model.cartlist.OutOfServiceData
-import com.tokopedia.cart.domain.model.cartlist.ShopGroupAvailableData
+import com.tokopedia.cart.domain.model.cartlist.*
 import com.tokopedia.cart.view.CartActivity.Companion.INVALID_PRODUCT_ID
 import com.tokopedia.cart.view.adapter.CartAdapter
 import com.tokopedia.cart.view.adapter.CartItemAdapter
@@ -72,7 +72,6 @@ import com.tokopedia.purchase_platform.common.analytics.PromoRevampAnalytics
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment
 import com.tokopedia.purchase_platform.common.constant.*
-import com.tokopedia.purchase_platform.common.constant.CartConstant.ACTION_OK
 import com.tokopedia.purchase_platform.common.constant.CartConstant.CART_EMPTY_DEFAULT_IMG_URL
 import com.tokopedia.purchase_platform.common.constant.CartConstant.CART_EMPTY_WITH_PROMO_IMG_URL
 import com.tokopedia.purchase_platform.common.constant.CartConstant.CART_ERROR_GLOBAL
@@ -711,20 +710,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         val toBeDeletedCartItemDataList = getAllSelectedCartDataList()
         val allCartItemDataList = cartAdapter.allCartItemData
         if (toBeDeletedCartItemDataList?.isNotEmpty() == true) {
-            val dialog = getMultipleItemsDialogDeleteConfirmation(toBeDeletedCartItemDataList.size)
-            dialog?.setPrimaryCTAClickListener {
-                if (toBeDeletedCartItemDataList.isNotEmpty()) {
-                    dPresenter.processDeleteCartItem(allCartItemDataList, toBeDeletedCartItemDataList, false, true)
-                    sendAnalyticsOnClickConfirmationRemoveCartSelectedNoAddToWishList(
-                            dPresenter.generateDeleteCartDataAnalytics(toBeDeletedCartItemDataList)
-                    )
-                }
-                dialog.dismiss()
+            if (toBeDeletedCartItemDataList.isNotEmpty()) {
+                dPresenter.processDeleteCartItem(allCartItemDataList, toBeDeletedCartItemDataList, false, true)
+                sendAnalyticsOnClickConfirmationRemoveCartSelectedNoAddToWishList(
+                        dPresenter.generateDeleteCartDataAnalytics(toBeDeletedCartItemDataList)
+                )
             }
-            dialog?.setSecondaryCTAClickListener {
-                dialog.dismiss()
-            }
-            dialog?.show()
         } else {
             showToastMessageRed(getString(R.string.message_delete_empty_selection))
         }
@@ -888,14 +879,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
         val allCartItemDataList = cartAdapter.allCartItemData
 
-        val dialog: DialogUnify?
-
         val macroInsurancePresent = cartAdapter.insuranceCartShops.isNotEmpty()
         val removeAllItem = allCartItemDataList.size == cartItemDatas.size
         val removeMacroInsurance = macroInsurancePresent && removeAllItem
 
         if (removeMacroInsurance) {
-            dialog = getInsuranceDialogDeleteConfirmation()
+            val dialog = getInsuranceDialogDeleteConfirmation()
             dialog?.setPrimaryCTAClickListener {
                 if (cartItemDatas.isNotEmpty()) {
                     dPresenter.processDeleteCartItem(allCartItemDataList, cartItemDatas, true, removeMacroInsurance)
@@ -914,24 +903,15 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 }
                 dialog.dismiss()
             }
-
+            dialog?.show()
         } else {
-            dialog = getDialogDeleteConfirmation()
-            dialog?.setPrimaryCTAClickListener {
-                if (cartItemDatas.size > 0) {
-                    dPresenter.processDeleteCartItem(allCartItemDataList, cartItemDatas, false, removeMacroInsurance)
-                    sendAnalyticsOnClickConfirmationRemoveCartSelectedNoAddToWishList(
-                            dPresenter.generateDeleteCartDataAnalytics(cartItemDatas)
-                    )
-                }
-                dialog.dismiss()
-            }
-            dialog?.setSecondaryCTAClickListener {
-                dialog.dismiss()
+            if (cartItemDatas.size > 0) {
+                dPresenter.processDeleteCartItem(allCartItemDataList, cartItemDatas, false, removeMacroInsurance)
+                sendAnalyticsOnClickConfirmationRemoveCartSelectedNoAddToWishList(
+                        dPresenter.generateDeleteCartDataAnalytics(cartItemDatas)
+                )
             }
         }
-
-        dialog?.show()
     }
 
     override fun onCartItemQuantityPlusButtonClicked(cartItemHolderData: CartItemHolderData, position: Int, parentPosition: Int) {
@@ -2462,8 +2442,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun onUndoDeleteClicked(cartIds: List<String>) {
-        // Todo : hit API undo. If success, refresh cart
-        Toast.makeText(context, "UNDO DELETE", Toast.LENGTH_SHORT).show()
+        dPresenter.processUndoDeleteCartItem(cartIds)
+    }
+
+    override fun onUndoDeleteCartDataSuccess(undoDeleteCartData: UndoDeleteCartData) {
+        dPresenter.processInitialGetCartData(getCartId(), false, false)
     }
 
     override fun onRefresh(view: View?) {
@@ -2940,8 +2923,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         val allDisabledCartItemDataList = cartAdapter.allDisabledCartItemData
         val allCartItemDataList = cartAdapter.allCartItemData
 
-        val dialog = getMultipleDisabledItemsDialogDeleteConfirmation(allDisabledCartItemDataList.size)
-
         for (cartItemData in allDisabledCartItemDataList) {
             if (cartItemData.nicotineLiteMessageData != null) {
                 cartPageAnalytics.eventClickHapusButtonOnProductContainTobacco()
@@ -2952,19 +2933,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 dPresenter.generateDeleteCartDataAnalytics(allDisabledCartItemDataList)
         )
 
-        dialog?.setPrimaryCTAClickListener {
-            if (allDisabledCartItemDataList.size > 0) {
-                dPresenter.processDeleteCartItem(allCartItemDataList, allDisabledCartItemDataList, false, false)
-                sendAnalyticsOnClickConfirmationRemoveCartConstrainedProductNoAddToWishList(
-                        dPresenter.generateDeleteCartDataAnalytics(allDisabledCartItemDataList)
-                )
-            }
-            dialog.dismiss()
+        if (allDisabledCartItemDataList.isNotEmpty()) {
+            dPresenter.processDeleteCartItem(allCartItemDataList, allDisabledCartItemDataList, false, false)
+            sendAnalyticsOnClickConfirmationRemoveCartConstrainedProductNoAddToWishList(
+                    dPresenter.generateDeleteCartDataAnalytics(allDisabledCartItemDataList)
+            )
         }
-        dialog?.setSecondaryCTAClickListener {
-            dialog.dismiss()
-        }
-        dialog?.show()
     }
 
     override fun onDeleteDisabledItem(data: CartItemData) {
@@ -2976,19 +2950,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         val cartItemDatas = listOf(data)
         val allCartItemDataList = cartAdapter.allCartItemData
 
-        val dialog = getDisabledItemDialogDeleteConfirmation()
-
-        dialog?.setPrimaryCTAClickListener {
-            dPresenter.processDeleteCartItem(allCartItemDataList, cartItemDatas, false, false)
-            sendAnalyticsOnClickConfirmationRemoveCartSelectedNoAddToWishList(
-                    dPresenter.generateDeleteCartDataAnalytics(cartItemDatas)
-            )
-            dialog.dismiss()
-        }
-        dialog?.setSecondaryCTAClickListener {
-            dialog.dismiss()
-        }
-        dialog?.show()
+        dPresenter.processDeleteCartItem(allCartItemDataList, cartItemDatas, false, false)
+        sendAnalyticsOnClickConfirmationRemoveCartSelectedNoAddToWishList(
+                dPresenter.generateDeleteCartDataAnalytics(cartItemDatas)
+        )
     }
 
     override fun onTobaccoLiteUrlClicked(url: String) {

@@ -8,6 +8,7 @@ import com.tokopedia.purchase_platform.common.feature.insurance.response.Insuran
 import com.tokopedia.cart.data.model.response.recentview.RecentView
 import com.tokopedia.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.cart.domain.model.cartlist.CartListData
+import com.tokopedia.cart.domain.model.cartlist.UndoDeleteCartData
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
@@ -71,6 +72,8 @@ interface ICartListView : CustomerView {
     fun renderLoadGetCartDataFinish()
 
     fun onDeleteCartDataSuccess(deletedCartIds: List<String>, removeAllItems: Boolean)
+
+    fun onUndoDeleteCartDataSuccess(undoDeleteCartData: UndoDeleteCartData)
 
     fun stopCartPerformanceTrace()
 

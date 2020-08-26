@@ -1,6 +1,5 @@
 package com.tokopedia.cart.domain.usecase
 
-import com.google.gson.Gson
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.cart.data.model.request.UndoDeleteCartRequest
 import com.tokopedia.cart.data.model.response.undodeletecart.UndoDeleteCartGqlResponse
@@ -13,8 +12,7 @@ import com.tokopedia.usecase.UseCase
 import rx.Observable
 import javax.inject.Inject
 
-class UndoDeleteCartUseCase @Inject constructor(private val updaterCartCounterUseCase: UpdateCartCounterUseCase,
-                                                private val graphqlUseCase: GraphqlUseCase,
+class UndoDeleteCartUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase,
                                                 private val schedulers: ExecutorSchedulers) : UseCase<UndoDeleteCartData>() {
 
     companion object {
@@ -55,6 +53,11 @@ class UndoDeleteCartUseCase @Inject constructor(private val updaterCartCounterUs
                 .flatMap {
                     graphqlUseCase.createObservable(RequestParams.EMPTY)
                             .map {
+                                val undoDeleteCartData = UndoDeleteCartData().apply {
+                                    isSuccess = true
+                                }
+                                // Todo : read real API
+/*
                                 val undoDeleteCartGqlResponse = it.getData<UndoDeleteCartGqlResponse>(UndoDeleteCartGqlResponse::class.java)
                                 val undoDeleteCartData = UndoDeleteCartData()
                                 if (undoDeleteCartGqlResponse != null) {
@@ -73,12 +76,7 @@ class UndoDeleteCartUseCase @Inject constructor(private val updaterCartCounterUs
                                         }
                                     }
                                 }
-                                undoDeleteCartData
-                            }
-                }.flatMap { undoDeleteCartData ->
-                    updaterCartCounterUseCase.createObservable(RequestParams.create())
-                            .map {
-                                undoDeleteCartData.cartCounter = it
+*/
                                 undoDeleteCartData
                             }
                 }

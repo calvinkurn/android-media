@@ -35,6 +35,8 @@ interface ICartListPresenter {
 
     fun processDeleteCartItem(allCartItemData: List<CartItemData>, removedCartItems: List<CartItemData>, addWishList: Boolean, removeInsurance: Boolean)
 
+    fun processUndoDeleteCartItem(cartIds: List<String>);
+
     fun processUpdateCartData(fireAndForget: Boolean)
 
     fun processToUpdateAndReloadCartData(cartId: String)
