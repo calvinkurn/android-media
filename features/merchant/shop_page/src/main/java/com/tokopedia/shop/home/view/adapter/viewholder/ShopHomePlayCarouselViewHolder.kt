@@ -9,7 +9,6 @@ import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarou
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselItemDataModel
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselOverlayImageDataModel
 import com.tokopedia.shop.R
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
 import com.tokopedia.shop.home.view.listener.ShopPageHomePlayCarouselListener
 import com.tokopedia.shop.home.view.model.ShopHomePlayCarouselUiModel
@@ -81,10 +80,6 @@ class ShopHomePlayCarouselViewHolder(
                 isFoldPosition(adapterPosition),
                 position + 1
         )
-    }
-
-    override fun onItemOverlayClick(dataModel: PlayBannerCarouselItemDataModel, position: Int) {
-        RouteManager.route(itemView.context, dataModel.overlayApplink)
     }
 
     override fun onReminderClick(dataModel: PlayBannerCarouselItemDataModel, position: Int) {

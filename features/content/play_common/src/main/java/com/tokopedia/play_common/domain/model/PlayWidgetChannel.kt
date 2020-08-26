@@ -73,9 +73,7 @@ data class PlayWidgetItem (
         @SerializedName("buttonAppLink")
         val buttonAppLink : String = "",
         @SerializedName("buttonWebLink")
-        val buttonWebLink : String = "",
-        @SerializedName("overlayImageAppLink")
-        val overlayImageAppLink : String = ""
+        val buttonWebLink : String = ""
 ){
     fun isBanner() = typename == TYPE_BANNER
     fun isChannel() = typename == TYPE_CHANNEL
