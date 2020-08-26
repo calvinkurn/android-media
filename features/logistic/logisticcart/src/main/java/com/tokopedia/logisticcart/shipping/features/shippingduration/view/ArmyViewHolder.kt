@@ -32,8 +32,6 @@ class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         itemView.tv_title.setTextColor(fontColor)
         itemView.tv_info.setTextColor(fontColor)
 
-        if(data.isCodAvailable != 1) itemView.lbl_cod_available.visibility = View.GONE
-
         if (!data.disabled) {
             itemView.setOnClickListener {
                 listener.onLogisticPromoClicked(data)
