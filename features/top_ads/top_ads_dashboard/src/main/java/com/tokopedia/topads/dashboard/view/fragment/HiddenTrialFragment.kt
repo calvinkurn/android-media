@@ -13,6 +13,8 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.EXPIRE
+import com.tokopedia.unifycomponents.setImage
+import kotlinx.android.synthetic.main.topads_dashboard_hidden_trial_layout.view.*
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -43,6 +45,10 @@ class HiddenTrialFragment : TkpdBaseV4Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         desc = view.findViewById(R.id.desc_1)
+        view.ic_ilustration.setImage(R.drawable.ill_iklan_otomatis, 0.0f)
+        view.icon1.setImage(R.drawable.ic_money, 0.0f)
+        view.icon2.setImage(R.drawable.ic_people, 0.0f)
+        view.icon3.setImage(R.drawable.ic_product, 0.0f)
         val date: String = outputFormat.format(inputFormat.parse(arguments?.getString(EXPIRE)))
         val text1 = getString(R.string.hidden_trial_desc1)
         val text2 = text1.removeRange(text1.length - 13, text1.length)

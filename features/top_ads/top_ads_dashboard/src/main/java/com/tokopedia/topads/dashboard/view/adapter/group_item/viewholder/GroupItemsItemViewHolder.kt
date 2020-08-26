@@ -17,6 +17,7 @@ import com.tokopedia.topads.dashboard.view.adapter.group_item.viewmodel.GroupIte
 import com.tokopedia.topads.dashboard.view.sheet.TopadsSelectActionSheet
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ProgressBarUnify
+import com.tokopedia.unifycomponents.setImage
 import kotlinx.android.synthetic.main.topads_dash_item_with_group_card.view.*
 
 
@@ -40,11 +41,12 @@ class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean
     override fun bind(item: GroupItemsItemViewModel, selectedMode: Boolean, fromSearch: Boolean, statsData: MutableList<DataItem>, countList: MutableList<CountDataItem>) {
         item.let {
 
+            view.img.setImage(R.drawable.topads_dashboard_folder, 0.0f)
             if (selectedMode) {
                 view.img_menu.visibility = View.INVISIBLE
                 view.check_box.visibility = View.VISIBLE
             } else {
-                view.card_view.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_dash_white))
+                view.card_view.setBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_dash_white))
                 view.img_menu.visibility = View.VISIBLE
                 view.check_box.visibility = View.GONE
                 view.check_box.isChecked = false
@@ -52,9 +54,9 @@ class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean
             }
             view.check_box.isChecked = it.isChecked
             if (!view.check_box.isChecked) {
-                view.card_view.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_dash_white))
+                view.card_view.setBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_dash_white))
             } else {
-                view.card_view.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_select_color))
+                view.card_view.setBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_select_color))
             }
             when (it.data.groupStatusDesc) {
                 ACTIVE -> view.label.setLabelType(Label.GENERAL_DARK_GREEN)
@@ -88,15 +90,15 @@ class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean
                     view.check_box.isChecked = !view.check_box.isChecked
                     it.isChecked = view.check_box.isChecked
                     if (view.check_box.isChecked)
-                        view.card_view.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_select_color))
+                        view.card_view.setBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_select_color))
                     else
-                        view.card_view.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_dash_white))
+                        view.card_view.setBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_dash_white))
                 }
             }
             view.item_card.setOnLongClickListener {
                 item.isChecked = true
                 view.check_box.isChecked = true
-                view.card_view.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_select_color))
+                view.card_view.setBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_select_color))
                 selectMode.invoke(true)
                 true
             }

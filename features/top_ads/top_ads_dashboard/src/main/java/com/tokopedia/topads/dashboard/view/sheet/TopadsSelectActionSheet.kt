@@ -7,6 +7,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.unifycomponents.setImage
 import kotlinx.android.synthetic.main.topads_dash_select_action_on_group_bottomsheet.*
 
 /**
@@ -30,6 +31,10 @@ class TopadsSelectActionSheet {
                     behavior.isHideable = false
                 }
             }
+            it.btn_close.setImage(R.drawable.topads_create_ic_group_close, 0.0f)
+            it.img_active.setImage(R.drawable.topads_dash_green_dot, 0.0f)
+            it.edit_img.setImage(R.drawable.topads_edit_pen_icon, 0.0f)
+            it.img_delete.setImage(R.drawable.topads_ic_delete, 0.0f)
             it.btn_close.setOnClickListener {
                 dismissDialog()
             }

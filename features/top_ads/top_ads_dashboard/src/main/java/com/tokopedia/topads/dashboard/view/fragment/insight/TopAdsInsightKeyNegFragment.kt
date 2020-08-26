@@ -22,6 +22,7 @@ import com.tokopedia.topads.dashboard.view.adapter.insight.TopAdsInsightNegKeyAd
 import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsInsightKeyBidFragment.Companion.COUNT
 import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsInsightKeyBidFragment.Companion.VALUE
 import com.tokopedia.topads.dashboard.view.sheet.InsightKeyBottomSheet
+import com.tokopedia.unifycomponents.setImage
 import kotlinx.android.synthetic.main.topads_dash_fragment_pos_key_insight.*
 
 /**
@@ -59,6 +60,7 @@ class TopAdsInsightKeyNegFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         adapter = TopAdsInsightNegKeyAdapter(this::butttonClicked)
         setView()
+//        toolTip.setImage(R.drawable.topads_dash_info_tooltip, 0.0f)
         toolTip.setOnClickListener {
             val sheet = InsightKeyBottomSheet.createInstance(1)
             sheet.show(fragmentManager!!, "")

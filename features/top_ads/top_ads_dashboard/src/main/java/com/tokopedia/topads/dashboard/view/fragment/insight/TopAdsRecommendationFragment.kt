@@ -16,7 +16,9 @@ import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashInsightPagerAdapter
 import com.tokopedia.topads.dashboard.view.adapter.insight.TopAdsInsightTabAdapter
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
+import com.tokopedia.unifycomponents.setImage
 import kotlinx.android.synthetic.main.topads_dash_fragment_recommendation_layout.*
+import kotlinx.android.synthetic.main.topads_dash_group_empty_state.view.*
 import java.util.*
 import javax.inject.Inject
 
@@ -71,6 +73,7 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
     private fun setEmptyView() {
         rvTabInsight.visibility = View.GONE
         empty_view.visibility = View.VISIBLE
+        empty_view.image_empty.setImage(R.drawable.ill_success, 0.0f)
         view_pager.visibility = View.GONE
         searchBar.visibility = View.GONE
     }

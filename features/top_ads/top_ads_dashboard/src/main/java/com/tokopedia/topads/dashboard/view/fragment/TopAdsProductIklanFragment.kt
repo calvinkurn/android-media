@@ -65,12 +65,22 @@ import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.topads.dashboard.view.sheet.CustomDatePicker
 import com.tokopedia.topads.dashboard.view.sheet.DatePickerSheet
 import com.tokopedia.topads.dashboard.view.sheet.TopadsGroupFilterSheet
+import com.tokopedia.unifycomponents.setImage
 import kotlinx.android.synthetic.main.partial_top_ads_dashboard_statistics.*
 import kotlinx.android.synthetic.main.topads_dash_auto_ads_onboarding_widget.*
+import kotlinx.android.synthetic.main.topads_dash_fragment_beranda_base.*
+import kotlinx.android.synthetic.main.topads_dash_fragment_group_detail_view_layout.*
 import kotlinx.android.synthetic.main.topads_dash_fragment_product_iklan.*
+import kotlinx.android.synthetic.main.topads_dash_fragment_product_iklan.app_bar_layout_2
+import kotlinx.android.synthetic.main.topads_dash_fragment_product_iklan.hari_ini
+import kotlinx.android.synthetic.main.topads_dash_fragment_product_iklan.swipe_refresh_layout
+import kotlinx.android.synthetic.main.topads_dash_fragment_product_iklan.tab_layout
+import kotlinx.android.synthetic.main.topads_dash_fragment_product_iklan.view_pager_frag
 import kotlinx.android.synthetic.main.topads_dash_layout_common_searchbar_layout.*
 import kotlinx.android.synthetic.main.topads_dash_layout_hari_ini.*
+import kotlinx.android.synthetic.main.topads_dash_layout_hari_ini.view.*
 import kotlinx.android.synthetic.main.topads_dash_product_iklan_empty_view.*
+import kotlinx.android.synthetic.main.topads_dash_product_iklan_empty_view.view.*
 import java.util.*
 import javax.inject.Inject
 import kotlin.math.abs
@@ -175,6 +185,8 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
         super.onViewCreated(view, savedInstanceState)
         topAdsDashboardPresenter.attachView(this)
         initStatisticComponent()
+
+        auto_ad_status_image.setImage(R.drawable.ill_iklan_otomatis, 0.0f)
         onBoarding.setOnClickListener {
             if (GlobalConfig.isSellerApp())
                 RouteManager.route(activity, ApplinkConstInternalTopAds.TOPADS_AUTOADS_ONBOARDING)
@@ -195,6 +207,8 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
         topAdsDashboardPresenter.saveDate(startDate!!, endDate!!)
         topAdsDashboardPresenter.saveSelectionDatePicker()
         loadData()
+        hari_ini?.date_image?.setImage(R.drawable.topads_ic_calendar, 0.0f)
+        hari_ini?.next_image?.setImage(R.drawable.topads_ic_arrow, 0.0f)
         hari_ini?.setOnClickListener {
             showBottomSheet()
         }
@@ -330,6 +344,7 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
         view_pager_frag.visibility = View.GONE
         autoads_layout.visibility = View.GONE
         app_bar_layout_2.visibility = View.GONE
+        empty_view.image_empty.setImage(R.drawable.topads_dashboard_empty_product, 0.0f)
         empty_view.visibility = View.VISIBLE
         mulai_beriklan.setOnClickListener {
             if (GlobalConfig.isSellerApp())

@@ -48,10 +48,15 @@ import com.tokopedia.topads.dashboard.view.fragment.*
 import com.tokopedia.topads.dashboard.view.model.GroupDetailViewModel
 import com.tokopedia.topads.dashboard.view.sheet.CustomDatePicker
 import com.tokopedia.topads.dashboard.view.sheet.DatePickerSheet
+import com.tokopedia.unifycomponents.setImage
 import kotlinx.android.synthetic.main.partial_top_ads_dashboard_statistics.*
 import kotlinx.android.synthetic.main.topads_dash_detail_view_widget.*
+import kotlinx.android.synthetic.main.topads_dash_fragment_beranda_base.*
 import kotlinx.android.synthetic.main.topads_dash_fragment_group_detail_view_layout.*
+import kotlinx.android.synthetic.main.topads_dash_fragment_group_detail_view_layout.hari_ini
+import kotlinx.android.synthetic.main.topads_dash_fragment_group_detail_view_layout.swipe_refresh_layout
 import kotlinx.android.synthetic.main.topads_dash_layout_hari_ini.*
+import kotlinx.android.synthetic.main.topads_dash_layout_hari_ini.view.*
 import java.lang.NumberFormatException
 import java.util.*
 import javax.inject.Inject
@@ -154,6 +159,8 @@ class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboa
         header_toolbar.setNavigationOnClickListener {
             super.onBackPressed()
         }
+        hari_ini?.date_image?.setImage(R.drawable.topads_ic_calendar, 0.0f)
+        hari_ini?.next_image?.setImage(R.drawable.topads_ic_arrow, 0.0f)
         hari_ini?.setOnClickListener {
             showBottomSheet()
         }

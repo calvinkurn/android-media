@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.model.insightkey.KeywordInsightDataMain
+import com.tokopedia.unifycomponents.setImage
 import kotlinx.android.synthetic.main.topads_dash_keyword_insight_mini_item_layout.view.*
 
 class TopAdsMiniKeywordInsightAdapter(var onCheck: ((pos: Int) -> Unit?)) : RecyclerView.Adapter<TopAdsMiniKeywordInsightAdapter.ViewHolder>() {
@@ -28,6 +29,8 @@ class TopAdsMiniKeywordInsightAdapter(var onCheck: ((pos: Int) -> Unit?)) : Recy
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.view.img.setImage(R.drawable.topads_dashboard_folder, 0.0f)
+        holder.view.arrow.setImage(R.drawable.topads_ic_arrow, 0.0f)
         holder.view.keywordName.text = items[position].name
         holder.view.insightCount.text = items[position].count.toString()
         holder.view.setOnClickListener {

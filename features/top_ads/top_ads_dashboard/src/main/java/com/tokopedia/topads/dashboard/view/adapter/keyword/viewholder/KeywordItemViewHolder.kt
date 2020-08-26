@@ -8,6 +8,7 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.STAT
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.STATUS_TIDAK_TAMPIL
 import com.tokopedia.topads.dashboard.view.adapter.keyword.viewmodel.KeywordItemViewModel
 import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.setImage
 import kotlinx.android.synthetic.main.topads_dash_item_keyword_card.view.*
 
 
@@ -30,10 +31,11 @@ class KeywordItemViewHolder(val view: View,
                 view.btn_switch.visibility = View.INVISIBLE
                 view.check_box.visibility = View.VISIBLE
             } else {
-                view.card_view?.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_dash_white))
+                view.card_view?.setBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_dash_white))
                 view.btn_switch.visibility = View.VISIBLE
                 view.check_box.visibility = View.GONE
             }
+            view.img_total.setImage(R.drawable.topads_dash_rupee, 0.0f)
             view.check_box.isChecked = item.isChecked
             view.key_title.text = it.result.keywordTag
             view.btn_switch.isChecked = it.result.keywordStatus == STATUS_ACTIVE || it.result.keywordStatus == STATUS_TIDAK_TAMPIL
@@ -47,9 +49,9 @@ class KeywordItemViewHolder(val view: View,
             view.produk_terjual_count.text = it.result.statTotalSold
             view.price_bid.text = it.result.keywordPriceBidFmt
             if (!view.check_box.isChecked) {
-                view.card_view.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_dash_white))
+                view.card_view.setBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_dash_white))
             } else {
-                view.card_view.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_select_color))
+                view.card_view.setBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_select_color))
             }
             view.btn_switch.setOnCheckedChangeListener { buttonView, isChecked ->
                 onSwitchAction.invoke(adapterPosition, isChecked)
@@ -60,16 +62,16 @@ class KeywordItemViewHolder(val view: View,
                     view.check_box.isChecked = !view.check_box.isChecked
                     item.isChecked = view.check_box.isChecked
                     if (view.check_box.isChecked)
-                        view.card_view?.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_select_color))
+                        view.card_view?.setBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_select_color))
                     else
-                        view.card_view?.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_dash_white))
+                        view.card_view?.setBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_dash_white))
                 }
             }
 
             view.item_card.setOnLongClickListener {
                 item.isChecked = true
                 view.check_box.isChecked = true
-                view.card_view.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_select_color))
+                view.card_view.setBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_select_color))
                 onSelectMode.invoke(true)
                 true
             }

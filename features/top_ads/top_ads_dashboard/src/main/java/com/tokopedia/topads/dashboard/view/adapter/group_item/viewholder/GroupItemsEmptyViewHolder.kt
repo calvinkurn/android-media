@@ -8,6 +8,7 @@ import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.model.CountDataItem
 import com.tokopedia.topads.dashboard.data.model.groupitem.DataItem
 import com.tokopedia.topads.dashboard.view.adapter.group_item.viewmodel.GroupItemsEmptyViewModel
+import com.tokopedia.unifycomponents.setImage
 import kotlinx.android.synthetic.main.topads_dash_group_empty_state.view.*
 
 /**
@@ -35,5 +36,6 @@ class GroupItemsEmptyViewHolder(val view: View) : GroupItemsViewHolder<GroupItem
             view.text_desc.text = view.context.getString(R.string.topads_empty_on_search_desc)
             view.btn_submit.visibility = View.GONE
         }
+        view.image_empty.setImage(R.drawable.ill_no_product, 0.0f)
     }
 }

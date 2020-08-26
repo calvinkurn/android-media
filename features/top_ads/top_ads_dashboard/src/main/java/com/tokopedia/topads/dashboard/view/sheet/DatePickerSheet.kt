@@ -8,6 +8,7 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CUST
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.list.ListUnify
+import com.tokopedia.unifycomponents.setImage
 import kotlinx.android.synthetic.main.topads_dash_datepicker_bottomsheet_layout.*
 
 class DatePickerSheet {
@@ -21,6 +22,7 @@ class DatePickerSheet {
             val listUnify = ArrayList<ListItemUnify>()
             val dateModel = Utils.getPeriodRangeList(context)
 
+            dialog.btn_close.setImage(R.drawable.topads_create_ic_group_close, 0.0f)
             dateModel.forEachIndexed { index, periodRangeModel ->
 
                 val data = if (index != CUSTOM_DATE)

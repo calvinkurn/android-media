@@ -6,7 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.topads_insight_bottomsheet_page_1.view.*
 import javax.inject.Inject
 
 
@@ -18,6 +20,11 @@ class TopAdsInsightSheetScreen2 : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(resources.getLayout(R.layout.topads_insight_bottomsheet_page_2), container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        view.img.setImage(R.drawable.topads_dash_insight_page2, 0.0f)
+        view.step_indicator.setImage(R.drawable.topads_indi_2, 0.0f)
     }
 
 }
