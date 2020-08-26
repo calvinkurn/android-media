@@ -1,6 +1,7 @@
 package com.tokopedia.product.addedit.common.util
 
 import android.content.Context
+import android.content.res.Resources
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.product.addedit.R
 import javax.inject.Inject
@@ -8,7 +9,11 @@ import javax.inject.Inject
 class ResourceProvider @Inject constructor(@ApplicationContext val context: Context?) {
 
     private fun getString(resId: Int): String? {
-        return context?.getString(resId)
+        return try {
+            context?.getString(resId)
+        } catch (e: Resources.NotFoundException) {
+            null
+        }
     }
 
     // product name string properties

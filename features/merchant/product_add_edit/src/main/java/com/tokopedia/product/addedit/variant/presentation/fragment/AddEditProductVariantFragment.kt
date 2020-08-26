@@ -230,7 +230,6 @@ class AddEditProductVariantFragment :
         buttonSave.setOnClickListener {
             // perform the save button function
             val variantPhotos = variantPhotoAdapter?.getData().orEmpty()
-            val selectedVariantDetails = variantTypeAdapter?.getSelectedItems().orEmpty()
             viewModel.updateVariantInputModel(variantPhotos)
             startAddEditProductVariantDetailActivity()
         }
@@ -838,10 +837,18 @@ class AddEditProductVariantFragment :
         variantTypeAdapter?.setMaxSelectedItems(MAX_SELECTED_VARIANT_TYPE)
         // set selected variant types
         variantTypeAdapter?.setSelectedItems(selectedVariantDetails)
+        // if editing old variant data (given data is reversed) then you should reverse
+        // selectedVariantDetails data first
+        viewModel.updateIsOldVariantData(variantTypeAdapter?.getSelectedItems().orEmpty(), selectedVariantDetails)
+        val displayedVariantDetail = if (viewModel.isOldVariantData) {
+            selectedVariantDetails.reversed()
+        } else {
+            selectedVariantDetails
+        }
         // update variant selection state
         if (selectedVariantDetails.size == 1) viewModel.isSingleVariantTypeIsSelected = true
         // set selected variant unit and values
-        selectedVariantDetails.forEachIndexed { index, variantDetail ->
+        displayedVariantDetail.forEachIndexed { index, variantDetail ->
 
             val selectedVariantUnit = variantDetail.units.firstOrNull()
                     ?: Unit()
