@@ -26,6 +26,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.device.info.DevicePerformanceInfo
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
@@ -353,7 +354,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
             val builder = ImagePickerBuilder(getString(R.string.image_picker_title),
                     intArrayOf(ImagePickerTabTypeDef.TYPE_CAMERA, ImagePickerTabTypeDef.TYPE_GALLERY),
                     GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
-                    ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.RATIO_1_1, true,
+                    ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.RATIO_1_1, false,
                     ImagePickerEditorBuilder(
                             intArrayOf(ImageEditActionTypeDef.ACTION_BRIGHTNESS, ImageEditActionTypeDef.ACTION_CONTRAST,
                                     ImageEditActionTypeDef.ACTION_CROP, ImageEditActionTypeDef.ACTION_ROTATE),
@@ -368,7 +369,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     override fun onRemoveImageClick(item: BaseImageReviewUiModel) {
-        imageAdapter.setImageReviewData(createReviewViewModel.removeImage(item))
+        imageAdapter.setImageReviewData(createReviewViewModel.removeImage(item, isEditMode))
         if(imageAdapter.isEmpty()) {
             rv_img_review.hide()
             createReviewAddPhotoEmpty.show()
@@ -411,6 +412,9 @@ class CreateReviewFragment : BaseDaggerFragment(),
             REQUEST_CODE_IMAGE -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     val selectedImage = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
+                    val originalImageUrl = data.getStringArrayListExtra(ImageEditorActivity.RESULT_PREVIOUS_IMAGE)
+                    val isEdited = data.getSerializableExtra(ImageEditorActivity.RESULT_IS_EDITTED) as ArrayList<Boolean>
+
                     createReviewViewModel.clearImageData()
 
                     CreateReviewTracking.reviewOnImageUploadTracker(
@@ -422,8 +426,8 @@ class CreateReviewFragment : BaseDaggerFragment(),
                             feedbackId.toString()
                     )
 
-                    val imageListData = createReviewViewModel.getImageList(selectedImage)
-                    if (selectedImage.isNotEmpty()) {
+                    if (!selectedImage.isNullOrEmpty()) {
+                        val imageListData = createReviewViewModel.getImageList(selectedImage, originalImageUrl, isEdited)
                         imageAdapter.setImageReviewData(imageListData)
                         rv_img_review.show()
                         createReviewAddPhotoEmpty.hide()
