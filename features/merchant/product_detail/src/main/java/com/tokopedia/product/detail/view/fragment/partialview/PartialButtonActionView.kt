@@ -5,7 +5,6 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.PARENT_ID
 import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.UNSET
-import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.detail.R
@@ -74,14 +73,16 @@ class PartialButtonActionView private constructor(val view: View,
     }
 
     private fun renderButton() {
-        if (isWarehouseProduct) {
-            showWarehouseButton()
-        } else if (hasShopAuthority) {
+        if (hasShopAuthority) {
             showShopManageButton()
         } else if (!GlobalConfig.isSellerApp() && onSuccessGetCartType) {
             showCartTypeButton()
         } else if (!GlobalConfig.isSellerApp() && !onSuccessGetCartType) {
-            showNewCheckoutButton()
+            if (isWarehouseProduct) {
+                showWarehouseButton()
+            } else {
+                showNewCheckoutButton()
+            }
         }
     }
 
@@ -119,12 +120,22 @@ class PartialButtonActionView private constructor(val view: View,
     }
 
     private fun UnifyButton.generateTheme(colorDescription: String) {
-        if (colorDescription == ProductDetailConstant.KEY_BUTTON_PRIMARY) {
-            this.buttonVariant = UnifyButton.Variant.FILLED
-            this.buttonType = UnifyButton.Type.TRANSACTION
-        } else {
-            this.buttonVariant = UnifyButton.Variant.GHOST
-            this.buttonType = UnifyButton.Type.TRANSACTION
+        when (colorDescription) {
+            ProductDetailConstant.KEY_BUTTON_PRIMARY -> {
+                this.buttonVariant = UnifyButton.Variant.FILLED
+                this.buttonType = UnifyButton.Type.TRANSACTION
+                this.isEnabled = true
+            }
+            ProductDetailConstant.KEY_BUTTON_DISABLE  -> {
+                this.buttonVariant = UnifyButton.Variant.FILLED
+                this.buttonType = UnifyButton.Type.MAIN
+                this.isEnabled = false
+            }
+            else -> {
+                this.buttonVariant = UnifyButton.Variant.GHOST
+                this.buttonType = UnifyButton.Type.TRANSACTION
+                this.isEnabled = true
+            }
         }
     }
 

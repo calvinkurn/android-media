@@ -8,6 +8,7 @@ import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.SHOP_PRODUCT_LIST_RESULT_SOURCE
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
+import com.tokopedia.shop.home.util.CoroutineDispatcherProvider
 import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
 import com.tokopedia.shop.product.view.datamodel.ShopEtalaseItemDataModel
 import com.tokopedia.shop.product.view.datamodel.ShopProductViewModel
@@ -33,7 +34,8 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
                                                              private val getShopProductUseCase: GqlGetShopProductUseCase,
                                                              private val getShopProductFilterUseCase: GetShopProductSortUseCase,
                                                              private val shopProductSortMapper: ShopProductSortMapper,
-                                                             dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
+                                                             private val dispatcherProvider: CoroutineDispatcherProvider
+) : BaseViewModel(dispatcherProvider.main()) {
 
     fun isMyShop(shopId: String) = userSession.shopId == shopId
 
@@ -51,7 +53,7 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
             getShopInfoUseCase.params = GQLGetShopInfoUseCase
                     .createParams(if (id == 0) listOf() else listOf(id), shopDomain, source = SHOP_PRODUCT_LIST_RESULT_SOURCE)
             getShopInfoUseCase.isFromCacheFirst = !isRefresh
-            val shopInfo = withContext(Dispatchers.IO) { getShopInfoUseCase.executeOnBackground() }
+            val shopInfo = withContext(dispatcherProvider.io()) { getShopInfoUseCase.executeOnBackground() }
             shopInfoResp.value = Success(shopInfo)
         }) {
             shopInfoResp.value = Fail(it)
@@ -65,14 +67,16 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
             sortId: Int = 0,
             etalase: String = "",
             search: String = "",
-            isForceRefresh: Boolean = false
+            isForceRefresh: Boolean = false,
+            etalaseType: Int
     ) {
         launchCatchError(block = {
-            val getProductResp = withContext(Dispatchers.IO) {
+            val getProductResp = withContext(dispatcherProvider.io()) {
                 getShopProductData(
                         shopId,
                         ShopProductFilterInput(page, perPage, search, etalase, sortId),
-                        isForceRefresh
+                        isForceRefresh,
+                        etalaseType
                 )
             }
             productData.postValue(Success(getProductResp))
@@ -98,7 +102,7 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
     ) {
         launchCatchError(coroutineContext, block = {
             val etalaseResponse = asyncCatchError(
-                    Dispatchers.IO,
+                    dispatcherProvider.io(),
                     block = {
                         getShopEtalaseData(shopInfo.shopCore.shopID, isOwner, isForceRefresh)
                     },
@@ -108,7 +112,7 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
                     }
             )
             val sortResponse  = asyncCatchError(
-                    Dispatchers.IO,
+                    dispatcherProvider.io(),
                     block = {
                         getSortListData()
                     },
@@ -151,7 +155,8 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
     private suspend fun getShopProductData(
             shopId: String,
             productFilter: ShopProductFilterInput,
-            isForceRefresh: Boolean = false
+            isForceRefresh: Boolean = false,
+            etalaseType: Int
     ): Pair<Boolean, List<ShopProductViewModel>> {
         getShopProductUseCase.params = GqlGetShopProductUseCase.createParams(shopId, productFilter)
         getShopProductUseCase.isFromCacheFirst = !isForceRefresh
@@ -159,7 +164,7 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
         val isHasNextPage = isHasNextPage(productFilter.page, productFilter.perPage, productListResponse.totalData)
         return Pair(
                 isHasNextPage,
-                productListResponse.data.map { ShopPageProductListMapper.mapShopProductToProductViewModel(it, isMyShop(shopId), productFilter.etalaseMenu) }
+                productListResponse.data.map { ShopPageProductListMapper.mapShopProductToProductViewModel(it, isMyShop(shopId), productFilter.etalaseMenu, etalaseType) }
         )
     }
     private fun isHasNextPage(page: Int, perPage: Int, totalData: Int): Boolean = page * perPage < totalData

@@ -16,8 +16,7 @@
         android:layout_marginLeft="@dimen/dp_16"
         android:textColor="@color/Neutral_N700_96"
         app:typographyType="body_3"
-        app:typographyWeight="reguler"
-        tools:text="cashback ovo points dan tokopoints" />
+        app:typographyWeight="reguler" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_total_cashback_value"
@@ -31,6 +30,5 @@
         android:gravity="end"
         android:textColor="@color/Neutral_N700_96"
         app:typographyType="body_3"
-        app:typographyWeight="bold"
-        tools:text="Rp 100.000.000.000.000.0001" />
+        app:typographyWeight="bold" />
 </LinearLayout>

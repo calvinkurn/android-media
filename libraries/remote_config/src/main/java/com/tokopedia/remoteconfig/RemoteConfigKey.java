@@ -51,8 +51,6 @@ public class RemoteConfigKey {
 
     public static final String IMAGE_HOST = "image_host";
 
-    public static final String ENABLE_BOTTOM_SHEET_FILTER_REVAMP = "android_customer_enable_bottom_sheet_filter_revamp";
-
     public static final String FIREBASE_DIGITAL_OMS_REMOTE_CONFIG_KEY = "app_enable_oms_native";
     public static final String SHOW_INSTANT_LOAN = "app_enable_instant_loan";
     public static final String SHOW_TOKOCARD = "app_enable_toko_card";
@@ -92,6 +90,7 @@ public class RemoteConfigKey {
 
     public static final String ANDROID_MAIN_APP_ENABLED_OLD_PDP = "android_main_app_enabled_old_pdp";
     public static final String ANDROID_MAIN_APP_ENABLED_CACHE_PDP = "android_main_app_enabled_cache_pdp";
+    public static final String ANDROID_MAIN_APP_ENABLED_CACHE_P2_PDP = "android_main_app_enabled_cache_p2_pdp";
 
     public static final String NONB1_TTL = "app_nonb_1_ttl";
     public static final String NONB1_DESC = "app_nonb_1_dsc";
@@ -227,6 +226,7 @@ public class RemoteConfigKey {
     public static final String FREE_SHIPPING_FEATURE_DISABLED = "android_free_shipping_feature_disabled";
     public static final String NEW_SELLER_HOME_DISABLED = "android_new_seller_home_disabled";
     public static final String ENABLE_GLOBAL_SEARCH_SELLER = "android_sellerapp_global_search_enabled";
+    public static final String ENABLE_PUSH_NOTIFICATION_CHAT_SELLER = "android_sellerapp_enable_push_notif_reply_chat";
 
     public static final String NOTIFICATION_TRAY_CLEAR = "app_notif_tray_clear";
 

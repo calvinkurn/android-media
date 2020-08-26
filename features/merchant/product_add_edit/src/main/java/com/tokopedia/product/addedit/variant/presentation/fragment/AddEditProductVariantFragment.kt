@@ -3,6 +3,7 @@ package com.tokopedia.product.addedit.variant.presentation.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -229,7 +230,6 @@ class AddEditProductVariantFragment :
         buttonSave.setOnClickListener {
             // perform the save button function
             val variantPhotos = variantPhotoAdapter?.getData().orEmpty()
-            val selectedVariantDetails = variantTypeAdapter?.getSelectedItems().orEmpty()
             viewModel.updateVariantInputModel(variantPhotos)
             startAddEditProductVariantDetailActivity()
         }
@@ -410,14 +410,12 @@ class AddEditProductVariantFragment :
                 variantValueLevel1Layout.show()
                 variantValueAdapterLevel1?.setData(selectedVariantUnitValues)
                 typographyVariantValueLevel1Title.text = variantTypeDetail.name
-                linkAddVariantValueLevel1.setTag(R.id.variant_detail, variantTypeDetail)
                 viewModel.updateVariantDataMap(VARIANT_VALUE_LEVEL_ONE_POSITION, variantTypeDetail)
             }
             VARIANT_VALUE_LEVEL_TWO_POSITION -> {
                 variantValueLevel2Layout.show()
                 variantValueAdapterLevel2?.setData(selectedVariantUnitValues)
                 typographyVariantValueLevel2Title.text = variantTypeDetail.name
-                linkAddVariantValueLevel2.setTag(R.id.variant_detail, variantTypeDetail)
                 viewModel.updateVariantDataMap(VARIANT_VALUE_LEVEL_TWO_POSITION, variantTypeDetail)
             }
         }
@@ -635,9 +633,16 @@ class AddEditProductVariantFragment :
         variantDataValuePicker?.overlayClickDismiss = false
         variantDataValuePicker?.showCloseIcon = true
         variantDataValuePicker?.clearContentPadding = true
-        // set the bottom sheet to full screen
         variantDataValuePicker?.setShowListener {
+            // set the bottom sheet to full screen
             variantDataValuePicker?.bottomSheet?.state = BottomSheetBehavior.STATE_EXPANDED
+            // enable the back button despite of overlayClickDismiss = false
+            variantDataValuePicker?.dialog?.setOnKeyListener { dialog, keyCode, event ->
+                if (keyCode == KeyEvent.KEYCODE_BACK) {
+                    variantDataValuePicker?.dismiss()
+                }
+                true
+            }
         }
         val variantDataValuePickerLayout = VariantDataValuePicker(requireContext(), layoutPosition, variantData, this, this, this, this)
         variantDataValuePickerLayout.setupVariantDataValuePicker(selectedVariantUnit, selectedVariantUnitValues, addedCustomVariantUnitValue, unConfirmedSelection)
@@ -664,6 +669,16 @@ class AddEditProductVariantFragment :
             variantUnitPicker?.dismiss()
             variantDataValuePicker?.dialog?.show()
         }
+        // enable the back button despite of overlayClickDismiss = false
+        variantUnitPicker?.setShowListener {
+            variantUnitPicker?.dialog?.setOnKeyListener { dialog, keyCode, event ->
+                if(keyCode == KeyEvent.KEYCODE_BACK){
+                    variantUnitPicker?.dismiss()
+                    variantDataValuePicker?.dialog?.show()
+                }
+                true
+            }
+        }
         variantUnitPicker?.setChild(variantUnitPickerLayout)
         variantUnitPicker?.show(this@AddEditProductVariantFragment.childFragmentManager, TAG_VARIANT_UNIT_PICKER)
     }
@@ -677,6 +692,15 @@ class AddEditProductVariantFragment :
         customVariantValueInputForm?.setTitle(getString(R.string.action_variant_add) + " " + variantData.name)
         customVariantValueInputForm?.overlayClickDismiss = false
         customVariantValueInputForm?.isKeyboardOverlap = false
+        // enable the back button despite of overlayClickDismiss = false
+        customVariantValueInputForm?.setShowListener {
+            customVariantValueInputForm?.dialog?.setOnKeyListener { dialog, keyCode, event ->
+                if(keyCode == KeyEvent.KEYCODE_BACK){
+                    customVariantValueInputForm?.dismiss()
+                }
+                true
+            }
+        }
         val customVariantValueInputLayout = CustomVariantUnitValueForm(requireContext(), layoutPosition, variantUnitValues, this)
         customVariantValueInputLayout.setupVariantCustomInputLayout(selectedVariantUnit, selectedVariantUnitValues)
         customVariantValueInputForm?.setChild(customVariantValueInputLayout)
@@ -813,10 +837,18 @@ class AddEditProductVariantFragment :
         variantTypeAdapter?.setMaxSelectedItems(MAX_SELECTED_VARIANT_TYPE)
         // set selected variant types
         variantTypeAdapter?.setSelectedItems(selectedVariantDetails)
+        // if editing old variant data (given data is reversed) then you should reverse
+        // selectedVariantDetails data first
+        viewModel.updateIsOldVariantData(variantTypeAdapter?.getSelectedItems().orEmpty(), selectedVariantDetails)
+        val displayedVariantDetail = if (viewModel.isOldVariantData) {
+            selectedVariantDetails.reversed()
+        } else {
+            selectedVariantDetails
+        }
         // update variant selection state
         if (selectedVariantDetails.size == 1) viewModel.isSingleVariantTypeIsSelected = true
         // set selected variant unit and values
-        selectedVariantDetails.forEachIndexed { index, variantDetail ->
+        displayedVariantDetail.forEachIndexed { index, variantDetail ->
 
             val selectedVariantUnit = variantDetail.units.firstOrNull()
                     ?: Unit()

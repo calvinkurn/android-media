@@ -275,6 +275,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         } else {
             R.menu.menu_product_manage_dark
         }
+        menu.clear()
         inflater.inflate(menuViewId, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
@@ -924,7 +925,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 }
                 val backgroundColor = MethodChecker.getColor(context, com.tokopedia.design.R.color.tkpd_main_green)
 
-                val spanText = SpannableString(getString(com.tokopedia.product.manage.item.R.string.popup_tips_trick_clickable))
+                val spanText = SpannableString(getString(R.string.popup_tips_trick_clickable))
                 spanText.setSpan(StyleSpan(Typeface.BOLD),
                     5, spanText.length - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 spanText.setSpan(ForegroundColorSpan(backgroundColor),
@@ -1441,6 +1442,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                     val intent = RouteManager.getIntent(context, appLinkToOpen).apply {
                         putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, appLinks)
                         putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, activity?.intent?.getStringExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME).orEmpty())
+                        addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                     }
                     when (activity?.intent?.getStringExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME)) {
                         SellerMigrationFeatureName.FEATURE_SET_CASHBACK -> startActivityForResult(intent, SET_CASHBACK_REQUEST_CODE)
