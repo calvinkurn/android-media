@@ -1,5 +1,6 @@
 package com.tokopedia.analyticsdebugger.validator.list
 
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -7,23 +8,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
+import android.widget.ImageButton
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.analyticsdebugger.R
 import com.tokopedia.analyticsdebugger.validator.Utils
-import com.tokopedia.kotlin.extensions.view.hideLoading
-import com.tokopedia.unifycomponents.SearchBarUnify
-import kotlinx.coroutines.*
 import timber.log.Timber
 
 class ValidatorListFragment : Fragment() {
 
     private var listener: Listener? = null
-
-    private var searchInputJob: Job? = null
-    private var searchTextChangeDelay: Long = DEFAULT_TEXT_CHANGE_DELAY_MILLIS
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_validator_list, container, false)
@@ -43,19 +41,19 @@ class ValidatorListFragment : Fragment() {
             adapter = listingAdapter
         }
 
-        val searchBar = view.findViewById<SearchBarUnify>(R.id.search_bar)
-        with(searchBar.searchBarTextField) {
+        val searchBarTextField = view.findViewById<EditText>(R.id.searchbar_textfield)
+        val searchBarClearButton = view.findViewById<ImageButton>(R.id.searchbar_clear)
+        with(searchBarTextField) {
             setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    searchBar.clearFocus()
+                    clearSearchBarFocus(this)
                     true
                 } else false
             }
             addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
-                    searchInputJob?.cancel()
-                    searchInputJob = CoroutineScope(Dispatchers.Main).launch {
-                        delay(searchTextChangeDelay)
+                    s?.run {
+                        searchBarClearButton.visibility = if (s.isNotEmpty()) View.VISIBLE else View.GONE
                         // Filter test cases based on search query
                         val filteredListTests = listTests.filter { it.contains(s.toString()) }
                         listingAdapter.setItems(filteredListTests)
@@ -72,13 +70,21 @@ class ValidatorListFragment : Fragment() {
 
             })
         }
-        searchBar.clearListener = {
-            searchBar.clearFocus()
+        searchBarClearButton.setOnClickListener {
+            searchBarTextField.text.clear()
+            searchBarClearButton.visibility = View.GONE
+            clearSearchBarFocus(searchBarTextField)
             listingAdapter.setItems(listTests)
         }
 
         listingAdapter.setOnItemClickListener { listener?.runTest(it) }
         listingAdapter.setItems(listTests)
+    }
+
+    private fun clearSearchBarFocus(editText: EditText) {
+        editText.clearFocus()
+        val input = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        input?.hideSoftInputFromWindow(editText.windowToken, 0)
     }
 
     fun setListener(listener: Listener) {
