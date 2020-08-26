@@ -31,6 +31,8 @@ class EventPDPActivity : BaseSimpleActivity(), HasComponent<EventPDPComponent> {
             urlPDP = uri.lastPathSegment ?: ""
         }else if(savedInstanceState != null){
             urlPDP = savedInstanceState.getString(EXTRA_URL_PDP,"")
+        }else if(intent.extras!=null){
+            urlPDP = intent.getStringExtra(EXTRA_URL_PDP)
         }
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
