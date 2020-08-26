@@ -61,7 +61,7 @@
         android:id="@+id/itemLayoutSavingBook" />
     
       <include layout="@layout/item_inactive_phone_onboarding_reciept"
-        android:id="@+id/itemLayoutSavingBook"
+        android:id="@+id/itemLayoutReceipt"
         android:visibility="gone"/>
   
     </FrameLayout>
