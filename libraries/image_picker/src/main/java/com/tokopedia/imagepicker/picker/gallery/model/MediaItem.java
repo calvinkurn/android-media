@@ -9,7 +9,6 @@ import android.os.Parcelable;
 import android.provider.MediaStore;
 
 import com.tokopedia.imagepicker.common.util.ImageUtils;
-import com.tokopedia.imagepicker.picker.gallery.loader.AlbumLoader;
 
 /**
  * Created by hangnadi on 5/29/17.
@@ -26,9 +25,8 @@ public class MediaItem implements Parcelable {
     private final String videoResolution; // only for video, in ms
     private long height;
     private long width;
-    private final Uri realPath;
 
-    private MediaItem(long id, Uri realPath, String mimeType, long size, long duration, String videoResolution) {
+    private MediaItem(long id, String mimeType, long size, long duration, String videoResolution) {
         this.id = id;
         this.mimeType = mimeType;
         Uri contentUri;
@@ -43,7 +41,6 @@ public class MediaItem implements Parcelable {
         this.uri = ContentUris.withAppendedId(contentUri, id);
         this.size = size;
         this.duration = duration;
-        this.realPath = realPath;
         this.videoResolution = videoResolution == null? "" : videoResolution;
     }
 
@@ -95,9 +92,7 @@ public class MediaItem implements Parcelable {
     }
 
     public static MediaItem valueOf(Cursor cursor) {
-        String clumn = cursor.getString(cursor.getColumnIndex(AlbumLoader.COLUMN_URI));
         return new MediaItem(cursor.getLong(cursor.getColumnIndex(MediaStore.Files.FileColumns._ID)),
-                Uri.parse(clumn != null ? clumn : ""),
                 cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.MIME_TYPE)),
                 cursor.getLong(cursor.getColumnIndex(MediaStore.MediaColumns.SIZE)),
                 cursor.getLong(cursor.getColumnIndex(MediaStore.Video.VideoColumns.DURATION)),
@@ -134,7 +129,7 @@ public class MediaItem implements Parcelable {
     }
 
     public Uri getRealPath() {
-        return realPath;
+        return getContentUri();
     }
 
     @Override
@@ -155,7 +150,6 @@ public class MediaItem implements Parcelable {
         dest.writeLong(this.duration);
         dest.writeLong(this.height);
         dest.writeLong(this.width);
-        dest.writeParcelable(this.realPath, 0);
         dest.writeString(this.videoResolution);
     }
 
@@ -167,7 +161,6 @@ public class MediaItem implements Parcelable {
         this.duration = in.readLong();
         this.height = in.readLong();
         this.width = in.readLong();
-        this.realPath = in.readParcelable(Uri.class.getClassLoader());
         this.videoResolution = in.readString();
     }
 
