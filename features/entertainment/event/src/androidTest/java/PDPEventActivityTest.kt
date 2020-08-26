@@ -13,6 +13,7 @@ import com.tokopedia.analyticsdebugger.validator.core.getAnalyticsWithQuery
 import com.tokopedia.analyticsdebugger.validator.core.hasAllSuccess
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.pdp.activity.EventPDPActivity
+import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import kotlinx.android.synthetic.main.partial_event_pdp_price.*
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.core.AllOf

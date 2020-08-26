@@ -294,7 +294,7 @@ class EventCheckoutFragment : BaseDaggerFragment() {
                         Toaster.make(view, it.getString(R.string.ent_event_checkout_submit_name), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error))
                     } else {
                         progressDialog.show()
-                         eventPDPTracking.onClickCheckoutButton(productDetailData, metadata.itemMap)
+                        eventPDPTracking.onClickCheckoutButton(productDetailData, metadata.itemMap)
                         if (name.isEmpty()) name = userSessionInterface.name
                         if (email.isEmpty()) email = userSessionInterface.email
                         metadata = getPassengerMetaData(metadata, forms)
