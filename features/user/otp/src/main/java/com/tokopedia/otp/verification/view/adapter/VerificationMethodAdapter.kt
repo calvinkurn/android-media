@@ -55,11 +55,8 @@ class VerificationMethodAdapter(
                 listener?.onModeListClick(modeList, position)
             }
 
-            val spannable: Spannable
             val otpListTextHtml = MethodChecker.fromHtml(modeList.otpListText)
-            val indexNewlineN = otpListTextHtml.indexOf("\n")
-            val indexNewlineBr = otpListTextHtml.indexOf("<br>")
-            spannable = SpannableString(otpListTextHtml)
+            val indexNewline = otpListTextHtml.indexOf("\n")
             val clickableSpan = object : ClickableSpan() {
                 override fun onClick(widget: View) {}
 
@@ -68,10 +65,11 @@ class VerificationMethodAdapter(
                     ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                 }
             }
-            if(indexNewlineN > -1) {
-                spannable.setSpan(clickableSpan, 0, indexNewlineN, 0)
-            } else if(indexNewlineBr > -1) {
-                spannable.setSpan(clickableSpan, 0, indexNewlineBr, 0)
+
+            val spannable: Spannable
+            spannable = SpannableString(otpListTextHtml)
+            if(indexNewline > -1) {
+                spannable.setSpan(clickableSpan, 0, indexNewline, 0)
             }
             itemView.method_text.setText(spannable, TextView.BufferType.SPANNABLE)
         }
