@@ -49,9 +49,12 @@ class CarouselBannerViewHolder(itemView: View, private val fragment: Fragment) :
 
         carouselBannerViewModel.getListDataLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
             carouselBannerRecycleAdapter.setDataList(item)
-            (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerImpression(
-                    item?.get(0)?.data ?: ArrayList(),
-                    carouselBannerViewModel.getComponentPosition())
+
+            if(!item.isNullOrEmpty()){
+                (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerImpression(
+                        item[0].data ?: ArrayList(),
+                        carouselBannerViewModel.getComponentPosition())
+            }
         })
 
         carouselBannerViewModel.getSeeAllButtonLiveData().observe(fragment.viewLifecycleOwner, Observer {
