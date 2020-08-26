@@ -211,7 +211,7 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
 
     private fun onBankAccountLoaded(accountList: ArrayList<BankAccount>) {
         accountList.forEach lit@{ bankAccount ->
-            if (bankAccount.isDefaultBank == DEFAULT_BANK_ACCOUNT_VALUE) {
+            if (bankAccount.defaultBankAccount) {
                 primaryBankAccount = bankAccount
                 return@lit
             }

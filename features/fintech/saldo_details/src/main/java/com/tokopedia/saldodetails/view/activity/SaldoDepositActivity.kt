@@ -15,7 +15,10 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent
 import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance
 import com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment
@@ -118,9 +121,23 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
 
         saldoHelp.show()
         saldoHelp.setOnClickListener { v -> RouteManager.route(this, ApplinkConstInternalGlobal.SALDO_INTRO) }
+        addAutoWithdrawalSettingIcon(isSeller)
+    }
 
-        toolbarAutoWithdrawalSetting.setOnClickListener {
-            RouteManager.route(this, ApplinkConstInternalGlobal.AUTO_WITHDRAW_SETTING)
+    private fun addAutoWithdrawalSettingIcon(isSeller : Boolean){
+        if(isSeller) {
+            val isAutoWithdrawalPageEnable = FirebaseRemoteConfigImpl(this)
+                    .getBoolean(FLAG_APP_SALDO_AUTO_WITHDRAWAL, false)
+            if(isAutoWithdrawalPageEnable) {
+                toolbarAutoWithdrawalSetting.visible()
+                toolbarAutoWithdrawalSetting.setOnClickListener {
+                    RouteManager.route(this, ApplinkConstInternalGlobal.AUTO_WITHDRAW_SETTING)
+                }
+            }else{
+                toolbarAutoWithdrawalSetting.gone()
+            }
+        }else{
+            toolbarAutoWithdrawalSetting.gone()
         }
     }
 
@@ -140,7 +157,7 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
     }
 
     companion object {
-
+        private const val FLAG_APP_SALDO_AUTO_WITHDRAWAL = "app_flag_saldo_auto_withdrawal"
         private val REQUEST_CODE_LOGIN = 1001
         private val TAG = "DEPOSIT_FRAGMENT"
 
