@@ -7,12 +7,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -20,7 +20,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
-import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
@@ -36,6 +35,7 @@ import com.tokopedia.oneclickcheckout.preference.edit.di.PreferenceEditComponent
 import com.tokopedia.oneclickcheckout.preference.edit.view.PreferenceEditParent
 import com.tokopedia.oneclickcheckout.preference.edit.view.shipping.ShippingDurationFragment
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.KERO_TOKEN
+import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
@@ -45,7 +45,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, AddressListItemAdapter.onSelectedListener {
+class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.onSelectedListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -54,15 +54,14 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
     lateinit var preferenceListAnalytics: PreferenceListAnalytics
 
     private val viewModel: AddressListViewModel by lazy {
-        ViewModelProviders.of(this, viewModelFactory)[AddressListViewModel::class.java]
+        ViewModelProvider(this, viewModelFactory)[AddressListViewModel::class.java]
     }
 
     private val adapter = AddressListItemAdapter(this)
 
-    private var searchAddress: SearchInputView? = null
+    private var searchAddress: SearchBarUnify? = null
     private var addressListRv: RecyclerView? = null
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
-    private var searchInputView: SearchInputView? = null
     private var buttonSaveAddress: UnifyButton? = null
     private var bottomLayout: FrameLayout? = null
 
@@ -97,9 +96,7 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_choose_address, container, false)
-        searchAddress = view.findViewById(R.id.search_input_view)
-        return view
+        return inflater.inflate(R.layout.fragment_choose_address, container, false)
     }
 
     private fun initViewModel() {
@@ -178,16 +175,16 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
 
     private fun initSearch() {
         val searchKey = viewModel.savedQuery
-        searchInputView?.searchText = searchKey
+        searchAddress?.searchBarTextField?.setText(searchKey)
 
-        performSearch(searchKey)
+        viewModel.searchAddress(searchKey)
     }
 
     private fun initView() {
         activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
         addressListRv = view?.findViewById(R.id.address_list_rv)
         swipeRefreshLayout = view?.findViewById(R.id.swipe_refresh_layout)
-        searchInputView = view?.findViewById(R.id.search_input_view)
+        searchAddress = view?.findViewById(R.id.search_input_view)
         buttonSaveAddress = view?.findViewById(R.id.btn_save_address)
         bottomLayout = view?.findViewById(R.id.bottom_layout_address)
         emptyStateLayout = view?.findViewById(R.id.empty_state_order_list)
@@ -254,25 +251,32 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
                 viewModel.destinationLatitude = saveAddressDataModel.latitude
                 viewModel.destinationPostalCode = saveAddressDataModel.postalCode
                 viewModel.destinationDistrict = saveAddressDataModel.districtId.toString()
-                performSearch("")
+                viewModel.searchAddress("")
                 goToNextStep()
             }
         } else if (requestCode == REQUEST_CREATE) {
-            performSearch(searchAddress?.searchTextView?.text?.toString() ?: "")
+            viewModel.searchAddress(searchAddress?.searchBarTextField?.text?.toString() ?: "")
         }
 
     }
 
     private fun initSearchView() {
-        searchAddress?.searchTextView?.setOnClickListener { view ->
-            searchAddress?.searchTextView?.isCursorVisible = true
+        searchAddress?.searchBarTextField?.setOnClickListener {
+            searchAddress?.searchBarTextField?.isCursorVisible = true
             openSoftKeyboard()
         }
-        searchAddress?.setResetListener {
-            performSearch("")
+        searchAddress?.searchBarTextField?.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                searchAddress?.clearFocus()
+                viewModel.searchAddress(searchAddress?.searchBarTextField?.text?.toString() ?: "")
+                return@setOnEditorActionListener true
+            }
+            return@setOnEditorActionListener false
         }
-        searchAddress?.setListener(this)
-        searchAddress?.setSearchHint(getString(com.tokopedia.purchase_platform.common.R.string.label_hint_search_address))
+        searchAddress?.clearListener = {
+            viewModel.searchAddress("")
+        }
+        searchAddress?.searchBarPlaceholder = getString(com.tokopedia.purchase_platform.common.R.string.label_hint_search_address)
     }
 
     override fun onSelect(addressId: String) {
@@ -280,20 +284,8 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
         viewModel.setSelectedAddress(addressId)
     }
 
-    override fun onSearchSubmitted(text: String) {
-        performSearch(text)
-    }
-
-    override fun onSearchTextChanged(text: String?) {
-        openSoftKeyboard()
-    }
-
-    private fun performSearch(query: String) {
-        viewModel.searchAddress(query)
-    }
-
     private fun openSoftKeyboard() {
-        searchAddress?.searchTextView?.let {
+        searchAddress?.searchBarTextField?.let {
             (activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)?.showSoftInput(it, InputMethodManager.SHOW_IMPLICIT)
         }
     }
@@ -380,7 +372,6 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
         searchAddress = null
         addressListRv = null
         swipeRefreshLayout = null
-        searchInputView = null
         buttonSaveAddress = null
         bottomLayout = null
         emptyStateLayout = null

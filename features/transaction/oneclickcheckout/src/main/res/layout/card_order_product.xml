@@ -139,7 +139,7 @@
         app:layout_constraintStart_toStartOf="@+id/tv_product_name"
         app:layout_constraintTop_toBottomOf="@+id/tv_product_name" />
 
-    <com.tokopedia.unifycomponents.ImageUnify
+    <ImageView
         android:id="@+id/iv_free_shipping"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

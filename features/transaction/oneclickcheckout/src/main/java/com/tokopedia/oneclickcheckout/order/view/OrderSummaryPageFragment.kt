@@ -10,7 +10,6 @@ import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.NestedScrollView
@@ -71,6 +70,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleActionListener
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleBottomsheet
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -106,7 +106,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     private val btnOnboardingAction by lazy { view?.findViewById<Typography>(R.id.lbl_occ_onboarding_action) }
     private val lblOnboardingMessage by lazy { view?.findViewById<Typography>(R.id.lbl_occ_onboarding_message) }
     private val lblOnboardingHeader by lazy { view?.findViewById<Typography>(R.id.lbl_occ_onboarding_header) }
-    private val ivOnboarding by lazy { view?.findViewById<ImageView>(R.id.iv_occ_onboarding) }
+    private val ivOnboarding by lazy { view?.findViewById<ImageUnify>(R.id.iv_occ_onboarding) }
 
     private val tvHeader2 by lazy { view?.findViewById<Typography>(R.id.tv_header_2) }
     private val tvHeader3 by lazy { view?.findViewById<Typography>(R.id.tv_header_3) }
@@ -117,7 +117,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     private val btnPromoCheckout by lazy { view?.findViewById<ButtonPromoCheckoutView>(R.id.btn_promo_checkout) }
 
-    private val imageEmptyProfile by lazy { view?.findViewById<ImageView>(R.id.image_empty_profile) }
+    private val imageEmptyProfile by lazy { view?.findViewById<ImageUnify>(R.id.image_empty_profile) }
     private val buttonAturPilihan by lazy { view?.findViewById<UnifyButton>(R.id.button_atur_pilihan) }
 
     private lateinit var orderProductCard: OrderProductCard
@@ -258,6 +258,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     orderProductCard.setShop(viewModel.orderShop)
                     orderProductCard.initView()
                     showMessage(it.data)
+                    showEmptyPreferenceCard()
                     if (it.data.preference.profileId > 0 &&
                             it.data.preference.address.addressId > 0 &&
                             it.data.preference.shipment.serviceId > 0 &&

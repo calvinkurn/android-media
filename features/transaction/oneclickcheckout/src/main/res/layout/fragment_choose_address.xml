@@ -11,7 +11,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <com.tokopedia.design.text.SearchInputView
+        <com.tokopedia.unifycomponents.SearchBarUnify
             android:id="@+id/search_input_view"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -21,7 +21,10 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:siv_search_hint="@string/label_hint_search_address" />
+            app:search_bar_clearable="true"
+            app:search_bar_enable="true"
+            app:search_bar_placeholder="@string/label_hint_search_address"
+            app:search_bar_show_icon="false" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/text_search_error"
