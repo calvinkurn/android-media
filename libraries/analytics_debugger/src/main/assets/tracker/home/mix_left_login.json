@@ -81,7 +81,8 @@
       "event": "view_item",
       "eventAction": "impression on banner dynamic channel left carousel",
       "sessionIris": "{{.*}}",
-      "eventLabel": "{{.*}}"
+      "eventLabel": "{{.*}}",
+      "userId": "{{.*}}"
     },
     {
       "businessUnit": "home & browse",
@@ -103,7 +104,8 @@
       "event": "select_content",
       "categoryId": "{{.*}}",
       "channelId": "{{.*}}",
-      "campaignCode": "{{.*}}"
+      "campaignCode": "{{.*}}",
+      "userId": "{{.*}}"
     }
   ]
 }
