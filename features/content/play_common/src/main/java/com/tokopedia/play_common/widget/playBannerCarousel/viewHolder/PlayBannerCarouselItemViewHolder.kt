@@ -28,6 +28,7 @@ class PlayBannerCarouselItemViewHolder (private val parent: View): BasePlayBanne
         parent.viewer_badge?.showOrHideView(dataModel.isShowTotalView && dataModel.widgetType != PlayBannerWidgetType.UPCOMING)
         parent.reminder?.showOrHideView(dataModel.widgetType == PlayBannerWidgetType.UPCOMING)
         parent.reminder.setImageDrawable(ContextCompat.getDrawable(itemView.context, if(dataModel.remindMe) R.drawable.ic_play_reminder else R.drawable.ic_play_reminder_non_active))
+        parent.container_content?.setOnClickListener { listener?.onItemOverlayClick(dataModel, adapterPosition) }
         parent.reminder?.setOnClickListener {
             dataModel.remindMe = !dataModel.remindMe
             parent.reminder.setImageDrawable(ContextCompat.getDrawable(itemView.context, if(dataModel.remindMe) R.drawable.ic_play_reminder else R.drawable.ic_play_reminder_non_active))
@@ -35,7 +36,7 @@ class PlayBannerCarouselItemViewHolder (private val parent: View): BasePlayBanne
         }
         parent.channel_up_coming_date?.showOrHideView(dataModel.widgetType == PlayBannerWidgetType.UPCOMING)
         parent.channel_up_coming_date?.text = dataModel.startTime
-        itemView.setOnClickListener { listener?.onItemClick(dataModel, adapterPosition) }
+        itemView.container_player?.setOnClickListener { listener?.onItemClick(dataModel, adapterPosition) }
         itemView.addOnImpressionListener(dataModel){ listener?.onItemImpress(dataModel, adapterPosition) }
     }
 }

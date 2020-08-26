@@ -40,7 +40,8 @@ object PlayWidgetMapper {
                                 videoId = playWidgetItem.video.id,
                                 videoType = playWidgetItem.video.type,
                                 remindMe = playWidgetItem.config.isReminderSet,
-                                partnerId = playWidgetItem.partner.id
+                                partnerId = playWidgetItem.partner.id,
+                                overlayApplink = playWidgetItem.overlayImageAppLink
                         )
                     }
                 }

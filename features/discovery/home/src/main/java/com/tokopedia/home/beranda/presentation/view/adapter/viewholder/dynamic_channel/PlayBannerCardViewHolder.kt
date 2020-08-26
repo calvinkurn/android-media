@@ -80,6 +80,10 @@ class PlayBannerCardViewHolder(
         listener.onPlayV2Click(dataModel)
     }
 
+    override fun onItemOverlayClick(dataModel: PlayBannerCarouselItemDataModel, position: Int) {
+        RouteManager.route(itemView.context, dataModel.overlayApplink)
+    }
+
     override fun onItemImpress(dataModel: PlayBannerCarouselItemDataModel, position: Int) {
         val autoPlay = if(playCarouselCardDataModel?.playBannerCarouselDataModel?.isAutoPlay == true) "success" else "false"
         listener.putEEToTrackingQueue(PlayWidgetCarouselTracking.getImpressionBanner(

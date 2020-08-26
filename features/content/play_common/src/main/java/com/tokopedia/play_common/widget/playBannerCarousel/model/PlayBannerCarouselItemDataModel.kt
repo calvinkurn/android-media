@@ -27,7 +27,8 @@ data class PlayBannerCarouselItemDataModel(
         val serverTime: Long = 0L,
         val widgetType: PlayBannerWidgetType = PlayBannerWidgetType.NONE,
         val partnerId: String = "",
-        var remindMe: Boolean = false
+        var remindMe: Boolean = false,
+        val overlayApplink: String = ""
 ): BasePlayBannerCarouselModel, ImpressHolder(){
     override fun type(typeFactory: PlayBannerCarouselTypeFactory): Int {
         return typeFactory.type(this)
@@ -52,5 +53,6 @@ data class PlayBannerCarouselItemDataModel(
                 && other.coverUrl == coverUrl
                 && other.videoUrl == videoUrl
                 && other.startTime == startTime
+                && other.overlayApplink == overlayApplink
     }
 }
