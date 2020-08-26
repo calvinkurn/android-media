@@ -97,7 +97,5 @@ class ValidatorListFragment : Fragment() {
 
     companion object {
         fun newInstance(): ValidatorListFragment = ValidatorListFragment()
-
-        const val DEFAULT_TEXT_CHANGE_DELAY_MILLIS: Long = 500
     }
 }
