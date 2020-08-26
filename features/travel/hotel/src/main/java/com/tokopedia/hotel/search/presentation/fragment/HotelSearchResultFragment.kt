@@ -219,9 +219,10 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         }
         quick_filter_sort_filter.addItem(ArrayList(sortFilterItem))
 
-        for (item in quick_filter_sort_filter.chipItems) {
+        for ((index, item) in quick_filter_sort_filter.chipItems.withIndex()) {
             item.refChipUnify.setOnClickListener {
                 item.toggleSelected()
+                trackingHotelUtil.clickOnQuickFilter(context, SEARCH_SCREEN_NAME, item.title.toString(), index)
                 refreshSelectedFilter(quickFilters)
             }
         }
@@ -321,6 +322,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     override fun onSubmitFilter(selectedFilter: List<ParamFilterV2>) {
         //track
         searchResultviewModel.addFilter(selectedFilter)
+        trackingHotelUtil.clickSubmitFilterOnBottomSheet(context, SEARCH_SCREEN_NAME, selectedFilter)
         setUpQuickFilterBaseOnSelectedFilter(selectedFilter)
         loadInitialData()
     }
