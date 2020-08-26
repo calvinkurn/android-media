@@ -92,11 +92,13 @@ public class MediaItem implements Parcelable {
     }
 
     public static MediaItem valueOf(Cursor cursor) {
+        int resolution =  cursor.getColumnIndex(MediaStore.Video.VideoColumns.RESOLUTION);
+
         return new MediaItem(cursor.getLong(cursor.getColumnIndex(MediaStore.Files.FileColumns._ID)),
                 cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.MIME_TYPE)),
                 cursor.getLong(cursor.getColumnIndex(MediaStore.MediaColumns.SIZE)),
                 cursor.getLong(cursor.getColumnIndex(MediaStore.Video.VideoColumns.DURATION)),
-                cursor.getString(cursor.getColumnIndex(MediaStore.Video.VideoColumns.RESOLUTION))
+                resolution > 0 ? cursor.getString(resolution):""
         );
     }
 
