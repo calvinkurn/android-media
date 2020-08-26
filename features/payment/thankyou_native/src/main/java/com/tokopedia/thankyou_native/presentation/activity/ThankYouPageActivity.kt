@@ -77,10 +77,7 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
     private fun showAppFeedbackBottomSheet(thanksPageData: ThanksPageData){
         val paymentStatus = PaymentStatusMapper.getPaymentStatusByInt(thanksPageData.paymentStatus)
         if(paymentStatus == PaymentVerified || paymentStatus == PaymentPreAuth) {
-            if (!InAppReviewHelper.launchInAppReview(this, null)) {
-                val rating = AppFeedbackRatingBottomSheet()
-                rating.showDialog(supportFragmentManager, this)
-            }
+            InAppReviewHelper.launchInAppReview(this, null)
         }
     }
 
