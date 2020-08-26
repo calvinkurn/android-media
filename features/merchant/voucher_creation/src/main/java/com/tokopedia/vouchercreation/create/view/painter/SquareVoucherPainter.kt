@@ -197,13 +197,17 @@ class SquareVoucherPainter(private val context: Context,
                     }
 
                     override fun onResourceReady(resource: Bitmap, model: Any?, target: Target<Bitmap>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                        val imageValue =
+                        val imageValue: Int
+                        val isPercentageType: Boolean =
                                 if (imageType is VoucherImageType.Percentage) {
-                                    imageType.percentage
+                                    imageValue = imageType.percentage
+                                    true
                                 } else {
-                                    imageType.value
+                                    imageValue = imageType.value
+                                    false
                                 }
-                        drawPromotionLabel(resource, leftPromoInfoX.toInt(), imageValue, PostValuePosition.LEFT)
+
+                        drawPromotionLabel(resource, leftPromoInfoX.toInt(), imageValue, PostValuePosition.LEFT, isPercentageType)
                         return false
                     }
                 })
@@ -219,7 +223,7 @@ class SquareVoucherPainter(private val context: Context,
                         }
 
                         override fun onResourceReady(resource: Bitmap, model: Any?, target: Target<Bitmap>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                            drawPromotionLabel(resource, rightPromoInfoX.toInt(), imageType.value, PostValuePosition.RIGHT, true)
+                            drawPromotionLabel(resource, rightPromoInfoX.toInt(), imageType.value, PostValuePosition.RIGHT)
                             return false
                         }
                     })
