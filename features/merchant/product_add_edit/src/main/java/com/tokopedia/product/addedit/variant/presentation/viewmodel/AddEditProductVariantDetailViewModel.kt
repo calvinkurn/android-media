@@ -293,10 +293,14 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
             if (!it.value) expandedHeaderPositions.add(it.key)
         }
         val filteredMap = inputLayoutModelMap.filterValues { expandedHeaderPositions.contains(it.headerPosition) }
-        if (collapsedFields != 0) {
+        if (collapsedFields > 0) {
             val fieldsMap = mutableMapOf<Int, VariantDetailInputLayoutModel>()
             filteredMap.forEach {
-                val newFieldPosition = it.key - collapsedFields
+                val newFieldPosition = if (it.key <= collapsedFields) {
+                    it.key
+                } else {
+                    it.key - collapsedFields
+                }
                 fieldsMap[newFieldPosition] = it.value
             }
             return fieldsMap
