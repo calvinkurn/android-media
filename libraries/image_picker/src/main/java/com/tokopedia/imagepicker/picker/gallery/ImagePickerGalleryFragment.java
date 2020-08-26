@@ -195,11 +195,11 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
             String permission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
             if (ActivityCompat.checkSelfPermission(getContext(), permission) == PackageManager.PERMISSION_GRANTED) {
                 showLoading();
-                getLoaderManager().initLoader(ALBUM_LOADER_ID, null, ImagePickerGalleryFragment.this);
+                LoaderManager.getInstance(this).initLoader(ALBUM_LOADER_ID, null, ImagePickerGalleryFragment.this);
             }
         } else {
             showLoading();
-            getLoaderManager().initLoader(ALBUM_LOADER_ID, null, ImagePickerGalleryFragment.this);
+            LoaderManager.getInstance(this).initLoader(ALBUM_LOADER_ID, null, ImagePickerGalleryFragment.this);
         }
     }
 
@@ -219,8 +219,9 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
     @Override
     public void onDestroy() {
         super.onDestroy();
-        getLoaderManager().destroyLoader(ALBUM_LOADER_ID);
-        getLoaderManager().destroyLoader(MEDIA_LOADER_ID);
+        LoaderManager loaderManager = LoaderManager.getInstance(this);
+        loaderManager.destroyLoader(ALBUM_LOADER_ID);
+        loaderManager.destroyLoader(MEDIA_LOADER_ID);
     }
 
     @Override
@@ -229,10 +230,10 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
         if (ActivityCompat.checkSelfPermission(getContext(), permission) == PackageManager.PERMISSION_GRANTED) {
             switch (id) {
                 case ALBUM_LOADER_ID:
-                    return AlbumLoader.newInstance(getContext());// ignore galleryType
+                    return AlbumLoader.newInstance(getContext(), galleryType);
                 case MEDIA_LOADER_ID:
                     Album album = selectedAlbumItem.intoAlbum();
-                    return AlbumMediaLoader.newInstance(getContext(), album, false);// ignore , selectedAlbumItem, galleryType
+                    return AlbumMediaLoader.newInstance(getContext(), album, galleryType);
                 default:
                     return new Loader<>(getContext());
             }
@@ -322,7 +323,7 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
         File file;
 
         try {
-            file = FileUtils.from(getContext(), item.getRealPath());
+            file = FileUtils.from(getContext(), item.getContentUri());
             if (!file.exists()) {
                 NetworkErrorHelper.showRedCloseSnackbar(getView(),
                         galleryType == GalleryType.VIDEO_ONLY ? getString(R.string.video_not_found) :

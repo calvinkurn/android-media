@@ -157,6 +157,8 @@ public class FileUtils {
                     cursor.close();
                 }
             }
+        } else {
+            return uri.getPath();
         }
         if (result == null) {
             result = uri.getPath();

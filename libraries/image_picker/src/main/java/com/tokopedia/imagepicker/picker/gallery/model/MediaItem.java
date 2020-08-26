@@ -25,8 +25,9 @@ public class MediaItem implements Parcelable {
     private final String videoResolution; // only for video, in ms
     private long height;
     private long width;
+    private final String realPath;
 
-    private MediaItem(long id, String mimeType, long size, long duration, String videoResolution) {
+    private MediaItem(long id, String realPath, String mimeType, long size, long duration, String videoResolution) {
         this.id = id;
         this.mimeType = mimeType;
         Uri contentUri;
@@ -41,6 +42,7 @@ public class MediaItem implements Parcelable {
         this.uri = ContentUris.withAppendedId(contentUri, id);
         this.size = size;
         this.duration = duration;
+        this.realPath = realPath;
         this.videoResolution = videoResolution == null? "" : videoResolution;
     }
 
@@ -85,7 +87,7 @@ public class MediaItem implements Parcelable {
 
     private void calculateWidthAndHeight(Context context) {
         if (width == 0 || height == 0) {
-            int[] widthHeight = ImageUtils.getWidthAndHeight(context, getRealPath());
+            int[] widthHeight = ImageUtils.getWidthAndHeight(context, getContentUri());
             width = widthHeight[0];
             height = widthHeight[1];
         }
@@ -95,6 +97,7 @@ public class MediaItem implements Parcelable {
         int resolution =  cursor.getColumnIndex(MediaStore.Video.VideoColumns.RESOLUTION);
 
         return new MediaItem(cursor.getLong(cursor.getColumnIndex(MediaStore.Files.FileColumns._ID)),
+                cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA)),
                 cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.MIME_TYPE)),
                 cursor.getLong(cursor.getColumnIndex(MediaStore.MediaColumns.SIZE)),
                 cursor.getLong(cursor.getColumnIndex(MediaStore.Video.VideoColumns.DURATION)),
@@ -130,8 +133,8 @@ public class MediaItem implements Parcelable {
         return uri;
     }
 
-    public Uri getRealPath() {
-        return getContentUri();
+    public String getRealPath() {
+        return realPath;
     }
 
     @Override
@@ -152,6 +155,7 @@ public class MediaItem implements Parcelable {
         dest.writeLong(this.duration);
         dest.writeLong(this.height);
         dest.writeLong(this.width);
+        dest.writeString(this.realPath);
         dest.writeString(this.videoResolution);
     }
 
@@ -163,6 +167,7 @@ public class MediaItem implements Parcelable {
         this.duration = in.readLong();
         this.height = in.readLong();
         this.width = in.readLong();
+        this.realPath = in.readString();
         this.videoResolution = in.readString();
     }
 

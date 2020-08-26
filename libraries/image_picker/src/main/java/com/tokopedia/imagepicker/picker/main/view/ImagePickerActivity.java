@@ -419,7 +419,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
     @Override
     public void onAlbumItemClicked(MediaItem item, boolean isChecked) {
         try {
-            onImageSelected(FileUtils.from(this, item.getRealPath()).getPath(), isChecked, null);
+            onImageSelected(FileUtils.from(this, item.getContentUri()).getPath(), isChecked, null);
         } catch (IOException e) {
             e.printStackTrace();
         }
