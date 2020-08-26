@@ -25,11 +25,11 @@ import java.net.URLDecoder
 
 open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
-    private lateinit var url: String
+    protected lateinit var url: String
     var showTitleBar = true
     private set
-    private var allowOverride = true
-    private var needLogin = false
+    protected var allowOverride = true
+    protected var needLogin = false
     var webViewTitle = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
