@@ -96,11 +96,15 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
     override fun getNewFragment(): Fragment {
         if (::url.isInitialized) {
-            return BaseSessionWebViewFragment.newInstance(url, needLogin, allowOverride)
+            return createFragmentInstance()
         } else {
             this.finish()
             return Fragment()
         }
+    }
+
+    protected open fun createFragmentInstance(): Fragment {
+        return BaseSessionWebViewFragment.newInstance(url, needLogin, allowOverride)
     }
 
     override fun onResume() {
