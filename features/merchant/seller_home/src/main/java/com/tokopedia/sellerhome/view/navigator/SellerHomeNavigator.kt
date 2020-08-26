@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhome.view.navigator
 
 import android.content.Context
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
@@ -48,16 +49,18 @@ class SellerHomeNavigator(
     }
 
     fun showPage(@FragmentType page: Int) {
-        val transaction = fm.beginTransaction()
-        val fragment = getPageFragment(page)
+        if(isActivityResumed()) {
+            val transaction = fm.beginTransaction()
+            val fragment = getPageFragment(page)
 
-        fragment?.let {
-            hideCurrentPage(transaction)
-            showFragment(it, transaction)
-            setSelectedPage(page)
+            fragment?.let {
+                hideCurrentPage(transaction)
+                showFragment(it, transaction)
+                setSelectedPage(page)
+            }
+
+            updateFragmentVisibilityHint(fragment)
         }
-
-        updateFragmentVisibilityHint(fragment)
     }
 
     fun navigateFromAppLink(page: PageFragment) {
@@ -236,5 +239,10 @@ class SellerHomeNavigator(
 
     private fun setSelectedPage(@FragmentType page: Int) {
         currentSelectedPage = page
+    }
+
+    private fun isActivityResumed(): Boolean {
+        val lifecycle = (context as? AppCompatActivity)?.lifecycle
+        return lifecycle?.currentState == Lifecycle.State.RESUMED
     }
 }
