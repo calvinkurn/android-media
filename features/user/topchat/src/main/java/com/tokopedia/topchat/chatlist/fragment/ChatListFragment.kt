@@ -28,6 +28,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
+import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Menus
@@ -35,6 +36,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import com.tokopedia.seller_migration_common.presentation.fragment.bottomsheet.SellerMigrationCommunicationBottomSheet
 import com.tokopedia.seller_migration_common.presentation.model.CommunicationInfo
 import com.tokopedia.seller_migration_common.presentation.util.initializeSellerMigrationCommunicationTicker
@@ -275,8 +277,22 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
         chatItemListViewModel.broadCastButtonUrl.observe(viewLifecycleOwner, Observer { url ->
             if (url.isNullOrEmpty()) return@Observer
             broadCastButton.setOnClickListener {
-                chatListAnalytics.eventClickBroadcastButton()
-                RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, url)
+                if(!GlobalConfig.isSellerApp()) {
+                    val screenName = SellerMigrationFeatureName.FEATURE_BROADCAST_CHAT
+                    val webViewUrl = String.format("%s?url=%s", ApplinkConst.WEBVIEW, url)
+                    val intent = context?.let { context ->
+                        SellerMigrationActivity.createIntent(
+                                context = context,
+                                featureName = SellerMigrationFeatureName.FEATURE_BROADCAST_CHAT,
+                                screenName = screenName,
+                                appLinks = arrayListOf(ApplinkConstInternalSellerapp.SELLER_HOME_CHAT, webViewUrl)
+                        )
+                    }
+                    startActivity(intent)
+                } else {
+                    chatListAnalytics.eventClickBroadcastButton()
+                    RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, url)
+                }
             }
         })
     }

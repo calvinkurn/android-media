@@ -10,13 +10,16 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller_migration_common.R
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
 import com.tokopedia.seller_migration_common.getSellerMigrationDate
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.fragment.bottomsheet.SellerMigrationCommunicationBottomSheet
+import com.tokopedia.seller_migration_common.presentation.model.AccountSettingData
 import com.tokopedia.seller_migration_common.presentation.model.CommunicationInfo
 import com.tokopedia.seller_migration_common.presentation.util.touchlistener.SellerMigrationTouchListener
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -150,5 +153,25 @@ fun FragmentActivity.initializeSellerMigrationCommunicationTicker(bottomSheet: S
 
 private fun FragmentActivity.openSellerMigrationBottomSheet(bottomSheet: SellerMigrationCommunicationBottomSheet?) {
     bottomSheet?.show(supportFragmentManager, SellerMigrationCommunicationBottomSheet::class.java.name)
+}
+
+
+fun Fragment.initializeSellerMigrationAccountSettingTicker(ticker: Ticker?) {
+    ticker?.run {
+        if(isSellerMigrationEnabled(context)) {
+            tickerTitle = context?.getString(AccountSettingData.titleRes)
+            //applink need improvement
+            setHtmlDescription(context?.getString(AccountSettingData.descRes, ApplinkConstInternalSellerapp.MENU_SETTING).orEmpty())
+            setDescriptionClickEvent(object : TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    RouteManager.route(context, linkUrl.toString())
+                }
+                override fun onDismiss() {}
+            })
+            show()
+        } else {
+            hide()
+        }
+    }
 }
 

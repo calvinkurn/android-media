@@ -61,10 +61,12 @@ import com.tokopedia.navigation_common.model.WalletPref
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.seller_migration_common.presentation.util.initializeSellerMigrationAccountSettingTicker
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.data.Token.Companion.GOOGLE_API_KEY
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl
+import kotlinx.android.synthetic.main.fragment_general_setting.*
 import java.util.*
 import javax.inject.Inject
 
@@ -440,6 +442,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
 
     override fun refreshSettingOptionsList() {
         if (adapter != null) {
+            setupTickerSellerMigration()
             adapter.setSettingItems(settingItems)
             adapter.notifyDataSetChanged()
         }
@@ -458,6 +461,10 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
             val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
             Toaster.showError(view!!, errorMessage, Snackbar.LENGTH_LONG)
         }
+    }
+
+    private fun setupTickerSellerMigration() {
+        initializeSellerMigrationAccountSettingTicker(tickerSellerMigrationAccountSetting)
     }
 
     companion object {
