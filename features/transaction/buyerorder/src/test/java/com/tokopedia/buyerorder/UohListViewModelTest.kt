@@ -276,4 +276,154 @@ class UohListViewModelTest {
         assert(uohListViewModel.atcResult.value is Success)
         assert((uohListViewModel.atcResult.value as Success<AtcMultiData>).data.atcMulti.buyAgainData.message.isNotEmpty())
     }
+
+    // lsprint
+    @Test
+    fun lsprintFinishOrder_shouldReturnSuccess() {
+        //given
+        coEvery {
+            lsPrintFinishOrderUseCase.execute(any(), any())
+        } returns Success(LsPrintData.Data(LsPrintData.Data.Oiaction("", 1, LsPrintData.Data.Oiaction.Data())))
+
+        //when
+        uohListViewModel.doLsPrintFinishOrder("", "")
+
+        //then
+        assert(uohListViewModel.lsPrintFinishOrderResult.value is Success)
+        assert((uohListViewModel.lsPrintFinishOrderResult.value as Success<LsPrintData.Data>).data.oiaction.status == 1)
+    }
+
+    @Test
+    fun lsprintFinishOrder_shouldReturnFail() {
+        //given
+        coEvery {
+            lsPrintFinishOrderUseCase.execute(any(), any())
+        } returns Fail(Throwable())
+
+        //when
+        uohListViewModel.doLsPrintFinishOrder("", "")
+
+        //then
+        assert(uohListViewModel.lsPrintFinishOrderResult.value is Fail)
+    }
+
+    @Test
+    fun lsprintFinishOrder_shouldNotReturnEmptyMessage() {
+        //given
+        coEvery {
+            lsPrintFinishOrderUseCase.execute(any(), any())
+        } returns Success(LsPrintData.Data(LsPrintData.Data.Oiaction("", 1, LsPrintData.Data.Oiaction.Data(message = "Test"))))
+
+        //when
+        uohListViewModel.doLsPrintFinishOrder("", "")
+
+        //then
+        assert(uohListViewModel.lsPrintFinishOrderResult.value is Success)
+        assert((uohListViewModel.lsPrintFinishOrderResult.value as Success<LsPrintData.Data>).data.oiaction.data.message.isNotEmpty())
+    }
+
+    // flight
+    @Test
+    fun flightResendEmail_shouldReturnSuccess() {
+        //given
+        coEvery {
+            flightResendEmailUseCase.execute(any(), any(), any())
+        } returns Success(FlightResendEmail.Data(FlightResendEmail.Data.FlightResendEmailV2(FlightResendEmail.Data.FlightResendEmailV2.Meta(status = "Ok"))))
+
+        //when
+        uohListViewModel.doFlightResendEmail("", "", "")
+
+        //then
+        assert(uohListViewModel.flightResendEmailResult.value is Success)
+        assert((uohListViewModel.flightResendEmailResult.value as Success<FlightResendEmail.Data>).data.flightResendEmailV2?.meta?.status.equals("Ok", true))
+    }
+
+    @Test
+    fun flightResendEmail_shouldReturnFail() {
+        //given
+        coEvery {
+            flightResendEmailUseCase.execute(any(), any(), any())
+        } returns Fail(Throwable())
+
+        //when
+        uohListViewModel.doFlightResendEmail("", "", "")
+
+        //then
+        assert(uohListViewModel.flightResendEmailResult.value is Fail)
+    }
+
+    @Test
+    fun flightResendEmail_shouldNotReturnEmptyMessage() {
+        //given
+        coEvery {
+            flightResendEmailUseCase.execute(any(), any(), any())
+        } returns Success(FlightResendEmail.Data(FlightResendEmail.Data.FlightResendEmailV2(FlightResendEmail.Data.FlightResendEmailV2.Meta(status = "Ok"))))
+
+        //when
+        uohListViewModel.doFlightResendEmail("", "", "")
+
+        //then
+        assert(uohListViewModel.flightResendEmailResult.value is Success)
+        (uohListViewModel.flightResendEmailResult.value as Success<FlightResendEmail.Data>).data.flightResendEmailV2?.meta?.status?.isNotEmpty()?.let { assert(it) }
+    }
+
+    // train
+    @Test
+    fun trainResendEmail_shouldReturnSuccess() {
+        //given
+        coEvery {
+            trainResendEmailUseCase.execute(any(), any())
+        } returns Success(TrainResendEmail.Data(TrainResendEmail.Data.TrainResendBookingEmail(success = true)))
+
+        //when
+        uohListViewModel.doTrainResendEmail("", TrainResendEmailParam())
+
+        //then
+        assert(uohListViewModel.trainResendEmailResult.value is Success)
+        assert((uohListViewModel.trainResendEmailResult.value as Success<TrainResendEmail.Data>).data.trainResendBookingEmail?.success == true)
+    }
+
+    @Test
+    fun trainResendEmail_shouldReturnFail() {
+        //given
+        coEvery {
+            trainResendEmailUseCase.execute(any(), any())
+        } returns Fail(Throwable())
+
+        //when
+        uohListViewModel.doTrainResendEmail("", TrainResendEmailParam())
+
+        //then
+        assert(uohListViewModel.trainResendEmailResult.value is Fail)
+    }
+
+    // recharge
+    @Test
+    fun rechargeSetFail_shouldReturnSuccess() {
+        //given
+        coEvery {
+            rechargeSetFailUseCase.execute(any(), any())
+        } returns Success(RechargeSetFailData.Data(RechargeSetFailData.Data.RechargeSetOrderToFail(RechargeSetFailData.Data.RechargeSetOrderToFail.Attributes(-1, -1, true, ""))))
+
+        //when
+        uohListViewModel.doRechargeSetFail("", -1)
+
+        //then
+        assert(uohListViewModel.rechargeSetFailResult.value is Success)
+        assert((uohListViewModel.rechargeSetFailResult.value as Success<RechargeSetFailData.Data>).data.rechargeSetOrderToFail.attributes.isSuccess)
+    }
+
+    @Test
+    fun rechargeSetFail_shouldReturnFail() {
+        //given
+        coEvery {
+            rechargeSetFailUseCase.execute(any(), any())
+        } returns Fail(Throwable())
+
+        //when
+        uohListViewModel.doRechargeSetFail("", -1)
+
+        //then
+        assert(uohListViewModel.rechargeSetFailResult.value is Fail)
+    }
 }
