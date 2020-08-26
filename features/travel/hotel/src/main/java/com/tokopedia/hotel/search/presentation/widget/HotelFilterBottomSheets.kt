@@ -65,9 +65,11 @@ class HotelFilterBottomSheets: BottomSheetUnify() {
 
         setAction("Reset") {
             for (i in 0 until recyclerView.childCount) {
-                val viewHolder: HotelSearchResultFilterV2Adapter.FilterBaseViewHolder =
-                        recyclerView.findViewHolderForAdapterPosition(i) as HotelSearchResultFilterV2Adapter.FilterBaseViewHolder
-                viewHolder.resetSelection()
+                val viewHolder = recyclerView.findViewHolderForAdapterPosition(i)
+                viewHolder?.let {
+                    it as HotelSearchResultFilterV2Adapter.FilterBaseViewHolder
+                    it.resetSelection()
+                }
             }
         }
 
@@ -75,11 +77,14 @@ class HotelFilterBottomSheets: BottomSheetUnify() {
         submitButton.setOnClickListener {
             selectedFilters = mutableListOf()
             for (i in 0 until recyclerView.childCount) {
-                val viewHolder: HotelSearchResultFilterV2Adapter.FilterBaseViewHolder =
-                        recyclerView.findViewHolderForAdapterPosition(i) as HotelSearchResultFilterV2Adapter.FilterBaseViewHolder
-                if (viewHolder.selectedOption.values.isNotEmpty()) {
-                    selectedFilters.add(viewHolder.selectedOption)
+                val viewHolder = recyclerView.findViewHolderForAdapterPosition(i)
+                viewHolder?.let {
+                    it as HotelSearchResultFilterV2Adapter.FilterBaseViewHolder
+                    if (it.selectedOption.values.isNotEmpty()) {
+                        selectedFilters.add(it.selectedOption)
+                    }
                 }
+
             }
             listener.onSubmitFilter(selectedFilters)
             this.dismiss()
