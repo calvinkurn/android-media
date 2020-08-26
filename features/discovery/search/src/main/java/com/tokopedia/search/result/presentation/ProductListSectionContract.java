@@ -169,6 +169,8 @@ public interface ProductListSectionContract {
         void openBottomSheetFilter(@Nullable DynamicFilterModel dynamicFilterModel);
 
         void setDynamicFilter(@NotNull DynamicFilterModel dynamicFilterModel);
+
+        void configureQuickFilterElevation(int id);
     }
 
     interface Presenter extends CustomerPresenter<View> {
