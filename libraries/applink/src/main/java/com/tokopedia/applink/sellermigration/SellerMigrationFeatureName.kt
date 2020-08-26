@@ -22,7 +22,9 @@ import androidx.annotation.StringDef
     SellerMigrationFeatureName.FEATURE_MARKET_INSIGHT,
     SellerMigrationFeatureName.FEATURE_SELLER_CHAT,
     SellerMigrationFeatureName.FEATURE_POST_FEED,
-    SellerMigrationFeatureName.FEATURE_BALANCE
+    SellerMigrationFeatureName.FEATURE_BALANCE,
+    SellerMigrationFeatureName.FEATURE_PLAY_FEED,
+    SellerMigrationFeatureName.FEATURE_FINANCIAL_SERVICES
 ])
 annotation class SellerMigrationFeatureName {
     companion object {
@@ -44,5 +46,7 @@ annotation class SellerMigrationFeatureName {
         const val FEATURE_SELLER_CHAT = "seller_chat"
         const val FEATURE_POST_FEED = "post_feed"
         const val FEATURE_BALANCE = "balance"
+        const val FEATURE_PLAY_FEED = "feed"
+        const val FEATURE_FINANCIAL_SERVICES = "financial_services"
     }
 }

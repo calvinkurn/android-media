@@ -148,6 +148,12 @@ class SellerMigrationFragment : Fragment(), SellerFeatureCarousel.RecyclerViewLi
             SellerMigrationFeatureName.FEATURE_SHOP_INSIGHT, SellerMigrationFeatureName.FEATURE_MARKET_INSIGHT -> {
                 4
             }
+            SellerMigrationFeatureName.FEATURE_PLAY_FEED -> {
+                5
+            }
+            SellerMigrationFeatureName.FEATURE_FINANCIAL_SERVICES -> {
+                6
+            }
             else -> {
                 0
             }
