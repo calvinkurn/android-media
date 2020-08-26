@@ -226,7 +226,7 @@ public class SearchActivity extends BaseActivity
         if (!(fragmentItem instanceof QuickFilterElevation)) return;
 
         if (id == R.id.searchMotionTabStart) {
-            ((QuickFilterElevation) fragmentItem).configure(false);
+            ((QuickFilterElevation) fragmentItem).configure(true);
         } else if (id == R.id.searchMotionTabEnd){
             ((QuickFilterElevation) fragmentItem).configure(false);
         }
