@@ -13,6 +13,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.ERR_STATE_GLOBAL
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
@@ -26,8 +27,9 @@ import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
+import java.net.ConnectException
+import java.net.UnknownHostException
+import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 
 /**
@@ -126,7 +128,15 @@ class PlayErrorFragment @Inject constructor(
     }
 
     private fun showGlobalError(throwable: Throwable) {
-        when(GlobalErrorCodeWrapper.wrap(throwable.message.orEmpty())) {
+        if (throwable is MessageErrorException) handleKnownServerError(throwable)
+        else handleUnknownError(throwable)
+
+        PlayAnalytics.errorState(channelId, "$ERR_STATE_GLOBAL: ${globalError.errorDescription.text}", playViewModel.channelType)
+        container.show()
+    }
+
+    private fun handleKnownServerError(exception: MessageErrorException) {
+        when(GlobalErrorCodeWrapper.wrap(exception.message.orEmpty())) {
             GlobalErrorCodeWrapper.NotFound -> {
                 globalError.setType(GlobalError.PAGE_NOT_FOUND)
                 globalError.setActionClickListener {
@@ -135,20 +145,31 @@ class PlayErrorFragment @Inject constructor(
                     }
                 }
             }
-            GlobalErrorCodeWrapper.PageFull, GlobalErrorCodeWrapper.ServerError, GlobalErrorCodeWrapper.Unknown -> {
+            GlobalErrorCodeWrapper.PageFull,
+            GlobalErrorCodeWrapper.ServerError,
+            GlobalErrorCodeWrapper.Unknown -> {
                 globalError.setType(GlobalError.PAGE_FULL)
                 globalError.setActionClickListener {
                     playViewModel.getChannelInfo(channelId)
                 }
             }
-//            GlobalErrorCodeWrapper.ServerError, GlobalErrorCodeWrapper.Unknown -> {
-//                globalError.setType(GlobalError.SERVER_ERROR)
-//                globalError.setActionClickListener {
-//                    playViewModel.getChannelInfo(channelId)
-//                }
-//            }
         }
-        PlayAnalytics.errorState(channelId, "$ERR_STATE_GLOBAL: ${globalError.errorDescription.text}", playViewModel.channelType)
-        container.show()
+    }
+
+    private fun handleUnknownError(error: Throwable) {
+        when (error) {
+            is ConnectException, is UnknownHostException, is TimeoutException -> {
+                globalError.setType(GlobalError.NO_CONNECTION)
+                globalError.setActionClickListener {
+                    playViewModel.getChannelInfo(channelId)
+                }
+            }
+            else -> {
+                globalError.setType(GlobalError.SERVER_ERROR)
+                globalError.setActionClickListener {
+                    playViewModel.getChannelInfo(channelId)
+                }
+            }
+        }
     }
 }
