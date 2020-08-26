@@ -884,6 +884,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                 intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
                 intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SMART_LOGIN, true)
                 intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_PENDING, isPending)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 it.startActivity(intent)
                 it.finish()
             }
