@@ -137,6 +137,7 @@ class PlayBannerCardViewHolder(
                 promoCode = "",
                 positionFold = if((playCarouselCardDataModel?.position ?: -1) <= 2) "0" else "1"
         ))
+        RouteManager.route(itemView.context, dataModel.applink)
     }
 
     override fun onOverlayImageBannerImpress(dataModel: PlayBannerCarouselOverlayImageDataModel) {
