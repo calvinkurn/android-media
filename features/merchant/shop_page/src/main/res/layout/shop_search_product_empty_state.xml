@@ -8,7 +8,6 @@
         android:id="@+id/shopSearchEmptyState"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:unifyEmptyStateImageDrawable="@drawable/ic_empty_state_illustrartion"
         app:unifyEmptyStateTitle="@string/shop_product_search_empty_state_title"
         app:unifyEmptyStateDescription="@string/shop_product_search_empty_state_desc"
         app:unifyEmptyStatePrimaryCTAText="@string/shop_product_search_empty_state_btn_primary"
