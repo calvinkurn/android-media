@@ -146,9 +146,7 @@ class ShopHomeNplCampaignViewHolder(
     }
 
     private fun setRemindMe(model: ShopHomeNewProductLaunchCampaignUiModel) {
-//        val isRemindMe = model.data?.firstOrNull()?.isRemindMe
-        val isRemindMe = false
-
+        val isRemindMe = model.data?.firstOrNull()?.isRemindMe
         isRemindMe?.let {
             itemView.layout_remind_me?.show()
             itemView.layout_remind_me?.setOnClickListener {
@@ -182,7 +180,7 @@ class ShopHomeNplCampaignViewHolder(
                     itemView.text_remind_me?.show()
                     launchCatchError(block = {
                         delay(DURATION_TO_HIDE_REMIND_ME_WORDING)
-                        model.data?.firstOrNull()?.isHideRemindMeTextAfterXSeconds = true
+                        model.data.firstOrNull()?.isHideRemindMeTextAfterXSeconds = true
                         itemView.text_remind_me?.hide()
                     }) {}
                 }
