@@ -39,6 +39,10 @@ class TalkWriteViewModel @Inject constructor(private val dispatchers: CoroutineD
     val buttonState: LiveData<TalkWriteButtonState>
         get() = _buttonState
 
+    private val _textFieldState = MediatorLiveData<Boolean>()
+    val textFieldState: LiveData<Boolean>
+        get() = _textFieldState
+
     private val isTextNotEmpty = MutableLiveData<Boolean>()
 
     private val _categoryChips: MutableLiveData<List<TalkWriteCategory>> = Transformations.map(writeFormData) {
@@ -64,6 +68,9 @@ class TalkWriteViewModel @Inject constructor(private val dispatchers: CoroutineD
         }
         _buttonState.addSource(isTextNotEmpty) {
             updateButtonFromText(it)
+        }
+        _textFieldState.addSource(categoryChips) {
+            updateTextFieldFromCategories(it.any { category -> category.isSelected })
         }
     }
 
@@ -101,6 +108,11 @@ class TalkWriteViewModel @Inject constructor(private val dispatchers: CoroutineD
     private fun updateButtonFromCategories(isAnyCategorySelected: Boolean) {
         _buttonState.value = _buttonState.value?.copy(isAnyCategorySelected = isAnyCategorySelected)
         _buttonState.notifyObserver()
+    }
+
+    private fun updateTextFieldFromCategories(isAnyCategorySelected: Boolean) {
+        _textFieldState.value = isAnyCategorySelected
+        _textFieldState.notifyObserver()
     }
 
     private fun updateButtonFromText(isTextNotEmpty: Boolean) {

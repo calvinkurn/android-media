@@ -21,10 +21,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
 import com.tokopedia.talk.common.constants.TalkConstants
@@ -85,6 +82,7 @@ class TalkWriteFragment : BaseDaggerFragment(),
         observeButtonState()
         observeCategories()
         observeSubmitFormResult()
+        observeTextFieldState()
         return inflater.inflate(R.layout.fragment_talk_write, container, false)
     }
 
@@ -158,6 +156,15 @@ class TalkWriteFragment : BaseDaggerFragment(),
         val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
         cacheManager?.put(KEY_SELECTED_CATEGORY, viewModel.getSelectedCategory())
         outState.putString(KEY_CACHE_MANAGER, cacheManager?.id)
+    }
+
+    override fun onDestroy() {
+        removeObservers(viewModel.writeFormData)
+        removeObservers(viewModel.buttonState)
+        removeObservers(viewModel.textFieldState)
+        removeObservers(viewModel.categoryChips)
+        removeObservers(viewModel.submitFormResult)
+        super.onDestroy()
     }
 
     private fun initView() {
@@ -238,6 +245,16 @@ class TalkWriteFragment : BaseDaggerFragment(),
     private fun observeButtonState() {
         viewModel.buttonState.observe(viewLifecycleOwner, Observer {
             talkWriteButton.isEnabled = it.isAnyCategorySelected && it.isNotTextEmpty
+        })
+    }
+
+    private fun observeTextFieldState() {
+        viewModel.textFieldState.observe(viewLifecycleOwner, Observer {
+            if(it) {
+                writeQuestionTextArea.show()
+            } else {
+                writeQuestionTextArea.hide()
+            }
         })
     }
 
