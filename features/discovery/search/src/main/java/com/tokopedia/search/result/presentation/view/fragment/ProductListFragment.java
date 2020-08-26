@@ -78,6 +78,7 @@ import com.tokopedia.search.result.presentation.view.listener.GlobalNavListener;
 import com.tokopedia.search.result.presentation.view.listener.InspirationCardListener;
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener;
 import com.tokopedia.search.result.presentation.view.listener.ProductListener;
+import com.tokopedia.search.result.presentation.view.listener.QuickFilterElevation;
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceMonitoringListener;
@@ -134,6 +135,7 @@ public class ProductListFragment
         BannedProductsRedirectToBrowserListener,
         BroadMatchListener,
         InspirationCardListener,
+        QuickFilterElevation,
         SortFilterBottomSheet.Callback {
 
     private static final String SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab";
@@ -1677,11 +1679,8 @@ public class ProductListFragment
     }
 
     @Override
-    public void configureQuickFilterElevation(int id) {
-        if (id == R.id.searchMotionTabStart) {
-            SearchFilterUtilsKt.removeQuickFilterLayout(searchSortFilter);
-        } else if (id == R.id.searchMotionTabEnd){
-            SearchFilterUtilsKt.applyQuickFilterLayout(getContext(), searchSortFilter);
-        }
+    public void configure(boolean shouldRemove) {
+        if (shouldRemove) SearchFilterUtilsKt.removeQuickFilterElevation(searchSortFilter);
+        else SearchFilterUtilsKt.applyQuickFilterElevation(getContext(), searchSortFilter);
     }
 }

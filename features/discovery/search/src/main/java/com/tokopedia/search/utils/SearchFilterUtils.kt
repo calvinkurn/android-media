@@ -25,7 +25,7 @@ internal val nonFilterParameterKeyList = setOf(
         SearchApiConst.FIRST_INSTALL
 )
 
-internal fun removeQuickFilterLayout(sortFilter: SortFilter?) {
+internal fun removeQuickFilterElevation(sortFilter: SortFilter?) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && sortFilter != null) {
         if (sortFilter.elevation > 0f) {
             sortFilter.elevation = 0f
@@ -33,7 +33,7 @@ internal fun removeQuickFilterLayout(sortFilter: SortFilter?) {
     }
 }
 
-internal fun applyQuickFilterLayout(context: Context?, sortFilter: SortFilter?) {
+internal fun applyQuickFilterElevation(context: Context?, sortFilter: SortFilter?) {
     if (context == null) return
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && sortFilter != null) {

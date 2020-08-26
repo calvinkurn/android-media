@@ -18,6 +18,7 @@ import android.widget.TextView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.motion.widget.MotionLayout;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
@@ -43,6 +44,7 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.search.R;
 import com.tokopedia.search.analytics.SearchTracking;
 import com.tokopedia.search.result.presentation.view.adapter.SearchSectionPagerAdapter;
+import com.tokopedia.search.result.presentation.view.listener.QuickFilterElevation;
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceMonitoringListener;
@@ -198,30 +200,36 @@ public class SearchActivity extends BaseActivity
     }
 
     private void configureTabLayout() {
-        container.setTransitionListener(
-                new MotionLayout.TransitionListener() {
-                    @Override
-                    public void onTransitionStarted(MotionLayout motionLayout, int i, int i1) { }
+        if (container == null) return;
 
-                    @Override
-                    public void onTransitionChange(MotionLayout motionLayout, int i, int i1, float v) { }
+        container.setTransitionListener(getContainerTransitionListener());
+    }
 
-                    @Override
-                    public void onTransitionTrigger(MotionLayout motionLayout, int i, boolean b, float v) { }
+    private MotionLayout.TransitionListener getContainerTransitionListener() {
+        return new MotionLayout.TransitionListener() {
+            @Override
+            public void onTransitionStarted(MotionLayout motionLayout, int i, int i1) { }
 
-                    @Override
-                    public void onTransitionCompleted(MotionLayout motionLayout, int i) {
-                        String activeTab = searchParameter.get(SearchApiConst.ACTIVE_TAB);
-                        if (searchSectionPagerAdapter != null) {
-                            if (SearchConstant.ActiveTab.SHOP.equals(activeTab) && searchSectionPagerAdapter.getShopListFragment() != null) {
-                                searchSectionPagerAdapter.getShopListFragment().configureQuickFilterElevation(i);
-                            } else if (SearchConstant.ActiveTab.PRODUCT.equals(activeTab) && searchSectionPagerAdapter.getProductListFragment() != null) {
-                                searchSectionPagerAdapter.getProductListFragment().configureQuickFilterElevation(i);
-                            }
-                        }
-                    }
-                }
-        );
+            @Override
+            public void onTransitionChange(MotionLayout motionLayout, int i, int i1, float v) { }
+
+            @Override
+            public void onTransitionTrigger(MotionLayout motionLayout, int i, boolean b, float v) { }
+
+            @Override
+            public void onTransitionCompleted(MotionLayout motionLayout, int i) { onContainerTransitionCompleted(i); }
+        };
+    }
+
+    private void onContainerTransitionCompleted(int id) {
+        Fragment fragmentItem = searchSectionPagerAdapter.getRegisteredFragmentAtPosition(viewPager.getCurrentItem());
+        if (!(fragmentItem instanceof QuickFilterElevation)) return;
+
+        if (id == R.id.searchMotionTabStart) {
+            ((QuickFilterElevation) fragmentItem).configure(false);
+        } else if (id == R.id.searchMotionTabEnd){
+            ((QuickFilterElevation) fragmentItem).configure(false);
+        }
     }
 
     private void initToolbar() {
