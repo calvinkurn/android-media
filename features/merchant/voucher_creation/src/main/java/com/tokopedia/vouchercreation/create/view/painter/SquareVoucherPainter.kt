@@ -219,7 +219,7 @@ class SquareVoucherPainter(private val context: Context,
                         }
 
                         override fun onResourceReady(resource: Bitmap, model: Any?, target: Target<Bitmap>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                            drawPromotionLabel(resource, rightPromoInfoX.toInt(), imageType.value, PostValuePosition.RIGHT)
+                            drawPromotionLabel(resource, rightPromoInfoX.toInt(), imageType.value, PostValuePosition.RIGHT, true)
                             return false
                         }
                     })
@@ -227,7 +227,7 @@ class SquareVoucherPainter(private val context: Context,
         }
     }
 
-    private fun Canvas.drawPromotionLabel(resource: Bitmap, xPosition: Int, value: Int, @PostValuePosition postValuePosition: Int) {
+    private fun Canvas.drawPromotionLabel(resource: Bitmap, xPosition: Int, value: Int, @PostValuePosition postValuePosition: Int, isPercentage: Boolean = false) {
         val bitmapRatio = resource.width / resource.height
         val fittedLabelWidth = (bitmapRatio * promoLabelHeight)
         val bitmapRect = Rect().apply {
@@ -235,12 +235,11 @@ class SquareVoucherPainter(private val context: Context,
         }
         drawBitmap(resource, null, bitmapRect, promoLabelPaint)
 
-        drawValueText(value, postValuePosition)
+        drawValueText(value, postValuePosition, isPercentage)
     }
 
-    private fun Canvas.drawValueText(value: Int, @PostValuePosition postValuePosition: Int) {
-        val isPercentagePosition = postValuePosition == PostValuePosition.LEFT
-        val horizontalLinearLayout = getValueLinearLayout(value, isPercentagePosition)
+    private fun Canvas.drawValueText(value: Int, @PostValuePosition postValuePosition: Int, isPercentage: Boolean) {
+        val horizontalLinearLayout = getValueLinearLayout(value, isPercentage)
         val xPosition: Float = when(postValuePosition) {
             PostValuePosition.LEFT -> leftPromoInfoX
             PostValuePosition.RIGHT -> rightPromoInfoX
