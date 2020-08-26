@@ -244,7 +244,7 @@ class SellerHomeNavigator(
     }
 
     private fun isActivityResumed(): Boolean {
-        val lifecycle = (context as? AppCompatActivity)?.lifecycle
-        return lifecycle?.currentState == Lifecycle.State.RESUMED
+        val state = (context as? AppCompatActivity)?.lifecycle?.currentState
+        return state == Lifecycle.State.RESUMED || state == Lifecycle.State.STARTED
     }
 }
