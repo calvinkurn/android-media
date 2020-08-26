@@ -73,6 +73,9 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
 
     private var manageAddressListener: ManageAddressListener? = null
 
+    private var maxItemPosition: Int = -1
+    private var isLoading: Boolean = false
+
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
@@ -122,6 +125,8 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     }
 
     private fun performSearch(query: String) {
+        clearData()
+        maxItemPosition = 0
         viewModel.searchAddress(query)
     }
 
@@ -142,6 +147,8 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
 
         ImageHandler.LoadImage(iv_empty_state, EMPTY_STATE_PICT_URL)
         ImageHandler.LoadImage(iv_empty_address, EMPTY_SEARCH_PICT_URL)
+
+        initScrollListener()
     }
 
     private fun initViewModel() {
@@ -150,8 +157,10 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                 is ManageAddressState.Success -> {
                     swipeRefreshLayout?.isRefreshing = false
                     globalErrorLayout?.gone()
-                    setEmptyState(it.data.listAddress.isEmpty(), viewModel.savedQuery.isNullOrEmpty())
-                    renderData(it.data.listAddress)
+                    updateData(it.data.listAddress)
+                    setEmptyState()
+                    isLoading = false
+
                 }
 
                 is ManageAddressState.Fail -> {
@@ -159,20 +168,44 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                     if (it.throwable != null) {
                         handleError(it.throwable)
                     }
+                    isLoading = false
                 }
 
-                else -> swipeRefreshLayout?.isRefreshing = true
+                else -> {
+                    swipeRefreshLayout?.isRefreshing = true
+                    isLoading = true
+                }
             }
         })
     }
 
-    private fun setEmptyState(isEmpty: Boolean, isFirstLoad: Boolean) {
-        if (!isEmpty) {
+    private fun initScrollListener() {
+        addressList?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val adapter = recyclerView.adapter
+                val totalItemCount = adapter?.itemCount
+                val lastVisibleItemPosition = (recyclerView.layoutManager as LinearLayoutManager)
+                        .findLastVisibleItemPosition()
+
+                if(maxItemPosition < lastVisibleItemPosition) {
+                    maxItemPosition = lastVisibleItemPosition
+                }
+
+                if ((maxItemPosition + 1) == totalItemCount && viewModel.canLoadMore && !isLoading) {
+                    viewModel.loadMore()
+                }
+            }
+        })
+    }
+
+    private fun setEmptyState() {
+        if (adapter.addressList.isNotEmpty()) {
             emptyStateLayout?.gone()
             searchAddress.visible()
             addressList?.visible()
             emptySearchLayout?.gone()
-        } else if (isFirstLoad) {
+        } else if (viewModel.savedQuery.isEmpty()) {
             buttonAddEmpty?.setOnClickListener {
                 openFormAddressView(null)
             }
@@ -219,8 +252,12 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         }
     }
 
-    private fun renderData(data: List<RecipientAddressModel>) {
+    private fun updateData(data: List<RecipientAddressModel>) {
         adapter.addList(data)
+    }
+
+    private fun clearData() {
+        adapter.clearData()
     }
 
     override fun onManageAddressEditClicked(peopleAddress: RecipientAddressModel) {

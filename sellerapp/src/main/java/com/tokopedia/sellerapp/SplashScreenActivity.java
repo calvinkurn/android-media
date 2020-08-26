@@ -146,7 +146,7 @@ public class SplashScreenActivity extends SplashScreen {
             intent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.SEAMLESS_LOGIN);
             Bundle b = new Bundle();
             b.putBoolean(KEY_AUTO_LOGIN, true);
-            if(!redirectApplink.isEmpty())
+            if(redirectApplink != null && redirectApplink.length() > 0)
                 b.putString(ApplinkConstInternalGlobal.KEY_REDIRECT_SEAMLESS_APPLINK, redirectApplink);
 
             if (remainingApplinks != null && !remainingApplinks.isEmpty()) {
