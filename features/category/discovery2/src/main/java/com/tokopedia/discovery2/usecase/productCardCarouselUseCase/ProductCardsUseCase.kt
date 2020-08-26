@@ -12,15 +12,16 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
         private const val RPC_START = "rpc_Start"
         private const val PRODUCT_PER_PAGE = 20
         private const val RPC_FILTER_KEU = "rpc_"
+        private const val rpc_PINNED_PRODUCT = "rpc_PinnedProduct"
     }
 
-    suspend fun loadFirstPageComponents(componentId: String, pageEndPoint: String): Boolean {
+    suspend fun loadFirstPageComponents(componentId: String, pageEndPoint: String, rpcPinnedProduct: String?): Boolean {
         var component = getComponent(componentId, pageEndPoint)
         if (component?.noOfPagesLoaded == 1)
             return false
         component?.let { component ->
             val parentComponentsItem = getComponent(component.parentComponentId, pageEndPoint)
-            component?.setComponentsItem(productCardsRepository.getProducts(componentId, getQueryParameterMap(0, component.componentsPerPage, parentComponentsItem?.chipSelectionData), pageEndPoint, component.name))
+            component?.setComponentsItem(productCardsRepository.getProducts(componentId, getQueryParameterMap(0, component.componentsPerPage, parentComponentsItem?.chipSelectionData, rpcPinnedProduct), pageEndPoint, component.name))
             component?.noOfPagesLoaded = 1
             return true
         }
@@ -42,12 +43,15 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
         return false
     }
 
-    private fun getQueryParameterMap(pageStart: Int, productPerPage: Int?, chipSelectionData: DataItem?): MutableMap<String, Any> {
+    private fun getQueryParameterMap(pageStart: Int, productPerPage: Int?, chipSelectionData: DataItem?, rpcPinnedProduct: String? = null): MutableMap<String, Any> {
         val queryParameterMap = mutableMapOf<String, Any>()
         queryParameterMap[RPC_ROWS] = PRODUCT_PER_PAGE.toString()
         queryParameterMap[RPC_START] = pageStart.toString()
         chipSelectionData?.let {
             queryParameterMap[RPC_FILTER_KEU + it.key] = it.value.toString()
+        }
+        rpcPinnedProduct?.let {
+            queryParameterMap[rpc_PINNED_PRODUCT] = it
         }
         return queryParameterMap
     }
