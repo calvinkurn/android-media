@@ -1,6 +1,11 @@
-package com.tokopedia.sellerhome.settings.analytics
+package com.tokopedia.seller.menu.common.analytics
 
 object SettingTrackingConstant {
+
+    const val EVENT = "event"
+    const val EVENT_CATEGORY = "eventCategory"
+    const val EVENT_ACTION = "eventAction"
+    const val EVENT_LABEL = "eventLabel"
 
     const val IMPRESSION = "impression"
     const val CLICK= "click"
@@ -47,4 +52,7 @@ object SettingTrackingConstant {
     const val SHOP_POWER_MERCHANT = "PM"
     const val SHOP_OFFICIAL_STORE = "OS"
 
+    const val USER_ID = "userId"
+    const val SHOP_ID = "shopId"
+    const val SHOP_TYPE = "shopType"
 }

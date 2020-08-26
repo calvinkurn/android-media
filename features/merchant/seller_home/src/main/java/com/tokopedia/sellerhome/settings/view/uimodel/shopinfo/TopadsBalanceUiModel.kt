@@ -1,6 +1,6 @@
 package com.tokopedia.sellerhome.settings.view.uimodel.shopinfo
 
-import com.tokopedia.sellerhome.settings.analytics.SettingTrackingConstant
+import com.tokopedia.seller.menu.common.analytics.SettingTrackingConstant
 import com.tokopedia.sellerhome.settings.view.uimodel.base.BalanceType
 
 class TopadsBalanceUiModel(val isTopAdsUser: Boolean,

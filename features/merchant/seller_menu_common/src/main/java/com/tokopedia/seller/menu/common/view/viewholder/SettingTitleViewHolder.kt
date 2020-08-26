@@ -1,10 +1,10 @@
-package com.tokopedia.sellerhome.settings.view.viewholder
+package com.tokopedia.seller.menu.common.view.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.sellerhome.R
-import com.tokopedia.sellerhome.settings.view.uimodel.SettingTitleUiModel
+import com.tokopedia.seller.menu.common.R
+import com.tokopedia.seller.menu.common.view.uimodel.SettingTitleUiModel
 import kotlinx.android.synthetic.main.setting_title.view.*
 
 class SettingTitleViewHolder(itemView: View) : AbstractViewHolder<SettingTitleUiModel>(itemView) {

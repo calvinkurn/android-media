@@ -1,11 +1,10 @@
-package com.tokopedia.sellerhome.settings.analytics
+package com.tokopedia.seller.menu.common.analytics
 
 import android.view.View
 import android.widget.ImageView
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.sellerhome.analytic.TrackingConstant
-import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingShopInfoClickTrackable
-import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingShopInfoImpressionTrackable
+import com.tokopedia.seller.menu.common.view.uimodel.base.SettingShopInfoClickTrackable
+import com.tokopedia.seller.menu.common.view.uimodel.base.SettingShopInfoImpressionTrackable
 import com.tokopedia.track.TrackApp
 
 /**
@@ -27,23 +26,23 @@ inline fun <R, T : SettingShopInfoImpressionTrackable> R.sendSettingShopInfoImpr
 
 fun <T : SettingShopInfoClickTrackable> T.sendSettingShopInfoClickTracking() {
     val map = mapOf(
-            TrackingConstant.EVENT to clickEventName,
-            TrackingConstant.EVENT_CATEGORY to clickEventCategory,
-            TrackingConstant.EVENT_ACTION to clickEventAction,
-            TrackingConstant.EVENT_LABEL to clickEventLabel,
-            TrackingConstant.USER_ID to clickEventUserId,
-            TrackingConstant.SHOP_ID to clickEventShopId,
-            TrackingConstant.SHOP_TYPE to clickEventShopType
+             SettingTrackingConstant.EVENT to clickEventName,
+             SettingTrackingConstant.EVENT_CATEGORY to clickEventCategory,
+             SettingTrackingConstant.EVENT_ACTION to clickEventAction,
+             SettingTrackingConstant.EVENT_LABEL to clickEventLabel,
+             SettingTrackingConstant.USER_ID to clickEventUserId,
+             SettingTrackingConstant.SHOP_ID to clickEventShopId,
+             SettingTrackingConstant.SHOP_TYPE to clickEventShopType
     )
     TrackApp.getInstance().gtm.sendGeneralEvent(map)
 }
 
 fun SettingShopInfoImpressionTrackable.sendShopInfoImpressionData() {
     val map = mapOf(
-            TrackingConstant.EVENT to impressionEventName,
-            TrackingConstant.EVENT_CATEGORY to impressionEventCategory,
-            TrackingConstant.EVENT_ACTION to impressionEventAction,
-            TrackingConstant.EVENT_LABEL to impressionEventLabel
+             SettingTrackingConstant.EVENT to impressionEventName,
+             SettingTrackingConstant.EVENT_CATEGORY to impressionEventCategory,
+             SettingTrackingConstant.EVENT_ACTION to impressionEventAction,
+             SettingTrackingConstant.EVENT_LABEL to impressionEventLabel
     )
     TrackApp.getInstance().gtm.sendGeneralEvent(map)
 }
@@ -80,10 +79,10 @@ private fun sendTrackingManual(eventName: String,
                        eventAction: String,
                        eventLabel: String) {
     val map = mapOf(
-            TrackingConstant.EVENT to eventName,
-            TrackingConstant.EVENT_CATEGORY to eventCategory,
-            TrackingConstant.EVENT_ACTION to eventAction,
-            TrackingConstant.EVENT_LABEL to eventLabel
+             SettingTrackingConstant.EVENT to eventName,
+             SettingTrackingConstant.EVENT_CATEGORY to eventCategory,
+             SettingTrackingConstant.EVENT_ACTION to eventAction,
+             SettingTrackingConstant.EVENT_LABEL to eventLabel
     )
     TrackApp.getInstance().gtm.sendGeneralEvent(map)
 }

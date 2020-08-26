@@ -1,7 +1,7 @@
-package com.tokopedia.sellerhome.settings.view.uimodel.base
+package com.tokopedia.seller.menu.common.view.uimodel.base
 
-import com.tokopedia.sellerhome.settings.analytics.SettingTrackingConstant.CLICK_NAVIGATION_DRAWER
-import com.tokopedia.sellerhome.settings.analytics.SettingTrackingConstant.OTHERS_TAB
+import com.tokopedia.seller.menu.common.analytics.SettingTrackingConstant.CLICK_NAVIGATION_DRAWER
+import com.tokopedia.seller.menu.common.analytics.SettingTrackingConstant.OTHERS_TAB
 
 interface SettingShopInfoClickTrackable {
     val clickEventName: String

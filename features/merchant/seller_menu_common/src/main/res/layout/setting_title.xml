@@ -9,10 +9,9 @@
         android:id="@+id/settingTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/setting_title_indented_margin_top"
-        android:paddingBottom="@dimen/setting_title_indented_margin_bottom"
-        android:textColor="@color/default_black_text"
-        android:letterSpacing="@integer/setting_title_letter_spacing"
+        android:paddingTop="@dimen/setting_title_padding_top"
+        android:paddingBottom="@dimen/setting_title_padding_bottom"
+        android:textColor="@color/setting_title_color"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="@id/guideline"
         app:typographyType="body_3"
@@ -24,6 +23,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.15"/>
+        app:layout_constraintGuide_percent="0.05"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

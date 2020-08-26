@@ -1,8 +1,8 @@
-package com.tokopedia.sellerhome.settings.view.uimodel
+package com.tokopedia.seller.menu.common.view.uimodel
 
-import com.tokopedia.sellerhome.settings.view.typefactory.OtherMenuTypeFactory
-import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingUiModel
-import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingUiType
+import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuTypeFactory
+import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiType
 
 class SettingTitleMenuUiModel(val settingTitle: String,
                               val settingDrawable: Int?) : SettingUiModel {

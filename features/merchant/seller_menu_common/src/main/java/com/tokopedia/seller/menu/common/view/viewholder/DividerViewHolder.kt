@@ -1,12 +1,11 @@
-package com.tokopedia.sellerhome.settings.view.viewholder
+package com.tokopedia.seller.menu.common.view.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.sellerhome.R
-import com.tokopedia.sellerhome.settings.view.uimodel.DividerUiModel
-import com.tokopedia.sellerhome.settings.view.uimodel.base.DividerType
-import kotlinx.android.synthetic.main.setting_divider.view.*
+import com.tokopedia.seller.menu.common.R
+import com.tokopedia.seller.menu.common.view.uimodel.DividerUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.base.DividerType
 
 class DividerViewHolder(itemView: View) : AbstractViewHolder<DividerUiModel>(itemView) {
 
@@ -29,8 +28,5 @@ class DividerViewHolder(itemView: View) : AbstractViewHolder<DividerUiModel>(ite
                 }
     }
 
-    override fun bind(element: DividerUiModel) {
-
-    }
-
+    override fun bind(element: DividerUiModel) {}
 }

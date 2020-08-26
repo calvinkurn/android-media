@@ -1,12 +1,14 @@
 package com.tokopedia.sellerhome.settings.view.uimodel.shopinfo
 
-import com.tokopedia.sellerhome.settings.analytics.SettingTrackingConstant
+import com.tokopedia.seller.menu.common.view.uimodel.base.SettingShopInfoClickTrackable
+import com.tokopedia.seller.menu.common.view.uimodel.base.SettingShopInfoImpressionTrackable
+import com.tokopedia.seller.menu.common.analytics.SettingTrackingConstant
 import com.tokopedia.sellerhome.settings.view.uimodel.base.*
 import com.tokopedia.user.session.UserSessionInterface
 
 class ShopStatusUiModel(val shopType: ShopType, val user: UserSessionInterface?) :
         SettingShopInfoImpressionTrackable,
-        SettingShopInfoClickTrackable
+    SettingShopInfoClickTrackable
 {
 
     override val impressionEventAction: String

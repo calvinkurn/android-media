@@ -1,8 +1,8 @@
-package com.tokopedia.sellerhome.settings.view.uimodel.base
+package com.tokopedia.seller.menu.common.view.uimodel.base
 
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.sellerhome.settings.analytics.SettingTrackingConstant.OTHERS_TAB
-import com.tokopedia.sellerhome.settings.analytics.SettingTrackingConstant.VIEW_NAVIGATION_IRIS
+import com.tokopedia.seller.menu.common.analytics.SettingTrackingConstant.OTHERS_TAB
+import com.tokopedia.seller.menu.common.analytics.SettingTrackingConstant.VIEW_NAVIGATION_IRIS
 
 interface SettingShopInfoImpressionTrackable {
     val impressHolder: ImpressHolder

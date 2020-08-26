@@ -1,6 +1,7 @@
-package com.tokopedia.sellerhome.settings.view.typefactory
+package com.tokopedia.seller.menu.common.view.typefactory
 
-import com.tokopedia.sellerhome.settings.view.uimodel.*
+import com.tokopedia.seller.menu.common.view.uimodel.MenuItemUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.*
 
 interface OtherMenuTypeFactory {
 

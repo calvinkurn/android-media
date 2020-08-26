@@ -1,21 +1,22 @@
-package com.tokopedia.sellerhome.settings.view.uimodel
+package com.tokopedia.seller.menu.common.view.uimodel
 
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
-import com.tokopedia.sellerhome.settings.analytics.SettingTrackingConstant
-import com.tokopedia.sellerhome.settings.view.typefactory.OtherMenuTypeFactory
-import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingShopInfoClickTrackable
-import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingShopInfoImpressionTrackable
-import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingUiModel
-import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingUiType
+import com.tokopedia.seller.menu.common.analytics.SettingTrackingConstant
+import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuTypeFactory
+import com.tokopedia.seller.menu.common.view.uimodel.base.SettingShopInfoClickTrackable
+import com.tokopedia.seller.menu.common.view.uimodel.base.SettingShopInfoImpressionTrackable
+import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiType
 
-class MenuItemUiModel(val title: String = "",
-                      val drawableReference: Int? = null,
-                      private val clickApplink: String? = null,
-                      eventActionSuffix: String = "",
-                      settingTypeInfix: String = "",
-                      val trackingAlias: String? = null,
-                      val clickAction: () -> Unit = {})
-    : SettingUiModel, SettingShopInfoImpressionTrackable, SettingShopInfoClickTrackable {
+class MenuItemUiModel(
+    val title: String = "",
+    val drawableReference: Int? = null,
+    private val clickApplink: String? = null,
+    eventActionSuffix: String = "",
+    settingTypeInfix: String = "",
+    val trackingAlias: String? = null,
+    val clickAction: () -> Unit = {}
+) : SettingUiModel, SettingShopInfoImpressionTrackable, SettingShopInfoClickTrackable {
 
     override val settingUiType: SettingUiType
         get() = SettingUiType.MENU_ITEM

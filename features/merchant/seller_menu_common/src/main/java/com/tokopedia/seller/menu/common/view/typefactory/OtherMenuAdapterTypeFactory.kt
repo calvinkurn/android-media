@@ -1,12 +1,13 @@
-package com.tokopedia.sellerhome.settings.view.typefactory
+package com.tokopedia.seller.menu.common.view.typefactory
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.sellerhome.settings.analytics.SettingTrackingListener
-import com.tokopedia.sellerhome.settings.view.uimodel.*
-import com.tokopedia.sellerhome.settings.view.viewholder.*
+import com.tokopedia.seller.menu.common.view.uimodel.MenuItemUiModel
+import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
+import com.tokopedia.seller.menu.common.view.uimodel.*
+import com.tokopedia.seller.menu.common.view.viewholder.*
 
 class OtherMenuAdapterTypeFactory(private val trackingListener: SettingTrackingListener) : BaseAdapterTypeFactory(), OtherMenuTypeFactory {
 

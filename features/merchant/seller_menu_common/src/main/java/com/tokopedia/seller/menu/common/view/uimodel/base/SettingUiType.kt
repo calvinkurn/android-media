@@ -1,4 +1,4 @@
-package com.tokopedia.sellerhome.settings.view.uimodel.base
+package com.tokopedia.seller.menu.common.view.uimodel.base
 
 sealed class SettingUiType {
     object DIVIDER : SettingUiType()
