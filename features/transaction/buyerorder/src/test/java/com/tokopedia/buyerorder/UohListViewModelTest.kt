@@ -37,6 +37,7 @@ class UohListViewModelTest {
     private var flightResendEmailResult = listOf<FlightResendEmail.Data>()
     private var trainResendEmailResult = listOf<TrainResendEmail.Data>()
     private var rechargeSetFailResult = listOf<RechargeSetFailData.Data>()
+    private var listMsg = arrayListOf<String>()
 
     @RelaxedMockK
     lateinit var uohListUseCase: UohListUseCase
@@ -92,6 +93,8 @@ class UohListViewModelTest {
         listRecommendation = arrayListOf(recomm1, recomm2, recomm3)
 
         finishOrderResult = UohFinishOrder.Data.FinishOrderBuyer(1)
+
+        listMsg.add("Test")
     }
 
     // order_history_list
@@ -219,10 +222,10 @@ class UohListViewModelTest {
         //given
         coEvery {
             uohFinishOrderUseCase.execute(any(), any())
-        } returns Success(UohFinishOrder.Data.FinishOrderBuyer(message = ))
+        } returns Success(UohFinishOrder.Data.FinishOrderBuyer(message = listMsg))
 
         //when
-        uohListViewModel.loadOrderList("", UohListParam())
+        uohListViewModel.doFinishOrder("", UohFinishOrderParam())
 
         //then
         assert(uohListViewModel.finishOrderResult.value is Success)
@@ -235,7 +238,7 @@ class UohListViewModelTest {
         //given
         coEvery {
             atcMultiProductsUseCase.execute(any(), any())
-        } returns Success(AtcMultiData())
+        } returns Success(AtcMultiData(AtcMultiData.AtcMulti("", "", AtcMultiData.AtcMulti.BuyAgainData(success = 1))))
 
         //when
         uohListViewModel.doAtc("", JsonArray())
@@ -253,10 +256,10 @@ class UohListViewModelTest {
         } returns Fail(Throwable())
 
         //when
-        uohListViewModel.doFinishOrder("", UohFinishOrderParam())
+        uohListViewModel.doAtc("", JsonArray())
 
         //then
-        assert(uohListViewModel.finishOrderResult.value is Fail)
+        assert(uohListViewModel.atcResult.value is Fail)
     }
 
     @Test
@@ -264,13 +267,13 @@ class UohListViewModelTest {
         //given
         coEvery {
             atcMultiProductsUseCase.execute(any(), any())
-        } returns Success(AtcMultiData())
+        } returns Success(AtcMultiData(AtcMultiData.AtcMulti("", "", AtcMultiData.AtcMulti.BuyAgainData(1, listMsg))))
 
         //when
-        uohListViewModel.loadOrderList("", UohListParam())
+        uohListViewModel.doAtc("", JsonArray())
 
         //then
-        assert(uohListViewModel.finishOrderResult.value is Success)
-        assert((uohListViewModel.finishOrderResult.value as Success<UohFinishOrder.Data.FinishOrderBuyer>).data.message.isNotEmpty())
+        assert(uohListViewModel.atcResult.value is Success)
+        assert((uohListViewModel.atcResult.value as Success<AtcMultiData>).data.atcMulti.buyAgainData.message.isNotEmpty())
     }
 }
