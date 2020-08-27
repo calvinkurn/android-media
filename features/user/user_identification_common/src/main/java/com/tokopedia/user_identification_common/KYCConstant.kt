@@ -8,6 +8,7 @@ interface KYCConstant {
         const val ERROR_STATUS_UNKNOWN = "1001"
         const val ERROR_MESSAGE_EMPTY = "1002"
         const val ERROR_UPLOAD_IMAGE = "1003"
+        const val ERROR_UPLOAD_IDENTIFICATION = "1003.1"
         const val ERROR_REGISTER = "1004"
         const val UNHANDLED_RESPONSE = "1005"
         const val KYC_PROJECT_ID = 1

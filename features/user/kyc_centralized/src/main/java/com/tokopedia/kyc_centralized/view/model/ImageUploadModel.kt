@@ -7,14 +7,14 @@ import android.os.Parcelable
  * @author by alvinatin on 21/11/18.
  */
 class ImageUploadModel : Parcelable {
-    var kycType: Int
-    var picObjKyc: String? = null
-    var filePath: String?
-    var fileName: String? = null
+    var kycType: Int = 0
+    var picObjKyc: String = ""
+    var filePath: String = ""
+    var fileName: String = ""
     var isSuccess = 0
-    var error: String? = null
+    var error: String = ""
 
-    constructor(kycType: Int, filePath: String?) {
+    constructor(kycType: Int, filePath: String) {
         this.kycType = kycType
         this.filePath = filePath
     }
@@ -34,11 +34,11 @@ class ImageUploadModel : Parcelable {
 
     constructor(`in`: Parcel) {
         kycType = `in`.readInt()
-        picObjKyc = `in`.readString()
-        filePath = `in`.readString()
-        fileName = `in`.readString()
+        picObjKyc = `in`.readString().toString()
+        filePath = `in`.readString().toString()
+        fileName = `in`.readString().toString()
         isSuccess = `in`.readInt()
-        error = `in`.readString()
+        error = `in`.readString().toString()
     }
 
     companion object {

@@ -9,16 +9,16 @@ import com.google.gson.annotations.SerializedName
 class RegisterIdentificationPojo {
     @Expose
     @SerializedName("kycRegister")
-    val kycRegister: KycRegister = KycRegister()
+    var kycRegister: KycRegister = KycRegister()
 
     inner class KycRegister {
         @Expose
         @SerializedName("isSuccess")
-        val isSuccess = 0
+        var isSuccess = 0
 
         @Expose
         @SerializedName("error")
-        val error: String = ""
+        var error: String = ""
 
     }
 }

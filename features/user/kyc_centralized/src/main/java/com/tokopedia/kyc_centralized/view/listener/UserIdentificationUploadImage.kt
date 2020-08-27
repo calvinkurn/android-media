@@ -15,20 +15,15 @@ import rx.Observable
 interface UserIdentificationUploadImage {
     interface View : CustomerView {
         val getContext: Context?
-        fun onSuccessUpload()
+        fun onSuccessUpload(kycType: Int, picObjKyc: String, projectId: Int)
         fun onErrorUpload(error: String?)
-//        val ktpStatusListener: GetKtpStatusSubscriber.GetKtpStatusListener?
         fun showLoading()
         fun hideLoading()
     }
 
     interface Presenter : CustomerPresenter<View?> {
         fun uploadImage(model: UserIdentificationStepperModel?, projectid: Int)
-//        fun checkKtp(image: String?)
         fun uploadImageUseCase(imageUploadModel: ImageUploadModel?): Observable<ImageUploadModel?>?
-        fun uploadIdentificationUseCase(imageUploadModels: List<ImageUploadModel?>?, projectId: Int): Observable<ImageUploadModel?>?
-        fun registerIdentificationUseCase(projectId: Int): Observable<Boolean?>?
-        fun isAllMutationSuccess(imageUploadModels: List<ImageUploadModel?>?): Observable<Boolean?>?
         fun createParam(cameraLoc: String?): RequestParams?
     }
 }

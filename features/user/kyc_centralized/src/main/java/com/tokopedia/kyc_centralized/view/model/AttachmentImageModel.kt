@@ -9,5 +9,5 @@ import com.google.gson.annotations.SerializedName
 class AttachmentImageModel {
     @SerializedName("picture_obj")
     @Expose
-    val pictureObj: String? = null
+    val pictureObj: String = ""
 }

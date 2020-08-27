@@ -18,7 +18,7 @@ class UploadUserIdentificationUseCase @Inject constructor(
     var params: HashMap<String, Any> = HashMap()
 
     override suspend fun executeOnBackground(): UploadIdentificationPojo {
-        val rawQuery = rawQueries[KYCConstant.QUERY_REGISTER_KYC]
+        val rawQuery = rawQueries[KYCConstant.QUERY_UPLOAD_KYC]
         val gqlRequest = GraphqlRequest(rawQuery,
                 UploadIdentificationPojo::class.java, params)
         val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
@@ -32,6 +32,8 @@ class UploadUserIdentificationUseCase @Inject constructor(
     }
 
     companion object {
+        const val TYPE_KTP = 1
+        const val TYPE_SELFIE = 2
         private const val PROJECT_ID = "projectID"
         private const val KYC_TYPE = "kycType"
         private const val PIC_OBJ_KYC = "picObjKYC"

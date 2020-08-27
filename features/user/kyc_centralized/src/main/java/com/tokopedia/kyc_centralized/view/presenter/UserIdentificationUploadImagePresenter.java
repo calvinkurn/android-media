@@ -2,25 +2,17 @@ package com.tokopedia.kyc_centralized.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
-import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.imageuploader.domain.UploadImageUseCase;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.user_identification_common.KYCConstant;
 import com.tokopedia.kyc_centralized.R;
-import com.tokopedia.user_identification_common.domain.pojo.RegisterIdentificationPojo;
-import com.tokopedia.user_identification_common.domain.pojo.UploadIdentificationPojo;
-import com.tokopedia.user_identification_common.domain.usecase.GetKtpStatusUseCase;
-import com.tokopedia.user_identification_common.domain.usecase.RegisterIdentificationUseCase;
-import com.tokopedia.user_identification_common.domain.usecase.UploadIdentificationUseCase;
-import com.tokopedia.user_identification_common.subscriber.GetKtpStatusSubscriber;
+import com.tokopedia.user_identification_common.domain.usecase.UploadUserIdentificationUseCase;
 import com.tokopedia.user_identification_common.util.SchedulerProvider;
 import com.tokopedia.kyc_centralized.view.listener.UserIdentificationUploadImage;
 import com.tokopedia.kyc_centralized.view.model.AttachmentImageModel;
 import com.tokopedia.kyc_centralized.view.model.ImageUploadModel;
 import com.tokopedia.kyc_centralized.view.model.UserIdentificationStepperModel;
-
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,30 +46,19 @@ public class UserIdentificationUploadImagePresenter extends
     private static final String DEFAULT_UPLOAD_TYPE = "fileToUpload\"; filename=\"image.jpg";
     private CompositeSubscription compositeSubscription;
 
-    private final GetKtpStatusUseCase cekKtpStatusUseCase;
     private final UploadImageUseCase<AttachmentImageModel> uploadImageUseCase;
-    private final UploadIdentificationUseCase uploadIdentificationUseCase;
-    private final RegisterIdentificationUseCase registerIdentificationUseCase;
     private final SchedulerProvider schedulerProvider;
     private final UserSessionInterface userSession;
 
     @Inject
-    public UserIdentificationUploadImagePresenter(UploadImageUseCase<AttachmentImageModel>
-                                                          uploadImageUseCase,
-                                                  UploadIdentificationUseCase
-                                                          uploadIdentificationUseCase,
-                                                  RegisterIdentificationUseCase registerIdentificationUseCase,
-                                                  GetKtpStatusUseCase cekKtpStatusUseCase,
+    public UserIdentificationUploadImagePresenter(UploadImageUseCase<AttachmentImageModel> uploadImageUseCase,
                                                   UserSessionInterface userSession,
                                                   CompositeSubscription compositeSubscription,
                                                   SchedulerProvider schedulerProvider) {
         this.uploadImageUseCase = uploadImageUseCase;
-        this.uploadIdentificationUseCase = uploadIdentificationUseCase;
-        this.registerIdentificationUseCase = registerIdentificationUseCase;
         this.userSession = userSession;
         this.compositeSubscription = compositeSubscription;
         this.schedulerProvider = schedulerProvider;
-        this.cekKtpStatusUseCase = cekKtpStatusUseCase;
     }
 
     @Override
@@ -91,51 +72,6 @@ public class UserIdentificationUploadImagePresenter extends
                 });
     }
 
-
-
-    @Nullable
-    @Override
-    public Observable<ImageUploadModel> uploadIdentificationUseCase(@Nullable List<ImageUploadModel> imageUploadModels, int projectId) {
-        return Observable.from(imageUploadModels)
-                .flatMap((Func1<ImageUploadModel, Observable<ImageUploadModel>>) imageUploadModel ->
-                        Observable.zip(Observable.just(imageUploadModel),
-                                uploadIdentificationUseCase.createObservable(
-                                        UploadIdentificationUseCase.getRequestParam(
-                                                imageUploadModel.getKycType(),
-                                                imageUploadModel.getPicObjKyc(),
-                                                imageUploadModel.getFileName(),
-                                                projectId
-                                        )
-                                ), (imageUploadModel1, graphqlResponse) -> {
-                                    UploadIdentificationPojo pojo = graphqlResponse.getData(UploadIdentificationPojo.class);
-                                    imageUploadModel1.setError(pojo != null ? pojo.getKycUpload().getError() : null);
-                                    imageUploadModel1.setSuccess(pojo != null ? pojo.getKycUpload().isSuccess() : 0);
-                                    return imageUploadModel1;
-                                }));
-
-    }
-
-    @Override
-    public Observable<Boolean> registerIdentificationUseCase(int projectId) {
-        return registerIdentificationUseCase.createObservable(
-                RegisterIdentificationUseCase.getRequestParam(projectId)
-        ).flatMap((Func1<GraphqlResponse, Observable<Boolean>>) graphqlResponse -> {
-            RegisterIdentificationPojo pojo = graphqlResponse.getData(RegisterIdentificationPojo.class);
-            return Observable.just(pojo != null && pojo.getKycRegister() != null && pojo.getKycRegister().isSuccess() == 1);
-        });
-    }
-
-
-    @Nullable
-    @Override
-    public Observable<Boolean> isAllMutationSuccess(@Nullable List<ImageUploadModel> imageUploadModels) {
-        int totalSuccess = 0;
-        for (ImageUploadModel imageUploadModel : imageUploadModels) {
-            totalSuccess = totalSuccess + imageUploadModel.isSuccess();
-        }
-        return Observable.just(totalSuccess == KYCConstant.IS_ALL_MUTATION_SUCCESS);
-    }
-
     @Override
     public void uploadImage(UserIdentificationStepperModel model, int projectId) {
         List<ImageUploadModel> attachments = parseToModel(model);
@@ -146,28 +82,10 @@ public class UserIdentificationUploadImagePresenter extends
                         return uploadImageUseCase(imageUploadModel);
                     }
                 }).toList()
-                .flatMap(new Func1<List<ImageUploadModel>, Observable<ImageUploadModel>>() {
-                    @Override
-                    public Observable<ImageUploadModel> call(List<ImageUploadModel> imageUploadModels) {
-                        return uploadIdentificationUseCase(imageUploadModels, projectId);
-                    }
-                }).toList()
-                .flatMap(new Func1<List<ImageUploadModel>, Observable<Boolean>>() {
-                    @Override
-                    public Observable<Boolean> call(List<ImageUploadModel> imageUploadModels) {
-                        return isAllMutationSuccess(imageUploadModels);
-                    }
-                })
-                .flatMap(new Func1<Boolean, Observable<Boolean>>() {
-                    @Override
-                    public Observable<Boolean> call(Boolean aBoolean) {
-                        return registerIdentificationUseCase(projectId);
-                    }
-                })
                 .subscribeOn(schedulerProvider.io())
                 .unsubscribeOn(schedulerProvider.io())
                 .observeOn(schedulerProvider.ui())
-                .subscribe(new Subscriber<Boolean>() {
+                .subscribe(new Subscriber<List<ImageUploadModel>>() {
                     @Override
                     public void onCompleted() { }
 
@@ -177,14 +95,19 @@ public class UserIdentificationUploadImagePresenter extends
                     }
 
                     @Override
-                    public void onNext(Boolean aBoolean) {
-                        if (aBoolean) {
-                            getView().onSuccessUpload();
-                        } else {
-                            getView().onErrorUpload(
-                                    String.format(getView().getGetContext().getString(R.string.error_upload_image_kyc),
-                                    KYCConstant.ERROR_UPLOAD_IMAGE)
-                            );
+                    public void onNext(List<ImageUploadModel> imageUploadModels) {
+                        for (ImageUploadModel imageUpload: imageUploadModels) {
+                            if(imageUpload != null) {
+                                getView().onSuccessUpload(
+                                        imageUpload.getKycType(),
+                                        imageUpload.getPicObjKyc(),
+                                        projectId);
+                            } else {
+                                getView().onErrorUpload(
+                                        String.format(getView().getGetContext().getString(R.string.error_upload_image_kyc),
+                                                KYCConstant.ERROR_UPLOAD_IMAGE)
+                                );
+                            }
                         }
                     }
                 })
@@ -209,15 +132,10 @@ public class UserIdentificationUploadImagePresenter extends
 
     private List<ImageUploadModel> parseToModel(UserIdentificationStepperModel model) {
         List<ImageUploadModel> list = new ArrayList<>();
-        list.add(new ImageUploadModel(UploadIdentificationUseCase.TYPE_KTP, model.getKtpFile()));
-        list.add(new ImageUploadModel(UploadIdentificationUseCase.TYPE_SELFIE, model.getFaceFile()));
+        list.add(new ImageUploadModel(UploadUserIdentificationUseCase.TYPE_KTP, model.getKtpFile()));
+        list.add(new ImageUploadModel(UploadUserIdentificationUseCase.TYPE_SELFIE, model.getFaceFile()));
         return list;
     }
-
-//    @Override
-//    public void checkKtp(String image) {
-//        cekKtpStatusUseCase.execute(cekKtpStatusUseCase.getRequestParam(image), new GetKtpStatusSubscriber(getView().getKtpStatusListener()));
-//    }
 
     @Override
     public void detachView() {

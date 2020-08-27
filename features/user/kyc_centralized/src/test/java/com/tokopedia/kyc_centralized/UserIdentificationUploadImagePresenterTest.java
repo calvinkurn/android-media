@@ -13,8 +13,6 @@ import com.tokopedia.kyc_centralized.view.presenter.UserIdentificationUploadImag
 import com.tokopedia.kyc_centralized.view.model.AttachmentImageModel;
 import com.tokopedia.kyc_centralized.view.model.ImageUploadModel;
 import com.tokopedia.user_identification_common.domain.usecase.GetKtpStatusUseCase;
-import com.tokopedia.user_identification_common.domain.usecase.RegisterIdentificationUseCase;
-import com.tokopedia.user_identification_common.domain.usecase.UploadIdentificationUseCase;
 import com.tokopedia.user_identification_common.util.TestSchedulerProvider;
 
 import org.junit.Before;

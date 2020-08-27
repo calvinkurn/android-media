@@ -19,12 +19,12 @@ import com.tokopedia.kyc_centralized.util.DispatcherProvider
 import com.tokopedia.kyc_centralized.view.listener.UserIdentificationUploadImage
 import com.tokopedia.kyc_centralized.view.presenter.UserIdentificationUploadImagePresenter
 import com.tokopedia.kyc_centralized.view.model.AttachmentImageModel
+import com.tokopedia.mediauploader.di.MediaUploaderModule
+import com.tokopedia.mediauploader.di.MediaUploaderNetworkModule
+import com.tokopedia.mediauploader.di.NetworkModule
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.user_identification_common.KYCConstant
-import com.tokopedia.user_identification_common.domain.usecase.GetKtpStatusUseCase
-import com.tokopedia.user_identification_common.domain.usecase.RegisterIdentificationUseCase
-import com.tokopedia.user_identification_common.domain.usecase.UploadIdentificationUseCase
 import com.tokopedia.user_identification_common.util.AppSchedulerProvider
 import dagger.Module
 import dagger.Provides
@@ -36,7 +36,11 @@ import rx.subscriptions.CompositeSubscription
  * @author by nisie on 13/11/18.
  */
 @UserIdentificationCommonScope
-@Module(includes = [ImageUploaderModule::class])
+@Module(includes = [
+    ImageUploaderModule::class,
+    MediaUploaderModule::class,
+    MediaUploaderNetworkModule::class,
+    NetworkModule::class])
 class UserIdentificationCommonModule {
 
     @UserIdentificationCommonScope
@@ -51,11 +55,11 @@ class UserIdentificationCommonModule {
 
     @UserIdentificationCommonScope
     @Provides
-    fun provideAttachmentImageModelUploadImageUseCase(@ImageUploaderQualifier uploadImageRepository: UploadImageRepository?,
-                                                      @ImageUploaderQualifier generateHostRepository: GenerateHostRepository?,
-                                                      @ImageUploaderQualifier gson: Gson?,
-                                                      @ImageUploaderQualifier userSession: UserSessionInterface?,
-                                                      @ImageUploaderQualifier imageUploaderUtils: ImageUploaderUtils?): UploadImageUseCase<AttachmentImageModel> {
+    fun provideAttachmentImageModelUploadImageUseCase(@ImageUploaderQualifier uploadImageRepository: UploadImageRepository,
+                                                      @ImageUploaderQualifier generateHostRepository: GenerateHostRepository,
+                                                      @ImageUploaderQualifier gson: Gson,
+                                                      @ImageUploaderQualifier userSession: UserSessionInterface,
+                                                      @ImageUploaderQualifier imageUploaderUtils: ImageUploaderUtils): UploadImageUseCase<AttachmentImageModel> {
         return UploadImageUseCase(uploadImageRepository, generateHostRepository, gson, userSession, AttachmentImageModel::class.java, imageUploaderUtils)
     }
 
@@ -67,16 +71,10 @@ class UserIdentificationCommonModule {
 
     @UserIdentificationCommonScope
     @Provides
-    fun provideUploadImagePresenter(uploadImageUseCase: UploadImageUseCase<AttachmentImageModel?>?,
-                                    uploadIdentificationUseCase: UploadIdentificationUseCase?,
-                                    registerIdentificationUseCase: RegisterIdentificationUseCase?,
-                                    getKtpStatusUseCase: GetKtpStatusUseCase?,
-                                    userSession: UserSession?,
-                                    compositeSubscription: CompositeSubscription?): UserIdentificationUploadImage.Presenter {
+    fun provideUploadImagePresenter(uploadImageUseCase: UploadImageUseCase<AttachmentImageModel>,
+                                    userSession: UserSession,
+                                    compositeSubscription: CompositeSubscription): UserIdentificationUploadImage.Presenter {
         return UserIdentificationUploadImagePresenter(uploadImageUseCase,
-                uploadIdentificationUseCase,
-                registerIdentificationUseCase,
-                getKtpStatusUseCase,
                 userSession,
                 compositeSubscription,
                 AppSchedulerProvider())

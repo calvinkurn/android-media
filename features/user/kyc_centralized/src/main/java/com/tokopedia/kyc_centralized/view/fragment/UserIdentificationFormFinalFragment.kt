@@ -130,6 +130,30 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
                 }
             }
         })
+
+        viewModel.registerKyc.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            when(it) {
+                is Success -> {
+                    if(it.data.kycRegister.isSuccess == 1) {
+                        hideLoading()
+                        Timber.w("P2#KYC_SELFIE_UPLOAD_RESULT#'SuccessUpload';" +
+                                "ktpPath='" + stepperModel?.ktpFile + "';" +
+                                "facePath='" + stepperModel?.faceFile + "';" +
+                                "tkpdProjectId='" + projectId + "';")
+                        activity?.setResult(Activity.RESULT_OK)
+                        analytics?.eventClickUploadPhotosTradeIn("success")
+                        stepperListener?.finishPage()
+                    } else {
+                        onErrorUpload(String.format(context?.getString(R.string.error_upload_image_kyc)?: "",
+                                it.data.kycRegister.error))
+                    }
+                }
+                is Fail -> {
+                    onErrorUpload(String.format(context?.getString(R.string.error_upload_image_kyc)?: "",
+                                    it.throwable.message))
+                }
+            }
+        })
     }
 
     override fun initInjector() {
@@ -272,13 +296,13 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
 
     private val isKycSelfie: Boolean
         get() {
-            try {
-                if (UserIdentificationFormActivity.isSupportedLiveness) {
-                    return RemoteConfigInstance.getInstance().abTestPlatform.getString(KYCConstant.KYC_AB_KEYWORD) != KYCConstant.KYC_AB_KEYWORD
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+//            try {
+//                if (UserIdentificationFormActivity.isSupportedLiveness) {
+//                    return RemoteConfigInstance.getInstance().abTestPlatform.getString(KYCConstant.KYC_AB_KEYWORD) != KYCConstant.KYC_AB_KEYWORD
+//                }
+//            } catch (e: Exception) {
+//                e.printStackTrace()
+//            }
             return true
         }
 
@@ -379,15 +403,8 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
     override val getContext: Context?
         get() = context
 
-    override fun onSuccessUpload() {
-        hideLoading()
-        Timber.w("P2#KYC_SELFIE_UPLOAD_RESULT#'SuccessUpload';" +
-                "ktpPath='" + stepperModel?.ktpFile + "';" +
-                "facePath='" + stepperModel?.faceFile + "';" +
-                "tkpdProjectId='" + projectId + "';")
-        activity?.setResult(Activity.RESULT_OK)
-        analytics?.eventClickUploadPhotosTradeIn("success")
-        stepperListener?.finishPage()
+    override fun onSuccessUpload(kycType: Int, picObjKyc: String, projectId: Int) {
+        viewModel.uploadUserIdentification(kycType, picObjKyc, projectId)
     }
 
     override fun onErrorUpload(error: String?) {
