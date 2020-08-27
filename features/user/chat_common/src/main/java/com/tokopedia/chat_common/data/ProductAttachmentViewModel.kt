@@ -349,7 +349,7 @@ open class ProductAttachmentViewModel : SendableViewModel,
     }
 
     fun hasEmptyStock(): Boolean {
-        return status == statusDeleted || status == statusWarehouse
+        return status != statusActive
     }
 
     fun isWishListed(): Boolean {
