@@ -187,7 +187,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
                     onSuccessSubmitReview()
                 }
                 is Fail -> {
-                    onFailSubmitReview()
+                    onFailSubmitReview(it.fail.message)
                 }
             }
         })
@@ -273,8 +273,13 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
         rv_img_review?.adapter = imageAdapter
 
-        createReviewSubmitButton.setOnClickListener {
-            submitReview()
+        createReviewSubmitButton.apply {
+            if(isEditMode) {
+                text = getString(R.string.review_create_submit_edit)
+            }
+            setOnClickListener {
+                submitReview()
+            }
         }
     }
 
@@ -625,10 +630,10 @@ class CreateReviewFragment : BaseDaggerFragment(),
         finishIfRoot(true)
     }
 
-    private fun onFailSubmitReview() {
+    private fun onFailSubmitReview(message: String?) {
         stopLoading()
         showLayout()
-        showToasterError(getString(R.string.review_create_fail_toaster))
+        showToasterError(message ?: getString(R.string.review_create_fail_toaster))
     }
 
     private fun showShimmering() {
