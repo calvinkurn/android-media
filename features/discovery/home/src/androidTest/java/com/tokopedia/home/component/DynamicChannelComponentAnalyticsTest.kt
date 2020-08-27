@@ -11,6 +11,7 @@ import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
@@ -30,6 +31,7 @@ import org.hamcrest.BaseMatcher
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.core.AllOf.allOf
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -108,8 +110,8 @@ class DynamicChannelComponentAnalyticsTest {
 //                hasAllSuccess())
 //        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_HOMEPAGE_BANNER),
 //                hasAllSuccess())
-//        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_TICKER),
-//                hasAllSuccess())
+        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_TICKER),
+                hasAllSuccess())
         assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MIX_LEFT),
                 hasAllSuccess())
         assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MIX_TOP),
@@ -156,11 +158,7 @@ class DynamicChannelComponentAnalyticsTest {
         val closeButton = childView.findViewById<View>(R.id.ticker_close_icon)
         if (textApplink.visibility == View.VISIBLE) {
             try {
-
-                Espresso.onView(ViewMatchers.withId(R.id.home_fragment_recycler_view))
-                        .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(itemPos, clickOnViewChild(R.id.ticker_description)))
-//                Espresso.onView(firstView(ViewMatchers.withId(R.id.ticker_description)))
-//                        .perform(ViewActions.click())
+                Espresso.onView(allOf(ViewMatchers.withId(R.id.ticker_description), isDisplayed())).perform(ViewActions.click())
                 logTestMessage("Click SUCCESS ticker text")
             } catch (e: PerformException) {
                 e.printStackTrace()
@@ -190,7 +188,7 @@ class DynamicChannelComponentAnalyticsTest {
             try {
                 Espresso.onView(firstView(ViewMatchers.withId(R.id.circular_view_pager)))
                         .perform(ViewActions.click())
-                logTestMessage("Click SUCCESS banner item "  + 1)
+                logTestMessage("Click SUCCESS banner item "  + i)
             } catch (e: PerformException) {
                 e.printStackTrace()
                 logTestMessage("Click FAILED banner item "  + i) }
@@ -199,8 +197,8 @@ class DynamicChannelComponentAnalyticsTest {
         //see all promo button click
         if (seeAllButton.visibility == View.VISIBLE) {
             try {
-                Espresso.onView(ViewMatchers.withId(R.id.home_fragment_recycler_view))
-                        .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(itemPos, clickOnViewChild(R.id.see_all_button)))
+                Espresso.onView(firstView(ViewMatchers.withId(R.id.see_all_button)))
+                        .perform(ViewActions.click())
                 logTestMessage("Click SUCCESS See All Button BannerViewHolder")
             } catch (e: PerformException) {
                 e.printStackTrace()
