@@ -146,6 +146,7 @@ query get_occ_cart_page($source: String) {
           booking_stock
         }
         cart_string
+        payment_profile
         shop {
           shop_id
           user_id
@@ -451,6 +452,17 @@ query get_occ_cart_page($source: String) {
         callback_url
       }
       error_ticker
+      prompt {
+        type
+        title
+        description
+        buttons {
+          text
+          link
+          action
+          color
+        }
+      }
     }
   }
 }

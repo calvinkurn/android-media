@@ -33,7 +33,9 @@ data class GetOccCartData(
         @SerializedName("payment_additional_data")
         val paymentAdditionalData: PaymentAdditionalData = PaymentAdditionalData(),
         @SerializedName("error_ticker")
-        val errorTicker: String = ""
+        val errorTicker: String = "",
+        @SerializedName("prompt")
+        val prompt: OccPromptResponse = OccPromptResponse()
 )
 
 data class CartMessages(
