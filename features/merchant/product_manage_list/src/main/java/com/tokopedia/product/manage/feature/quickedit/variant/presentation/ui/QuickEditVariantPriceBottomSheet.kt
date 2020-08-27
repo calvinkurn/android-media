@@ -52,11 +52,6 @@ class QuickEditVariantPriceBottomSheet(
         }
     }
 
-    override fun onPause() {
-        super.onPause()
-        dismiss()
-    }
-
     private fun isVariantsPriceValid(result: EditVariantResult): Boolean {
         result.variants.forEach {
             if(it.price < MINIMUM_PRICE) {

@@ -72,11 +72,6 @@ class QuickEditVariantStockBottomSheet(
         viewModel.setVariantStatus(variantId, status)
     }
 
-    override fun onPause() {
-        super.onPause()
-        dismiss()
-    }
-
     private fun observeViewState() {
         observe(viewModel.showStockTicker) { showStockTicker ->
             if (showStockTicker) {
