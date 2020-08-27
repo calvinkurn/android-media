@@ -101,6 +101,14 @@
     <string name="shop_product_empty_product_content">Silakan lakukan pencarian dengan kata kunci / filter lain.</string>
 
     <string name="shop_product_empty_product_title">Oops, Produk Nggak Ditemukan</string>
+    
+    <string name="shop_product_search_empty_state_title">Produk tidak ditemukan</string>
+    <string name="shop_product_search_empty_state_desc">Mohon coba kata kunci yang lain atau yang lebih umum</string>
+
+    <string name="shop_product_search_empty_state_btn_primary">Coba kata lain</string>
+    <string name="shop_product_search_empty_state_btn_secondary">Cari di Tokopedia</string>
+
+    <string name="shop_product_search_title_empty_state">Produk lain di Toko ini</string>
 
     <string name="shop_info_default_etalase">Pilih Etalase</string>
     <string name="shop_info_default_etalase_title">Etalase</string>
@@ -170,6 +178,7 @@
     <string name="shop_search_product">Search Shop Product</string>
     <string name="shop_search_product_in_this_shop_etalase">di Etalase Toko ini</string>
     <string name="shop_search_product_in_tokopedia">di Tokopedia</string>
+    <string name="shop_search_product_in_shop_name">di %1s</string>
     <string name="shop_product_list_empty_button_text">Cari di toko lain</string>
     <string name="shop_note_detail_date_format">%1$s, pukul %2$s</string>
     <string name="shop_product_seller_empty_state_label"><![CDATA[Kata orang, <b>jutaan mimpi</b> berawal dari satu langkah kecil.Tambah produk pertamamu]]></string>
