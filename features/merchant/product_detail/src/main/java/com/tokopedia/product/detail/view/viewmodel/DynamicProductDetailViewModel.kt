@@ -179,7 +179,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     val userId: String
         get() = userSessionInterface.userId
 
-    var deviceId: String = userSessionInterface.deviceId
+    var deviceId: String = userSessionInterface.deviceId ?: ""
 
     init {
         _productInfoP3.addSource(_p2Data) { p2Data ->
