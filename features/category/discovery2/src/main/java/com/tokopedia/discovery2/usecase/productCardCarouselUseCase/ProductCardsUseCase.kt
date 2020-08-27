@@ -13,15 +13,16 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
         private const val RPC_START = "rpc_Start"
         private const val PRODUCT_PER_PAGE = 20
         private const val RPC_FILTER_KEU = "rpc_"
+        private const val rpc_PINNED_PRODUCT = "rpc_PinnedProduct"
     }
 
-    suspend fun loadFirstPageComponents(componentId: String, pageEndPoint: String): Boolean {
+    suspend fun loadFirstPageComponents(componentId: String, pageEndPoint: String, rpcPinnedProduct: String?): Boolean {
         var component = getComponent(componentId, pageEndPoint)
         if (component?.noOfPagesLoaded == 1)
             return false
         component?.let { component ->
             val parentComponentsItem = getComponent(component.parentComponentId, pageEndPoint)
-            component?.setComponentsItem(productCardsRepository.getProducts(componentId, getQueryParameterMap(0, component.componentsPerPage, parentComponentsItem?.chipSelectionData, component.selectedFilters, component.selectedSort), pageEndPoint, component.name))
+            component?.setComponentsItem(productCardsRepository.getProducts(componentId, getQueryParameterMap(0, component.componentsPerPage, parentComponentsItem?.chipSelectionData, component.selectedFilters, component.selectedSort, rpcPinnedProduct), pageEndPoint, component.name))
             component?.noOfPagesLoaded = 1
             return true
         }
@@ -43,7 +44,7 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
         return false
     }
 
-    private fun getQueryParameterMap(pageStart: Int, productPerPage: Int?, chipSelectionData: DataItem?, selectedFilters : HashMap<String, String>?, selectedSort : HashMap<String, String>?): MutableMap<String, Any> {
+    private fun getQueryParameterMap(pageStart: Int, productPerPage: Int?, chipSelectionData: DataItem?, selectedFilters : HashMap<String, String>?, selectedSort : HashMap<String, String>?, rpcPinnedProduct: String? = null): MutableMap<String, Any> {
         val queryParameterMap = mutableMapOf<String, Any>()
         queryParameterMap[RPC_ROWS] = PRODUCT_PER_PAGE.toString()
         queryParameterMap[RPC_START] = pageStart.toString()
@@ -59,6 +60,9 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
             for(map in it){
                 queryParameterMap[RPC_FILTER_KEU + map.key] = map.value
             }
+        }
+        if (!rpcPinnedProduct.isNullOrEmpty()) {
+            queryParameterMap[rpc_PINNED_PRODUCT] = rpcPinnedProduct
         }
         return queryParameterMap
     }

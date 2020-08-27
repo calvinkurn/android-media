@@ -60,9 +60,8 @@ data class ComponentsItem(
         var design: String = "",
         val filterController: FilterController = FilterController(),
         var searchParameter: SearchParameter = SearchParameter(),
-        var filters: ArrayList<Filter> = ArrayList()
-
-) {
+        var filters: ArrayList<Filter> = ArrayList(),
+        var rpc_PinnedProduct: String? = "") {
 
     private var componentsItem: List<ComponentsItem>? = null
 
