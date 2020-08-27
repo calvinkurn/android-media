@@ -21,6 +21,8 @@ public class AlbumMediaLoader extends CursorLoader {
             MediaStore.MediaColumns.DISPLAY_NAME,
             MediaStore.MediaColumns.MIME_TYPE,
             MediaStore.MediaColumns.SIZE,
+            MediaStore.MediaColumns.WIDTH,
+            MediaStore.MediaColumns.HEIGHT,
             "duration"};
 
     // === params for album ALL && showSingleMediaType: false ===

@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -19,7 +20,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
+
+import timber.log.Timber;
 
 
 public class FileUtils {
@@ -106,28 +113,77 @@ public class FileUtils {
     private static final int EOF = -1;
     private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
 
-    public static File from(Context context, Uri uri) throws IOException {
-        InputStream inputStream = context.getContentResolver().openInputStream(uri);
+    private static final HashMap<Uri, File> contentUriToFileMap = new HashMap<>();
+
+    public static @Nullable
+    File from(Context context, Uri uri) {
+        try {
+            boolean isUriContent = "content".equals(uri.getScheme());
+            if (isUriContent) {
+                File fileFromMap = contentUriToFileMap.get(uri);
+                if (fileFromMap != null && fileFromMap.exists()) {
+                    return fileFromMap;
+                }
+            } else {
+                String uriPath = uri.getPath();
+                if (uriPath!= null) {
+                    File file = new File(uriPath);
+                    if (file.exists()) {
+                        return file;
+                    }
+                }
+            }
+            InputStream inputStream = context.getContentResolver().openInputStream(uri);
+            File tempFile = createTempFile(context, uri);
+            FileOutputStream out = null;
+            try {
+                out = new FileOutputStream(tempFile);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            if (inputStream != null) {
+                copy(inputStream, out);
+                inputStream.close();
+            }
+
+            if (out != null) {
+                out.close();
+            }
+            if ("content".equals(uri.getScheme())) {
+                contentUriToFileMap.put(uri, tempFile);
+            }
+            return tempFile;
+        } catch (Exception e) {
+            Timber.w("P1#FILE_UTIL#uri;error='%s'", e.toString());
+            return null;
+        }
+    }
+
+    public static File createTempFile(Context context, Uri uri) {
         String fileName = getFileName(context, uri);
         String[] splitName = splitFileName(fileName);
-        File tempFile = File.createTempFile(splitName[0], splitName[1]);
-        tempFile = rename(tempFile, fileName);
-        tempFile.deleteOnExit();
-        FileOutputStream out = null;
+        File tempFile = null;
         try {
-            out = new FileOutputStream(tempFile);
-        } catch (FileNotFoundException e) {
+            tempFile = File.createTempFile(splitName[0], splitName[1]);
+        } catch (IOException e) {
             e.printStackTrace();
         }
-        if (inputStream != null) {
-            copy(inputStream, out);
-            inputStream.close();
-        }
-
-        if (out != null) {
-            out.close();
-        }
+        tempFile = rename(tempFile, fileName);
+        tempFile.deleteOnExit();
         return tempFile;
+    }
+
+    public static void deleteTempMapFile(List<String> excludedImageUrlOrPathList) {
+        Iterator<Map.Entry<Uri, File>> iterator = contentUriToFileMap.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<Uri, File> entry = iterator.next();
+            File fileToRemove = entry.getValue();
+            if (fileToRemove != null && fileToRemove.exists() &&
+                    !excludedImageUrlOrPathList.contains(fileToRemove.getAbsolutePath())) {
+                fileToRemove.delete();
+                iterator.remove();
+            }
+        }
     }
 
     private static String[] splitFileName(String fileName) {
