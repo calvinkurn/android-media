@@ -288,11 +288,15 @@ public class ImageUtils {
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
             InputStream input = context.getContentResolver().openInputStream(uri);
-            BitmapFactory.decodeStream(input, null, options);  input.close();
+            BitmapFactory.decodeStream(input, null, options);
+            if (input != null) {
+                input.close();
+            }
             return new int[]{options.outWidth, options.outHeight};
         }
-        catch (Exception e){}
-        return new int[]{0,0};
+        catch (Exception ignored){
+            return new int[]{0,0};
+        }
     }
 
     public static int[] getWidthAndHeight(File file) {

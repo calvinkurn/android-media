@@ -144,7 +144,7 @@ public class FileUtils {
 
     private static String getFileName(Context context, Uri uri) {
         String result = null;
-        if (uri.getScheme().equals("content")) {
+        if ("content".equals(uri.getScheme())) {
             Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
             try {
                 if (cursor != null && cursor.moveToFirst()) {
@@ -160,9 +160,11 @@ public class FileUtils {
         }
         if (result == null) {
             result = uri.getPath();
-            int cut = result.lastIndexOf(File.separator);
-            if (cut != -1) {
-                result = result.substring(cut + 1);
+            if (result != null) {
+                int cut = result.lastIndexOf(File.separator);
+                if (cut != -1) {
+                    result = result.substring(cut + 1);
+                }
             }
         }
         return result;

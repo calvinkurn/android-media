@@ -12,8 +12,8 @@ import android.provider.MediaStore;
 import androidx.loader.content.CursorLoader;
 
 import com.tokopedia.imagepicker.picker.gallery.internal.entity.Album;
-import com.tokopedia.imagepicker.picker.gallery.internal.entity.SelectionSpec;
 import com.tokopedia.imagepicker.picker.gallery.model.MimeType;
+import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -114,20 +114,20 @@ public class AlbumLoader extends CursorLoader {
         );
     }
 
-    public static CursorLoader newInstance(Context context) {
+    public static CursorLoader newInstance(Context context, int galleryType) {
         String selection;
         String[] selectionArgs;
-        if (SelectionSpec.getInstance().onlyShowGif()) {
+        if (galleryType == GalleryType.GIF_ONLY) {
             selection = beforeAndroidTen()
                     ? SELECTION_FOR_SINGLE_MEDIA_GIF_TYPE : SELECTION_FOR_SINGLE_MEDIA_GIF_TYPE_29;
             selectionArgs = getSelectionArgsForSingleMediaGifType(
                     MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE);
-        } else if (SelectionSpec.getInstance().onlyShowImages()) {
+        } else if (galleryType == GalleryType.IMAGE_ONLY) {
             selection = beforeAndroidTen()
                     ? SELECTION_FOR_SINGLE_MEDIA_TYPE : SELECTION_FOR_SINGLE_MEDIA_TYPE_29;
             selectionArgs = getSelectionArgsForSingleMediaType(
                     MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE);
-        } else if (SelectionSpec.getInstance().onlyShowVideos()) {
+        } else if (galleryType == GalleryType.VIDEO_ONLY) {
             selection = beforeAndroidTen()
                     ? SELECTION_FOR_SINGLE_MEDIA_TYPE : SELECTION_FOR_SINGLE_MEDIA_TYPE_29;
             selectionArgs = getSelectionArgsForSingleMediaType(

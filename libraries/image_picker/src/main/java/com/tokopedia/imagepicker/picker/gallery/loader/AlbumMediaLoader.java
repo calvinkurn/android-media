@@ -2,17 +2,13 @@ package com.tokopedia.imagepicker.picker.gallery.loader;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.database.MatrixCursor;
-import android.database.MergeCursor;
 import android.net.Uri;
 import android.provider.MediaStore;
 
 import androidx.loader.content.CursorLoader;
 
 import com.tokopedia.imagepicker.picker.gallery.internal.entity.Album;
-import com.tokopedia.imagepicker.picker.gallery.internal.entity.Item;
-import com.tokopedia.imagepicker.picker.gallery.internal.entity.SelectionSpec;
-import com.tokopedia.imagepicker.picker.gallery.util.MediaStoreCompat;
+import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 
 /**
  * Created by hangnadi on 5/29/17.
@@ -106,29 +102,26 @@ public class AlbumMediaLoader extends CursorLoader {
     // ===============================================================
 
     private static final String ORDER_BY = MediaStore.Images.Media.DATE_TAKEN + " DESC";
-    private final boolean mEnableCapture;
 
-    private AlbumMediaLoader(Context context, String selection, String[] selectionArgs, boolean capture) {
+    private AlbumMediaLoader(Context context, String selection, String[] selectionArgs) {
         super(context, QUERY_URI, PROJECTION, selection, selectionArgs, ORDER_BY);
-        mEnableCapture = capture;
     }
 
-    public static CursorLoader newInstance(Context context, Album album, boolean capture) {
+    public static CursorLoader newInstance(Context context, Album album, int galleryType) {
         String selection;
         String[] selectionArgs;
-        boolean enableCapture;
 
         if (album.isAll()) {
-            if (SelectionSpec.getInstance().onlyShowGif()) {
+            if (galleryType == GalleryType.GIF_ONLY) {
                 selection = SELECTION_ALL_FOR_GIF;
                 selectionArgs = getSelectionArgsForGifType(
                         MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE);
-            } else if (SelectionSpec.getInstance().onlyShowImages()) {
+            } else if (galleryType == GalleryType.IMAGE_ONLY) {
                 selection = SELECTION_ALL_FOR_SINGLE_MEDIA_TYPE;
                 selectionArgs =
                         getSelectionArgsForSingleMediaType(
                                 MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE);
-            } else if (SelectionSpec.getInstance().onlyShowVideos()) {
+            } else if (galleryType == GalleryType.VIDEO_ONLY) {
                 selection = SELECTION_ALL_FOR_SINGLE_MEDIA_TYPE;
                 selectionArgs =
                         getSelectionArgsForSingleMediaType(
@@ -137,20 +130,19 @@ public class AlbumMediaLoader extends CursorLoader {
                 selection = SELECTION_ALL;
                 selectionArgs = SELECTION_ALL_ARGS;
             }
-            enableCapture = capture;
         } else {
-            if (SelectionSpec.getInstance().onlyShowGif()) {
+            if (galleryType == GalleryType.GIF_ONLY) {
                 selection = SELECTION_ALBUM_FOR_GIF;
                 selectionArgs =
                         getSelectionAlbumArgsForGifType(
                                 MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE, album.getId());
-            } else if (SelectionSpec.getInstance().onlyShowImages()) {
+            } else if (galleryType == GalleryType.IMAGE_ONLY) {
                 selection = SELECTION_ALBUM_FOR_SINGLE_MEDIA_TYPE;
                 selectionArgs =
                         getSelectionAlbumArgsForSingleMediaType(
                                 MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE,
                                 album.getId());
-            } else if (SelectionSpec.getInstance().onlyShowVideos()) {
+            } else if (galleryType == GalleryType.VIDEO_ONLY) {
                 selection = SELECTION_ALBUM_FOR_SINGLE_MEDIA_TYPE;
                 selectionArgs = getSelectionAlbumArgsForSingleMediaType(
                         MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO,
@@ -159,20 +151,13 @@ public class AlbumMediaLoader extends CursorLoader {
                 selection = SELECTION_ALBUM;
                 selectionArgs = getSelectionAlbumArgs(album.getId());
             }
-            enableCapture = false;
         }
-        return new AlbumMediaLoader(context, selection, selectionArgs, enableCapture);
+        return new AlbumMediaLoader(context, selection, selectionArgs);
     }
 
     @Override
     public Cursor loadInBackground() {
-        Cursor result = super.loadInBackground();
-        if (!mEnableCapture || !MediaStoreCompat.hasCameraFeature(getContext())) {
-            return result;
-        }
-        MatrixCursor dummy = new MatrixCursor(PROJECTION);
-        dummy.addRow(new Object[]{Item.ITEM_ID_CAPTURE, Item.ITEM_DISPLAY_NAME_CAPTURE, "", 0, 0});
-        return new MergeCursor(new Cursor[]{dummy, result});
+        return super.loadInBackground();
     }
 
     @Override

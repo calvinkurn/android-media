@@ -72,10 +72,9 @@ public class MediaGrid extends SquareFrameLayout implements View.OnClickListener
     }
 
     private void setImage() {
-        Pair<Integer, Integer> widthHeight = ImageUtil.getWidthAndHeight(mMedia.getContentUri());
-        int width = widthHeight.getFirst();
-        int height = widthHeight.getSecond();
-        int min, max;
+        long width = mMedia.getWidth(getContext());
+        long height = mMedia.getHeight(getContext());
+        long min, max;
         if (width > height) {
             min = height;
             max = width;
@@ -113,7 +112,7 @@ public class MediaGrid extends SquareFrameLayout implements View.OnClickListener
     }
 
     private void setSelection(ArrayList<String> selectionIdList) {
-        if (selectionIdList.contains(mMedia.getRealPath())) {
+        if (selectionIdList.contains(mMedia.getContentUri().toString())) {
             ivCheck.setVisibility(View.VISIBLE);
         } else {
             ivCheck.setVisibility(View.GONE);
