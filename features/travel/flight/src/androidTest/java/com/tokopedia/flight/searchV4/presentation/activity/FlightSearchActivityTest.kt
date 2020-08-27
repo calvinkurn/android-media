@@ -1,16 +1,27 @@
 package com.tokopedia.flight.searchV4.presentation.activity
 
+import android.app.Activity
+import android.app.Instrumentation
 import android.content.Intent
-import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.intent.Intents.intending
+import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
+import androidx.test.espresso.matcher.ViewMatchers.assertThat
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
+import com.tokopedia.analyticsdebugger.validator.core.getAnalyticsWithQuery
+import com.tokopedia.analyticsdebugger.validator.core.hasAllSuccess
 import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.homepage.presentation.model.FlightClassModel
 import com.tokopedia.flight.homepage.presentation.model.FlightPassengerModel
+import com.tokopedia.flight.searchV4.presentation.adapter.viewholder.FlightSearchViewHolder
 import com.tokopedia.flight.searchV4.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.junit.Before
@@ -65,25 +76,31 @@ class FlightSearchActivityTest {
     fun setup() {
         gtmLogDBSource.deleteAll().subscribe()
         setupGraphqlMockResponse(FlightSearchMockResponse())
-//        intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
     @Test
     fun validateFlightSearchPageP1Tracking() {
         Thread.sleep(2000)
         assert(getJourneyItemCount() > 1)
-        Log.d("JUMLAH", getJourneyItemCount().toString())
 
-        Thread.sleep(2000)
+        Thread.sleep(3000)
+        if (getJourneyItemCount() > 0) {
+            onView(withId(R.id.recycler_view)).perform(RecyclerViewActions
+                    .actionOnItemAtPosition<FlightSearchViewHolder>(0, click()))
+        }
 
-//        if (getJourneyItemCount() > 0) {
-//            onView(ViewMatchers.withId(R.id.recycler_view)).perform(RecyclerViewActions
-//                    .actionOnItemAtPosition<FlightSearchViewHolder>(0, ViewActions.click()))
-//        }
+        Thread.sleep(3000)
+        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_P1),
+                hasAllSuccess())
     }
 
     private fun getJourneyItemCount(): Int {
         val recyclerView: RecyclerView = activityRule.activity.findViewById(R.id.recycler_view) as RecyclerView
         return recyclerView.adapter?.itemCount ?: 0
+    }
+
+    companion object {
+        private const val ANALYTIC_VALIDATOR_QUERY_P1 = "tracker/travel/flight/flight_search_p1.json"
     }
 }
