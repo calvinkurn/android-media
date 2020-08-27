@@ -668,7 +668,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private void openHotProduct(List<String> linkSegment, Uri uriData) {
         if (linkSegment.size() > 1) {
-            RouteManager.route(context, DeeplinkMapper.getRegisteredNavigation(context, ApplinkConst.FIND + "/" + linkSegment.get(1)));
+            RouteManager.route(context, DeeplinkMapper.getRegisteredNavigation(context, ApplinkConst.DISCOVERY_SEARCH + "?q=" + linkSegment.get(1)));
         }
     }
 
