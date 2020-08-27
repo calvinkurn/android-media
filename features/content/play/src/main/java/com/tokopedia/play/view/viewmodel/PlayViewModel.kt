@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toAmountString
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -25,6 +26,7 @@ import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.player.PlayVideoManager
+import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -139,6 +141,7 @@ class PlayViewModel @Inject constructor(
     private val _observablePinnedMessage = MutableLiveData<PinnedMessageUiModel>()
     private val _observablePinnedProduct = MutableLiveData<PinnedProductUiModel>()
     private val _observableVideoProperty = MutableLiveData<VideoPropertyUiModel>()
+    private val _observableVideoMeta = MutableLiveData<VideoMetaUiModel>()
     private val _observableProductSheetContent = MutableLiveData<PlayResult<ProductSheetUiModel>>()
     private val _observableBottomInsetsState = MutableLiveData<Map<BottomInsetsType, BottomInsetsState>>()
     private val _observableNewChat = MediatorLiveData<Event<PlayChatUiModel>>().apply {
@@ -147,19 +150,8 @@ class PlayViewModel @Inject constructor(
         }
     }
     private val _observablePinned = MediatorLiveData<PinnedUiModel>()
-    private val _observableVideoMeta = MediatorLiveData<VideoMetaUiModel>().apply {
-        addSource(playVideoManager.getObservableVideoPlayer()) {
-            if (!videoPlayer.isYouTube) {
-                val videoPlayer = General(it)
-                value = value?.copy(videoPlayer = videoPlayer) ?: VideoMetaUiModel(videoPlayer)
-            }
-        }
-    }
     private val _observableBadgeCart = MutableLiveData<CartUiModel>()
     private val stateHandler: LiveData<Unit> = MediatorLiveData<Unit>().apply {
-        addSource(playVideoManager.getObservablePlayVideoState()) {
-            _observableVideoProperty.value = VideoPropertyUiModel(it)
-        }
         addSource(observablePartnerInfo) {
             val currentMessageValue = _observablePinnedMessage.value
             if (currentMessageValue != null) {
@@ -195,6 +187,24 @@ class PlayViewModel @Inject constructor(
 
     private var channelInfoJob: Job? = null
 
+    private val videoManagerListener = object : PlayVideoManager.Listener {
+        override fun onPlayerStateChanged(state: PlayVideoState) {
+            scope.launch(dispatchers.immediate) {
+                _observableVideoProperty.value = VideoPropertyUiModel(state)
+            }
+        }
+
+        override fun onVideoPlayerChanged(player: ExoPlayer) {
+            scope.launch(dispatchers.immediate) {
+                if (!videoPlayer.isYouTube) {
+                    val videoPlayer = General(player)
+                    val currentMetaValue = _observableVideoMeta.value
+                    _observableVideoMeta.value = currentMetaValue?.copy(videoPlayer = videoPlayer) ?: VideoMetaUiModel(videoPlayer)
+                }
+            }
+        }
+    }
+
     /**
      * DO NOT CHANGE THIS TO LAMBDA
      */
@@ -203,6 +213,8 @@ class PlayViewModel @Inject constructor(
     }
 
     init {
+        playVideoManager.addListener(videoManagerListener)
+
         stateHandler.observeForever(stateHandlerObserver)
 
         _observablePinned.addSource(_observablePinnedMessage) {
@@ -229,6 +241,7 @@ class PlayViewModel @Inject constructor(
         stateHandler.removeObserver(stateHandlerObserver)
         destroy()
         stopPlayer()
+        playVideoManager.removeListener(videoManagerListener)
     }
     //endregion
 

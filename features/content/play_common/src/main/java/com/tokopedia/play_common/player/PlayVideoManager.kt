@@ -45,7 +45,10 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
 
     private val exoPlaybackExceptionParser = ExoPlaybackExceptionParser()
     private var currentPrepareState: PlayVideoPrepareState = getDefaultPrepareState()
+
+    @Deprecated(message = "Use listener instead")
     private val _observablePlayVideoState = MutableLiveData<PlayVideoState>()
+    @Deprecated(message = "Use listener instead")
     private val _observableVideoPlayer = MutableLiveData<SimpleExoPlayer>()
 
     private val playerStateProcessor = ExoPlayerStateProcessorImpl()
@@ -135,7 +138,10 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
     }
 
     private var playerModel: PlayPlayerModel by Delegates.observable(initVideoPlayer(null, PlayBufferControl())) { _, old, new ->
-        if (old.player != new.player) _observableVideoPlayer.value = new.player
+        if (old.player != new.player) {
+            broadcastVideoPlayerToListeners(new.player)
+            _observableVideoPlayer.value = new.player
+        }
     }
 
     val videoPlayer: SimpleExoPlayer
@@ -237,7 +243,9 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
     //endregion
 
     //region video state
+    @Deprecated(message = "Use listener instead")
     fun getObservablePlayVideoState(): LiveData<PlayVideoState> = _observablePlayVideoState
+    @Deprecated(message = "Use listener instead")
     fun getObservableVideoPlayer(): LiveData<out ExoPlayer> = _observableVideoPlayer
 
     fun isPlaying(): Boolean = videoPlayer.isPlaying
