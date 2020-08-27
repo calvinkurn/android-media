@@ -91,9 +91,15 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         @JvmStatic
         fun getCallingIntent(context: Context, extras: Bundle): Intent {
             val uri = Uri.parse(extras.getString(DeepLink.URI)) ?: return Intent()
-            return RouteManager.getIntent(context,
+            val intent = RouteManager.getIntent(context,
                     ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                    uri.lastPathSegment) ?: Intent()
+                    uri.lastPathSegment)
+
+            if (!uri.getQueryParameter(PARAM_LAYOUT_ID).isNullOrBlank()) {
+                intent.putExtra(PARAM_LAYOUT_ID, uri.getQueryParameter(PARAM_LAYOUT_ID))
+            }
+
+            return intent ?: Intent()
         }
 
         @DeepLink(ApplinkConst.AFFILIATE_PRODUCT)
