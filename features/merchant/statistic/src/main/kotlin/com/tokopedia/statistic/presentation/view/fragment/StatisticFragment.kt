@@ -100,7 +100,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         hideTooltipIfExist()
         setupView()
 
-        mViewModel.setDateRange(defaultStartDate, defaultEndDate, DateFilterType.DATE_TYPE_DAY)
+        mViewModel.setDateFilter(defaultStartDate, defaultEndDate, DateFilterType.DATE_TYPE_DAY)
 
         observeWidgetLayoutLiveData()
         observeUserRole()
@@ -396,7 +396,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         StatisticTracker.sendSetDateFilterEvent(item.label)
         val startDate = item.startDate ?: return
         val endDate = item.endDate ?: return
-        mViewModel.setDateRange(startDate, endDate, item.getDateFilterType())
+        mViewModel.setDateFilter(startDate, endDate, item.getDateFilterType())
         adapter.data.forEach {
             if (it !is TickerWidgetUiModel) {
                 it.isLoaded = false
