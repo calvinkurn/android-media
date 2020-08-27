@@ -224,7 +224,8 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
             TopAdsUrlHitter(className).hitImpressionUrl(context, homeRecommendationItemDataModel.product.trackerImageUrl,
                     homeRecommendationItemDataModel.product.id,
                     homeRecommendationItemDataModel.product.name,
-                    homeRecommendationItemDataModel.product.imageUrl)
+                    homeRecommendationItemDataModel.product.imageUrl,
+                    HOME_RECOMMENDATION_FRAGMENT)
             if (userSessionInterface.isLoggedIn) {
                 trackingQueue.putEETracking(getRecommendationProductViewLoginTopAds(
                         tabName.toLowerCase(Locale.ROOT),
@@ -257,7 +258,8 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
                     homeRecommendationItemDataModel.product.clickUrl,
                     homeRecommendationItemDataModel.product.id,
                     homeRecommendationItemDataModel.product.name,
-                    homeRecommendationItemDataModel.product.imageUrl)
+                    homeRecommendationItemDataModel.product.imageUrl,
+                    HOME_RECOMMENDATION_FRAGMENT)
             if (userSessionInterface.isLoggedIn) {
                 TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(getRecommendationProductClickLoginTopAds(
                         tabName.toLowerCase(Locale.ROOT),
@@ -450,6 +452,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
 
     companion object {
         private const val className = "com.tokopedia.home.beranda.presentation.view.fragment.HomeRecommendationFragment"
+        private const val HOME_RECOMMENDATION_FRAGMENT = "home_recommendation_fragment"
         const val ARG_TAB_INDEX = "ARG_TAB_INDEX"
         const val ARG_RECOM_ID = "ARG_RECOM_ID"
         const val ARG_TAB_NAME = "ARG_TAB_NAME"

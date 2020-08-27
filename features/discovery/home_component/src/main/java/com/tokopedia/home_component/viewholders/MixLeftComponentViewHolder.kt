@@ -223,7 +223,8 @@ class MixLeftComponentViewHolder (itemView: View,
                     blankSpaceConfig = BlankSpaceConfig(),
                     grid = element,
                     applink = element.applink,
-                    listener = this
+                    listener = this,
+                    componentName = FPM_MIX_LEFT
             ))
         }
         return list
