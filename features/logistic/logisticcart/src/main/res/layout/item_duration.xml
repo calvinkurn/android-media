@@ -20,10 +20,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_16"
-            android:lineSpacingExtra="4sp"
+            android:lineSpacingExtra="@dimen/sp_4"
             app:typographyType="body_2"
             app:typographyWeight="bold"
-            tools:text="4 Jam" />
+            tools:text="@string/tv_duration" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_promo_potency"
@@ -48,13 +48,13 @@
             android:id="@+id/lbl_cod_available"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
             android:layout_toEndOf="@+id/tv_duration"
             android:layout_toRightOf="@+id/tv_duration"
             android:layout_alignBottom="@id/tv_duration"
             android:layout_alignTop="@id/tv_duration"
-            android:text="Tersedia Bayar di tempat"
+            android:text="@string/tersedia_bayar_di_tempat"
             app:labelType="general_light_green" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -62,10 +62,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_duration"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="@dimen/dp_4"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
-            tools:text="Mulai dari Rp10.000" />
+            tools:text="@string/tv_price" />
 
         <com.tokopedia.unifycomponents.Label
             android:id="@+id/lbl_ontime_delivery"
@@ -73,7 +73,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_4"
             android:layout_below="@+id/tv_price"
-            android:text="Jaminan Tepat Waktu"
+            android:text="@string/jaminan_tepat_waktu"
             android:visibility="gone"
             app:labelType="general_light_green" />
 
@@ -85,14 +85,14 @@
             android:layout_marginTop="@dimen/dp_4"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
-            tools:text="(Direkomendasikan untuk berat di atas 5kg)" />
+            tools:text="@string/tv_text_desc" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_order_prioritas"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_text_desc"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="@dimen/dp_4"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
             tools:text="Tersedia layanan Order Prioritas" />
@@ -102,7 +102,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_order_prioritas"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="@dimen/dp_4"
             android:text="@string/label_shipping_information"
             app:typographyType="small"
             app:typographyWeight="reguler" />
@@ -116,7 +116,7 @@
             android:textColor="@color/text_courier_error_red"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
-            tools:text="Jarak melebihi batas maksimum kurir" />
+            tools:text="@string/tv_error" />
 
         <ImageView
             android:id="@+id/img_check"
@@ -125,14 +125,15 @@
             android:layout_alignBaseline="@+id/tv_duration"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            app:srcCompat="@drawable/ic_check" />
+            app:srcCompat="@drawable/ic_check"
+            android:contentDescription="@string/content_img_check"/>
 
     </RelativeLayout>
 
     <View
         android:id="@+id/v_separator"
         android:layout_width="match_parent"
-        android:layout_height="0.5dp"
+        android:layout_height="@dimen/dp_half"
         android:layout_below="@+id/rl_content"
         android:layout_marginTop="@dimen/dp_16"
         android:background="@color/separator_color" />

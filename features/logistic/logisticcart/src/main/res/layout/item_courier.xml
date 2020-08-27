@@ -14,8 +14,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
-        android:lineSpacingExtra="4sp"
-        tools:text="TIKI" />
+        android:lineSpacingExtra="@dimen/sp_4"
+        tools:text="@string/tv_courier" />
 
     <TextView
         android:id="@+id/tv_promo_potency"
@@ -39,13 +39,13 @@
         android:id="@+id/lbl_cod_available"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_8"
         android:layout_toEndOf="@+id/tv_courier"
         android:layout_toRightOf="@+id/tv_courier"
         android:layout_alignBottom="@id/tv_courier"
         android:layout_alignTop="@id/tv_courier"
-        android:text="Tersedia Bayar di tempat"
+        android:text="@string/tersedia_bayar_di_tempat"
         android:visibility="gone"
         app:labelType="general_light_green" />
 
@@ -56,15 +56,15 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_courier"
         android:layout_marginTop="4dp"
-        tools:text="Rp10.000" />
+        tools:text="@string/tv_price" />
 
     <com.tokopedia.unifycomponents.Label
         android:id="@+id/lbl_otd_available"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_price"
-        android:text="Jaminan Tepat Waktu"
-        android:layout_marginTop="4dp"
+        android:text="@string/jaminan_tepat_waktu"
+        android:layout_marginTop="@dimen/dp_4"
         app:labelType="general_light_green" />
 
     <ImageView
@@ -74,12 +74,13 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        app:srcCompat="@drawable/ic_check" />
+        app:srcCompat="@drawable/ic_check"
+        android:contentDescription="@string/content_img_check"/>
 
     <View
         android:id="@+id/separator"
         android:layout_width="match_parent"
-        android:layout_height="0.5dp"
+        android:layout_height="@dimen/dp_half"
         android:layout_below="@id/lbl_otd_available"
         android:layout_marginTop="@dimen/dp_16"
         android:background="@color/separator_color" />
