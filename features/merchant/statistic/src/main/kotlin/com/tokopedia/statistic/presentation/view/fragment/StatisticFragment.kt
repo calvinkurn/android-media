@@ -28,6 +28,7 @@ import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.sellerhomecommon.utils.Utils
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.analytics.StatisticTracker
+import com.tokopedia.statistic.common.utils.logger.StatisticLogger
 import com.tokopedia.statistic.di.DaggerStatisticComponent
 import com.tokopedia.statistic.presentation.view.bottomsheet.DateFilterBottomSheet
 import com.tokopedia.statistic.presentation.view.model.DateFilterItem
@@ -545,6 +546,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             showErrorToaster()
             globalErrorStc.gone()
         }
+        StatisticLogger.logToCrashlytics(throwable, StatisticLogger.ERROR_LAYOUT)
     }
 
     private fun showErrorToaster() = view?.run {
@@ -610,7 +612,6 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     private inline fun <reified D : BaseDataUiModel, reified W : BaseWidgetUiModel<D>> Throwable.setOnErrorWidgetState(widgetType: String) {
-        this.printStackTrace()
         val message = this.message.orEmpty()
         adapter.data.filter { it.widgetType == widgetType }
                 .forEach { widget ->
@@ -627,6 +628,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         recyclerView.post {
             requestVisibleWidgetsData()
         }
+        StatisticLogger.logToCrashlytics(this, "${StatisticLogger.ERROR_WIDGET} $widgetType")
     }
 
     private inline fun <D : BaseDataUiModel, reified W : BaseWidgetUiModel<D>> List<D>.setOnSuccessWidgetState() {
