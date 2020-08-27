@@ -20,7 +20,6 @@ import com.tokopedia.applink.find.DeepLinkMapperFind.getRegisteredFind
 import com.tokopedia.applink.fintech.DeeplinkMapperFintech.getRegisteredNavigationForFintech
 import com.tokopedia.applink.fintech.DeeplinkMapperFintech.getRegisteredNavigationForLayanan
 import com.tokopedia.applink.gamification.DeeplinkMapperGamification
-import com.tokopedia.applink.home.DeeplinkMapperHome
 import com.tokopedia.applink.home.DeeplinkMapperHome.getRegisteredNavigationHome
 import com.tokopedia.applink.home.DeeplinkMapperHome.getRegisteredNavigationHomeContentExplore
 import com.tokopedia.applink.home.DeeplinkMapperHome.getRegisteredNavigationHomeFeed
@@ -34,6 +33,7 @@ import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.getRegisteredNaviga
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.getRegisteredNavigationReputation
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.getRegisteredNavigationShopReview
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.isShopReview
+import com.tokopedia.applink.order.DeeplinkMapperBuyerOrder
 import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerAwbChange
 import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerAwbInvalid
 import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerComplaint
@@ -57,7 +57,6 @@ import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomNewOrderAp
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomReadyToShipAppLink
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomShippedAppLink
 import com.tokopedia.config.GlobalConfig
-import java.lang.Exception
 
 /**
  * Function to map the deeplink to applink (registered in manifest)
@@ -339,8 +338,8 @@ object DeeplinkMapper {
             DLP.exact(ApplinkConst.HAS_PASSWORD, ApplinkConstInternalGlobal.HAS_PASSWORD),
             DLP.exact(ApplinkConst.THANK_YOU_PAGE_NATIVE, ApplinkConstInternalPayment.PAYMENT_THANK_YOU_PAGE),
             DLP.exact(ApplinkConst.PROFILE_COMPLETION, ApplinkConstInternalGlobal.PROFILE_COMPLETION),
-            DLP.exact(ApplinkConst.MARKETPLACE_ORDER, ApplinkConstInternalOrder.UNIFY_ORDER),
-            DLP.startWith(ApplinkConst.MARKETPLACE_ORDER_SUB) { _, _, _ -> ApplinkConstInternalOrder.UNIFY_ORDER_IN_PROCESS }
+            DLP.startWith(ApplinkConst.MARKETPLACE_ORDER) { _, _, deeplink-> DeeplinkMapperBuyerOrder.getRegisteredNavigationBuyerOrder(deeplink) },
+            DLP.startWith(ApplinkConst.MARKETPLACE_ORDER_SUB) { _, _, deeplink -> DeeplinkMapperBuyerOrder.getRegisteredNavigationBuyerOrder(deeplink) }
     ).toMutableList()
 
     /**

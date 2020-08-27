@@ -114,6 +114,18 @@ class BuyerAccountPresenter(
         getBuyerAccountUseCase.execute(requestParams, GetBuyerAccountSubscriber(view))
     }
 
+    override fun getOldBuyerData(query: String, saldoQuery: String) {
+        view?.showLoading()
+
+        val requestParams = RequestParams.create()
+
+        requestParams.putString(AccountConstants.QUERY, query)
+        requestParams.putString(AccountConstants.SALDO_QUERY, saldoQuery)
+        requestParams.putObject(AccountConstants.VARIABLES, HashMap<Any, Any>())
+
+        getBuyerAccountUseCase.execute(requestParams, GetBuyerAccountSubscriber(view))
+    }
+
     override fun attachView(view: BuyerAccount.View) {
         this.view = view
     }

@@ -11,6 +11,7 @@ import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.data.model.AccountModel;
 import com.tokopedia.home.account.data.util.StaticBuyerModelGenerator;
+import com.tokopedia.home.account.data.util.StaticBuyerModelGeneratorUoh;
 import com.tokopedia.home.account.presentation.viewmodel.BuyerCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayBSModel;
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayViewModel;
@@ -18,6 +19,7 @@ import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewModel;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.navigation_common.model.VccUserStatus;
+import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -48,6 +50,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
     private static final String LABEL_BLOCKED = "Layanan Terblokir";
     private static final String LABEL_DEACTIVATED = "Dinonaktifkan";
     private static final String LABEL_KYC_PENDING = "Selesaikan Pengajuan Aplikasimu";
+    private static final String UOH_AB_TEST_KEY = "UOH_android";
     private Context context;
     private RemoteConfig remoteConfig;
     private UserSession userSession;
@@ -190,7 +193,12 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
         } else {
             tokopediaPayViewModel.setBsDataCentre(null);
         }
-        items.addAll(StaticBuyerModelGenerator.Companion.getModel(context, accountModel, remoteConfig, accountModel.getUohOrderCount()));
+
+        if (useUoh()) {
+            items.addAll(StaticBuyerModelGeneratorUoh.Companion.getModel(context, accountModel, remoteConfig, accountModel.getUohOrderCount()));
+        } else {
+            items.addAll(StaticBuyerModelGenerator.Companion.getModel(context, accountModel, remoteConfig));
+        }
         model.setItems(items);
 
         return model;
@@ -224,5 +232,14 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
 
         userSession.setHasPassword(accountModel.getUserProfileCompletion().isCreatedPassword());
         return buyerCardViewModel;
+    }
+
+    private Boolean useUoh() {
+        String remoteConfigValue = getABTestRemoteConfig().getString(UOH_AB_TEST_KEY);
+        return !remoteConfigValue.isEmpty();
+    }
+
+    private RemoteConfig getABTestRemoteConfig() {
+        return RemoteConfigInstance.getInstance().getABTestPlatform();
     }
 }

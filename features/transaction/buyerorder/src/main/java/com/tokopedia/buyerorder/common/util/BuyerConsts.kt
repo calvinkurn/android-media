@@ -32,4 +32,5 @@ object BuyerConsts {
     const val KEY_HOUR = "jam"
     const val KEY_HOUR_DIVIDER = ":"
     const val KEY_MINUTE = "menit"
+    const val UOH_AB_TEST_KEY = "UOH_android"
 }

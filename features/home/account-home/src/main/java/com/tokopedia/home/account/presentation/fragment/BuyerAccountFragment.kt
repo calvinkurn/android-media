@@ -25,6 +25,7 @@ import com.tokopedia.home.account.AccountConstants
 import com.tokopedia.home.account.R
 import com.tokopedia.home.account.analytics.AccountAnalytics
 import com.tokopedia.home.account.data.util.StaticBuyerModelGenerator
+import com.tokopedia.home.account.data.util.StaticBuyerModelGeneratorUoh
 import com.tokopedia.home.account.di.component.DaggerBuyerAccountComponent
 import com.tokopedia.home.account.presentation.BuyerAccount
 import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory
@@ -41,6 +42,10 @@ import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_buyer_account.*
 import javax.inject.Inject
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+
+
+
 
 /**
  * @author okasurya on 7/16/18.
@@ -60,6 +65,7 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
             DEFAULT_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
 
     private var shouldRefreshOnResume = true
+    private var UOH_AB_TEST_KEY = "UOH_android"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -141,7 +147,13 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
         } else {
             context?.let {
                 adapter.clearAllElements()
-                adapter.setElement(StaticBuyerModelGenerator.getModel(it, null, remoteConfig, null))
+                useUoh()?.let { newFlow ->
+                    if (newFlow) {
+                        adapter.setElement(StaticBuyerModelGeneratorUoh.getModel(it, null, remoteConfig, null))
+                    } else {
+                        adapter.setElement(StaticBuyerModelGenerator.getModel(it, null, remoteConfig))
+                    }
+                }
             }
         }
 
@@ -349,10 +361,18 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
         context?.let {
             val saldoQuery = GraphqlHelper.loadRawString(it.resources, R.raw
                     .new_query_saldo_balance)
-            val uohCounterQuery = GraphqlHelper.loadRawString(it.resources, R.raw
-                    .query_uoh_order_count)
-            presenter.getBuyerData(GraphqlHelper.loadRawString(it.resources, R.raw
-                    .query_buyer_account_home), saldoQuery, uohCounterQuery)
+
+            useUoh()?.let { newFlow ->
+                if (newFlow) {
+                    val uohCounterQuery = GraphqlHelper.loadRawString(it.resources, R.raw
+                            .query_uoh_order_count)
+                    presenter.getBuyerData(GraphqlHelper.loadRawString(it.resources, R.raw
+                            .query_buyer_account_home), saldoQuery, uohCounterQuery)
+                } else {
+                    presenter.getOldBuyerData(GraphqlHelper.loadRawString(it.resources, R.raw
+                            .query_buyer_account_home), saldoQuery)
+                }
+            }
         }
     }
 
@@ -383,6 +403,15 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
 
     fun scrollToTop() {
         recycler_buyer.scrollToPosition(0)
+    }
+
+    private fun getABTestRemoteConfig(): RemoteConfig? {
+        return RemoteConfigInstance.getInstance().abTestPlatform
+    }
+
+    private fun useUoh(): Boolean? {
+        val remoteConfigValue = getABTestRemoteConfig()?.getString(UOH_AB_TEST_KEY)
+        return remoteConfigValue?.isNotEmpty()
     }
 
     companion object {

@@ -145,7 +145,8 @@ public interface ApplinkConst {
     String DIGITAL_RECHARGE = "tokopedia://recharge";
     String DIGITAL_SUBHOMEPAGE_HOME = "tokopedia://recharge/home";
 
-    String MARKETPLACE_ORDER = "tokopedia://belanja/order";
+    String MARKETPLACE_ORDER = "tokopedia://marketplace/order";
+    String BELANJA_ORDER = "tokopedia://belanja/order";
     String MARKETPLACE_ORDER_SUB = "tokopedia://order/marketplace/filter";
     String MARKETPLACE_ORDER_FILTER = "tokopedia://order/marketplace/filter/{filter_id}";
 

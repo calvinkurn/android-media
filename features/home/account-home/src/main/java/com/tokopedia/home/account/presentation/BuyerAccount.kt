@@ -20,10 +20,10 @@ interface BuyerAccount {
 
     interface Presenter : CustomerPresenter<View> {
         fun getBuyerData(query: String, saldoQuery: String, uohCounterQuery: String)
+        fun getOldBuyerData(query: String, saldoQuery: String)
         fun getFirstRecomData()
         fun getRecomData(page: Int)
         fun addWishlist(model: RecommendationItem,  callback: (Boolean, Throwable?) -> Unit)
         fun removeWishlist(model: RecommendationItem,  callback: (Boolean, Throwable?) -> Unit)
-        // fun getUohCounterData(query: String, onSuccess: Function1<UohOrderCountResponse?, Unit>, onError: Function1<Throwable?, Unit>)
     }
 }
