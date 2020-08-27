@@ -17,12 +17,14 @@ class AddCartToWishlistSubscriber(private val view: ICartListView?,
     override fun onError(e: Throwable) {
         view?.let {
             Timber.e(e)
+            it.hideProgressLoading()
             it.showToastMessageRed(e)
         }
     }
 
     override fun onNext(addCartToWishlistData: AddCartToWishlistData) {
         view?.let { view ->
+            view.hideProgressLoading()
             if (addCartToWishlistData.isSuccess) {
                 view.onAddCartToWishlistSuccess(productId, cartId, isLastItem, source)
             } else {
