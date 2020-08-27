@@ -61,7 +61,7 @@ import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTrackingConstants
 import com.tokopedia.seller_migration_common.presentation.util.goToInformationWebview
 import com.tokopedia.seller_migration_common.presentation.util.goToSellerApp
-import com.tokopedia.seller_migration_common.presentation.util.touchlistener.SellerMigrationTouchListener
+import com.tokopedia.seller_migration_common.presentation.util.setOnClickLinkSpannable
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.feed.di.DaggerFeedShopComponent
@@ -907,10 +907,9 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         BottomSheetUnify.bottomSheetBehaviorHeader(viewTarget, false)
 
         val tvTitleTabFeedHasPost = viewTarget.findViewById<Typography>(R.id.tvTitleTabFeedHasPost)
-        tvTitleTabFeedHasPost.text = getString(R.string.seller_migration_tab_feed_bottom_sheet_content)
-        tvTitleTabFeedHasPost?.setOnTouchListener(SellerMigrationTouchListener {
-            goToInformationWebview(it)
-        })
+        tvTitleTabFeedHasPost.setOnClickLinkSpannable(getString(R.string.seller_migration_tab_feed_bottom_sheet_content)) {
+            goToSellerApp()
+        }
     }
 
 }

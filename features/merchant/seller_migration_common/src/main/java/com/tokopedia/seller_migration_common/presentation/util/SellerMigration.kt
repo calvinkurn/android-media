@@ -175,3 +175,12 @@ fun Fragment.initializeSellerMigrationAccountSettingTicker(ticker: Ticker?) {
     }
 }
 
+fun Typography.setOnClickLinkSpannable(htmlString: String,
+                                       redirectPage: () -> Unit = {}) {
+    val htmlLinkString = HtmlLinkHelper(context, htmlString)
+    text = htmlLinkString.spannedString
+    htmlLinkString.urlList[0].setOnClickListener {
+        redirectPage()
+    }
+}
+
