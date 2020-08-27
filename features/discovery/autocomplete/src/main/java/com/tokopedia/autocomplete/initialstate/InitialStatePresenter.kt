@@ -226,6 +226,8 @@ class InitialStatePresenter @Inject constructor(
         override fun onNext(listData: List<InitialStateData>) {
             val refreshedPopularSearchData = getRefreshedData(id, listData)
 
+            if (refreshedPopularSearchData.isEmpty()) return
+
             listVistable.forEachIndexed { _, visitable ->
                 if (visitable is PopularSearchViewModel) {
                     visitable.list = refreshedPopularSearchData
@@ -266,6 +268,8 @@ class InitialStatePresenter @Inject constructor(
 
         override fun onNext(listData: List<InitialStateData>) {
             val dynamicInitialStateData = getRefreshedData(id, listData)
+
+            if (dynamicInitialStateData.isEmpty()) return
 
             listVistable.forEachIndexed { _, visitable ->
                 if (visitable is DynamicInitialStateSearchViewModel) {

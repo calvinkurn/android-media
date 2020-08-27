@@ -1,11 +1,5 @@
-package com.tokopedia.autocomplete.initialstate.testinstance
-
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import com.tokopedia.autocomplete.initialstate.InitialStateData
-
-private val initialStateCommonJSON = """
-  [
+{
+  "data": [
     {
       "id": "recent_view",
       "header": "Terakhir dilihat",
@@ -378,8 +372,133 @@ private val initialStateCommonJSON = """
           "type": ""
         }
       ]
+    },
+    {
+      "id": "new_section_1",
+      "header": "New Section 2",
+      "label_action": "",
+      "items": [
+        {
+          "id": "0",
+          "template": "list_double_line",
+          "image_url": "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2020/5/23/21722219/21722219_a958c3c3-1599-435b-92a3-3fdcef496102_600_600",
+          "applink": "tokopedia://search?q=Samsung+A11&source=universe&st=product",
+          "url": "/search?q=Samsung+A11&source=universe&st=product",
+          "title": "Samsung A11",
+          "subtitle": "914 pencarian",
+          "icon_title": "",
+          "icon_subtitle": "",
+          "label": "",
+          "label_type": "",
+          "shortcut_image": "",
+          "type": ""
+        },
+        {
+          "id": "0",
+          "template": "list_double_line",
+          "image_url": "https://ecs7.tokopedia.net/img/pYncxN/2020/8/19/857cc3cd-b5a6-4e67-8642-95cfa0a20a52.png",
+          "applink": "tokopedia://discovery/finansial-kredivo-2",
+          "url": "https://www.tokopedia.com/discovery/finansial-kredivo-2",
+          "title": "Diskon Paylater di Tokopedia",
+          "subtitle": "Potongan Langsung Rp 25rb",
+          "icon_title": "",
+          "icon_subtitle": "",
+          "label": "",
+          "label_type": "",
+          "shortcut_image": "",
+          "type": ""
+        },
+        {
+          "id": "0",
+          "template": "list_double_line",
+          "image_url": "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2020/2/26/87919959/87919959_444d07a8-7b56-43f2-80a4-0f3f78a4c541_500_500",
+          "applink": "tokopedia://search?q=Bor+Listrik&source=universe&st=product",
+          "url": "/search?q=Bor+Listrik&source=universe&st=product",
+          "title": "Bor Listrik",
+          "subtitle": "582 pencarian",
+          "icon_title": "",
+          "icon_subtitle": "",
+          "label": "",
+          "label_type": "",
+          "shortcut_image": "",
+          "type": ""
+        },
+        {
+          "id": "0",
+          "template": "list_double_line",
+          "image_url": "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2019/12/10/1092291/1092291_439bdc83-9a24-497a-8660-ee9cf3d4bf41_1000_1000",
+          "applink": "tokopedia://search?q=Ring+Light&source=universe&st=product",
+          "url": "/search?q=Ring+Light&source=universe&st=product",
+          "title": "Ring Light",
+          "subtitle": "792 pencarian",
+          "icon_title": "",
+          "icon_subtitle": "",
+          "label": "",
+          "label_type": "",
+          "shortcut_image": "",
+          "type": ""
+        },
+        {
+          "id": "0",
+          "template": "list_double_line",
+          "image_url": "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2017/11/13/17218065/17218065_ef40e6b0-c455-4e1a-9682-ed7efce88d36_590_443.jpg",
+          "applink": "tokopedia://search?q=Wifi+Extender&source=universe&st=product",
+          "url": "/search?q=Wifi+Extender&source=universe&st=product",
+          "title": "Wifi Extender",
+          "subtitle": "564 pencarian",
+          "icon_title": "",
+          "icon_subtitle": "",
+          "label": "",
+          "label_type": "",
+          "shortcut_image": "",
+          "type": ""
+        },
+        {
+          "id": "0",
+          "template": "list_double_line",
+          "image_url": "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2017/9/14/174093042/174093042_20bf7f55-a0e9-40cc-9d82-d3ac56f8cb37_639_640.jpg",
+          "applink": "tokopedia://search?q=Iphone+6s&source=universe&st=product",
+          "url": "/search?q=Iphone+6s&source=universe&st=product",
+          "title": "Iphone 6s",
+          "subtitle": "1 rb pencarian",
+          "icon_title": "",
+          "icon_subtitle": "",
+          "label": "",
+          "label_type": "",
+          "shortcut_image": "",
+          "type": ""
+        },
+        {
+          "id": "0",
+          "template": "list_double_line",
+          "image_url": "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2019/11/7/278958240/278958240_c5e20549-7737-489d-bfdc-9821d508062b_700_700.jpg",
+          "applink": "tokopedia://search?q=Baju+Sepeda&source=universe&st=product",
+          "url": "/search?q=Baju+Sepeda&source=universe&st=product",
+          "title": "Baju Sepeda",
+          "subtitle": "576 pencarian",
+          "icon_title": "",
+          "icon_subtitle": "",
+          "label": "",
+          "label_type": "",
+          "shortcut_image": "",
+          "type": ""
+        },
+        {
+          "id": "0",
+          "template": "list_double_line",
+          "image_url": "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2019/8/16/8024622/8024622_f4d65214-0985-42f8-bfe9-c3a18a593c98_800_800",
+          "applink": "tokopedia://search?q=London+Taxi&source=universe&st=product",
+          "url": "/search?q=London+Taxi&source=universe&st=product",
+          "title": "London Taxi",
+          "subtitle": "854 pencarian",
+          "icon_title": "",
+          "icon_subtitle": "",
+          "label": "",
+          "label_type": "",
+          "shortcut_image": "",
+          "type": ""
+        }
+      ]
     }
   ]
-""".trimIndent().replace("\n", "")
-
-internal val initialStateCommonResponse = Gson().fromJson<List<InitialStateData>>(initialStateCommonJSON, (object: TypeToken<List<InitialStateData>>() { }).type)
+}
