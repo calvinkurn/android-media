@@ -15,7 +15,8 @@ import rx.Subscriber;
  * Created by zulfikarrahman on 7/6/18.
  */
 
-public class UploadProofPaymentPresenter extends BaseDaggerPresenter<UploadProofPaymentContract.View> implements UploadProofPaymentContract.Presenter {
+public class UploadProofPaymentPresenter extends BaseDaggerPresenter<UploadProofPaymentContract.View>
+        implements UploadProofPaymentContract.Presenter {
 
     private UploadPaymentProofUseCase uploadPaymentProofUseCase;
 
