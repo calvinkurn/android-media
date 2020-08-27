@@ -20,16 +20,16 @@
         app:subtitleTextAppearance="?subtitleTextAppearance"
         app:titleTextAppearance="?titleTextAppearance">
 
-        <RelativeLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 android:fontFamily="sans-serif-medium"
                 android:text="@string/title_saldo_detail"
                 android:textColor="@color/black_70"
@@ -39,9 +39,9 @@
                 android:id="@+id/toolbar_saldo_help"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toStartOf="@id/toolbarAutoWithdrawalSetting"
-                android:layout_toLeftOf="@id/toolbarAutoWithdrawalSetting"
-                android:layout_centerVertical="true"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/toolbarAutoWithdrawalSetting"
                 android:layout_marginEnd="@dimen/dp_12"
                 android:layout_marginRight="@dimen/dp_12"
                 android:padding="@dimen/dp_4"
@@ -51,14 +51,14 @@
                 android:id="@+id/toolbarAutoWithdrawalSetting"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_marginEnd="@dimen/dp_12"
                 android:layout_marginRight="@dimen/dp_12"
                 android:padding="@dimen/dp_4"
                 app:srcCompat="@drawable/saldo_ic_setting" />
-        </RelativeLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.appcompat.widget.Toolbar>
 
