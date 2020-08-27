@@ -168,6 +168,7 @@ class CartModule {
                                   updateCartUseCase: UpdateCartUseCase,
                                   compositeSubscription: CompositeSubscription,
                                   addWishListUseCase: AddWishListUseCase,
+                                  addCartToWishlistUseCase: AddCartToWishlistUseCase,
                                   removeWishListUseCase: RemoveWishListUseCase,
                                   updateAndReloadCartUseCase: UpdateAndReloadCartUseCase,
                                   userSessionInterface: UserSessionInterface,
@@ -186,8 +187,8 @@ class CartModule {
                                   validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase,
                                   schedulers: ExecutorSchedulers): ICartListPresenter {
         return CartListPresenter(getCartListSimplifiedUseCase, deleteCartUseCase,
-                undoDeleteCartUseCase, updateCartUseCase, compositeSubscription,
-                addWishListUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
+                undoDeleteCartUseCase, updateCartUseCase, compositeSubscription, addWishListUseCase,
+                addCartToWishlistUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
                 userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
                 getWishlistUseCase, getRecommendationUseCase, addToCartUseCase, addToCartExternalUseCase,
                 getInsuranceCartUseCase, removeInsuranceProductUsecase,

@@ -25,7 +25,7 @@ interface ActionListener {
 
     fun onShowAllItem(appLink: String)
 
-    fun onAddDisabledItemToWishlist(productId: String)
+    fun onAddDisabledItemToWishlist(productId: String, cartId: Int)
 
     fun onAddLastSeenToWishlist(productId: String)
 

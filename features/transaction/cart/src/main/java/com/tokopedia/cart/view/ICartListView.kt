@@ -75,6 +75,8 @@ interface ICartListView : CustomerView {
 
     fun onUndoDeleteCartDataSuccess(undoDeleteCartData: UndoDeleteCartData)
 
+    fun onAddCartToWishlistSuccess(productId: String, cartId: String, isLastItem: Boolean, source: String)
+
     fun stopCartPerformanceTrace()
 
     fun stopAllCartPerformanceTrace()

@@ -6,6 +6,7 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
+import com.tokopedia.cart.data.model.request.AddCartToWishlistRequest
 import com.tokopedia.cart.data.model.request.RemoveCartRequest
 import com.tokopedia.cart.data.model.request.UndoDeleteCartRequest
 import com.tokopedia.cart.data.model.request.UpdateCartRequest
@@ -44,7 +45,6 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
 import java.util.*
 import javax.inject.Inject
@@ -60,6 +60,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                                             private val updateCartUseCase: UpdateCartUseCase?,
                                             private val compositeSubscription: CompositeSubscription,
                                             private val addWishListUseCase: AddWishListUseCase?,
+                                            private val addCartToWishlistUseCase: AddCartToWishlistUseCase?,
                                             private val removeWishListUseCase: RemoveWishListUseCase?,
                                             private val updateAndReloadCartUseCase: UpdateAndReloadCartUseCase?,
                                             private val userSessionInterface: UserSessionInterface,
@@ -112,6 +113,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
     override fun detachView() {
         compositeSubscription.unsubscribe()
         addWishListUseCase?.unsubscribe()
+        addCartToWishlistUseCase?.unsubscribe()
         removeWishListUseCase?.unsubscribe()
         getRecommendationUseCase?.unsubscribe()
         getInsuranceCartUseCase?.unsubscribe()
@@ -593,6 +595,19 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
     override fun processRemoveFromWishlist(productId: String, userId: String, wishListActionListener: WishListActionListener) {
         removeWishListUseCase?.createObservable(productId, userId, wishListActionListener)
+    }
+
+    override fun processAddCartToWishlist(productId: String, cartId: Int, isLastItem: Boolean, source: String) {
+        view?.let {
+            val addCartToWishlistRequest = AddCartToWishlistRequest()
+            addCartToWishlistRequest.cartIds = listOf(cartId)
+
+            val requestParams = RequestParams.create()
+            requestParams.putObject(AddCartToWishlistUseCase.PARAM_ADD_CART_TO_WISHLIST_REQUEST, addCartToWishlistRequest)
+
+            compositeSubscription.add(addCartToWishlistUseCase?.createObservable(requestParams)
+                    ?.subscribe(AddCartToWishlistSubscriber(it, productId, cartId.toString(), isLastItem, source)))
+        }
     }
 
     // ANALYTICS COMMON

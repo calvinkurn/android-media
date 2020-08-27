@@ -2,6 +2,7 @@ package com.tokopedia.cart.view.viewholder
 
 import android.graphics.Paint
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.R
 import com.tokopedia.cart.view.ActionListener
@@ -80,13 +81,18 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
 
     private fun renderWishlistButton(data: DisabledCartItemHolderData) {
         itemView.text_move_to_wishlist.apply {
-            setOnClickListener {
-                if (data.isWishlisted) {
-                    actionListener?.onRemoveDisabledItemFromWishlist(data.productId)
-                } else {
-                    actionListener?.onAddDisabledItemToWishlist(data.productId)
+            if (data.data?.originData?.isWishlisted == true) {
+                this.text = "Sudah ada di wishlist"
+                this.setTextColor(ContextCompat.getColor(itemView.context, R.color.Neutral_N700_32))
+                this.setOnClickListener { }
+            } else {
+                this.text = "Pindahkan ke wishlist"
+                this.setTextColor(ContextCompat.getColor(itemView.context, R.color.Neutral_N700_68))
+                this.setOnClickListener {
+                    actionListener?.onAddDisabledItemToWishlist(data.productId, data.cartId)
                 }
             }
+
         }
     }
 

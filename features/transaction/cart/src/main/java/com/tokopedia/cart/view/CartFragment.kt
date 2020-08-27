@@ -224,6 +224,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         private val NAVIGATION_SHIPMENT = 983
         private val ADVERTISINGID = "ADVERTISINGID"
         private val KEY_ADVERTISINGID = "KEY_ADVERTISINGID"
+        private val WISHLIST_SOURCE_AVAILABLE_ITEM = "WISHLIST_SOURCE_AVAILABLE_ITEM"
+        private val WISHLIST_SOURCE_UNAVAILABLE_ITEM = "WISHLIST_SOURCE_UNAVAILABLE_ITEM"
 
         @JvmStatic
         fun newInstance(bundle: Bundle?, args: String): CartFragment {
@@ -1114,8 +1116,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         return wishlistsWishlistActionListener as WishListActionListener
     }
 
-    override fun onAddDisabledItemToWishlist(productId: String) {
-        dPresenter.processAddToWishlist(productId, userSession.userId, getCartUnavailableWishlistActionListener())
+    override fun onAddDisabledItemToWishlist(productId: String, cartId: Int) {
+        val isLastItem = cartAdapter.allCartItemData.size == 1
+        dPresenter.processAddCartToWishlist(productId, cartId, isLastItem, WISHLIST_SOURCE_UNAVAILABLE_ITEM)
+//        dPresenter.processAddToWishlist(productId, userSession.userId, getCartUnavailableWishlistActionListener())
     }
 
     override fun onAddLastSeenToWishlist(productId: String) {
@@ -1420,12 +1424,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    override fun onWishlistCheckChanged(productId: String, isChecked: Boolean) {
-        if (isChecked) {
-            dPresenter.processAddToWishlist(productId, userSession.userId, getCartAvailableWishlistActionListener())
-        } else {
-            dPresenter.processRemoveFromWishlist(productId, userSession.userId, getCartAvailableWishlistActionListener())
-        }
+    override fun onWishlistCheckChanged(productId: String, cartId: Int) {
+        val isLastItem = cartAdapter.allCartItemData.size == 1
+        dPresenter.processAddCartToWishlist(productId, cartId, isLastItem, WISHLIST_SOURCE_AVAILABLE_ITEM)
+//        dPresenter.processAddToWishlist(productId, userSession.userId, getCartAvailableWishlistActionListener())
     }
 
     override fun onNeedToRefreshSingleShop(parentPosition: Int) {
@@ -2447,6 +2449,29 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onUndoDeleteCartDataSuccess(undoDeleteCartData: UndoDeleteCartData) {
         dPresenter.processInitialGetCartData(getCartId(), false, false)
+    }
+
+    override fun onAddCartToWishlistSuccess(productId: String, cartId: String, isLastItem: Boolean, source: String) {
+        when (source) {
+            WISHLIST_SOURCE_AVAILABLE_ITEM -> {
+                cartPageAnalytics.eventAddWishlistAvailableSection(FLAG_IS_CART_EMPTY, productId)
+            }
+            WISHLIST_SOURCE_UNAVAILABLE_ITEM -> {
+                cartPageAnalytics.eventAddWishlistUnavailableSection(FLAG_IS_CART_EMPTY, productId)
+            }
+        }
+
+        if (isLastItem) {
+            resetRecentViewList()
+            dPresenter.processInitialGetCartData(getCartId(), false, false)
+        } else {
+            cartAdapter.removeCartItemById(listOf(cartId), context)
+            dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList, cartAdapter.insuranceCartShops)
+            setToolbarShadowVisibility(cartAdapter.allAvailableCartItemData.isEmpty())
+            notifyBottomCartParent()
+
+            // Todo : refresh wishlist
+        }
     }
 
     override fun onRefresh(view: View?) {

@@ -111,7 +111,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         boolean onCartItemCheckChanged(int position, int parentPosition, boolean checked);
 
-        void onWishlistCheckChanged(String productId, boolean isChecked);
+        void onWishlistCheckChanged(String productId, int cartId);
 
         void onNeedToRefreshSingleShop(int parentPosition);
 

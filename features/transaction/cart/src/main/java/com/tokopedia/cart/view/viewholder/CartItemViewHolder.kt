@@ -603,12 +603,17 @@ class CartItemViewHolder constructor(itemView: View,
     }
 
     private fun renderWishlist(data: CartItemHolderData) {
-        textMoveToWishlist.setOnClickListener {
-            val checked = data.cartItemData?.originData?.isWishlisted ?: false
-            actionListener?.onWishlistCheckChanged(data.cartItemData?.originData?.productId, !checked)
+        if (data.cartItemData?.originData?.isWishlisted == true) {
+            textMoveToWishlist.text = "Sudah ada di wishlist"
+            textMoveToWishlist.setTextColor(ContextCompat.getColor(itemView.context, R.color.Neutral_N700_32))
+            textMoveToWishlist.setOnClickListener { }
+        } else {
+            textMoveToWishlist.text = "Pindahkan ke wishlist"
+            textMoveToWishlist.setTextColor(ContextCompat.getColor(itemView.context, R.color.Neutral_N700_68))
+            textMoveToWishlist.setOnClickListener {
+                actionListener?.onWishlistCheckChanged(data.cartItemData?.originData?.productId, data.cartItemData?.originData?.cartId ?: 0)
+            }
         }
-
-        // Todo : remove item from cart list
     }
 
     private fun getOnClickProductItemListener(
