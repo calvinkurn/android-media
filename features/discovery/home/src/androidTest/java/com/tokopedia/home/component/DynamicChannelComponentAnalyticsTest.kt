@@ -6,6 +6,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.PerformException
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
@@ -104,14 +106,14 @@ class DynamicChannelComponentAnalyticsTest {
         //non login state, without userId
 //        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_HOMEPAGE_SCREEN),
 //                hasAllSuccess())
-        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_HOMEPAGE_BANNER),
-                hasAllSuccess())
+//        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_HOMEPAGE_BANNER),
+//                hasAllSuccess())
 //        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_TICKER),
 //                hasAllSuccess())
-//        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MIX_LEFT),
-//                hasAllSuccess())
-//        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MIX_TOP),
-//                hasAllSuccess())
+        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MIX_LEFT),
+                hasAllSuccess())
+        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MIX_TOP),
+                hasAllSuccess())
     }
 
     private fun onFinishTest() {
@@ -128,34 +130,37 @@ class DynamicChannelComponentAnalyticsTest {
         when (viewholder) {
             is TickerViewHolder -> {
                 logTestMessage("VH TickerViewHolder")
-                clickTickerItem(viewholder.itemView)
+                clickTickerItem(viewholder.itemView, i)
             }
             is BannerViewHolder -> {
                 logTestMessage("VH BannerViewHolder")
-                clickHomeBannerItemAndViewAll(viewholder.itemView)
+                clickHomeBannerItemAndViewAll(viewholder.itemView, i)
             }
             is MixLeftComponentViewHolder -> {
                 logTestMessage("VH MixLeftComponentViewHolder")
-                clickLihatSemuaButtonIfAvailable(viewholder.itemView, "MixLeftComponentViewHolder")
+                clickLihatSemuaButtonIfAvailable(viewholder.itemView, "MixLeftComponentViewHolder", i)
                 clickOnEachItemRecyclerView(viewholder.itemView, R.id.rv_product, "MixLeftComponentViewHolder")
             }
             is MixTopComponentViewHolder -> {
                 logTestMessage("VH MixTopComponentViewHolder")
-                clickLihatSemuaButtonIfAvailable(viewholder.itemView, "MixTopComponentViewHolder")
+                clickLihatSemuaButtonIfAvailable(viewholder.itemView, "MixTopComponentViewHolder", i)
                 clickOnEachItemRecyclerView(viewholder.itemView, R.id.dc_banner_rv, "MixTopComponentViewHolder")
                 clickOnMixTopCTA(viewholder.itemView)
             }
         }
     }
 
-    private fun clickTickerItem(view: View) {
+    private fun clickTickerItem(view: View, itemPos: Int) {
         val childView = view
         val textApplink = childView.findViewById<View>(R.id.ticker_description)
         val closeButton = childView.findViewById<View>(R.id.ticker_close_icon)
         if (textApplink.visibility == View.VISIBLE) {
             try {
-                Espresso.onView(firstView(ViewMatchers.withId(R.id.ticker_description)))
-                        .perform(ViewActions.click())
+
+                Espresso.onView(ViewMatchers.withId(R.id.home_fragment_recycler_view))
+                        .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(itemPos, clickOnViewChild(R.id.ticker_description)))
+//                Espresso.onView(firstView(ViewMatchers.withId(R.id.ticker_description)))
+//                        .perform(ViewActions.click())
                 logTestMessage("Click SUCCESS ticker text")
             } catch (e: PerformException) {
                 e.printStackTrace()
@@ -174,7 +179,7 @@ class DynamicChannelComponentAnalyticsTest {
         }
     }
 
-    private fun clickHomeBannerItemAndViewAll(view: View) {
+    private fun clickHomeBannerItemAndViewAll(view: View, itemPos: Int) {
         val childView = view
         val seeAllButton = childView.findViewById<View>(R.id.see_all_promo)
 
@@ -194,8 +199,8 @@ class DynamicChannelComponentAnalyticsTest {
         //see all promo button click
         if (seeAllButton.visibility == View.VISIBLE) {
             try {
-                Espresso.onView(firstView(ViewMatchers.withId(R.id.see_all_button)))
-                        .perform(ViewActions.click())
+                Espresso.onView(ViewMatchers.withId(R.id.home_fragment_recycler_view))
+                        .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(itemPos, clickOnViewChild(R.id.see_all_button)))
                 logTestMessage("Click SUCCESS See All Button BannerViewHolder")
             } catch (e: PerformException) {
                 e.printStackTrace()
@@ -219,20 +224,28 @@ class DynamicChannelComponentAnalyticsTest {
         }
     }
 
-    private fun clickLihatSemuaButtonIfAvailable(view: View, viewComponent: String) {
+    private fun clickLihatSemuaButtonIfAvailable(view: View, viewComponent: String, itemPos: Int) {
         val childView = view
         val seeAllButton = childView.findViewById<View>(R.id.see_all_button)
         if (seeAllButton.visibility == View.VISIBLE) {
             try {
-                Espresso.onView(firstView(ViewMatchers.withId(R.id.see_all_button)))
-                        .perform(ViewActions.click())
+                Espresso.onView(ViewMatchers.withId(R.id.home_fragment_recycler_view))
+                        .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(itemPos, clickOnViewChild(R.id.see_all_button)))
                 logTestMessage("Click SUCCESS See All Button $viewComponent")
             } catch (e: PerformException) {
                 e.printStackTrace()
                 logTestMessage("Click FAILED See All Button $viewComponent")
             }
         }
+    }
 
+    private fun clickOnViewChild(viewId: Int) = object: ViewAction {
+        override fun getDescription(): String  = ""
+
+        override fun getConstraints() = null
+
+        override fun perform(uiController: UiController, view: View)
+                = ViewActions.click().perform(uiController, view.findViewById<View>(viewId))
     }
 
     private fun clickOnEachItemRecyclerView(view: View, recyclerViewId: Int, viewComponent: String) {
