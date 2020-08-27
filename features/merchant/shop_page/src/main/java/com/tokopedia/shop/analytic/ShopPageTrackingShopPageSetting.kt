@@ -16,14 +16,6 @@ class ShopPageTrackingShopPageSetting(
                 customDimensionShopPage)
     }
 
-//    fun clickShareButtonSellerView(customDimensionShopPage: CustomDimensionShopPage) {
-//        sendGeneralEvent(CLICK_SHOP_PAGE,
-//                SETTING_PAGE_SELLER,
-//                CLICK_SHARE,
-//                "",
-//                customDimensionShopPage)
-//    }
-
     fun clickShopDashboard(customDimensionShopPage: CustomDimensionShopPage) {
         sendGeneralEvent(CLICK_SHOP_PAGE,
                 SETTING_PAGE_SELLER,
