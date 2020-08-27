@@ -222,6 +222,12 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
                 price = product.priceInt.toString()
         )
         presenter.addToCart(addToCartOccRequestParams, {
+            analytics.trackClickOccProduct(
+                    product,
+                    getViewState().chatRoomViewModel.shopType,
+                    getViewState().chatRoomViewModel.shopName,
+                    it.data.cartId
+            )
             finishOccLoading(product, position)
             RouteManager.route(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
         }, {
