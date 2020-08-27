@@ -15,8 +15,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
-        android:lineSpacingExtra="4sp"
-        tools:text="TIKI" />
+        android:lineSpacingExtra="@dimen/sp_4"
+        tools:text="@string/tv_courier" />
 
     <TextView
         android:id="@+id/tv_promo_potency"
@@ -36,6 +36,20 @@
         android:visibility="gone"
         tools:visibility="visible" />
 
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/lbl_cod_available"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_toEndOf="@+id/tv_courier"
+        android:layout_toRightOf="@+id/tv_courier"
+        android:layout_alignBottom="@id/tv_courier"
+        android:layout_alignTop="@id/tv_courier"
+        android:text="@string/tersedia_bayar_di_tempat"
+        android:visibility="gone"
+        app:labelType="general_light_green" />
+
     <TextView
         android:id="@+id/tv_price"
         style="@style/TextSmallNormalBlack54"
@@ -43,44 +57,16 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_courier"
         android:layout_marginTop="4dp"
-        tools:text="Rp10.000" />
+        tools:text="@string/tv_price" />
 
-    <TextView
-        android:id="@+id/tv_cod_availability"
-        style="@style/TextSmallNormalBlack54"
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/lbl_otd_available"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_price"
-        android:layout_marginTop="4dp"
-        tools:text="(Tersedia Bayar di Tempat)"
-        tools:visibility="visible" />
-
-    <LinearLayout
-        android:id="@+id/otdelivery"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_courier"
+        android:text="@string/jaminan_tepat_waktu"
         android:layout_marginTop="@dimen/dp_4"
-        android:layout_toRightOf="@+id/tv_price"
-        android:layout_toEndOf="@+id/tv_price"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:id="@+id/iv_icon_otd"
-            android:layout_width="@dimen/dp_12"
-            android:layout_height="@dimen/dp_12"
-            android:layout_marginLeft="@dimen/dp_6"
-            android:layout_marginRight="@dimen/dp_6" />
-
-        <TextView
-            android:id="@+id/tv_otd"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/sp_12"
-            tools:text="Jaminan tepat waktu" />
-
-    </LinearLayout>
+        app:labelType="general_light_green" />
 
     <ImageView
         android:id="@+id/img_check"
@@ -89,13 +75,14 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        app:srcCompat="@drawable/ic_check" />
+        app:srcCompat="@drawable/ic_check"
+        android:contentDescription="@string/content_img_check"/>
 
     <View
         android:id="@+id/separator"
         android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:layout_below="@id/tv_cod_availability"
+        android:layout_height="@dimen/dp_half"
+        android:layout_below="@id/lbl_otd_available"
         android:layout_marginTop="@dimen/dp_16"
         android:background="@color/separator_color" />
 

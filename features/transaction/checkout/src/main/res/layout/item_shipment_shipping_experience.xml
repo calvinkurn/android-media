@@ -145,39 +145,29 @@
                     app:typographyWeight="reguler"
                     tools:text="Rp999.000" />
 
-                <ImageView
-                    android:id="@+id/icon_on_time_delivery_guarantee"
-                    android:layout_width="@dimen/dp_16"
-                    android:layout_height="@dimen/dp_16"
-                    android:layout_marginStart="@dimen/dp_6"
-                    android:layout_marginLeft="@dimen/dp_6"
-                    app:layout_constraintStart_toEndOf="@+id/label_selected_shipping_price"
-                    app:layout_constraintTop_toBottomOf="@+id/label_selected_shipping_courier"
-                    tools:srcCompat="@color/color_03AC0E" />
-
                 <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/label_on_time_delivery_guarantee"
+                    android:id="@+id/label_description_courier"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_3"
                     android:layout_marginLeft="@dimen/dp_3"
                     android:textColor="@color/color_F531353B"
                     app:layout_constraintBaseline_toBaselineOf="@+id/label_selected_shipping_price"
-                    app:layout_constraintStart_toEndOf="@+id/icon_on_time_delivery_guarantee"
+                    app:layout_constraintStart_toEndOf="@+id/label_selected_shipping_price"
                     app:layout_constraintTop_toBottomOf="@+id/label_selected_shipping_courier"
                     app:typographyType="small"
                     app:typographyWeight="reguler"
                     tools:text="Jaminan tepat waktu." />
 
                 <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/label_on_time_delivery_guarantee_tnc"
+                    android:id="@+id/label_description_courier_tnc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_3"
                     android:text="@string/label_otdg_tnc"
                     android:textColor="@color/color_03AC0E"
                     app:layout_constraintBaseline_toBaselineOf="@+id/label_selected_shipping_price"
-                    app:layout_constraintStart_toEndOf="@+id/label_on_time_delivery_guarantee"
+                    app:layout_constraintStart_toEndOf="@+id/label_description_courier"
                     app:layout_constraintTop_toBottomOf="@+id/label_selected_shipping_courier"
                     app:typographyType="small"
                     app:typographyWeight="reguler"
