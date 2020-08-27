@@ -16,11 +16,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import javax.inject.Inject
 import javax.inject.Named
 class OtherMenuViewModel @Inject constructor(
@@ -81,7 +77,8 @@ class OtherMenuViewModel @Inject constructor(
 
     private fun getAllShopInfoData() {
         launchCatchError(block = {
-            _settingShopInfoLiveData.value = Success(getAllShopInfoUseCase.executeOnBackground())
+            val partialSettingInfo = getAllShopInfoUseCase.executeOnBackground()
+            _settingShopInfoLiveData.value = Success(SettingShopInfoUiModel(partialSettingInfo.first, partialSettingInfo.second))
         }, onError = {
             _settingShopInfoLiveData.value = Fail(it)
         })
