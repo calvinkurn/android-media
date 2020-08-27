@@ -1017,7 +1017,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     override fun onDiscussionSendQuestionClicked(componentTrackDataModel: ComponentTrackDataModel) {
         doActionOrLogin({
             viewModel.getDynamicProductInfoP1?.let {
-                DynamicProductDetailTracking.Click.eventEmptyDiscussionSendQuestion(it, componentTrackDataModel, viewModel.userId)
+                DynamicProductDetailTracking.Click.eventEmptyDiscussionSendQuestion(it, componentTrackDataModel, viewModel.userId, pdpUiUpdater?.productNewVariantDataModel?.isPartialySelected()?.not() ?: false)
             }
             goToWriteActivity()
         })

@@ -282,11 +282,11 @@ class TalkWriteFragment : BaseDaggerFragment(),
         viewModel.submitFormResult.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Success -> {
-                    TalkWriteTracking.eventClickSendButton(viewModel.getUserId(), viewModel.getProductId().toString(), viewModel.getSelectedCategory()?.categoryName.toString(), true)
+                    TalkWriteTracking.eventClickSendButton(userId = viewModel.getUserId(), productId = viewModel.getProductId().toString(), category = viewModel.getSelectedCategory()?.categoryName.toString(), isSuccess = true, isVariantSelected = viewModel.isVariantSelected)
                     goToReplyPage(it.data.discussionId.toIntOrZero())
                 }
                 is Fail -> {
-                    TalkWriteTracking.eventClickSendButton(viewModel.getUserId(), viewModel.getProductId().toString(), viewModel.getSelectedCategory()?.categoryName.toString(), false,  it.throwable.message)
+                    TalkWriteTracking.eventClickSendButton(viewModel.getUserId(), viewModel.getProductId().toString(), viewModel.getSelectedCategory()?.categoryName.toString(), false,  it.throwable.message, viewModel.isVariantSelected)
                     showErrorToaster(it.throwable.message ?: getString(R.string.write_submit_error))
                 }
             }

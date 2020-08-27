@@ -23,10 +23,10 @@ object TalkWriteTracking {
         )
     }
 
-    fun eventClickSendButton(userId: String, productId: String, category: String, isSuccess: Boolean, errorMessage: String? = null) {
+    fun eventClickSendButton(userId: String, productId: String, category: String, isSuccess: Boolean, errorMessage: String? = null, isVariantSelected: Boolean) {
         with(TalkWriteTrackingConstants) {
             val successOrFailTag = if(isSuccess) {SEND_SUCCESS} else {SEND_FAIL}
-            val eventLabel = String.format(EVENT_LABEL_CLICK_SEND, category, successOrFailTag, errorMessage.toString())
+            val eventLabel = String.format(EVENT_LABEL_CLICK_SEND, category, successOrFailTag, errorMessage.toString(), isVariantSelected.toString())
             eventTalkWriting(userId, productId, EVENT_ACTION_SEND, eventLabel)
         }
 
@@ -36,7 +36,7 @@ object TalkWriteTracking {
         with(TalkWriteTrackingConstants) {
             eventTalkWriting(userId, productId,
                     EVENT_ACTION_CLICK_CATEGORY,
-                    String.format(EVENT_LABEL_CLICK_CATEGORY, category, message))
+                    String.format(EVENT_LABEL_CLICK_CATEGORY, category, message, isVariantSelected.toString()))
         }
     }
 

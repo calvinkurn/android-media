@@ -507,7 +507,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     private fun goToWriteActivity(eventAction: String) {
-        TalkReadingTracking.eventWithoutLabel(viewModel.getUserId(), productId, eventAction)
+        TalkReadingTracking.eventClickWrite(viewModel.getUserId(), productId, eventAction, isVariantSelected)
         if(useOldPage()) {
             val intent = context?.let { AddTalkActivity.createIntent(it, productId, TalkConstants.READING_SOURCE) }
             startActivityForResult(intent, TALK_WRITE_ACTIVITY_REQUEST_CODE)
