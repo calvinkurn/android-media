@@ -60,7 +60,7 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
                 val hashMap = HashMap<String, Any>()
                 banner.let {
                     hashMap[KEY_ID] = it.id ?: 0
-                    hashMap[KEY_NAME] = "/${removeDashPageIdentifier(pagePath)} - $pageType - ${banner.positionForParentItem + 1} - - ${componentName}${if (banner.action == ACTION_NOTIFIER) " - $NOTIFIER" else ""}"
+                    hashMap[KEY_NAME] = "/${removeDashPageIdentifier(pagePath)} - $pageType - ${banner.positionForParentItem + 1} - - ${componentName}${if (banner.action == ACTION_NOTIFIER) "-$NOTIFIER" else ""}"
                     hashMap[KEY_CREATIVE] = it.name ?: EMPTY_STRING
                     hashMap[KEY_POSITION] = componentPosition+1
                 }
@@ -76,12 +76,12 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
 
     fun trackBannerClick(banner: DataItem, bannerPosition: Int) {
         val componentName = banner.parentComponentName ?: EMPTY_STRING
-        val map = createGeneralEvent(eventName = EVENT_PROMO_CLICK, eventAction = CLICK_DYNAMIC_BANNER, eventLabel = "${componentName}${if (banner.action == ACTION_NOTIFIER) " - $NOTIFIER" else ""}")
+        val map = createGeneralEvent(eventName = EVENT_PROMO_CLICK, eventAction = CLICK_DYNAMIC_BANNER, eventLabel = "${componentName}${if (banner.action == ACTION_NOTIFIER) "-$NOTIFIER" else ""}")
         val list = ArrayList<Map<String, Any>>()
         banner.let {
             list.add(mapOf(
                     KEY_ID to it.id.toString(),
-                    KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${banner.positionForParentItem + 1} - - ${componentName}${if (banner.action == ACTION_NOTIFIER) " - $NOTIFIER" else ""}",
+                    KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${banner.positionForParentItem + 1} - - ${componentName}${if (banner.action == ACTION_NOTIFIER) "-$NOTIFIER" else ""}",
                     KEY_CREATIVE to it.name.toString(),
                     KEY_POSITION to bannerPosition + 1
             ))
