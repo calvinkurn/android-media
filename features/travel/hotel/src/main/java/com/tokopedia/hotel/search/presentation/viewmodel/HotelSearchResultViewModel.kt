@@ -104,8 +104,8 @@ class HotelSearchResultViewModel @Inject constructor(
     }
 
     fun addFilter(filterV2: List<ParamFilterV2>) {
-        searchParam.filters = filterV2.toMutableList()
-        isFilter = filterV2.any { it.values.isNotEmpty() }
+        searchParam.filters = filterV2.filter { it.values.isNotEmpty() }.toMutableList()
+        isFilter = selectedFilterV2.isNotEmpty()
     }
 
     companion object {
