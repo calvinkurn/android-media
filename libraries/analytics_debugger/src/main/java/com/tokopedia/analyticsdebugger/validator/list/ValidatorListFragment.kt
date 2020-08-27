@@ -55,7 +55,7 @@ class ValidatorListFragment : Fragment() {
                     s?.run {
                         searchBarClearButton.visibility = if (s.isNotEmpty()) View.VISIBLE else View.GONE
                         // Filter test cases based on search query
-                        val filteredListTests = listTests.filter { it.contains(s.toString()) }
+                        val filteredListTests = listTests.filter { it.contains(s.toString(), true) }
                         listingAdapter.setItems(filteredListTests)
                     }
                 }
