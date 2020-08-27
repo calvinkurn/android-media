@@ -1,6 +1,7 @@
 package com.tokopedia.review.feature.historydetails.presentation.fragment
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
@@ -8,6 +9,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -20,6 +22,8 @@ import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSlider
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
+import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringContract
+import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
 import com.tokopedia.review.common.data.*
 import com.tokopedia.review.common.presentation.util.ReviewAttachedImagesClickListener
 import com.tokopedia.review.common.presentation.util.ReviewScoreClickListener
@@ -38,7 +42,7 @@ import javax.inject.Inject
 
 class ReviewDetailFragment : BaseDaggerFragment(),
         HasComponent<ReviewDetailComponent>, ReviewAttachedImagesClickListener,
-        OnBackPressedListener, ReviewScoreClickListener {
+        OnBackPressedListener, ReviewScoreClickListener, ReviewPerformanceMonitoringContract {
 
     companion object {
         const val KEY_FEEDBACK_ID = "feedbackID"
@@ -61,6 +65,44 @@ class ReviewDetailFragment : BaseDaggerFragment(),
     @Inject
     lateinit var viewModel: ReviewDetailViewModel
 
+    private var reviewPerformanceMonitoringListener: ReviewPerformanceMonitoringListener? = null
+
+    override fun stopPreparePerfomancePageMonitoring() {
+        reviewPerformanceMonitoringListener?.stopPreparePagePerformanceMonitoring()
+    }
+
+    override fun startNetworkRequestPerformanceMonitoring() {
+        reviewPerformanceMonitoringListener?.startNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun stopNetworkRequestPerformanceMonitoring() {
+        reviewPerformanceMonitoringListener?.stopNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun startRenderPerformanceMonitoring() {
+        reviewPerformanceMonitoringListener?.startRenderPerformanceMonitoring()
+        reviewDetailScrollView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                reviewPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
+                reviewPerformanceMonitoringListener?.stopPerformanceMonitoring()
+                reviewDetailScrollView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+            }
+        })
+    }
+
+    override fun castContextToTalkPerformanceMonitoringListener(context: Context): ReviewPerformanceMonitoringListener? {
+        return if(context is ReviewPerformanceMonitoringListener) {
+            context
+        } else {
+            null
+        }
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        reviewPerformanceMonitoringListener = castContextToTalkPerformanceMonitoringListener(context)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
@@ -80,6 +122,8 @@ class ReviewDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        stopPreparePerfomancePageMonitoring()
+        startNetworkRequestPerformanceMonitoring()
         super.onViewCreated(view, savedInstanceState)
         initHeader()
         initErrorPage()
@@ -144,6 +188,8 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         viewModel.reviewDetails.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Success -> {
+                    stopNetworkRequestPerformanceMonitoring()
+                    startRenderPerformanceMonitoring()
                     if(it.isRefresh) {
                         hideError()
                         hideLoading()
