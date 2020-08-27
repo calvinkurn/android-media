@@ -100,7 +100,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         hideTooltipIfExist()
         setupView()
 
-        mViewModel.setDateRange(defaultStartDate, defaultEndDate, DateFilterType.DATE_TYPE_WEEK)
+        mViewModel.setDateRange(defaultStartDate, defaultEndDate, DateFilterType.DATE_TYPE_DAY)
 
         observeWidgetLayoutLiveData()
         observeUserRole()
