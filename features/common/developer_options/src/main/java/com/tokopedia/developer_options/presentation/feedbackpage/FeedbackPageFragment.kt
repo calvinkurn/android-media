@@ -4,7 +4,6 @@ import android.os.Build
 import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -130,7 +129,6 @@ class FeedbackPageFragment: Fragment() {
                 }
                 else -> {
                     val issueType = bugType.selectedItem.toString()
-                    Log.d("ANDROID_VERSION", androidVersion)
                     submitFeedback(emailText, affectedPageText, issueText, issueType)
                 }
             }
@@ -167,8 +165,6 @@ class FeedbackPageFragment: Fragment() {
 
     private fun requestMapper(email: String, page: String, desc: String, issueType: String): FeedbackRequest {
         val affectedVersion = if (GlobalConfig.isSellerApp()) "SA-$appVersion" else "MA-$appVersion"
-        Log.d("AFFECTED_VERSION", affectedVersion)
-
         return FeedbackRequest(Fields(
                 summary = "[INTERNAL-FEEDBACK] {$email} {$page}",
                 project = Project(
