@@ -24,13 +24,14 @@
         android:text="@string/topads_common_keyword_empty_desc"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txtTitle" />
+        app:layout_constraintTop_toBottomOf="@id/txtTitle"
+        app:typographyType="body_3" />
 
     <com.tokopedia.unifycomponents.CardUnify
         android:id="@+id/cardView"
         android:layout_width="@dimen/dp_0"
         android:layout_height="@dimen/dp_0"
-        android:layout_marginTop="@dimen/dp_24"
+        android:layout_margin="@dimen/dp_24"
         android:padding="@dimen/dp_16"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

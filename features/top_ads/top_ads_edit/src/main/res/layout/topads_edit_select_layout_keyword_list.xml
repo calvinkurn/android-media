@@ -21,6 +21,10 @@
         android:id="@+id/searchBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_6"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_6"
         app:layout_constraintTop_toTopOf="parent"
         app:search_bar_show_icon="false" />
 
@@ -65,8 +69,8 @@
                 android:layout_marginTop="@dimen/dp_18"
                 android:layout_marginEnd="@dimen/dp_16"
                 android:visibility="invisible"
-                app:layout_constraintTop_toBottomOf="@id/txtSelected"
                 app:layout_constraintBottom_toTopOf="@id/selectedKeyList"
+                app:layout_constraintTop_toBottomOf="@id/txtSelected"
                 tools:visibility="visible">
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -86,7 +90,7 @@
                     android:id="@+id/txtRange"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/dp_30"
+                    android:layout_marginEnd="@dimen/dp_27"
                     android:text="@string/topads_common_keyword_pencarian"
                     android:textAllCaps="true"
                     android:textColor="@color/topads_heading_color"
@@ -101,7 +105,7 @@
                     android:id="@+id/txtkeyCompetition"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/dp_36"
+                    android:layout_marginEnd="@dimen/dp_19"
                     android:text="@string/topads_common_keyword_competition"
                     android:textAllCaps="true"
                     android:textColor="@color/topads_heading_color"
@@ -116,7 +120,6 @@
                     android:id="@+id/checkBox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/dp_16"
                     android:checked="false"
                     android:gravity="center_vertical"
                     android:visibility="invisible"
@@ -234,7 +237,7 @@
         app:layout_constraintBottom_toTopOf="@id/view2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/searchBar"/>
+        app:layout_constraintTop_toBottomOf="@id/searchBar" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -309,7 +309,7 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
         for (item in selectedKeyFromSearch!!) {
             if (keywordSelectedAdapter.items.find { selected -> selected.keyword == item.keyword } == null) {
                 list.add(KeywordDataItem(item.bidSuggest, item.totalSearch.toString(), item.keyword
-                        ?: "", item.competition ?: "", item.source ?: ""))
+                        ?: "", item.source ?: "", item.competition ?: ""))
             }
         }
         return list

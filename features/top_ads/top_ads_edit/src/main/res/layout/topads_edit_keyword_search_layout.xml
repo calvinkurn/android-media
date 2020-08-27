@@ -48,7 +48,7 @@
             android:id="@+id/txtRange"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dp_30"
+            android:layout_marginEnd="@dimen/dp_27"
             android:text="@string/topads_common_keyword_pencarian"
             android:textAllCaps="true"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -62,7 +62,7 @@
             android:id="@+id/txtkeyCompetition"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dp_36"
+            android:layout_marginEnd="@dimen/dp_19"
             android:text="@string/topads_common_keyword_competition"
             android:textAllCaps="true"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -76,7 +76,6 @@
             android:id="@+id/checkBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dp_16"
             android:checked="false"
             android:gravity="center_vertical"
             android:visibility="invisible"
@@ -163,13 +162,13 @@
 
     <include
         android:id="@+id/emptyLayout"
-        layout="@layout/topads_create_layout_keyword_list_empty_tip"
+        layout="@layout/topads_edit_layout_keyword_search_list_empty_tip"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/view2"
         app:layout_constraintTop_toBottomOf="@id/headlineList" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

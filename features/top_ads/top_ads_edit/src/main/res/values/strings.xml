@@ -32,9 +32,9 @@
     <string name="topads_edit_leave_page_conf_dialog_title">Simpan Perubahan?</string>
     <string name="topads_edit_leave_page_conf_dialog_desc">Kamu sudah mengubah pengaturan grup dan belum simpan perubahanmu</string>
     <string name="topads_edit_delete_keyword_conf_dialog_title">Hapus Kata Kunci?</string>
-    <string name="topads_edit_delete_keyword_conf_dialog_desc">Iklan produkmu tidak akan tampil di pencarian kata kunci %s?</string>
+    <string name="topads_edit_delete_keyword_conf_dialog_desc">Iklan produkmu tidak akan tampil di pencarian kata kunci  &lt;b>%s&lt;/b>?</string>
     <string name="topads_edit_delete_neg_keyword_conf_dialog_title">Hapus Kata Kunci Negatif?</string>
-    <string name="topads_edit_delete_neg_keyword_conf_dialog_desc">Apakah kamu yakin untuk menghapus kata kunci %s?</string>
+    <string name="topads_edit_delete_neg_keyword_conf_dialog_desc">![CDATA[Produkmu kemungkinan tampil di pencarian kata kunci  &lt;b>%s&lt;/b>.</string>
     <string name="topads_edit_ya">Ya</string>
     <string name="topads_edit_batal">Batal</string>
     <string name="topads_edit_no_neg_keyword_title">Belum ada kata kunci negatif</string>
@@ -48,6 +48,12 @@
     <string name="pencarian_bulan">Pencarian / bulan</string>
     <string name="topads_Edit_green_dot">\u25CF</string>
     <string name="topads_edit_keyword_duplicate_toast">Kata Kunci sudah digunakan. Coba cari dengan kata kunci yang berbeda.</string>
+    <string name="topads_edit_search_empty_tip_title_main">Belum ada pencarian kata kunci</string>
+    <string name="topads_edit_search_empty_tip_desc_main">Cari kata kunci yang sesuai dengan produkmu.</string>
+    <string name="topads_edit_search_empty_tip_title">Tips memilih kata kunci</string>
+    <string name="topads_edit_search_empty_tip_desc1">Pilih kata yang sama dengan nama produk.</string>
+    <string name="topads_edit_search_empty_tip_desc2">Lebih efektif dengan kata kunci spesifik.</string>
+    <string name="topads_edit_search_empty_tip_desc3">Gunakan kata kunci umum dengan  maksimum 2 kata.</string>
 
 
 </resources>

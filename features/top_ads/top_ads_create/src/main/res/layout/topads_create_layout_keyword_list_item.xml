@@ -10,11 +10,11 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/keyword_name"
-        style="@style/TextView.Small"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_18"
+        android:layout_marginEnd="@dimen/dp_4"
         android:layout_marginBottom="@dimen/dp_18"
         android:gravity="center_vertical"
         android:text="@string/_0_produk"
@@ -27,7 +27,6 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/keyword_count"
-        style="@style/TextView.Micro"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp_30"
@@ -40,7 +39,6 @@
 
     <com.tokopedia.unifycomponents.Label
         android:id="@+id/keywordCompetition"
-        style="@style/TextView.Micro"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp_36"

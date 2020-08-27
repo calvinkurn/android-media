@@ -152,6 +152,7 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<TopAdsEditComponent> 
             adapter.items.add(it)
         }
         setEmpty(data.isEmpty())
+        onSelectedItem()
         adapter.notifyDataSetChanged()
     }
 
