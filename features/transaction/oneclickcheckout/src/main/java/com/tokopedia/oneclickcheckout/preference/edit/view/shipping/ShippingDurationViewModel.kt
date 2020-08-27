@@ -10,6 +10,7 @@ import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.oneclickcheckout.common.dispatchers.ExecutorDispatchers
+import com.tokopedia.oneclickcheckout.common.view.model.Failure
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.preference.edit.domain.shipping.GetShippingDurationUseCase
 import com.tokopedia.oneclickcheckout.preference.edit.domain.shipping.mapper.ShippingDurationModelWithPriceMapper
@@ -41,7 +42,7 @@ class ShippingDurationViewModel @Inject constructor(private val useCase: GetShip
         useCase.execute(onSuccess = {
             logicSelection(it)
         }, onError = {
-            _shippingDuration.value = OccState.Fail(false, it, "")
+            _shippingDuration.value = OccState.Failed(Failure(it))
         })
 
     }
@@ -64,13 +65,6 @@ class ShippingDurationViewModel @Inject constructor(private val useCase: GetShip
         }
     }
 
-    fun consumeGetShippingDurationFail() {
-        val value = _shippingDuration.value
-        if (value is OccState.Fail) {
-            _shippingDuration.value = value.copy(isConsumed = true)
-        }
-    }
-
     fun setSelectedShipping(shippingId: Int) {
         val shippingModel = shippingDurationModel
         if (shippingModel != null && _shippingDuration.value is OccState.Success) {
@@ -83,20 +77,19 @@ class ShippingDurationViewModel @Inject constructor(private val useCase: GetShip
     /*With Price*/
     fun getRates(listShopShipment: ArrayList<ShopShipment>?, shippingParam: ShippingParam?) {
         _shippingDuration.value = OccState.Loading
-        val ratesParamBuilder = shippingParam?.let { listShopShipment?.let { list -> RatesParam.Builder(list, it) } }
-        val ratesParam = ratesParamBuilder?.build()
-        ratesParam?.occ = "1"
+        val ratesParam = shippingParam?.let { listShopShipment?.let { list -> RatesParam.Builder(list, it) } }?.build()
         ratesParam?.let {
+            it.occ = "1"
             compositeSubscription.add(
                     useCaseRates.execute(it)
                             .subscribe(object : Observer<ShippingRecommendationData> {
                                 override fun onError(e: Throwable?) {
-                                    _shippingDuration.value = OccState.Fail(false, e, "")
+                                    _shippingDuration.value = OccState.Failed(Failure(e))
                                 }
 
                                 override fun onNext(shippingRecomendationData: ShippingRecommendationData) {
                                     if (!shippingRecomendationData.errorMessage.isNullOrEmpty()) {
-                                        _shippingDuration.value = OccState.Fail(false, MessageErrorException(shippingRecomendationData.errorMessage), "")
+                                        _shippingDuration.value = OccState.Failed(Failure(MessageErrorException(shippingRecomendationData.errorMessage)))
                                     } else {
                                         logicSelection(mapToModelPrice(shippingRecomendationData))
                                     }
@@ -119,5 +112,3 @@ class ShippingDurationViewModel @Inject constructor(private val useCase: GetShip
         compositeSubscription.clear()
     }
 }
-
-

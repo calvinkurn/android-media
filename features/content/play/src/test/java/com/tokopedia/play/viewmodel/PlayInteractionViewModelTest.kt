@@ -1,6 +1,7 @@
 package com.tokopedia.play.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.domain.PostFollowPartnerUseCase
 import com.tokopedia.play.domain.PostLikeUseCase
@@ -10,6 +11,7 @@ import com.tokopedia.play.model.ModelBuilder
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.Event
+import com.tokopedia.play.view.uimodel.FeedInfoUiModel
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
@@ -238,20 +240,25 @@ class PlayInteractionViewModelTest {
 
     @Test
     fun `test do like post call like use case`() {
-        val contentId = 123
-        val contentType = 3
-        val likeType = 2
+        val feedInfoUiModel = FeedInfoUiModel(
+                contentId = "123",
+                contentType = 3,
+                likeType = 2
+        )
         val shouldLike = true
 
         playInteractionViewModel.doLikeUnlike(
-                contentId = contentId,
-                contentType = contentType,
-                likeType = likeType,
+                feedInfoUiModel,
                 shouldLike = shouldLike
         )
 
         coVerifySequence {
-            mockPostLikeUseCase.params = PostLikeUseCase.createParam(contentId, contentType, likeType, shouldLike)
+            mockPostLikeUseCase.params = PostLikeUseCase.createParam(
+                    feedInfoUiModel.contentId.toIntOrZero(),
+                    feedInfoUiModel.contentType,
+                    feedInfoUiModel.likeType,
+                    shouldLike
+            )
             mockPostLikeUseCase.executeOnBackground()
         }
     }

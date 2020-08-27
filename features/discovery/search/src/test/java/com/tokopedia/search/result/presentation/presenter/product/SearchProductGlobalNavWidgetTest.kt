@@ -8,7 +8,6 @@ import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.CpmViewModel
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel
-import com.tokopedia.search.result.presentation.model.QuickFilterViewModel
 import com.tokopedia.search.shouldBeInstanceOf
 import io.mockk.every
 import io.mockk.slot
@@ -61,8 +60,7 @@ internal class SearchProductGlobalNavWidgetTest: ProductListPresenterTestFixture
         val visitableList = visitableListSlot.captured
 
         visitableList[0].shouldBeInstanceOf<GlobalNavViewModel>()
-        visitableList[1].shouldBeInstanceOf<QuickFilterViewModel>()
-        visitableList[2].shouldBeInstanceOf<CpmViewModel>()
+        visitableList[1].shouldBeInstanceOf<CpmViewModel>()
     }
 
     @Test
@@ -85,9 +83,8 @@ internal class SearchProductGlobalNavWidgetTest: ProductListPresenterTestFixture
         val visitableList = visitableListSlot.captured
 
         visitableList[0].shouldBeInstanceOf<GlobalNavViewModel>()
-        visitableList[1].shouldBeInstanceOf<QuickFilterViewModel>()
 
-        for(i in 2 until visitableList.size) {
+        for(i in 1 until visitableList.size) {
             visitableList[i].shouldBeInstanceOf<ProductItemViewModel>()
         }
     }
@@ -111,10 +108,9 @@ internal class SearchProductGlobalNavWidgetTest: ProductListPresenterTestFixture
     private fun `Then verify visitable list not showing global nav widget and still show CPM`() {
         val visitableList = visitableListSlot.captured
 
-        visitableList[0].shouldBeInstanceOf<QuickFilterViewModel>()
-        visitableList[1].shouldBeInstanceOf<CpmViewModel>()
+        visitableList[0].shouldBeInstanceOf<CpmViewModel>()
 
-        for (i in 2 until visitableList.size) {
+        for (i in 1 until visitableList.size) {
             visitableList[i].shouldBeInstanceOf<ProductItemViewModel>()
         }
     }

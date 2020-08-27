@@ -254,4 +254,7 @@
     <string name="shop_search_product">Search Shop Product</string>
     <string name="shop_page_setting_title">Toko Kamu</string>
 
+    <!-- Dynamic feature Statistic -->
+    <string name="title_statistic">Statistic</string>
+
 </resources>

@@ -91,7 +91,7 @@ class ShopHomeAdapter(
             if(playCarouselUiModel.playBannerCarouselDataModel.channelList.isEmpty()){
                 visitables.removeAt(index)
                 notifyItemRemoved(index)
-            } else {
+            } else if(index != -1){
                 visitables[index] = playCarouselUiModel
                 notifyItemChanged(index)
             }
@@ -335,6 +335,51 @@ class ShopHomeAdapter(
 
     private fun getPositionPlayCarousel(): Int{
         return visitables.indexOfFirst { it is ShopHomePlayCarouselUiModel}
+    }
+
+    fun updateRemindMeStatusCampaignNplWidgetData(
+            campaignId: String,
+            isRemindMe: Boolean? = null,
+            isClickRemindMe: Boolean = false
+    ) {
+        visitables.filterIsInstance<ShopHomeNewProductLaunchCampaignUiModel>().onEach{nplCampaignUiModel ->
+            nplCampaignUiModel.data?.firstOrNull { it.campaignId == campaignId }?.let {
+                isRemindMe?.let{ isRemindMe ->
+                    it.isRemindMe = isRemindMe
+                    if (isClickRemindMe) {
+                        if (isRemindMe)
+                            ++it.totalNotify
+                        else
+                            --it.totalNotify
+                    }
+                }
+                it.showRemindMeLoading = false
+                notifyChangedItem(visitables.indexOf(nplCampaignUiModel))
+            }
+        }
+    }
+
+    fun removeShopHomeCampaignNplWidget(model: ShopHomeNewProductLaunchCampaignUiModel){
+        val modelIndex = visitables.indexOf(model)
+        if(modelIndex != -1){
+            visitables.remove(model)
+            notifyRemovedItem(modelIndex)
+        }
+    }
+
+    fun showNplRemindMeLoading(campaignId: String) {
+        visitables.filterIsInstance<ShopHomeNewProductLaunchCampaignUiModel>().onEach{nplCampaignUiModel ->
+            nplCampaignUiModel.data?.firstOrNull { it.campaignId == campaignId }?.let {
+                it.showRemindMeLoading = true
+                notifyChangedItem(visitables.indexOf(nplCampaignUiModel))
+            }
+        }
+    }
+
+    fun getNplCampaignUiModel(campaignId: String): ShopHomeNewProductLaunchCampaignUiModel? {
+        return visitables.filterIsInstance<ShopHomeNewProductLaunchCampaignUiModel>().firstOrNull {
+            it.data?.firstOrNull()?.campaignId == campaignId
+        }
     }
 
 }

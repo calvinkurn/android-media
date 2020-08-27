@@ -13,7 +13,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
  * @param productItem the pojo of product recommendation from the network
  * @param listener the default listener for recommendation widget, it will handling on impression, click, wishlist tracker
  */
-class RecommendationItemDataModel(
+data class RecommendationItemDataModel(
         val productItem: RecommendationItem,
         val listener: RecommendationListener
 ) : HomeRecommendationDataModel {

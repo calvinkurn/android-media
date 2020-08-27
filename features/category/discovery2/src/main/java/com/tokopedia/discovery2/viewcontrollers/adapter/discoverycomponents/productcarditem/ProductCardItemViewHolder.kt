@@ -16,8 +16,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.DataItem
@@ -59,6 +57,7 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     private var linearLayoutImageRating: LinearLayout = itemView.findViewById(R.id.linearLayoutImageRating)
     private var textViewReviewCount: TextView = itemView.findViewById(R.id.textViewReviewCount)
     private var stockHabisLabel: TextView = itemView.findViewById(R.id.labelStock)
+    private var componentPosition: Int? = null
 
     private lateinit var productCardItemViewModel: ProductCardItemViewModel
     private var productCardName = ""
@@ -90,10 +89,8 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
             })
 
             productCardItemViewModel.getShowLoginData().observe(lifecycleOwner, Observer { showLogin ->
-                context?.let {
-                    if (showLogin) {
-                        it.startActivity(RouteManager.getIntent(it, ApplinkConst.LOGIN))
-                    }
+                if (showLogin == true) {
+                    componentPosition?.let { position -> (fragment as DiscoveryFragment).openLoginScreen(position) }
                 }
             })
             productCardItemViewModel.notifyMeCurrentStatus().observe(lifecycleOwner, Observer { status ->
@@ -102,6 +99,15 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
 
             productCardItemViewModel.showNotifyToastMessage().observe(lifecycleOwner, Observer { message ->
                 showNotifyResultToast(message)
+            })
+            productCardItemViewModel.getComponentPosition().observe(lifecycleOwner, Observer {
+                componentPosition = it
+            })
+            productCardItemViewModel.getSyncPageLiveData().observe(it, Observer { needResync ->
+                if (needResync) {
+                    (fragment as DiscoveryFragment).reSync()
+                }
+
             })
 
         }
