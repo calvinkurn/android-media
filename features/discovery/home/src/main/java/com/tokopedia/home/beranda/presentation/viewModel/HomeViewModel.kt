@@ -302,12 +302,12 @@ open class HomeViewModel @Inject constructor(
             }
         } else if(playCard.value is PlayCarouselCardDataModel && (playCard.value as PlayCarouselCardDataModel).playBannerCarouselDataModel.channelList.isNotEmpty()) {
             (playCard.value as PlayCarouselCardDataModel).playBannerCarouselDataModel.channelList.withIndex().find { (_, value) -> value is PlayBannerCarouselItemDataModel && value.channelId == channelId }?.let {
-                val newList = (playCard.value as PlayCarouselCardDataModel).playBannerCarouselDataModel.channelList.toMutableList()
-                newList[it.index] = (it.value as PlayBannerCarouselItemDataModel).copy(countView = totalView)
-                val newPlayCard = (playCard.value as PlayCarouselCardDataModel).copy(playBannerCarouselDataModel = (playCard.value as PlayCarouselCardDataModel).playBannerCarouselDataModel.copy(channelList = newList))
-                launch(coroutineContext) {
-                    updateWidget(UpdateLiveDataModel(ACTION_UPDATE, newPlayCard, playCard.index))
-                }
+                    val newList = (playCard.value as PlayCarouselCardDataModel).playBannerCarouselDataModel.channelList.toMutableList()
+                    newList[it.index] = (it.value as PlayBannerCarouselItemDataModel).copy(countView = totalView)
+                    val newPlayCard = (playCard.value as PlayCarouselCardDataModel).copy(playBannerCarouselDataModel = (playCard.value as PlayCarouselCardDataModel).playBannerCarouselDataModel.copy(channelList = newList))
+                    launch(coroutineContext) {
+                        updateWidget(UpdateLiveDataModel(ACTION_UPDATE, newPlayCard, playCard.index))
+                    }
             }
         }
 
@@ -673,7 +673,7 @@ open class HomeViewModel @Inject constructor(
         getTokocashBalance()
     }
 
-    fun insertRechargeRecommendation(data: RechargeRecommendation) {
+   fun insertRechargeRecommendation(data: RechargeRecommendation) {
         if (data.recommendations.isNotEmpty()) {
             _homeLiveData.value?.list?.apply {
                 val findRechargeRecommendationViewModel = find { visitable -> visitable is ReminderWidgetModel
@@ -681,8 +681,8 @@ open class HomeViewModel @Inject constructor(
                 val indexOfRechargeRecommendationViewModel = indexOf(findRechargeRecommendationViewModel)
                 if (indexOfRechargeRecommendationViewModel > -1 && findRechargeRecommendationViewModel is ReminderWidgetModel) {
                     val newFindRechargeRecommendationViewModel = findRechargeRecommendationViewModel.copy(
-                            data = mapperRechargetoReminder(data),
-                            source = ReminderEnum.RECHARGE
+                           data = mapperRechargetoReminder(data),
+                           source = ReminderEnum.RECHARGE
                     )
                     launch(coroutineContext){updateWidget(UpdateLiveDataModel(ACTION_UPDATE, newFindRechargeRecommendationViewModel, indexOfRechargeRecommendationViewModel))}
                 }
@@ -1159,7 +1159,7 @@ open class HomeViewModel @Inject constructor(
     private fun getTopAdsBannerData(topadsMap: Map<Int, HomeTopAdsBannerDataModel>) {
         if(topadsMap.isNotEmpty()) {
             if(getTopAdsBannerDataJob?.isActive == true) return
-            getTopAdsBannerDataJob = launchCatchError(coroutineContext, {
+                getTopAdsBannerDataJob = launchCatchError(coroutineContext, {
                 val results = topAdsImageViewUseCase.get().getImageData(
                         topAdsImageViewUseCase.get().getQueryMap(
                                 "",
@@ -1351,7 +1351,7 @@ open class HomeViewModel @Inject constructor(
 
     fun getUserId() = userSession.get().userId ?: ""
 
-    // ============================================================================================
+// ============================================================================================
 // ================================ Live Data Controller ======================================
 // ============================================================================================
     private suspend fun updateChannel(channel: ReceiveChannel<UpdateLiveDataModel>){
