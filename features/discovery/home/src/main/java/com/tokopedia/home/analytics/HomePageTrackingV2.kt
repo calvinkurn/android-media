@@ -59,7 +59,7 @@ object HomePageTrackingV2 : BaseTracking() {
 
         fun getBannerClick(bannerModel: BannerSlidesModel): Map<String, Any> {
             val trackingBuilder = BaseTrackingBuilder()
-            return trackingBuilder.constructBasicPromotionView(
+            return trackingBuilder.constructBasicPromotionClick(
                     event = Event.PROMO_CLICK,
                     eventCategory = Category.HOMEPAGE,
                     eventAction = Action.CLICK.format(SLIDER_BANNER),
