@@ -347,21 +347,6 @@ class AddEditProductVariantViewModel @Inject constructor(
         }
     }
 
-    private fun mapUnit(variantDetail: VariantDetail, value: List<UnitValue>): Unit? {
-        val unitValue = value.firstOrNull()
-        return if (unitValue?.variantUnitValueID == VARIANT_CUSTOM_UNIT_VALUE_ID) {
-            // condition for custom value (get first unit)
-            variantDetail.units.firstOrNull()
-        } else {
-            // condition for main value
-            variantDetail.units.firstOrNull { unit ->
-                unit.unitValues.any {
-                    it.variantUnitValueID == unitValue?.variantUnitValueID
-                }
-            }
-        }
-    }
-
     private fun mapOptions(unit: List<UnitValue>): List<OptionInputModel> =
             unit.map {
                 OptionInputModel(
