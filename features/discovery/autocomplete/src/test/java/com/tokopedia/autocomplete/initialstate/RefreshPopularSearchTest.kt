@@ -22,8 +22,8 @@ internal class RefreshPopularSearchTest: InitialStatePresenterTestFixtures() {
         `Then verify popularSearch API is called`()
     }
 
-    private fun `When presenter refresh popular search`(id: String) {
-        initialStatePresenter.refreshPopularSearch(id)
+    private fun `When presenter refresh popular search`(featureId: String) {
+        initialStatePresenter.refreshPopularSearch(featureId)
     }
 
     @Test

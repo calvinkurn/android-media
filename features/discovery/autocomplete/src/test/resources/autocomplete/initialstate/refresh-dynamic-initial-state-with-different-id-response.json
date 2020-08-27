@@ -2,6 +2,7 @@
   "data": [
     {
       "id": "recent_search",
+      "feature_id": "recent_search",
       "header": "Terakhir Dicari",
       "label_action": "Hapus Semua",
       "items": [
@@ -49,6 +50,7 @@
     },
     {
       "id": "recent_view",
+      "feature_id": "recent_view",
       "header": "Terakhir Dilihat",
       "label_action": "",
       "items": [
@@ -70,6 +72,7 @@
     },
     {
       "id": "popular_search",
+      "feature_id": "popular_search",
       "header": "Pencarian Populer",
       "label_action": "Refresh",
       "items": [
@@ -119,7 +122,8 @@
     },
     {
       "id": "new_section_3",
-      "header": "New Section",
+      "feature_id": "new_section_3",
+      "header": "New Section 3",
       "label_action": "Refresh",
       "items": [
         {

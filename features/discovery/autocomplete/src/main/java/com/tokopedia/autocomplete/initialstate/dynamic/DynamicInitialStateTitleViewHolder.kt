@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.autocomplete.R
 import com.tokopedia.autocomplete.initialstate.InitialStateItemClickListener
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import kotlinx.android.synthetic.main.layout_title_auto_complete.view.*
 import kotlinx.android.synthetic.main.layout_title_dynamic_initial_state.view.*
 
 class DynamicInitialStateTitleViewHolder(itemView: View, private val clickListener: InitialStateItemClickListener) : AbstractViewHolder<DynamicInitialStateTitleViewModel>(itemView) {
@@ -19,7 +18,7 @@ class DynamicInitialStateTitleViewHolder(itemView: View, private val clickListen
     private fun bindActionButton(item: DynamicInitialStateTitleViewModel) {
         itemView.initialStateDynamicButton?.shouldShowWithAction(item.labelAction.isNotEmpty()) {
             itemView.initialStateDynamicButton?.text = item.labelAction
-            itemView.initialStateDynamicButton?.setOnClickListener { clickListener.onRefreshDynamicSection(item.id) }
+            itemView.initialStateDynamicButton?.setOnClickListener { clickListener.onRefreshDynamicSection(item.featureId) }
         }
     }
 

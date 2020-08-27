@@ -161,7 +161,7 @@ class InitialStatePresenter @Inject constructor(
                 InitialStateData.INITIAL_STATE_POPULAR_SEARCH -> {
                     data.addAll(
                             initialStateData.convertPopularSearchToVisitableList().insertTitleWithRefresh(
-                                    initialStateData.id,
+                                    initialStateData.featureId,
                                     initialStateData.header,
                                     initialStateData.labelAction
                             )
@@ -170,7 +170,7 @@ class InitialStatePresenter @Inject constructor(
                 else -> {
                     data.addAll(
                             initialStateData.convertDynamicInitialStateSearchToVisitableList().insertDynamicTitle(
-                                    initialStateData.id,
+                                    initialStateData.featureId,
                                     initialStateData.header,
                                     initialStateData.labelAction
                             )
@@ -193,14 +193,14 @@ class InitialStatePresenter @Inject constructor(
         return this
     }
 
-    private fun MutableList<Visitable<*>>.insertTitleWithRefresh(id: String, title: String, labelAction: String): List<Visitable<*>> {
-        val titleSearch = PopularSearchTitleViewModel(id, title, labelAction)
+    private fun MutableList<Visitable<*>>.insertTitleWithRefresh(featureId: String, title: String, labelAction: String): List<Visitable<*>> {
+        val titleSearch = PopularSearchTitleViewModel(featureId, title, labelAction)
         this.add(0, titleSearch)
         return this
     }
 
-    private fun MutableList<Visitable<*>>.insertDynamicTitle(id: String, title: String, labelAction: String): List<Visitable<*>> {
-        val titleSearch = DynamicInitialStateTitleViewModel(id, title, labelAction)
+    private fun MutableList<Visitable<*>>.insertDynamicTitle(featureId: String, title: String, labelAction: String): List<Visitable<*>> {
+        val titleSearch = DynamicInitialStateTitleViewModel(featureId, title, labelAction)
         this.add(0, titleSearch)
         return this
     }
@@ -212,11 +212,11 @@ class InitialStatePresenter @Inject constructor(
                         userSession.deviceId,
                         userSession.userId
                 ),
-                getPopularSearchSubscriber(id)
+                getPopularSearchSubscriber(featureId)
         )
     }
 
-    private fun getPopularSearchSubscriber(id: String): Subscriber<List<InitialStateData>> = object : Subscriber<List<InitialStateData>>() {
+    private fun getPopularSearchSubscriber(featureId: String): Subscriber<List<InitialStateData>> = object : Subscriber<List<InitialStateData>>() {
         override fun onCompleted() {}
 
         override fun onError(e: Throwable) {
@@ -224,7 +224,7 @@ class InitialStatePresenter @Inject constructor(
         }
 
         override fun onNext(listData: List<InitialStateData>) {
-            val refreshedPopularSearchData = getRefreshedData(id, listData)
+            val refreshedPopularSearchData = getRefreshedData(featureId, listData)
 
             if (refreshedPopularSearchData.isEmpty()) return
 
@@ -238,9 +238,8 @@ class InitialStatePresenter @Inject constructor(
         }
     }
 
-    //change id to feature_id later
-    private fun getRefreshedData(id: String, listData: List<InitialStateData>): List<BaseItemInitialStateSearch> {
-        val newData: InitialStateData? = listData.find { it.id == id }
+    private fun getRefreshedData(featureId: String, listData: List<InitialStateData>): List<BaseItemInitialStateSearch> {
+        val newData: InitialStateData? = listData.find { it.featureId == featureId }
         var refreshedData = listOf<BaseItemInitialStateSearch>()
         newData?.let {
             refreshedData = it.items.convertToBaseItemInitialStateSearch()
@@ -255,11 +254,11 @@ class InitialStatePresenter @Inject constructor(
                         userSession.deviceId,
                         userSession.userId
                 ),
-                getRefreshDynamicSectionSubscriber(id)
+                getRefreshDynamicSectionSubscriber(featureId)
         )
     }
 
-    private fun getRefreshDynamicSectionSubscriber(id: String): Subscriber<List<InitialStateData>> = object : Subscriber<List<InitialStateData>>() {
+    private fun getRefreshDynamicSectionSubscriber(featureId: String): Subscriber<List<InitialStateData>> = object : Subscriber<List<InitialStateData>>() {
         override fun onCompleted() {}
 
         override fun onError(e: Throwable) {
@@ -267,7 +266,7 @@ class InitialStatePresenter @Inject constructor(
         }
 
         override fun onNext(listData: List<InitialStateData>) {
-            val dynamicInitialStateData = getRefreshedData(id, listData)
+            val dynamicInitialStateData = getRefreshedData(featureId, listData)
 
             if (dynamicInitialStateData.isEmpty()) return
 

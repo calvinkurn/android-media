@@ -5,11 +5,11 @@ interface InitialStateItemClickListener {
 
     fun onDeleteAllRecentSearch()
 
-    fun onRefreshPopularSearch(id: String)
+    fun onRefreshPopularSearch(featureId: String)
 
     fun onItemClicked(applink: String, webUrl: String)
 
     fun onRecentSearchItemClicked(item: BaseItemInitialStateSearch, adapterPosition: Int)
 
-    fun onRefreshDynamicSection(id: String)
+    fun onRefreshDynamicSection(featureId: String)
 }

@@ -2,6 +2,7 @@
   "data": [
     {
       "id": "recent_view",
+      "feature_id": "recent_view",
       "header": "Terakhir dilihat",
       "label_action": "",
       "items": [
@@ -39,6 +40,7 @@
     },
     {
       "id": "recent_search",
+      "feature_id": "recent_search",
       "header": "Terakhir dicari",
       "label_action": "",
       "items": [
@@ -121,6 +123,7 @@
     },
     {
       "id": "popular_search",
+      "feature_id": "popular_search",
       "header": "Pencarian populer",
       "label_action": "Refresh",
       "items": [
@@ -248,6 +251,7 @@
     },
     {
       "id": "new_section",
+      "feature_id": "new_section",
       "header": "New Section",
       "label_action": "",
       "items": [
@@ -374,7 +378,8 @@
       ]
     },
     {
-      "id": "new_section_1",
+      "id": "new_section_2",
+      "feature_id": "new_section_2",
       "header": "New Section 2",
       "label_action": "",
       "items": [

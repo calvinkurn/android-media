@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.autocomplete.initialstate.InitialStateTypeFactory
 
 class DynamicInitialStateTitleViewModel(
-        val id: String = "",
+        val featureId: String = "",
         val title: String = "",
         val labelAction: String = ""
 ): Visitable<InitialStateTypeFactory> {

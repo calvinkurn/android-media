@@ -169,13 +169,13 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
         presenter.deleteAllRecentSearch()
     }
 
-    override fun onRefreshPopularSearch(id: String) {
-        refreshPopularSearch(id)
+    override fun onRefreshPopularSearch(featureId: String) {
+        refreshPopularSearch(featureId)
     }
 
-    private fun refreshPopularSearch(id: String) {
+    private fun refreshPopularSearch(featureId: String) {
         AutocompleteTracking.eventClickRefreshPopularSearch()
-        presenter.refreshPopularSearch(id)
+        presenter.refreshPopularSearch(featureId)
     }
 
     fun setSearchParameter(searchParameter: HashMap<String, String> ) {
@@ -186,9 +186,8 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
         this.initialStateViewUpdateListener = initialStateViewUpdateListener
     }
 
-    override fun onRefreshDynamicSection(id: String) {
-//        AutocompleteTracking.eventClickRefreshDynamicSection()
-        presenter.refreshDynamicSection(id)
+    override fun onRefreshDynamicSection(featureId: String) {
+        presenter.refreshDynamicSection(featureId)
     }
 
     override fun onRecentViewImpressed(list: List<Any>) {

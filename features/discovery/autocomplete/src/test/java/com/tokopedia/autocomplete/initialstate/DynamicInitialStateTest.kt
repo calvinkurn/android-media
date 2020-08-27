@@ -23,8 +23,8 @@ internal class DynamicInitialStateTest: InitialStatePresenterTestFixtures() {
         `Then verify popularSearch API is called`()
     }
 
-    private fun `When presenter refresh dynamic initial state data`(id: String) {
-        initialStatePresenter.refreshDynamicSection(id)
+    private fun `When presenter refresh dynamic initial state data`(featureId: String) {
+        initialStatePresenter.refreshDynamicSection(featureId)
     }
 
     @Test

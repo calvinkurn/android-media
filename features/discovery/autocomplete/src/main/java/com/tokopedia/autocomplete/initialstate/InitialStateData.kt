@@ -6,6 +6,9 @@ data class InitialStateData(
         @SerializedName("id")
         val id: String = "",
 
+        @SerializedName("feature_id")
+        val featureId: String = "",
+
         @SerializedName("header")
         val header: String = "",
 

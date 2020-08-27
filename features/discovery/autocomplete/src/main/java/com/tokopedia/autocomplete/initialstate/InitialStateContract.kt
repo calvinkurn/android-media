@@ -30,9 +30,9 @@ interface InitialStateContract {
 
         fun deleteAllRecentSearch()
 
-        fun refreshPopularSearch(id: String)
+        fun refreshPopularSearch(featureId: String)
 
-        fun refreshDynamicSection(id: String)
+        fun refreshDynamicSection(featureId: String)
 
         fun getQueryKey(): String
 

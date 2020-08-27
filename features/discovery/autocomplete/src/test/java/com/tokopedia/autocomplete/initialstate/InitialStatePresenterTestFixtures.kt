@@ -103,12 +103,8 @@ internal open class InitialStatePresenterTestFixtures {
     }
 
     protected fun `Then verify refreshPopularSearch view behavior with no new refreshed data`() {
-        verifyOrder {
-            initialStateView.onRecentViewImpressed(capture(slotRecentViewItemList))
-            initialStateView.onRecentSearchImpressed(capture(slotRecentSearchItemList))
-            initialStateView.onPopularSearchImpressed(capture(slotPopularSearchItemList))
-
-            //This showInitialStateResult is called the first time it loads initial state data
+        verify(exactly = 1) {
+            //This showInitialStateResult is only called once when it loads initial state data
             initialStateView.showInitialStateResult(capture(slotVisitableList))
         }
     }
