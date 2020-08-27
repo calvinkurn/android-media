@@ -216,6 +216,8 @@ public class HomePageTracking {
                 HashMap<String, String> customDimensions = new HashMap<>();
                 customDimensions.put(SCREEN_DIMENSION_IS_LOGGED_IN_STATUS, String.valueOf(isUserLoggedIn));
                 customDimensions.put(ConstantKt.KEY_SESSION_IRIS, new IrisSession(activity).getSessionId());
+                customDimensions.put("currentSite", "tokopediamarketplace");
+                customDimensions.put("businessUnit", "home & browse");
                 tracker.sendScreenAuthenticated(
                         screenName, customDimensions);
             }

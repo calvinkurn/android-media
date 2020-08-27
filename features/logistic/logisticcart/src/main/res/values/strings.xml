@@ -23,10 +23,12 @@
     <string name="label_shipping_information">Pembelian di atas 14:00 WIB berpotensi dikirim besok.</string>
     <string name="tersedia_bayar_di_tempat">Tersedia Bayar di tempat</string>
     <string name="jaminan_tepat_waktu">Jaminan Tepat Waktu</string>
-    <string name="content_img_check">image check</string>
     <string name="tv_courier">TIKI</string>
     <string name="tv_price">Rp10.000</string>
     <string name="tv_error">Jarak melebihi batas maksimum kurir</string>
     <string name="tv_text_desc">(Direkomendasikan untuk berat di atas 5kg)</string>
     <string name="tv_duration">4 Jam</string>
+    <string name="content_img_check">image check</string>
+    <string name="content_desc_tv_duration">text durasi</string>
+    <string name="content_desc_tv_courier">text kurir</string>
 </resources>

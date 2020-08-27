@@ -165,6 +165,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txt_main_price"
+        android:contentDescription="@string/content_desc_txt_main_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_16"
@@ -202,6 +203,7 @@
 
     <ImageView
         android:id="@+id/fab_detail_pdp"
+        android:contentDescription="@string/content_desc_fab_detail_pdp"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_marginEnd="@dimen/dp_16"
@@ -276,6 +278,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/product_name"
+        android:contentDescription="@string/content_desc_product_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_8"
