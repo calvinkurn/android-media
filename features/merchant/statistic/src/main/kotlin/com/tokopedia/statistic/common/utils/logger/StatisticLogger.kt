@@ -10,8 +10,8 @@ import com.tokopedia.statistic.common.exception.StatisticException
 
 object StatisticLogger {
 
-    const val ERROR_LAYOUT = "Error get layout data."
-    const val ERROR_WIDGET = "Error get widget data."
+    const val ERROR_LAYOUT = "Statistic - error get layout data."
+    const val ERROR_WIDGET = "Statistic - error get widget data."
 
     fun logToCrashlytics(throwable: Throwable, message: String) {
         if (!BuildConfig.DEBUG) {
