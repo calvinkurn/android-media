@@ -65,16 +65,22 @@
       "screenName": "/",
       "event": "clickHomepage",
       "userId": "{{.*}}",
-      "eventAction": "click view all card on dynamic channel top carousel",
+      "eventAction": "click view all on dynamic channel top carousel",
       "sessionIris": "{{.*}}",
-      "eventLabel": "{{.*}}"
+      "eventLabel": "{{.*}}",
+      "channelId": "{{.*}}"
     },
     {
       "eventCategory": "homepage",
       "event": "clickHomepage",
       "eventAction": "{{click .* on dynamic channel top carousel}}",
       "sessionIris": "{{.*}}",
-      "eventLabel": "{{.*}}"
+      "eventLabel": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace",
+      "screenName": "/",
+      "channelId": "{{.*}}"
     }
   ]
 }
