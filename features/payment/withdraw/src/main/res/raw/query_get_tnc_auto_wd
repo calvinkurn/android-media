@@ -1,9 +1,0 @@
-query GetTNCAutoWD{
-  GetTNCAutoWD{
-    code
-    message
-    data {
-      template
-    }
-  }
-}
