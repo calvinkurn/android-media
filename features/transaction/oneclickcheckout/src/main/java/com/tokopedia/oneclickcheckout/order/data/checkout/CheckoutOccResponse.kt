@@ -1,6 +1,7 @@
 package com.tokopedia.oneclickcheckout.order.data.checkout
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.oneclickcheckout.order.data.get.OccPromptResponse
 
 data class CheckoutOccGqlResponse(
         @SerializedName("one_click_checkout")
@@ -31,7 +32,9 @@ data class Data(
         @SerializedName("error")
         val error: Error = Error(),
         @SerializedName("payment_parameter")
-        val paymentParameter: PaymentParameter = PaymentParameter()
+        val paymentParameter: PaymentParameter = PaymentParameter(),
+        @SerializedName("prompt")
+        val prompt: OccPromptResponse = OccPromptResponse()
 )
 
 data class Error(

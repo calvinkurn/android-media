@@ -17,7 +17,9 @@ import com.tokopedia.oneclickcheckout.order.view.model.ProductTrackerData
 import com.tokopedia.oneclickcheckout.order.view.model.WholesalePrice
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 import kotlin.math.min
 
 class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUseCase: GraphqlUseCase<GetOccCartGqlResponse>) : UseCase<OrderData>() {
@@ -58,7 +60,8 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
                         response.response.data.profileRecommendation,
                         mapProfile(response.response.data.profileResponse),
                         LastApplyMapper.mapPromo(response.response.data.promo),
-                        mapOrderPayment(response.response.data))
+                        mapOrderPayment(response.response.data),
+                        mapPrompt(response.response.data.prompt))
             } else {
                 throw MessageErrorException(DEFAULT_ERROR_MESSAGE)
             }
@@ -255,6 +258,16 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
         return OrderProfileAddress(address.addressId, address.receiverName, address.addressName, address.addressStreet, address.districtId,
                 address.districtName, address.cityId, address.cityName, address.provinceId, address.provinceName, address.phone, address.longitude,
                 address.latitude, address.postalCode)
+    }
+
+    private fun mapPrompt(promptResponse: OccPromptResponse): OccPrompt {
+//        return OccPrompt(OccPrompt.TYPE_DIALOG, "title disini", "desc disini", listOf(
+//                OccPromptButton("text ini", "tokopedia://home", OccPromptButton.ACTION_OPEN, OccPromptButton.COLOR_PRIMARY),
+//                OccPromptButton("", "tokopedia://home", OccPromptButton.ACTION_OPEN, OccPromptButton.COLOR_PRIMARY)
+//        ))
+        return OccPrompt(OccPrompt.FROM_CART, promptResponse.type.toLowerCase(Locale.ROOT), promptResponse.title, promptResponse.description, promptResponse.buttons.map {
+            OccPromptButton(it.text, it.link, it.action.toLowerCase(Locale.ROOT), it.color.toLowerCase(Locale.ROOT))
+        })
     }
 
     companion object {

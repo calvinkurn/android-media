@@ -4,11 +4,9 @@ import android.graphics.Paint
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.widget.EditText
 import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
@@ -16,7 +14,6 @@ import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
-import com.tokopedia.purchase_platform.common.utils.QuantityTextWatcher
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
@@ -30,15 +27,15 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
     private lateinit var product: OrderProduct
     private lateinit var shop: OrderShop
 
-    private val etQty by lazy { view.findViewById<EditText>(R.id.et_qty) }
+//    private val etQty by lazy { view.findViewById<EditText>(R.id.et_qty) }
     private val tvProductName by lazy { view.findViewById<Typography>(R.id.tv_product_name) }
     private val ivProductImage by lazy { view.findViewById<ImageUnify>(R.id.iv_product_image) }
     private val lblCashback by lazy { view.findViewById<Label>(R.id.lbl_cashback) }
     private val tfNote by lazy { view.findViewById<TextFieldUnify>(R.id.tf_note) }
-    private val btnQtyPlus by lazy { view.findViewById<ImageView>(R.id.btn_qty_plus) }
-    private val btnQtyMin by lazy { view.findViewById<ImageView>(R.id.btn_qty_min) }
+//    private val btnQtyPlus by lazy { view.findViewById<ImageView>(R.id.btn_qty_plus) }
+//    private val btnQtyMin by lazy { view.findViewById<ImageView>(R.id.btn_qty_min) }
     private val tvQuantityStockAvailable by lazy { view.findViewById<Typography>(R.id.tv_quantity_stock_available) }
-    private val tvErrorFormValidation by lazy { view.findViewById<Typography>(R.id.tv_error_form_validation) }
+//    private val tvErrorFormValidation by lazy { view.findViewById<Typography>(R.id.tv_error_form_validation) }
     private val qtyEditorProduct by lazy { view.findViewById<QuantityEditorUnify>(R.id.qty_editor_product) }
     private val tvShopLocation by lazy { view.findViewById<Typography>(R.id.tv_shop_location) }
     private val tvShopName by lazy { view.findViewById<Typography>(R.id.tv_shop_name) }
@@ -47,7 +44,7 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
     private val ivFreeShipping by lazy { view.findViewById<ImageView>(R.id.iv_free_shipping) }
     private val labelError by lazy { view.findViewById<Label>(R.id.label_error) }
 
-    private var quantityTextWatcher: QuantityTextWatcher? = null
+    private var quantityTextWatcher: TextWatcher? = null
     private var noteTextWatcher: TextWatcher? = null
 
     private var oldQtyValue: Int = 0
@@ -101,6 +98,11 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
             }
             tfNote?.textFieldInput?.addTextChangedListener(noteTextWatcher)
 
+            if (quantityTextWatcher != null) {
+                // reset listener
+                qtyEditorProduct?.editText?.removeTextChangedListener(quantityTextWatcher)
+                qtyEditorProduct?.setValueChangedListener { _, _, _ -> }
+            }
             qtyEditorProduct?.minValue = product.quantity.minOrderQuantity
             qtyEditorProduct?.maxValue = product.quantity.maxOrderStock
             oldQtyValue = product.quantity.orderQuantity
@@ -116,13 +118,24 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
             qtyEditorProduct?.setSubstractListener {
                 orderSummaryAnalytics.eventEditQuantityDecrease(product.productId.toString(), shop.shopId.toString(), product.quantity.orderQuantity.toString())
             }
-            qtyEditorProduct?.editText?.afterTextChanged {
-                val newValue = it.replace("[^0-9]".toRegex(), "").toIntOrZero()
-                if (oldQtyValue != newValue) {
-                    oldQtyValue = newValue
-                    qtyEditorProduct?.setValue(newValue)
+            quantityTextWatcher = object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                    val newValue = s.toString().replace("[^0-9]".toRegex(), "").toIntOrZero()
+                    if (oldQtyValue != newValue) {
+                        oldQtyValue = newValue
+                        qtyEditorProduct?.setValue(newValue)
+                    }
+                }
+
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
                 }
             }
+            qtyEditorProduct?.editText?.addTextChangedListener(quantityTextWatcher)
 
 //            if (quantityTextWatcher != null) {
 //                etQty?.removeTextChangedListener(quantityTextWatcher)

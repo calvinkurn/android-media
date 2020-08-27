@@ -175,6 +175,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             lastValidateUsePromoRequest = null
             orderPromo.value = orderData.promo.copy(state = ButtonBayarState.NORMAL)
             if (orderProduct.productId > 0 && orderData.preference.shipment.serviceId > 0) {
+                if (orderData.prompt.shouldShowPrompt()) {
+                    globalEvent.value = OccGlobalEvent.Prompt(orderData.prompt)
+                }
                 orderTotal.value = orderTotal.value.copy(buttonState = ButtonBayarState.LOADING)
                 getRates()
             } else {
@@ -895,7 +898,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         })
     }
 
-    fun finalUpdate(onSuccessCheckout: (Data) -> Unit, skipCheckIneligiblePromo: Boolean) {
+    fun finalUpdate(onSuccessCheckout: (CheckoutOccResult) -> Unit, skipCheckIneligiblePromo: Boolean) {
         if (orderTotal.value.buttonState == ButtonBayarState.NORMAL) {
             globalEvent.value = OccGlobalEvent.Loading
             val product = orderProduct
@@ -926,7 +929,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
     }
 
-    private fun finalValidateUse(product: OrderProduct, shop: OrderShop, pref: OrderPreference, onSuccessCheckout: (Data) -> Unit, skipCheckIneligiblePromo: Boolean) {
+    private fun finalValidateUse(product: OrderProduct, shop: OrderShop, pref: OrderPreference, onSuccessCheckout: (CheckoutOccResult) -> Unit, skipCheckIneligiblePromo: Boolean) {
         if (!skipCheckIneligiblePromo) {
             val requestParams = RequestParams.create()
             requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, generateValidateUsePromoRequest())
@@ -959,7 +962,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
     }
 
-    private fun doCheckout(product: OrderProduct, shop: OrderShop, pref: OrderPreference, onSuccessCheckout: (Data) -> Unit) {
+    private fun doCheckout(product: OrderProduct, shop: OrderShop, pref: OrderPreference, onSuccessCheckout: (CheckoutOccResult) -> Unit) {
         val shopPromos = generateShopPromos()
         val checkoutPromos = generateCheckoutPromos()
         val allPromoCodes = checkoutPromos.map { it.code } + shopPromos.map { it.code }
@@ -990,17 +993,19 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 )
         )), promos = checkoutPromos, mode = if (orderTotal.value.isButtonChoosePayment) 1 else 0))
         OccIdlingResource.increment()
-        checkoutOccUseCase.execute(param, { checkoutOccGqlResponse: CheckoutOccGqlResponse ->
-            if (checkoutOccGqlResponse.response.status.equals(STATUS_OK, true)) {
-                if (checkoutOccGqlResponse.response.data.success == 1 || checkoutOccGqlResponse.response.data.paymentParameter.redirectParam.url.isNotEmpty()) {
-                    onSuccessCheckout(checkoutOccGqlResponse.response.data)
-                    orderSummaryAnalytics.eventClickBayarSuccess(orderTotal.value.isButtonChoosePayment, getTransactionId(checkoutOccGqlResponse.response.data.paymentParameter.redirectParam.form), generateOspEe(OrderSummaryPageEnhanceECommerce.STEP_2, OrderSummaryPageEnhanceECommerce.STEP_2_OPTION, allPromoCodes))
+        checkoutOccUseCase.execute(param, { checkoutOccData: CheckoutOccData ->
+            if (checkoutOccData.status.equals(STATUS_OK, true)) {
+                if (checkoutOccData.result.success == 1 || checkoutOccData.result.paymentParameter.redirectParam.url.isNotEmpty()) {
+                    onSuccessCheckout(checkoutOccData.result)
+                    orderSummaryAnalytics.eventClickBayarSuccess(orderTotal.value.isButtonChoosePayment, getTransactionId(checkoutOccData.result.paymentParameter.redirectParam.form), generateOspEe(OrderSummaryPageEnhanceECommerce.STEP_2, OrderSummaryPageEnhanceECommerce.STEP_2_OPTION, allPromoCodes))
                 } else {
-                    val error = checkoutOccGqlResponse.response.data.error
+                    val error = checkoutOccData.result.error
                     val errorCode = error.code
                     orderSummaryAnalytics.eventClickBayarNotSuccess(orderTotal.value.isButtonChoosePayment, errorCode)
-                    if (errorCode == ErrorCheckoutBottomSheet.ERROR_CODE_PRODUCT_STOCK_EMPTY || errorCode == ErrorCheckoutBottomSheet.ERROR_CODE_PRODUCT_ERROR || errorCode == ErrorCheckoutBottomSheet.ERROR_CODE_SHOP_CLOSED) {
-                        globalEvent.value = OccGlobalEvent.CheckoutError(CheckoutErrorData(error.code, error.imageUrl, error.message))
+                    if (checkoutOccData.result.prompt.shouldShowPrompt()) {
+                        globalEvent.value = OccGlobalEvent.Prompt(checkoutOccData.result.prompt)
+                    } else if (errorCode == ErrorCheckoutBottomSheet.ERROR_CODE_PRODUCT_STOCK_EMPTY || errorCode == ErrorCheckoutBottomSheet.ERROR_CODE_PRODUCT_ERROR || errorCode == ErrorCheckoutBottomSheet.ERROR_CODE_SHOP_CLOSED) {
+                        globalEvent.value = OccGlobalEvent.CheckoutError(error)
                     } else if (errorCode == ERROR_CODE_PRICE_CHANGE) {
                         globalEvent.value = OccGlobalEvent.PriceChangeError(PriceChangeMessage(PRICE_CHANGE_ERROR_MESSAGE, error.message, PRICE_CHANGE_ACTION_MESSAGE))
                     } else if (error.message.isNotBlank()) {
@@ -1010,8 +1015,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                     }
                 }
             } else {
-                globalEvent.value = OccGlobalEvent.TriggerRefresh(errorMessage = checkoutOccGqlResponse.response.header.messages.firstOrNull()
-                        ?: DEFAULT_ERROR_MESSAGE)
+                globalEvent.value = OccGlobalEvent.TriggerRefresh(errorMessage = checkoutOccData.headerMessage ?: DEFAULT_ERROR_MESSAGE)
             }
             OccIdlingResource.decrement()
         }, { throwable: Throwable ->
@@ -1106,7 +1110,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         return notEligiblePromoHolderdataList
     }
 
-    fun cancelIneligiblePromoCheckout(notEligiblePromoHolderdataList: ArrayList<NotEligiblePromoHolderdata>, onSuccessCheckout: (Data) -> Unit) {
+    fun cancelIneligiblePromoCheckout(notEligiblePromoHolderdataList: ArrayList<NotEligiblePromoHolderdata>, onSuccessCheckout: (CheckoutOccResult) -> Unit) {
         globalEvent.value = OccGlobalEvent.Loading
         val promoCodeList = ArrayList(notEligiblePromoHolderdataList.map { it.promoCode })
         clearCacheAutoApplyStackUseCase.setParams(PARAM_VALUE_MARKETPLACE, promoCodeList, true)
