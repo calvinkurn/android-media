@@ -45,6 +45,7 @@ class CouponListAdapter(private val mItems: MutableList<CouponValueEntity>) : Re
         var imgLabel: ImageView
         var ivMinTxn: ImageView
         var isVisited = false
+
         /*This section is exclusively for handling timer*/
         var timer: CountDownTimer? = null
         var progressTimer: ProgressBar
@@ -80,6 +81,16 @@ class CouponListAdapter(private val mItems: MutableList<CouponValueEntity>) : Re
     }
 
     override fun onBindViewHolder(pHolder: RecyclerView.ViewHolder, position: Int) {
+
+        val params = pHolder.itemView.getLayoutParams() as ViewGroup.MarginLayoutParams
+        if (position == 0) {
+            params.setMargins(convertDpToPixel(10, pHolder.itemView.getContext()), 0, 0, 0)
+        } else if (position == mItems.size + 1) {
+            params.setMargins( 0, 0, convertDpToPixel(10, pHolder.itemView.getContext()), 0)
+        } else {
+            params.setMargins(convertDpToPixel(10, pHolder.itemView.getContext()), 0, 0, 0)
+        }
+
         val item = mItems!![position]
         if (pHolder is ViewHolder) {
             val holder = pHolder
@@ -114,7 +125,7 @@ class CouponListAdapter(private val mItems: MutableList<CouponValueEntity>) : Re
             /*This section is exclusively for handling flash-sale timer*/if (holder.timer != null) {
                 holder.timer!!.cancel()
             }
-            if ( item.usage != null && item.usage.activeCountDown < 1) {
+            if (item.usage != null && item.usage.activeCountDown < 1) {
                 if (item.usage.expiredCountDown > 0
                         && item.usage.expiredCountDown <= CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S) {
                     holder.progressTimer.max = CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S.toInt()

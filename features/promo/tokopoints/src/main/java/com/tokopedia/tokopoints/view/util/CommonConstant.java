@@ -103,10 +103,11 @@ public interface CommonConstant {
     interface SectionLayoutType {
         String CATEGORY = "category";
         String TICKER = "ticker";
-        String TAB = "tab";
         String COUPON = "coupon";
         String CATALOG = "catalog";
         String BANNER = "banner";
+        String TOPADS = "topads";
+        String TOPHEADER = "topheader";
     }
 
     interface BannerType {

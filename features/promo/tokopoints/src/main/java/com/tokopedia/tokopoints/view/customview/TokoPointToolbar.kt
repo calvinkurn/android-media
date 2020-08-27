@@ -134,7 +134,7 @@ class TokoPointToolbar : Toolbar {
     }
 
     fun applyAlphaToToolbarBackground(alpha: Float) {
-        mContext?.resources?.getColor(com.tokopedia.design.R.color.white)?.let { adjustAlpha(it, alpha) }?.let {
+        mContext?.resources?.getColor(android.R.color.white)?.let { adjustAlpha(it, alpha) }?.let {
             setBackgroundColor(it)
         }
     }

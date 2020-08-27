@@ -36,4 +36,6 @@
     <color name="tp_green_token">#afd564</color>
     <color name="tp_coupon_flash_sale_timer_text_color">#D23B4D</color>
     <color name="tp_coupon_stack_new_badge_color">#ef144a</color>
+    <color name="tp_red_d43000">#d43000</color>
+    <color name="tp_black_38">#60000000</color>
 </resources>
