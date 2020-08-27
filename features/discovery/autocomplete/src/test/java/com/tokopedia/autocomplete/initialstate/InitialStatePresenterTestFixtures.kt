@@ -2,7 +2,6 @@ package com.tokopedia.autocomplete.initialstate
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.autocomplete.initialstate.data.InitialStateUniverse
-import com.tokopedia.autocomplete.initialstate.popularsearch.RefreshPopularSearchUseCase
 import com.tokopedia.autocomplete.jsonToObject
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
@@ -16,7 +15,7 @@ internal open class InitialStatePresenterTestFixtures {
 
     protected val getInitialStateUseCase = mockk<UseCase<List<InitialStateData>>>(relaxed = true)
     protected val deleteRecentSearchUseCase = mockk<UseCase<Boolean>>(relaxed = true)
-    protected val popularSearchUseCase = mockk<RefreshPopularSearchUseCase>(relaxed = true)
+    protected val refreshInitialStateUseCase = mockk<UseCase<List<InitialStateData>>>(relaxed = true)
 
     protected val userSession = mockk<UserSessionInterface>(relaxed = true)
 
@@ -43,7 +42,7 @@ internal open class InitialStatePresenterTestFixtures {
         initialStatePresenter = InitialStatePresenter(
                 getInitialStateUseCase,
                 deleteRecentSearchUseCase,
-                popularSearchUseCase,
+                refreshInitialStateUseCase,
                 userSession)
         initialStatePresenter.attachView(initialStateView)
     }
@@ -78,14 +77,14 @@ internal open class InitialStatePresenterTestFixtures {
     }
 
     protected fun `Given refresh popular search API will return data`(list: List<InitialStateData>) {
-        every { popularSearchUseCase.execute(any(), any()) }.answers {
+        every { refreshInitialStateUseCase.execute(any(), any()) }.answers {
             secondArg<Subscriber<List<InitialStateData>>>().onStart()
             secondArg<Subscriber<List<InitialStateData>>>().onNext(list)
         }
     }
 
     protected fun `Then verify popularSearch API is called`() {
-        verify { popularSearchUseCase.execute(any(), any()) }
+        verify { refreshInitialStateUseCase.execute(any(), any()) }
     }
 
     protected fun `Then verify refreshPopularSearch view behavior`() {

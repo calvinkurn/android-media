@@ -7,7 +7,7 @@ import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateTitleV
 import com.tokopedia.autocomplete.initialstate.dynamic.convertDynamicInitialStateSearchToVisitableList
 import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchTitleViewModel
 import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchViewModel
-import com.tokopedia.autocomplete.initialstate.popularsearch.RefreshPopularSearchUseCase
+import com.tokopedia.autocomplete.initialstate.popularsearch.RefreshInitialStateUseCase
 import com.tokopedia.autocomplete.initialstate.popularsearch.convertPopularSearchToVisitableList
 import com.tokopedia.autocomplete.initialstate.recentsearch.DeleteRecentSearchUseCase
 import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchTitleViewModel
@@ -21,11 +21,12 @@ import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 import javax.inject.Inject
+import javax.inject.Named
 
 class InitialStatePresenter @Inject constructor(
-        private val initialStateUseCase: UseCase<List<InitialStateData>>,
+        @Named(NAMED_USE_CASE_INITIAL_STATE) private val initialStateUseCase: UseCase<List<InitialStateData>>,
         private val deleteRecentSearchUseCase: UseCase<Boolean>,
-        private val refreshPopularSearchUseCase: RefreshPopularSearchUseCase,
+        @Named(NAMED_USE_CASE_REFRESH_INITIAL_STATE) private val refreshInitialStateUseCase: UseCase<List<InitialStateData>>,
         private val userSession: UserSessionInterface
 ) : BaseDaggerPresenter<InitialStateContract.View>(), InitialStateContract.Presenter {
 
@@ -205,9 +206,9 @@ class InitialStatePresenter @Inject constructor(
         return this
     }
 
-    override fun refreshPopularSearch(id: String) {
-        refreshPopularSearchUseCase.execute(
-                RefreshPopularSearchUseCase.getParams(
+    override fun refreshPopularSearch(featureId: String) {
+        refreshInitialStateUseCase.execute(
+                RefreshInitialStateUseCase.getParams(
                         searchParameter,
                         userSession.deviceId,
                         userSession.userId
@@ -247,9 +248,9 @@ class InitialStatePresenter @Inject constructor(
         return refreshedData
     }
 
-    override fun refreshDynamicSection(id: String) {
-        refreshPopularSearchUseCase.execute(
-                RefreshPopularSearchUseCase.getParams(
+    override fun refreshDynamicSection(featureId: String) {
+        refreshInitialStateUseCase.execute(
+                RefreshInitialStateUseCase.getParams(
                         searchParameter,
                         userSession.deviceId,
                         userSession.userId
@@ -387,7 +388,7 @@ class InitialStatePresenter @Inject constructor(
         super.detachView()
         initialStateUseCase.unsubscribe()
         deleteRecentSearchUseCase.unsubscribe()
-        refreshPopularSearchUseCase.unsubscribe()
+        refreshInitialStateUseCase.unsubscribe()
     }
 
     override fun attachView(view: InitialStateContract.View) {

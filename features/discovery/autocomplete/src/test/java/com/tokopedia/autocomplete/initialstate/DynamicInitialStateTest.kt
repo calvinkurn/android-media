@@ -67,7 +67,7 @@ internal class DynamicInitialStateTest: InitialStatePresenterTestFixtures() {
     }
 
     private fun `Given refresh popular search API will return error`() {
-        every { popularSearchUseCase.execute(any(), any()) }.answers {
+        every { refreshInitialStateUseCase.execute(any(), any()) }.answers {
             secondArg<Subscriber<List<InitialStateItem>>>().onStart()
             secondArg<Subscriber<List<InitialStateItem>>>().onError(testException)
         }
