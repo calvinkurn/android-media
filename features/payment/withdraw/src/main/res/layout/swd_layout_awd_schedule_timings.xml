@@ -16,7 +16,7 @@
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnUpdateSchedule"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:text="@string/swd_auto_wd_select"
         app:layout_constraintEnd_toEndOf="parent"

@@ -17,7 +17,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvAutoWDInfoTitle"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/swp_dp_12"
         android:layout_marginLeft="@dimen/swp_dp_12"
@@ -31,7 +31,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvAutoWDInfoDescription"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:textColor="@color/Neutral_N700_68"

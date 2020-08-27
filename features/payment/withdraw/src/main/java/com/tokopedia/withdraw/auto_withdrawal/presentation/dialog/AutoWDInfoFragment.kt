@@ -76,7 +76,7 @@ class AutoWDInfoFragment : BottomSheetUnify(), TickerCallback {
 
     private fun openMoreInfo() {
         context?.let {
-            val intent = RouteManager.getIntent(context,"https://www.tokopedia.com/help/article/auto-withdrawal").apply {
+            val intent = RouteManager.getIntent(context,URL_AUTO_WD_MORE_INFO).apply {
                 putExtra(KEY_NEED_LOGIN, true)
             }
             it.startActivity(intent)
@@ -88,6 +88,7 @@ class AutoWDInfoFragment : BottomSheetUnify(), TickerCallback {
     }
 
     companion object {
+        private const val URL_AUTO_WD_MORE_INFO = "https://www.tokopedia.com/help/article/auto-withdrawal"
         private const val TAG_BOTTOM_SHEET = "AutoWDInfoFragment"
         private const val ARG_AWD_INFO = "arg_awd_info"
         fun show(context: Context?,fragmentManager: FragmentManager, getInfoAutoWD: GetInfoAutoWD){

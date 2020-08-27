@@ -53,8 +53,8 @@
 
     <ImageView
         android:id="@+id/ivAutoWDBannerBackground"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl0"
         android:scaleType="fitXY"
         app:layout_constraintDimensionRatio="H,3:1"
         app:layout_constraintEnd_toEndOf="parent"
@@ -73,7 +73,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvAutoWDBannerTitle"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl5"
         android:ellipsize="end"
@@ -89,7 +89,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvAutoWDBannerBody"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:gravity="center_vertical"
@@ -112,8 +112,8 @@
 
     <ScrollView
         android:id="@+id/scrollViewAutoWDContent"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl0"
         android:layout_marginTop="@dimen/spacing_lvl5"
         android:orientation="vertical"
         android:visibility="visible"
@@ -251,7 +251,7 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvAutoWDBankName"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl4"
                 android:layout_marginLeft="@dimen/spacing_lvl4"
@@ -267,7 +267,7 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvAutoWdBankAccountDetail"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl4"
                 android:layout_marginLeft="@dimen/spacing_lvl4"
@@ -283,7 +283,7 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvAutoWdBankNote"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl4"
                 android:layout_marginLeft="@dimen/spacing_lvl4"
@@ -300,7 +300,7 @@
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btnAutoWDAddBankAccount"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/layout_lvl1"
                 android:text="@string/swd_add_bank_account"
@@ -322,7 +322,7 @@
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnAutoWDSaveSettings"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/layout_lvl1"
         android:text="@string/swd_save"
@@ -335,7 +335,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvAutoWDTermsAndCond"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_marginBottom="@dimen/layout_lvl1"
@@ -349,7 +349,7 @@
 
     <View
         android:id="@+id/dividerAutoWDTermsAndCond"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/spacing_lvl2"
         android:layout_marginBottom="@dimen/layout_lvl1"
         android:background="@drawable/swd_top_shadow"

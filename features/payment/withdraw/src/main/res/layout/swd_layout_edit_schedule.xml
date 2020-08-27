@@ -21,10 +21,10 @@
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/cta_button"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/layout_lvl1"
-        android:text="Pilih"
+        android:text="@string/swd_awd_pilih"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/right_guideline"
         app:layout_constraintStart_toStartOf="@id/left_guideline"
@@ -34,8 +34,8 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/info_recycler_view"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl0"
         app:layout_constraintBottom_toTopOf="@id/cta_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

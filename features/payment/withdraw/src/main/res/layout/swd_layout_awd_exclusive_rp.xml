@@ -15,7 +15,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvAutoWDExclusiveRPHeading"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         app:typographyType="heading_3"
         android:gravity="center"
@@ -29,7 +29,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvAutoWDExclusiveRPDescription"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         app:typographyType="body_2"
         android:gravity="center"
@@ -44,7 +44,7 @@
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnJoinPremiumProgramFree"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_marginBottom="@dimen/spacing_lvl5"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl6"

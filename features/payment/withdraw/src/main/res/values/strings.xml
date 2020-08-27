@@ -112,4 +112,5 @@
     <string name="swd_awd_auto_withdrawal_will_not_work">Saldo Penghasilan tidak akan lagi dicairkan secara otomatis ke rekeningmu.</string>
     <string name="swd_deactivate">Nonaktifkan</string>
     <string name="swd_awd_no_saved_account">Belum ada rekening tersimpan.</string>
+    <string name="swd_awd_pilih">Pilih</string>
 </resources>

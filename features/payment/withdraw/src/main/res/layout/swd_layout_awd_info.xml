@@ -6,7 +6,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/btnMoreInfo"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:paddingTop="@dimen/spacing_lvl4"
@@ -29,7 +29,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvAutoWDInfo"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl3"
         app:layout_constraintEnd_toEndOf="parent"
@@ -38,7 +38,7 @@
 
     <com.tokopedia.unifycomponents.ticker.Ticker
         android:id="@+id/awdJoinRPTicker"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
