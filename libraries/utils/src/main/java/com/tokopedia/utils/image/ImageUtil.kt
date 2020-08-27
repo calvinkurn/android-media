@@ -80,19 +80,15 @@ object ImageUtil {
     }
 
     @JvmStatic
-    fun getWidthAndHeight(file: File): Pair<Int, Int> {
-        val options = BitmapFactory.Options()
-        options.inJustDecodeBounds = true
-        BitmapFactory.decodeFile(file.absolutePath, options)
-        return options.outWidth to options.outHeight
-    }
-
-    @JvmStatic
-    fun getWidthAndHeight(localUri: Uri): Pair<Int, Int> {
+    fun getWidthAndHeight(context: Context, uri: Uri): Pair<Int, Int> {
         return try {
-            getWidthAndHeight(File(localUri.path))
-        } catch (e: Exception) {
-            // handling if uri is not found as local file.
+            val options = BitmapFactory.Options()
+            options.inJustDecodeBounds = true
+            val input = context.contentResolver.openInputStream(uri)
+            BitmapFactory.decodeStream(input, null, options)
+            input?.close()
+            options.outWidth to options.outHeight
+        } catch (ignored: Exception) {
             0 to 0
         }
     }
