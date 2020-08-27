@@ -75,7 +75,7 @@ class OrderSummaryPageActivityTest {
             assertEquals(View.GONE, view.visibility)
         }
         onView(withId(R.id.iv_free_shipping)).check(matches(isDisplayed()))
-        onView(withId(R.id.et_qty)).check(matches(withText("1")))
+        onView(withId(com.tokopedia.unifycomponents.R.id.quantity_editor_qty)).check(matches(withText("1")))
 
         onView(withId(R.id.tv_card_header)).check(matches(withText("Pilihan 1")))
         onView(withId(R.id.tv_address_name)).check(matches(withText("Address 1")))
@@ -136,9 +136,9 @@ class OrderSummaryPageActivityTest {
         activityRule.launchActivity(null)
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
-        onView(withId(R.id.btn_qty_plus)).perform(click())
+        onView(withId(com.tokopedia.unifycomponents.R.id.quantity_editor_add)).perform(click())
         Thread.sleep(1500)
-        onView(withId(R.id.et_qty)).check(matches(withText("2")))
+        onView(withId(com.tokopedia.unifycomponents.R.id.quantity_editor_qty)).check(matches(withText("2")))
 
         onView(withId(R.id.btn_pay)).perform(scrollTo())
         onView(withId(R.id.tv_total_payment_value)).check(matches(withText("Rp216.000")))
