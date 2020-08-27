@@ -39,10 +39,6 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
     @Test
     fun `when get shop basic data should return success`() {
         runBlocking {
-//            every {
-//                getShopBasicDataUseCase.getData(any())
-//            } returns ShopBasicDataModel()
-
             _onGetShopBasicData_thenReturn()
 
             shopEditBasicInfoViewModel.getShopBasicData()
@@ -82,10 +78,6 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
             val tagline: String = "tagline"
             val description: String = "description"
 
-//            every {
-//                uploadShopImageUseCase.getData(any())
-//            } returns UploadShopEditImageModel()
-
             _onUploadShopImage_thenReturn()
 
             shopEditBasicInfoViewModel.uploadShopImage(
@@ -106,10 +98,6 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
             val shopDescription = "description"
 
             _onUpdateShopBasicData_thenReturn()
-
-//            every {
-//                updateShopBasicDataUseCase.getData(any())
-//            } returns "test string response"
 
             shopEditBasicInfoViewModel.updateShopBasicData(
                     shopName, shopDomain, shopTagLine, shopDescription)

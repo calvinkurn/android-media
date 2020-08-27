@@ -102,9 +102,6 @@ abstract class ShopEditBasicInfoViewModelTestFixture {
         every {
             updateShopBasicDataUseCase.getData(any())
         } returns "test string response"
-//        every {
-//            updateShopBasicDataUseCase.createObservable(any())
-//        } returns Observable.just(responseModel)
     }
 
     protected fun _onGetShopBasicData_thenReturn() {
@@ -138,10 +135,5 @@ abstract class ShopEditBasicInfoViewModelTestFixture {
 
     protected fun verifySuccessValidateDomainNameRequestParamsCalled(domainName: String) {
         verify { ValidateDomainShopNameUseCase.createRequestParam(domainName) }
-    }
-
-    protected fun verifySuccessValidateDomainNameCalled(domainName: String) {
-        verify { ValidateDomainShopNameUseCase.createRequestParam(domainName) }
-        coVerify { validateDomainShopNameUseCase.executeOnBackground() }
     }
 }

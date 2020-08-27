@@ -2,9 +2,7 @@ package com.tokopedia.shop_settings.viewmodel.shopsettingsinfo
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
-import com.tokopedia.gm.common.data.source.cloud.model.GoldGetPmOsStatus
 import com.tokopedia.gm.common.domain.interactor.GetShopStatusUseCase
-import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopBasicDataUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.UpdateShopScheduleUseCase
 import com.tokopedia.shop.settings.basicinfo.data.CheckShopIsOfficialModel
@@ -68,43 +66,6 @@ abstract class ShopSettingsInfoViewModelTestFixture  {
         coVerify { checkOsMerchantUseCase.executeOnBackground() }
     }
 
-    protected fun verifySuccessUpdateShopScheduleCalled(action: Int, closeNow: Boolean, closeStart: String, closeEnd: String, closeNote: String) {
-        verify { UpdateShopScheduleUseCase.createRequestParams(action, closeNow, closeStart, closeEnd, closeNote) }
-        coVerify { updateShopScheduleUseCase.createObservable(any()) }
-    }
-
-    protected fun onGetShopBasicInfo_thenReturn(shopBasicDataModel: ShopBasicDataModel) {
-        every {
-            getShopBasicDataUseCase.createObservable(any())
-        } returns Observable.just(shopBasicDataModel)
-    }
-
-    protected fun onUpdateShopSchedule_thenReturn(result: String) {
-        every {
-            updateShopScheduleUseCase.createObservable(any())
-        } returns Observable.just(result)
-    }
-
-    protected fun verifyUpdateShopScheduleUseCaseCalled() {
-        verify {
-            getShopBasicDataUseCase.createObservable(any())
-            getShopStatusUseCase.createObservable(any())
-        }
-    }
-
-    protected fun onGetShopStatus_thenReturn(goldGetPmOsStatus: GoldGetPmOsStatus) {
-        every {
-            getShopStatusUseCase.createObservable(any())
-        } returns Observable.just(goldGetPmOsStatus)
-    }
-
-    protected fun verifyAllUseCaseCalled() {
-        verify {
-            getShopBasicDataUseCase.createObservable(any())
-            getShopStatusUseCase.createObservable(any())
-        }
-    }
-
     protected fun verifyUnsubscribeUseCase() {
         coVerify { getShopBasicDataUseCase.unsubscribe() }
         coVerify { getShopStatusUseCase.unsubscribe() }
@@ -116,11 +77,5 @@ abstract class ShopSettingsInfoViewModelTestFixture  {
         val actualResult = (value as? Success<T>)?.data
         TestCase.assertEquals(expectedResult, actualResult)
     }
-
-//    protected fun verifyGetPmOsStatusUseCaseCalled() {
-//        verify {
-//            getShopStatusUseCase.createObservable(any())
-//        }
-//    }
 
 }
