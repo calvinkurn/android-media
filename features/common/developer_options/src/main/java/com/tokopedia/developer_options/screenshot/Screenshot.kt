@@ -8,11 +8,20 @@ import android.provider.MediaStore
 
 
 class Screenshot(contentResolver: ContentResolver, listener: Listener) {
-    private val mHandlerThread: HandlerThread
+    private val mHandlerThread: HandlerThread = HandlerThread("ScreenshotObserver")
     private val mHandler: Handler
     private val mContentResolver: ContentResolver
     private val mContentObserver: ContentObserver
     private val mListener: Listener
+
+    init {
+        mHandlerThread.start()
+        mHandler = Handler(mHandlerThread.looper)
+        mContentResolver = contentResolver
+        mContentObserver = ScreenshotObserver(mHandler, contentResolver, listener)
+        mListener = listener
+    }
+
     fun register() {
         mContentResolver.registerContentObserver(
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
@@ -29,12 +38,5 @@ class Screenshot(contentResolver: ContentResolver, listener: Listener) {
         fun onScreenShotTaken(screenshotData: ScreenshotData?)
     }
 
-    init {
-        mHandlerThread = HandlerThread("ShotWatch")
-        mHandlerThread.start()
-        mHandler = Handler(mHandlerThread.looper)
-        mContentResolver = contentResolver
-        mContentObserver = ScreenShotObserver(mHandler, contentResolver, listener)
-        mListener = listener
-    }
+
 }

@@ -9,15 +9,18 @@ import android.os.Looper
 import android.provider.MediaStore
 
 class ScreenshotObserver(handler: Handler?, private val mContentResolver: ContentResolver, listener: Screenshot.Listener) : ContentObserver(handler) {
+
     private val PROJECTION = arrayOf(
             MediaStore.Images.Media._ID,
             MediaStore.Images.Media.DISPLAY_NAME,
             MediaStore.Images.Media.DATA
     )
+
     private val MEDIA_EXTERNAL_URI_STRING = MediaStore.Images.Media.EXTERNAL_CONTENT_URI.toString()
     private val FILE_NAME_PREFIX = "screenshot"
     private val PATH_SCREENSHOT = "screenshots/"
-    private val mListener: Screenshot.Listener
+    private val mListener: Screenshot.Listener = listener
+
     override fun deliverSelfNotifications(): Boolean {
         return super.deliverSelfNotifications()
     }
@@ -72,7 +75,4 @@ class ScreenshotObserver(handler: Handler?, private val mContentResolver: Conten
         return path.toLowerCase().contains(PATH_SCREENSHOT)
     }
 
-    init {
-        mListener = listener
-    }
 }
