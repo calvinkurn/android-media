@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.lifecycle.Observer
@@ -33,6 +34,8 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.reputation.common.view.AnimatedRatingPickerCreateReviewView
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
+import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringContract
+import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
 import com.tokopedia.review.common.analytics.ReviewTracking
 import com.tokopedia.review.common.data.*
 import com.tokopedia.review.common.presentation.util.ReviewScoreClickListener
@@ -56,14 +59,12 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import kotlinx.android.synthetic.main.fragment_create_review.*
 import kotlinx.android.synthetic.main.widget_create_review_text_area.*
-import kotlinx.android.synthetic.main.widget_create_review_text_area.view.*
-import kotlinx.android.synthetic.main.widget_create_review_text_area.view.createReviewEditText
 import javax.inject.Inject
 import com.tokopedia.usecase.coroutines.Fail as CoroutineFail
 import com.tokopedia.usecase.coroutines.Success as CoroutineSuccess
 
 class CreateReviewFragment : BaseDaggerFragment(),
-        ImageClickListener, TextAreaListener, ReviewScoreClickListener {
+        ImageClickListener, TextAreaListener, ReviewScoreClickListener, ReviewPerformanceMonitoringContract {
 
     companion object {
         private const val REQUEST_CODE_IMAGE = 111
@@ -110,6 +111,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
     private var isLowDevice = false
 
+    private var reviewPerformanceMonitoringListener: ReviewPerformanceMonitoringListener? = null
     private var shouldPlayAnimation: Boolean = true
     private var reviewClickAt: Int = 0
     private var reputationId: Int = 0
@@ -120,6 +122,42 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
     lateinit var imgAnimationView: LottieAnimationView
     private var textAreaBottomSheet: CreateReviewTextAreaBottomSheet? = null
+
+    override fun stopPreparePerfomancePageMonitoring() {
+        reviewPerformanceMonitoringListener?.stopPreparePagePerformanceMonitoring()
+    }
+
+    override fun startNetworkRequestPerformanceMonitoring() {
+        reviewPerformanceMonitoringListener?.startNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun stopNetworkRequestPerformanceMonitoring() {
+        reviewPerformanceMonitoringListener?.stopNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun startRenderPerformanceMonitoring() {
+        reviewPerformanceMonitoringListener?.startRenderPerformanceMonitoring()
+        createReviewScrollView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                reviewPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
+                reviewPerformanceMonitoringListener?.stopPerformanceMonitoring()
+                createReviewScrollView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+            }
+        })
+    }
+
+    override fun castContextToTalkPerformanceMonitoringListener(context: Context): ReviewPerformanceMonitoringListener? {
+        return if(context is ReviewPerformanceMonitoringListener) {
+            context
+        } else {
+            null
+        }
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        reviewPerformanceMonitoringListener = castContextToTalkPerformanceMonitoringListener(context)
+    }
 
     override fun getScreenName(): String = ""
 
@@ -194,6 +232,8 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        stopPreparePerfomancePageMonitoring()
+        startNetworkRequestPerformanceMonitoring()
         super.onViewCreated(view, savedInstanceState)
         isLowDevice = DevicePerformanceInfo.isLow(context)
         initCreateReviewTextArea()
@@ -414,6 +454,8 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessGetReviewForm(data: ProductRevGetForm) {
+        stopNetworkRequestPerformanceMonitoring()
+        startRenderPerformanceMonitoring()
         with(data.productrevGetForm) {
             if (!validToReview || productData.productStatus == 0) {
                 activity?.let {
@@ -486,6 +528,8 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessGetReviewDetail(productrevGetReviewDetail: ProductrevGetReviewDetail) {
+        stopNetworkRequestPerformanceMonitoring()
+        startRenderPerformanceMonitoring()
         hideShimmering()
         with(productrevGetReviewDetail) {
             setReview(review)
