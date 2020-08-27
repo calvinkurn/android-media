@@ -46,9 +46,7 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerMultipleSelectio
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.imagepreview.ImagePreviewActivity
-import com.tokopedia.kotlin.extensions.view.hideLoadingTransparent
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.showLoadingTransparent
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
@@ -65,6 +63,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
+import com.tokopedia.topchat.chatroom.view.activity.TopchatReportWebViewActivity
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactoryImpl
@@ -95,7 +94,6 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.webview.BaseSimpleWebViewActivity
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import javax.inject.Inject
 import kotlin.math.abs
@@ -1080,7 +1078,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         context?.let {
             analytics.eventClickReportUser(opponentId)
             val reportUrl = getChatReportUrl()
-            val intent = BaseSimpleWebViewActivity.getStartIntent(it, reportUrl)
+            val intent = TopchatReportWebViewActivity.getStartIntent(it, reportUrl)
             startActivity(intent)
         }
     }
