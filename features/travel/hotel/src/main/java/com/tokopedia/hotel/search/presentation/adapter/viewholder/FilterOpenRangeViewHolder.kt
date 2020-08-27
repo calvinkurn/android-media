@@ -13,19 +13,20 @@ import kotlinx.android.synthetic.main.layout_hotel_filter_open_range.view.*
  * @author by jessica on 12/08/20
  */
 
-class FilterOpenRangeViewHolder(view: View): HotelSearchResultFilterV2Adapter.FilterBaseViewHolder(view) {
+class FilterOpenRangeViewHolder(view: View, val onSelectedFilterChangedListener: OnSelectedFilterChangedListener)
+    : HotelSearchResultFilterV2Adapter.FilterBaseViewHolder(view) {
 
-    override var selectedOption: ParamFilterV2 = ParamFilterV2()
+    override var filterName: String = ""
     private var initialMaxPrice = 0
 
     override fun bind(filter: FilterV2) {
-        selectedOption.name = filter.name
-        selectedOption.values = filter.optionSelected.toMutableList()
+        filterName = filter.name
+        onSelectedFilterChangedListener.onSelectedFilterChanged(filterName)
 
         if (filter.options.isEmpty()) filter.options = listOf(MIN_PRICE, MAX_PRICE)
         initialMaxPrice = filter.options.lastOrNull().toIntOrZero()
 
-        val selectedFilterOnlyOne = selectedOption.values.size == 1
+        val selectedFilterOnlyOne = filter.optionSelected.size == 1
 
         with(itemView) {
             hotel_filter_open_range_title.text = filter.displayName
@@ -40,15 +41,15 @@ class FilterOpenRangeViewHolder(view: View): HotelSearchResultFilterV2Adapter.Fi
 
             hotel_filter_open_range_slider.onValueChangedListener = object: HotelFilterPriceRangeSlider.OnValueChangedListener{
                 override fun onValueChanged(startValue: Int, endValue: Int) {
-                    if (startValue.toString() == MIN_PRICE && endValue.toString() == MAX_PRICE) selectedOption.values = mutableListOf()
-                    else selectedOption.values = mutableListOf(startValue.toString(), endValue.toString())
+                    if (startValue.toString() == MIN_PRICE && endValue.toString() == MAX_PRICE) onSelectedFilterChangedListener.onSelectedFilterChanged(filterName)
+                    else onSelectedFilterChangedListener.onSelectedFilterChanged(filterName, mutableListOf(startValue.toString(), endValue.toString()))
                 }
             }
         }
     }
 
     override fun resetSelection() {
-        selectedOption = ParamFilterV2()
+        onSelectedFilterChangedListener.onSelectedFilterChanged(filterName)
         itemView.hotel_filter_open_range_slider.initView(0, initialMaxPrice, initialMaxPrice)
     }
 

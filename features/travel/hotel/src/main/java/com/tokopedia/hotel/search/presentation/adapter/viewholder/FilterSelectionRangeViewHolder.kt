@@ -18,13 +18,14 @@ import kotlinx.android.synthetic.main.layout_hotel_filter_selection_range.view.b
  * @author by jessica on 12/08/20
  */
 
-class FilterSelectionRangeViewHolder(view: View): HotelSearchResultFilterV2Adapter.FilterBaseViewHolder(view) {
+class FilterSelectionRangeViewHolder(view: View, val onSelectedFilterChangedListener: OnSelectedFilterChangedListener)
+    : HotelSearchResultFilterV2Adapter.FilterBaseViewHolder(view) {
 
-    override var selectedOption = ParamFilterV2()
+    override var filterName: String = ""
 
     override fun bind(filter: FilterV2) {
-        selectedOption.name  = filter.name
-        selectedOption.values = filter.optionSelected.toMutableList()
+        filterName  = filter.name
+        onSelectedFilterChangedListener.onSelectedFilterChanged(filterName, filter.optionSelected.toMutableList())
 
         with(itemView) {
             hotel_filter_selection_range_title.text = filter.displayName
@@ -58,13 +59,17 @@ class FilterSelectionRangeViewHolder(view: View): HotelSearchResultFilterV2Adapt
                 }
             }
 
-            if (selectedOption.values.isEmpty()) hotel_filter_selection_range_seekbar.progress = hotel_filter_selection_range_seekbar.max
+            if (filter.optionSelected.isEmpty())
+                hotel_filter_selection_range_seekbar.progress = hotel_filter_selection_range_seekbar.max
 
             hotel_filter_selection_range_seekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
                 override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
                     if (filter.options.getOrNull(p1) != null) {
-                        if (p1 == filter.options.lastIndex) selectedOption.values = mutableListOf()
-                        else selectedOption.values = mutableListOf(filter.options[filter.options.size - p1 - 1])
+                        if (p1 == filter.options.lastIndex) onSelectedFilterChangedListener.onSelectedFilterChanged(filterName)
+                        else {
+                            onSelectedFilterChangedListener.onSelectedFilterChanged(filterName,
+                                    mutableListOf(filter.options[filter.options.size - p1 - 1]))
+                        }
                     }
                 }
 
@@ -77,7 +82,7 @@ class FilterSelectionRangeViewHolder(view: View): HotelSearchResultFilterV2Adapt
     }
 
     override fun resetSelection() {
-        selectedOption = ParamFilterV2()
+        onSelectedFilterChangedListener.onSelectedFilterChanged(filterName)
         with(itemView) {
             hotel_filter_selection_range_seekbar.progress = hotel_filter_selection_range_seekbar.max
         }
