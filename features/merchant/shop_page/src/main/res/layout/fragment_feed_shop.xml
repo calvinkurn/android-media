@@ -9,20 +9,20 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/mainView"
         android:layout_height="match_parent"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:background="@color/white"
         android:fitsSystemWindows="true">
 
         <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
             android:id="@+id/swipeToRefresh"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:clipToPadding="false">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:paddingTop="@dimen/dp_8"
                 android:orientation="vertical"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -31,6 +31,13 @@
         </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <include
+        android:id="@+id/sellerMigrationTabFeed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        layout="@layout/widget_seller_migration_tab_feed_has_post" />
 
     <FrameLayout
         android:id="@+id/loadingLayout"

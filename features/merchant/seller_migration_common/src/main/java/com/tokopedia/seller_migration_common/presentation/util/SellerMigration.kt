@@ -46,8 +46,8 @@ internal fun Fragment.setupMigrationFooter(view: View?,
     })
 }
 
-private fun Fragment.goToSellerApp(trackGoToSellerApp: () -> Unit,
-                                   trackGoToPlayStore: () -> Unit) {
+fun Fragment.goToSellerApp(trackGoToSellerApp: () -> Unit = {},
+                                   trackGoToPlayStore: () -> Unit = {}) {
     with(SellerMigrationConstants) {
         try {
             val intent = context?.packageManager?.getLaunchIntentForPackage(PACKAGE_SELLER_APP)
@@ -66,8 +66,8 @@ private fun Fragment.goToSellerApp(trackGoToSellerApp: () -> Unit,
     }
 }
 
-private fun Fragment.goToInformationWebview(link: String,
-                                            trackLearnMore: () -> Unit): Boolean {
+fun Fragment.goToInformationWebview(link: String,
+                                    trackLearnMore: () -> Unit = {}): Boolean {
     trackLearnMore()
     return RouteManager.route(activity, "${ApplinkConst.WEBVIEW}?url=${link}")
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.shop.feed.view.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -8,8 +9,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -22,6 +25,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
@@ -53,6 +57,11 @@ import com.tokopedia.kolcommon.util.PostMenuListener
 import com.tokopedia.kolcommon.util.createBottomMenu
 import com.tokopedia.kolcommon.view.listener.KolPostLikeListener
 import com.tokopedia.kolcommon.view.listener.KolPostViewHolderListener
+import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
+import com.tokopedia.seller_migration_common.analytics.SellerMigrationTrackingConstants
+import com.tokopedia.seller_migration_common.presentation.util.goToInformationWebview
+import com.tokopedia.seller_migration_common.presentation.util.goToSellerApp
+import com.tokopedia.seller_migration_common.presentation.util.touchlistener.SellerMigrationTouchListener
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.feed.di.DaggerFeedShopComponent
@@ -62,7 +71,9 @@ import com.tokopedia.shop.feed.view.analytics.ShopAnalytics
 import com.tokopedia.shop.feed.view.contract.FeedShopContract
 import com.tokopedia.shop.feed.view.model.EmptyFeedShopViewModel
 import com.tokopedia.shop.feed.view.model.WhitelistViewModel
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_feed_shop.*
 import javax.inject.Inject
@@ -93,6 +104,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     private lateinit var shopId: String
     private var isLoading = false
     private var isForceRefresh = false
+
+    private var bottomSheetSellerMigration: BottomSheetBehavior<View>? = null
 
     private var whitelistDomain: WhitelistDomain = WhitelistDomain()
 
@@ -169,6 +182,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         userVisibleHint = false
         super.onViewCreated(view, savedInstanceState)
         isLoadingInitialData = true
+        setupBottomSheetSellerMigration(view)
     }
 
     override fun onPause() {
@@ -193,12 +207,17 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                 try {
                     if (hasFeed()
                             && newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        FeedScrollListener.onFeedScrolled(recyclerView, adapter.list)
+                        if(GlobalConfig.isSellerApp()) {
+                            FeedScrollListener.onFeedScrolled(recyclerView, adapter.list)
+                        } else {
+                            bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_EXPANDED
+                        }
+                    } else {
+                        bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_HIDDEN
                     }
                 } catch (e: IndexOutOfBoundsException) {
                 }
             }
-
         })
     }
 
@@ -355,6 +374,17 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun onEmptyFeedButtonClicked() {
         goToCreatePost()
         shopAnalytics.eventClickCreatePost()
+    }
+
+    override fun onGotoPlayStoreClicked() {
+        goToSellerApp {
+            SellerMigrationTracking.eventGoToSellerApp(userSession.userId.orEmpty(), SellerMigrationTrackingConstants.EVENT_CLICK_GO_TO_SELLER_APP_ACCOUNT)
+            SellerMigrationTracking.eventGoToPlayStore(userSession.userId.orEmpty(), SellerMigrationTrackingConstants.EVENT_CLICK_GO_TO_SELLER_APP_ACCOUNT)
+        }
+    }
+
+    override fun onGotoLearnMoreClicked(url: String): Boolean {
+        return goToInformationWebview(url)
     }
 
     override fun onSuccessGetFeed(visitables: List<Visitable<*>>, lastCursor: String) {
@@ -753,10 +783,10 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     private fun goToCreatePost() {
-          goToCreatePost(getSellerApplink())
+        goToCreatePost(getSellerApplink())
     }
 
-    private fun goToCreatePost(link : String) {
+    private fun goToCreatePost(link: String) {
         startActivityForResult(
                 RouteManager.getIntent(
                         requireContext(),
@@ -818,17 +848,17 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     private fun onSuccessReportContent() {
         view?.let {
-            Toaster.make(it,getString(com.tokopedia.feedcomponent.R.string.feed_content_reported),
-                            Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL,
-                    getString(com.tokopedia.design.R.string.label_close), View.OnClickListener {  } )
+            Toaster.make(it, getString(com.tokopedia.feedcomponent.R.string.feed_content_reported),
+                    Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL,
+                    getString(com.tokopedia.design.R.string.label_close), View.OnClickListener { })
         }
     }
 
     private fun onErrorReportContent(errorMsg: String) {
         view?.let {
-            Toaster.make(it,errorMsg,
+            Toaster.make(it, errorMsg,
                     Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
-                    getString(com.tokopedia.design.R.string.label_close), View.OnClickListener {  } )
+                    getString(com.tokopedia.design.R.string.label_close), View.OnClickListener { })
         }
     }
 
@@ -852,8 +882,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     private fun showError(message: String, listener: View.OnClickListener?) {
         listener?.let {
-            Toaster.make(view!!, message,Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
-                    getString(com.tokopedia.abstraction.R.string.title_try_again), it )
+            Toaster.make(view!!, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                    getString(com.tokopedia.abstraction.R.string.title_try_again), it)
         }
     }
 
@@ -867,6 +897,20 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     override fun onTopAdsViewImpression(bannerId: String, imageUrl: String) {
 
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun setupBottomSheetSellerMigration(view: View) {
+        val viewTarget = view.findViewById<ConstraintLayout>(R.id.bottomSheetTabFeedHasPost)
+        bottomSheetSellerMigration = BottomSheetBehavior.from(viewTarget)
+        BottomSheetUnify.bottomSheetBehaviorKnob(viewTarget, false)
+        BottomSheetUnify.bottomSheetBehaviorHeader(viewTarget, false)
+
+        val tvTitleTabFeedHasPost = viewTarget.findViewById<Typography>(R.id.tvTitleTabFeedHasPost)
+        tvTitleTabFeedHasPost.text = getString(R.string.seller_migration_tab_feed_bottom_sheet_content)
+        tvTitleTabFeedHasPost?.setOnTouchListener(SellerMigrationTouchListener {
+            goToInformationWebview(it)
+        })
     }
 
 }

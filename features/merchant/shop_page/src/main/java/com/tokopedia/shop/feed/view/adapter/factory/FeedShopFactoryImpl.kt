@@ -4,6 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.feedcomponent.view.adapter.post.DynamicFeedTypeFactory
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerViewHolder
@@ -26,6 +27,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendat
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
+import com.tokopedia.shop.feed.view.adapter.holder.EmptyFeedShopSellerMigrationViewHolder
 import com.tokopedia.shop.feed.view.adapter.holder.EmptyFeedShopViewHolder
 import com.tokopedia.shop.feed.view.adapter.holder.WhitelistViewHolder
 import com.tokopedia.shop.feed.view.contract.FeedShopContract
@@ -74,7 +76,11 @@ class FeedShopFactoryImpl(private val mainView: FeedShopContract.View,
     }
 
     override fun type(emptyFeedShopViewModel: EmptyFeedShopViewModel): Int {
-        return EmptyFeedShopViewHolder.LAYOUT
+        return if(GlobalConfig.isSellerApp()) {
+            EmptyFeedShopViewHolder.LAYOUT
+        } else {
+            EmptyFeedShopSellerMigrationViewHolder.LAYOUT
+        }
     }
 
     override fun type(highlightViewModel: HighlightViewModel): Int {
@@ -108,6 +114,8 @@ class FeedShopFactoryImpl(private val mainView: FeedShopContract.View,
             WhitelistViewHolder.LAYOUT ->
                 WhitelistViewHolder(parent, mainView) as AbstractViewHolder<Visitable<*>>
             EmptyFeedShopViewHolder.LAYOUT ->
+                EmptyFeedShopViewHolder(parent, mainView) as AbstractViewHolder<Visitable<*>>
+            EmptyFeedShopSellerMigrationViewHolder.LAYOUT ->
                 EmptyFeedShopViewHolder(parent, mainView) as AbstractViewHolder<Visitable<*>>
             TopAdsBannerViewHolder.LAYOUT ->
                 TopAdsBannerViewHolder(parent, topAdsBannerListener, cardTitleListener) as AbstractViewHolder<Visitable<*>>
