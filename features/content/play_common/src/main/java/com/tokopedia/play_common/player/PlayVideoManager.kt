@@ -21,6 +21,7 @@ import com.google.android.exoplayer2.util.Util
 import com.tokopedia.play_common.exception.PlayVideoErrorException
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.PlayPlayerModel
+import com.tokopedia.play_common.player.state.ExoPlayerStateProcessorImpl
 import com.tokopedia.play_common.state.PlayVideoPrepareState
 import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.play_common.state.VideoPositionHandle
@@ -47,16 +48,34 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
     private val _observablePlayVideoState = MutableLiveData<PlayVideoState>()
     private val _observableVideoPlayer = MutableLiveData<SimpleExoPlayer>()
 
-    private val playerEventListener = object : Player.EventListener {
+    private val playerStateProcessor = ExoPlayerStateProcessorImpl()
+    private val listeners: MutableList<Listener> = mutableListOf()
+
+    private val listenerPlayerEventListener = object : Player.EventListener {
         override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
-            when (playbackState) {
-                Player.STATE_IDLE -> _observablePlayVideoState.value = PlayVideoState.NoMedia
-                Player.STATE_BUFFERING -> _observablePlayVideoState.value = PlayVideoState.Buffering
-                Player.STATE_READY -> {
-                    _observablePlayVideoState.value = if (!playWhenReady) PlayVideoState.Pause else PlayVideoState.Playing
-                }
-                Player.STATE_ENDED -> _observablePlayVideoState.value = PlayVideoState.Ended
-            }
+            broadcastStateToListeners(safeProcessPlaybackState(playWhenReady, playbackState))
+        }
+
+        override fun onPlayerError(error: ExoPlaybackException) {
+            broadcastStateToListeners(PlayVideoState.Error(PlayVideoErrorException(error.cause)))
+        }
+    }
+
+    private val liveDataPlayerEventListener = object : Player.EventListener {
+        override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+            _observablePlayVideoState.value = safeProcessPlaybackState(playWhenReady, playbackState)
+        }
+
+        override fun onPlayerError(error: ExoPlaybackException) {
+            _observablePlayVideoState.value = PlayVideoState.Error(PlayVideoErrorException(error.cause))
+        }
+    }
+
+    private val playerEventListener = object : Player.EventListener {
+
+        override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+            listenerPlayerEventListener.onPlayerStateChanged(playWhenReady, playbackState)
+            liveDataPlayerEventListener.onPlayerStateChanged(playWhenReady, playbackState)
         }
 
         override fun onPlayerError(error: ExoPlaybackException) {
@@ -95,7 +114,9 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
                     playUri(prepareState.uri, videoPlayer.playWhenReady)
                 }
             }
-            _observablePlayVideoState.value = PlayVideoState.Error(PlayVideoErrorException(error.cause))
+
+            listenerPlayerEventListener.onPlayerError(error)
+            liveDataPlayerEventListener.onPlayerError(error)
         }
 
         override fun onTimelineChanged(timeline: Timeline, manifest: Any?, reason: Int) {
@@ -129,6 +150,14 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
         }
 
     //region public method
+    fun addListener(listener: Listener) {
+        listeners.add(listener)
+    }
+
+    fun removeListener(listener: Listener) {
+        listeners.remove(listener)
+    }
+
     fun playUri(uri: Uri, autoPlay: Boolean = true, bufferControl: PlayBufferControl = playerModel.loadControl.bufferControl) {
         if (uri.toString().isEmpty()) {
             release()
@@ -303,6 +332,22 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
         return PlayPlayerModel(videoPlayer, videoLoadControl)
     }
 
+    private fun safeProcessPlaybackState(playWhenReady: Boolean, playbackState: Int): PlayVideoState {
+        return try {
+            playerStateProcessor.processState(playWhenReady, playbackState)
+        } catch (e: IllegalStateException) {
+            PlayVideoState.Error(e)
+        }
+    }
+
+    private fun broadcastStateToListeners(state: PlayVideoState) {
+        listeners.forEach { it.onPlayerStateChanged(state) }
+    }
+
+    private fun broadcastVideoPlayerToListeners(exoPlayer: ExoPlayer) {
+        listeners.forEach { it.onVideoPlayerChanged(exoPlayer) }
+    }
+
     /**
      * To handle audio focus and content type
      */
@@ -358,5 +403,11 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
                 INSTANCE = null
             }
         }
+    }
+
+    interface Listener {
+
+        fun onPlayerStateChanged(state: PlayVideoState) {}
+        fun onVideoPlayerChanged(player: ExoPlayer) {}
     }
 }
