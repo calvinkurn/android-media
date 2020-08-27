@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.data.model.DataDeposit
 import com.tokopedia.topads.credit.history.view.activity.TopAdsCreditHistoryActivity
@@ -129,8 +130,8 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
         super.onViewCreated(view, savedInstanceState)
         selectedStatisticType = TopAdsStatisticsType.PRODUCT_ADS
         initStatisticComponent()
-        image.setImage(R.drawable.topads_ic_wallet, 0.0f)
-        arrow.setImage(R.drawable.topads_ic_arrow, 0.0f)
+        image.setImageDrawable(context?.getResDrawable(R.drawable.topads_ic_wallet))
+        arrow.setImageDrawable(context?.getResDrawable(R.drawable.topads_ic_arrow))
         help_section.setOnClickListener {
             RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, SELLER_CENTER_URL)
         }
@@ -149,8 +150,8 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
         endDate = Utils.getEndDate()
         startDate = Utils.getStartDate()
         loadData()
-        hari_ini?.date_image?.setImage(R.drawable.topads_ic_calendar, 0.0f)
-        hari_ini?.next_image?.setImage(R.drawable.topads_ic_arrow, 0.0f)
+        hari_ini?.date_image?.setImageDrawable(context?.getResDrawable(R.drawable.topads_ic_calendar))
+        hari_ini?.next_image?.setImageDrawable(context?.getResDrawable(R.drawable.topads_ic_arrow))
         hari_ini?.setOnClickListener {
             showBottomSheet()
         }
@@ -278,7 +279,7 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
     private fun onSuccessGetAutoTopUpStatus(data: AutoTopUpStatus) {
         val isAutoTopUpActive = (data.status.toIntOrZero()) != TopAdsDashboardConstant.AUTO_TOPUP_INACTIVE
         if (isAutoTopUpActive) {
-            img_auto_debit.setImage(R.drawable.topads_dash_auto_debit, 0.0f)
+            img_auto_debit.setImageDrawable(context?.getResDrawable(R.drawable.topads_dash_auto_debit))
             img_auto_debit.visibility = View.VISIBLE
         }
     }

@@ -3,12 +3,12 @@ package com.tokopedia.topads.dashboard.view.sheet
 import android.content.Context
 import android.view.View
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CUSTOM_DATE
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.list.ListUnify
-import com.tokopedia.unifycomponents.setImage
 import kotlinx.android.synthetic.main.topads_dash_datepicker_bottomsheet_layout.*
 
 class DatePickerSheet {
@@ -22,7 +22,7 @@ class DatePickerSheet {
             val listUnify = ArrayList<ListItemUnify>()
             val dateModel = Utils.getPeriodRangeList(context)
 
-            dialog.btn_close.setImage(R.drawable.topads_create_ic_group_close, 0.0f)
+            dialog.btn_close.setImageDrawable(context.getResDrawable(R.drawable.topads_create_ic_group_close))
             dateModel.forEachIndexed { index, periodRangeModel ->
 
                 val data = if (index != CUSTOM_DATE)

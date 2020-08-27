@@ -5,9 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
-import com.tokopedia.unifycomponents.setImage
 import kotlinx.android.synthetic.main.topads_dash_group_empty_state.*
 import kotlinx.android.synthetic.main.topads_dash_group_empty_state.image_empty
 import kotlinx.android.synthetic.main.topads_dash_group_empty_state.text_desc
@@ -33,7 +33,7 @@ class TopAdsInsightBaseBidFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        image_empty.setImage(R.drawable.topads_empty_insight_img, 0.0f)
+        image_empty.setImageDrawable(context?.getResDrawable(R.drawable.topads_empty_insight_img))
         text_title.text = resources.getString(R.string.topads_insight_empty_bid_title)
         text_desc.text = resources.getString(R.string.topads_insight_empty_bid_desc)
     }

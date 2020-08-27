@@ -3,12 +3,12 @@ package com.tokopedia.topads.dashboard.view.adapter.keyword.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
+import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.STATUS_ACTIVE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.STATUS_TIDAK_TAMPIL
 import com.tokopedia.topads.dashboard.view.adapter.keyword.viewmodel.KeywordItemViewModel
 import com.tokopedia.unifycomponents.Label
-import com.tokopedia.unifycomponents.setImage
 import kotlinx.android.synthetic.main.topads_dash_item_keyword_card.view.*
 
 
@@ -35,7 +35,7 @@ class KeywordItemViewHolder(val view: View,
                 view.btn_switch.visibility = View.VISIBLE
                 view.check_box.visibility = View.GONE
             }
-            view.img_total.setImage(R.drawable.topads_dash_rupee, 0.0f)
+            view.img_total.setImageDrawable(view.context.getResDrawable(R.drawable.topads_dash_rupee))
             view.check_box.isChecked = item.isChecked
             view.key_title.text = it.result.keywordTag
             view.btn_switch.isChecked = it.result.keywordStatus == STATUS_ACTIVE || it.result.keywordStatus == STATUS_TIDAK_TAMPIL

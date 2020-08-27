@@ -22,8 +22,7 @@
         android:layout_marginLeft="@dimen/dp_4"
         app:layout_constraintBottom_toBottomOf="@id/insight_title"
         app:layout_constraintStart_toEndOf="@id/insight_title"
-        app:layout_constraintTop_toTopOf="@id/insight_title"
-        app:srcCompat="@drawable/topads_dash_info_tooltip" />
+        app:layout_constraintTop_toTopOf="@id/insight_title" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/insight_desc"

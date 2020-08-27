@@ -4,6 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTIVE
@@ -17,7 +18,6 @@ import com.tokopedia.topads.dashboard.view.adapter.group_item.viewmodel.GroupIte
 import com.tokopedia.topads.dashboard.view.sheet.TopadsSelectActionSheet
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ProgressBarUnify
-import com.tokopedia.unifycomponents.setImage
 import kotlinx.android.synthetic.main.topads_dash_item_with_group_card.view.*
 
 
@@ -41,7 +41,7 @@ class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean
     override fun bind(item: GroupItemsItemViewModel, selectedMode: Boolean, fromSearch: Boolean, statsData: MutableList<DataItem>, countList: MutableList<CountDataItem>) {
         item.let {
 
-            view.img.setImage(R.drawable.topads_dashboard_folder, 0.0f)
+            view.img.setImageDrawable(view.context.getResDrawable(R.drawable.topads_dashboard_folder))
             if (selectedMode) {
                 view.img_menu.visibility = View.INVISIBLE
                 view.check_box.visibility = View.VISIBLE

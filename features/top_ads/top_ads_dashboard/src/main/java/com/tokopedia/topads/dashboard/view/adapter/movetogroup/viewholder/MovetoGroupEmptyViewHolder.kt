@@ -2,10 +2,10 @@ package com.tokopedia.topads.dashboard.view.adapter.movetogroup.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.model.CountDataItem
 import com.tokopedia.topads.dashboard.view.adapter.movetogroup.viewmodel.MovetoGroupEmptyViewModel
-import com.tokopedia.unifycomponents.setImage
 import kotlinx.android.synthetic.main.topads_dash_no_search_result.view.*
 
 /**
@@ -20,7 +20,7 @@ class MovetoGroupEmptyViewHolder(val view: View) : MovetoGroupViewHolder<MovetoG
 
     override fun bind(item: MovetoGroupEmptyViewModel, lastSelected: Int, countList: MutableList<CountDataItem>) {
         item.let {
-            view.image_empty.setImage(R.drawable.ill_no_product, 0.0f)
+            view.image_empty.setImageDrawable(view.context.getResDrawable(R.drawable.ill_no_product))
         }
 
     }

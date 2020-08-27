@@ -29,6 +29,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.datepicker.range.view.constant.DatePickerConstant
 import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.topads.auto.view.activity.AutoAdsOnboardingActivity
 import com.tokopedia.topads.auto.view.widget.AutoAdsWidget
@@ -65,7 +66,6 @@ import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.topads.dashboard.view.sheet.CustomDatePicker
 import com.tokopedia.topads.dashboard.view.sheet.DatePickerSheet
 import com.tokopedia.topads.dashboard.view.sheet.TopadsGroupFilterSheet
-import com.tokopedia.unifycomponents.setImage
 import kotlinx.android.synthetic.main.partial_top_ads_dashboard_statistics.*
 import kotlinx.android.synthetic.main.topads_dash_auto_ads_onboarding_widget.*
 import kotlinx.android.synthetic.main.topads_dash_fragment_beranda_base.*
@@ -186,7 +186,7 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
         topAdsDashboardPresenter.attachView(this)
         initStatisticComponent()
 
-        auto_ad_status_image.setImage(R.drawable.ill_iklan_otomatis, 0.0f)
+        auto_ad_status_image.setImageDrawable(context?.getResDrawable(R.drawable.ill_iklan_otomatis))
         onBoarding.setOnClickListener {
             if (GlobalConfig.isSellerApp())
                 RouteManager.route(activity, ApplinkConstInternalTopAds.TOPADS_AUTOADS_ONBOARDING)
@@ -207,8 +207,8 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
         topAdsDashboardPresenter.saveDate(startDate!!, endDate!!)
         topAdsDashboardPresenter.saveSelectionDatePicker()
         loadData()
-        hari_ini?.date_image?.setImage(R.drawable.topads_ic_calendar, 0.0f)
-        hari_ini?.next_image?.setImage(R.drawable.topads_ic_arrow, 0.0f)
+        hari_ini?.date_image?.setImageDrawable(context?.getResDrawable(R.drawable.topads_ic_calendar))
+        hari_ini?.next_image?.setImageDrawable(context?.getResDrawable(R.drawable.topads_ic_arrow))
         hari_ini?.setOnClickListener {
             showBottomSheet()
         }
@@ -344,7 +344,7 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
         view_pager_frag.visibility = View.GONE
         autoads_layout.visibility = View.GONE
         app_bar_layout_2.visibility = View.GONE
-        empty_view.image_empty.setImage(R.drawable.topads_dashboard_empty_product, 0.0f)
+        empty_view.image_empty.setImageDrawable(context?.getResDrawable(R.drawable.topads_dashboard_empty_product))
         empty_view.visibility = View.VISIBLE
         mulai_beriklan.setOnClickListener {
             if (GlobalConfig.isSellerApp())

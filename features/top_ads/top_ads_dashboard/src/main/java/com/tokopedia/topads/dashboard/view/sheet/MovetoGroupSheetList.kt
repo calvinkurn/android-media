@@ -11,13 +11,13 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.model.CountDataItem
 import com.tokopedia.topads.dashboard.view.adapter.movetogroup.MovetoGroupAdapter
 import com.tokopedia.topads.dashboard.view.adapter.movetogroup.MovetoGroupAdapterTypeFactoryImpl
 import com.tokopedia.topads.dashboard.view.adapter.movetogroup.viewmodel.MovetoGroupItemViewModel
 import com.tokopedia.topads.dashboard.view.adapter.movetogroup.viewmodel.MovetoGroupViewModel
-import com.tokopedia.unifycomponents.setImage
 import kotlinx.android.synthetic.main.topads_dash_layout_common_searchbar_layout.*
 import kotlinx.android.synthetic.main.topads_dash_moveto_group_bottom_sheet.*
 
@@ -44,7 +44,7 @@ class MovetoGroupSheetList {
                     behavior.isHideable = false
                 }
             }
-            it.btn_close.setImage(R.drawable.topads_create_ic_group_close, 0.0f)
+            it.btn_close.setImageDrawable(context.getResDrawable(R.drawable.topads_create_ic_group_close))
             it.btn_close.setOnClickListener { dismissDialog() }
             it.submit_butt.setOnClickListener {
                 if (groupId.toString() == "0") {

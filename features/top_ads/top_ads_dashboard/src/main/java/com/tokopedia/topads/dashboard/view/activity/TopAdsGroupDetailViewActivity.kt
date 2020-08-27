@@ -21,6 +21,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
+import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
@@ -48,7 +49,6 @@ import com.tokopedia.topads.dashboard.view.fragment.*
 import com.tokopedia.topads.dashboard.view.model.GroupDetailViewModel
 import com.tokopedia.topads.dashboard.view.sheet.CustomDatePicker
 import com.tokopedia.topads.dashboard.view.sheet.DatePickerSheet
-import com.tokopedia.unifycomponents.setImage
 import kotlinx.android.synthetic.main.partial_top_ads_dashboard_statistics.*
 import kotlinx.android.synthetic.main.topads_dash_detail_view_widget.*
 import kotlinx.android.synthetic.main.topads_dash_fragment_beranda_base.*
@@ -159,8 +159,8 @@ class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboa
         header_toolbar.setNavigationOnClickListener {
             super.onBackPressed()
         }
-        hari_ini?.date_image?.setImage(R.drawable.topads_ic_calendar, 0.0f)
-        hari_ini?.next_image?.setImage(R.drawable.topads_ic_arrow, 0.0f)
+        hari_ini?.date_image?.setImageDrawable(this.getResDrawable(R.drawable.topads_ic_calendar))
+        hari_ini?.next_image?.setImageDrawable(this.getResDrawable(R.drawable.topads_ic_arrow))
         hari_ini?.setOnClickListener {
             showBottomSheet()
         }

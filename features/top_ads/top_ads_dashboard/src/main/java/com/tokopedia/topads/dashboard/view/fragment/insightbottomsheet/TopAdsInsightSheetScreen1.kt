@@ -5,8 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.dashboard.R
-import com.tokopedia.unifycomponents.setImage
 import kotlinx.android.synthetic.main.topads_insight_bottomsheet_page_1.view.*
 
 /**
@@ -20,8 +20,8 @@ class TopAdsInsightSheetScreen1 : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        view.img.setImage(R.drawable.topads_dash_insight_page1, 0.0f)
-        view.step_indicator.setImage(R.drawable.topads_indi_1, 0.0f)
+        view.img.setImageDrawable(view.context.getResDrawable(R.drawable.topads_dash_insight_page1))
+        view.step_indicator.setImageDrawable(view.context.getResDrawable(R.drawable.topads_indi_1))
     }
 
 }

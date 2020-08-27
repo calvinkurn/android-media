@@ -17,8 +17,7 @@
             app:layout_constraintBottom_toTopOf="@+id/text_title"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/topads_dashboard_empty_product" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/text_title"

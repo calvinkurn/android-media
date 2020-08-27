@@ -6,10 +6,10 @@ import android.view.View
 import android.widget.FrameLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
-import com.tokopedia.unifycomponents.setImage
 import kotlinx.android.synthetic.main.topads_dash_filter_bottomsheet.*
 import kotlinx.android.synthetic.main.topads_dash_filter_bottomsheet.view.*
 
@@ -32,7 +32,7 @@ class TopadsGroupFilterSheet : BottomSheetUnify() {
                     behavior.isHideable = false
                 }
             }
-            it.btn_close.setImage(R.drawable.topads_create_ic_group_close, 0.0f)
+            it.btn_close.setImageDrawable(context.getResDrawable(R.drawable.topads_create_ic_group_close))
             it.status?.visibility = View.VISIBLE
             it.status_title?.visibility = View.VISIBLE
 
