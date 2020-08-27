@@ -236,6 +236,7 @@ class InitialStatePresenter @Inject constructor(
         }
     }
 
+    //change id to feature_id later
     private fun getRefreshedData(id: String, listData: List<InitialStateData>): List<BaseItemInitialStateSearch> {
         val newData: InitialStateData? = listData.find { it.id == id }
         var refreshedData = listOf<BaseItemInitialStateSearch>()

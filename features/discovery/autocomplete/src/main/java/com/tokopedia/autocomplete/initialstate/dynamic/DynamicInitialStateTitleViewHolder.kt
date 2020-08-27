@@ -13,13 +13,13 @@ class DynamicInitialStateTitleViewHolder(itemView: View, private val clickListen
 
     override fun bind(element: DynamicInitialStateTitleViewModel) {
         itemView.initialStateDynamicTitle?.text = element.title
-        bindActionRefreshButton(element)
+        bindActionButton(element)
     }
 
-    private fun bindActionRefreshButton(item: DynamicInitialStateTitleViewModel) {
+    private fun bindActionButton(item: DynamicInitialStateTitleViewModel) {
         itemView.initialStateDynamicButton?.shouldShowWithAction(item.labelAction.isNotEmpty()) {
             itemView.initialStateDynamicButton?.text = item.labelAction
-            itemView.actionRefreshButton?.setOnClickListener { clickListener.onRefreshDynamicSection(item.id) }
+            itemView.initialStateDynamicButton?.setOnClickListener { clickListener.onRefreshDynamicSection(item.id) }
         }
     }
 

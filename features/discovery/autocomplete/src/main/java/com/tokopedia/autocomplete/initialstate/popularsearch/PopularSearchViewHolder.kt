@@ -27,7 +27,7 @@ class PopularSearchViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.layout_dynamic_initial_state
+        val LAYOUT = R.layout.layout_popular_autocomplete
     }
 
     private val adapter: ItemAdapter
