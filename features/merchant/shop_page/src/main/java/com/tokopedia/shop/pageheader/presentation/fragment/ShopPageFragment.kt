@@ -257,7 +257,6 @@ class ShopPageFragment :
         mainLayout.requestFocus()
         initStickyLogin(view)
         getChatButtonInitialMargin()
-        setupBottomSheet()
     }
 
     private fun getChatButtonInitialMargin() {
@@ -305,7 +304,9 @@ class ShopPageFragment :
         shopViewModel.shopImagePath.observe(owner, Observer {
             shopImageFilePath = it
             if(shopImageFilePath.isNotEmpty()) {
-                shopShareBottomSheet?.show()
+                shopShareBottomSheet = ShopShareBottomSheet(context, fragmentManager, this).apply {
+                    show()
+                }
             }
         })
 
@@ -456,10 +457,6 @@ class ShopPageFragment :
         } else {
             displayToolbarBuyer()
         }
-    }
-
-    private fun setupBottomSheet() {
-        shopShareBottomSheet = ShopShareBottomSheet(context, fragmentManager, this)
     }
 
     private fun displayToolbarSeller() {

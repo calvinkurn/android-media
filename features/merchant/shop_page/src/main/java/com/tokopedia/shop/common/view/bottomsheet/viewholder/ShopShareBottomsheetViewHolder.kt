@@ -18,10 +18,10 @@ class ShopShareBottomsheetViewHolder(itemView: View, private val bottomsheetList
 
     fun bind(shop: ShopShareModel) {
         if(shop is ShopShareModel.Others) {
-            itemView.item_separator.invisible()
+            itemView.item_separator?.invisible()
         }
-        itemView.iv_social_media_logo.setImageDrawable(shop.socialMediaIcon)
-        itemView.tv_social_media_name.text = shop.socialMediaName
+        itemView.iv_social_media_logo?.setImageDrawable(shop.socialMediaIcon)
+        itemView.tv_social_media_name?.text = shop.socialMediaName
         itemView.setOnClickListener {
             bottomsheetListener.onItemBottomsheetShareClicked(shop)
         }
