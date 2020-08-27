@@ -12,4 +12,7 @@
     <string name="product_card_out_of_stock">Stok Habis</string>
     <string name="home_flashsale_card_ad">Ad</string>
 
+    <string name="content_desc_imageProduct">image product</string>
+    <string name="content_desc_textTopAds">text topads</string>
+    <string name="content_desc_imageThreeDots">button threedots</string>
 </resources>
