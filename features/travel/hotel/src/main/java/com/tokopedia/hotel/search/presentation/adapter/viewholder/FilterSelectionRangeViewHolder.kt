@@ -7,12 +7,12 @@ import android.widget.LinearLayout
 import android.widget.SeekBar
 import android.widget.TextView
 import com.tokopedia.hotel.R
+import com.tokopedia.hotel.search.data.model.FilterRatingEnum
 import com.tokopedia.hotel.search.data.model.FilterV2
 import com.tokopedia.hotel.search.data.model.params.ParamFilterV2
 import com.tokopedia.hotel.search.presentation.adapter.HotelSearchResultFilterV2Adapter
 import kotlinx.android.synthetic.main.layout_hotel_filter_selection_range.view.*
 import kotlinx.android.synthetic.main.layout_hotel_filter_selection_range.view.base_rating_step
-import kotlin.math.max
 
 /**
  * @author by jessica on 12/08/20
@@ -33,7 +33,12 @@ class FilterSelectionRangeViewHolder(view: View): HotelSearchResultFilterV2Adapt
             val selectedValue =  filter.optionSelected.firstOrNull() ?: "0"
 
             if (filter.options.isEmpty()) {
-                filter.options = listOf("Semua", "6.0", "7.0", "8.0", "9.0")
+                filter.options = listOf(
+                        FilterRatingEnum.ALL_RATING.value,
+                        FilterRatingEnum.ABOVE_6.value,
+                        FilterRatingEnum.ABOVE_7.value,
+                        FilterRatingEnum.ABOVE_8.value,
+                        FilterRatingEnum.ABOVE_9.value)
             }
 
             filter.options.forEachIndexed { index, item ->
@@ -58,7 +63,8 @@ class FilterSelectionRangeViewHolder(view: View): HotelSearchResultFilterV2Adapt
             hotel_filter_selection_range_seekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
                 override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
                     if (filter.options.getOrNull(p1) != null) {
-                        selectedOption.values = mutableListOf(filter.options[filter.options.size - p1 - 1])
+                        if (p1 == filter.options.lastIndex) selectedOption.values = mutableListOf()
+                        else selectedOption.values = mutableListOf(filter.options[filter.options.size - p1 - 1])
                     }
                 }
 

@@ -40,7 +40,8 @@ class FilterOpenRangeViewHolder(view: View): HotelSearchResultFilterV2Adapter.Fi
 
             hotel_filter_open_range_slider.onValueChangedListener = object: HotelFilterPriceRangeSlider.OnValueChangedListener{
                 override fun onValueChanged(startValue: Int, endValue: Int) {
-                    selectedOption.values = mutableListOf(startValue.toString(), endValue.toString())
+                    if (startValue.toString() == MIN_PRICE && endValue.toString() == MAX_PRICE) selectedOption.values = mutableListOf()
+                    else selectedOption.values = mutableListOf(startValue.toString(), endValue.toString())
                 }
             }
         }

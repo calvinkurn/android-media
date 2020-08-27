@@ -4,6 +4,7 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.presentation.widget.SpanningLinearLayoutManager
+import com.tokopedia.hotel.search.data.model.FilterStarEnum
 import com.tokopedia.hotel.search.data.model.FilterV2
 import com.tokopedia.hotel.search.data.model.params.ParamFilterV2
 import com.tokopedia.hotel.search.presentation.adapter.HotelSearchResultFilterAdapter
@@ -37,8 +38,12 @@ class FilterSelectionViewHolder(view: View): HotelSearchResultFilterV2Adapter.Fi
 
             if (filter.name == SELECTION_STAR_TYPE) {
                 if (hotelFilterItems.isEmpty()) {
-                    hotelFilterItems = listOf(1, 2, 3, 4, 5).map {
-                        HotelSearchResultFilterAdapter.HotelFilterItem(it.toString(), it.toString(), filter.name == SELECTION_STAR_TYPE)
+                    hotelFilterItems = listOf(FilterStarEnum.STAR_ONE.value,
+                            FilterStarEnum.STAR_TWO.value,
+                            FilterStarEnum.STAR_THREE.value,
+                            FilterStarEnum.STAR_FOUR.value,
+                            FilterStarEnum.STAR_FIVE.value).map {
+                        HotelSearchResultFilterAdapter.HotelFilterItem(it, it, filter.name == SELECTION_STAR_TYPE)
                     }
                 }
                 hotel_filter_selection_rv.layoutManager = SpanningLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL,

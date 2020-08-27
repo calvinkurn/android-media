@@ -47,6 +47,7 @@ import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_search_result.*
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterTypeFactory>(),
@@ -174,6 +175,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
             bottom_action_view.visibility = View.GONE
         } else {
             bottom_action_view.visibility = View.VISIBLE
+            bottom_action_view.filterItem.active = searchResultviewModel.isFilter
         }
 
         super.renderList(searchProperties, searchProperties.isNotEmpty())
@@ -233,9 +235,10 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         }
         quick_filter_sort_filter.addItem(ArrayList(sortFilterItem))
 
-        for (item in quick_filter_sort_filter.chipItems) {
+        for ((index, item) in quick_filter_sort_filter.chipItems.withIndex()) {
             item.refChipUnify.setOnClickListener {
                 item.toggleSelected()
+                trackingHotelUtil.clickOnQuickFilter(context, SEARCH_SCREEN_NAME, item.title.toString(), index)
                 refreshSelectedFilter(quickFilters)
             }
         }
@@ -345,7 +348,11 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     override fun onEmptyButtonClicked() {
         if (!searchResultviewModel.isFilter) activity?.onBackPressed()
         else {
-            onSubmitFilter(mutableListOf())
+            filterBottomSheet = HotelFilterBottomSheets()
+                    .setSubmitFilterListener(this)
+                    .setSelected(searchResultviewModel.selectedFilterV2)
+                    .setFilter((searchResultviewModel.liveSearchResult.value as Success<PropertySearch>).data.filters)
+            filterBottomSheet.show(childFragmentManager, javaClass.simpleName)
         }
     }
 
@@ -359,6 +366,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
             }
         }
         searchResultviewModel.addFilter(selectedFilter)
+        trackingHotelUtil.clickSubmitFilterOnBottomSheet(context, SEARCH_SCREEN_NAME, selectedFilter)
         setUpQuickFilterBaseOnSelectedFilter(selectedFilter)
         loadInitialData()
     }
@@ -387,7 +395,9 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
                 if (selectedFilters.containsKey(quickFilter.name)) {
                     val selectedFilter = selectedFilters[quickFilter.name] ?: ParamFilterV2()
                     val filterValue = selectedFilter.values.toHashSet()
-                    if (quickFilter.type == FilterV2.FILTER_TYPE_OPEN_RANGE || quickFilter.type == FilterV2.FILTER_TYPE_SELECTION_RANGE) filterValue.clear()
+                    if (quickFilter.type == FilterV2.FILTER_TYPE_OPEN_RANGE
+                            || quickFilter.type == FilterV2.FILTER_TYPE_SELECTION_RANGE ||
+                            quickFilter.name == "star") filterValue.clear()
                     filterValue.addAll(quickFilter.values)
                     selectedFilters[quickFilter.name] = ParamFilterV2(quickFilter.name, filterValue.toMutableList())
                 } else {
@@ -454,8 +464,12 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     }
 
     override fun loadData(page: Int) {
-        val searchQuery = GraphqlHelper.loadRawString(resources, R.raw.gql_get_property_search)
-        searchResultviewModel.searchProperty(page, searchQuery)
+        GlobalScope.launch {
+            bottom_action_view.visibility = View.GONE
+            delay(500)
+            val searchQuery = GraphqlHelper.loadRawString(resources, R.raw.gql_get_property_search)
+            searchResultviewModel.searchProperty(page, searchQuery)
+        }
     }
 
     override fun isAutoLoadEnabled(): Boolean = true
