@@ -11,7 +11,6 @@ import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Option
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -95,18 +94,18 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
     }
 
     private fun setQuickFilterChipsSelected(position: Int) {
-        quickSortFilter.chipItems[position].let {
-            it.type = ChipsUnify.TYPE_SELECTED
-            it.refChipUnify.chipType = ChipsUnify.TYPE_SELECTED
-            it.typeUpdated = false
+        quickSortFilter.chipItems[position].apply {
+            this.type = ChipsUnify.TYPE_SELECTED
+            this.refChipUnify.chipType = ChipsUnify.TYPE_SELECTED
+            this.typeUpdated = false
         }
     }
 
     private fun setQuickFilterChipsNormal(position: Int) {
-        quickSortFilter.chipItems[position].let {
-            it.type = ChipsUnify.TYPE_NORMAL
-            it.refChipUnify.chipType = ChipsUnify.TYPE_NORMAL
-            it.typeUpdated = false
+        quickSortFilter.chipItems[position].apply {
+            this.type = ChipsUnify.TYPE_NORMAL
+            this.refChipUnify.chipType = ChipsUnify.TYPE_NORMAL
+            this.typeUpdated = false
         }
     }
 
@@ -126,7 +125,7 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
     }
 
     override fun getResultCount(mapParameter: Map<String, String>) {
-        sortFilterBottomSheet.setResultCountText(fragment.getString(R.string.bottom_sheet_filter_finish_button_text))
+        sortFilterBottomSheet.setResultCountText(fragment.getString(R.string.discovery_bottom_sheet_filter_finish_button_text))
     }
 
 }

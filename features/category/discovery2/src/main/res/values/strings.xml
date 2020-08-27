@@ -38,6 +38,6 @@
     <string name="quick_coupon_title">Kupon Cashback 80%</string>
     <string name="empty_state_title">Awas keduluan pembeli lain!</string>
     <string name="empty_state_description">Aktifkan pengingat supaya kamu nggak ketinggalan penawaran seru dari seller-seller Tokopedia!</string>
-    <string name="bottom_sheet_filter_finish_button_text">Tampilkan produk</string>
+    <string name="discovery_bottom_sheet_filter_finish_button_text">Tampilkan produk</string>
 
 </resources>
