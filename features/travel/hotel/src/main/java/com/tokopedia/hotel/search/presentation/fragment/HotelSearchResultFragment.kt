@@ -320,7 +320,6 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     }
 
     override fun onSubmitFilter(selectedFilter: List<ParamFilterV2>) {
-        //track
         searchResultviewModel.addFilter(selectedFilter)
         trackingHotelUtil.clickSubmitFilterOnBottomSheet(context, SEARCH_SCREEN_NAME, selectedFilter)
         setUpQuickFilterBaseOnSelectedFilter(selectedFilter)
