@@ -38,6 +38,7 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
     @Inject
     lateinit var userSession: UserSession
     private var isSeller: Boolean = false
+    private val saldoComponent by lazy(LazyThreadSafetyMode.NONE) { SaldoDetailsComponentInstance.getComponent(this) }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -60,11 +61,11 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
     }
 
     private fun initInjector() {
-        SaldoDetailsComponentInstance.getComponent(this).inject(this)
+        saldoComponent.inject(this)
     }
 
     override fun getComponent(): SaldoDetailsComponent? {
-        return SaldoDetailsComponentInstance.getComponent(this)
+        return saldoComponent
     }
 
     override fun getLayoutRes(): Int {

@@ -103,8 +103,8 @@ class TopAdsAssertion(val context: Context,
     }
 
     private fun waitForVerificatorReady() {
-        //wait for 10 minutes
-        Thread.sleep(600000)
+        //wait for 15 seconds
+        Thread.sleep(15000)
     }
 
     private fun logTestMessage(message: String) {

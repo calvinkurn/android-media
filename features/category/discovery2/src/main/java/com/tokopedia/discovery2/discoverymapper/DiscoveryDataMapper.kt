@@ -5,6 +5,8 @@ import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.Properties
 import com.tokopedia.discovery2.data.categorynavigationresponse.ChildItem
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 
 private const val CHIPS = "Chips"
 private const val TABS_ITEM = "tabs_item"
@@ -15,7 +17,7 @@ class DiscoveryDataMapper {
 
         val discoveryDataMapper: DiscoveryDataMapper by lazy { DiscoveryDataMapper() }
 
-        fun mapListToComponentList(itemList: List<DataItem>, subComponentName: String = "", parentComponentName: String?, position: Int, design : String = ""): ArrayList<ComponentsItem> {
+        fun mapListToComponentList(itemList: List<DataItem>, subComponentName: String = "", parentComponentName: String?, position: Int, design: String = ""): ArrayList<ComponentsItem> {
             val list = ArrayList<ComponentsItem>()
             itemList.forEachIndexed { index, it ->
                 val componentsItem = ComponentsItem()
@@ -34,12 +36,21 @@ class DiscoveryDataMapper {
             return list
         }
 
-        fun mapTabsListToComponentList(component: ComponentsItem, subComponentName: String = "", position: Int): ArrayList<ComponentsItem> {
+        fun mapTabsListToComponentList(component: ComponentsItem, subComponentName: String = "", position: Int, pinnedTabID: String?): ArrayList<ComponentsItem> {
             val list = ArrayList<ComponentsItem>()
             var isSelectedFound = false
             component.data?.forEachIndexed { index, it ->
                 val id = "${TABS_ITEM}_$index"
-                if (it.isSelected) {
+                if (!pinnedTabID.isNullOrEmpty()) {
+                    var pinnedActiveIndex = pinnedTabID.toIntOrZero()
+                    if (pinnedActiveIndex.isMoreThanZero()) {
+                        pinnedActiveIndex -= 1
+                        if (index == pinnedActiveIndex) {
+                            it.isSelected = true
+                            isSelectedFound = true
+                        }
+                    }
+                } else if (it.isSelected) {
                     isSelectedFound = true
                 }
                 val componentsItem = ComponentsItem()
@@ -53,6 +64,7 @@ class DiscoveryDataMapper {
                 componentsItem.id = id
                 list.add(componentsItem)
             }
+
             if (!isSelectedFound) {
                 list[0].data?.get(0)?.isSelected = true
             }
