@@ -13,6 +13,7 @@ import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.UpdateShop
 import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.GetShopDomainNameSuggestionUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.ValidateDomainShopNameUseCase
 import com.tokopedia.shop.settings.basicinfo.data.AllowShopNameDomainChanges.*
+import com.tokopedia.shop.settings.basicinfo.data.AllowShopNameDomainChangesData
 import com.tokopedia.shop.settings.basicinfo.data.UploadShopEditImageModel
 import com.tokopedia.shop.settings.basicinfo.domain.GetAllowShopNameDomainChanges
 import com.tokopedia.shop.settings.basicinfo.domain.UploadShopImageUseCase
@@ -65,8 +66,13 @@ class ShopEditBasicInfoViewModel @Inject constructor(
     private var currentShopName: String? = null
     private var currentShop: ShopBasicDataModel? = null
 
-    private var validateShopNameJob: Job? = null
-    private var validateShopDomainJob: Job? = null
+    private var _validateShopNameJob: Job? = null
+    val validateShopNameJob: Job?
+        get() = _validateShopNameJob
+
+    private var _validateShopDomainJob: Job? = null
+    val validateShopDomainJob: Job?
+        get() = _validateShopDomainJob
 
     fun getAllowShopNameDomainChanges() {
         launchCatchError(block = {
@@ -83,7 +89,7 @@ class ShopEditBasicInfoViewModel @Inject constructor(
     fun validateShopName(shopName: String) {
         if(shopName == currentShop?.name) return
 
-        validateShopNameJob?.cancel()
+        _validateShopNameJob?.cancel()
 
         launchCatchError(block = {
             val allowChangeDomain = isDomainChangeAllowed()
@@ -102,7 +108,7 @@ class ShopEditBasicInfoViewModel @Inject constructor(
             _validateShopName.value = Success(data)
         }) {
             _validateShopName.value = Fail(it)
-        }.let { validateShopNameJob = it }
+        }.let { _validateShopNameJob = it }
 
         setCurrentShopName(shopName)
     }
@@ -110,7 +116,7 @@ class ShopEditBasicInfoViewModel @Inject constructor(
     fun validateShopDomain(domain: String) {
         if(domain == currentShop?.domain) return
 
-        validateShopDomainJob?.cancel()
+        _validateShopDomainJob?.cancel()
 
         launchCatchError(block = {
             val data = withContext(dispatchers.io) {
@@ -128,7 +134,7 @@ class ShopEditBasicInfoViewModel @Inject constructor(
             _validateShopDomain.value = Success(data)
         }) {
             _validateShopDomain.value = Fail(it)
-        }.let { validateShopDomainJob = it }
+        }.let { _validateShopDomainJob = it }
     }
 
     fun getShopBasicData() {
@@ -161,6 +167,7 @@ class ShopEditBasicInfoViewModel @Inject constructor(
             uploadShopImage.data?.image?.picCode?.let { picCode ->
                 updateShopBasicData(name, domain, tagline, description, picCode)
             }
+            _uploadShopImage.value = Success(uploadShopImage)
         }) {
             _uploadShopImage.value = Fail(it)
         }
@@ -193,11 +200,11 @@ class ShopEditBasicInfoViewModel @Inject constructor(
     }
 
     fun cancelValidateShopName() {
-        validateShopNameJob?.cancel()
+        _validateShopNameJob?.cancel()
     }
 
     fun cancelValidateShopDomain() {
-        validateShopDomainJob?.cancel()
+        _validateShopDomainJob?.cancel()
     }
 
     fun setCurrentShopData(data: ShopBasicDataModel) {
