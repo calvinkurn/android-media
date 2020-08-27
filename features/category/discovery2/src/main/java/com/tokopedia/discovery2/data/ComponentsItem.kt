@@ -51,7 +51,8 @@ data class ComponentsItem(
         var couponAppliedClicked: Boolean = false,
         var position: Int = 0,
         var couponViewImpression: Boolean = false,
-        var design: String = "") {
+        var design: String = "",
+        var rpc_PinnedProduct: String? = "") {
 
     private var componentsItem: List<ComponentsItem>? = null
 
