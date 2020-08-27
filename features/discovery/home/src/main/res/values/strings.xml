@@ -102,4 +102,14 @@
     <string name="content_desc_see_all_button">text dynamic channel lihat semua</string>
     <string name="content_desc_count_down">text dynamic channel count down</string>
     <string name="content_desc_channel_subtitle">text dynamic channel subtitle</string>
+    <string name="content_desc_imageProduct">image product</string>
+    <string name="content_desc_labelPromo">text promo</string>
+    <string name="content_desc_textViewProductName">text product name</string>
+    <string name="content_desc_labelDiscount">text discount</string>
+    <string name="content_desc_textViewSlashedPrice">text slashed price</string>
+    <string name="content_desc_textViewPrice">text product price</string>
+    <string name="content_desc_linearLayoutShopBadges">image badge</string>
+    <string name="content_desc_textViewShopLocation">text shop location</string>
+    <string name="content_desc_textViewReviewCount">text review</string>
+    <string name="content_desc_imageFreeOngkirPromo">image bebas ongkir</string>
 </resources>
