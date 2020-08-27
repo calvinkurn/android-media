@@ -273,6 +273,7 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         inputLayoutModelMap.forEach {
             it.value.isSkuFieldVisible = isVisible
         }
+        refreshCollapsedVariantDetailField()
     }
 
     fun getCurrentHeaderPosition(headerPosition: Int): Int {
@@ -433,6 +434,17 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
                 unitValueLabel = unitValueLabel,
                 isPrimary = isPrimary,
                 combination = combination)
+    }
+
+    private fun refreshCollapsedVariantDetailField() {
+        updateProductInputModel() // save the last input
+        // reset collapsed variables
+        collapsedFields = 0
+        headerStatusMap.forEach {
+            headerStatusMap[it.key] = false
+        }
+        // do refresh
+        productInputModel.value = productInputModel.value // force invoke livedata notify observer
     }
 
 }
