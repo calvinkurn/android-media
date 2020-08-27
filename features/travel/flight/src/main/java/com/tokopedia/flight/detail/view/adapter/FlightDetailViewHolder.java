@@ -119,7 +119,8 @@ public class FlightDetailViewHolder extends AbstractViewHolder<FlightDetailRoute
                     stopOverTextView.setText(String.format(getString(R.string.flight_detail_total_stop_over_label), route.getStopOver()));
                 } else {
                     stopOverTextView.setText(getString(R.string.flight_detail_transit_stop_over_label));
-                    stopOverTextView.append(TextUtils.join("\n", route.getStopOverDetail()));
+                    stopOverTextView.append(" ");
+                    stopOverTextView.append(TextUtils.join(", ", route.getStopOverDetail()));
                 }
             } else {
                 stopOverTextView.setVisibility(View.GONE);
@@ -166,16 +167,24 @@ public class FlightDetailViewHolder extends AbstractViewHolder<FlightDetailRoute
             transitTag = "\n" + flightSearchCache.getInternationalTransitTag();
         }
 
+        String arrivalAirport = "";
+
         if (!TextUtils.isEmpty(route.getArrivalAirportCity())) {
             arrivalAirportDesc.setText(route.getArrivalAirportName());
             arrivalAirportName.setText(String.format("%s (%s)", route.getArrivalAirportCity(), route.getArrivalAirportCode()));
-            transitInfo.setTextDescription(itemView.getContext().getString(R.string.flight_label_transit,
-                    route.getArrivalAirportCity(), route.getLayover(), transitTag));
+            arrivalAirport = route.getArrivalAirportCity();
         } else {
             arrivalAirportName.setText(route.getArrivalAirportCode());
             arrivalAirportDesc.setText("");
-            transitInfo.setTextDescription(itemView.getContext().getString(R.string.flight_label_transit,
-                    route.getArrivalAirportCode(), route.getLayover(), transitTag));
+            arrivalAirport = route.getArrivalAirportCode();
+        }
+
+        if (route.getLayover().length() > 0) {
+            transitInfo.setTextDescription(itemView.getContext().getString(R.string.flight_label_transit_with_duration,
+                    arrivalAirport, route.getLayover(), transitTag));
+        } else {
+            transitInfo.setTextDescription(itemView.getContext().getString(R.string.flight_label_transit_without_duration,
+                    arrivalAirport, transitTag));
         }
     }
 
