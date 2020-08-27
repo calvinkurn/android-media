@@ -21,19 +21,9 @@ public interface UploadProofPaymentContract {
 
         void onResultUploadProof(PaymentProofResponse isSuccess);
 
-        void showLoadingMain();
-
-        void hideLoadingMain();
-
-        void onSuccessGetImageProof(String imageUrl);
-
-        void onErrorGetImageProof(Throwable e);
     }
 
     interface Presenter extends CustomerPresenter<View>{
-
         void uploadProofPayment(String transactionId, String merchantCode, String imageUrl);
-
-        void getProofPayment(String transactionId, String merchantCode, Resources resources);
     }
 }
