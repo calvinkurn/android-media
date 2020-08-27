@@ -11,6 +11,7 @@
     <TextView
         android:id="@+id/tv_courier"
         style="@style/TextMidMediumBlack70"
+        android:contentDescription="@string/content_desc_tv_courier"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"

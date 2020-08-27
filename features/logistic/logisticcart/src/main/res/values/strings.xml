@@ -21,4 +21,6 @@
     <string name="label_hardcoded_courier_ticker_logistic">Pembelian di atas 14:00 WIB berpotensi dikirim besok</string>
     <string name="title_shipment_courier_bottomsheet_occ">Pilih Kurir</string>
     <string name="label_shipping_information">Pembelian di atas 14:00 WIB berpotensi dikirim besok.</string>
+    <string name="content_desc_tv_duration">text durasi</string>
+    <string name="content_desc_tv_courier">text kurir</string>
 </resources>

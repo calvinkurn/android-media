@@ -54,6 +54,7 @@
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/label_choose_shipping"
+                    android:contentDescription="@string/content_desc_label_choose_shipping"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingLeft="@dimen/dp_9"
@@ -67,6 +68,7 @@
 
                 <ImageView
                     android:id="@+id/icon_chevron_choose_shipping"
+                    android:contentDescription="@string/content_desc_icon_chevron_choose_shipping"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:rotation="270"
@@ -88,6 +90,7 @@
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/label_selected_shipping_duration"
+                    android:contentDescription="@string/content_desc_label_selected_shipping_duration"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     app:layout_constraintBottom_toBottomOf="@+id/icon_chevron_choose_duration"
@@ -100,6 +103,7 @@
 
                 <ImageView
                     android:id="@+id/icon_chevron_choose_duration"
+                    android:contentDescription="@string/content_desc_icon_chevron_choose_duration"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:rotation="270"
@@ -119,6 +123,7 @@
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/label_selected_shipping_courier"
+                    android:contentDescription="@string/content_desc_label_selected_shipping_courier"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_13"
@@ -180,6 +185,7 @@
 
                 <ImageView
                     android:id="@+id/icon_chevron_choose_courier"
+                    android:contentDescription="@string/content_desc_icon_chevron_choose_courier"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_13"
