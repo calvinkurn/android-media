@@ -415,7 +415,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
     private fun onSuccessGetReviewForm(data: ProductRevGetForm) {
         with(data.productrevGetForm) {
-            if (!validToReview) {
+            if (!validToReview || productData.productStatus == 0) {
                 activity?.let {
                     Toast.makeText(it, R.string.review_already_submit, Toast.LENGTH_LONG).show()
                     finishIfRoot()

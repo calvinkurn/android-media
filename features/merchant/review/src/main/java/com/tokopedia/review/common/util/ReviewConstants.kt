@@ -98,6 +98,11 @@ object ReviewConstants {
 
     const val AB_TEST_KEY = "InboxUlasanRevamp2"
     const val NEW_REVIEW_FLOW = "New Review Flow"
+
+    const val REVIEW_PENDING_TRACE = "review_pending_trace"
+    const val REVIEW_PENDING_PLT_PREPARE_METRICS = "review_pending_plt_prepare_metrics"
+    const val REVIEW_PENDING_PLT_NETWORK_METRICS = "review_pending_plt_network_metrics"
+    const val REVIEW_PENDING_PLT_RENDER_METRICS = "review_pending_plt_render_metrics"
 }
 
 

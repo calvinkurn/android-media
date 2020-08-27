@@ -37,6 +37,8 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
 
     companion object {
         const val CREATE_REVIEW_SOURCE_ID = "bjFkPX"
+        const val EDIT_REVIEW_ARGUMENT_ERROR = "3"
+        const val EDIT_REVIEW_INTERNAL_ERROR = "13"
     }
 
     private var imageData: MutableList<BaseImageReviewUiModel> = mutableListOf()

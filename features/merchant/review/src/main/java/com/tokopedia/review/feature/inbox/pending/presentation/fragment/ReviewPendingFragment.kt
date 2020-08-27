@@ -1,12 +1,14 @@
 package com.tokopedia.review.feature.inbox.pending.presentation.fragment
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -23,6 +25,8 @@ import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
+import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringContract
+import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
 import com.tokopedia.review.common.analytics.ReviewTracking
 import com.tokopedia.review.common.data.Fail
 import com.tokopedia.review.common.data.LoadingView
@@ -52,7 +56,7 @@ import com.tokopedia.usecase.coroutines.Fail as CoroutineFail
 import com.tokopedia.usecase.coroutines.Success as CoroutineSucess
 
 class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendingAdapterTypeFactory>(),
-        ReviewPendingItemListener, HasComponent<ReviewPendingComponent> {
+        ReviewPendingItemListener, HasComponent<ReviewPendingComponent>, ReviewPerformanceMonitoringContract {
 
     companion object {
         const val CREATE_REVIEW_REQUEST_CODE = 420
@@ -63,6 +67,8 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
 
     @Inject
     lateinit var viewModel: ReviewPendingViewModel
+
+    private var reviewPerformanceMonitoringListener: ReviewPerformanceMonitoringListener? = null
 
     override fun getAdapterTypeFactory(): ReviewPendingAdapterTypeFactory {
         return ReviewPendingAdapterTypeFactory(this)
@@ -121,6 +127,42 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
                     .reviewComponent(ReviewInstance.getComponent(application))
                     .build()
         }
+    }
+
+    override fun stopPreparePerfomancePageMonitoring() {
+        reviewPerformanceMonitoringListener?.stopPreparePagePerformanceMonitoring()
+    }
+
+    override fun startNetworkRequestPerformanceMonitoring() {
+        reviewPerformanceMonitoringListener?.startNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun stopNetworkRequestPerformanceMonitoring() {
+        reviewPerformanceMonitoringListener?.stopNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun startRenderPerformanceMonitoring() {
+        reviewPerformanceMonitoringListener?.startRenderPerformanceMonitoring()
+        reviewPendingRecyclerView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                reviewPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
+                reviewPerformanceMonitoringListener?.stopPerformanceMonitoring()
+                reviewPendingRecyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+            }
+        })
+    }
+
+    override fun castContextToTalkPerformanceMonitoringListener(context: Context): ReviewPerformanceMonitoringListener? {
+        return if(context is ReviewPerformanceMonitoringListener) {
+            context
+        } else {
+            null
+        }
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        reviewPerformanceMonitoringListener = castContextToTalkPerformanceMonitoringListener(context)
     }
 
     override fun getRecyclerView(view: View?): RecyclerView {
@@ -273,6 +315,8 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
         viewModel.reviewList.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Success -> {
+                    stopNetworkRequestPerformanceMonitoring()
+                    startRenderPerformanceMonitoring()
                     hideFullPageLoading()
                     hideError()
                     if(it.data.list.isEmpty() && it.page == ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE) {
