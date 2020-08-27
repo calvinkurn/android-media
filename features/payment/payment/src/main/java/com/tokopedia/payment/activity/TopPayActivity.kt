@@ -133,11 +133,8 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         initView()
         initVar()
         setViewListener()
-        scroogeWebView?.loadUrl("https://www.google.com")
-        tvTitle?.setOnClickListener {
             setActionVar()
         }
-    }
 
     private fun initInjector() {
         DaggerFingerprintComponent
@@ -186,10 +183,6 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
             webViewClient = TopPayWebViewClient()
             webChromeClient = webChromeWebviewClient
             setOnKeyListener(webViewOnKeyListener)
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            WebView.setWebContentsDebuggingEnabled(true)
         }
 
         btnBack?.visibility = View.VISIBLE
