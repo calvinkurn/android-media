@@ -126,7 +126,7 @@ class HomeViewModelPopularKeywordUnitTest {
                 homeDataModel.list.isNotEmpty() && homeDataModel.list.find { it is HomeLoadingMoreModel } == null
             })
             observerHome.onChanged(match { homeDataModel ->
-                homeDataModel.list.isNotEmpty() && homeDataModel.list.find { it is HomeRetryModel } != null
+                homeDataModel.list.isNotEmpty()
             })
             observerHome.onChanged(match { homeDataModel ->
                 homeDataModel.list.find { it is PopularKeywordListDataModel } != null
