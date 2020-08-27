@@ -1,6 +1,5 @@
 package com.tokopedia.gamification.giftbox.presentation.viewholder
 
-import android.text.TextUtils
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
@@ -63,14 +62,6 @@ class CouponListResultVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
             }
         } else {
             button.gone()
-        }
-
-        if (crackBenefitEntity.isAutoApply) {
-            if(crackButtonEntity!=null && !TextUtils.isEmpty(crackButtonEntity.title)){
-                button.text = crackButtonEntity.title
-            }else{
-                button.text = ""
-            }
         }
     }
 
