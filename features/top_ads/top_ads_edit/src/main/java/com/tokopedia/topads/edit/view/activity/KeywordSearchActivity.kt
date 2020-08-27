@@ -117,7 +117,7 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<TopAdsEditComponent> 
         }
     }
 
-    private fun onSelectedItem(){
+    private fun onSelectedItem() {
         selected_info.text = String.format(getString(R.string.format_selected_keyword), adapter.getSelectedItem().size)
     }
 
@@ -157,9 +157,11 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<TopAdsEditComponent> 
 
     private fun setEmpty(setEmpty: Boolean) {
         if (setEmpty) {
+            tip_btn.visibility = View.GONE
             headlineList.visibility = View.GONE
             emptyLayout.visibility = View.VISIBLE
         } else {
+            tip_btn.visibility = View.VISIBLE
             headlineList.visibility = View.VISIBLE
             emptyLayout.visibility = View.GONE
         }

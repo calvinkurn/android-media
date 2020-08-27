@@ -33,7 +33,6 @@ import com.tokopedia.topads.edit.utils.Constants.KEYWORD_TYPE_PHRASE
 import com.tokopedia.topads.edit.utils.Constants.MAX_BID
 import com.tokopedia.topads.edit.utils.Constants.MIN_BID
 import com.tokopedia.topads.edit.utils.Constants.MIN_SUGGESTION
-import com.tokopedia.topads.edit.utils.Constants.ORIGINAL_LIST
 import com.tokopedia.topads.edit.utils.Constants.POSITIVE_CREATE
 import com.tokopedia.topads.edit.utils.Constants.POSITIVE_DELETE
 import com.tokopedia.topads.edit.utils.Constants.POSITIVE_EDIT
@@ -66,11 +65,9 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     private var addedKeywords: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
     private var editedKeywords: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
     private var initialBudget: MutableList<Int> = mutableListOf()
-    private var isnewlyAddded:MutableList<Boolean> = mutableListOf()
+    private var isnewlyAddded: MutableList<Boolean> = mutableListOf()
     private var originalKeyList: MutableList<String> = arrayListOf()
     private var selectedData: ArrayList<KeywordDataItem>? = arrayListOf()
-    private var selectedDataOriginal: ArrayList<KeywordDataItem>? = arrayListOf()
-
     private var cursor = ""
     private lateinit var recyclerviewScrollListener: EndlessRecyclerViewScrollListener
     private lateinit var layoutManager: LinearLayoutManager
@@ -102,8 +99,8 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view =  inflater.inflate(resources.getLayout(R.layout.topads_edit_keword_layout), container, false)
-         recyclerView = view.findViewById(R.id.keyword_list)
+        val view = inflater.inflate(resources.getLayout(R.layout.topads_edit_keword_layout), container, false)
+        recyclerView = view.findViewById(R.id.keyword_list)
         setAdapter()
         return view
     }
@@ -121,7 +118,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     private fun onRecyclerViewListener(): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                if (cursor!="") {
+                if (cursor != "") {
                     fetchNextPage()
                 }
             }
@@ -153,11 +150,19 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         val sheet = TopAdsEditKeywordBidSheet.createInstance(bundle)
         sheet.show(fragmentManager!!, "")
         sheet.onSaved = { bid, type, position ->
-            if ((adapter.items[pos] as EditKeywordItemViewModel).data.type != type) {
-                actionStatusChange(pos)
+            if (ifNewKeyword((adapter.items[position] as EditKeywordItemViewModel).data.tag)) {
+                addedKeywords?.forEach {
+                    if (it.tag == (adapter.items[position] as EditKeywordItemViewModel).data.tag) {
+                        it.priceBid = bid.toInt()
+                        it.type = type
+                    }
+                }
             }
-            (adapter.items[pos] as EditKeywordItemViewModel).data.type = type
-            (adapter.items[pos] as EditKeywordItemViewModel).data.priceBid = bid.toInt()
+            if ((adapter.items[position] as EditKeywordItemViewModel).data.type != type) {
+                actionStatusChange(position)
+            }
+            (adapter.items[position] as EditKeywordItemViewModel).data.type = type
+            (adapter.items[position] as EditKeywordItemViewModel).data.priceBid = bid.toInt()
             adapter.notifyItemChanged(position)
 
         }
@@ -166,15 +171,14 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun ifNewKeyword(tag: String): Boolean {
+        return addedKeywords?.find { item -> item.tag == tag } != null
+    }
+
     private fun actionStatusChange(position: Int) {
         if (isExistsOriginal(position)) {
             deletedKeywords?.add((adapter.items[position] as EditKeywordItemViewModel).data)
             addedKeywords?.add((adapter.items[position] as EditKeywordItemViewModel).data)
-        } else {
-            addedKeywords?.forEach {
-                if (it.tag == (adapter.items[position] as EditKeywordItemViewModel).data.tag)
-                    it.type = (adapter.items[position] as EditKeywordItemViewModel).data.type
-            }
         }
     }
 
@@ -205,7 +209,6 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         intent.putExtra(MIN_SUGGESTION, minSuggestKeyword)
         intent.putExtra(PRODUCT_ID, productIds)
         intent.putExtra(GROUP_ID, groupId)
-        intent.putStringArrayListExtra(ORIGINAL_LIST, ArrayList(originalKeyList))
         intent.putParcelableArrayListExtra(SELECTED_DATA, selectedData)
         startActivityForResult(intent, 1)
     }
@@ -273,7 +276,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun onSuccessKeyword(data: List<GetKeywordResponse.KeywordsItem>,cursor:String) {
+    private fun onSuccessKeyword(data: List<GetKeywordResponse.KeywordsItem>, cursor: String) {
         this.cursor = cursor
         if (data.isEmpty()) {
             setEmptyView()
@@ -298,7 +301,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             }
             updateItemCount()
             recyclerviewScrollListener.updateStateAfterGetData()
-            adapter.getBidData(initialBudget,isnewlyAddded)
+            adapter.getBidData(initialBudget, isnewlyAddded)
         }
     }
 
@@ -320,7 +323,6 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         if (requestCode == REQUEST_OK) {
             if (resultCode == Activity.RESULT_OK) {
                 selectedData = data?.getParcelableArrayListExtra(SELECTED_DATA)
-                selectedDataOriginal = selectedData
                 if (selectedData?.size != 0)
                     updateKeywords(selectedData)
             }

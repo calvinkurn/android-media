@@ -34,24 +34,23 @@ class KeywordSelectedAdapter(private val onChecked:((position:Int)->Unit)) : Rec
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        holder.view.keyword_name.text = items[position].keyword
+        holder.view.keyword_name.text = items[holder.adapterPosition].keyword
         try {
             holder.view.keyword_count.text = Constants.convertToCurrencyString(items[position].totalSearch.toLong())
         } catch (e: Exception) {
-            holder.view.keyword_count.text = items[position].totalSearch.toString()
+            holder.view.keyword_count.text = items[holder.adapterPosition].totalSearch.toString()
         }
         holder.view.checkBox.setOnCheckedChangeListener(null)
         holder.view.checkBox.isChecked = true
         holder.view.setOnClickListener {
-         //   holder.view.checkBox.setOnCheckedChangeListener(null)
             holder.view.checkBox.isChecked =false
         }
         holder.view.checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
-            items[position].onChecked = isChecked
-            onChecked.invoke(position)
+            items[holder.adapterPosition].onChecked = isChecked
+            onChecked.invoke(holder.adapterPosition)
 
         }
-        when (items[position].competition) {
+        when (items[holder.adapterPosition].competition) {
             KeywordItemViewHolder.LOW -> {
                 holder.view.keywordCompetition.setLabelType(Label.GENERAL_DARK_GREEN)
                 holder.view.keywordCompetition.setLabel(holder.view.resources.getString(R.string.topads_common_keyword_competition_low))

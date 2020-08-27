@@ -5,8 +5,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.topads.view.adapter.keyword.viewholder.KeywordViewHolder
 import com.tokopedia.topads.view.adapter.keyword.viewmodel.KeywordViewModel
-import com.tokopedia.topads.view.adapter.keyword.viewmodel.KeywordEmptyViewModel
-import com.tokopedia.topads.view.adapter.keyword.viewmodel.KeywordGroupViewModel
 import com.tokopedia.topads.view.adapter.keyword.viewmodel.KeywordItemViewModel
 
 

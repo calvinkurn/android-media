@@ -11,9 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.topads.common.data.response.KeywordData
 import com.tokopedia.topads.common.data.response.KeywordDataItem
 import com.tokopedia.topads.common.data.response.SearchData
@@ -23,11 +21,9 @@ import com.tokopedia.topads.edit.di.TopAdsEditComponent
 import com.tokopedia.topads.edit.utils.Constants
 import com.tokopedia.topads.edit.utils.Constants.COUNT
 import com.tokopedia.topads.edit.utils.Constants.GROUP_ID
-import com.tokopedia.topads.edit.utils.Constants.ORIGINAL_LIST
 import com.tokopedia.topads.edit.utils.Constants.PRODUCT_ID
 import com.tokopedia.topads.edit.utils.Constants.SELECTED_DATA
 import com.tokopedia.topads.edit.view.activity.KeywordSearchActivity
-import com.tokopedia.topads.edit.view.adapter.keyword.viewmodel.KeywordEmptyViewModel
 import com.tokopedia.topads.edit.view.adapter.keyword.KeywordListAdapter
 import com.tokopedia.topads.edit.view.adapter.keyword.KeywordListAdapterTypeFactoryImpl
 import com.tokopedia.topads.edit.view.adapter.keyword.KeywordSelectedAdapter
@@ -36,9 +32,6 @@ import com.tokopedia.topads.edit.view.model.KeywordAdsViewModel
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.topads_edit_select_layout_keyword_list.*
 import javax.inject.Inject
-import kotlin.Comparator
-import kotlin.collections.ArrayList
-import kotlin.collections.HashSet
 
 class KeywordAdsListFragment : BaseDaggerFragment() {
 
@@ -49,10 +42,7 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
     private lateinit var keywordSelectedAdapter: KeywordSelectedAdapter
     private var STAGE = 0
     private var selectedKeyFromSearch: ArrayList<SearchData>? = arrayListOf()
-
-    private val keywordList = HashSet<String>()
     var productId = ""
-    private var originalList: ArrayList<String> = arrayListOf()
     private var selected: ArrayList<KeywordDataItem>? = arrayListOf()
 
 
@@ -85,7 +75,6 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
         super.onActivityCreated(savedInstanceState)
         val productIds = arguments?.getString(PRODUCT_ID) ?: ""
         val groupId = arguments?.getInt(GROUP_ID)
-        originalList = arguments?.getStringArrayList(ORIGINAL_LIST)!!
         viewModel.getSuggestionKeyword(productIds, groupId, this::onSuccessSuggestion)
     }
 
@@ -118,13 +107,22 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
         keywordSelectedAdapter.items.removeAt(pos)
         keywordSelectedAdapter.notifyItemRemoved(pos)
         if (keywordSelectedAdapter.items.isEmpty()) {
-            setStepLayout(View.GONE)
-            btn_next?.text = resources.getString(R.string.topads_common_keyword_list_step)
-            txtRecommendation?.text = resources.getString(R.string.topads_common_recommended_list)
             STAGE = 0
+            setBtnText()
+            setStepLayout(View.GONE)
         }
         sortList()
         showSelectMessage()
+    }
+
+    private fun setBtnText() {
+        if (STAGE == 0) {
+            btn_next?.text = resources.getString(R.string.topads_common_keyword_list_step)
+            txtRecommendation?.text = resources.getString(R.string.topads_common_recommended_list)
+        } else {
+            btn_next?.text = resources.getString(R.string.lanjutkan)
+            txtRecommendation?.text = resources.getString(R.string.topads_common_label_top_ads_keyword)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -177,23 +175,33 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessSuggestion(keywords: List<KeywordData>) {
+        startLoading(false)
         keywords.forEach { key ->
             key.keywordData.forEach {
                 keywordListAdapter.items.add(KeywordItemViewModel(it))
-                keywordList.add(KeywordItemViewModel(it).data.keyword)
             }
         }
+        tip_btn.visibility = View.VISIBLE
+        headlineList.visibility = View.VISIBLE
+        keywordListAdapter.notifyDataSetChanged()
         if (keywords.isEmpty()) {
             setEmptyView()
         }
-        keywordListAdapter.notifyDataSetChanged()
+        if (selected?.isNotEmpty()!!) {
+            restoreStage()
+        } else {
+            setStepLayout(View.GONE)
+        }
         showSelectMessage()
     }
 
     private fun setEmptyView() {
+        STAGE = 1
         setStepLayout(View.GONE)
+        tip_btn.visibility = View.GONE
         headlineList.visibility = View.GONE
-        keywordListAdapter.items.add(KeywordEmptyViewModel())
+        emptyLayout.visibility = View.VISIBLE
+        setBtnText()
     }
 
     override fun getScreenName(): String {
@@ -210,12 +218,8 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        startLoading(true)
         selected = arguments?.getParcelableArrayList(SELECTED_DATA)
-        if (selected?.isNotEmpty()!!) {
-            restoreStage()
-        } else {
-            setStepLayout(View.GONE)
-        }
         btn_next.setOnClickListener {
             if (btn_next.text == resources.getString(R.string.topads_common_keyword_list_step)) {
                 gotoNextStage()
@@ -239,14 +243,22 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
 
     }
 
+    private fun startLoading(isLoading: Boolean) {
+        if (isLoading) {
+            loading.visibility = View.VISIBLE
+        } else {
+            loading.visibility = View.GONE
+            headlineList.visibility = View.VISIBLE
+        }
+    }
+
     private fun restoreStage() {
         setStepLayout(View.VISIBLE)
-        btn_next?.text = resources.getString(R.string.lanjutkan)
+        STAGE = 1
+        setBtnText()
         keywordSelectedAdapter.items.clear()
         selected?.forEach { item ->
-            if ((originalList.find { item.keyword == it } == null)) {
-                keywordSelectedAdapter.items.add(item)
-            }
+            keywordSelectedAdapter.items.add(item)
         }
         keywordSelectedAdapter.notifyDataSetChanged()
         removeFromRecommended()
@@ -254,29 +266,27 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
     }
 
     private fun removeFromRecommended() {
-        val ids: MutableList<Int> = mutableListOf()
-        keywordListAdapter.items.forEachIndexed { index, key ->
-            if (selected?.find { item -> (key as KeywordItemViewModel).data.keyword == item.keyword } != null) {
-                ids.add(index)
+        val iterator = keywordListAdapter.items.iterator()
+        while (iterator.hasNext()) {
+            val key = iterator.next()
+            if (selected?.find { item ->
+                        (key as KeywordItemViewModel).data.keyword == item.keyword
+                    } != null) {
+                iterator.remove()
             }
         }
-        ids.forEach {
-            keywordListAdapter.items.removeAt(it)
-        }
-
         keywordListAdapter.notifyDataSetChanged()
     }
 
     private fun gotoNextStage() {
         setStepLayout(View.VISIBLE)
-        btn_next?.text = resources.getString(R.string.lanjutkan)
-        txtRecommendation?.text = resources.getString(R.string.topads_common_label_top_ads_keyword)
         keywordSelectedAdapter.items.clear()
         keywordSelectedAdapter.items.addAll(getTotalChosenKeywords())
         sortListSelected()
         keywordListAdapter.items.removeAll(keywordListAdapter.getSelectedItems())
         keywordListAdapter.notifyDataSetChanged()
         STAGE = 1
+        setBtnText()
         showSelectMessage()
     }
 
@@ -319,12 +329,6 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
             }
             startActivityForResult(intent, REQUEST_CODE_SEARCH)
         }
-    }
-
-    private fun makeToast(s: String) {
-        SnackbarManager.make(activity, s,
-                Snackbar.LENGTH_LONG)
-                .show()
     }
 
 }

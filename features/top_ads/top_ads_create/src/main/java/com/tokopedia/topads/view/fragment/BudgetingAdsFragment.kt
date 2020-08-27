@@ -23,7 +23,6 @@ import com.tokopedia.topads.view.adapter.bidinfo.BidInfoAdapterTypeFactoryImpl
 import com.tokopedia.topads.view.adapter.bidinfo.viewModel.BidInfoEmptyViewModel
 import com.tokopedia.topads.view.adapter.bidinfo.viewModel.BidInfoItemViewModel
 import com.tokopedia.topads.view.model.BudgetingAdsViewModel
-import com.tokopedia.topads.view.sheet.InfoSheetBudgetList
 import com.tokopedia.topads.view.sheet.TipSheetBudgetList
 import kotlinx.android.synthetic.main.topads_create_fragment_budget_list.*
 import java.util.*
@@ -59,7 +58,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         const val SPECIFIC_TYPE = "Spesifik"
         const val BROAD_TYPE = "Luas"
         private const val EXACT_POSITIVE = 21
-         const val BROAD_POSITIVE = 11
+        const val BROAD_POSITIVE = 11
         private const val FACTOR = 50
         fun createInstance(): Fragment {
             val fragment = BudgetingAdsFragment()
@@ -192,7 +191,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
             list.add(EXACT_POSITIVE)
         }
         bidInfoAdapter.setType(list)
-        if (stepperModel?.finalBidPerClick != -1)
+        if (stepperModel?.finalBidPerClick != -1 && stepperModel?.finalBidPerClick != 0)
             budget.textFieldInput.setText(stepperModel?.finalBidPerClick.toString())
         else
             budget.textFieldInput.setText(suggestBidPerClick.toString())

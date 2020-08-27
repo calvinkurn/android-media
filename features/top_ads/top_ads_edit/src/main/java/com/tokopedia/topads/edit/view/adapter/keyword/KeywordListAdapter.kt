@@ -3,10 +3,8 @@ package com.tokopedia.topads.edit.view.adapter.keyword
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.topads.common.data.response.KeywordSuggestionResponse
 import com.tokopedia.topads.edit.view.adapter.keyword.viewholder.KeywordViewHolder
 import com.tokopedia.topads.edit.view.adapter.keyword.viewmodel.KeywordViewModel
-import com.tokopedia.topads.edit.view.adapter.keyword.viewmodel.KeywordGroupViewModel
 import com.tokopedia.topads.edit.view.adapter.keyword.viewmodel.KeywordItemViewModel
 
 class KeywordListAdapter(private val typeFactory: KeywordListAdapterTypeFactory) : RecyclerView.Adapter<KeywordViewHolder<KeywordViewModel>>() {

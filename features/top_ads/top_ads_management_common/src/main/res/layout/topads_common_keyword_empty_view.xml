@@ -1,16 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="@dimen/dp_24"
-    android:padding="@dimen/dp_16">
+    android:layout_margin="@dimen/dp_14"
+    android:layout_gravity="center_vertical"
+    app:cardUseCompatPadding="true"
+    app:cardCornerRadius="@dimen/dp_8"
+    app:contentPadding="@dimen/dp_16">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
 
         <ImageView
             android:id="@+id/ic_tip"
@@ -54,7 +59,7 @@
             style="@style/TextView.Small"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_16"
             android:gravity="top"
             android:text="@string/sesuaikan_kata_kunci_dengan_nama_produk"
@@ -81,7 +86,7 @@
             style="@style/TextView.Small"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_16"
             android:text="@string/lebih_efektif_dengan_kata_kunci_spesifik"
             app:layout_constraintBottom_toTopOf="@+id/typography26"
@@ -107,7 +112,7 @@
             style="@style/TextView.Small"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_16"
             android:text="@string/gunakan_kata_kunci_umum_dengan_maksimum_2_kata"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -119,4 +124,4 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</com.tokopedia.unifycomponents.CardUnify>
+</androidx.cardview.widget.CardView>

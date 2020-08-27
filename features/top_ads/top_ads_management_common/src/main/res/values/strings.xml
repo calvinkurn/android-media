@@ -101,6 +101,7 @@
     <string name="topads_common_selected_list">Kata Kunci Pilihan</string>
     <string name="topads_common_recommended_list">Rekomendasi</string>
     <string name="topads_common_text_ok">Oke</string>
+    <string name="topads_common_create_tool_tip">Info tips kata kunci</string>
 
 
 </resources>

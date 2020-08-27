@@ -157,9 +157,11 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<CreateAdsComponent> {
 
     private fun setEmpty(setEmpty: Boolean) {
         if (setEmpty) {
+            tip_btn.visibility = View.GONE
             headlineList.visibility = View.GONE
             emptyLayout.visibility = View.VISIBLE
         } else {
+            tip_btn.visibility = View.VISIBLE
             headlineList.visibility = View.VISIBLE
             emptyLayout.visibility = View.GONE
         }
