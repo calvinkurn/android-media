@@ -36,6 +36,11 @@ class SelectVariantMainBottomSheet(
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
+    override fun onPause() {
+        super.onPause()
+        dismiss()
+    }
+
     fun setData(items: VariantInputModel?) {
         items?.run {
             selectAdapter?.setData(this)
