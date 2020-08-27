@@ -43,6 +43,15 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
         verify { getInitialStateUseCase.execute(any(), any()) }
     }
 
+    private fun `Given view already get initial state`(list: List<InitialStateData>) {
+        `Given initial state use case capture request params`(list)
+        `Given presenter get initial state data`()
+    }
+
+    private fun `Given presenter get initial state data`() {
+        initialStatePresenter.getInitialStateData()
+    }
+
     @Test
     fun `Test get initial state data`() {
         `Test Initial State Data`(initialStateCommonResponse)
@@ -91,8 +100,8 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
     }
 
     @Test
-    fun `tTest refresh popular search data`() {
-        `Test Initial State Data`(initialStateCommonResponse)
+    fun `Test refresh popular search data`() {
+        `Given view already get initial state`(initialStateCommonResponse)
 
         `Given initial state view called showInitialStateResult behavior`()
         `Given refresh popular search API will return data`()
@@ -142,8 +151,8 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
     }
 
     @Test
-    fun `test fail to refresh popular search data`() {
-        `Test Initial State Data`(initialStateCommonResponse)
+    fun `Test fail to refresh popular search data`() {
+        `Given view already get initial state`(initialStateCommonResponse)
 
         `Given initial state view called showInitialStateResult behavior`()
         `Given refresh popular search API will return error`()
@@ -172,7 +181,7 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
                 shortcutImage = "https://shortcut"
         )
 
-        `Test Initial State Data`(initialStateCommonResponse)
+        `Given view already get initial state`(initialStateCommonResponse)
 
         `Given initial state view called showInitialStateResult behavior`()
         `Given delete recent search API will return data`()
@@ -225,7 +234,7 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
                 type = "shop"
         )
 
-        `Test Initial State Data`(initialStateCommonResponse)
+        `Given view already get initial state`(initialStateCommonResponse)
 
         `Given initial state view called showInitialStateResult behavior`()
         `Given delete recent search API will return data`()
@@ -253,7 +262,7 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
                 productId = "0"
         )
 
-        `Test Initial State Data`(initialStateCommonResponse)
+        `Given view already get initial state`(initialStateCommonResponse)
 
         `Given initial state view called showInitialStateResult behavior`()
         `Given delete recent search API will return error`()
@@ -271,7 +280,7 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
 
     @Test
     fun `Test delete all recent search data`() {
-        `Test Initial State Data`(initialStateCommonResponse)
+        `Given view already get initial state`(initialStateCommonResponse)
 
         `Given initial state view called showInitialStateResult behavior`()
         `Given delete recent search API will return data`()
@@ -297,8 +306,8 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
     }
 
     @Test
-    fun `test fail to delete all recent search data`() {
-        `Test Initial State Data`(initialStateCommonResponse)
+    fun `Test fail to delete all recent search data`() {
+        `Given view already get initial state`(initialStateCommonResponse)
 
         `Given initial state view called showInitialStateResult behavior`()
         `Given delete recent search API will return error`()
@@ -308,8 +317,8 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
     }
 
     @Test
-    fun `test get initial state impression`() {
-        `Test Initial State Data`(initialStateCommonResponse)
+    fun `Test get initial state impression`() {
+        `Given view already get initial state`(initialStateCommonResponse)
 
         `Then verify initial state impression is called`()
         `Then verify list impression data`()
@@ -359,7 +368,7 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
 
     @Test
     fun `Test initial state impression with empty items`() {
-        `Test Initial State Data`(initialStateEmptyDataResponse)
+        `Given view already get initial state`(initialStateEmptyDataResponse)
 
         `Then verify initial state view will call showInitialStateResult behavior`()
         `Then verify initial state view do nothing behavior`()
