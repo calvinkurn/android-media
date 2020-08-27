@@ -21,6 +21,7 @@ import com.tokopedia.shop.home.view.model.BannerType
 import com.tokopedia.shop.home.view.model.ShopHomeNewProductLaunchCampaignUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.shop.home.view.model.ShopHomeNewProductLaunchCampaignUiModel.Companion.TOTAL_NOTIFY_WORDING_FORMAT_FOR_REPLACED
 import com.tokopedia.unifycomponents.toPx
@@ -69,7 +70,8 @@ class ShopHomeNplCampaignViewHolder(
         this.model = model
         setHeader(model)
         setTimer(model)
-        setRemindMe(model)
+        if (!GlobalConfig.isSellerApp())
+            setRemindMe(model)
         setBannerImage(model)
         setProductCarousel(model)
         setWidgetImpressionListener(model)
