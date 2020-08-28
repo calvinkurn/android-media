@@ -159,11 +159,11 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
     }
 
     private fun observeLiveData(){
-        viewModel.homeRecommendationLiveData.observe(this, androidx.lifecycle.Observer { data ->
+        viewModel.homeRecommendationLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer { data ->
             adapter.submitList(data.homeRecommendations)
         })
 
-        viewModel.homeRecommendationNetworkLiveData.observe(this, androidx.lifecycle.Observer {result ->
+        viewModel.homeRecommendationNetworkLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {result ->
             if(result.isFailure){
                 view?.let {
                     if(adapter.itemCount > 1){
