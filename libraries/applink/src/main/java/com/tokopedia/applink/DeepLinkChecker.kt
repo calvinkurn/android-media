@@ -227,7 +227,9 @@ object DeepLinkChecker {
 
     private fun getHotIntent(context: Context, url: String): Intent {
         val uri = Uri.parse(url)
-        return RouteManager.getIntent(context, DeeplinkMapper.getRegisteredNavigation(context, ApplinkConst.DISCOVERY_SEARCH + "?q=" + if (uri.pathSegments.size > 1) uri.pathSegments[1] else ""))
+        val query = if (uri.pathSegments.size > 1) uri.pathSegments[1] else ""
+        query.replace("-","+")
+        return RouteManager.getIntent(context, DeeplinkMapper.getRegisteredNavigation(context, ApplinkConst.DISCOVERY_SEARCH + "?q=" + query))
     }
 
     private fun getFindIntent(context: Context, url: String): Intent {
