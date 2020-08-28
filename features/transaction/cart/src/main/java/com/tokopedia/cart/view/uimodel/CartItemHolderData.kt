@@ -20,7 +20,8 @@ data class CartItemHolderData(
         var isStateHasNotes: Boolean = false,
         var isStateNotesOnFocuss: Boolean = false,
         var isSelected: Boolean = false,
-        var actionsData: List<ActionData> = emptyList()
+        var actionsData: List<ActionData> = emptyList(),
+        var selectedUnavailableActionId: Int = 0
 ) : Parcelable {
 
     companion object {

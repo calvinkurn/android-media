@@ -281,11 +281,7 @@
                 "errors": [],
                 "messages": [],
                 "checkbox_state": true,
-                "similar_product_url": "tokopedia://rekomendasi/15262849?ref=cart",
-                "similar_product": {
-                  "text": "Lihat Produk Serupa",
-                  "url": "tokopedia://rekomendasi/15262849?ref=cart"
-                }
+                "similar_product_url": "tokopedia://rekomendasi/15262849?ref=cart"
               }
             ],
             "total_cart_details_error": 1,
@@ -495,11 +491,7 @@
                 "errors": [],
                 "messages": [],
                 "checkbox_state": true,
-                "similar_product_url": "tokopedia://rekomendasi/15262849?ref=cart",
-                "similar_product": {
-                  "text": "Lihat Produk Serupa",
-                  "url": "tokopedia://rekomendasi/15262849?ref=cart"
-                }
+                "similar_product_url": "tokopedia://rekomendasi/15262849?ref=cart"
               }
             ],
             "total_cart_details_error": 1,
@@ -556,6 +548,7 @@
               "message": "Checkout di browser"
             }
           ],
+          "selected_unavailable_action_id": 3,
           "unavailable_group": [
             {
               "user_address_id": 0,
@@ -736,10 +729,6 @@
                   "messages": [],
                   "checkbox_state": true,
                   "similar_product_url": "",
-                  "similar_product": {
-                    "text": "",
-                    "url": ""
-                  },
                   "nicotine_lite_message": {
                     "text": "",
                     "url": "t"
@@ -955,10 +944,6 @@
                   "messages": [],
                   "checkbox_state": true,
                   "similar_product_url": "",
-                  "similar_product": {
-                    "text": "",
-                    "url": ""
-                  },
                   "nicotine_lite_message": {
                     "text": "",
                     "url": "t"
@@ -1097,10 +1082,6 @@
                   "messages": [],
                   "checkbox_state": true,
                   "similar_product_url": "",
-                  "similar_product": {
-                    "text": "",
-                    "url": ""
-                  },
                   "nicotine_lite_message": {
                     "text": "",
                     "url": "t"
@@ -1338,11 +1319,7 @@
                   ],
                   "messages": [],
                   "checkbox_state": true,
-                  "similar_product_url": "tokopedia://rekomendasi/15262849?ref=cart",
-                  "similar_product": {
-                    "text": "Lihat Produk Serupa",
-                    "url": "tokopedia://rekomendasi/15262849?ref=cart"
-                  }
+                  "similar_product_url": "tokopedia://rekomendasi/15262849?ref=cart"
                 }
               ],
               "total_cart_details_error": 1,
