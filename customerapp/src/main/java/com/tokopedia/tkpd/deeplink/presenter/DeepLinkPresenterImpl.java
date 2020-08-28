@@ -620,8 +620,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                             affiliateString = uriData.getQueryParameter("aff");
                         }
 
-                        if (!TextUtils.isEmpty(uriData.getQueryParameter("layoutID"))) {
-                            layoutTesting = uriData.getQueryParameter("layoutID");
+                        if (!TextUtils.isEmpty(uriData.getQueryParameter(ApplinkConstInternalMarketplace.ARGS_LAYOUT_ID))) {
+                            layoutTesting = uriData.getQueryParameter(ApplinkConstInternalMarketplace.ARGS_LAYOUT_ID);
                         }
 
                         Intent productIntent = RouteManager.getIntent(context,
