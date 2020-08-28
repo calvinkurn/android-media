@@ -39,7 +39,6 @@ class GetAllShopInfoUseCase @Inject constructor(
                 getShopTotalFollowersUseCase.params = GetShopTotalFollowersUseCase.createRequestParams(shopId)
                 getShopBadgeUseCase.params = GetShopBadgeUseCase.createRequestParams(shopId)
                 PartialSettingSuccessInfoType.PartialShopSettingSuccessInfo(
-                        balanceInfoUseCase.executeOnBackground(),
                         shopStatusTypeUseCase.executeOnBackground(),
                         getShopTotalFollowersUseCase.executeOnBackground(),
                         getShopBadgeUseCase.executeOnBackground()
@@ -56,6 +55,7 @@ class GetAllShopInfoUseCase @Inject constructor(
                 topAdsDashboardDepositUseCase.params = TopAdsDashboardDepositUseCase.createRequestParams(shopId.toInt())
                 topAdsAutoTopupUseCase.params = TopAdsAutoTopupUseCase.createRequestParams(shopId)
                 PartialSettingSuccessInfoType.PartialTopAdsSettingSuccessInfo(
+                        balanceInfoUseCase.executeOnBackground(),
                         topAdsDashboardDepositUseCase.executeOnBackground(),
                         topAdsAutoTopupUseCase.executeOnBackground())
             } catch (exception: Exception) {
@@ -69,24 +69,4 @@ class GetAllShopInfoUseCase @Inject constructor(
         return PartialSettingFail
     }
 
-//    private fun mapToSettingShopInfo(shopInfo: ShopInfo,
-//                             shopStatusType: ShopType,
-//                             topAdsBalance: Float,
-//                             isTopAdsAutoTopup: Boolean,
-//                             totalFollowers: Int,
-//                             shopBadge: String): SettingShopInfoUiModel {
-//        shopInfo.shopInfoMoengage?.run {
-//            return SettingShopInfoUiModel(
-//                    info?.shopName.toEmptyStringIfNull(),
-//                    info?.shopAvatar.toEmptyStringIfNull(),
-//                    shopStatusType,
-//                    shopInfo.balance?.totalBalance ?: "",
-//                    topAdsBalance.getCurrencyFormatted(),
-//                    isTopAdsAutoTopup,
-//                    shopBadge,
-//                    totalFollowers,
-//                    userSession)
-//        }
-//        return SettingShopInfoUiModel()
-//    }
 }

@@ -35,7 +35,7 @@ class SettingShopInfoUiModel(private val partialShopInfo: PartialSettingResponse
     }
 
     val saldoBalanceUiModel by lazy {
-        (partialShopInfo as? PartialSettingSuccessInfoType.PartialShopSettingSuccessInfo)?.let {
+        (partialTopAdsInfo as? PartialSettingSuccessInfoType.PartialTopAdsSettingSuccessInfo)?.let {
             BalanceUiModel(BalanceType.SALDO, it.othersBalance.totalBalance.orEmpty())
         }
     }
