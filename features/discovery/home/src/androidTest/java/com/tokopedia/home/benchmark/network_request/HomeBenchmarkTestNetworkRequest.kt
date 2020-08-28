@@ -67,7 +67,7 @@ class HomeBenchmarkTestNetworkRequest: CoroutineScope {
                 homeDao.save(HomeRoomData(homeData = homeData))
             }
             val remoteConfig = FirebaseRemoteConfigImpl(context)
-            val homeVisitableFactory = HomeVisitableFactoryImpl(null, remoteConfig)
+            val homeVisitableFactory = HomeVisitableFactoryImpl(null, remoteConfig, HomeDefaultDataSource())
             val trackingQueue = TrackingQueue(context)
             homeDataMapper = HomeDataMapper(context, homeVisitableFactory, trackingQueue)
 
