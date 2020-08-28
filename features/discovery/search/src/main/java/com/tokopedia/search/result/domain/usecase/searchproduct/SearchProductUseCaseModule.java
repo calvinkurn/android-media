@@ -4,6 +4,7 @@ import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.search.di.scope.SearchScope;
+import com.tokopedia.search.result.data.mapper.searchproduct.SearchProductMapperModule;
 import com.tokopedia.search.result.domain.model.SearchProductModel;
 import com.tokopedia.usecase.UseCase;
 
