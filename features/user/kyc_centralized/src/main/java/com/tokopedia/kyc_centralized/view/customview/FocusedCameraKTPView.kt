@@ -32,12 +32,12 @@ class FocusedCameraKTPView : View {
 
     private fun initPaints() {
         mSemiBlackPaint = Paint()
-        mSemiBlackPaint!!.color = Color.TRANSPARENT
-        mSemiBlackPaint!!.strokeWidth = CONST_STROKE_WIDTH.toFloat()
+        mSemiBlackPaint?.color = Color.TRANSPARENT
+        mSemiBlackPaint?.strokeWidth = CONST_STROKE_WIDTH.toFloat()
         mWhitePaint = Paint()
-        mWhitePaint!!.style = Paint.Style.STROKE
-        mWhitePaint!!.color = Color.WHITE
-        mWhitePaint!!.strokeWidth = CONST_STROKE_WIDTH.toFloat()
+        mWhitePaint?.style = Paint.Style.STROKE
+        mWhitePaint?.color = Color.WHITE
+        mWhitePaint?.strokeWidth = CONST_STROKE_WIDTH.toFloat()
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -61,23 +61,27 @@ class FocusedCameraKTPView : View {
             )
         }
         mPath.fillType = Path.FillType.INVERSE_EVEN_ODD
-        canvas.drawPath(mPath, mSemiBlackPaint!!)
+        mSemiBlackPaint?.let { canvas.drawPath(mPath, it) }
         canvas.clipPath(mPath)
         canvas.drawColor(Color.parseColor(KYCConstant.KYC_OVERLAY_COLOR))
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            canvas.drawRect(left + (right - left) / LEFT_DIMEN_DIVIDER.toFloat(),
-                    (top + (bottom - top) / TOP_DIMEN_DIVIDER).toFloat(),
-                    right - (right - left) / RIGHT_DIMEN_DIVIDER.toFloat(),
-                    (bottom - (bottom - top) / BOTTOM_DIMEN_DIVIDER).toFloat(),
-                    mWhitePaint!!)
+            mWhitePaint?.let {
+                canvas.drawRect(left + (right - left) / LEFT_DIMEN_DIVIDER.toFloat(),
+                        (top + (bottom - top) / TOP_DIMEN_DIVIDER).toFloat(),
+                        right - (right - left) / RIGHT_DIMEN_DIVIDER.toFloat(),
+                        (bottom - (bottom - top) / BOTTOM_DIMEN_DIVIDER).toFloat(),
+                        it)
+            }
         } else {
-            canvas.drawRoundRect(left + (right - left) / LEFT_DIMEN_DIVIDER.toFloat(),
-                    (top + (bottom - top) / TOP_DIMEN_DIVIDER).toFloat(),
-                    right - (right - left) / RIGHT_DIMEN_DIVIDER.toFloat(),
-                    (bottom - (bottom - top) / BOTTOM_DIMEN_DIVIDER).toFloat(),
-                    CONST_RADIUS.toFloat(),
-                    CONST_RADIUS.toFloat(),
-                    mWhitePaint!!)
+            mWhitePaint?.let {
+                canvas.drawRoundRect(left + (right - left) / LEFT_DIMEN_DIVIDER.toFloat(),
+                        (top + (bottom - top) / TOP_DIMEN_DIVIDER).toFloat(),
+                        right - (right - left) / RIGHT_DIMEN_DIVIDER.toFloat(),
+                        (bottom - (bottom - top) / BOTTOM_DIMEN_DIVIDER).toFloat(),
+                        CONST_RADIUS.toFloat(),
+                        CONST_RADIUS.toFloat(),
+                        it)
+            }
         }
     }
 
