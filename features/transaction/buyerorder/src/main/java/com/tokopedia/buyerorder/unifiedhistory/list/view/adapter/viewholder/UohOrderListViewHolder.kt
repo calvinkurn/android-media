@@ -125,10 +125,7 @@ class UohOrderListViewHolder(itemView: View, private val actionListener: UohItem
             }
 
             itemView.cl_data_product?.setOnClickListener {
-                actionListener?.onListItemClicked(
-                        item.dataObject.verticalCategory,
-                        item.dataObject.verticalID,
-                        item.dataObject.metadata.upstream)
+                actionListener?.onListItemClicked(item.dataObject.metadata.detailURL)
             }
 
             itemView.uoh_btn_action?.setOnClickListener {

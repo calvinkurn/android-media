@@ -80,4 +80,7 @@ object UohConsts {
 
     const val RECHARGE_GQL_PARAM_ORDER_ID = "orderId"
     const val BUSINESS_UNIT_REPLACEE = "{business_unit}"
+
+    const val APP_LINK_TYPE = "APP_LINK"
+    const val WEB_LINK_TYPE = "WEB_LINK"
 }

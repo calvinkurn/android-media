@@ -71,6 +71,9 @@ data class UohListOrder(
                         @SerializedName("upstream")
                         val upstream: String = "",
 
+                        @SerializedName("detailURL")
+                        val detailURL: DetailUrl = DetailUrl(),
+
                         @SerializedName("verticalLogo")
                         val verticalLogo: String = "",
 
@@ -110,6 +113,20 @@ data class UohListOrder(
                         @SerializedName("listProducts")
                         val listProducts: String = ""
                 ) {
+                    data class DetailUrl(
+                        @SerializedName("appURL")
+                        val appURL: String = "",
+
+                        @SerializedName("appTypeLink")
+                        val appTypeLink: String = "",
+
+                        @SerializedName("webURL")
+                        val webURL: String = "",
+
+                        @SerializedName("webTypeLink")
+                        val webTypeLink: String = ""
+                    )
+
                     data class Status(
                         @SerializedName("label")
                         val label: String = "",

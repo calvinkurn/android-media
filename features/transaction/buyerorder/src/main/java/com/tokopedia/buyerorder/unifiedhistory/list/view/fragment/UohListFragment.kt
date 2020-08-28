@@ -24,6 +24,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.unifiedhistory.common.di.UohComponentInstance
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.APP_LINK_TYPE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.EMAIL_MUST_NOT_BE_EMPTY
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.END_DATE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.FINISH_ORDER_BOTTOMSHEET_TITLE
@@ -40,6 +41,7 @@ import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.LS_LACAK_MW
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.REPLACE_ORDER_ID
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.START_DATE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TYPE_ACTION_BUTTON_LINK
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.WEB_LINK_TYPE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.WRONG_FORMAT_EMAIL
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohUtils
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.*
@@ -1041,13 +1043,19 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         }
     }
 
-    override fun onListItemClicked(verticalCategory: String, verticalId: String, upstream: String) {
-        if (verticalCategory.equals(UohConsts.LS_PRINT_VERTICAL_CATEGORY, true)) {
+    override fun onListItemClicked(detailUrl: UohListOrder.Data.UohOrders.Order.Metadata.DetailUrl) {
+        /*if (verticalCategory.equals(UohConsts.LS_PRINT_VERTICAL_CATEGORY, true)) {
             val url = "m.tokopedia.com/order-details/lsprint/$verticalId&upstream=$upstream"
             RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
         } else {
             val applink = "${UohConsts.APPLINK_BASE}${UohConsts.APPLINK_PATH_ORDER}/$verticalId?${UohConsts.APPLINK_PATH_UPSTREAM}$upstream"
             RouteManager.route(context, applink)
+        }*/
+
+        if (detailUrl.appTypeLink == WEB_LINK_TYPE) {
+            RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, detailUrl.webURL))
+        } else if (detailUrl.appTypeLink == APP_LINK_TYPE) {
+            RouteManager.route(context, detailUrl.appURL)
         }
     }
 

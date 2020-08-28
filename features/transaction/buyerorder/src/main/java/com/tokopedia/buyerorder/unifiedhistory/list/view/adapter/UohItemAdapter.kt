@@ -32,7 +32,7 @@ class UohItemAdapter : RecyclerView.Adapter<UohItemAdapter.BaseViewHolder<*>>() 
 
     interface ActionListener {
         fun onKebabMenuClicked(listDotMenu: List<UohListOrder.Data.UohOrders.Order.Metadata.DotMenu>)
-        fun onListItemClicked(verticalCategory: String, verticalId: String, upstream: String)
+        fun onListItemClicked(detailUrl: UohListOrder.Data.UohOrders.Order.Metadata.DetailUrl)
         fun onActionButtonClicked(button: UohListOrder.Data.UohOrders.Order.Metadata.Button,
                                   index: Int,
                                   orderUUID: String,

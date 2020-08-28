@@ -9,6 +9,12 @@ query GetOrderHistory($input:UOHOrdersRequest!){
       verticalStatus
       searchableText
       metadata {
+        detailURL {
+          appURL
+          appTypeLink
+          webURL
+          webTypeLink
+        }
         upstream
         verticalLogo
         verticalLabel
