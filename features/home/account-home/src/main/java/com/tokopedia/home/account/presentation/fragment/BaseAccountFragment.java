@@ -68,8 +68,6 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_CATEGO
 import static com.tokopedia.home.account.AccountConstants.Analytics.PEMBELI;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PENJUAL;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PROFILE;
-import static com.tokopedia.home.account.AccountConstants.Analytics.SECTION_OTHER_FEATURE;
-import static com.tokopedia.home.account.AccountConstants.TOP_SELLER_APPLICATION_PACKAGE;
 import static com.tokopedia.home.account.data.util.StaticBuyerModelGeneratorKt.RESCENTER_BUYER;
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT;
 
@@ -583,7 +581,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
             ArrayList<String> appLinks = new ArrayList();
             appLinks.add(ApplinkConst.PRODUCT_MANAGE);
             appLinks.add(ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW);
-            Intent intent = SellerMigrationActivity.Companion.createIntent(getContext(), SellerMigrationFeatureName.FEATURE_SET_VARIANT, getScreenName(), appLinks);
+            Intent intent = SellerMigrationActivity.Companion.createIntent(getContext(), SellerMigrationFeatureName.FEATURE_SET_VARIANT, getScreenName(), appLinks, false);
             startActivity(intent);
             addProductBottomSheet.dismiss();
         }

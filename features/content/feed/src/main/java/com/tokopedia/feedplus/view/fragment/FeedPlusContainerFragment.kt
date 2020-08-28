@@ -25,6 +25,7 @@ import com.tokopedia.affiliatecommon.DISCOVERY_BY_ME
 import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
@@ -41,6 +42,7 @@ import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
+import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import com.tokopedia.seller_migration_common.presentation.util.setupBottomSheetFeedSellerMigration
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -381,9 +383,19 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             //seller migration enabled
             if (isSellerMigrationEnabled(context)) {
                 for (author in whitelistDomain.authors) {
+                    val intent = context?.let { context ->
+                        SellerMigrationActivity.createIntent(
+                                context = context,
+                                featureName = SellerMigrationFeatureName.FEATURE_POST_FEED,
+                                screenName = FeedPlusContainerFragment::class.simpleName.orEmpty(),
+                                appLinks = arrayListOf(author.link),
+                                isStackBuilder = false)
+                    }
                     setupBottomSheetFeedSellerMigration {
-                        goToCreateAffiliate()
-                        onGoToLink(author.link)
+                        if (author.type.equals(Author.TYPE_AFFILIATE, ignoreCase = true)) {
+                            goToCreateAffiliate()
+                        }
+                        startActivity(intent)
                     }
                 }
             } else {

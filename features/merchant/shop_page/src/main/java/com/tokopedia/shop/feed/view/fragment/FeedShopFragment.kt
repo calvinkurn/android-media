@@ -1,6 +1,5 @@
 package com.tokopedia.shop.feed.view.fragment
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -59,6 +58,7 @@ import com.tokopedia.kolcommon.view.listener.KolPostLikeListener
 import com.tokopedia.kolcommon.view.listener.KolPostViewHolderListener
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTrackingConstants
+import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.util.goToInformationWebview
 import com.tokopedia.seller_migration_common.presentation.util.goToSellerApp
 import com.tokopedia.seller_migration_common.presentation.util.setOnClickLinkSpannable
@@ -105,7 +105,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     private var isLoading = false
     private var isForceRefresh = false
 
-    private var bottomSheetSellerMigration: BottomSheetBehavior<View>? = null
+    private var bottomSheetSellerMigration: BottomSheetBehavior<ConstraintLayout>? = null
 
     private var whitelistDomain: WhitelistDomain = WhitelistDomain()
 
@@ -207,10 +207,13 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                 try {
                     if (hasFeed()
                             && newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        if(GlobalConfig.isSellerApp()) {
-                            FeedScrollListener.onFeedScrolled(recyclerView, adapter.list)
+                        if (!GlobalConfig.isSellerApp()) {
+                            if (isSellerMigrationEnabled(context)) {
+                                bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_EXPANDED
+                            }
                         } else {
-                            bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_EXPANDED
+                            bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_HIDDEN
+                            FeedScrollListener.onFeedScrolled(recyclerView, adapter.list)
                         }
                     } else {
                         bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_HIDDEN
@@ -899,9 +902,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     }
 
-    @SuppressLint("ClickableViewAccessibility")
     private fun setupBottomSheetSellerMigration(view: View) {
-        val viewTarget = view.findViewById<ConstraintLayout>(R.id.bottomSheetTabFeedHasPost)
+        val viewTarget: ConstraintLayout = view.findViewById(R.id.bottomSheetTabFeedHasPost)
         bottomSheetSellerMigration = BottomSheetBehavior.from(viewTarget)
         BottomSheetUnify.bottomSheetBehaviorKnob(viewTarget, false)
         BottomSheetUnify.bottomSheetBehaviorHeader(viewTarget, false)

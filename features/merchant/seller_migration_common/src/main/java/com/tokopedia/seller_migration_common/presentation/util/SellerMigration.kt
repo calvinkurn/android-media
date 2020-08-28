@@ -163,14 +163,13 @@ private fun FragmentActivity.openSellerMigrationBottomSheet(bottomSheet: SellerM
 fun Fragment.initializeSellerMigrationAccountSettingTicker(ticker: Ticker?) {
     ticker?.run {
         if (isSellerMigrationEnabled(context)) {
-            tickerTitle = context?.getString(AccountSettingData.titleRes)
+            tickerTitle = getString(AccountSettingData.titleRes)
             //applink need improvement
-            setHtmlDescription(context?.getString(AccountSettingData.descRes, ApplinkConstInternalSellerapp.MENU_SETTING).orEmpty())
+            setHtmlDescription(getString(AccountSettingData.descRes))
             setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    RouteManager.route(context, linkUrl.toString())
+                    RouteManager.route(context, ApplinkConstInternalSellerapp.MENU_SETTING)
                 }
-
                 override fun onDismiss() {}
             })
             show()
