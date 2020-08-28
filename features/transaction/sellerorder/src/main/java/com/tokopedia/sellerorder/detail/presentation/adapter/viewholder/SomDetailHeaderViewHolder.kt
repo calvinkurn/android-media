@@ -155,7 +155,7 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
     private fun setupOrderStatus(statusText: String, statusCode: Int) {
         itemView.header_title?.text = statusText
         if (statusCode == 0) {
-            itemView.header_title?.setTextColor(MethodChecker.getColor(itemView.context, R.color.Red_R600))
+            itemView.header_title?.setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Red_R600))
         }
     }
 
