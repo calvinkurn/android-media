@@ -20,11 +20,15 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import static com.tokopedia.imagepicker.common.util.ImageUtils.TOKOPEDIA_FOLDER_PREFIX;
+import static com.tokopedia.imagepicker.picker.gallery.loader.AlbumMediaLoader.BUCKET_DISPLAY_NAME;
+
 /**
  * Created by hangnadi on 5/22/17.
  */
 
 public class AlbumLoader extends CursorLoader {
+
 
     private static final String COLUMN_BUCKET_ID = "bucket_id";
     private static final String COLUMN_BUCKET_DISPLAY_NAME = "bucket_display_name";
@@ -59,6 +63,7 @@ public class AlbumLoader extends CursorLoader {
                     + " OR "
                     + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?)"
                     + " AND " + MediaStore.MediaColumns.SIZE + ">0"
+                    + " AND " + BUCKET_DISPLAY_NAME + " NOT LIKE '"+TOKOPEDIA_FOLDER_PREFIX+" %' "
                     + ") GROUP BY (bucket_id";
     private static final String SELECTION_29 =
             "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
@@ -75,10 +80,12 @@ public class AlbumLoader extends CursorLoader {
     private static final String SELECTION_FOR_SINGLE_MEDIA_TYPE =
             MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
                     + " AND " + MediaStore.MediaColumns.SIZE + ">0"
+                    + " AND " + BUCKET_DISPLAY_NAME + " NOT LIKE '"+TOKOPEDIA_FOLDER_PREFIX+" %' "
                     + ") GROUP BY (bucket_id";
     private static final String SELECTION_FOR_SINGLE_MEDIA_TYPE_29 =
             MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
-                    + " AND " + MediaStore.MediaColumns.SIZE + ">0";
+                    + " AND " + MediaStore.MediaColumns.SIZE + ">0"
+                    + " AND " + BUCKET_DISPLAY_NAME + " NOT LIKE '"+TOKOPEDIA_FOLDER_PREFIX+" %' ";
 
     private static String[] getSelectionArgsForSingleMediaType(int mediaType) {
         return new String[]{String.valueOf(mediaType)};
@@ -90,11 +97,13 @@ public class AlbumLoader extends CursorLoader {
             MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
                     + " AND " + MediaStore.MediaColumns.SIZE + ">0"
                     + " AND " + MediaStore.MediaColumns.MIME_TYPE + "=?"
+                    + " AND " + BUCKET_DISPLAY_NAME + " NOT LIKE '"+TOKOPEDIA_FOLDER_PREFIX+" %' "
                     + ") GROUP BY (bucket_id";
     private static final String SELECTION_FOR_SINGLE_MEDIA_GIF_TYPE_29 =
             MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
                     + " AND " + MediaStore.MediaColumns.SIZE + ">0"
-                    + " AND " + MediaStore.MediaColumns.MIME_TYPE + "=?";
+                    + " AND " + MediaStore.MediaColumns.MIME_TYPE + "=?"
+                    + " AND " + BUCKET_DISPLAY_NAME + " NOT LIKE '"+TOKOPEDIA_FOLDER_PREFIX+" %' ";
 
     private static String[] getSelectionArgsForSingleMediaGifType(int mediaType) {
         return new String[]{String.valueOf(mediaType), "image/gif"};

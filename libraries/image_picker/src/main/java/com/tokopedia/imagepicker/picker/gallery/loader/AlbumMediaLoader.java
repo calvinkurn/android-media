@@ -15,6 +15,8 @@ import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
  */
 
 public class AlbumMediaLoader extends CursorLoader {
+    public static final String BUCKET_ID = "bucket_id";
+    public static final String BUCKET_DISPLAY_NAME = "bucket_display_name";
     private static final Uri QUERY_URI = MediaStore.Files.getContentUri("external");
     private static final String[] PROJECTION = {
             MediaStore.Files.FileColumns._ID,
