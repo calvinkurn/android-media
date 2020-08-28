@@ -115,6 +115,10 @@ public interface DigitalBaseContract {
         void stopPerfomanceMonitoringTrace();
 
         DigitalSubscriptionParams getDigitalSubscriptionParams();
+
+        void successCancelVoucherCart();
+
+        void failedCancelVoucherCart();
     }
 
     interface Presenter<T extends View> extends CustomerPresenter<T>{
@@ -133,5 +137,7 @@ public interface DigitalBaseContract {
         void processPatchOtpCart(String categoryId);
 
         void processGetCartDataAfterCheckout(String categoryId);
+
+        void cancelVoucherCart();
     }
 }

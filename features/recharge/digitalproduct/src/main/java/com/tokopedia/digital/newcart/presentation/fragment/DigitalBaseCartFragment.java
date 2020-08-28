@@ -269,8 +269,18 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     @Override
     public void onDisablePromoDiscount() {
         digitalAnalytics.eventclickCancelApplyCoupon(getCategoryName(), promoData.getPromoCode());
+        presenter.cancelVoucherCart();
+    }
+
+    @Override
+    public void successCancelVoucherCart() {
         promoData.setPromoCode("");
         disableVoucherCheckoutDiscount();
+    }
+
+    @Override
+    public void failedCancelVoucherCart() {
+        Toast.makeText(getActivity(), getString(R.string.default_request_error_unknown), Toast.LENGTH_SHORT).show();
     }
 
     private String getCategoryName() {
