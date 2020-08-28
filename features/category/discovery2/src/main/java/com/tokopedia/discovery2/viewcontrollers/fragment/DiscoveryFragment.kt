@@ -373,7 +373,9 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                 }
             }
             PAGE_REFRESH_LOGIN -> {
-                refreshPage()
+                if (resultCode == Activity.RESULT_OK) {
+                    refreshPage()
+                }
             }
         }
     }
