@@ -1,4 +1,4 @@
-package com.tokopedia.statistic.analytics.performancemonitoring
+package com.tokopedia.statistic.analytics.performance
 
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 

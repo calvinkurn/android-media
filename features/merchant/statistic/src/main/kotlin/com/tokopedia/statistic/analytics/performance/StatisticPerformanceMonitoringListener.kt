@@ -1,12 +1,11 @@
-package com.tokopedia.statistic.analytics.performancemonitoring
+package com.tokopedia.statistic.analytics.performance
 
 /**
  * Created By @ilhamsuaib on 27/08/20
  */
 
-interface StatisticPerformanceMonitoringInterface {
+interface StatisticPerformanceMonitoringListener {
 
-    fun initPerformanceMonitoring()
     fun startNetworkPerformanceMonitoring()
     fun startRenderPerformanceMonitoring()
     fun stopPerformanceMonitoring()
