@@ -20,8 +20,8 @@ public class SellerReputationInfoActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_reputation_info);
-        webviewReputationInfo = (WebView) findViewById(R.id.webview_reputation_info);
+        setContentView(R.layout.activity_reputation_review_info);
+        webviewReputationInfo = (WebView) findViewById(R.id.webview_reputation_review_info);
 
         webviewReputationInfo.getSettings().setJavaScriptEnabled(true);
         webviewReputationInfo.loadUrl("file:///android_asset/poin-reputasi.html");
