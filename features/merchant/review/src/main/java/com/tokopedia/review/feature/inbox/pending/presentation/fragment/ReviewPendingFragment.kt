@@ -233,6 +233,8 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
             loadInitialData()
             if(resultCode == Activity.RESULT_OK) {
                 onSuccessCreateReview()
+            } else if (resultCode == Activity.RESULT_FIRST_USER) {
+                onFailCreateReview(data?.getStringExtra(ReviewInboxConstants.CREATE_REVIEW_ERROR_MESSAGE) ?: getString(R.string.review_pending_invalid_to_review))
             }
         }
     }
@@ -286,7 +288,7 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
         reviewPendingLoading.hide()
     }
 
-    private fun showErrorToaster(errorMessage: String, ctaText: String, action: () -> Unit) {
+    private fun showErrorToaster(errorMessage: String, ctaText: String, action: () -> Unit = {}) {
         view?.let { Toaster.build(reviewPendingContainer, errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, ctaText, View.OnClickListener { action() }).show() }
     }
 
@@ -360,6 +362,10 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
 
     private fun onSuccessCreateReview() {
         showToaster(getString(R.string.review_create_success_toaster, viewModel.getUserName()), getString(R.string.review_oke))
+    }
+
+    private fun onFailCreateReview(errorMessage: String) {
+        showErrorToaster(errorMessage, getString(R.string.review_oke))
     }
 
     private fun renderReviewData(reviewData: List<ReviewPendingUiModel>, hasNextPage: Boolean) {

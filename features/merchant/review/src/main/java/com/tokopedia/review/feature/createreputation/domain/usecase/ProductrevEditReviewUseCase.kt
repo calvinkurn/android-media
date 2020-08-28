@@ -1,12 +1,15 @@
 package com.tokopedia.review.feature.createreputation.domain.usecase
 
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException
+import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
+import com.tokopedia.graphql.data.model.GraphqlError
+import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.review.feature.createreputation.model.ProductRevEditReviewResponseWrapper
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class ProductrevEditReviewUseCase @Inject constructor(graphqlRepository: GraphqlRepository): GraphqlUseCase<ProductRevEditReviewResponseWrapper>(graphqlRepository) {
+class ProductrevEditReviewUseCase @Inject constructor(private val gqlUseCase: MultiRequestGraphqlUseCase): UseCase<ProductRevEditReviewResponseWrapper>() {
 
     companion object {
         const val PARAM_FEEDBACK_ID = "feedbackID"
@@ -30,13 +33,10 @@ class ProductrevEditReviewUseCase @Inject constructor(graphqlRepository: Graphql
         }
     }
 
-    init {
-        setGraphqlQuery(query)
-        setTypeClass(ProductRevEditReviewResponseWrapper::class.java)
-    }
+    private var requestParams = RequestParams.EMPTY
 
     fun setParams(feedbackId: Int, reputationId: Int, productId: Int, shopId: Int, reputationScore: Int = 0, rating: Int, reviewText: String, isAnonymous: Boolean, oldAttachmentUrls: List<String>, attachmentIds: List<String> = emptyList()) {
-        setRequestParams(RequestParams.create().apply {
+        requestParams = RequestParams.create().apply {
             putString(PARAM_FEEDBACK_ID, feedbackId.toString())
             putString(PARAM_REPUTATION_ID, reputationId.toString())
             putString(PARAM_PRODUCT_ID, productId.toString())
@@ -57,6 +57,17 @@ class ProductrevEditReviewUseCase @Inject constructor(graphqlRepository: Graphql
             if(attachmentIds.isNotEmpty()) {
                 putObject(PARAM_NEW_ATTACHMENT_ID, attachmentIds)
             }
-        }.parameters)
+        }
+    }
+
+    override suspend fun executeOnBackground(): ProductRevEditReviewResponseWrapper {
+        gqlUseCase.clearRequest()
+        gqlUseCase.addRequest(GraphqlRequest(query, ProductRevEditReviewResponseWrapper::class.java, requestParams.parameters))
+        val gqlResponse = gqlUseCase.executeOnBackground()
+        val error: List<GraphqlError>? = gqlResponse.getError(ProductRevEditReviewResponseWrapper::class.java)
+        if (error != null && error.isNotEmpty()) {
+            throw MessageErrorException(error.mapNotNull { it.message }.joinToString(separator = ", "), error.firstOrNull()?.extensions?.code.toString())
+        }
+        return gqlResponse.getData(ProductRevEditReviewResponseWrapper::class.java)
     }
 }

@@ -51,6 +51,7 @@ import com.tokopedia.review.feature.createreputation.presentation.widget.CreateR
 import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTracking
 import com.tokopedia.review.feature.createreputation.model.Reputation
 import com.tokopedia.review.feature.createreputation.presentation.viewmodel.CreateReviewViewModel
+import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.review.feature.ovoincentive.presentation.bottomsheet.IncentiveOvoBottomSheet
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -90,6 +91,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
         private const val RATING_3 = 3
         private const val RATING_4 = 4
         private const val RATING_5 = 5
+        private const val SAME_ARGS_ERROR = 3
 
         fun createInstance(productId: String, reviewId: String, reviewClickAt: Int = 0, isEditMode: Boolean, feedbackId: Int) = CreateReviewFragment().also {
             it.arguments = Bundle().apply {
@@ -226,6 +228,20 @@ class CreateReviewFragment : BaseDaggerFragment(),
                 }
                 is Fail -> {
                     onFailSubmitReview(it.fail.message)
+                }
+            }
+        })
+
+        createReviewViewModel.editReviewResult.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is LoadingView -> {
+                    showLoading()
+                }
+                is Success -> {
+                    onSuccessSubmitReview()
+                }
+                is Fail -> {
+                    onFailEditReview(it.fail)
                 }
             }
         })
@@ -457,14 +473,16 @@ class CreateReviewFragment : BaseDaggerFragment(),
         stopNetworkRequestPerformanceMonitoring()
         startRenderPerformanceMonitoring()
         with(data.productrevGetForm) {
-            if (!validToReview || productData.productStatus == 0) {
-                activity?.let {
-                    Toast.makeText(it, R.string.review_already_submit, Toast.LENGTH_LONG).show()
-                    finishIfRoot()
+            when {
+                !validToReview -> {
+                    finishIfRoot(false, getString(R.string.review_pending_invalid_to_review))
+                    return
                 }
-                return
+                productData.productStatus == 0 -> {
+                    finishIfRoot(false, getString(R.string.review_pending_deleted_product_error_toaster))
+                    return
+                }
             }
-
             hideShimmering()
             showLayout()
 
@@ -680,6 +698,22 @@ class CreateReviewFragment : BaseDaggerFragment(),
         showToasterError(message ?: getString(R.string.review_create_fail_toaster))
     }
 
+    private fun onFailEditReview(throwable: Throwable) {
+        stopLoading()
+        showLayout()
+        (throwable as? MessageErrorException)?.let {
+            if(throwable.errorCode.toIntOrZero() == SAME_ARGS_ERROR) {
+                view?.let {
+                    showToasterError(throwable.message ?: getString(R.string.review_edit_fail))
+                }
+            } else {
+                showToasterError(getString(R.string.review_edit_fail))
+            }
+            return
+        }
+        showToasterError(getString(R.string.review_edit_fail))
+    }
+
     private fun showShimmering() {
         shimmering_create_review.show()
     }
@@ -702,7 +736,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
     private fun showToasterError(message: String) {
         view?.let {
-            Toaster.build(it, message, Toaster.toasterLength, Toaster.TYPE_ERROR).show()
+            Toaster.build(it, message, Toaster.toasterLength, Toaster.TYPE_ERROR, getString(R.string.review_oke)).show()
         }
     }
 
@@ -721,7 +755,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
     }
 
-    private fun finishIfRoot(success: Boolean = false) {
+    private fun finishIfRoot(success: Boolean = false, errorMessage: String = "") {
         activity?.run {
             if (isTaskRoot) {
                 val intent = RouteManager.getIntent(context, ApplinkConst.HOME)
@@ -732,8 +766,11 @@ class CreateReviewFragment : BaseDaggerFragment(),
             } else {
                 val intent = Intent()
                 intent.putExtra(ReviewConstants.ARGS_RATING, reviewClickAt.toFloat())
+                intent.putExtra(ReviewInboxConstants.CREATE_REVIEW_ERROR_MESSAGE, errorMessage)
                 if (success) {
                     setResult(Activity.RESULT_OK, intent)
+                } else {
+                    setResult(Activity.RESULT_FIRST_USER, intent)
                 }
             }
             finish()

@@ -37,8 +37,6 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
 
     companion object {
         const val CREATE_REVIEW_SOURCE_ID = "bjFkPX"
-        const val EDIT_REVIEW_ARGUMENT_ERROR = "3"
-        const val EDIT_REVIEW_INTERNAL_ERROR = "13"
     }
 
     private var imageData: MutableList<BaseImageReviewUiModel> = mutableListOf()
@@ -57,6 +55,10 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
     private val _submitReviewResult = MutableLiveData<ReviewViewState<Boolean>>()
     val submitReviewResult: LiveData<ReviewViewState<Boolean>>
         get() = _submitReviewResult
+
+    private val _editReviewResult = MutableLiveData<ReviewViewState<Boolean>>()
+    val editReviewResult: LiveData<ReviewViewState<Boolean>>
+        get() = _editReviewResult
 
     fun submitReview(reputationId: Int, productId: Int, shopId: Int, reputationScore: Int = 0, rating: Int,
                      reviewText: String = "", isAnonymous: Boolean = false) {
@@ -234,13 +236,13 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
             }
             if(response.productrevSuccessIndicator != null) {
                 if(response.productrevSuccessIndicator.success) {
-                    _submitReviewResult.postValue(Success(response.productrevSuccessIndicator.success))
+                    _editReviewResult.postValue(Success(response.productrevSuccessIndicator.success))
                 } else {
-                    _submitReviewResult.postValue(Fail(Throwable()))
+                    _editReviewResult.postValue(Fail(Throwable()))
                 }
             }
         }) {
-            _submitReviewResult.postValue(Fail(it))
+            _editReviewResult.postValue(Fail(it))
         }
     }
 
@@ -265,13 +267,13 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
             }
             if(response.productrevSuccessIndicator != null) {
                 if(response.productrevSuccessIndicator.success) {
-                    _submitReviewResult.postValue(Success(response.productrevSuccessIndicator.success))
+                    _editReviewResult.postValue(Success(response.productrevSuccessIndicator.success))
                 } else {
-                    _submitReviewResult.postValue(Fail(Throwable()))
+                    _editReviewResult.postValue(Fail(Throwable()))
                 }
             }
         }) {
-            _submitReviewResult.postValue(Fail(it))
+            _editReviewResult.postValue(Fail(it))
         }
     }
 
