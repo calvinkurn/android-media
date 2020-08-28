@@ -215,7 +215,7 @@ open class WishlistViewModel @Inject constructor(
      */
     fun getRecommendationOnEmptyWishlist(page: Int){
         val emptyDataVisitable = wishlistData.value
-        wishlistData.value = wishlistData.value.plus(LoadMoreDataModel())
+        wishlistData.postValue(wishlistData.value.plus(LoadMoreDataModel()))
         launchCatchError(block = {
             val widget = getSingleRecommendationUseCase.getData(
                     GetRecommendationRequestParam(pageNumber = page, pageName = "empty_wishlist")
