@@ -1,6 +1,6 @@
 package com.tokopedia.sellerhome.settings.view.uimodel.base.partialresponse
 
-import com.tokopedia.sellerhome.settings.domain.entity.ShopInfo
+import com.tokopedia.sellerhome.settings.domain.entity.OthersBalance
 import com.tokopedia.sellerhome.settings.view.uimodel.base.ShopType
 
 sealed class PartialSettingSuccessInfoType: PartialSettingResponse {
@@ -11,7 +11,7 @@ sealed class PartialSettingSuccessInfoType: PartialSettingResponse {
     ) : PartialSettingSuccessInfoType()
 
     data class PartialShopSettingSuccessInfo(
-            val shopInfo: ShopInfo,
+            val othersBalance: OthersBalance,
             val shopStatusType: ShopType,
             val totalFollowers: Int,
             val shopBadgeUrl: String

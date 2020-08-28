@@ -55,14 +55,32 @@ class OtherMenuViewHolder(private val itemView: View,
             addView(successLayout)
             setOnClickAction()
         }
-        uiModel.run {
+        with(uiModel) {
             setShopName(shopName)
             setShopAvatar(shopAvatarUiModel)
-            setShopStatusType(shopStatusUiModel)
-            setSaldoBalance(saldoBalanceUiModel)
-            setKreditTopadsBalance(topadsBalanceUiModel)
-            setShopBadge(shopBadgeUiModel)
-            setShopTotalFollowers(shopFollowersUiModel)
+            when {
+                partialResponseStatus.first && partialResponseStatus.second -> {
+                    shopStatusUiModel?.let { setShopStatusType(it) }
+                    saldoBalanceUiModel?.let { setSaldoBalance(it) }
+                    topadsBalanceUiModel?.let { setKreditTopadsBalance(it) }
+                    shopBadgeUiModel?.let { setShopBadge(it) }
+                    shopFollowersUiModel?.let { setShopTotalFollowers(it) }
+                }
+                partialResponseStatus.first -> {
+                    shopStatusUiModel?.let { setShopStatusType(it) }
+                    shopBadgeUiModel?.let { setShopBadge(it) }
+                    shopFollowersUiModel?.let { setShopTotalFollowers(it) }
+                    // TODO: Set error local load
+                }
+                partialResponseStatus.second -> {
+                    saldoBalanceUiModel?.let { setSaldoBalance(it) }
+                    topadsBalanceUiModel?.let { setKreditTopadsBalance(it) }
+                    // TODO: Set error local load
+                }
+                else -> {
+                    onErrorGetSettingShopInfoData()
+                }
+            }
         }
     }
 

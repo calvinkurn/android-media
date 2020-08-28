@@ -16,7 +16,7 @@ import javax.inject.Inject
 
 class GetAllShopInfoUseCase @Inject constructor(
         private val userSession: UserSessionInterface,
-        private val getSettingShopInfoUseCase: GetSettingShopInfoUseCase,
+        private val balanceInfoUseCase: BalanceInfoUseCase,
         private val getShopBadgeUseCase: GetShopBadgeUseCase,
         private val getShopTotalFollowersUseCase: GetShopTotalFollowersUseCase,
         private val shopStatusTypeUseCase: ShopStatusTypeUseCase,
@@ -26,21 +26,20 @@ class GetAllShopInfoUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): Pair<PartialSettingResponse, PartialSettingResponse> = coroutineScope {
         with(userSession) {
-            val partialShopInfo = async { getPartialShopInfoData(userId.toIntOrZero(), shopId.toIntOrZero()) }
+            val partialShopInfo = async { getPartialShopInfoData(shopId.toIntOrZero()) }
             val partialTopAdsInfo = async { getPartialTopAdsData(shopId) }
             return@coroutineScope Pair(partialShopInfo.await(), partialTopAdsInfo.await())
         }
     }
 
-    private suspend fun getPartialShopInfoData(userId: Int, shopId: Int): PartialSettingResponse {
+    private suspend fun getPartialShopInfoData(shopId: Int): PartialSettingResponse {
         return withContext(Dispatchers.IO) {
             try {
-                getSettingShopInfoUseCase.params = GetSettingShopInfoUseCase.createRequestParams(userId)
                 shopStatusTypeUseCase.params = ShopStatusTypeUseCase.createRequestParams(shopId)
                 getShopTotalFollowersUseCase.params = GetShopTotalFollowersUseCase.createRequestParams(shopId)
                 getShopBadgeUseCase.params = GetShopBadgeUseCase.createRequestParams(shopId)
                 PartialSettingSuccessInfoType.PartialShopSettingSuccessInfo(
-                        getSettingShopInfoUseCase.executeOnBackground(),
+                        balanceInfoUseCase.executeOnBackground(),
                         shopStatusTypeUseCase.executeOnBackground(),
                         getShopTotalFollowersUseCase.executeOnBackground(),
                         getShopBadgeUseCase.executeOnBackground()

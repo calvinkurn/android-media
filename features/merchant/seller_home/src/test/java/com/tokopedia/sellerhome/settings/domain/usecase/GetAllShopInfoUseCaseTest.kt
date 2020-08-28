@@ -27,7 +27,7 @@ class GetAllShopInfoUseCaseTest {
     lateinit var userSession : UserSessionInterface
 
     @RelaxedMockK
-    lateinit var getSettingShopInfoUseCase: GetSettingShopInfoUseCase
+    lateinit var balanceInfoUseCase: BalanceInfoUseCase
 
     @RelaxedMockK
     lateinit var getShopBadgeUseCase: GetShopBadgeUseCase
@@ -55,7 +55,7 @@ class GetAllShopInfoUseCaseTest {
     private val mGetAllShopInfoUseCase by lazy {
         GetAllShopInfoUseCase(
                 userSession,
-                getSettingShopInfoUseCase,
+                balanceInfoUseCase,
                 getShopBadgeUseCase,
                 getShopTotalFollowersUseCase,
                 shopStatusTypeUseCase,
@@ -87,7 +87,7 @@ class GetAllShopInfoUseCaseTest {
                 )
 
         coEvery {
-            getSettingShopInfoUseCase.executeOnBackground()
+            balanceInfoUseCase.executeOnBackground()
         } returns settingShopInfoSuccess
 
         coEvery {
@@ -113,7 +113,7 @@ class GetAllShopInfoUseCaseTest {
         val allShopInfo = mGetAllShopInfoUseCase.executeOnBackground()
 
         coVerify {
-            getSettingShopInfoUseCase.executeOnBackground()
+            balanceInfoUseCase.executeOnBackground()
             shopStatusTypeUseCase.executeOnBackground()
             getShopTotalFollowersUseCase.executeOnBackground()
             getShopBadgeUseCase.executeOnBackground()

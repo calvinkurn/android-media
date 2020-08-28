@@ -5,10 +5,12 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sellerhome.common.viewmodel.NonNullLiveData
 import com.tokopedia.sellerhome.settings.domain.usecase.GetAllShopInfoUseCase
+import com.tokopedia.sellerhome.settings.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType
 import com.tokopedia.sellerhome.settings.view.uimodel.shopinfo.SettingShopInfoUiModel
 import com.tokopedia.shop.common.domain.interactor.GetShopFreeShippingInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GetShopFreeShippingStatusUseCase
@@ -29,6 +31,8 @@ class OtherMenuViewModel @Inject constructor(
 
     companion object {
         private const val DELAY_TIME = 5000L
+
+        private const val CUSTOM_ERROR_EXCEPTION_MESSAGE = "both shop info and topads response are failed"
     }
 
     private val _settingShopInfoLiveData = MutableLiveData<Result<SettingShopInfoUiModel>>()
@@ -77,8 +81,13 @@ class OtherMenuViewModel @Inject constructor(
 
     private fun getAllShopInfoData() {
         launchCatchError(block = {
-            val partialSettingInfo = getAllShopInfoUseCase.executeOnBackground()
-            _settingShopInfoLiveData.value = Success(SettingShopInfoUiModel(partialSettingInfo.first, partialSettingInfo.second))
+            _settingShopInfoLiveData.value = with(getAllShopInfoUseCase.executeOnBackground()) {
+                if (first is PartialSettingSuccessInfoType || second is PartialSettingSuccessInfoType) {
+                    Success(SettingShopInfoUiModel(first, second, userSession))
+                } else {
+                    throw MessageErrorException(CUSTOM_ERROR_EXCEPTION_MESSAGE)
+                }
+            }
         }, onError = {
             _settingShopInfoLiveData.value = Fail(it)
         })
