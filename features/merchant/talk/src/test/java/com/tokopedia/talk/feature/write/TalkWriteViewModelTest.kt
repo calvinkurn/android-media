@@ -69,6 +69,7 @@ class TalkWriteViewModelTest : TalkWriteViewModelTestFixture() {
 
         verifyCategoriesEquals(expectedSelectedCategories)
         verifySelectedCategoryEquals(categoryToSelect)
+        verifyTextFieldStateEquals(expectedSelectedCategories.any { it.isSelected })
 
         viewModel.toggleCategory(TalkWriteCategory("Stock", "", false))
 
@@ -82,6 +83,7 @@ class TalkWriteViewModelTest : TalkWriteViewModelTestFixture() {
 
         verifyCategoriesEquals(expectedUnselectedCategories)
         verifySelectedCategoryEquals(null)
+        verifyTextFieldStateEquals(expectedUnselectedCategories.any { it.isSelected })
     }
 
     @Test
@@ -211,5 +213,9 @@ class TalkWriteViewModelTest : TalkWriteViewModelTestFixture() {
 
     private fun verifySelectedCategoryEquals(category: TalkWriteCategory?) {
         Assert.assertEquals(category, viewModel.getSelectedCategory())
+    }
+
+    private fun verifyTextFieldStateEquals(isAnyCategorySelected: Boolean) {
+        viewModel.textFieldState.verifyValueEquals(isAnyCategorySelected)
     }
 }

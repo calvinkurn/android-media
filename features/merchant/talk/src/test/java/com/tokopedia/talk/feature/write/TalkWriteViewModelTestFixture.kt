@@ -37,6 +37,7 @@ abstract class TalkWriteViewModelTestFixture {
         viewModel.writeFormData.observeForever{}
         viewModel.buttonState.observeForever {}
         viewModel.categoryChips.observeForever {}
+        viewModel.textFieldState.observeForever {}
     }
 
 
