@@ -3,6 +3,11 @@ package com.tokopedia.sellerhome.settings.domain.entity
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 
+data class OtherBalanceResponse(
+        @SerializedName("balance")
+        val othersBalance: OthersBalance = OthersBalance()
+)
+
 data class OthersBalance (
         @SerializedName("seller_usable")
         var sellerBalance: Float = 0f,
