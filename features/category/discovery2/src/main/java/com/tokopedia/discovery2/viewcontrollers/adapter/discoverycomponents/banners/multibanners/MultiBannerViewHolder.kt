@@ -2,6 +2,7 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.ban
 
 import android.content.Context
 import android.view.View
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
@@ -9,15 +10,18 @@ import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalTestApp
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.discovery2.viewcontrollers.fragment.PAGE_REFRESH_LOGIN
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.Toaster
 
-class MultiBannerViewHolder(customItemView: View, val fragment: Fragment) : AbstractViewHolder(customItemView) {
+class MultiBannerViewHolder(private val customItemView: View, val fragment: Fragment) : AbstractViewHolder(customItemView) {
     private var constraintLayout: ConstraintLayout = customItemView.findViewById(R.id.banner_container_layout)
     private var context: Context
     private lateinit var bannerName: String
@@ -51,9 +55,23 @@ class MultiBannerViewHolder(customItemView: View, val fragment: Fragment) : Abst
                 ImageHandler.LoadImage(bannersItemList[it].bannerImageView as ImageUnify, bannersItemList[it].bannerItemData.registeredImageApp)
             }
         })
-
         multiBannerViewModel.getShowLoginData().observe(fragment.viewLifecycleOwner, Observer {
-            context.startActivity(RouteManager.getIntent(context, ApplinkConst.LOGIN))
+            if (it) context.startActivity(RouteManager.getIntent(context, ApplinkConst.LOGIN))
+        })
+
+        multiBannerViewModel.checkApplink().observe(fragment.viewLifecycleOwner, Observer { applink ->
+            if (applink.isNotEmpty()) {
+                Toaster.make(customItemView, fragment.getString(R.string.coupon_code_successfully_copied), Toast.LENGTH_SHORT, Toaster.TYPE_NORMAL,
+                        customItemView.context.getString(R.string.coupon_code_btn_text), View.OnClickListener {
+                    multiBannerViewModel.navigate(customItemView.context, applink)
+                })
+            } else {
+                Toaster.make(customItemView, fragment.getString(R.string.coupon_code_successfully_copied), Toast.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+            }
+        })
+
+        multiBannerViewModel.isPageRefresh().observe(fragment.viewLifecycleOwner, Observer {
+            if (it) fragment.startActivityForResult(RouteManager.getIntent(fragment.context, ApplinkConstInternalTestApp.LOGIN), PAGE_REFRESH_LOGIN)
         })
     }
 
@@ -94,7 +112,7 @@ class MultiBannerViewHolder(customItemView: View, val fragment: Fragment) : Abst
 
     private fun setClickOnBanners(itemData: DataItem, index: Int) {
         bannersItemList[index].bannerImageView.setOnClickListener {
-            multiBannerViewModel.onBannerClicked(index, it)
+            multiBannerViewModel.onBannerClicked(index)
             (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerClick(itemData, index)
         }
     }

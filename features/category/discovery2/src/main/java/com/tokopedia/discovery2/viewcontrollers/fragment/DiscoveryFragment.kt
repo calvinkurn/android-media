@@ -60,6 +60,7 @@ import javax.inject.Inject
 
 private const val LOGIN_REQUEST_CODE = 35769
 private const val MOBILE_VERIFICATION_REQUEST_CODE = 35770
+const val PAGE_REFRESH_LOGIN = 35771
 private const val SCROLL_TOP_DIRECTION = -1
 private const val DEFAULT_SCROLL_POSITION = 0
 
@@ -331,6 +332,10 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     }
 
     override fun onRefresh() {
+        refreshPage()
+    }
+
+    private fun refreshPage() {
         trackingQueue.sendAll()
         getDiscoveryAnalytics().clearProductViewIds()
         discoveryViewModel.clearPageData()
@@ -366,6 +371,9 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                 } else {
                     discoveryBaseViewModel?.isPhoneVerificationSuccess(false)
                 }
+            }
+            PAGE_REFRESH_LOGIN -> {
+                refreshPage()
             }
         }
     }
