@@ -45,6 +45,7 @@ import com.tokopedia.digital.newcart.presentation.compoundview.InputPriceHolderV
 import com.tokopedia.digital.newcart.presentation.contract.DigitalBaseContract;
 import com.tokopedia.digital.newcart.presentation.model.DigitalSubscriptionParams;
 import com.tokopedia.digital.utils.DeviceUtil;
+import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.nps.presentation.view.dialog.AppFeedbackRatingBottomSheet;
 import com.tokopedia.promocheckout.common.data.ConstantKt;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
@@ -280,7 +281,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public void failedCancelVoucherCart() {
-        Toast.makeText(getActivity(), getString(R.string.default_request_error_unknown), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), ErrorNetMessage.MESSAGE_ERROR_DEFAULT, Toast.LENGTH_SHORT).show();
     }
 
     private String getCategoryName() {
