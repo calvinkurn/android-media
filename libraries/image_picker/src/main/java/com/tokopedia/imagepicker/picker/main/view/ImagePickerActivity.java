@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -29,7 +28,6 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.component.Menus;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.exception.FileSizeAboveMaximumException;
-import com.tokopedia.imagepicker.common.util.FileUtils;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity;
 import com.tokopedia.imagepicker.picker.camera.ImagePickerCameraFragment;
@@ -44,8 +42,6 @@ import com.tokopedia.imagepicker.picker.main.builder.StateRecorderType;
 import com.tokopedia.imagepicker.picker.video.VideoRecorderFragment;
 import com.tokopedia.imagepicker.picker.widget.ImagePickerPreviewWidget;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -587,14 +583,8 @@ public class ImagePickerActivity extends BaseSimpleActivity
         intent.putExtra(RESULT_IS_EDITTED, isEdittedList);
         setResult(Activity.RESULT_OK, intent);
 
-        deleteAllTempFileNotInResult(imageUrlOrPathList);
-
         trackContinue();
         finish();
-    }
-
-    private void deleteAllTempFileNotInResult(ArrayList<String> imageUrlOrPathList) {
-        FileUtils.deleteTempMapFile(imageUrlOrPathList);
     }
 
     @Override
