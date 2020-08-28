@@ -14,6 +14,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.cart.R
+import com.tokopedia.cart.domain.model.cartlist.ActionData
+import com.tokopedia.cart.view.*
 import com.tokopedia.cart.view.adapter.CartItemAdapter
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.design.utils.CurrencyFormatUtil
@@ -192,12 +194,45 @@ class CartItemViewHolder constructor(itemView: View,
         this.dataSize = dataSize
 
         renderProductInfo(data, parentPosition)
-        renderRemark(data, parentPosition, viewHolderListener)
+        renderWarningAndError(data)
+        renderSelection(data, parentPosition)
         renderQuantity(data, parentPosition, viewHolderListener)
         renderErrorFormItemValidation(data)
-        renderWarningAndError(data)
-        renderWishlist(data)
-        renderSelection(data, parentPosition)
+        renderDefaultActionState()
+        renderProductAction(data, viewHolderListener)
+    }
+
+    private fun renderDefaultActionState() {
+        llShopNoteSection.gone()
+        textMoveToWishlist.gone()
+        btnDelete.gone()
+    }
+
+    private fun renderProductAction(data: CartItemHolderData, viewHolderListener: ViewHolderListener) {
+        if (data.actionsData.isNotEmpty()) {
+            data.actionsData.forEach {
+                when (it.id) {
+                    ACTION_NOTES -> {
+                        renderActionNotes(data, parentPosition, viewHolderListener)
+                    }
+                    ACTION_WISHLIST -> {
+                        renderActionWishlist(it, data)
+                    }
+                    ACTION_DELETE -> {
+                        renderActionDelete(data)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun renderActionDelete(data: CartItemHolderData) {
+        btnDelete.setOnClickListener {
+            if (adapterPosition != RecyclerView.NO_POSITION) {
+                actionListener?.onCartItemDeleteButtonClicked(data, adapterPosition, parentPosition)
+            }
+        }
+        btnDelete.show()
     }
 
     private fun renderSelection(data: CartItemHolderData, parentPosition: Int) {
@@ -341,12 +376,6 @@ class CartItemViewHolder constructor(itemView: View,
     private fun setClickListener(parentPosition: Int, data: CartItemHolderData) {
         ivProductImage.setOnClickListener(getOnClickProductItemListener(adapterPosition, parentPosition, data))
         textProductName.setOnClickListener(getOnClickProductItemListener(adapterPosition, parentPosition, data))
-
-        btnDelete.setOnClickListener {
-            if (adapterPosition != RecyclerView.NO_POSITION) {
-                actionListener?.onCartItemDeleteButtonClicked(data, adapterPosition, parentPosition)
-            }
-        }
     }
 
     private fun renderPrice(data: CartItemHolderData) {
@@ -448,7 +477,7 @@ class CartItemViewHolder constructor(itemView: View,
         textProductVariant.setPadding(0, paddingTop, paddingRight, 0);
     }
 
-    private fun renderRemark(data: CartItemHolderData, parentPosition: Int, viewHolderListener: ViewHolderListener) {
+    private fun renderActionNotes(data: CartItemHolderData, parentPosition: Int, viewHolderListener: ViewHolderListener) {
         etRemark.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 data.isStateNotesOnFocuss = false
@@ -536,6 +565,8 @@ class CartItemViewHolder constructor(itemView: View,
 
             }
         })
+
+        llShopNoteSection.show()
     }
 
     private fun renderQuantity(data: CartItemHolderData, parentPosition: Int, viewHolderListener: ViewHolderListener) {
@@ -602,18 +633,20 @@ class CartItemViewHolder constructor(itemView: View,
         }
     }
 
-    private fun renderWishlist(data: CartItemHolderData) {
+    private fun renderActionWishlist(action: ActionData, data: CartItemHolderData) {
         if (data.cartItemData?.originData?.isWishlisted == true) {
             textMoveToWishlist.text = "Sudah ada di wishlist"
             textMoveToWishlist.setTextColor(ContextCompat.getColor(itemView.context, R.color.Neutral_N700_32))
             textMoveToWishlist.setOnClickListener { }
         } else {
-            textMoveToWishlist.text = "Pindahkan ke wishlist"
+            textMoveToWishlist.text = action.message
             textMoveToWishlist.setTextColor(ContextCompat.getColor(itemView.context, R.color.Neutral_N700_68))
             textMoveToWishlist.setOnClickListener {
-                actionListener?.onWishlistCheckChanged(data.cartItemData?.originData?.productId, data.cartItemData?.originData?.cartId ?: 0)
+                actionListener?.onWishlistCheckChanged(data.cartItemData?.originData?.productId, data.cartItemData?.originData?.cartId
+                        ?: 0)
             }
         }
+        textMoveToWishlist.show()
     }
 
     private fun getOnClickProductItemListener(

@@ -67,18 +67,13 @@
         "action": [
           {
             "id": "1",
-            "code": "NOTIFY",
-            "message": "Notify me when the stock is ready"
+            "code": "WISHLIST",
+            "message": "Pindahkan ke wishlist"
           },
           {
             "id": "2",
             "code": "DELETE",
             "message": "Hapus barang"
-          },
-          {
-            "id": "3",
-            "code": "WISHLIST",
-            "message": "Pindahkan ke wishlist"
           },
           {
             "id": "4",
@@ -235,7 +230,7 @@
                   },
                   "product_finsurance": 1,
                   "product_shop_id": 480829,
-                  "is_wishlisted": false,
+                  "is_wishlisted": true,
                   "product_tracker_data": {
                     "attribution": "none/other",
                     "tracker_list_name": "none/other"
