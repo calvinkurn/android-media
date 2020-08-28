@@ -16,6 +16,8 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.common.WidgetListener
@@ -28,6 +30,16 @@ import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.sellerhomecommon.utils.Utils
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.analytics.StatisticTracker
+import com.tokopedia.statistic.analytics.performance.StatisticPerformanceMonitoringListener
+import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTraceNameConst.BAR_CHART_WIDGET_TRACE
+import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTraceNameConst.CARD_WIDGET_TRACE
+import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTraceNameConst.CAROUSEL_WIDGET_TRACE
+import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTraceNameConst.LINE_GRAPH_WIDGET_TRACE
+import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTraceNameConst.PIE_CHART_WIDGET_TRACE
+import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTraceNameConst.POST_LIST_WIDGET_TRACE
+import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTraceNameConst.PROGRESS_WIDGET_TRACE
+import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTraceNameConst.STATISTIC_LAYOUT_TRACE
+import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTraceNameConst.TABLE_WIDGET_TRACE
 import com.tokopedia.statistic.common.utils.logger.StatisticLogger
 import com.tokopedia.statistic.di.DaggerStatisticComponent
 import com.tokopedia.statistic.presentation.view.bottomsheet.DateFilterBottomSheet
@@ -89,6 +101,17 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private var isFirstLoad = true
     private var isErrorToastShown = false
     private var canSelectTabEnabled = false
+
+    private var isPltMonitoringCompleted = false
+    private var performanceMonitoringPageLayout: PerformanceMonitoring? = null
+    private var performanceMonitoringCardWidget: PerformanceMonitoring? = null
+    private var performanceMonitoringLineGraphWidget: PerformanceMonitoring? = null
+    private var performanceMonitoringProgressWidget: PerformanceMonitoring? = null
+    private var performanceMonitoringPostListWidget: PerformanceMonitoring? = null
+    private var performanceMonitoringCarouselWidget: PerformanceMonitoring? = null
+    private var performanceMonitoringTableWidget: PerformanceMonitoring? = null
+    private var performanceMonitoringPieChartWidget: PerformanceMonitoring? = null
+    private var performanceMonitoringBarChartWidget: PerformanceMonitoring? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return layoutInflater.inflate(R.layout.fragment_stc_statistic, container, false)
@@ -336,48 +359,56 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private fun fetchCardData(widgets: List<BaseWidgetUiModel<*>>) {
         widgets.forEach { it.isLoaded = true }
         val dataKeys: List<String> = Utils.getWidgetDataKeys<CardWidgetUiModel>(widgets)
+        performanceMonitoringCardWidget = PerformanceMonitoring.start(CARD_WIDGET_TRACE)
         mViewModel.getCardWidgetData(dataKeys)
     }
 
     private fun fetchLineGraphData(widgets: List<BaseWidgetUiModel<*>>) {
         widgets.forEach { it.isLoaded = true }
         val dataKeys: List<String> = Utils.getWidgetDataKeys<LineGraphWidgetUiModel>(widgets)
+        performanceMonitoringLineGraphWidget = PerformanceMonitoring.start(LINE_GRAPH_WIDGET_TRACE)
         mViewModel.getLineGraphWidgetData(dataKeys)
     }
 
     private fun fetchProgressData(widgets: List<BaseWidgetUiModel<*>>) {
         widgets.forEach { it.isLoaded = true }
         val dataKeys: List<String> = Utils.getWidgetDataKeys<ProgressWidgetUiModel>(widgets)
+        performanceMonitoringProgressWidget = PerformanceMonitoring.start(PROGRESS_WIDGET_TRACE)
         mViewModel.getProgressWidgetData(dataKeys)
     }
 
     private fun fetchPostData(widgets: List<BaseWidgetUiModel<*>>) {
         widgets.forEach { it.isLoaded = true }
         val dataKeys: List<String> = Utils.getWidgetDataKeys<PostListWidgetUiModel>(widgets)
+        performanceMonitoringPostListWidget = PerformanceMonitoring.start(POST_LIST_WIDGET_TRACE)
         mViewModel.getPostWidgetData(dataKeys)
     }
 
     private fun fetchCarouselData(widgets: List<BaseWidgetUiModel<*>>) {
         widgets.forEach { it.isLoaded = true }
         val dataKeys: List<String> = Utils.getWidgetDataKeys<CarouselWidgetUiModel>(widgets)
+        performanceMonitoringCarouselWidget = PerformanceMonitoring.start(CAROUSEL_WIDGET_TRACE)
         mViewModel.getCarouselWidgetData(dataKeys)
     }
 
     private fun fetchTableData(widgets: List<BaseWidgetUiModel<*>>) {
         widgets.forEach { it.isLoaded = true }
         val dataKeys: List<String> = Utils.getWidgetDataKeys<TableWidgetUiModel>(widgets)
+        performanceMonitoringTableWidget = PerformanceMonitoring.start(TABLE_WIDGET_TRACE)
         mViewModel.getTableWidgetData(dataKeys)
     }
 
     private fun fetchPieChartData(widgets: List<BaseWidgetUiModel<*>>) {
         widgets.forEach { it.isLoaded = true }
         val dataKeys: List<String> = Utils.getWidgetDataKeys<PieChartWidgetUiModel>(widgets)
+        performanceMonitoringPieChartWidget = PerformanceMonitoring.start(PIE_CHART_WIDGET_TRACE)
         mViewModel.getPieChartWidgetData(dataKeys)
     }
 
     private fun fetchBarChartData(widgets: List<BaseWidgetUiModel<*>>) {
         widgets.forEach { it.isLoaded = true }
         val dataKeys: List<String> = Utils.getWidgetDataKeys<BarChartWidgetUiModel>(widgets)
+        performanceMonitoringBarChartWidget = PerformanceMonitoring.start(BAR_CHART_WIDGET_TRACE)
         mViewModel.getBarChartWidgetData(dataKeys)
     }
 
@@ -659,10 +690,14 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
                 is Success -> setOnSuccessGetLayout(result.data)
                 is Fail -> setOnErrorGetLayout(result.throwable)
             }
+
+            stopLayoutPerformanceMonitoring()
             setProgressBarVisibility(false)
         })
 
         setProgressBarVisibility(true)
+
+        startLayoutNetworkPerformanceMonitoring()
         mViewModel.getWidgetLayout()
     }
 
@@ -677,10 +712,15 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     private inline fun <reified D : BaseDataUiModel> observeWidgetData(liveData: LiveData<Result<List<D>>>, type: String) {
         liveData.observe(viewLifecycleOwner, Observer { result ->
+            startLayoutRenderingPerformanceMonitoring()
+
             when (result) {
                 is Success -> result.data.setOnSuccessWidgetState()
                 is Fail -> result.throwable.setOnErrorWidgetState<D, BaseWidgetUiModel<D>>(type)
             }
+
+            stopPLTPerformanceMonitoring()
+            stopWidgetPerformanceMonitoring(type)
         })
     }
 
@@ -715,5 +755,40 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         val tickerItems = listOf(TickerItemUiModel(title = title, message = message, redirectUrl = tickerUrl))
         val tickerData = TickerDataUiModel(tickers = tickerItems, dataKey = TICKER_NAME)
         return@lazy TickerWidgetUiModel(data = tickerData, title = TICKER_NAME, dataKey = TICKER_NAME)
+    }
+
+    private fun startLayoutNetworkPerformanceMonitoring() {
+        performanceMonitoringPageLayout = PerformanceMonitoring.start(STATISTIC_LAYOUT_TRACE)
+        (activity as? StatisticPerformanceMonitoringListener)?.startNetworkPerformanceMonitoring()
+    }
+
+    private fun startLayoutRenderingPerformanceMonitoring() {
+        (activity as? StatisticPerformanceMonitoringListener)?.startRenderPerformanceMonitoring()
+    }
+
+    private fun stopPLTPerformanceMonitoring() {
+        if (!isPltMonitoringCompleted) {
+            isPltMonitoringCompleted = true
+            recyclerView.addOneTimeGlobalLayoutListener {
+                (activity as? StatisticPerformanceMonitoringListener)?.stopPerformanceMonitoring()
+            }
+        }
+    }
+
+    private fun stopLayoutPerformanceMonitoring() {
+        performanceMonitoringPageLayout?.stopTrace()
+    }
+
+    private fun stopWidgetPerformanceMonitoring(type: String) {
+        when (type) {
+            WidgetType.CARD -> performanceMonitoringCardWidget?.stopTrace()
+            WidgetType.LINE_GRAPH -> performanceMonitoringLineGraphWidget?.stopTrace()
+            WidgetType.PROGRESS -> performanceMonitoringProgressWidget?.stopTrace()
+            WidgetType.POST_LIST -> performanceMonitoringPostListWidget?.stopTrace()
+            WidgetType.CAROUSEL -> performanceMonitoringCarouselWidget?.stopTrace()
+            WidgetType.TABLE -> performanceMonitoringTableWidget?.stopTrace()
+            WidgetType.PIE_CHART -> performanceMonitoringPieChartWidget?.stopTrace()
+            WidgetType.BAR_CHART -> performanceMonitoringBarChartWidget?.stopTrace()
+        }
     }
 }
