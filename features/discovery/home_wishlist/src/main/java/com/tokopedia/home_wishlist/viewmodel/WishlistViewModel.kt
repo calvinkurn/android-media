@@ -159,7 +159,7 @@ open class WishlistViewModel @Inject constructor(
             }
         }){
             isWishlistErrorInFirstPage.postValue(true)
-            wishlistData.postValue(listOf(ErrorWishlistDataModel(it.message)))
+            wishlistData.postValue(listOf(ErrorWishlistDataModel()))
             currentPage--
             it.printStackTrace()
         }
@@ -223,7 +223,7 @@ open class WishlistViewModel @Inject constructor(
             val newList = emptyDataVisitable.toMutableList()
             if(page == 0) newList.add(RecommendationTitleDataModel(widget.title, ""))
             newList.addAll(widget.recommendationItemList.map { RecommendationItemDataModel(widget.title, it) })
-            wishlistData.value = newList
+            wishlistData.postValue(newList)
         }){
             it.printStackTrace()
         }
