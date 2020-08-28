@@ -37,7 +37,7 @@ class StaticBuyerModelGenerator private constructor() {
                 linkText = context.getString(R.string.label_menu_show_history)
                 titleTrack = AccountConstants.Analytics.PEMBELI
                 sectionTrack = context.getString(R.string.title_menu_transaction)
-                applinkUrl = ApplinkConst.MARKETPLACE_ORDER
+                applinkUrl = ApplinkConst.BELANJA_ORDER
                 items = when (homeRouter.getBooleanRemoteConfig(RemoteConfigKey.APP_GLOBAL_NAV_NEW_DESIGN, true)) {
                     true -> getMarketPlaceOrderMenu(context, accountModel)
                     else -> getPurchaseOrderMenu(context, accountModel)
