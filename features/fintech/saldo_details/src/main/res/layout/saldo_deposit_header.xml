@@ -8,13 +8,6 @@
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
-    <com.tokopedia.unifycomponents.ticker.Ticker
-        android:id="@+id/ticker_seller_migration_saldo_deposit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:tickerType="announcement" />
-
     <LinearLayout
         android:id="@+id/saldo_balance_layout"
         android:layout_width="match_parent"
