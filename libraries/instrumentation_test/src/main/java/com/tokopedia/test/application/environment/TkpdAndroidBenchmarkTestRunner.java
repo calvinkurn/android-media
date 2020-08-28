@@ -4,7 +4,12 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
 
+import androidx.benchmark.IsolationActivity;
 import androidx.benchmark.junit4.AndroidBenchmarkRunner;
+import androidx.test.platform.app.InstrumentationRegistry;
+
+import com.tokopedia.instrumentation.test.R;
+import com.tokopedia.test.application.benchmark_component.activity.TkpdIsolationActivity;
 
 public class TkpdAndroidBenchmarkTestRunner extends AndroidBenchmarkRunner {
     @Override
@@ -19,4 +24,28 @@ public class TkpdAndroidBenchmarkTestRunner extends AndroidBenchmarkRunner {
         arguments.putString("androidx.benchmark.output.enable", "true");
         super.onCreate(arguments);
     }
+
+    @Override
+    protected void waitForActivitiesToComplete() {
+        final boolean[] isResumed = {false};
+        InstrumentationRegistry.getInstrumentation().runOnMainSync(new Runnable() {
+            @Override
+            public void run() {
+                isResumed[0] = TkpdIsolationActivity.Companion.getResumed();
+            }
+        });
+        if (!isResumed[0]) {
+            IsolationActivity.Companion.launchSingleton();
+            TkpdIsolationActivity.Companion.launchSingleton(R.style.Theme_AppCompat_Light_NoActionBar);
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        IsolationActivity.Companion.finishSingleton();
+        TkpdIsolationActivity.Companion.finishSingleton();
+        super.waitForActivitiesToComplete();
+        super.onDestroy();
+    }
+
 }

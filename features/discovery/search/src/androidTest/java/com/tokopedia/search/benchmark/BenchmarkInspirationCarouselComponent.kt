@@ -4,12 +4,11 @@ import android.widget.FrameLayout
 import androidx.benchmark.junit4.BenchmarkRule
 import androidx.benchmark.junit4.measureRepeated
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.rule.ActivityTestRule
 import com.tokopedia.search.createInspirationCarouselListener
-import com.tokopedia.search.env.BlankTestActivity
 import com.tokopedia.search.mock.MockSearchProductModel.getInspirationCarouselListViewModel
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.InspirationCarouselViewHolder
 import com.tokopedia.test.application.benchmark_component.BenchmarkObject
+import com.tokopedia.test.application.benchmark_component.BenchmarkViewRule
 import org.junit.Rule
 import org.junit.Test
 
@@ -18,11 +17,11 @@ internal class BenchmarkInspirationCarouselComponent {
     val benchmarkRule = BenchmarkRule()
 
     @get:Rule
-    var activityRule: ActivityTestRule<BlankTestActivity> = ActivityTestRule(BlankTestActivity::class.java)
+    val benchmarkViewRule = BenchmarkViewRule()
 
     @Test
     fun benchmark_onBind_ViewHolder_inspiration_carousel_list() {
-        val itemView = BenchmarkObject.simpleViewFromLayout(InspirationCarouselViewHolder.LAYOUT, activityRule.activity)
+        val itemView = BenchmarkObject.simpleViewFromLayout(InspirationCarouselViewHolder.LAYOUT, benchmarkViewRule.getBenchmarkActivity())
         val viewHolder = InspirationCarouselViewHolder(
                 itemView, createInspirationCarouselListener())
         val data = getInspirationCarouselListViewModel()
@@ -35,7 +34,7 @@ internal class BenchmarkInspirationCarouselComponent {
 
     @Test
     fun benchmark_onCreateViewHolder_ViewHolder_inspiration_carousel_list() {
-        val viewGroup = FrameLayout(activityRule.activity)
+        val viewGroup = FrameLayout(benchmarkViewRule.getBenchmarkActivity())
         val recyclerViewAdapter = BenchmarkObject.simpleAdapter(
                 InspirationCarouselViewHolder.LAYOUT) {
             InspirationCarouselViewHolder(it, createInspirationCarouselListener())

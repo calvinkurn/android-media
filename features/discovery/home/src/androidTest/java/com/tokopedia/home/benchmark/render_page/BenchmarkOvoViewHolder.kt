@@ -1,20 +1,18 @@
-package com.tokopedia.home_component
+package com.tokopedia.home.benchmark.render_page
 
 import android.widget.FrameLayout
 import androidx.benchmark.junit4.BenchmarkRule
 import androidx.benchmark.junit4.measureRepeated
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.home_component.mock.channel.MockChannelModel
-import com.tokopedia.home_component.model.DynamicChannelLayout.LAYOUT_MIX_TOP
-import com.tokopedia.home_component.viewholders.MixTopComponentViewHolder
-import com.tokopedia.home_component.visitable.MixTopDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.OvoViewHolder
+import com.tokopedia.home.mock.MockOvoModel
 import com.tokopedia.test.application.benchmark_component.BenchmarkObject.simpleAdapter
 import com.tokopedia.test.application.benchmark_component.BenchmarkObject.simpleViewFromLayout
 import com.tokopedia.test.application.benchmark_component.BenchmarkViewRule
 import org.junit.Rule
 import org.junit.Test
 
-class BenchmarkMixTopComponent {
+class BenchmarkOvoViewHolder {
     @get:Rule
     val benchmarkRule = BenchmarkRule()
 
@@ -22,11 +20,11 @@ class BenchmarkMixTopComponent {
     val benchmarkViewRule = BenchmarkViewRule()
 
     @Test
-    fun benchmark_onCreateViewHolder_ViewHolder_mix_top_component() {
+    fun benchmark_onCreateViewHolder_ViewHolder_home_ovo_tokopoint() {
         val viewGroup = FrameLayout(benchmarkViewRule.getBenchmarkActivity())
         val recyclerViewAdapter = simpleAdapter(
-                MixTopComponentViewHolder.LAYOUT) {
-            MixTopComponentViewHolder(it, null, null)
+                OvoViewHolder.LAYOUT) {
+            OvoViewHolder(it, null)
         }
 
         benchmarkRule.measureRepeated {
@@ -37,12 +35,12 @@ class BenchmarkMixTopComponent {
     }
 
     @Test
-    fun benchmark_onBind_ViewHolder_mix_top_component() {
-        val itemView = simpleViewFromLayout(MixTopComponentViewHolder.LAYOUT, benchmarkViewRule.getBenchmarkActivity())
-        val viewHolder = MixTopComponentViewHolder(
-                itemView, null, null
+    fun benchmark_onBind_ViewHolder_home_ovo_tokopoint() {
+        val itemView = simpleViewFromLayout(OvoViewHolder.LAYOUT, benchmarkViewRule.getBenchmarkActivity())
+        val viewHolder = OvoViewHolder(
+                itemView, null
         )
-        val data = MixTopDataModel(MockChannelModel.get(LAYOUT_MIX_TOP))
+        val data = MockOvoModel.get()
         benchmarkRule.measureRepeated {
             InstrumentationRegistry.getInstrumentation().runOnMainSync {
                 viewHolder.bind(data)

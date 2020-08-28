@@ -1,20 +1,18 @@
-package com.tokopedia.home_component
+package com.tokopedia.home.benchmark.render_page
 
 import android.widget.FrameLayout
 import androidx.benchmark.junit4.BenchmarkRule
 import androidx.benchmark.junit4.measureRepeated
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.home_component.mock.channel.MockChannelModel
-import com.tokopedia.home_component.model.DynamicChannelLayout.LAYOUT_MIX_TOP
-import com.tokopedia.home_component.viewholders.MixTopComponentViewHolder
-import com.tokopedia.home_component.visitable.MixTopDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.BannerViewHolder
+import com.tokopedia.home.mock.MockSliderBannerModel
 import com.tokopedia.test.application.benchmark_component.BenchmarkObject.simpleAdapter
 import com.tokopedia.test.application.benchmark_component.BenchmarkObject.simpleViewFromLayout
 import com.tokopedia.test.application.benchmark_component.BenchmarkViewRule
 import org.junit.Rule
 import org.junit.Test
 
-class BenchmarkMixTopComponent {
+class BenchmarkSliderBannerViewHolder {
     @get:Rule
     val benchmarkRule = BenchmarkRule()
 
@@ -22,11 +20,11 @@ class BenchmarkMixTopComponent {
     val benchmarkViewRule = BenchmarkViewRule()
 
     @Test
-    fun benchmark_onCreateViewHolder_ViewHolder_mix_top_component() {
+    fun benchmark_onCreateViewHolder_ViewHolder_home_page_slider_banner() {
         val viewGroup = FrameLayout(benchmarkViewRule.getBenchmarkActivity())
         val recyclerViewAdapter = simpleAdapter(
-                MixTopComponentViewHolder.LAYOUT) {
-            MixTopComponentViewHolder(it, null, null)
+                BannerViewHolder.LAYOUT) {
+            BannerViewHolder(it, null)
         }
 
         benchmarkRule.measureRepeated {
@@ -37,12 +35,12 @@ class BenchmarkMixTopComponent {
     }
 
     @Test
-    fun benchmark_onBind_ViewHolder_mix_top_component() {
-        val itemView = simpleViewFromLayout(MixTopComponentViewHolder.LAYOUT, benchmarkViewRule.getBenchmarkActivity())
-        val viewHolder = MixTopComponentViewHolder(
-                itemView, null, null
+    fun benchmark_onBind_ViewHolder_dynamic_home_page_slider_banner() {
+        val itemView = simpleViewFromLayout(BannerViewHolder.LAYOUT, benchmarkViewRule.getBenchmarkActivity())
+        val viewHolder = BannerViewHolder(
+                itemView, null
         )
-        val data = MixTopDataModel(MockChannelModel.get(LAYOUT_MIX_TOP))
+        val data = MockSliderBannerModel.get()
         benchmarkRule.measureRepeated {
             InstrumentationRegistry.getInstrumentation().runOnMainSync {
                 viewHolder.bind(data)
