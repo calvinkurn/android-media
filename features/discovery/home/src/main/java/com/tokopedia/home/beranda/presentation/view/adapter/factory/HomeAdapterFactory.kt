@@ -23,6 +23,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.UseCaseIc
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.default_home_dc.ErrorPromptViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business.NewBusinessViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.DynamicChannelLoadingViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.EmptyBlankViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.GeolocationPromptViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.OvoViewHolder
@@ -176,6 +177,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
     override fun type(productHighlightDataModel: ProductHighlightDataModel): Int {
         return ProductHighlightComponentViewHolder.LAYOUT
     }
+
+    override fun type(dynamicChannelLoadingModel: DynamicChannelLoadingModel): Int {
+        return DynamicChannelLoadingViewHolder.LAYOUT
+    }
     //end of Home-Component section
 
     private fun getDynamicChannelLayoutFromType(layout: String): Int {
@@ -291,6 +296,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             ReminderWidgetViewHolder.LAYOUT -> viewHolder =
                     ReminderWidgetViewHolder(view,reminderWidgetListener)
             TopadsBannerViewHolder.LAYOUT -> viewHolder = TopadsBannerViewHolder(view, listener)
+            DynamicChannelLoadingViewHolder.LAYOUT -> viewHolder = DynamicChannelLoadingViewHolder(view)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 

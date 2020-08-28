@@ -8,10 +8,8 @@ import com.tokopedia.home.analytics.HomePageTrackingV2
 import com.tokopedia.home.analytics.v2.CategoryWidgetTracking
 import com.tokopedia.home.analytics.v2.ProductHighlightTracking
 import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
-import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
-import com.tokopedia.home.beranda.domain.model.HomeData
-import com.tokopedia.home.beranda.domain.model.HomeFlag
-import com.tokopedia.home.beranda.domain.model.Spotlight
+import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
+import com.tokopedia.home.beranda.domain.model.*
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionDataModel
@@ -38,6 +36,7 @@ class HomeVisitableFactoryImpl(
     private var trackingQueue: TrackingQueue? = null
     private var homeData: HomeData? = null
     private var isCache: Boolean = true
+    private var dynamicChannelDataMapper: HomeDynamicChannelDataMapper? = null
     private var visitableList: MutableList<Visitable<*>> = mutableListOf()
 
     companion object{
@@ -57,12 +56,13 @@ class HomeVisitableFactoryImpl(
         private const val VALUE_BANNER_UNKNOWN_LAYOUT_TYPE = "lego banner unknown"
     }
 
-    override fun buildVisitableList(homeData: HomeData, isCache: Boolean, trackingQueue: TrackingQueue, context: Context): HomeVisitableFactory {
+    override fun buildVisitableList(homeData: HomeData, isCache: Boolean, trackingQueue: TrackingQueue, context: Context, dynamicChannelDataMapper: HomeDynamicChannelDataMapper): HomeVisitableFactory {
         this.homeData = homeData
         this.isCache = isCache
         this.visitableList = mutableListOf()
         this.trackingQueue = trackingQueue
         this.context = context
+        this.dynamicChannelDataMapper = dynamicChannelDataMapper
         return this
     }
 
@@ -133,6 +133,15 @@ class HomeVisitableFactoryImpl(
             viewModelDynamicIcon.isTrackingCombined = false
         }
         visitableList.add(viewModelDynamicIcon)
+        return this
+    }
+
+    override fun addDynamicChannelVisitable(): HomeVisitableFactory {
+        homeData?.let {
+            val data = dynamicChannelDataMapper?.mapToDynamicChannelDataModel(
+                    HomeChannelData(it.dynamicHomeChannel), false, homeData?.token?.isNotEmpty()?:false)
+            data?.let { it1 -> visitableList.addAll(it1) }
+        }
         return this
     }
 

@@ -27,4 +27,6 @@ class HomeUseCase @Inject constructor(
     }
 
     fun updateHomeData() = homeRepository.updateHomeData()
+
+    fun deleteHomeData() = homeRepository.deleteHomeData()
 }

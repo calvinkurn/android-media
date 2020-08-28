@@ -13,7 +13,7 @@ data class MixTopDataModel(
 
     override fun equalsWith(b: Any?): Boolean {
         return if (b is MixTopDataModel) {
-            channelModel == b.channelModel
+            channelModel.channelConfig.createdTimeMillis == b.channelModel.channelConfig.createdTimeMillis
         } else false
     }
 

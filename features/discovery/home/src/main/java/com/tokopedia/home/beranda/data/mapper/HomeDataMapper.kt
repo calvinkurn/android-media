@@ -12,18 +12,20 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 class HomeDataMapper(
         private val context: Context,
         private val homeVisitableFactory: HomeVisitableFactory,
-        private val trackingQueue: TrackingQueue
+        private val trackingQueue: TrackingQueue,
+        private val homeDynamicChannelDataMapper: HomeDynamicChannelDataMapper
 ) {
     fun mapToHomeViewModel(homeData: HomeData?, isCache: Boolean): HomeDataModel{
         BenchmarkHelper.beginSystraceSection(TRACE_MAP_TO_HOME_VIEWMODEL)
         if (homeData == null) return HomeDataModel(isCache = isCache)
         val list: List<Visitable<*>> = homeVisitableFactory.buildVisitableList(
-                homeData, isCache, trackingQueue, context)
+                homeData, isCache, trackingQueue, context, homeDynamicChannelDataMapper)
                 .addBannerVisitable()
                 .addTickerVisitable()
                 .addUserWalletVisitable()
                 .addDynamicIconVisitable()
                 .addGeolocationVisitable()
+                .addDynamicChannelVisitable()
                 .build()
         BenchmarkHelper.endSystraceSection()
         return HomeDataModel(homeData.homeFlag, list, isCache)

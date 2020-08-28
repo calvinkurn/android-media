@@ -453,12 +453,25 @@ open class HomeViewModel @Inject constructor(
             newHomeViewModel = evaluatePlayWidget(newHomeViewModel)
             newHomeViewModel = evaluatePlayCarouselWidget(newHomeViewModel)
             newHomeViewModel = evaluateBuWidgetData(newHomeViewModel)
-            if (needToEvaluateRecommendation) newHomeViewModel = evaluateRecommendationSection(newHomeViewModel)
+            newHomeViewModel = evaluateRecommendationSection(newHomeViewModel)
+            newHomeViewModel = evaluateDynamicChannelModel(newHomeViewModel)
             newHomeViewModel = evaluatePopularKeywordComponent(newHomeViewModel)
             newHomeViewModel = evaluateTopAdsBannerComponent(newHomeViewModel)
             return newHomeViewModel
         }
         return homeDataModel
+    }
+
+    private fun evaluateDynamicChannelModel(newHomeViewModel: HomeDataModel?): HomeDataModel? {
+        newHomeViewModel?.let {
+            val getDynamicChannelModelComponent = it.list.filterIsInstance(HomeComponentVisitable::class.java)
+            if (getDynamicChannelModelComponent.isEmpty()) {
+                val list = it.list.toMutableList()
+                list.add(DynamicChannelLoadingModel())
+                return newHomeViewModel.copy(list = list)
+            }
+        }
+        return newHomeViewModel
     }
 
     private fun evaluateGeolocationComponent(homeDataModel: HomeDataModel?): HomeDataModel? {
@@ -902,7 +915,7 @@ open class HomeViewModel @Inject constructor(
                         _homeLiveData.value = homeData
                     }
                     if (isOnlyHomeHeader(homeDataModel)) {
-                        updateWidget(UpdateLiveDataModel(action = ACTION_UPDATE_HOME_DATA, homeData = homeDataModel, needToEvaluateRecommendation = false))
+//                        updateWidget(UpdateLiveDataModel(action = ACTION_UPDATE_HOME_DATA, homeData = homeData, needToEvaluateRecommendation = false))
                         getDynamicChannelData(token = homeToken, numOfChannel = 2)
                     } else {
                         getPlayBannerCarousel()
@@ -1029,77 +1042,97 @@ open class HomeViewModel @Inject constructor(
     }
 
     fun getDynamicChannelData(token: String = "", numOfChannel: Int = 0){
-        launchCatchError(coroutineContext, block = {
-            getDynamicChannelsUseCase.get().setParams(
-                    token = token,
-                    numOfChannel = numOfChannel
-            )
-            val data = getDynamicChannelsUseCase.get().executeOnBackground()
-            if(data.isNotEmpty()){
-                val newList = _homeLiveData.value?.list?.toMutableList()
-                newList?.addAll(data)
-
-                val newHomeDataModel = _homeLiveData.value?.copy(list = newList?.toList()?: listOf(), isCache = false)
-
-                _isStartToRenderDynamicChannel.postValue(Event(true))
-                updateWidget(UpdateLiveDataModel(
-                        action = ACTION_UPDATE_HOME_DATA,
-                        homeData = newHomeDataModel,
-                        needToEvaluateRecommendation = true
-                ))
-
-//                _trackingLiveData.postValue(Event(data) as Event<List<HomeVisitable>>?)
-            }
-        }){
-            it.printStackTrace()
-        }
+//        launchCatchError(coroutineContext, block = {
+//            getDynamicChannelsUseCase.get().setParams(
+//                    token = token,
+//                    numOfChannel = numOfChannel
+//            )
+//            val data = getDynamicChannelsUseCase.get().executeOnBackground()
+//            homeToken = data.first
+//            val visitableList = data.second
+//
+//            if(visitableList.isNotEmpty()){
+//                val newList = _homeLiveData.value?.list?.toMutableList()
+//                newList?.removeAll { it is DynamicChannelLoadingModel }
+//                newList?.addAll(visitableList)
+//                val dynamicChannelLoadingModel = newList?.filter { it is DynamicChannelLoadingModel }
+////                dynamicChannelLoadingModel?.forEach {
+////                    updateWidget(UpdateLiveDataModel(
+////                            action = ACTION_DELETE,
+////                            visitable = it
+////                    ))
+////                }
+//                val newHomeViewModel = _homeLiveData.value?.copy(list = newList?.toList()?:listOf())
+//
+//                _isStartToRenderDynamicChannel.postValue(Event(true))
+//                val needToEvaluateRecommendation = !homeToken.isNotEmpty()
+//                visitableList.forEach {
+//                    updateWidget(UpdateLiveDataModel(
+//                            action = ACTION_UPDATE_HOME_DATA,
+//                            needToEvaluateRecommendation = needToEvaluateRecommendation,
+//                            homeData = newHomeViewModel
+//                    ))
+//                }
+//
+//                if (homeToken.isNotEmpty()) {
+//                    getDynamicChannelData(homeToken, 0)
+//                }
+////                _trackingLiveData.postValue(Event(data) as Event<List<HomeVisitable>>?)
+//            }
+//        }){
+//            it.printStackTrace()
+//        }
     }
 
     fun getDynamicChannelData(dynamicChannelDataModel: DynamicChannelDataModel, position: Int){
-        launchCatchError(coroutineContext, block = {
-            getDynamicChannelsUseCase.get().setParams(dynamicChannelDataModel.channel?.groupId ?: "")
-            val data = getDynamicChannelsUseCase.get().executeOnBackground()
-            if(data.isEmpty()){
-                updateWidget(UpdateLiveDataModel(ACTION_DELETE, dynamicChannelDataModel, position))
-            } else {
-                var lastIndex = position
-                val dynamicData = _homeLiveData.value?.list?.getOrNull(lastIndex)
-                if(dynamicData !is DynamicChannelDataModel && dynamicData != dynamicChannelDataModel){
-                    lastIndex = _homeLiveData.value?.list?.indexOf(dynamicChannelDataModel) ?: -1
-                }
-                updateWidget(UpdateLiveDataModel(ACTION_DELETE, dynamicChannelDataModel, lastIndex))
-                data.reversed().forEach {
-                    updateWidget(UpdateLiveDataModel(ACTION_ADD, it, lastIndex))
-                }
-                _trackingLiveData.postValue(Event(data.filterIsInstance(HomeVisitable::class.java)))
-//                _trackingLiveData.postValue(Event(data) as Event<List<HomeVisitable>>?)
-            }
-        }){
-            updateWidget(UpdateLiveDataModel(ACTION_DELETE, dynamicChannelDataModel, position))
-        }
+//        launchCatchError(coroutineContext, block = {
+//            getDynamicChannelsUseCase.get().setParams(dynamicChannelDataModel.channel?.groupId ?: "")
+//            val data = getDynamicChannelsUseCase.get().executeOnBackground()
+//            val visitableList = data.second
+//
+//            if(visitableList.isEmpty()){
+//                updateWidget(UpdateLiveDataModel(ACTION_DELETE, dynamicChannelDataModel, position))
+//            } else {
+//                var lastIndex = position
+//                val dynamicData = _homeLiveData.value?.list?.getOrNull(lastIndex)
+//                if(dynamicData !is DynamicChannelDataModel && dynamicData != dynamicChannelDataModel){
+//                    lastIndex = _homeLiveData.value?.list?.indexOf(dynamicChannelDataModel) ?: -1
+//                }
+//                updateWidget(UpdateLiveDataModel(ACTION_DELETE, dynamicChannelDataModel, lastIndex))
+//                visitableList.reversed().forEach {
+//                    updateWidget(UpdateLiveDataModel(ACTION_ADD, it, lastIndex))
+//                }
+//                _trackingLiveData.postValue(Event(visitableList.filterIsInstance(HomeVisitable::class.java)))
+////                _trackingLiveData.postValue(Event(data) as Event<List<HomeVisitable>>?)
+//            }
+//        }){
+//            updateWidget(UpdateLiveDataModel(ACTION_DELETE, dynamicChannelDataModel, position))
+//        }
     }
 
     fun getDynamicChannelData(visitable: Visitable<*>, channelModel: ChannelModel, position: Int){
-        launchCatchError(coroutineContext, block = {
-            getDynamicChannelsUseCase.get().setParams(channelModel.groupId)
-            val data = getDynamicChannelsUseCase.get().executeOnBackground()
-            if(data.isEmpty()){
-                updateWidget(UpdateLiveDataModel(ACTION_DELETE, visitable, position))
-            } else {
-                var lastIndex = position
-                val dynamicData = _homeLiveData.value?.list?.getOrNull(lastIndex)
-                if(dynamicData !is DynamicChannelDataModel && dynamicData != visitable){
-                    lastIndex = _homeLiveData.value?.list?.indexOf(visitable) ?: -1
-                }
-                updateWidget(UpdateLiveDataModel(ACTION_DELETE, visitable, lastIndex))
-                data.reversed().forEach {
-                    updateWidget(UpdateLiveDataModel(ACTION_ADD, it, lastIndex))
-                }
-//                _trackingLiveData.postValue(Event(data.filterIsInstance(HomeVisitable::class.java)))
-            }
-        }){
-            updateWidget(UpdateLiveDataModel(ACTION_DELETE, visitable, position))
-        }
+//        launchCatchError(coroutineContext, block = {
+//            getDynamicChannelsUseCase.get().setParams(channelModel.groupId)
+//            val data = getDynamicChannelsUseCase.get().executeOnBackground()
+//            val visitableList = data.second
+//
+//            if(visitableList.isEmpty()){
+//                updateWidget(UpdateLiveDataModel(ACTION_DELETE, visitable, position))
+//            } else {
+//                var lastIndex = position
+//                val dynamicData = _homeLiveData.value?.list?.getOrNull(lastIndex)
+//                if(dynamicData !is DynamicChannelDataModel && dynamicData != visitable){
+//                    lastIndex = _homeLiveData.value?.list?.indexOf(visitable) ?: -1
+//                }
+//                updateWidget(UpdateLiveDataModel(ACTION_DELETE, visitable, lastIndex))
+//                visitableList.reversed().forEach {
+//                    updateWidget(UpdateLiveDataModel(ACTION_ADD, it, lastIndex))
+//                }
+////                _trackingLiveData.postValue(Event(data.filterIsInstance(HomeVisitable::class.java)))
+//            }
+//        }){
+//            updateWidget(UpdateLiveDataModel(ACTION_DELETE, visitable, position))
+//        }
     }
 
     fun getRechargeRecommendation() {
@@ -1510,4 +1543,7 @@ open class HomeViewModel @Inject constructor(
         if(GlobalConfig.DEBUG) Timber.tag(this.javaClass.simpleName).e(message)
     }
 
+    fun deleteHomeData() {
+        launch(Dispatchers.IO) { homeUseCase.get().deleteHomeData() }
+    }
 }

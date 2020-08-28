@@ -463,7 +463,7 @@ open class HomeFragment : BaseDaggerFragment(),
     private fun setupHomeRecyclerView() { //giving recyclerview larger cache to prevent lag, we can implement this because home dc content
 //is finite
         homeRecyclerView?.setItemViewCacheSize(20)
-        homeRecyclerView?.itemAnimator = null
+//        homeRecyclerView?.itemAnimator = null
         if (homeRecyclerView?.itemDecorationCount == 0) {
             homeRecyclerView?.addItemDecoration(HomeRecyclerDecoration(resources.getDimensionPixelSize(R.dimen.home_recyclerview_item_spacing)))
         }
@@ -647,6 +647,11 @@ open class HomeFragment : BaseDaggerFragment(),
         layoutManager = null
         getHomeViewModel().onCloseChannel()
         unRegisterBroadcastReceiverTokoCash()
+    }
+
+    override fun onStop() {
+        super.onStop()
+//        getHomeViewModel().deleteHomeData()
     }
 
     private fun initRefreshLayout() {

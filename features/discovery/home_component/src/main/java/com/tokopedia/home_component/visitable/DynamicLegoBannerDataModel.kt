@@ -13,7 +13,7 @@ data class DynamicLegoBannerDataModel(
 
     override fun equalsWith(b: Any?): Boolean {
         return if (b is DynamicLegoBannerDataModel) {
-            channelModel == b.channelModel
+            channelModel.channelConfig.createdTimeMillis == b.channelModel.channelConfig.createdTimeMillis
         } else false
     }
 

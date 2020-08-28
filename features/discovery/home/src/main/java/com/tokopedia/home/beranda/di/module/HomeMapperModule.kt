@@ -18,7 +18,7 @@ class HomeMapperModule {
 
     @HomeScope
     @Provides
-    fun provideHomeDataMapper(@ApplicationContext context: Context, visitableFactory: HomeVisitableFactory, trackingQueue: TrackingQueue) = HomeDataMapper(context, visitableFactory, trackingQueue)
+    fun provideHomeDataMapper(@ApplicationContext context: Context, visitableFactory: HomeVisitableFactory, trackingQueue: TrackingQueue, homeDynamicChannelDataMapper: HomeDynamicChannelDataMapper) = HomeDataMapper(context, visitableFactory, trackingQueue, homeDynamicChannelDataMapper)
 
     @HomeScope
     @Provides

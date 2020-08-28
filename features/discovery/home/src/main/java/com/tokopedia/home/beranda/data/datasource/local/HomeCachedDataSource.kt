@@ -32,4 +32,8 @@ class HomeCachedDataSource(
         homeDao.save(HomeRoomData(homeData = homeData))
         BenchmarkHelper.endSystraceSection()
     }
+
+    fun deleteHomeData() {
+        homeDao.deleteHomeData()
+    }
 }

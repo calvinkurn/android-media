@@ -45,7 +45,8 @@ object DynamicChannelComponentMapper {
                         channel.layout,
                         channel.showPromoBadge,
                         channel.hasCloseButton,
-                        ServerTimeOffsetUtil.getServerTimeOffsetFromUnix(channel.header.serverTimeUnix)
+                        ServerTimeOffsetUtil.getServerTimeOffsetFromUnix(channel.header.serverTimeUnix),
+                        channel.timestamp
                 ),
                 trackingAttributionModel = TrackingAttributionModel(
                         galaxyAttribution = channel.galaxyAttribution,

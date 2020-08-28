@@ -64,7 +64,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
         return this
     }
 
-    override fun addDynamicChannelVisitable(): HomeDynamicChannelVisitableFactory {
+    override fun addDynamicChannelVisitable(addLoadingMore: Boolean): HomeDynamicChannelVisitableFactory {
         var dynamicChannelList = mutableListOf<DynamicHomeChannel.Channels>()
         if (homeChannelData?.dynamicHomeChannel == null
                 || homeChannelData?.dynamicHomeChannel?.channels == null
@@ -153,7 +153,15 @@ class HomeDynamicChannelVisitableFactoryImpl(
             }
         }
 
+        if (addLoadingMore) {
+            createDynamicChannelLoadingMore()
+        }
+
         return this
+    }
+
+    private fun createDynamicChannelLoadingMore() {
+        visitableList.add(DynamicChannelLoadingModel())
     }
 
     private fun createPlayWidget(channel: DynamicHomeChannel.Channels) {

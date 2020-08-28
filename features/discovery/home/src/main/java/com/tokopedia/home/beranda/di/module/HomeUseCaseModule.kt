@@ -190,6 +190,9 @@ class HomeUseCaseModule {
             "          layout\n" +
             "          type\n" +
             "          showPromoBadge\n" +
+            "          has_close_button\n" +
+            "          isAutoRefreshAfterExpired\n" +
+            "          token\n" +
             "          header {\n" +
             "            id\n" +
             "            name\n" +
@@ -250,6 +253,68 @@ class HomeUseCaseModule {
             "        }\n" +
             "    }\n" +
             "}"
+
+    private val homeQuery: String = "" +
+            "query homeData\n" +
+            "        {\n" +
+            "        status\n" +
+            "          ticker {\n" +
+            "            meta {\n" +
+            "              total_data\n" +
+            "            }\n" +
+            "            tickers\n" +
+            "            {\n" +
+            "              id\n" +
+            "              title\n" +
+            "              message\n" +
+            "              color\n" +
+            "              layout\n" +
+            "              ticker_type\n" +
+            "              title\n" +
+            "            }\n" +
+            "          }\n" +
+            "          slides(device: 32) {\n" +
+            "            meta { total_data }\n" +
+            "            slides {\n" +
+            "              id\n" +
+            "              galaxy_attribution\n" +
+            "              persona\n" +
+            "              brand_id\n" +
+            "              category_persona\n" +
+            "              image_url\n" +
+            "              redirect_url\n" +
+            "              applink\n" +
+            "              topads_view_url\n" +
+            "              promo_code\n" +
+            "              creative_name\n" +
+            "              type\n" +
+            "              category_id\n" +
+            "              campaignCode\n" +
+            "            }\n" +
+            "          }\n" +
+            "          dynamicHomeIcon {\n" +
+            "            dynamicIcon {\n" +
+            "              id\n" +
+            "              galaxy_attribution\n" +
+            "              persona\n" +
+            "              brand_id\n" +
+            "              category_persona\n" +
+            "              name\n" +
+            "              url\n" +
+            "              imageUrl\n" +
+            "              applinks\n" +
+            "              bu_identifier\n" +
+            "            }\n" +
+            "          }\n" +
+            "          homeFlag{\n" +
+            "                event_time\n" +
+            "                server_time\n" +
+            "                flags(name: \"has_recom_nav_button,dynamic_icon_wrap,has_tokopoints,is_autorefresh\"){\n" +
+            "                    name\n" +
+            "                    is_active\n" +
+            "                }\n" +
+            "            }\n" +
+            "        }"
 
     private val recommendationQuery : String = "{\n" +
             "  get_home_recommendation{\n" +
@@ -418,6 +483,14 @@ class HomeUseCaseModule {
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeChannelData>(graphqlRepository)
         useCase.setGraphqlQuery(dynamicChannelQuery)
         return GetDynamicChannelsUseCase(useCase, homeDynamicChannelDataMapper)
+    }
+
+    @Provides
+    @HomeScope
+    fun provideGetHomeData(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository, homeDynamicChannelDataMapper: HomeDynamicChannelDataMapper): GetHomeDataUseCase{
+        val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeData>(graphqlRepository)
+        useCase.setGraphqlQuery(homeQuery)
+        return GetHomeDataUseCase(useCase)
     }
 
     @Provides
