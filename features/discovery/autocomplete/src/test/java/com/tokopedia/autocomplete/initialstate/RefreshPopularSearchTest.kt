@@ -16,7 +16,6 @@ internal class RefreshPopularSearchTest: InitialStatePresenterTestFixtures() {
     private fun `Test Refresh Popular Search`(initialStateResponse: List<InitialStateData>, refreshPopularSearchResponse: List<InitialStateData>) {
         `Given view already get initial state`(initialStateResponse)
 
-        `Given initial state view called showInitialStateResult behavior`()
         `Given refresh popular search API will return data`(refreshPopularSearchResponse)
         `When presenter refresh popular search`(ID_POPULAR_SEARCH)
         `Then verify popularSearch API is called`()
@@ -56,11 +55,10 @@ internal class RefreshPopularSearchTest: InitialStatePresenterTestFixtures() {
     fun `Test fail to get refresh popular search data`() {
         `Given view already get initial state`(initialStateCommonData)
 
-        `Given initial state view called showInitialStateResult behavior`()
         `Given refresh popular search API will return error`()
         `When presenter refresh popular search`(ID_POPULAR_SEARCH)
         `Then verify popularSearch API is called`()
-        `Then verify initial state view do nothing behavior`()
+        `Then verify initial state view behavior is correct`()
     }
 
     private fun `Given refresh popular search API will return error`() {

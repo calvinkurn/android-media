@@ -11,8 +11,12 @@ import kotlinx.android.synthetic.main.layout_title_dynamic_initial_state.view.*
 class DynamicInitialStateTitleViewHolder(itemView: View, private val clickListener: InitialStateItemClickListener) : AbstractViewHolder<DynamicInitialStateTitleViewModel>(itemView) {
 
     override fun bind(element: DynamicInitialStateTitleViewModel) {
-        itemView.initialStateDynamicTitle?.text = element.title
+        bindTitle(element)
         bindActionButton(element)
+    }
+
+    private fun bindTitle(item: DynamicInitialStateTitleViewModel) {
+        itemView.initialStateDynamicTitle?.text = item.title
     }
 
     private fun bindActionButton(item: DynamicInitialStateTitleViewModel) {

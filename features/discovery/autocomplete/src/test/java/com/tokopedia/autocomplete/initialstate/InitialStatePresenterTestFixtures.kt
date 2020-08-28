@@ -63,13 +63,14 @@ internal open class InitialStatePresenterTestFixtures {
         }
     }
 
-    protected fun `Given initial state view called showInitialStateResult behavior`() {
-        verify {
+    protected fun `Then verify initial state view behavior is correct`() {
+        verifyOrder {
             initialStateView.onRecentViewImpressed(capture(slotRecentViewItemList))
             initialStateView.onRecentSearchImpressed(capture(slotRecentSearchItemList))
             initialStateView.onPopularSearchImpressed(capture(slotPopularSearchItemList))
             initialStateView.showInitialStateResult(capture(slotVisitableList))
         }
+        confirmVerified(initialStateView)
     }
 
     protected fun `Then verify initial state view do nothing behavior`() {

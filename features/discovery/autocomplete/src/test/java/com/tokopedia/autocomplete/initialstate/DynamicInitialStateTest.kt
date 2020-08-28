@@ -17,7 +17,6 @@ internal class DynamicInitialStateTest: InitialStatePresenterTestFixtures() {
     private fun `Test Dynamic Initial State`(initialStateResponse: List<InitialStateData>, refreshedDynamicInitialStateData: List<InitialStateData>) {
         `Given view already get initial state`(initialStateResponse)
 
-        `Given initial state view called showInitialStateResult behavior`()
         `Given refresh popular search API will return data`(refreshedDynamicInitialStateData)
         `When presenter refresh dynamic initial state data`(ID_NEW_SECTION)
         `Then verify popularSearch API is called`()
@@ -59,11 +58,10 @@ internal class DynamicInitialStateTest: InitialStatePresenterTestFixtures() {
     fun `Test fail to get dynamic initial state data`() {
         `Given view already get initial state`(initialStateCommonData)
 
-        `Given initial state view called showInitialStateResult behavior`()
         `Given refresh popular search API will return error`()
         `When presenter refresh dynamic initial state data`(ID_NEW_SECTION)
         `Then verify popularSearch API is called`()
-        `Then verify initial state view do nothing behavior`()
+        `Then verify initial state view behavior is correct`()
     }
 
     private fun `Given refresh popular search API will return error`() {

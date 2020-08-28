@@ -24,9 +24,9 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class InitialStatePresenter @Inject constructor(
-        @Named(NAMED_USE_CASE_INITIAL_STATE) private val initialStateUseCase: UseCase<List<InitialStateData>>,
+        @Named(INITIAL_STATE_USE_CASE) private val initialStateUseCase: UseCase<List<InitialStateData>>,
         private val deleteRecentSearchUseCase: UseCase<Boolean>,
-        @Named(NAMED_USE_CASE_REFRESH_INITIAL_STATE) private val refreshInitialStateUseCase: UseCase<List<InitialStateData>>,
+        @Named(REFRESH_INITIAL_STATE_USE_CASE) private val refreshInitialStateUseCase: UseCase<List<InitialStateData>>,
         private val userSession: UserSessionInterface
 ) : BaseDaggerPresenter<InitialStateContract.View>(), InitialStateContract.Presenter {
 
@@ -36,7 +36,7 @@ class InitialStatePresenter @Inject constructor(
         const val POPULAR_SEARCH = "popular_search"
     }
 
-    private var listVistable = mutableListOf<Visitable<*>>()
+    private var listVisitable = mutableListOf<Visitable<*>>()
     private var searchParameter = HashMap<String, String>()
 
     override fun getQueryKey(): String {
@@ -104,8 +104,8 @@ class InitialStatePresenter @Inject constructor(
                 }
             }
 
-            listVistable = getInitialStateResult(initialStateViewModel.list)
-            view.showInitialStateResult(listVistable)
+            listVisitable = getInitialStateResult(initialStateViewModel.list)
+            view.showInitialStateResult(listVisitable)
         }
     }
 
@@ -229,13 +229,13 @@ class InitialStatePresenter @Inject constructor(
 
             if (refreshedPopularSearchData.isEmpty()) return
 
-            listVistable.forEachIndexed { _, visitable ->
+            listVisitable.forEachIndexed { _, visitable ->
                 if (visitable is PopularSearchViewModel) {
                     visitable.list = refreshedPopularSearchData
                 }
             }
 
-            view.showInitialStateResult(listVistable)
+            view.showInitialStateResult(listVisitable)
         }
     }
 
@@ -271,13 +271,13 @@ class InitialStatePresenter @Inject constructor(
 
             if (dynamicInitialStateData.isEmpty()) return
 
-            listVistable.forEachIndexed { _, visitable ->
+            listVisitable.forEachIndexed { _, visitable ->
                 if (visitable is DynamicInitialStateSearchViewModel) {
                     visitable.list = dynamicInitialStateData
                 }
             }
 
-            view.showInitialStateResult(listVistable)
+            view.showInitialStateResult(listVisitable)
         }
     }
 
@@ -303,7 +303,7 @@ class InitialStatePresenter @Inject constructor(
         override fun onNext(isSuccess: Boolean) {
             if (isSuccess) {
                 var needDelete = false
-                listVistable.forEachIndexed { _, visitable ->
+                listVisitable.forEachIndexed { _, visitable ->
                     if (visitable is RecentSearchViewModel) {
                         if (visitable.list.size == 1) {
                             needDelete = true
@@ -317,19 +317,19 @@ class InitialStatePresenter @Inject constructor(
                     removeRecentSearchTitle()
                     removeRecentSearch()
                 }
-                view.showInitialStateResult(listVistable)
+                view.showInitialStateResult(listVisitable)
             }
         }
     }
 
     private fun removeRecentSearchTitle() {
-        val titleViewModel = listVistable.filterIsInstance<RecentSearchTitleViewModel>()
-        listVistable.removeAll(titleViewModel)
+        val titleViewModel = listVisitable.filterIsInstance<RecentSearchTitleViewModel>()
+        listVisitable.removeAll(titleViewModel)
     }
 
     private fun removeRecentSearch() {
-        val recentSearchViewModel = listVistable.filterIsInstance<RecentSearchViewModel>()
-        listVistable.removeAll(recentSearchViewModel)
+        val recentSearchViewModel = listVisitable.filterIsInstance<RecentSearchViewModel>()
+        listVisitable.removeAll(recentSearchViewModel)
     }
 
     override fun deleteAllRecentSearch() {
@@ -354,7 +354,7 @@ class InitialStatePresenter @Inject constructor(
             if (isSuccess) {
                 removeRecentSearchTitle()
                 removeRecentSearch()
-                view.showInitialStateResult(listVistable)
+                view.showInitialStateResult(listVisitable)
             }
         }
     }

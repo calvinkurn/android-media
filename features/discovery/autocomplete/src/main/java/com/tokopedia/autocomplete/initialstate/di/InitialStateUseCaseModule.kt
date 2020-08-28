@@ -6,7 +6,7 @@ import com.tokopedia.autocomplete.R
 import com.tokopedia.autocomplete.initialstate.InitialStateData
 import com.tokopedia.autocomplete.initialstate.data.InitialStateGqlResponse
 import com.tokopedia.autocomplete.initialstate.InitialStateUseCase
-import com.tokopedia.autocomplete.initialstate.NAMED_USE_CASE_INITIAL_STATE
+import com.tokopedia.autocomplete.initialstate.INITIAL_STATE_USE_CASE
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -22,7 +22,7 @@ class InitialStateUseCaseModule {
 
     @InitialStateScope
     @Provides
-    @Named(NAMED_USE_CASE_INITIAL_STATE)
+    @Named(INITIAL_STATE_USE_CASE)
     internal fun provideInitialStateUseCase(
             @InitialStateContext context: Context,
             initialStateDataModelMapper: Func1<GraphqlResponse, List<InitialStateData>>

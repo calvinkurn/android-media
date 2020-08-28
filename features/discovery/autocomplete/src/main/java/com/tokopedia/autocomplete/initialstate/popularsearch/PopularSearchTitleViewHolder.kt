@@ -11,8 +11,12 @@ import kotlinx.android.synthetic.main.layout_title_popular_search.view.*
 class PopularSearchTitleViewHolder(itemView: View, private val clickListener: InitialStateItemClickListener) : AbstractViewHolder<PopularSearchTitleViewModel>(itemView) {
 
     override fun bind(element: PopularSearchTitleViewModel) {
-        itemView.titleTextView?.text = element.title
+        bindTitle(element)
         bindActionRefreshButton(element)
+    }
+
+    private fun bindTitle(item: PopularSearchTitleViewModel) {
+        itemView.titleTextView?.text = item.title
     }
 
     private fun bindActionRefreshButton(item: PopularSearchTitleViewModel) {

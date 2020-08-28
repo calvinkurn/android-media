@@ -32,7 +32,6 @@ internal class DeleteRecentSearchTest: InitialStatePresenterTestFixtures() {
 
         `Given view already get initial state`(initialStateCommonData)
 
-        `Given initial state view called showInitialStateResult behavior`()
         `Given delete recent search API will return data`()
         `When presenter delete recent search`(item)
         `Then verify deleteRecentSearch API is called`()
@@ -85,7 +84,6 @@ internal class DeleteRecentSearchTest: InitialStatePresenterTestFixtures() {
 
         `Given view already get initial state`(initialStateCommonData)
 
-        `Given initial state view called showInitialStateResult behavior`()
         `Given delete recent search API will return data`()
         `When presenter delete recent search`(item)
         `Then verify deleteRecentSearch API is called`()
@@ -113,11 +111,10 @@ internal class DeleteRecentSearchTest: InitialStatePresenterTestFixtures() {
 
         `Given view already get initial state`(initialStateCommonData)
 
-        `Given initial state view called showInitialStateResult behavior`()
         `Given delete recent search API will return error`()
         `When presenter delete recent search`(item)
         `Then verify deleteRecentSearch API is called`()
-        `Then verify initial state view do nothing behavior`()
+        `Then verify initial state view behavior is correct`()
     }
 
     private fun `Given delete recent search API will return error`() {
@@ -131,7 +128,6 @@ internal class DeleteRecentSearchTest: InitialStatePresenterTestFixtures() {
     fun `Test delete all recent search data`() {
         `Given view already get initial state`(initialStateCommonData)
 
-        `Given initial state view called showInitialStateResult behavior`()
         `Given delete recent search API will return data`()
         `When presenter delete all recent search`()
         `Then verify deleteRecentSearch API is called`()
@@ -158,10 +154,9 @@ internal class DeleteRecentSearchTest: InitialStatePresenterTestFixtures() {
     fun `Test fail to delete all recent search data`() {
         `Given view already get initial state`(initialStateCommonData)
 
-        `Given initial state view called showInitialStateResult behavior`()
         `Given delete recent search API will return error`()
         `When presenter delete all recent search`()
         `Then verify deleteRecentSearch API is called`()
-        `Then verify initial state view do nothing behavior`()
+        `Then verify initial state view behavior is correct`()
     }
 }
