@@ -23,7 +23,6 @@ class UpdateCartOccUseCase @Inject constructor(private val graphqlUseCase: Graph
         }, { throwable: Throwable ->
             onError(throwable)
         })
-
     }
 
     private fun generateParam(param: UpdateCartOccRequest): Map<String, Any?> {

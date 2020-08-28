@@ -41,6 +41,7 @@ import com.tokopedia.checkout.view.converter.RatesDataConverter;
 import com.tokopedia.design.component.Tooltip;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
+import com.tokopedia.logisticcart.shipping.model.CashOnDeliveryProduct;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
 import com.tokopedia.logisticcart.shipping.model.OntimeDelivery;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
@@ -246,9 +247,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private ImageView iconChevronChooseDuration;
     private Typography labelSelectedShippingCourier;
     private Typography labelSelectedShippingPrice;
-    private ImageView iconOnTimeDeliveryGuarantee;
-    private Typography labelOnTimeDeliveryGuarantee;
-    private Typography labelOnTimeDeliveryGuaranteeTnc;
+    private Typography labelDescCourier;
+    private Typography labelDescCourierTnc;
     private ImageView iconChevronChooseCourier;
     private ConstraintLayout layoutStateHasSelectedFreeShipping;
     private Typography labelSelectedFreeShipping;
@@ -407,9 +407,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         iconChevronChooseDuration = itemView.findViewById(R.id.icon_chevron_choose_duration);
         labelSelectedShippingCourier = itemView.findViewById(R.id.label_selected_shipping_courier);
         labelSelectedShippingPrice = itemView.findViewById(R.id.label_selected_shipping_price);
-        iconOnTimeDeliveryGuarantee = itemView.findViewById(R.id.icon_on_time_delivery_guarantee);
-        labelOnTimeDeliveryGuarantee = itemView.findViewById(R.id.label_on_time_delivery_guarantee);
-        labelOnTimeDeliveryGuaranteeTnc = itemView.findViewById(R.id.label_on_time_delivery_guarantee_tnc);
+        labelDescCourier = itemView.findViewById(R.id.label_description_courier);
+        labelDescCourierTnc = itemView.findViewById(R.id.label_description_courier_tnc);
         iconChevronChooseCourier = itemView.findViewById(R.id.icon_chevron_choose_courier);
         layoutStateHasSelectedFreeShipping = itemView.findViewById(R.id.layout_state_has_selected_free_shipping);
         labelSelectedFreeShipping = itemView.findViewById(R.id.label_selected_free_shipping);
@@ -812,22 +811,27 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 );
 
                 OntimeDelivery ontimeDelivery = selectedCourierItemData.getOntimeDelivery();
+                CashOnDeliveryProduct codProductData = selectedCourierItemData.getCodProductData();
+
                 if (ontimeDelivery != null && ontimeDelivery.getAvailable()) {
                     // On time delivery guarantee
-                    ImageHandler.loadImageWithoutPlaceholderAndError(
-                            iconOnTimeDeliveryGuarantee, ontimeDelivery.getIconUrl()
-                    );
-                    labelOnTimeDeliveryGuarantee.setText(ontimeDelivery.getTextLabel());
-                    labelOnTimeDeliveryGuaranteeTnc.setOnClickListener(view -> {
+                    labelDescCourier.setText(ontimeDelivery.getTextLabel());
+                    labelDescCourierTnc.setOnClickListener(view -> {
                         mActionListener.onOntimeDeliveryClicked(ontimeDelivery.getUrlDetail());
                     });
-                    iconOnTimeDeliveryGuarantee.setVisibility(View.VISIBLE);
-                    labelOnTimeDeliveryGuarantee.setVisibility(View.VISIBLE);
-                    labelOnTimeDeliveryGuaranteeTnc.setVisibility(View.VISIBLE);
+                    labelDescCourier.setVisibility(View.VISIBLE);
+                    labelDescCourierTnc.setVisibility(View.VISIBLE);
+                } else if (codProductData != null && codProductData.isCodAvailable() == 1) {
+                    /*Cash on delivery*/
+                    labelDescCourier.setText(codProductData.getCodText());
+                    labelDescCourierTnc.setOnClickListener(view -> {
+                        mActionListener.onOntimeDeliveryClicked(codProductData.getTncLink());
+                    });
+                    labelDescCourier.setVisibility(View.VISIBLE);
+                    labelDescCourierTnc.setVisibility(View.VISIBLE);
                 } else {
-                    iconOnTimeDeliveryGuarantee.setVisibility(View.GONE);
-                    labelOnTimeDeliveryGuarantee.setVisibility(View.GONE);
-                    labelOnTimeDeliveryGuaranteeTnc.setVisibility(View.GONE);
+                    labelDescCourier.setVisibility(View.GONE);
+                    labelDescCourierTnc.setVisibility(View.GONE);
                 }
             }
         } else {
