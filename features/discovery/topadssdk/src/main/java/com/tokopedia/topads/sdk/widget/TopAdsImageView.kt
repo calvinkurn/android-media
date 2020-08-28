@@ -65,10 +65,11 @@ class TopAdsImageView : AppCompatImageView {
      * @param adsCount Use this parameter, To tell number of ads on page required
      * @param dimenId Use this parameter to provide dimen id
      * @param depId Required in case of category and intermediate page else optional
+     * @param productID Required for filtering. Ads service will look for ads related to the product id.
      * */
-    fun getImageData(source: String, adsCount: Int, dimenId: Int, query: String = "", depId: String = "", pageToken: String = "") {
+    fun getImageData(source: String, adsCount: Int, dimenId: Int, query: String = "", depId: String = "", pageToken: String = "", productID: String = "") {
         initViewModel()
-        val queryParams = topAdsImageViewViewModel.getQueryParams(query, source, pageToken, adsCount, dimenId, depId)
+        val queryParams = topAdsImageViewViewModel.getQueryParams(query, source, pageToken, adsCount, dimenId, depId, productID)
         topAdsImageViewViewModel.getImageData(queryParams)
         topAdsImageViewViewModel.getResponse().observe(context as LifecycleOwner, Observer {
             when (it) {

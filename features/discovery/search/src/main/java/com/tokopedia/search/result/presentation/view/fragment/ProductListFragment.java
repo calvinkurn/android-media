@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -79,6 +78,7 @@ import com.tokopedia.search.result.presentation.view.listener.GlobalNavListener;
 import com.tokopedia.search.result.presentation.view.listener.InspirationCardListener;
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener;
 import com.tokopedia.search.result.presentation.view.listener.ProductListener;
+import com.tokopedia.search.result.presentation.view.listener.QuickFilterElevation;
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceMonitoringListener;
@@ -86,7 +86,6 @@ import com.tokopedia.search.result.presentation.view.listener.SuggestionListener
 import com.tokopedia.search.result.presentation.view.listener.TickerListener;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactoryImpl;
-import com.tokopedia.search.utils.HideTabOnScrollListener;
 import com.tokopedia.search.utils.SearchFilterUtilsKt;
 import com.tokopedia.search.utils.SearchKotlinExtKt;
 import com.tokopedia.search.utils.SearchLogger;
@@ -121,7 +120,6 @@ import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.B
 import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.LIST;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.SMALL_GRID;
 
-
 public class ProductListFragment
         extends BaseDaggerFragment
         implements ProductListAdapter.OnItemChangeView,
@@ -137,6 +135,7 @@ public class ProductListFragment
         BannedProductsRedirectToBrowserListener,
         BroadMatchListener,
         InspirationCardListener,
+        QuickFilterElevation,
         SortFilterBottomSheet.Callback {
 
     private static final String SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab";
@@ -352,7 +351,6 @@ public class ProductListFragment
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(createProductItemDecoration());
         recyclerView.addOnScrollListener(staggeredGridLayoutLoadMoreTriggerListener);
-        recyclerView.addOnScrollListener(new HideTabOnScrollListener(getContext(), searchNavigationListener, searchSortFilter));
     }
 
     @NonNull
@@ -1102,21 +1100,12 @@ public class ProductListFragment
 
     @Override
     public void backToTop() {
-        new Handler().postDelayed(() -> {
-            smoothScrollRecyclerView();
-            showTabInFull();
-        }, 200);
+        smoothScrollRecyclerView();
     }
 
     private void smoothScrollRecyclerView() {
         if (recyclerView != null) {
             recyclerView.smoothScrollToPosition(0);
-        }
-    }
-
-    private void showTabInFull() {
-        if (searchNavigationListener != null) {
-            searchNavigationListener.configureTabLayout(true);
         }
     }
 
@@ -1687,5 +1676,11 @@ public class ProductListFragment
         if (getActivity() == null) return "";
 
         return getActivity().getClass().getName();
+    }
+
+    @Override
+    public void configure(boolean shouldRemove) {
+        if (shouldRemove) SearchFilterUtilsKt.removeQuickFilterElevation(searchSortFilter);
+        else SearchFilterUtilsKt.applyQuickFilterElevation(getContext(), searchSortFilter);
     }
 }
