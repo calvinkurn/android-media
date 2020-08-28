@@ -14,5 +14,4 @@ object StatisticPagePerformanceTraceNameConst {
     const val TABLE_WIDGET_TRACE = "statistic_table_widget"
     const val PIE_CHART_WIDGET_TRACE = "statistic_pie_chart_widget"
     const val BAR_CHART_WIDGET_TRACE = "statistic_bar_chart_widget"
-    const val STATISTIC_LAYOUT_TRACE = "statistic_layout"
 }

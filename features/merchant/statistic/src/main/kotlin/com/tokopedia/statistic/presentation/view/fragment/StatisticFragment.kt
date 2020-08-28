@@ -30,7 +30,6 @@ import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.sellerhomecommon.utils.Utils
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.analytics.StatisticTracker
-import com.tokopedia.statistic.analytics.performance.StatisticPerformanceMonitoringListener
 import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTraceNameConst.BAR_CHART_WIDGET_TRACE
 import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTraceNameConst.CARD_WIDGET_TRACE
 import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTraceNameConst.CAROUSEL_WIDGET_TRACE
@@ -38,8 +37,8 @@ import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTra
 import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTraceNameConst.PIE_CHART_WIDGET_TRACE
 import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTraceNameConst.POST_LIST_WIDGET_TRACE
 import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTraceNameConst.PROGRESS_WIDGET_TRACE
-import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTraceNameConst.STATISTIC_LAYOUT_TRACE
 import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTraceNameConst.TABLE_WIDGET_TRACE
+import com.tokopedia.statistic.analytics.performance.StatisticPerformanceMonitoringListener
 import com.tokopedia.statistic.common.utils.logger.StatisticLogger
 import com.tokopedia.statistic.di.DaggerStatisticComponent
 import com.tokopedia.statistic.presentation.view.bottomsheet.DateFilterBottomSheet
@@ -103,7 +102,6 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private var canSelectTabEnabled = false
 
     private var isPltMonitoringCompleted = false
-    private var performanceMonitoringPageLayout: PerformanceMonitoring? = null
     private var performanceMonitoringCardWidget: PerformanceMonitoring? = null
     private var performanceMonitoringLineGraphWidget: PerformanceMonitoring? = null
     private var performanceMonitoringProgressWidget: PerformanceMonitoring? = null
@@ -691,7 +689,6 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
                 is Fail -> setOnErrorGetLayout(result.throwable)
             }
 
-            stopLayoutPerformanceMonitoring()
             setProgressBarVisibility(false)
         })
 
@@ -758,7 +755,6 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     private fun startLayoutNetworkPerformanceMonitoring() {
-        performanceMonitoringPageLayout = PerformanceMonitoring.start(STATISTIC_LAYOUT_TRACE)
         (activity as? StatisticPerformanceMonitoringListener)?.startNetworkPerformanceMonitoring()
     }
 
@@ -773,10 +769,6 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
                 (activity as? StatisticPerformanceMonitoringListener)?.stopPerformanceMonitoring()
             }
         }
-    }
-
-    private fun stopLayoutPerformanceMonitoring() {
-        performanceMonitoringPageLayout?.stopTrace()
     }
 
     private fun stopWidgetPerformanceMonitoring(type: String) {
