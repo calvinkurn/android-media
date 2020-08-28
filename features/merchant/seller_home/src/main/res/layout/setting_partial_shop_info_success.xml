@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <include
-        android:id="@+id/shopInfoLayout"
+        android:id="@+id/successShopInfoLayout"
         layout="@layout/setting_partial_main_info_success"/>
 
     <LinearLayout
@@ -24,15 +24,8 @@
         android:layout_height="@dimen/setting_divider_thin"
         android:background="@color/white"/>
 
-    <com.tokopedia.unifycomponents.LocalLoad
-        android:id="@+id/localLoadOthersBalance"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="@dimen/layout_lvl2"
-        android:paddingStart="@dimen/layout_lvl2"
-        android:paddingEnd="@dimen/layout_lvl2"
-        android:background="@color/white"
-        android:visibility="gone"/>
+    <include
+        layout="@layout/setting_partial_others_local_load"/>
 
     <include
         android:id="@+id/saldoBalance"

@@ -18,12 +18,6 @@ class SettingShopInfoUiModel(private val partialShopInfo: PartialSettingResponse
         )
     }
 
-    val shopName by lazy { userSession.shopName.orEmpty() }
-
-    val shopAvatarUiModel by lazy {
-        ShopAvatarUiModel(userSession.shopAvatar.orEmpty() )
-    }
-
     val shopBadgeUiModel by lazy {
         (partialShopInfo as? PartialSettingSuccessInfoType.PartialShopSettingSuccessInfo)?.let {
             ShopBadgeUiModel(it.shopBadgeUrl)
@@ -47,7 +41,7 @@ class SettingShopInfoUiModel(private val partialShopInfo: PartialSettingResponse
     }
 
     val topadsBalanceUiModel by lazy {
-        (partialShopInfo as? PartialSettingSuccessInfoType.PartialTopAdsSettingSuccessInfo)?.let {
+        (partialTopAdsInfo as? PartialSettingSuccessInfoType.PartialTopAdsSettingSuccessInfo)?.let {
             TopadsBalanceUiModel(it.isTopAdsAutoTopup, it.topAdsBalance.getCurrencyFormatted())
         }
     }

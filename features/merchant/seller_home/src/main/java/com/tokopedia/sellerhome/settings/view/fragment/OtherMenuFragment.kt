@@ -431,7 +431,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         }
         populateAdapterData()
         recycler_view.layoutManager = LinearLayoutManager(context)
-        context?.let { otherMenuViewHolder = OtherMenuViewHolder(view, it, this, this, freeShippingTracker)}
+        context?.let { otherMenuViewHolder = OtherMenuViewHolder(view, it, this, this, freeShippingTracker, userSession)}
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (isDefaultDarkStatusBar) {
                 activity?.requestStatusBarDark()
