@@ -24,7 +24,6 @@ open class TopupBillsRecentTransactionWidget @JvmOverloads constructor(@NotNull 
 
     protected val recyclerView: RecyclerView
     protected val titleWidget: TextView
-    protected val digitalTrackRecentPrev = mutableListOf<TopupBillsTrackRecentTransaction>()
 
     private lateinit var listener: TopupBillsRecentNumberListener
 
@@ -66,7 +65,7 @@ open class TopupBillsRecentTransactionWidget @JvmOverloads constructor(@NotNull 
         })
     }
 
-    private fun getVisibleRecentItemsToUsersTracking(recentNumbers: List<TopupBillsRecommendation>) {
+    fun getVisibleRecentItemsToUsersTracking(recentNumbers: List<TopupBillsRecommendation>) {
         val firstPos = (recyclerView.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
         val lastPos = (recyclerView.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
 
@@ -78,13 +77,8 @@ open class TopupBillsRecentTransactionWidget @JvmOverloads constructor(@NotNull 
                         recentNumbers[i].categoryId, i))
             }
         }
-        if (digitalTrackRecentList.size > 0 &&
-                digitalTrackRecentList.size != digitalTrackRecentPrev.size &&
-                digitalTrackRecentList != digitalTrackRecentPrev) {
+        if (digitalTrackRecentList.size > 0) {
             listener.onTrackImpressionRecentList(digitalTrackRecentList)
-
-            digitalTrackRecentPrev.clear()
-            digitalTrackRecentPrev.addAll(digitalTrackRecentList)
         }
     }
 

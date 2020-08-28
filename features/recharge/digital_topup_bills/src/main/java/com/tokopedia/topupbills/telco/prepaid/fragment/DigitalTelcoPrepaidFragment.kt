@@ -221,6 +221,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 sharedModelPrepaid.setSelectedCategoryViewPager(getLabelActiveCategory())
             } else {
                 setTrackingOnTabMenu(tabs[position].title)
+                if (tabs[position].title == TelcoComponentName.PROMO) sendImpressionPromo()
+                else sendImpressionRecents()
             }
         }
     }
@@ -269,6 +271,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 separator.hide()
                 tabLayout.hide()
             }
+            //initiate impression promo
+            sendImpressionPromo()
         }
     }
     // endregion Promo and Recommendation

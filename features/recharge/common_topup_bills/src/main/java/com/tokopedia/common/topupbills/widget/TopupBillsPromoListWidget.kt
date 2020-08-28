@@ -3,7 +3,7 @@ package com.tokopedia.common.topupbills.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import android.widget.FrameLayout
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,14 +20,13 @@ import org.jetbrains.annotations.NotNull
  */
 class TopupBillsPromoListWidget @JvmOverloads constructor(@NotNull context: Context, attrs: AttributeSet? = null,
                                                           defStyleAttr: Int = 0)
-    : FrameLayout(context, attrs, defStyleAttr), TopupBillsWidgetInterface {
+    : LinearLayout(context, attrs, defStyleAttr), TopupBillsWidgetInterface {
 
     private val recyclerView: RecyclerView
     private val titleWidget: TextView
     private val promoList = mutableListOf<TopupBillsPromo>()
     private lateinit var topupBillsPromoListAdapter: TopupBillsPromoListAdapter
     private lateinit var listener: ActionListener
-    private val digitalTrackRecentPrev = mutableListOf<TopupBillsTrackPromo>()
 
     init {
         val view = View.inflate(context, R.layout.view_digital_component_list, this)
@@ -57,6 +56,8 @@ class TopupBillsPromoListWidget @JvmOverloads constructor(@NotNull context: Cont
         this.promoList.addAll(promoList)
         topupBillsPromoListAdapter.notifyDataSetChanged()
 
+        getVisibleRecentItemsToUsersTracking(promoList)
+
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
@@ -78,13 +79,8 @@ class TopupBillsPromoListWidget @JvmOverloads constructor(@NotNull context: Cont
                 digitalTrackPromoList.add(TopupBillsTrackPromo(promoList[i], i))
             }
         }
-        if (digitalTrackPromoList.size > 0 &&
-                digitalTrackPromoList.size != digitalTrackRecentPrev.size &&
-                digitalTrackPromoList != digitalTrackRecentPrev) {
+        if (digitalTrackPromoList.size > 0) {
             listener.onTrackImpressionPromoList(digitalTrackPromoList)
-
-            digitalTrackRecentPrev.clear()
-            digitalTrackRecentPrev.addAll(digitalTrackPromoList)
         }
     }
 
