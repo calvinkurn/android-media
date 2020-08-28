@@ -7,9 +7,12 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.common.util.SomConsts.UNIFY_TICKER_TYPE_ANNOUNCEMENT
+import com.tokopedia.sellerorder.common.util.SomConsts.UNIFY_TICKER_TYPE_ERROR
+import com.tokopedia.sellerorder.common.util.SomConsts.UNIFY_TICKER_TYPE_INFO
+import com.tokopedia.sellerorder.common.util.SomConsts.UNIFY_TICKER_TYPE_WARNING
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
-import java.util.*
 
 /**
  * Created by fwidjaja on 2019-11-21.
@@ -55,18 +58,18 @@ object Utils {
     @JvmStatic
     fun mapStringTickerTypeToUnifyTickerType(typeString: String): Int {
         return when (typeString) {
-            "announcement" -> Ticker.TYPE_ANNOUNCEMENT
-            "info" -> Ticker.TYPE_INFORMATION
-            "warning" -> Ticker.TYPE_WARNING
-            "error" -> Ticker.TYPE_ERROR
+            UNIFY_TICKER_TYPE_ANNOUNCEMENT -> Ticker.TYPE_ANNOUNCEMENT
+            UNIFY_TICKER_TYPE_INFO -> Ticker.TYPE_INFORMATION
+            UNIFY_TICKER_TYPE_WARNING -> Ticker.TYPE_WARNING
+            UNIFY_TICKER_TYPE_ERROR -> Ticker.TYPE_ERROR
             else -> Ticker.TYPE_ANNOUNCEMENT
         }
     }
 
     @JvmStatic
-    fun getL2CancellationReason(text: String, textToAppend: String = ""): String {
+    fun getL2CancellationReason(text: String, textToPrepend: String = ""): String {
         return if (text.contains('-')) {
-            "$textToAppend ${text.split(" - ").last().decapitalize()}"
+            "$textToPrepend ${text.split(" - ").last().decapitalize()}"
         } else {
             text
         }

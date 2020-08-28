@@ -139,6 +139,8 @@ object SomConsts {
     const val PARAM_SOURCE_ASK_BUYER = "tx_ask_buyer"
     const val ATTRIBUTE_ID = "id"
 
+    const val STATUS_ORDER_ORDER_CREATED = 220
+    const val STATUS_ORDER_ORDER_CONFIRMED = 400
     const val STATUS_ORDER_DELIVERED = 600
     const val STATUS_ORDER_DELIVERED_DUE_LIMIT = 699
 
@@ -151,4 +153,12 @@ object SomConsts {
 
     const val ERROR_GET_USER_ROLES = "Error when get user roles in %s."
     const val ERROR_REJECT_CANCEL_ORDER = "Error when rejecting cancel order."
+
+    const val UNIFY_TICKER_TYPE_ANNOUNCEMENT = "announcement"
+    const val UNIFY_TICKER_TYPE_INFO = "info"
+    const val UNIFY_TICKER_TYPE_WARNING = "warning"
+    const val UNIFY_TICKER_TYPE_ERROR = "error"
+
+    const val KEY_PRIMARY_DIALOG_BUTTON = "primary"
+    const val KEY_SECONDARY_DIALOG_BUTTON = "secondary"
 }
