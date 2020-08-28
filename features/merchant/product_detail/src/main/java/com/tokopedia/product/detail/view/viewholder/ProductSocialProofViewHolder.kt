@@ -1,6 +1,5 @@
 package com.tokopedia.product.detail.view.viewholder
 
-import android.graphics.Color
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -12,7 +11,6 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductSocialProofDataM
 import com.tokopedia.product.detail.view.fragment.partialview.PartialAttributeInfoView
 import com.tokopedia.product.detail.view.fragment.partialview.PartialProductStatisticView
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
-import kotlinx.android.synthetic.main.item_dynamic_pdp_social_proof.view.*
 import kotlinx.android.synthetic.main.partial_product_detail_visibility.view.*
 import kotlinx.android.synthetic.main.partial_product_rating_talk_courier.view.*
 
@@ -49,7 +47,7 @@ class ProductSocialProofViewHolder(val view: View, private val listener: Dynamic
         attributeInfoView?.renderWishlistCount(element.wishlistCount)
 
         productStatsView?.renderData(stats.countReview, stats.countTalk, listener::onReviewClick, listener::onDiscussionClicked, getComponentTrackData(element))
-        attributeInfoView?.renderDataDynamicPdp(stats.countView, txStats, element.isSocialProofPv)
+        attributeInfoView?.renderDataDynamicPdp(element.viewCount, txStats, element.isSocialProofPv)
 
         productStatsView?.renderClickShipping {
             listener.onShipmentSocialProofClicked(getComponentTrackData(element))

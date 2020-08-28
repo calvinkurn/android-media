@@ -375,7 +375,7 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
         val searchProductModelPage1 = broadMatchResponseCode0Page1Position1.jsonToObject<SearchProductModel>()
         val searchProductModelPage2 = broadMatchResponseCode0Page2.jsonToObject<SearchProductModel>()
 
-        `Test broad match with position`(searchProductModelPage1, searchProductModelPage2) { 1 }
+        `Test broad match with position`(searchProductModelPage1, searchProductModelPage2) { 0 }
     }
 
     @Test
@@ -383,7 +383,7 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
         val searchProductModelPage1 = broadMatchResponseCode0Page1Position4.jsonToObject<SearchProductModel>()
         val searchProductModelPage2 = broadMatchResponseCode0Page2.jsonToObject<SearchProductModel>()
 
-        `Test broad match with position`(searchProductModelPage1, searchProductModelPage2) { 5 }
+        `Test broad match with position`(searchProductModelPage1, searchProductModelPage2) { 4 }
     }
 
     @Test
@@ -391,7 +391,7 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
         val searchProductModelPage1 = broadMatchResponseCode0Page1Position12.jsonToObject<SearchProductModel>()
         val searchProductModelPage2 = broadMatchResponseCode0Page2.jsonToObject<SearchProductModel>()
 
-        `Test broad match with position`(searchProductModelPage1, searchProductModelPage2) { 13 }
+        `Test broad match with position`(searchProductModelPage1, searchProductModelPage2) { 12 }
     }
 
     private fun `Test broad match with position`(
