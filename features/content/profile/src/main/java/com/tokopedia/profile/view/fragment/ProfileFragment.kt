@@ -483,7 +483,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                         checkShouldChangeUsername(element.profileHeaderViewModel.link) { showShareBottomSheets(this) }
                         profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
                     }
-//                    onlyOnePost -> showShowCaseDialog(shareProfile)
                     else -> showAfterPostToaster(affiliatePostQuota?.number != 0)
                 }
                 successPost = false
@@ -1510,19 +1509,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
             iv_action2_parallax.setOnClickListener(onClickListener)
             iv_action2.setOnClickListener(onClickListener)
-//            shareProfile.setOnClickListener {
-//                checkShouldChangeUsername(headerViewModel.link) {
-//                    byMeInstastoryView.setAvatarDrawable(iv_profile.drawable)
-//                    linkerData = showShareBottomSheet(
-//                            headerViewModel,
-//                            String.format(getString(com.tokopedia.feedcomponent.R.string.profile_share_text), headerViewModel.link),
-//                            String.format(getString(com.tokopedia.feedcomponent.R.string.profile_share_title)),
-//                            byMeInstastoryView.getTempFileUri()
-//                    )
-//                    profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
-//                    isShareProfile = true
-//                }
-//            }
         }
     }
 
