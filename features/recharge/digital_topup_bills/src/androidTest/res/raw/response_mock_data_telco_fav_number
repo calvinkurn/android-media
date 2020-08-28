@@ -1,15 +1,9 @@
-{
-  "data": {
-    "recharge_favorite_number": {
-      "list": [
-        {
-          "client_number": "087812345030",
-          "label": "",
-          "product_id": 30,
-          "operator_id": 5,
-          "category_id": 1
-        }
-      ]
+[
+  {
+    "data": {
+      "recharge_favorite_number": {
+        "list": []
+      }
     }
   }
-}
+]

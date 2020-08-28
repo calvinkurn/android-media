@@ -1,122 +1,130 @@
-{
-  "data": {
-    "rechargeCatalogMenuDetail": {
-      "catalog": {
-        "id": 1,
-        "name": "telco",
-        "label": "Telco",
-        "icon": ""
-      },
-      "recommendations": [
-        {
-          "iconUrl": "https://ecs7.tokopedia.net/img/recharge/operator/xl_3.png",
-          "title": "25.000",
-          "clientNumber": "087855812080",
-          "appLink": "tokopedia://digital/form?category_id=1&client_number=087855812080&product_id=30&operator_id=5&is_from_widget=true",
-          "webLink": "https://pulsa.tokopedia.com/?action=init_data&operator_id=5&product_id=30&client_number=087855812080",
-          "type": "history",
-          "categoryId": 1,
-          "productId": 30,
-          "isATC": true,
-          "description": "",
-          "operatorID": 5
-        }
-      ],
-      "promos": [
-        {
-          "id": 2397,
-          "filename": "https://ecs7.tokopedia.net/img/banner/2020/7/31/42484317/42484317_a917be56-8f7e-490a-be79-767d8f8130ed.jpg",
-          "filename_webp": "",
-          "img_url": "https://www.tokopedia.com/promo/digital-cashback-5/",
-          "status": 1,
-          "title": "[TOPED] Cashback hingga Rp350.000. S&K klik disini",
-          "subtitle": "kode promo : {TOPED}",
-          "promo_code": "TOPED"
+[
+  {
+    "data": {
+      "rechargeCatalogMenuDetail": {
+        "catalog": {
+          "id": 1,
+          "name": "telco",
+          "label": "Telco",
+          "icon": ""
         },
-        {
-          "id": 2253,
-          "filename": "https://ecs7.tokopedia.net/img/banner/2020/7/31/42484317/42484317_54b8430a-8fb6-43e5-9cdc-9da0ab0cedcb.jpg",
-          "filename_webp": "",
-          "img_url": "https://www.tokopedia.com/promo/digital-cashback-13/",
-          "status": 1,
-          "title": "[Top Up] Cashback hingga Rp50.000. Klik Disini.",
-          "subtitle": "Kode Promo: {COBATOPUP}",
-          "promo_code": "COBATOPUP"
-        },
-        {
-          "id": 2420,
-          "filename": "https://ecs7.tokopedia.net/img/banner/2020/7/21/42484317/42484317_782a9a5a-bb24-4296-8e1d-9bd75b51b9df.jpg",
-          "filename_webp": "",
-          "img_url": "https://www.tokopedia.com/promo/digital-indosat-2/",
-          "status": 1,
-          "title": "[Paket Data] Beli produk promo Indosat spesial Payday, dapat tambahan cashback.",
-          "subtitle": "Kode Promo: {CBINDOSAT}",
-          "promo_code": "CBINDOSAT"
-        },
-        {
-          "id": 2329,
-          "filename": "https://ecs7.tokopedia.net/img/banner/2020/6/4/50732530/50732530_3b1593d1-a6a1-4123-94a6-bc1c75ebd40d.jpg",
-          "filename_webp": "",
-          "img_url": "https://www.tokopedia.com/promo/digital-xl/",
-          "status": 1,
-          "title": "[XL Top Spender]. Top-up Pulsa & Paket Data XL Sebanyak-banyaknya, Dapatkan Grand Prize Menarik.",
-          "subtitle": "",
-          "promo_code": ""
-        },
-        {
-          "id": 2330,
-          "filename": "https://ecs7.tokopedia.net/img/banner/2020/6/1/42484317/42484317_bdf5558e-04bc-4a90-a979-8fce7dfb3f0c.jpg",
-          "filename_webp": "",
-          "img_url": "https://www.tokopedia.com/promo/digital-axis/",
-          "status": 1,
-          "title": "[Axis Top Spender]. Top-up Pulsa & Paket Data Axis Sebanyak-banyaknya, Dapatkan Grand Prize Menarik.",
-          "subtitle": "",
-          "promo_code": ""
-        },
-        {
-          "id": 1573,
-          "filename": "https://ecs7.tokopedia.net/img/banner/2020/7/1/42484317/42484317_83d9a7ab-8bdf-4759-a545-0e8b3046ab4e.jpg",
-          "filename_webp": "",
-          "img_url": "https://www.tokopedia.com/promo/digital-cashback-17/",
-          "status": 1,
-          "title": "[Tagihan]. Cashback terus-terusan. S&K lengkap klik di sini. ",
-          "subtitle": "kode promo : {BAYARTERUS}",
-          "promo_code": "BAYARTERUS"
-        },
-        {
-          "id": 2174,
-          "filename": "https://ecs7.tokopedia.net/img/banner/2020/6/24/42484317/42484317_e7e0a0ed-5dad-486e-a463-75a10818a6b4.jpg",
-          "filename_webp": "",
-          "img_url": "https://www.tokopedia.com/promo/digital-mandiri-3/",
-          "status": 1,
-          "title": "[DGMANDIRICC] Bayar top up, tagihan, atau entertainment diskon 5% hingga Rp50.000 dengan Mandiri Kartu Kredit. Klik di sini.",
-          "subtitle": "Kode Promo: {DGMANDIRICC}",
-          "promo_code": "DGMANDIRICC"
-        },
-        {
-          "id": 1989,
-          "filename": "https://ecs7.tokopedia.net/img/banner/2020/2/3/42484317/42484317_3432983c-3c7c-4fe7-857a-80cedd370a27.jpg",
-          "filename_webp": "",
-          "img_url": "https://www.tokopedia.com/promo/digital-standard-chartered/",
-          "status": 1,
-          "title": "[SCPREMDG] Cashback hingga Rp50.000 dengan kartu kredit Standard Chartered Premium. Klik di sini.",
-          "subtitle": "Kode Promo: {SCPREMDG}",
-          "promo_code": "SCPREMDG"
-        },
-        {
-          "id": 2097,
-          "filename": "https://ecs7.tokopedia.net/img/banner/2020/3/17/42484317/42484317_83b450f5-7d74-4ced-ae54-61a330329f53.jpg",
-          "filename_webp": "",
-          "img_url": "https://www.tokopedia.com/promo/digital-ocbc/",
-          "status": 1,
-          "title": "[OCBCDIGI] Beli pulsa, paket Data, atau bayar listrik diskon hingga Rp25rb dengan debit online OCBC. Klik di sini.",
-          "subtitle": "Kode Promo: {OCBCDIGI}",
-          "promo_code": "OCBCDIGI"
-        }
-      ],
-      "tickers": [],
-      "banners": [],
-      "express_checkout": false
+        "recommendations": [],
+        "promos": [
+          {
+            "id": 2300,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2020/8/14/42484317/42484317_ad6ae165-47ae-484e-968d-035188ee99a5.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-cashback-2/",
+            "status": 1,
+            "title": "[DGTOPED] Top Up, Tagihan, dan Hiburan cashback hingga Rp350rb. Klik di sini.",
+            "subtitle": "Kode Promo: {DGTOPED}",
+            "promo_code": "DGTOPED"
+          },
+          {
+            "id": 2397,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2020/7/31/42484317/42484317_a917be56-8f7e-490a-be79-767d8f8130ed.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-cashback-5/",
+            "status": 1,
+            "title": "[TOPED] Cashback hingga Rp350.000. S\u0026K klik disini",
+            "subtitle": "kode promo : {TOPED}",
+            "promo_code": "TOPED"
+          },
+          {
+            "id": 2253,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2020/7/31/42484317/42484317_54b8430a-8fb6-43e5-9cdc-9da0ab0cedcb.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-cashback-13/",
+            "status": 1,
+            "title": "[Top Up] Cashback hingga Rp50.000. Klik Disini.",
+            "subtitle": "Kode Promo: {COBATOPUP}",
+            "promo_code": "COBATOPUP"
+          },
+          {
+            "id": 2495,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2020/8/14/41966928/41966928_a9c44b9e-96ed-4671-8c53-63ba8adae586.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-indosat/",
+            "status": 1,
+            "title": "[Paket Data] Beli produk promo Indosat, ada tambahan cashback.",
+            "subtitle": "Kode Promo: {CBINDOSAT}",
+            "promo_code": "CBINDOSAT"
+          },
+          {
+            "id": 2424,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2020/8/14/42484317/42484317_d4337082-a443-4881-9440-cd814c530196.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-cashback-10/",
+            "status": 1,
+            "title": "[DGELECTRO]. Top-up \u0026 Bayar Tagihan, Bonus Kupon Belanja Elektronik hingga 25rb",
+            "subtitle": "Kode Promo: {DGELECTRO}",
+            "promo_code": "DGELECTRO"
+          },
+          {
+            "id": 2329,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2020/6/4/50732530/50732530_3b1593d1-a6a1-4123-94a6-bc1c75ebd40d.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-xl/",
+            "status": 1,
+            "title": "[XL Top Spender]. Top-up Pulsa \u0026 Paket Data XL Sebanyak-banyaknya, Dapatkan Grand Prize Menarik.",
+            "subtitle": "",
+            "promo_code": ""
+          },
+          {
+            "id": 2330,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2020/6/1/42484317/42484317_bdf5558e-04bc-4a90-a979-8fce7dfb3f0c.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-axis/",
+            "status": 1,
+            "title": "[Axis Top Spender]. Top-up Pulsa \u0026 Paket Data Axis Sebanyak-banyaknya, Dapatkan Grand Prize Menarik.",
+            "subtitle": "",
+            "promo_code": ""
+          },
+          {
+            "id": 1573,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2020/8/9/42484317/42484317_e1fee503-1aab-49e1-97a3-77cc5112870e.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-cashback-17/",
+            "status": 1,
+            "title": "[Tagihan]. Cashback terus-terusan. S\u0026K lengkap klik di sini. ",
+            "subtitle": "kode promo : {BAYARTERUS}",
+            "promo_code": "BAYARTERUS"
+          },
+          {
+            "id": 2174,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2020/6/24/42484317/42484317_e7e0a0ed-5dad-486e-a463-75a10818a6b4.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-mandiri-3/",
+            "status": 1,
+            "title": "[DGMANDIRICC] Bayar top up, tagihan, atau entertainment diskon 5% hingga Rp50.000 dengan Mandiri Kartu Kredit. Klik di sini.",
+            "subtitle": "Kode Promo: {DGMANDIRICC}",
+            "promo_code": "DGMANDIRICC"
+          },
+          {
+            "id": 1989,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2020/2/3/42484317/42484317_3432983c-3c7c-4fe7-857a-80cedd370a27.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-standard-chartered/",
+            "status": 1,
+            "title": "[SCPREMDG] Cashback hingga Rp50.000 dengan kartu kredit Standard Chartered Premium. Klik di sini.",
+            "subtitle": "Kode Promo: {SCPREMDG}",
+            "promo_code": "SCPREMDG"
+          },
+          {
+            "id": 2097,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2020/3/17/42484317/42484317_83b450f5-7d74-4ced-ae54-61a330329f53.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-ocbc/",
+            "status": 1,
+            "title": "[OCBCDIGI] Beli pulsa, paket Data, atau bayar listrik diskon hingga Rp25rb dengan debit online OCBC. Klik di sini.",
+            "subtitle": "Kode Promo: {OCBCDIGI}",
+            "promo_code": "OCBCDIGI"
+          }
+        ],
+        "tickers": [],
+        "banners": [],
+        "express_checkout": false
+      }
     }
   }
-}
+]
