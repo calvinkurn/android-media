@@ -107,7 +107,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
 
     @Override
     public void onPause() {
-        addProductBottomSheet.dismiss();
+        dismissProductBottomSheet();
         super.onPause();
         trackingQueue.sendAll();
     }
@@ -584,13 +584,19 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
             appLinks.add(ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW);
             Intent intent = SellerMigrationActivity.Companion.createIntent(getContext(), SellerMigrationFeatureName.FEATURE_SET_VARIANT, getScreenName(), appLinks);
             startActivity(intent);
-            addProductBottomSheet.dismiss();
+            dismissProductBottomSheet();
         }
     }
 
     @Override
     public void onDestroy() {
-        addProductBottomSheet.dismiss();
+        dismissProductBottomSheet();
         super.onDestroy();
+    }
+
+    private void dismissProductBottomSheet(){
+        if(addProductBottomSheet != null){
+            addProductBottomSheet.dismiss();
+        }
     }
 }

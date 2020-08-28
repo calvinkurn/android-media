@@ -268,9 +268,13 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         if (stepperModel?.selectedKeywords?.count() ?: 0 > 0) {
             stepperModel?.selectedKeywords?.forEachIndexed { index, _ ->
                 addKeywords(index)
-                addProducts(index)
             }
             input.keywords = keywordsList
+        }
+        if (stepperModel?.selectedProductIds?.count() ?: 0 > 0) {
+            stepperModel?.selectedProductIds?.forEachIndexed { index, _ ->
+                addProducts(index)
+            }
             input.group.ads = adsItemsList
         }
 
