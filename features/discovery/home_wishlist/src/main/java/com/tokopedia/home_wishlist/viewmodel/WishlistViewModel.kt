@@ -128,40 +128,39 @@ open class WishlistViewModel @Inject constructor(
         keywordSearch = keyword
         currentPage = 1
 
-        launchCatchError(wishlistCoroutineDispatcherProvider.io(), block = {
+        launchCatchError(wishlistCoroutineDispatcherProvider.ui(), block = {
             val data = getWishlistUseCase.getData(
                     GetWishlistParameter(keyword, currentPage))
             if (!data.isSuccess) {
-                isWishlistErrorInFirstPage.postValue(true)
+                isWishlistErrorInFirstPage.value = true
 
-                wishlistData.postValue(listOf(ErrorWishlistDataModel(data.errorMessage)))
+                wishlistData.value = listOf(ErrorWishlistDataModel(data.errorMessage))
                 currentPage--
                 return@launchCatchError
             }
 
             if(data.items.isEmpty()){
-                wishlistState.postValue(Status.EMPTY)
+                wishlistState.value = Status.EMPTY
 
-                wishlistData.postValue(listOf(
+                wishlistData.value = listOf(
                         if(keyword.isEmpty()) EmptyWishlistDataModel() else EmptySearchWishlistDataModel(keyword)
-                ))
+                )
                 getRecommendationOnEmptyWishlist(0)
             } else {
-                wishlistState.postValue(Status.SUCCESS)
+                wishlistState.value = Status.SUCCESS
 
                 val visitableWishlist = mappingWishlistToVisitable(data.items)
 
                 if (data.items.size >= recommendationPositionInPage ) {
-                    wishlistData.postValue(getTopAdsBannerData(visitableWishlist, currentPage))
+                    wishlistData.value = getTopAdsBannerData(visitableWishlist, currentPage, data.items.map { it.id })
                 } else {
-                    wishlistData.postValue(visitableWishlist)
+                    wishlistData.value = visitableWishlist
                 }
             }
         }){
-            isWishlistErrorInFirstPage.postValue(true)
-            wishlistData.postValue(listOf(ErrorWishlistDataModel(it.message)))
+            isWishlistErrorInFirstPage.value = true
+            wishlistData.value = listOf(ErrorWishlistDataModel(it.message))
             currentPage--
-            it.printStackTrace()
         }
     }
 
@@ -174,36 +173,36 @@ open class WishlistViewModel @Inject constructor(
         wishlistData.value = combineVisitable(wishlistData.value.copy(), listOf(LoadMoreDataModel()))
         currentPage++
 
-        launchCatchError(wishlistCoroutineDispatcherProvider.io(), block = {
+        launchCatchError(wishlistCoroutineDispatcherProvider.ui(), block = {
             val data = getWishlistUseCase.getData(GetWishlistParameter(keywordSearch, currentPage))
             if (!data.isSuccess || data.items.isEmpty()) {
-                wishlistData.postValue(removeLoadMore())
+                wishlistData.value = removeLoadMore()
                 currentPage--
-                loadMoreWishlistAction.postValue(Event(LoadMoreWishlistActionData(
+                loadMoreWishlistAction.value = Event(LoadMoreWishlistActionData(
                         isSuccess = data.isSuccess,
                         hasNextPage = data.hasNextPage,
-                        message = data.errorMessage)))
+                        message = data.errorMessage))
                 return@launchCatchError
             } else {
                 val newPageVisitableData = combineVisitable(removeLoadMore(), mappingWishlistToVisitable(data.items))
 
                 if (data.items.size >= recommendationPositionInPage && currentPage % 2 == 0) {
-                    wishlistData.postValue(getRecommendationWishlist(newPageVisitableData, currentPage, data.items.map { it.id }))
+                    wishlistData.value = getRecommendationWishlist(newPageVisitableData, currentPage, data.items.map { it.id })
                 } else {
-                    wishlistData.postValue(getTopAdsBannerData(newPageVisitableData, currentPage))
+                    wishlistData.value = getTopAdsBannerData(newPageVisitableData, currentPage, data.items.map { it.id })
                 }
-                loadMoreWishlistAction.postValue(Event(LoadMoreWishlistActionData(
+                loadMoreWishlistAction.value = Event(LoadMoreWishlistActionData(
                         isSuccess = true,
                         hasNextPage = data.hasNextPage,
-                        message = data.errorMessage)))
+                        message = data.errorMessage))
             }
         }){
-            wishlistData.postValue(removeLoadMore())
-            loadMoreWishlistAction.postValue(Event(LoadMoreWishlistActionData(
+            wishlistData.value = removeLoadMore()
+            loadMoreWishlistAction.value = Event(LoadMoreWishlistActionData(
                     isSuccess = false,
                     hasNextPage = false,
                     message = it.message
-                            ?: "")))
+                            ?: ""))
             currentPage--
         }
     }
@@ -225,7 +224,6 @@ open class WishlistViewModel @Inject constructor(
             newList.addAll(widget.recommendationItemList.map { RecommendationItemDataModel(widget.title, it) })
             wishlistData.value = newList
         }){
-            it.printStackTrace()
         }
     }
 
@@ -342,7 +340,7 @@ open class WishlistViewModel @Inject constructor(
     /**
      * Void [getTopAdsBannerData]
      */
-    private suspend fun getTopAdsBannerData(wishlistVisitable: List<WishlistDataModel>, currentPage: Int): List<WishlistDataModel>{
+    private suspend fun getTopAdsBannerData(wishlistVisitable: List<WishlistDataModel>, currentPage: Int, productIds: List<String>): List<WishlistDataModel>{
         return withContext(wishlistCoroutineDispatcherProvider.io()){
             if(wishlistVisitable.isNotEmpty()) {
                 val recommendationPositionInPreviousPage = ((currentPage - 3) * maxItemInPage) + recommendationPositionInPage
@@ -369,6 +367,12 @@ open class WishlistViewModel @Inject constructor(
                             topadsBanner = results.first(),
                             recommendationPositionInPage= recommendationPositionInPage,
                             currentPage = currentPage)
+                } else {
+                    return@withContext getRecommendationWishlist(
+                            wishlistVisitable = wishlistVisitable,
+                            page = currentPage,
+                            productIds = productIds
+                    )
                 }
             }
             return@withContext wishlistVisitable
