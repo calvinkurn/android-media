@@ -20,10 +20,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 import timber.log.Timber;
@@ -113,26 +109,9 @@ public class FileUtils {
     private static final int EOF = -1;
     private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
 
-    private static final HashMap<Uri, File> contentUriToFileMap = new HashMap<>();
-
     public static @Nullable
     File from(Context context, Uri uri) {
         try {
-            boolean isUriContent = "content".equals(uri.getScheme());
-            if (isUriContent) {
-                File fileFromMap = contentUriToFileMap.get(uri);
-                if (fileFromMap != null && fileFromMap.exists()) {
-                    return fileFromMap;
-                }
-            } else {
-                String uriPath = uri.getPath();
-                if (uriPath!= null) {
-                    File file = new File(uriPath);
-                    if (file.exists()) {
-                        return file;
-                    }
-                }
-            }
             InputStream inputStream = context.getContentResolver().openInputStream(uri);
             File tempFile = createTempFile(context, uri);
             FileOutputStream out = null;
@@ -148,9 +127,6 @@ public class FileUtils {
 
             if (out != null) {
                 out.close();
-            }
-            if ("content".equals(uri.getScheme())) {
-                contentUriToFileMap.put(uri, tempFile);
             }
             return tempFile;
         } catch (Exception e) {
@@ -171,19 +147,6 @@ public class FileUtils {
         tempFile = rename(tempFile, fileName);
         tempFile.deleteOnExit();
         return tempFile;
-    }
-
-    public static void deleteTempMapFile(List<String> excludedImageUrlOrPathList) {
-        Iterator<Map.Entry<Uri, File>> iterator = contentUriToFileMap.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<Uri, File> entry = iterator.next();
-            File fileToRemove = entry.getValue();
-            if (fileToRemove != null && fileToRemove.exists() &&
-                    !excludedImageUrlOrPathList.contains(fileToRemove.getAbsolutePath())) {
-                fileToRemove.delete();
-                iterator.remove();
-            }
-        }
     }
 
     private static String[] splitFileName(String fileName) {
