@@ -291,6 +291,7 @@ class DigitalTopupAnalytics {
             putString(TrackAppUtils.EVENT_CATEGORY, DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE)
             putString(TrackAppUtils.EVENT_ACTION, DigitalTopupEventTracking.Action.CLICK_DETAIL_CLUSTER)
             putString(TrackAppUtils.EVENT_LABEL, "${getCategoryName(itemProduct.attributes.categoryId)} - $operatorName - ${itemProduct.attributes.desc}")
+            putString(DigitalTopupEventTracking.Additional.SCREEN_NAME, getCategoryName(itemProduct.attributes.categoryId))
             putString(DigitalTopupEventTracking.Additional.CURRENT_SITE, DigitalTopupEventTracking.Additional.CURRENT_SITE_RECHARGE)
             putString(DigitalTopupEventTracking.Additional.USER_ID, userId)
             putString(DigitalTopupEventTracking.Additional.BUSINESS_UNIT, DigitalTopupEventTracking.Additional.BUSINESS_UNIT_RECHARGE)

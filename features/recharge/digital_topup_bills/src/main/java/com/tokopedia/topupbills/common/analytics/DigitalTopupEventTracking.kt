@@ -14,6 +14,7 @@ interface DigitalTopupEventTracking {
             const val BUSINESS_UNIT_RECHARGE = "top up and tagihan"
             const val USER_ID = "userId"
             const val DIGITAL_SCREEN_NAME = "/digital/"
+            const val SCREEN_NAME = "screenName"
             const val IS_LOGIN_STATUS = "isLoggedInStatus"
             const val CATEGORY = "category"
             const val CATEGORY_ID = "digitalCategoryId"

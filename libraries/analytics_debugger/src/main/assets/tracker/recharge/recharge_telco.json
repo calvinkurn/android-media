@@ -4,51 +4,18 @@
   "query": [
     {
       "event": "openScreen",
-      "screenName": "/digital/pulsa",
+      "screenName": "{{/digital/.*}}",
       "isLoggedInStatus": "{{true|false}}",
       "currentSite": "tokopediadigitalRecharge",
       "userId": "{{.*}}",
       "businessUnit": "top up and tagihan",
       "category": "{{.*}}",
       "digitalCategoryId": "{{.*}}",
+      "clientId": "{{.*}}",
       "sessionIris": "{{.*}}",
       "shopId": "{{.*}}",
-      "networkSpeed": "{{.*}}",
-      "clientId": "{{.*}}",
-      "appsflyerId": "{{.*}}"
-    },
-    {
-      "event": "openScreen",
-      "screenName": "/digital/paket data",
-      "isLoggedInStatus": "{{true|false}}",
-      "currentSite": "tokopediadigitalRecharge",
-      "userId": "{{.*}}",
-      "businessUnit": "top up and tagihan",
-      "category": "{{.*}}",
-      "digitalCategoryId": "{{.*}}",
-      "sessionIris": "{{.*}}"
-    },
-    {
-      "event": "openScreen",
-      "screenName": "/digital/roaming",
-      "isLoggedInStatus": "{{true|false}}",
-      "currentSite": "tokopediadigitalRecharge",
-      "userId": "{{.*}}",
-      "businessUnit": "top up and tagihan",
-      "category": "{{.*}}",
-      "digitalCategoryId": "{{.*}}",
-      "sessionIris": "{{.*}}"
-    },
-    {
-      "event": "openScreen",
-      "screenName": "/digital/pascabayar",
-      "isLoggedInStatus": "{{true|false}}",
-      "currentSite": "tokopediadigitalRecharge",
-      "userId": "{{.*}}",
-      "businessUnit": "top up and tagihan",
-      "category": "{{.*}}",
-      "digitalCategoryId": "{{.*}}",
-      "sessionIris": "{{.*}}"
+      "appsflyerId": "{{.*}}",
+      "networkSpeed": "{{.*}}"
     },
     {
       "event": "clickHomepage",
@@ -160,6 +127,7 @@
       "businessUnit": "top up and tagihan",
       "item_list": "{{.*}}",
       "sessionIris": "{{.*}}",
+      "clientId": "{{.*}}",
       "items": [
         {
           "item_id": "{{.*}}",
@@ -182,6 +150,7 @@
       "businessUnit": "top up and tagihan",
       "item_list": "{{.*}}",
       "sessionIris": "{{.*}}",
+      "clientId": "{{.*}}",
       "items": [
         {
           "item_id": "{{.*}}",
@@ -190,7 +159,8 @@
           "item_variant": "{{.*}}",
           "item_category": "{{.*}}",
           "index": "{{\\d*.\\d*}}",
-          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}"
+          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
+          "dimension40": "{{.*}}"
         }
       ]
     },
@@ -198,7 +168,8 @@
       "event": "add_to_cart",
       "eventCategory": "digital - homepage",
       "eventAction": "click pilih detail cluster",
-      "screenName": "{{.*}}",
+      "clientId": "{{.*}}",
+      "screenName": "{{pulsa|paket data|roaming}}",
       "eventLabel": "{{.* - .* - .*}}",
       "currentSite": "tokopediadigitalRecharge",
       "userId": "{{.*}}",
@@ -211,7 +182,7 @@
           "item_brand": "{{.*}}",
           "item_variant": "{{.*}}",
           "item_category": "{{.*}}",
-          "quantity": "{{.*}}",
+          "quantity": "{{\\d*.\\d*}}",
           "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}"
         }
       ]
@@ -254,11 +225,12 @@
       ]
     },
     {
-      "event": "view_item",
+      "event": "view_item_list",
       "eventCategory": "digital - homepage",
       "eventAction": "impression recent icon",
       "eventLabel": "{{.*}}",
       "sessionIris": "{{.*}}",
+      "item_list": "{{.*}}",
       "items": [
         {
           "item_id": "{{.*}}",
@@ -267,7 +239,8 @@
           "item_variant": "{{.*}}",
           "item_category": "{{.*}}",
           "index": "{{\\d*.\\d*}}",
-          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}"
+          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
+          "dimension40": "{{.*}}"
         }
       ]
     },
