@@ -9,12 +9,12 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.notifications.R
 import com.tokopedia.notifications.analytics.InAppAnalytics
 import com.tokopedia.notifications.inApp.CMInAppManager
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMButton
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp
-import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMLayout
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.*
 import com.tokopedia.notifications.inApp.viewEngine.adapter.ActionButtonAdapter
 import com.tokopedia.unifycomponents.setImage
@@ -119,17 +119,20 @@ internal open class BannerView(activity: Activity) {
     }
 
     private fun setCloseButton(data: CMInApp) {
+        btnClose.showWithCondition(data.isCancelable)
         btnClose.setOnClickListener {
             dismissInteractionTracking(data)
             dialog.dismiss()
         }
     }
 
-    private fun getBannerAppLink(cmLayout: CMLayout): String {
-        return if (cmLayout.getAppLink().isNullOrEmpty() && cmLayout.getButton().isNotEmpty()) {
-            cmLayout.getButton().first().getAppLink()
-        } else {
-            cmLayout.getAppLink()
+    private fun getBannerAppLink(data: CMInApp): String {
+        with(data.getCmLayout()) {
+            return if (data.type == TYPE_INTERSTITIAL && getButton().isNotEmpty()) {
+                getButton().first().getAppLink()
+            } else {
+                getAppLink()
+            }
         }
     }
 
@@ -137,7 +140,7 @@ internal open class BannerView(activity: Activity) {
         // prevent banner click if has more than one CTA button
         with(data.getCmLayout()) {
             if (getButton().size > 1) return
-            val bannerAppLink = getBannerAppLink(this)
+            val bannerAppLink = getBannerAppLink(data)
 
             imgBanner.setOnClickListener {
                 trackAppLinkClick(data, bannerAppLink, ElementType(ElementType.MAIN))
@@ -160,6 +163,11 @@ internal open class BannerView(activity: Activity) {
             appLink: String,
             elementType: ElementType
     ) {
+        if (appLink.equals("close", true)) {
+            dismissInteractionTracking(data)
+            return
+        }
+
         listener?.let {
             it.onCMInAppLinkClick(appLink, data, elementType)
             it.onCMinAppDismiss(data)

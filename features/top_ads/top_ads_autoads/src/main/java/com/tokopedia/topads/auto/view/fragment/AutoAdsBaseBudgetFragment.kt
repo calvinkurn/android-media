@@ -16,19 +16,23 @@ import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.design.text.watcher.NumberTextWatcher
 import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.data.network.param.AutoAdsParam
 import com.tokopedia.topads.auto.data.network.response.EstimationResponse
 import com.tokopedia.topads.auto.data.network.response.TopadsBidInfo
 import com.tokopedia.topads.auto.di.AutoAdsComponent
-import com.tokopedia.topads.common.data.internal.AutoAdsStatus
 import com.tokopedia.topads.auto.view.factory.DailyBudgetViewModelFactory
 import com.tokopedia.topads.auto.view.viewmodel.DailyBudgetViewModel
 import com.tokopedia.topads.auto.view.widget.Range
 import com.tokopedia.topads.auto.view.widget.RangeSeekBar
 import com.tokopedia.topads.common.activity.NoCreditActivity
 import com.tokopedia.topads.common.activity.SuccessActivity
+import com.tokopedia.topads.common.data.internal.AutoAdsStatus
+import com.tokopedia.topads.common.getSellerMigrationFeatureName
+import com.tokopedia.topads.common.getSellerMigrationRedirectionApplinks
+import com.tokopedia.topads.common.isFromPdpSellerMigration
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.user.session.UserSessionInterface
 import java.text.NumberFormat
@@ -212,13 +216,23 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
     }
 
     private fun eligible() {
-        val intent = Intent(context, SuccessActivity::class.java)
+        val intent = Intent(context, SuccessActivity::class.java).apply {
+            if (isFromPdpSellerMigration(activity?.intent?.extras)) {
+                putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, getSellerMigrationFeatureName(activity?.intent?.extras))
+                putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, getSellerMigrationRedirectionApplinks(activity?.intent?.extras))
+            }
+        }
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
     }
 
     private fun insufficientCredit() {
-        val intent = Intent(context, NoCreditActivity::class.java)
+        val intent = Intent(context, NoCreditActivity::class.java).apply {
+            if (isFromPdpSellerMigration(activity?.intent?.extras)) {
+                putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, getSellerMigrationFeatureName(activity?.intent?.extras))
+                putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, getSellerMigrationRedirectionApplinks(activity?.intent?.extras))
+            }
+        }
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
     }

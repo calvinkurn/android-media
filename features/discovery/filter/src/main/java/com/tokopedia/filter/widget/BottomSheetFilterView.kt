@@ -237,21 +237,23 @@ class BottomSheetFilterView : BaseCustomView, BottomSheetDynamicFilterView {
     }
 
     private fun initBottomSheetListener() {
-        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetLayout) as UserLockBottomSheetBehavior<*>
-        bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
-        bottomSheetBehavior?.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-            override fun onStateChanged(bottomSheet: View, newState: Int) {
-                if (newState == BottomSheetBehavior.STATE_HIDDEN) {
-                    callback.onHide()
-                } else {
-                    callback.onShow()
+        bottomSheetLayout?.let {
+            bottomSheetBehavior = BottomSheetBehavior.from(it) as UserLockBottomSheetBehavior<*>
+            bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
+            bottomSheetBehavior?.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+                override fun onStateChanged(bottomSheet: View, newState: Int) {
+                    if (newState == BottomSheetBehavior.STATE_HIDDEN) {
+                        callback.onHide()
+                    } else {
+                        callback.onShow()
+                    }
                 }
-            }
 
-            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                override fun onSlide(bottomSheet: View, slideOffset: Float) {
 
-            }
-        })
+                }
+            })
+        }
         buttonClose?.setOnClickListener { closeView() }
         buttonFinish?.setOnClickListener { closeView() }
         buttonReset?.setOnClickListener { resetAllFilter() }

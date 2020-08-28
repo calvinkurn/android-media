@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatsetting.view.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.LifecycleOwner
@@ -23,6 +24,7 @@ import com.tokopedia.topchat.chatsetting.view.adapter.ChatSettingTypeFactoryImpl
 import com.tokopedia.topchat.chatsetting.view.adapter.viewholder.ChatSettingViewHolder
 import com.tokopedia.topchat.chatsetting.view.widget.ChatSettingItemDecoration
 import com.tokopedia.topchat.chatsetting.viewmodel.ChatSettingViewModel
+import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity.PARAM_IS_SELLER
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
@@ -67,7 +69,13 @@ class ChatSettingFragment : BaseListFragment<Visitable<*>, ChatSettingTypeFactor
             if (appLink.isNotBlank()) {
                 shouldMoveToChatTemplate = false
                 activity?.intent?.extras?.clear()
-                context?.run { RouteManager.route(this, appLink) }
+                context?.run {
+                    RouteManager.getIntent(this, appLink).apply {
+                        addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+                        putExtra(PARAM_IS_SELLER, true)
+                        startActivity(this)
+                    }
+                }
             }
         }
     }

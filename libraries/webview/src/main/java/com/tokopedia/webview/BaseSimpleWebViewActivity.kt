@@ -89,7 +89,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         if (item.itemId == R.id.menu_home) {
             RouteManager.route(this, ApplinkConst.HOME)
         } else if (item.itemId == R.id.menu_help) {
-            RouteManager.route(this, ApplinkConst.CONTACT_US)
+            RouteManager.route(this, ApplinkConst.CONTACT_US_NATIVE)
         }
         return super.onOptionsItemSelected(item)
     }

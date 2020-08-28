@@ -54,14 +54,7 @@ class IrisService : BaseJobIntentService(), CoroutineScope {
             }
             try {
                 isRunning = true
-                val cache = Cache(applicationContext)
-                if (cache.isEnabled()) {
-                    val trackingRepository = TrackingRepository(applicationContext)
-                    val dataSize = trackingRepository.sendRemainingEvent(maxRow)
-                    if (dataSize == 0) {
-                        IrisAnalytics.getInstance(applicationContext).setAlarm(false, force = true)
-                    }
-                }
+                IrisServiceCore.run(applicationContext, maxRow)
             } catch (e: Exception) {
                 Timber.e("P1#IRIS#startService %s", e.toString())
             } finally {

@@ -7,6 +7,7 @@ import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.HTTP_PREFIX
 import com.tokopedia.product.addedit.common.constant.ProductStatus.STATUS_ACTIVE_STRING
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
@@ -188,7 +189,7 @@ class AddEditProductVariantViewModel @Inject constructor(
         mSelectedVariantUnitValuesLevel2.value = selectedVariantUnitValues
     }
 
-    fun updateVariantInputModel(selectedVariantDetails: List<VariantDetail>, variantPhotos: List<VariantPhoto>) {
+    fun updateVariantInputModel(variantPhotos: List<VariantPhoto>) {
         productInputModel.value?.variantInputModel?.apply {
             products = mapProducts(selectedVariantDetails, variantPhotos)
             selections = mapSelections(selectedVariantDetails)
@@ -242,10 +243,15 @@ class AddEditProductVariantViewModel @Inject constructor(
         }
     }
 
-    fun updateSizechartFieldVisibility(variantDetail: VariantDetail, isVisible: Boolean) {
-        if (variantDetail.identifier == VARIANT_IDENTIFIER_HAS_SIZECHART) {
-            mIsVariantSizechartVisible.value = isVisible
+    fun updateSizechartFieldVisibility() {
+        val isSizeUnit = this.selectedVariantDetails.any {
+            it.identifier == VARIANT_IDENTIFIER_HAS_SIZECHART
         }
+        val isVariantValueNotEmpty = selectedVariantUnitValuesMap.any {
+            it.value.isNotEmpty()
+        }
+
+        mIsVariantSizechartVisible.value = isSizeUnit && isVariantValueNotEmpty
     }
 
     fun clearProductVariant() {
@@ -320,10 +326,9 @@ class AddEditProductVariantViewModel @Inject constructor(
         var level = 0 // varaint value level
         selectedVariantUnitValuesMap.toSortedMap().forEach {
             // get selected variant detail selected each level
-            variantDetailsSelected.getOrNull(level)?.let { variantDetail ->
-                val unit = mapUnit(variantDetail, it.value) // get unit from variant detail
-                unit?.run {
-                    // if unit is not null then map the SelectionInputModel
+            if (it.value.isNotEmpty()) {
+                variantDetailsSelected.getOrNull(level)?.let { variantDetail ->
+                    val unit = selectedVariantUnitMap.getOrElse(level) { Unit() }
                     result.add(SelectionInputModel(
                             variantDetail.variantID.toString(),
                             variantDetail.name,
@@ -375,14 +380,16 @@ class AddEditProductVariantViewModel @Inject constructor(
         val result: MutableList<ProductVariantInputModel> = mutableListOf()
         val unitValueList: MutableList<List<UnitValue>> = mutableListOf()
         val variantIdList: MutableList<Int> = mutableListOf()
+        var level = 0
 
         // init unitValueList and variantIdList
         selectedVariantUnitValuesMap.toSortedMap().forEach {
             if (it.value.isNotEmpty()) {
                 unitValueList.add(it.value)
-                variantDetails.getOrNull(it.key)?.let { variantDetail ->
+                variantDetails.getOrNull(level)?.let { variantDetail ->
                     variantIdList.add(variantDetail.variantID)
                 }
+                level++
             }
         }
 
@@ -458,7 +465,14 @@ class AddEditProductVariantViewModel @Inject constructor(
         return if (variantPhoto != null && variantPhoto.imageUrlOrPath.isNotEmpty()) {
             val result = PictureVariantInputModel(
                     filePath = variantPhoto.imageUrlOrPath,
-                    urlOriginal = variantPhoto.imageUrlOrPath
+                    urlOriginal = variantPhoto.imageUrlOrPath,
+                    picID = variantPhoto.picID,
+                    description = variantPhoto.description,
+                    fileName = variantPhoto.fileName,
+                    width = variantPhoto.width,
+                    height = variantPhoto.height,
+                    isFromIG = variantPhoto.isFromIG,
+                    uploadId = variantPhoto.uploadId
             )
             listOf(result)
         } else {
@@ -505,6 +519,12 @@ class AddEditProductVariantViewModel @Inject constructor(
         this.selectedVariantDetails = selectedVariantDetails.toMutableList()
     }
 
+    fun removeSelectedVariantDetails(variantDetail: VariantDetail) {
+        this.selectedVariantDetails.removeFirst {
+            it.variantID == variantDetail.variantID
+        }
+    }
+
     fun getProductVariantPhotos(productInputModel: ProductInputModel): List<VariantPhoto> {
         val variantPhotos = mutableListOf<VariantPhoto>()
         // get variant photo name
@@ -518,11 +538,30 @@ class AddEditProductVariantViewModel @Inject constructor(
         colorVariant?.options?.forEachIndexed { index, optionInputModel ->
             val variantUnitValueName = optionInputModel.value
             // get variant image url
-            val photoUrl = productInputModel.variantInputModel.products.find {
+            val picture = productInputModel.variantInputModel.products.find {
                 it.combination.getOrNull(colorVariantLevel) == index
-            }?.pictures?.firstOrNull()?.urlOriginal.orEmpty()
+            }?.pictures?.firstOrNull()
 
-            variantPhotos.add(VariantPhoto(variantUnitValueName, photoUrl))
+            val photoUrl = picture?.urlOriginal.orEmpty()
+            val photoPicID = picture?.picID.orEmpty()
+            val photoDescription = picture?.description.orEmpty()
+            val photoFileName = picture?.fileName.orEmpty()
+            val photoWidth = picture?.width.orZero()
+            val photoHeight = picture?.height.orZero()
+            val photoIsFromIG = picture?.isFromIG.orEmpty()
+            val photoUploadId = picture?.uploadId.orEmpty()
+
+            variantPhotos.add(VariantPhoto(
+                    variantUnitValueName,
+                    photoUrl,
+                    photoPicID,
+                    photoDescription,
+                    photoFileName,
+                    photoWidth,
+                    photoHeight,
+                    photoIsFromIG,
+                    photoUploadId
+            ))
         }
         return variantPhotos
     }
