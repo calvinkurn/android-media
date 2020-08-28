@@ -238,6 +238,7 @@ fun Fragment.setupBottomSheetFeedSellerMigration(goToCreateAffiliate: () -> Unit
     val viewBottomSheet = View.inflate(context, R.layout.bottom_sheet_feed_content_seller_migration, null)
     val bottomSheet = BottomSheetUnify()
     val feedListUnify = viewBottomSheet.findViewById<ListUnify>(R.id.feedListUnify)
+    bottomSheet.setChild(viewBottomSheet)
 
     setupListUnifyFeedSellerMigration(feedListUnify, bottomSheet) {
         goToCreateAffiliate()
