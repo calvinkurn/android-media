@@ -146,6 +146,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     private val REQUEST_GO_TO_NORMAL_CHECKOUT = 115
     private val REQUEST_ATTACH_INVOICE = 116
     private val REQUEST_ATTACH_VOUCHER = 117
+    private val REQUEST_REPORT_USER = 118
 
     private var seenAttachedProduct = HashSet<Int>()
     private var seenAttachedBannedProduct = HashSet<Int>()
@@ -886,6 +887,18 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
             REQUEST_GO_TO_NORMAL_CHECKOUT -> onReturnFromNormalCheckout(resultCode, data)
             REQUEST_ATTACH_INVOICE -> onAttachInvoiceSelected(data, resultCode)
             REQUEST_ATTACH_VOUCHER -> onAttachVoucherSelected(data, resultCode)
+            REQUEST_REPORT_USER -> onReturnFromReportUser(data, resultCode)
+        }
+    }
+
+    private fun onReturnFromReportUser(data: Intent?, resultCode: Int) {
+        if (data == null || resultCode != RESULT_OK) return
+        val result = data.getStringExtra(TopChatInternalRouter.Companion.RESULT_KEY_REPORT_USER)
+        val payload = data.getStringExtra(TopChatInternalRouter.Companion.RESULT_KEY_PAYLOAD_REPORT_USER)
+        if (result == TopChatInternalRouter.Companion.RESULT_REPORT_BLOCK_PROMO) {
+            onClickBlockPromo()
+        } else if (result == TopChatInternalRouter.Companion.RESULT_REPORT_TOASTER && payload != null) {
+            showToasterConfirmation(payload)
         }
     }
 
@@ -1079,7 +1092,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
             analytics.eventClickReportUser(opponentId)
             val reportUrl = getChatReportUrl()
             val intent = TopchatReportWebViewActivity.getStartIntent(it, reportUrl)
-            startActivity(intent)
+            startActivityForResult(intent, REQUEST_REPORT_USER)
         }
     }
 

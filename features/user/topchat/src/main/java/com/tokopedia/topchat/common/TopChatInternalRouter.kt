@@ -32,6 +32,11 @@ open class TopChatInternalRouter {
 
         const val EXTRA_SHOP_STATUS_FAVORITE_FROM_SHOP = "SHOP_STATUS_FAVOURITE"
 
+        const val RESULT_KEY_REPORT_USER = "result_key_report_user"
+        const val RESULT_KEY_PAYLOAD_REPORT_USER = "result_key_payload_report_user"
+        const val RESULT_REPORT_BLOCK_PROMO = "result_report_block_promo"
+        const val RESULT_REPORT_TOASTER = "result_report_toaster"
+
 
         const val TOKOPEDIA_ATTACH_INVOICE_SELECTED_INVOICE_KEY = "SELECTED_INVOICE"
 
