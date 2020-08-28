@@ -152,7 +152,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     openHomepage(defaultBundle);
                     break;
                 case DeepLinkChecker.CATEGORY:
-                    openCategory(uriData.toString(), defaultBundle);
+                    openInternalDeeplink(uriData.toString(), defaultBundle);
                     screenName = AppScreen.SCREEN_BROWSE_PRODUCT;
                     break;
                 case DeepLinkChecker.BROWSE:
@@ -682,19 +682,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openDiscoveryPage(String url, Bundle bundle) {
-        String pageId;
-        if (DeepLinkChecker.getDeepLinkType(context, url) != DeepLinkChecker.DISCOVERY_PAGE) {
-            pageId = "";
-        } else {
-            Uri uriData = Uri.parse(url);
-            List<String> linkSegment = uriData.getPathSegments();
-            pageId = linkSegment.get(1);
-        }
-        Intent intent = DiscoveryActivity.createDiscoveryIntent(
-                context,
-                pageId);
-        intent.putExtras(bundle);
-        context.startActivity(intent);
+        openInternalDeeplink(url, bundle);
         context.finish();
     }
 
@@ -706,7 +694,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         context.startActivity(intent);
     }
 
-    private void openCategory(String uriData, Bundle bundle) {
+    private void openInternalDeeplink(String uriData, Bundle bundle) {
         Uri uri = Uri.parse(uriData);
         String deeplink = DeeplinkConstant.SCHEME_TOKOPEDIA + ":/" + uri.getPath();
         if (uri.getQuery() != null) {
