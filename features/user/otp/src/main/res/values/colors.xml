@@ -11,4 +11,5 @@
     <color name="otp_f05f68">#f05f68</color>
     <color name="otp_black_38">#60000000</color>
     <color name="otp_black_disabled_38">#61000000</color>
+    <color name="otp_grey_text">#AD31353B</color>
 </resources>

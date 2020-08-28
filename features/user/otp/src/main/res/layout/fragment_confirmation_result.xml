@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/main_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:visibility="visible"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ImageView
+        android:id="@+id/btn_cancel"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ic_cancel_grey"/>
+
+    <ImageView
+        android:id="@+id/main_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        app:layout_constraintBottom_toTopOf="@+id/title"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/success_image"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_title"
+        app:typographyType="heading_2"
+        app:typographyWeight="bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:textColor="@color/Neutral_N700_96"
+        android:textSize="@dimen/fontSize_lvl6"
+        app:layout_constraintBottom_toTopOf="@+id/subtitle"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/main_image"
+        android:text="Akses masuk diterima" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_subtitle"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:textAlignment="center"
+        android:textColor="@color/otp_black_secondary"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_title"
+        android:text="Kamu berhasil masuk ke Tokopedia lewat perangkat lain. Selamat berbelanja, ya!" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/button_main"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_lvl6"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        android:layout_marginLeft="@dimen/spacing_lvl5"
+        android:layout_marginRight="@dimen/spacing_lvl5"
+        app:layout_constraintTop_toBottomOf="@id/text_subtitle"
+        android:text="Tutup"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
