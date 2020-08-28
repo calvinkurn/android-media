@@ -103,7 +103,6 @@ object TopAdsVerificationTestReportUtil {
     private fun getSuccessPercentage(success: Int, total: Int): String {
         if (total == 0) return "-"
 
-
         return (success * 100 / total).toDouble().toString() + "%"
     }
 
