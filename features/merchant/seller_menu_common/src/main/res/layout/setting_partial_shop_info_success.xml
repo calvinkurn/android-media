@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/shopInfoLayout"
+        layout="@layout/setting_partial_main_info_success"/>
+
+    <LinearLayout
+        android:id="@+id/shopStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"/>
+
+    <include
+        android:id="@+id/freeShippingLayout"
+        android:visibility="gone"
+        layout="@layout/setting_partial_free_shipping" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/setting_divider_thin"
+        android:background="@color/white"/>
+
+    <include
+        android:id="@+id/saldoBalance"
+        layout="@layout/setting_balance"/>
+
+    <include
+        android:id="@+id/topAdsBalance"
+        layout="@layout/setting_balance_topads"/>
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/setting_divider_thick"/>
+
+</LinearLayout>
