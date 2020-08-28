@@ -1,10 +1,10 @@
 package com.tokopedia.cart.view
 
-const val WISHLIST = "WISHLIST"
-const val DELETE = "DELETE"
-const val NOTES = "NOTES"
-const val VALIDATENOTES = "VALIDATENOTES"
-const val SIMILARPRODUCT = "SIMILARPRODUCT"
-const val CHECKOUTBROWSER = "CHECKOUTBROWSER"
-const val SHOWLESS = "SHOWLESS"
-const val SHOWMORE = "SHOWMORE"
+const val ACTION_WISHLIST = 1
+const val ACTION_DELETE = 2
+const val ACTION_NOTES = 3
+const val ACTION_VALIDATENOTES = 4
+const val ACTION_SIMILARPRODUCT = 5
+const val ACTION_CHECKOUTBROWSER = 6
+const val ACTION_SHOWLESS = 7
+const val ACTION_SHOWMORE = 8

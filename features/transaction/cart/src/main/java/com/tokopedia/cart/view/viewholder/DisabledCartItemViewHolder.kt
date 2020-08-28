@@ -5,10 +5,12 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.R
-import com.tokopedia.cart.view.ActionListener
+import com.tokopedia.cart.domain.model.cartlist.ActionData
+import com.tokopedia.cart.view.*
 import com.tokopedia.cart.view.uimodel.DisabledCartItemHolderData
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
@@ -24,9 +26,7 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
 
     fun bind(data: DisabledCartItemHolderData) {
         renderProductInfo(data)
-        renderSlashPrice(data)
-        renderDeleteButton(data)
-        renderWishlistButton(data)
+        renderDefaultActionState()
         renderProductAction(data)
         renderDivider(data)
     }
@@ -41,6 +41,7 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
         } else {
             itemView.text_product_variant.gone()
         }
+        renderSlashPrice(data)
     }
 
     private fun renderSlashPrice(data: DisabledCartItemHolderData) {
@@ -71,58 +72,81 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
         }
     }
 
-    private fun renderDeleteButton(data: DisabledCartItemHolderData) {
-        itemView.btn_delete_cart.setOnClickListener {
-            data.data?.let {
-                actionListener?.onDeleteDisabledItem(it)
-            }
-        }
-    }
-
-    private fun renderWishlistButton(data: DisabledCartItemHolderData) {
-        itemView.text_move_to_wishlist.apply {
-            if (data.data?.originData?.isWishlisted == true) {
-                this.text = "Sudah ada di wishlist"
-                this.setTextColor(ContextCompat.getColor(itemView.context, R.color.Neutral_N700_32))
-                this.setOnClickListener { }
-            } else {
-                this.text = "Pindahkan ke wishlist"
-                this.setTextColor(ContextCompat.getColor(itemView.context, R.color.Neutral_N700_68))
-                this.setOnClickListener {
-                    actionListener?.onAddDisabledItemToWishlist(data.productId, data.cartId)
-                }
-            }
-
-        }
+    private fun renderDefaultActionState() {
+        itemView.text_move_to_wishlist.gone()
+        itemView.btn_delete_cart.invisible()
+        itemView.tv_product_unavailable_action.gone()
     }
 
     private fun renderProductAction(data: DisabledCartItemHolderData) {
         if (data.actionsData.isNotEmpty()) {
             data.actionsData.forEach {
-                // Todo : re-check action code
-                if (it.code.equals("CHECKOUTBROWSER", true)) {
-                    itemView.tv_product_unavailable_action.text = it.message
-                    itemView.tv_product_unavailable_action.setOnClickListener {
-                        data.nicotineLiteMessageData?.url?.let {
-                            actionListener?.onTobaccoLiteUrlClicked(it)
+                when (it.id) {
+                    ACTION_WISHLIST -> {
+                        renderActionWishlist(it, data)
+                    }
+                    ACTION_CHECKOUTBROWSER, ACTION_SIMILARPRODUCT -> {
+                        when {
+                            data.selectedUnavailableActionId == ACTION_CHECKOUTBROWSER && it.id == ACTION_CHECKOUTBROWSER -> {
+                                renderActionCheckoutInBrowser(it, data)
+                            }
+                            data.selectedUnavailableActionId == ACTION_SIMILARPRODUCT && it.id == ACTION_SIMILARPRODUCT -> {
+                                renderActionSimilarProduct(it, data)
+                            }
                         }
                     }
-                    actionListener?.onShowTickerTobacco()
-                    itemView.tv_product_unavailable_action.visibility = View.VISIBLE
-                } else if (it.code.equals("SIMILARPRODUCT", true)) {
-                    itemView.tv_product_unavailable_action.text = it.message
-                    itemView.tv_product_unavailable_action.setOnClickListener {
-                        actionListener?.onSimilarProductUrlClicked(data.similarProductUrl)
+                    ACTION_DELETE -> {
+                        renderActionDelete(data)
                     }
-                    actionListener?.onShowTickerOutOfStock(data.productId)
-                    itemView.tv_product_unavailable_action.visibility = View.VISIBLE
-                } else {
-                    itemView.tv_product_unavailable_action.visibility = View.VISIBLE
                 }
             }
-        } else {
-            itemView.tv_product_unavailable_action.visibility = View.GONE
         }
+    }
+
+    private fun renderActionDelete(data: DisabledCartItemHolderData) {
+        itemView.btn_delete_cart.setOnClickListener {
+            data.data?.let {
+                actionListener?.onDeleteDisabledItem(it)
+            }
+        }
+        itemView.btn_delete_cart.show()
+    }
+
+    private fun renderActionSimilarProduct(it: ActionData, data: DisabledCartItemHolderData) {
+        itemView.tv_product_unavailable_action.text = it.message
+        itemView.tv_product_unavailable_action.setOnClickListener {
+            actionListener?.onSimilarProductUrlClicked(data.similarProductUrl)
+        }
+        actionListener?.onShowTickerOutOfStock(data.productId)
+        itemView.tv_product_unavailable_action.show()
+    }
+
+    private fun renderActionCheckoutInBrowser(it: ActionData, data: DisabledCartItemHolderData) {
+        itemView.tv_product_unavailable_action.text = it.message
+        itemView.tv_product_unavailable_action.setOnClickListener {
+            data.nicotineLiteMessageData?.url?.let {
+                actionListener?.onTobaccoLiteUrlClicked(it)
+            }
+        }
+        actionListener?.onShowTickerTobacco()
+        itemView.tv_product_unavailable_action.show()
+    }
+
+    private fun renderActionWishlist(it: ActionData, data: DisabledCartItemHolderData) {
+        if (data.isWishlisted) {
+            itemView.text_move_to_wishlist.text = "Sudah ada di Wishlist"
+            itemView.text_move_to_wishlist.setTextColor(ContextCompat.getColor(itemView.context, R.color.Neutral_N700_32))
+            itemView.text_move_to_wishlist.setOnClickListener {  }
+        } else {
+            itemView.text_move_to_wishlist.text = it.message
+            itemView.text_move_to_wishlist.setTextColor(ContextCompat.getColor(itemView.context, R.color.Neutral_N700_68))
+            itemView.text_move_to_wishlist.setOnClickListener {
+                actionListener?.onAddDisabledItemToWishlist(data.productId, data.cartId)
+            }
+
+        }
+
+        itemView.text_move_to_wishlist.show()
     }
 
     private fun renderDivider(data: DisabledCartItemHolderData) {

@@ -45,7 +45,8 @@ class ViewHolderDataMapper @Inject constructor() {
                 nicotineLiteMessageData = cartItemHolderData.cartItemData?.nicotineLiteMessageData,
                 showDivider = showDivider,
                 data = cartItemHolderData.cartItemData,
-                actionsData = cartItemHolderData.actionsData
+                actionsData = cartItemHolderData.actionsData,
+                selectedUnavailableActionId = cartItemHolderData.selectedUnavailableActionId
         )
     }
 }

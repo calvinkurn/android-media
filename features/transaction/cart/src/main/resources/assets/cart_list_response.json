@@ -534,8 +534,8 @@
           "action": [
             {
               "id": 1,
-              "code": "NOTIFY",
-              "message": "Notify me when the stock is ready"
+              "code": "WISHLIST",
+              "message": "Pindahkan ke wishlist"
             },
             {
               "id": 2,
@@ -543,12 +543,12 @@
               "message": "Hapus barang"
             },
             {
-              "id": 3,
+              "id": 6,
               "code": "CHECKOUTBROWSER",
               "message": "Checkout di browser"
             }
           ],
-          "selected_unavailable_action_id": 3,
+          "selected_unavailable_action_id": 6,
           "unavailable_group": [
             {
               "user_address_id": 0,
@@ -1126,8 +1126,8 @@
           "action": [
             {
               "id": 1,
-              "code": "NOTIFY",
-              "message": "Notify me when the stock is ready"
+              "code": "WISHLIST",
+              "message": "Pindahkan ke wishlist"
             },
             {
               "id": 2,
@@ -1135,11 +1135,12 @@
               "message": "Hapus barang"
             },
             {
-              "id": 9,
+              "id": 5,
               "code": "SIMILARPRODUCT",
               "message": "Lihat produk serupa"
             }
           ],
+          "selected_unavailable_action_id": 5,
           "unavailable_group": [
             {
               "user_address_id": 0,
@@ -1271,7 +1272,7 @@
                     },
                     "product_finsurance": 1,
                     "product_shop_id": 480829,
-                    "is_wishlisted": false,
+                    "is_wishlisted": true,
                     "product_tracker_data": {
                       "attribution": "none/other",
                       "tracker_list_name": "none/other"

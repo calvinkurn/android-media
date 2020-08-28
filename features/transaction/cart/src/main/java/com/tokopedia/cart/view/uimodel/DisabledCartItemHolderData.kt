@@ -17,5 +17,6 @@ data class DisabledCartItemHolderData(
         var nicotineLiteMessageData: NicotineLiteMessageData? = null,
         var showDivider: Boolean = true,
         var data: CartItemData? = CartItemData(),
-        var actionsData: List<ActionData> = emptyList()
+        var actionsData: List<ActionData> = emptyList(),
+        var selectedUnavailableActionId: Int = 0
 )
