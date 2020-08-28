@@ -179,8 +179,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     val userId: String
         get() = userSessionInterface.userId
 
-    var deviceId: String = ""
-        get() = userSessionInterface.deviceId
+    var deviceId: String = userSessionInterface.deviceId ?: ""
 
     init {
         _productInfoP3.addSource(_p2Data) { p2Data ->
@@ -660,7 +659,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     private fun assignTradeinParams() {
         getDynamicProductInfoP1?.let {
             tradeInParams.categoryId = it.basic.category.id.toIntOrZero()
-            tradeInParams.deviceId = deviceId ?: ""
+            tradeInParams.deviceId = deviceId
             tradeInParams.userId = userId.toIntOrZero()
             tradeInParams.setPrice(it.data.price.value)
             tradeInParams.productId = it.basic.getProductId()
@@ -694,7 +693,15 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     private fun getProductInfoP2DataAsync(productId: String, pdpSession: String): Deferred<ProductInfoP2UiData> {
         return async {
-            getProductInfoP2DataUseCase.executeOnBackground(GetProductInfoP2DataUseCase.createParams(productId, pdpSession), forceRefresh, enableCachingP2)
+            getProductInfoP2DataUseCase.executeOnBackground(GetProductInfoP2DataUseCase.createParams(productId, generatePdpSessionWithDeviceId(pdpSession)), forceRefresh, enableCachingP2)
+        }
+    }
+
+    private fun generatePdpSessionWithDeviceId(pdpSession: String): String {
+        return if (getDynamicProductInfoP1?.data?.isTradeIn == false) {
+            pdpSession
+        } else {
+            pdpSession + ProductDetailConstant.DELIMITER_DEVICE_ID + deviceId
         }
     }
 

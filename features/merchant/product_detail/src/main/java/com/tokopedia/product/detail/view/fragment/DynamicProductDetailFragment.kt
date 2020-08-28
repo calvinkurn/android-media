@@ -239,7 +239,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
-    private var shouldMoveToTopAds: Boolean = false
     private val recommendationCarouselPositionSavedState = SparseIntArray()
 
     private val irisSessionId by lazy {
@@ -2770,8 +2769,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun initTradein() {
-        viewModel.deviceId = TradeInUtils.getDeviceId(context)
-                ?: viewModel.userSessionInterface.deviceId
+        viewModel.deviceId = TradeInUtils.getDeviceId(context) ?: viewModel.userSessionInterface.deviceId ?: ""
     }
 
     private fun goToHargaFinal() {
