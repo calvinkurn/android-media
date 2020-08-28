@@ -108,13 +108,13 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.tabResp.observe(this, Observer {
+        viewModel.tabResp.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessGetTab(it.data)
                 is Fail -> onErrorGetTab(it.throwable)
             }
         })
-        viewModel.whitelistResp.observe(this, Observer {
+        viewModel.whitelistResp.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> renderFab(it.data)
                 is Fail -> onErrorGetWhitelist(it.throwable)
@@ -494,5 +494,5 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         super.onViewStateRestored(savedInstanceState)
         isLightThemeStatusBar = savedInstanceState?.getBoolean(KEY_IS_LIGHT_THEME_STATUS_BAR)
                 ?: false
-    |
+    }
 }
