@@ -38,12 +38,14 @@ import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.*
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 /**
  * A simple [Fragment] subclass.
  */
-class ChangePinFragment : BaseDaggerFragment() {
+class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
 
     @Inject
     lateinit var trackingPinUtil: TrackingPinUtil
@@ -61,6 +63,7 @@ class ChangePinFragment : BaseDaggerFragment() {
     private var isValidated = false
     private var isForgotPin = false
     private var inputNewPin = false
+    private val job = Job()
 
     private var pin = ""
     private var oldPin = ""
@@ -68,6 +71,9 @@ class ChangePinFragment : BaseDaggerFragment() {
     private var changePinInput: PinUnify? = null
     private var methodIcon: ImageUnify? = null
     private var mainView: View? = null
+
+    override val coroutineContext: CoroutineContext
+        get() = job + Dispatchers.Main
 
     private val onForgotPinClick = View.OnClickListener {
         forgotPinState()
@@ -102,6 +108,11 @@ class ChangePinFragment : BaseDaggerFragment() {
     override fun onPause() {
         super.onPause()
         hideKeyboard()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        job.cancel()
     }
 
     private fun initViews() {
@@ -147,7 +158,6 @@ class ChangePinFragment : BaseDaggerFragment() {
                 changePinViewModel.changePin(pin, input, oldPin)
             }
         } else {
-            changePinInput?.pinTextField?.setText("")
             displayErrorPin(getString(R.string.error_wrong_pin))
         }
     }
@@ -193,7 +203,7 @@ class ChangePinFragment : BaseDaggerFragment() {
             view.post {
                 if (view.requestFocus()) {
                     val inputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                    inputMethodManager.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
+                    inputMethodManager.showSoftInput(view, InputMethodManager.SHOW_FORCED)
                 }
             }
         }
@@ -204,13 +214,14 @@ class ChangePinFragment : BaseDaggerFragment() {
     }
 
     private fun konfirmasiState() {
+        showLoading()
         resetInputPin()
         isConfirm = true
         changePinInput?.pinTitle = getString(R.string.confirm_create_pin)
         changePinInput?.pinDescription = getString(R.string.subtitle_confirm_create_pin)
         changePinInput?.pinMessage = ""
         changePinInput?.pinSecondaryActionText = ""
-        showKeyboard()
+        dismissLoading()
     }
 
     private fun forgotPinState() {
@@ -226,7 +237,6 @@ class ChangePinFragment : BaseDaggerFragment() {
         changePinInput?.pinDescription = getString(R.string.change_pin_subtitle_new_pin)
         changePinInput?.pinSecondaryActionText = ""
         toggleForgotText(true)
-        showKeyboard()
     }
 
     private fun resetInputPin() {

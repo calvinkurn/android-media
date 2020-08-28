@@ -284,10 +284,10 @@ class AddPinFragment : BaseDaggerFragment() {
         inputPin?.pinMessage = getString(R.string.message_create_pin)
         isConfirmPin = false
         pin = ""
-        showKeyboard()
     }
 
     private fun displayConfirmPin() {
+        showLoading()
         hideErrorPin()
         inputPin?.pinTitle = getString(R.string.confirm_create_pin)
         inputPin?.pinDescription = getString(R.string.subtitle_confirm_create_pin)
@@ -295,7 +295,7 @@ class AddPinFragment : BaseDaggerFragment() {
         if (inputPin?.pinTextField?.text.toString().isNotEmpty()) pin = inputPin?.pinTextField?.text.toString()
         inputPin?.value = ""
         inputPin?.pinMessage = ""
-        showKeyboard()
+        dismissLoading()
     }
 
     private fun displayErrorPin(error: String) {
@@ -325,7 +325,7 @@ class AddPinFragment : BaseDaggerFragment() {
             view.post {
                 if (view.requestFocus()) {
                     val inputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                    inputMethodManager.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
+                    inputMethodManager.showSoftInput(view, InputMethodManager.SHOW_FORCED)
                 }
             }
         }

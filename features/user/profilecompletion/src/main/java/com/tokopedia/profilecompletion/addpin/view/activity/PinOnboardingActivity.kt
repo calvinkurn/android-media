@@ -61,6 +61,7 @@ class PinOnboardingActivity : BaseSimpleActivity(), HasComponent<ProfileCompleti
         setSupportActionBar(toolbar)
         supportActionBar?.apply {
             setHomeAsUpIndicator(R.drawable.ic_close_toolbar_profile_completion)
+            setDisplayShowTitleEnabled(false)
             setDisplayHomeAsUpEnabled(true)
             elevation = 0f
             setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(this@PinOnboardingActivity, R.color.Neutral_N0)))

@@ -14,9 +14,13 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addpin.data.StatusPinData
+import com.tokopedia.profilecompletion.addpin.view.activity.PinOnboardingActivity
 import com.tokopedia.profilecompletion.addpin.viewmodel.AddChangePinViewModel
+import com.tokopedia.profilecompletion.changepin.view.activity.ChangePinActivity
 import com.tokopedia.profilecompletion.common.LoadingDialog
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinConstant
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinUtil
@@ -107,7 +111,10 @@ class PinOnboardingFragment : BaseDaggerFragment() {
         if (statusPinData.isRegistered) {
             goToChangePin()
         } else {
-            dismissLoading()
+            if (activity is PinOnboardingActivity) {
+                (activity as PinOnboardingActivity).supportActionBar?.setDisplayShowTitleEnabled(true)
+            }
+            hideLoading()
         }
     }
 
@@ -137,7 +144,7 @@ class PinOnboardingFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessAddPhoneNumber() {
-        dismissLoading()
+        hideLoading()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -156,11 +163,13 @@ class PinOnboardingFragment : BaseDaggerFragment() {
     }
 
     private fun showLoading() {
-        loadingDialog.show()
+        loader?.show()
+        container?.hide()
     }
 
-    private fun dismissLoading() {
-        loadingDialog.dismiss()
+    private fun hideLoading() {
+        loader?.hide()
+        container?.show()
     }
 
     override fun onDestroy() {
@@ -177,7 +186,7 @@ class PinOnboardingFragment : BaseDaggerFragment() {
 
         const val REQUEST_CODE_ADD_PHONE = 100
 
-        const val ONBOARD_PICT_URL = "https://ecs7.tokopedia.net/android/user/image_pin_two_factor.png"
+        const val ONBOARD_PICT_URL = "https://ecs7.tokopedia.net/android/user/high_onboard_create_pin.png"
 
         fun createInstance(bundle: Bundle): PinOnboardingFragment {
             val fragment = PinOnboardingFragment()
