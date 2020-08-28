@@ -3,7 +3,7 @@ package com.tokopedia.sellerhome.settings.domain.usecase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.sellerhome.settings.domain.entity.ShopStatusResponse
-import com.tokopedia.sellerhome.settings.view.uimodel.base.ShopType
+import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 import com.tokopedia.sellerhome.utils.TestHelper
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
