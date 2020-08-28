@@ -11,6 +11,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -124,102 +125,9 @@ class ShopPageViewModel @Inject constructor(
                         null
                     })
             shopP1DataAsync.await()?.let{
-                productListData = it.second
                 shopPageP1Data.postValue(Success(it.first))
+                productListData = it.second
             }
-//            val getIsShopOfficialDataAsync = asyncCatchError(
-//                    Dispatchers.IO,
-//                    block = {
-//                        getIsShopOfficial(id, isRefresh)
-//                    },
-//                    onError = {
-//                        shopPageP1Data.postValue(Fail(it))
-//                        null
-//                    })
-//
-//            val getIsShopPowerMerchantDataAsync = asyncCatchError(
-//                    Dispatchers.IO,
-//                    block = {
-//                        getIsShopPowerMerchant(id, isRefresh)
-//                    },
-//                    onError = {
-//                        shopPageP1Data.postValue(Fail(it))
-//                        null
-//                    })
-//
-//            val shopInfoTopContentDataAsync = asyncCatchError(
-//                    Dispatchers.IO,
-//                    block = {
-//                        getShopInfoTopContentData(id, shopDomain, isRefresh)
-//                    },
-//                    onError = {
-//                        shopPageP1Data.postValue(Fail(it))
-//                        null
-//                    })
-//
-//            val shopPageHomeTypeDataAsync = asyncCatchError(
-//                    Dispatchers.IO,
-//                    block = {
-//                        getShopInfoHomeTypeData(id, shopDomain, isRefresh)
-//                    },
-//                    onError = {
-//                        shopPageP1Data.postValue(Fail(it))
-//                        null
-//                    })
-//
-//            val shopInfoShopCoreShopAssetsDataAsync = asyncCatchError(
-//                    Dispatchers.IO,
-//                    block = {
-//                        getShopInfoCoreAndAssetsData(id, shopDomain, isRefresh)
-//                    },
-//                    onError = {
-//                        shopPageP1Data.postValue(Fail(it))
-//                        null
-//                    })
-//
-//            val feedWhitelistAsync = asyncCatchError(
-//                    Dispatchers.IO,
-//                    block = {
-//                        getFeedWhitelist(shopId.toIntOrZero(), isRefresh)
-//                    },
-//                    onError = {
-//                        shopPageP1Data.postValue(Fail(it))
-//                        null
-//                    }
-//            )
-//
-//            val productListDataAsync = asyncCatchError(
-//                    Dispatchers.IO,
-//                    block = {
-//                        getProductList(
-//                                getShopProductUseCase.get(),
-//                                shopId.orEmpty(),
-//                                START_PAGE,
-//                                ShopPageConstant.DEFAULT_PER_PAGE,
-//                                "",
-//                                "",
-//                                DEFAULT_SORT_ID,
-//                                isRefresh
-//                        )
-//                    },
-//                    onError = {
-//                        shopPageP1Data.postValue(Fail(it))
-//                        null
-//                    })
-//            val shopInfoOsData = getIsShopOfficialDataAsync.await()
-//            val shopInfoGoldData = getIsShopPowerMerchantDataAsync.await()
-//            val shopInfoTopContentData = shopInfoTopContentDataAsync.await()
-//            val shopPageHomeTypeData = shopPageHomeTypeDataAsync.await()
-//            val shopInfoShopCoreShopAssetsData = shopInfoShopCoreShopAssetsDataAsync.await()
-//            val feedWhitelistData = feedWhitelistAsync.await()
-//            productListDataAsync.await()?.let { productList ->
-//            }
-//            if (null != shopInfoOsData && null != shopInfoGoldData && null != shopInfoTopContentData
-//                    && null != shopPageHomeTypeData && null != shopInfoShopCoreShopAssetsData
-//                    && null != feedWhitelistData
-//            ) {
-
-//            }
         }) {
             shopPageP1Data.postValue(Fail(it))
         }
@@ -257,13 +165,13 @@ class ShopPageViewModel @Inject constructor(
         )
         val cacheStrategy = GraphqlCacheStrategy.Builder(if (isRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build()
         val gqlResponse = gqlRepository.getReseponse(requests, cacheStrategy)
-        val getIsOfficialData = gqlResponse.getData<GetIsShopOfficialStore.Response>(GetIsShopOfficialStore.Response::class.java).result
-        val getIsShopPowerMerchant = gqlResponse.getData<GetIsShopPowerMerchant.Response>(GetIsShopPowerMerchant.Response::class.java).result
-        val getShopInfoTopContentData = gqlResponse.getData<ShopInfo.Response>(ShopInfo.Response::class.java).result.data.first()
-        val getShopInfoHomeTypeData = gqlResponse.getData<ShopPageGetHomeType.Response>(ShopPageGetHomeType.Response::class.java).shopPageGetHomeType
-        val getShopInfoCoreAndAssetsData = gqlResponse.getData<ShopInfo.Response>(ShopInfo.Response::class.java).result.data.first()
-        val getFeedWhitelist = gqlResponse.getData<WhitelistQuery>(WhitelistQuery::class.java).whitelist
-        val getProductList = gqlResponse.getData<ShopProduct.Response>(ShopProduct.Response::class.java).getShopProduct
+        val getIsOfficialData = getResponseData<GetIsShopOfficialStore.Response>(gqlResponse).result
+        val getIsShopPowerMerchant = getResponseData<GetIsShopPowerMerchant.Response>(gqlResponse).result
+        val getShopInfoTopContentData = getResponseData<ShopInfo.Response>(gqlResponse).result.data.first()
+        val getShopInfoHomeTypeData = getResponseData<ShopPageGetHomeType.Response>(gqlResponse).shopPageGetHomeType
+        val getShopInfoCoreAndAssetsData = getResponseData<ShopInfo.Response>(gqlResponse).result.data.first()
+        val getFeedWhitelist = getResponseData<WhitelistQuery>(gqlResponse).whitelist
+        val getProductList = getResponseData<ShopProduct.Response>(gqlResponse).getShopProduct
         val productListData =  Pair(
                 isHasNextPage(page, ShopPageConstant.DEFAULT_PER_PAGE, getProductList.totalData),
                 getProductList.data.map { ShopPageProductListMapper.mapShopProductToProductViewModel(it, isMyShop(shopId), etalaseId) }
@@ -279,11 +187,13 @@ class ShopPageViewModel @Inject constructor(
         return  Pair(shopPageP1Data, productListData)
     }
 
-    private suspend fun getIsShopOfficial(shopId: Int, isRefresh: Boolean): GetIsShopOfficialStore {
-        val useCase = gqlGetIsOfficialUseCase.get()
-        useCase.params = GqlGetIsShopOsUseCase.createParams(shopId)
-        useCase.isFromCacheFirst = !isRefresh
-        return useCase.executeOnBackground()
+    private inline fun <reified T> getResponseData(response: GraphqlResponse): T {
+        val error = response.getError(T::class.java)
+        if (error == null || error.isEmpty()) {
+            return response.getData<T>(T::class.java)
+        } else {
+            throw MessageErrorException(error.mapNotNull { it.message }.joinToString(separator = ", "))
+        }
     }
 
     private fun getIsShopOfficialRequest(shopId: Int): GraphqlRequest {
@@ -292,28 +202,10 @@ class ShopPageViewModel @Inject constructor(
         return useCase.request
     }
 
-    private suspend fun getIsShopPowerMerchant(shopId: Int, isRefresh: Boolean): GetIsShopPowerMerchant {
-        val useCase = gqlGetIsPowerMerchantUseCase.get()
-        useCase.params = GqlGetIsShopPmUseCase.createParams(shopId)
-        useCase.isFromCacheFirst = !isRefresh
-        return useCase.executeOnBackground()
-    }
-
     private fun getIsShopPowerMerchantRequest(shopId: Int): GraphqlRequest {
         val useCase = gqlGetIsPowerMerchantUseCase.get()
         useCase.params = GqlGetIsShopPmUseCase.createParams(shopId)
         return useCase.request
-    }
-
-    private suspend fun getShopInfoTopContentData(shopId: Int, shopDomain: String?, isRefresh: Boolean): ShopInfo {
-        gqlGetShopInfobUseCaseTopContent.get().params = GQLGetShopInfoUseCase.createParams(
-                if (shopId == 0) listOf() else listOf(shopId),
-                shopDomain,
-                source = SHOP_PAGE_SOURCE,
-                fields = listOf(GQLGetShopInfoUseCase.FIELD_TOP_CONTENT)
-        )
-        gqlGetShopInfobUseCaseTopContent.get().isFromCacheFirst = !isRefresh
-        return gqlGetShopInfobUseCaseTopContent.get().executeOnBackground()
     }
 
     private fun getShopInfoTopContentDataRequest(shopId: Int, shopDomain: String?): GraphqlRequest {
@@ -327,28 +219,10 @@ class ShopPageViewModel @Inject constructor(
         return useCase.request
     }
 
-    private suspend fun getShopInfoHomeTypeData(shopId: Int, shopDomain: String?, isRefresh: Boolean): ShopPageGetHomeType {
-        val useCase = gqlGetShopPageHomeType.get()
-        useCase.params = GqlShopPageGetHomeType.createParams(shopId)
-        useCase.isFromCacheFirst = !isRefresh
-        return useCase.executeOnBackground()
-    }
-
     private fun getShopInfoHomeTypeDataRequest(shopId: Int): GraphqlRequest {
         val useCase = gqlGetShopPageHomeType.get()
         useCase.params = GqlShopPageGetHomeType.createParams(shopId)
         return useCase.request
-    }
-
-    private suspend fun getShopInfoCoreAndAssetsData(shopId: Int, shopDomain: String?, isRefresh: Boolean): ShopInfo {
-        gqlGetShopInfobUseCaseCoreAndAssets.get().params = GQLGetShopInfoUseCase.createParams(
-                if (shopId == 0) listOf() else listOf(shopId),
-                shopDomain,
-                source = SHOP_PAGE_SOURCE,
-                fields = listOf(GQLGetShopInfoUseCase.FIELD_CORE, GQLGetShopInfoUseCase.FIELD_ASSETS)
-        )
-        gqlGetShopInfobUseCaseCoreAndAssets.get().isFromCacheFirst = !isRefresh
-        return gqlGetShopInfobUseCaseCoreAndAssets.get().executeOnBackground()
     }
 
     private fun getShopInfoCoreAndAssetsDataRequest(shopId: Int, shopDomain: String?): GraphqlRequest {
@@ -360,28 +234,6 @@ class ShopPageViewModel @Inject constructor(
                 fields = listOf(GQLGetShopInfoUseCase.FIELD_CORE, GQLGetShopInfoUseCase.FIELD_ASSETS)
         )
         return useCase.request
-    }
-
-    private suspend fun getProductList(
-            useCase: GqlGetShopProductUseCase,
-            shopId: String,
-            page: Int,
-            perPage: Int,
-            etalaseId: String,
-            keyword: String,
-            sortId: Int,
-            isRefresh: Boolean
-    ): Pair<Boolean, List<ShopProductViewModel>> {
-        useCase.isFromCacheFirst = !isRefresh
-        useCase.params = GqlGetShopProductUseCase.createParams(shopId, ShopProductFilterInput(
-                page, perPage, keyword, etalaseId, sortId
-        ))
-        val productListResponse = useCase.executeOnBackground()
-        val isHasNextPage = isHasNextPage(page, ShopPageConstant.DEFAULT_PER_PAGE, productListResponse.totalData)
-        return Pair(
-                isHasNextPage,
-                productListResponse.data.map { ShopPageProductListMapper.mapShopProductToProductViewModel(it, isMyShop(shopId), etalaseId) }
-        )
     }
 
     private fun getProductListRequest(
