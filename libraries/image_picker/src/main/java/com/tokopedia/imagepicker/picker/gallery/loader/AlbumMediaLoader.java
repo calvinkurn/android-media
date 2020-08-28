@@ -18,9 +18,12 @@ public class AlbumMediaLoader extends CursorLoader {
     private static final Uri QUERY_URI = MediaStore.Files.getContentUri("external");
     private static final String[] PROJECTION = {
             MediaStore.Files.FileColumns._ID,
+            MediaStore.MediaColumns.DATA,
             MediaStore.MediaColumns.DISPLAY_NAME,
             MediaStore.MediaColumns.MIME_TYPE,
             MediaStore.MediaColumns.SIZE,
+            MediaStore.MediaColumns.WIDTH,
+            MediaStore.MediaColumns.HEIGHT,
             "duration"};
 
     // === params for album ALL && showSingleMediaType: false ===

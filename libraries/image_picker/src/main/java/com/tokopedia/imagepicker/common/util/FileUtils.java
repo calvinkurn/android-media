@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -20,6 +21,8 @@ import java.io.OutputStream;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Random;
+
+import timber.log.Timber;
 
 
 public class FileUtils {
@@ -106,27 +109,43 @@ public class FileUtils {
     private static final int EOF = -1;
     private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
 
-    public static File from(Context context, Uri uri) throws IOException {
-        InputStream inputStream = context.getContentResolver().openInputStream(uri);
+    public static @Nullable
+    File from(Context context, Uri uri) {
+        try {
+            InputStream inputStream = context.getContentResolver().openInputStream(uri);
+            File tempFile = createTempFile(context, uri);
+            FileOutputStream out = null;
+            try {
+                out = new FileOutputStream(tempFile);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            if (inputStream != null) {
+                copy(inputStream, out);
+                inputStream.close();
+            }
+
+            if (out != null) {
+                out.close();
+            }
+            return tempFile;
+        } catch (Exception e) {
+            Timber.w("P1#FILE_UTIL#uri;error='%s'", e.toString());
+            return null;
+        }
+    }
+
+    public static File createTempFile(Context context, Uri uri) {
         String fileName = getFileName(context, uri);
         String[] splitName = splitFileName(fileName);
-        File tempFile = File.createTempFile(splitName[0], splitName[1]);
-        tempFile = rename(tempFile, fileName);
-        tempFile.deleteOnExit();
-        FileOutputStream out = null;
+        File tempFile = null;
         try {
-            out = new FileOutputStream(tempFile);
-        } catch (FileNotFoundException e) {
+            tempFile = File.createTempFile(splitName[0], splitName[1]);
+        } catch (IOException e) {
             e.printStackTrace();
         }
-        if (inputStream != null) {
-            copy(inputStream, out);
-            inputStream.close();
-        }
-
-        if (out != null) {
-            out.close();
-        }
+        tempFile = rename(tempFile, fileName);
+        tempFile.deleteOnExit();
         return tempFile;
     }
 

@@ -323,7 +323,7 @@ open class VideoPickerActivity : BaseSimpleActivity(),
         }
         //get single image
         isVideoSourcePicker = true
-        videoPath = com.tokopedia.imagepicker.common.util.FileUtils.from(this, item.contentUri).path.toString()
+        videoPath = item.path
         onVideoTaken(videoPath)
     }
 

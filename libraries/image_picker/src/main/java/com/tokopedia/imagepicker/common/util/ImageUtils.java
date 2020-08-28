@@ -67,8 +67,6 @@ public class ImageUtils {
     }
 
 
-
-
     public static File getTokopediaPhotoPath(@DirectoryDef String directoryDef, boolean isPng) {
         File directory = getTokopediaPublicDirectory(directoryDef);
         return new File(directory.getAbsolutePath(), FileUtils.generateUniqueFileName() + (isPng ? PNG_EXT : JPG_EXT));

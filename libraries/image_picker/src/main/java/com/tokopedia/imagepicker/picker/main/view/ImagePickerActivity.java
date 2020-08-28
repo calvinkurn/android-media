@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -43,6 +44,7 @@ import com.tokopedia.imagepicker.picker.main.builder.StateRecorderType;
 import com.tokopedia.imagepicker.picker.video.VideoRecorderFragment;
 import com.tokopedia.imagepicker.picker.widget.ImagePickerPreviewWidget;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -418,11 +420,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
 
     @Override
     public void onAlbumItemClicked(MediaItem item, boolean isChecked) {
-        try {
-            onImageSelected(FileUtils.from(this, item.getContentUri()).getPath(), isChecked, null);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        onImageSelected(item.getPath(), isChecked, null);
     }
 
     @Override
@@ -579,17 +577,24 @@ public class ImagePickerActivity extends BaseSimpleActivity
     }
 
     protected void onFinishWithMultipleFinalImage(ArrayList<String> imageUrlOrPathList,
-                                                ArrayList<String> originalImageList,
-                                                ArrayList<String> imageDescriptionList,
-                                                ArrayList<Boolean> isEdittedList) {
+                                                  ArrayList<String> originalImageList,
+                                                  ArrayList<String> imageDescriptionList,
+                                                  ArrayList<Boolean> isEdittedList) {
         Intent intent = new Intent();
         intent.putStringArrayListExtra(PICKER_RESULT_PATHS, imageUrlOrPathList);
         intent.putStringArrayListExtra(RESULT_PREVIOUS_IMAGE, originalImageList);
         intent.putStringArrayListExtra(RESULT_IMAGE_DESCRIPTION_LIST, imageDescriptionList);
         intent.putExtra(RESULT_IS_EDITTED, isEdittedList);
         setResult(Activity.RESULT_OK, intent);
+
+        deleteAllTempFileNotInResult(imageUrlOrPathList);
+
         trackContinue();
         finish();
+    }
+
+    private void deleteAllTempFileNotInResult(ArrayList<String> imageUrlOrPathList) {
+        FileUtils.deleteTempMapFile(imageUrlOrPathList);
     }
 
     @Override
@@ -684,7 +689,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
 
     @Override
     public void onVideoRecorder(int state) {
-        if (state == StateRecorderType.START){
+        if (state == StateRecorderType.START) {
             tabLayout.setClickable(false);
         } else {
             tabLayout.setClickable(true);
@@ -701,15 +706,15 @@ public class ImagePickerActivity extends BaseSimpleActivity
         onCameraViewVisible();
     }
 
-    public void trackOpen(){
+    public void trackOpen() {
         //to be overridden
     }
 
-    public void trackBack(){
+    public void trackBack() {
         //to be overridden
     }
 
-    public void trackContinue(){
+    public void trackContinue() {
         //to be overridden
     }
 }

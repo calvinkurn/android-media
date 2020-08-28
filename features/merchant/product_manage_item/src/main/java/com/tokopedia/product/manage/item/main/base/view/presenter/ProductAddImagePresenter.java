@@ -40,7 +40,7 @@ public class ProductAddImagePresenter extends BaseDaggerPresenter<ProductAddImag
         Subscription subscription = Observable.just(imageUris).map(new Func1<ArrayList<Uri>, ArrayList<String>>() {
             @Override
             public ArrayList<String> call(ArrayList<Uri> imageUris) {
-                int imagescount = (imageUris.size() > MAX_IMAGES) ? MAX_IMAGES : imageUris.size();
+                int imagescount = Math.min(imageUris.size(), MAX_IMAGES);
                 ArrayList<String> imageUrls = new ArrayList<>();
                 for (int i = 0; i < imagescount; i++) {
                     Uri imageUri = imageUris.get(i);

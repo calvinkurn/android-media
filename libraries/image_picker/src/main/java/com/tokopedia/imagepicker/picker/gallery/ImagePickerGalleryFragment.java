@@ -182,7 +182,7 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
             if (resultCode == Activity.RESULT_OK && data != null) {
                 selectedAlbumItem = data.getParcelableExtra(EXTRA_ALBUM_ITEM);
                 selectedAlbumPosition = data.getIntExtra(EXTRA_ALBUM_POSITION, 0);
-                getLoaderManager().restartLoader(ALBUM_LOADER_ID, null, ImagePickerGalleryFragment.this);
+                LoaderManager.getInstance(this).restartLoader(ALBUM_LOADER_ID, null, ImagePickerGalleryFragment.this);
             }
         }
     }
@@ -191,13 +191,8 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
     @Override
     public void onResume() {
         super.onResume();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            String permission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
-            if (ActivityCompat.checkSelfPermission(getContext(), permission) == PackageManager.PERMISSION_GRANTED) {
-                showLoading();
-                LoaderManager.getInstance(this).initLoader(ALBUM_LOADER_ID, null, ImagePickerGalleryFragment.this);
-            }
-        } else {
+        String permission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
+        if (ActivityCompat.checkSelfPermission(getContext(), permission) == PackageManager.PERMISSION_GRANTED) {
             showLoading();
             LoaderManager.getInstance(this).initLoader(ALBUM_LOADER_ID, null, ImagePickerGalleryFragment.this);
         }
@@ -299,7 +294,7 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
         if (albumItem.isAll() && albumItem.isEmpty()) {
             NetworkErrorHelper.showEmptyState(getContext(), getView(), getString(R.string.error_no_media_storage), null);
         } else {
-            getLoaderManager().restartLoader(MEDIA_LOADER_ID, null, this);
+            LoaderManager.getInstance(this).restartLoader(MEDIA_LOADER_ID, null, this);
         }
     }
 
@@ -320,44 +315,32 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
     @Override
     public boolean isMediaValid(MediaItem item) {
         // check if file exists
-        File file;
-
-        try {
-            file = FileUtils.from(getContext(), item.getContentUri());
-            if (!file.exists()) {
-                NetworkErrorHelper.showRedCloseSnackbar(getView(),
-                        galleryType == GalleryType.VIDEO_ONLY ? getString(R.string.video_not_found) :
-                                getString(R.string.image_not_found));
-                return false;
-            }
-            //check image resolution
-            if (item.isVideo() && item.getDuration() > 0) { // it is video
-                int minVideoResolution = item.getMinimumVideoResolution();
-                if ((file.length() / BYTES_IN_KB) > onImagePickerGalleryFragmentListener.getMaxFileSize()) {
-                    NetworkErrorHelper.showRedCloseSnackbar(getView(), getString(R.string.max_video_size_reached));
-                    return false;
-                }
-                if (item.getDuration() > MAX_VIDEO_DURATION_MS) {
-                    NetworkErrorHelper.showRedCloseSnackbar(getView(), getString(R.string.max_video_duration_reached));
-                    return false;
-                }
-            } else {
-                if ((file.length() / BYTES_IN_KB) > onImagePickerGalleryFragmentListener.getMaxFileSize()) {
-                    NetworkErrorHelper.showRedCloseSnackbar(getView(), imageTooLargeErrorMessage);
-                    return false;
-                }
-                if (item.getWidth(getContext()) < minImageResolution || item.getHeight(getContext()) < minImageResolution) {
-                    NetworkErrorHelper.showRedCloseSnackbar(getView(), belowMinImageResolutionErrorMessage);
-                    return false;
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (item.getWidth() == 0 || item.getHeight() == 0) {
+            NetworkErrorHelper.showRedCloseSnackbar(getView(),
+                    galleryType == GalleryType.VIDEO_ONLY ? getString(R.string.video_not_found) :
+                            getString(R.string.image_not_found));
             return false;
         }
-
-
-
+        //check image resolution
+        if (item.isVideo() && item.getDuration() > 0) { // it is video
+            if ((item.getSize() / BYTES_IN_KB) > onImagePickerGalleryFragmentListener.getMaxFileSize()) {
+                NetworkErrorHelper.showRedCloseSnackbar(getView(), getString(R.string.max_video_size_reached));
+                return false;
+            }
+            if (item.getDuration() > MAX_VIDEO_DURATION_MS) {
+                NetworkErrorHelper.showRedCloseSnackbar(getView(), getString(R.string.max_video_duration_reached));
+                return false;
+            }
+        } else {
+            if ((item.getSize() / BYTES_IN_KB) > onImagePickerGalleryFragmentListener.getMaxFileSize()) {
+                NetworkErrorHelper.showRedCloseSnackbar(getView(), imageTooLargeErrorMessage);
+                return false;
+            }
+            if (item.getWidth() < minImageResolution || item.getHeight() < minImageResolution) {
+                NetworkErrorHelper.showRedCloseSnackbar(getView(), belowMinImageResolutionErrorMessage);
+                return false;
+            }
+        }
         return true;
     }
 
