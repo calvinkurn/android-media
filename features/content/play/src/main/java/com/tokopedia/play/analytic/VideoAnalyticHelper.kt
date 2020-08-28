@@ -3,6 +3,7 @@ package com.tokopedia.play.analytic
 import android.content.Context
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.play.ERR_STATE_VIDEO
+import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play_common.state.PlayVideoState
 import kotlin.math.abs
@@ -37,16 +38,16 @@ class VideoAnalyticHelper(
         )
     }
 
-    fun onNewVideoState(userId: String, channelType: PlayChannelType, state: PlayVideoState) {
+    fun onNewVideoState(userId: String, channelType: PlayChannelType, state: PlayViewerVideoState) {
         handleBufferAnalytics(userId, channelType, state)
         handleDurationAnalytics(state)
     }
 
-    private fun handleBufferAnalytics(userId: String, channelType: PlayChannelType, state: PlayVideoState) {
-        if (state is PlayVideoState.Error) {
+    private fun handleBufferAnalytics(userId: String, channelType: PlayChannelType, state: PlayViewerVideoState) {
+        if (state is PlayViewerVideoState.Error) {
             sendErrorStateVideoAnalytic(channelType, state.error.message ?: context.getString(com.tokopedia.play_common.R.string.play_common_video_error_message))
 
-        } else if (state is PlayVideoState.Buffering && !bufferTrackingModel.isBuffering) {
+        } else if (state is PlayViewerVideoState.Buffer && !bufferTrackingModel.isBuffering) {
             val nextBufferCount = if (bufferTrackingModel.shouldTrackNext) bufferTrackingModel.bufferCount + 1 else bufferTrackingModel.bufferCount
 
             bufferTrackingModel = BufferTrackingModel(
@@ -56,7 +57,7 @@ class VideoAnalyticHelper(
                     shouldTrackNext = bufferTrackingModel.shouldTrackNext
             )
 
-        } else if ((state is PlayVideoState.Playing || state is PlayVideoState.Pause) && bufferTrackingModel.isBuffering) {
+        } else if ((state is PlayViewerVideoState.Play || state is PlayViewerVideoState.Pause) && bufferTrackingModel.isBuffering) {
             if (bufferTrackingModel.shouldTrackNext) sendVideoBufferingAnalytic(userId, channelType)
 
             bufferTrackingModel = bufferTrackingModel.copy(
@@ -66,8 +67,8 @@ class VideoAnalyticHelper(
         }
     }
 
-    private fun handleDurationAnalytics(state: PlayVideoState) {
-        if (state is PlayVideoState.Playing) {
+    private fun handleDurationAnalytics(state: PlayViewerVideoState) {
+        if (state is PlayViewerVideoState.Play) {
             if (watchDurationModel.watchTime == null) watchDurationModel = watchDurationModel.copy(
                     watchTime = System.currentTimeMillis()
             )

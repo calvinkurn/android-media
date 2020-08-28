@@ -16,6 +16,7 @@ import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.util.event.DistinctEventObserver
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.video.PlayVideoUtil
+import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.custom.RoundedConstraintLayout
 import com.tokopedia.play.view.type.ScreenOrientation
@@ -23,6 +24,7 @@ import com.tokopedia.play.view.uimodel.General
 import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
 import com.tokopedia.play.view.viewcomponent.EmptyViewComponent
 import com.tokopedia.play.view.viewcomponent.OneTapViewComponent
+import com.tokopedia.play.view.viewcomponent.VideoLoadingComponent
 import com.tokopedia.play.view.viewcomponent.VideoViewComponent
 import com.tokopedia.play.view.viewmodel.PlayVideoViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
@@ -40,7 +42,7 @@ class PlayVideoFragment @Inject constructor(
 ): TkpdBaseV4Fragment(), PlayFragmentContract {
 
     private val videoView by viewComponent { VideoViewComponent(it, R.id.view_video) }
-    private val videoLoadingView by viewComponent { EmptyViewComponent(it, R.id.view_video_loading) }
+    private val videoLoadingView by viewComponent { VideoLoadingComponent(it, R.id.view_video_loading) }
     private val oneTapView by viewComponent { OneTapViewComponent(it, R.id.iv_one_tap_finger) }
     private val overlayVideoView by viewComponent { EmptyViewComponent(it, R.id.v_play_overlay_video) }
 
@@ -145,8 +147,8 @@ class PlayVideoFragment @Inject constructor(
             }
 
             when (it.state) {
-                PlayVideoState.Buffering -> videoLoadingView.show()
-                PlayVideoState.Playing, PlayVideoState.Ended, PlayVideoState.NoMedia, PlayVideoState.Pause -> videoLoadingView.hide()
+                is PlayViewerVideoState.Buffer -> videoLoadingView.show(source = it.state.bufferSource)
+                PlayViewerVideoState.Play, PlayViewerVideoState.End, PlayViewerVideoState.Pause -> videoLoadingView.hide()
             }
 
             if (!playViewModel.channelType.isVod) {
@@ -154,7 +156,7 @@ class PlayVideoFragment @Inject constructor(
                 return@DistinctObserver
             }
             when (it.state) {
-                PlayVideoState.Ended -> overlayVideoView.show()
+                PlayViewerVideoState.End -> overlayVideoView.show()
                 else -> overlayVideoView.hide()
             }
         })
@@ -186,12 +188,12 @@ class PlayVideoFragment @Inject constructor(
     }
     //endregion
 
-    private fun handleVideoStateChanged(state: PlayVideoState) {
+    private fun handleVideoStateChanged(state: PlayViewerVideoState) {
         when (state) {
-            PlayVideoState.Playing, PlayVideoState.Pause -> {
+            PlayViewerVideoState.Play, PlayViewerVideoState.Pause -> {
                 videoView.showThumbnail(null)
             }
-            PlayVideoState.Ended -> {
+            PlayViewerVideoState.End -> {
                 videoView.getCurrentBitmap()?.let { saveEndImage(it) }
             }
         }

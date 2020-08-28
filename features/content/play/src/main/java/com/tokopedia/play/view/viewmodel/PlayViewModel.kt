@@ -18,6 +18,9 @@ import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.Event
+import com.tokopedia.play.util.video.state.PlayViewerVideoState
+import com.tokopedia.play.util.video.state.PlayViewerVideoStateListener
+import com.tokopedia.play.util.video.state.PlayViewerVideoStateProcessor
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.mapper.PlayUiMapper
@@ -36,6 +39,7 @@ import javax.inject.Inject
  */
 class PlayViewModel @Inject constructor(
         private val playVideoManager: PlayVideoManager,
+        private val videoStateProcessor: PlayViewerVideoStateProcessor,
         private val getChannelInfoUseCase: GetChannelDetailUseCase,
         private val getSocketCredentialUseCase: GetSocketCredentialUseCase,
         private val getPartnerInfoUseCase: GetPartnerInfoUseCase,
@@ -187,13 +191,15 @@ class PlayViewModel @Inject constructor(
 
     private var channelInfoJob: Job? = null
 
-    private val videoManagerListener = object : PlayVideoManager.Listener {
-        override fun onPlayerStateChanged(state: PlayVideoState) {
+    private val videoStateListener = object : PlayViewerVideoStateListener {
+        override fun onStateChanged(state: PlayViewerVideoState) {
             scope.launch(dispatchers.immediate) {
                 _observableVideoProperty.value = VideoPropertyUiModel(state)
             }
         }
+    }
 
+    private val videoManagerListener = object : PlayVideoManager.Listener {
         override fun onVideoPlayerChanged(player: ExoPlayer) {
             scope.launch(dispatchers.immediate) {
                 if (!videoPlayer.isYouTube) {
@@ -214,6 +220,7 @@ class PlayViewModel @Inject constructor(
 
     init {
         playVideoManager.addListener(videoManagerListener)
+        videoStateProcessor.addStateListener(videoStateListener)
 
         stateHandler.observeForever(stateHandlerObserver)
 
@@ -242,6 +249,7 @@ class PlayViewModel @Inject constructor(
         destroy()
         stopPlayer()
         playVideoManager.removeListener(videoManagerListener)
+        videoStateProcessor.removeStateListener(videoStateListener)
     }
     //endregion
 

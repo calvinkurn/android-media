@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
@@ -37,6 +36,7 @@ import com.tokopedia.play.view.measurement.bounds.provider.VideoBoundsProvider
 import com.tokopedia.play.view.measurement.layout.DynamicLayoutManager
 import com.tokopedia.play.view.measurement.layout.PlayDynamicLayoutManager
 import com.tokopedia.play.util.observer.DistinctObserver
+import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.view.bottomsheet.PlayMoreActionBottomSheet
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayNavigation
@@ -49,7 +49,6 @@ import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
-import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.play_common.util.extension.awaitMeasured
@@ -61,7 +60,6 @@ import com.tokopedia.play_common.view.updatePadding
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.play_common.viewcomponent.viewComponentOrNull
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.usecase.coroutines.Fail
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
@@ -474,10 +472,10 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun observeVideoProperty() {
         playViewModel.observableVideoProperty.observe(viewLifecycleOwner, DistinctObserver {
-            if (it.state == PlayVideoState.Playing) {
+            if (it.state == PlayViewerVideoState.Play) {
                 PlayAnalytics.clickPlayVideo(channelId, playViewModel.channelType)
             }
-            if (it.state == PlayVideoState.Ended) showInteractionIfWatchMode()
+            if (it.state == PlayViewerVideoState.End) showInteractionIfWatchMode()
 
             playButtonViewOnStateChanged(state = it.state)
         })
@@ -882,15 +880,15 @@ class PlayUserInteractionFragment @Inject constructor(
     //region OnStateChanged
     private fun playButtonViewOnStateChanged(
             channelType: PlayChannelType = playViewModel.channelType,
-            state: PlayVideoState
+            state: PlayViewerVideoState
     ) {
         if (!channelType.isVod) {
             playButtonView.hide()
             return
         }
         when (state) {
-            PlayVideoState.Pause -> playButtonView.showPlayButton()
-            PlayVideoState.Ended -> playButtonView.showRepeatButton()
+            PlayViewerVideoState.Pause -> playButtonView.showPlayButton()
+            PlayViewerVideoState.End -> playButtonView.showRepeatButton()
             else -> playButtonView.hide()
         }
     }

@@ -13,7 +13,10 @@ import com.tokopedia.play.util.coroutine.DefaultCoroutineDispatcherProvider
 import com.tokopedia.play.util.observer.PlayVideoUtilObserver
 import com.tokopedia.play.util.video.PlayVideoUtil
 import com.tokopedia.play.util.video.PlayVideoUtilImpl
+import com.tokopedia.play.util.video.state.PlayViewerVideoStateProcessor
+import com.tokopedia.play.util.video.state.PlayViewerVideoStateProcessorImpl
 import com.tokopedia.play_common.player.PlayVideoManager
+import com.tokopedia.play_common.util.ExoPlaybackExceptionParser
 import com.tokopedia.play_common.util.PlayVideoPlayerObserver
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
@@ -94,5 +97,20 @@ class PlayModule(val mContext: Context) {
     @PlayScope
     fun providePlayVideoUtil(): PlayVideoUtil {
         return PlayVideoUtilImpl(mContext)
+    }
+
+    @Provides
+    @PlayScope
+    fun provideExoPlaybackExceptionParser(): ExoPlaybackExceptionParser {
+        return ExoPlaybackExceptionParser()
+    }
+
+    @Provides
+    @PlayScope
+    fun providePlayViewerVideoStateProcessor(
+            videoManager: PlayVideoManager,
+            exoPlaybackExceptionParser: ExoPlaybackExceptionParser
+    ): PlayViewerVideoStateProcessor {
+        return PlayViewerVideoStateProcessorImpl(videoManager, exoPlaybackExceptionParser)
     }
 }

@@ -14,11 +14,9 @@ import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.upstream.DefaultLoadErrorHandlingPolicy
-import com.google.android.exoplayer2.upstream.HttpDataSource.InvalidResponseCodeException
 import com.google.android.exoplayer2.upstream.LoadErrorHandlingPolicy
 import com.google.android.exoplayer2.upstream.Loader.UnexpectedLoaderException
 import com.google.android.exoplayer2.util.Util
-import com.tokopedia.play_common.exception.PlayVideoErrorException
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.PlayPlayerModel
 import com.tokopedia.play_common.player.state.ExoPlayerStateProcessorImpl
@@ -60,7 +58,7 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
         }
 
         override fun onPlayerError(error: ExoPlaybackException) {
-            broadcastStateToListeners(PlayVideoState.Error(PlayVideoErrorException(error.cause)))
+            broadcastStateToListeners(PlayVideoState.Error(error))
         }
     }
 
@@ -70,7 +68,7 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
         }
 
         override fun onPlayerError(error: ExoPlaybackException) {
-            _observablePlayVideoState.value = PlayVideoState.Error(PlayVideoErrorException(error.cause))
+            _observablePlayVideoState.value = PlayVideoState.Error(error)
         }
     }
 
