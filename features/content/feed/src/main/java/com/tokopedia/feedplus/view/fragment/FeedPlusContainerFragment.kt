@@ -40,6 +40,8 @@ import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener
+import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
+import com.tokopedia.seller_migration_common.presentation.util.setupBottomSheetFeedSellerMigration
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -94,7 +96,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     private var startToTransitionOffset = 0
     private var searchBarTransitionRange = 0
     private var isLightThemeStatusBar = false
-
 
     private lateinit var coachMarkItem: CoachMarkItem
     private lateinit var feedBackgroundCrossfader: TransitionDrawable
@@ -377,26 +378,36 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     private fun fabClickListener(whitelistDomain: WhitelistDomain): View.OnClickListener {
         return View.OnClickListener {
-            if (isFabExpanded) {
-                hideAllFab(false)
-            } else {
-                fab_feed.animation = AnimationUtils.loadAnimation(activity, R.anim.rotate_forward)
-                layout_grey_popup.visibility = View.VISIBLE
+            //seller migration enabled
+            if (isSellerMigrationEnabled(context)) {
                 for (author in whitelistDomain.authors) {
-                    if (author.type.equals(Author.TYPE_AFFILIATE, ignoreCase = true)) {
-                        fab_feed_byme.show()
-                        text_fab_byme.visibility = View.VISIBLE
-                        text_fab_byme.text = author.title
-                        fab_feed_byme.setOnClickListener { goToCreateAffiliate() }
-                    } else {
-                        fab_feed_shop.show()
-                        text_fab_shop.visibility = View.VISIBLE
-                        text_fab_shop.text = author.title
-                        fab_feed_shop.setOnClickListener { onGoToLink(author.link) }
+                    setupBottomSheetFeedSellerMigration {
+                        goToCreateAffiliate()
+                        onGoToLink(author.link)
                     }
                 }
-                layout_grey_popup.setOnClickListener { hideAllFab(false) }
-                isFabExpanded = true
+            } else {
+                if (isFabExpanded) {
+                    hideAllFab(false)
+                } else {
+                    fab_feed.animation = AnimationUtils.loadAnimation(activity, R.anim.rotate_forward)
+                    layout_grey_popup.visibility = View.VISIBLE
+                    for (author in whitelistDomain.authors) {
+                        if (author.type.equals(Author.TYPE_AFFILIATE, ignoreCase = true)) {
+                            fab_feed_byme.show()
+                            text_fab_byme.visibility = View.VISIBLE
+                            text_fab_byme.text = author.title
+                            fab_feed_byme.setOnClickListener { goToCreateAffiliate() }
+                        } else {
+                            fab_feed_shop.show()
+                            text_fab_shop.visibility = View.VISIBLE
+                            text_fab_shop.text = author.title
+                            fab_feed_shop.setOnClickListener { onGoToLink(author.link) }
+                        }
+                    }
+                    layout_grey_popup.setOnClickListener { hideAllFab(false) }
+                    isFabExpanded = true
+                }
             }
         }
     }
@@ -483,5 +494,5 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         super.onViewStateRestored(savedInstanceState)
         isLightThemeStatusBar = savedInstanceState?.getBoolean(KEY_IS_LIGHT_THEME_STATUS_BAR)
                 ?: false
-    }
+    |
 }
