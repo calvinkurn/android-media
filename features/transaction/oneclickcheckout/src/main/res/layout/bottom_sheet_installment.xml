@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/main_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_installment_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:text="@string/lbl_installment_not_available"
+            android:textColor="@color/Neutral_N700_96"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_20"
+            android:background="@color/background_bottom_sheet_installment"
+            android:paddingBottom="@dimen/dp_16">
+
+            <ImageView
+                android:id="@+id/iv_installment_terms"
+                android:layout_width="@dimen/dp_26"
+                android:layout_height="@dimen/dp_24"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_16"
+                app:srcCompat="@drawable/ic_installment_term"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="ContentDescription" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_12"
+                android:layout_marginEnd="@dimen/dp_12"
+                android:text="@string/lbl_see_installment_terms_and_condition"
+                android:textColor="@color/font_black_secondary_54"
+                app:layout_constraintBottom_toBottomOf="@+id/iv_installment_terms"
+                app:layout_constraintEnd_toStartOf="@+id/iv_expand_terms"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toEndOf="@+id/iv_installment_terms"
+                app:layout_constraintTop_toTopOf="@+id/iv_installment_terms"
+                app:typographyType="body_3"
+                app:typographyWeight="reguler" />
+
+            <ImageView
+                android:id="@+id/iv_expand_terms"
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="@dimen/dp_24"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:background="?attr/selectableItemBackground"
+                android:rotation="180"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/iv_installment_terms"
+                app:srcCompat="@drawable/ic_arrow_drop_down_grey_checkout_module"
+                tools:ignore="ContentDescription" />
+
+            <WebView
+                android:id="@+id/web_view_terms"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_20"
+                app:layout_constraintEnd_toEndOf="@+id/iv_expand_terms"
+                app:layout_constraintStart_toStartOf="@+id/iv_installment_terms"
+                app:layout_constraintTop_toBottomOf="@+id/iv_installment_terms"
+                tools:ignore="WebViewLayout" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

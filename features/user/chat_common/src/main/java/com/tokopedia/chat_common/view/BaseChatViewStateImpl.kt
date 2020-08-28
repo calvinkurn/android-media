@@ -121,8 +121,8 @@ open class BaseChatViewStateImpl(
         setLabel(chatroomViewModel.headerModel.label)
 
         val avatar = toolbar.findViewById<ImageView>(R.id.user_avatar)
-        ImageHandler.loadImageCircle2(avatar.context, avatar, chatroomViewModel.headerModel.image,
-                R.drawable.ic_default_avatar)
+
+        loadAvatar(chatroomViewModel.headerModel.image)
 
         val onlineDesc = toolbar.findViewById<TextView>(R.id.subtitle)
         val onlineStatus = toolbar.findViewById<ImageView>(R.id.online_status)
@@ -130,12 +130,21 @@ open class BaseChatViewStateImpl(
         if (chatroomViewModel.headerModel.isOnline) {
             onlineStatus.setImageResource(getOnlineIndicatorResource())
             onlineDesc.text = view.context.getString(R.string.online)
-        } else
+            onlineDesc.visibility = View.VISIBLE
+        } else {
+            onlineDesc.visibility = View.GONE
             onlineStatus.setImageResource(getOfflineIndicatorResource())
+        }
 
         title.setOnClickListener { onToolbarClicked() }
         avatar.setOnClickListener { onToolbarClicked() }
 
+    }
+
+   override fun loadAvatar(avatarUrl: String) {
+        val avatar = toolbar.findViewById<ImageView>(R.id.user_avatar)
+        ImageHandler.loadImageCircle2(avatar.context, avatar, avatarUrl,
+                R.drawable.ic_default_avatar)
     }
 
     @DrawableRes
@@ -188,18 +197,18 @@ open class BaseChatViewStateImpl(
         val label = toolbar.findViewById<TextView>(R.id.label)
         label.text = labelText
 
-        when (labelText) {
-            SELLER_TAG -> {
+        when {
+            labelText == SELLER_TAG && shouldShowSellerLabel() -> {
                 label.setBackgroundResource(R.drawable.topchat_seller_label)
                 label.setTextColor(MethodChecker.getColor(label.context, R.color.medium_green))
                 label.visibility = View.VISIBLE
             }
-            ADMIN_TAG -> {
+            labelText == ADMIN_TAG -> {
                 label.setBackgroundResource(R.drawable.topchat_admin_label)
                 label.setTextColor(MethodChecker.getColor(label.context, R.color.topchat_admin_label_text_color))
                 label.visibility = View.VISIBLE
             }
-            OFFICIAL_TAG -> {
+            labelText == OFFICIAL_TAG -> {
                 label.setBackgroundResource(R.drawable.topchat_admin_label)
                 label.setTextColor(MethodChecker.getColor(label.context, R.color.topchat_admin_label_text_color))
                 label.visibility = View.VISIBLE
@@ -207,6 +216,8 @@ open class BaseChatViewStateImpl(
             else -> label.visibility = View.GONE
         }
     }
+
+    protected open fun shouldShowSellerLabel(): Boolean = true
 
     open fun scrollDownWhenInBottom() {
         if (checkLastCompletelyVisibleItemIsFirst()) {

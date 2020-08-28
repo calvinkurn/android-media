@@ -18,6 +18,10 @@ data class ProfileResponse(
         val profileId: Int = 0,
         @SerializedName("status")
         val status: Int = 0,
+        @SerializedName("enable")
+        val enable: Boolean = true,
+        @SerializedName("message")
+        val message: String = "",
         @SerializedName("address")
         val address: Address = Address(),
         @SerializedName("payment")
