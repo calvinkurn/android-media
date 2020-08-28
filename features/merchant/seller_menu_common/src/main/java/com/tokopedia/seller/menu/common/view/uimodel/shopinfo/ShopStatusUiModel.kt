@@ -1,9 +1,9 @@
-package com.tokopedia.sellerhome.settings.view.uimodel.shopinfo
+package com.tokopedia.seller.menu.common.view.uimodel.shopinfo
 
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingShopInfoClickTrackable
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingShopInfoImpressionTrackable
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingConstant
-import com.tokopedia.sellerhome.settings.view.uimodel.base.*
+import com.tokopedia.seller.menu.common.view.uimodel.base.*
 import com.tokopedia.user.session.UserSessionInterface
 
 class ShopStatusUiModel(val shopType: ShopType, val user: UserSessionInterface?) :
