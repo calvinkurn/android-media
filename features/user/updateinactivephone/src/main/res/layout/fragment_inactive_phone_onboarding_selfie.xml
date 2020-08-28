@@ -130,7 +130,7 @@
     android:textColor="@color/dark_N200"
     android:layout_marginStart="@dimen/spacing_lvl3"
     android:layout_marginEnd="@dimen/spacing_lvl4"
-    app:typographyType="small"
+    app:typographyType="body_2"
     app:layout_constraintTop_toTopOf="@id/imgIconVerified"
     app:layout_constraintLeft_toRightOf="@id/imgIconVerified"
     app:layout_constraintRight_toRightOf="parent"

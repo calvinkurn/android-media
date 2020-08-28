@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.revamp.common.cameraview.CameraViewMode
 import com.tokopedia.updateinactivephone.revamp.common.FragmentTransactionInterface
+import com.tokopedia.updateinactivephone.revamp.common.InactivePhoneConstant.REQUEST_CAPTURE_ID_CARD
 import com.tokopedia.updateinactivephone.revamp.view.activity.InactivePhoneImagePickerActivity
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_inactive_phone_onboarding.*
@@ -69,14 +70,10 @@ class InactivePhoneOnboardingIdCardFragment : BaseDaggerFragment() {
         fragmentTransactionInterface.replace(InactivePhoneOnboardingSelfieFragment())
     }
     private fun gotoOnboardingSavingBook() {
-        fragmentTransactionInterface.replace(InactivePhoneOnboardingSelfieFragment())
+        fragmentTransactionInterface.replace(InactivePhoneOnboardingSavingBookFragment())
     }
 
     private fun gotoSelectAccount() {
 
-    }
-
-    companion object {
-        private const val REQUEST_CAPTURE_ID_CARD = 100
     }
 }

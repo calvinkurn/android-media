@@ -33,18 +33,19 @@ class InactivePhoneImagePickerActivity : ImagePickerActivity() {
     companion object {
         private const val EXTRA_CAMERA_MODE = "cameraMode"
 
-        fun getIntent(context: Context?, imagePickerBuilder: ImagePickerBuilder, cameraViewMode: CameraViewMode): Intent? {
+        fun createIntentCamera(context: Context?, cameraViewMode: CameraViewMode): Intent {
             val bundle = Bundle()
+            val builder = InactivePhoneImagePickerBuilder(context?.getString(R.string.text_select_image) ?: "", intArrayOf(ImagePickerTabTypeDef.TYPE_CAMERA))
             val intent = Intent(context, InactivePhoneImagePickerActivity::class.java)
-            bundle.putParcelable(EXTRA_IMAGE_PICKER_BUILDER, imagePickerBuilder)
+            bundle.putParcelable(EXTRA_IMAGE_PICKER_BUILDER, builder)
             bundle.putParcelable(EXTRA_CAMERA_MODE, cameraViewMode)
             intent.putExtra(EXTRA_IMAGE_PICKER_BUILDER, bundle)
             return intent
         }
 
-        fun createIntentCamera(context: Context?, cameraViewMode: CameraViewMode): Intent {
+        fun createIntentCameraWithGallery(context: Context?, cameraViewMode: CameraViewMode): Intent {
             val bundle = Bundle()
-            val builder = InactivePhoneImagePickerBuilder(context?.getString(R.string.text_select_image) ?: "", intArrayOf(ImagePickerTabTypeDef.TYPE_CAMERA))
+            val builder = InactivePhoneImagePickerBuilder(context?.getString(R.string.text_select_image) ?: "", intArrayOf(ImagePickerTabTypeDef.TYPE_CAMERA, ImagePickerTabTypeDef.TYPE_GALLERY))
             val intent = Intent(context, InactivePhoneImagePickerActivity::class.java)
             bundle.putParcelable(EXTRA_IMAGE_PICKER_BUILDER, builder)
             bundle.putParcelable(EXTRA_CAMERA_MODE, cameraViewMode)

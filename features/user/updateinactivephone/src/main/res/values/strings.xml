@@ -71,8 +71,8 @@
     <string name="text_onboarding_description">Kamu bisa mengajukan perubahan nomor HP dan akan diminta upload kartu identitas untuk verifikasi data diri</string>
     <string name="text_onboarding_protected">Tokopedia menjamin keamanan &amp; privasi datamu.</string>
     <string name="text_onboarding_id_card_description">Ikuti cara ini agar kartumu berhasil diverifikasi:
-          \n- Siapkan kartu identitas (KTP, SIM, kartu pelajar, atau paspor) yang sesuai dengan data di akun Tokopedia kamu.
-          \n- Posisikan kartu identitas di dalam bingkai foto dan pastikan informasi terlihat jelas.</string>
+      \n- Siapkan kartu identitas (KTP, SIM, kartu pelajar, atau paspor) yang sesuai dengan data di akun Tokopedia kamu.
+      \n- Posisikan kartu identitas di dalam bingkai foto dan pastikan informasi terlihat jelas.</string>
     <string name="text_onboarding_selfie_description">Tunjukkan bagian depan kartu identitas dengan posisi di bawah dagu tanpa menutupi wajah.</string>
     <string name="text_onboarding_saving_book_description">Ikuti cara ini agar datamu berhasil diverifikasi:
       \n- Siapkan buku tabungan dari rekening yang sering kamu pakai di Tokopedia.
@@ -83,5 +83,14 @@
       \n- Bukti transfer dari OVO
       \n- Struk pembayaran dari Indomaret atau Alfamart</string>
   <string name="text_onboarding_saving_book_titile">Lampirkan buku tabungan atau bukti pembayaran</string>
+  <string name="text_form_title">Hasil Fotomu</string>
+  <string name="text_form_button">Upload Data</string>
+  <string name="text_form_input_phone_number">Masukan Nomor HP Baru</string>
+  <string name="text_form_input_phone_number_description">Nomor ini akan terhubung dengan akun Tokopedia pilihanmu.</string>
+  <string name="text_form_id_card">Kartu Identitas</string>
+  <string name="text_form_selfie">Foto Wajah &amp; Kartu Identitas</string>
+  <string name="text_form_saving_book">Bukti Untuk Verifikasi</string>
+  <string name="phone_id_idn">+62</string>
+  <string name="label_new_phone_number">Nomor HP Baru</string>
 
 </resources>

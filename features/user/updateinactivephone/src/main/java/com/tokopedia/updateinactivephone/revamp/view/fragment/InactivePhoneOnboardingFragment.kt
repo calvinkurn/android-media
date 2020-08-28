@@ -29,6 +29,8 @@ class InactivePhoneOnboardingFragment : BaseDaggerFragment() {
 
         btnNext?.setOnClickListener {
             fragmentTransactionInterface.replace(InactivePhoneOnboardingIdCardFragment())
+//            fragmentTransactionInterface.replace(InactivePhoneUploadDataFragment())
+//            fragmentTransactionInterface.replace(InactivePhoneOnboardingSavingBookFragment())
         }
     }
 }

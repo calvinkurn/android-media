@@ -8,24 +8,29 @@ import android.view.View
 import android.view.ViewGroup
 import com.otaliastudios.cameraview.CameraListener
 import com.otaliastudios.cameraview.PictureResult
-import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
-import com.tokopedia.imagepicker.common.util.ImageUtils.JPG_EXT
+import com.otaliastudios.cameraview.controls.Facing
+import com.otaliastudios.cameraview.controls.Mode
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.imagepicker.picker.camera.ImagePickerCameraFragment.OnImagePickerCameraFragmentListener
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.permissionchecker.request
 import com.tokopedia.updateinactivephone.R
+import com.tokopedia.updateinactivephone.revamp.common.InactivePhoneConstant
 import com.tokopedia.updateinactivephone.revamp.common.cameraview.CameraViewMode
 import com.tokopedia.utils.image.ImageUtils
 import kotlinx.android.synthetic.main.fragment_inactive_phone_camera_view.*
 import java.io.File
 import java.io.FileOutputStream
 
-class InactivePhoneCameraFragment : TkpdBaseV4Fragment() {
+class InactivePhoneCameraFragment : BaseDaggerFragment() {
 
     private var mode = 0
     private val permissionCheckerHelper = PermissionCheckerHelper()
     private lateinit var onImagePickerCameraFragmentListener: OnImagePickerCameraFragmentListener
 
+    override fun initInjector() {
+
+    }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_inactive_phone_camera_view, container, false)
     }
@@ -53,7 +58,6 @@ class InactivePhoneCameraFragment : TkpdBaseV4Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        showCamera()
         setLayoutCameraView()
 
         btnFlipCamera?.setOnClickListener { _ ->
@@ -69,7 +73,7 @@ class InactivePhoneCameraFragment : TkpdBaseV4Fragment() {
         }
 
         btnNext?.setOnClickListener {
-            onImagePickerCameraFragmentListener.onImageTaken(File(activity?.externalCacheDir, createFileName()).absolutePath)
+            onImagePickerCameraFragmentListener.onImageTaken(filePath())
         }
 
         txtTitle?.setOnClickListener {
@@ -82,9 +86,11 @@ class InactivePhoneCameraFragment : TkpdBaseV4Fragment() {
         when (mode) {
             CameraViewMode.ID_CARD.id -> {
                 updateTitle(getString(R.string.text_title_id_card))
+                showCamera()
             }
             CameraViewMode.SELFIE.id -> {
                 updateTitle(getString(R.string.text_title_selfie))
+                showCamera()
             }
             CameraViewMode.SAVING_BOOK.id -> {
                 updateTitle(getString(R.string.text_title_saving_book))
@@ -105,15 +111,22 @@ class InactivePhoneCameraFragment : TkpdBaseV4Fragment() {
         btnFlipCamera?.visibility = View.VISIBLE
 
         if (isSavingBook) {
+            cameraView?.facing = Facing.FRONT
             txtDescription?.visibility = View.GONE
             txtDescriptionSavingBook?.visibility = View.VISIBLE
         } else {
+            cameraView?.facing = Facing.BACK
             txtDescription?.visibility = View.VISIBLE
             txtDescriptionSavingBook?.visibility = View.GONE
         }
 
         cameraView?.apply {
             clearCameraListeners()
+            if (isOpened) {
+                close()
+            }
+
+            mode = Mode.PICTURE
             addCameraListener(listenerOnPictureTaken {
                 onSuccessTakePicture(it)
             })
@@ -141,8 +154,7 @@ class InactivePhoneCameraFragment : TkpdBaseV4Fragment() {
     }
 
     private fun writeImageToCache(bitmap: Bitmap): File {
-        val path = File(activity?.externalCacheDir, createFileName()).absolutePath
-        val file = File(path)
+        val file = File(filePath())
         if (file.exists()) {
             file.delete()
         }
@@ -159,24 +171,20 @@ class InactivePhoneCameraFragment : TkpdBaseV4Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        cameraView?.close()
-    }
-
-    private fun createFileName(): String {
-        return when (mode) {
-            CameraViewMode.ID_CARD.id -> {
-                "$TAG-IdCard$JPG_EXT"
-            }
-            CameraViewMode.SELFIE.id -> {
-                "$TAG-Selfie$JPG_EXT"
-            }
-            CameraViewMode.SAVING_BOOK.id -> {
-                "$TAG-SavingBook$JPG_EXT"
-            }
-            else -> {
-                ""
+        cameraView?.let {
+            if (it.isOpened) {
+                it.close()
+                it.destroy()
             }
         }
+    }
+
+    private fun filePath(): String {
+        context?.let {
+            return InactivePhoneConstant.filePath(it, mode)
+        }
+
+        return ""
     }
 
     private fun listenerOnPictureTaken(result: (PictureResult) -> Unit): CameraListener {
@@ -194,7 +202,6 @@ class InactivePhoneCameraFragment : TkpdBaseV4Fragment() {
     override fun getScreenName(): String = ""
 
     companion object {
-        private const val TAG = "inactivePhone"
         private const val KEY_MODE = "mode"
 
         fun instance(mode: CameraViewMode): InactivePhoneCameraFragment {
