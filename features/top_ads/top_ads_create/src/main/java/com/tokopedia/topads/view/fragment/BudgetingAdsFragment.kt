@@ -1,6 +1,7 @@
 package com.tokopedia.topads.view.fragment
 
 import android.os.Bundle
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,6 +25,7 @@ import com.tokopedia.topads.view.adapter.bidinfo.viewModel.BidInfoEmptyViewModel
 import com.tokopedia.topads.view.adapter.bidinfo.viewModel.BidInfoItemViewModel
 import com.tokopedia.topads.view.model.BudgetingAdsViewModel
 import com.tokopedia.topads.view.sheet.TipSheetBudgetList
+import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.topads_create_fragment_budget_list.*
 import java.util.*
 import javax.inject.Inject
@@ -34,6 +36,10 @@ import javax.inject.Inject
 
 private const val CLICK_TIPS_BIAYA_IKLAN = "click-tips biaya iklan"
 private const val CLICK_ATUR_BIAYA_IKLAN = "click-atur biaya iklan"
+private const val CLICK_BUDGET = "click - biaya non kata kunci box"
+private const val EVENT_CLICK_BUDGET = "biaya yang diinput"
+private const val GROUPID = "0"
+private const val CLICK_SETUP_KEY = "click - setup keyword"
 
 class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
 
@@ -47,7 +53,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     private var maxSuggestKeyword = 0
     private var suggestBidPerClick = 0
     private var isEnable = false
-
+    private var userID:String = ""
     companion object {
         private const val MAX_BID = "max"
         private const val MIN_BID = "min"
@@ -80,6 +86,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     }
 
     private fun onClickItem(pos: Int) {
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_SETUP_KEY, GROUPID,userID)
         val sheet = TopAdsEditKeywordBidSheet.createInstance(prepareBundle(pos))
         sheet.show(fragmentManager!!, "")
         sheet.onSaved = { bid, type, position ->
@@ -226,16 +233,25 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        userID = UserSession(view.context).userId
         loading.visibility = View.VISIBLE
-        btn_next.setOnClickListener {
+        btn_next?.setOnClickListener {
             gotoNextPage()
         }
-        tip_btn.setOnClickListener {
+
+        tip_btn?.setOnClickListener {
             TipSheetBudgetList.newInstance(it.context).show()
-            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_TIPS_BIAYA_IKLAN, "")
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_TIPS_BIAYA_IKLAN, GROUPID,userID)
         }
 
-        budget.textFieldInput.addTextChangedListener(object : NumberTextWatcher(budget.textFieldInput, "0") {
+        budget?.textFieldInput?.setOnFocusChangeListener { v, hasFocus ->
+            if(hasFocus){
+                val eventLabel = "$GROUPID - $EVENT_CLICK_BUDGET"
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_BUDGET, eventLabel, userID)
+            }
+        }
+
+        budget?.textFieldInput?.addTextChangedListener(object : NumberTextWatcher(budget.textFieldInput, "0") {
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
                 val result = number.toInt()
@@ -268,7 +284,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
 
     private fun setMessageErrorField(error: String, bid: Int, bool: Boolean) {
         budget.setError(bool)
-        budget.setMessage(String.format(error, bid))
+        budget.setMessage(Html.fromHtml(String.format(error, bid)))
     }
 
 }

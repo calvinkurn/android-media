@@ -1,7 +1,6 @@
 package com.tokopedia.topads.view.adapter.keyword.viewmodel
 
 import com.tokopedia.topads.data.response.KeywordDataItem
-import com.tokopedia.topads.data.response.ResponseKeywordSuggestion
 import com.tokopedia.topads.view.adapter.keyword.KeywordListAdapterTypeFactory
 
 /**

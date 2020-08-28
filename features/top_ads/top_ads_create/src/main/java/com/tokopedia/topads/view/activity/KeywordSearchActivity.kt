@@ -3,21 +3,19 @@ package com.tokopedia.topads.view.activity
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.view.inputmethod.EditorInfo
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.topads.Utils
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.response.SearchData
+import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.common.view.sheet.TipSheetKeywordList
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.di.CreateAdsComponent
@@ -29,8 +27,15 @@ import com.tokopedia.topads.view.fragment.KeywordAdsListFragment.Companion.SEARC
 import com.tokopedia.topads.view.fragment.KeywordAdsListFragment.Companion.SELECTED_KEYWORDS
 import com.tokopedia.topads.view.model.KeywordAdsViewModel
 import com.tokopedia.unifycomponents.SearchBarUnify
+import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.topads_create_keyword_search_layout.*
 import javax.inject.Inject
+
+private const val CLICK_MANUAL_SEARCH = "click - ceklist rekomendasi kata kunci manual search"
+private const val EVENT_CLICK_MANUAL_SEARCH = "kata kunci terpilih yang di ceklist"
+private const val GROUPID = "0"
+private const val CLICK_SUBMIT_BUTT = "'click - pilih kata kunci"
+private const val EVENT_CLICK_SUBMIT_BUTT = "kata kunci terpilih yang di ceklist"
 
 class KeywordSearchActivity : BaseActivity(), HasComponent<CreateAdsComponent> {
 
@@ -39,6 +44,8 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<CreateAdsComponent> {
     private lateinit var viewModel: KeywordAdsViewModel
     private lateinit var adapter: KeywordSearchAdapter
     private lateinit var search: SearchBarUnify
+    private var userID: String = ""
+
 
     override fun getComponent(): CreateAdsComponent {
         return DaggerCreateAdsComponent.builder().baseAppComponent(
@@ -52,10 +59,11 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<CreateAdsComponent> {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        userID = UserSession(this).userId
         window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         initInjector()
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(KeywordAdsViewModel::class.java)
-        adapter = KeywordSearchAdapter(::onSelectedItem)
+        adapter = KeywordSearchAdapter(::onCheckedItem)
         setContentView(R.layout.topads_create_keyword_search_layout)
         setSearchBar()
         fetchData()
@@ -65,6 +73,8 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<CreateAdsComponent> {
             TipSheetKeywordList().show(supportFragmentManager, KeywordAdsListFragment::class.java.name)
         }
         btn_next.setOnClickListener {
+            val eventLabel = "$GROUPID - $EVENT_CLICK_SUBMIT_BUTT"
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_SUBMIT_BUTT, eventLabel, userID)
             val returnIntent = Intent()
             returnIntent.putParcelableArrayListExtra(SELECTED_KEYWORDS, ArrayList(adapter.getSelectedItem()))
             setResult(Activity.RESULT_OK, returnIntent)
@@ -75,25 +85,6 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<CreateAdsComponent> {
     private fun setSearchBar() {
         setSearchParam()
         setHeader()
-        val searchTextField = search.searchBarTextField
-        val searchClearButton = search.searchBarIcon
-        searchTextField.imeOptions = EditorInfo.IME_ACTION_SEARCH
-        searchTextField.setOnEditorActionListener(object : TextView.OnEditorActionListener {
-
-            override fun onEditorAction(textView: TextView?, actionId: Int, even: KeyEvent?): Boolean {
-
-                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    fetchData()
-                    Utils.dismissKeyboard(baseContext, rootView)
-                    return true
-                }
-                return false
-            }
-        })
-        searchClearButton.setOnClickListener {
-            searchTextField.text?.clear()
-            Utils.dismissKeyboard(this, rootView)
-        }
     }
 
     private fun setSearchParam() {
@@ -103,6 +94,9 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<CreateAdsComponent> {
         search.showIcon = false
         search.searchBarTextField.setText(intent.getStringExtra(SEARCH_QUERY))
         search.layoutParams = param
+        val searchTextField = search.searchBarTextField
+        searchTextField.hint = getString(R.string.topads_common_search_hint_activity)
+        Utils.setSearchListener(search, this, rootView, ::fetchData)
     }
 
     private fun setHeader() {
@@ -166,4 +160,12 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<CreateAdsComponent> {
             emptyLayout.visibility = View.GONE
         }
     }
+
+    private fun onCheckedItem() {
+        val eventLabel = "$GROUPID - $EVENT_CLICK_MANUAL_SEARCH"
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_MANUAL_SEARCH, eventLabel, userID)
+        onSelectedItem()
+    }
 }
+
+

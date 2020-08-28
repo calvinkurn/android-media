@@ -4,22 +4,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.topads.common.data.response.KeywordData
 import com.tokopedia.topads.common.data.response.KeywordDataItem
+import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.edit.R
-import com.tokopedia.topads.edit.utils.Constants
 import com.tokopedia.topads.edit.view.adapter.keyword.viewholder.KeywordItemViewHolder
 import com.tokopedia.unifycomponents.Label
 import kotlinx.android.synthetic.main.topads_edit_layout_keyword_list_item.view.*
-import java.lang.Exception
 
 /**
  * Created by Pika on 23/8/20.
  */
 
-class KeywordSelectedAdapter(private val onChecked:((position:Int)->Unit)) : RecyclerView.Adapter<KeywordSelectedAdapter.ViewHolder>() {
+class KeywordSelectedAdapter(private val onChecked: ((position: Int) -> Unit)) : RecyclerView.Adapter<KeywordSelectedAdapter.ViewHolder>() {
 
     var items: MutableList<KeywordDataItem> = mutableListOf()
+
     inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -36,18 +35,20 @@ class KeywordSelectedAdapter(private val onChecked:((position:Int)->Unit)) : Rec
 
         holder.view.keyword_name.text = items[holder.adapterPosition].keyword
         try {
-            holder.view.keyword_count.text = Constants.convertToCurrencyString(items[position].totalSearch.toLong())
+            holder.view.keyword_count.text = Utils.convertToCurrencyString(items[position].totalSearch.toLong())
         } catch (e: Exception) {
             holder.view.keyword_count.text = items[holder.adapterPosition].totalSearch.toString()
         }
         holder.view.checkBox.setOnCheckedChangeListener(null)
         holder.view.checkBox.isChecked = true
         holder.view.setOnClickListener {
-            holder.view.checkBox.isChecked =false
+            holder.view.checkBox.isChecked = false
         }
         holder.view.checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
-            items[holder.adapterPosition].onChecked = isChecked
-            onChecked.invoke(holder.adapterPosition)
+            if (holder.adapterPosition != RecyclerView.NO_POSITION) {
+                items[holder.adapterPosition].onChecked = isChecked
+                onChecked.invoke(holder.adapterPosition)
+            }
 
         }
         when (items[holder.adapterPosition].competition) {

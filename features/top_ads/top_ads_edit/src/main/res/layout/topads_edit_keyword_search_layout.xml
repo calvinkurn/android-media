@@ -19,9 +19,10 @@
         android:id="@+id/txtError"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:typographyType="body_3"
+        android:layout_marginStart="@dimen/dp_16"
         android:textColor="@color/topads_common_red"
         app:layout_constraintTop_toBottomOf="@id/header_toolbar"
+        app:typographyType="body_3"
         tools:text="lalala" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -166,9 +167,9 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/view2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/headlineList" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,17 +1,15 @@
 package com.tokopedia.topads.edit.view.adapter.edit_keyword
 
-import android.provider.SyncStateContract
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.topads.common.data.response.SearchData
+import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.edit.R
-import com.tokopedia.topads.edit.utils.Constants
 import com.tokopedia.topads.edit.view.adapter.keyword.viewholder.KeywordItemViewHolder
 import com.tokopedia.unifycomponents.Label
 import kotlinx.android.synthetic.main.topads_edit_layout_keyword_list_item.view.*
-import java.lang.Exception
 
 /**
  * Created by Pika on 20/8/20.
@@ -48,7 +46,7 @@ class KeywordSearchAdapter(private val onChecked: (() -> Unit)) : RecyclerView.A
 
         holder.view.keyword_name.text = items[holder.adapterPosition].keyword
         try {
-            holder.view.keyword_count.text = Constants.convertToCurrencyString(items[position].totalSearch.toLong())
+            holder.view.keyword_count.text = Utils.convertToCurrencyString(items[position].totalSearch.toLong())
         } catch (e: Exception) {
             holder.view.keyword_count.text = items[holder.adapterPosition].totalSearch.toString()
         }

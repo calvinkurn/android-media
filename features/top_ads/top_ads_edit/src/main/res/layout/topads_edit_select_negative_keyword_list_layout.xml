@@ -100,7 +100,7 @@
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_8"
-        android:text="@string/lanjutkan"
+        android:text="@string/topads_edit_tambah"
         app:buttonCompatType="primary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

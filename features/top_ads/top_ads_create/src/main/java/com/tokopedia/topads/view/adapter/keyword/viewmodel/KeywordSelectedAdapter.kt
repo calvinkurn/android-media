@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.topads.Utils
+import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.response.KeywordDataItem
 import com.tokopedia.topads.view.adapter.keyword.viewholder.KeywordItemViewHolder
@@ -45,8 +45,10 @@ class KeywordSelectedAdapter(private val onChecked:((position:Int)->Unit)) : Rec
             holder.view.checkBox.isChecked =false
         }
         holder.view.checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
-            items[holder.adapterPosition].onChecked = isChecked
-            onChecked.invoke(holder.adapterPosition)
+            if (holder.adapterPosition != RecyclerView.NO_POSITION) {
+                items[holder.adapterPosition].onChecked = isChecked
+                onChecked.invoke(holder.adapterPosition)
+            }
 
         }
         when (items[holder.adapterPosition].competition) {

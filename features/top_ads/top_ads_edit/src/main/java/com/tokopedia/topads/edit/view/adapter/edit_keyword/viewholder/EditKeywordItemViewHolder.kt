@@ -3,6 +3,7 @@ package com.tokopedia.topads.edit.view.adapter.edit_keyword.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.view.adapter.edit_keyword.viewmodel.EditKeywordItemViewModel
 import kotlinx.android.synthetic.main.topads_edit_keyword_edit_item_layout.view.*
@@ -33,7 +34,7 @@ class EditKeywordItemViewHolder(val view: View,
                 view.keywordType.text = BROAD_TYPE
             }
             view.keywordBudget.text = "Rp " + it.priceBid.toString()
-            if (added.isNotEmpty() && added.size > adapterPosition) {
+            if (added.isNotEmpty() && added.size > adapterPosition && adapterPosition != RecyclerView.NO_POSITION) {
                 if (added[adapterPosition]) {
                     view.setBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_item_selected))
                     view.dotImg.visibility = View.VISIBLE

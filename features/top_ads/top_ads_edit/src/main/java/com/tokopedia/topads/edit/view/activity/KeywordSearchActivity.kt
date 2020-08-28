@@ -3,34 +3,40 @@ package com.tokopedia.topads.edit.view.activity
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.view.inputmethod.EditorInfo
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.response.SearchData
+import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.common.view.sheet.TipSheetKeywordList
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.di.DaggerTopAdsEditComponent
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
 import com.tokopedia.topads.edit.di.module.TopAdEditModule
 import com.tokopedia.topads.edit.utils.Constants
+import com.tokopedia.topads.edit.utils.Constants.GROUP_ID
 import com.tokopedia.topads.edit.view.adapter.edit_keyword.KeywordSearchAdapter
 import com.tokopedia.topads.edit.view.fragment.select.KeywordAdsListFragment.Companion.PRODUCT_IDS_SELECTED
 import com.tokopedia.topads.edit.view.fragment.select.KeywordAdsListFragment.Companion.SEARCH_QUERY
 import com.tokopedia.topads.edit.view.fragment.select.KeywordAdsListFragment.Companion.SELECTED_KEYWORDS
 import com.tokopedia.topads.edit.view.model.KeywordAdsViewModel
 import com.tokopedia.unifycomponents.SearchBarUnify
+import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.topads_edit_keyword_search_layout.*
 import javax.inject.Inject
+
+private const val CLICK_MANUAL_SEARCH = "click - ceklist rekomendasi kata kunci manual search"
+private const val EVENT_CLICK_MANUAL_SEARCH = "kata kunci terpilih yang di ceklist"
+private const val CLICK_SUBMIT_BUTT = "'click - pilih kata kunci"
+private const val EVENT_CLICK_SUBMIT_BUTT = "kata kunci terpilih yang di ceklist"
 
 class KeywordSearchActivity : BaseActivity(), HasComponent<TopAdsEditComponent> {
 
@@ -39,6 +45,8 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<TopAdsEditComponent> 
     private lateinit var viewModel: KeywordAdsViewModel
     private lateinit var adapter: KeywordSearchAdapter
     private lateinit var search: SearchBarUnify
+    private var groupId: String = ""
+    private var userID: String = ""
 
     override fun getComponent(): TopAdsEditComponent {
         return DaggerTopAdsEditComponent.builder().baseAppComponent(
@@ -48,9 +56,11 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<TopAdsEditComponent> 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()
+        userID = UserSession(this).userId
+        groupId = intent?.getStringExtra(GROUP_ID) ?: ""
         window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(KeywordAdsViewModel::class.java)
-        adapter = KeywordSearchAdapter(::onSelectedItem)
+        adapter = KeywordSearchAdapter(::onCheckItem)
         setContentView(R.layout.topads_edit_keyword_search_layout)
         setSearchBar()
         fetchData()
@@ -60,6 +70,8 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<TopAdsEditComponent> 
             TipSheetKeywordList().show(supportFragmentManager, KeywordSearchActivity::class.java.name)
         }
         btn_next.setOnClickListener {
+            val eventLabel = "$groupId - $EVENT_CLICK_SUBMIT_BUTT"
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEventEdit(CLICK_SUBMIT_BUTT, eventLabel, userID)
             val returnIntent = Intent()
             returnIntent.putParcelableArrayListExtra(SELECTED_KEYWORDS, ArrayList(adapter.getSelectedItem()))
             setResult(Activity.RESULT_OK, returnIntent)
@@ -76,25 +88,6 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<TopAdsEditComponent> 
     private fun setSearchBar() {
         setSearchParam()
         setHeader()
-        val searchTextField = search.searchBarTextField
-        val searchClearButton = search.searchBarIcon
-        searchTextField.imeOptions = EditorInfo.IME_ACTION_SEARCH
-        searchTextField.setOnEditorActionListener(object : TextView.OnEditorActionListener {
-
-            override fun onEditorAction(textView: TextView?, actionId: Int, even: KeyEvent?): Boolean {
-
-                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    fetchData()
-                    Constants.dismissKeyboard(baseContext, rootView)
-                    return true
-                }
-                return false
-            }
-        })
-        searchClearButton.setOnClickListener {
-            searchTextField.text?.clear()
-            Constants.dismissKeyboard(this, rootView)
-        }
     }
 
     private fun setSearchParam() {
@@ -104,6 +97,10 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<TopAdsEditComponent> 
         search.showIcon = false
         search.searchBarTextField.setText(intent.getStringExtra(SEARCH_QUERY))
         search.layoutParams = param
+        Utils.setSearchListener(search, this, rootView, ::fetchData)
+        val searchTextField = search.searchBarTextField
+        searchTextField.hint = getString(R.string.topads_common_search_hint_activity)
+
     }
 
     private fun setHeader() {
@@ -167,4 +164,12 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<TopAdsEditComponent> 
             emptyLayout.visibility = View.GONE
         }
     }
+
+    private fun onCheckItem() {
+        val eventLabel = "$groupId - $EVENT_CLICK_MANUAL_SEARCH"
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEventEdit(CLICK_MANUAL_SEARCH, eventLabel, userID)
+        onSelectedItem()
+    }
 }
+
+

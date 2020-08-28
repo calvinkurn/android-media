@@ -1,21 +1,8 @@
 package com.tokopedia.topads.edit.utils
 
-import android.content.Context
-import android.view.KeyEvent
-import android.view.View
-import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
-import android.widget.TextView
-import com.tokopedia.topads.edit.R
-import com.tokopedia.unifycomponents.SearchBarUnify
-import java.text.NumberFormat
-import java.util.*
-
 object Constants {
 
-    const val FAVOURED_DATA = "favouredData"
     const val SELECTED_DATA = "selectedData"
-    const val ORIGINAL_LIST = "originalList"
     const val PRODUCT_ID = "product"
     const val MIN_SUGGESTION = "minSuggestedBid"
     const val GROUP_ID = "groupId"
@@ -53,7 +40,6 @@ object Constants {
     const val REQUEST_OK = 1
     const val ADDED_PRODUCTS = "addedProducts"
     const val DELETED_PRODUCTS = "deletedProducts"
-    const val KALI = " kali"
     const val PRODUK_NAME = " Produk"
     const val KATA_KUNCI = " Kata Kunci"
     const val ATUR_NAME = " Atur"
@@ -85,50 +71,9 @@ object Constants {
     const val MIN_BID = "min"
     const val SUGGESTION_BID = "suggest"
     const val KEYWORD_NAME = "keywordName"
+    const val FROM_EDIT = "fromEdit"
     const val CURRENT_KEY_TYPE = "currentKeyType"
     const val ITEM_POSITION = "pos"
-    const val SPECIFIC_TYPE = "Spesifik"
-    const val BROAD_TYPE = "Luas"
-    const val EXACT_POSITIVE = 21
-    const val BROAD_POSITIVE = 11
-
-
-    var locale = Locale("in", "ID")
-
-
-    fun convertToCurrencyString(value: Long): String {
-        return (NumberFormat.getNumberInstance(locale).format(value) + KALI)
-    }
-
-
-    fun dismissKeyboard(context: Context?, view: View?) {
-        val inputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-        if (inputMethodManager?.isAcceptingText == true)
-            inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
-    }
-
-    fun setSearchListener(context: Context?, view: View, onSuccess: () -> Unit) {
-        val searchbar = view.findViewById<SearchBarUnify>(R.id.searchBar)
-        val searchTextField = searchbar?.searchBarTextField
-        val searchClearButton = searchbar?.searchBarIcon
-        searchTextField?.imeOptions = EditorInfo.IME_ACTION_SEARCH
-        searchTextField?.setOnEditorActionListener(object : TextView.OnEditorActionListener {
-
-            override fun onEditorAction(textView: TextView?, actionId: Int, even: KeyEvent?): Boolean {
-
-                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    onSuccess.invoke()
-                    dismissKeyboard(context, view)
-                    return true
-                }
-                return false
-            }
-        })
-        searchClearButton?.setOnClickListener {
-            searchTextField?.text?.clear()
-            onSuccess.invoke()
-            dismissKeyboard(context, view)
-        }
-    }
+    const val GROUPID = "group_id"
 
 }

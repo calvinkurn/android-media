@@ -28,7 +28,7 @@
     <string name="format_selected_produk">%d produk dipilih</string>
     <string name="no_promoted_product">Produkmu belum\ndiiklankan</string>
     <string name="recommendated_bid_message">Biaya rata-rata kompetitor Rp %d</string>
-    <string name="recommendated_bid_message_new">Rekomendasi Rp %d</string>
+    <string name="recommendated_bid_message_new">Rekomendasi &lt;b>Rp%d&lt;/b></string>
 
     <string name="min_bid_error">Biaya minimum %d rupiah</string>
     <string name="max_bid_error">Biaya maximum %d rupiah</string>
@@ -82,6 +82,8 @@
     <string name="topads_common_keyword_edit_bid_sheet_title">Celana Panjang</string>
     <string name="topads_common_keyword_edit_info_sheet_title_1">Pencarian luas</string>
     <string name="topads_common_keyword_edit_info_sheet_sub_title">Tipe Pencarian</string>
+    <string name="topads_common_keyword_edit_info_sheet_desc_1_foredit">Pencarian dengan kata kunci luas dapat meningkatkan frekuensi produkmu tampil.</string>
+    <string name="topads_common_keyword_edit_info_sheet_desc_2_foredit">Gunakan pencarian dengan kata kunci spesifik untuk beriklan lebih efektif dan produkmu lebih mudah ditemukan pembeli.</string>
     <string name="topads_common_keyword_edit_info_sheet_desc_1">Kata Kunci tetap muncul meski pembeli menambahkan kata di depan atau di belakang kata kunci yang kamu pasang.</string>
     <string name="topads_common_keyword_edit_info_sheet_desc_2">Kata Kunci hanya muncul saat pembeli mencari kata kunci yang kamu pasang. digunakan untuk mengapai calon pelanggan tertentu.</string>
     <string name="topads_common_keyword_edit_info_sheet_title_2">Pencarian Spesifik</string>
@@ -102,6 +104,8 @@
     <string name="topads_common_recommended_list">Rekomendasi</string>
     <string name="topads_common_text_ok">Oke</string>
     <string name="topads_common_create_tool_tip">Info tips kata kunci</string>
+    <string name="topads_common_search_hint">Cari Kata Kunci</string>
+    <string name="topads_common_search_hint_activity">Cari kata kunci di sini</string>
 
 
 </resources>

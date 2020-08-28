@@ -13,9 +13,9 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
-import com.tokopedia.topads.Utils
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.response.SearchData
+import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.common.view.sheet.TipSheetKeywordList
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
@@ -29,6 +29,8 @@ import com.tokopedia.topads.view.adapter.keyword.KeywordListAdapterTypeFactoryIm
 import com.tokopedia.topads.view.adapter.keyword.viewmodel.KeywordItemViewModel
 import com.tokopedia.topads.view.adapter.keyword.viewmodel.KeywordSelectedAdapter
 import com.tokopedia.topads.view.model.KeywordAdsViewModel
+import com.tokopedia.unifycomponents.SearchBarUnify
+import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.topads_create_layout_keyword_list.*
 import javax.inject.Inject
 
@@ -36,8 +38,17 @@ import javax.inject.Inject
  * Author errysuprayogi on 29,October,2019
  */
 
-private const val CLICK_PILIH_KEYWORD = "click-pilih keyword"
-private const val CLICK_TIPS_KEYWORD = "click-tips memilih kata kunci"
+private const val CLICK_PILIH_KEYWORD = "click - lanjutkan pilih kata kunci rekomendasi"
+private const val CLICK_TIPS_KEYWORD = "click - info tips kata kunci"
+private const val CLICK_CHECKBOX = "click - ceklist rekomendasi kata kunci"
+private const val EVENT_LIST_CHECKBOX = "kata kunci pilihan yang di ceklist"
+private const val SELCTED = "select"
+private const val UNSELECT = "unselect"
+private const val GROUPID = "0"
+private const val EVENT_CLICK_LAJUKTAN = "kata kunci pilihan dari rekomendasi"
+private const val CLICK_ON_SEARCH = "click - tambah kata kunci manual"
+private const val EVENT_CLICK_ON_SEARCH = "kata kunci yang ditambahkan manual"
+
 
 class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
 
@@ -48,6 +59,7 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     private lateinit var keywordSelectedAdapter: KeywordSelectedAdapter
     private var STAGE = 0
     private var selectedKeyFromSearch: ArrayList<SearchData>? = arrayListOf()
+    private var userID: String = ""
 
     companion object {
 
@@ -77,7 +89,15 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     }
 
     private fun onItemUnchecked(pos: Int) {
-        keywordListAdapter.items.add(KeywordItemViewModel(KeywordDataItem(keywordSelectedAdapter.items[pos].bidSuggest, keywordSelectedAdapter.items[pos].totalSearch, keywordSelectedAdapter.items[pos].keyword, keywordSelectedAdapter.items[pos].competition, keywordSelectedAdapter.items[pos].source)))
+        if (!keywordSelectedAdapter.items[pos].fromSearch) {
+            keywordListAdapter.items.add(KeywordItemViewModel(
+                    KeywordDataItem(keywordSelectedAdapter.items[pos].bidSuggest, keywordSelectedAdapter.items[pos].totalSearch,
+                            keywordSelectedAdapter.items[pos].keyword, keywordSelectedAdapter.items[pos].competition,
+                            keywordSelectedAdapter.items[pos].source)))
+
+        } else {
+            removeSearchedItem(pos)
+        }
         keywordSelectedAdapter.items.removeAt(pos)
         keywordSelectedAdapter.notifyItemRemoved(pos)
         if (keywordSelectedAdapter.items.isEmpty()) {
@@ -87,6 +107,17 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         }
         sortList()
         showSelectMessage()
+    }
+
+    private fun removeSearchedItem(pos: Int) {
+        var id = -1
+        selectedKeyFromSearch?.forEachIndexed { index, it ->
+            if (it.keyword == keywordSelectedAdapter.items[pos].keyword) {
+                id = index
+            }
+        }
+        if (id != -1 && selectedKeyFromSearch?.size ?: 0 > id)
+            selectedKeyFromSearch?.removeAt(id)
     }
 
     private fun startShowCase() {
@@ -142,14 +173,23 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     }
 
     private fun onKeywordSelected(pos: Int) {
-        if (pos != -1 && keywordListAdapter.items[pos] is KeywordItemViewModel && STAGE == 1) {
-            keywordSelectedAdapter.items.add((keywordListAdapter.items[pos] as KeywordItemViewModel).data)
-            keywordListAdapter.items.removeAt(pos)
-            keywordListAdapter.notifyItemRemoved(pos)
-            sortListSelected()
-        }
-        showSelectMessage()
+        if (pos != -1 && keywordListAdapter.items[pos] is KeywordItemViewModel) {
+            val eventLabel = if ((keywordListAdapter.items[pos] as KeywordItemViewModel).isChecked) {
+                "$SELCTED - $GROUPID - $EVENT_LIST_CHECKBOX"
+            } else {
+                "$UNSELECT - $GROUPID - $EVENT_LIST_CHECKBOX"
+            }
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_CHECKBOX, eventLabel, userID)
 
+            if (STAGE == 1) {
+                keywordSelectedAdapter.items.add((keywordListAdapter.items[pos] as KeywordItemViewModel).data)
+                keywordListAdapter.items.removeAt(pos)
+                keywordListAdapter.notifyItemRemoved(pos)
+                sortListSelected()
+            }
+            showSelectMessage()
+
+        }
     }
 
     private fun showSelectMessage() {
@@ -199,7 +239,8 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         stepperModel?.STAGE = 1
         stepperModel?.selectedKeywordStage = keywordSelectedAdapter.items
         stepperListener?.goToNextPage(stepperModel)
-        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_PILIH_KEYWORD, getSelectedKeyword().joinToString("::"))
+        val eventLabel = "$GROUPID - $EVENT_CLICK_LAJUKTAN"
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_PILIH_KEYWORD, eventLabel, userID)
     }
 
     private fun getSelectedKeyword(): MutableList<String> {
@@ -237,6 +278,7 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        userID = UserSession(view.context).userId
         startLoading(true)
         setStepLayout(View.GONE)
         btn_next.setOnClickListener {
@@ -247,10 +289,17 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         }
         tip_btn.setOnClickListener {
             TipSheetKeywordList().show(fragmentManager!!, KeywordAdsListFragment::class.java.name)
-            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_TIPS_KEYWORD, "")
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_TIPS_KEYWORD, GROUPID, userID)
         }
         setAdapters()
-        Utils.setSearchListener(context, view, ::fetchData)
+        val searchBar = view.findViewById<SearchBarUnify>(R.id.searchBar)
+        searchBar?.searchBarTextField?.setOnFocusChangeListener { v, hasFocus ->
+            if(hasFocus) {
+                val eventLabel = "$GROUPID - $EVENT_CLICK_ON_SEARCH"
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_ON_SEARCH, eventLabel, userID)
+            }
+        }
+        Utils.setSearchListener(searchBar, context, view, ::fetchData)
     }
 
     private fun startLoading(isLoading: Boolean) {
@@ -368,7 +417,7 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         for (item in selectedKeyFromSearch!!) {
             if (keywordSelectedAdapter.items.find { selected -> selected.keyword == item.keyword } == null) {
                 list.add(KeywordDataItem(item.bidSuggest, item.totalSearch.toString(), item.keyword
-                        ?: "", item.competition ?: "", item.source ?: ""))
+                        ?: "", item.competition ?: "", item.source ?: "", true, true))
             }
         }
         return list

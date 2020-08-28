@@ -2,12 +2,11 @@ package com.tokopedia.topads.view.adapter.keyword.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import com.tokopedia.topads.Utils
+import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.view.adapter.keyword.viewmodel.KeywordItemViewModel
 import com.tokopedia.unifycomponents.Label
 import kotlinx.android.synthetic.main.topads_create_layout_keyword_list_item.view.*
-import kotlinx.android.synthetic.main.topads_create_layout_keyword_list_item.view.checkBox
 import java.lang.Exception
 
 /**

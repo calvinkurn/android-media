@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.topads.common.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import kotlinx.android.synthetic.main.topads_common_keyword_info_sheet.*
 
 
 class TipSheetKeywordList : BottomSheetUnify() {
@@ -20,6 +21,9 @@ class TipSheetKeywordList : BottomSheetUnify() {
     private fun initView() {
 
         setCloseClickListener {
+            dismiss()
+        }
+        btn_submit?.setOnClickListener {
             dismiss()
         }
     }

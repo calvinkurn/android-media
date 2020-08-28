@@ -2,8 +2,8 @@ package com.tokopedia.topads.edit.view.adapter.keyword.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.edit.R
-import com.tokopedia.topads.edit.utils.Constants
 import com.tokopedia.topads.edit.view.adapter.keyword.viewmodel.KeywordItemViewModel
 import com.tokopedia.unifycomponents.Label
 import kotlinx.android.synthetic.main.topads_edit_layout_keyword_list_item.view.*
@@ -33,7 +33,7 @@ class KeywordItemViewHolder(val view: View, private var actionSelected: ((pos: I
             view.checkBox.setOnCheckedChangeListener(null)
             view.checkBox.isChecked = item.isChecked
             try {
-                view.keyword_count.text = Constants.convertToCurrencyString(it.totalSearch.toLong())
+                view.keyword_count.text = Utils.convertToCurrencyString(it.totalSearch.toLong())
             } catch (e: Exception) {
                 view.keyword_count.text = it.totalSearch
             }

@@ -51,7 +51,8 @@ data class KeywordDataItem(
 
         @field:SerializedName("source")
         val source: String = "",
-        var onChecked:Boolean = false
+        var onChecked:Boolean = false,
+        var fromSearch:Boolean = false
 ):Parcelable {
         constructor(parcel: Parcel) : this(
                 parcel.readInt(),
@@ -59,6 +60,7 @@ data class KeywordDataItem(
                 parcel.readString().toString(),
                 parcel.readString().toString(),
                 parcel.readString().toString(),
+                parcel.readByte() != 0.toByte(),
                 parcel.readByte() != 0.toByte()) {
         }
 
@@ -68,6 +70,7 @@ data class KeywordDataItem(
                 parcel.writeString(keyword)
                 parcel.writeString(competition)
                 parcel.writeString(source)
+                parcel.writeByte(if (onChecked) 1 else 0)
                 parcel.writeByte(if (onChecked) 1 else 0)
         }
 

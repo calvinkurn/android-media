@@ -6,14 +6,14 @@
     android:padding="@dimen/dp_16">
 
     <com.tokopedia.unifyprinciples.Typography
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        app:typographyType="body_3"
-        app:typographyWeight="bold"
         android:id="@+id/keyTitle1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="@string/topads_common_label_top_ads_keyword"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_3"
+        app:typographyWeight="bold" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/keySheetdesc1"
@@ -66,11 +66,11 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_22"
         android:layout_marginTop="@dimen/dp_8"
-        app:typographyType="body_3"
         android:text="@string/topads_common_keyword_info_sheet_tinggi"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/label1"
-        app:layout_constraintTop_toBottomOf="@id/keySheetdesc3" />
+        app:layout_constraintTop_toBottomOf="@id/keySheetdesc3"
+        app:typographyType="body_3" />
 
 
     <com.tokopedia.unifycomponents.Label
@@ -89,12 +89,12 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_8"
-        app:typographyType="body_3"
         android:text="@string/topads_common_keyword_info_sheet_Sedang"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/label2"
         app:layout_constraintStart_toStartOf="@id/sheetLabel1"
-        app:layout_constraintTop_toBottomOf="@id/sheetLabel1" />
+        app:layout_constraintTop_toBottomOf="@id/sheetLabel1"
+        app:typographyType="body_3" />
 
     <com.tokopedia.unifycomponents.Label
         android:id="@+id/label3"
@@ -111,20 +111,21 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_8"
-        app:typographyType="body_3"
+        android:layout_marginBottom="@dimen/dp_24"
         android:text="@string/topads_common_keyword_info_sheet_Rendah"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/label3"
         app:layout_constraintStart_toStartOf="@id/sheetLabel1"
-        app:layout_constraintTop_toBottomOf="@id/sheetLabel2" />
+        app:layout_constraintTop_toBottomOf="@id/sheetLabel2"
+        app:typographyType="body_3" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_submit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/dp_16"
-        app:layout_constraintTop_toBottomOf="@id/sheetLabel3"
         android:text="@string/topads_common_selanjutnya"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sheetLabel3" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -16,7 +16,7 @@
     <string name="topads_edit_keyword_edit_info_sheet_title_2">Pencarian Spesifik</string>
     <string name="topads_edit_info_sheet_title">Tipe Pencarian</string>
     <string name="topads_edit_ubah_group">Ubah Grup</string>
-    <string name="topads_edit_no_keywords_desc">Tambahkan kata kunci agar produkmu lebih mudah ditemukan pembeli</string>
+    <string name="topads_edit_no_keywords_desc">Tambahkan kata kunci agar produkmu lebih mudah ditemukan calon pembeli.</string>
     <string name="topads_edit_no_keywords_title">Belum ada kata kunci dipilih</string>
     <string name="topads_edit_add_keword">Tambah Kata Kunci</string>
     <string name="topads_edit_kata_kunci">Kata Kunci</string>
@@ -34,11 +34,11 @@
     <string name="topads_edit_delete_keyword_conf_dialog_title">Hapus Kata Kunci?</string>
     <string name="topads_edit_delete_keyword_conf_dialog_desc">Iklan produkmu tidak akan tampil di pencarian kata kunci  &lt;b>%s&lt;/b>?</string>
     <string name="topads_edit_delete_neg_keyword_conf_dialog_title">Hapus Kata Kunci Negatif?</string>
-    <string name="topads_edit_delete_neg_keyword_conf_dialog_desc">![CDATA[Produkmu kemungkinan tampil di pencarian kata kunci  &lt;b>%s&lt;/b>.</string>
+    <string name="topads_edit_delete_neg_keyword_conf_dialog_desc">Produkmu kemungkinan tampil di pencarian kata kunci   &lt;b>%s&lt;/b>.</string>
     <string name="topads_edit_ya">Ya</string>
     <string name="topads_edit_batal">Batal</string>
     <string name="topads_edit_no_neg_keyword_title">Belum ada kata kunci negatif</string>
-    <string name="topads_edit_no_neg_keyword_desc">Tambahkan kata kunci negatif agar produkmu tidak tampil di hasil pencarian yang tidak relevan</string>
+    <string name="topads_edit_no_neg_keyword_desc">Gunakan kata kunci negatif agar iklanmu tidak muncul di sembarang hasil pencarian.</string>
     <string name="topads_edit_add_negative_keyword">Tambah Kata Kunci Negatif</string>
     <string name="topads_edit_tambah">Tambah</string>
     <string name="topads_edit_product_select_label">Pilih Produk</string>

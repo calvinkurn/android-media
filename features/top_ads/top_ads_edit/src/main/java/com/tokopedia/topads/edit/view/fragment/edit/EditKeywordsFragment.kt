@@ -16,6 +16,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.data.internal.ParamObject.GROUPID
 import com.tokopedia.topads.common.data.response.KeywordDataItem
 import com.tokopedia.topads.common.view.sheet.TopAdsEditKeywordBidSheet
 import com.tokopedia.topads.edit.R
@@ -25,6 +27,7 @@ import com.tokopedia.topads.edit.data.response.GetKeywordResponse
 import com.tokopedia.topads.edit.data.response.ResponseBidInfo
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
 import com.tokopedia.topads.edit.utils.Constants.CURRENT_KEY_TYPE
+import com.tokopedia.topads.edit.utils.Constants.FROM_EDIT
 import com.tokopedia.topads.edit.utils.Constants.GROUP_ID
 import com.tokopedia.topads.edit.utils.Constants.ITEM_POSITION
 import com.tokopedia.topads.edit.utils.Constants.KEYWORD_EXISTS
@@ -47,14 +50,18 @@ import com.tokopedia.topads.edit.view.adapter.edit_keyword.EditKeywordListAdapte
 import com.tokopedia.topads.edit.view.adapter.edit_keyword.viewmodel.EditKeywordEmptyViewModel
 import com.tokopedia.topads.edit.view.adapter.edit_keyword.viewmodel.EditKeywordItemViewModel
 import com.tokopedia.topads.edit.view.model.EditFormDefaultViewModel
+import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.topads_edit_keword_layout.*
 import javax.inject.Inject
 
 /**
  * Created by Pika on 12/4/20.
  */
-class EditKeywordsFragment : BaseDaggerFragment() {
 
+
+private const val CLICK_SETUP_KEY = "click - setup keyword"
+
+class EditKeywordsFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -73,6 +80,8 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     private lateinit var recyclerviewScrollListener: EndlessRecyclerViewScrollListener
     private lateinit var layoutManager: LinearLayoutManager
     private lateinit var recyclerView: RecyclerView
+    private var userID: String = ""
+
 
     private val viewModelProvider by lazy {
         ViewModelProviders.of(this, viewModelFactory)
@@ -141,14 +150,8 @@ class EditKeywordsFragment : BaseDaggerFragment() {
 
 
     private fun onActionClicked(pos: Int) {
-        val bundle = Bundle()
-        bundle.putInt(MAX_BID, maxSuggestKeyword)
-        bundle.putInt(MIN_BID, minSuggestKeyword)
-        bundle.putInt(SUGGESTION_BID, (adapter.items[pos] as EditKeywordItemViewModel).data.priceBid)
-        bundle.putInt(ITEM_POSITION, pos)
-        bundle.putInt(CURRENT_KEY_TYPE, (adapter.items[pos] as EditKeywordItemViewModel).data.type)
-        bundle.putString(KEYWORD_NAME, (adapter.items[pos] as EditKeywordItemViewModel).data.tag)
-        val sheet = TopAdsEditKeywordBidSheet.createInstance(bundle)
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEventEdit(CLICK_SETUP_KEY, groupId.toString(), userID)
+        val sheet = TopAdsEditKeywordBidSheet.createInstance(prepareBundle(pos))
         sheet.show(fragmentManager!!, "")
         sheet.onSaved = { bid, type, position ->
             if (ifNewKeyword((adapter.items[position] as EditKeywordItemViewModel).data.tag)) {
@@ -170,6 +173,20 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         sheet.onDelete = { position ->
             showConfirmationDialog(position)
         }
+    }
+
+    private fun prepareBundle(pos: Int): Bundle {
+        val bundle = Bundle()
+        bundle.putInt(MAX_BID, maxSuggestKeyword)
+        bundle.putInt(MIN_BID, minSuggestKeyword)
+        bundle.putInt(SUGGESTION_BID, (adapter.items[pos] as EditKeywordItemViewModel).data.priceBid)
+        bundle.putInt(ITEM_POSITION, pos)
+        bundle.putInt(CURRENT_KEY_TYPE, (adapter.items[pos] as EditKeywordItemViewModel).data.type)
+        bundle.putString(KEYWORD_NAME, (adapter.items[pos] as EditKeywordItemViewModel).data.tag)
+        bundle.putInt(FROM_EDIT, 1)
+        bundle.putString(GROUPID, groupId.toString())
+        return bundle
+
     }
 
     private fun ifNewKeyword(tag: String): Boolean {
@@ -248,7 +265,6 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             setEmptyView()
         }
         adapter.notifyDataSetChanged()
-        updateItemCount()
     }
 
     private fun isExistsOriginal(position: Int): Boolean {
@@ -259,12 +275,9 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         return (originalKeyList.find { name == it } != null)
     }
 
-    private fun updateItemCount() {
-        keyword_count.text = String.format(getString(R.string.keyword_count), adapter.items.size)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        userID = UserSession(view.context).userId
         sharedViewModel.getProuductIds().observe(viewLifecycleOwner, Observer {
             productIds = it.joinToString(",")
         })
@@ -301,7 +314,6 @@ class EditKeywordsFragment : BaseDaggerFragment() {
                 setVisibilityOperation(View.VISIBLE)
                 adapter.notifyDataSetChanged()
             }
-            updateItemCount()
             recyclerviewScrollListener.updateStateAfterGetData()
             adapter.getBidData(initialBudget, isnewlyAddded)
         }
@@ -311,13 +323,15 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         adapter.items.clear()
         adapter.items.add(EditKeywordEmptyViewModel())
         setVisibilityOperation(View.GONE)
+        headlineList?.visibility = View.INVISIBLE
+
         adapter.notifyDataSetChanged()
     }
 
     private fun setVisibilityOperation(visibilty: Int) {
-        keyword_count.visibility = visibilty
-        add_keyword.visibility = visibilty
-        add_image.visibility = visibilty
+        headlineList?.visibility = visibilty
+        add_keyword?.visibility = visibilty
+        add_image?.visibility = visibilty
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -337,17 +351,18 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         }
         selectedKeywords?.forEach {
             if (adapter.items.find { item -> it.keyword == (item as EditKeywordItemViewModel).data.tag } == null) {
-                adapter.items.add(EditKeywordItemViewModel(GetKeywordResponse.KeywordsItem(KEYWORD_TYPE_PHRASE, KEYWORD_EXISTS, "0", it.bidSuggest, false, it.keyword, it.source)))
+                adapter.items.add(EditKeywordItemViewModel(GetKeywordResponse.KeywordsItem(KEYWORD_TYPE_PHRASE, KEYWORD_EXISTS,
+                        "0", it.bidSuggest, false, it.keyword, it.source)))
                 initialBudget.add(it.bidSuggest)
                 isnewlyAddded.add(true)
                 if (!isExistsOriginal(it.keyword)) {
-                    addedKeywords?.add(GetKeywordResponse.KeywordsItem(KEYWORD_TYPE_PHRASE, KEYWORD_EXISTS, "0", it.bidSuggest, false, it.keyword, it.source))
+                    addedKeywords?.add(GetKeywordResponse.KeywordsItem(KEYWORD_TYPE_PHRASE, KEYWORD_EXISTS,
+                            "0", it.bidSuggest, false, it.keyword, it.source))
                 }
             }
         }
         adapter.getBidData(initialBudget, isnewlyAddded)
         setVisibilityOperation(View.VISIBLE)
-        updateItemCount()
     }
 
     override fun onAttach(context: Context) {

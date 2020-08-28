@@ -1,7 +1,6 @@
 package com.tokopedia.topads.view.model
 
 import android.content.Context
-import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
@@ -18,10 +17,7 @@ import com.tokopedia.topads.common.data.response.KeywordSearch
 import com.tokopedia.topads.common.data.response.SearchData
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.response.KeywordData
-import com.tokopedia.topads.data.response.KeywordDataItem
 import com.tokopedia.topads.data.response.ResponseKeywordSuggestion
-import com.tokopedia.topads.view.adapter.keyword.viewmodel.KeywordItemViewModel
-import com.tokopedia.topads.view.adapter.keyword.viewmodel.KeywordViewModel
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
