@@ -253,7 +253,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         (context as? ProductDetailActivity)?.startMonitoringPltNetworkRequest()
         super.onViewCreated(view, savedInstanceState)
         if (::remoteConfig.isInitialized) {
-            viewModel.enableCachingP2 = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_MAIN_APP_ENABLED_CACHE_P2_PDP, false)
             viewModel.enableCaching = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_MAIN_APP_ENABLED_CACHE_PDP, true)
             enableCheckImeiRemoteConfig = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_CHECK_IMEI_PDP, false)
         }
@@ -1319,6 +1318,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun observeToggleFavourite() {
         viewLifecycleOwner.observe(viewModel.toggleFavoriteResult) { data ->
             data.doSuccessOrFail({
+                viewModel.clearCacheP2Data()
                 onSuccessFavoriteShop(it.data)
             }, {
                 onFailFavoriteShop(it)
@@ -2854,6 +2854,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun observeToggleNotifyMe() {
         viewLifecycleOwner.observe(viewModel.toggleTeaserNotifyMe) { data ->
             data.doSuccessOrFail({
+                viewModel.clearCacheP2Data()
                 val messageSuccess = if (viewModel.notifyMeAction == ProductDetailCommonConstant.VALUE_TEASER_ACTION_REGISTER) getString(R.string.notify_me_success_registered_message) else getString(R.string.notify_me_success_unregistered_message)
                 showToastSuccess(messageSuccess)
                 viewModel.updateNotifyMeData()
