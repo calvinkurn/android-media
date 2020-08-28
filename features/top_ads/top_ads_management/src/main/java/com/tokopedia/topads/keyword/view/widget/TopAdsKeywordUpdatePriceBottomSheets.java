@@ -12,8 +12,8 @@ import android.widget.TextView;
 import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.design.component.ButtonCompat;
 import com.tokopedia.seller.common.widget.PrefixEditText;
-import com.tokopedia.product.manage.item.common.util.CurrencyIdrTextWatcher;
 import com.tokopedia.topads.R;
+import com.tokopedia.topads.common.util.CurrencyIdrTextWatcher;
 
 /**
  * Created by hadi.putra on 24/05/18.

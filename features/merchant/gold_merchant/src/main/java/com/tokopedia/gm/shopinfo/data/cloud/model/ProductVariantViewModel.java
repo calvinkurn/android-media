@@ -9,7 +9,7 @@ import android.util.SparseIntArray;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.product.manage.common.common.util.StockTypeDef;
+import com.tokopedia.gm.common.util.StockTypeDef;
 
 import java.util.ArrayList;
 import java.util.HashMap;

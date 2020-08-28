@@ -2,7 +2,6 @@ package com.tokopedia.topads.dashboard.domain.interactor;
 
 import android.content.Context;
 
-import com.tokopedia.product.manage.item.common.data.source.cloud.DataResponse;
 import com.tokopedia.topads.common.data.source.local.TopAdsCacheDataSourceImpl;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAdBulkAction;
@@ -10,6 +9,7 @@ import com.tokopedia.topads.dashboard.data.model.request.DataRequest;
 import com.tokopedia.topads.dashboard.data.model.request.SearchAdRequest;
 import com.tokopedia.topads.dashboard.data.model.response.PageDataResponse;
 import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.TopAdsManagementService;
+import com.tokopedia.topads.dashboard.data.source.cloud.response.DataResponse;
 import com.tokopedia.user.session.UserSession;
 
 import java.util.List;
