@@ -91,7 +91,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     @Inject
     lateinit var viewModel: TalkReadingViewModel
 
-    private lateinit var remoteConfigInstance: RemoteConfigInstance
+    private var remoteConfigInstance: RemoteConfigInstance? = null
 
     private var productId: String = ""
     private var shopId: String = ""
@@ -593,10 +593,10 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     private fun getAbTestPlatform(): AbTestPlatform? {
-        if (!::remoteConfigInstance.isInitialized) {
+        if (remoteConfigInstance == null) {
             remoteConfigInstance = RemoteConfigInstance(this.activity?.application)
         }
-        return remoteConfigInstance.abTestPlatform
+        return remoteConfigInstance?.abTestPlatform
     }
 
     private fun useOldPage(): Boolean {

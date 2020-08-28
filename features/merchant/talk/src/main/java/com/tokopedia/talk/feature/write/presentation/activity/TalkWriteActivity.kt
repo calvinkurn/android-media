@@ -44,8 +44,8 @@ class TalkWriteActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, Tal
         if(productId == 0) {
             getDataFromApplink()
         }
-        super.onCreate(savedInstanceState)
         startPerformanceMonitoring()
+        super.onCreate(savedInstanceState)
         setUpToolBar()
     }
 

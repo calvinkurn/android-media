@@ -38,7 +38,7 @@ class AddTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
 
     }
 
-    private lateinit var remoteConfigInstance: RemoteConfigInstance
+    private var remoteConfigInstance: RemoteConfigInstance? = null
 
     private var productId = ""
     private var source = ""
@@ -87,10 +87,10 @@ class AddTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
     }
 
     private fun getAbTestPlatform(): AbTestPlatform? {
-        if (!::remoteConfigInstance.isInitialized) {
+        if (remoteConfigInstance == null) {
             remoteConfigInstance = RemoteConfigInstance(this.application)
         }
-        return remoteConfigInstance.abTestPlatform
+        return remoteConfigInstance?.abTestPlatform
     }
 
     private fun useOldPage(): Boolean {

@@ -78,10 +78,8 @@ class TalkWriteViewModel @Inject constructor(private val dispatchers: CoroutineD
     private fun getWriteFormData(productId: Int) : LiveData<Result<DiscussionGetWritingForm>> {
         val result = MutableLiveData<Result<DiscussionGetWritingForm>>()
         launchCatchError(block = {
-            val response = withContext(dispatchers.io) {
-                discussionGetWritingFormUseCase.setParams(productId)
-                discussionGetWritingFormUseCase.executeOnBackground()
-            }
+            discussionGetWritingFormUseCase.setParams(productId)
+            val response = discussionGetWritingFormUseCase.executeOnBackground()
             result.postValue(Success(response.discussionGetWritingForm))
             shopId = response.discussionGetWritingForm.shopId
         }) {
@@ -108,25 +106,20 @@ class TalkWriteViewModel @Inject constructor(private val dispatchers: CoroutineD
 
     private fun updateButtonFromCategories(isAnyCategorySelected: Boolean) {
         _buttonState.value = _buttonState.value?.copy(isAnyCategorySelected = isAnyCategorySelected)
-        _buttonState.notifyObserver()
     }
 
     private fun updateTextFieldFromCategories(isAnyCategorySelected: Boolean) {
         _textFieldState.value = isAnyCategorySelected
-        _textFieldState.notifyObserver()
     }
 
     private fun updateButtonFromText(isTextNotEmpty: Boolean) {
         _buttonState.value = _buttonState.value?.copy(isNotTextEmpty = isTextNotEmpty)
-        _buttonState.notifyObserver()
     }
 
     fun submitForm(text: String) {
         launchCatchError(block = {
-            val response = withContext(dispatchers.io) {
-                discussionSubmitFormUseCase.setParams(text, selectedCategory?.categoryName.orEmpty(), productId.value.orZero())
-                discussionSubmitFormUseCase.executeOnBackground()
-            }
+            discussionSubmitFormUseCase.setParams(text, selectedCategory?.categoryName.orEmpty(), productId.value.orZero())
+            val response = discussionSubmitFormUseCase.executeOnBackground()
             _submitFormResult.postValue(Success(response.discussionSubmitForm))
         }) {
             _submitFormResult.postValue(Fail(it))

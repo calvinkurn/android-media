@@ -96,9 +96,9 @@ class TalkWriteFragment : BaseDaggerFragment(),
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         stopPreparePerfomancePageMonitoring()
         startNetworkRequestPerformanceMonitoring()
+        super.onViewCreated(view, savedInstanceState)
         initView()
         initRecycleView()
         initTnC()
