@@ -13,6 +13,7 @@ import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaul
 import com.tokopedia.home.beranda.data.datasource.local.HomeCachedDataSource
 import com.tokopedia.home.beranda.data.datasource.remote.GeolocationRemoteDataSource
 import com.tokopedia.home.beranda.data.datasource.remote.HomeRemoteDataSource
+import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
 import com.tokopedia.home.beranda.data.mapper.factory.HomeDynamicChannelVisitableFactory
 import com.tokopedia.home.beranda.data.mapper.factory.HomeDynamicChannelVisitableFactoryImpl
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactory
@@ -57,12 +58,14 @@ class HomeModule {
     fun homeRepository(geolocationRemoteDataSource: Lazy<GeolocationRemoteDataSource>,
                        homeRemoteDataSource: HomeRemoteDataSource,
                        homeCachedDataSource: HomeCachedDataSource,
-                       homeDefaultDataSource: HomeDefaultDataSource
+                       homeDefaultDataSource: HomeDefaultDataSource,
+                       dynamicChannelDataMapper: HomeDynamicChannelDataMapper
     ): HomeRepository = HomeRepositoryImpl(
             homeCachedDataSource,
             homeRemoteDataSource,
             homeDefaultDataSource,
-            geolocationRemoteDataSource)
+            geolocationRemoteDataSource,
+            dynamicChannelDataMapper)
 
     @HomeScope
     @Provides

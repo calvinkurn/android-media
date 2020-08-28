@@ -26,6 +26,8 @@ class HomeUseCase @Inject constructor(
         }
     }
 
+    suspend fun onDynamicChannelExpired(groupId: String) = homeRepository.onDynamicChannelExpired(groupId = groupId)
+
     fun updateHomeData() = homeRepository.updateHomeData()
 
     fun deleteHomeData() = homeRepository.deleteHomeData()

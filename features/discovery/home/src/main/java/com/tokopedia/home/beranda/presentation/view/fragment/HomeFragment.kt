@@ -1250,7 +1250,7 @@ open class HomeFragment : BaseDaggerFragment(),
 
     private fun onNetworkRetry() { //on refresh most likely we already lay out many view, then we can reduce
 //animation to keep our performance
-        homeRecyclerView?.itemAnimator = null
+//        homeRecyclerView?.itemAnimator = null
         resetFeedState()
         removeNetworkError()
         homeRecyclerView?.isEnabled = false

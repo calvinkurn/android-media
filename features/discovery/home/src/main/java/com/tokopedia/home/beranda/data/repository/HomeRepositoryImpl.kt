@@ -1,12 +1,15 @@
 package com.tokopedia.home.beranda.data.repository
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
 import com.tokopedia.home.beranda.data.datasource.local.HomeCachedDataSource
 import com.tokopedia.home.beranda.data.datasource.remote.*
+import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.HomeChannelData
 import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.helper.Result
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import dagger.Lazy
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -20,7 +23,8 @@ class HomeRepositoryImpl @Inject constructor(
         private val homeCachedDataSource: HomeCachedDataSource,
         private val homeRemoteDataSource: HomeRemoteDataSource,
         private val homeDefaultDataSource: HomeDefaultDataSource,
-        private val geolocationRemoteDataSource: Lazy<GeolocationRemoteDataSource>
+        private val geolocationRemoteDataSource: Lazy<GeolocationRemoteDataSource>,
+        private val homeDynamicChannelDataMapper: HomeDynamicChannelDataMapper
 ): HomeRepository {
 
     var isCacheExist = false
@@ -54,6 +58,13 @@ class HomeRepositoryImpl @Inject constructor(
             emit(Result.success(null))
             homeCachedDataSource.saveToDatabase(homeDataResponse)
         }
+    }
+
+    override suspend fun onDynamicChannelExpired(groupId: String): List<Visitable<*>> {
+        val dynamicChannelResponse = homeRemoteDataSource.getDynamicChannelData(groupIds = groupId)
+        val homeChannelData = HomeChannelData(dynamicChannelResponse.dynamicHomeChannel)
+
+        return homeDynamicChannelDataMapper.mapToDynamicChannelDataModel(homeChannelData, isCache = false, addLoadingMore = false)
     }
 
     private suspend fun processFullPageDynamicChannel(dynamicChannelResponse: HomeChannelData, homeDataResponse: HomeData): HomeChannelData {
