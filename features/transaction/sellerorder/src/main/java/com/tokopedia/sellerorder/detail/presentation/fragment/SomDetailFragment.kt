@@ -370,7 +370,7 @@ class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun observingDetail() {
-        somDetailViewModel.orderDetailResult.observe(this, Observer {
+        somDetailViewModel.orderDetailResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     detailResponse = it.data
@@ -385,7 +385,7 @@ class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun observingAcceptOrder() {
-        somDetailViewModel.acceptOrderResult.observe(this, Observer {
+        somDetailViewModel.acceptOrderResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     SomAnalytics.eventClickAcceptOrderPopup(true)
@@ -411,7 +411,7 @@ class SomDetailFragment : BaseDaggerFragment(),
 
     private fun observingRejectReasons() {
         val bottomSheetRejectReason = BottomSheetUnify()
-        somDetailViewModel.rejectReasonResult.observe(this, Observer {
+        somDetailViewModel.rejectReasonResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     rejectReasonResponse = it.data.listSomRejectReason
@@ -460,7 +460,7 @@ class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun observingSetDelivered() {
-        somDetailViewModel.setDelivered.observe(this, Observer {
+        somDetailViewModel.setDelivered.observe(viewLifecycleOwner, Observer {
             setLoadingIndicator(false)
             when (it) {
                 is Success -> {
@@ -955,7 +955,7 @@ class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun observingEditAwb() {
-        somDetailViewModel.editRefNumResult.observe(this, Observer {
+        somDetailViewModel.editRefNumResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     successEditAwbResponse = it.data
@@ -1367,7 +1367,7 @@ class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun observingRejectOrder() {
-        somDetailViewModel.rejectOrderResult.observe(this, Observer {
+        somDetailViewModel.rejectOrderResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     rejectOrderResponse = it.data.rejectOrder
