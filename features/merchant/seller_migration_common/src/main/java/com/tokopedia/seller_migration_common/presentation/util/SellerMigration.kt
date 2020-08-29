@@ -223,13 +223,14 @@ fun Fragment.setupListUnifyFeedSellerMigration(feedListUnify: ListUnify,
                     positionPostFavoriteItem -> {
                         if(isAuthorAffiliate) {
                             goToCreateAffiliate()
+                            bottomSheet.dismiss()
                         }
                     }
                     positionPostInSeller -> {
                         startActivity(onGoToLink)
+                        bottomSheet.dismiss()
                     }
                 }
-                bottomSheet.dismiss()
             }
         }
     }
