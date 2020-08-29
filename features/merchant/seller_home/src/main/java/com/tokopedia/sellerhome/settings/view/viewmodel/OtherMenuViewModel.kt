@@ -81,13 +81,17 @@ class OtherMenuViewModel @Inject constructor(
 
     private fun getAllShopInfoData() {
         launchCatchError(block = {
-            _settingShopInfoLiveData.value = with(getAllShopInfoUseCase.executeOnBackground()) {
-                if (first is PartialSettingSuccessInfoType || second is PartialSettingSuccessInfoType) {
-                    Success(SettingShopInfoUiModel(first, second, userSession))
-                } else {
-                    throw MessageErrorException(CUSTOM_ERROR_EXCEPTION_MESSAGE)
-                }
-            }
+            _settingShopInfoLiveData.value = Success(
+                    withContext(Dispatchers.IO) {
+                        with(getAllShopInfoUseCase.executeOnBackground()) {
+                            if (first is PartialSettingSuccessInfoType || second is PartialSettingSuccessInfoType) {
+                                SettingShopInfoUiModel(first, second, userSession)
+                            } else {
+                                throw MessageErrorException(CUSTOM_ERROR_EXCEPTION_MESSAGE)
+                            }
+                        }
+                    }
+            )
         }, onError = {
             _settingShopInfoLiveData.value = Fail(it)
         })
