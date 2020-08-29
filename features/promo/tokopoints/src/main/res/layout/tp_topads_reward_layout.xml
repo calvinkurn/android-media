@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/dp_16"
-    >
+    android:padding="@dimen/dp_16">
 
 
     <TextView
@@ -51,12 +50,27 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_topad_title"
         tools:text="Cari tahu sekarang juga" />
 
-    <com.tokopedia.topads.sdk.widget.TopAdsImageView
-        android:id="@+id/topads_reward"
-        android:layout_width="wrap_content"
+    <ViewFlipper
+        android:id="@+id/container_topads"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_topads_sub_title" />
+        android:measureAllChildren="false"
+        app:layout_constraintTop_toBottomOf="@+id/tv_topads_sub_title">
+
+
+        <com.elyeproj.loaderviewlibrary.LoaderImageView
+            android:id="@+id/loader_img_main"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_150"
+            android:layout_marginTop="@dimen/dp_8"
+            app:corners="20" />
+
+        <com.tokopedia.topads.sdk.widget.TopAdsImageView
+            android:id="@+id/topads_reward"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8" />
+    </ViewFlipper>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

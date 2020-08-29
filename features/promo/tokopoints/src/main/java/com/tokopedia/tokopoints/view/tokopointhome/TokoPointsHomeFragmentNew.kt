@@ -238,7 +238,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                     stopNetworkRequestPerformanceMonitoring()
                     startRenderPerformanceMonitoring()
                     setOnRecyclerViewLayoutReady()
-                    onSuccessResponse(it.data.tokoPointEntity, it.data.sectionList, it.data.topAdsImageViewModel)
+                    onSuccessResponse(it.data.tokoPointEntity, it.data.sectionList)
                 }
                 else -> {
                 }
@@ -250,10 +250,10 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         it?.let { RouteManager.route(context, it) }
     })
 
-    override fun onSuccessResponse(data: TokopediaRewardTopSection?, sections: List<SectionContent>, topAdsImageViewModel: TopAdsImageViewModel?) {
+    override fun onSuccessResponse(data: TokopediaRewardTopSection?, sections: List<SectionContent>) {
         mContainerMain?.displayedChild = CONTAINER_DATA
         renderToolbarWithHeader(data)
-        renderSections(sections, topAdsImageViewModel)
+        renderSections(sections)
     }
 
     override fun onError(error: String, hasInternet: Boolean) {
@@ -513,7 +513,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         }
     }
 
-    override fun renderSections(sections: List<SectionContent>, topAdsImageViewModel: TopAdsImageViewModel?) {
+    override fun renderSections(sections: List<SectionContent>) {
         if (sections == null) { //TODO hide all section container
             return
         }
@@ -528,13 +528,13 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
             }
         }
         //init explore and kupon-saya tab
-        renderExploreSectionTab(exploreSectionItem, topAdsImageViewModel)
+        renderExploreSectionTab(exploreSectionItem)
     }
 
-    override fun renderExploreSectionTab(sections: List<SectionContent>, topAdsImageViewModel: TopAdsImageViewModel?) {
+    override fun renderExploreSectionTab(sections: List<SectionContent>) {
         if (sections.isEmpty()) { //TODO hide tab or show empty box
         }
-        mExploreSectionPagerAdapter = ExploreSectionPagerAdapter(activityContext, mPresenter, sections, topAdsImageViewModel)
+        mExploreSectionPagerAdapter = ExploreSectionPagerAdapter(activityContext, mPresenter, sections)
         mExploreSectionPagerAdapter?.setRefreshing(false)
         mPagerPromos?.adapter = mExploreSectionPagerAdapter
     }

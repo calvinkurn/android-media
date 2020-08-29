@@ -44,11 +44,11 @@ public interface TokoPointsHomeContract {
 
         void renderToolbarWithHeader(TokopediaRewardTopSection data);
 
-        void renderSections(List<SectionContent> sections , TopAdsImageViewModel topAdsImageViewModel);
+        void renderSections(List<SectionContent> sections );
 
-        void renderExploreSectionTab(List<SectionContent> sections , TopAdsImageViewModel topAdsImageViewModel);
+        void renderExploreSectionTab(List<SectionContent> sections );
 
-        void onSuccessResponse(TokopediaRewardTopSection data, List<SectionContent> sections , TopAdsImageViewModel topAdsImageViewModel);
+        void onSuccessResponse(TokopediaRewardTopSection data, List<SectionContent> sections);
 
     }
 
