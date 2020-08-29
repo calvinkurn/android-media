@@ -211,7 +211,8 @@ val Fragment.getUnifyFeedList: ArrayList<ListItemUnify>
 fun Fragment.setupListUnifyFeedSellerMigration(feedListUnify: ListUnify,
                                                bottomSheet: BottomSheetUnify,
                                                goToCreateAffiliate: () -> Unit = {},
-                                               onGoToLink: () -> Unit = {}) {
+                                               isAuthorAffiliate: Boolean,
+                                               onGoToLink: Intent) {
     val positionPostFavoriteItem = 0
     val positionPostInSeller = 1
     feedListUnify.setData(getUnifyFeedList)
@@ -220,10 +221,12 @@ fun Fragment.setupListUnifyFeedSellerMigration(feedListUnify: ListUnify,
             it.setOnItemClickListener { _, _, position, _ ->
                 when (position) {
                     positionPostFavoriteItem -> {
-                        goToCreateAffiliate()
+                        if(isAuthorAffiliate) {
+                            goToCreateAffiliate()
+                        }
                     }
                     positionPostInSeller -> {
-                        onGoToLink()
+                        startActivity(onGoToLink)
                     }
                 }
                 bottomSheet.dismiss()
@@ -233,16 +236,14 @@ fun Fragment.setupListUnifyFeedSellerMigration(feedListUnify: ListUnify,
 }
 
 fun Fragment.setupBottomSheetFeedSellerMigration(goToCreateAffiliate: () -> Unit = {},
-                                                 onGoToLink: () -> Unit = {}) {
+                                                 isAuthorAffiliate: Boolean,
+                                                 onGoToLink: Intent) {
     val viewBottomSheet = View.inflate(context, R.layout.bottom_sheet_feed_content_seller_migration, null)
     val bottomSheet = BottomSheetUnify()
     val feedListUnify = viewBottomSheet.findViewById<ListUnify>(R.id.feedListUnify)
     bottomSheet.setChild(viewBottomSheet)
 
-    setupListUnifyFeedSellerMigration(feedListUnify, bottomSheet) {
-        goToCreateAffiliate()
-        onGoToLink()
-    }
+    setupListUnifyFeedSellerMigration(feedListUnify, bottomSheet,  goToCreateAffiliate, isAuthorAffiliate, onGoToLink)
 
     bottomSheet.apply {
         showCloseIcon = true

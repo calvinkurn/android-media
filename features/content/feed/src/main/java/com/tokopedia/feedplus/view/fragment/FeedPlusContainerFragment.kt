@@ -61,6 +61,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     companion object {
         const val TOOLBAR_GRADIENT = 1
         const val TOOLBAR_WHITE = 2
+
         @JvmStatic
         fun newInstance(bundle: Bundle?) = FeedPlusContainerFragment().apply { arguments = bundle }
     }
@@ -391,11 +392,9 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                                 appLinks = arrayListOf(author.link),
                                 isStackBuilder = false)
                     }
-                    setupBottomSheetFeedSellerMigration {
-                        if (author.type.equals(Author.TYPE_AFFILIATE, ignoreCase = true)) {
-                            goToCreateAffiliate()
-                        }
-                        startActivity(intent)
+                    if (intent != null) {
+                        val isAuthorAffiliate = author.type.equals(Author.TYPE_AFFILIATE, ignoreCase = true)
+                        setupBottomSheetFeedSellerMigration(::goToCreateAffiliate, isAuthorAffiliate, intent)
                     }
                 }
             } else {
