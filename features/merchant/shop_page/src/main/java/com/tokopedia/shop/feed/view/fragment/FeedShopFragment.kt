@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -72,6 +73,7 @@ import com.tokopedia.shop.feed.view.contract.FeedShopContract
 import com.tokopedia.shop.feed.view.model.EmptyFeedShopViewModel
 import com.tokopedia.shop.feed.view.model.WhitelistViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
@@ -908,7 +910,10 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         BottomSheetUnify.bottomSheetBehaviorKnob(viewTarget, false)
         BottomSheetUnify.bottomSheetBehaviorHeader(viewTarget, false)
 
-        val tvTitleTabFeedHasPost = viewTarget.findViewById<Typography>(R.id.tvTitleTabFeedHasPost)
+        val ivTabFeedHasPost: ImageUnify = viewTarget.findViewById(R.id.ivTabFeedHasPost)
+        val tvTitleTabFeedHasPost: Typography = viewTarget.findViewById(R.id.tvTitleTabFeedHasPost)
+        ivTabFeedHasPost.setImageDrawable(context?.let { ContextCompat.getDrawable(it, R.drawable.ic_tab_feed_has_post_seller_migration) })
+        tvTitleTabFeedHasPost.text = getString(R.string.seller_migration_tab_feed_bottom_sheet_content)
         tvTitleTabFeedHasPost.setOnClickLinkSpannable(getString(R.string.seller_migration_tab_feed_bottom_sheet_content)) {
             goToSellerApp()
         }

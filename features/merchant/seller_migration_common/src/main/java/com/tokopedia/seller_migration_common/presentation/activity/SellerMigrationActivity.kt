@@ -80,9 +80,9 @@ class SellerMigrationActivity : BaseSimpleActivity() {
                     }
 
                     if(isStackBuilder) {
-                        if(appLinks.size > 1) {
+                        if(appLinks.size == 1) {
                             val taskStackBuilder = TaskStackBuilder.create(this)
-                            val secondAppLink = appLinks.lastOrNull().orEmpty()
+                            val secondAppLink = appLinks.firstOrNull().orEmpty()
                             val secondIntent = RouteManager.getIntent(this, secondAppLink)
                             taskStackBuilder.addNextIntent(seamLessLoginIntent)
                             taskStackBuilder.addNextIntent(secondIntent)

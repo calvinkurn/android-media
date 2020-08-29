@@ -29,7 +29,7 @@
     <string name="seller_migration_product_bottom_sheet_content">Kini kamu bisa langsung menambah stok produk, memasang pengingat stok, dan mengubah harga dengan mudah dan cepat.</string>
 
     <string name="seller_migration_account_setting_ticker_title">Pengaturan toko pindah ke Akun Toko</string>
-    <string name="seller_migration_account_setting_ticker_description">Kelola toko lebih efisien dengan akses pengaturan langsung di halaman tokomu. cek &lt;a href="#"&gt;di sini&lt;/a&gt;</string>
+    <string name="seller_migration_account_setting_ticker_description">Kelola toko lebih efisien dengan akses pengaturan langsung di halaman tokomu. Cek &lt;a href="#"&gt;di sini&lt;/a&gt;</string>
 
     <string name="seller_migration_topads_ticker_title">Beragam fitur promosi di Tokopedia Seller</string>
     <string name="seller_migration_topads_ticker_description">Jangkau pembeli dengan langsung kelola fitur promosi di aplikasi Tokopedia Seller. Pelajari &lt;a href="#"&gt;di sini&lt;/a&gt;</string>
