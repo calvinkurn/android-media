@@ -139,6 +139,7 @@ object ProductDetailConstant {
     const val ARG_FROM_AFFILIATE = "ARG_FROM_AFFILIATE"
     const val ARG_AFFILIATE_STRING = "ARG_AFFILIATE_STRING"
     const val ARG_DEEPLINK_URL = "ARG_DEEPLINK_URL"
+    const val ARG_LAYOUT_ID= "ARG_LAYOUT_ID"
     const val REVIEW_PRD_NM = "x_prd_nm"
 
 

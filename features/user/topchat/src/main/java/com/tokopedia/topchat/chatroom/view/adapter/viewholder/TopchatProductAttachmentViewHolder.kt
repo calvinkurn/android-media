@@ -339,7 +339,11 @@ open class TopchatProductAttachmentViewHolder constructor(
                 it.setText(com.tokopedia.chat_common.R.string.action_empty_stock)
             } else {
                 it.isEnabled = true
-                it.setText(com.tokopedia.chat_common.R.string.action_buy)
+                if (product.isPreOrder) {
+                    it.setText(R.string.title_topchat_pre_order_camel)
+                } else {
+                    it.setText(com.tokopedia.chat_common.R.string.action_buy)
+                }
                 it.setOnClickListener {
                     listener.onClickBuyFromProductAttachment(product)
                 }
