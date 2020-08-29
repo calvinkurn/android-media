@@ -92,7 +92,8 @@ class ExploreSectionPagerAdapter(context: Context?, presenter: TokoPointsHomeVie
                 continue
             }
 
-            if (sectionContent.layoutTopAdsAttr != null && !sectionContent.layoutTopAdsAttr.jsonTopAdsDisplayParam.isEmpty()) {
+            if (sectionContent.layoutTopAdsAttr != null && sectionContent.layoutTopAdsAttr.jsonTopAdsDisplayParam!=null
+                    && !sectionContent.layoutTopAdsAttr.jsonTopAdsDisplayParam.isEmpty()) {
                 container.addView(getTopadsBanner(sectionContent))
                 continue
             }
@@ -119,7 +120,6 @@ class ExploreSectionPagerAdapter(context: Context?, presenter: TokoPointsHomeVie
 
     private fun getTopadsBanner(content: SectionContent): View? {
 
-
         val view = mLayoutInflater.inflate(R.layout.tp_topads_reward_layout, null, false)
         if (content == null || content.sectionTitle == null || content.layoutBannerAttr == null) {
             view.visibility = View.GONE
@@ -143,9 +143,7 @@ class ExploreSectionPagerAdapter(context: Context?, presenter: TokoPointsHomeVie
             view.findViewById<View>(R.id.tv_topads_sub_title).visibility = View.VISIBLE
             (view.findViewById<View>(R.id.tv_topads_sub_title) as TextView).text = content.sectionSubTitle
         }
-
         val containerTopads = view.findViewById<ViewFlipper>(R.id.container_topads)
-
 
         val jObject = JSONObject(content.layoutTopAdsAttr.jsonTopAdsDisplayParam)
         view.topads_reward.getImageData(
@@ -166,7 +164,6 @@ class ExploreSectionPagerAdapter(context: Context?, presenter: TokoPointsHomeVie
                     view.topads_reward.loadImage(stack.pop(), convertDpToPixel(10, view.context))
                     view.topads_reward.setTopAdsImageViewImpression(object : TopAdsImageViewImpressionListener {
                         override fun onTopAdsImageViewImpression(viewUrl: String) {
-
                             sendBannerImpression(content.sectionTitle)
                             TopAdsUrlHitter(packageName).hitImpressionUrl(
                                     view.context,
@@ -186,13 +183,11 @@ class ExploreSectionPagerAdapter(context: Context?, presenter: TokoPointsHomeVie
                 } else
                     view.hide()
             }
-
             override fun onError(t: Throwable) {
                 view.hide()
             }
         })
         return view
-
     }
 
     fun getCatalogCarousel(content: SectionContent?): View {
