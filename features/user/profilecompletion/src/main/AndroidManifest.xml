@@ -3,7 +3,9 @@
     package="com.tokopedia.profilecompletion">
 
 
-    <application>
+    <application
+        android:allowBackup="true"
+        android:supportsRtl="true">
         <activity
             android:name=".settingprofile.view.activity.SettingProfileActivity"
             android:label="@string/title_setting_profile"
