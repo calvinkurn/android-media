@@ -77,7 +77,6 @@ class SellerMigrationActivity : BaseSimpleActivity() {
                         putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, appLinks)
                         putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, featureName)
                         flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-                        finish()
                     }
 
                     if(isStackBuilder) {
@@ -92,6 +91,7 @@ class SellerMigrationActivity : BaseSimpleActivity() {
                     } else {
                         startActivity(seamLessLoginIntent)
                     }
+                    finish()
                 }
             }
             EVENT_LABEL_TO_SELLER_APP
