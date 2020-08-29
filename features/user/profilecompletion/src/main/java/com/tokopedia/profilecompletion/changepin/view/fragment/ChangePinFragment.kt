@@ -331,28 +331,28 @@ class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun initObserver() {
-        changePinViewModel.resetPinResponse.observe(this, Observer {
+        changePinViewModel.resetPinResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessResetPin(it.data)
                 is Fail -> onError(it.throwable)
             }
         })
 
-        changePinViewModel.validatePinResponse.observe(this, Observer {
+        changePinViewModel.validatePinResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessValidatePin(it.data)
                 is Fail -> onErrorValidatePin(it.throwable)
             }
         })
 
-        changePinViewModel.checkPinResponse.observe(this, Observer {
+        changePinViewModel.checkPinResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessCheckPin(it.data)
                 is Fail -> onError(it.throwable)
             }
         })
 
-        changePinViewModel.changePinResponse.observe(this, Observer {
+        changePinViewModel.changePinResponse.observe(viewLifecycleOwner, Observer {
             when(it){
                 is Success -> onSuccessChangePin(it.data)
                 is Fail -> onError(it.throwable)
