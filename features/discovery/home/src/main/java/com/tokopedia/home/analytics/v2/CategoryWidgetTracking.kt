@@ -2,7 +2,6 @@ package com.tokopedia.home.analytics.v2
 
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
-import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.track.TrackApp
 
 object CategoryWidgetTracking : BaseTracking() {
@@ -16,7 +15,7 @@ object CategoryWidgetTracking : BaseTracking() {
         }
     }
 
-    fun getCategoryWidgetBanneImpression(
+    fun getCategoryWidgetBannerImpression(
             banner: List<DynamicHomeChannel.Grid>,
             userId: String,
             isToIris: Boolean = false,
@@ -28,6 +27,9 @@ object CategoryWidgetTracking : BaseTracking() {
             eventLabel = channel.header.name,
             channelId = channel.id,
             userId = userId,
+            screen = Screen.DEFAULT,
+            currentSite = CurrentSite.DEFAULT,
+            businessUnit = BusinessUnit.DEFAULT,
             promotions = banner.mapIndexed { position, grid ->
                 Promotion(
                         id = CustomAction.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, grid.id, channel.persoType, channel.categoryID),
@@ -39,7 +41,6 @@ object CategoryWidgetTracking : BaseTracking() {
     )
 
     fun getCategoryWidgetBannerClick(
-            headerName: String,
             channelId: String,
             userId: String,
             position: String,
@@ -57,6 +58,9 @@ object CategoryWidgetTracking : BaseTracking() {
             shopId = channel.brandId,
             userId = userId,
             campaignCode = channel.campaignCode,
+            screen = Screen.DEFAULT,
+            currentSite = CurrentSite.DEFAULT,
+            businessUnit = BusinessUnit.DEFAULT,
             promotions = listOf(
                     Promotion(
                             id = CustomAction.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, grid.id, channel.persoType, channel.categoryID),
