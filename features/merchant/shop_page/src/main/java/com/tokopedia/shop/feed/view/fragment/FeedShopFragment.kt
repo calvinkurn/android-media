@@ -184,7 +184,9 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         userVisibleHint = false
         super.onViewCreated(view, savedInstanceState)
         isLoadingInitialData = true
-        setupBottomSheetSellerMigration(view)
+        if(!GlobalConfig.isSellerApp()) {
+            setupBottomSheetSellerMigration(view)
+        }
     }
 
     override fun onPause() {
@@ -209,9 +211,11 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                 try {
                     if (hasFeed()
                             && newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        if (!GlobalConfig.isSellerApp()) {
-                            if (isSellerMigrationEnabled(context)) {
+                        if (isSellerMigrationEnabled(context)) {
+                            if (!GlobalConfig.isSellerApp()) {
                                 bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_EXPANDED
+                            } else {
+                                bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_HIDDEN
                             }
                         } else {
                             bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_HIDDEN

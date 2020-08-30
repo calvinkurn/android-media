@@ -36,6 +36,7 @@
             android:layout_height="wrap_content"
             android:paddingBottom="@dimen/spacing_lvl3"
             android:layout_gravity="bottom"
+            android:visibility="gone"
             app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
             <com.tokopedia.unifycomponents.ImageUnify
