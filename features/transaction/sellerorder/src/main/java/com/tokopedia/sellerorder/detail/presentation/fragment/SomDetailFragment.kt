@@ -87,8 +87,8 @@ import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_PROCESS_REQ_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_REJECT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_SET_DELIVERED
-import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ORDER_ORDER_CONFIRMED
-import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ORDER_ORDER_CREATED
+import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_CODE_ORDER_CREATED
+import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_CODE_ORDER_ORDER_CONFIRMED
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_ATUR_TOKO_TUTUP
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_BATALKAN_PESANAN_PENALTY
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_COURIER_PROBLEM
@@ -1499,8 +1499,8 @@ class SomDetailFragment : BaseDaggerFragment(),
             reasonBuyer: String,
             actionButtons: List<SomDetailOrder.Data.GetSomDetail.PopUp.ActionButton>) = with(view) {
         when {
-            detailResponse.statusCode == STATUS_ORDER_ORDER_CREATED ||
-                    detailResponse.statusCode == STATUS_ORDER_ORDER_CONFIRMED -> {
+            detailResponse.statusCode == STATUS_CODE_ORDER_CREATED ||
+                    detailResponse.statusCode == STATUS_CODE_ORDER_ORDER_CONFIRMED -> {
                 val primaryButtonText = actionButtons.find {
                     it.type == KEY_PRIMARY_DIALOG_BUTTON
                 }?.displayName.orEmpty()
@@ -1518,10 +1518,10 @@ class SomDetailFragment : BaseDaggerFragment(),
                             primaryButtonClickAction = {
                                 bottomSheetReqCancel.dismiss()
                                 when (detailResponse.statusCode) {
-                                    STATUS_ORDER_ORDER_CREATED -> {
+                                    STATUS_CODE_ORDER_CREATED -> {
                                         setActionAcceptOrder(orderId, userSession.shopId)
                                     }
-                                    STATUS_ORDER_ORDER_CONFIRMED -> {
+                                    STATUS_CODE_ORDER_ORDER_CONFIRMED -> {
                                         rejectCancelOrder()
                                     }
                                 }
@@ -1541,8 +1541,8 @@ class SomDetailFragment : BaseDaggerFragment(),
 
     private fun getBuyerRequestCancellationRejectButton(statusCode: Int): String {
         return when (statusCode) {
-            STATUS_ORDER_ORDER_CREATED -> getString(R.string.som_buyer_cancellation_confirm_accept_order_button)
-            STATUS_ORDER_ORDER_CONFIRMED -> getString(R.string.som_buyer_cancellation_confirm_shipping_button)
+            STATUS_CODE_ORDER_CREATED -> getString(R.string.som_buyer_cancellation_confirm_accept_order_button)
+            STATUS_CODE_ORDER_ORDER_CONFIRMED -> getString(R.string.som_buyer_cancellation_confirm_shipping_button)
             else -> ""
         }
     }
@@ -1550,16 +1550,16 @@ class SomDetailFragment : BaseDaggerFragment(),
     private fun getBuyerRequestCancellationPopUpDescription(statusCode: Int): String {
 
         return when (statusCode) {
-            STATUS_ORDER_ORDER_CREATED -> getString(R.string.som_buyer_cancellation_confirm_accept_order_description)
-            STATUS_ORDER_ORDER_CONFIRMED -> getString(R.string.som_buyer_cancellation_confirm_shipping_description)
+            STATUS_CODE_ORDER_CREATED -> getString(R.string.som_buyer_cancellation_confirm_accept_order_description)
+            STATUS_CODE_ORDER_ORDER_CONFIRMED -> getString(R.string.som_buyer_cancellation_confirm_shipping_description)
             else -> ""
         }
     }
 
     private fun getBuyerRequestCancellationPopupTitle(statusCode: Int): String {
         return when (statusCode) {
-            STATUS_ORDER_ORDER_CREATED -> getString(R.string.som_buyer_cancellation_confirm_accept_order_title)
-            STATUS_ORDER_ORDER_CONFIRMED -> getString(R.string.som_buyer_cancellation_confirm_shipping_title)
+            STATUS_CODE_ORDER_CREATED -> getString(R.string.som_buyer_cancellation_confirm_accept_order_title)
+            STATUS_CODE_ORDER_ORDER_CONFIRMED -> getString(R.string.som_buyer_cancellation_confirm_shipping_title)
             else -> ""
         }
     }

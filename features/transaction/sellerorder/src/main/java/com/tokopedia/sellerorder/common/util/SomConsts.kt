@@ -139,10 +139,13 @@ object SomConsts {
     const val PARAM_SOURCE_ASK_BUYER = "tx_ask_buyer"
     const val ATTRIBUTE_ID = "id"
 
-    const val STATUS_ORDER_ORDER_CREATED = 220
-    const val STATUS_ORDER_ORDER_CONFIRMED = 400
-    const val STATUS_ORDER_DELIVERED = 600
-    const val STATUS_ORDER_DELIVERED_DUE_LIMIT = 699
+    const val STATUS_CODE_ORDER_CANCELLED = 0
+    const val STATUS_CODE_ORDER_AUTO_CANCELLED = 3
+    const val STATUS_CODE_ORDER_REJECTED = 10
+    const val STATUS_CODE_ORDER_CREATED = 220
+    const val STATUS_CODE_ORDER_ORDER_CONFIRMED = 400
+    const val STATUS_CODE_ORDER_DELIVERED = 600
+    const val STATUS_CODE_ORDER_DELIVERED_DUE_LIMIT = 699
 
     const val REPLACE_CUST_NAME = "#custName"
     const val REPLACE_INVOICE_NO = "#invoiceNo"

@@ -23,8 +23,11 @@ import com.tokopedia.sellerorder.common.domain.model.TickerInfo
 import com.tokopedia.sellerorder.common.util.SomConsts.EXTRA_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.EXTRA_USER_MODE
 import com.tokopedia.sellerorder.common.util.SomConsts.LABEL_EMPTY
-import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ORDER_DELIVERED
-import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ORDER_DELIVERED_DUE_LIMIT
+import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_CODE_ORDER_AUTO_CANCELLED
+import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_CODE_ORDER_CANCELLED
+import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_CODE_ORDER_DELIVERED
+import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_CODE_ORDER_DELIVERED_DUE_LIMIT
+import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_CODE_ORDER_REJECTED
 import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.detail.data.model.SomDetailData
 import com.tokopedia.sellerorder.detail.data.model.SomDetailHeader
@@ -67,7 +70,7 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
 
             if (item.dataObject.deadlineText.isNotEmpty()) {
                 itemView.header_deadline_label?.visibility = View.VISIBLE
-                if (item.dataObject.statusCode == STATUS_ORDER_DELIVERED || item.dataObject.statusCode == STATUS_ORDER_DELIVERED_DUE_LIMIT) {
+                if (item.dataObject.statusCode == STATUS_CODE_ORDER_DELIVERED || item.dataObject.statusCode == STATUS_CODE_ORDER_DELIVERED_DUE_LIMIT) {
                     itemView.header_deadline_label?.text = itemView.context.getString(R.string.som_deadline_done)
                 } else {
                     itemView.header_deadline_label?.text = itemView.context.getString(R.string.som_deadline)
@@ -154,7 +157,9 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
 
     private fun setupOrderStatus(statusText: String, statusCode: Int) {
         itemView.header_title?.text = statusText
-        if (statusCode == 0) {
+        if (statusCode == STATUS_CODE_ORDER_CANCELLED ||
+                statusCode == STATUS_CODE_ORDER_AUTO_CANCELLED ||
+                statusCode == STATUS_CODE_ORDER_REJECTED) {
             itemView.header_title?.setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Red_R600))
         }
     }

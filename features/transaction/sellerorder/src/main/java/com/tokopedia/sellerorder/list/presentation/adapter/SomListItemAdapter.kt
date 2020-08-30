@@ -11,8 +11,8 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.domain.model.TickerInfo
 import com.tokopedia.sellerorder.common.util.SomConsts.LABEL_EMPTY
-import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ORDER_DELIVERED
-import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ORDER_DELIVERED_DUE_LIMIT
+import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_CODE_ORDER_DELIVERED
+import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_CODE_ORDER_DELIVERED_DUE_LIMIT
 import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.list.data.model.SomListOrder
 import com.tokopedia.sellerorder.list.presentation.fragment.SomListFragment
@@ -65,7 +65,7 @@ class SomListItemAdapter : RecyclerView.Adapter<SomListItemAdapter.ViewHolder>()
                     holder.itemView.label_due_response.visibility = View.GONE
                     holder.itemView.ic_label_due_card.visibility = View.GONE
                 } else {
-                    if (orderItem.orderStatusId == STATUS_ORDER_DELIVERED || orderItem.orderStatusId == STATUS_ORDER_DELIVERED_DUE_LIMIT) {
+                    if (orderItem.orderStatusId == STATUS_CODE_ORDER_DELIVERED || orderItem.orderStatusId == STATUS_CODE_ORDER_DELIVERED_DUE_LIMIT) {
                         holder.itemView.label_due_response.text = holder.itemView.context.getString(R.string.som_deadline_done)
                     } else {
                         holder.itemView.label_due_response.text = holder.itemView.context.getString(R.string.som_deadline)

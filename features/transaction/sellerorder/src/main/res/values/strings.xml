@@ -276,6 +276,8 @@
     <string name="dialog_title_cannot_access_page">Kamu tidak memiliki akses ke halaman ini</string>
     <string name="dialog_description_cannot_access_page">Akses ke halaman penjualan hanya dapat diberikan oleh pemilik toko</string>
     <string name="button_understand">Ya, saya mengerti</string>
+
+    <!--  instant cancel  -->
     <string name="bottomsheet_buyer_request_cancel">Alasan pembeli mengajukan pembatalan pesanan:</string>
     <string name="bottomsheet_order_cancellation_response_negative_button_code_220">Terima Pesanan</string>
     <string name="bottomsheet_order_cancellation_response_positive_button_code_220">Batalkan Pesanan</string>
