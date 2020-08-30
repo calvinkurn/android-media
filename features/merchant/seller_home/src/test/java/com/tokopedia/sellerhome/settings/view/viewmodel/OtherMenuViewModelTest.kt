@@ -50,15 +50,13 @@ class OtherMenuViewModelTest {
     val rule = InstantTaskExecutorRule()
 
     private lateinit var mViewModel: OtherMenuViewModel
-    private lateinit var testDispatcher: TestCoroutineDispatcher
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        testDispatcher = TestCoroutineDispatcher()
         mViewModel =
                 OtherMenuViewModel(
-                        testDispatcher,
+                        testCoroutineDispatcher,
                         getAllShopInfoUseCase,
                         getShopFreeShippingInfoUseCase,
                         userSession,
@@ -68,7 +66,11 @@ class OtherMenuViewModelTest {
 
     @After
     fun cleanup() {
-        testDispatcher.cleanupTestCoroutines()
+        testCoroutineDispatcher.cleanupTestCoroutines()
+    }
+
+    private val testCoroutineDispatcher by lazy {
+        TestCoroutineDispatcher()
     }
 
     @Test
@@ -130,13 +132,13 @@ class OtherMenuViewModelTest {
             mockViewModel["checkDelayErrorResponseTrigger"]()
         }
 
-        testDispatcher.pauseDispatcher()
+        testCoroutineDispatcher.pauseDispatcher()
 
         mockViewModel.isToasterAlreadyShown.observeOnce {
             assertTrue(it)
         }
 
-        testDispatcher.resumeDispatcher()
+        testCoroutineDispatcher.resumeDispatcher()
 
         mockViewModel.isToasterAlreadyShown.observeOnce {
             assertFalse(it)

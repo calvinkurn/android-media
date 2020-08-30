@@ -19,10 +19,8 @@ class BalanceInfoUseCase @Inject constructor(private val graphQlRepository: Grap
                 "}"
     }
 
-    private val params = HashMap<String, Any>()
-
     override suspend fun executeOnBackground(): OthersBalance {
-        val gqlRequest = GraphqlRequest(QUERY, OtherBalanceResponse::class.java, params)
+        val gqlRequest = GraphqlRequest(QUERY, OtherBalanceResponse::class.java, HashMap<String, Any>())
         val gqlResponse = graphQlRepository.getReseponse(listOf(gqlRequest))
 
         val errors = gqlResponse.getError(OtherBalanceResponse::class.java)

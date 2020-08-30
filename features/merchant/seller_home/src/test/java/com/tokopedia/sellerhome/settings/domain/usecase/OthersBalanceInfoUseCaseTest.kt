@@ -2,6 +2,7 @@ package com.tokopedia.sellerhome.settings.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.sellerhome.settings.domain.entity.OtherBalanceResponse
 import com.tokopedia.sellerhome.settings.domain.entity.OthersBalance
 import com.tokopedia.sellerhome.utils.TestHelper
 import io.mockk.MockKAnnotations
@@ -46,7 +47,7 @@ class OthersBalanceInfoUseCaseTest {
     @Test
     fun `Success get setting shop info`() = runBlocking {
 
-        val successResponse = TestHelper.createSuccessResponse<OthersBalance>(SUCCESS_RESPONSE)
+        val successResponse = TestHelper.createSuccessResponse<OtherBalanceResponse>(SUCCESS_RESPONSE)
         val successShopInfo =
                 OthersBalance(
                         sellerBalance = 100000f,
@@ -70,7 +71,7 @@ class OthersBalanceInfoUseCaseTest {
     @Test
     fun `Failed get setting shop info`() = runBlocking {
 
-        val errorResponse = TestHelper.createErrorResponse<OthersBalance>()
+        val errorResponse = TestHelper.createErrorResponse<OtherBalanceResponse>()
 
         coEvery {
             gqlRepository.getReseponse(any(), any())
