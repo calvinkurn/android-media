@@ -28,6 +28,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.drawable.CountDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -40,12 +41,13 @@ import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.TrackShopTypeDef
 import com.tokopedia.shop.common.constant.ShopHomeType
+import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.favourite.view.activity.ShopFavouriteListActivity
 import com.tokopedia.shop.feed.view.fragment.FeedShopFragment
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderContentData
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
-import com.tokopedia.shop.pageheader.data.model.ShopPageP1Data
+import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageP1HeaderData
 import com.tokopedia.shop.pageheader.data.model.ShopPageTabModel
 import com.tokopedia.shop.pageheader.di.component.DaggerShopPageComponent
 import com.tokopedia.shop.pageheader.di.component.ShopPageComponent
@@ -112,6 +114,8 @@ class ShopPageFragment :
         private const val PATH_REVIEW = "review"
         private const val QUERY_SHOP_REF = "shop_ref"
         private const val QUERY_SHOP_ATTRIBUTION = "tracker_attribution"
+        private const val START_PAGE = 1
+        private const val DEFAULT_SORT_ID = 0
 
         @JvmStatic
         fun createInstance() = ShopPageFragment()
@@ -284,7 +288,16 @@ class ShopPageFragment :
 
     private fun onSuccessGetShopIdFromDomain(shopId: String) {
         this.shopId = shopId
-        shopViewModel.getShopPageTabData(shopId, shopDomain, isRefresh)
+        shopViewModel.getShopPageTabData(
+                shopId.toIntOrZero(),
+                shopDomain.orEmpty(),
+                START_PAGE,
+                ShopPageConstant.DEFAULT_PER_PAGE,
+                DEFAULT_SORT_ID,
+                "",
+                "",
+                isRefresh
+        )
     }
 
     private fun onErrorGetShopPageHeaderContentData(error: Throwable) {
@@ -409,7 +422,16 @@ class ShopPageFragment :
         if(shopId.isEmpty()){
             shopViewModel.getShopIdFromDomain(shopDomain.orEmpty())
         }else{
-            shopViewModel.getShopPageTabData(shopId, shopDomain, isRefresh)
+            shopViewModel.getShopPageTabData(
+                    shopId.toIntOrZero(),
+                    shopDomain.orEmpty(),
+                    START_PAGE,
+                    ShopPageConstant.DEFAULT_PER_PAGE,
+                    DEFAULT_SORT_ID,
+                    "",
+                    "",
+                    isRefresh
+            )
         }
     }
 
@@ -594,18 +616,18 @@ class ShopPageFragment :
         }
     }
 
-    private fun onSuccessGetShopPageTabData(shopPageP1Data: ShopPageP1Data) {
-        isShowFeed = shopPageP1Data.isWhitelist
-        createPostUrl = shopPageP1Data.url
+    private fun onSuccessGetShopPageTabData(shopPageP1HeaderData: ShopPageP1HeaderData) {
+        isShowFeed = shopPageP1HeaderData.isWhitelist
+        createPostUrl = shopPageP1HeaderData.url
         shopPageHeaderDataModel = ShopPageHeaderDataModel().apply {
             shopId = this@ShopPageFragment.shopId
-            isOfficial = shopPageP1Data.isOfficial
-            isGoldMerchant = shopPageP1Data.isGoldMerchant
-            shopHomeType = shopPageP1Data.shopHomeType
-            topContentUrl = shopPageP1Data.topContentUrl
-            shopName = shopPageP1Data.shopName
-            shopDomain = shopPageP1Data.shopDomain
-            avatar = shopPageP1Data.shopAvatar
+            isOfficial = shopPageP1HeaderData.isOfficial
+            isGoldMerchant = shopPageP1HeaderData.isGoldMerchant
+            shopHomeType = shopPageP1HeaderData.shopHomeType
+            topContentUrl = shopPageP1HeaderData.topContentUrl
+            shopName = shopPageP1HeaderData.shopName
+            shopDomain = shopPageP1HeaderData.shopDomain
+            avatar = shopPageP1HeaderData.shopAvatar
         }
         customDimensionShopPage.updateCustomDimensionData(
                 shopId,
