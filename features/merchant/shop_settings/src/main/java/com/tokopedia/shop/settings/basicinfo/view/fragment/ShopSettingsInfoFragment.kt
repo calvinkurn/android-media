@@ -343,14 +343,27 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                 }
             }
 
-            tvShopSlogan.text = shopBasicData.tagline
-            tvShopDescription.text = shopBasicData.description
-
             val logoUrl = shopBasicData.logo
             if (TextUtils.isEmpty(logoUrl)) {
                 ImageHandler.loadImage2(ivShopLogo, logoUrl, com.tokopedia.design.R.drawable.ic_shop_default_empty)
             } else {
                 ImageHandler.LoadImage(ivShopLogo, logoUrl)
+            }
+
+            if (shopBasicData.tagline.isNullOrBlank()) {
+                tvShopSloganTitle.visibility = View.GONE
+                tvShopSlogan.visibility = View.GONE
+            } else {
+                tvShopSloganTitle.visibility = View.VISIBLE
+                tvShopSlogan.text = shopBasicData.tagline
+            }
+
+            if (shopBasicData.description.isNullOrBlank()) {
+                tvShopDescriptionTitle.visibility = View.GONE
+                tvShopDescription.visibility = View.GONE
+            } else {
+                tvShopDescriptionTitle.visibility = View.VISIBLE
+                tvShopDescription.text = shopBasicData.description
             }
 
             tvShopStatus.text = if (shopBasicData.isOpen) getString(com.tokopedia.design.R.string.label_open) else getString(com.tokopedia.design.R.string.label_close)
