@@ -7,21 +7,21 @@
     android:layout_height="wrap_content"
     android:padding="@dimen/dp_16">
 
-    <ProgressBar
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/pgLoader"
-        android:layout_width="@dimen/dp_32"
-        android:layout_height="@dimen/dp_32"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
         android:visibility="invisible"
+        tools:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:background="@color/green_50" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/imgStatus"
-        android:layout_width="@dimen/dp_32"
-        android:layout_height="@dimen/dp_32"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
         android:layout_gravity="center_vertical"
-        android:src="@drawable/ic_status_notif_red_error"
+        app:srcCompat="@drawable/ic_ts_notif_checked"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -32,7 +32,6 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:gravity="center_vertical"
-        android:layout_marginLeft="@dimen/dp_12"
         android:layout_marginStart="@dimen/dp_12"
         tools:text="Test Push Notification"
         android:textColor="@color/charcoal_grey_96"
