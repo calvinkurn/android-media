@@ -42,17 +42,4 @@
         app:layout_constraintStart_toEndOf="@+id/pgLoader"
         app:layout_constraintTop_toTopOf="@+id/pgLoader" />
 
-    <TextView
-        android:id="@+id/txtMessage"
-        android:visibility="gone"
-        tools:visibility="visible"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:lineSpacingExtra="@dimen/sp_6"
-        app:layout_constraintEnd_toEndOf="@+id/txtTitle"
-        app:layout_constraintStart_toStartOf="@+id/txtTitle"
-        app:layout_constraintTop_toBottomOf="@+id/txtTitle"
-        android:textColor="@color/charcoal_grey_68"
-        tools:text="Reminder, Feeds, dan Aktivitas akun kamu. This is really long text" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

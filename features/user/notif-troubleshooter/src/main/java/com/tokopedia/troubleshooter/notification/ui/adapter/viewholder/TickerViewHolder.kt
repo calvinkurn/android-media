@@ -14,15 +14,11 @@ class TickerViewHolder(
         view: View
 ): AbstractViewHolder<TickerUIView>(view) {
 
-    private val txtTitle: Typography? = view.findViewById(R.id.txtTitle)
     private val txtDescription: Typography? = view.findViewById(R.id.txtDescription)
     private val btnActivation: UnifyButton? = view.findViewById(R.id.btnActivation)
-    private val context by lazy { itemView.context }
 
     override fun bind(element: TickerUIView?) {
         if (element == null) return
-
-        txtTitle?.text = context?.getString(element.title)
         txtDescription?.text = element.message
 
         btnActivation?.setOnClickListener {

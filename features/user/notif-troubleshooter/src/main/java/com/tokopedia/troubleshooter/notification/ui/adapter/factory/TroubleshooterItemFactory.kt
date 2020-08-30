@@ -5,9 +5,11 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.troubleshooter.notification.ui.adapter.viewholder.ConfigViewHolder
 import com.tokopedia.troubleshooter.notification.ui.adapter.viewholder.TickerViewHolder
+import com.tokopedia.troubleshooter.notification.ui.adapter.viewholder.WarningTitleViewHolder
 import com.tokopedia.troubleshooter.notification.ui.listener.ConfigItemListener
 import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigUIView
 import com.tokopedia.troubleshooter.notification.ui.uiview.TickerUIView
+import com.tokopedia.troubleshooter.notification.ui.uiview.WarningTitleUIVIew
 
 class TroubleshooterItemFactory(
         private val listener: ConfigItemListener
@@ -21,10 +23,15 @@ class TroubleshooterItemFactory(
         return TickerViewHolder.LAYOUT
     }
 
+    override fun type(title: WarningTitleUIVIew): Int {
+        return WarningTitleViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when(type) {
             ConfigViewHolder.LAYOUT -> ConfigViewHolder(listener, parent)
             TickerViewHolder.LAYOUT -> TickerViewHolder(listener, parent)
+            WarningTitleViewHolder.LAYOUT -> WarningTitleViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }

@@ -12,6 +12,7 @@ import com.tokopedia.troubleshooter.notification.ui.uiview.StatusState.Error
 import com.tokopedia.troubleshooter.notification.ui.uiview.StatusState.Success
 import com.tokopedia.troubleshooter.notification.ui.uiview.TickerUIView
 import com.tokopedia.troubleshooter.notification.ui.uiview.TickerUIView.Companion.showTicker
+import com.tokopedia.troubleshooter.notification.ui.uiview.WarningTitleUIVIew
 import com.tokopedia.troubleshooter.notification.util.dropFirst
 import com.tokopedia.troubleshooter.notification.util.getWithIndex
 
@@ -63,19 +64,15 @@ internal open class TroubleshooterAdapter(
     }
 
     fun addTicker(message: CharSequence) {
-        removeTicker()
-        addElement(TICKER_INDEX, showTicker(message))
+        addElement(WarningTitleUIVIew("Rekomendasi lebih optimal"))
+        addElement(showTicker(message))
     }
 
     fun removeTicker() {
-        if (visitables.size > 0 && visitables.first() is TickerUIView) {
-            visitables.dropFirst()
-            notifyItemRemoved(TICKER_INDEX)
-        }
-    }
-
-    companion object {
-        private const val TICKER_INDEX = 0
+//        if (visitables.size > 0 && visitables.first() is TickerUIView) {
+//            visitables.dropFirst()
+//            notifyItemRemoved(TICKER_INDEX)
+//        }
     }
 
 }
