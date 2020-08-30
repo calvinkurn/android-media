@@ -245,7 +245,7 @@ class StaticBuyerModelGenerator private constructor() {
                     R.drawable.ic_belanja,
                     context.getString(R.string.title_menu_market_place),
                     when (homeRouter.getBooleanRemoteConfig(RemoteConfigKey.APP_GLOBAL_NAV_NEW_DESIGN, true)) {
-                        true -> ApplinkConst.MARKETPLACE_ORDER
+                        true -> ApplinkConst.BELANJA_ORDER
                         else -> ApplinkConst.PURCHASE_HISTORY
                     },
                     0,
