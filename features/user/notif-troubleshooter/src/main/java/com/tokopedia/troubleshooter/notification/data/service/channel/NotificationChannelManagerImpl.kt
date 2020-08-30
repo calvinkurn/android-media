@@ -10,9 +10,9 @@ class NotificationChannelManagerImpl(
 ) : NotificationChannelManager {
 
     @SuppressLint("NewApi")
-    override fun getNotificationChannel(): Int {
-        val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        return manager.getNotificationChannel(CHANNEL_ID).importance
+    override fun getNotificationChannel(): Int? {
+        val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager?
+        return manager?.getNotificationChannel(CHANNEL_ID)?.importance?: -1
     }
 
     override fun hasNotificationChannel(): Boolean {
