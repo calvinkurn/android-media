@@ -24,4 +24,8 @@ class DynamicFilterModel(@SerializedName("data")
     fun getIsOfficialSelectedFlag(): Boolean {
         return isOfficialSelectedFlag
     }
+
+    fun isEmpty(): Boolean {
+        return data.filter.map { it.options }.flatten().isEmpty()
+    }
 }

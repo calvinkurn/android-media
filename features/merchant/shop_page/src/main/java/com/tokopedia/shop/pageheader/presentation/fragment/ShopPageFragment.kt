@@ -34,8 +34,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shop.R
-import com.tokopedia.shop.ShopComponentInstance
-import com.tokopedia.shop.ShopModuleRouter
+import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
@@ -46,7 +45,7 @@ import com.tokopedia.shop.feed.view.fragment.FeedShopFragment
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderContentData
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
-import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderTabData
+import com.tokopedia.shop.pageheader.data.model.ShopPageP1Data
 import com.tokopedia.shop.pageheader.data.model.ShopPageTabModel
 import com.tokopedia.shop.pageheader.di.component.DaggerShopPageComponent
 import com.tokopedia.shop.pageheader.di.component.ShopPageComponent
@@ -64,6 +63,7 @@ import com.tokopedia.shop.setting.view.activity.ShopPageSettingActivity
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginView
+import com.tokopedia.tkpd.tkpdreputation.review.shop.view.ReviewShopFragment
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -158,6 +158,7 @@ class ShopPageFragment :
         )
     }
     private var shopPageHeaderDataModel: ShopPageHeaderDataModel? = null
+    private var initialProductListSortId: String = ""
 
     val isMyShop: Boolean
         get() = if (::shopViewModel.isInitialized) {
@@ -166,7 +167,7 @@ class ShopPageFragment :
 
     override fun getComponent() = activity?.run {
         DaggerShopPageComponent.builder().shopPageModule(ShopPageModule())
-                .shopComponent(ShopComponentInstance.getComponent(application)).build()
+                .shopComponent(ShopComponentHelper().getComponent(application, this)).build()
     }
 
     override fun getScreenName() = ""
@@ -183,7 +184,7 @@ class ShopPageFragment :
 
 
     override fun onDestroy() {
-        shopViewModel.shopPageHeaderTabData.removeObservers(this)
+        shopViewModel.shopPageP1Data.removeObservers(this)
         shopViewModel.shopPageHeaderContentData.removeObservers(this)
         shopViewModel.flush()
         super.onDestroy()
@@ -191,8 +192,8 @@ class ShopPageFragment :
 
     private fun initViews(view: View) {
         activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
-        errorTextView = view.findViewById(R.id.message_retry)
-        errorButton = view.findViewById(R.id.button_retry)
+        errorTextView = view.findViewById(com.tokopedia.abstraction.R.id.message_retry)
+        errorButton = view.findViewById(com.tokopedia.abstraction.R.id.button_retry)
         shopPageFragmentHeaderViewHolder = ShopPageFragmentHeaderViewHolder(view, this, shopPageTracking, shopPageTrackingSGCPlay, view.context)
         initToolbar()
         initAdapter()
@@ -244,7 +245,7 @@ class ShopPageFragment :
     }
 
     private fun observeLiveData(owner: LifecycleOwner) {
-        shopViewModel.shopPageHeaderTabData.observe(owner, Observer { result ->
+        shopViewModel.shopPageP1Data.observe(owner, Observer { result ->
             startShopPageHeaderMonitoringPltRenderPage()
             when (result) {
                 is Success -> {
@@ -269,10 +270,25 @@ class ShopPageFragment :
             }
         })
 
+        shopViewModel.shopIdFromDomainData.observe(owner, Observer { result ->
+            when (result) {
+                is Success -> {
+                    onSuccessGetShopIdFromDomain(result.data)
+                }
+                is Fail -> {
+                    onErrorGetShopPageHeaderContentData(result.throwable)
+                }
+            }
+        })
+
+    }
+
+    private fun onSuccessGetShopIdFromDomain(shopId: String) {
+        this.shopId = shopId
+        shopViewModel.getShopPageTabData(shopId, shopDomain, isRefresh, initialProductListSortId)
     }
 
     private fun onErrorGetShopPageHeaderContentData(error: Throwable) {
-        shopPageFragmentHeaderViewHolder.showShopPageHeaderContentError()
         val errorMessage = ErrorHandler.getErrorMessage(context, error)
         view?.let { view ->
             Toaster.make(
@@ -288,7 +304,6 @@ class ShopPageFragment :
     }
 
     private fun getShopPageHeaderContentData() {
-        shopPageFragmentHeaderViewHolder.showShopPageHeaderContentLoading()
         shopViewModel.getShopPageHeaderContentData(shopId, shopDomain ?: "", isRefresh)
     }
 
@@ -310,6 +325,7 @@ class ShopPageFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        stopPreparePltShopPage()
         context?.let {
             remoteConfig = FirebaseRemoteConfigImpl(it)
             cartLocalCacheHandler = LocalCacheHandler(it, CART_LOCAL_CACHE_NAME)
@@ -354,6 +370,7 @@ class ShopPageFragment :
     private fun startPltNetworkPerformanceMonitoring() {
         (activity as? ShopPageHeaderPerformanceMonitoringListener)?.let { shopPageActivity ->
             shopPageActivity.getShopPageHeaderLoadTimePerformanceCallback()?.let {
+                shopPageActivity.stopMonitoringPltPreparePage(it)
                 shopPageActivity.startMonitoringPltNetworkRequest(it)
             }
         }
@@ -389,7 +406,12 @@ class ShopPageFragment :
         isFirstLoading = true
         if (!swipeToRefresh.isRefreshing)
             setViewState(VIEW_LOADING)
-        shopViewModel.getShopPageTabData(shopId, shopDomain, isRefresh)
+        startMonitoringNetworkPltShopPage()
+        if(shopId.isEmpty()){
+            shopViewModel.getShopIdFromDomain(shopDomain.orEmpty())
+        }else{
+            shopViewModel.getShopPageTabData(shopId, shopDomain, isRefresh, initialProductListSortId)
+        }
     }
 
     private fun initToolbar() {
@@ -573,17 +595,18 @@ class ShopPageFragment :
         }
     }
 
-    private fun onSuccessGetShopPageTabData(shopPageHeaderTabData: ShopPageHeaderTabData) {
-        stopPreparePltShopPage()
-        isShowFeed = shopPageHeaderTabData.feedWhitelist.isWhitelist
-        createPostUrl = shopPageHeaderTabData.feedWhitelist.url
+    private fun onSuccessGetShopPageTabData(shopPageP1Data: ShopPageP1Data) {
+        isShowFeed = shopPageP1Data.isWhitelist
+        createPostUrl = shopPageP1Data.url
         shopPageHeaderDataModel = ShopPageHeaderDataModel().apply {
             shopId = this@ShopPageFragment.shopId
-            isOfficial = shopPageHeaderTabData.shopInfo.os.isOfficial == 1
-            isGoldMerchant = shopPageHeaderTabData.shopInfo.gold.isGold == 1
-            shopName = shopPageHeaderTabData.shopInfo.shopCore.name
-            shopHomeType = shopPageHeaderTabData.shopInfo.shopHomeType
-            topContentUrl = shopPageHeaderTabData.shopInfo.topContent.topUrl
+            isOfficial = shopPageP1Data.isOfficial
+            isGoldMerchant = shopPageP1Data.isGoldMerchant
+            shopHomeType = shopPageP1Data.shopHomeType
+            topContentUrl = shopPageP1Data.topContentUrl
+            shopName = shopPageP1Data.shopName
+            shopDomain = shopPageP1Data.shopDomain
+            avatar = shopPageP1Data.shopAvatar
         }
         customDimensionShopPage.updateCustomDimensionData(
                 shopId,
@@ -600,9 +623,20 @@ class ShopPageFragment :
         setupTabs()
         setViewState(VIEW_CONTENT)
         swipeToRefresh.isRefreshing = false
+        shopPageHeaderDataModel?.let{
+            shopPageFragmentHeaderViewHolder.bind(it, isMyShop, remoteConfig)
+        }
     }
 
     protected fun stopPreparePltShopPage(){
+        (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
+            shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
+                shopPageActivity.stopMonitoringPltPreparePage(it)
+            }
+        }
+    }
+
+    protected fun startMonitoringNetworkPltShopPage(){
         (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
             shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
                 shopPageActivity.startMonitoringPltNetworkRequest(it)
@@ -612,8 +646,6 @@ class ShopPageFragment :
 
     private fun onSuccessGetShopPageHeaderContentData(shopPageHeaderContentData: ShopPageHeaderContentData) {
         shopPageHeaderDataModel?.let { shopPageHeaderDataModel ->
-            shopPageHeaderDataModel.avatar = shopPageHeaderContentData.shopInfo.shopAssets.avatar
-            shopPageHeaderDataModel.domain = shopPageHeaderContentData.shopInfo.shopCore.domain
             shopPageHeaderDataModel.location = shopPageHeaderContentData.shopInfo.location
             shopPageHeaderDataModel.isFreeOngkir = shopPageHeaderContentData.shopInfo.freeOngkir.isActive
             shopPageHeaderDataModel.statusTitle = shopPageHeaderContentData.shopInfo.statusInfo.statusTitle
@@ -629,7 +661,6 @@ class ShopPageFragment :
                 button_chat.hide()
             }
             updateFavouriteResult(shopPageHeaderContentData.favoriteData.alreadyFavorited == 1)
-            shopPageFragmentHeaderViewHolder.showShopPageHeaderContent()
             shopPageFragmentHeaderViewHolder.bind(shopPageHeaderDataModel, isMyShop, remoteConfig)
             shopPageFragmentHeaderViewHolder.updateFavoriteData(shopPageHeaderContentData.favoriteData)
             if (!shopPageHeaderDataModel.isOfficial) {
@@ -666,8 +697,8 @@ class ShopPageFragment :
             }
         }
         if(shouldOverrideTabToReview){
-            selectedPosition = if(viewPagerAdapter.isFragmentObjectExists((activity?.application as ShopModuleRouter).reviewFragmentClass)){
-                viewPagerAdapter.getFragmentPosition((activity?.application as ShopModuleRouter).reviewFragmentClass)
+            selectedPosition = if(viewPagerAdapter.isFragmentObjectExists(ReviewShopFragment::class.java)){
+                viewPagerAdapter.getFragmentPosition(ReviewShopFragment::class.java)
             } else {
                 selectedPosition
             }
@@ -700,6 +731,9 @@ class ShopPageFragment :
                     shopAttribution,
                     shopRef
             )
+            shopPageProductFragment.setInitialProductListData(
+                    shopViewModel.productListData
+            )
             add(ShopPageTabModel(
                     getString(R.string.new_shop_info_title_tab_product),
                     iconTabProduct,
@@ -716,18 +750,15 @@ class ShopPageFragment :
                         feedFragment
                 ))
             }
-            if (activity?.application is ShopModuleRouter) {
-                val shopReviewFragment = (activity?.application as ShopModuleRouter).getReviewFragment(
-                        activity,
-                        shopId,
-                        shopDomain
-                )
-                add(ShopPageTabModel(
-                        getString(R.string.shop_info_title_tab_review),
-                        iconTabReview,
-                        shopReviewFragment
-                ))
-            }
+            val shopReviewFragment = ReviewShopFragment.createInstance(
+                    shopId,
+                    shopDomain
+            )
+            add(ShopPageTabModel(
+                    getString(R.string.shop_info_title_tab_review),
+                    iconTabReview,
+                    shopReviewFragment
+            ))
         }
     }
 
@@ -1017,5 +1048,9 @@ class ShopPageFragment :
             Toaster.make(view, message, actionText = getString(R.string.shop_page_product_action_no_upload_product), type = Toaster.TYPE_NORMAL)
             this.isFirstCreateShop = false
         }
+    }
+
+    fun updateSortId(sortId: String) {
+        this.initialProductListSortId = sortId
     }
 }

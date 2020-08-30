@@ -76,7 +76,7 @@
     <string name="label_chat_seller">Chat Penjual</string>
     <string name="label_favorite">Favoritkan</string>
     <string name="label_follow">Follow</string>
-    <string name="label_favorited">Followed</string>
+    <string name="label_favorited">Following</string>
     <string name="template_shop_last_login">\u2022 %s</string>
     <string name="campaign_expired_title">Waktu sudah berakhir</string>
     <string name="campaign_expired_descr">Periode promo telah selesai. Harga produk kembali menjadi harga normal</string>
@@ -196,7 +196,8 @@
 
     //Variant section
     <string name="add_to_cart_error_variant">Oops, kamu wajib pilih varian.</string>
-    <string name="variant_failed_load">Variannya belum muncul, refresh yuk!</string>
+    <string name="variant_failed_load">Varian gagal ditampilkan</string>
+    <string name="variant_failed_load_description">Klik ikon di samping untuk coba lagi.</string>
     <string name="product_refresh">Refresh</string>
     <string name="tradein_error_label">Stok sudah habis. Cari barang lain untuk bisa gunakan Tukar Tambah</string>
 
@@ -212,7 +213,7 @@
     //NotifyMe (UpComing Teaser) section
     <string name="notify_me_active">Pengingat Aktif</string>
     <string name="notify_me_inactive">Ingatkan Saya</string>
-    <string name="notify_me_subtitle">Dimulai dalam %1$s hari lagi</string>
+    <string name="notify_me_subtitle"><![CDATA[Dimulai dalam <b>%1$s hari lagi</b>]]></string>
     <string name="notify_me_subtitle_main">Dimulai dalam</string>
     <string name="notify_me_title">Kejar Diskon</string>
     <string name="notify_me_success_registered_message">Kamu berhasil menambah produk ke Diskon Yang Dikejar.</string>
@@ -301,6 +302,8 @@
     <string name="shop_chat_speed_in_minute">%1d menit</string>
     <string name="shop_chat_speed_in_one_two_days">1–2 hari</string>
 
+    <string name="label_go_apotik">By GoApotik</string>
+    <string name="campaign_npl_start">Dimulai dalam</string>
 
     <string name="pdp_tradein_text_permission_description">Dengan klik <b>setuju</b>, kamu memberikan izin untuk :\n• Model perangkat dan IMEI.
         \n• Menyalakan WiFi

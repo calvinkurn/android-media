@@ -50,8 +50,6 @@ class AddEditProductPreviewViewModel @Inject constructor(
         (!id.isNullOrBlank() || productInputModel.value?.productId.orZero() != 0L) && !isDuplicate
     }
 
-    val productAddResult = MutableLiveData<ProductInputModel>()
-
     // observing the product id, and will execute the use case when product id is changed
     private val mGetProductResult = MediatorLiveData<Result<Product>>().apply {
         addSource(productId) {
@@ -140,9 +138,6 @@ class AddEditProductPreviewViewModel @Inject constructor(
                         ProductInputModel()
                     }
                 }
-            }
-            addSource(productAddResult) {
-                productInputModel.value = it
             }
         }
     }
