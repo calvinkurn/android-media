@@ -23,6 +23,7 @@
         android:layout_gravity="center_vertical"
         app:srcCompat="@drawable/ic_ts_notif_checked"
         android:visibility="gone"
+        android:background="@android:color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible" />
