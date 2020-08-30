@@ -14,7 +14,6 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.settings.analytics.*
 import com.tokopedia.sellerhome.settings.view.bottomsheet.SettingsFreeShippingBottomSheet
@@ -22,7 +21,6 @@ import com.tokopedia.sellerhome.settings.view.uimodel.base.PowerMerchantStatus
 import com.tokopedia.sellerhome.settings.view.uimodel.base.RegularMerchant
 import com.tokopedia.sellerhome.settings.view.uimodel.base.ShopType
 import com.tokopedia.sellerhome.settings.view.uimodel.shopinfo.*
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_other_menu.view.*
 import kotlinx.android.synthetic.main.fragment_other_menu.view.shopInfoLayout
 import kotlinx.android.synthetic.main.setting_balance.view.*
@@ -36,7 +34,8 @@ import kotlinx.android.synthetic.main.setting_shop_status_regular.view.*
 class OtherMenuViewHolder(private val itemView: View,
                           private val context: Context,
                           private val listener: Listener,
-                          private val trackingListener: SettingTrackingListener) {
+                          private val trackingListener: SettingTrackingListener,
+                          private val freeShippingTracker: SettingFreeShippingTracker) {
 
     companion object {
         private val GREEN_TIP = R.drawable.setting_tip_bar_enabled
@@ -110,20 +109,17 @@ class OtherMenuViewHolder(private val itemView: View,
         }
     }
 
-    fun setupFreeShippingLayout(
-        fm: FragmentManager?,
-        user: UserSessionInterface
-    ) {
+    fun setupFreeShippingLayout(fm: FragmentManager?) {
         itemView.shopInfoLayout.freeShippingLayout?.apply {
             val freeShippingBottomSheet = SettingsFreeShippingBottomSheet.createInstance()
 
             setOnClickListener {
                 freeShippingBottomSheet.show(fm)
-                SettingFreeShippingTracker.trackFreeShippingClick(user)
+                freeShippingTracker.trackFreeShippingClick()
             }
-            show()
+            visibility = View.VISIBLE
 
-            SettingFreeShippingTracker.trackFreeShippingImpression(user)
+            freeShippingTracker.trackFreeShippingImpression()
         }
     }
 

@@ -69,7 +69,7 @@ class TopAdsInsightKeyNegFragment : BaseDaggerFragment() {
 
     private fun butttonClicked(position: Int) {
         itemCountCallBack?.onButtonClickedNeg(listOf(adapter.items[position].mutationData), key
-                ?: "", 1)
+                ?: "", 1, false)
     }
 
     private fun getfromArguments() {
@@ -90,7 +90,7 @@ class TopAdsInsightKeyNegFragment : BaseDaggerFragment() {
         setHeader(totalPotential)
         btnTambah.setOnClickListener {
             itemCountCallBack?.onButtonClickedNeg(mutationList, key
-                    ?: "", dataInsight?.get(key)?.negative?.size ?: 0)
+                    ?: "", dataInsight?.get(key)?.negative?.size ?: 0, true)
         }
         adapter.notifyDataSetChanged()
     }
@@ -116,7 +116,7 @@ class TopAdsInsightKeyNegFragment : BaseDaggerFragment() {
     }
 
     interface OnKeywordAdded {
-        fun onButtonClickedNeg(data: List<MutationData>, groupId: String, countToAdd: Int)
+        fun onButtonClickedNeg(data: List<MutationData>, groupId: String, countToAdd: Int, forAllButton: Boolean)
     }
 
 }

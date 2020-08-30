@@ -56,20 +56,19 @@ class HomeTopAdsVerificationTest {
     }
 
     private fun checkProductOnDynamicChannel(homeRecyclerView: RecyclerView, i: Int) {
-        val viewholder = homeRecyclerView.findViewHolderForAdapterPosition(i)
-        when (viewholder) {
+        when (val viewHolder = homeRecyclerView.findViewHolderForAdapterPosition(i)) {
             is MixTopComponentViewHolder -> {
-                clickOnEachItemRecyclerView(viewholder.itemView, R.id.dc_banner_rv, 0)
+                clickOnEachItemRecyclerView(viewHolder.itemView, R.id.dc_banner_rv, 0)
             }
             is MixLeftComponentViewHolder -> {
-                clickOnEachItemRecyclerView(viewholder.itemView, R.id.rv_product, 0)
+                clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_product, 0)
             }
             is DynamicChannelSprintViewHolder -> {
-                clickOnEachItemRecyclerView(viewholder.itemView, R.id.recycleList, 0)
+                clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recycleList, 0)
             }
             is HomeRecommendationFeedViewHolder -> {
                 waitForData()
-                clickOnEachItemRecyclerView(viewholder.itemView, R.id.home_feed_fragment_recycler_view, 0)
+                clickOnEachItemRecyclerView(viewHolder.itemView, R.id.home_feed_fragment_recycler_view, 0)
             }
         }
     }

@@ -16,11 +16,12 @@
             android:gravity="center"
             android:visibility="gone" />
 
-        <ProgressBar
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/progress_bar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center" />
+            android:layout_width="@dimen/dp_64"
+            android:layout_height="@dimen/dp_64"
+            android:layout_gravity="center"
+            app:loader_type="circular" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_preference_list"

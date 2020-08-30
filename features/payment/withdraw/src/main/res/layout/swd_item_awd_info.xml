@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/spacing_lvl4">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/ivInfoIcon"
+        android:layout_width="@dimen/layout_lvl5"
+        android:layout_height="@dimen/layout_lvl5"
+        app:unify_image_corner_radius="0"
+        app:unify_image_type="rect"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvAutoWDInfoTitle"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/swp_dp_12"
+        android:layout_marginLeft="@dimen/swp_dp_12"
+        android:textColor="@color/Neutral_N700_96"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/ivInfoIcon"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        tools:text="Jadwal penarikan" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvAutoWDInfoDescription"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:textColor="@color/Neutral_N700_68"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/tvAutoWDInfoTitle"
+        app:layout_constraintTop_toBottomOf="@id/tvAutoWDInfoTitle"
+        app:typographyType="body_2"
+        tools:text="Saldo akan dicairkan" />
+</androidx.constraintlayout.widget.ConstraintLayout>
