@@ -5,7 +5,6 @@ import com.tokopedia.favorite.di.modul.FavoriteModule
 import com.tokopedia.favorite.di.modul.UserSessionModule
 import com.tokopedia.favorite.di.scope.FavoriteScope
 import com.tokopedia.favorite.view.FragmentFavorite
-import com.tokopedia.favorite.view.FragmentFavoriteUsingViewModel
 import dagger.Component
 
 @FavoriteScope
@@ -14,6 +13,5 @@ import dagger.Component
         dependencies = [BaseAppComponent::class]
 )
 interface FavoriteComponent {
-    fun inject(fragmentFavorite: FragmentFavorite)
-    fun inject(fragment: FragmentFavoriteUsingViewModel)
+    fun inject(fragment: FragmentFavorite)
 }

@@ -42,10 +42,10 @@ import javax.inject.Inject
 /**
  * @author Kulomady on 1/20/17.
  */
-class FragmentFavoriteUsingViewModel() : BaseDaggerFragment(), FavoriteClickListener, OnRefreshListener {
+class FragmentFavorite() : BaseDaggerFragment(), FavoriteClickListener, OnRefreshListener {
 
     companion object {
-        val TAG = FragmentFavoriteUsingViewModel::class.java.simpleName
+        val TAG = FragmentFavorite::class.java.simpleName
         private val LOGIN_STATUS = "logged_in_status"
         private val IS_FAVORITE_EMPTY = "is_favorite_empty"
         private val OPEN_FAVORITE = "Favorite_Screen_Launched"
@@ -60,7 +60,7 @@ class FragmentFavoriteUsingViewModel() : BaseDaggerFragment(), FavoriteClickList
         //account fragment, which is only logged in user that can access that tab
         val VALUE_IS_LOGGED_IN_FAVORITE_SHOP = "true"
         fun newInstance(): Fragment {
-            return FragmentFavoriteUsingViewModel()
+            return FragmentFavorite()
         }
     }
 

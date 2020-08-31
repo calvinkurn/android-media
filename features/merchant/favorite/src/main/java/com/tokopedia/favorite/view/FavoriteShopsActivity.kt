@@ -8,8 +8,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
  */
 class FavoriteShopsActivity : BaseSimpleActivity() {
     override fun getNewFragment(): Fragment? {
-        return FragmentFavoriteUsingViewModel.newInstance()
-//        return FragmentFavorite.newInstance();
+        return FragmentFavorite.newInstance()
     }
 
     override fun getTagFragment(): String {
