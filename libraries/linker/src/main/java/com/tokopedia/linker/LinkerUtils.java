@@ -16,6 +16,7 @@ import com.tokopedia.linker.model.LinkerShareResult;
 import com.tokopedia.linker.requests.LinkerDeeplinkRequest;
 import com.tokopedia.linker.requests.LinkerGenericRequest;
 import com.tokopedia.linker.requests.LinkerShareRequest;
+import com.tokopedia.linker.validation.BranchHelperValidation;
 
 import io.branch.referral.BranchError;
 
@@ -62,12 +63,13 @@ public class LinkerUtils {
             return "";
     }
 
-    public static double convertToDouble(String value) {
+    public static double convertToDouble(String value, String type) {
         double result = 0;
         try {
             result = Double.valueOf(value);
         } catch (NumberFormatException ex) {
             ex.printStackTrace();
+            new BranchHelperValidation().exceptionStringToDouble("" + ex.getMessage(),type +"="+ value);
         }
         return result;
     }

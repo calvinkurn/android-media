@@ -17,7 +17,7 @@ import com.tokopedia.withdraw.saldowithdrawal.presentation.fragment.SaldoWithdra
 import com.tokopedia.withdraw.saldowithdrawal.presentation.fragment.SuccessFragmentWithdrawal
 import com.tokopedia.withdraw.saldowithdrawal.presentation.listener.WithdrawalFragmentCallback
 import com.tokopedia.withdraw.saldowithdrawal.presentation.listener.WithdrawalJoinRPCallback
-import kotlinx.android.synthetic.main.activity_saldo_withdraw.*
+import kotlinx.android.synthetic.main.swd_activity_saldo_withdraw.*
 import javax.inject.Inject
 
 /**
@@ -31,7 +31,7 @@ class WithdrawActivity : BaseSimpleActivity(), WithdrawalFragmentCallback,
     @Inject
     lateinit var analytics: dagger.Lazy<WithdrawAnalytics>
 
-    override fun getLayoutRes() = R.layout.activity_saldo_withdraw
+    override fun getLayoutRes() = R.layout.swd_activity_saldo_withdraw
 
     override fun getToolbarResourceID() = R.id.swd_header
 
