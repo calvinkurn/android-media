@@ -1351,6 +1351,18 @@
           ]
         }
       ],
+      "unavailable_section_action": [
+        {
+          "id": 7,
+          "code": "SHOWLESS",
+          "message": "Tampilkan Lebih Sedikittt"
+        },
+        {
+          "id": 8,
+          "code": "SHOWMORE",
+          "message": "Tampilkan Lebih Banyakkk"
+        }
+      ],
       "total_product_price": 2403000,
       "total_product_count": 2,
       "total_product_error": 1,

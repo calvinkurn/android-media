@@ -1,5 +1,6 @@
 package com.tokopedia.cart.view
 
+import com.tokopedia.cart.domain.model.cartlist.CartListData
 import com.tokopedia.cart.domain.model.cartlist.ShopGroupWithErrorData
 import com.tokopedia.cart.domain.model.cartlist.UnavailableGroupData
 import com.tokopedia.cart.view.uimodel.*
@@ -47,6 +48,14 @@ class ViewHolderDataMapper @Inject constructor() {
                 data = cartItemHolderData.cartItemData,
                 actionsData = cartItemHolderData.actionsData,
                 selectedUnavailableActionId = cartItemHolderData.selectedUnavailableActionId
+        )
+    }
+
+    fun mapDisabledAccordionHolderData(cartListData: CartListData, isCollapsed: Boolean): DisabledAccordionHolderData {
+        return DisabledAccordionHolderData(
+                isCollapsed = isCollapsed,
+                showMoreWording = cartListData.showMoreUnavailableDataWording,
+                showLessWording = cartListData.showLessUnavailableDataWording
         )
     }
 }

@@ -2074,7 +2074,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 }
             }
 
-            cartAdapter.addNotAvailableAccordion(DisabledAccordionHolderData(accordionCollapseState))
+            val accordionHolderData = viewHolderDataMapper.mapDisabledAccordionHolderData(cartListData, accordionCollapseState)
+            cartAdapter.addNotAvailableAccordion(accordionHolderData)
         }
     }
 

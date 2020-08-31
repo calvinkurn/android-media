@@ -7,6 +7,8 @@ import com.tokopedia.cart.R
 import com.tokopedia.cart.data.model.response.promo.*
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.*
 import com.tokopedia.cart.domain.model.cartlist.*
+import com.tokopedia.cart.view.ACTION_SHOWLESS
+import com.tokopedia.cart.view.ACTION_SHOWMORE
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.purchase_platform.common.constant.CartConstant.STATE_RED
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.BenefitSummaryInfo
@@ -43,6 +45,12 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
         }
         cartListData.shopGroupAvailableDataList = mapShopGroupAvailableDataList(cartDataListResponse)
         cartListData.unavailableGroupData = mapUnavailableGroupData(cartDataListResponse)
+        cartListData.showLessUnavailableDataWording = cartDataListResponse.unavailableSectionAction.find {
+            return@find it.id == ACTION_SHOWLESS
+        }?.message ?: "Tampilkan Lebih Sedikit34"
+        cartListData.showMoreUnavailableDataWording = cartDataListResponse.unavailableSectionAction.find {
+            return@find it.id == ACTION_SHOWMORE
+        }?.message ?: "Tampilkan Semua12"
         cartListData.isPromoCouponActive = cartDataListResponse.isCouponActive == 1
 
         var errorCount = 0
