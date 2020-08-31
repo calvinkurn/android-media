@@ -18,6 +18,8 @@ private const val KEY_TOP_ADS_SCREEN_NAME = "/topads - home"
 private const val KEY_TOP_ADS_OBAORDING_SCREEN_NAME = "/autoads - onboarding"
 private const val KEY_EVENT_LOGGED_IN_STATUS = "isLoggedInStatus"
 private const val KEY_EVENT_USER_ID = "userId"
+private const val KEY_EVENT_INSIGHT_RECOMMENDATION = "clickShopInsight"
+private const val KEY_EVENT_CATEGORY_INSIGHT_RECOMMENDATION = "insight center"
 
 
 class TopAdsCreateAnalytics {
@@ -65,6 +67,18 @@ class TopAdsCreateAnalytics {
         val map = mapOf(
                 KEY_EVENT to KEY_OPEN_SCREEN_EVENT,
                 KEY_EVENT_SCREEN_NAME to KEY_TOP_ADS_SCREEN_NAME
+        )
+
+        getTracker().sendGeneralEvent(map)
+    }
+
+    fun sendInsightGtmEvent(eventAction: String, eventLabel: String, userId: String) {
+        val map = mapOf(
+                KEY_EVENT to KEY_EVENT_INSIGHT_RECOMMENDATION,
+                KEY_EVENT_CATEGORY to KEY_EVENT_CATEGORY_INSIGHT_RECOMMENDATION,
+                KEY_EVENT_ACTION to eventAction,
+                KEY_EVENT_LABEL to eventLabel,
+                KEY_EVENT_USER_ID to userId
         )
 
         getTracker().sendGeneralEvent(map)

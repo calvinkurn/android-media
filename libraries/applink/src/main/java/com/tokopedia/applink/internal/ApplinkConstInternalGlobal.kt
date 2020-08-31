@@ -79,6 +79,10 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/withdraw
     @JvmField
     val WITHDRAW = "$INTERNAL_GLOBAL/withdraw"
+    // WithdrawActivity
+    // tokopedia-android-internal://global/withdraw
+    @JvmField
+    val AUTO_WITHDRAW_SETTING = "$INTERNAL_GLOBAL/autoWithdrawSettings"
 
     // ChangeInactiveFormRequestActivity
     // tokopedia-android-internal://global/change-inactive-phone-form

@@ -107,6 +107,7 @@ public interface CommonConstant {
         String COUPON = "coupon";
         String CATALOG = "catalog";
         String BANNER = "banner";
+        String TOPADS = "topads";
     }
 
     interface BannerType {
