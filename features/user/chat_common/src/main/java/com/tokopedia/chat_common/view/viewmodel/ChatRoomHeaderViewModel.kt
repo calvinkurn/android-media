@@ -8,7 +8,7 @@ import kotlinx.android.parcel.Parcelize
  * shopId always f
  */
 @Parcelize
-data class ChatRoomHeaderViewModel(
+data class ChatRoomHeaderViewModel constructor(
         var name: String = "",
         var label: String = "",
         var senderId: String = "",

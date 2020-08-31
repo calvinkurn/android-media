@@ -8,7 +8,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.image.SquareImageView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatlist.listener.ChatListItemListener
+import com.tokopedia.topchat.chatlist.analytic.ChatListAnalytic
 import com.tokopedia.topchat.chatlist.model.EmptyChatModel
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.empty_chat.view.*
@@ -16,7 +16,10 @@ import kotlinx.android.synthetic.main.empty_chat.view.*
 /**
  * @author : Steven 2019-08-07
  */
-class EmptyChatViewHolder(itemView: View, var listener: ChatListItemListener) : AbstractViewHolder<EmptyChatModel>(itemView) {
+class EmptyChatViewHolder constructor(
+        itemView: View,
+        private val chatListAnalytics: ChatListAnalytic
+) : AbstractViewHolder<EmptyChatModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -28,10 +31,23 @@ class EmptyChatViewHolder(itemView: View, var listener: ChatListItemListener) : 
     val image: SquareImageView = itemView.findViewById(R.id.thumbnail)
 
     override fun bind(element: EmptyChatModel) {
-        title.text = element.title
-        subtitle.text = element.body
-        ImageHandler.loadImage2(image, element.image, R.drawable.empty_chat)
+        bindText(element)
+        bindDescription(element)
+        bindImage(element)
         bindCta(element)
+        bindTrackView(element)
+    }
+
+    private fun bindText(element: EmptyChatModel) {
+        title.text = element.title
+    }
+
+    private fun bindDescription(element: EmptyChatModel) {
+        subtitle.text = element.body
+    }
+
+    private fun bindImage(element: EmptyChatModel) {
+        ImageHandler.loadImage2(image, element.image, R.drawable.empty_chat)
     }
 
     private fun bindCta(element: EmptyChatModel) {
@@ -41,7 +57,15 @@ class EmptyChatViewHolder(itemView: View, var listener: ChatListItemListener) : 
 
         itemView.btnCta?.text = element.ctaText
         itemView.btnCta?.setOnClickListener {
+            if (element.isTopAds) {
+                chatListAnalytics.eventClickCtaTopAds()
+            }
             RouteManager.route(it.context, element.ctaApplink)
         }
+    }
+
+    private fun bindTrackView(element: EmptyChatModel) {
+        if (!element.isTopAds) return
+        chatListAnalytics.eventViewCtaTopAds()
     }
 }

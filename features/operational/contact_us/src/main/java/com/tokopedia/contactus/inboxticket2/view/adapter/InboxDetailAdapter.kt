@@ -20,8 +20,10 @@ import com.tokopedia.contactus.common.analytics.ContactUsTracking
 import com.tokopedia.contactus.common.analytics.InboxTicketTracking
 import com.tokopedia.contactus.inboxticket2.domain.CommentsItem
 import com.tokopedia.contactus.inboxticket2.view.activity.InboxDetailActivity
-import com.tokopedia.contactus.inboxticket2.view.adapter.InboxDetailAdapter.DetailViewHolder
+import com.tokopedia.contactus.inboxticket2.view.adapter.holder.InboxDetailViewHolder
+import com.tokopedia.contactus.inboxticket2.view.adapter.holder.InboxHeaderViewHolder
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract.InboxDetailPresenter
+import com.tokopedia.contactus.inboxticket2.view.listeners.InboxDetailListener
 import com.tokopedia.contactus.inboxticket2.view.utils.CLOSED
 import com.tokopedia.contactus.inboxticket2.view.utils.Utils
 import com.tokopedia.kotlin.extensions.view.hide
@@ -29,11 +31,13 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.utils.htmltags.HtmlUtil
 
 private const val ROLE_TYPE_AGENT = "agent"
+private const val VIEW_TYPE_HEADER = 0
 
 class InboxDetailAdapter(private val mContext: Context,
-                         private val commentList: List<CommentsItem>,
+                         private val commentList: MutableList<CommentsItem>,
                          needAttachment: Boolean,
-                         private val mPresenter: InboxDetailPresenter) : RecyclerView.Adapter<DetailViewHolder>() {
+                         private val mPresenter: InboxDetailPresenter,
+                         private val inboxDetailListener: InboxDetailListener) : RecyclerView.Adapter<InboxDetailViewHolder>() {
 
     private var needAttachment: Boolean
     private val indexExpanded: Int = -1
@@ -41,15 +45,25 @@ class InboxDetailAdapter(private val mContext: Context,
     private var searchText: String? = null
     private val utils: Utils by lazy { Utils() }
     private val hintAttachmentString: SpannableString
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DetailViewHolder {
-        val inflater = LayoutInflater.from(
-                parent.context)
-        val v = inflater.inflate(R.layout.layout_item_message, parent, false)
-        return DetailViewHolder(v)
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InboxDetailViewHolder {
+        val inflater = LayoutInflater.from(parent.context)
+        return if (viewType == VIEW_TYPE_HEADER) {
+            val view = inflater.inflate(R.layout.layout_item_message_header, parent, false)
+            InboxHeaderViewHolder(view)
+        } else {
+            val view = inflater.inflate(R.layout.layout_item_message, parent, false)
+            InboxMessageViewHolder(view)
+        }
+
     }
 
-    override fun onBindViewHolder(holder: DetailViewHolder, position: Int) {
-        holder.bindViewHolder(position, mPresenter)
+    override fun onBindViewHolder(holder: InboxDetailViewHolder, position: Int) {
+        if (holder is InboxMessageViewHolder) {
+            holder.bindViewHolder(position, mPresenter)
+        } else if (holder is InboxHeaderViewHolder) {
+            holder.bind(commentList[position], inboxDetailListener, utils)
+        }
     }
 
     fun enterSearchMode(text: String) {
@@ -74,7 +88,17 @@ class InboxDetailAdapter(private val mContext: Context,
         return commentList.size
     }
 
-    inner class DetailViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
+    override fun getItemViewType(position: Int): Int {
+        return position
+    }
+
+    fun addComment(commentsItem: CommentsItem) {
+        commentList.add(commentsItem)
+        notifyItemRangeChanged(itemCount - 2, 2)
+        (mContext as InboxDetailActivity).scrollTo(itemCount - 1)
+    }
+
+    inner class InboxMessageViewHolder(val view: View) : InboxDetailViewHolder(view), View.OnClickListener {
         private var ivProfile: ImageView? = null
         private var tvName: TextView? = null
         private var tvDateRecent: TextView? = null
@@ -118,7 +142,8 @@ class InboxDetailAdapter(private val mContext: Context,
             val item = commentList[position]
             if (item.createdBy != null) {
                 ImageHandler.loadImageCircle2(mContext, ivProfile, item.createdBy?.picture)
-                tvName?.text = item.createdBy?.name
+                if (isRoleAgent(item)) tvName?.text = view.context.getString(R.string.contact_us_tokopedia_care_team)
+                else tvName?.text = item.createdBy?.name
             }
             if (item.rating != null && item.rating == KEY_DIS_LIKED) {
                 ratingThumbsDown.show()
@@ -190,16 +215,14 @@ class InboxDetailAdapter(private val mContext: Context,
         }
 
         private fun sendGTMEvent(eventLabel: String) {
-            ContactUsTracking.sendGTMInboxTicket(InboxTicketTracking.Event.EventName,
+            ContactUsTracking.sendGTMInboxTicket(view.context, InboxTicketTracking.Event.EventName,
                     InboxTicketTracking.Category.EventHelpMessageInbox,
                     InboxTicketTracking.Action.EventClickCsatPerReply,
                     eventLabel)
         }
 
         private fun isRoleAgent(item: CommentsItem?): Boolean {
-            return if (item?.createdBy?.role != null) {
-                item.createdBy?.role == ROLE_TYPE_AGENT
-            } else false
+            return item?.createdBy?.role == ROLE_TYPE_AGENT
         }
 
         private fun settingRatingButtonsVisibility(visibility: Int) {

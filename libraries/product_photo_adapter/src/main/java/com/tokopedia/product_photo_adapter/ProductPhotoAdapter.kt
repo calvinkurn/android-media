@@ -61,8 +61,10 @@ class ProductPhotoAdapter(private val maxSize: Int,
     }
 
     override fun onDeleteButtonClicked(position: Int) {
-        productPhotoPaths.removeAt(position)
-        if (productPhotoPaths.isEmpty() && usePlaceholder) addImagePlaceHolder()
-        notifyDataSetChanged()
+        if (position >= 0 && position < productPhotoPaths.size) {
+            productPhotoPaths.removeAt(position)
+            if (productPhotoPaths.isEmpty() && usePlaceholder) addImagePlaceHolder()
+            notifyDataSetChanged()
+        }
     }
 }

@@ -2,12 +2,6 @@ package com.tokopedia.favorite.view;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +9,16 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
@@ -26,16 +28,16 @@ import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.favorite.R;
-import com.tokopedia.favorite.di.component.FavoriteComponent;
 import com.tokopedia.favorite.di.component.DaggerFavoriteComponent;
+import com.tokopedia.favorite.di.component.FavoriteComponent;
 import com.tokopedia.favorite.view.adapter.FavoriteAdapter;
 import com.tokopedia.favorite.view.adapter.FavoriteAdapterTypeFactory;
 import com.tokopedia.favorite.view.viewlistener.FavoriteClickListener;
 import com.tokopedia.favorite.view.viewmodel.FavoriteShopViewModel;
 import com.tokopedia.favorite.view.viewmodel.TopAdsShopItem;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -57,6 +59,8 @@ public class FragmentFavorite extends BaseDaggerFragment
         SwipeRefreshLayout.OnRefreshListener {
 
     public static final String TAG = FragmentFavorite.class.getSimpleName();
+
+    private static final String className = "com.tokopedia.favorite.view.FragmentFavorite";
 
     private static final String LOGIN_STATUS = "logged_in_status";
     private static final String IS_FAVORITE_EMPTY = "is_favorite_empty";
@@ -237,7 +241,7 @@ public class FragmentFavorite extends BaseDaggerFragment
     }
 
     public BaseAppComponent getBaseAppComponent() {
-        return ((BaseMainApplication)getActivity().getApplication()).getBaseAppComponent();
+        return ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent();
     }
 
     @Override
@@ -362,6 +366,12 @@ public class FragmentFavorite extends BaseDaggerFragment
 
     @Override
     public void onFavoriteShopClicked(View view, TopAdsShopItem shopItemSelected) {
+        new TopAdsUrlHitter(view.getContext()).hitClickUrl(
+                className,
+                shopItemSelected.getShopClickUrl(),
+                shopItemSelected.getShopId(),
+                shopItemSelected.getShopName(),
+                shopItemSelected.getShopImageUrl());
         favoriteShopViewSelected = view;
         this.shopItemSelected = shopItemSelected;
         favoritePresenter.addFavoriteShop(favoriteShopViewSelected, this.shopItemSelected);

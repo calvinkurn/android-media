@@ -2,7 +2,6 @@ package com.tokopedia.favorite.view.adapter
 
 import android.content.Context
 import android.graphics.drawable.Drawable
-import android.os.AsyncTask
 import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
@@ -21,20 +20,13 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.favorite.R
 import com.tokopedia.favorite.utils.TrackingConst
 import com.tokopedia.favorite.view.viewlistener.FavoriteClickListener
 import com.tokopedia.favorite.view.viewmodel.TopAdsShopItem
 import com.tokopedia.topads.sdk.utils.ImageLoader
-import com.tokopedia.topads.sdk.utils.ImpresionTask
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
-import java.io.BufferedReader
-import java.io.IOException
-import java.io.InputStream
-import java.io.InputStreamReader
-import java.net.HttpURLConnection
-import java.net.URL
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -75,7 +67,7 @@ class TopAdsShopAdapter(
         holder.shopName.text = Html.fromHtml(shopItem.shopName)
         holder.shopLocation.text = Html.fromHtml(shopItem.shopLocation)
         imageLoader!!.loadImage(shopItem.shopImageUrl, shopItem.shopImageEcs, holder.shopIcon)
-        setShopCover(holder, shopItem.shopCoverUrl, shopItem.shopCoverEcs)
+        setShopCover(holder, shopItem)
         setFavorite(holder, shopItem)
         holder.mainContent.setOnClickListener(onShopClicked(shopItem))
         holder.favButton.setOnClickListener(
@@ -83,45 +75,33 @@ class TopAdsShopAdapter(
         )
     }
 
-    private fun glideRequestListener(coverUri: String): RequestListener<Drawable?> {
-        return object : RequestListener<Drawable?> {
-            override fun onLoadFailed(
-                    e: GlideException?,
-                    model: Any,
-                    target: Target<Drawable?>,
-                    isFirstResource: Boolean
-            ): Boolean {
-                return false
-            }
-
-            override fun onResourceReady(
-                    resource: Drawable?,
-                    model: Any,
-                    target: Target<Drawable?>,
-                    dataSource: DataSource,
-                    isFirstResource: Boolean
-            ): Boolean {
-                if (coverUri.contains(PATH_VIEW) && !isFirstResource) {
-                    ImpresionTask(className).execute(coverUri)
-                }
-                return false
-            }
-        }
-    }
-
-    private fun setShopCover(holder: ViewHolder, coverUri: String?, ecs: String?) {
-        if (coverUri == null) {
+    private fun setShopCover(holder: ViewHolder, shopItem: TopAdsShopItem) {
+        if (shopItem.shopCoverUrl == null) {
             holder.shopCover.setImageResource(com.tokopedia.abstraction.R.drawable.ic_loading_toped)
         } else {
             Glide.with(context!!)
-                    .load(ecs)
+                    .load(shopItem.shopCoverEcs)
                     .dontAnimate()
                     .placeholder(com.tokopedia.topads.sdk.R.drawable.loading_page)
                     .error(com.tokopedia.topads.sdk.R.drawable.error_drawable)
                     .skipMemoryCache(true)
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .override(375, 97)
-                    .listener(glideRequestListener(coverUri))
+                    .listener(object : RequestListener<Drawable?> {
+                        override fun onLoadFailed(e: GlideException?, model: Any, target: Target<Drawable?>, isFirstResource: Boolean): Boolean {
+                            return false
+                        }
+
+                        override fun onResourceReady(resource: Drawable?, model: Any, target: Target<Drawable?>, dataSource: DataSource, isFirstResource: Boolean): Boolean {
+                            TopAdsUrlHitter(holder.getContext()).hitImpressionUrl(
+                                    className,
+                                    shopItem.shopImageUrl,
+                                    shopItem.shopId,
+                                    shopItem.shopName,
+                                    shopItem.shopImageUrl)
+                            return false
+                        }
+                    })
                     .into(holder.shopCover)
         }
     }
@@ -143,10 +123,9 @@ class TopAdsShopAdapter(
     }
 
     private fun createScaleAnimation() {
-        anim = ScaleAnimation(1f, 1.25f, // from x and y
-                1f, 1.25f, // to x and y
-                Animation.RELATIVE_TO_SELF, 0.2.toFloat(), // pivot x type and value
-                Animation.RELATIVE_TO_SELF, 0.2.toFloat()) // pivot y type and value
+        anim = ScaleAnimation(1f, 1.25f, 1f, 1.25f,
+                Animation.RELATIVE_TO_SELF,
+                0.2.toFloat(), Animation.RELATIVE_TO_SELF, 0.2.toFloat())
         anim!!.duration = 250
         anim!!.repeatCount = Animation.INFINITE
         anim!!.repeatMode = Animation.REVERSE
@@ -156,67 +135,22 @@ class TopAdsShopAdapter(
     private fun onShopClicked(item: TopAdsShopItem): View.OnClickListener {
         return View.OnClickListener { view ->
             val context = view.context
-            FireTopAdsActionAsyncTask().execute(item.shopClickUrl)
+            TopAdsUrlHitter(view.context).hitClickUrl(
+                    className,
+                    item.shopClickUrl,
+                    item.shopId,
+                    item.shopName,
+                    item.shopImageUrl)
             eventFavoriteViewRecommendation()
             val intent = RouteManager.getIntent(context, ApplinkConst.SHOP, item.shopId)
             context.startActivity(intent)
         }
     }
 
-    /**
-     * Hack solution using AsyncTask
-     * This is to handled fire and forget url to shopfavorit
-     * Previously was using Volley (TopadsUtil.clickTopAdsAction)
-     */
-    class FireTopAdsActionAsyncTask : AsyncTask<String?, Void?, Void?>() {
-
-        override fun doInBackground(vararg params: String?): Void? {
-            val url: URL
-            val urlConnection: HttpURLConnection
-            try {
-                val stringBuilder = params[0] +
-                        "?device=android&os_type=1&appversion=" +
-                        GlobalConfig.VERSION_CODE
-                url = URL(stringBuilder)
-                urlConnection = url.openConnection() as HttpURLConnection
-                urlConnection.requestMethod = "GET"
-                val responseCode = urlConnection.responseCode
-                if (responseCode == HttpURLConnection.HTTP_OK) {
-                    readStream(urlConnection.inputStream)
-                }
-            } catch (e: Throwable) {
-                e.printStackTrace()
-            }
-            return null
-        }
-
-        private fun readStream(`in`: InputStream) {
-            var reader: BufferedReader? = null
-            val response = StringBuilder()
-            try {
-                reader = BufferedReader(InputStreamReader(`in`))
-                var line: String? = ""
-                while (reader.readLine().also { line = it } != null) {
-                    response.append(line)
-                }
-            } catch (e: IOException) {
-                e.printStackTrace()
-            } finally {
-                if (reader != null) {
-                    try {
-                        reader.close()
-                    } catch (e: IOException) {
-                        e.printStackTrace()
-                    }
-                }
-            }
-        }
-    }
-
-    private fun eventFavoriteViewRecommendation() {
+    fun eventFavoriteViewRecommendation() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 TrackingConst.Event.FAVORITE,
-                TrackingConst.Category.HOMEPAGE.toLowerCase(),
+                TrackingConst.Category.HOMEPAGE.toLowerCase(Locale.getDefault()),
                 TrackingConst.Action.CLICK_SHOP_FAVORITE,
                 "")
     }

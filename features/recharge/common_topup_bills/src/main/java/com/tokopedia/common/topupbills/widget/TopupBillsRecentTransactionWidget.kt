@@ -3,6 +3,7 @@ package com.tokopedia.common.topupbills.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -10,7 +11,6 @@ import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsRecentNumbersAdapter
 import com.tokopedia.common.topupbills.view.model.TopupBillsTrackRecentTransaction
-import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import org.jetbrains.annotations.NotNull
@@ -19,8 +19,8 @@ import org.jetbrains.annotations.NotNull
  * Created by nabillasabbaha on 25/04/19.
  */
 open class TopupBillsRecentTransactionWidget @JvmOverloads constructor(@NotNull context: Context, attrs: AttributeSet? = null,
-                                                                  defStyleAttr: Int = 0)
-    : BaseCustomView(context, attrs, defStyleAttr), TopupBillsWidgetInterface {
+                                                                       defStyleAttr: Int = 0)
+    : FrameLayout(context, attrs, defStyleAttr), TopupBillsWidgetInterface {
 
     protected val recyclerView: RecyclerView
     protected val titleWidget: TextView
