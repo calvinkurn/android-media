@@ -57,6 +57,7 @@ dependencies {
     implementation rootProject.ext.firebase.messaging
     
     implementation project(rootProject.ext.libraries.translator)
+    implementation project(rootProject.ext.libraries.screenshot_observer)
     implementation rootProject.ext.debugToolsDependencies.stetho
 
     implementation(rootProject.ext.debugToolsDependencies.timber) {
