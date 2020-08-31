@@ -119,7 +119,7 @@ class DealsHomeFragment : DealsBaseFragment(),
     }
 
     private fun checkCoachMark(homeLayout: List<DealsBaseItemDataView>) {
-        val shouldShowCoachMark = localCacheHandler.getBoolean(SHOW_COACH_MARK_KEY, true)
+        val shouldShowCoachMark = localCacheHandler.getBoolean(SHOW_COACH_MARK_KEY, true) && (activity != null && isAdded)
         if (shouldShowCoachMark && homeLayout.isNotEmpty() && homeLayout.first().isLoaded) {
             recyclerView.smoothScrollToPosition(adapter.lastIndex)
             Handler().postDelayed(
