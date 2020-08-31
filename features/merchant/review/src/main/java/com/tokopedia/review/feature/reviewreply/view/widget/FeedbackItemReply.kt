@@ -71,10 +71,10 @@ class FeedbackItemReply : BaseCustomView, ReviewReplyListener {
         replyFeedbackState?.background = ContextCompat.getDrawable(context, R.drawable.rectangle_8)
         if (feedbackText.isEmpty()) {
             tvFeedbackReview?.text = context.getString(R.string.review_not_found)
-            tvFeedbackReview?.setTextColor(ContextCompat.getColor(context, R.color.clr_review_not_found))
+            tvFeedbackReview?.setTextColor(ContextCompat.getColor(context, R.color.light_N700_44))
         } else {
             tvFeedbackReview?.apply {
-                setTextColor(ContextCompat.getColor(context, R.color.clr_f531353b))
+                setTextColor(ContextCompat.getColor(context, R.color.light_N700_96))
                 text = feedbackText
             }
         }
