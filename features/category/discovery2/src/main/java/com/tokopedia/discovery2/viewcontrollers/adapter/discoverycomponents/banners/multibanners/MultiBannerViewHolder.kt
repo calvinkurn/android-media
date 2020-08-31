@@ -71,7 +71,7 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
         })
 
         multiBannerViewModel.isPageRefresh().observe(fragment.viewLifecycleOwner, Observer {
-            if (it) fragment.startActivityForResult(RouteManager.getIntent(fragment.context, ApplinkConstInternalTestApp.LOGIN), PAGE_REFRESH_LOGIN)
+            if (it) fragment.startActivityForResult(RouteManager.getIntent(fragment.context, ApplinkConst.LOGIN), PAGE_REFRESH_LOGIN)
         })
     }
 
