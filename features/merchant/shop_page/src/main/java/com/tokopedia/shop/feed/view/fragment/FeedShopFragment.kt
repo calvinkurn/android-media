@@ -7,8 +7,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.Toast
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -57,7 +57,6 @@ import com.tokopedia.kolcommon.util.PostMenuListener
 import com.tokopedia.kolcommon.util.createBottomMenu
 import com.tokopedia.kolcommon.view.listener.KolPostLikeListener
 import com.tokopedia.kolcommon.view.listener.KolPostViewHolderListener
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTrackingConstants
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
@@ -108,7 +107,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     private var isLoading = false
     private var isForceRefresh = false
 
-    private var bottomSheetSellerMigration: BottomSheetBehavior<ConstraintLayout>? = null
+    private var bottomSheetSellerMigration: BottomSheetBehavior<LinearLayout>? = null
 
     private var whitelistDomain: WhitelistDomain = WhitelistDomain()
 
@@ -385,10 +384,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     override fun onGotoPlayStoreClicked() {
-        goToSellerApp {
-            SellerMigrationTracking.eventGoToSellerApp(userSession.userId.orEmpty(), SellerMigrationTrackingConstants.EVENT_CLICK_GO_TO_SELLER_APP_ACCOUNT)
-            SellerMigrationTracking.eventGoToPlayStore(userSession.userId.orEmpty(), SellerMigrationTrackingConstants.EVENT_CLICK_GO_TO_SELLER_APP_ACCOUNT)
-        }
+        goToSellerApp(::trackGotoSellerApp, ::trackGotoPlayStore)
     }
 
     override fun onGotoLearnMoreClicked(url: String): Boolean {
@@ -903,20 +899,30 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         presenter.clearCache()
     }
 
+    private fun trackGotoSellerApp() {
+        SellerMigrationTracking.eventGoToSellerApp(userSession.userId.orEmpty(), SellerMigrationTrackingConstants.EVENT_CLICK_GO_TO_SELLER_APP_ACCOUNT)
+    }
+
+    private fun trackGotoPlayStore() {
+        SellerMigrationTracking.eventGoToPlayStore(userSession.userId.orEmpty(), SellerMigrationTrackingConstants.EVENT_CLICK_GO_TO_SELLER_APP_ACCOUNT)
+    }
+
     override fun onTopAdsViewImpression(bannerId: String, imageUrl: String) {
 
     }
 
     private fun setupBottomSheetSellerMigration(view: View) {
-        val viewTarget: ConstraintLayout = view.findViewById(R.id.bottomSheetTabFeedHasPost)
         if(!GlobalConfig.isSellerApp()) {
-            viewTarget.show()
-            bottomSheetSellerMigration = BottomSheetBehavior.from(bottomSheetTabFeedHasPost)
+            val viewTarget: LinearLayout = view.findViewById(R.id.bottom_sheet_wrapper)
+            bottomSheetSellerMigration = BottomSheetBehavior.from(viewTarget)
             BottomSheetUnify.bottomSheetBehaviorKnob(viewTarget, false)
             BottomSheetUnify.bottomSheetBehaviorHeader(viewTarget, false)
 
-            val ivTabFeedHasPost: ImageUnify = viewTarget.findViewById(R.id.ivTabFeedHasPost)
-            val tvTitleTabFeedHasPost: Typography = viewTarget.findViewById(R.id.tvTitleTabFeedHasPost)
+            val sellerMigrationLayout = View.inflate(context, R.layout.widget_seller_migration_bottom_sheet_has_post, null)
+            viewTarget.addView(sellerMigrationLayout)
+
+            val ivTabFeedHasPost: ImageUnify = sellerMigrationLayout.findViewById(R.id.ivTabFeedHasPost)
+            val tvTitleTabFeedHasPost: Typography = sellerMigrationLayout.findViewById(R.id.tvTitleTabFeedHasPost)
             ivTabFeedHasPost.setImageDrawable(context?.let { ContextCompat.getDrawable(it, R.drawable.ic_tab_feed_has_post_seller_migration) })
             tvTitleTabFeedHasPost.text = getString(R.string.seller_migration_tab_feed_bottom_sheet_content)
             tvTitleTabFeedHasPost.setOnClickLinkSpannable(getString(R.string.seller_migration_tab_feed_bottom_sheet_content)) {
