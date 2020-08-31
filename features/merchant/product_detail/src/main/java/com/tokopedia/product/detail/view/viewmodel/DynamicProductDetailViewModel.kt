@@ -550,7 +550,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                         val productIds = arrayListOf(getDynamicProductInfoP1?.basic?.productID ?: "")
                         val productIdsString = TextUtils.join(",", productIds)
                         getRecommendationFilterChips.setParams(
-                                userId = userSessionInterface.userId,
+                                userId = if(userSessionInterface.userId.isEmpty()) 0 else userSessionInterface.userId.toInt(),
                                 pageName = pageName,
                                 productIDs = productIdsString,
                                 xSource = ProductDetailConstant.DEFAULT_X_SOURCE

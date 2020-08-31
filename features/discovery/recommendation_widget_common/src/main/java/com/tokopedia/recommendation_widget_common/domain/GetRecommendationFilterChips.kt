@@ -60,9 +60,9 @@ class GetRecommendationFilterChips (
         return recommendationFilterChipsEntity.recommendationFilterChips.data.filterChip
     }
 
-    fun setParams(userId: String="", productIDs: String="", pageName: String="", xSource: String="", queryParam: String=""){
+    fun setParams(userId: Int=0, productIDs: String="", pageName: String="", xSource: String="", queryParam: String=""){
         params.parameters.clear()
-        params.putString(PARAM_USER_ID, userId)
+        params.putInt(PARAM_USER_ID, userId)
         params.putString(PARAM_PRODUCT_IDS, productIDs)
         params.putString(PARAM_PAGE_NAME, pageName)
         params.putString(PARAM_X_SOURCE, xSource)
