@@ -423,25 +423,26 @@ class CartItemViewHolder constructor(itemView: View,
     }
 
     private fun renderSlashPriceFromWholesale(data: CartItemHolderData, slashPricePercentage: Double): Double {
-        var slashPricePercentage1 = slashPricePercentage
-        textSlashPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(data.cartItemData?.originData?.pricePlanInt
-                ?: 0, false).removeDecimalSuffix()
-        val pricePlan = data.cartItemData?.originData?.pricePlan ?: 0.0
+        var tmpSlashPricePercentage = slashPricePercentage
+        val priceDropValue = data.cartItemData?.originData?.initialPriceBeforeDrop ?: 0
+        val pricePlan = data.cartItemData?.originData?.pricePlanInt ?: 0
+        val originalPrice = if (priceDropValue > 0) priceDropValue else pricePlan
+        textSlashPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(originalPrice, false).removeDecimalSuffix()
         val wholesalePrice = data.cartItemData?.originData?.wholesalePrice ?: 0
-        slashPricePercentage1 = (pricePlan - wholesalePrice) / pricePlan * 100
-        labelSlashPricePercentage.text = "${slashPricePercentage1.roundToInt()}%"
-        return slashPricePercentage1
+        tmpSlashPricePercentage = (pricePlan.toDouble() - wholesalePrice) / pricePlan * 100
+        labelSlashPricePercentage.text = "${tmpSlashPricePercentage.roundToInt()}%"
+        return tmpSlashPricePercentage
     }
 
     private fun renderSlashPriceFromPriceDrop(data: CartItemHolderData, slashPricePercentage: Double): Double {
-        var slashPricePercentage1 = slashPricePercentage
+        var tmpSlashPricePercentage = slashPricePercentage
         textSlashPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(data.cartItemData?.originData?.initialPriceBeforeDrop
                 ?: 0, false).removeDecimalSuffix()
         val pricePlan = data.cartItemData?.originData?.pricePlan ?: 0.0
         val priceOriginal = data.cartItemData?.originData?.initialPriceBeforeDrop ?: 1
-        slashPricePercentage1 = (priceOriginal - pricePlan) / priceOriginal * 100
-        labelSlashPricePercentage.text = "${slashPricePercentage1.roundToInt()}%"
-        return slashPricePercentage1
+        tmpSlashPricePercentage = (priceOriginal - pricePlan) / priceOriginal * 100
+        labelSlashPricePercentage.text = "${tmpSlashPricePercentage.roundToInt()}%"
+        return tmpSlashPricePercentage
     }
 
     private fun renderSlashPriceFromCampaign(data: CartItemHolderData) {
