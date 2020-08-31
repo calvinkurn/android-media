@@ -1,12 +1,9 @@
 package com.tokopedia.sellerhome.settings.domain.usecase
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
-import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
-import com.tokopedia.sellerhome.settings.domain.entity.ShopInfo
+import com.tokopedia.sellerhome.settings.domain.entity.OthersBalance
 import com.tokopedia.sellerhome.settings.view.uimodel.base.PowerMerchantStatus
-import com.tokopedia.sellerhome.settings.view.uimodel.base.ShopType
-import com.tokopedia.sellerhome.settings.view.uimodel.shopinfo.SettingShopInfoUiModel
+import com.tokopedia.sellerhome.settings.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -27,7 +24,7 @@ class GetAllShopInfoUseCaseTest {
     lateinit var userSession : UserSessionInterface
 
     @RelaxedMockK
-    lateinit var getSettingShopInfoUseCase: GetSettingShopInfoUseCase
+    lateinit var balanceInfoUseCase: BalanceInfoUseCase
 
     @RelaxedMockK
     lateinit var getShopBadgeUseCase: GetShopBadgeUseCase
@@ -55,7 +52,7 @@ class GetAllShopInfoUseCaseTest {
     private val mGetAllShopInfoUseCase by lazy {
         GetAllShopInfoUseCase(
                 userSession,
-                getSettingShopInfoUseCase,
+                balanceInfoUseCase,
                 getShopBadgeUseCase,
                 getShopTotalFollowersUseCase,
                 shopStatusTypeUseCase,
@@ -66,28 +63,34 @@ class GetAllShopInfoUseCaseTest {
 
     @Test
     fun `success get all shop info`() = runBlocking {
-        val settingShopInfoSuccess = ShopInfo()
+        val balanceSuccess = OthersBalance()
         val shopTypeSuccess = PowerMerchantStatus.Active
         val totalFollowersSuccess = anyInt()
         val shopBadgeUrlSuccess = anyString()
         val topAdsDepositSuccess = anyFloat()
         val isTopAdsAutoTopupSuccess = anyBoolean()
 
-        val allShopInfoSuccess =
-                SettingShopInfoUiModel(
-                        settingShopInfoSuccess.shopInfoMoengage?.info?.shopName.toEmptyStringIfNull(),
-                        settingShopInfoSuccess.shopInfoMoengage?.info?.shopAvatar.toEmptyStringIfNull(),
-                        shopTypeSuccess,
-                        settingShopInfoSuccess.balance?.totalBalance ?: "",
-                        topAdsDepositSuccess.getCurrencyFormatted(),
-                        isTopAdsAutoTopupSuccess,
-                        shopBadgeUrlSuccess,
-                        totalFollowersSuccess
-                )
+        val partialTopAdsInfo = PartialSettingSuccessInfoType.PartialTopAdsSettingSuccessInfo(
+                balanceSuccess,
+                topAdsDepositSuccess,
+                isTopAdsAutoTopupSuccess
+        )
+
+        val partialShopInfo = PartialSettingSuccessInfoType.PartialShopSettingSuccessInfo(
+                shopTypeSuccess,
+                totalFollowersSuccess,
+                shopBadgeUrlSuccess
+        )
+
+        val allShopInfoSuccess = Pair(partialShopInfo, partialTopAdsInfo)
 
         coEvery {
-            getSettingShopInfoUseCase.executeOnBackground()
-        } returns settingShopInfoSuccess
+            userSession.shopId
+        } returns "0"
+
+        coEvery {
+            balanceInfoUseCase.executeOnBackground()
+        } returns balanceSuccess
 
         coEvery {
             shopStatusTypeUseCase.executeOnBackground()
@@ -112,48 +115,15 @@ class GetAllShopInfoUseCaseTest {
         val allShopInfo = mGetAllShopInfoUseCase.executeOnBackground()
 
         coVerify {
-            getSettingShopInfoUseCase.executeOnBackground()
+            balanceInfoUseCase.executeOnBackground()
             shopStatusTypeUseCase.executeOnBackground()
             getShopTotalFollowersUseCase.executeOnBackground()
             getShopBadgeUseCase.executeOnBackground()
             topAdsDashboardDepositUseCase.executeOnBackground()
             topAdsAutoTypeUseCase.executeOnBackground()
-            mapToSettingShopInfo(
-                    settingShopInfoSuccess,
-                    shopTypeSuccess,
-                    topAdsDepositSuccess,
-                    isTopAdsAutoTopupSuccess,
-                    totalFollowersSuccess,
-                    shopBadgeUrlSuccess)
         }
 
-        assertEquals(allShopInfo.shopName, allShopInfoSuccess.shopName)
-        assertEquals(allShopInfo.saldoBalanceUiModel.balanceValue, allShopInfoSuccess.saldoBalanceUiModel.balanceValue)
-        assertEquals(allShopInfo.shopBadgeUiModel.shopBadgeUrl, allShopInfoSuccess.shopBadgeUiModel.shopBadgeUrl)
-        assertEquals(allShopInfo.shopFollowersUiModel.shopFollowers, allShopInfoSuccess.shopFollowersUiModel.shopFollowers)
-        assertEquals(allShopInfo.shopStatusUiModel.shopType, allShopInfoSuccess.shopStatusUiModel.shopType)
-        assertEquals(allShopInfo.topadsBalanceUiModel.isTopAdsUser, allShopInfoSuccess.topadsBalanceUiModel.isTopAdsUser)
-        assertEquals(allShopInfo.shopAvatarUiModel.shopAvatarUrl, allShopInfoSuccess.shopAvatarUiModel.shopAvatarUrl)
-    }
-
-    private fun mapToSettingShopInfo(shopInfo: ShopInfo,
-                             shopStatusType: ShopType,
-                             topAdsBalance: Float,
-                             isTopAdsAutoTopup: Boolean,
-                             totalFollowers: Int,
-                             shopBadge: String): SettingShopInfoUiModel {
-        shopInfo.shopInfoMoengage?.run {
-            return SettingShopInfoUiModel(
-                    info?.shopName.toEmptyStringIfNull(),
-                    info?.shopAvatar.toEmptyStringIfNull(),
-                    shopStatusType,
-                    shopInfo.balance?.totalBalance ?: "",
-                    topAdsBalance.getCurrencyFormatted(),
-                    isTopAdsAutoTopup,
-                    shopBadge,
-                    totalFollowers)
-        }
-        return SettingShopInfoUiModel()
+        assertEquals(allShopInfo, allShopInfoSuccess)
     }
 
 }

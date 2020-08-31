@@ -1,13 +1,11 @@
 package com.tokopedia.home.viewModel.homepage
 
 import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
-import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.data.model.PlayChannel
 import com.tokopedia.home.beranda.data.model.PlayData
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
-import com.tokopedia.home.beranda.domain.model.InjectCouponTimeBased
 import com.tokopedia.home.beranda.domain.model.SetInjectCouponTimeBased
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.DeclineRechargeRecommendation
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeRecommendation
@@ -19,45 +17,50 @@ import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home.rules.TestDispatcherProvider
 import com.tokopedia.play_common.domain.usecases.GetPlayWidgetUseCase
 import com.tokopedia.play_common.domain.usecases.PlayToggleChannelReminderUseCase
+import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselDataModel
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import io.mockk.coEvery
 import io.mockk.mockk
-import dagger.Lazy
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
-import org.spekframework.spek2.dsl.TestBody
-import org.spekframework.spek2.style.gherkin.FeatureBody
 import java.util.concurrent.TimeoutException
 
-@ExperimentalCoroutinesApi
-fun TestBody.createHomeViewModel(): HomeViewModel{
-    val dismissHomeReviewUseCase by memoized<DismissHomeReviewUseCase>()
-    val getAtcUseCase by memoized<AddToCartOccUseCase>()
-    val getBusinessUnitDataUseCase by memoized<GetBusinessUnitDataUseCase>()
-    val getBusinessWidgetTab by memoized<GetBusinessWidgetTab>()
-    val getCoroutinePendingCashbackUseCase by memoized<GetCoroutinePendingCashbackUseCase>()
-    val getCoroutineWalletBalanceUseCase by memoized<GetCoroutineWalletBalanceUseCase>()
-    val getDynamicChannelsUseCase by memoized<GetDynamicChannelsUseCase>()
-    val getHomeReviewSuggestedUseCase by memoized<GetHomeReviewSuggestedUseCase>()
-    val getHomeTokopointsDataUseCase by memoized<GetHomeTokopointsDataUseCase>()
-    val getHomeUseCase by memoized<HomeUseCase>()
-    val getKeywordSearchUseCase by memoized<GetKeywordSearchUseCase>()
-    val getPlayLiveDynamicUseCase by memoized<GetPlayLiveDynamicUseCase>()
-    val getPopularKeywordUseCase by memoized<GetPopularKeywordUseCase>()
-    val getRecommendationTabUseCase by memoized<GetRecommendationTabUseCase>()
-    val getSendGeolocationInfoUseCase by memoized<SendGeolocationInfoUseCase>()
-    val getStickyLoginUseCase by memoized<StickyLoginUseCase>()
-    val userSessionInterface by memoized<UserSessionInterface>()
-    val closeChannelUseCase by memoized<CloseChannelUseCase>()
-    val declineRechargeRecommendationUseCase by memoized<DeclineRechargeRecommendationUseCase>()
-    val getRechargeRecommendationUseCase by memoized<GetRechargeRecommendationUseCase>()
-    val getPlayBannerUseCase by memoized<GetPlayWidgetUseCase>()
-    val playToggleChannelReminderUseCase by memoized<PlayToggleChannelReminderUseCase>()
-    val injectCouponTimeBasedUseCase by memoized<InjectCouponTimeBasedUseCase>()
-    val declineSalamWIdgetUseCase by memoized<DeclineSalamWIdgetUseCase>()
-    val getSalamWidgetUseCase by memoized<GetSalamWidgetUseCase>()
+/**
+ * Created by Lukas on 14/05/20.
+ */
+
+fun createHomeViewModel(
+        getBusinessUnitDataUseCase: GetBusinessUnitDataUseCase = mockk(relaxed = true),
+        getBusinessWidgetTab: GetBusinessWidgetTab = mockk(relaxed = true),
+        getHomeUseCase: HomeUseCase = mockk(relaxed = true),
+        userSessionInterface: UserSessionInterface = mockk(relaxed = true),
+        dismissHomeReviewUseCase: DismissHomeReviewUseCase = mockk(relaxed = true),
+        getAtcUseCase: AddToCartOccUseCase = mockk(relaxed = true),
+        getHomeReviewSuggestedUseCase: GetHomeReviewSuggestedUseCase = mockk(relaxed = true),
+        getKeywordSearchUseCase: GetKeywordSearchUseCase = mockk(relaxed = true),
+        getRecommendationTabUseCase: GetRecommendationTabUseCase = mockk(relaxed = true),
+        getHomeTokopointsDataUseCase: GetHomeTokopointsDataUseCase = mockk(relaxed = true),
+        getCoroutinePendingCashbackUseCase: GetCoroutinePendingCashbackUseCase = mockk(relaxed = true),
+        getPlayLiveDynamicUseCase: GetPlayLiveDynamicUseCase = mockk(relaxed = true),
+        getPlayBannerUseCase: GetPlayWidgetUseCase = mockk(relaxed = true),
+        playToggleChannelReminderUseCase: PlayToggleChannelReminderUseCase = mockk(relaxed = true),
+        getCoroutineWalletBalanceUseCase: GetCoroutineWalletBalanceUseCase = mockk(relaxed = true),
+        getSendGeolocationInfoUseCase: SendGeolocationInfoUseCase = mockk(relaxed = true),
+        getStickyLoginUseCase: StickyLoginUseCase = mockk(relaxed = true),
+        getPopularKeywordUseCase: GetPopularKeywordUseCase = mockk(relaxed = true),
+        getDynamicChannelsUseCase: GetDynamicChannelsUseCase = mockk(relaxed = true),
+        closeChannelUseCase: CloseChannelUseCase = mockk(relaxed = true),
+        injectCouponTimeBasedUseCase: InjectCouponTimeBasedUseCase = mockk(relaxed = true),
+        getRechargeRecommendationUseCase: GetRechargeRecommendationUseCase = mockk(relaxed = true),
+        getSalamWidgetUseCase: GetSalamWidgetUseCase = mockk(relaxed = true),
+        declineSalamWidgetUseCase: DeclineSalamWIdgetUseCase = mockk{ mockk(relaxed = true)},
+        declineRechargeRecommendationUseCase: DeclineRechargeRecommendationUseCase = mockk(relaxed = true),
+        topadsImageViewUseCase: TopAdsImageViewUseCase = mockk(relaxed = true)
+): HomeViewModel{
+
+
     return HomeViewModel(
             dismissHomeReviewUseCase = Lazy{dismissHomeReviewUseCase},
             getBusinessUnitDataUseCase = Lazy{getBusinessUnitDataUseCase},
@@ -71,7 +74,7 @@ fun TestBody.createHomeViewModel(): HomeViewModel{
             getRecommendationTabUseCase = Lazy{getRecommendationTabUseCase},
             getWalletBalanceUseCase = Lazy{getCoroutineWalletBalanceUseCase},
             homeDispatcher = Lazy{TestDispatcherProvider()},
-            homeUseCase = Lazy{getHomeUseCase},
+            homeUseCase = Lazy{ getHomeUseCase },
             popularKeywordUseCase = Lazy{getPopularKeywordUseCase},
             sendGeolocationInfoUseCase = Lazy{getSendGeolocationInfoUseCase},
             stickyLoginUseCase = Lazy{getStickyLoginUseCase},
@@ -79,43 +82,14 @@ fun TestBody.createHomeViewModel(): HomeViewModel{
             userSession = Lazy{userSessionInterface},
             closeChannelUseCase = Lazy{closeChannelUseCase},
             injectCouponTimeBasedUseCase = Lazy{injectCouponTimeBasedUseCase},
-            declineSalamWIdgetUseCase = Lazy{declineSalamWIdgetUseCase},
-            declineRechargeRecommendationUseCase = Lazy { declineRechargeRecommendationUseCase },
+            declineSalamWidgetUseCase = Lazy{declineSalamWidgetUseCase},
+            declineRechargeRecommendationUseCase = Lazy {declineRechargeRecommendationUseCase},
             getSalamWidgetUseCase = Lazy{getSalamWidgetUseCase},
+            topAdsImageViewUseCase = Lazy{topadsImageViewUseCase},
             getPlayBannerUseCase = Lazy{getPlayBannerUseCase},
-            playToggleChannelReminderUseCase = Lazy{playToggleChannelReminderUseCase}
-            getRechargeRecommendationUseCase = Lazy{getRechargeRecommendationUseCase }
+            playToggleChannelReminderUseCase = Lazy{playToggleChannelReminderUseCase},
+            getRechargeRecommendationUseCase = Lazy{getRechargeRecommendationUseCase}
     )
-}
-
-fun FeatureBody.createHomeViewModelTestInstance() {
-    val userSessionInterface by memoized<UserSessionInterface> { mockk(relaxed = true) }
-    val dismissHomeReviewUseCase by memoized<DismissHomeReviewUseCase> { mockk(relaxed = true) }
-    val getAtcUseCase by memoized<AddToCartOccUseCase>{ mockk(relaxed = true) }
-    val getHomeReviewSuggestedUseCase by memoized<GetHomeReviewSuggestedUseCase> { mockk(relaxed = true) }
-    val getKeywordSearchUseCase by memoized<GetKeywordSearchUseCase> { mockk(relaxed = true) }
-    val getRecommendationTabUseCase by memoized<GetRecommendationTabUseCase> { mockk(relaxed = true) }
-    val getHomeTokopointsDataUseCase by memoized<GetHomeTokopointsDataUseCase> { mockk(relaxed = true) }
-    val getCoroutinePendingCashbackUseCase by memoized<GetCoroutinePendingCashbackUseCase> { mockk(relaxed = true) }
-    val getPlayLiveDynamicUseCase by memoized<GetPlayLiveDynamicUseCase> { mockk(relaxed = true) }
-    val getCoroutineWalletBalanceUseCase by memoized<GetCoroutineWalletBalanceUseCase> { mockk(relaxed = true) }
-    val getHomeUseCase by memoized<HomeUseCase> { mockk(relaxed = true) }
-    val getSendGeolocationInfoUseCase by memoized<SendGeolocationInfoUseCase> { mockk(relaxed = true) }
-    val getStickyLoginUseCase by memoized<StickyLoginUseCase> { mockk(relaxed = true) }
-    val getBusinessWidgetTab by memoized<GetBusinessWidgetTab> { mockk(relaxed = true) }
-    val getBusinessUnitDataUseCase by memoized<GetBusinessUnitDataUseCase> { mockk(relaxed = true) }
-    val getPopularKeywordUseCase by memoized<GetPopularKeywordUseCase> { mockk(relaxed = true) }
-    val getDynamicChannelsUseCase by memoized<GetDynamicChannelsUseCase> { mockk(relaxed = true) }
-    val closeChannelUseCase by memoized<CloseChannelUseCase> { mockk(relaxed = true) }
-    val injectCouponTimeBasedUseCase by memoized<InjectCouponTimeBasedUseCase> { mockk(relaxed = true) }
-    val homeDataMapper by memoized<HomeDataMapper> { mockk(relaxed = true) }
-    val declineRechargeRecommendationUseCase by memoized<DeclineRechargeRecommendationUseCase>() { mockk(relaxed = true)}
-    val getRechargeRecommendationUseCase by memoized<GetRechargeRecommendationUseCase>() { mockk(relaxed = true)}
-    val getPlayBannerUseCase by memoized<GetPlayWidgetUseCase>() { mockk(relaxed = true) }
-    val playToggleChannelReminderUseCase by memoized<PlayToggleChannelReminderUseCase>() { mockk(relaxed = true) }
-    val getSalamWidgetUseCase by memoized<GetSalamWidgetUseCase>{ mockk(relaxed = true)}
-    val declineSalamWIdgetUseCase by memoized<DeclineSalamWIdgetUseCase>{ mockk(relaxed = true)}
-
 }
 
 fun GetPlayLiveDynamicUseCase.givenGetPlayLiveDynamicUseCaseReturn(channel: PlayChannel) {
@@ -123,6 +97,14 @@ fun GetPlayLiveDynamicUseCase.givenGetPlayLiveDynamicUseCaseReturn(channel: Play
     coEvery { executeOnBackground() } returns PlayData(
             playChannels = listOf(channel)
     )
+}
+
+fun GetPlayWidgetUseCase.givenGetPlayCarouselUseCaseReturn(playBannerCarouselDataModel: PlayBannerCarouselDataModel) {
+    coEvery { executeOnBackground() } returns playBannerCarouselDataModel
+}
+
+fun GetPlayWidgetUseCase.givenGetPlayCarouselUseCaseReturnError() {
+    coEvery { executeOnBackground() } throws TimeoutException()
 }
 
 fun GetBusinessWidgetTab.givenGetBusinessWidgetTabUseCaseReturn(homeWidget: HomeWidget) {
@@ -172,6 +154,7 @@ fun HomeUseCase.givenGetHomeDataReturn(homeDataModel: HomeDataModel) {
         emit(homeDataModel)
     }
 }
+
 fun HomeUseCase.givenGetHomeDataReturn(homeDataModel: HomeDataModel, newHomeDataModel: HomeDataModel) {
     coEvery { getHomeData() } returns flow{
         emit(homeDataModel)
@@ -185,4 +168,11 @@ fun InjectCouponTimeBasedUseCase.givenInjectCouponTimeBasedUseCaseReturn(setInje
 
 fun InjectCouponTimeBasedUseCase.givenInjectCouponTimeBasedUseCaseThrowReturn() {
     coEvery { executeOnBackground() } throws Exception()
+}
+
+fun areEqualKeyValues(first: Map<String, Any>, second: Map<String,Any>): Boolean{
+    first.forEach{
+        if(it.value != second[it.key]) return false
+    }
+    return true
 }

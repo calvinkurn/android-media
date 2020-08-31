@@ -7,10 +7,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -20,8 +20,11 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.di.provider.PlayBroadcastComponentProvider
 import com.tokopedia.play.broadcaster.di.setup.DaggerPlayBroadcastSetupComponent
-import com.tokopedia.play.broadcaster.util.BreadcrumbsModel
-import com.tokopedia.play.broadcaster.util.compatTransitionName
+import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
+import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.play.broadcaster.util.extension.cleanBackstack
+import com.tokopedia.play.broadcaster.util.extension.compatTransitionName
+import com.tokopedia.play.broadcaster.util.model.BreadcrumbsModel
 import com.tokopedia.play.broadcaster.view.contract.PlayBottomSheetCoordinator
 import com.tokopedia.play.broadcaster.view.contract.ProductSetupListener
 import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
@@ -29,10 +32,9 @@ import com.tokopedia.play.broadcaster.view.fragment.PlayCoverSetupFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayEtalaseDetailFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayEtalasePickerFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
-import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSetupViewModel
-import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import java.util.*
 import javax.inject.Inject
+
 
 /**
  * Created by jegul on 26/05/20
@@ -50,8 +52,11 @@ class PlayBroadcastSetupBottomSheet(
     @Inject
     lateinit var fragmentFactory: FragmentFactory
 
-    private lateinit var broadcastViewModel: PlayBroadcastViewModel
-    private lateinit var viewModel: PlayBroadcastSetupViewModel
+    @Inject
+    lateinit var dispatcher: CoroutineDispatcherProvider
+
+    @Inject
+    lateinit var dialogCustomizer: PlayBroadcastDialogCustomizer
 
     private lateinit var flFragment: FrameLayout
     private lateinit var flOverlay: FrameLayout
@@ -59,9 +64,6 @@ class PlayBroadcastSetupBottomSheet(
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
 
     private val fragmentBreadcrumbs = Stack<BreadcrumbsModel>()
-
-    override val channelId: String
-        get() = broadcastViewModel.channelId
 
     private var mListener: SetupResultListener? = null
 
@@ -82,6 +84,8 @@ class PlayBroadcastSetupBottomSheet(
                     mListener?.onSetupCanceled()
                 }
             }
+        }.apply {
+            dialogCustomizer.customize(this)
         }
     }
 
@@ -90,9 +94,8 @@ class PlayBroadcastSetupBottomSheet(
         childFragmentManager.fragmentFactory = fragmentFactory
 
         super.onCreate(savedInstanceState)
-//        setStyle(DialogFragment.STYLE_NORMAL, R.style.Style_FloatingBottomSheet)
-        broadcastViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(PlayBroadcastSetupViewModel::class.java)
+        cleanBackstack()
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheet_Setup_Pinned)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -122,25 +125,36 @@ class PlayBroadcastSetupBottomSheet(
                 extras = Bundle().apply {
                     putString(PlayEtalaseDetailFragment.EXTRA_ETALASE_ID, id)
                 },
-                sharedElements = sharedElements,
-                onFragment = {
-                    it.setListener(this)
-                }
+                sharedElements = sharedElements
         )
     }
 
-    override fun onProductSetupFinished(sharedElements: List<View>, dataStore: PlayBroadcastSetupDataStore) {
+    override suspend fun onProductSetupFinished(sharedElements: List<View>, dataStore: PlayBroadcastSetupDataStore): Throwable? {
         navigateToFragment(
                 fragmentClass = PlayCoverSetupFragment::class.java,
-                sharedElements = sharedElements,
-                onFragment = {
-                    it.setListener(this)
-                }
+                sharedElements = sharedElements
         )
+
+        return null
     }
 
-    override fun onCoverSetupFinished(dataStore: PlayBroadcastSetupDataStore) {
-        complete(dataStore)
+    override suspend fun onCoverSetupFinished(dataStore: PlayBroadcastSetupDataStore): Throwable? {
+        val error = mListener?.onSetupCompletedWithData(this@PlayBroadcastSetupBottomSheet, dataStore)
+        return if (error == null) {
+            dismiss()
+            null
+        }
+        else error
+    }
+
+    override fun onAttachFragment(childFragment: Fragment) {
+        super.onAttachFragment(childFragment)
+
+        when (childFragment) {
+            is PlayEtalasePickerFragment -> childFragment.setListener(this)
+            is PlayEtalaseDetailFragment -> childFragment.setListener(this)
+            is PlayCoverSetupFragment -> childFragment.setListener(this)
+        }
     }
 
     fun show(fragmentManager: FragmentManager) {
@@ -186,10 +200,7 @@ class PlayBroadcastSetupBottomSheet(
         flOverlay.setOnClickListener { dialog?.onBackPressed() }
 
         navigateToFragment(
-                PlayEtalasePickerFragment::class.java,
-                onFragment = {
-                    it.setListener(this)
-                }
+                PlayEtalasePickerFragment::class.java
         )
     }
 
@@ -223,14 +234,10 @@ class PlayBroadcastSetupBottomSheet(
     private fun addBreadcrumb() {
         currentFragment?.let { fragment ->
             fragmentBreadcrumbs.add(
-                    BreadcrumbsModel(fragment.javaClass, fragment.arguments ?: Bundle.EMPTY)
+                    BreadcrumbsModel(fragment.javaClass, fragment.arguments
+                            ?: Bundle.EMPTY)
             )
         }
-    }
-
-    private fun complete(dataStore: PlayBroadcastSetupDataStore) {
-        mListener?.onSetupCompletedWithData(dataStore)
-        dismiss()
     }
 
     companion object {

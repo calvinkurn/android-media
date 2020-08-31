@@ -9,15 +9,6 @@ object AppScreen {
     const val ADD_SHOP_SHOWCASE_SCREEN = "Add Shop Showcase Screen"
 }
 
-object GQLQueryConstant {
-    const val QUERY_SHOP_SHOWCASE_LIST = "get_shop_showcase_list"
-    const val QUERY_SHOP_SHOWCASE_LIST_AS_BUYER = "get_shop_showcase_list_as_buyer"
-    const val QUERY_SHOP_SHOWCASE_LIST_AS_SELLER = "get_shop_showcase_list_as_seller"
-    const val QUERY_DELETE_SINGLE_SHOP_SHOWCASE = "delete_shop_showcase"
-    const val QUERY_REORDER_SHOP_SHOWCASE = "reorder_shop_showcase"
-    const val QUERY_SHOP_SHOWCASE_GET_TOTAL_PRODUCTS = "get_shop_showcase_product"
-}
-
 object PageNameConstant {
     const val SHOWCASE_LIST_PAGE = "SHOWCASE_LIST_PAGE"
     const val SHOWCASE_LIST_REORDER_PAGE = "SHOWCASE_LIST_REORDER_PAGE"
@@ -27,6 +18,7 @@ object ShopShowcaseListParam {
     const val EXTRA_SHOP_ID = "SHOP_ID"
     const val EXTRA_ETALASE_ID = "ETALASE_ID"
     const val EXTRA_ETALASE_NAME = "ETALASE_NAME"
+    const val EXTRA_ETALASE_TYPE = "ETALASE_TYPE"
     const val EXTRA_ETALASE_BADGE = "ETALASE_BADGE"
     const val EXTRA_SELECTED_ETALASE_ID = "EXTRA_SELECTED_ETALASE_ID"
     const val EXTRA_EDIT_SHOWCASE_RESULT = "IS_EDIT_SHOWCASE_SUCCESS"
@@ -46,6 +38,7 @@ object ShopShowcaseEditParam {
 
 object ShowcaseType {
     const val GENERATED: Int = -1
+    const val CAMPAIGN: Int = -2
     const val CUSTOM: Int = 1
 }
 

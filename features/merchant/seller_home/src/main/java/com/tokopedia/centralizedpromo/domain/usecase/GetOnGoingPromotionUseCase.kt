@@ -1,11 +1,11 @@
 package com.tokopedia.centralizedpromo.domain.usecase
 
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.centralizedpromo.domain.mapper.OnGoingPromotionMapper
 import com.tokopedia.centralizedpromo.domain.model.GetPromotionListResponseWrapper
 import com.tokopedia.centralizedpromo.view.model.OnGoingPromoListUiModel
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerhome.domain.usecase.BaseGqlUseCase
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject

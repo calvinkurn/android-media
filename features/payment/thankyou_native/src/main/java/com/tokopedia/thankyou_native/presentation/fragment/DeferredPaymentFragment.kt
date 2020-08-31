@@ -118,13 +118,7 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
             refreshThanksPageData()
             thankYouPageAnalytics.get().onCheckPaymentStatusClick(thanksPageData.paymentID.toString())
         }
-        btnShopAgain.setOnClickListener {
-            if (thanksPageData.thanksCustomization == null || thanksPageData.thanksCustomization.customOrderUrlApp.isNullOrBlank()) {
-                gotoHomePage()
-            } else {
-                launchApplink(thanksPageData.thanksCustomization.customHomeUrlApp)
-            }
-        }
+        setUpHomeButton(btnShopAgain)
     }
 
     private fun showDigitAnnouncementTicker() {

@@ -18,6 +18,7 @@ object SomConsts {
     const val PARAM_BARCODE_TYPE = "barcodeType"
     const val PARAM_BOOKING_MESSAGE_LIST = "message"
     const val PARAM_ORDER_CODE = "order_code"
+    const val PARAM_USER_ROLES = "user_roles"
 
     const val VAR_PARAM_ORDERID = "orderID"
     const val VAR_PARAM_LANG = "lang"
@@ -69,6 +70,7 @@ object SomConsts {
     const val KEY_CONFIRM_SHIPPING = "confirm_shipping"
     const val KEY_VIEW_COMPLAINT_SELLER = "view_complaint"
     const val KEY_SET_DELIVERED = "set_delivered"
+    const val KEY_RESPOND_TO_CANCELLATION = "respond_to_cancellations"
 
     const val KEY_REASON_EMPTY_STOCK = "empty_stock"
     const val KEY_REASON_SHOP_CLOSED = "shop_closed"
@@ -137,8 +139,13 @@ object SomConsts {
     const val PARAM_SOURCE_ASK_BUYER = "tx_ask_buyer"
     const val ATTRIBUTE_ID = "id"
 
-    const val STATUS_ORDER_DELIVERED = 600
-    const val STATUS_ORDER_DELIVERED_DUE_LIMIT = 699
+    const val STATUS_CODE_ORDER_CANCELLED = 0
+    const val STATUS_CODE_ORDER_AUTO_CANCELLED = 3
+    const val STATUS_CODE_ORDER_REJECTED = 10
+    const val STATUS_CODE_ORDER_CREATED = 220
+    const val STATUS_CODE_ORDER_ORDER_CONFIRMED = 400
+    const val STATUS_CODE_ORDER_DELIVERED = 600
+    const val STATUS_CODE_ORDER_DELIVERED_DUE_LIMIT = 699
 
     const val REPLACE_CUST_NAME = "#custName"
     const val REPLACE_INVOICE_NO = "#invoiceNo"
@@ -146,4 +153,15 @@ object SomConsts {
 
     const val SORT_ASCENDING = 0
     const val SORT_DESCENDING = 2
+
+    const val ERROR_GET_USER_ROLES = "Error when get user roles in %s."
+    const val ERROR_REJECT_CANCEL_ORDER = "Error when rejecting cancel order."
+
+    const val UNIFY_TICKER_TYPE_ANNOUNCEMENT = "announcement"
+    const val UNIFY_TICKER_TYPE_INFO = "info"
+    const val UNIFY_TICKER_TYPE_WARNING = "warning"
+    const val UNIFY_TICKER_TYPE_ERROR = "error"
+
+    const val KEY_PRIMARY_DIALOG_BUTTON = "primary"
+    const val KEY_SECONDARY_DIALOG_BUTTON = "secondary"
 }

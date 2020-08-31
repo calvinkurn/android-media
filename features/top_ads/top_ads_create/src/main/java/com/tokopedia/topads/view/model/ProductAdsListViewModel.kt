@@ -11,14 +11,14 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.response.ResponseEtalase
 import com.tokopedia.topads.data.response.ResponseProductList
-import com.tokopedia.topads.internal.ParamObject.ETALASE
-import com.tokopedia.topads.internal.ParamObject.KEYWORD
-import com.tokopedia.topads.internal.ParamObject.ROWS
-import com.tokopedia.topads.internal.ParamObject.SHOP_ID
-import com.tokopedia.topads.internal.ParamObject.SHOP_Id
-import com.tokopedia.topads.internal.ParamObject.SORT_BY
-import com.tokopedia.topads.internal.ParamObject.START
-import com.tokopedia.topads.internal.ParamObject.STATUS
+import com.tokopedia.topads.common.data.internal.ParamObject.ETALASE
+import com.tokopedia.topads.common.data.internal.ParamObject.KEYWORD
+import com.tokopedia.topads.common.data.internal.ParamObject.ROWS
+import com.tokopedia.topads.common.data.internal.ParamObject.SHOP_ID
+import com.tokopedia.topads.common.data.internal.ParamObject.SHOP_Id
+import com.tokopedia.topads.common.data.internal.ParamObject.SORT_BY
+import com.tokopedia.topads.common.data.internal.ParamObject.START
+import com.tokopedia.topads.common.data.internal.ParamObject.STATUS
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
@@ -36,7 +36,7 @@ class ProductAdsListViewModel @Inject constructor(
         private val dispatcher: CoroutineDispatcher,
         private val userSession: UserSessionInterface,
         private val gqlRepository: GraphqlRepository) : BaseViewModel(dispatcher) {
-        private var totalCount =0
+    private var totalCount = 0
 
     fun etalaseList(onSuccess: ((List<ResponseEtalase.Data.ShopShowcasesByShopID.Result>) -> Unit), onError: ((Throwable) -> Unit)) {
         launchCatchError(
@@ -58,7 +58,7 @@ class ProductAdsListViewModel @Inject constructor(
         )
     }
 
-    fun productList(keyword: String, etalaseId: String, sortBy: String, isPromoted: String, rows: Int, start: Int, onSuccess: ((List<ResponseProductList.Result.TopadsGetListProduct.Data>) -> Unit),
+    fun productList(keyword: String, etalaseId: String, sortBy: String, isPromoted: String, rows: Int, start: Int, onSuccess: ((List<ResponseProductList.Result.TopadsGetListProduct.Data>, eof: Boolean) -> Unit),
                     onEmpty: (() -> Unit), onError: ((Throwable) -> Unit)) {
         launchCatchError(
                 block = {
@@ -82,10 +82,10 @@ class ProductAdsListViewModel @Inject constructor(
                         if (it.topadsGetListProduct.data.isEmpty()) {
                             onEmpty()
                         } else {
-                            if(etalaseId.isEmpty()){
+                            if (etalaseId.isEmpty()) {
                                 totalCount = it.topadsGetListProduct.data.size
                             }
-                            onSuccess(it.topadsGetListProduct.data)
+                            onSuccess(it.topadsGetListProduct.data, it.topadsGetListProduct.eof)
                         }
                     }
                 },

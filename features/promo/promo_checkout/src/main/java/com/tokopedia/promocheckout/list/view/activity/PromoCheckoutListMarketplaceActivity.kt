@@ -29,7 +29,7 @@ class PromoCheckoutListMarketplaceActivity : BaseSimpleActivity(), HasComponent<
                 intent?.extras?.getString(PROMO_CODE, ""),
                 intent?.extras?.getBoolean(ONE_CLICK_SHIPMENT, false),
                 intent?.extras?.getInt(PAGE_TRACKING, 1) ?: 1,
-                intent?.extras?.getParcelable(CHECK_PROMO_FIRST_STEP_PARAM) as Promo
+                intent?.extras?.getParcelable(CHECK_PROMO_FIRST_STEP_PARAM) ?: Promo()
         )
     }
 

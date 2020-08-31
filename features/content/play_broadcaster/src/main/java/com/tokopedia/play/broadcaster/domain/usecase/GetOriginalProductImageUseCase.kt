@@ -3,9 +3,7 @@ package com.tokopedia.play.broadcaster.domain.usecase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.play.broadcaster.domain.model.GetPDPInfo
-import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 /**
@@ -13,7 +11,7 @@ import javax.inject.Inject
  */
 class GetOriginalProductImageUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository
-) : UseCase<List<String>>() {
+) : BaseUseCase<List<String>>() {
 
     /**
      * we only get the field that we need to reduce and optimize payload
@@ -30,9 +28,8 @@ class GetOriginalProductImageUseCase @Inject constructor(
     var params: Map<String, Any> = emptyMap()
 
     override suspend fun executeOnBackground(): List<String> {
-        val gqlRequest = GraphqlRequest(query, GetPDPInfo.Response::class.java, params)
-        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest),
-                GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
+        val gqlResponse = configureGqlResponse(graphqlRepository, query, GetPDPInfo.Response::class.java, params, GraphqlCacheStrategy
+                .Builder(CacheType.ALWAYS_CLOUD).build())
         val response = gqlResponse.getData<GetPDPInfo.Response>(GetPDPInfo.Response::class.java)
         response?.let {
             return it.getPdpInfo.mediaList.map { mediaList ->

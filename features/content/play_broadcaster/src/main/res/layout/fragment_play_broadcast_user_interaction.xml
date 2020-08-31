@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="@dimen/spacing_lvl4">
+    android:layout_height="match_parent">
 
     <com.tokopedia.play.broadcaster.view.custom.PlayTimerView
         android:id="@+id/view_timer"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/play_stats_info_counter_height"
+        android:layout_marginTop="@dimen/spacing_lvl4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -40,25 +41,97 @@
         android:layout_marginBottom="@dimen/spacing_lvl4"
         app:layout_constraintBottom_toTopOf="@id/iv_product_tag"
         app:layout_constraintEnd_toStartOf="@id/iv_share_link"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@id/iv_product_tag"
         />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_product_tag"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/layout_lvl6"
+        android:layout_height="@dimen/layout_lvl6"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
         android:background="@drawable/bg_play_light_gray_circle"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/iv_share_link"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/ic_play_inventory_disabled" />
+        app:srcCompat="@drawable/ic_play_inventory_disabled"
+        />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_share_link"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/layout_lvl6"
+        android:layout_height="@dimen/layout_lvl6"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
         android:background="@drawable/bg_play_light_gray_circle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_play_share_link_white" />
+        app:srcCompat="@drawable/ic_play_share_link_white"
+        />
+
+    <com.tokopedia.play.broadcaster.view.custom.PlayTimerCountDown
+        android:id="@+id/countdown_timer"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone"
+        />
+
+    <FrameLayout
+        android:id="@+id/loading_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/Neutral_N700_68"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/play_loader_container_margin"
+            android:background="@drawable/bg_play_container_loader"
+            android:padding="@dimen/spacing_lvl4">
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/loader"
+                android:layout_width="@dimen/layout_lvl4"
+                android:layout_height="@dimen/layout_lvl4"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/loader_title"
+                android:layout_width="@dimen/layout_lvl0"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_lvl3"
+                android:layout_marginLeft="@dimen/spacing_lvl3"
+                android:text="@string/play_loader_connecting"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/loader"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="heading_4" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="@dimen/layout_lvl0"
+                android:layout_height="wrap_content"
+                android:text="@string/play_loader_live_paused"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/loader_title"
+                app:layout_constraintTop_toBottomOf="@+id/loader_title" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </FrameLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

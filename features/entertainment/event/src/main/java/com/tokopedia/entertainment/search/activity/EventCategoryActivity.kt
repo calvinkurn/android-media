@@ -58,7 +58,7 @@ class EventCategoryActivity : BaseSimpleActivity(), HasComponent<EventSearchComp
         var text: String? = ""
         if(bundle != null){
             if(bundle!!.getString(text_to_find) != null){
-                text= bundle!!.getString(text_to_find)
+                text= bundle!!.getString(text_to_find, "")
                 return text
             }
         }

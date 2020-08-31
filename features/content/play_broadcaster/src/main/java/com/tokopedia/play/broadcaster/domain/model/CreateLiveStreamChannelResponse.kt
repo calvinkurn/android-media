@@ -10,11 +10,6 @@ data class CreateLiveStreamChannelResponse(
         @SerializedName("broadcasterCreateLivestream")
         val media: GetMedia
 ) {
-    data class CreateLiveStreamChannelData(
-
-            @SerializedName("data")
-            val data: CreateLiveStreamChannelResponse
-    )
     data class GetMedia(
             @SerializedName("mediaID")
             val mediaId: String,

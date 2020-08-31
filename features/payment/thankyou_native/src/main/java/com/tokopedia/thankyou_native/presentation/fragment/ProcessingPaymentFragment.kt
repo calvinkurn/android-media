@@ -23,7 +23,7 @@ class ProcessingPaymentFragment : ThankYouBaseFragment() {
         super.onCreate(savedInstanceState)
         arguments?.let {
             if (it.containsKey(ARG_THANK_PAGE_DATA)) {
-                thanksPageData = it.getParcelable(ARG_THANK_PAGE_DATA)
+                thanksPageData = it.getParcelable(ARG_THANK_PAGE_DATA)!!
             }
         }
     }
@@ -50,10 +50,10 @@ class ProcessingPaymentFragment : ThankYouBaseFragment() {
         tvInterestRate.text = getString(R.string.thank_interest_rate, thanksPageData.additionalInfo.interest)
         tvTotalAmount.text = getString(R.string.thankyou_rp_without_space, thanksPageData.amountStr)
         tvSeeDetail.setOnClickListener { openInvoiceDetail(thanksPageData) }
-        if (thanksPageData.thanksCustomization == null || thanksPageData.thanksCustomization.customWtvText.isNullOrBlank()) {
+        if (thanksPageData.thanksCustomization == null || thanksPageData.thanksCustomization?.customWtvText.isNullOrBlank()) {
             tvCheckPaymentStatusTitle.text = getString(R.string.thank_processing_payment_check_order)
         } else {
-            tvCheckPaymentStatusTitle.text = thanksPageData.thanksCustomization.customWtvText
+            tvCheckPaymentStatusTitle.text = thanksPageData.thanksCustomization?.customWtvText
         }
     }
 
@@ -62,13 +62,7 @@ class ProcessingPaymentFragment : ThankYouBaseFragment() {
             thankYouPageAnalytics.get().onCheckPaymentStatusClick(thanksPageData.paymentID.toString())
             refreshThanksPageData()
         }
-        btnShopAgain.setOnClickListener {
-            if (thanksPageData.thanksCustomization == null || thanksPageData.thanksCustomization.customOrderUrlApp.isNullOrBlank()) {
-                gotoHomePage()
-            } else {
-                launchApplink(thanksPageData.thanksCustomization.customHomeUrlApp)
-            }
-        }
+        setUpHomeButton(btnShopAgain)
     }
 
     override fun onThankYouPageDataReLoaded(data: ThanksPageData) {

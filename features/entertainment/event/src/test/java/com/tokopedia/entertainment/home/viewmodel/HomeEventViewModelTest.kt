@@ -1,5 +1,6 @@
 package com.tokopedia.entertainment.home.viewmodel
 
+import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
 import com.tokopedia.common.network.coroutines.repository.RestRepository
@@ -10,11 +11,11 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.Answer
+import com.tokopedia.user.session.UserSession
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
+import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
@@ -45,39 +46,66 @@ class HomeEventViewModelTest {
     lateinit var graphqlRepository: GraphqlRepository
     @MockK
     lateinit var restRepository: RestRepository
-    @MockK
-    lateinit var userSessionInterface: UserSessionInterface
-    @MockK
-    lateinit var fragmentView: FragmentView
+    lateinit var userSessionInterface: UserSession
+    private val context: Context = mockk(relaxed = true)
 
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
+        userSessionInterface = UserSession(context)
         homeEventViewModel = HomeEventViewModel(Dispatchers.Unconfined, graphqlRepository, restRepository, userSessionInterface)
     }
 
     @Test
-    fun getHomeData() {
-        assertNotNull(fragmentView)
+    fun fetchDataHome_successfetchhome_success() {
         assertNotNull(graphqlRepository)
         assertNotNull(homeEventViewModel)
         val data = Gson().fromJson<EventHomeDataResponse.Data>(getJson("home_response_mock.json"), EventHomeDataResponse.Data::class.java)
-        val mockKAdditionalAnswerScope = coEvery { graphqlRepository.getReseponse(any(), any()) } returns GraphqlResponse(mapOf(
-                EventHomeDataResponse.Data::class.java to data
-        ) as MutableMap<Type, Any>,  HashMap<Type, List<GraphqlError>>(), false)
+
+        coEvery {
+            graphqlRepository.getReseponse(any(), any())
+        } coAnswers {
+            GraphqlResponse(mapOf(
+                    EventHomeDataResponse.Data::class.java to data
+            ) as MutableMap<Type, Any>, HashMap<Type, List<GraphqlError>>(), false)
+        }
 
         fun result(mutableList: MutableList<HomeEventItem<*>>) {
             assertNotNull(mutableList)
             assertEquals(mutableList.size, 10)
         }
 
-        fun error(throwable: Throwable) {
-            assertNotNull(throwable)
+        homeEventViewModel.getHomeData("", ::result, ::error, CacheType.CACHE_FIRST)
+
+    }
+
+    @Test
+    fun fetchDataHome_failfetchhome_failed() {
+        assertNotNull(graphqlRepository)
+        assertNotNull(homeEventViewModel)
+
+        val errorGql = GraphqlError()
+        errorGql.message = "Error Fetch Home"
+
+        val errors = HashMap<Type, List<GraphqlError>>()
+        errors[EventHomeDataResponse.Data::class.java] = listOf(errorGql)
+
+        coEvery {
+            graphqlRepository.getReseponse(any(), any())
+        } coAnswers {
+            GraphqlResponse(HashMap<Type, Any?>(), errors, false)
         }
 
-        runBlocking(Dispatchers.Unconfined){
-            homeEventViewModel.getHomeData(fragmentView, ::result, ::error, CacheType.CACHE_FIRST)
+        fun result(mutableList: MutableList<HomeEventItem<*>>) {
+            assertNull(mutableList)
         }
+
+        fun error(throwable: Throwable) {
+            assertNotNull(throwable)
+            assertEquals(throwable.message, errorGql.message)
+        }
+
+        homeEventViewModel.getHomeData("", ::result, ::error, CacheType.CACHE_FIRST)
 
     }
 
@@ -107,8 +135,8 @@ class HomeEventViewModelTest {
     }
 
     private fun getJson(path : String) : String {
-        val uri = this.javaClass.classLoader.getResource(path)
-        val file = File(uri.path)
+        val uri = this.javaClass.classLoader?.getResource(path)
+        val file = File(uri?.path ?: "")
         return String(file.readBytes())
     }
 }

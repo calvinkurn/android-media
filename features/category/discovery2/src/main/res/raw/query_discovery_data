@@ -11,6 +11,7 @@ query DiscoPageLayoutQuery($identifier: String!, $version: String!, $device: Str
             Path
             Type
             share_config
+            campaign_code
           }
       additional_info
     }

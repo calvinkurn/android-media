@@ -78,7 +78,7 @@
                 android:lineSpacingExtra="6sp"
                 android:paddingTop="@dimen/dp_16"
                 android:paddingBottom="@dimen/dp_16"
-                android:text="@string/af_set_main_image"
+                android:text="@string/cp_set_main_image"
                 android:textColor="@color/medium_green"
                 android:textSize="@dimen/sp_14"
                 app:layout_constraintEnd_toStartOf="@+id/mainImageIcon"

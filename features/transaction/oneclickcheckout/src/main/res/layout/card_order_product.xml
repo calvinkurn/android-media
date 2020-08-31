@@ -36,8 +36,7 @@
         app:layout_constraintStart_toEndOf="@+id/tv_shop"
         app:layout_constraintTop_toBottomOf="@+id/tv_header"
         app:typographyType="body_3"
-        app:typographyWeight="bold"
-        tools:text="Toko Sepeda A" />
+        app:typographyWeight="bold" />
 
     <com.tokopedia.unifycomponents.Label
         android:id="@+id/label_error"
@@ -52,8 +51,7 @@
         android:visibility="gone"
         app:labelType="general_dark_red"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_header"
-        tools:labelTitle="Bukan barang testing" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_header" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_shop_location"
@@ -67,15 +65,14 @@
         app:layout_constraintStart_toStartOf="@+id/tv_shop"
         app:layout_constraintTop_toBottomOf="@+id/tv_shop"
         app:typographyType="small"
-        app:typographyWeight="reguler"
-        tools:text="Jakarta" />
+        app:typographyWeight="reguler" />
 
-    <com.tokopedia.design.image.RoundedCornerImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_product_image"
         android:layout_width="46dp"
         android:layout_height="46dp"
+        android:scaleType="fitCenter"
         android:layout_marginTop="@dimen/dp_16"
-        android:src="@color/black"
         app:layout_constraintStart_toStartOf="@+id/tv_shop_location"
         app:layout_constraintTop_toBottomOf="@+id/tv_shop_location" />
 
@@ -94,8 +91,7 @@
         app:layout_constraintStart_toEndOf="@+id/iv_product_image"
         app:layout_constraintTop_toTopOf="@+id/iv_product_image"
         app:typographyType="body_2"
-        app:typographyWeight="bold"
-        tools:text="Sepeda Bagus Sekali" />
+        app:typographyWeight="bold" />
 
     <androidx.constraintlayout.helper.widget.Flow
         android:id="@+id/flow"
@@ -125,8 +121,7 @@
         android:textColor="#BDBDBD"
         android:visibility="gone"
         app:typographyType="body_2"
-        app:typographyWeight="reguler"
-        tools:text="Rp 1.000.000.000" />
+        app:typographyWeight="reguler" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_product_price"
@@ -136,8 +131,7 @@
         android:maxLines="2"
         android:textColor="@color/Neutral_N700_96"
         app:typographyType="body_2"
-        app:typographyWeight="bold"
-        tools:text="Rp 1.000.000" />
+        app:typographyWeight="bold" />
 
     <com.tokopedia.unifycomponents.Label
         android:id="@+id/lbl_cashback"
@@ -149,7 +143,7 @@
         app:layout_constraintStart_toStartOf="@+id/tv_product_name"
         app:layout_constraintTop_toBottomOf="@+id/tv_product_name" />
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_free_shipping"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -157,9 +151,7 @@
         android:layout_marginLeft="@dimen/dp_8"
         android:layout_marginTop="@dimen/dp_8"
         app:layout_constraintStart_toEndOf="@id/lbl_cashback"
-        app:layout_constraintTop_toBottomOf="@+id/tv_product_name"
-        tools:ignore="ContentDescription"
-        tools:src="@drawable/ic_close_default" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_product_name" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrier_product_extra"
@@ -179,8 +171,7 @@
         app:layout_constraintEnd_toStartOf="@+id/btn_qty_min"
         app:layout_constraintStart_toStartOf="@+id/iv_product_image"
         app:layout_constraintTop_toBottomOf="@+id/flow"
-        app:typographyType="body_3"
-        tools:text="Stok terbatas! Tersedia &lt; 5" />
+        app:typographyType="body_3" />
 
     <ImageView
         android:id="@+id/btn_qty_min"
@@ -206,8 +197,7 @@
         app:backgroundTint="@color/tkpd_main_green"
         app:layout_constraintBottom_toBottomOf="@+id/btn_qty_plus"
         app:layout_constraintEnd_toStartOf="@+id/btn_qty_plus"
-        app:layout_constraintTop_toTopOf="@+id/btn_qty_plus"
-        tools:text="10000" />
+        app:layout_constraintTop_toTopOf="@+id/btn_qty_plus"/>
 
     <ImageView
         android:id="@+id/btn_qty_plus"
@@ -236,9 +226,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/btn_qty_min"
         app:layout_constraintTop_toBottomOf="@+id/et_qty"
-        app:typographyType="body_3"
-        tools:text="Maksimal 2 broh hjadjf askjbfk kjabfdk ashfb aksbfkabsf "
-        tools:visibility="visible" />
+        app:typographyType="body_3" />
 
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/tf_note"

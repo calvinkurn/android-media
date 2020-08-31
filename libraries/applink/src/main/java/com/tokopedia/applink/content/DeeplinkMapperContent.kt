@@ -16,23 +16,13 @@ object DeeplinkMapperContent {
         else deeplink
     }
 
-    fun getRegisteredNavigationPlay(deeplink: String): String {
-        return if (deeplink.startsWithPattern(ApplinkConst.PLAY_DETAIL)) getRegisteredNavigation(deeplink)
-        else deeplink
-    }
-
-    fun getRegisteredNavigationInterestPick(deeplink: String): String {
-        return if (deeplink.startsWithPattern(ApplinkConst.INTEREST_PICK)) getRegisteredNavigation(deeplink)
-        else deeplink
-    }
-
     /**
      * tokopedia://people/{user_id}
      * tokopedia://people/{user_id}?after_post=true
      * tokopedia://people/{user_id}?after_edit=true
      * tokopedia://people/{user_id}?success_post=true
      */
-    private fun getRegisteredNavigation(deeplink: String): String {
+    fun getRegisteredNavigation(deeplink: String): String {
         return deeplink.replace(DeeplinkConstant.SCHEME_TOKOPEDIA, DeeplinkConstant.SCHEME_INTERNAL)
     }
 
@@ -51,5 +41,17 @@ object DeeplinkMapperContent {
             }
         }
         return getRegisteredNavigation(deepLink)
+    }
+
+    fun getContentCreatePostDeepLink(deepLink: String): String {
+        when {
+            deepLink.startsWith(ApplinkConst.CONTENT_CREATE_POST) ||
+                    deepLink.startsWithPattern(ApplinkConst.CONTENT_DRAFT_POST) ||
+                    deepLink.startsWith(ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST) ||
+                    deepLink.startsWithPattern(ApplinkConst.AFFILIATE_DRAFT_POST) -> {
+                return getRegisteredNavigation(deepLink)
+            }
+        }
+        return deepLink
     }
 }

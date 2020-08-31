@@ -9,7 +9,6 @@ import android.webkit.URLUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.URLGenerator
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
@@ -26,7 +25,7 @@ import com.tokopedia.chat_common.view.fragment.BaseChatActivityListener
 import com.tokopedia.chat_common.view.listener.BaseChatContract
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
-import com.tokopedia.chat_common.view.widget.AttachmentMenuRecyclerView
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.constant.TkpdBaseURL
 import com.tokopedia.user.session.UserSessionInterface
 import java.net.URLEncoder
@@ -102,9 +101,9 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         return when {
             savedInstanceState != null
                     && savedInstanceState.getString(paramName, "").isNotEmpty()
-            -> savedInstanceState.getString(paramName)
+            -> savedInstanceState.getString(paramName, "")
             arguments != null && arguments.getString(paramName, "").isNotEmpty()
-            -> arguments.getString(paramName)
+            -> arguments.getString(paramName, "")
             else -> ""
         }
     }
@@ -267,6 +266,8 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
 
     override fun onClickBannedProduct(viewModel: BannedProductAttachmentViewModel) {}
 
+    override fun onClickOccFromProductAttachment(product: ProductAttachmentViewModel, position: Int) { }
+
     override fun trackSeenProduct(element: ProductAttachmentViewModel) {}
 
     override fun trackSeenBannedProduct(viewModel: BannedProductAttachmentViewModel) {}
@@ -275,7 +276,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
 
     override fun onClickRemoveFromWishList(productId: String, success: () -> Unit) {}
 
-    override fun trackClickProductThumbnail(product: ProductAttachmentViewModel) { }
+    override fun trackClickProductThumbnail(product: ProductAttachmentViewModel) {}
 
     override fun onItemClicked(t: Visitable<*>?) {}
 }

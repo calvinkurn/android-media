@@ -19,7 +19,7 @@ class EventPDPTicketActivity: BaseSimpleActivity(), HasComponent<EventPDPCompone
     override fun onCreate(savedInstanceState: Bundle?) {
         val uri = intent.data
         if(uri != null){
-            urlPDP = uri.lastPathSegment
+            urlPDP = uri.lastPathSegment ?: ""
             startDate = uri.getQueryParameter("startDate") ?: ""
             selectedDate = uri.getQueryParameter("selectedDate") ?: ""
             endDate = uri.getQueryParameter("endDate") ?: ""

@@ -5,6 +5,8 @@ import android.app.PendingIntent
 import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.IconCompat.createWithBitmap
 import androidx.core.graphics.drawable.IconCompat.createWithResource
@@ -57,7 +59,11 @@ class MainSliceProvider : SliceProvider() {
 
     override fun onBindSlice(sliceUri: Uri): Slice? {
         userSession = UserSession(contextNonNull)
-        return createGetInvoiceSlice(sliceUri)
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            createGetInvoiceSlice(sliceUri)
+        } else {
+            return null
+        }
     }
 
     private fun createPendingIntent(id: Int?, applink: String?, trackingClick: String): PendingIntent? {
@@ -86,6 +92,7 @@ class MainSliceProvider : SliceProvider() {
             0
     )
 
+    @RequiresApi(Build.VERSION_CODES.KITKAT)
     private fun createGetInvoiceSlice(sliceUri: Uri): Slice? {
         if (getRemoteConfigRechargeSliceEnabler(contextNonNull)) {
             val mainPendingIntent = PendingIntent.getActivity(
@@ -118,7 +125,7 @@ class MainSliceProvider : SliceProvider() {
                             var listProduct: MutableList<Product> = mutableListOf()
                             for (i in recomRange) {
                                 if (!recommendationModel?.get(i)?.productName.isNullOrEmpty() && !recommendationModel?.get(i)?.appLink.isNullOrEmpty()
-                                        && recommendationModel?.get(i)?.productPrice!=0) {
+                                        && recommendationModel?.get(i)?.productPrice != 0) {
                                     var product = Product()
                                     row {
                                         setTitleItem(createWithBitmap(recommendationModel?.get(i)?.iconUrl?.getBitmap()), SMALL_IMAGE)
@@ -141,7 +148,7 @@ class MainSliceProvider : SliceProvider() {
                                     }
                                 }
                             }
-                            if(alreadyLoadData && listProduct.size==3) {
+                            if (alreadyLoadData && listProduct.isNotEmpty()) {
                                 val trackingImpression = TrackingData(listProduct)
                                 Timber.w(contextNonNull.resources.getString(R.string.slice_track_timber_impression) + trackingImpression)
                             }
@@ -151,16 +158,16 @@ class MainSliceProvider : SliceProvider() {
                     return sliceNotLogin(sliceUri)
                 }
             } catch (e: Exception) {
-                return sliceNotLogin(sliceUri)
+                return sliceNoAccess(sliceUri)
             }
         } else {
             return sliceNoAccess(sliceUri)
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.KITKAT)
     private fun sliceNotLogin(sliceUri: Uri): Slice {
-        Timber.w(contextNonNull.resources.getString(R.string.slice_track_timber_impression) +
-                contextNonNull.resources.getString(R.string.slice_user_not_login))
+        Timber.w("""${contextNonNull.resources.getString(R.string.slice_track_timber_impression)}${contextNonNull.resources.getString(R.string.slice_user_not_login)}""")
         return list(contextNonNull, sliceUri, INFINITY) {
             setAccentColor(ContextCompat.getColor(contextNonNull, R.color.colorAccent))
             header {
@@ -177,6 +184,7 @@ class MainSliceProvider : SliceProvider() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.KITKAT)
     private fun sliceNoAccess(sliceUri: Uri): Slice {
         return list(contextNonNull, sliceUri, INFINITY) {
             setAccentColor(ContextCompat.getColor(contextNonNull, R.color.colorAccent))
@@ -230,9 +238,9 @@ class MainSliceProvider : SliceProvider() {
     fun String.capitalizeWords(): String = split(" ").joinToString(" ") { it.capitalize() }
 
     override fun onCreateSliceProvider(): Boolean {
-        contextNonNull = context.applicationContext ?: return false
+        contextNonNull = context?.applicationContext ?: return false
         remoteConfig = FirebaseRemoteConfigImpl(contextNonNull)
-        LocalCacheHandler(context,APPLINK_DEBUGGER)
+        LocalCacheHandler(context, APPLINK_DEBUGGER)
         loadString = contextNonNull.resources.getString(R.string.slice_loading)
         return true
     }

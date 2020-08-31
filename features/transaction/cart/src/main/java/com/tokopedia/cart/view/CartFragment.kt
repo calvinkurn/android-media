@@ -517,12 +517,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                         if ((parent.layoutManager as GridLayoutManager).findFirstVisibleItemPosition() >= firstCartSectionHeaderPosition) {
                             if (cardHeader.visibility != View.GONE && !noAvailableItems && bottomLayout.visibility == View.VISIBLE) {
                                 cardHeader.gone()
-                                llPromoCheckout.gone()
                                 setToolbarShadowVisibility(true)
                             }
                         } else if (cardHeader.visibility != View.VISIBLE && !noAvailableItems && bottomLayout.visibility == View.VISIBLE && bottomLayout.visibility == View.VISIBLE) {
                             cardHeader.show()
-                            llPromoCheckout.show()
                             setToolbarShadowVisibility(false)
                         }
                     }

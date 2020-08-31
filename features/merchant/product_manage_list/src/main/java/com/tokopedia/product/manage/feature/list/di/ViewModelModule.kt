@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductDraftListCountViewModel
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModel
 import dagger.Binds
 import dagger.Module
@@ -21,4 +22,9 @@ abstract  class ViewModelModule {
     @IntoMap
     @ViewModelKey(ProductManageViewModel::class)
     internal abstract fun productManageViewModel(viewModel: ProductManageViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ProductDraftListCountViewModel::class)
+    internal abstract fun productDraftListCountViewModel(viewModel: ProductDraftListCountViewModel): ViewModel
 }

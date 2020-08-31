@@ -2,8 +2,10 @@
     <string name="app_name">tkpdreputation</string>
     <string name="title_activity_reputation_review">Ulasan</string>
     <string name="title_tab_waiting_review">Menunggu Diulas</string>
+    <string name="title_rating_product">Rating Produk</string>
+    <string name="title_inbox_ulasan">Inbox Ulasan</string>
     <string name="title_tab_my_review">Ulasan Saya</string>
-    <string name="title_tab_buyer_review">Ulasan Pembeli</string>
+    <string name="title_tab_buyer_review">Penilaian Pembeli</string>
     <string name="empty_inbox_reputation">Reputasi kosong</string>
     <string name="deadline_prefix">Batas memberikan penilaian</string>
     <string name="deadline_suffix">hari lagi</string>
@@ -121,7 +123,7 @@
     <string name="inbox_reputation_seller_empty_title">Belum ada ulasan dari pembeli.\nPastikan Produk Anda sudah terjual.</string>
     <string name="see_my_shop">Lihat Toko Saya</string>
     <string name="query_hint_review_buyer">Cari toko atau invoice</string>
-    <string name="query_hint_review_seller">Cari toko atau invoice</string>
+    <string name="query_hint_review_seller">Cari invoice</string>
     <string name="product_is_banned">Produk telah diban</string>
     <string name="product_review_label_rating_comparison">/ 5</string>
     <string name="product_review_label_helpful_review">Ulasan Paling Membantu</string>
@@ -139,6 +141,8 @@
     <string name="review_min_character">Minimal 30 karakter</string>
     <string name="review_label_all">Semua</string>
     <string name="review_label_with_photo">Dengan Foto</string>
+    <string name="seller_migration_review_title">Ulasan produk dan template</string>
+    <string name="seller_migration_review_description">Fitur unggulan untuk mempermudah pantau dan balas ulasan pembeli.</string>
 
     <string name="review_add_photo_txt">Tambah \nfoto</string>
     <string name="image_picker_title">Pilih foto</string>
@@ -160,4 +164,6 @@
         <item>Semua</item>
         <item>Belum Dibaca</item>
     </string-array>
+
+    <string name="title_review_inbox">Inbox Ulasan</string>
 </resources>

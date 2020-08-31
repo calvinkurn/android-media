@@ -19,6 +19,7 @@ class RecommendationPageTracking {
         private const val EVENT_CATEGORY = "eventCategory"
         private const val EVENT_ACTION = "eventAction"
         private const val EVENT_LABEL = "eventLabel"
+        private const val SHOP_ID = "shopId"
 
         private const val ECOMMERCE = "ecommerce"
         private const val ECOMMERCE_ADD = "add"
@@ -107,7 +108,7 @@ class RecommendationPageTracking {
             return DataLayer.mapOf(
                     FIELD_PRODUCT_NAME, item.name,
                     FIELD_PRODUCT_ID, item.productId,
-                    FIELD_PRODUCT_PRICE, item.getPriceIntFromString(),
+                    FIELD_PRODUCT_PRICE, item.priceInt.toString(),
                     FIELD_PRODUCT_BRAND, VALUE_NONE_OTHER,
                     FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,
                     FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
@@ -130,7 +131,7 @@ class RecommendationPageTracking {
                     DataLayer.mapOf(
                             FIELD_PRODUCT_NAME, item.name,
                             FIELD_PRODUCT_ID, item.productId,
-                            FIELD_PRODUCT_PRICE, item.getPriceIntFromString(),
+                            FIELD_PRODUCT_PRICE, item.priceInt.toString(),
                             FIELD_PRODUCT_BRAND, VALUE_NONE_OTHER,
                             FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,
                             FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
@@ -149,7 +150,7 @@ class RecommendationPageTracking {
             return DataLayer.mapOf(
                     FIELD_PRODUCT_NAME, item.name,
                     FIELD_PRODUCT_ID, item.productId,
-                    FIELD_PRODUCT_PRICE, item.getPriceIntFromString(),
+                    FIELD_PRODUCT_PRICE, item.priceInt.toString(),
                     FIELD_PRODUCT_BRAND, VALUE_NONE_OTHER,
                     FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
                     FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,
@@ -171,7 +172,7 @@ class RecommendationPageTracking {
                     DataLayer.mapOf(
                             FIELD_PRODUCT_NAME, item.name,
                             FIELD_PRODUCT_ID, item.productId,
-                            FIELD_PRODUCT_PRICE, item.getPriceIntFromString(),
+                            FIELD_PRODUCT_PRICE, item.priceInt.toString(),
                             FIELD_PRODUCT_BRAND, VALUE_NONE_OTHER,
                             FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
                             FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,
@@ -190,7 +191,7 @@ class RecommendationPageTracking {
                         DataLayer.mapOf(
                                 FIELD_PRODUCT_NAME, item.name,
                                 FIELD_PRODUCT_ID, item.productId.toString(),
-                                FIELD_PRODUCT_PRICE, item.getPriceIntFromString(),
+                                FIELD_PRODUCT_PRICE, item.priceInt.toString(),
                                 FIELD_PRODUCT_BRAND, VALUE_NONE_OTHER,
                                 FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
                                 FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,
@@ -583,6 +584,7 @@ class RecommendationPageTracking {
                     EVENT_CATEGORY, EVENT_CATEGORY_RECOMMENDATION_PAGE_WITH_PRODUCT_ID,
                     EVENT_ACTION, EVENT_ACTION_CLICK_PRIMARY_PRODUCT,
                     EVENT_LABEL, VALUE_EMPTY,
+                    SHOP_ID, recommendationItem.shopId,
                     ECOMMERCE, DataLayer.mapOf(
                     ECOMMERCE_CLICK, convertPrimaryProductToDataClickObject(
                     recommendationItem,
@@ -614,6 +616,7 @@ class RecommendationPageTracking {
                     EVENT_CATEGORY, EVENT_CATEGORY_RECOMMENDATION_PAGE_WITH_PRODUCT_ID,
                     EVENT_ACTION, EVENT_ACTION_IMPRESSION_PRIMARY_PRODUCT,
                     EVENT_LABEL, VALUE_EMPTY,
+                    SHOP_ID, recommendationItem.shopId,
                     ECOMMERCE, DataLayer.mapOf(
                     ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
                     ECOMMERCE_IMPRESSIONS, DataLayer.listOf(
@@ -637,26 +640,29 @@ class RecommendationPageTracking {
         // No 71
         fun eventUserClickProductToWishlistForUserLoginWithProductId(
                 isAdded: Boolean,
-                ref: String
+                ref: String,
+                shopId: String
         ){
             val tracker = getTracker()
             val data = DataLayer.mapOf(
                     EVENT, EVENT_CLICK_RECOMMENDATION,
                     EVENT_CATEGORY, EVENT_CATEGORY_RECOMMENDATION_PAGE_WITH_PRODUCT_ID,
                     EVENT_ACTION, String.format(EVENT_ACTION_CLICK_PRIMARY_PRODUCT_LOGIN, if(isAdded) "add" else "remove"),
-                    EVENT_LABEL, String.format(EVENT_LABEL_SOURCE, if(ref.isEmpty()) "null" else ref)
+                    EVENT_LABEL, String.format(EVENT_LABEL_SOURCE, if(ref.isEmpty()) "null" else ref),
+                    SHOP_ID, shopId
             )
             tracker.sendEnhanceEcommerceEvent(data)
         }
 
         // No 72
-        fun eventUserClickProductToWishlistForNonLoginWithProductId(ref: String){
+        fun eventUserClickProductToWishlistForNonLoginWithProductId(ref: String, shopId: String){
             val tracker = getTracker()
             val data = DataLayer.mapOf(
                     EVENT, EVENT_CLICK_RECOMMENDATION,
                     EVENT_CATEGORY, EVENT_CATEGORY_RECOMMENDATION_PAGE_WITH_PRODUCT_ID,
                     EVENT_ACTION, EVENT_ACTION_CLICK_PRIMARY_PRODUCT_NON_LOGIN,
-                    EVENT_LABEL, String.format(EVENT_LABEL_SOURCE, if(ref.isEmpty()) "null" else ref)
+                    EVENT_LABEL, String.format(EVENT_LABEL_SOURCE, if(ref.isEmpty()) "null" else ref),
+                    SHOP_ID, shopId
             )
             tracker.sendEnhanceEcommerceEvent(data)
         }
@@ -673,6 +679,7 @@ class RecommendationPageTracking {
                     EVENT_CATEGORY, EVENT_CATEGORY_RECOMMENDATION_PAGE_WITH_PRODUCT_ID,
                     EVENT_ACTION, EVENT_ACTION_ADD_TO_CART,
                     EVENT_LABEL, VALUE_EMPTY,
+                    SHOP_ID, recommendationItem.shopId,
                     ECOMMERCE, DataLayer.mapOf(
                     ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
                     ECOMMERCE_ADD, convertProductToDataClickAddToCart(
@@ -686,12 +693,13 @@ class RecommendationPageTracking {
         }
 
         // No 74
-        fun eventUserAddToCartNonLoginWithProductId(ref: String){
+        fun eventUserAddToCartNonLoginWithProductId(ref: String, shopId: String){
             val tracker = getTracker()
             val data = DataLayer.mapOf(
                     EVENT, EVENT_CLICK_RECOMMENDATION,
                     EVENT_CATEGORY, EVENT_CATEGORY_RECOMMENDATION_PAGE_WITH_PRODUCT_ID,
                     EVENT_ACTION, EVENT_ACTION_ADD_TO_CART_NON_LOGIN,
+                    SHOP_ID, shopId,
                     EVENT_LABEL, String.format(EVENT_LABEL_SOURCE, if(ref.isEmpty()) "null" else ref)
             )
             tracker.sendEnhanceEcommerceEvent(data)
@@ -733,6 +741,7 @@ class RecommendationPageTracking {
                     EVENT_CATEGORY, EVENT_CATEGORY_RECOMMENDATION_PAGE_WITH_PRODUCT_ID,
                     EVENT_ACTION, EVENT_ACTION_BUY,
                     EVENT_LABEL, VALUE_EMPTY,
+                    SHOP_ID, recommendationItem.shopId,
                     ECOMMERCE, DataLayer.mapOf(
                     ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
                     ECOMMERCE_ADD, convertProductToDataClickAddToCart(
@@ -746,12 +755,13 @@ class RecommendationPageTracking {
         }
 
         // No 78
-        fun eventUserClickBuyNonLoginWithProductId(ref: String){
+        fun eventUserClickBuyNonLoginWithProductId(ref: String, shopId: String){
             val tracker = getTracker()
             val data = DataLayer.mapOf(
                     EVENT, EVENT_CLICK_RECOMMENDATION,
                     EVENT_CATEGORY, EVENT_CATEGORY_RECOMMENDATION_PAGE_WITH_PRODUCT_ID,
                     EVENT_ACTION, EVENT_ACTION_BUY_NON_LOGIN,
+                    SHOP_ID, shopId,
                     EVENT_LABEL, String.format(EVENT_LABEL_SOURCE, if(ref.isEmpty()) "null" else ref)
             )
             tracker.sendEnhanceEcommerceEvent(data)

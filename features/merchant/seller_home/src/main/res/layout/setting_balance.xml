@@ -17,7 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
-            android:textColor="@color/setting_black_text"
+            android:textColor="@color/default_black_text"
             app:typographyType="body_2"
             app:layout_constraintStart_toStartOf="@id/guidelineVerticalLeft"
             tools:text="Saldo"/>
@@ -27,11 +27,12 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:gravity="center_vertical|end"
-            android:textColor="@color/setting_black_text"
+            android:textColor="@color/default_black_text"
             app:layout_constraintWidth_percent="0.5"
             app:typographyType="body_2"
             app:typographyWeight="bold"
-            app:layout_constraintEnd_toEndOf="@id/guidelineVerticalRight"/>
+            app:layout_constraintEnd_toEndOf="@id/guidelineVerticalRight"
+            tools:text="Rp123.456.789"/>
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guidelineVerticalLeft"

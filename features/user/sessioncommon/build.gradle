@@ -46,8 +46,6 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.spekApi
     testImplementation rootProject.ext.testDependencies.platformEngine
     testImplementation rootProject.ext.testDependencies.junitPlatformRunner
-    androidTestImplementation project(rootProject.ext.libraries.tkpddesign)
-    testImplementation project(rootProject.ext.libraries.tkpddesign)
 }
 
 project.ext {

@@ -3,17 +3,14 @@ package com.tokopedia.topads.dashboard.view.activity;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
-import com.tokopedia.core.app.TActivity;
-import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.topads.R;
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.topads.common.view.activity.TopAdsBaseActivity;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.data.model.data.ShopAd;
-import com.tokopedia.topads.dashboard.view.fragment.TopAdsDetailGroupFragment;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsDetailShopFragment;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsNewScheduleNewGroupFragment;
 
-public class TopAdsDetailShopActivity extends BaseSimpleActivity {
+public class TopAdsDetailShopActivity extends TopAdsBaseActivity {
 
     public static final String TAG = TopAdsDetailShopFragment.class.getSimpleName();
 
@@ -47,8 +44,4 @@ public class TopAdsDetailShopActivity extends BaseSimpleActivity {
         return TAG;
     }
 
-    @Override
-    protected boolean isToolbarWhite() {
-        return true;
-    }
 }

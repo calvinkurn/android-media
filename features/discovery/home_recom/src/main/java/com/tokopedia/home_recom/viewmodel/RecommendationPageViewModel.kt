@@ -58,7 +58,7 @@ open class RecommendationPageViewModel @Inject constructor(
                         pageName = "recom_1,recom_2,recom_3",
                         queryParam = queryParam), object : Subscriber<List<RecommendationWidget>>() {
             override fun onNext(t: List<RecommendationWidget>) {
-                _recommendationListLiveData.postValue(Response.success(t))
+                _recommendationListLiveData.postValue(Response.success(t.filter { it.recommendationItemList.isNotEmpty() }))
             }
 
             override fun onCompleted() {

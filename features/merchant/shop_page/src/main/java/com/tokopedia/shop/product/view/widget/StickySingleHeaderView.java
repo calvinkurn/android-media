@@ -77,14 +77,14 @@ public class StickySingleHeaderView extends FrameLayout
         mRecyclerView = (RecyclerView) view;
         recyclerViewPaddingTop = mRecyclerView.getPaddingTop();
         mHeaderContainer = new FrameLayout(getContext());
-        mHeaderContainer.setBackground(MethodChecker.getDrawable(getContext(), R.drawable.card_shadow_bottom));
+        mHeaderContainer.setBackground(MethodChecker.getDrawable(getContext(), com.tokopedia.design.R.drawable.card_shadow_bottom));
         mHeaderContainer.setClipToPadding(false);
         mHeaderContainer.setClipChildren(false);
         mHeaderContainer.setClickable(true);
         mHeaderContainer.setLayoutParams(
                 new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         mHeaderContainer.setVisibility(View.GONE);
-        mHeaderContainer.setBackground(MethodChecker.getDrawable(getContext(), R.drawable.card_shadow_bottom));
+        mHeaderContainer.setBackground(MethodChecker.getDrawable(getContext(), com.tokopedia.design.R.drawable.card_shadow_bottom));
         addView(mHeaderContainer);
         RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
             @Override

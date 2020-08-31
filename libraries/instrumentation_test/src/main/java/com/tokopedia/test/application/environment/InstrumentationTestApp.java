@@ -12,6 +12,7 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.google.firebase.FirebaseApp;
 import com.google.gson.Gson;
+import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
@@ -32,11 +33,14 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.instrumentation.test.R;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
+import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface;
 import com.tokopedia.test.application.environment.interceptor.TopAdsDetectorInterceptor;
+import com.tokopedia.test.application.environment.interceptor.size.GqlNetworkAnalyzerInterceptor;
 import com.tokopedia.test.application.util.DeviceConnectionInfo;
 import com.tokopedia.test.application.util.DeviceInfo;
 import com.tokopedia.test.application.util.DeviceScreenInfo;
@@ -46,9 +50,12 @@ import com.tokopedia.track.interfaces.ContextAnalytics;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+import javax.annotation.Nullable;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
@@ -56,11 +63,17 @@ import okhttp3.Interceptor;
 import okhttp3.Response;
 
 public class InstrumentationTestApp extends BaseMainApplication
-        implements AbstractionRouter, TkpdCoreRouter, NetworkRouter, ApplinkRouter, TopAdsVerificatorInterface {
+        implements AbstractionRouter,
+        TkpdCoreRouter,
+        NetworkRouter,
+        ApplinkRouter,
+        TopAdsVerificatorInterface {
     public static final String MOCK_ADS_ID = "2df9e57a-849d-4259-99ea-673107469eef";
     public static final String MOCK_FINGERPRINT_HASH = "eyJjYXJyaWVyIjoiQW5kcm9pZCIsImN1cnJlbnRfb3MiOiI4LjAuMCIsImRldmljZV9tYW51ZmFjdHVyZXIiOiJHb29nbGUiLCJkZXZpY2VfbW9kZWwiOiJBbmRyb2lkIFNESyBidWlsdCBmb3IgeDg2IiwiZGV2aWNlX25hbWUiOiJBbmRyb2lkIFNESyBidWlsdCBmb3IgeDg2IiwiZGV2aWNlX3N5c3RlbSI6ImFuZHJvaWQiLCJpc19lbXVsYXRvciI6dHJ1ZSwiaXNfamFpbGJyb2tlbl9yb290ZWQiOmZhbHNlLCJpc190YWJsZXQiOmZhbHNlLCJsYW5ndWFnZSI6ImVuX1VTIiwibG9jYXRpb25fbGF0aXR1ZGUiOiItNi4xNzU3OTQiLCJsb2NhdGlvbl9sb25naXR1ZGUiOiIxMDYuODI2NDU3Iiwic2NyZWVuX3Jlc29sdXRpb24iOiIxMDgwLDE3OTQiLCJzc2lkIjoiXCJBbmRyb2lkV2lmaVwiIiwidGltZXpvbmUiOiJHTVQrNyIsInVzZXJfYWdlbnQiOiJEYWx2aWsvMi4xLjAgKExpbnV4OyBVOyBBbmRyb2lkIDguMC4wOyBBbmRyb2lkIFNESyBidWlsdCBmb3IgeDg2IEJ1aWxkL09TUjEuMTcwOTAxLjA0MykifQ==";
     public static final String MOCK_DEVICE_ID="cx68b1CtPII:APA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR";
     private int topAdsProductCount = 0;
+    private Long totalSizeInBytes = 0L;
+    private Map<String, Interceptor> testInterceptors = new HashMap<>();
 
     @Override
     public void onCreate() {
@@ -71,6 +84,7 @@ public class InstrumentationTestApp extends BaseMainApplication
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
         TrackApp.getInstance().registerImplementation(TrackApp.APPSFLYER, DummyAppsFlyerAnalytics.class);
         TrackApp.getInstance().registerImplementation(TrackApp.MOENGAGE, MoengageAnalytics.class);
+        initAkamaiBotManager();
         LinkerManager.initLinkerManager(getApplicationContext()).setGAClientId(TrackingUtils.getClientID(getApplicationContext()));
         TrackApp.getInstance().initializeAllApis();
         NetworkClient.init(this);
@@ -78,22 +92,48 @@ public class InstrumentationTestApp extends BaseMainApplication
         GlobalConfig.VERSION_NAME = "3.66";
         GraphqlClient.init(this);
         com.tokopedia.config.GlobalConfig.DEBUG = true;
-        enableTopAdsDetector();
+        RemoteConfigInstance.initAbTestPlatform(this);
         super.onCreate();
+
+        ResourceDownloadManager
+                .Companion.getManager()
+                .setBaseAndRelativeUrl("http://dummy.dummy", "dummy")
+                .initialize(this, R.raw.dummy_description);
+    }
+
+    private void initAkamaiBotManager() {
+        com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(InstrumentationTestApp.this);
+        //Thread sleep to ensure akamai hit properly
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public void enableTopAdsDetector() {
         if (GlobalConfig.DEBUG) {
-            List<Interceptor> testInterceptors = new ArrayList<>();
-            testInterceptors.add(new TopAdsDetectorInterceptor(new Function1<Integer, Unit>() {
+            addInterceptor(new TopAdsDetectorInterceptor(new Function1<Integer, Unit>() {
                 @Override
                 public Unit invoke(Integer newCount) {
                     topAdsProductCount+=newCount;
                     return null;
                 }
             }));
+        }
+    }
 
-            GraphqlClient.reInitRetrofitWithInterceptors(testInterceptors, this);
+    public void enableSizeDetector(@Nullable List<String> listToAnalyze) {
+        if (GlobalConfig.DEBUG) {
+            addInterceptor(new GqlNetworkAnalyzerInterceptor(listToAnalyze));
+        }
+    }
+
+    public void addInterceptor(Interceptor interceptor) {
+        if (!testInterceptors.containsKey(interceptor.getClass().getCanonicalName())) {
+            testInterceptors.put(interceptor.getClass().getCanonicalName(), interceptor);
+            ArrayList<Interceptor> interceptorList = new ArrayList<Interceptor>(testInterceptors.values());
+            GraphqlClient.reInitRetrofitWithInterceptors(interceptorList, this);
         }
     }
 
@@ -174,12 +214,6 @@ public class InstrumentationTestApp extends BaseMainApplication
         }
     }
 
-public void sendAnalyticsAnomalyResponse(String title,
-
-                                      String accessToken, String refreshToken,
-
-                                      String response, String request){}
-
     @Override
     public Class<?> getDeeplinkClass() {
         return null;
@@ -230,11 +264,6 @@ public void sendAnalyticsAnomalyResponse(String title,
         return new SessionHandler(this) {
 
             @Override
-            public String getGTMLoginID() {
-                return "null";
-            }
-
-            @Override
             public String getLoginID() {
                 return "null";
             }
@@ -244,10 +273,6 @@ public void sendAnalyticsAnomalyResponse(String title,
                 return "null";
             }
 
-            @Override
-            public boolean isMsisdnVerified() {
-                return false;
-            }
         };
     }
 
@@ -263,11 +288,6 @@ public void sendAnalyticsAnomalyResponse(String title,
 
     @Override
     public void refreshFCMFromInstantIdService(String token) {
-
-    }
-
-    @Override
-    public void refreshFCMTokenFromForegroundToCM() {
 
     }
 
@@ -420,4 +440,9 @@ public void sendAnalyticsAnomalyResponse(String title,
     public void onNewIntent(Context context, Intent intent) {
 
     }
+    @Override
+    public void sendAnalyticsAnomalyResponse(String s, String s1, String s2, String s3, String s4) {
+
+    }
+
 }

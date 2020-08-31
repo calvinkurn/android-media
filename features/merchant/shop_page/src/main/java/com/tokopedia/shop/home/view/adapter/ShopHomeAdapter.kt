@@ -13,16 +13,13 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomePlayCarouselViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductViewHolder
 import com.tokopedia.shop.home.view.model.*
-import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder
-import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeProductEtalaseTitleUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
 import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
 import com.tokopedia.shop.product.view.widget.OnStickySingleHeaderListener
 import com.tokopedia.shop.product.view.widget.StickySingleHeaderView
+import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
+import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder
 
 /**
  * Created by rizqiaryansa on 2020-02-21.
@@ -36,7 +33,6 @@ class ShopHomeAdapter(
 
     companion object {
         private const val ALL_PRODUCT_STRING = "Semua Produk"
-
     }
 
     private var onStickySingleHeaderViewListener: OnStickySingleHeaderListener? = null
@@ -95,7 +91,7 @@ class ShopHomeAdapter(
             if(playCarouselUiModel.playBannerCarouselDataModel.channelList.isEmpty()){
                 visitables.removeAt(index)
                 notifyItemRemoved(index)
-            } else {
+            } else if(index != -1){
                 visitables[index] = playCarouselUiModel
                 notifyItemChanged(index)
             }
@@ -115,6 +111,16 @@ class ShopHomeAdapter(
         visitables.clear()
         visitables.addAll(data)
         notifyChangedDataSet()
+    }
+
+    fun setHomeYouTubeData(widgetId: String, data: YoutubeVideoDetailModel) {
+        visitables.filterIsInstance<ShopHomeDisplayWidgetUiModel>()
+                .find {
+                    it.widgetId == widgetId
+                }?.let {
+                    it.data?.firstOrNull()?.youTubeVideoDetail = data
+                    notifyChangedItem(visitables.indexOf(it))
+                }
     }
 
     override fun hideLoading() {
@@ -329,6 +335,51 @@ class ShopHomeAdapter(
 
     private fun getPositionPlayCarousel(): Int{
         return visitables.indexOfFirst { it is ShopHomePlayCarouselUiModel}
+    }
+
+    fun updateRemindMeStatusCampaignNplWidgetData(
+            campaignId: String,
+            isRemindMe: Boolean? = null,
+            isClickRemindMe: Boolean = false
+    ) {
+        visitables.filterIsInstance<ShopHomeNewProductLaunchCampaignUiModel>().onEach{nplCampaignUiModel ->
+            nplCampaignUiModel.data?.firstOrNull { it.campaignId == campaignId }?.let {
+                isRemindMe?.let{ isRemindMe ->
+                    it.isRemindMe = isRemindMe
+                    if (isClickRemindMe) {
+                        if (isRemindMe)
+                            ++it.totalNotify
+                        else
+                            --it.totalNotify
+                    }
+                }
+                it.showRemindMeLoading = false
+                notifyChangedItem(visitables.indexOf(nplCampaignUiModel))
+            }
+        }
+    }
+
+    fun removeShopHomeCampaignNplWidget(model: ShopHomeNewProductLaunchCampaignUiModel){
+        val modelIndex = visitables.indexOf(model)
+        if(modelIndex != -1){
+            visitables.remove(model)
+            notifyRemovedItem(modelIndex)
+        }
+    }
+
+    fun showNplRemindMeLoading(campaignId: String) {
+        visitables.filterIsInstance<ShopHomeNewProductLaunchCampaignUiModel>().onEach{nplCampaignUiModel ->
+            nplCampaignUiModel.data?.firstOrNull { it.campaignId == campaignId }?.let {
+                it.showRemindMeLoading = true
+                notifyChangedItem(visitables.indexOf(nplCampaignUiModel))
+            }
+        }
+    }
+
+    fun getNplCampaignUiModel(campaignId: String): ShopHomeNewProductLaunchCampaignUiModel? {
+        return visitables.filterIsInstance<ShopHomeNewProductLaunchCampaignUiModel>().firstOrNull {
+            it.data?.firstOrNull()?.campaignId == campaignId
+        }
     }
 
 }

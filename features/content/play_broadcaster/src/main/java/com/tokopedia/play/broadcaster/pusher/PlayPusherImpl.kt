@@ -2,19 +2,20 @@ package com.tokopedia.play.broadcaster.pusher
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.util.Log
 import android.view.SurfaceView
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.alivc.live.pusher.*
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.play.broadcaster.pusher.state.PlayPusherErrorType
-import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoState
+import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoListener
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherNetworkState
+import com.tokopedia.play.broadcaster.pusher.state.PlayPusherStatus
 import com.tokopedia.play.broadcaster.pusher.timer.PlayPusherTimer
 import com.tokopedia.play.broadcaster.pusher.timer.PlayPusherTimerListener
 import com.tokopedia.play.broadcaster.pusher.type.PlayPusherQualityMode
+import com.tokopedia.play.broadcaster.util.error.DefaultErrorThrowable
+import com.tokopedia.play.broadcaster.util.extension.sendCrashlyticsLog
 
 
 /**
@@ -25,173 +26,187 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
     private var mTimerDuration: PlayPusherTimer? = null
     private var mIngestUrl: String = ""
 
-    private var mAliVcLivePusher: AlivcLivePusher = AlivcLivePusher()
+    private  var mAliVcLivePusher: AlivcLivePusher? = null
+    private  var mPlayPusherStatus: PlayPusherStatus = PlayPusherStatus.Idle
 
-    private val _observableInfoState = MutableLiveData<PlayPusherInfoState>()
+    private var  mPusherListener: PlayPusherInfoListener? = null
     private val _observableNetworkState = MutableLiveData<PlayPusherNetworkState>()
     
-    private val mAliVcLivePushConfig: AlivcLivePushConfig = AlivcLivePushConfig().apply {
+    private val mAliVcLivePushConfig: PlayPusherConfig = PlayPusherConfig().apply {
         setCameraType(builder.cameraType)
         setPreviewOrientation(builder.orientation)
         previewDisplayMode = builder.previewDisplayMode
         setResolution(builder.resolution)
         isEnableAutoResolution = builder.isEnableAutoResolution
         setFps(builder.fps)
-        setAudioChannels(builder.audioChannel)
-        audioProfile = builder.audioProfile
-        setAudioEncodeMode(builder.audioEncode)
-        setAudioSamepleRate(builder.audioSampleRate)
-        audioBitRate = builder.audioBitrate
+        setPushMirror(builder.pushMirror)
+//        setAudioChannels(builder.audioChannel)
+//        audioProfile = builder.audioProfile
+//        setAudioEncodeMode(builder.audioEncode)
+//        setAudioSamepleRate(builder.audioSampleRate)
+//        audioBitRate = builder.audioBitrate
         setQualityMode(this)
     }
 
-    override fun create() {
+    override suspend fun create() {
+        if (mAliVcLivePusher != null) {
+            mAliVcLivePusher?.destroy()
+            mAliVcLivePusher = null
+        }
         try {
             mAliVcLivePusher = AlivcLivePusher()
-            mAliVcLivePusher.init(builder.context, mAliVcLivePushConfig)
-            mAliVcLivePusher.setLivePushErrorListener(mAliVcLivePushErrorListener)
-//            mAliVcLivePusher.setLivePushInfoListener(mAliVcLivePushInfoListener)
-            mAliVcLivePusher.setLivePushNetworkListener(mAliVcLivePushNetworkListener)
-        } catch (e: IllegalArgumentException) {
-            if (GlobalConfig.DEBUG) {
-                e.printStackTrace()
-            }
-        } catch (e: IllegalStateException) {
+            mAliVcLivePusher?.init(builder.context, mAliVcLivePushConfig)
+            mAliVcLivePusher?.setLivePushErrorListener(mAliVcLivePushErrorListener)
+            mAliVcLivePusher?.setLivePushNetworkListener(mAliVcLivePushNetworkListener)
+            mAliVcLivePusher?.setAudioDenoise(true)
+        } catch (e: Exception) {
+            sendCrashlyticsLog(e)
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
             }
         }
     }
 
-    override fun startPreview(surfaceView: SurfaceView) {
+    override suspend fun startPreview(surfaceView: SurfaceView) {
+        if (ActivityCompat.checkSelfPermission(builder.context, Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_DENIED) {
+            if (GlobalConfig.DEBUG)
+                throw IllegalStateException("android.permission.CAMERA not granted")
+            return
+        }
         try {
-            if (ActivityCompat.checkSelfPermission(builder.context, Manifest.permission.CAMERA)
-                    == PackageManager.PERMISSION_GRANTED) {
-                mAliVcLivePusher.startPreviewAysnc(surfaceView)
-            }
-        } catch (e: IllegalArgumentException) {
-            if (GlobalConfig.DEBUG) {
-                e.printStackTrace()
-            }
-        } catch (e: IllegalStateException) {
-            if (GlobalConfig.DEBUG) {
-                e.printStackTrace()
-            }
+            mAliVcLivePusher?.startPreview(surfaceView)
+        } catch (e: Exception) {
+            sendCrashlyticsLog(e)
         }
     }
 
     override fun stopPreview() {
         try {
-            mAliVcLivePusher.stopPreview()
+            mAliVcLivePusher?.stopPreview()
         } catch (e: Exception) {
+            sendCrashlyticsLog(e)
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
             }
         }
     }
 
-    override fun startPush(ingestUrl: String) {
+    override suspend fun startPush(ingestUrl: String) {
         if (ingestUrl.isNotEmpty()) {
             this.mIngestUrl = ingestUrl
         }
         if (this.mIngestUrl.isEmpty()) {
-            if (GlobalConfig.DEBUG) {
-                throw IllegalArgumentException("ingestUrl is empty")
-            }
-            return
+            throw IllegalArgumentException("ingestUrl must not be empty")
         }
+        if (isPushing() || mPlayPusherStatus != PlayPusherStatus.Idle) {
+            throw IllegalStateException("Current pusher status is ${mPlayPusherStatus.name}")
+        }
+        mTimerDuration?.start()
+        mAliVcLivePusher?.startPushAysnc(this.mIngestUrl)
+        mPlayPusherStatus = PlayPusherStatus.Active
+        mPusherListener?.onStart()
+    }
+
+    override suspend fun restartPush() {
+        mAliVcLivePusher?.restartPushAync()
+    }
+
+    override suspend fun stopPush() {
         try {
-            mAliVcLivePusher.startPushAysnc(this.mIngestUrl)
-            mTimerDuration?.start()
+            mAliVcLivePusher?.stopPush()
         } catch (e: Exception) {
-            // TODO("handle start push async error")
+            sendCrashlyticsLog(e)
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
             }
         }
+        mTimerDuration?.stop()
+        mPlayPusherStatus = PlayPusherStatus.Stop
+        mPusherListener?.onStop(mTimerDuration?.getTimeElapsed().orEmpty())
     }
 
-    override fun restartPush() {
+    override suspend fun switchCamera() {
         try {
-            mAliVcLivePusher.restartPushAync()
+            mAliVcLivePusher?.switchCamera()
+            mAliVcLivePusher?.setPushMirror(mAliVcLivePushConfig.getCameraTypeEnum()
+                    == AlivcLivePushCameraTypeEnum.CAMERA_TYPE_FRONT)
+        } catch (e: Exception) {}
+    }
+
+    override suspend fun resume() {
+        try {
+            mAliVcLivePusher?.resumeAsync()
         } catch (e: Exception) {
+            sendCrashlyticsLog(e)
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
             }
         }
-    }
-
-    override fun stopPush() {
-        try {
-            mAliVcLivePusher.stopPush()
-            mTimerDuration?.stop()
-        } catch (e: Exception) {
-            if (GlobalConfig.DEBUG) {
-                e.printStackTrace()
-            }
-        }
-    }
-
-    override fun switchCamera() {
-        try {
-            mAliVcLivePusher.switchCamera()
-        } catch (e: Exception) {
-            if (GlobalConfig.DEBUG) {
-                e.printStackTrace()
-            }
-        }
-    }
-
-    override fun resume() {
-        try {
-            mAliVcLivePusher.resumeAsync()
+        if (mPlayPusherStatus != PlayPusherStatus.Paused) {
+            throw IllegalStateException("Current pusher status is ${mPlayPusherStatus.name}")
+        } else {
             mTimerDuration?.resume()
-        } catch (e: java.lang.IllegalStateException) {
-            if (GlobalConfig.DEBUG) {
-                e.printStackTrace()
-            }
-        } catch (e: java.lang.IllegalArgumentException) {
+            mPlayPusherStatus = PlayPusherStatus.Active
+            mPusherListener?.onResume()
+        }
+    }
+
+    override suspend fun pause() {
+        try {
+            mAliVcLivePusher?.pause()
+        } catch (e: Exception) {
+            sendCrashlyticsLog(e)
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
             }
         }
-    }
-
-    override fun pause() {
-        try {
-            mAliVcLivePusher.pause()
+        if (mPlayPusherStatus != PlayPusherStatus.Active) {
+            throw IllegalStateException("Current pusher status is ${mPlayPusherStatus.name}")
+        } else {
             mTimerDuration?.pause()
-        } catch (e: Exception) {
-            if (GlobalConfig.DEBUG) {
-                e.printStackTrace()
-            }
+            mPlayPusherStatus = PlayPusherStatus.Paused
+            mPusherListener?.onPause()
         }
     }
 
     override fun destroy() {
         try {
-            mAliVcLivePusher.destroy()
+            mAliVcLivePusher?.destroy()
+            mTimerDuration?.destroy()
         } catch (e: Exception) {
+            sendCrashlyticsLog(e)
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
             }
         }
     }
 
-    override fun addMaxStreamDuration(millis: Long) {
-        this.mTimerDuration = PlayPusherTimer(
-                context = builder.context,
-                duration = millis,
-                callback = mPlayPusherTimerListener
-        )
+    override fun addStreamDuration(durationInMillis: Long) {
+        if (this.mTimerDuration == null)
+            this.mTimerDuration = PlayPusherTimer(builder.context, durationInMillis)
+
+        this.mTimerDuration?.callback = mPlayPusherTimerListener
     }
 
-    override fun addMaxPauseDuration(millis: Long) {
-        this.mTimerDuration?.pauseDuration = millis
+    override fun addMaxStreamDuration(durationInMillis: Long) {
+        this.mTimerDuration?.mMaxDuration = durationInMillis
     }
 
-    override fun getObservablePlayPusherInfoState(): LiveData<PlayPusherInfoState> {
-        return _observableInfoState
+    override fun restartStreamDuration(durationInMillis: Long) {
+        this.mTimerDuration?.restart(durationInMillis)
+    }
+
+    override fun addMaxPauseDuration(durationInMillis: Long) {
+        if (this.mTimerDuration == null)
+            this.mTimerDuration = PlayPusherTimer(builder.context)
+
+        this.mTimerDuration?.pauseDuration = durationInMillis
+        this.mTimerDuration?.callback = mPlayPusherTimerListener
+    }
+
+    override fun addPusherInfoListener(playPusherInfoListener: PlayPusherInfoListener) {
+        this.mPusherListener = playPusherInfoListener
     }
 
     override fun getObservablePlayPusherNetworkState(): LiveData<PlayPusherNetworkState> {
@@ -217,49 +232,11 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
 
     private val mAliVcLivePushErrorListener = object : AlivcLivePushErrorListener {
         override fun onSystemError(pusher: AlivcLivePusher?, pusherError: AlivcLivePushError?) {
-            showLog("onSystemError currentStatus:${pusher?.currentStatus}, lastError:${pusher?.lastError}, isNetworkPushing:${pusher?.isNetworkPushing}, isPushing:${pusher?.isPushing}")
+            sendCrashlyticsLog(DefaultErrorThrowable("onSystemError ${pusherError?.msg}, lastError:${pusher?.lastError}"))
         }
 
         override fun onSDKError(pusher: AlivcLivePusher?, pusherError: AlivcLivePushError?) {
-            showLog("onSDKError currentStatus:${pusher?.currentStatus}, lastError:${pusher?.lastError}, isNetworkPushing:${pusher?.isNetworkPushing}, isPushing:${pusher?.isPushing}")
-        }
-    }
-
-    private val mAliVcLivePushInfoListener = object: AlivcLivePushInfoListener {
-        override fun onPushResumed(pusher: AlivcLivePusher?) {
-        }
-
-        override fun onPreviewStarted(pusher: AlivcLivePusher?) {
-        }
-
-        override fun onAdjustFps(pusher: AlivcLivePusher?, curFps: Int, targetFps: Int) {
-        }
-
-        override fun onFirstFramePreviewed(pusher: AlivcLivePusher?) {
-        }
-
-        override fun onPushStoped(pusher: AlivcLivePusher?) {
-        }
-
-        override fun onDropFrame(pusher: AlivcLivePusher?, countBef: Int, countAft: Int) {
-        }
-
-        override fun onFirstAVFramePushed(pusher: AlivcLivePusher?) {
-        }
-
-        override fun onPreviewStoped(pusher: AlivcLivePusher?) {
-        }
-
-        override fun onAdjustBitRate(pusher: AlivcLivePusher?, curBr: Int, targetBr: Int) {
-        }
-
-        override fun onPushStarted(pusher: AlivcLivePusher?) {
-        }
-
-        override fun onPushPauesed(pusher: AlivcLivePusher?) {
-        }
-
-        override fun onPushRestarted(pusher: AlivcLivePusher?) {
+            sendCrashlyticsLog(DefaultErrorThrowable("onSystemError ${pusherError?.msg}, lastError:${pusher?.lastError}"))
         }
     }
 
@@ -272,7 +249,7 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
         }
 
         override fun onReconnectFail(pusher: AlivcLivePusher?) {
-            _observableNetworkState.postValue(PlayPusherNetworkState.Loss)
+            _observableNetworkState.postValue(PlayPusherNetworkState.ReconnectFailed)
         }
 
         override fun onSendDataTimeout(pusher: AlivcLivePusher?) {
@@ -280,14 +257,15 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
         }
 
         override fun onConnectFail(pusher: AlivcLivePusher?) {
-            _observableNetworkState.postValue(PlayPusherNetworkState.Loss)
+            _observableNetworkState.postValue(PlayPusherNetworkState.ConnectFailed)
         }
 
         override fun onReconnectStart(pusher: AlivcLivePusher?) {
+            _observableNetworkState.postValue(PlayPusherNetworkState.ReConnectStart)
         }
 
         override fun onReconnectSucceed(pusher: AlivcLivePusher?) {
-            _observableNetworkState.postValue(PlayPusherNetworkState.Recover)
+            _observableNetworkState.postValue(PlayPusherNetworkState.ReConnectSucceed)
         }
 
         override fun onPushURLAuthenticationOverdue(pusher: AlivcLivePusher?): String {
@@ -301,32 +279,25 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
 
     private val mPlayPusherTimerListener = object : PlayPusherTimerListener{
         override fun onCountDownActive(timeLeft: String) {
-            _observableInfoState.postValue(PlayPusherInfoState.Active(timeLeft))
+            mPusherListener?.onTimerActive(timeLeft)
         }
 
         override fun onCountDownAlmostFinish(minutesUntilFinished: Long) {
-            _observableInfoState.postValue(PlayPusherInfoState.AlmostFinish(minutesUntilFinished))
+            mPusherListener?.onTimerAlmostFinish(minutesUntilFinished)
         }
 
-        override fun onCountDownFinish(timeElapsed: String) {
-            _observableInfoState.postValue(PlayPusherInfoState.Finish(timeElapsed))
+        override fun onCountDownFinish() {
+            mPusherListener?.onTimerFinish()
         }
 
         override fun onReachMaximumPauseDuration() {
-            _observableInfoState.postValue(PlayPusherInfoState.Error(PlayPusherErrorType.ReachMaximumDuration))
+            mPusherListener?.onReachMaximumPauseDuration()
         }
     }
 
-     override fun isPushing(): Boolean = mAliVcLivePusher.currentStatus == AlivcLivePushStats.PUSHED
-
-    private fun showLog(message: String) {
-        if (GlobalConfig.DEBUG) {
-            Log.d(TAG_PLAY_PUSHER, message)
-        }
-    }
+    override fun isPushing(): Boolean = mAliVcLivePusher?.currentStatus == AlivcLivePushStats.PUSHED
 
     companion object {
         const val AUDIO_BITRATE_128Kbps = 128000
-        const val TAG_PLAY_PUSHER = "PlayPusher"
     }
 }

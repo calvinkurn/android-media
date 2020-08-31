@@ -3,12 +3,12 @@ package com.tokopedia.topads.keyword.view.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.util.SessionHandler;
+import androidx.fragment.app.Fragment;
+
 import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
@@ -22,7 +22,8 @@ import com.tokopedia.topads.keyword.di.module.TopAdsKeywordDetailModule;
 import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordEditDetailPositiveActivity;
 import com.tokopedia.topads.keyword.view.model.KeywordAd;
 import com.tokopedia.topads.keyword.view.presenter.TopadsKeywordDetailPresenter;
-import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
 
@@ -85,23 +86,23 @@ public class TopAdsKeywordDetailFragment extends TopAdsDetailStatisticFragment<T
     @Override
     protected void turnOnAd() {
         super.turnOnAd();
-        topadsKeywordDetailPresenter.turnOnAd(ad.getId(), ad.getGroupId(), SessionHandler.getShopID(getActivity()));
+        topadsKeywordDetailPresenter.turnOnAd(ad.getId(), ad.getGroupId(), getShopId());
     }
 
     @Override
     protected void turnOffAd() {
         super.turnOffAd();
-        topadsKeywordDetailPresenter.turnOffAd(ad.getId(), ad.getGroupId(), SessionHandler.getShopID(getActivity()));
+        topadsKeywordDetailPresenter.turnOffAd(ad.getId(), ad.getGroupId(), getShopId());
     }
 
     @Override
     protected void refreshAd() {
         if (adFromIntent != null) {
             topadsKeywordDetailPresenter.refreshAd(getDatePickerPresenter().getStartDate(),
-                    getDatePickerPresenter().getEndDate(), adFromIntent.getId(), getKeywordTypeValue(), SessionHandler.getShopID(getActivity()));
+                    getDatePickerPresenter().getEndDate(), adFromIntent.getId(), getKeywordTypeValue(), getShopId());
         } else {
             topadsKeywordDetailPresenter.refreshAd(getDatePickerPresenter().getStartDate(),
-                    getDatePickerPresenter().getEndDate(), adId, getKeywordTypeValue(), SessionHandler.getShopID(getActivity()));
+                    getDatePickerPresenter().getEndDate(), adId, getKeywordTypeValue(), getShopId());
         }
     }
 
@@ -121,7 +122,7 @@ public class TopAdsKeywordDetailFragment extends TopAdsDetailStatisticFragment<T
     @Override
     protected void deleteAd() {
         super.deleteAd();
-        topadsKeywordDetailPresenter.deleteAd(ad.getId(), ad.getGroupId(), SessionHandler.getShopID(getActivity()));
+        topadsKeywordDetailPresenter.deleteAd(ad.getId(), ad.getGroupId(), getShopId());
     }
 
     @Override
@@ -174,6 +175,18 @@ public class TopAdsKeywordDetailFragment extends TopAdsDetailStatisticFragment<T
         super.onAttachListener(context);
         if (context instanceof OnKeywordDetailListener) {
             onKeywordDetailListener = (OnKeywordDetailListener) context;
+        }
+    }
+
+    private String shopId = "";
+
+    private String getShopId() {
+        if(!TextUtils.isEmpty(shopId)) {
+            return shopId;
+        } else {
+            UserSessionInterface userSession = new UserSession(getActivity());
+            shopId = userSession.getShopId();
+            return shopId;
         }
     }
 }

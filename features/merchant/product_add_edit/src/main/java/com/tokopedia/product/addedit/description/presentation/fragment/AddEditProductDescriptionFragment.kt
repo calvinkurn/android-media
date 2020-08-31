@@ -1,5 +1,6 @@
 package com.tokopedia.product.addedit.description.presentation.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
@@ -8,71 +9,59 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import androidx.fragment.app.Fragment
+import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
-import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant
-import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_CURRENCY_TYPE
-import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DEFAULT_PRICE
-import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DEFAULT_SKU
-import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DESCRIPTION_INPUT
-import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_HAS_ORIGINAL_VARIANT_LV1
-import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_HAS_ORIGINAL_VARIANT_LV2
-import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_HAS_WHOLESALE
-import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_IS_ADD
-import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_IS_OFFICIAL_STORE
-import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_IS_USING_CACHE_MANAGER
-import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_NEED_RETAIN_IMAGE
-import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_PRODUCT_SIZECHART
-import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST
-import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_PRODUCT_VARIANT_SELECTION
-import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_SHIPMENT_INPUT
-import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_STOCK_TYPE
-import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_VARIANT_INPUT
-import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_VARIANT_PICKER_RESULT_CACHE_ID
-import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_VARIANT_RESULT_CACHE_ID
-import com.tokopedia.product.addedit.common.util.ResourceProvider
-import com.tokopedia.product.addedit.common.util.getText
-import com.tokopedia.product.addedit.common.util.setText
-import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.ProductVariantByCatModel
+import com.tokopedia.product.addedit.common.util.*
 import com.tokopedia.product.addedit.description.di.AddEditProductDescriptionModule
 import com.tokopedia.product.addedit.description.di.DaggerAddEditProductDescriptionComponent
-import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity.Companion.PARAM_IS_ADD_MODE
-import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity.Companion.PARAM_IS_EDIT_MODE
-import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity.Companion.PARAM_PRODUCT_INPUT_MODEL
 import com.tokopedia.product.addedit.description.presentation.adapter.VideoLinkTypeFactory
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
-import com.tokopedia.product.addedit.description.presentation.model.PictureViewModel
-import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
 import com.tokopedia.product.addedit.description.presentation.viewmodel.AddEditProductDescriptionViewModel
-import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_BACK_PRESSED
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.BUNDLE_CACHE_MANAGER_ID
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_VARIANT_DIALOG_EDIT
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_KEY_ADD_MODE
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_KEY_DESCRIPTION
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.BUNDLE_BACK_PRESSED
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DESCRIPTION_DATA
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DETAIL_DATA
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_ADDING_PRODUCT
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_DRAFTING_PRODUCT
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_EDITING_PRODUCT
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_FIRST_MOVED
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_PRODUCT_INPUT_MODEL
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.NO_DATA
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
-import com.tokopedia.product.addedit.shipment.presentation.activity.AddEditProductShipmentActivity
-import com.tokopedia.product.addedit.shipment.presentation.fragment.AddEditProductShipmentFragment.Companion.REQUEST_CODE_SHIPMENT
-import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
+import com.tokopedia.product.addedit.shipment.presentation.fragment.AddEditProductShipmentFragmentArgs
 import com.tokopedia.product.addedit.tooltip.model.NumericTooltipModel
 import com.tokopedia.product.addedit.tooltip.presentation.TooltipBottomSheet
 import com.tokopedia.product.addedit.tracking.ProductAddDescriptionTracking
 import com.tokopedia.product.addedit.tracking.ProductEditDescriptionTracking
-import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.product.addedit.variant.presentation.activity.AddEditProductVariantActivity
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 import kotlinx.android.synthetic.main.add_edit_product_description_input_layout.*
+import kotlinx.android.synthetic.main.add_edit_product_no_variant_input_layout.*
 import kotlinx.android.synthetic.main.add_edit_product_variant_input_layout.*
 import kotlinx.android.synthetic.main.add_edit_product_video_input_layout.*
 import kotlinx.android.synthetic.main.fragment_add_edit_product_description.*
@@ -83,31 +72,8 @@ class AddEditProductDescriptionFragment:
         VideoLinkTypeFactory.VideoLinkListener {
 
     companion object {
-        fun createInstance(productInputModel: ProductInputModel): Fragment {
-            return AddEditProductDescriptionFragment().apply {
-                arguments = Bundle().apply {
-                    putParcelable(PARAM_PRODUCT_INPUT_MODEL, productInputModel)
-                }
-            }
-        }
-        fun createInstance(productInputModel: ProductInputModel,
-                           isEditMode: Boolean,
-                           isAddMode: Boolean): Fragment {
-            return AddEditProductDescriptionFragment().apply {
-                arguments = Bundle().apply {
-                    putParcelable(PARAM_PRODUCT_INPUT_MODEL, productInputModel)
-                    putBoolean(PARAM_IS_EDIT_MODE, isEditMode)
-                    putBoolean(PARAM_IS_ADD_MODE, isAddMode)
-                }
-            }
-        }
-
         const val MAX_VIDEOS = 3
         const val MAX_DESCRIPTION_CHAR = 2000
-        const val REQUEST_CODE_VARIANT = 0
-        const val TYPE_IDR = 1
-        const val IS_ADD = 0
-        const val REQUEST_CODE_DESCRIPTION = 0x03
         const val VIDEO_REQUEST_DELAY = 250L
     }
 
@@ -125,7 +91,7 @@ class AddEditProductDescriptionFragment:
     }
 
     override fun onDeleteClicked(videoLinkModel: VideoLinkModel, position: Int) {
-        if (descriptionViewModel.isEditMode && !descriptionViewModel.isAddMode) {
+        if (descriptionViewModel.isEditMode) {
             ProductEditDescriptionTracking.clickRemoveVideoLink(shopId)
         } else {
             ProductAddDescriptionTracking.clickRemoveVideoLink(shopId)
@@ -145,6 +111,7 @@ class AddEditProductDescriptionFragment:
         }
         textViewAddVideo.visibility =
                 if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
+        updateSaveButtonStatus()
     }
 
     override fun onTextChanged(url: String, position: Int) {
@@ -169,7 +136,7 @@ class AddEditProductDescriptionFragment:
                 Uri.parse("${AddEditProductConstants.HTTP_PREFIX}://${url}")
             }
             startActivity(Intent(Intent.ACTION_VIEW, uri))
-            if (descriptionViewModel.isEditMode && !descriptionViewModel.isAddMode) {
+            if (descriptionViewModel.isEditMode) {
                 ProductEditDescriptionTracking.clickPlayVideo(shopId)
             }
         } catch (e: Throwable) {
@@ -192,28 +159,37 @@ class AddEditProductDescriptionFragment:
         userSession = UserSession(requireContext())
         shopId = userSession.shopId
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            val isEditMode: Boolean = it.getBoolean(PARAM_IS_EDIT_MODE, false)
-            val isAddMode: Boolean = it.getBoolean(PARAM_IS_ADD_MODE, false)
-            descriptionViewModel.isEditMode = isEditMode
-            descriptionViewModel.isAddMode = isAddMode
-            descriptionViewModel.productInputModel =
-                    it.getParcelable(PARAM_PRODUCT_INPUT_MODEL) ?: ProductInputModel()
 
-        }
-        if (descriptionViewModel.isAddMode || !descriptionViewModel.isEditMode) {
-            ProductAddDescriptionTracking.trackScreen()
+        arguments?.let {
+            val cacheManagerId = AddEditProductDescriptionFragmentArgs.fromBundle(it).cacheManagerId
+            val saveInstanceCacheManager = SaveInstanceCacheManager(requireContext(), cacheManagerId)
+
+            cacheManagerId.run {
+                val productInputModel = saveInstanceCacheManager.get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java) ?: ProductInputModel()
+                descriptionViewModel.updateProductInputModel(productInputModel)
+                descriptionViewModel.isEditMode = saveInstanceCacheManager.get(EXTRA_IS_EDITING_PRODUCT, Boolean::class.java, false) ?: false
+                descriptionViewModel.isAddMode = saveInstanceCacheManager.get(EXTRA_IS_ADDING_PRODUCT, Boolean::class.java, false) ?: false
+                descriptionViewModel.isDraftMode = saveInstanceCacheManager.get(EXTRA_IS_DRAFTING_PRODUCT, Boolean::class.java) ?: false
+                descriptionViewModel.isFirstMoved = saveInstanceCacheManager.get(EXTRA_IS_FIRST_MOVED, Boolean::class.java) ?: false
+            }
+            if (descriptionViewModel.isAddMode) {
+                ProductAddDescriptionTracking.trackScreen()
+            }
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_add_edit_product_description, container, false)
+        return inflater.inflate(com.tokopedia.product.addedit.R.layout.fragment_add_edit_product_description, container, false)
     }
 
     override fun onResume() {
         super.onResume()
         btnNext.isLoading = false
         btnSave.isLoading = false
+    }
+
+    override fun getRecyclerViewResourceId(): Int {
+        return com.tokopedia.product.addedit.R.id.recycler_view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -234,11 +210,9 @@ class AddEditProductDescriptionFragment:
             }
         }
 
-        if (descriptionViewModel.isEditMode) applyEditMode()
-
         textViewAddVideo.setOnClickListener {
             if (getFilteredValidVideoLink().size == adapter.dataSize) {
-                if (descriptionViewModel.isEditMode && !descriptionViewModel.isAddMode) {
+                if (descriptionViewModel.isEditMode) {
                     ProductEditDescriptionTracking.clickAddVideoLink(shopId)
                 } else {
                     ProductAddDescriptionTracking.clickAddVideoLink(shopId)
@@ -256,14 +230,16 @@ class AddEditProductDescriptionFragment:
         }
 
         tvAddVariant.setOnClickListener {
-            if (descriptionViewModel.isEditMode && !descriptionViewModel.isAddMode) {
+            if (descriptionViewModel.isEditMode) {
                 ProductEditDescriptionTracking.clickAddProductVariant(shopId)
             } else {
                 ProductAddDescriptionTracking.clickAddProductVariant(shopId)
             }
-            descriptionViewModel.productVariantData?.let {
-                showVariantDialog(it)
-            }
+            showVariantDialog()
+        }
+
+        tvEditVariant.setOnClickListener {
+            showVariantDialog()
         }
 
         btnNext.setOnClickListener {
@@ -273,7 +249,13 @@ class AddEditProductDescriptionFragment:
 
         btnSave.setOnClickListener {
             btnSave.isLoading = true
-            submitInputEdit()
+            val isAdding = descriptionViewModel.isAddMode
+            val isDrafting = descriptionViewModel.isDraftMode
+            if (isAdding && !isDrafting) {
+                submitInput()
+            } else {
+                submitInputEdit()
+            }
         }
 
         getRecyclerView(view).itemAnimator = object: DefaultItemAnimator() {
@@ -282,14 +264,41 @@ class AddEditProductDescriptionFragment:
             }
         }
 
-        descriptionViewModel.getVariants(descriptionViewModel.categoryId)
+        if (!(descriptionViewModel.isAddMode && descriptionViewModel.isFirstMoved)) applyEditMode()
 
-        observeProductVariant()
+        with (GlobalConfig.isSellerApp()) {
+            containerAddEditDescriptionFragmentNoInputVariant.showWithCondition(!this)
+            containerAddEditDescriptionFragmentInputVariant.showWithCondition(this)
+            tvNoVariantDescription.text = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_add_edit_no_variant_description).parseAsHtml()
+        }
+        onFragmentResult()
+        setupOnBackPressed()
+
+        hideKeyboardWhenTouchOutside()
+        observeProductInputModel()
         observeProductVideo()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        removeObservers()
+    }
+
+    private fun removeObservers() {
+        descriptionViewModel.productInputModel.removeObservers(this)
+        descriptionViewModel.videoYoutube.removeObservers(this)
+        getNavigationResult(REQUEST_KEY_ADD_MODE)?.removeObservers(this)
+    }
+
     private fun addEmptyVideoUrl() {
-        loadData(adapter.dataSize + 1)
+        val lastData = adapter.data.lastOrNull()
+        if (lastData == null) {
+            loadData(adapter.dataSize + 1)
+        } else {
+            if (lastData.inputUrl.isNotEmpty()) {
+                loadData(adapter.dataSize + 1)
+            }
+        }
     }
 
     override fun loadInitialData() {
@@ -311,21 +320,30 @@ class AddEditProductDescriptionFragment:
         }
     }
 
-    fun sendDataBack() {
-        if(!descriptionViewModel.isEditMode) {
-            inputAllDataInInputDraftModel()
-            val intent = Intent()
-            intent.putExtra(EXTRA_PRODUCT_INPUT_MODEL, descriptionViewModel.productInputModel)
-            intent.putExtra(EXTRA_BACK_PRESSED, 2)
-            activity?.setResult(Activity.RESULT_OK, intent)
-            activity?.finish()
+    private fun onFragmentResult() {
+        getNavigationResult(REQUEST_KEY_ADD_MODE)?.observe(viewLifecycleOwner, Observer { bundle ->
+            setNavigationResult(bundle, REQUEST_KEY_ADD_MODE)
+            removeNavigationResult(REQUEST_KEY_ADD_MODE)
+            findNavController().navigateUp()
+        })
+    }
+
+    private fun sendDataBack() {
+        if(descriptionViewModel.isAddMode && !descriptionViewModel.isDraftMode) {
+            var dataBackPressed = NO_DATA
+            if(descriptionViewModel.isFirstMoved) {
+                inputAllDataInInputDraftModel()
+                dataBackPressed = DESCRIPTION_DATA
+                descriptionViewModel.productInputModel.value?.requestCode = arrayOf(DETAIL_DATA, DESCRIPTION_DATA, NO_DATA)
+            }
+            setFragmentResultWithBundle(REQUEST_KEY_ADD_MODE, dataBackPressed)
         } else {
-            activity?.finish()
+            setFragmentResultWithBundle(REQUEST_KEY_DESCRIPTION)
         }
     }
 
     fun onBackPressed() {
-        if (descriptionViewModel.isEditMode && !descriptionViewModel.isAddMode) {
+        if (descriptionViewModel.isEditMode) {
             ProductEditDescriptionTracking.clickBack(shopId)
         } else {
             ProductAddDescriptionTracking.clickBack(shopId)
@@ -333,20 +351,37 @@ class AddEditProductDescriptionFragment:
     }
 
     private fun inputAllDataInInputDraftModel() {
-        descriptionViewModel.productInputModel.descriptionInputModel = DescriptionInputModel(
+        descriptionViewModel.productInputModel.value?.descriptionInputModel = DescriptionInputModel(
                 textFieldDescription.getText(),
                 getFilteredValidVideoLink()
         )
     }
 
-    private fun observeProductVariant() {
-        tvAddVariant.isEnabled = false
-        descriptionViewModel.productVariant.observe(viewLifecycleOwner, Observer { result ->
-            when (result) {
-                is Success -> tvAddVariant.isEnabled = true
-                is Fail -> showVariantErrorToast(getString(R.string.default_request_error_timeout))
-            }
+    private fun observeProductInputModel() {
+        descriptionViewModel.productInputModel.observe(viewLifecycleOwner, Observer {
+            updateVariantLayout()
         })
+    }
+
+    private fun updateVariantLayout() {
+        if (descriptionViewModel.hasVariant) {
+            tvEditVariant.visible()
+            tvAddVariant.gone()
+            layoutVariantTips.gone()
+        } else {
+            tvEditVariant.gone()
+            tvAddVariant.visible()
+            layoutVariantTips.visible()
+        }
+        tvVariantHeaderSubtitle.text = descriptionViewModel.getVariantSelectedMessage()
+        tvVariantLevel1Type.setTextOrGone(descriptionViewModel
+                .getVariantTypeMessage(VARIANT_VALUE_LEVEL_ONE_POSITION))
+        tvVariantLevel2Type.setTextOrGone(descriptionViewModel
+                .getVariantTypeMessage(VARIANT_VALUE_LEVEL_TWO_POSITION))
+        tvVariantLevel1Count.setTextOrGone(descriptionViewModel
+                .getVariantCountMessage(VARIANT_VALUE_LEVEL_ONE_POSITION))
+        tvVariantLevel2Count.setTextOrGone(descriptionViewModel
+                .getVariantCountMessage(VARIANT_VALUE_LEVEL_TWO_POSITION))
     }
 
     private fun observeProductVideo() {
@@ -364,6 +399,7 @@ class AddEditProductDescriptionFragment:
                     }
                 }
                 is Fail -> {
+                    AddEditProductErrorHandler.logExceptionToCrashlytics(requestResult.throwable)
                     displayErrorOnSelectedVideo(position)
                 }
             }
@@ -372,6 +408,7 @@ class AddEditProductDescriptionFragment:
                 getVideoYoutube(descriptionViewModel.urlToFetch[position].orEmpty(), position)
             }
             refreshDuplicateVideo(position)
+            updateSaveButtonStatus()
         })
     }
 
@@ -425,59 +462,43 @@ class AddEditProductDescriptionFragment:
             super.renderList(videoLinks)
         }
 
-        tvVariantHeaderSubtitle.text = descriptionViewModel.getVariantSelectedMessage()
-        tvAddVariant.text = descriptionViewModel.getVariantButtonMessage()
+        updateVariantLayout()
         btnNext.visibility = View.GONE
         btnSave.visibility = View.VISIBLE
-    }
-
-    private fun showVariantErrorToast(errorMessage: String) {
-        view?.let {
-            Toaster.make(it, errorMessage,
-                    type =  Toaster.TYPE_ERROR,
-                    actionText = getString(R.string.title_try_again),
-                    clickListener =  View.OnClickListener {
-                        descriptionViewModel.getVariants(descriptionViewModel.categoryId)
-                    })
-        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && data != null) {
+            val cacheManagerId = data.getStringExtra(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID) ?: ""
             when (requestCode) {
-                REQUEST_CODE_SHIPMENT -> {
-                    if(data.getIntExtra(EXTRA_BACK_PRESSED, 0) != 0) {
-                        activity?.setResult(Activity.RESULT_OK, data)
-                        activity?.finish()
-                        return
-                    }
-                    val shipmentInputModel =
-                            data.getParcelableExtra<ShipmentInputModel>(EXTRA_SHIPMENT_INPUT)
-                    submitInput(shipmentInputModel)
-                }
-                REQUEST_CODE_VARIANT -> {
-                    val variantCacheId = data.getStringExtra(EXTRA_VARIANT_PICKER_RESULT_CACHE_ID)
-                    val cacheManager = SaveInstanceCacheManager(context!!, variantCacheId)
-                    val productPictureViewModel = if (data.hasExtra(EXTRA_PRODUCT_SIZECHART)) {
-                        cacheManager.get(EXTRA_PRODUCT_SIZECHART,
-                                object : TypeToken<PictureViewModel>() {}.type, PictureViewModel())
-                    } else null
-                    if (data.hasExtra(EXTRA_PRODUCT_VARIANT_SELECTION)) {
-                        val productVariantViewModel = cacheManager.get(EXTRA_PRODUCT_VARIANT_SELECTION,
-                                object : TypeToken<ProductVariantInputModel>() {}.type) ?: ProductVariantInputModel()
-                        descriptionViewModel.setVariantInput(productVariantViewModel.productVariant,
-                                productVariantViewModel.variantOptionParent, productPictureViewModel)
-                        tvVariantHeaderSubtitle.text = descriptionViewModel.getVariantSelectedMessage()
-                        tvAddVariant.text = descriptionViewModel.getVariantButtonMessage()
+                REQUEST_CODE_VARIANT_DIALOG_EDIT -> {
+                    SaveInstanceCacheManager(requireContext(), cacheManagerId).run {
+                        val productInputModel = get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java)
+                                        ?: ProductInputModel()
+                        descriptionViewModel.updateProductInputModel(productInputModel)
                     }
                 }
             }
         }
     }
 
+    private fun setupOnBackPressed() {
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                sendDataBack()
+
+                if (descriptionViewModel.isEditMode) {
+                    ProductEditDescriptionTracking.clickBack(shopId)
+                } else {
+                    ProductAddDescriptionTracking.clickBack(shopId)
+                }
+            }
+        })
+    }
+
     private fun showDescriptionTips() {
-        if (!descriptionViewModel.isEditMode || descriptionViewModel.isAddMode) {
+        if (descriptionViewModel.isAddMode) {
             ProductAddDescriptionTracking.clickHelpWriteDescription(shopId)
         }
         fragmentManager?.let {
@@ -498,7 +519,7 @@ class AddEditProductDescriptionFragment:
     }
 
     private fun showVariantTips() {
-        if (descriptionViewModel.isEditMode && !descriptionViewModel.isAddMode) {
+        if (descriptionViewModel.isEditMode) {
             ProductEditDescriptionTracking.clickHelpVariant(shopId)
         } else {
             ProductAddDescriptionTracking.clickHelpVariant(shopId)
@@ -533,79 +554,87 @@ class AddEditProductDescriptionFragment:
                 if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
     }
 
-    private fun showVariantDialog(variants: List<ProductVariantByCatModel>) {
-        activity?.let {
-            val cacheManager = SaveInstanceCacheManager(it, true).apply {
-                put(EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST, variants)
-                put(EXTRA_PRODUCT_VARIANT_SELECTION, descriptionViewModel.variantInputModel)
-                put(EXTRA_PRODUCT_SIZECHART, descriptionViewModel.variantInputModel.productSizeChart)
-                put(EXTRA_CURRENCY_TYPE, TYPE_IDR)
-                put(EXTRA_DEFAULT_PRICE, descriptionViewModel.productInputModel.detailInputModel.price)
-                put(EXTRA_STOCK_TYPE, descriptionViewModel.getStatusStockViewVariant())
-                put(EXTRA_IS_OFFICIAL_STORE, false)
-                put(EXTRA_DEFAULT_SKU, "")
-                put(EXTRA_NEED_RETAIN_IMAGE, false)
-                put(EXTRA_HAS_ORIGINAL_VARIANT_LV1, true)
-                put(EXTRA_HAS_ORIGINAL_VARIANT_LV2, false)
-                put(EXTRA_HAS_WHOLESALE, false)
-                put(EXTRA_IS_ADD, IS_ADD)
+    private fun showVariantDialog() {
+        context?.run {
+            val cacheManager = SaveInstanceCacheManager(this, true).apply {
+                put(EXTRA_PRODUCT_INPUT_MODEL, descriptionViewModel.productInputModel.value)
             }
-            val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_EDIT_VARIANT_DASHBOARD)
-            intent?.run {
-                putExtra(EXTRA_VARIANT_RESULT_CACHE_ID, cacheManager.id)
-                putExtra(EXTRA_IS_USING_CACHE_MANAGER, true)
-                startActivityForResult(this, REQUEST_CODE_VARIANT)
+            val intent = AddEditProductVariantActivity.createInstance(this, cacheManager.id)
+            startActivityForResult(intent, REQUEST_CODE_VARIANT_DIALOG_EDIT)
+        }
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun hideKeyboardWhenTouchOutside() {
+        mainLayout?.setOnTouchListener{ _, _ ->
+            activity?.apply {
+                KeyboardHandler.hideSoftKeyboard(this)
             }
+            true
         }
     }
 
     private fun moveToShipmentActivity() {
-        if (descriptionViewModel.isEditMode && !descriptionViewModel.isAddMode) {
-            ProductEditDescriptionTracking.clickContinue(shopId)
-        } else {
+        if (descriptionViewModel.isAddMode) {
             ProductAddDescriptionTracking.clickContinue(shopId)
         }
         inputAllDataInInputDraftModel()
         if (descriptionViewModel.validateInputVideo(adapter.data)) {
-            val intent = Intent(context, AddEditProductShipmentActivity::class.java)
-            intent.putExtra(AddEditProductUploadConstant.EXTRA_PRODUCT_INPUT_MODEL, descriptionViewModel.productInputModel)
-            startActivityForResult(intent, REQUEST_CODE_SHIPMENT)
+            arguments?.let {
+                val cacheManagerId = AddEditProductDescriptionFragmentArgs.fromBundle(it).cacheManagerId
+                SaveInstanceCacheManager(requireContext(), cacheManagerId).apply {
+                    put(EXTRA_PRODUCT_INPUT_MODEL, descriptionViewModel.productInputModel.value)
+                    put(EXTRA_IS_EDITING_PRODUCT, descriptionViewModel.isEditMode)
+                    put(EXTRA_IS_ADDING_PRODUCT, descriptionViewModel.isAddMode)
+                    put(EXTRA_IS_DRAFTING_PRODUCT, descriptionViewModel.isDraftMode)
+                    put(EXTRA_IS_FIRST_MOVED, descriptionViewModel.isFirstMoved)
+                }
+                val destination = AddEditProductDescriptionFragmentDirections.actionAddEditProductDescriptionFragmentToAddEditProductShipmentFragment()
+                destination.cacheManagerId = cacheManagerId
+                findNavController().navigate(destination)
+            }
         }
     }
 
-    private fun submitInput(shipmentInputModel: ShipmentInputModel) {
-        val descriptionInputModel = DescriptionInputModel(
-                textFieldDescription.getText(),
-                getFilteredValidVideoLink()
-        )
-        val intent = Intent()
-        intent.putExtra(EXTRA_DESCRIPTION_INPUT, descriptionInputModel)
-        intent.putExtra(EXTRA_SHIPMENT_INPUT, shipmentInputModel)
-        intent.putExtra(EXTRA_VARIANT_INPUT, descriptionViewModel.variantInputModel)
-        activity?.setResult(Activity.RESULT_OK, intent)
-        activity?.finish()
+    private fun submitInput() {
+        if (descriptionViewModel.validateInputVideo(adapter.data)) {
+            inputAllDataInInputDraftModel()
+            setFragmentResultWithBundle(REQUEST_KEY_ADD_MODE)
+        }
     }
 
     private fun submitInputEdit() {
-        if (descriptionViewModel.isEditMode && !descriptionViewModel.isAddMode) {
-            ProductEditDescriptionTracking.clickContinue(shopId)
-        } else {
-            ProductAddDescriptionTracking.clickContinue(shopId)
-        }
         if (descriptionViewModel.validateInputVideo(adapter.data)) {
-            val descriptionInputModel = DescriptionInputModel(
-                    textFieldDescription.getText(),
-                    getFilteredValidVideoLink()
-            )
-            val intent = Intent()
-            intent.putExtra(EXTRA_DESCRIPTION_INPUT, descriptionInputModel)
-            intent.putExtra(EXTRA_VARIANT_INPUT, descriptionViewModel.variantInputModel)
-            activity?.setResult(Activity.RESULT_OK, intent)
-            activity?.finish()
+            inputAllDataInInputDraftModel()
+            setFragmentResultWithBundle(REQUEST_KEY_DESCRIPTION)
+        }
+        if (descriptionViewModel.isEditMode) {
+            ProductEditDescriptionTracking.clickContinue(shopId)
+        }
+    }
+
+    private fun setFragmentResultWithBundle(requestKey: String, dataBackPressed: Int = DESCRIPTION_DATA) {
+        arguments?.let {
+            val cacheManagerId = AddEditProductShipmentFragmentArgs.fromBundle(it).cacheManagerId
+            SaveInstanceCacheManager(requireContext(), cacheManagerId).put(EXTRA_PRODUCT_INPUT_MODEL, descriptionViewModel.productInputModel.value)
+
+            val bundle = Bundle().apply {
+                putString(BUNDLE_CACHE_MANAGER_ID, cacheManagerId)
+                putInt(BUNDLE_BACK_PRESSED, dataBackPressed)
+            }
+            setNavigationResult(bundle,requestKey)
+            findNavController().navigateUp()
         }
     }
 
     private fun getFilteredValidVideoLink() = adapter.data.filter {
         it.inputUrl.isNotBlank() && it.errorMessage.isBlank()
+    }
+
+    private fun updateSaveButtonStatus() {
+        with (descriptionViewModel.validateInputVideo(adapter.data)) {
+            btnSave.isEnabled = this
+            btnNext.isEnabled = this
+        }
     }
 }

@@ -140,13 +140,17 @@ class ProductInfoFragment : BaseDaggerFragment() {
         location?.text = productDataModel.productDetailData.shop.location
         if (productDataModel.productDetailData.badges.isNotEmpty()) {
             badge?.show()
-            ImageHandler.loadImageFitCenter(context, badge, productDataModel.productDetailData.badges[0].imageUrl)
+            context?.let{
+                ImageHandler.loadImageFitCenter(it, badge, productDataModel.productDetailData.badges[0].imageUrl)
+            }
         } else {
             badge?.hide()
         }
         setRatingReviewCount(productDataModel.productDetailData.rating, productDataModel.productDetailData.countReview)
         updateWishlist(productDataModel.productDetailData.isWishlist)
-        ImageHandler.loadImageRounded2(context, product_image, productDataModel.productDetailData.imageUrl)
+        context?.let{
+            ImageHandler.loadImageRounded2(it, product_image, productDataModel.productDetailData.imageUrl)
+        }
         handleDiscount(productDataModel.productDetailData.discountPercentage, productDataModel.productDetailData.slashedPrice)
 
         when(productDataModel.productDetailData.status){
@@ -167,7 +171,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
         onClickAddToCart(productDataModel.productDetailData)
         onClickBuyNow(productDataModel.productDetailData)
         onClickProductCard(productDataModel.productDetailData.id.toString())
-        onClickWishlist(productDataModel.productDetailData.id.toString())
+        onClickWishlist(productDataModel.productDetailData.id.toString(), productDataModel.productDetailData.shop.id.toString())
     }
 
     /**
@@ -406,7 +410,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
                 addToCart(productDetailData)
             } else {
                 context?.let {
-                    RecommendationPageTracking.eventUserAddToCartNonLoginWithProductId(ref)
+                    RecommendationPageTracking.eventUserAddToCartNonLoginWithProductId(ref, productDetailData.shop.id.toString())
                     startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
                             REQUEST_CODE_LOGIN)
                 }
@@ -423,7 +427,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
                 buy_now?.isEnabled = false
                 buyNow(productDetailData)
             } else {
-                RecommendationPageTracking.eventUserClickBuyNonLoginWithProductId(ref)
+                RecommendationPageTracking.eventUserClickBuyNonLoginWithProductId(ref, productDetailData.shop.id.toString())
                 context?.let {
                     startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
                             REQUEST_CODE_LOGIN)
@@ -435,17 +439,17 @@ class ProductInfoFragment : BaseDaggerFragment() {
     /**
      * [onClickWishlist] it will handle click wishlist icon
      */
-    private fun onClickWishlist(productId: String){
+    private fun onClickWishlist(productId: String, shopId: String){
         fab_detail?.setOnClickListener {
             if (primaryProductViewModel.isLoggedIn()) {
-                RecommendationPageTracking.eventUserClickProductToWishlistForUserLoginWithProductId(!it.isActivated, ref)
+                RecommendationPageTracking.eventUserClickProductToWishlistForUserLoginWithProductId(!it.isActivated, ref, shopId)
                 if (it.isActivated) {
                     primaryProductViewModel.removeWishList(productId)
                 } else {
                     primaryProductViewModel.addWishList(productId)
                 }
             } else {
-                RecommendationPageTracking.eventUserClickProductToWishlistForNonLoginWithProductId(ref)
+                RecommendationPageTracking.eventUserClickProductToWishlistForNonLoginWithProductId(ref, shopId)
                 RouteManager.route(activity, ApplinkConst.LOGIN)
             }
         }

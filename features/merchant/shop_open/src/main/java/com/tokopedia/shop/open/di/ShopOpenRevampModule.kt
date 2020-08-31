@@ -8,12 +8,12 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.shop.open.R
 import com.tokopedia.shop.open.common.GQLQueryConstant
+import com.tokopedia.shop.open.common.ShopOpenDispatcherProvider
+import com.tokopedia.shop.open.common.ShopOpenDispatcherProviderImpl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import javax.inject.Named
 
 @Module(includes = [ShopOpenRevampViewModelModule::class])
@@ -34,7 +34,7 @@ class ShopOpenRevampModule {
 
     @ShopOpenRevampScope
     @Provides
-    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
+    fun provideDispatcherProvider(): ShopOpenDispatcherProvider = ShopOpenDispatcherProviderImpl()
 
     @ShopOpenRevampScope
     @Provides
@@ -47,20 +47,6 @@ class ShopOpenRevampModule {
     @Named(GQLQueryConstant.QUERY_SHOP_OPEN_REVAMP_GET_SURVEY_DATA)
     fun provideQueryShopOpenRevampGetSurveyData(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.shop_open_revamp_get_survey_data)
-    }
-
-    @ShopOpenRevampScope
-    @Provides
-    @Named(GQLQueryConstant.QUERY_SHOP_OPEN_REVAMP_VALIDATE_DOMAIN_SHOP_NAME)
-    fun provideQueryShopOpenRevampGetValidateDomainShopName(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.validate_domain_name_shop)
-    }
-
-    @ShopOpenRevampScope
-    @Provides
-    @Named(GQLQueryConstant.QUERY_SHOP_OPEN_REVAMP_DOMAIN_SHOP_SUGGESTION)
-    fun provideQueryDomainShopSuggestion(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.shop_open_revamp_domain_suggestion)
     }
 
     @ShopOpenRevampScope

@@ -5,10 +5,10 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.shop.open.common.ShopOpenDispatcherProvider
 import com.tokopedia.shop.open.presentation.view.fragment.ShopOpenRevampInputShopFragment
 import com.tokopedia.shop.open.presentation.view.fragment.ShopOpenRevampQuisionerFragment
 import dagger.Component
-import kotlinx.coroutines.CoroutineDispatcher
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 
@@ -19,7 +19,7 @@ interface ShopOpenRevampComponent {
     @ApplicationContext
     fun getContext(): Context
     fun getMultiRequestGraphqlUseCase(): MultiRequestGraphqlUseCase
-    fun getCoroutineDispatcher(): CoroutineDispatcher
+    fun getDispatcherProvider(): ShopOpenDispatcherProvider
     fun httpLoggingInterceptor(): HttpLoggingInterceptor
     fun retrofitBuilder(): Retrofit.Builder
     fun graphQlRepository(): GraphqlRepository

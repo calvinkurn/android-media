@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        android:scaleType="fitCenter"
+        app:srcCompat="@drawable/ic_arrow_down_grey_rounded" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_new_unread_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_marginLeft="@dimen/spacing_lvl2"
+        android:includeFontPadding="false"
+        android:textColor="@color/Neutral_N700_68"
+        app:typographyType="heading_6"
+        app:typographyWeight="bold"
+        tools:text="3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:includeFontPadding="false"
+        android:text=" pesan baru"
+        android:textColor="@color/Neutral_N700_68"
+        app:typographyType="heading_6"
+        app:typographyWeight="bold" />
+</LinearLayout>

@@ -10,7 +10,7 @@ import com.tokopedia.kotlin.extensions.view.dpToPx
  * Created By @ilhamsuaib on 2020-03-04
  */
 
-class SellerHomeToolbar(context: Context?, attrs: AttributeSet?) : Toolbar(context, attrs) {
+class SellerHomeToolbar(context: Context?, attrs: AttributeSet?) : Toolbar(context as Context, attrs) {
 
     init {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

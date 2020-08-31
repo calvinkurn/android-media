@@ -1,16 +1,26 @@
 package com.tokopedia.product.addedit.preview.presentation.activity
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.applink.UriUtil
-import com.tokopedia.applink.internal.ApplinkConstInternalMechant
-import com.tokopedia.product.addedit.R
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.setStatusBarColor
+import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.BUNDLE_DRAFT_ID
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.BUNDLE_IS_PRODUCT_DUPLICATE
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.BUNDLE_PRODUCT_ID
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_DRAFT_ID
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_FROM_NOTIF_EDIT_PRODUCT
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_FROM_NOTIF_SUCCESS
@@ -47,10 +57,12 @@ class AddEditProductPreviewActivity : BaseSimpleActivity() {
     private var isDuplicate = false
 
     override fun getNewFragment(): Fragment? {
-        return AddEditProductPreviewFragment.createInstance(productId, draftId, isDuplicate)
+        return null
     }
 
-    override fun getLayoutRes() = R.layout.activity_add_edit_product_preview
+    override fun getLayoutRes() = com.tokopedia.product.addedit.R.layout.activity_add_edit_product_preview
+
+    override fun getParentViewResourceID(): Int = com.tokopedia.product.addedit.R.id.parent_view
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // get draftId from failed notif
@@ -83,76 +95,33 @@ class AddEditProductPreviewActivity : BaseSimpleActivity() {
             }
         }
         super.onCreate(savedInstanceState)
-    }
-
-    override fun onBackPressed() {
-        onBackPressedHitTracking()
-        DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
-            setTitle(getString(R.string.label_title_on_dialog))
-            setPrimaryCTAText(getString(R.string.label_cta_primary_button_on_dialog))
-            setSecondaryCTAText(getString(R.string.label_cta_secondary_button_on_dialog))
-            if(isEditing()) {
-                setDescription(getString(R.string.label_description_on_dialog_edit))
-                setSecondaryCTAClickListener {
-                    super.onBackPressed()
-                }
-                setPrimaryCTAClickListener {
-                    this.dismiss()
-                }
-            } else {
-                setDescription(getString(R.string.label_description_on_dialog))
-                setSecondaryCTAClickListener {
-                    saveProductToDraft()
-                    moveToManageProduct()
-                    onCtaYesPressedHitTracking()
-                }
-                setPrimaryCTAClickListener {
-                    this.dismiss()
-                    onCtaNoPressedHitTracking()
-                }
-            }
-        }.show()
-    }
-
-    private fun moveToManageProduct() {
-        val intent = RouteManager.getIntent(this, ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST)
-        startActivity(intent)
-        finish()
-    }
-
-    private fun isEditing(): Boolean {
-        val f = fragment
-        if (f != null && f is AddEditProductPreviewFragment) {
-            return f.isEditing()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            setStatusBarColor(Color.WHITE)
         }
-        return false
+
+        findViewById<androidx.appcompat.widget.Toolbar>(com.tokopedia.product.addedit.R.id.toolbar)?.let {
+            setSupportActionBar(it)
+        }
+        setupNavController()
     }
 
-    private fun saveProductToDraft() {
-        val f = fragment
-        if (f != null && f is AddEditProductPreviewFragment) {
-            f.saveProductDraft()
+    private fun setupNavController() {
+        // passing data into fragment
+        val bundle = Bundle().apply {
+            putString(BUNDLE_PRODUCT_ID, productId)
+            putString(BUNDLE_DRAFT_ID, draftId)
+            putBoolean(BUNDLE_IS_PRODUCT_DUPLICATE, isDuplicate)
         }
+
+        val navController = findNavController(com.tokopedia.product.addedit.R.id.parent_view)
+        val listener = AppBarConfiguration.OnNavigateUpListener {
+            navController.navigateUp()
+        }
+
+        val appBarConfiguration = AppBarConfiguration.Builder().setFallbackOnNavigateUpListener(listener).build()
+        navController.setGraph(com.tokopedia.product.addedit.R.navigation.product_add_edit_navigation, bundle)
+        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration)
     }
 
-    private fun onCtaYesPressedHitTracking() {
-        val f = fragment
-        if (f != null && f is AddEditProductPreviewFragment) {
-            f.onCtaYesPressed()
-        }
-    }
 
-    private fun onCtaNoPressedHitTracking() {
-        val f = fragment
-        if (f != null && f is AddEditProductPreviewFragment) {
-            f.onCtaNoPressed()
-        }
-    }
-
-    private fun onBackPressedHitTracking() {
-        val f = fragment
-        if (f != null && f is AddEditProductPreviewFragment) {
-            f.onBackPressed()
-        }
-    }
 }

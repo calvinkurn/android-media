@@ -3,10 +3,8 @@ package com.tokopedia.play.broadcaster.domain.usecase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.broadcaster.domain.model.GetProductsByEtalaseResponse
-import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 /**
@@ -14,41 +12,42 @@ import javax.inject.Inject
  */
 class GetProductsInEtalaseUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository
-) : UseCase<GetProductsByEtalaseResponse.GetShopProductData>() {
+) : BaseUseCase<GetProductsByEtalaseResponse.GetProductListData>() {
 
     private val query = """
-            query getShopProduct(${'$'}shopId: String!, ${'$'}filter: ProductListFilter!){
-                GetShopProduct(shopID: ${'$'}shopId, filter: ${'$'}filter){
-                    status
-                    errors
+            query GetShopProductList(${'$'}shopId: String!, ${'$'}filter: [GoodsFilterInput], ${'$'}sort: GoodsSortInput) {
+                ProductList(shopID: ${'$'}shopId, filter: ${'$'}filter, sort: ${'$'}sort) {
+                    header {
+                        messages
+                        reason
+                        errorCode
+                    }
                     data {
-                        product_id
+                        id
                         name
-                        product_url
                         stock
-                        primary_image{
-                            original
-                            thumbnail
-                            resize300
+                        pictures {
+                            urlThumbnail
                         }
                     }
-                    totalData
-                }
+                    meta {
+                        totalHits
+                    }
+                }  
             }
         """
 
     var params: Map<String, Any> = emptyMap()
 
-    override suspend fun executeOnBackground(): GetProductsByEtalaseResponse.GetShopProductData {
-        val gqlRequest = GraphqlRequest(query, GetProductsByEtalaseResponse::class.java, params)
-        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
+    override suspend fun executeOnBackground(): GetProductsByEtalaseResponse.GetProductListData {
+        val gqlResponse = configureGqlResponse(graphqlRepository, query, GetProductsByEtalaseResponse::class.java, params, GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
         val response = gqlResponse.getData<GetProductsByEtalaseResponse>(GetProductsByEtalaseResponse::class.java)
-        val errors = response?.getShopProduct?.errors
+        val errors = response?.productList?.header?.messages.orEmpty()
         if (response != null && errors.isNullOrEmpty()) {
-            return response.getShopProduct
+            return response.productList
         } else {
-            throw MessageErrorException(errors.orEmpty())
+            throw MessageErrorException(errors.joinToString(","))
         }
     }
 
@@ -56,11 +55,17 @@ class GetProductsInEtalaseUseCase @Inject constructor(
 
         private const val PARAMS_SHOP_ID = "shopId"
         private const val PARAMS_FILTER = "filter"
-        private const val PARAMS_PAGE = "page"
-        private const val PARAMS_PER_PAGE = "perPage"
-        private const val PARAMS_ETALASE_ID = "fmenu"
-        private const val PARAMS_KEYWORD = "fkeyword"
         private const val PARAMS_SORT = "sort"
+        private const val PARAMS_ID = "id"
+        private const val PARAMS_VALUE = "value"
+
+        private const val PARAMS_INPUT_KEYWORD = "keyword"
+        private const val PARAMS_INPUT_PAGE = "page"
+        private const val PARAMS_INPUT_PER_PAGE = "perPage"
+        private const val PARAMS_INPUT_ETALASE_ID = "menu"
+        private const val PARAMS_INPUT_STATUS = "status"
+
+        private const val PARAMS_INPUT_UPDATE_TIME = "UPDATE_TIME"
 
         fun createParams(
                 shopId: String,
@@ -70,13 +75,24 @@ class GetProductsInEtalaseUseCase @Inject constructor(
                 keyword: String = ""
         ): Map<String, Any> = mapOf(
                 PARAMS_SHOP_ID to shopId,
-                PARAMS_FILTER to mapOf(
-                        PARAMS_PAGE to page,
-                        PARAMS_PER_PAGE to perPage,
-                        PARAMS_ETALASE_ID to etalaseId,
-                        PARAMS_KEYWORD to keyword,
-                        PARAMS_SORT to 0
-                )
+                PARAMS_FILTER to mutableListOf(
+                        getFilterInput(PARAMS_INPUT_KEYWORD, keyword),
+                        getFilterInput(PARAMS_INPUT_PAGE, page.toString()),
+                        getFilterInput(PARAMS_INPUT_PER_PAGE, perPage.toString()),
+                        getFilterInput(PARAMS_INPUT_STATUS, "ACTIVE")
+                ).apply {
+                    if (etalaseId.isNotEmpty())
+                        add(getFilterInput(PARAMS_INPUT_ETALASE_ID, etalaseId))
+                },
+                PARAMS_SORT to mapOf(PARAMS_INPUT_UPDATE_TIME to "DESC")
+        )
+
+        private fun getFilterInput(
+                id: String,
+                vararg value: String
+        ) = mapOf(
+                PARAMS_ID to id,
+                PARAMS_VALUE to value
         )
     }
 }

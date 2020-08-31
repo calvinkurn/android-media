@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/reviewDetailScoreTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/layout_lvl2"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:textColor="@color/Neutral_N700_96"
+        android:text="@string/review_history_details_score_title"
+        app:typographyType="heading_5"
+        app:typographyWeight="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/reviewDetailScoreShopName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Neutral_N700_96"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:visibility="gone"
+        app:typographyType="body_2"
+        app:layout_constraintStart_toStartOf="@id/reviewDetailScoreTitle"
+        app:layout_constraintTop_toBottomOf="@id/reviewDetailScoreTitle"
+        tools:visibility="visible"
+        tools:text="Tokopedia"/>
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/reviewDetailScoreSmiley"
+        android:layout_width="@dimen/layout_lvl6"
+        android:layout_height="@dimen/layout_lvl6"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@id/reviewDetailScoreTitle"
+        app:layout_constraintTop_toBottomOf="@id/reviewDetailScoreShopName"
+        tools:src="@drawable/ic_smiley_bad_active"
+        tools:visibility="gone"/>
+    
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/reviewDetailScoreText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl1"
+        android:layout_marginLeft="@dimen/layout_lvl1"
+        android:visibility="gone"
+        app:layout_constraintStart_toEndOf="@id/reviewDetailScoreSmiley"
+        app:layout_constraintTop_toTopOf="@id/reviewDetailScoreSmiley"
+        app:layout_constraintBottom_toBottomOf="@id/reviewDetailScoreSmiley"
+        tools:visibility="gone"
+        tools:text="@string/review_detail_score_bad"/>
+
+    <com.tokopedia.review.common.presentation.widget.ReviewSmileyWidget
+        android:id="@+id/reviewEditableBadSmiley"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginEnd="@dimen/layout_lvl5"
+        android:visibility="gone"
+        app:isSelected="false"
+        app:score="bad"
+        app:layout_constraintEnd_toStartOf="@id/reviewEditableMediocreSmiley"
+        app:layout_constraintTop_toBottomOf="@id/reviewDetailScoreShopName"
+        tools:visibility="visible"/>
+
+    <com.tokopedia.review.common.presentation.widget.ReviewSmileyWidget
+        android:id="@+id/reviewEditableMediocreSmiley"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:visibility="gone"
+        app:isSelected="false"
+        app:score="mediocre"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/reviewDetailScoreShopName"
+        tools:visibility="visible"/>
+
+    <com.tokopedia.review.common.presentation.widget.ReviewSmileyWidget
+        android:id="@+id/reviewEditableExcellentSmiley"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginStart="@dimen/layout_lvl5"
+        android:visibility="gone"
+        app:isSelected="false"
+        app:score="excellent"
+        app:layout_constraintStart_toEndOf="@id/reviewEditableMediocreSmiley"
+        app:layout_constraintTop_toBottomOf="@id/reviewDetailScoreShopName"
+        tools:visibility="visible"/>
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/smiley_barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="reviewEditableBadSmiley, reviewEditableMediocreSmiley, reviewEditableExcellentSmiley"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/reviewScoreDeadlineLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginLeft="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:text="@string/review_reputation_deadline"
+        android:visibility="gone"
+        android:textColor="@color/Neutral_N700_68"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/smiley_barrier"
+        app:typographyType="body_3"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/reviewScoreDeadline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_marginLeft="@dimen/spacing_lvl2"
+        android:textColor="@color/Neutral_N700_68"
+        android:visibility="gone"
+        app:layout_constraintStart_toEndOf="@id/reviewScoreDeadlineLabel"
+        app:layout_constraintTop_toTopOf="@id/reviewScoreDeadlineLabel"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:visibility="visible" />
+    
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/reviewScoreLoadingSmiley"
+        android:layout_width="@dimen/layout_lvl5"
+        android:layout_height="@dimen/layout_lvl5"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:visibility="gone"
+        app:corners="100"
+        app:custom_color="@color/shimmer_custom_color"
+        app:layout_constraintTop_toBottomOf="@id/reviewDetailScoreShopName"
+        app:layout_constraintStart_toStartOf="@id/reviewDetailScoreShopName" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/reviewScoreLoadingText"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/dp_12"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/dp_56"
+        android:visibility="gone"
+        app:corners="8"
+        app:custom_color="@color/shimmer_custom_color"
+        app:layout_constraintTop_toTopOf="@id/reviewScoreLoadingSmiley"
+        app:layout_constraintBottom_toBottomOf="@id/reviewScoreLoadingSmiley"
+        app:layout_constraintStart_toEndOf="@id/reviewScoreLoadingSmiley"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

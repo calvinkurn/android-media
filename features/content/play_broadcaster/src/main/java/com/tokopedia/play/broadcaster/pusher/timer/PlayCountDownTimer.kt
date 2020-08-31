@@ -114,7 +114,8 @@ abstract class PlayCountDownTimer
             synchronized(this@PlayCountDownTimer) {
                 if (!mPaused) {
                     val millisLeft = mStopTimeInFuture - SystemClock.elapsedRealtime()
-                    if (millisLeft <= 0) {
+                    if (millisLeft < 0) {
+                        onTick(millisLeft)
                         onFinish()
                     } else if (millisLeft < mCountdownInterval) {
                         // no tick, just delay until done

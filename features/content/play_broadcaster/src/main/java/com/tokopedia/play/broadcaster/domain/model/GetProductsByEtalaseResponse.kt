@@ -6,52 +6,58 @@ import com.google.gson.annotations.SerializedName
  * Created by jegul on 02/06/20
  */
 data class GetProductsByEtalaseResponse(
-        @SerializedName("GetShopProduct")
-        val getShopProduct: GetShopProductData
+        @SerializedName("ProductList")
+        val productList: GetProductListData
 ) {
 
-        data class GetShopProductData(
+        data class GetProductListData(
 
-                @SerializedName("status")
-                val status: String,
-
-                @SerializedName("errors")
-                val errors: String,
+                @SerializedName("header")
+                val header: Header = Header(),
 
                 @SerializedName("data")
-                val data: List<ShopProductListDetail>,
+                val data: List<Data> = emptyList(),
 
-                @SerializedName("totalData")
-                val totalData: Int
+                @SerializedName("meta")
+                val meta: Meta = Meta()
         )
 
-        data class ShopProductListDetail(
+        data class Header(
 
-                @SerializedName("product_id")
-                val productId: String,
+                @SerializedName("messages")
+                val messages: List<String> = emptyList(),
+
+                @SerializedName("reason")
+                val reason: String = "",
+
+                @SerializedName("errorCode")
+                val errorCode: String = ""
+        )
+
+        data class Data(
+
+                @SerializedName("id")
+                val id: String = "",
 
                 @SerializedName("name")
-                val name: String,
-
-                @SerializedName("product_url")
-                val productUrl: String,
+                val name: String = "",
 
                 @SerializedName("stock")
-                val stock: Int,
+                val stock: Int = 0,
 
-                @SerializedName("primary_image")
-                val primaryImage: PrimaryImage
+                @SerializedName("pictures")
+                val pictures: List<Picture> = emptyList()
         )
 
-        data class PrimaryImage(
+        data class Picture(
 
-                @SerializedName("original")
-                val original: String,
+                @SerializedName("urlThumbnail")
+                val urlThumbnail: String = ""
+        )
 
-                @SerializedName("thumbnail")
-                val thumbnail: String,
+        data class Meta(
 
-                @SerializedName("resize300")
-                val resize300: String
+                @SerializedName("totalHits")
+                val totalHits: Int = 0
         )
 }

@@ -19,7 +19,7 @@ import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayGridTwoItemDecoratio
 import com.tokopedia.play.broadcaster.ui.model.ProductLoadingUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
 import com.tokopedia.play.broadcaster.ui.viewholder.ProductSelectableViewHolder
-import com.tokopedia.play.broadcaster.util.productNotFoundState
+import com.tokopedia.play.broadcaster.util.extension.productNotFoundState
 import com.tokopedia.play.broadcaster.util.scroll.EndlessRecyclerViewScrollListener
 import com.tokopedia.play.broadcaster.util.scroll.StopFlingScrollListener
 import com.tokopedia.play.broadcaster.view.adapter.ProductSelectableAdapter
@@ -50,11 +50,10 @@ class PlaySearchResultFragment @Inject constructor(
         }
 
         override fun onProductSelectError(reason: Throwable) {
-            Toaster.make(
-                    view = requireView(),
-                    text = reason.localizedMessage,
+            etalaseSetupCoordinator.showToaster(
+                    message = reason.localizedMessage,
                     duration = Toaster.LENGTH_SHORT,
-                    actionText = getString(R.string.play_ok)
+                    actionLabel = getString(R.string.play_ok)
             )
         }
     })
@@ -74,6 +73,7 @@ class PlaySearchResultFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        startPostponedTransition()
         initView(view)
         setupView(view)
     }
@@ -84,6 +84,7 @@ class PlaySearchResultFragment @Inject constructor(
     }
 
     override fun refresh() {
+        searchProductsAdapter.notifyDataSetChanged()
     }
 
     private fun initView(view: View) {
@@ -149,6 +150,11 @@ class PlaySearchResultFragment @Inject constructor(
                     } else searchProductsAdapter.setItemsAndAnimateChanges(it.currentValue + ProductLoadingUiModel)
                 }
                 is PageResultState.Fail -> {
+                    etalaseSetupCoordinator.showToaster(
+                            message = it.state.error.localizedMessage,
+                            type = Toaster.TYPE_ERROR,
+                            duration = Toaster.LENGTH_LONG
+                    )
                     searchProductsAdapter.setItemsAndAnimateChanges(it.currentValue)
                     scrollListener.setHasNextPage(true)
                     scrollListener.updateState(false)
@@ -176,6 +182,10 @@ class PlaySearchResultFragment @Inject constructor(
         exitTransition = Slide(Gravity.BOTTOM)
                 .setStartDelay(150)
                 .setDuration(300)
+    }
+
+    private fun startPostponedTransition() {
+        etalaseSetupCoordinator.startPostponedEnterTransition()
     }
 
     companion object {
