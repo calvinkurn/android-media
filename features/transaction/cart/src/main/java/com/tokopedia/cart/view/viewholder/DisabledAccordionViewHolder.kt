@@ -31,7 +31,7 @@ class DisabledAccordionViewHolder(itemView: View, val actionListener: ActionList
         }
 
         itemView.setOnClickListener {
-            actionListener?.onAccordionClicked(data)
+            actionListener?.onAccordionClicked(data, textAccordion.text.toString())
         }
     }
 }

@@ -7,8 +7,8 @@ import com.tokopedia.cart.R
 import com.tokopedia.cart.data.model.response.promo.*
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.*
 import com.tokopedia.cart.domain.model.cartlist.*
-import com.tokopedia.cart.view.ACTION_SHOWLESS
-import com.tokopedia.cart.view.ACTION_SHOWMORE
+import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_SHOWLESS
+import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_SHOWMORE
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.purchase_platform.common.constant.CartConstant.STATE_RED
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.BenefitSummaryInfo
@@ -16,7 +16,6 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.response.valida
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoCheckoutErrorDefault
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.*
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.BenefitSummaryInfoUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.DetailsItemUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.SummariesItemUiModel
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData

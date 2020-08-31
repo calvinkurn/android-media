@@ -15,6 +15,9 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.cart.R
 import com.tokopedia.cart.domain.model.cartlist.ActionData
+import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_DELETE
+import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_NOTES
+import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_WISHLIST
 import com.tokopedia.cart.view.*
 import com.tokopedia.cart.view.adapter.CartItemAdapter
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
@@ -455,6 +458,7 @@ class CartItemViewHolder constructor(itemView: View,
         if (data.cartItemData?.originData?.maxOrder ?: 0 in 0..5) {
             textQtyLeft.text = data.cartItemData?.originData?.warningMessage ?: ""
             textQtyLeft.show()
+            actionListener?.onCartItemShowRemainingQty(data.cartItemData?.originData?.productId ?: "")
         } else {
             textQtyLeft.gone()
         }

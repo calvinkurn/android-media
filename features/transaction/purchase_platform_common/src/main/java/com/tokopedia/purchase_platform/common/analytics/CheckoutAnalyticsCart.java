@@ -1023,7 +1023,7 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
     }
 
     // Cart Revamp
-    public void eventViewRemainingStickInfo(String userId, String productId) {
+    public void eventViewRemainingStockInfo(String userId, String productId) {
         Map<String, Object> gtmData = getGtmData(
                 EventName.VIEW_ATC_IRIS,
                 EventCategory.CART,
@@ -1035,6 +1035,7 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         sendGeneralEvent(gtmData);
     }
 
+    // Todo : implement this
     public void eventViewInformationLabelInProductCard(String userId, String productId, String informationLabel) {
         Map<String, Object> gtmData = getGtmData(
                 EventName.VIEW_ATC_IRIS,
@@ -1059,6 +1060,8 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         sendGeneralEvent(gtmData);
     }
 
+    // Todo : implement this
+    // Todo : clarify error type
     public void eventClickMoveToWishlistOnUnavailableSectionGetError(String userId, String productId, String errorType) {
         Map<String, Object> gtmData = getGtmData(
                 EventName.CLICK_ATC,
@@ -1071,6 +1074,8 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         sendGeneralEvent(gtmData);
     }
 
+    // Todo : implement this
+    // Todo : clarify error type
     public void eventClickDeleteProductOnUnavailableSectionGetError(String userId, String productId, String errorType) {
         Map<String, Object> gtmData = getGtmData(
                 EventName.CLICK_ATC,
@@ -1083,6 +1088,8 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         sendGeneralEvent(gtmData);
     }
 
+    // Todo : implement this
+    // Todo : clarify error type
     public void eventClickSeeOtherProductOnUnavailableSection(String userId, String productId, String errorType) {
         Map<String, Object> gtmData = getGtmData(
                 EventName.CLICK_ATC,
@@ -1095,6 +1102,7 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         sendGeneralEvent(gtmData);
     }
 
+    // Todo : clarify error type
     public void eventClickCheckoutMelaluiBrowserOnUnavailableSection(String userId, String productId, String errorType) {
         Map<String, Object> gtmData = getGtmData(
                 EventName.CLICK_ATC,

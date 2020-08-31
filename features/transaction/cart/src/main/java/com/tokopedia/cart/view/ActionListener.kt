@@ -1,8 +1,10 @@
 package com.tokopedia.cart.view
 
+import com.tokopedia.cart.domain.model.cartlist.ActionData
 import com.tokopedia.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
 import com.tokopedia.cart.view.uimodel.DisabledAccordionHolderData
+import com.tokopedia.cart.view.uimodel.DisabledCartItemHolderData
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
 /**
@@ -69,11 +71,11 @@ interface ActionListener {
 
     fun onSeeErrorProductsClicked()
 
-    fun onTobaccoLiteUrlClicked(url: String)
+    fun onTobaccoLiteUrlClicked(url: String, data: DisabledCartItemHolderData, actionData: ActionData)
 
     fun onShowTickerTobacco()
 
     fun onCartShopNameChecked(isAllChecked: Boolean)
 
-    fun onAccordionClicked(data: DisabledAccordionHolderData)
+    fun onAccordionClicked(data: DisabledAccordionHolderData, buttonWording: String)
 }

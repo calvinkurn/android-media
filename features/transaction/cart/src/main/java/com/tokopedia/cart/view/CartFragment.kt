@@ -506,6 +506,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun onClickChevronSummaryTransaction() {
+        cartPageAnalytics.eventClickDetailTagihan(userSession.userId)
         showBottomSheetSummaryTransaction()
     }
 
@@ -1560,6 +1561,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         layoutGlobalError.errorTitle.text = outOfServiceData.title
         layoutGlobalError.errorDescription.text = outOfServiceData.description
         layoutGlobalError.errorIllustration.setImage(outOfServiceData.image, 0f)
+        cartPageAnalytics.eventViewErrorPageWhenLoadCart(userSession.userId, outOfServiceData.getErrorType())
         showErrorContainer()
     }
 
@@ -2439,6 +2441,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun onUndoDeleteClicked(cartIds: List<String>) {
+        cartPageAnalytics.eventClickUndoAfterDeleteProduct(userSession.userId)
         dPresenter.processUndoDeleteCartItem(cartIds)
     }
 
@@ -2955,6 +2958,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         if (allDisabledCartItemDataList.isNotEmpty()) {
             dPresenter.processDeleteCartItem(allCartItemDataList, allDisabledCartItemDataList, false, false)
+            cartPageAnalytics.eventClickDeleteAllUnavailableProduct(userSession.userId)
             sendAnalyticsOnClickConfirmationRemoveCartConstrainedProductNoAddToWishList(
                     dPresenter.generateDeleteCartDataAnalytics(allDisabledCartItemDataList)
             )
@@ -2976,7 +2980,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         )
     }
 
-    override fun onTobaccoLiteUrlClicked(url: String) {
+    override fun onTobaccoLiteUrlClicked(url: String, data: DisabledCartItemHolderData, actionData: ActionData) {
+        cartPageAnalytics.eventClickCheckoutMelaluiBrowserOnUnavailableSection(userSession.userId, data.productId, actionData.code)
         cartPageAnalytics.eventClickBrowseButtonOnTickerProductContainTobacco()
         dPresenter.redirectToLite(url)
     }
@@ -3104,7 +3109,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         activity?.let { TopAdsUrlHitter(CartFragment::class.qualifiedName).hitClickUrl(it, url, productId, productName, imageUrl) }
     }
 
-    override fun onAccordionClicked(data: DisabledAccordionHolderData) {
+    override fun onAccordionClicked(data: DisabledAccordionHolderData, buttonWording: String) {
+        cartPageAnalytics.eventClickAccordionButtonOnUnavailableProduct(userSession.userId, buttonWording)
         cartAdapter.collapseOrExpandDisabledItemAccordion(data)
         accordionCollapseState = data.isCollapsed
         if (data.isCollapsed) {
@@ -3124,5 +3130,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onCashbackUpdated(amount: Int) {
         cartListData?.shoppingSummaryData?.sellerCashbackValue = amount
+    }
+
+    override fun onCartItemShowRemainingQty(productId: String) {
+        cartPageAnalytics.eventViewRemainingStockInfo(userSession.userId, productId)
     }
 }

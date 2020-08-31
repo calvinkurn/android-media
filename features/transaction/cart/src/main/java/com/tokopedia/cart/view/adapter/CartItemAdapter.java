@@ -132,5 +132,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         void onCartItemQuantityChangedThenHitUpdateCartAndValidateUse();
 
         void onEditNoteDone(int position);
+
+        void onCartItemShowRemainingQty(String productId);
     }
 }

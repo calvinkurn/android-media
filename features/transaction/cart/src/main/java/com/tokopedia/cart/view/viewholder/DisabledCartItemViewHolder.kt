@@ -6,6 +6,10 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.R
 import com.tokopedia.cart.domain.model.cartlist.ActionData
+import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_CHECKOUTBROWSER
+import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_DELETE
+import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_SIMILARPRODUCT
+import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_WISHLIST
 import com.tokopedia.cart.view.*
 import com.tokopedia.cart.view.uimodel.DisabledCartItemHolderData
 import com.tokopedia.design.utils.CurrencyFormatUtil
@@ -121,11 +125,11 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
         itemView.tv_product_unavailable_action.show()
     }
 
-    private fun renderActionCheckoutInBrowser(it: ActionData, data: DisabledCartItemHolderData) {
-        itemView.tv_product_unavailable_action.text = it.message
+    private fun renderActionCheckoutInBrowser(actionData: ActionData, data: DisabledCartItemHolderData) {
+        itemView.tv_product_unavailable_action.text = actionData.message
         itemView.tv_product_unavailable_action.setOnClickListener {
             data.nicotineLiteMessageData?.url?.let {
-                actionListener?.onTobaccoLiteUrlClicked(it)
+                actionListener?.onTobaccoLiteUrlClicked(it, data, actionData)
             }
         }
         actionListener?.onShowTickerTobacco()
