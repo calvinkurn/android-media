@@ -123,7 +123,6 @@ ext {
             ovop2p                          : ":features:ovop2p",
             productAddEdit                  : ":features:merchant:product_add_edit",
             productManageCommon             : ":features:merchant:product_manage_common",
-            productManageItem               : ":features:merchant:product_manage_item",
             productManageList               : ":features:merchant:product_manage_list",
             productShare                    : ":features:merchant:product_share",
             report                          : ":features:merchant:report",

@@ -3,7 +3,7 @@ package com.tokopedia.seller.common.exception.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.network.data.model.response.BaseResponseError;
-import com.tokopedia.product.manage.item.common.util.TomeException;
+import com.tokopedia.seller.manageitem.common.util.TomeException;
 
 import java.io.IOException;
 

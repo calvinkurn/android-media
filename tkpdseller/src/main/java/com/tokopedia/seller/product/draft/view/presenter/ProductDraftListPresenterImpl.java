@@ -1,8 +1,8 @@
 package com.tokopedia.seller.product.draft.view.presenter;
 
-import com.tokopedia.product.manage.item.main.draft.data.model.ProductDraftViewModel;
+import com.tokopedia.seller.manageitem.data.db.ProductDraftViewModel;
+import com.tokopedia.seller.manageitem.domain.usecase.UpdateUploadingDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProductLegacyUseCase;
-import com.tokopedia.product.manage.item.main.draft.domain.UpdateUploadingDraftProductUseCase;
 import com.tokopedia.seller.product.common.utils.ProductDraftErrorHandler;
 import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.DeleteSingleDraftProductUseCase;

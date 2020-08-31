@@ -30,12 +30,10 @@ import com.tokopedia.base.list.seller.view.fragment.BaseListFragment;
 import com.tokopedia.base.list.seller.view.old.NoResultDataBinder;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
-import com.tokopedia.product.manage.item.main.base.view.service.UploadProductService;
-import com.tokopedia.product.manage.item.main.draft.data.model.ProductDraftViewModel;
-import com.tokopedia.product.manage.item.main.draft.view.activity.ProductDraftAddActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.presenter.BlankPresenter;
+import com.tokopedia.seller.manageitem.data.db.ProductDraftViewModel;
+import com.tokopedia.seller.manageitem.di.component.ProductComponent;
 import com.tokopedia.seller.product.draft.analytic.ProductDraftListTracker;
 import com.tokopedia.seller.product.draft.di.component.DaggerProductDraftListComponent;
 import com.tokopedia.seller.product.draft.di.module.ProductDraftListModule;
@@ -67,6 +65,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
     public static final int INSTAGRAM_SELECT_REQUEST_CODE = 9002;
     public static final int REQUEST_CODE_ADD_PRODUCT = 9003;
 
+    public static final String ACTION_DRAFT_CHANGED = "com.tokopedia.draft.changed";
     public static final String EXTRA_DRAFT_ID = "DRAFT_ID";
 
     public static final String SCREEN_NAME = "/draft product page";
@@ -280,14 +279,13 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
             draftBroadCastReceiver = new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
-                    if (intent.getAction().equals(UploadProductService.ACTION_DRAFT_CHANGED) || intent.getAction().equals(TkpdState.ProductService.BROADCAST_ADD_PRODUCT)) {
+                    if (intent.getAction().equals(intent.getAction().equals(TkpdState.ProductService.BROADCAST_ADD_PRODUCT))) {
                         resetPageAndSearch();
                     }
                 }
             };
         }
         IntentFilter intentFilters = new IntentFilter();
-        intentFilters.addAction(UploadProductService.ACTION_DRAFT_CHANGED);
         intentFilters.addAction(TkpdState.ProductService.BROADCAST_ADD_PRODUCT);
         if (getContext() != null) {
             LocalBroadcastManager.getInstance(getContext()).registerReceiver(draftBroadCastReceiver, intentFilters);
@@ -312,12 +310,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
 
     @Override
     protected void searchForPage(int page) {
-        // page is always 0 for draft
-        if (isMyServiceRunning(UploadProductService.class)) {
-            productDraftListPresenter.fetchAllDraftData();
-        } else {
-            productDraftListPresenter.fetchAllDraftDataWithUpdateUploading();
-        }
+        productDraftListPresenter.fetchAllDraftData();
     }
 
     private boolean isMyServiceRunning(Class<?> serviceClass) {
@@ -380,7 +373,13 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
     public void onSaveBulkDraftSuccess(List<Long> draftProductIdList) {
         hideProgressDialog();
         if (draftProductIdList.size() == 1) {
-            ProductDraftAddActivity.Companion.createInstance(getActivity(), draftProductIdList.get(0));
+            String uri = Uri.parse(ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW)
+                    .buildUpon()
+                    .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_ID, draftProductIdList.get(0) + "")
+                    .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_MODE, ApplinkConstInternalMechant.MODE_EDIT_DRAFT)
+                    .build()
+                    .toString();
+            Intent intent = RouteManager.getIntent(getContext(), uri);
         } else {
             resetPageAndSearch();
             Toast.makeText(getActivity(), MethodChecker.fromHtml(getString(R.string.product_draft_instagram_save_success, draftProductIdList.size())), Toast.LENGTH_LONG).show();

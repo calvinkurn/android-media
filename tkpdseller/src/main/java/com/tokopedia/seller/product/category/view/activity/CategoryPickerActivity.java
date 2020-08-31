@@ -7,10 +7,10 @@ import android.net.Uri;
 import androidx.fragment.app.Fragment;
 
 import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.product.manage.item.category.view.istener.CategoryPickerFragmentListener;
 import com.tokopedia.seller.ProductEditItemComponentInstance;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
+import com.tokopedia.seller.manageitem.common.listener.CategoryPickerFragmentListener;
+import com.tokopedia.seller.manageitem.di.component.ProductComponent;
 import com.tokopedia.seller.product.category.view.fragment.CategoryPickerFragment;
 import com.tokopedia.core.common.category.view.model.CategoryViewModel;
 import com.tokopedia.seller.product.draft.tracking.ProductAddEditDraftListPageTracking;

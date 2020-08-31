@@ -5,7 +5,7 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.product.manage.common.draft.data.db.repository.AddEditProductDraftRepository;
-import com.tokopedia.product.manage.item.main.draft.data.model.ProductDraftViewModel;
+import com.tokopedia.seller.manageitem.data.db.ProductDraftViewModel;
 import com.tokopedia.seller.product.draft.domain.mapper.ProductDraftMapper;
 
 import java.util.List;

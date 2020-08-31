@@ -8,9 +8,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.tokopedia.base.list.seller.view.adapter.BaseViewHolder;
-import com.tokopedia.product.manage.item.common.util.ItemPickerType;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.utils.CircleTransform;
+import com.tokopedia.seller.manageitem.common.util.ItemPickerType;
 
 /**
  * @author normansyahputa on 5/26/17.

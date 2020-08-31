@@ -6,10 +6,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.base.list.seller.view.fragment.BaseListFragment;
 import com.tokopedia.seller.R;
-import com.tokopedia.product.manage.item.common.util.ItemPickerType;
 import com.tokopedia.seller.base.view.listener.BasePickerItemCacheList;
 import com.tokopedia.seller.base.view.listener.BasePickerMultipleItem;
 import com.tokopedia.seller.base.view.presenter.BlankPresenter;
+import com.tokopedia.seller.manageitem.common.util.ItemPickerType;
 
 import java.util.ArrayList;
 import java.util.List;

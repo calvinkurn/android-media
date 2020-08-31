@@ -6,12 +6,12 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef;
-import com.tokopedia.product.manage.item.main.base.data.model.ProductPictureViewModel;
-import com.tokopedia.product.manage.item.main.base.data.model.ProductViewModel;
-import com.tokopedia.product.manage.item.main.draft.domain.ProductDraftRepository;
-import com.tokopedia.product.manage.item.utils.constant.ProductConditionTypeDef;
-import com.tokopedia.product.manage.item.utils.constant.WeightUnitTypeDef;
+import com.tokopedia.seller.manageitem.common.util.CurrencyTypeDef;
+import com.tokopedia.seller.manageitem.common.util.ProductConditionTypeDef;
+import com.tokopedia.seller.manageitem.common.util.WeightUnitTypeDef;
+import com.tokopedia.seller.manageitem.data.cloud.model.product.ProductPictureViewModel;
+import com.tokopedia.seller.manageitem.data.cloud.model.product.ProductViewModel;
+import com.tokopedia.seller.manageitem.domain.repository.ProductDraftRepository;
 
 import java.util.ArrayList;
 import java.util.List;

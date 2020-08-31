@@ -1,7 +1,7 @@
 package com.tokopedia.seller.product.draft.di.component;
 
-import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
-import com.tokopedia.product.manage.item.main.add.di.ProductAddScope;
+import com.tokopedia.seller.manageitem.di.component.ProductComponent;
+import com.tokopedia.seller.manageitem.di.scope.ProductAddScope;
 import com.tokopedia.seller.product.draft.di.module.ProductDraftListModule;
 import com.tokopedia.seller.product.draft.view.fragment.ProductDraftListFragment;
 

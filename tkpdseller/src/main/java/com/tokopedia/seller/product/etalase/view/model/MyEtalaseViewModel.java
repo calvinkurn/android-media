@@ -1,7 +1,7 @@
 package com.tokopedia.seller.product.etalase.view.model;
 
+import com.tokopedia.seller.manageitem.data.model.MyEtalaseItemViewModel;
 import java.util.List;
-import com.tokopedia.product.manage.item.etalase.view.model.MyEtalaseItemViewModel;
 
 /**
  * @author sebastianuskh on 5/3/17.

@@ -2,7 +2,7 @@ package com.tokopedia.seller.product.draft.domain.mapper
 
 import android.text.TextUtils
 import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
-import com.tokopedia.product.manage.item.main.draft.data.model.ProductDraftViewModel
+import com.tokopedia.seller.manageitem.data.db.ProductDraftViewModel
 import javax.inject.Inject
 
 class ProductDraftMapper @Inject constructor() {
