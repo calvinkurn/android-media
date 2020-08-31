@@ -1,0 +1,17 @@
+[
+  {
+    "data": {
+      "recharge_favorite_number": {
+        "list": [
+          {
+            "client_number": "081232323232",
+            "label": "Tes",
+            "product_id": 559,
+            "operator_id": 113,
+            "category_id": 9
+          }
+        ]
+      }
+    }
+  }
+]
