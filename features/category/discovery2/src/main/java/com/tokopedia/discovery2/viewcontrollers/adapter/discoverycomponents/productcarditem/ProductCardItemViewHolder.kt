@@ -162,12 +162,8 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     }
 
     private fun showOutOfStockLabel(productStock: String?, saleStockValidation : Int = 0) {
-        when {
-            productStock.isNullOrEmpty() -> {
-                stockHabisLabel.hide()
-                outOfStockOverlay.hide()
-            }
-            productStock.toIntOrNull() == saleStockValidation -> {
+        when(saleStockValidation) {
+            productStock?.toIntOrNull()-> {
                 stockHabisLabel.apply {
                     unlockFeature = true
                     val colorHexString = "#${Integer.toHexString(ContextCompat.getColor(context, R.color.clr_AD31353B))}"
