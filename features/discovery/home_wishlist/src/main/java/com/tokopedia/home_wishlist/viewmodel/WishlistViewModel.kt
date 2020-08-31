@@ -159,7 +159,7 @@ open class WishlistViewModel @Inject constructor(
             }
         }){
             isWishlistErrorInFirstPage.postValue(true)
-            wishlistData.postValue(listOf(ErrorWishlistDataModel(it.message)))
+            wishlistData.postValue(listOf(ErrorWishlistDataModel()))
             currentPage--
             it.printStackTrace()
         }
@@ -215,7 +215,7 @@ open class WishlistViewModel @Inject constructor(
      */
     fun getRecommendationOnEmptyWishlist(page: Int){
         val emptyDataVisitable = wishlistData.value
-        wishlistData.value = wishlistData.value.plus(LoadMoreDataModel())
+        wishlistData.postValue(wishlistData.value.plus(LoadMoreDataModel()))
         launchCatchError(block = {
             val widget = getSingleRecommendationUseCase.getData(
                     GetRecommendationRequestParam(pageNumber = page, pageName = "empty_wishlist")
@@ -223,7 +223,7 @@ open class WishlistViewModel @Inject constructor(
             val newList = emptyDataVisitable.toMutableList()
             if(page == 0) newList.add(RecommendationTitleDataModel(widget.title, ""))
             newList.addAll(widget.recommendationItemList.map { RecommendationItemDataModel(widget.title, it) })
-            wishlistData.value = newList
+            wishlistData.postValue(newList)
         }){
             it.printStackTrace()
         }
@@ -750,7 +750,7 @@ open class WishlistViewModel @Inject constructor(
         if(!isBulkMode) {
             val sortFirst = listRecommendationCarouselOnMarked.toSortedMap()
             sortFirst.forEach{
-                if (it.key <= newVisitable.size) {
+                if (it.key <= newVisitable.size && it.key >= 0) {
                     newVisitable.add(it.key, it.value)
                 }
             }
@@ -787,7 +787,7 @@ open class WishlistViewModel @Inject constructor(
      */
     fun setWishlistOnMarkDelete(productPosition: Int, isChecked: Boolean){
         val wishlistDataTemp: MutableList<WishlistDataModel> = wishlistData.value.toMutableList()
-        if(productPosition < wishlistDataTemp.size && wishlistDataTemp[productPosition] is WishlistItemDataModel){
+        if(productPosition >= 0 && productPosition < wishlistDataTemp.size && wishlistDataTemp[productPosition] is WishlistItemDataModel){
             wishlistDataTemp[productPosition] = (wishlistDataTemp[productPosition] as WishlistItemDataModel).copy(
                     isOnChecked = isChecked
             )

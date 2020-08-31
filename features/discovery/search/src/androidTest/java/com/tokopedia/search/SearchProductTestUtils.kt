@@ -78,13 +78,6 @@ internal fun createBroadMatchListener(): BroadMatchListener {
     }
 }
 
-internal fun createQuickFilterListener(): QuickFilterListener {
-    return object: QuickFilterListener {
-        override fun onQuickFilterSelected(option: Option?) {}
-        override fun isQuickFilterSelected(option: Option?): Boolean { return false }
-    }
-}
-
 internal fun createGlobalNavListener(): GlobalNavListener {
     return object: GlobalNavListener {
         override fun onGlobalNavWidgetClicked(item: GlobalNavViewModel.Item?, keyword: String?) {}

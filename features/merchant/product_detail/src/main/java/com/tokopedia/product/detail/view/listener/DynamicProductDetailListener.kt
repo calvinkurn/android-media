@@ -7,18 +7,16 @@ import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
-import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.product.Video
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductSnapshotDataModel
-import com.tokopedia.product.detail.data.model.description.DescriptionData
-import com.tokopedia.product.detail.data.model.spesification.Specification
+import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
 interface DynamicProductDetailListener {
     fun getApplicationContext(): Application?
     fun getLifecycleFragment(): Lifecycle
+    fun refreshPage()
 
     /**
      * ProductSnapshotViewHolder
@@ -36,10 +34,12 @@ interface DynamicProductDetailListener {
      * ProductInfoViewHolder
      */
     fun gotoVideoPlayer(videos: List<Video>, index: Int)
-    fun gotoDescriptionTab(data: DescriptionData, listOfCatalog: ArrayList<Specification>, componentTrackDataModel: ComponentTrackDataModel)
+    fun gotoDescriptionTab(descriptionText: String, componentTrackDataModel: ComponentTrackDataModel)
     fun onCategoryClicked(url: String, componentTrackDataModel: ComponentTrackDataModel)
     fun onEtalaseClicked(url: String, componentTrackDataModel: ComponentTrackDataModel)
     fun goToApplink(url: String)
+
+    fun onBbiInfoClick(url: String, title: String, componentTrackDataModel: ComponentTrackDataModel)
 
     /**
      * ProductDiscussionViewHolder
@@ -117,7 +117,6 @@ interface DynamicProductDetailListener {
      * ProductNotifyMeViewHolder
      */
     fun onNotifyMeClicked(data: ProductNotifyMeDataModel, componentTrackDataModel: ComponentTrackDataModel)
-    fun showAlertUpcomingEnded()
 
     /**
      * ProductMiniShopInfoViewHolder
@@ -134,4 +133,10 @@ interface DynamicProductDetailListener {
      */
     fun onTickerGeneralClicked(tickerTitle: String, tickerType: Int, url: String, componentTrackDataModel: ComponentTrackDataModel?)
     fun onTickerShopClicked(tickerTitle: String, tickerType: Int, componentTrackDataModel: ComponentTrackDataModel?)
+
+    /**
+     * ProductTopAdsImageViewHolder
+     */
+    fun onTopAdsImageViewClicked(model: TopAdsImageDataModel, applink: String?, bannerId: String, bannerName: String)
+    fun onTopAdsImageViewImpression(model: TopAdsImageDataModel, bannerId: String, bannerName: String)
 }
