@@ -412,7 +412,7 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
         return listProductRecomMap?.find { it.recomWidgetData?.pageName == data.recomWidgetData?.pageName }?.apply {
             filterData = data.filterData
             recomWidgetData = data.recomWidgetData
-            cardModel = data.cardModel
+            cardModel = mapToCardModel(data.recomWidgetData)
         }
     }
 
@@ -433,7 +433,8 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
         }
     }
 
-    private fun mapToCardModel(data: RecommendationWidget): List<ProductCardModel> {
+    private fun mapToCardModel(data: RecommendationWidget?): List<ProductCardModel> {
+        if(data == null) return listOf()
         return data.recommendationItemList.map {
             ProductCardModel(
                     slashedPrice = it.slashedPrice,
