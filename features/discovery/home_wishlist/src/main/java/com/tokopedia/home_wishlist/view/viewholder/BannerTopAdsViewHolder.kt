@@ -36,7 +36,7 @@ class BannerTopAdsViewHolder (view: View) : SmartAbstractViewHolder<BannerTopAds
                 .override(itemView.context.resources.displayMetrics.widthPixels,
                         getHeight(bannerTopAdsDataModel.topAdsDataModel.imageWidth, bannerTopAdsDataModel.topAdsDataModel.imageHeight))
                 .fitCenter()
-                .transform(RoundedCorners(8))
+                .transform(RoundedCorners(16))
                 .addListener(object : RequestListener<Drawable> {
                     override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
                         itemView.wishlist_topads_image_view.hide()
