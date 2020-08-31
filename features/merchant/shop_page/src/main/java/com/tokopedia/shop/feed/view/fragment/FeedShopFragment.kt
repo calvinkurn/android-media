@@ -927,8 +927,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
             val ivTabFeedHasPost: ImageUnify = sellerMigrationLayout.findViewById(R.id.ivTabFeedHasPost)
             val tvTitleTabFeedHasPost: Typography = sellerMigrationLayout.findViewById(R.id.tvTitleTabFeedHasPost)
             ivTabFeedHasPost.setImageDrawable(context?.let { ContextCompat.getDrawable(it, ic_tab_feed_has_post_seller_migration) })
-            tvTitleTabFeedHasPost.text = getString(seller_migration_tab_feed_bottom_sheet_content)
-            tvTitleTabFeedHasPost.setOnClickLinkSpannable(getString(R.string.seller_migration_tab_feed_bottom_sheet_content)) {
+            tvTitleTabFeedHasPost.setOnClickLinkSpannable(getString(seller_migration_tab_feed_bottom_sheet_content)) {
                 goToSellerApp()
             }
         }
