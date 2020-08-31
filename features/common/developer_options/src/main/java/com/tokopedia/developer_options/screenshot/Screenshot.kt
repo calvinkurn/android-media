@@ -7,7 +7,7 @@ import android.os.HandlerThread
 import android.provider.MediaStore
 
 
-class Screenshot(contentResolver: ContentResolver, listener: Listener) {
+open class Screenshot(contentResolver: ContentResolver, listener: Listener) {
     private val mHandlerThread: HandlerThread = HandlerThread("ScreenshotObserver")
     private val mHandler: Handler
     private val mContentResolver: ContentResolver

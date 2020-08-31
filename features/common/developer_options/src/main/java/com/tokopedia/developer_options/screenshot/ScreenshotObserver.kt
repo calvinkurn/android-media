@@ -21,14 +21,6 @@ class ScreenshotObserver(handler: Handler?, private val mContentResolver: Conten
     private val PATH_SCREENSHOT = "screenshots/"
     private val mListener: Screenshot.Listener = listener
 
-    override fun deliverSelfNotifications(): Boolean {
-        return super.deliverSelfNotifications()
-    }
-
-    override fun onChange(selfChange: Boolean) {
-        super.onChange(selfChange)
-    }
-
     override fun onChange(selfChange: Boolean, uri: Uri) {
         super.onChange(selfChange, uri)
         if (isSingleImageFile(uri)) {

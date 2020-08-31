@@ -1,5 +1,6 @@
 package com.tokopedia.developer_options.presentation.feedbackpage
 
+import android.net.Uri
 import android.os.Build
 import android.os.Build.VERSION_CODES
 import android.os.Bundle
@@ -26,16 +27,25 @@ class FeedbackPageFragment: Fragment() {
 
     private lateinit var bugType : Spinner
     private lateinit var email: EditText
-    private lateinit var issueDesc: EditText
     private lateinit var affectedPage: EditText
+    private lateinit var journey: EditText
+    private lateinit var actualResult: EditText
+    private lateinit var expectedResult: EditText
+    private lateinit var imageView: ImageView
     private lateinit var submitButton: View
     private lateinit var feedbackApi: FeedbackApi
     private lateinit var compositeSubscription: CompositeSubscription
     private lateinit var myPreferences: Preferences
+    private lateinit var screenshot: com.tokopedia.screenshot_observer.Screenshot
 
     private var deviceInfo: String = ""
     private var androidVersion: String = ""
     private var appVersion: String = ""
+    private var versionCode: String = ""
+    private var userId: String = ""
+    private var sessionToken: String = ""
+    private var fcmToken: String = ""
+    private var loginState: String = ""
 
     private var userSession: UserSessionInterface? = null
     private var loadingDialog: LoadingDialog? = null
@@ -50,14 +60,27 @@ class FeedbackPageFragment: Fragment() {
     private fun initView(mainView: View){
         email =  mainView.findViewById(R.id.email)
         bugType = mainView.findViewById(R.id.spinner_bug_type)
-        issueDesc = mainView.findViewById(R.id.issue_description)
         affectedPage = mainView.findViewById(R.id.affected_page)
+        journey = mainView.findViewById(R.id.step_to_reproduce)
+        actualResult = mainView.findViewById(R.id.actual_result)
+        expectedResult = mainView.findViewById(R.id.expected_result)
+        imageView = mainView.findViewById(R.id.image_feedback)
         submitButton = mainView.findViewById(R.id.submit_button)
 
         feedbackApi = ApiClient.getAPIService()
         compositeSubscription = CompositeSubscription()
         myPreferences = Preferences(context)
         loadingDialog = context?.let { LoadingDialog(it) }
+
+
+        screenshot = context?.contentResolver?.let {
+            com.tokopedia.screenshot_observer.Screenshot(it, object : com.tokopedia.screenshot_observer.Screenshot.Listener {
+                override fun onScreenShotTaken(screenshotData: com.tokopedia.screenshot_observer.ScreenshotData?) {
+                    val uri = Uri.parse(screenshotData?.path)
+                    imageView.setImageURI(uri)
+                }
+            })
+        }!!
 
         context?.let { ArrayAdapter.createFromResource(it,
                 R.array.bug_type_array,
@@ -68,12 +91,13 @@ class FeedbackPageFragment: Fragment() {
         } }
 
         userSession = UserSession(activity)
-        initVersionData()
+        initData()
 
     }
 
-    private fun initVersionData() {
+    private fun initData() {
         val fields = VERSION_CODES::class.java.fields
+
         var codeName = "UNKNOWN"
         fields.filter { it.getInt(VERSION_CODES::class) == Build.VERSION.SDK_INT }
                 .forEach { codeName = it.name }
@@ -88,7 +112,11 @@ class FeedbackPageFragment: Fragment() {
 
         deviceInfo = (StringBuilder().append(Build.MANUFACTURER).append(" ").append(Build.MODEL).toString())
         androidVersion = codeName
-        appVersion = context?.packageManager?.getPackageInfo(context?.packageName, 0)?.versionName ?: ""
+        appVersion = GlobalConfig.VERSION_NAME
+        versionCode = GlobalConfig.VERSION_CODE.toString()
+        userId = userSession?.userId ?: ""
+        sessionToken = userSession?.deviceId ?: ""
+        loginState = userSession?.isLoggedIn.toString()
     }
 
     private fun initListener() {
@@ -111,35 +139,55 @@ class FeedbackPageFragment: Fragment() {
         }
 
         submitButton.setOnClickListener {
-            val emailText: String = email.text.toString()
-            val issueText: String = issueDesc.text.toString()
-            val affectedPageText: String = affectedPage.text.toString()
+            val emailText= email.text.toString()
+            val affectedPageText = affectedPage.text.toString()
+            val journeyText = journey.text.toString()
+            val actualResultText = actualResult.text.toString()
+            val expectedResultText = expectedResult.text.toString()
             when {
                 TextUtils.isEmpty(emailText) -> {
                     Toast.makeText(context,
                             "Email should not be empty", Toast.LENGTH_SHORT).show()
                 }
-                TextUtils.isEmpty(issueText) -> {
+                TextUtils.isEmpty(affectedPageText) -> {
                     Toast.makeText(context,
                             "Issue should not be empty", Toast.LENGTH_SHORT).show()
                 }
-                TextUtils.isEmpty(affectedPageText) -> {
+                TextUtils.isEmpty(journeyText) -> {
                     Toast.makeText(context,
                             "Affected Page should not be empty", Toast.LENGTH_SHORT).show()
                 }
+                TextUtils.isEmpty(actualResultText) -> {
+                    Toast.makeText(context,
+                    "Actual Result should not be empty", Toast.LENGTH_SHORT).show()
+                }
+                TextUtils.isEmpty(expectedResultText) -> {
+                    Toast.makeText(context,
+                    "Expected Result should not be empty", Toast.LENGTH_SHORT).show()
+                }
                 else -> {
                     val issueType = bugType.selectedItem.toString()
-                    submitFeedback(emailText, affectedPageText, issueText, issueType)
+                    submitFeedback(emailText, affectedPageText, journeyText, issueType, actualResultText, expectedResultText)
                 }
             }
         }
 
     }
 
-    private fun submitFeedback(email: String, page: String, desc: String, issueType: String) {
+    override fun onResume() {
+        super.onResume()
+        screenshot.register()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        screenshot.unregister()
+    }
+
+    private fun submitFeedback(email: String, page: String, desc: String, issueType: String, actualResult: String, expectedResult: String) {
         loadingDialog?.show()
         compositeSubscription.add(
-                feedbackApi.getResponse(requestMapper(email, page, desc, issueType))
+                feedbackApi.getResponse(requestMapper(email, page, desc, issueType, actualResult, expectedResult))
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(object : Subscriber<FeedbackResponse>() {
@@ -163,7 +211,7 @@ class FeedbackPageFragment: Fragment() {
         )
     }
 
-    private fun requestMapper(email: String, page: String, desc: String, issueType: String): FeedbackRequest {
+    private fun requestMapper(email: String, page: String, desc: String, issueType: String, actualResult: String, expectedResult: String): FeedbackRequest {
         val affectedVersion = if (GlobalConfig.isSellerApp()) "SA-$appVersion" else "MA-$appVersion"
         return FeedbackRequest(Fields(
                 summary = "[INTERNAL-FEEDBACK] {$email} {$page}",
@@ -185,10 +233,17 @@ class FeedbackPageFragment: Fragment() {
                                         type = "text",
                                         text = "Reporter : $email \n" +
                                                 "Device Info : $deviceInfo | $androidVersion\n" +
-                                                "App Version : $appVersion \n" +
+                                                "App Version : $appVersion $versionCode \n" +
+                                                "UserId : $userId \n" +
+                                                "Session Token : $sessionToken \n" +
+                                                "Login State : $loginState \n" +
                                                 "Affected Page : $page \n\n" +
-                                                "Description of Issue : \n" +
-                                                desc
+                                                "Step to Reproduce : \n" +
+                                                "$desc \n\n" +
+                                                "Actual Result : \n" +
+                                                "$actualResult \n\n" +
+                                                "Expected Result : \n" +
+                                                expectedResult
                                 ))
                         ))
                 ),

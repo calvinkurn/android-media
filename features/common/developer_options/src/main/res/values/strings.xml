@@ -14,7 +14,9 @@
     <string name="remote_config_edit_btn_save">Save</string>
     <string name="bug_type">Bug Type</string>
     <string name="email">Email</string>
-    <string name="description_of_issue">Description of Issue</string>
+    <string name="step_to_reproduce">Journey/Step to Reproduce</string>
+    <string name="actual_result">Actual Result</string>
+    <string name="expected_result">Expected Result</string>
     <string name="affected_page">Affected Page</string>
     <string name="btn_submit_feedback_page">Submit</string>
 
