@@ -32,6 +32,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.imagepicker.common.util.FileUtils
+import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.di.DaggerUserIdentificationCommonComponent
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationCameraActivity.Companion.createIntent
@@ -332,11 +333,11 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
     private fun getLivenessResult(data: Intent) {
         val isSuccessRegister = data.getBooleanExtra(ApplinkConst.Liveness.EXTRA_IS_SUCCESS_REGISTER, false)
         if (!isSuccessRegister) {
-            stepperModel?.listRetake = data.getIntegerArrayListExtra(ApplinkConst.Liveness.EXTRA_LIST_RETAKE)
-            stepperModel?.listMessage = data.getStringArrayListExtra(ApplinkConst.Liveness.EXTRA_LIST_MESSAGE)
-            stepperModel?.titleText = data.getStringExtra(ApplinkConst.Liveness.EXTRA_TITLE)
-            stepperModel?.subtitleText = data.getStringExtra(ApplinkConst.Liveness.EXTRA_SUBTITLE)
-            stepperModel?.buttonText = data.getStringExtra(ApplinkConst.Liveness.EXTRA_BUTTON)
+            stepperModel?.listRetake = data.getIntegerArrayListExtra(ApplinkConst.Liveness.EXTRA_LIST_RETAKE)?: arrayListOf()
+            stepperModel?.listMessage = data.getStringArrayListExtra(ApplinkConst.Liveness.EXTRA_LIST_MESSAGE)?: arrayListOf()
+            stepperModel?.titleText = data.getStringExtra(ApplinkConst.Liveness.EXTRA_TITLE).toEmptyStringIfNull()
+            stepperModel?.subtitleText = data.getStringExtra(ApplinkConst.Liveness.EXTRA_SUBTITLE).toEmptyStringIfNull()
+            stepperModel?.buttonText = data.getStringExtra(ApplinkConst.Liveness.EXTRA_BUTTON).toEmptyStringIfNull()
             val ft = fragmentManager?.beginTransaction()
             ft?.detach(this)?.attach(this)?.commit()
         } else {
@@ -356,11 +357,11 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
         if (!isKycSelfie) {
             when (requestCode) {
                 KYCConstant.REQUEST_CODE_CAMERA_KTP -> {
-                    stepperModel?.ktpFile = data.getStringExtra(KYCConstant.EXTRA_STRING_IMAGE_RESULT)
+                    stepperModel?.ktpFile = data.getStringExtra(KYCConstant.EXTRA_STRING_IMAGE_RESULT).toEmptyStringIfNull()
                     openLivenessView()
                 }
                 KYCConstant.REQUEST_CODE_CAMERA_FACE -> {
-                    stepperModel?.faceFile = data.getStringExtra(ApplinkConstInternalGlobal.PARAM_FACE_PATH)
+                    stepperModel?.faceFile = data.getStringExtra(ApplinkConstInternalGlobal.PARAM_FACE_PATH).toEmptyStringIfNull()
                     getLivenessResult(data)
                 }
                 else -> {
@@ -369,7 +370,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
         } else {
             val imagePath = data.getStringExtra(KYCConstant.EXTRA_STRING_IMAGE_RESULT)
             if (requestCode == KYCConstant.REQUEST_CODE_CAMERA_KTP) {
-                stepperModel?.ktpFile = imagePath
+                stepperModel?.ktpFile = imagePath.toEmptyStringIfNull()
                 analytics?.eventClickUploadPhotos()
                 checkKtp()
             }

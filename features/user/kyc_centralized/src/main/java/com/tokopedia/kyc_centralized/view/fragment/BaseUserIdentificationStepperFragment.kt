@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.view.listener.StepperListener
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationCameraActivity.Companion.createIntent
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivity
@@ -81,14 +82,14 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
             if (requestCode == KYCConstant.REQUEST_CODE_CAMERA_FACE) {
                 if (isKycSelfie) {
                     val faceFile = data.getStringExtra(KYCConstant.EXTRA_STRING_IMAGE_RESULT)
-                    stepperModel?.faceFile = faceFile
+                    stepperModel?.faceFile = faceFile.toEmptyStringIfNull()
                     stepperListener?.goToNextPage(stepperModel)
                 } else {
                     getLivenessResult(data)
                 }
             } else if (requestCode == KYCConstant.REQUEST_CODE_CAMERA_KTP) {
                 val ktpFile = data.getStringExtra(KYCConstant.EXTRA_STRING_IMAGE_RESULT)
-                stepperModel?.ktpFile = ktpFile
+                stepperModel?.ktpFile = ktpFile.toEmptyStringIfNull()
                 stepperListener?.goToNextPage(stepperModel)
             }
         } else if (resultCode == KYCConstant.IS_FILE_IMAGE_TOO_BIG) {
@@ -109,17 +110,16 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
 
     private fun getLivenessResult(data: Intent) {
         val isSuccessRegister = data.getBooleanExtra(ApplinkConst.Liveness.EXTRA_IS_SUCCESS_REGISTER, false)
-        stepperModel?.faceFile = data.getStringExtra(ApplinkConstInternalGlobal.PARAM_FACE_PATH)
         if (isSuccessRegister) {
             activity?.setResult(Activity.RESULT_OK)
             stepperListener?.finishPage()
         } else {
-            stepperModel?.faceFile = data.getStringExtra(ApplinkConstInternalGlobal.PARAM_FACE_PATH)
-            stepperModel?.listRetake = data.getIntegerArrayListExtra(ApplinkConst.Liveness.EXTRA_LIST_RETAKE)
-            stepperModel?.listMessage = data.getStringArrayListExtra(ApplinkConst.Liveness.EXTRA_LIST_MESSAGE)
-            stepperModel?.titleText = data.getStringExtra(ApplinkConst.Liveness.EXTRA_TITLE)
-            stepperModel?.subtitleText = data.getStringExtra(ApplinkConst.Liveness.EXTRA_SUBTITLE)
-            stepperModel?.buttonText = data.getStringExtra(ApplinkConst.Liveness.EXTRA_BUTTON)
+            stepperModel?.faceFile = data.getStringExtra(ApplinkConstInternalGlobal.PARAM_FACE_PATH).toEmptyStringIfNull()
+            stepperModel?.listRetake = data.getIntegerArrayListExtra(ApplinkConst.Liveness.EXTRA_LIST_RETAKE)?: arrayListOf()
+            stepperModel?.listMessage = data.getStringArrayListExtra(ApplinkConst.Liveness.EXTRA_LIST_MESSAGE)?: arrayListOf()
+            stepperModel?.titleText = data.getStringExtra(ApplinkConst.Liveness.EXTRA_TITLE).toEmptyStringIfNull()
+            stepperModel?.subtitleText = data.getStringExtra(ApplinkConst.Liveness.EXTRA_SUBTITLE).toEmptyStringIfNull()
+            stepperModel?.buttonText = data.getStringExtra(ApplinkConst.Liveness.EXTRA_BUTTON).toEmptyStringIfNull()
             stepperListener?.goToNextPage(stepperModel)
         }
     }
