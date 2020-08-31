@@ -586,6 +586,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 val recomData = getRecommendationUseCase.createObservable(getRecommendationUseCase.getRecomParams(
                         pageNumber = ProductDetailConstant.DEFAULT_PAGE_NUMBER,
                         pageName = recommendationDataModel.recomWidgetData?.pageName ?: "",
+                        queryParam = annotationChip.recommendationFilterChip.value,
                         productIds = arrayListOf(getDynamicProductInfoP1?.basic?.productID ?: "")
                 )).toBlocking().first()
                 if(recomData.isNotEmpty()){
