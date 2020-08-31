@@ -25,6 +25,10 @@ data class OccPrompt(
     fun getSecondButton(primaryButton: OccPromptButton): OccPromptButton? {
         return buttons.firstOrNull { it != primaryButton }
     }
+
+    fun hasReloadActionButton(): Boolean {
+        return buttons.firstOrNull { it.action == OccPromptButton.ACTION_RELOAD } != null
+    }
 }
 
 data class OccPromptButton(

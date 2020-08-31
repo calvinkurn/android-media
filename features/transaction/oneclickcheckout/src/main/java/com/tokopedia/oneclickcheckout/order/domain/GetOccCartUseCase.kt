@@ -261,9 +261,8 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
     }
 
     private fun mapPrompt(promptResponse: OccPromptResponse): OccPrompt {
-//        return OccPrompt(OccPrompt.TYPE_DIALOG, "title disini", "desc disini", listOf(
-//                OccPromptButton("text ini", "tokopedia://home", OccPromptButton.ACTION_OPEN, OccPromptButton.COLOR_PRIMARY),
-//                OccPromptButton("", "tokopedia://home", OccPromptButton.ACTION_OPEN, OccPromptButton.COLOR_PRIMARY)
+//        return OccPrompt(OccPrompt.FROM_CART, OccPrompt.TYPE_DIALOG, "title disini", "desc disini", listOf(
+//                OccPromptButton("text ini", "tokopedia://home", OccPromptButton.ACTION_OPEN, OccPromptButton.COLOR_PRIMARY)
 //        ))
         return OccPrompt(OccPrompt.FROM_CART, promptResponse.type.toLowerCase(Locale.ROOT), promptResponse.title, promptResponse.description, promptResponse.buttons.map {
             OccPromptButton(it.text, it.link, it.action.toLowerCase(Locale.ROOT), it.color.toLowerCase(Locale.ROOT))
