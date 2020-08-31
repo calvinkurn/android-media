@@ -319,22 +319,26 @@ open class WishlistViewModel @Inject constructor(
      */
     private suspend fun getRecommendationWishlist(wishlistVisitable: List<WishlistDataModel>, page: Int, productIds: List<String>): List<WishlistDataModel> =
             withContext(wishlistCoroutineDispatcherProvider.io()){
-                val recommendationData = getRecommendationUseCase.getData(
-                        GetRecommendationRequestParam(
-                                pageNumber = page,
-                                productIds = productIds,
-                                pageName = WISHLIST_PAGE_NAME
-                        )
-                )
-                if(recommendationData.isNotEmpty()) {
-                    return@withContext mappingRecommendationToWishlist(
-                            currentPage = page,
-                            recommendationList = recommendationData,
-                            wishlistVisitable = wishlistVisitable,
-                            recommendationPositionInPage = recommendationPositionInPage,
-                            maxItemInPage = maxItemInPage)
+                try{
+                    val recommendationData = getRecommendationUseCase.getData(
+                            GetRecommendationRequestParam(
+                                    pageNumber = page,
+                                    productIds = productIds,
+                                    pageName = WISHLIST_PAGE_NAME
+                            )
+                    )
+                    if(recommendationData.isNotEmpty()) {
+                        return@withContext mappingRecommendationToWishlist(
+                                currentPage = page,
+                                recommendationList = recommendationData,
+                                wishlistVisitable = wishlistVisitable,
+                                recommendationPositionInPage = recommendationPositionInPage,
+                                maxItemInPage = maxItemInPage)
+                    }
+                    return@withContext wishlistVisitable
+                } catch (e: Throwable){
+                    return@withContext wishlistVisitable
                 }
-                return@withContext wishlistVisitable
             }
 
     /**
@@ -342,40 +346,41 @@ open class WishlistViewModel @Inject constructor(
      */
     private suspend fun getTopAdsBannerData(wishlistVisitable: List<WishlistDataModel>, currentPage: Int, productIds: List<String>): List<WishlistDataModel>{
         return withContext(wishlistCoroutineDispatcherProvider.io()){
-            if(wishlistVisitable.isNotEmpty()) {
-                val recommendationPositionInPreviousPage = ((currentPage - 3) * maxItemInPage) + recommendationPositionInPage
-                var pageToken = ""
-                // 1 = 0 * 21 + 4
-                // 2 = 1 * 21 + 4
-                // 3 = 2 * 21 + 4
-                if(recommendationPositionInPreviousPage >= 0 && wishlistVisitable[recommendationPositionInPreviousPage] is BannerTopAdsDataModel){
-                    pageToken = (wishlistVisitable[recommendationPositionInPreviousPage] as BannerTopAdsDataModel).topAdsDataModel.nextPageToken ?: ""
-                }
-                val results = topAdsImageViewUseCase.getImageData(
-                        topAdsImageViewUseCase.getQueryMap(
-                                "",
-                                "6",
-                                pageToken,
-                                1,
-                                3,
-                                ""
-                        )
-                )
-                if (results.isNotEmpty()) {
-                    return@withContext mappingTopadsBannerToWishlist(
-                            wishlistVisitable = wishlistVisitable,
-                            topadsBanner = results.first(),
-                            recommendationPositionInPage= recommendationPositionInPage,
-                            currentPage = currentPage)
-                } else {
-                    return@withContext getRecommendationWishlist(
-                            wishlistVisitable = wishlistVisitable,
-                            page = currentPage,
-                            productIds = productIds
+            try{
+                if(wishlistVisitable.isNotEmpty()) {
+                    val recommendationPositionInPreviousPage = ((currentPage - 3) * maxItemInPage) + recommendationPositionInPage
+                    var pageToken = ""
+                    if(recommendationPositionInPreviousPage >= 0 && wishlistVisitable[recommendationPositionInPreviousPage] is BannerTopAdsDataModel){
+                        pageToken = (wishlistVisitable[recommendationPositionInPreviousPage] as BannerTopAdsDataModel).topAdsDataModel.nextPageToken ?: ""
+                    }
+                    val results = topAdsImageViewUseCase.getImageData(
+                            topAdsImageViewUseCase.getQueryMap(
+                                    "",
+                                    "6",
+                                    pageToken,
+                                    1,
+                                    3,
+                                    ""
+                            )
                     )
+                    if (results.isNotEmpty()) {
+                        return@withContext mappingTopadsBannerToWishlist(
+                                wishlistVisitable = wishlistVisitable,
+                                topadsBanner = results.first(),
+                                recommendationPositionInPage= recommendationPositionInPage,
+                                currentPage = currentPage)
+                    } else {
+                        return@withContext getRecommendationWishlist(
+                                wishlistVisitable = wishlistVisitable,
+                                page = currentPage,
+                                productIds = productIds
+                        )
+                    }
                 }
+                return@withContext wishlistVisitable
+            } catch (e: Throwable){
+                return@withContext wishlistVisitable
             }
-            return@withContext wishlistVisitable
         }
     }
 
