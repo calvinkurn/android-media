@@ -39,6 +39,6 @@ class GetSettingShopInfoUseCase @Inject constructor(private val graphQlRepositor
         val errors = gqlResponse.getError(ShopInfo::class.java)
         if (errors.isNullOrEmpty()) {
             return gqlResponse.getData(ShopInfo::class.java)
-        } else throw MessageErrorException(errors.firstOrNull()?.message)
+        } else throw MessageErrorException(errors.joinToString { it.message })
     }
 }

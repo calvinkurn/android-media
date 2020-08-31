@@ -79,7 +79,7 @@ class StatisticViewModel @Inject constructor(
 
     private var dynamicParameter = DynamicParameterModel()
 
-    fun setDateRange(startDate: Date, endDate: Date, filterType: String) {
+    fun setDateFilter(startDate: Date, endDate: Date, filterType: String) {
         val startDateFmt = DateTimeUtil.format(startDate.time, DATE_FORMAT)
         val endDateFmt = DateTimeUtil.format(endDate.time, DATE_FORMAT)
         this.dynamicParameter = DynamicParameterModel(

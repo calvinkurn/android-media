@@ -318,6 +318,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public void disableVoucherCheckoutDiscount() {
+        detailHolderView.removeAdditionalInfo();
         checkoutHolderView.disableVoucherDiscount();
     }
 
@@ -337,11 +338,11 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
                     }
                     case FAILED: {
                         promoData.setPromoCode("");
-                        presenter.onReceivePromoCode(promoData.getTitle(), promoData.getDescription(), promoData.getPromoCode(), promoData.getTypePromo());
+                        presenter.onReceivePromoCode(promoData);
                         break;
                     }
                     case ACTIVE: {
-                        presenter.onReceivePromoCode(promoData.getTitle(), promoData.getDescription(), promoData.getPromoCode(), promoData.getTypePromo());
+                        presenter.onReceivePromoCode(promoData);
                         break;
                     }
                     default: {

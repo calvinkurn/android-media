@@ -19,6 +19,9 @@ object ProductAnalytics {
     private const val KEY_ADD = "add"
     private const val KEY_PRODUCTS = "products"
     private const val KEY_CHECKOUT = "checkout"
+    private const val KEY_ACTION_FIELDS = "actionField"
+    private const val KEY_STEP = "step"
+    private const val KEY_OPTION = "option"
 
     private const val KEY_ID = "id"
     private const val KEY_NAME = "name"
@@ -53,6 +56,8 @@ object ProductAnalytics {
     private const val IDR = "IDR"
     private const val LIST = "/pushnotif"
     private const val POSITION = "1"
+    private const val CHECKOUT_STEP = "1"
+    private const val CHECKOUT_OPTION = "checkout page loaded"
 
     fun impression(
             userId: String,
@@ -156,8 +161,10 @@ object ProductAnalytics {
         val product = productElement.first()
         val ecommerce = mapOf(
                 KEY_CHECKOUT to mapOf(
-                        "actionField" to mapOf(
-                                KEY_LIST to LIST
+                        KEY_ACTION_FIELDS to mapOf(
+                                KEY_LIST to LIST,
+                                KEY_STEP to CHECKOUT_STEP,
+                                KEY_OPTION to CHECKOUT_OPTION
                         ),
                         KEY_PRODUCTS to listOf(mapOf(
                                 KEY_ID to product.productId.toString(),
