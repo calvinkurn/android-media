@@ -335,6 +335,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
 
     private fun onQuickFilterChanged(selectedFilters: List<ParamFilterV2>) {
         searchResultviewModel.addFilter(selectedFilters)
+        showQuickFilterShimmering(true)
         loadInitialData()
     }
 
