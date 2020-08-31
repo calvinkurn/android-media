@@ -213,8 +213,8 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
 
     fun updateDataTradein(context: Context?, tradeinResponse: ValidateTradeIn) {
         productTradeinMap?.run {
-            basicContentMap?.shouldShowTradein = true
-            snapShotMap?.shouldShowTradein = true
+            basicContentMap?.shouldShowTradein = tradeinResponse.isEligible
+            snapShotMap?.shouldShowTradein = tradeinResponse.isEligible
 
             data.first().subtitle = if (tradeinResponse.usedPrice.toIntOrZero() > 0) {
                 context?.getString(R.string.text_price_holder, CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeinResponse.usedPrice.toIntOrZero(), true))

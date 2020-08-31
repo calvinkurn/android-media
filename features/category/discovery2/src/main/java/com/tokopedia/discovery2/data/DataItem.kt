@@ -348,6 +348,9 @@ data class DataItem(
         @SerializedName("body")
         val body: String = "",
 
+        @SerializedName("buttonStr")
+        val claimButtonStr: String? = null,
+
         var shopAdsClickURL : String? = "",
 
         var shopAdsViewURL : String? = "",
