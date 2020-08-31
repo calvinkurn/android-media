@@ -16,7 +16,7 @@ class GetRecommendationFilterChips (
 ): UseCase<List<RecommendationFilterChipsEntity.RecommendationFilterChip>>() {
 
     private val query = "query getRecommendationFilterChips(\n" +
-            "          \$userId:String,\n" +
+            "          \$userId:Int,\n" +
             "          \$productIDs:String,\n" +
             "          \$pageName:String,\n" +
             "          \$xSource:String,\n" +
