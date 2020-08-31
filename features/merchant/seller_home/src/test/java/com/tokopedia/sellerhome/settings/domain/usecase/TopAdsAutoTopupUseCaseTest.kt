@@ -1,7 +1,7 @@
 package com.tokopedia.sellerhome.settings.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.network.exception.ResponseErrorException
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerhome.settings.domain.entity.TopAdsAutoTopupDataModel
 import com.tokopedia.sellerhome.utils.TestHelper
 import io.mockk.MockKAnnotations
@@ -69,7 +69,7 @@ class TopAdsAutoTopupUseCaseTest {
             gqlRepository.getReseponse(any(), any())
         } returns errorResponse
 
-        expectedException.expect(ResponseErrorException::class.java)
+        expectedException.expect(MessageErrorException::class.java)
         useCase.params = TopAdsAutoTopupUseCase.createRequestParams(anyString())
         val isTopAdsAutoTopup = useCase.executeOnBackground()
 
