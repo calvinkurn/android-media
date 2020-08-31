@@ -312,21 +312,6 @@
             app:unifyButtonVariant="ghost"
             tools:visibility="gone" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_topchat_12"
-            android:layout_marginLeft="@dimen/dp_topchat_12"
-            android:layout_marginTop="@dimen/spacing_lvl2"
-            android:gravity="end|center_vertical"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_buy">
-
-            <include layout="@layout/item_chatcommon_chat_read_status_attachment" />
-
-        </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.tokopedia.unifycomponents.LoaderUnify
