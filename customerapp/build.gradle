@@ -381,6 +381,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.imagePreviewSlider)
     implementation project(rootProject.ext.libraries.devMonitoringTools)
     implementation project(rootProject.ext.features.shopCommon)
+    implementation project(rootProject.ext.features.youtubeCommon)
     implementation project(rootProject.ext.features.merchantVoucher)
     implementation project(rootProject.ext.features.navigationCommon)
     implementation project(rootProject.ext.libraries.analytics)
