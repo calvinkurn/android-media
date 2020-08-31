@@ -71,7 +71,7 @@ class CardViewHolder(
                         selectableItemBg, true)
                 containerCard.setBackgroundResource(selectableItemBg.resourceId)
             } else
-                containerCard.setBackgroundColor(context.getResColor(android.R.color.transparent))
+                containerCard.setBackgroundColor(context.getResColor(R.color.Neutral_N0))
 
             tvCardTitle.text = element.title
             tvCardValue.text = element.data?.value ?: "0"
