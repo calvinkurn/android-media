@@ -20,7 +20,6 @@ import kotlinx.android.synthetic.main.topads_common_edit_key_bid_sheet.*
 private const val CLICK_BUDGET_CREATE = "click - biaya kata kunci box"
 private const val EVENT_CLICK_BUDGET_CREATE = "biaya yang diinput"
 private const val CLICK_KEYWORD_TYPE = "click - tipe pencarian"
-private const val GROUPID = "0"
 private const val BROAD = "pencarian luas"
 private const val SPECIFIC = "pencarian specific"
 private const val CLICK_KEYWORD_DELETE = "click - delete keyword selected"
@@ -40,10 +39,14 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
     private var groupId: String = ""
     var onSaved: ((bid: String, type: Int, pos: Int) -> Unit)? = null
     var onDelete: ((pos: Int) -> Unit)? = null
+    private var shopID = ""
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         userID = UserSession(view.context).userId
+        shopID = UserSession(view.context).shopId
+
         getDatafromArguments()
         initView()
         sendAnalyticsData()
@@ -76,10 +79,11 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
         budget.textFieldInput.setOnFocusChangeListener { v, hasFocus ->
 
                 if (hasFocus) {
-                    val eventLabel = "$GROUPID - $name - $EVENT_CLICK_BUDGET_CREATE"
                     if (fromEdit != 1) {
+                        val eventLabel = "$shopID - $name - $EVENT_CLICK_BUDGET_CREATE"
                         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_BUDGET_CREATE, eventLabel, userID)
                     } else {
+                        val eventLabel = "$groupId - $name - $EVENT_CLICK_BUDGET_CREATE"
                         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEventEdit(CLICK_BUDGET_CREATE, eventLabel, userID)
                     }
                 }
@@ -140,20 +144,24 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
         }
         btnDeleteKeyword?.setOnClickListener {
             if (fromEdit != 1)
-                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_KEYWORD_DELETE, "$GROUPID - $name", userID)
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_KEYWORD_DELETE, "$shopID - $name", userID)
             else
-                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEventEdit(CLICK_KEYWORD_DELETE, "$GROUPID - $name", userID)
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEventEdit(CLICK_KEYWORD_DELETE, "$groupId - $name", userID)
 
             dismiss()
             onDelete?.invoke(position)
         }
 
         btnSave.setOnClickListener {
-            val eventLabel = "$GROUPID - $name - ${budget.textFieldInput.text} - ${getSelectedSortId()}"
-            if (fromEdit != 1)
+            if (fromEdit != 1) {
+                val eventLabel = "$shopID - $name - ${budget.textFieldInput.text} - ${getSelectedSortId()}"
+
                 TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_SUBMIT_BUTTON, eventLabel, userID)
-            else
+            }
+            else {
+                val eventLabel = "$groupId - $name - ${budget.textFieldInput.text} - ${getSelectedSortId()}"
                 TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEventEdit(CLICK_SUBMIT_BUTTON, eventLabel, userID)
+            }
             onSaved?.invoke(budget.textFieldInput.text.toString(), getSelectedSortId(), position)
             dismiss()
         }

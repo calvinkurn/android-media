@@ -33,7 +33,6 @@ import javax.inject.Inject
 
 private const val CLICK_MANUAL_SEARCH = "click - ceklist rekomendasi kata kunci manual search"
 private const val EVENT_CLICK_MANUAL_SEARCH = "kata kunci terpilih yang di ceklist"
-private const val GROUPID = "0"
 private const val CLICK_SUBMIT_BUTT = "'click - pilih kata kunci"
 private const val EVENT_CLICK_SUBMIT_BUTT = "kata kunci terpilih yang di ceklist"
 
@@ -45,7 +44,7 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<CreateAdsComponent> {
     private lateinit var adapter: KeywordSearchAdapter
     private lateinit var search: SearchBarUnify
     private var userID: String = ""
-
+    private var shopID = ""
 
     override fun getComponent(): CreateAdsComponent {
         return DaggerCreateAdsComponent.builder().baseAppComponent(
@@ -60,6 +59,7 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<CreateAdsComponent> {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         userID = UserSession(this).userId
+        shopID = UserSession(this).shopId
         window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         initInjector()
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(KeywordAdsViewModel::class.java)
@@ -73,7 +73,7 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<CreateAdsComponent> {
             TipSheetKeywordList().show(supportFragmentManager, KeywordAdsListFragment::class.java.name)
         }
         btn_next.setOnClickListener {
-            val eventLabel = "$GROUPID - $EVENT_CLICK_SUBMIT_BUTT"
+            val eventLabel = "$shopID - $EVENT_CLICK_SUBMIT_BUTT"
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_SUBMIT_BUTT, eventLabel, userID)
             val returnIntent = Intent()
             returnIntent.putParcelableArrayListExtra(SELECTED_KEYWORDS, ArrayList(adapter.getSelectedItem()))
@@ -162,7 +162,7 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<CreateAdsComponent> {
     }
 
     private fun onCheckedItem() {
-        val eventLabel = "$GROUPID - $EVENT_CLICK_MANUAL_SEARCH"
+        val eventLabel = "$shopID - $EVENT_CLICK_MANUAL_SEARCH"
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_MANUAL_SEARCH, eventLabel, userID)
         onSelectedItem()
     }

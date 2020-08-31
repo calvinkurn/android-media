@@ -38,7 +38,6 @@ private const val CLICK_TIPS_BIAYA_IKLAN = "click-tips biaya iklan"
 private const val CLICK_ATUR_BIAYA_IKLAN = "click-atur biaya iklan"
 private const val CLICK_BUDGET = "click - biaya non kata kunci box"
 private const val EVENT_CLICK_BUDGET = "biaya yang diinput"
-private const val GROUPID = "0"
 private const val CLICK_SETUP_KEY = "click - setup keyword"
 
 class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
@@ -54,6 +53,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     private var suggestBidPerClick = 0
     private var isEnable = false
     private var userID:String = ""
+    private var shopID = ""
     companion object {
         private const val MAX_BID = "max"
         private const val MIN_BID = "min"
@@ -86,7 +86,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     }
 
     private fun onClickItem(pos: Int) {
-        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_SETUP_KEY, GROUPID,userID)
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_SETUP_KEY, shopID,userID)
         val sheet = TopAdsEditKeywordBidSheet.createInstance(prepareBundle(pos))
         sheet.show(fragmentManager!!, "")
         sheet.onSaved = { bid, type, position ->
@@ -234,6 +234,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         userID = UserSession(view.context).userId
+        shopID = UserSession(view.context).shopId
         loading.visibility = View.VISIBLE
         btn_next?.setOnClickListener {
             gotoNextPage()
@@ -241,12 +242,12 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
 
         tip_btn?.setOnClickListener {
             TipSheetBudgetList.newInstance(it.context).show()
-            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_TIPS_BIAYA_IKLAN, GROUPID,userID)
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_TIPS_BIAYA_IKLAN, shopID,userID)
         }
 
         budget?.textFieldInput?.setOnFocusChangeListener { v, hasFocus ->
             if(hasFocus){
-                val eventLabel = "$GROUPID - $EVENT_CLICK_BUDGET"
+                val eventLabel = "$shopID - $EVENT_CLICK_BUDGET"
                 TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_BUDGET, eventLabel, userID)
             }
         }

@@ -44,7 +44,6 @@ private const val CLICK_CHECKBOX = "click - ceklist rekomendasi kata kunci"
 private const val EVENT_LIST_CHECKBOX = "kata kunci pilihan yang di ceklist"
 private const val SELCTED = "select"
 private const val UNSELECT = "unselect"
-private const val GROUPID = "0"
 private const val EVENT_CLICK_LAJUKTAN = "kata kunci pilihan dari rekomendasi"
 private const val CLICK_ON_SEARCH = "click - tambah kata kunci manual"
 private const val EVENT_CLICK_ON_SEARCH = "kata kunci yang ditambahkan manual"
@@ -60,6 +59,7 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     private var STAGE = 0
     private var selectedKeyFromSearch: ArrayList<SearchData>? = arrayListOf()
     private var userID: String = ""
+    private var shopID = ""
 
     companion object {
 
@@ -175,9 +175,9 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     private fun onKeywordSelected(pos: Int) {
         if (pos != -1 && keywordListAdapter.items[pos] is KeywordItemViewModel) {
             val eventLabel = if ((keywordListAdapter.items[pos] as KeywordItemViewModel).isChecked) {
-                "$SELCTED - $GROUPID - $EVENT_LIST_CHECKBOX"
+                "$SELCTED - $shopID - $EVENT_LIST_CHECKBOX"
             } else {
-                "$UNSELECT - $GROUPID - $EVENT_LIST_CHECKBOX"
+                "$UNSELECT - $shopID - $EVENT_LIST_CHECKBOX"
             }
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_CHECKBOX, eventLabel, userID)
 
@@ -238,7 +238,7 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         stepperModel?.selectedSuggestBid = getSelectedBid()
         stepperModel?.STAGE = 1
         stepperModel?.selectedKeywordStage = keywordSelectedAdapter.items
-        val eventLabel = "$GROUPID - $EVENT_CLICK_LAJUKTAN"
+        val eventLabel = "$shopID - $EVENT_CLICK_LAJUKTAN"
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_PILIH_KEYWORD, eventLabel, userID)
         stepperListener?.goToNextPage(stepperModel)
 
@@ -280,6 +280,7 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         userID = UserSession(view.context).userId
+        shopID = UserSession(view.context).shopId
         startLoading(true)
         setStepLayout(View.GONE)
         btn_next.setOnClickListener {
@@ -290,13 +291,13 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         }
         tip_btn.setOnClickListener {
             TipSheetKeywordList().show(fragmentManager!!, KeywordAdsListFragment::class.java.name)
-            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_TIPS_KEYWORD, GROUPID, userID)
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_TIPS_KEYWORD, shopID, userID)
         }
         setAdapters()
         val searchBar = view.findViewById<SearchBarUnify>(R.id.searchBar)
         searchBar?.searchBarTextField?.setOnFocusChangeListener { v, hasFocus ->
             if(hasFocus) {
-                val eventLabel = "$GROUPID - $EVENT_CLICK_ON_SEARCH"
+                val eventLabel = "$shopID - $EVENT_CLICK_ON_SEARCH"
                 TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_ON_SEARCH, eventLabel, userID)
             }
         }
