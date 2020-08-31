@@ -167,6 +167,7 @@ class TelcoPostpaidLoginInstrumentTest {
         viewInteraction.perform(RecyclerViewActions
                 .actionOnItemAtPosition<TopupBillsRecentNumbersAdapter.RecentNumbersItemViewHolder>(0, click()))
         Thread.sleep(3000)
+        enquiry_phone_number()
     }
 
     @After
