@@ -1,12 +1,11 @@
 package com.tokopedia.talk.feature.reply
 
 import android.accounts.NetworkErrorException
+import com.tokopedia.talk.common.data.TalkMutationData
 import com.tokopedia.talk.feature.reply.data.model.createcomment.TalkCreateNewComment
 import com.tokopedia.talk.feature.reply.data.model.createcomment.TalkCreateNewCommentResponseWrapper
-import com.tokopedia.talk.feature.reply.data.model.createcomment.TalkCreateNewCommentResultData
 import com.tokopedia.talk.feature.reply.data.model.delete.comment.TalkDeleteComment
 import com.tokopedia.talk.feature.reply.data.model.delete.comment.TalkDeleteCommentResponseWrapper
-import com.tokopedia.talk.feature.reply.data.model.delete.comment.TalkDeleteCommentResultData
 import com.tokopedia.talk.feature.reply.data.model.delete.talk.TalkDeleteTalk
 import com.tokopedia.talk.feature.reply.data.model.delete.talk.TalkDeleteTalkResponseWrapper
 import com.tokopedia.talk.feature.reply.data.model.delete.talk.TalkDeleteTalkResultData
@@ -15,6 +14,9 @@ import com.tokopedia.talk.feature.reply.data.model.discussion.DiscussionDataByQu
 import com.tokopedia.talk.feature.reply.data.model.follow.TalkFollowUnfollowTalk
 import com.tokopedia.talk.feature.reply.data.model.follow.TalkFollowUnfollowTalkResponseWrapper
 import com.tokopedia.talk.feature.reply.data.model.follow.TalkFollowUnfollowTalkResultData
+import com.tokopedia.talk.util.verifyErrorEquals
+import com.tokopedia.talk.util.verifySuccessEquals
+import com.tokopedia.talk.util.verifyValueEquals
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
@@ -101,7 +103,7 @@ class TalkReplyViewModelTest : TalkReplyViewModelTestFixture() {
 
     @Test
     fun `when deleteTalk should execute expected use case and get expected data`() {
-        val response = TalkDeleteTalkResponseWrapper(TalkDeleteTalk(data = TalkDeleteTalkResultData(isSuccess = 1)))
+        val response = TalkDeleteTalkResponseWrapper(TalkDeleteTalk(data = TalkMutationData(isSuccess = 1)))
         val questionId = "148148"
 
         onTalkDeleteTalk_thenReturn(response)
@@ -116,7 +118,7 @@ class TalkReplyViewModelTest : TalkReplyViewModelTestFixture() {
 
     @Test
     fun `when deleteTalk fails due to backend should execute expected use case and fail with expected error`() {
-        val response = TalkDeleteTalkResponseWrapper(TalkDeleteTalk(messageError = listOf("Some Error"), data = TalkDeleteTalkResultData(isSuccess = 0)))
+        val response = TalkDeleteTalkResponseWrapper(TalkDeleteTalk(messageError = listOf("Some Error"), data = TalkMutationData(isSuccess = 0)))
         val questionId = "148148"
 
         onTalkDeleteTalk_thenReturn(response)
@@ -146,7 +148,7 @@ class TalkReplyViewModelTest : TalkReplyViewModelTestFixture() {
 
     @Test
     fun `when deleteComment should execute expected use case and get expected data`() {
-        val response = TalkDeleteCommentResponseWrapper(TalkDeleteComment(data = TalkDeleteCommentResultData(isSuccess = 1)))
+        val response = TalkDeleteCommentResponseWrapper(TalkDeleteComment(data = TalkMutationData(isSuccess = 1)))
         val questionId = "148148"
         val commentId = "19219314"
 
@@ -162,7 +164,7 @@ class TalkReplyViewModelTest : TalkReplyViewModelTestFixture() {
 
     @Test
     fun `when deleteComment fails due to backend should execute expected use case and fail with expected error`() {
-        val response = TalkDeleteCommentResponseWrapper(TalkDeleteComment(messageError = listOf("Some Error"), data = TalkDeleteCommentResultData(isSuccess = 0)))
+        val response = TalkDeleteCommentResponseWrapper(TalkDeleteComment(messageError = listOf("Some Error"), data = TalkMutationData(isSuccess = 0)))
         val questionId = "148148"
         val commentId = "19219314"
 
@@ -194,7 +196,7 @@ class TalkReplyViewModelTest : TalkReplyViewModelTestFixture() {
 
     @Test
     fun `when createNewComment should execute expected use case and get expected data`() {
-        val response = TalkCreateNewCommentResponseWrapper(TalkCreateNewComment(data = TalkCreateNewCommentResultData(isSuccess = 1)))
+        val response = TalkCreateNewCommentResponseWrapper(TalkCreateNewComment(data = TalkMutationData(isSuccess = 1)))
         val questionId = "148148"
         val comment = "Barangnya ready ga ya?"
 
@@ -210,7 +212,7 @@ class TalkReplyViewModelTest : TalkReplyViewModelTestFixture() {
 
     @Test
     fun `when createNewComment fails due to backend should execute expected use case and fail with expected error`() {
-        val response = TalkCreateNewCommentResponseWrapper(TalkCreateNewComment(messageError = listOf("Some Error"), data = TalkCreateNewCommentResultData(isSuccess = 0)))
+        val response = TalkCreateNewCommentResponseWrapper(TalkCreateNewComment(messageError = listOf("Some Error"), data = TalkMutationData(isSuccess = 0)))
         val questionId = "148148"
         val comment = "Barangnya ready ga ya?"
 
