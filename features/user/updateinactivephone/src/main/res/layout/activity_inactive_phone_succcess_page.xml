@@ -1,19 +1,27 @@
-<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  tools:ignore="MissingDefaultResource">
+  android:clipToPadding="false"
+  android:orientation="vertical">
   
   <ImageView
-    android:id="@+id/imgHeader"
-    android:layout_width="@dimen/layout_lvl9"
-    android:layout_height="@dimen/layout_lvl9"
-    android:layout_marginTop="@dimen/layout_lvl9"
-    android:background="@color/dark_N500"
+    android:id="@+id/imgBack"
+    android:layout_width="@dimen/layout_lvl5"
+    android:layout_height="@dimen/layout_lvl5"
+    android:layout_margin="@dimen/layout_lvl2"
+    app:srcCompat="@drawable/ic_arrow_back_black"
     app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintLeft_toLeftOf="parent"/>
+  
+  <com.tokopedia.unifycomponents.ImageUnify
+    android:id="@+id/imgHeader"
+    android:layout_width="@dimen/updateinactivephone_280dp"
+    android:layout_height="@dimen/updateinactivephone_210dp"
+    android:src="@drawable/ic_success_page"
+    android:layout_marginTop="@dimen/layout_lvl8"
+    app:layout_constraintTop_toBottomOf="@id/imgBack"
     app:layout_constraintLeft_toLeftOf="parent"
     app:layout_constraintRight_toRightOf="parent"/>
   
@@ -25,7 +33,7 @@
     android:layout_marginStart="@dimen/spacing_lvl6"
     android:layout_marginEnd="@dimen/spacing_lvl6"
     android:textAlignment="center"
-    android:text="@string/text_onboarding_title"
+    android:text="@string/text_success_title"
     app:typographyType="heading_2"
     app:typographyWeight="bold"
     app:layout_constraintTop_toBottomOf="@id/imgHeader"
@@ -33,50 +41,28 @@
     app:layout_constraintRight_toRightOf="parent"/>
   
   <com.tokopedia.unifyprinciples.Typography
+    android:id="@+id/textDescription"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/spacing_lvl3"
     android:layout_marginStart="@dimen/spacing_lvl6"
     android:layout_marginEnd="@dimen/spacing_lvl6"
     android:textAlignment="center"
-    android:text="@string/text_onboarding_description"
+    android:text="@string/text_success_description_single_account"
     android:textColor="@color/dark_N200"
     app:typographyType="body_2"
     app:layout_constraintTop_toBottomOf="@id/txtTitle"
     app:layout_constraintLeft_toLeftOf="parent"
     app:layout_constraintRight_toRightOf="parent"/>
   
-  <ImageView
-    android:id="@+id/imgIconVerified"
-    android:layout_width="@dimen/spacing_lvl5"
-    android:layout_height="@dimen/spacing_lvl5"
-    app:srcCompat="@drawable/ic_shield"
-    android:layout_marginStart="@dimen/spacing_lvl4"
-    android:layout_marginBottom="@dimen/spacing_lvl4"
-    app:layout_constraintBottom_toTopOf="@id/btnUploadData"
-    app:layout_constraintLeft_toLeftOf="parent"/>
-  
-  <com.tokopedia.unifyprinciples.Typography
-    android:layout_width="@dimen/layout_lvl0"
-    android:layout_height="wrap_content"
-    android:text="@string/text_onboarding_protected"
-    android:textColor="@color/dark_N200"
-    android:layout_marginStart="@dimen/spacing_lvl3"
-    android:layout_marginEnd="@dimen/spacing_lvl4"
-    app:typographyType="body_2"
-    app:layout_constraintTop_toTopOf="@id/imgIconVerified"
-    app:layout_constraintLeft_toRightOf="@id/imgIconVerified"
-    app:layout_constraintRight_toRightOf="parent"
-    app:layout_constraintBottom_toBottomOf="@id/imgIconVerified"/>
-  
   <com.tokopedia.unifycomponents.UnifyButton
-    android:id="@+id/btnUploadData"
+    android:id="@+id/btnGotoHome"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/spacing_lvl4"
-    android:text="@string/text_onboarding_button"
+    android:text="@string/text_success_button"
+    app:layout_constraintTop_toBottomOf="@id/textDescription"
     app:layout_constraintLeft_toLeftOf="parent"
-    app:layout_constraintRight_toRightOf="parent"
-    app:layout_constraintBottom_toBottomOf="parent"/>
-
+    app:layout_constraintRight_toRightOf="parent"/>
+  
 </androidx.constraintlayout.widget.ConstraintLayout>

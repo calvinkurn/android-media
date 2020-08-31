@@ -10,9 +10,10 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.revamp.common.cameraview.CameraViewMode
 import com.tokopedia.updateinactivephone.revamp.common.FragmentTransactionInterface
-import com.tokopedia.updateinactivephone.revamp.common.InactivePhoneConstant
 import com.tokopedia.updateinactivephone.revamp.common.InactivePhoneConstant.REQUEST_CAPTURE_SELFIE
+import com.tokopedia.updateinactivephone.revamp.common.InactivePhoneConstant.SELFIE
 import com.tokopedia.updateinactivephone.revamp.view.activity.InactivePhoneImagePickerActivity
+import com.tokopedia.updateinactivephone.revamp.view.activity.InactivePhoneUploadDataActivity
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_inactive_phone_onboarding.*
 
@@ -36,7 +37,7 @@ class InactivePhoneOnboardingSelfieFragment : BaseDaggerFragment() {
 
         fragmentTransactionInterface = activity as FragmentTransactionInterface
 
-        btnNext?.setOnClickListener {
+        btnUploadData?.setOnClickListener {
             val intent = InactivePhoneImagePickerActivity.createIntentCamera(context, CameraViewMode.SELFIE)
             startActivityForResult(intent, REQUEST_CAPTURE_SELFIE)
         }
@@ -51,6 +52,8 @@ class InactivePhoneOnboardingSelfieFragment : BaseDaggerFragment() {
     }
 
     private fun gotoPageUploadData() {
-        fragmentTransactionInterface.replace(InactivePhoneUploadDataFragment.instance(InactivePhoneConstant.SELFIE))
+        activity?.let {
+            startActivity(InactivePhoneUploadDataActivity.getIntent(it, SELFIE))
+        }
     }
 }

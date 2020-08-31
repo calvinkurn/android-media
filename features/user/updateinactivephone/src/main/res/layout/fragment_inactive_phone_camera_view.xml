@@ -176,7 +176,7 @@
       app:typographyType="heading_4" />
   
     <com.tokopedia.unifyprinciples.Typography
-      android:id="@+id/btnNext"
+      android:id="@+id/btnUploadData"
       android:layout_width="@dimen/layout_lvl0"
       android:layout_height="match_parent"
       android:layout_marginEnd="@dimen/spacing_lvl2"

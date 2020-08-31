@@ -57,7 +57,7 @@
     <string name="camera_next_button">Lanjut</string>
     <string name="text_camera_description">Pastikan wajah dan kartu identitasmu terlihat jelas di dalam bingkai foto ini.</string>
     <string name="text_camera_description_saving_book">Posisikan buku tabungan di dalam bingkai &amp; pastikan informasi terlihat jelas.</string>
-    <string name="text_title">"Ubah Nomor HP"</string>
+    <string name="text_title">"<b>Ubah Nomor HP</b>"</string>
     <string name="text_button_camera">Kamera</string>
     <string name="text_button_gallery">Galeri</string>
     <string name="text_select_image">Pilih Foto</string>
@@ -90,7 +90,18 @@
   <string name="text_form_id_card">Kartu Identitas</string>
   <string name="text_form_selfie">Foto Wajah &amp; Kartu Identitas</string>
   <string name="text_form_saving_book">Bukti Untuk Verifikasi</string>
+  <string name="text_form_error_empty">Wajib diisi.</string>
+  <string name="text_form_error_min_9_digit">Minimal 9 digit.</string>
+  <string name="text_form_error_phone_already_used">Nomor ini sudah terdaftar, masukkan nomor lainnya.</string>
   <string name="phone_id_idn">+62</string>
   <string name="label_new_phone_number">Nomor HP Baru</string>
+  <string name="text_exit_title">Keluar dari halaman ini?</string>
+  <string name="text_exit_description">Foto barusan tidak akan tersimpan dan kamu harus mengulang proses verifikasi dari awal.</string>
+  <string name="text_exit_cta_primary">Keluar</string>
+  <string name="text_exit_cta_secondary">Lanjut Verifikasi</string>
+  <string name="text_success_title">Perubahan sudah diajukan</string>
+  <string name="text_success_description_single_account"><![CDATA[Datamu akan diproses maks. 1x24 jam ke depan. Informasi seputar pengajuan ini akan dikirim lewat e-mail ke alamat <b>%s</b> dan SMS ke nomor <b>%s</b>.]]></string>
+  <string name="text_success_description_has_no_email"><![CDATA[Datamu akan diproses maks. 1x24 jam ke depan. Informasi seputar pengajuan ini akan dikirim lewat SMS ke nomor <b>%s</b>.]]></string>
+  <string name="text_success_button">Ke Home</string>
 
 </resources>

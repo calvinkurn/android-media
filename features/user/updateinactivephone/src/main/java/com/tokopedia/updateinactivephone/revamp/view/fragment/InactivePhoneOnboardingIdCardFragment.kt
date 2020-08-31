@@ -17,8 +17,6 @@ import kotlinx.android.synthetic.main.fragment_inactive_phone_onboarding.*
 
 class InactivePhoneOnboardingIdCardFragment : BaseDaggerFragment() {
 
-    private val userSession: UserSession = UserSession(activity)
-
     private lateinit var fragmentTransactionInterface: FragmentTransactionInterface
 
     override fun getScreenName(): String = ""
@@ -35,14 +33,7 @@ class InactivePhoneOnboardingIdCardFragment : BaseDaggerFragment() {
 
         fragmentTransactionInterface = activity as FragmentTransactionInterface
 
-        btnNext?.setOnClickListener {
-            // check has multiple account ?
-            // check login with phone number ?
-            // need improvement on login / register page to set login method
-//            if (userSession.loginMethod != UserSessionInterface.LOGIN_METHOD_PHONE) {
-//
-//            }
-
+        btnUploadData?.setOnClickListener {
             // take picture [ID CARD] [SELFIE]
             val intent = InactivePhoneImagePickerActivity.createIntentCamera(context, CameraViewMode.ID_CARD)
             startActivityForResult(intent, REQUEST_CAPTURE_ID_CARD)
@@ -71,9 +62,5 @@ class InactivePhoneOnboardingIdCardFragment : BaseDaggerFragment() {
     }
     private fun gotoOnboardingSavingBook() {
         fragmentTransactionInterface.replace(InactivePhoneOnboardingSavingBookFragment())
-    }
-
-    private fun gotoSelectAccount() {
-
     }
 }

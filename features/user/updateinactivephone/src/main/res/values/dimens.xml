@@ -22,6 +22,7 @@
     <dimen name="updateinactivephone_40dp">40dp</dimen>
     <dimen name="updateinactivephone_112dp">112dp</dimen>
     <dimen name="updateinactivephone_210dp">210dp</dimen>
+    <dimen name="updateinactivephone_280dp">280dp</dimen>
 
     <dimen name="updateinactivephone_6sp">6sp</dimen>
     <dimen name="updateinactivephone_13sp">13sp</dimen>

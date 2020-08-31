@@ -43,6 +43,8 @@
   
         <activity android:name=".revamp.view.activity.InactivePhoneOnboardingActivity"/>
         <activity android:name=".revamp.view.activity.InactivePhoneImagePickerActivity"/>
+        <activity android:name=".revamp.view.activity.InactivePhoneUploadDataActivity"/>
+        <activity android:name=".revamp.view.activity.InactivePhoneSuccessPageActivity"/>
     </application>
 
 </manifest>

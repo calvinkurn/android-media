@@ -7,15 +7,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.revamp.common.FragmentTransactionInterface
-import com.tokopedia.updateinactivephone.revamp.common.InactivePhoneConstant
 import com.tokopedia.updateinactivephone.revamp.common.InactivePhoneConstant.REQUEST_CAPTURE_SAVING_BOOK
+import com.tokopedia.updateinactivephone.revamp.common.InactivePhoneConstant.SAVING_BOOk
 import com.tokopedia.updateinactivephone.revamp.common.cameraview.CameraViewMode
-import com.tokopedia.updateinactivephone.revamp.common.cameraview.InactivePhoneImagePickerBuilder
 import com.tokopedia.updateinactivephone.revamp.view.activity.InactivePhoneImagePickerActivity
+import com.tokopedia.updateinactivephone.revamp.view.activity.InactivePhoneUploadDataActivity
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_inactive_phone_onboarding_saving_book.*
 
@@ -39,7 +38,7 @@ class InactivePhoneOnboardingSavingBookFragment : BaseDaggerFragment() {
 
         fragmentTransactionInterface = activity as FragmentTransactionInterface
 
-        btnNext?.setOnClickListener {
+        btnUploadData?.setOnClickListener {
             takePicture()
         }
 
@@ -72,6 +71,8 @@ class InactivePhoneOnboardingSavingBookFragment : BaseDaggerFragment() {
     }
 
     private fun gotoPageUploadData() {
-        fragmentTransactionInterface.replace(InactivePhoneUploadDataFragment.instance(InactivePhoneConstant.SAVING_BOOk))
+        activity?.let {
+            startActivity(InactivePhoneUploadDataActivity.getIntent(it, SAVING_BOOk))
+        }
     }
 }

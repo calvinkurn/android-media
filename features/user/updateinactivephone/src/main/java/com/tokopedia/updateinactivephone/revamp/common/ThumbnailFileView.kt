@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
+import com.tokopedia.kotlin.extensions.view.clearImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.unifyprinciples.Typography
@@ -53,14 +54,17 @@ class ThumbnailFileView @JvmOverloads constructor(
     }
 
     fun setImage(url: String) {
+        imageThumbnail.clearImage()
         imageThumbnail.setImage(url, IMAGE_RADIUS)
     }
 
     fun setImage(file: File) {
+        imageThumbnail.clearImage()
         imageThumbnail.setImage(file.absolutePath, IMAGE_RADIUS)
     }
 
     fun setImage(@DrawableRes drawable: Int) {
+        imageThumbnail.clearImage()
         imageThumbnail.setImage(drawable, IMAGE_RADIUS)
     }
 

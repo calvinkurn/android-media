@@ -120,7 +120,7 @@
     app:srcCompat="@drawable/ic_shield"
     android:layout_marginStart="@dimen/spacing_lvl4"
     android:layout_marginBottom="@dimen/spacing_lvl4"
-    app:layout_constraintBottom_toTopOf="@id/btnNext"
+    app:layout_constraintBottom_toTopOf="@id/btnUploadData"
     app:layout_constraintLeft_toLeftOf="parent"/>
   
   <com.tokopedia.unifyprinciples.Typography
@@ -137,7 +137,7 @@
     app:layout_constraintBottom_toBottomOf="@id/imgIconVerified"/>
   
   <com.tokopedia.unifycomponents.UnifyButton
-    android:id="@+id/btnNext"
+    android:id="@+id/btnUploadData"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/spacing_lvl4"

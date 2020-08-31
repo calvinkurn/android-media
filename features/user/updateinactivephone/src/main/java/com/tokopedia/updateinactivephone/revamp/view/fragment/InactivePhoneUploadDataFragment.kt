@@ -12,6 +12,7 @@ import com.tokopedia.updateinactivephone.revamp.common.InactivePhoneConstant
 import com.tokopedia.updateinactivephone.revamp.common.ThumbnailFileView
 import com.tokopedia.updateinactivephone.revamp.common.cameraview.CameraViewMode
 import com.tokopedia.updateinactivephone.revamp.view.activity.InactivePhoneImagePickerActivity
+import com.tokopedia.updateinactivephone.revamp.view.activity.InactivePhoneSuccessPageActivity
 import kotlinx.android.synthetic.main.fragment_inactive_phone_upload_data.*
 
 class InactivePhoneUploadDataFragment : BaseDaggerFragment() {
@@ -41,8 +42,21 @@ class InactivePhoneUploadDataFragment : BaseDaggerFragment() {
             }
         }
 
-        btnNext?.setOnClickListener {
-            textPhoneNumber?.error = "Nomor ini sudah terdaftar, masukan nomor lainnya"
+        btnUploadData?.setOnClickListener {
+            val phoneNumber = textPhoneNumber?.text.toString()
+            when {
+                phoneNumber.isEmpty() -> {
+                    textPhoneNumber?.error = getString(R.string.text_form_error_empty)
+                }
+                phoneNumber.length < 9 -> {
+                    textPhoneNumber?.error = getString(R.string.text_form_error_min_9_digit)
+                }
+                else -> {
+                    context?.let {
+                        startActivity(InactivePhoneSuccessPageActivity.getIntent(it))
+                    }
+                }
+            }
         }
 
         imgIdCard?.setOnClickListener {

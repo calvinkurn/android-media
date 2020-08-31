@@ -72,7 +72,7 @@ class InactivePhoneCameraFragment : BaseDaggerFragment() {
             showCamera()
         }
 
-        btnNext?.setOnClickListener {
+        btnUploadData?.setOnClickListener {
             onImagePickerCameraFragmentListener.onImageTaken(filePath())
         }
 
@@ -85,14 +85,17 @@ class InactivePhoneCameraFragment : BaseDaggerFragment() {
         layoutCameraView?.layoutType = mode
         when (mode) {
             CameraViewMode.ID_CARD.id -> {
+                cameraView?.facing = Facing.BACK
                 updateTitle(getString(R.string.text_title_id_card))
                 showCamera()
             }
             CameraViewMode.SELFIE.id -> {
+                cameraView?.facing = Facing.FRONT
                 updateTitle(getString(R.string.text_title_selfie))
                 showCamera()
             }
             CameraViewMode.SAVING_BOOK.id -> {
+                cameraView?.facing = Facing.BACK
                 updateTitle(getString(R.string.text_title_saving_book))
                 showCamera(true)
             }
@@ -111,11 +114,9 @@ class InactivePhoneCameraFragment : BaseDaggerFragment() {
         btnFlipCamera?.visibility = View.VISIBLE
 
         if (isSavingBook) {
-            cameraView?.facing = Facing.FRONT
             txtDescription?.visibility = View.GONE
             txtDescriptionSavingBook?.visibility = View.VISIBLE
         } else {
-            cameraView?.facing = Facing.BACK
             txtDescription?.visibility = View.VISIBLE
             txtDescriptionSavingBook?.visibility = View.GONE
         }
@@ -169,8 +170,10 @@ class InactivePhoneCameraFragment : BaseDaggerFragment() {
         return file
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onStop() {
+        super.onStop()
+        // https://stackoverflow.com/questions/43972053/cameraview-black-on-when-being-used-for-second-time/63629326#63629326
+
         cameraView?.let {
             if (it.isOpened) {
                 it.close()
