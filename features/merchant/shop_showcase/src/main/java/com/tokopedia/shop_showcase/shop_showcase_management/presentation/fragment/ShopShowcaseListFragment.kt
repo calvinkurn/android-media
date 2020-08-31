@@ -158,7 +158,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
             }
             REQUEST_EDIT_SHOWCASE_CODE -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    val isSuccessEditShowcase = data?.extras?.getInt(ShopShowcaseListParam.EXTRA_EDIT_SHOWCASE_RESULT)
+                    val isSuccessEditShowcase = data?.extras?.getInt(ShopShowcaseParamConstant.EXTRA_EDIT_SHOWCASE_RESULT)
                     if (isSuccessEditShowcase == ShopShowcaseAddFragment.SUCCESS_EDIT_SHOWCASE)
                         onSuccessUpdateShowcase()
                 }
