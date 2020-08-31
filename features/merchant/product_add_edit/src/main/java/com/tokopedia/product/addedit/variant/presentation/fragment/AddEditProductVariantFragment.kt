@@ -792,7 +792,7 @@ class AddEditProductVariantFragment :
             if (it.urlThumbnail.isNotEmpty()) {
                 ivSizechart.setImage(it.urlThumbnail, 0F)
             } else {
-                ivSizechart.setImage(it.filePath, 0F)
+                ivSizechart.setImage(it.urlOriginal, 0F)
             }
         })
     }

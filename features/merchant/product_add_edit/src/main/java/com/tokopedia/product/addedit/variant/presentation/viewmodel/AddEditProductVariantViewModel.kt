@@ -213,7 +213,7 @@ class AddEditProductVariantViewModel @Inject constructor(
 
     fun updateSizechart(url: String) {
         val newSizechart = PictureVariantInputModel()
-        newSizechart.filePath = url
+        newSizechart.urlOriginal = url
         mVariantSizechart.value = newSizechart
     }
 
@@ -481,7 +481,7 @@ class AddEditProductVariantViewModel @Inject constructor(
     private fun mapVariantPhoto(variantPhoto: VariantPhoto?): List<PictureVariantInputModel> {
         return if (variantPhoto != null && variantPhoto.imageUrlOrPath.isNotEmpty()) {
             val result = PictureVariantInputModel(
-                    filePath = variantPhoto.imageUrlOrPath,
+                    filePath = variantPhoto.filePath,
                     urlOriginal = variantPhoto.imageUrlOrPath,
                     picID = variantPhoto.picID,
                     description = variantPhoto.description,
@@ -564,6 +564,7 @@ class AddEditProductVariantViewModel @Inject constructor(
             val photoPicID = picture?.picID.orEmpty()
             val photoDescription = picture?.description.orEmpty()
             val photoFileName = picture?.fileName.orEmpty()
+            val photoFilePath = picture?.filePath.orEmpty()
             val photoWidth = picture?.width.orZero()
             val photoHeight = picture?.height.orZero()
             val photoIsFromIG = picture?.isFromIG.orEmpty()
@@ -575,6 +576,7 @@ class AddEditProductVariantViewModel @Inject constructor(
                     photoPicID,
                     photoDescription,
                     photoFileName,
+                    photoFilePath,
                     photoWidth,
                     photoHeight,
                     photoIsFromIG,
