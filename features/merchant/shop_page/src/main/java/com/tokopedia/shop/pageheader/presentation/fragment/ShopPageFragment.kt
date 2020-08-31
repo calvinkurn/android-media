@@ -669,9 +669,6 @@ class ShopPageFragment :
         }
     }
 
-    private fun onSuccessGetShopPageTabData(shopPageP1HeaderData: ShopPageP1HeaderData) {
-        isShowFeed = shopPageP1HeaderData.isWhitelist
-        createPostUrl = shopPageP1HeaderData.url
     private fun getWriteReadStoragePermission() = activity?.let {
         permissionChecker.checkPermissions(it, arrayOf(
                 PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE,
@@ -691,18 +688,18 @@ class ShopPageFragment :
         })
     }
 
-    private fun onSuccessGetShopPageTabData(shopPageP1Data: ShopPageP1Data) {
+    private fun onSuccessGetShopPageTabData(shopPageP1Data: ShopPageP1HeaderData) {
         isShowFeed = shopPageP1Data.isWhitelist
         createPostUrl = shopPageP1Data.url
         shopPageHeaderDataModel = ShopPageHeaderDataModel().apply {
             shopId = this@ShopPageFragment.shopId
-            isOfficial = shopPageP1HeaderData.isOfficial
-            isGoldMerchant = shopPageP1HeaderData.isGoldMerchant
-            shopHomeType = shopPageP1HeaderData.shopHomeType
-            topContentUrl = shopPageP1HeaderData.topContentUrl
-            shopName = shopPageP1HeaderData.shopName
-            shopDomain = shopPageP1HeaderData.shopDomain
-            avatar = shopPageP1HeaderData.shopAvatar
+            isOfficial = shopPageP1Data.isOfficial
+            isGoldMerchant = shopPageP1Data.isGoldMerchant
+            shopHomeType = shopPageP1Data.shopHomeType
+            topContentUrl = shopPageP1Data.topContentUrl
+            shopName = shopPageP1Data.shopName
+            shopDomain = shopPageP1Data.shopDomain
+            avatar = shopPageP1Data.shopAvatar
         }
         customDimensionShopPage.updateCustomDimensionData(
                 shopId,
