@@ -554,7 +554,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         attributes.setIdentifier(getView().getDigitalIdentifierParam());
         requestBodyCancelVoucher.setAttributes(attributes);
         getView().showFullPageLoading();
-        cartDigitalInteractor.cancelVoucher(requestBodyCancelVoucher, new Subscriber<String>() {
+        cartDigitalInteractor.cancelVoucher(requestBodyCancelVoucher, new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {
 
@@ -563,13 +563,17 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
             @Override
             public void onError(Throwable e) {
                 getView().hideFullPageLoading();
-                getView().failedCancelVoucherCart();
+                getView().failedCancelVoucherCart(e);
             }
 
             @Override
-            public void onNext(String s) {
+            public void onNext(Boolean success) {
                 getView().hideFullPageLoading();
-                getView().successCancelVoucherCart();
+                if (success) {
+                    getView().successCancelVoucherCart();
+                } else {
+                    getView().failedCancelVoucherCart(new Throwable(""));
+                }
             }
         });
     }
