@@ -3135,4 +3135,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun onCartItemShowRemainingQty(productId: String) {
         cartPageAnalytics.eventViewRemainingStockInfo(userSession.userId, productId)
     }
+
+    override fun onCartItemShowInformationLabel(productId: String, informationLabel: String) {
+        cartPageAnalytics.eventViewInformationLabelInProductCard(userSession.userId, productId, informationLabel)
+    }
 }

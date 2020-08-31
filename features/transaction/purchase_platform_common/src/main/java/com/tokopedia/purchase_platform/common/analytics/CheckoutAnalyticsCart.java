@@ -1035,7 +1035,6 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         sendGeneralEvent(gtmData);
     }
 
-    // Todo : implement this
     public void eventViewInformationLabelInProductCard(String userId, String productId, String informationLabel) {
         Map<String, Object> gtmData = getGtmData(
                 EventName.VIEW_ATC_IRIS,

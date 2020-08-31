@@ -134,5 +134,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         void onEditNoteDone(int position);
 
         void onCartItemShowRemainingQty(String productId);
+
+        void onCartItemShowInformationLabel(String productId, String informationLabel);
     }
 }

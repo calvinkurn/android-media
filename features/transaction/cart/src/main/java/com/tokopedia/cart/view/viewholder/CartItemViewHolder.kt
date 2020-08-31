@@ -349,6 +349,7 @@ class CartItemViewHolder constructor(itemView: View,
                 textWholesalePrice.text = "Harga Grosir"
             }
             textWholesalePrice.show()
+            actionListener?.onCartItemShowInformationLabel(data.cartItemData?.originData?.productId ?: "", "Harga Grosir")
         } else {
             textWholesalePrice.gone()
         }
@@ -362,6 +363,7 @@ class CartItemViewHolder constructor(itemView: View,
                 textPriceDrop.text = "Harga Turun"
             }
             textPriceDrop.show()
+            actionListener?.onCartItemShowInformationLabel(data.cartItemData?.originData?.productId ?: "", "Harga Turun")
         } else {
             textPriceDrop.gone()
         }
@@ -371,6 +373,7 @@ class CartItemViewHolder constructor(itemView: View,
         if (data.cartItemData?.originData?.productCashBack?.isNotBlank() == true) {
             textCashback.text = data.cartItemData?.originData?.cashBackInfo
             textCashback.show()
+            actionListener?.onCartItemShowInformationLabel(data.cartItemData?.originData?.productId ?: "", "Cashback From Seller")
         } else {
             textCashback.gone()
         }
@@ -415,6 +418,7 @@ class CartItemViewHolder constructor(itemView: View,
                 textSlashPrice.paintFlags = textSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                 textSlashPrice.show()
                 labelSlashPricePercentage.show()
+                actionListener?.onCartItemShowInformationLabel(data.cartItemData?.originData?.productId ?: "", "Discount label")
             } else {
                 textSlashPrice.gone()
                 labelSlashPricePercentage.gone()
