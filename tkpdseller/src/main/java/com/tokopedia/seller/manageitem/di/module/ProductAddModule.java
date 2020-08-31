@@ -21,23 +21,16 @@ import com.tokopedia.seller.manageitem.common.mapper.SimpleDataResponseMapper;
 import com.tokopedia.seller.manageitem.view.presenter.ProductAddPresenterImpl;
 import com.tokopedia.seller.manageitem.data.cloud.api.MerlinApi;
 import com.tokopedia.seller.manageitem.data.cloud.api.SearchApi;
-import com.tokopedia.seller.manageitem.data.db.ProductDraftDB;
-import com.tokopedia.seller.manageitem.data.db.ProductDraftDao;
 import com.tokopedia.seller.manageitem.data.source.CatalogDataSource;
 import com.tokopedia.seller.manageitem.data.source.CategoryRecommDataSource;
-import com.tokopedia.seller.manageitem.data.source.ProductDraftDataSource;
 import com.tokopedia.seller.manageitem.data.source.ProductVariantDataSource;
 import com.tokopedia.seller.manageitem.di.scope.ProductAddScope;
 import com.tokopedia.seller.manageitem.domain.repository.CatalogRepository;
 import com.tokopedia.seller.manageitem.domain.repository.CatalogRepositoryImpl;
 import com.tokopedia.seller.manageitem.domain.repository.CategoryRecommRepository;
 import com.tokopedia.seller.manageitem.domain.repository.CategoryRecommRepositoryImpl;
-import com.tokopedia.seller.manageitem.domain.repository.ProductDraftRepository;
-import com.tokopedia.seller.manageitem.domain.repository.ProductDraftRepositoryImpl;
 import com.tokopedia.seller.manageitem.domain.repository.ProductVariantRepository;
 import com.tokopedia.seller.manageitem.domain.repository.ProductVariantRepositoryImpl;
-import com.tokopedia.seller.manageitem.domain.usecase.FetchProductVariantByCatUseCase;
-import com.tokopedia.seller.manageitem.domain.usecase.SaveDraftProductUseCase;
 import com.tokopedia.shop.common.di.ShopCommonModule;
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase;
 import com.tokopedia.user.session.UserSession;
@@ -57,11 +50,9 @@ public class ProductAddModule {
 
     @ProductAddScope
     @Provides
-    ProductAddPresenterImpl<ProductAddView> provideProductAddPresenter(SaveDraftProductUseCase saveDraftProductUseCase,
-                                                                       GQLGetShopInfoUseCase gqlGetShopInfoUseCase,
-                                                                       UserSessionInterface userSession,
-                                                                       FetchProductVariantByCatUseCase fetchProductVariantByCatUseCase){
-        return new ProductAddPresenterImpl<>(saveDraftProductUseCase, gqlGetShopInfoUseCase, userSession, fetchProductVariantByCatUseCase);
+    ProductAddPresenterImpl<ProductAddView> provideProductAddPresenter(GQLGetShopInfoUseCase gqlGetShopInfoUseCase,
+                                                                       UserSessionInterface userSession){
+        return new ProductAddPresenterImpl<>(gqlGetShopInfoUseCase, userSession);
     }
 
     @ProductAddScope
@@ -103,25 +94,6 @@ public class ProductAddModule {
                                                  FetchCategoryDataSource fetchCategoryDataSource){
         return new CategoryRepositoryImpl(categoryDataSource, fetchCategoryDataSource);
     }
-
-    @ProductAddScope
-    @Provides
-    ProductDraftRepository provideProductDraftRepository(ProductDraftDataSource productDraftDataSource, @ApplicationContext Context context){
-        return new ProductDraftRepositoryImpl(productDraftDataSource, context);
-    }
-
-    @ProductAddScope
-    @Provides
-    ProductDraftDB provideProductDraftDb(@ApplicationContext Context context){
-        return ProductDraftDB.getInstance(context);
-    }
-
-    @ProductAddScope
-    @Provides
-    ProductDraftDao provideProductDraftDao(ProductDraftDB productDraftDB){
-        return productDraftDB.getProductDraftDao();
-    }
-
 
     // FOR SEARCH CATALOG
     @ProductAddScope

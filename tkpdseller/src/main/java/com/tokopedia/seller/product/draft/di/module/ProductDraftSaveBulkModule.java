@@ -8,14 +8,8 @@ import com.tokopedia.product.manage.common.draft.data.db.AddEditProductDraftDb;
 import com.tokopedia.product.manage.common.draft.data.db.repository.AddEditProductDraftRepository;
 import com.tokopedia.product.manage.common.draft.data.db.repository.AddEditProductDraftRepositoryImpl;
 import com.tokopedia.product.manage.common.draft.data.db.source.AddEditProductDraftDataSource;
-import com.tokopedia.seller.manageitem.data.db.ProductDraftDB;
-import com.tokopedia.seller.manageitem.data.db.ProductDraftDao;
-import com.tokopedia.seller.manageitem.data.source.ProductDraftDataSource;
 import com.tokopedia.seller.manageitem.di.module.ProductAddModule;
 import com.tokopedia.seller.manageitem.di.scope.ProductAddScope;
-import com.tokopedia.seller.manageitem.domain.repository.ProductDraftRepository;
-import com.tokopedia.seller.manageitem.domain.repository.ProductDraftRepositoryImpl;
-import com.tokopedia.seller.product.draft.domain.interactor.SaveBulkDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.SaveInstagramToProductDraftUseCase;
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftSaveBulkPresenter;
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftSaveBulkPresenterImpl;
@@ -34,27 +28,8 @@ public class ProductDraftSaveBulkModule extends ProductAddModule {
 
     @ProductAddScope
     @Provides
-    ProductDraftRepository provideProductDraftRepository(ProductDraftDataSource productDraftDataSource, @ApplicationContext Context context){
-        return new ProductDraftRepositoryImpl(productDraftDataSource, context);
-    }
-
-    @ProductAddScope
-    @Provides
-    ProductDraftSaveBulkPresenter provideProductDraftSaveBulkPresenter(SaveBulkDraftProductUseCase saveBulkDraftProductUseCase,
-                                                                       SaveInstagramToProductDraftUseCase saveInstagramToProductDraftUseCase){
-        return new ProductDraftSaveBulkPresenterImpl(saveBulkDraftProductUseCase, saveInstagramToProductDraftUseCase);
-    }
-
-    @ProductAddScope
-    @Provides
-    ProductDraftDB provideProductDraftDb(@ApplicationContext Context context){
-        return ProductDraftDB.getInstance(context);
-    }
-
-    @ProductAddScope
-    @Provides
-    ProductDraftDao provideProductDraftDao(ProductDraftDB productDraftDB){
-        return productDraftDB.getProductDraftDao();
+    ProductDraftSaveBulkPresenter provideProductDraftSaveBulkPresenter(SaveInstagramToProductDraftUseCase saveInstagramToProductDraftUseCase){
+        return new ProductDraftSaveBulkPresenterImpl(saveInstagramToProductDraftUseCase);
     }
 
     //this is for seller app

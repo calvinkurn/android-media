@@ -10,7 +10,5 @@ import com.tokopedia.seller.manageitem.data.cloud.model.product.ProductViewModel
  */
 
 public interface ProductAddPresenter<T extends ProductAddView> {
-    void saveDraft(ProductViewModel viewModel, boolean isUploading);
     void getShopInfo(AddEditPageType addEditPageType);
-    void fetchProductVariantByCat(long categoryId);
 }

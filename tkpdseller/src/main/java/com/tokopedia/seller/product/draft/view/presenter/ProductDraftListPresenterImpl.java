@@ -1,12 +1,9 @@
 package com.tokopedia.seller.product.draft.view.presenter;
 
 import com.tokopedia.seller.manageitem.data.db.ProductDraftViewModel;
-import com.tokopedia.seller.manageitem.domain.usecase.UpdateUploadingDraftProductUseCase;
-import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProductLegacyUseCase;
 import com.tokopedia.seller.product.common.utils.ProductDraftErrorHandler;
 import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.DeleteSingleDraftProductUseCase;
-import com.tokopedia.seller.product.draft.domain.interactor.FetchAllDraftProductLegacyUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.FetchAllDraftProductUseCase;
 import com.tokopedia.usecase.RequestParams;
 
@@ -22,60 +19,29 @@ import rx.Subscriber;
 public class ProductDraftListPresenterImpl extends ProductDraftListPresenter {
     private FetchAllDraftProductUseCase fetchAllDraftProductUseCase;
     private DeleteSingleDraftProductUseCase deleteSingleDraftProductUseCase;
-    private UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase;
     private ClearAllDraftProductUseCase clearAllDraftProductUseCase;
-    private FetchAllDraftProductLegacyUseCase fetchAllDraftProductLegacyUseCase;
-    private ClearAllDraftProductLegacyUseCase clearAllDraftProductLegacyUseCase;
 
     public ProductDraftListPresenterImpl(FetchAllDraftProductUseCase fetchAllDraftProductUseCase,
-                                         FetchAllDraftProductLegacyUseCase fetchAllDraftProductLegacyUseCase,
                                          DeleteSingleDraftProductUseCase deleteSingleDraftProductUseCase,
-                                         UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase,
-                                         ClearAllDraftProductUseCase clearAllDraftProductUseCase,
-                                         ClearAllDraftProductLegacyUseCase clearAllDraftProductLegacyUseCase) {
+                                         ClearAllDraftProductUseCase clearAllDraftProductUseCase) {
         this.fetchAllDraftProductUseCase = fetchAllDraftProductUseCase;
-        this.fetchAllDraftProductLegacyUseCase = fetchAllDraftProductLegacyUseCase;
         this.deleteSingleDraftProductUseCase = deleteSingleDraftProductUseCase;
-        this.updateUploadingDraftProductUseCase = updateUploadingDraftProductUseCase;
         this.clearAllDraftProductUseCase = clearAllDraftProductUseCase;
-        this.clearAllDraftProductLegacyUseCase = clearAllDraftProductLegacyUseCase;
     }
 
     @Override
     public void fetchAllDraftData() {
-        fetchAllDraftProductUseCase.execute(
-                FetchAllDraftProductUseCase.createRequestParams(),
-                getSubscriber()
-        );
-    }
-
-    @Override
-    public void fetchAllDraftDataWithUpdateUploading() {
-        updateUploadingDraftProductUseCase.execute(UpdateUploadingDraftProductUseCase.createRequestParamsUpdateAll(false),
-                getUpdateUploadingSubscriber());
+        fetchAllDraftProductUseCase.execute(FetchAllDraftProductUseCase.createRequestParams(), getSubscriber());
     }
 
     @Override
     public void deleteProductDraft(long draftProductId) {
-        //TODO milhamj
-//        if (GlobalConfig.isSellerApp()) {
-            deleteSingleDraftProductUseCase.execute(DeleteSingleDraftProductUseCase.Companion.createRequestParams(draftProductId),
-                    getDeleteSubscriber());
-//        } else {
-//            deleteSingleDraftProductLegacyUseCase.execute(DeleteSingleDraftProductLegacyUseCase.createRequestParams(draftProductId),
-//                    getDeleteSubscriber());
-//        }
-
+        deleteSingleDraftProductUseCase.execute(DeleteSingleDraftProductUseCase.Companion.createRequestParams(draftProductId), getDeleteSubscriber());
     }
 
     @Override
     public void clearAllDraftData() {
-        //TODO milhamj
-//        if (GlobalConfig.isSellerApp()) {
-            clearAllDraftProductUseCase.execute(RequestParams.EMPTY, getClearAllDraftSubscriber());
-//        } else {
-//            clearAllDraftProductLegacyUseCase.execute(RequestParams.EMPTY, getClearAllDraftSubscriber());
-//        }
+        clearAllDraftProductUseCase.execute(RequestParams.EMPTY, getClearAllDraftSubscriber());
     }
 
     private Subscriber<Boolean> getClearAllDraftSubscriber() {
@@ -147,29 +113,8 @@ public class ProductDraftListPresenterImpl extends ProductDraftListPresenter {
     @Override
     public void detachView() {
         super.detachView();
-        fetchAllDraftProductLegacyUseCase.unsubscribe();
         fetchAllDraftProductUseCase.unsubscribe();
         deleteSingleDraftProductUseCase.unsubscribe();
-        updateUploadingDraftProductUseCase.unsubscribe();
-    }
-
-    public Subscriber<Boolean> getUpdateUploadingSubscriber() {
-        return new Subscriber<Boolean>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable t) {
-                fetchAllDraftData();
-                ProductDraftErrorHandler.INSTANCE.logExceptionToCrashlytics(t);
-            }
-
-            @Override
-            public void onNext(Boolean aBoolean) {
-                fetchAllDraftData();
-            }
-        };
+        deleteSingleDraftProductUseCase.unsubscribe();
     }
 }

@@ -12,33 +12,22 @@ import com.tokopedia.core.network.retrofit.utils.NetworkCalculator;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.seller.manageitem.common.mapper.ProductUploadMapper;
 import com.tokopedia.seller.manageitem.data.cloud.api.GenerateHostApi;
-import com.tokopedia.seller.manageitem.data.db.ProductDraftDB;
-import com.tokopedia.seller.manageitem.data.db.ProductDraftDao;
 import com.tokopedia.seller.manageitem.data.model.UploadImageModel;
 import com.tokopedia.seller.manageitem.data.source.FetchVideoEditProductDataSource;
 import com.tokopedia.seller.manageitem.data.source.GenerateHostDataSource;
 import com.tokopedia.seller.manageitem.data.source.ProductDataSource;
-import com.tokopedia.seller.manageitem.data.source.ProductDraftDataSource;
 import com.tokopedia.seller.manageitem.data.source.ProductVariantDataSource;
 import com.tokopedia.seller.manageitem.data.source.UploadImageDataSource;
 import com.tokopedia.seller.manageitem.di.scope.AddProductServiceScope;
 import com.tokopedia.seller.manageitem.domain.repository.GenerateHostRepository;
 import com.tokopedia.seller.manageitem.domain.repository.GenerateHostRepositoryImpl;
-import com.tokopedia.seller.manageitem.domain.repository.ProductDraftRepository;
-import com.tokopedia.seller.manageitem.domain.repository.ProductDraftRepositoryImpl;
 import com.tokopedia.seller.manageitem.domain.repository.ProductRepository;
 import com.tokopedia.seller.manageitem.domain.repository.ProductRepositoryImpl;
 import com.tokopedia.seller.manageitem.domain.repository.ProductVariantRepository;
 import com.tokopedia.seller.manageitem.domain.repository.ProductVariantRepositoryImpl;
 import com.tokopedia.seller.manageitem.domain.repository.UploadImageRepository;
 import com.tokopedia.seller.manageitem.domain.repository.UploadImageRepositoryImpl;
-import com.tokopedia.seller.manageitem.domain.usecase.DeleteSingleDraftProductUseCase;
-import com.tokopedia.seller.manageitem.domain.usecase.FetchDraftProductUseCase;
-import com.tokopedia.seller.manageitem.domain.usecase.SubmitProductUseCase;
-import com.tokopedia.seller.manageitem.domain.usecase.UpdateUploadingDraftProductUseCase;
 import com.tokopedia.seller.manageitem.domain.usecase.UploadImageUseCase;
-import com.tokopedia.seller.manageitem.view.presenter.AddProductServicePresenter;
-import com.tokopedia.seller.manageitem.view.presenter.AddProductServicePresenterImpl;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -53,22 +42,6 @@ import retrofit2.Retrofit;
 @AddProductServiceScope
 @Module
 public class AddProductserviceModule {
-
-    @AddProductServiceScope
-    @Provides
-    AddProductServicePresenter provideAddProductServicePresenter(FetchDraftProductUseCase fetchDraftProductUseCase,
-                                                                 SubmitProductUseCase uploadProductUseCase,
-                                                                 DeleteSingleDraftProductUseCase deleteSingleDraftProductUseCase,
-                                                                 UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase,
-                                                                 ProductUploadMapper productUploadMapper) {
-        return new AddProductServicePresenterImpl(fetchDraftProductUseCase, uploadProductUseCase, deleteSingleDraftProductUseCase, updateUploadingDraftProductUseCase, productUploadMapper);
-    }
-
-    @AddProductServiceScope
-    @Provides
-    ProductDraftRepository provideProductDraftRepository(ProductDraftDataSource productDraftDataSource, @ApplicationContext Context context) {
-        return new ProductDraftRepositoryImpl(productDraftDataSource, context);
-    }
 
     @AddProductServiceScope
     @Provides
@@ -134,25 +107,8 @@ public class AddProductserviceModule {
 
     @AddProductServiceScope
     @Provides
-    FetchDraftProductUseCase provideFetchDraftProductUseCase(ProductDraftRepository productDraftRepository) {
-        return new FetchDraftProductUseCase(productDraftRepository);
-    }
-
-    @AddProductServiceScope
-    @Provides
     UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
         return new UserSession(context);
     }
 
-    @AddProductServiceScope
-    @Provides
-    ProductDraftDB provideProductDraftDb(@ApplicationContext Context context){
-        return ProductDraftDB.getInstance(context);
-    }
-
-    @AddProductServiceScope
-    @Provides
-    ProductDraftDao provideProductDraftDao(ProductDraftDB productDraftDB){
-        return productDraftDB.getProductDraftDao();
-    }
 }

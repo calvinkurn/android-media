@@ -7,7 +7,6 @@ import com.tokopedia.seller.manageitem.common.util.ViewUtils;
 import com.tokopedia.seller.manageitem.data.cloud.model.product.ProductVariantByCatModel;
 import com.tokopedia.seller.manageitem.data.cloud.model.product.ProductViewModel;
 import com.tokopedia.seller.manageitem.domain.usecase.FetchProductVariantByCatUseCase;
-import com.tokopedia.seller.manageitem.domain.usecase.SaveDraftProductUseCase;
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -28,25 +27,13 @@ import static com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.
 
 public class ProductAddPresenterImpl<T extends ProductAddView> extends BaseDaggerPresenter<T> implements ProductAddPresenter<T> {
 
-    private final SaveDraftProductUseCase saveDraftProductUseCase;
     private final GQLGetShopInfoUseCase gqlGetShopInfoUseCase;
-    protected final FetchProductVariantByCatUseCase fetchProductVariantByCatUseCase;
     private UserSessionInterface userSession;
 
-    public ProductAddPresenterImpl(SaveDraftProductUseCase saveDraftProductUseCase,
-                                   GQLGetShopInfoUseCase gqlGetShopInfoUseCase,
-                                   UserSessionInterface userSession,
-                                   FetchProductVariantByCatUseCase fetchProductVariantByCatUseCase) {
-        this.saveDraftProductUseCase = saveDraftProductUseCase;
+    public ProductAddPresenterImpl(GQLGetShopInfoUseCase gqlGetShopInfoUseCase,
+                                   UserSessionInterface userSession) {
         this.gqlGetShopInfoUseCase = gqlGetShopInfoUseCase;
         this.userSession = userSession;
-        this.fetchProductVariantByCatUseCase = fetchProductVariantByCatUseCase;
-    }
-
-    @Override
-    public void saveDraft(ProductViewModel viewModel, boolean isUploading) {
-        saveDraftProductUseCase.execute(generateRequestParamAddDraft(viewModel, isUploading),
-                new SaveDraftSubscriber(isUploading));
     }
 
     @Override
@@ -90,80 +77,8 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends BaseDagge
         );
     }
 
-    @Override
-    public void fetchProductVariantByCat(long categoryId) {
-        com.tokopedia.core.base.domain.RequestParams requestParam = FetchProductVariantByCatUseCase.generateParam(categoryId);
-        fetchProductVariantByCatUseCase.execute(requestParam, getProductVariantSubscriber());
-    }
-
-    private Subscriber<List<ProductVariantByCatModel>> getProductVariantSubscriber() {
-        return new Subscriber<List<ProductVariantByCatModel>>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (!isViewAttached()) {
-                    return;
-                }
-                getView().onErrorGetProductVariantByCat(e);
-            }
-
-            @Override
-            public void onNext(List<ProductVariantByCatModel> s) {
-                getView().onSuccessGetProductVariantCat(s);
-            }
-        };
-    }
-
-
-    private class SaveDraftSubscriber extends Subscriber<Long> {
-
-        boolean isUploading;
-
-        SaveDraftSubscriber(boolean isUploading) {
-            this.isUploading = isUploading;
-        }
-
-        @Override
-        public void onCompleted() {
-
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            if (!isViewAttached()) {
-                return;
-            }
-            if (isUploading) {
-                getView().onErrorStoreProductToDraftWhenUpload(ViewUtils.getErrorMessage(e));
-            } else {
-                getView().onErrorStoreProductToDraftWhenBackPressed(ViewUtils.getErrorMessage(e));
-            }
-        }
-
-        @Override
-        public void onNext(Long productId) {
-            checkViewAttached();
-            getView().onSuccessStoreProductToDraft(productId, isUploading);
-        }
-    }
-
-    private RequestParams generateRequestParamAddDraft(ProductViewModel viewModel, boolean isUploading) {
-        return SaveDraftProductUseCase.generateUploadProductParam(viewModel, getProductDraftId(),
-                isUploading);
-    }
-
-    private long getProductDraftId() {
-        return getView().getProductDraftId();
-    }
-
     public void detachView() {
         super.detachView();
         gqlGetShopInfoUseCase.cancelJobs();
-        saveDraftProductUseCase.unsubscribe();
-        fetchProductVariantByCatUseCase.unsubscribe();
     }
 }
