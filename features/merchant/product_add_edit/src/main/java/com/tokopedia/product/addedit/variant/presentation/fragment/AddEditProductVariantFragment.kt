@@ -383,7 +383,7 @@ class AddEditProductVariantFragment :
             }
         }
         viewModel.hideProductVariantPhotos(variantDetail)
-        viewModel.updateSizechartFieldVisibility(variantDetail, false)
+        viewModel.updateSizechartFieldVisibility()
     }
 
     private fun setupCancellationDialog(layoutPosition: Int, adapterPosition: Int, variantDetail: VariantDetail) {
