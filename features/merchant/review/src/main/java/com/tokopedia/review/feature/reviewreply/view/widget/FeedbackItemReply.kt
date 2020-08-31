@@ -68,6 +68,7 @@ class FeedbackItemReply : BaseCustomView, ReviewReplyListener {
     }
 
     private fun setupFeedbackReview(feedbackText: String) {
+        replyFeedbackState?.background = ContextCompat.getDrawable(context, R.drawable.rectangle_8)
         if (feedbackText.isEmpty()) {
             tvFeedbackReview?.text = context.getString(R.string.review_not_found)
             tvFeedbackReview?.setTextColor(ContextCompat.getColor(context, R.color.clr_review_not_found))

@@ -9,7 +9,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvProductTitle"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -51,7 +51,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvFeedbackDate"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="@+id/tvFeedbackUser"
         app:layout_constraintStart_toEndOf="@id/tvFeedbackUser"
@@ -107,6 +107,7 @@
         android:id="@+id/replyFeedbackState"
         android:layout_width="@dimen/spacing_lvl2"
         android:layout_height="@dimen/layout_lvl0"
+        tools:background="@drawable/rectangle_8"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="@+id/tvReplyComment"
         app:layout_constraintTop_toBottomOf="@id/rvItemAttachmentFeedback"
