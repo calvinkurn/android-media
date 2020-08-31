@@ -241,9 +241,15 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
                         // resetting
                         isReset = true
-                        currFilterType = -1
+                        /*currFilterType = -1
                         currFilterLabel = ""
                         currFilterKey = ""
+                        uoh_sort_filter?.resetAllFilters()
+                        filter1?.title = UohConsts.ALL_DATE
+                        filter2?.title = UohConsts.ALL_STATUS
+                        filter3?.title = UohConsts.ALL_CATEGORIES
+                        paramUohOrder = UohListParam()*/
+
                         uoh_sort_filter?.resetAllFilters()
                         filter1?.title = UohConsts.ALL_DATE
                         filter2?.title = UohConsts.ALL_STATUS
@@ -306,11 +312,11 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             when (it) {
                 is Success -> {
                     orderList = it.data
-                    // if (currFilterKey.isEmpty() && currFilterType == -1) {
+                    if (currFilterKey.isEmpty() && currFilterType == -1) {
                         if (orderList.filters.isNotEmpty() && orderList.categories.isNotEmpty()) {
                             renderChipsFilter()
                         }
-                    // }
+                    }
 
                     if (orderList.orders.isNotEmpty()) {
                         if (orderIdNeedUpdated.isEmpty()) {
