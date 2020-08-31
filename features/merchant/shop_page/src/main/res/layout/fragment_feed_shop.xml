@@ -29,10 +29,10 @@
 
         </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
+        <include
+            layout="@layout/bottom_sheet_layout"/>
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
-    
-    <include
-        layout="@layout/bottom_sheet_layout"/>
 
     <FrameLayout
         android:id="@+id/loadingLayout"
