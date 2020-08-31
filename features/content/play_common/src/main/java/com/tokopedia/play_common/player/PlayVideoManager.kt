@@ -14,7 +14,6 @@ import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.upstream.DefaultLoadErrorHandlingPolicy
-import com.google.android.exoplayer2.upstream.HttpDataSource.InvalidResponseCodeException
 import com.google.android.exoplayer2.upstream.LoadErrorHandlingPolicy
 import com.google.android.exoplayer2.upstream.Loader.UnexpectedLoaderException
 import com.google.android.exoplayer2.util.Util
@@ -50,12 +49,12 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
     private val playerEventListener = object : Player.EventListener {
         override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
             when (playbackState) {
-                Player.STATE_IDLE -> _observablePlayVideoState.value = PlayVideoState.NoMedia
-                Player.STATE_BUFFERING -> _observablePlayVideoState.value = PlayVideoState.Buffering
+                Player.STATE_IDLE -> _observablePlayVideoState.threadSafeSetValue(PlayVideoState.NoMedia)
+                Player.STATE_BUFFERING -> _observablePlayVideoState.threadSafeSetValue(PlayVideoState.Buffering)
                 Player.STATE_READY -> {
-                    _observablePlayVideoState.value = if (!playWhenReady) PlayVideoState.Pause else PlayVideoState.Playing
+                    _observablePlayVideoState.threadSafeSetValue(if (!playWhenReady) PlayVideoState.Pause else PlayVideoState.Playing)
                 }
-                Player.STATE_ENDED -> _observablePlayVideoState.value = PlayVideoState.Ended
+                Player.STATE_ENDED -> _observablePlayVideoState.threadSafeSetValue(PlayVideoState.Ended)
             }
         }
 
@@ -95,7 +94,7 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
                     playUri(prepareState.uri, videoPlayer.playWhenReady)
                 }
             }
-            _observablePlayVideoState.value = PlayVideoState.Error(PlayVideoErrorException(error.cause))
+            _observablePlayVideoState.threadSafeSetValue(PlayVideoState.Error(PlayVideoErrorException(error.cause)))
         }
 
         override fun onTimelineChanged(timeline: Timeline, manifest: Any?, reason: Int) {
@@ -114,7 +113,7 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
     }
 
     private var playerModel: PlayPlayerModel by Delegates.observable(initVideoPlayer(null, PlayBufferControl())) { _, old, new ->
-        if (old.player != new.player) _observableVideoPlayer.value = new.player
+        if (old.player != new.player) _observableVideoPlayer.threadSafeSetValue(new.player)
     }
 
     val videoPlayer: SimpleExoPlayer
@@ -301,6 +300,14 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
                 }
 
         return PlayPlayerModel(videoPlayer, videoLoadControl)
+    }
+
+    private fun <T> MutableLiveData<T>.threadSafeSetValue(newValue: T) {
+        try {
+            value = newValue
+        } catch (e: Throwable) {
+            postValue(newValue)
+        }
     }
 
     /**
