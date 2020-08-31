@@ -169,6 +169,7 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_TRAVEL = "df_travel"
     private const val DF_USER_LIVENESS = "df_user_liveness"
     const val DF_USER_SETTINGS = "df_user_settings"
+    const val DF_USER_GROUPCHAT = "df_user_groupchat"
     const val DF_PROMO_GAMIFICATION = "df_promo_gamification"
     const val DF_PROMO_TOKOPOINTS = "df_promo_tokopoints"
     const val DF_GAMIFICATION = "df_gamification"
@@ -343,8 +344,8 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(HOTEL) }, DF_BASE, R.string.title_hotel))
 
             // User
-            add(DFP({ it.startsWith(GROUPCHAT_LIST) }, DF_BASE, R.string.title_groupchat))
-            add(DFP({ it.startsWith(GROUPCHAT_DETAIL) }, DF_BASE, R.string.title_groupchat))
+            add(DFP({ it.startsWith(GROUPCHAT_LIST) }, DF_USER_GROUPCHAT, R.string.title_groupchat))
+            add(DFP({ it.startsWith(GROUPCHAT_DETAIL) }, DF_USER_GROUPCHAT, R.string.title_groupchat))
             add(DFP({ it.startsWith(PROMO_CAMPAIGN_SHAKE_LANDING_PREFIX) }, DF_BASE, R.string.title_applink_campaign_shake_landing))
 
             add(DFP({
