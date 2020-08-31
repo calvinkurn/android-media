@@ -48,9 +48,10 @@ class SomListViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
     val userRoleResult: LiveData<Result<SomGetUserRoleUiModel>>
         get() = _userRoleResult
 
-    private val _topAdsGetShopInfo = MutableLiveData<Result<SomTopAdsGetShopInfoResponse.Data.TopAdsGetShopInfo>>()
+    private val _topAdsGetShopInfo = MutableLiveData<Result<SomTopAdsGetShopInfoResponse.Data.TopAdsGetShopInfo.SomTopAdsShopInfo>>()
 
     private var getUserRolesJob: Job? = null
+    private var getTopAdsGetShopInfoJob: Job? = null
 
     fun loadTickerList(tickerQuery: String) {
         launchCatchError(block = {
@@ -79,7 +80,9 @@ class SomListViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
 
     fun loadOrderList(paramOrder: SomListOrderParam) {
         launchCatchError(block = {
-            _orderListResult.postValue(getOrderListUseCase.execute(paramOrder))
+            val result = getOrderListUseCase.execute(paramOrder)
+            getTopAdsGetShopInfoJob?.join()
+            _orderListResult.postValue(result)
         }, onError = {
             _orderListResult.postValue(Fail(it))
         })
@@ -97,17 +100,19 @@ class SomListViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
     }
 
     fun loadTopAdsShopInfo(shopId: Int) {
-        launchCatchError(block = {
-            _topAdsGetShopInfo.postValue(topAdsGetShopInfoUseCase.execute(shopId))
-        }, onError = {
-            _topAdsGetShopInfo.postValue(Fail(it))
-        })
+        if (getTopAdsGetShopInfoJob == null || getTopAdsGetShopInfoJob?.isCompleted != false) {
+            getTopAdsGetShopInfoJob = launchCatchError(block = {
+                _topAdsGetShopInfo.postValue(topAdsGetShopInfoUseCase.execute(shopId))
+            }, onError = {
+                _topAdsGetShopInfo.postValue(Fail(it))
+            })
+        }
     }
 
     fun isTopAdsActive(): Boolean {
         val topAdsGetShopInfoResult = _topAdsGetShopInfo.value
         return topAdsGetShopInfoResult is Success &&
-                topAdsGetShopInfoResult.data.somTopAdsShopInfo.category != 1
+                topAdsGetShopInfoResult.data.category != 1
     }
 
     fun clearUserRoles() {

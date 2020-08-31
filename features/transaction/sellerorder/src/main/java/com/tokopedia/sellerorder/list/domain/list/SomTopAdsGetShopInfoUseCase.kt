@@ -14,12 +14,12 @@ class SomTopAdsGetShopInfoUseCase @Inject constructor(private val useCase: Graph
         useCase.setGraphqlQuery(QUERY)
     }
 
-    suspend fun execute(shopId: Int): Result<SomTopAdsGetShopInfoResponse.Data.TopAdsGetShopInfo> {
+    suspend fun execute(shopId: Int): Result<SomTopAdsGetShopInfoResponse.Data.TopAdsGetShopInfo.SomTopAdsShopInfo> {
         useCase.setTypeClass(SomTopAdsGetShopInfoResponse.Data::class.java)
         useCase.setRequestParams(generateParam(shopId))
 
         return try {
-            val orderList = useCase.executeOnBackground().topAdsGetShopInfo
+            val orderList = useCase.executeOnBackground().topAdsGetShopInfo.somTopAdsShopInfo
             Success(orderList)
         } catch (throwable: Throwable) {
             Fail(throwable)
