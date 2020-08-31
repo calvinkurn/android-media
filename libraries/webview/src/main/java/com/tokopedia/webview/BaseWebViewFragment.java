@@ -487,8 +487,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
             String title = view.getTitle();
-            if (view.getContext() instanceof BaseSimpleWebViewActivity) {
-                BaseSimpleWebViewActivity activity = (BaseSimpleWebViewActivity) view.getContext();
+            Activity activityInstance = getActivity();
+            if (activityInstance instanceof BaseSimpleWebViewActivity) {
+                BaseSimpleWebViewActivity activity = (BaseSimpleWebViewActivity) activityInstance;
                 String activityTitle = activity.getWebViewTitle();
                 if (TextUtils.isEmpty(activityTitle) || activityTitle.equals(DEFAULT_TITLE)) {
                     if (activity.getShowTitleBar()) {
@@ -499,22 +500,22 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                         activity.updateTitle(title);
                     }
                 }
-            } else if (getActivity() != null && !getActivity().isFinishing() && getActivity() instanceof BaseSimpleActivity) {
-                ActionBar actionBar = ((AppCompatActivity) view.getContext()).getSupportActionBar();
-                if (actionBar != null && view.getContext() != null) {
+            } else if (activityInstance != null && !activityInstance.isFinishing() && activityInstance instanceof BaseSimpleActivity) {
+                ActionBar actionBar = ((AppCompatActivity) activityInstance).getSupportActionBar();
+                if (actionBar != null) {
                     if (isHelpUrl(url) && !title.isEmpty()) {
                         actionBar.setTitle(title);
                     } else {
-                        String activityExtraTitle = getExtraTitle(getActivity());
+                        String activityExtraTitle = getExtraTitle(activityInstance);
                         if (!TextUtils.isEmpty(activityExtraTitle)) {
                             actionBar.setTitle(activityExtraTitle);
                         } else {
-                            actionBar.setTitle(view.getContext().getString(R.string.tokopedia));
+                            actionBar.setTitle(activityInstance.getString(R.string.tokopedia));
                         }
                     }
                 }
+            }
         }
-    }
 
         private String getExtraTitle(Context context) {
             if (context != null && isAdded()) {
