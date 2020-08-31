@@ -25,8 +25,8 @@ object InputPriceUtil {
     }
 
     fun formatProductPriceInput(productPriceInput: String): String {
-        val priceWithoutScientificNotation = productPriceInput.format("%f")
         return try {
+            val priceWithoutScientificNotation = productPriceInput.format("%f")
             if (priceWithoutScientificNotation.isNotBlank()) {
                 NumberFormat.getNumberInstance(Locale.US)
                         .format(productPriceInput.toBigDecimal())
@@ -34,7 +34,9 @@ object InputPriceUtil {
             } else {
                 productPriceInput
             }
-        } catch (e: NumberFormatException) {
+        } catch (e: Exception) {
+            AddEditProductErrorHandler.logMessage("productPriceInput: $productPriceInput")
+            AddEditProductErrorHandler.logExceptionToCrashlytics(e)
             productPriceInput
         }
     }
