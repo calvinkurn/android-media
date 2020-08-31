@@ -499,20 +499,20 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                         activity.updateTitle(title);
                     }
                 }
-            }else if (view.getContext() instanceof BaseSimpleActivity) {
-            ActionBar actionBar = ((AppCompatActivity) view.getContext()).getSupportActionBar();
-            if (actionBar != null && view.getContext() != null) {
-                if (isHelpUrl(url) && !title.isEmpty()) {
-                    actionBar.setTitle(title);
-                } else {
-                    String activityExtraTitle = getExtraTitle(view.getContext());
-                    if (!TextUtils.isEmpty(activityExtraTitle)) {
-                        actionBar.setTitle(activityExtraTitle);
+            } else if (getActivity() != null && !getActivity().isFinishing() && getActivity() instanceof BaseSimpleActivity) {
+                ActionBar actionBar = ((AppCompatActivity) view.getContext()).getSupportActionBar();
+                if (actionBar != null && view.getContext() != null) {
+                    if (isHelpUrl(url) && !title.isEmpty()) {
+                        actionBar.setTitle(title);
                     } else {
-                        actionBar.setTitle(view.getContext().getString(R.string.tokopedia));
+                        String activityExtraTitle = getExtraTitle(getActivity());
+                        if (!TextUtils.isEmpty(activityExtraTitle)) {
+                            actionBar.setTitle(activityExtraTitle);
+                        } else {
+                            actionBar.setTitle(view.getContext().getString(R.string.tokopedia));
+                        }
                     }
                 }
-            }
         }
     }
 
