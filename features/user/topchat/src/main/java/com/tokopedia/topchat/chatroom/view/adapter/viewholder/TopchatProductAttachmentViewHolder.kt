@@ -71,7 +71,7 @@ open class TopchatProductAttachmentViewHolder constructor(
         if (payloads.isEmpty()) return
         when (payloads[0]) {
             DeferredAttachment.PAYLOAD_DEFERRED -> bindDeferredAttachment(element)
-            PAYLOAD_OCC_STATE -> bindNewOccState(element)
+            is OccState -> bindNewOccState(element)
         }
     }
 
@@ -443,7 +443,10 @@ open class TopchatProductAttachmentViewHolder constructor(
         const val VARIANT_A = "ATC OCC"
         const val VARIANT_B = "OCC Only"
         const val AB_TEST_KEY = "OCC at TopChat"
-
-        const val PAYLOAD_OCC_STATE = "payload_occ_state"
     }
+
+    data class OccState(
+         val parentPosition: Int,
+         val childPosition: Int = -1 // for carousel
+    )
 }
