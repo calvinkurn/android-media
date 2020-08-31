@@ -456,7 +456,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     private fun observeFollowUnfollowResponse() {
-        viewModel.followUnfollowResult.observe(this, Observer {
+        viewModel.followUnfollowResult.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Success -> {
                     showFollowingSuccess()
@@ -469,7 +469,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     private fun observeDiscussionData() {
-        viewModel.discussionData.observe(this, Observer {
+        viewModel.discussionData.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Success -> {
                     with(it.data) {
@@ -502,7 +502,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     private fun observeDeleteQuestionResponse() {
-        viewModel.deleteTalkResult.observe(this, Observer {
+        viewModel.deleteTalkResult.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Success -> onSuccessDeleteQuestion()
                 else -> onFailDeleteQuestion()
@@ -511,7 +511,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     private fun observeDeleteCommentResponse() {
-        viewModel.deleteCommentResult.observe(this, Observer {
+        viewModel.deleteCommentResult.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Success -> onSuccessDeleteComment()
                 else -> onFailDeleteComment()
@@ -520,7 +520,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     private fun observeCreateNewCommentResponse() {
-        viewModel.createNewCommentResult.observe(this, Observer {
+        viewModel.createNewCommentResult.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Success -> onSuccessCreateComment()
                 is Fail -> onFailCreateComment(it.throwable.message)
@@ -529,7 +529,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     private fun observeAttachedProducts() {
-        viewModel.attachedProducts.observe(this, Observer {
+        viewModel.attachedProducts.observe(viewLifecycleOwner, Observer {
             if(it.isNotEmpty()) {
                 attachedProductAdapter?.setData(it)
                 showAttachedProduct()

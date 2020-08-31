@@ -10,6 +10,15 @@
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustResize|stateHidden">
 
+        </activity>
+
+        <activity
+            android:name="com.tokopedia.talk.feature.inbox.presentation.activity.TalkInboxActivity"
+            android:label="@string/title_talk_discuss"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="adjustResize|stateHidden">
+
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />

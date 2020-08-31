@@ -3,6 +3,7 @@ package com.tokopedia.talk.feature.inbox.presentation.adapter.viewholder
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.talk.feature.inbox.presentation.adapter.uimodel.TalkInboxUiModel
 import com.tokopedia.talk_old.R
@@ -21,11 +22,20 @@ class TalkInboxViewHolder(view: View) : AbstractViewHolder<TalkInboxUiModel>(vie
             setProductName(productName)
             setQuestion(content, isMasked)
             setNotification(isUnread)
+            setCountAndDate(totalAnswer, lastReplyTime)
         }
     }
 
     private fun setProductThumbnail(productThumbnail: String) {
-        itemView.talkInboxProductThumbnail.setImageUrl(productThumbnail)
+        with(itemView) {
+            if(productThumbnail.isEmpty()) {
+//            itemView.talkInboxProductThumbnail.setImageDrawable()
+                talkInboxProductName.setTextColor(ContextCompat.getColor(context, R.color.Neutral_N700_32))
+                return
+            }
+            talkInboxProductThumbnail.setImageUrl(productThumbnail)
+            talkInboxProductName.setTextColor(ContextCompat.getColor(context, R.color.Neutral_N700_96))
+        }
     }
 
     private fun setProductName(productName: String) {
@@ -48,7 +58,15 @@ class TalkInboxViewHolder(view: View) : AbstractViewHolder<TalkInboxUiModel>(vie
     private fun setNotification(isUnread: Boolean) {
         if(isUnread) {
             itemView.talkInboxNotification.showWithCondition(isUnread)
+        } else {
+            itemView.talkInboxNotification.hide()
         }
+    }
+
+    private fun setCountAndDate(totalAnswer: Int, date: String) {
+        itemView.talkInboxAnswerCountAndDate.text = itemView.context.getString(R.string.inbox_total_count_and_date,
+                if(totalAnswer == 0) getString(R.string.inbox_no_answer) else totalAnswer.toString(),
+                date)
     }
 
 }

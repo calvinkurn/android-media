@@ -12,4 +12,6 @@ object TalkConstants {
     const val PARAM_SOURCE = "utm_source"
     const val READING_SOURCE = "reading"
     const val APP_DISABLE_NEW_TALK_REMOTE_CONFIG_KEY = "android_mainapp_disable_new_talk"
+    const val DEFAULT_INITIAL_PAGE = 1
+    const val DEFAULT_ITEM_LIMIT = 10
 }

@@ -142,5 +142,14 @@
     <string name="write_question_placeholder">Pertanyaan</string>
 
     <string name="reply_dot_builder">• %s</string>
+    
+    <string name="inbox_read">Sudah Dibaca</string>
+    <string name="inbox_unread">Belum Dibaca</string>
+    <string name="inbox_total_count_and_date">%s jawaban • %s</string>
+    <string name="inbox_no_answer">Belum ada</string>
+    <string name="inbox_empty_title">Lagi nggak ada diskusi</string>
+    <string name="inbox_empty_read_discussion">Semua diskusi yang belum dibaca akan tampil di sini</string>
+    <string name="inbox_empty_unread_discussion">Semua diskusi yang sudah dibaca akan tampil di sini</string>
+    <string name="inbox_all_empty">Belum ada diskusi, nih.</string>
 
 </resources>

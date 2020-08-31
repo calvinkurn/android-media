@@ -52,6 +52,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_12"
+        android:textColor="@color/Neutral_N700_68"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
         app:layout_constraintStart_toStartOf="@id/talkInboxMessage"
         app:layout_constraintTop_toBottomOf="@id/talkInboxMessage"/>
 
