@@ -96,7 +96,7 @@ private fun renderPaymentTotal(view: View, cartListData: CartListData) {
 private fun renderDiscount(cartListData: CartListData, view: View) {
     if (cartListData.shoppingSummaryData.discountValue > 0) {
         view.text_discount_total_value?.apply {
-            text = CurrencyFormatUtil.convertPriceValueToIdrFormat(cartListData.shoppingSummaryData.discountValue, false).removeDecimalSuffix()
+            text = CurrencyFormatUtil.convertPriceValueToIdrFormat(cartListData.shoppingSummaryData.discountValue * -1, false).removeDecimalSuffix()
             visibility = View.VISIBLE
         }
         view.text_discount_total_title?.apply {
