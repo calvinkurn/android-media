@@ -182,6 +182,9 @@
 
     <string name="label_manage_address">Daftar Alamat</string>
 
+    <string name="title_activity_add_address">Tambah Alamat</string>
+    <string name="title_activity_search_address">Tulis Kota/Kecamatan</string>
+
     <!-- Dynamic feature for Setting Bank-->
     <string name="onboarding_app_name">OnBoarding</string>
 
@@ -287,6 +290,7 @@
     <string name="checkout_module_title_activity_multiple_address">Kirim ke Banyak Alamat</string>
     <string name="title_one_click_checkout">Beli Langsung</string>
     <string name="title_one_click_checkout_preference">Pengaturan Beli Langsung</string>
+    <string name="title_one_click_checkout_credit_card_and_debit">Kartu Kredit</string>
     <string name="promo_checkout_marketplace_module_title_activity_promo_list">Pakai Promo</string>
 
     <!-- Content -->

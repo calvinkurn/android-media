@@ -2,6 +2,7 @@ package com.tokopedia.oneclickcheckout.preference.edit.view.address
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -26,7 +27,6 @@ import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
@@ -40,7 +40,6 @@ import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companio
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.empty_list_address.*
-import kotlinx.android.synthetic.main.fragment_choose_address.*
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -50,6 +49,7 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var preferenceListAnalytics: PreferenceListAnalytics
 
@@ -57,10 +57,10 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
         ViewModelProviders.of(this, viewModelFactory)[AddressListViewModel::class.java]
     }
 
-    private lateinit var searchAddress: SearchInputView
     private val adapter = AddressListItemAdapter(this)
 
-    private var addressList: RecyclerView? = null
+    private var searchAddress: SearchInputView? = null
+    private var addressListRv: RecyclerView? = null
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
     private var searchInputView: SearchInputView? = null
     private var buttonSaveAddress: UnifyButton? = null
@@ -110,33 +110,25 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
             }
         }
 
-        viewModel.addressList.observe(this, Observer {
+        viewModel.addressList.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is OccState.Success -> {
                     swipeRefreshLayout?.isRefreshing = false
                     globalErrorLayout?.gone()
                     setEmptyState(it.data.listAddress.isEmpty(), viewModel.savedQuery.isEmpty())
-                    renderData(it.data.listAddress)
+                    adapter.setData(it.data.listAddress)
                 }
 
-                is OccState.Fail -> {
-                    if (!it.isConsumed) {
-                        swipeRefreshLayout?.isRefreshing = false
-                        if (it.throwable != null) {
-                            handleError(it.throwable)
-                        }
+                is OccState.Failed -> {
+                    swipeRefreshLayout?.isRefreshing = false
+                    it.getFailure()?.let { failure ->
+                        handleError(failure.throwable)
                     }
                 }
 
-                else -> swipeRefreshLayout?.isRefreshing = true
+                is OccState.Loading -> swipeRefreshLayout?.isRefreshing = true
             }
         })
-    }
-
-    private fun renderData(data: List<RecipientAddressModel>) {
-        adapter.addressList.clear()
-        adapter.addressList.addAll(data)
-        adapter.notifyDataSetChanged()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -145,8 +137,8 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
         initView()
         initViewModel()
         initSearch()
-        address_list_rv.adapter = adapter
-        address_list_rv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        addressListRv?.adapter = adapter
+        addressListRv?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         initSearchView()
     }
 
@@ -162,24 +154,24 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
             }
             emptyStateLayout?.gone()
             textSearchError?.gone()
-            searchAddress.visible()
-            addressList?.visible()
+            searchAddress?.visible()
+            addressListRv?.visible()
             bottomLayout?.visible()
         } else if (isFirstLoad) {
             buttonSaveAddress?.text = getString(R.string.label_button_input_address_empty)
             buttonSaveAddress?.setOnClickListener {
                 goToPickLocation(REQUEST_FIRST_CREATE)
             }
-            addressList?.gone()
-            searchAddress.gone()
+            addressListRv?.gone()
+            searchAddress?.gone()
             textSearchError?.gone()
             emptyStateLayout?.visible()
             bottomLayout?.visible()
         } else {
-            addressList?.gone()
+            addressListRv?.gone()
             bottomLayout?.gone()
             emptyStateLayout?.gone()
-            searchAddress.visible()
+            searchAddress?.visible()
             textSearchError?.visible()
         }
     }
@@ -192,7 +184,8 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
     }
 
     private fun initView() {
-        addressList = view?.findViewById(R.id.address_list_rv)
+        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
+        addressListRv = view?.findViewById(R.id.address_list_rv)
         swipeRefreshLayout = view?.findViewById(R.id.swipe_refresh_layout)
         searchInputView = view?.findViewById(R.id.search_input_view)
         buttonSaveAddress = view?.findViewById(R.id.btn_save_address)
@@ -229,7 +222,7 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
                         goToPickLocation(REQUEST_CREATE)
                     } else {
                         view?.let {
-                            Toaster.make(it, DEFAULT_LOCAL_ERROR_MESSAGE, type = Toaster.TYPE_ERROR)
+                            Toaster.build(it, DEFAULT_LOCAL_ERROR_MESSAGE, type = Toaster.TYPE_ERROR).show()
                         }
                     }
                 }
@@ -237,14 +230,12 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
         } else {
             val parent = activity
             if (parent is PreferenceEditParent) {
-                parent.hideDeleteButton()
-                parent.hideAddButton()
                 parent.showAddButton()
                 parent.setAddButtonOnClickListener {
                     goToPickLocation(REQUEST_CREATE)
                 }
                 parent.showStepper()
-                parent.setStepperValue(25, true)
+                parent.setStepperValue(25)
                 parent.setHeaderTitle(getString(R.string.activity_title_choose_address))
                 parent.setHeaderSubtitle(getString(R.string.activity_subtitle_choose_address))
             }
@@ -267,19 +258,21 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
                 goToNextStep()
             }
         } else if (requestCode == REQUEST_CREATE) {
-            performSearch(searchAddress.searchTextView.text.toString())
+            performSearch(searchAddress?.searchTextView?.text?.toString() ?: "")
         }
 
     }
 
     private fun initSearchView() {
-        searchAddress.searchTextView.setOnClickListener(onSearchViewClickListener())
-        searchAddress.searchTextView.setOnTouchListener(onSearchViewTouchListener())
-        searchAddress.setResetListener {
+        searchAddress?.searchTextView?.setOnClickListener { view ->
+            searchAddress?.searchTextView?.isCursorVisible = true
+            openSoftKeyboard()
+        }
+        searchAddress?.setResetListener {
             performSearch("")
         }
-        searchAddress.setListener(this)
-        searchAddress.setSearchHint(getString(com.tokopedia.purchase_platform.common.R.string.label_hint_search_address))
+        searchAddress?.setListener(this)
+        searchAddress?.setSearchHint(getString(com.tokopedia.purchase_platform.common.R.string.label_hint_search_address))
     }
 
     override fun onSelect(addressId: String) {
@@ -300,22 +293,8 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
     }
 
     private fun openSoftKeyboard() {
-        (activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)?.showSoftInput(
-                searchAddress.searchTextView, InputMethodManager.SHOW_IMPLICIT)
-    }
-
-    private fun onSearchViewTouchListener(): View.OnTouchListener {
-        return View.OnTouchListener { view, motionEvent ->
-            searchAddress.searchTextView.isCursorVisible = true
-            openSoftKeyboard()
-            false
-        }
-    }
-
-    private fun onSearchViewClickListener(): View.OnClickListener {
-        return View.OnClickListener { view ->
-            searchAddress.searchTextView.isCursorVisible = true
-            openSoftKeyboard()
+        searchAddress?.searchTextView?.let {
+            (activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)?.showSoftInput(it, InputMethodManager.SHOW_IMPLICIT)
         }
     }
 
@@ -342,7 +321,7 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
 
     private fun setShippingParam() {
         val parent = activity
-        if(parent is PreferenceEditParent) {
+        if (parent is PreferenceEditParent) {
             val shippingParam = parent.getShippingParam()
             if (shippingParam != null) {
                 shippingParam.destinationDistrictId = viewModel.destinationDistrict
@@ -355,23 +334,20 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
         }
     }
 
-    private fun handleError(throwable: Throwable) {
+    private fun handleError(throwable: Throwable?) {
         when (throwable) {
             is SocketTimeoutException, is UnknownHostException, is ConnectException -> {
-                view?.let {
-                    showGlobalError(GlobalError.NO_CONNECTION)
-                }
+                showGlobalError(GlobalError.NO_CONNECTION)
             }
             is RuntimeException -> {
-                when (throwable.localizedMessage.toIntOrNull()) {
+                when (throwable.localizedMessage?.toIntOrNull()) {
                     ReponseStatus.GATEWAY_TIMEOUT, ReponseStatus.REQUEST_TIMEOUT -> showGlobalError(GlobalError.NO_CONNECTION)
                     ReponseStatus.NOT_FOUND -> showGlobalError(GlobalError.PAGE_NOT_FOUND)
                     ReponseStatus.INTERNAL_SERVER_ERROR -> showGlobalError(GlobalError.SERVER_ERROR)
-
                     else -> {
                         view?.let {
                             showGlobalError(GlobalError.SERVER_ERROR)
-                            Toaster.make(it, DEFAULT_ERROR_MESSAGE, type = Toaster.TYPE_ERROR)
+                            Toaster.build(it, DEFAULT_ERROR_MESSAGE, type = Toaster.TYPE_ERROR).show()
                         }
                     }
                 }
@@ -379,12 +355,11 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
             else -> {
                 view?.let {
                     showGlobalError(GlobalError.SERVER_ERROR)
-                    Toaster.make(it, throwable.message
-                            ?: DEFAULT_ERROR_MESSAGE, type = Toaster.TYPE_ERROR)
+                    Toaster.build(it, throwable?.message
+                            ?: DEFAULT_ERROR_MESSAGE, type = Toaster.TYPE_ERROR).show()
                 }
             }
         }
-        viewModel.consumeSearchAddressFail()
     }
 
     private fun showGlobalError(type: Int) {
@@ -392,12 +367,24 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
         globalErrorLayout?.setActionClickListener {
             viewModel.searchAddress("")
         }
-        searchAddress.gone()
+        searchAddress?.gone()
         textSearchError?.gone()
-        addressList?.gone()
+        addressListRv?.gone()
         bottomLayout?.gone()
         emptyStateLayout?.gone()
         globalErrorLayout?.visible()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        searchAddress = null
+        addressListRv = null
+        swipeRefreshLayout = null
+        searchInputView = null
+        buttonSaveAddress = null
+        bottomLayout = null
+        emptyStateLayout = null
+        textSearchError = null
+        globalErrorLayout = null
+    }
 }

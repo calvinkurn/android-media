@@ -3,8 +3,6 @@ package com.tokopedia.product.detail.data.util
 import com.tokopedia.url.TokopediaUrl
 
 object ProductDetailConstant {
-
-
     @JvmField
     var BASE_REST_URL = TokopediaUrl.getInstance().WS
 
@@ -22,9 +20,6 @@ object ProductDetailConstant {
 
     const val PARAM_PRODUCT_ETALASE_ID = "product_etalase_id"
     const val PARAM_PRODUCT_ETALASE_NAME = "product_etalase_name"
-
-    const val PARAM_OPTION = "option"
-    const val PARAM_INCLUDE_CAMPAIGN = "includeCampaign"
 
     const val VALUE_NEW_ETALASE = "new"
 
@@ -44,24 +39,23 @@ object ProductDetailConstant {
     const val WISHLIST_STATUS_UPDATED_POSITION = "wishlistUpdatedPosition"
     const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
 
-    const val KEY_USER_ID = "userID"
-    const val KEY_PREORDER = "preorder"
-    const val KEY_LEASING = "leasing"
     const val KEY_NORMAL_BUTTON = "normal"
     const val KEY_OCS_BUTTON = "ocs"
     const val KEY_OCC_BUTTON = "occ"
-    const val KEY_OVO_DEALS = "ovo_deals"
     const val KEY_CHAT = "chat"
     const val KEY_BYME = "byme"
+    const val DELIMITER_DEVICE_ID = "|>deviceID:"
     const val KEY_BUTTON_PRIMARY = "primary"
+    const val KEY_BUTTON_DISABLE = "disabled"
     const val KEY_BUTTON_SECONDARY = "secondary"
     const val DEFAULT_PAGE_NUMBER = 1
     const val DEFAULT_PAGE_NAME = "pdp_1,pdp_2,pdp_3,pdp_4"
+    const val KEY_TOP_ADS = "tdn_topads"
 
     const val PDP_P1_TRACE = "mp_pdp_p1"
-    const val PDP_P2_TRACE = "mp_pdp_p2"
-    const val PDP_P2_GENERAL_TRACE = "mp_pdp_p2_general"
+    const val PDP_P2_OTHER_TRACE = "mp_pdp_p2_other"
     const val PDP_P2_LOGIN_TRACE = "mp_pdp_p2_login"
+    const val PDP_P2_DATA_TRACE = "mp_pdp_p2_data"
     const val PDP_P3_TRACE = "mp_pdp_p3"
 
     const val PDP_RESULT_PLT_PREPARE_METRICS = "pdp_result_plt_prepare_metrics"
@@ -75,6 +69,7 @@ object ProductDetailConstant {
     const val PAYLOAD_TOOGLE_FAVORITE = 2
     const val PAYLOAD_TOOGLE_AND_FAVORITE_SHOP = 3
     const val PAYLOAD_UPDATE_IMAGE = 5
+    const val PAYLOAD_MEDIA_UPDATE_IMAGE_REVIEW = 521
     const val PAYLOAD_VARIANT_COMPONENT = 1
     const val PAYLOAD_NOTIFY_ME = 1
 
@@ -107,7 +102,7 @@ object ProductDetailConstant {
     const val VALUE_PROPOSITION = "value_prop"
     const val PRODUCT_LIST = "product_list"
     const val NOTIFY_ME = "teaser"
-      const val TICKER_INFO = "ticker_info"
+    const val TICKER_INFO = "ticker_info"
     const val UPCOMING_DEALS = "upcoming_deals"
     const val VARIANT_OPTIONS = "variant_options"
     const val VARIANT = "variant"
@@ -120,6 +115,7 @@ object ProductDetailConstant {
     const val PRODUCT_VARIANT_INFO = "variant"
     const val PRODUCT_WHOLESALE_INFO = "wholesale"
     const val PRODUCT_SHOP_CREDIBILITY = "shop_credibility"
+    const val PRODUCT_CUSTOM_INFO = "custom_info"
     const val PRODUCT_INSTALLMENT_INFO = "installment"
     const val PRODUCT_SHIPPING_INFO = "shipping"
     const val ORDER_PRIORITY = "order_prio"
@@ -129,10 +125,8 @@ object ProductDetailConstant {
     const val PRODUCT_CONTENT = "product_content"
     const val PRODUCT_CONTENT_TITLE_TOP = "product_content_title_top"
     const val MEDIA = "product_media"
-    const val LAYOUT_HEAD_N_SHOULDERS = "head n shoulders"
-    const val LAYOUT_DEFAULT = "Default Layout"
-    const val LAYOUT_TAIL_N_SHOULDERS = "tail n shoulders"
     const val BY_ME = "byme"
+    const val TOP_ADS = "banner_ads"
 
 
     //Arguments
@@ -146,6 +140,7 @@ object ProductDetailConstant {
     const val ARG_FROM_AFFILIATE = "ARG_FROM_AFFILIATE"
     const val ARG_AFFILIATE_STRING = "ARG_AFFILIATE_STRING"
     const val ARG_DEEPLINK_URL = "ARG_DEEPLINK_URL"
+    const val ARG_LAYOUT_ID= "ARG_LAYOUT_ID"
     const val REVIEW_PRD_NM = "x_prd_nm"
 
 
@@ -177,5 +172,12 @@ object ProductDetailConstant {
     const val OVO_INSUFFICIENT_BALANCE_STATUS = 2;
 
     const val ENABLE_NEW_DISCUSSION_REMOTE_CONFIG = "android_enable_new_discussion"
-    const val SHOW_LABEL_SHARED_PREFERENCE_KEY = "discussion_show_new_%s"
+
+    //SHOP
+    const val ALREADY_FAVORITE_SHOP = 1
+
+    //TopAds Banner
+    const val ADS_COUNT = 1
+    const val DIMEN_ID = 3
+    const val PAGE_SOURCE = "3"
 }

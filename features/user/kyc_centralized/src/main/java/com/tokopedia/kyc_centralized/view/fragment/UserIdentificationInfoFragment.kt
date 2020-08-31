@@ -60,6 +60,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
     private var analytics: UserIdentificationAnalytics? = null
     private var statusCode = 0
     private var projectId = -1
+    private var callback: String? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -77,6 +78,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
         if (arguments != null) {
             isSourceSeller = arguments?.getBoolean(KYCConstant.EXTRA_IS_SOURCE_SELLER)?: false
             projectId = arguments?.getInt(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, KYCConstant.KYC_PROJECT_ID)?: KYCConstant.KYC_PROJECT_ID
+            callback = arguments?.getString(ApplinkConstInternalGlobal.PARAM_CALL_BACK)
         }
         if (isSourceSeller) {
             goToFormActivity()
@@ -152,6 +154,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
         statusCode = status
         when (status) {
             KYCConstant.STATUS_REJECTED -> showStatusRejected(reasons)
+            KYCConstant.STATUS_APPROVED -> showStatusPending()
             KYCConstant.STATUS_PENDING -> showStatusPending()
             KYCConstant.STATUS_VERIFIED -> showStatusVerified()
             KYCConstant.STATUS_EXPIRED -> showStatusNotVerified()
@@ -203,11 +206,16 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
         ImageHandler.LoadImage(image, KycUrl.ICON_SUCCESS_VERIFY)
         title?.setText(R.string.kyc_verified_title)
         text?.setText(R.string.kyc_verified_text)
-        button?.setText(R.string.kyc_verified_button)
+        if (callback == null) {
+            button?.setText(R.string.kyc_verified_button)
+            button?.setOnClickListener(onGoToTermsButton())
+        } else {
+            button?.setText(R.string.camera_next_button)
+            button?.setOnClickListener(goToCallBackUrl(callback))
+        }
         button?.buttonVariant = FILLED
         button?.buttonType = MAIN
         button?.visibility = View.VISIBLE
-        button?.setOnClickListener(onGoToTermsButton())
         analytics?.eventViewSuccessPage()
     }
 
@@ -215,7 +223,13 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
         ImageHandler.LoadImage(image, KycUrl.ICON_WAITING)
         title?.setText(R.string.kyc_pending_title)
         text?.setText(R.string.kyc_pending_text)
-        button?.setText(R.string.kyc_pending_button)
+        if (callback == null) {
+            button?.setText(R.string.kyc_pending_button)
+            button?.setOnClickListener(onGoToAccountSettingButton(KYCConstant.STATUS_PENDING))
+        } else {
+            button?.setText(R.string.camera_next_button)
+            button?.setOnClickListener(goToCallBackUrl(callback))
+        }
         button?.buttonVariant = GHOST
         button?.visibility = View.VISIBLE
         button?.setOnClickListener(onGoToAccountSettingButton(KYCConstant.STATUS_PENDING))
@@ -338,13 +352,23 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
         }
     }
 
+    private fun goToCallBackUrl(callback: String?): View.OnClickListener {
+        return View.OnClickListener { v: View? ->
+            if (callback != null) {
+                RouteManager.route(activity, callback)
+                activity?.finish()
+            }
+        }
+    }
+
     companion object {
         private const val FLAG_ACTIVITY_KYC_FORM = 1301
-        fun createInstance(isSourceSeller: Boolean, projectid: Int): UserIdentificationInfoFragment {
+        fun createInstance(isSourceSeller: Boolean, projectid: Int, callback: String?): UserIdentificationInfoFragment {
             val fragment = UserIdentificationInfoFragment()
             val args = Bundle()
             args.putBoolean(KYCConstant.EXTRA_IS_SOURCE_SELLER, isSourceSeller)
             args.putInt(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectid)
+            args.putString(ApplinkConstInternalGlobal.PARAM_CALL_BACK, callback)
             fragment.arguments = args
             return fragment
         }

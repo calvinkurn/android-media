@@ -100,4 +100,5 @@ dependencies {
 
 //    Merchant
     implementation project(rootProject.ext.features.shopPage)
+    implementation project(rootProject.ext.features.statistic)
 }

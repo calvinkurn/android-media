@@ -1,5 +1,6 @@
 {
   "readme": "Search Product P0 Tracking - General Search, Impression Organic and Top Ads, Click Organic And Top Ads",
+  "mode": "exact",
   "query" : [
     {
       "event": "clickSearch",

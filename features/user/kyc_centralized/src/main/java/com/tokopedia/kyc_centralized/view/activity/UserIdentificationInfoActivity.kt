@@ -1,7 +1,6 @@
 package com.tokopedia.kyc_centralized.view.activity
 
 import android.os.Bundle
-import android.view.MenuItem
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -15,6 +14,7 @@ import com.tokopedia.user_identification_common.KYCConstant
 class UserIdentificationInfoActivity : BaseSimpleActivity() {
     var isSourceSeller = false
     private var projectId = -1
+    private var callbackUrl: String? = null
 
     interface Listener {
         fun onTrackBackPressed()
@@ -38,6 +38,7 @@ class UserIdentificationInfoActivity : BaseSimpleActivity() {
     override fun getNewFragment(): Fragment? {
         try {
             projectId = intent.data?.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID).toIntOrZero()
+            callbackUrl = intent.data?.getQueryParameter(ApplinkConstInternalGlobal.PARAM_CALL_BACK)
         } catch (ex: NullPointerException) {
             projectId = KYCConstant.STATUS_DEFAULT
         } catch (ex: NumberFormatException) {
@@ -45,6 +46,6 @@ class UserIdentificationInfoActivity : BaseSimpleActivity() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        return UserIdentificationInfoFragment.createInstance(isSourceSeller, projectId)
+        return UserIdentificationInfoFragment.createInstance(isSourceSeller, projectId, callbackUrl)
     }
 }

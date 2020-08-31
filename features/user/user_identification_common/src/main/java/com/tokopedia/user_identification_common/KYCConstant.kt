@@ -23,6 +23,7 @@ interface KYCConstant {
         const val STATUS_VERIFIED = 1
         const val STATUS_EXPIRED = 2
         const val STATUS_NOT_VERIFIED = 3
+        const val STATUS_APPROVED = 4
         const val STATUS_BLACKLISTED = 5
         const val IS_SUCCESS_GET_STATUS = 1
         const val IS_ALL_MUTATION_SUCCESS = 2

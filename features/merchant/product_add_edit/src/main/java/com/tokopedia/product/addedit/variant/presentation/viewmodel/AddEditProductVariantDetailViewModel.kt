@@ -178,6 +178,7 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
                 if (price < productInputModel.value?.detailInputModel?.price ?: 0.toBigInteger()) {
                     productInputModel.value?.detailInputModel?.price = price
                 }
+                combination = variantDetailInput.combination
             }
             productPosition++
         }
@@ -195,6 +196,11 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
     }
 
     fun updateProductInputModel(inputModel: MultipleVariantEditInputModel) {
+        val variantDetailInputMap = mutableMapOf<List<Int>, Boolean>()
+        inputLayoutModelMap.forEach {
+            variantDetailInputMap[it.value.combination] = it.value.isActive
+        }
+
         productInputModel.value = productInputModel.value?.also {
             inputModel.selection.forEach { selectedCombination ->
                 // search product variant by comparing combination
@@ -222,6 +228,8 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
                     if (inputModel.sku.isNotEmpty()) {
                         sku = inputModel.sku
                     }
+
+                    status = if(variantDetailInputMap[selectedCombination] == true) STATUS_ACTIVE_STRING else STATUS_INACTIVE_STRING
                 }
             }
         }
@@ -409,6 +417,7 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
                 .getOrElse(productVariantIndex) { ProductVariantInputModel() }
         val priceString = productVariant.price.toString()
         val isPrimary = productVariant.isPrimary
+        val combination = productVariant.combination
 
         return VariantDetailInputLayoutModel(
                 price = InputPriceUtil.formatProductPriceInput(priceString),
@@ -418,7 +427,8 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
                 headerPosition = headerPosition,
                 isSkuFieldVisible = isSkuFieldVisible,
                 unitValueLabel = unitValueLabel,
-                isPrimary = isPrimary)
+                isPrimary = isPrimary,
+                combination = combination)
     }
 
 }

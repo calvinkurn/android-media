@@ -14,12 +14,20 @@
         app:unify_header_is_show_shadow="false"
         app:unify_header_title="@string/top_ads_title_dashboard" />
 
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker_seller_migration_topads"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:tickerType="announcement"
+        app:layout_constraintTop_toBottomOf="@id/header_toolbar"/>
+
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/header_toolbar">
+        app:layout_constraintTop_toBottomOf="@id/ticker_seller_migration_topads">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/app_bar_layout"
