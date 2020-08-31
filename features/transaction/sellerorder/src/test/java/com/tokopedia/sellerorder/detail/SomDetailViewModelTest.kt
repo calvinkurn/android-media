@@ -80,11 +80,11 @@ class SomDetailViewModelTest {
     fun getOrderDetail_shouldReturnSuccess() {
         //given
         coEvery {
-            somGetOrderDetailUseCase.execute(any(), any())
+            somGetOrderDetailUseCase.execute(any())
         } returns Success(SomDetailOrder.Data.GetSomDetail(123))
 
         //when
-        somDetailViewModel.loadDetailOrder("", "")
+        somDetailViewModel.loadDetailOrder("")
 
         //then
         assert(somDetailViewModel.orderDetailResult.value is Success)
@@ -95,11 +95,11 @@ class SomDetailViewModelTest {
     fun getOrderDetail_shouldReturnFail() {
         //given
         coEvery {
-            somGetOrderDetailUseCase.execute(any(), any())
+            somGetOrderDetailUseCase.execute(any())
         } returns Fail(Throwable())
 
         //when
-        somDetailViewModel.loadDetailOrder("", "")
+        somDetailViewModel.loadDetailOrder("")
 
         //then
         assert(somDetailViewModel.orderDetailResult.value is Fail)
@@ -109,11 +109,11 @@ class SomDetailViewModelTest {
     fun getOrderDetail_shouldNotReturnEmpty() {
         //given
         coEvery {
-            somGetOrderDetailUseCase.execute(any(), any())
+            somGetOrderDetailUseCase.execute(any())
         } returns Success(SomDetailOrder.Data.GetSomDetail(listProduct = listProducts))
 
         //when
-        somDetailViewModel.loadDetailOrder("", "")
+        somDetailViewModel.loadDetailOrder("")
 
         //then
         assert(somDetailViewModel.orderDetailResult.value is Success)
