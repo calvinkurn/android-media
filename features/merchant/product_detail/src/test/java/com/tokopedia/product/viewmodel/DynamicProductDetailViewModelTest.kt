@@ -38,6 +38,7 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -121,6 +122,9 @@ class DynamicProductDetailViewModelTest {
     @RelaxedMockK
     lateinit var getProductInfoP2DataUseCase: GetProductInfoP2DataUseCase
 
+    @RelaxedMockK
+    lateinit var topAdsImageViewUseCase: TopAdsImageViewUseCase
+
     private lateinit var spykViewModel : DynamicProductDetailViewModel
 
     @get:Rule
@@ -130,7 +134,7 @@ class DynamicProductDetailViewModelTest {
     fun setup() {
         MockKAnnotations.init(this)
         spykViewModel = spyk(DynamicProductDetailViewModel(TestDispatcherProvider(), stickyLoginUseCase, getPdpLayoutUseCase, getProductInfoP2LoginUseCase, getProductInfoP2OtherUseCase, getProductInfoP2DataUseCase, getProductInfoP3UseCase, toggleFavoriteUseCase, removeWishlistUseCase, addWishListUseCase, getRecommendationUseCase,
-                moveProductToWarehouseUseCase, moveProductToEtalaseUseCase, trackAffiliateUseCase, submitHelpTicketUseCase, updateCartCounterUseCase, addToCartUseCase, addToCartOcsUseCase, addToCartOccUseCase, toggleNotifyMeUseCase, discussionMostHelpfulUseCase, userSessionInterface)
+                moveProductToWarehouseUseCase, moveProductToEtalaseUseCase, trackAffiliateUseCase, submitHelpTicketUseCase, updateCartCounterUseCase, addToCartUseCase, addToCartOcsUseCase, addToCartOccUseCase, toggleNotifyMeUseCase, discussionMostHelpfulUseCase, topAdsImageViewUseCase, userSessionInterface)
         )
     }
 
@@ -141,7 +145,7 @@ class DynamicProductDetailViewModelTest {
 
     private val viewModel by lazy {
         DynamicProductDetailViewModel(TestDispatcherProvider(), stickyLoginUseCase, getPdpLayoutUseCase, getProductInfoP2LoginUseCase, getProductInfoP2OtherUseCase, getProductInfoP2DataUseCase, getProductInfoP3UseCase, toggleFavoriteUseCase, removeWishlistUseCase, addWishListUseCase, getRecommendationUseCase,
-                moveProductToWarehouseUseCase, moveProductToEtalaseUseCase, trackAffiliateUseCase, submitHelpTicketUseCase, updateCartCounterUseCase, addToCartUseCase, addToCartOcsUseCase, addToCartOccUseCase, toggleNotifyMeUseCase, discussionMostHelpfulUseCase, userSessionInterface)
+                moveProductToWarehouseUseCase, moveProductToEtalaseUseCase, trackAffiliateUseCase, submitHelpTicketUseCase, updateCartCounterUseCase, addToCartUseCase, addToCartOcsUseCase, addToCartOccUseCase, toggleNotifyMeUseCase, discussionMostHelpfulUseCase,topAdsImageViewUseCase, userSessionInterface)
     }
 
     //=========================================VARIABLE SECTION======================================//
@@ -473,9 +477,9 @@ class DynamicProductDetailViewModelTest {
         coEvery {
             getPdpLayoutUseCase.requestParams
         } returns GetPdpLayoutUseCase.createParams(productParams.productId
-                ?: "", productParams.shopDomain ?: "", productParams.productName ?: "", productParams.warehouseId ?: "")
+                ?: "", productParams.shopDomain ?: "", productParams.productName ?: "", productParams.warehouseId ?: "", "")
 
-        viewModel.getProductP1(productParams, true, false)
+        viewModel.getProductP1(productParams, true, false, "")
 
         Assert.assertTrue(getPdpLayoutUseCase.requestParams.getString(PARAM_PRODUCT_ID, "") == productId)
         Assert.assertTrue(getPdpLayoutUseCase.requestParams.getString(PARAM_PRODUCT_KEY, "").isEmpty())
@@ -494,9 +498,9 @@ class DynamicProductDetailViewModelTest {
         coEvery {
             getPdpLayoutUseCase.requestParams
         } returns GetPdpLayoutUseCase.createParams(productParams.productId
-                ?: "", productParams.shopDomain ?: "", productParams.productName ?: "", productParams.warehouseId ?: "")
+                ?: "", productParams.shopDomain ?: "", productParams.productName ?: "", productParams.warehouseId ?: "", "")
 
-        viewModel.getProductP1(productParams, true, false)
+        viewModel.getProductP1(productParams, true, false, " ")
 
         Assert.assertTrue(getPdpLayoutUseCase.requestParams.getString(PARAM_PRODUCT_ID, "").isEmpty())
         Assert.assertTrue(getPdpLayoutUseCase.requestParams.getString(PARAM_PRODUCT_KEY, "") == productKey)
@@ -526,7 +530,7 @@ class DynamicProductDetailViewModelTest {
 
        `co every p1 success`(dataP1)
 
-        viewModel.getProductP1(productParams, true, false)
+        viewModel.getProductP1(productParams, true, false, "")
 
         `co verify p1 success`()
 
@@ -558,7 +562,7 @@ class DynamicProductDetailViewModelTest {
         }
 
         coVerify {
-            getProductInfoP2DataUseCase.executeOnBackground(any(), any())
+            getProductInfoP2DataUseCase.executeOnBackground(any(), any(), any())
         }
 
         coVerify {
@@ -584,7 +588,7 @@ class DynamicProductDetailViewModelTest {
         } returns ProductInfoP3()
 
         coEvery {
-            getProductInfoP2DataUseCase.executeOnBackground(any(), any())
+            getProductInfoP2DataUseCase.executeOnBackground(any(), any(), any())
         } returns ProductInfoP2UiData()
 
         coEvery {
@@ -659,7 +663,7 @@ class DynamicProductDetailViewModelTest {
         }
 
         coVerify {
-            getProductInfoP2DataUseCase.executeOnBackground(any(), any())
+            getProductInfoP2DataUseCase.executeOnBackground(any(), any(), any())
         }
 
         coVerify {

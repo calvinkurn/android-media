@@ -107,7 +107,7 @@ public abstract class SellerRouterApplication extends MainApplication
         CoreNetworkRouter,
         LinkerRouter,
         SellerHomeRouter,
-        LoginRouter {
+        LoginRouter{
 
     protected RemoteConfig remoteConfig;
     private DaggerGMComponent.Builder daggerGMBuilder;

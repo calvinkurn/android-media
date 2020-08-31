@@ -141,6 +141,7 @@ object GqlQueryConstant {
             "                    shopLastActive\n" +
             "                    location\n" +
             "                    isAllowManage\n" +
+            "                    shopSnippetURL\n" +
             "                    statusInfo {\n" +
             "                        shopStatus\n" +
             "                        statusMessage\n" +

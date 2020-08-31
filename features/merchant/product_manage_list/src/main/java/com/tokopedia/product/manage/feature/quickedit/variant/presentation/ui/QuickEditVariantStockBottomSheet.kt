@@ -15,7 +15,7 @@ import com.tokopedia.product.manage.feature.quickedit.variant.presentation.data.
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 
 class QuickEditVariantStockBottomSheet(
-    private val onSaveVariantsStock: (EditVariantResult) -> Unit
+    private val onSaveVariantsStock: (EditVariantResult) -> Unit = {}
 ): QuickEditVariantBottomSheet(), ProductVariantStockListener {
 
     companion object {
