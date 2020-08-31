@@ -123,6 +123,7 @@ import com.tokopedia.referral.ReferralAction
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shopetalasepicker.constant.ShopParamConstant
 import com.tokopedia.shopetalasepicker.view.activity.ShopEtalasePickerActivity
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
@@ -443,14 +444,23 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             }
             ProductDetailConstant.REQUEST_CODE_ETALASE -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
-                    val selectedEtalaseId = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_ID)
-                    val selectedEtalaseName = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_NAME)
+                    val selectedEtalaseId = data.getStringExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_ID)
+                    val selectedEtalaseName = data.getStringExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_NAME)
                     val dynamicProductInfoData = viewModel.getDynamicProductInfoP1
                             ?: DynamicProductInfoP1()
                     if (dynamicProductInfoData.basic.productID.isNotEmpty() && !selectedEtalaseName.isNullOrEmpty()) {
                         showProgressDialog(onCancelClicked = { viewModel.cancelEtalaseUseCase() })
                         viewModel.moveProductToEtalase(dynamicProductInfoData.basic.productID, selectedEtalaseId, selectedEtalaseName)
                     }
+
+//                    val selectedEtalaseId = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_ID)
+//                    val selectedEtalaseName = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_NAME)
+//                    val dynamicProductInfoData = viewModel.getDynamicProductInfoP1
+//                            ?: DynamicProductInfoP1()
+//                    if (dynamicProductInfoData.basic.productID.isNotEmpty() && !selectedEtalaseName.isNullOrEmpty()) {
+//                        showProgressDialog(onCancelClicked = { viewModel.cancelEtalaseUseCase() })
+//                        viewModel.moveProductToEtalase(dynamicProductInfoData.basic.productID, selectedEtalaseId, selectedEtalaseName)
+//                    }
                 }
             }
             ProductDetailConstant.REQUEST_CODE_EDIT_PRODUCT -> {
@@ -1943,9 +1953,17 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             val shopId = viewModel.getDynamicProductInfoP1?.basic?.shopID ?: ""
             if (shopId.isNotEmpty()) {
                 val etalaseId = viewModel.getDynamicProductInfoP1?.basic?.menu?.id ?: ""
-                val shopEtalasePickerIntent = ShopEtalasePickerActivity.createIntent(this,
-                        shopId, etalaseId, false, true)
+                val shopEtalasePickerIntent: Intent = RouteManager.getIntent(context, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST)
+                shopEtalasePickerIntent.putExtra(ShopShowcaseParamConstant.EXTRA_SHOP_ID, shopId)
+                shopEtalasePickerIntent.putExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_ID, etalaseId)
+                shopEtalasePickerIntent.putExtra(ShopShowcaseParamConstant.EXTRA_IS_SHOW_DEFAULT, false)
+                shopEtalasePickerIntent.putExtra(ShopShowcaseParamConstant.EXTRA_IS_SHOW_ZERO_PRODUCT, true)
                 startActivityForResult(shopEtalasePickerIntent, ProductDetailConstant.REQUEST_CODE_ETALASE)
+
+//                val etalaseId = viewModel.getDynamicProductInfoP1?.basic?.menu?.id ?: ""
+//                val shopEtalasePickerIntent = ShopEtalasePickerActivity.createIntent(this,
+//                        shopId, etalaseId, false, true)
+//                startActivityForResult(shopEtalasePickerIntent, ProductDetailConstant.REQUEST_CODE_ETALASE)
             }
         }
     }
