@@ -59,9 +59,9 @@ class SomDetailViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
     val rejectCancelOrderResult: LiveData<Result<SomRejectCancelOrderResponse.Data>>
         get() = _rejectCancelOrderResult
 
-    fun loadDetailOrder(detailQuery: String, orderId: String) {
+    fun loadDetailOrder(orderId: String) {
         launchCatchError(block = {
-            _orderDetailResult.postValue(somGetOrderDetailUseCase.execute(detailQuery, orderId))
+            _orderDetailResult.postValue(somGetOrderDetailUseCase.execute(orderId))
         }, onError = {
             _orderDetailResult.postValue(Fail(it))
         })

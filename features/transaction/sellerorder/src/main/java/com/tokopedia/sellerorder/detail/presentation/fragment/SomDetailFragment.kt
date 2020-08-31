@@ -355,7 +355,7 @@ class SomDetailFragment : BaseDaggerFragment(),
             activity?.let {
                 SomAnalytics.sendScreenName(it, SomConsts.DETAIL_ORDER_SCREEN_NAME + orderId)
                 it.resources?.let { r ->
-                    somDetailViewModel.loadDetailOrder(GraphqlHelper.loadRawString(r, R.raw.gql_som_detail), orderId)
+                    somDetailViewModel.loadDetailOrder(orderId)
                 }
             }
         } else {
