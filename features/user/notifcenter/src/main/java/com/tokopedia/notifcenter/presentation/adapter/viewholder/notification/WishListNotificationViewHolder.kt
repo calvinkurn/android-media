@@ -4,6 +4,7 @@ import android.view.View
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
+import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.entity.ProductData
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
@@ -22,6 +23,7 @@ class WishListNotificationViewHolder(
     override fun bindProductView(element: NotificationItemViewBean) {
         val product = element.getAtcProduct() ?: return
         val atcDrawable = ContextCompat.getDrawable(itemView.context, R.drawable.notifcenter_ic_add_to_cart)
+        listener.getAnalytic().saveProductCardImpression(element, adapterPosition)
 
         with(product) {
             btnCart.setImageDrawable(atcDrawable)
@@ -40,14 +42,21 @@ class WishListNotificationViewHolder(
         }
     }
 
-    override fun bindProductClickTrack(element: NotificationItemViewBean) {
+    override fun trackProduct(element: NotificationItemViewBean) {
         listener.getAnalytic().trackAtcToPdpClick(element)
     }
 
-    private fun onSuccessAddToCart(): () -> Unit {
+    private fun onSuccessAddToCart(): (DataModel) -> Unit {
         return {
-            val checkDrawable = ContextCompat.getDrawable(itemView.context, R.drawable.notifcenter_ic_add_to_cart_check_grey)
+            val checkDrawable = ContextCompat.getDrawable(
+                    itemView.context,
+                    R.drawable.notifcenter_ic_add_to_cart_check_grey
+            )
             btnCart.setImageDrawable(checkDrawable)
+
+            // show toaster
+            val message = it.message.first()
+            listener.onSuccessAddToCart(message)
         }
     }
 

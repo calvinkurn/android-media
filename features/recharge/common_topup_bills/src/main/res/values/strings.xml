@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">common_topup_bills</string>
+
+    <string name="common_topup__menu_promo">Promo</string>
+    <string name="common_topup__menu_help">Tokopedia Care</string>
+    <string name="common_topup__menu_transaction_list">Daftar Transaksi</string>
+
+    <string name="common_topup_text_copy_promo_code">Salin</string>
+    <string name="common_topup_text_has_copied_promo_code">Disalin</string>
+    <string name="common_topup_title_promo">Promo</string>
+    <string name="common_topup_title_promo_code">Kode Promo: </string>
+    <string name="common_topup_title_recent_transaction_widget">Transaksi Terakhir</string>
+
+    <string name="common_topup_title_fav_number">Nomor Favorit</string>
+    <string name="common_topup_voucher_code_already_copied">Kode voucher telah tersalin</string>
+
+    <string name="common_topup_enquiry_default_label">Lanjut</string>
+    <string name="common_topup_enquiry_error">Terjadi kesalahan, silahkan coba beberapa saat lagi</string>
+
+    <string name="common_topup_checkout_view_total_value_label">Total Pembayaran</string>
+</resources>

@@ -21,7 +21,7 @@
 
         <ImageView
             android:id="@+id/no_result_image"
-            android:layout_width="100dp"
+            android:layout_width="133dp"
             android:layout_height="100dp"
             android:scaleType="fitCenter"/>
 
@@ -70,14 +70,5 @@
             android:paddingRight="21dp"/>
 
     </RelativeLayout>
-
-    <com.tokopedia.topads.sdk.widget.TopAdsView
-        android:id="@+id/topads"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:display_type="grid"
-        app:ep="product"
-        app:items="4" />
 
 </LinearLayout>

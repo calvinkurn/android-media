@@ -55,6 +55,14 @@ public class LineChartView extends ChartView {
 	private float mClickableRadius;
 	private Drawable drawable;
 
+	/**
+	 * to add gradient background support you should passing array
+	 * of start and end colors.
+	 * Ex : {startColor, endColor}
+	 * int[] colors = {Color.parseColor("#4CAF50"), Color.TRANSPARENT};
+	 * lineChartView.setGradientFillColors(colors);
+	 */
+	private int[] gradientFillColors = {0, 0};
 
 	public LineChartView(Context context, AttributeSet attrs) {
 
@@ -66,6 +74,9 @@ public class LineChartView extends ChartView {
 		mClickableRadius = context.getResources().getDimension(R.dimen.dot_region_radius);
 	}
 
+	public void setGradientFillColors(int[] gradientFillColors) {
+		this.gradientFillColors = gradientFillColors;
+	}
 
 	public LineChartView(Context context) {
 
@@ -158,6 +169,12 @@ public class LineChartView extends ChartView {
 				//Draw background
 				if (lineSet.hasFill() || lineSet.hasGradientFill())
 					canvas.drawPath(createBackgroundPath(new Path(linePath), lineSet), mStyle.mFillPaint);
+
+				//Draw gradient background
+				if (gradientFillColors.length == 2) {
+					float[] position = {lineSet.getEntry(lineSet.getEnd() - 1).getX(), super.getInnerChartBottom()};
+					lineSet.setGradientFill(gradientFillColors, position);
+				}
 
 				//Draw line
 				canvas.drawPath(linePath, mStyle.mLinePaint);
@@ -254,7 +271,6 @@ public class LineChartView extends ChartView {
 
 				// Style dot
 				mStyle.mDotsPaint.setColor(dot.getColor());
-				mStyle.mDotsPaint.setAlpha((int) (set.getAlpha() * 255));
 				applyShadow(mStyle.mDotsPaint, set.getAlpha(), dot.getShadowDx(), dot
 						  .getShadowDy(), dot.getShadowRadius(), dot.getShadowColor());
 
@@ -267,7 +283,6 @@ public class LineChartView extends ChartView {
 					// Style stroke
 					mStyle.mDotsStrokePaint.setStrokeWidth(dot.getStrokeThickness());
 					mStyle.mDotsStrokePaint.setColor(dot.getStrokeColor());
-					mStyle.mDotsStrokePaint.setAlpha((int) (set.getAlpha() * 255));
 					applyShadow(mStyle.mDotsStrokePaint, set.getAlpha(), dot.getShadowDx(), dot
 							  .getShadowDy(), dot.getShadowRadius(), dot.getShadowColor());
 
@@ -277,8 +292,8 @@ public class LineChartView extends ChartView {
 				// Draw drawable
 				if (dot.getDrawable() != null) {
 					Bitmap dotsBitmap = Tools.drawableToBitmap(dot.getDrawable());
-					canvas.drawBitmap(dotsBitmap, dot.getX() - dotsBitmap.getWidth() / 2,
-							  dot.getY() - dotsBitmap.getHeight() / 2, mStyle.mDotsPaint);
+					canvas.drawBitmap(dotsBitmap, dot.getX() - dotsBitmap.getWidth() / 2f,
+							  dot.getY() - dotsBitmap.getHeight() / 2f, mStyle.mDotsPaint);
 				}
 			}
 		}
@@ -372,10 +387,13 @@ public class LineChartView extends ChartView {
 		mStyle.mFillPaint.setAlpha((int) (set.getAlpha() * 255));
 
 		if (set.hasFill()) mStyle.mFillPaint.setColor(set.getFillColor());
-		if (set.hasGradientFill()) mStyle.mFillPaint.setShader(
-				  new LinearGradient(super.getInnerChartLeft(), super.getInnerChartTop(),
-							 super.getInnerChartLeft(), super.getInnerChartBottom(),
-							 set.getGradientColors(), set.getGradientPositions(), Shader.TileMode.MIRROR));
+		if (set.hasGradientFill()) {
+			mStyle.mFillPaint.setShader(
+					new LinearGradient(super.getInnerChartLeft(), super.getInnerChartTop(),
+							super.getInnerChartLeft(), super.getInnerChartBottom(),
+							set.getGradientColors()[0], set.getGradientColors()[1], Shader.TileMode.MIRROR)
+			);
+		}
 
 		path.lineTo(set.getEntry(set.getEnd() - 1).getX(), super.getInnerChartBottom());
 		path.lineTo(set.getEntry(set.getBegin()).getX(), super.getInnerChartBottom());

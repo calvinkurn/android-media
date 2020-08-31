@@ -82,7 +82,8 @@
 
     <string name="filter">Filter</string>
     <string name="recom_go_to_wishlist">Lihat Wishlist</string>
-    <string name="notifcenter_title_view">LIHAT</string>
+    <string name="notifcenter_title_view">Lihat</string>
+    <string name="notifcenter_btn_title_ok">OK</string>
 
     <string name="in_full">Selengkapnya</string>
 
@@ -98,6 +99,16 @@
     <string name="notif_transaction_waiting_payment">Menunggu Pembayaran</string>
     <string name="title_read_more">Lihat Semua</string>
     <string name="no_notification_update_yet">Belum ada Notification</string>
-
+    <string name="title_seller_info">Info Penjual</string>
     <string name="notifcenter_btn_buy">Beli</string>
+    <string name="notifcenter_btn_atc">+ Keranjang</string>
+    <string name="notifcenter_btn_reminder">Ingatkan Saya</string>
+    <string name="notifcenter_btn_out_of_stock">Stock Habis</string>
+
+    <string name="product_reminder_success">Kami akan mengabarkan bila barang sudah di stok kembali</string>
+    <string name="product_highlight_empty">Belum ada produk</string>
+    <string name="notifcenter_btn_title_atc">+ Keranjang</string>
+    <string name="notifcenter_title_product_highlight">Produk unggulan dari toko ini</string>
+
+    <string name="notifcenter_out_of_stock">Yaah, stok barangnya habis. Coba cek barang serupa lainnya, yuk.</string>
 </resources>

@@ -2,6 +2,7 @@ package com.tokopedia.notifcenter.presentation.adapter
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.notifcenter.data.entity.DataNotification
 import com.tokopedia.notifcenter.data.entity.ProductData
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.ProductRecommendationMoreViewHolder
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.ProductRecommendationViewHolder
@@ -13,6 +14,7 @@ class NotifCenterProductRecomAdapter(
 
     private var products: List<ProductData> = emptyList()
     private var totalProduct = products.size
+    private var dataNotification = DataNotification()
     private val TYPE_PRODUCT = 0
     private val TYPE_PRODUCT_LOAD_MROE = 1
 
@@ -51,7 +53,7 @@ class NotifCenterProductRecomAdapter(
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
         when (viewHolder) {
             is ProductRecommendationViewHolder -> viewHolder.bind(products[position])
-            is ProductRecommendationMoreViewHolder -> viewHolder.bind(products, position, totalProduct)
+            is ProductRecommendationMoreViewHolder -> viewHolder.bind(products, dataNotification, position, totalProduct)
         }
     }
 
@@ -62,6 +64,10 @@ class NotifCenterProductRecomAdapter(
 
     fun updateTotalProductCount(totalProduct: Int) {
         this.totalProduct = totalProduct
+    }
+
+    fun updateDataNotification(dataNotification: DataNotification) {
+        this.dataNotification = dataNotification
     }
 
     fun getSeenProductRecommendation() : List<ProductData> {

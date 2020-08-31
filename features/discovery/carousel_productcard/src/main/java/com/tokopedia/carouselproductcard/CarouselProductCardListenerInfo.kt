@@ -2,9 +2,38 @@ package com.tokopedia.carouselproductcard
 
 internal class CarouselProductCardListenerInfo {
     
-     var onItemClickListener: CarouselProductCardListener.OnItemClickListener? = null
-     var onItemLongClickListener: CarouselProductCardListener.OnItemLongClickListener? = null
-     var onItemImpressedListener: CarouselProductCardListener.OnItemImpressedListener? = null
-     var onItemAddToCartListener: CarouselProductCardListener.OnItemAddToCartListener? = null
-     var onWishlistItemClickListener: CarouselProductCardListener.OnWishlistItemClickListener? = null
+    var onItemClickListener: CarouselProductCardListener.OnItemClickListener? = null
+        set(value) {
+            if (value != null) {
+                field = value
+            }
+        }
+
+    var onItemImpressedListener: CarouselProductCardListener.OnItemImpressedListener? = null
+        set(value) {
+            if (value != null) {
+                field = value
+            }
+        }
+
+    var onItemAddToCartListener: CarouselProductCardListener.OnItemAddToCartListener? = null
+        set(value) {
+            if (value != null) {
+                field = value
+            }
+        }
+
+    var onItemThreeDotsClickListener: CarouselProductCardListener.OnItemThreeDotsClickListener? = null
+        set(value) {
+            if (value != null) {
+                field = value
+            }
+        }
+
+    var onSeeMoreClickListener: CarouselProductCardListener.OnSeeMoreClickListener? = null
+        set(value) {
+            if (value != null) {
+                field = value
+            }
+        }
 }

@@ -3,20 +3,20 @@ package com.tokopedia.home.account.data.util
 import android.content.Context
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.home.account.AccountConstants
-import com.tokopedia.home.account.AccountHomeRouter
 import com.tokopedia.home.account.AccountHomeUrl
 import com.tokopedia.home.account.R
-import com.tokopedia.home.account.data.model.AccountModel
 import com.tokopedia.home.account.presentation.viewmodel.*
 import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewModel
+import com.tokopedia.home.account.revamp.domain.data.model.AccountDataModel
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import java.lang.Boolean
 
+const val RESCENTER_BUYER = "https://m.tokopedia.com/resolution-center/inbox/buyer"
 class StaticBuyerModelGenerator private constructor() {
 
     companion object {
-        fun getModel(context: Context, accountModel: AccountModel?, remoteConfig: RemoteConfig): List<ParcelableViewModel<*>> {
-            val homeRouter: AccountHomeRouter = context.applicationContext as AccountHomeRouter
+        fun getModel(context: Context, accountDataModel: AccountDataModel?, remoteConfig: RemoteConfig): List<ParcelableViewModel<*>> {
             val viewItems = arrayListOf<ParcelableViewModel<*>>()
 
             viewItems.add(MenuTitleViewModel().apply {
@@ -26,7 +26,8 @@ class StaticBuyerModelGenerator private constructor() {
             viewItems.add(MenuListViewModel().apply {
                 menu = context.getString(R.string.title_menu_waiting_for_payment)
                 menuDescription = context.getString(R.string.label_menu_waiting_for_payment)
-                count = accountModel?.notifications?.buyerOrder?.paymentStatus?.toInt(10) ?: 0
+                val paymentStatus = accountDataModel?.notifications?.buyerOrder?.paymentStatus?: "0"
+                count = if(paymentStatus.isNotEmpty()) { paymentStatus.toInt(10) } else { 0 }
                 applink = ApplinkConst.PMS
                 titleTrack = AccountConstants.Analytics.PEMBELI
                 sectionTrack = context.getString(R.string.title_menu_transaction)
@@ -38,15 +39,15 @@ class StaticBuyerModelGenerator private constructor() {
                 titleTrack = AccountConstants.Analytics.PEMBELI
                 sectionTrack = context.getString(R.string.title_menu_transaction)
                 applinkUrl = ApplinkConst.MARKETPLACE_ORDER
-                items = when (homeRouter.getBooleanRemoteConfig(RemoteConfigKey.APP_GLOBAL_NAV_NEW_DESIGN, true)) {
-                    true -> getMarketPlaceOrderMenu(context, accountModel)
-                    else -> getPurchaseOrderMenu(context, accountModel)
+                items = when (remoteConfig.getBoolean(RemoteConfigKey.APP_GLOBAL_NAV_NEW_DESIGN, true)) {
+                    true -> getMarketPlaceOrderMenu(context, accountDataModel)
+                    else -> getPurchaseOrderMenu(context, accountDataModel)
                 }
             }
 
             viewItems.add(MenuGridViewModel().apply {
                 title = context.getString(R.string.title_menu_other_transaction)
-                items = getDigitalOrderMenu(context, homeRouter)
+                items = getDigitalOrderMenu(context, remoteConfig)
             })
 
             viewItems.add(MenuListViewModel().apply {
@@ -60,8 +61,8 @@ class StaticBuyerModelGenerator private constructor() {
             viewItems.add(MenuListViewModel().apply {
                 menu = context.getString(R.string.title_menu_buyer_complain)
                 menuDescription = context.getString(R.string.label_menu_buyer_complain)
-                count = accountModel?.notifications?.resolution?.buyer ?: 0
-                applink = ApplinkConst.RESCENTER_BUYER
+                count = accountDataModel?.notifications?.resolution?.buyer ?: 0
+                applink = RESCENTER_BUYER
                 titleTrack = AccountConstants.Analytics.PEMBELI
                 sectionTrack = context.getString(R.string.title_menu_transaction)
             })
@@ -70,7 +71,7 @@ class StaticBuyerModelGenerator private constructor() {
                 title = context.getString(R.string.title_menu_favorites)
             })
 
-            if (homeRouter.isEnableInterestPick) {
+            if (remoteConfig.getBoolean("mainapp_enable_interest_pick", Boolean.TRUE)) {
                 viewItems.add(MenuListViewModel().apply {
                     menu = context.getString(R.string.title_menu_favorite_topic)
                     menuDescription = context.getString(R.string.label_menu_favorite_topic)
@@ -112,14 +113,14 @@ class StaticBuyerModelGenerator private constructor() {
                 sectionTrack = context.getString(R.string.title_menu_mybills)
             })
 
-            if (homeRouter.getBooleanRemoteConfig(RemoteConfigKey.APP_SHOW_REFERRAL_BUTTON, false)) {
+            if (remoteConfig.getBoolean(RemoteConfigKey.APP_SHOW_REFERRAL_BUTTON, false)) {
                 viewItems.add(InfoCardViewModel().apply {
                     iconRes = R.drawable.ic_tokocash_big
-                    mainText = homeRouter.getStringRemoteConfig(
+                    mainText = remoteConfig.getString(
                             RemoteConfigKey.APP_REFERRAL_TITLE,
                             context.getString(R.string.title_menu_wallet_referral)
                     )
-                    secondaryText = homeRouter.getStringRemoteConfig(
+                    secondaryText = remoteConfig.getString(
                             RemoteConfigKey.APP_REFERRAL_SUBTITLE,
                             context.getString(R.string.label_menu_wallet_referral)
                     )
@@ -147,7 +148,7 @@ class StaticBuyerModelGenerator private constructor() {
 
         private fun getPurchaseOrderMenu(
                 context: Context,
-                accountModel: AccountModel?
+                accountDataModel: AccountDataModel?
         ): List<MenuGridItemViewModel> {
             val gridItems = arrayListOf<MenuGridItemViewModel>()
 
@@ -155,7 +156,7 @@ class StaticBuyerModelGenerator private constructor() {
                     R.drawable.ic_waiting_for_confirmation,
                     context.getString(R.string.label_menu_waiting_confirmation),
                     ApplinkConst.PURCHASE_CONFIRMED,
-                    accountModel?.notifications?.buyerOrder?.confirmed ?: 0,
+                    accountDataModel?.notifications?.buyerOrder?.confirmed ?: 0,
                     AccountConstants.Analytics.PEMBELI,
                     context.getString(R.string.title_menu_transaction)
             ))
@@ -164,7 +165,7 @@ class StaticBuyerModelGenerator private constructor() {
                     R.drawable.ic_order_processed,
                     context.getString(R.string.label_menu_order_processed),
                     ApplinkConst.PURCHASE_PROCESSED,
-                    accountModel?.notifications?.buyerOrder?.processed ?: 0,
+                    accountDataModel?.notifications?.buyerOrder?.processed ?: 0,
                     AccountConstants.Analytics.PEMBELI,
                     context.getString(R.string.title_menu_transaction)
             ))
@@ -173,7 +174,7 @@ class StaticBuyerModelGenerator private constructor() {
                     R.drawable.ic_shipped,
                     context.getString(R.string.label_menu_shipping),
                     ApplinkConst.PURCHASE_SHIPPED,
-                    accountModel?.notifications?.buyerOrder?.shipped ?: 0,
+                    accountDataModel?.notifications?.buyerOrder?.shipped ?: 0,
                     AccountConstants.Analytics.PEMBELI,
                     context.getString(R.string.title_menu_transaction)
             ))
@@ -182,7 +183,7 @@ class StaticBuyerModelGenerator private constructor() {
                     R.drawable.ic_delivered,
                     context.getString(R.string.label_menu_delivered),
                     ApplinkConst.PURCHASE_DELIVERED,
-                    accountModel?.notifications?.buyerOrder?.arriveAtDestination ?: 0,
+                    accountDataModel?.notifications?.buyerOrder?.arriveAtDestination ?: 0,
                     AccountConstants.Analytics.PEMBELI,
                     context.getString(R.string.title_menu_transaction)
             ))
@@ -192,7 +193,7 @@ class StaticBuyerModelGenerator private constructor() {
 
         private fun getMarketPlaceOrderMenu(
                 context: Context,
-                accountModel: AccountModel?
+                accountDataModel: AccountDataModel?
         ): List<MenuGridItemViewModel> {
             val gridItems = arrayListOf<MenuGridItemViewModel>()
 
@@ -200,7 +201,7 @@ class StaticBuyerModelGenerator private constructor() {
                     R.drawable.ic_waiting_for_confirmation,
                     context.getString(R.string.label_menu_waiting_confirmation),
                     ApplinkConst.MARKETPLACE_WAITING_CONFIRMATION,
-                    accountModel?.notifications?.buyerOrder?.confirmed ?: 0,
+                    accountDataModel?.notifications?.buyerOrder?.confirmed ?: 0,
                     AccountConstants.Analytics.PEMBELI,
                     context.getString(R.string.title_menu_transaction)
             ))
@@ -209,7 +210,7 @@ class StaticBuyerModelGenerator private constructor() {
                     R.drawable.ic_order_processed,
                     context.getString(R.string.label_menu_order_processed),
                     ApplinkConst.MARKETPLACE_ORDER_PROCESSED,
-                    accountModel?.notifications?.buyerOrder?.processed ?: 0,
+                    accountDataModel?.notifications?.buyerOrder?.processed ?: 0,
                     AccountConstants.Analytics.PEMBELI,
                     context.getString(R.string.title_menu_transaction)
             ))
@@ -218,7 +219,7 @@ class StaticBuyerModelGenerator private constructor() {
                     R.drawable.ic_shipped,
                     context.getString(R.string.label_menu_shipping),
                     ApplinkConst.MARKETPLACE_SENT,
-                    accountModel?.notifications?.buyerOrder?.shipped ?: 0,
+                    accountDataModel?.notifications?.buyerOrder?.shipped ?: 0,
                     AccountConstants.Analytics.PEMBELI,
                     context.getString(R.string.title_menu_transaction)
             ))
@@ -227,7 +228,7 @@ class StaticBuyerModelGenerator private constructor() {
                     R.drawable.ic_delivered,
                     context.getString(R.string.label_menu_delivered),
                     ApplinkConst.MARKETPLACE_DELIVERED,
-                    accountModel?.notifications?.buyerOrder?.arriveAtDestination ?: 0,
+                    accountDataModel?.notifications?.buyerOrder?.arriveAtDestination ?: 0,
                     AccountConstants.Analytics.PEMBELI,
                     context.getString(R.string.title_menu_transaction)
             ))
@@ -237,14 +238,14 @@ class StaticBuyerModelGenerator private constructor() {
 
         private fun getDigitalOrderMenu(
                 context: Context,
-                homeRouter: AccountHomeRouter
+                remoteConfig: RemoteConfig
         ): List<MenuGridItemViewModel> {
             val gridItems = arrayListOf<MenuGridItemViewModel>()
 
             gridItems.add(MenuGridItemViewModel(
                     R.drawable.ic_belanja,
                     context.getString(R.string.title_menu_market_place),
-                    when (homeRouter.getBooleanRemoteConfig(RemoteConfigKey.APP_GLOBAL_NAV_NEW_DESIGN, true)) {
+                    when (remoteConfig.getBoolean(RemoteConfigKey.APP_GLOBAL_NAV_NEW_DESIGN, true)) {
                         true -> ApplinkConst.MARKETPLACE_ORDER
                         else -> ApplinkConst.PURCHASE_HISTORY
                     },

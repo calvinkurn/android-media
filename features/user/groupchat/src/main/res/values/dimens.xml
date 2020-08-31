@@ -66,4 +66,7 @@
     <dimen name="min_height_button_shopping">40dp</dimen>
     <dimen name="snackbar_height">64dp</dimen>
     <dimen name="gc_component_width">244dp</dimen>
+
+    <dimen name="live_label_width">43dp</dimen>
+    <dimen name="live_label_height">14dp</dimen>
 </resources>

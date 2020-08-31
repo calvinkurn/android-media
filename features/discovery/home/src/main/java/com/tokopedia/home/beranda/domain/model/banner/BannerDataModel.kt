@@ -4,5 +4,5 @@ import com.google.gson.annotations.SerializedName
 
 data class BannerDataModel(
     @SerializedName("slides")
-    val slides: List<BannerSlidesModel> = listOf()
+    val slides: List<BannerSlidesModel>? = null
 )

@@ -1,32 +1,32 @@
 package com.tokopedia.profilecompletion.changepin.view.fragment
 
 import android.app.Activity
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.fragment.app.Fragment
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addpin.data.AddChangePinData
 import com.tokopedia.profilecompletion.addpin.data.CheckPinData
 import com.tokopedia.profilecompletion.addpin.data.ValidatePinData
 import com.tokopedia.profilecompletion.addpin.view.fragment.PinCompleteFragment
-import com.tokopedia.profilecompletion.addpin.viewmodel.AddChangePinViewModel
 import com.tokopedia.profilecompletion.changepin.view.activity.ChangePinActivity
+import com.tokopedia.profilecompletion.changepin.view.viewmodel.ChangePinViewModel
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinConstant
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinUtil
+import com.tokopedia.profilecompletion.customview.focus
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -47,7 +47,7 @@ class ChangePinFragment : BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
-    private val addChangePinViewModel by lazy { viewModelProvider.get(AddChangePinViewModel::class.java) }
+    private val changePinViewModel by lazy { viewModelProvider.get(ChangePinViewModel::class.java) }
 
     private var isConfirm = false
     private var isValidated = false
@@ -92,7 +92,7 @@ class ChangePinFragment : BaseDaggerFragment() {
 
     private fun initViews(){
         toggleForgotText(true)
-        changePinInput.addTextChangedListener(object: TextWatcher {
+        changePinInput.pinTextField.addTextChangedListener(object: TextWatcher {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
@@ -108,8 +108,11 @@ class ChangePinFragment : BaseDaggerFragment() {
                 isConfirm -> handleConfirmState(text)
                 inputNewPin -> handleInputNewPinState(text)
                 isValidated || isForgotPin -> handleValidatedAndForgotState(text)
-                else -> addChangePinViewModel.validatePin(text)
+                else -> changePinViewModel.validatePin(text)
             }
+        }else {
+            changePinInput.isError = false
+            changePinInput.pinErrorMessageView.text = ""
         }
     }
 
@@ -120,26 +123,26 @@ class ChangePinFragment : BaseDaggerFragment() {
 
     private fun handleConfirmState(input: String){
         if(pin == input){
-            if(isForgotPin) goToVerificationActivity()
-            else addChangePinViewModel.changePin(pin, input, oldPin)
+            if(isForgotPin) {
+                goToVerificationActivity()
+            } else {
+                changePinViewModel.changePin(pin, input, oldPin)
+            }
         }else{
-            changePinInput.setText("")
+            changePinInput.pinTextField.setText("")
             changePinInput.focus()
             displayErrorPin(getString(R.string.error_wrong_pin))
         }
     }
 
     private fun handleInputNewPinState(input: String){
-        addChangePinViewModel.checkPin(input)
+        changePinViewModel.checkPin(input)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when (resultCode) {
-            Activity.RESULT_OK -> {
-                when (requestCode) {
-                    REQUEST_CODE_COTP_PHONE_VERIFICATION -> goToSuccessPage()
-                }
-            }
+        if(resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_COTP_PHONE_VERIFICATION){
+            val validateToken = data?.extras?.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
+            changePinViewModel.resetPin(validateToken)
         }
     }
 
@@ -190,7 +193,7 @@ class ChangePinFragment : BaseDaggerFragment() {
 
     private fun resetInputPin(){
         hideErrorPin()
-        changePinInput.setText("")
+        changePinInput.pinTextField.setText("")
     }
 
     private fun toggleForgotText(isForgot: Boolean){
@@ -214,31 +217,27 @@ class ChangePinFragment : BaseDaggerFragment() {
         dismissLoading()
         if(checkPinData.valid){
             if(inputNewPin) {
-                pin = changePinInput.text.toString()
+                pin = changePinInput.pinTextField.text.toString()
                 inputNewPin = false
                 konfirmasiState()
             }
             else inputNewPinState()
         }else  {
-            changePinInput.setText("")
+            changePinInput.pinTextField.setText("")
             displayErrorPin(checkPinData.errorMessage)
         }
     }
 
     private fun displayErrorPin(error: String){
-        errorPin.apply {
-            visibility = View.VISIBLE
-            text = error
-        }
+        changePinInput.isError = true
+        changePinInput.pinErrorMessageView.text = error
     }
 
     private fun hideErrorPin(){
-        if(errorPin.isVisible){
-            errorPin.visibility = View.GONE
-        }
+        changePinInput.isError = false
     }
 
-    private fun onError(throwable: Throwable){
+    private fun onError(throwable: Throwable?){
         dismissLoading()
         view?.run{
             val errorMessage = ErrorHandler.getErrorMessage(activity, throwable)
@@ -249,7 +248,7 @@ class ChangePinFragment : BaseDaggerFragment() {
 
     private fun onSuccessValidatePin(data: ValidatePinData){
         isValidated = data.valid
-        oldPin = changePinInput.text.toString()
+        oldPin = changePinInput.pinTextField.text.toString()
         if(data.valid){
             inputNewPinState()
         }else{
@@ -275,31 +274,45 @@ class ChangePinFragment : BaseDaggerFragment() {
         activity?.finish()
     }
 
+    private fun onSuccessResetPin(data: AddChangePinData){
+        if(data.success) goToSuccessPage()
+        else onError(Throwable())
+    }
+
     private fun onSuccessChangePin(data: AddChangePinData){
         if(data.success) goToSuccessPage()
+        else onError(Throwable())
     }
 
     private fun initObserver(){
-        addChangePinViewModel.changePinResponse.observe(this, Observer {
+        changePinViewModel.resetPinResponse.observe(this, Observer {
             when(it){
-                is Success -> onSuccessChangePin(it.data)
+                is Success -> onSuccessResetPin(it.data)
                 is Fail -> onError(it.throwable)
             }
         })
 
-        addChangePinViewModel.validatePinResponse.observe(this, Observer {
+        changePinViewModel.validatePinResponse.observe(this, Observer {
             when(it){
                 is Success -> onSuccessValidatePin(it.data)
                 is Fail -> onErrorValidatePin(it.throwable)
             }
         })
 
-        addChangePinViewModel.checkPinResponse.observe(this, Observer {
+        changePinViewModel.checkPinResponse.observe(this, Observer {
             when(it){
                 is Success -> onSuccessCheckPin(it.data)
                 is Fail -> onError(it.throwable)
             }
         })
+
+        changePinViewModel.changePinResponse.observe(this, Observer {
+            when(it){
+                is Success -> onSuccessChangePin(it.data)
+                is Fail -> onError(it.throwable)
+            }
+        })
+
     }
 
 }

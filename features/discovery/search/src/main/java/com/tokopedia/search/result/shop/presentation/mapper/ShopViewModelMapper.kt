@@ -14,7 +14,8 @@ internal class ShopViewModelMapper: Mapper<SearchShopModel, ShopViewModel> {
                 searchUrl = searchShopData.searchUrl,
                 paging = createPagingViewModel(searchShopData.paging),
                 tabName = searchShopData.tabName,
-                shopItemList = createShopItemViewModelList(searchShopData.shopList)
+                shopItemList = createShopItemViewModelList(searchShopData.shopList, isRecommendation = false),
+                recommendationShopItemList = createShopItemViewModelList(searchShopData.topShopList, isRecommendation = true)
         )
     }
 
@@ -26,19 +27,21 @@ internal class ShopViewModelMapper: Mapper<SearchShopModel, ShopViewModel> {
     }
 
     private fun createShopItemViewModelList(
-            shopItemModelList: List<SearchShopModel.AceSearchShop.ShopItem>
+            shopItemModelList: List<SearchShopModel.AceSearchShop.ShopItem>,
+            isRecommendation: Boolean
     ): List<ShopViewModel.ShopItem> {
         val shopItemViewModelList = mutableListOf<ShopViewModel.ShopItem>()
 
         shopItemModelList.forEach { shopItemModel ->
-            shopItemViewModelList.add(createShopItemViewModel(shopItemModel))
+            shopItemViewModelList.add(createShopItemViewModel(shopItemModel, isRecommendation))
         }
 
         return shopItemViewModelList
     }
 
     private fun createShopItemViewModel(
-            shopItemModel: SearchShopModel.AceSearchShop.ShopItem
+            shopItemModel: SearchShopModel.AceSearchShop.ShopItem,
+            isRecommendation: Boolean
     ): ShopViewModel.ShopItem {
         return ShopViewModel.ShopItem(
                 id = shopItemModel.id,
@@ -59,30 +62,33 @@ internal class ShopViewModelMapper: Mapper<SearchShopModel, ShopViewModel> {
                 rateAccuracy = shopItemModel.rateAccuracy,
                 rateService = shopItemModel.rateService,
                 status = shopItemModel.status,
-                productList = createShopItemProductViewModelList(shopItemModel.productList),
+                productList = createShopItemProductViewModelList(shopItemModel.productList, isRecommendation),
                 voucher = createShopItemVoucherViewModel(shopItemModel.voucher),
                 lucky = shopItemModel.lucky,
                 reputationImageUri = shopItemModel.reputationImageUri,
                 reputationScore = shopItemModel.reputationScore,
                 isOfficial = shopItemModel.isOfficial,
-                gaKey = shopItemModel.gaKey
+                gaKey = shopItemModel.gaKey,
+                isRecommendation = isRecommendation
         )
     }
 
     private fun createShopItemProductViewModelList(
-            shopItemProductList: List<SearchShopModel.AceSearchShop.ShopItem.ShopItemProduct>
+            shopItemProductList: List<SearchShopModel.AceSearchShop.ShopItem.ShopItemProduct>,
+            isRecommendation: Boolean
     ): List<ShopViewModel.ShopItem.ShopItemProduct> {
         val shopItemProductViewModelList = mutableListOf<ShopViewModel.ShopItem.ShopItemProduct>()
 
         shopItemProductList.forEach { shopItemProduct ->
-            shopItemProductViewModelList.add(createShopItemProductViewModel(shopItemProduct))
+            shopItemProductViewModelList.add(createShopItemProductViewModel(shopItemProduct, isRecommendation))
         }
 
         return shopItemProductViewModelList
     }
 
     private fun createShopItemProductViewModel(
-            shopItemProduct: SearchShopModel.AceSearchShop.ShopItem.ShopItemProduct
+            shopItemProduct: SearchShopModel.AceSearchShop.ShopItem.ShopItemProduct,
+            isRecommendation: Boolean
     ): ShopViewModel.ShopItem.ShopItemProduct {
         return ShopViewModel.ShopItem.ShopItemProduct(
                 id = shopItemProduct.id,
@@ -91,7 +97,8 @@ internal class ShopViewModelMapper: Mapper<SearchShopModel, ShopViewModel> {
                 applink = shopItemProduct.applink,
                 price = shopItemProduct.price,
                 priceFormat = shopItemProduct.priceFormat,
-                imageUrl = shopItemProduct.imageUrl
+                imageUrl = shopItemProduct.imageUrl,
+                isRecommendation = isRecommendation
         )
     }
 

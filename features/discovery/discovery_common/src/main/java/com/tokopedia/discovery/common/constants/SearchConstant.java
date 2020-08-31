@@ -9,6 +9,9 @@ public interface SearchConstant {
     String FROM_APP_SHORTCUTS = "FROM_APP_SHORTCUTS" ;
 
     String SEARCH_RESULT_TRACE = "search_result_trace";
+    String SEARCH_RESULT_PLT_PREPARE_METRICS = "search_result_plt_prepare_metrics";
+    String SEARCH_RESULT_PLT_NETWORK_METRICS = "search_result_plt_network_metrics";
+    String SEARCH_RESULT_PLT_RENDER_METRICS = "search_result_plt_render_metrics";
 
     String SEARCH_VIEW_MODEL_FACTORY = "search_view_model_factory";
 
@@ -33,6 +36,7 @@ public interface SearchConstant {
     interface Wishlist {
         String WISHLIST_STATUS_UPDATED_POSITION = "wishlistUpdatedPosition";
         String WISHLIST_STATUS_IS_WISHLIST = "isWishlist";
+        String WISHLIST_PRODUCT_ID = "product_id";
         String PRODUCT_WISHLIST_URL = "product_wishlist_url";
         String PRODUCT_WISHLIST_URL_USE_CASE = "product_wishlist_url_use_case";
     }
@@ -42,10 +46,10 @@ public interface SearchConstant {
         String KEY_PARAMS = "params";
         String KEY_SOURCE = "source";
         String KEY_HEADLINE_PARAMS = "headline_params";
-    }
-
-    interface RemoteConfigKey {
-        String APP_CHANGE_PARAMETER_ROW = "mainapp_change_parameter_row";
+        String KEY_QUICK_FILTER_PARAMS = "quick_filter_params";
+        String KEY_PAGE_SOURCE = "page_source";
+        String PAGE_SOURCE_SEARCH_SHOP = "search_shop";
+        String SOURCE_QUICK_FILTER = "quick_filter";
     }
 
     interface BaseUrl {
@@ -72,7 +76,7 @@ public interface SearchConstant {
     interface SearchProduct {
         String SEARCH_PRODUCT_FIRST_PAGE_USE_CASE = "search_product_first_page_use_case";
         String SEARCH_PRODUCT_LOAD_MORE_USE_CASE = "search_product_load_more_use_case";
-        String PARAMETER_ROWS = "8";
+        String GET_PRODUCT_COUNT_USE_CASE = "get_product_count_use_case";
         String HEADLINE = "headline";
         String HEADLINE_TEMPLATE_VALUE = "3,4";
         String HEADLINE_ITEM_VALUE = "1";
@@ -81,6 +85,7 @@ public interface SearchConstant {
     interface SearchShop {
         String SEARCH_SHOP_FIRST_PAGE_USE_CASE = "search_shop_first_page_use_case";
         String SEARCH_SHOP_LOAD_MORE_USE_CASE = "search_shop_load_more_use_case";
+        String GET_SHOP_COUNT_USE_CASE = "get_shop_count_use_case";
         String HEADLINE = "headline";
         String HEADLINE_TEMPLATE_VALUE = "3";
         String HEADLINE_ITEM_VALUE = "1";
@@ -97,19 +102,9 @@ public interface SearchConstant {
         int KEY_SHOP_STATUS_INACTIVE = 4;
     }
 
-    interface SearchCatalog {
-        String SEARCH_CATALOG_USE_CASE = "search_catalog_use_case";
-    }
-
-    interface SearchProfile {
-        String SEARCH_PROFILE_USE_CASE = "search_profile_use_case";
-    }
-
     interface SearchTabPosition {
         int TAB_FIRST_POSITION = 0;
         int TAB_SECOND_POSITION = 1;
-        int TAB_THIRD_POSITION = 2;
-        int TAB_FORTH_POSITION = 3;
     }
 
     interface Cart {
@@ -118,17 +113,9 @@ public interface SearchConstant {
         String CART_LOCAL_CACHE = "CART_LOCAL_CACHE";
     }
 
-    interface GCM {
-        String GCM_ID = "gcm_id";
-        String GCM_STORAGE = "GCM_STORAGE";
-        String GCM_LOCAL_CACHE = "GCM_LOCAL_CACHE";
-    }
-
     interface ActiveTab {
         String PRODUCT = "product";
         String SHOP = "shop";
-        String CATALOG = "catalog";
-        String PROFILE = "profile";
     }
 
     interface FreeOngkir {
@@ -145,5 +132,21 @@ public interface SearchConstant {
         String KEY_ADVERTISING_ID = "KEY_ADVERTISINGID";
         String ADVERTISING_LOCAL_CACHE = "ADVERTISING_LOCAL_CACHE";
         String APP_CLIENT_ID = "appClientId";
+    }
+
+    interface ABTestRemoteConfigKey {
+        String AB_TEST_KEY_COMMA_VS_FULL_STAR = "Comma vs Full Star";
+        String AB_TEST_VARIANT_FULL_STAR = "Full Star";
+        String AB_TEST_VARIANT_COMMA_STAR = "Comma Star";
+    }
+
+    interface OnBoarding {
+        String LOCAL_CACHE_NAME = "SEARCH_PRODUCT_ON_BOARDING";
+        String FILTER_ONBOARDING_SHOWN = "FILTER_ONBOARDING_SHOWN";
+    }
+
+    interface InspirationCarousel {
+        String LAYOUT_INSPIRATION_CAROUSEL_LIST = "list";
+        String LAYOUT_INSPIRATION_CAROUSEL_INFO = "info";
     }
 }

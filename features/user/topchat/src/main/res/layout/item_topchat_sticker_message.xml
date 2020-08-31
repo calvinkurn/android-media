@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingStart="@dimen/spacing_lvl4"
+    android:paddingTop="@dimen/spacing_lvl2"
+    android:paddingEnd="@dimen/spacing_lvl4"
+    android:paddingBottom="@dimen/spacing_lvl2">
+
+    <com.tokopedia.design.image.SquareImageView
+        android:id="@+id/iv_sticker_message"
+        android:layout_width="@dimen/dp_topchat_144"
+        android:layout_height="@dimen/dp_topchat_144"
+        android:layout_gravity="end" />
+
+    <LinearLayout
+        android:id="@+id/ll_footer"
+        android:layout_width="@dimen/dp_topchat_144"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:gravity="end|center_vertical"
+        android:orientation="horizontal">
+
+        <include layout="@layout/item_chatcommon_chat_read_status_attachment" />
+    </LinearLayout>
+</LinearLayout>

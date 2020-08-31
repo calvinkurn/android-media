@@ -1,93 +1,142 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel
 
-import android.content.Context
 import android.view.View
+import android.widget.TextView
 import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularListener
+import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularModel
+import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularPageChangeListener
+import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularViewPager
+import com.tokopedia.circular_view_pager.presentation.widgets.pageIndicator.CircularPageIndicator
 import com.tokopedia.home.R
-import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
+import com.tokopedia.home.beranda.helper.benchmark.TRACE_ON_BIND_BANNER_VIEWHOLDER
+import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BannerViewModel
-import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
-import com.tokopedia.home_page_banner.presenter.handler.HomePageBannerListener
-import com.tokopedia.home_page_banner.presenter.model.BannerModel
-import com.tokopedia.home_page_banner.presenter.widgets.HomePageBannerView
-import java.util.*
+import com.tokopedia.home.beranda.presentation.view.adapter.HomeBannerAdapter
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomepageBannerDataModel
+import com.tokopedia.unifycomponents.PageControl
 
 /**
  * @author by errysuprayogi on 11/28/17.
  */
 
-class BannerViewHolder(itemView: View, private val listener: HomeCategoryListener)
-    : AbstractViewHolder<BannerViewModel>(itemView),
-        HomePageBannerListener{
-    private val context: Context = itemView.context
+class BannerViewHolder(itemView: View, private val listener: HomeCategoryListener?)
+    : AbstractViewHolder<HomepageBannerDataModel>(itemView),
+        CircularListener {
     private var slidesList: List<BannerSlidesModel>? = null
     private var isCache = true
+    private val circularViewPager: CircularViewPager = itemView.findViewById(R.id.circular_view_pager)
+    private val indicatorView: PageControl = itemView.findViewById(R.id.indicator_banner)
+    private val seeAllPromo: TextView = itemView.findViewById(R.id.see_all_promo)
+    private val adapter = HomeBannerAdapter(listOf(), this)
 
-    override fun bind(element: BannerViewModel) {
+    init {
+        indicatorView.activeColor = ContextCompat.getColor(itemView.context, R.color.home_hpb_indicator_active)
+        indicatorView.inactiveColor = ContextCompat.getColor(itemView.context, R.color.home_hpb_indicator_inactive)
+    }
+
+    override fun bind(element: HomepageBannerDataModel) {
+        BenchmarkHelper.beginSystraceSection(TRACE_ON_BIND_BANNER_VIEWHOLDER)
         try {
             slidesList = element.slides
             slidesList?.let {
                 this.isCache = element.isCache
-
-                val promoUrls = ArrayList<String>()
-                for (slidesModel in it) {
-                    promoUrls.add(slidesModel.imageUrl)
-                }
-                val bannerView = itemView.findViewById<HomePageBannerView>(R.id.home_page_banner)
-                bannerView?.setListener(this)
-                bannerView?.showSeeAllPromo(it.isNotEmpty())
-                bannerView?.buildView(it.map { BannerModel(it.id, it.imageUrl) })
+                initSeeAllPromo()
+                initBanner(it.map{ CircularModel(it.id, it.imageUrl) })
             }
         } catch (e: Exception) {
             e.printStackTrace()
         }
+        BenchmarkHelper.endSystraceSection()
     }
 
-    override fun onPromoClick(position: Int) {
-        slidesList?.let {
-            if (it[position].type == BannerSlidesModel.TYPE_BANNER_PERSO) {
-                HomePageTracking.eventPromoOverlayClick(it[position])
-            } else {
-                HomePageTracking.eventPromoClick(it[position])
-            }
-            listener.onPromoClick(position, it[position])
-            HomeTrackingUtils.homeSlidingBannerClick(context, it[position], position)
-        }
-    }
-
-    override fun onPromoScrolled(position: Int) {
-        if (listener.isHomeFragment) {
-            slidesList?.let {
-                HomeTrackingUtils.homeSlidingBannerImpression(context, it[position], position)
-                listener.onPromoScrolled(it[position])
-
-                if (!isCache) {
-                    if (it[position].type == BannerSlidesModel.TYPE_BANNER_PERSO &&
-                            !it[position].isInvoke) {
-                        listener.putEEToTrackingQueue(HomePageTracking.getBannerOverlayPersoImpressionDataLayer(
-                                it[position]
-                        ))
-                        it[position].invoke()
-                    } else if (!it[position].isInvoke) {
-                        listener.putEEToTrackingQueue(HomePageTracking.getBannerImpressionDataLayer(
-                                it[position]
-                        ))
-                        it[position].invoke()
-                    }
+    override fun bind(element: HomepageBannerDataModel, payloads: MutableList<Any>) {
+        BenchmarkHelper.beginSystraceSection(TRACE_ON_BIND_BANNER_VIEWHOLDER)
+        try {
+            slidesList = element.slides
+            this.isCache = element.isCache
+            element.slides?.let {
+                if (it.size > 5) {
+                    indicatorView.setIndicator(it.size)
+                } else {
+                    indicatorView.setIndicator(it.size)
                 }
+                circularViewPager.setItemList(it.map { CircularModel(it.id, it.imageUrl) })
+            }
+        }catch (e: Exception){
+            e.printStackTrace()
+        }
+        BenchmarkHelper.endSystraceSection()
+    }
+
+    private fun initSeeAllPromo(){
+        seeAllPromo.setOnClickListener { onPromoAllClick() }
+    }
+
+    private fun initBanner(list: List<CircularModel>){
+        circularViewPager.setIndicatorPageChangeListener(object: CircularViewPager.IndicatorPageChangeListener{
+            override fun onIndicatorPageChange(newIndicatorPosition: Int) {
+                indicatorView.setCurrentIndicator(newIndicatorPosition)
+            }
+        })
+
+        circularViewPager.setPageChangeListener(object: CircularPageChangeListener {
+            override fun onPageScrolled(position: Int) {
+                onPromoScrolled(position)
+            }
+
+            override fun onPageScrollStateChanged(state: Int) {
+                onPageDragStateChanged(state == CircularViewPager.SCROLL_STATE_DRAGGING)
+            }
+        })
+        circularViewPager.setAdapter(adapter)
+        circularViewPager.setItemList(list)
+        if (list.size > 5) {
+            indicatorView.setIndicator(list.size)
+        } else {
+            indicatorView.setIndicator(list.size)
+        }
+    }
+
+    override fun onClick(position: Int) {
+        slidesList?.let {
+            if(it.size > position) {
+                listener?.onPromoClick(position, it[position])
             }
         }
     }
 
-    override fun onPageDragStateChanged(isDrag: Boolean) {
-        listener.onPageDragStateChanged(isDrag)
+    private fun onPromoScrolled(position: Int) {
+        if (listener?.isMainViewVisible?:false) {
+            slidesList?.let {
+                listener?.onPromoScrolled(it[position])
+                it[position].invoke()
+            }
+        }
     }
 
-    override fun onPromoAllClick() {
-        listener.onPromoAllClick()
+    private fun onPageDragStateChanged(isDrag: Boolean) {
+        listener?.onPageDragStateChanged(isDrag)
+    }
+
+    private fun onPromoAllClick() {
+        listener?.onPromoAllClick()
+    }
+
+    fun onResume(){
+        circularViewPager.resetImpressions()
+        circularViewPager.resumeAutoScroll()
+    }
+
+    fun resetImpression(){
+        circularViewPager.reset()
+    }
+
+    fun onPause(){
+        circularViewPager.pauseAutoScroll()
     }
 
     companion object {

@@ -2,20 +2,23 @@ package com.tokopedia.topads.credit.history.view.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.data.exception.ResponseErrorException
 import com.tokopedia.topads.credit.history.data.model.TopAdsCreditHistory
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpData
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -33,8 +36,8 @@ class TopAdsCreditHistoryViewModel @Inject constructor(private val graphqlReposi
 
     fun getCreditHistory(rawQuery: String, startDate: Date? = null, endDate: Date? = null) {
         val params = mapOf(
-                PARAM_SHOP_ID to userSessionInterface.shopId.toInt(),
-                PARAM_USER_ID to userSessionInterface.userId.toInt(),
+                PARAM_SHOP_ID to userSessionInterface.shopId.toIntOrZero(),
+                PARAM_USER_ID to userSessionInterface.userId.toIntOrZero(),
                 PARAM_START_DATE to startDate?.let { SimpleDateFormat(TopAdsCommonConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(it) },
                 PARAM_END_DATE to endDate?.let { SimpleDateFormat(TopAdsCommonConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(it) }
         )

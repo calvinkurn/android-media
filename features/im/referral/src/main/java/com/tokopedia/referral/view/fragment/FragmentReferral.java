@@ -4,10 +4,6 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.google.android.material.tabs.TabLayout;
-import androidx.core.widget.NestedScrollView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +15,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.widget.NestedScrollView;
+
+import com.google.android.material.tabs.TabLayout;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -83,7 +84,7 @@ public class FragmentReferral extends BaseDaggerFragment implements ReferralView
         pagerGuide = view.findViewById(R.id.view_pager_referral_guide);
         tabGuide = view.findViewById(R.id.tab_referral_guide);
         llShareIcons = view.findViewById(R.id.ll_share_icons);
-        nestedScrollView = view.findViewById(com.tokopedia.design.R.id.nested_scroll_view);
+        nestedScrollView = view.findViewById(R.id.nested_scroll_view);
         viewLine = view.findViewById(R.id.view_line);
         referralCount = view.findViewById(R.id.referral_count);
         imgTick = view.findViewById(R.id.img_tick);

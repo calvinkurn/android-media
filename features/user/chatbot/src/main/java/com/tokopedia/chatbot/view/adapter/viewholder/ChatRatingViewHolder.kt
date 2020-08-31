@@ -1,23 +1,27 @@
 package com.tokopedia.chatbot.view.adapter.viewholder
 
-import androidx.annotation.LayoutRes
 import android.text.format.DateFormat
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.TextView
-
+import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentActivity
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
-import com.tokopedia.chat_common.util.ChatTimeConverter
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
+import com.tokopedia.chatbot.EllipsizeMaker
+import com.tokopedia.chatbot.EllipsizeMaker.MESSAGE_LINE_COUNT
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
+import com.tokopedia.chatbot.util.ChatBotTimeConverter
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatRatingListener
-
-import java.util.Date
+import com.tokopedia.chatbot.view.customview.ReadMoreBottomSheet
+import java.util.*
 
 /**
  * @author by yfsx on 14/05/18.
@@ -30,6 +34,8 @@ class ChatRatingViewHolder(itemView: View,
     private val ratingYes: ImageView
     private val ratingNo: ImageView
     private val ratingSelected: ImageView
+    private val mesageLayout: RelativeLayout
+    private val mesageBottom: TextView
 
     init {
         view = itemView
@@ -40,18 +46,20 @@ class ChatRatingViewHolder(itemView: View,
         ratingYes = itemView.findViewById(R.id.rating_option_yes)
         ratingNo = itemView.findViewById(R.id.rating_option_no)
         ratingSelected = itemView.findViewById(R.id.rating_selected)
+        mesageLayout = itemView.findViewById(R.id.message_text_holder)
+        mesageBottom = itemView.findViewById(R.id.bottom_view)
     }
 
     override fun bind(element: ChatRatingViewModel) {
         view.setOnClickListener { v -> KeyboardHandler.DropKeyboard(itemView.context, view) }
 
         message.movementMethod = ChatLinkHandlerMovementMethod(chatLinkHandlerListener)
-        message.text = MethodChecker.fromHtml(element.message)
+        setMessage(element)
         date.visibility = View.VISIBLE
         var time: String?
 
         try {
-            val myTime = java.lang.Long.parseLong(element.replyTime)
+            val myTime = (element.replyTime)?.toLong() ?: 0L
             time = DateFormat.getLongDateFormat(itemView.context).format(Date(myTime))
         } catch (e: NumberFormatException) {
             time = element.replyTime
@@ -65,16 +73,7 @@ class ChatRatingViewHolder(itemView: View,
             date.visibility = View.GONE
         }
 
-
-        var hourTime: String?
-
-        try {
-            hourTime = ChatTimeConverter.formatTime(java.lang.Long.parseLong(element.replyTime))
-        } catch (e: NumberFormatException) {
-            hourTime = element.replyTime
-        }
-
-        hour.text = hourTime
+        hour.text = getHourTime(element.replyTime ?: "")
 
         when (element.ratingStatus) {
             ChatRatingViewModel.RATING_NONE -> {
@@ -103,6 +102,32 @@ class ChatRatingViewHolder(itemView: View,
             }
         }
 
+    }
+
+    override fun getHourTime(replyTime: String): String {
+        return ChatBotTimeConverter.getHourTime(replyTime)
+    }
+
+    private fun setMessage(element: ChatRatingViewModel) {
+        if (element.message.isNotEmpty()) {
+            message.text = MethodChecker.fromHtml(element.message)
+            message.post {
+                if (message.lineCount >= MESSAGE_LINE_COUNT) {
+                    message.maxLines = MESSAGE_LINE_COUNT
+                    message.text = EllipsizeMaker.getTruncatedMsg(message)
+                    MethodChecker.setBackground(mesageLayout, ContextCompat.getDrawable(itemView.context,R.drawable.left_bubble_with_stroke))
+                    mesageBottom.visibility = View.VISIBLE
+                    mesageBottom.setOnClickListener {
+                        ReadMoreBottomSheet.createInstance(element.message).show((itemView.context as FragmentActivity).supportFragmentManager,"read_more_bottom_sheet")
+                    }
+
+                } else {
+                    mesageBottom.visibility = View.GONE
+                    MethodChecker.setBackground(mesageLayout, ContextCompat.getDrawable(itemView.context,com.tokopedia.chat_common.R.drawable.left_bubble))
+                }
+            }
+
+        }
     }
 
     companion object {

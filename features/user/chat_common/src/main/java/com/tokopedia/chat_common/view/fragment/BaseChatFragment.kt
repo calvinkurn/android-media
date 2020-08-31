@@ -4,14 +4,11 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.webkit.URLUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.URLGenerator
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
@@ -20,7 +17,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.VoucherMenu
-import com.tokopedia.chat_common.view.BaseChatViewStateImpl
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
@@ -29,9 +25,9 @@ import com.tokopedia.chat_common.view.fragment.BaseChatActivityListener
 import com.tokopedia.chat_common.view.listener.BaseChatContract
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.constant.TkpdBaseURL
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_chatroom.view.*
 import java.net.URLEncoder
 import java.util.*
 
@@ -52,31 +48,28 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     protected var opponentName = ""
     protected var opponentRole = ""
     protected var shopId = 0
-
     protected var toShopId = "0"
     protected var toUserId = "0"
     protected var source = ""
+    protected var amISeller = false
+    protected open fun rvAttachmentMenuId() = R.id.rv_attachment_menu
 
-    override fun onItemClicked(t: Visitable<*>?) {
-        return
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_chatroom, container, false)
-    }
+    abstract fun onCreateViewState(view: View): BaseChatViewState
+    abstract fun onSendButtonClicked()
+    abstract fun getUserSession(): UserSessionInterface
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewState = BaseChatViewStateImpl(
-                view,
-                (activity as BaseChatToolbarActivity).getToolbar(),
-                this,
-                this
-        )
-
+        setupViewState(view)
         setupViewData(arguments, savedInstanceState)
         prepareView(view)
         prepareListener()
+    }
+
+    private fun setupViewState(view: View?) {
+        view?.let {
+            viewState = onCreateViewState(it)
+        }
     }
 
     override fun callInitialLoadAutomatically(): Boolean {
@@ -108,9 +101,9 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         return when {
             savedInstanceState != null
                     && savedInstanceState.getString(paramName, "").isNotEmpty()
-            -> savedInstanceState.getString(paramName)
+            -> savedInstanceState.getString(paramName, "")
             arguments != null && arguments.getString(paramName, "").isNotEmpty()
-            -> arguments.getString(paramName)
+            -> arguments.getString(paramName, "")
             else -> ""
         }
     }
@@ -123,7 +116,6 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
             else -> -1
         }
     }
-
 
     override fun onImageAnnouncementClicked(viewModel: ImageAnnouncementViewModel) {
         if (!TextUtils.isEmpty(viewModel.redirectUrl)) {
@@ -173,7 +165,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     }
 
     override fun handleBranchIOLinkClick(url: String) {
-        if (GlobalConfig.isCustomerApp()) {
+        if (!GlobalConfig.isSellerApp()) {
             val intent = RouteManager.getIntent(activity, ApplinkConst.CONSUMER_SPLASH_SCREEN)
             intent.putExtra("branch", url)
             intent.putExtra("branch_force_new_session", true)
@@ -239,18 +231,13 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         //Please override if you use
     }
 
-    abstract fun onSendButtonClicked()
-
-    abstract fun getUserSession(): UserSessionInterface
-
     open fun updateViewData(it: ChatroomViewModel) {
         this.opponentId = it.headerModel.senderId
         this.opponentName = it.headerModel.name
         this.opponentRole = it.headerModel.role
         this.shopId = it.headerModel.shopId
+        this.amISeller = it.isSeller()
     }
-
-    override fun trackSeenProduct(element: ProductAttachmentViewModel) {}
 
     override fun onDestroy() {
         super.onDestroy()
@@ -265,23 +252,31 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         return false
     }
 
-    fun addVoucherAttachmentMenu() {
-        view?.rv_attachment_menu?.addVoucherAttachmentMenu()
-    }
-
     override fun createAttachmentMenus(): List<AttachmentMenu> {
         return emptyList()
     }
 
-    override fun onClickAttachProduct(menu: AttachmentMenu) { }
+    override fun onClickAttachProduct(menu: AttachmentMenu) {}
 
-    override fun onClickAttachImage(menu: AttachmentMenu) { }
+    override fun onClickAttachImage(menu: AttachmentMenu) {}
 
-    override fun onClickAttachInvoice(menu: AttachmentMenu) { }
+    override fun onClickAttachInvoice(menu: AttachmentMenu) {}
 
-    override fun onClickAttachVoucher(voucherMenu: VoucherMenu) { }
+    override fun onClickAttachVoucher(voucherMenu: VoucherMenu) {}
 
-    override fun onClickBannedProduct(viewModel: BannedProductAttachmentViewModel) { }
+    override fun onClickBannedProduct(viewModel: BannedProductAttachmentViewModel) {}
 
-    override fun trackSeenBannedProduct(viewModel: BannedProductAttachmentViewModel) { }
+    override fun onClickOccFromProductAttachment(product: ProductAttachmentViewModel, position: Int) { }
+
+    override fun trackSeenProduct(element: ProductAttachmentViewModel) {}
+
+    override fun trackSeenBannedProduct(viewModel: BannedProductAttachmentViewModel) {}
+
+    override fun onClickAddToWishList(product: ProductAttachmentViewModel, success: () -> Unit) {}
+
+    override fun onClickRemoveFromWishList(productId: String, success: () -> Unit) {}
+
+    override fun trackClickProductThumbnail(product: ProductAttachmentViewModel) {}
+
+    override fun onItemClicked(t: Visitable<*>?) {}
 }

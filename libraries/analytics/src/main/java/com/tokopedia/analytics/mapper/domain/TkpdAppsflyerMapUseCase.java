@@ -15,6 +15,8 @@ import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.Arrays;
 
@@ -44,8 +46,9 @@ public class TkpdAppsflyerMapUseCase extends UseCase<Boolean> {
         String userID = "";
         String appsFlyerId = "";
         if (context.getApplicationContext() instanceof TkpdAppsFlyerRouter) {
+            UserSessionInterface userSession = new UserSession(context);
             appsFlyerId = ((TkpdAppsFlyerRouter) context.getApplicationContext()).getAppsFlyerID();
-            userID = ((TkpdAppsFlyerRouter) context.getApplicationContext()).getUserId();
+            userID = userSession.getUserId();
         }
         //check if userID Same not to go further
         if(userID == null || userID.isEmpty() || appsFlyerId == null || appsFlyerId.isEmpty()) {
@@ -57,6 +60,7 @@ public class TkpdAppsflyerMapUseCase extends UseCase<Boolean> {
         AppsflyerMappingRequest appsflyerMappingRequest = new AppsflyerMappingRequest();
         appsflyerMappingRequest.setAppsflyerId(appsFlyerId);
         appsflyerMappingRequest.setCustomerUserId(userID);
+        appsflyerMappingRequest.setEventTime("");
         requestParams.putObject("input", appsflyerMappingRequest);
         GraphqlClient.init(context);
         GraphqlRequest graphqlRequest = new

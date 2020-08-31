@@ -25,4 +25,31 @@
     <color name="gf_grad_btn_outer_end_green">#26962d</color>
     <color name="gf_grad_btn_inner_start_green">#96c93d</color>
     <color name="gf_grad_btn_inner_end_green">#42b549</color>
+    <color name="gf_green_settings">#03AC0E</color>
+    <color name="gf_dim">#80000000</color>
+    <color name="gf_black_transparent">#00000000</color>
+
+    <color name="gf_box_hint_color">#12883D</color>
+    <color name="gf_box_prize_color">#52565E</color>
+    <color name="gf_orange_color">#FA591D</color>
+    <color name="gf_loader_message_color">#AD31353B</color>
+    <color name="gf_loader_title_color">#F531353B</color>
+    <color name="gf_grey68">#ae31353b</color>
+    <color name="gf_constraint_borderColor">#50000000</color>
+    <color name="gf_small_benefit_color">#29596A</color>
+    <color name="gf_box_orange_1">#FB8255</color>
+    <color name="gf_box_orange_2">#FA591D</color>
+    <color name="gf_box_black_shadow">#40000000</color>
+    <color name="gf_box_green_1">#41D19D</color>
+    <color name="gf_box_green_2">#06C17C</color>
+    <color name="gf_box_disabled_1">#C7CCD4</color>
+    <color name="gf_box_disabled_2">#B5BBC5</color>
+    <color name="gf_box_white_80">#80FFFFFF</color>
+    <color name="gf_box_text_shadow">#4A000000</color>
+    <color name="gf_n600">#40454C</color>
+    <color name="gf_tap_hint">#58595B</color>
+    <color name="gf_outline_btn">#9FA6B0</color>
+    <color name="gf_reward_green_1">#9BFA99</color>
+    <color name="gf_reward_green_2">#B7F49B</color>
+
 </resources>

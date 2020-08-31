@@ -2,15 +2,16 @@ package com.tokopedia.loginphone.chooseaccount.view.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import android.graphics.drawable.Drawable
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.text.Spanned
 import android.text.format.DateFormat
-import android.view.*
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -19,16 +20,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.crashlytics.android.Crashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_IS_SQ_CHECK
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.design.text.TextDrawable
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.linker.LinkerConstants
@@ -44,11 +40,13 @@ import com.tokopedia.loginphone.chooseaccount.view.listener.ChooseAccountContrac
 import com.tokopedia.loginphone.chooseaccount.viewmodel.ChooseAccountViewModel
 import com.tokopedia.loginphone.common.analytics.LoginPhoneNumberAnalytics
 import com.tokopedia.loginphone.common.di.DaggerLoginRegisterPhoneComponent
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifications.CMPushNotificationManager
-import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.track.TrackApp
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -64,38 +62,30 @@ import kotlin.collections.HashMap
 class ChooseAccountFragment : BaseDaggerFragment(),
         ChooseAccountContract.ViewAdapter {
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var analytics: LoginPhoneNumberAnalytics
+    @Named(SessionModule.SESSION_MODULE)
+    @Inject
+    lateinit var userSessionInterface: UserSessionInterface
+
     private val REQUEST_SECURITY_QUESTION = 101
 
-    lateinit var message: TextView
-    lateinit var listAccount: RecyclerView
-    lateinit var mainView: View
-    lateinit var progressBar: ProgressBar
-    lateinit var adapter: AccountAdapter
+    private lateinit var listAccount: RecyclerView
+    private lateinit var mainView: View
+    private lateinit var progressBar: LoaderUnify
+    private lateinit var adapter: AccountAdapter
+    private lateinit var toolbarShopCreation: Toolbar
 
     lateinit var viewModel: com.tokopedia.loginphone.chooseaccount.data.ChooseAccountViewModel
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModelProvider by lazy {
         ViewModelProviders.of(this, viewModelFactory)
     }
     private val chooseAccountViewModel by lazy {
         viewModelProvider.get(ChooseAccountViewModel::class.java)
     }
-
-    @Inject
-    lateinit var analytics: LoginPhoneNumberAnalytics
-
-    lateinit var mIris: Iris
-
-    @Named(SessionModule.SESSION_MODULE)
-    @Inject
-    lateinit var userSessionInterface: UserSessionInterface
-
-    private val promptText: Spanned
-        get() = MethodChecker.fromHtml(getString(R.string.prompt_choose_tokocash_account,
-                viewModel.accountList.userDetails.size,
-                viewModel.phoneNumber))
 
     override fun getScreenName(): String {
         return LoginPhoneNumberAnalytics.Screen.SCREEN_CHOOSE_TOKOCASH_ACCOUNT
@@ -138,16 +128,12 @@ class ChooseAccountFragment : BaseDaggerFragment(),
             activity != null -> activity?.finish()
         }
 
-        context?.run {
-            mIris = IrisAnalytics.getInstance(this)
-        }
-
     }
 
     override fun onCreateView(inflater: LayoutInflater, parent: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_choose_login_phone_account, parent, false)
         setHasOptionsMenu(true)
-        message = view.findViewById(R.id.message)
+        toolbarShopCreation = view.findViewById(R.id.toolbar_shop_creation)
         listAccount = view.findViewById(R.id.list_account)
         mainView = view.findViewById(R.id.main_view)
         progressBar = view.findViewById(R.id.progress_bar)
@@ -155,37 +141,22 @@ class ChooseAccountFragment : BaseDaggerFragment(),
         return view
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        if (activity != null) {
-            menu?.let {
-                it.add(Menu.NONE, MENU_ID_LOGOUT, 0, "")
-                val menuItem = it.findItem(MENU_ID_LOGOUT)
-                menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
-                menuItem.icon = getDraw(activity)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initToolbar()
+        initObserver()
+        showLoadingProgress()
+        getAccountList()
+    }
+
+    private fun initToolbar() {
+        (activity as AppCompatActivity).let {
+            it.setSupportActionBar(toolbarShopCreation)
+            it.supportActionBar?.apply {
+                setDisplayShowTitleEnabled(false)
+                setDisplayHomeAsUpEnabled(true)
+                setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(it, R.color.transparent)))
             }
-        }
-
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    private fun getDraw(context: Context?): Drawable {
-        val drawable = TextDrawable(context)
-        drawable.text = resources.getString(R.string.action_logout)
-        return drawable
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val id = item?.itemId
-        if (id == MENU_ID_LOGOUT) {
-            goToLoginPage()
-            return true
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
-    private fun goToLoginPage() {
-        if (activity != null) {
-            RouteManager.route(activity, ApplinkConst.LOGIN)
         }
     }
 
@@ -276,6 +247,7 @@ class ChooseAccountFragment : BaseDaggerFragment(),
             analytics.eventSuccessLoginPhoneNumber()
             setTrackingUserId(userId)
             setFCM()
+
             it.setResult(Activity.RESULT_OK)
             it.finish()
         }
@@ -310,10 +282,6 @@ class ChooseAccountFragment : BaseDaggerFragment(),
                 loginEventAppsFlyer(userSessionInterface.userId, userSessionInterface.email)
             }
 
-            if (::mIris.isInitialized) {
-                mIris.setUserId(userId)
-                mIris.setDeviceId(userSessionInterface.deviceId)
-            }
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -334,7 +302,7 @@ class ChooseAccountFragment : BaseDaggerFragment(),
     }
 
     private fun onErrorLoginToken(throwable: Throwable) {
-        onErrorLogin(ErrorHandlerSession.getErrorMessage(throwable, context, true))
+        onErrorLogin(ErrorHandler.getErrorMessage(context, throwable))
         logUnknownError(Throwable("Login Phone Number Login Token is not success"))
     }
 
@@ -356,21 +324,20 @@ class ChooseAccountFragment : BaseDaggerFragment(),
     }
 
     private fun onErrorGetUserInfo(throwable: Throwable) {
-        onErrorLogin(ErrorHandlerSession.getErrorMessage(throwable, context, true))
+        onErrorLogin(ErrorHandler.getErrorMessage(context, throwable))
         logUnknownError(Throwable("Login Phone Number Get User Info is not success"))
     }
 
     //Impossible Flow
     private fun onGoToActivationPage(): (MessageErrorException) -> Unit {
         return {
-            onErrorLogin(ErrorHandlerSession.getErrorMessage(it, context, false))
+            onErrorLogin(ErrorHandler.getErrorMessage(context, it))
             logUnknownError(Throwable("Login Phone Number Login Token go to activation"))
         }
     }
 
     private fun onGoToSecurityQuestion(): () -> Unit {
         return {
-            8
             activity?.let {
                 it.setResult(Activity.RESULT_OK, Intent().putExtra(PARAM_IS_SQ_CHECK, true))
                 it.finish()
@@ -389,35 +356,25 @@ class ChooseAccountFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessGetAccountList(accountList: AccountList) {
-        if (activity != null) {
-            this.viewModel.accountList = accountList
-            activity?.setResult(Activity.RESULT_OK)
+        this.viewModel.accountList = accountList
 
-            if (accountList.userDetails.size == 1 && accountList.msisdn.isNotEmpty()) {
-                val userDetail = accountList.userDetails[0]
-                loginToken(userDetail, accountList.msisdn)
-            } else {
-                dismissLoadingProgress()
-                adapter.setList(accountList.userDetails, accountList.msisdn)
-                message.text = promptText
-            }
+        if (accountList.userDetails.size == 1 && accountList.msisdn.isNotEmpty()) {
+            adapter.setList(accountList.userDetails, accountList.msisdn)
+            val userDetail = accountList.userDetails[0]
+            loginToken(userDetail, accountList.msisdn)
+        } else {
+            dismissLoadingProgress()
+            adapter.setList(accountList.userDetails, accountList.msisdn)
         }
     }
 
     private fun onErrorGetAccountList(e: Throwable) {
         dismissLoadingProgress()
-        val errorMessage = ErrorHandlerSession.getErrorMessage(e, context, true)
+        val errorMessage = ErrorHandler.getErrorMessage(context, e)
         NetworkErrorHelper.showEmptyState(context, view, errorMessage) {
             showLoadingProgress()
             getAccountList()
         }
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        initObserver()
-        showLoadingProgress()
-        getAccountList()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

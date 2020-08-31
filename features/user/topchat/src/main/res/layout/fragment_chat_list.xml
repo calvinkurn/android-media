@@ -1,19 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/white">
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/layout_ticker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            android:orientation="vertical">
+
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/ticker_ban_status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:closeButtonVisibility="gone"
+                app:tickerType="error"
+                app:titleText="@string/title_topchat_chat_banned_seller"
+                tools:visibility="visible" />
+
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/ticker_seller_migration_topchat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:tickerType="announcement"/>
+
+        </LinearLayout>
 
         <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
             android:id="@+id/swipe_refresh_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="@dimen/layout_lvl0"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layout_ticker">
 
             <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
                 android:id="@+id/recycler_view"
@@ -27,17 +55,18 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_broadcast"
-        android:layout_width="@dimen/dp_56"
-        android:layout_height="@dimen/dp_56"
+        android:layout_width="@dimen/dp_topchat_56"
+        android:layout_height="@dimen/dp_topchat_56"
         android:layout_gravity="bottom|end"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_24"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/spacing_lvl5"
         android:visibility="gone"
         app:backgroundTint="@color/Yellow_Y400"
-        app:fabCustomSize="@dimen/dp_56"
+        app:fabCustomSize="@dimen/dp_topchat_56"
         app:layout_anchorGravity="bottom|center"
         app:maxImageSize="33dp"
-        app:srcCompat="@drawable/ic_broadcast_white" />
+        app:srcCompat="@drawable/ic_broadcast_white"
+        tools:visibility="visible" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

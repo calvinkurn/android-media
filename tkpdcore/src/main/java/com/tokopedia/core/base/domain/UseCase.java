@@ -47,14 +47,6 @@ public abstract class UseCase<T> implements Interactor<T> {
         execute(requestParams, subscriber, false);
     }
 
-    public final void executeSync(RequestParams requestParams) {
-        execute(requestParams, null, true);
-    }
-
-    public final void executeSync(RequestParams requestParams, Subscriber<T> subscriber) {
-        execute(requestParams, subscriber, true);
-    }
-
     private void execute(RequestParams requestParams, Subscriber<T> subscriber, boolean sync) {
         try {
             if (compositeSubscription == null || compositeSubscription.isUnsubscribed()) {
@@ -84,16 +76,5 @@ public abstract class UseCase<T> implements Interactor<T> {
         if (!compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
         }
-    }
-
-    @Override
-    public Observable<T> getExecuteObservable(RequestParams requestParams) {
-        return createObservable(requestParams);
-    }
-
-    public Observable<T> getExecuteObservableAsync(RequestParams requestParams){
-        return createObservable(requestParams)
-                .subscribeOn(Schedulers.from(this.threadExecutor))
-                .observeOn(this.postExecutionThread.getScheduler());
     }
 }

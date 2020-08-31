@@ -1,6 +1,8 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.analytics
 
 import android.app.Activity
+import com.tokopedia.logisticaddaddress.common.AddressConstants.LOGISTIC_LABEL
+import com.tokopedia.logisticaddaddress.common.AddressConstants.NON_LOGISTIC_LABEL
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 
@@ -55,7 +57,7 @@ object AddNewAddressAnalytics {
     private const val VIEW_TOASTER_ALAMAT_TIDAK_SESUAI_DENGAN_PETA = "view toaster alamat tidak sesuai dengan peta"
 
     @JvmStatic
-    fun sendScreenName(activity: Activity, screenName: String) {
+    fun sendScreenName(screenName: String) {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
     }
 
@@ -70,175 +72,178 @@ object AddNewAddressAnalytics {
                 event, eventCategory, eventAction, eventLabel))
     }
 
-    fun eventClickButtonOkOnAllowLocation() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_OK_ON_ALLOW_LOCATION)
+    fun eventClickButtonOkOnAllowLocation(isFullFlow: Boolean, isLogisticLabel: Boolean) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_OK_ON_ALLOW_LOCATION, getAnalyticsLabel(isFullFlow, isLogisticLabel))
     }
 
-    fun eventClickButtonDoNotAllowOnAllowLocation() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_DO_NOT_ALLOW_ON_ALLOW_LOCATION)
+    fun eventClickButtonDoNotAllowOnAllowLocation(isFullFlow: Boolean, isLogisticLabel: Boolean) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_DO_NOT_ALLOW_ON_ALLOW_LOCATION, getAnalyticsLabel(isFullFlow, isLogisticLabel))
     }
 
-    fun eventClickButtonAktifkanLayananLokasiOnBlockGps() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_AKTIFKAN_LAYANAN_LOKASI_ON_BLOCK_GPS)
+    fun eventClickButtonAktifkanLayananLokasiOnBlockGps(isFullFlow: Boolean, isLogisticLabel: Boolean) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_AKTIFKAN_LAYANAN_LOKASI_ON_BLOCK_GPS, getAnalyticsLabel(isFullFlow, isLogisticLabel))
     }
 
-    fun eventClickButtonXOnBlockGps() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_X_ON_BLOCK_GPS)
+    fun eventClickButtonXOnBlockGps(isFullFlow: Boolean, isLogisticLabel : Boolean) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_X_ON_BLOCK_GPS, getAnalyticsLabel(isFullFlow, isLogisticLabel))
     }
 
-    fun eventViewErrorAlamatTidakValid() {
-        sendEventCategoryAction(VIEW_ADDRESS, CART_CHANGE_ADDRESS, VIEW_ERROR_ALAMAT_TIDAK_VALID)
+    fun eventViewErrorAlamatTidakValid(isFullFlow: Boolean, isLogisticLabel: Boolean) {
+        sendEventCategoryActionLabel(VIEW_ADDRESS, CART_CHANGE_ADDRESS, VIEW_ERROR_ALAMAT_TIDAK_VALID, getAnalyticsLabel(isFullFlow, isLogisticLabel))
     }
 
-    fun eventClickBackArrowOnInputAddress() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BACK_ARROW_ON_INPUT_ADDRESS)
+    fun eventClickBackArrowOnInputAddress(isFullFlow: Boolean, isLogisticLabel: Boolean) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BACK_ARROW_ON_INPUT_ADDRESS, getAnalyticsLabel(isFullFlow, isLogisticLabel))
     }
 
-    fun eventClickFieldCariLokasi() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_FIELD_CARI_LOKASI)
+    fun eventClickFieldCariLokasi(isFullFlow: Boolean, isLogisticLabel: Boolean) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_FIELD_CARI_LOKASI, getAnalyticsLabel(isFullFlow, isLogisticLabel))
     }
 
-    fun eventClickMagnifier() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_MAGNIFIER)
+    fun eventClickMagnifier(isFullFlow: Boolean, isLogisticLabel: Boolean) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_MAGNIFIER, getAnalyticsLabel(isFullFlow, isLogisticLabel))
     }
 
-    fun eventClickAddressSuggestionFromSuggestionList() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_ADDRESS_SUGGESTION_FROM_SUGGESTION_LIST)
+    fun eventClickAddressSuggestionFromSuggestionList(isFullFlow: Boolean, isLogisticLabel: Boolean) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_ADDRESS_SUGGESTION_FROM_SUGGESTION_LIST, getAnalyticsLabel(isFullFlow, isLogisticLabel))
     }
 
-    fun eventClickButtonPilihLokasi() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_PILIH_LOKASI)
+    fun eventClickButtonPilihLokasi(isFullFlow: Boolean, isLogisticLabel: Boolean) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_PILIH_LOKASI, getAnalyticsLabel(isFullFlow, isLogisticLabel))
     }
 
-    fun eventClickFieldDetailAlamat() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_FIELD_DETAIL_ALAMAT)
+    fun eventClickFieldDetailAlamat(isFullFlow: Boolean, isLogisticLabel: Boolean) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_FIELD_DETAIL_ALAMAT, getAnalyticsLabel(isFullFlow, isLogisticLabel))
     }
 
-    fun eventClickBackArrowOnPinPoint() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BACK_ARROW_ON_PIN_POINT)
+    fun eventClickBackArrowOnPinPoint(isFullFlow: Boolean, isLogisticLabel: Boolean) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BACK_ARROW_ON_PIN_POINT, getAnalyticsLabel(isFullFlow, isLogisticLabel))
     }
 
-    fun eventClickButtonPilihLokasiIniSuccess() {
-        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_PILIH_LOKASI_INI, SUCCESS)
+    fun eventClickButtonPilihLokasiIniSuccess(isFullFlow: Boolean, isLogisticLabel: Boolean) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_PILIH_LOKASI_INI, "$SUCCESS - ${getAnalyticsLabel(isFullFlow, isLogisticLabel)}")
     }
 
-    fun eventClickButtonPilihLokasiIniNotSuccess() {
-        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_PILIH_LOKASI_INI, NOT_SUCCESS)
+    fun eventClickButtonPilihLokasiIniNotSuccess(isFullFlow: Boolean, isLogisticLabel: Boolean) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_PILIH_LOKASI_INI, "$NOT_SUCCESS - ${getAnalyticsLabel(isFullFlow, isLogisticLabel)}")
     }
 
-    fun eventClickButtonPilihLokasiIni() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_PILIH_LOKASI_INI)
+    fun eventClickButtonPilihLokasiIni(isFullFlow: Boolean, isLogisticLabel: Boolean) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_PILIH_LOKASI_INI, getAnalyticsLabel(isFullFlow, isLogisticLabel))
     }
 
-    fun eventClickFieldDetailAlamatChangeAddressPositive() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS_POSITIVE, CLICK_FIELD_DETAIL_ALAMAT)
+    fun eventClickFieldDetailAlamatChangeAddressPositive(isFullFlow: Boolean, isLogisticLabel: Boolean) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_POSITIVE, CLICK_FIELD_DETAIL_ALAMAT, getAnalyticsLabel(isFullFlow, isLogisticLabel))
     }
 
-    fun eventClickFieldLabelAlamatChangeAddressPositive() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS_POSITIVE, CLICK_FIELD_LABEL_ALAMAT)
+    fun eventClickFieldLabelAlamatChangeAddressPositive(isFullFlow: Boolean, isLogisticLabel: Boolean) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_POSITIVE, CLICK_FIELD_LABEL_ALAMAT, getAnalyticsLabel(isFullFlow, isLogisticLabel))
     }
 
-    fun eventClickChipsLabelAlamatChangeAddressPositive() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS_POSITIVE, CLICK_CHIPS_LABEL_ALAMAT)
+    fun eventClickChipsLabelAlamatChangeAddressPositive(isFullFlow: Boolean, isLogisticLabel: Boolean) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_POSITIVE, CLICK_CHIPS_LABEL_ALAMAT, getAnalyticsLabel(isFullFlow, isLogisticLabel))
     }
 
-    fun eventClickFieldNamaPenerimaChangeAddressPositive() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS_POSITIVE, CLICK_FIELD_NAMA_PENERIMA)
+    fun eventClickFieldNamaPenerimaChangeAddressPositive(isFullFlow: Boolean, isLogisticLabel: Boolean) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_POSITIVE, CLICK_FIELD_NAMA_PENERIMA, getAnalyticsLabel(isFullFlow, isLogisticLabel))
     }
 
-    fun eventClickFieldNoPonselChangeAddressPositive() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS_POSITIVE, CLICK_FIELD_NO_PONSEL)
+    fun eventClickFieldNoPonselChangeAddressPositive(isFullFlow: Boolean, isLogisticLabel: Boolean) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_POSITIVE, CLICK_FIELD_NO_PONSEL, getAnalyticsLabel(isFullFlow, isLogisticLabel))
     }
 
-    fun eventClickButtonUbahPinPointChangeAddressPositive() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS_POSITIVE, CLICK_BUTTON_UBAH_PIN_POINT)
+    fun eventClickButtonUbahPinPointChangeAddressPositive(isFullFlow: Boolean, isLogisticLabel: Boolean) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_POSITIVE, CLICK_BUTTON_UBAH_PIN_POINT, getAnalyticsLabel(isFullFlow, isLogisticLabel))
     }
 
-    fun eventClickButtonUnnamedRoad() {
-        sendEventCategoryAction(VIEW_ADDRESS, CART_CHANGE_ADDRESS, CLICK_PILIH_LOKASI_UNNAMED_ROAD)
+    fun eventClickButtonUnnamedRoad(isFullFlow: Boolean, isLogisticLabel: Boolean) {
+        sendEventCategoryActionLabel(VIEW_ADDRESS, CART_CHANGE_ADDRESS, CLICK_PILIH_LOKASI_UNNAMED_ROAD, getAnalyticsLabel(isFullFlow, isLogisticLabel))
     }
 
-    fun eventClickBackArrowOnPositivePageChangeAddressPositive() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS_POSITIVE, CLICK_BACK_ARROW_ON_POSITIVE_PAGE)
+    fun eventClickBackArrowOnPositivePageChangeAddressPositive(isFullFlow: Boolean, isLogisticLabel: Boolean) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_POSITIVE, CLICK_BACK_ARROW_ON_POSITIVE_PAGE, getAnalyticsLabel(isFullFlow, isLogisticLabel))
     }
 
-    fun eventClickButtonSimpanSuccess() {
-        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_SIMPAN, POSITIVE_SUCCESS)
+    fun eventClickButtonSimpanSuccess(isFullFlow: Boolean, isLogisticLabel: Boolean) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_SIMPAN, "$POSITIVE_SUCCESS - ${getAnalyticsLabel(isFullFlow, isLogisticLabel)}")
     }
 
-    fun eventClickButtonSimpanNotSuccess(errorField: String) {
-        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_SIMPAN, "$POSITIVE_NOT_SUCCESS - $errorField")
+    fun eventClickButtonSimpanNotSuccess(errorField: String, isFullFlow: Boolean, isLogisticLabel: Boolean) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_SIMPAN, "$POSITIVE_NOT_SUCCESS - $errorField - ${getAnalyticsLabel(isFullFlow, isLogisticLabel)}")
     }
 
-    fun eventViewFailedPinPointNotification() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, VIEW_FAILED_PINPOINT_NOTIFICATION)
+    fun eventViewFailedPinPointNotification(isFullFlow: Boolean, isLogisticLabel: Boolean) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, VIEW_FAILED_PINPOINT_NOTIFICATION, getAnalyticsLabel(isFullFlow, isLogisticLabel))
     }
 
-    fun eventClickButtonTandaiLokasiChangeAddressNegativeSuccess() {
-        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_BUTTON_TANDAI_LOKASI, SUCCESS)
+    fun eventClickButtonTandaiLokasiChangeAddressNegativeSuccess(isFullFlow: Boolean, isLogisticLabel: Boolean) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_BUTTON_TANDAI_LOKASI, "$SUCCESS - ${getAnalyticsLabel(isFullFlow, isLogisticLabel)}")
     }
 
-    fun eventClickButtonTandaiLokasiChangeAddressNegativeFailed() {
-        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_BUTTON_TANDAI_LOKASI, FAILED)
+    fun eventClickButtonTandaiLokasiChangeAddressNegativeFailed(isFullFlow: Boolean, isLogisticLabel: Boolean) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_BUTTON_TANDAI_LOKASI, "$FAILED - ${getAnalyticsLabel(isFullFlow, isLogisticLabel)}")
     }
 
-    fun eventClickFieldKotaKecamatanChangeAddressNegative() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_FIELD_KOTA_KECAMATAN)
+    fun eventClickFieldKotaKecamatanChangeAddressNegative(isFullFlow: Boolean, isLogisticLabel: Boolean) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_FIELD_KOTA_KECAMATAN, getAnalyticsLabel(isFullFlow, isLogisticLabel))
     }
 
-    fun eventClickChipsKotaKecamatanChangeAddressNegative() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_CHIPS_KOTA_KECAMATAN)
+    fun eventClickChipsKotaKecamatanChangeAddressNegative(isFullFlow: Boolean, isLogisticLabel: Boolean) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_CHIPS_KOTA_KECAMATAN, getAnalyticsLabel(isFullFlow, isLogisticLabel))
     }
 
-    fun eventClickSuggestionKotaKecamatanChangeAddressNegative() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_SUGGESTION_KOTA_KECAMATAN)
+    fun eventClickSuggestionKotaKecamatanChangeAddressNegative(isFullFlow: Boolean, isLogisticLabel: Boolean) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_SUGGESTION_KOTA_KECAMATAN, getAnalyticsLabel(isFullFlow, isLogisticLabel))
     }
 
-    fun eventClickFieldKodePosChangeAddressNegative() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_FIELD_KODE_POS)
+    fun eventClickFieldKodePosChangeAddressNegative(isFullFlow: Boolean, isLogisticLabel: Boolean) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_FIELD_KODE_POS, getAnalyticsLabel(isFullFlow, isLogisticLabel))
     }
 
-    fun eventClickChipsKodePosChangeAddressNegative() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_CHIPS_KODE_POS)
+    fun eventClickChipsKodePosChangeAddressNegative(isFullFlow: Boolean, isLogisticLabel: Boolean) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_CHIPS_KODE_POS, getAnalyticsLabel(isFullFlow, isLogisticLabel))
     }
 
-    fun eventClickFieldAlamatChangeAddressNegative() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_FIELD_ALAMAT)
+    fun eventClickFieldAlamatChangeAddressNegative(isFullFlow: Boolean, isLogisticLabel: Boolean) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_FIELD_ALAMAT, getAnalyticsLabel(isFullFlow, isLogisticLabel))
     }
 
-    fun eventClickFieldLabelAlamatChangeAddressNegative() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_FIELD_LABEL_ALAMAT)
+    fun eventClickFieldLabelAlamatChangeAddressNegative(isFullFlow: Boolean, isLogisticLabel: Boolean) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_FIELD_LABEL_ALAMAT, getAnalyticsLabel(isFullFlow, isLogisticLabel))
     }
 
-    fun eventClickChipsLabelAlamatChangeAddressNegative() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_CHIPS_LABEL_ALAMAT)
+    fun eventClickChipsLabelAlamatChangeAddressNegative(isFullFlow: Boolean, isLogisticLabel: Boolean) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_CHIPS_LABEL_ALAMAT, getAnalyticsLabel(isFullFlow, isLogisticLabel))
     }
 
-    fun eventClickFieldNamaPenerimaChangeAddressNegative() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_FIELD_NAMA_PENERIMA)
+    fun eventClickFieldNamaPenerimaChangeAddressNegative(isFullFlow: Boolean, isLogisticLabel: Boolean) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_FIELD_NAMA_PENERIMA, getAnalyticsLabel(isFullFlow, isLogisticLabel))
     }
 
-    fun eventClickFieldNoPonselChangeAddressNegative() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_FIELD_NO_PONSEL)
+    fun eventClickFieldNoPonselChangeAddressNegative(isFullFlow: Boolean, isLogisticLabel: Boolean) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_FIELD_NO_PONSEL, getAnalyticsLabel(isFullFlow, isLogisticLabel))
     }
 
-    fun eventViewToasterPilihKotaDanKodePosTerlebihDahulu() {
-        sendEventCategoryAction(VIEW_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, VIEW_TOASTER_PILIH_KOTA_DAN_KODE_POS_TERLEBIH_DAHULU)
+    fun eventViewToasterPilihKotaDanKodePosTerlebihDahulu(isFullFlow: Boolean, isLogisticLabel: Boolean) {
+        sendEventCategoryActionLabel(VIEW_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, VIEW_TOASTER_PILIH_KOTA_DAN_KODE_POS_TERLEBIH_DAHULU, getAnalyticsLabel(isFullFlow, isLogisticLabel))
     }
 
-    fun eventViewToasterAlamatTidakSesuaiDenganPeta() {
-        sendEventCategoryAction(VIEW_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, VIEW_TOASTER_ALAMAT_TIDAK_SESUAI_DENGAN_PETA)
+    fun eventViewToasterAlamatTidakSesuaiDenganPeta(isFullFlow: Boolean, isLogisticLabel: Boolean) {
+        sendEventCategoryActionLabel(VIEW_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, VIEW_TOASTER_ALAMAT_TIDAK_SESUAI_DENGAN_PETA, getAnalyticsLabel(isFullFlow, isLogisticLabel))
     }
 
-    fun eventClickBackArrowOnNegativePage() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_BACK_ARROW_ON_NEGATIVE_PAGE)
+    fun eventClickBackArrowOnNegativePage(isFullFlow: Boolean, isLogisticLabel: Boolean) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_BACK_ARROW_ON_NEGATIVE_PAGE, getAnalyticsLabel(isFullFlow, isLogisticLabel))
     }
 
-    fun eventClickButtonSimpanNegativeSuccess() {
-        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_SIMPAN, NEGATIVE_SUCCESS)
+    fun eventClickButtonSimpanNegativeSuccess(isFullFlow: Boolean, isLogisticLabel: Boolean) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_SIMPAN, "$NEGATIVE_SUCCESS - ${getAnalyticsLabel(isFullFlow, isLogisticLabel)}")
     }
 
-    fun eventClickButtonSimpanNegativeNotSuccess(errorField: String) {
-        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_BUTTON_SIMPAN, "$NEGATIVE_NOT_SUCCESS - $errorField")
+    fun eventClickButtonSimpanNegativeNotSuccess(errorField: String, isFullFlow: Boolean, isLogisticLabel: Boolean) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_BUTTON_SIMPAN, "$NEGATIVE_NOT_SUCCESS - $errorField - ${getAnalyticsLabel(isFullFlow, isLogisticLabel)}")
     }
+
+    private fun getAnalyticsLabel(flow: Boolean, logistic: Boolean) = if (flow && logistic) LOGISTIC_LABEL else NON_LOGISTIC_LABEL
+
 }

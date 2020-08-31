@@ -302,16 +302,6 @@
         <key>nonb_5_dsc</key>
         <value>Buka toko gratis, nikmati transaksi mudah, aman, dan dikunjungi jutaan pembeli</value>
     </entry>
-    <!--switch for New category belanja-->
-    <entry>
-        <key>app_category_browse_v1</key>
-        <value>true</value>
-    </entry>
-    <!--switch for New category belanja A/B testing-->
-    <entry>
-        <key>app_category_browse_enable_ab</key>
-        <value>true</value>
-    </entry>
     <entry>
     <key>android_seller_account_ticker_msg</key>
         <value>Perkuat bisnismu dengan Power Merchant versi baru.</value>
@@ -333,16 +323,11 @@
         <value>false</value>
     </entry>
     <entry>
-        <key>app_enable_category_revamp</key>
+        <key>android_customer_enable_new_deals_revamp_flow</key>
         <value>true</value>
     </entry>
-
     <entry>
         <key>app_enable_banned_navigation</key>
-        <value>true</value>
-    </entry>
-    <entry>
-        <key>app_enable_catalog_revamp</key>
         <value>true</value>
     </entry>
     <entry>
@@ -354,15 +339,155 @@
         <value>Pengiriman ini berpotensi Bebas Ongkir</value>
     </entry>
     <entry>
-        <key>app_hotlist_nav_enable</key>
-        <value>true</value>
-    </entry>
-    <entry>
         <key>android_main_app_enabled_old_pdp</key>
         <value>false</value>
     </entry>
     <entry>
         <key>android_main_app_enabled_umrah</key>
         <value>true</value>
+    </entry>
+    <entry>
+        <key>android_main_app_enable_new_shop_page</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_main_app_enabled_cache_pdp</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_main_app_enabled_cache_p2_pdp</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>app_semua_category_enable</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_mainapp_enable_event_revamp</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_mainapp_enable_slice_recharge</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_exec_seq1_async</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_exec_seq2_async</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_exec_seq3_async</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_exec_seq4_async</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_exec_seq5_async</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_async_remoteconf_fetch</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_async_deffered_deeplink_fetch</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_async_movetohome</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_async_appsflyer_init</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_async_onboarding_create</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>android_async_openhome_event</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_async_firsttime_event</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_async_create_appsflyer</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_async_installtrack</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_enable_home_sndscr</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_async_addshortcuts</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_async_checkappsignature</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_async_hansel_init</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_async_home_dagger</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>android_async_cmpushnotif_init</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>android_async_iris_init</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>android_async_remoteconfig_mainapp_init</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>android_async_applink_delegate_creation</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>android_async_remoteresource_init</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>excluded_amp</key>
+        <value>stories</value>
+    </entry>
+    <entry>
+        <key>android_mainapp_enable_pdp_event</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_mainapp_enable_seller_migration</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_addgaid_to_branch</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>app_enable_branch_utm_support</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_gql_connection_warm_up</key>
+        <value>false</value>
     </entry>
 </defaultsMap>

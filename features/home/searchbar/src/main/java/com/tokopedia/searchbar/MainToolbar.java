@@ -7,7 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.Gravity;
-import android.widget.ImageButton;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -102,15 +102,6 @@ public class MainToolbar extends Toolbar {
 
         FirebaseRemoteConfigImpl firebaseRemoteConfig = new FirebaseRemoteConfigImpl(context);
         wishlistNewPage = firebaseRemoteConfig.getBoolean(RemoteConfigKey.ENABLE_NEW_WISHLIST_PAGE, true);
-        inflateResource(context);
-        ImageButton btnQrCode = findViewById(R.id.btn_qrcode);
-        btnNotification = findViewById(R.id.btn_notification);
-        btnInbox = findViewById(R.id.btn_inbox);
-        btnWishlist = findViewById(R.id.btn_wishlist);
-        editTextSearch = findViewById(R.id.et_search);
-
-        remoteConfig = new FirebaseRemoteConfigImpl(context);
-
         if (attrs != null) {
             TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.MainToolbar, 0, 0);
             try {
@@ -119,19 +110,23 @@ public class MainToolbar extends Toolbar {
                 ta.recycle();
             }
         }
+        inflateResource(context);
+    }
+
+    protected void actionAfterInflation(Context context, View view){
+        btnNotification = view.findViewById(R.id.btn_notification);
+        btnInbox = view.findViewById(R.id.btn_inbox);
+        btnWishlist = view.findViewById(R.id.btn_wishlist);
+        editTextSearch = view.findViewById(R.id.et_search);
+
+        remoteConfig = new FirebaseRemoteConfigImpl(context);
+
+
 
         if ((getResources().getConfiguration().screenLayout &
                 Configuration.SCREENLAYOUT_SIZE_MASK) >=
                 Configuration.SCREENLAYOUT_SIZE_LARGE) {
             editTextSearch.setTextSize(18);
-        }
-
-        if (btnQrCode != null) {
-            btnQrCode.setOnClickListener(v -> {
-                searchBarAnalytics.eventTrackingSqanQr();
-                getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
-                        .gotoQrScannerPage(false));
-            });
         }
 
         btnWishlist.setOnClickListener(v -> {
@@ -156,7 +151,7 @@ public class MainToolbar extends Toolbar {
         });
 
         editTextSearch.setOnClickListener(v -> {
-            searchBarAnalytics.eventTrackingSearchBar(screenName);
+            searchBarAnalytics.eventTrackingSearchBar(screenName, "");
             RouteManager.route(context, searchApplink);
         });
 
@@ -185,6 +180,7 @@ public class MainToolbar extends Toolbar {
 
     public void inflateResource(Context context) {
         inflate(context, R.layout.main_toolbar, this);
+        actionAfterInflation(context, this);
     }
 
     public ImageView getBtnNotification() {
@@ -193,5 +189,9 @@ public class MainToolbar extends Toolbar {
 
     public ImageView getBtnWishlist() {
         return btnWishlist;
+    }
+
+    public ImageView getBtnInbox() {
+        return btnInbox;
     }
 }

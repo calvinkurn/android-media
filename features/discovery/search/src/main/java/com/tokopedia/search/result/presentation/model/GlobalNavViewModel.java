@@ -3,7 +3,7 @@ package com.tokopedia.search.result.presentation.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 
@@ -17,6 +17,7 @@ public class GlobalNavViewModel implements Parcelable, Visitable<ProductListType
     private String background;
     private String seeAllApplink;
     private String seeAllUrl;
+    private boolean isShowTopAds;
     private List<Item> itemList;
 
     public GlobalNavViewModel(
@@ -27,6 +28,7 @@ public class GlobalNavViewModel implements Parcelable, Visitable<ProductListType
             String background,
             String seeAllApplink,
             String seeAllUrl,
+            boolean isShowTopAds,
             List<Item> itemList
     ) {
         this.source = source;
@@ -36,6 +38,7 @@ public class GlobalNavViewModel implements Parcelable, Visitable<ProductListType
         this.background = background;
         this.seeAllApplink = seeAllApplink;
         this.seeAllUrl = seeAllUrl;
+        this.isShowTopAds = isShowTopAds;
         this.itemList = itemList;
     }
 
@@ -65,6 +68,10 @@ public class GlobalNavViewModel implements Parcelable, Visitable<ProductListType
 
     public String getSeeAllUrl() {
         return seeAllUrl;
+    }
+
+    public boolean getIsShowTopAds() {
+        return isShowTopAds;
     }
 
     public List<Item> getItemList() {
@@ -159,11 +166,11 @@ public class GlobalNavViewModel implements Parcelable, Visitable<ProductListType
             return position;
         }
 
-        public Object getGlobalNavItemAsObjectDataLayer() {
+        public Object getGlobalNavItemAsObjectDataLayer(String creativeName) {
             return DataLayer.mapOf(
                     "id", name,
                     "name", "/search result - widget",
-                    "creative", name,
+                    "creative", creativeName,
                     "position", Integer.toString(position)
             );
         }

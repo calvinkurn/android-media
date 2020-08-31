@@ -1,7 +1,7 @@
 package com.tokopedia.feedcomponent.view.viewmodel.posttag
 
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
-import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItemTag
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.TagsItem
 import com.tokopedia.feedcomponent.view.adapter.posttag.PostTagTypeFactory
 
 /**
@@ -19,7 +19,7 @@ data class ProductPostTagViewModel (
         val isSelected: Boolean = false,
         var position: MutableList<Float> = ArrayList(),
         var isWishlisted: Boolean = false,
-        val tags: List<PostTagItemTag> = ArrayList(),
+        val tags: List<TagsItem> = ArrayList(),
         val postTagItemPojo: PostTagItem = PostTagItem(),
         val rating: Int = 0,
         val needToResize: Boolean = false,

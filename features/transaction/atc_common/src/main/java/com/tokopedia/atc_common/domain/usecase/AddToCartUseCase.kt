@@ -2,6 +2,7 @@ package com.tokopedia.atc_common.domain.usecase
 
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.data.model.response.AddToCartGqlResponse
+import com.tokopedia.atc_common.domain.AddToCartAnalytics
 import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -18,7 +19,8 @@ import javax.inject.Named
 
 class AddToCartUseCase @Inject constructor(@Named("atcMutation") private val queryString: String,
                                            private val graphqlUseCase: GraphqlUseCase,
-                                           private val addToCartDataMapper: AddToCartDataMapper) : UseCase<AddToCartDataModel>() {
+                                           private val addToCartDataMapper: AddToCartDataMapper,
+                                           private val analytics: AddToCartAnalytics) : UseCase<AddToCartDataModel>() {
 
     companion object {
         const val REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST = "REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST"
@@ -37,7 +39,8 @@ class AddToCartUseCase @Inject constructor(@Named("atcMutation") private val que
 
         @JvmStatic
         @JvmOverloads
-        fun getMinimumParams(productId: String, shopId: String, quantity: Int = 1, notes: String = ""): RequestParams {
+        fun getMinimumParams(productId: String, shopId: String, quantity: Int = 1, notes: String = "", atcExternalSource: String = AddToCartRequestParams.ATC_FROM_OTHERS,
+                /*tracking data*/ productName: String = "", category: String = "", price: String = ""): RequestParams {
             return RequestParams.create()
                     .apply {
                         putObject(
@@ -46,7 +49,11 @@ class AddToCartUseCase @Inject constructor(@Named("atcMutation") private val que
                                         productId = productId.toLong(),
                                         shopId = shopId.toInt(),
                                         quantity = quantity,
-                                        notes = notes
+                                        notes = notes,
+                                        atcFromExternalSource = atcExternalSource,
+                                        productName = productName,
+                                        category = category,
+                                        price = price
                                 )
                         )
                     }
@@ -77,7 +84,9 @@ class AddToCartUseCase @Inject constructor(@Named("atcMutation") private val que
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(RequestParams.EMPTY).map {
             val addToCartGqlResponse = it.getData<AddToCartGqlResponse>(AddToCartGqlResponse::class.java)
-            addToCartDataMapper.mapAddToCartResponse(addToCartGqlResponse)
+            val result = addToCartDataMapper.mapAddToCartResponse(addToCartGqlResponse)
+            analytics.sendAppsFlyerTracking(result, addToCartRequest)
+            result
         }
 
     }

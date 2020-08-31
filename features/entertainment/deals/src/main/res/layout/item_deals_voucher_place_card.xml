@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/deals_item_voucher_place_card_height"
+    android:layout_margin="@dimen/spacing_lvl2"
+    app:cardCornerRadius="@dimen/spacing_lvl3">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/img_voucher_place_card"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            tools:src="@tools:sample/backgrounds/scenic" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/deals_item_voucher_place_card_scrim_height"
+            android:background="@drawable/bg_deals_scrim_voucher_place_card"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/txt_voucher_place_card_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/deals_dp_12"
+            android:layout_marginStart="@dimen/deals_dp_12"
+            android:layout_marginEnd="@dimen/deals_dp_12"
+            android:layout_marginRight="@dimen/deals_dp_12"
+            android:textColor="@color/dark_N700_96"
+            app:layout_constraintBottom_toTopOf="@+id/txt_voucher_place_card_count"
+            app:layout_constraintStart_toStartOf="parent"
+            app:typographyType="heading_5"
+            tools:text="Lotte Avenue"
+            app:layout_goneMarginBottom="@dimen/deals_dp_12"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/txt_voucher_place_card_count"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/deals_dp_12"
+            android:layout_marginStart="@dimen/deals_dp_12"
+            android:layout_marginBottom="@dimen/deals_dp_12"
+            android:layout_marginRight="@dimen/deals_dp_12"
+            android:layout_marginEnd="@dimen/deals_dp_12"
+            android:textColor="@color/dark_N700_96"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
+            tools:text="20 voucher" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

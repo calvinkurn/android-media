@@ -4,5 +4,7 @@
     <string name="path_global_home_recommendation_domain" translatable="false">/rekomendasi/.*</string>
     <string name="path_global_home_wishlist_domain" translatable="false">/wishlist</string>
     <string name="path_global_similar_product_domain" translatable="false">/rekomendasi/.*</string>
-    <string name="path_store_setting_sellerapp_temp" translatable="false">/seller/manage-shop</string>
+    <string name="path_favorite" translatable="false">/favorite</string>
+    <string name="path_inbox" translatable="false">/inbox</string>
+    <string name="path_navigation" translatable="false">/navigation</string>
 </resources>

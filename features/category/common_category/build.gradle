@@ -1,0 +1,49 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+repositories {
+    maven { url 'https://hansel.io/maven' }
+}
+buildscript {
+    repositories {
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        mavenCentral()
+        jcenter()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+
+dependencies {
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.commonNetwork)
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation project(rootProject.ext.libraries.graphql)
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation project(rootProject.ext.libraries.baseList)
+    implementation project(rootProject.ext.features.topAdsSdk)
+    implementation project(rootProject.ext.features.filter)
+    implementation project(rootProject.ext.features.productCard)
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation project(rootProject.ext.features.discoveryCommon)
+    implementation project(rootProject.ext.features.basemvvm)
+    implementation project(rootProject.ext.features.seamlesslogin)
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation project(rootProject.ext.libraries.remoteResourceRequest)
+}
+
+project.ext {
+    artifactId = 'common_category'
+    groupId = 'com.tokopedia.category'
+    versionName = "0.0.2"
+    artifactName ="common_category-release"
+}
+apply from: '../../../publish_local.gradle'

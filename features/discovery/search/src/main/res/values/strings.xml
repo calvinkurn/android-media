@@ -1,17 +1,15 @@
 <resources>
     <string name="title_search_result" >Pencarian</string>
-    <string name="search_result_app_name">search</string>
     <string name="app_name">Search</string>
     <string name="search_result_page">Search Result Page</string>
     <string name="OK">OK</string>
 
+    <string name="search_toolbar_title_default">Cari di Tokopedia</string>
+
     <string name="product_tab_title">Produk</string>
-    <string name="catalog_tab_title">Katalog</string>
     <string name="shop_tab_title">Toko</string>
 
     <string name="title_category">Kategori</string>
-    <string name="title_share">Bagikan</string>
-    <string name="title_profile">Profil</string>
 
     <string name="grid">Grid</string>
 
@@ -21,16 +19,11 @@
     <string name="result_count_template_text">%s Produk</string>
     <string name="empty_state_selected_filter_price_name">Filter Harga</string>
 
-    <string name="view_similar_item">Lihat Barang Serupa</string>
-    <string name="press_to_see_similar">Tekan dan tahan produk pilihan Anda untuk melihat produk serupa.</string>
-    <string name="megerti">Mengerti</string>
     <string name="msg_remove_wishlist">Sukses menghapus wishlist</string>
     <string name="msg_add_wishlist">Sukses menambah wishlist</string>
+    <string name="msg_remove_wishlist_failed">Gagal menghapus wishlist</string>
+    <string name="msg_add_wishlist_failed">Gagal menambah wishlist</string>
 
-    <string name="message_success_people_fav">Sukses menambahkan toko favorit</string>
-    <string name="message_success_people_unfav">Sukses menghapus toko favorit</string>
-    <string name="shop_total_count_found_in">\u0020ditemukan di\u0020</string>
-    <string name="shop_total_count_shop">\u0020toko</string>
     <string name="shop_has_no_product">Toko belum ada produk</string>
     <string name="shop_product_item_price">Rp%s</string>
     <string name="shop_voucher_free_shipping">Gratis Ongkir</string>
@@ -41,30 +34,31 @@
     <string name="shop_status_inactive">Toko Sudah Tidak Aktif</string>
     <string name="shop_voucher_cashback_rb">%srb</string>
     <string name="shop_see_shop_button">Lihat Toko</string>
+    <string name="shop_apply_filter">Tampilkan %s Toko</string>
 
-    <string name="title_total_prods">Produk</string>
-
-    <string name="value_profile_count">%1$s profil</string>
-    <string name="empty_search_content_template">Hasil pencarian untuk \"%s\" tidak ditemukan. Coba keyword lain?</string>
     <string name="empty_search_button_text">Lakukan Pencarian Baru</string>
     <string name="msg_empty_search_with_filter_1">Oops, %s tidak ditemukan :(</string>
-    <string name="msg_empty_search_shop_title">Oops, toko tidak ditemukan :(</string>
+
+    <string name="msg_empty_search_shop_title">Oops, toko nggak ditemukan</string>
+    <string name="msg_empty_search_shop_content">Coba kata kunci lain untuk menemukan toko yang kamu inginkan.</string>
+    <string name="msg_empty_search_shop_content_with_filter">Coba kurangi salah satu filter yang kamu gunakan :</string>
+    <string name="msg_empty_search_shop_button">Ganti Kata Kunci</string>
+    <string name="empty_search_shop_recommendation_title">Toko rekomendasi</string>
+
     <string name="msg_empty_search_product_title">Oops, Produk Nggak Ditemukan</string>
     <string name="msg_empty_search_product_content">Coba kata kunci lain atau cek produk rekomendasi di bawah.</string>
     <string name="msg_empty_search_product_content_with_filter">Coba kurangi salah satu filter yang kamu gunakan :</string>
     <string name="msg_empty_search_product_button">Ganti Kata Kunci</string>
+
     <string name="post_count_value">%1$s post</string>
     <string name="btn_following_text">Following</string>
     <string name="btn_follow_text">Follow</string>
     <string name="sort">Sort</string>
-    <string name="filter">Filter</string>
+    <string name="search_filter">Filter</string>
     <string name="list">List</string>
     <string name="msg_empty_search_with_filter_2">Hasil pencarian untuk \"%s\" tidak ditemukan. Coba kurangi filter pencarian Anda :</string>
     <string name="related_search_title">Mungkin maksud Anda :</string>
     <string name="value_status_followed">\u2022 Following</string>
-    <string name="image_product_desc">Produk</string>
-    <string name="search_hint">Cari produk atau Toko</string>
-    <string name="search_title">Pencarian</string>
 
     <string name="free_ongkir_promo_show_case_title">Bebas Ongkir</string>
     <string name="free_ongkir_promo_show_case_description">Semua barang berlogo Bebas Ongkir, biaya kirimnya berpotensi GRATIS!</string>
@@ -73,4 +67,20 @@
     <string name="banned_products_empty_search_go_to_browser_button">Cari di Browser</string>
     <string name="banned_products_ticker_title">Hasil pencarian terbatas</string>
 
+    <string name="inspiration_carousel_title">Pilih sesuai budget-mu</string>
+    <string name="inspiration_carousel_option_title">Rp20,08 jt - Rp21,05 jt</string>
+    <string name="inspiration_carousel_option_view_all">Lihat Semua</string>
+    <string name="inspiration_carousel_product_name">Xiaomi Note 8 4GB/64GB [4GB-64GB] Garansi TAM Original Quality</string>
+    <string name="inspiration_carousel_product_description">Layar 6.22 in.\nKamera 12MP\nRAM 3/4GB\nBaterai 5000mAH</string>
+    <string name="inspiration_carousel_product_price">Rp50.000.000</string>
+    <string name="inspiration_carousel_review_count">(60)</string>
+
+    <string name="broad_match_title">Pot tanaman alumunium IKEA</string>
+    <string name="broad_match_see_more">Lihat Semua</string>
+
+    <string name="search_product_filter_onboarding_title">Cari barang yang gimana?</string>
+    <string name="search_product_filter_onboarding_description">Yuk, temukan barang lebih cepat dengan mengurutkan dan memilih lokasi, harga, atau kategori lainnya disini.</string>
+
+    <string name="search_inspiration_card_title">Mungkin maksud kamu ini?</string>
+    <string name="search_inspiration_card_option">putih</string>
 </resources>

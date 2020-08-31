@@ -4,12 +4,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_HEADER_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_PAYMENT_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_PRODUCTS_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_SHIPPING_TYPE
 import com.tokopedia.sellerorder.detail.data.model.SomDetailData
+import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
 import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailHeaderViewHolder
 import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailPaymentsViewHolder
 import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailProductsViewHolder
@@ -21,7 +23,7 @@ import com.tokopedia.sellerorder.detail.presentation.fragment.SomDetailFragment
  */
 class SomDetailAdapter : RecyclerView.Adapter<SomDetailAdapter.BaseViewHolder<*>>() {
     var listDataDetail = mutableListOf<SomDetailData>()
-    private lateinit var actionListener: ActionListener
+    private var actionListener: ActionListener? = null
 
     interface ActionListener {
         fun onShowBottomSheetInfo(title: String, resIdDesc: Int)
@@ -29,11 +31,14 @@ class SomDetailAdapter : RecyclerView.Adapter<SomDetailAdapter.BaseViewHolder<*>
         fun onInvalidResiUpload(awbUploadUrl: String)
         fun onDialPhone(strPhoneNo: String)
         fun onShowBookingCode(bookingCode: String, bookingType: String)
-        fun onShowBuyerRequestCancelReasonBottomSheet()
+        fun onShowBuyerRequestCancelReasonBottomSheet(it: SomDetailOrder.Data.GetSomDetail.Button)
         fun onSeeInvoice(invoiceUrl: String)
         fun onCopiedInvoice(invoice: String, str: String)
         fun onClickProduct(productId: Int)
         fun onCopiedAddress(address: String, str: String)
+        fun onAddedCoachMarkHeader(coachMark: CoachMarkItem)
+        fun onAddedCoachMarkProducts(coachMark: CoachMarkItem)
+        fun onAddedCoachMarkShipping(coachMark: CoachMarkItem)
     }
 
     companion object {

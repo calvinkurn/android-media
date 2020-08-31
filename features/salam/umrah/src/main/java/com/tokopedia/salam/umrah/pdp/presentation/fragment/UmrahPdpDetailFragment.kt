@@ -23,7 +23,6 @@ import com.tokopedia.salam.umrah.checkout.presentation.activity.UmrahCheckoutAct
 import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
 import com.tokopedia.salam.umrah.common.data.UmrahVariant
 import com.tokopedia.salam.umrah.common.util.CurrencyFormatter.getRupiahFormat
-import com.tokopedia.salam.umrah.homepage.presentation.fragment.UmrahHomepageFragment
 import com.tokopedia.salam.umrah.pdp.data.ParamPurchase
 import com.tokopedia.salam.umrah.pdp.di.UmrahPdpComponent
 import com.tokopedia.salam.umrah.pdp.presentation.activity.UmrahPdpActivity.Companion.EXTRA_IS_EMPTY

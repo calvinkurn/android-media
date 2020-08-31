@@ -9,12 +9,6 @@ import android.widget.EditText;
 
 public class KeyboardHandler {
 
-    public static void DropKeyboard(Context context, EditText view) {
-        view.clearFocus();
-        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-    }
-
     public static void DropKeyboard(Context context, View view) {
         if (view != null) {
             view.clearFocus();
@@ -44,6 +38,4 @@ public class KeyboardHandler {
             inputMethodManager.showSoftInput(currentFocus, InputMethodManager.SHOW_IMPLICIT);
 
     }
-
-
 }

@@ -2,6 +2,7 @@ query GetUserSetting {
     notifier_notificationGetUserAllSettings {
     email {
       section
+      icon
       list_settings {
         name
         icon

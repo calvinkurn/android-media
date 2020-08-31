@@ -16,7 +16,7 @@ import android.view.ViewGroup;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.base.list.seller.view.adapter.BaseRetryDataBinder;
 import com.tokopedia.base.list.seller.view.old.RetryDataBinder;
-import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;

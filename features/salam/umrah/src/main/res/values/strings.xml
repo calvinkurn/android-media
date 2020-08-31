@@ -256,5 +256,37 @@
     <string name="umrah_shop_source">seller</string>
     <string name="umrah_shop_name">Tokopedia Umroh</string>
     <string name="umrah_shop_link">Hai, Saya ingin bertanya mengenai paket umroh ini https://m.tokopedia.com/s/umroh/produk/%s</string>
+    <string name="umrah_ticker_static_promo">Cashback akan dikirim saat pesanan selesai, pada hari keberangkatan umroh.</string>
 
+
+    <string name="umrah_travel_link_share">https://m.tokopedia.com/s/umroh/agen/%s</string>
+    <string name="umrah_travel_agent_title">Penyelenggara Umroh</string>
+    <string name="umrah_travel_contact">Hubungi Travel</string>
+    <string name="umrah_travel_info_desc_title">Deskripsi</string>
+    <string name="umrah_travel_info_desc_content">PT PATUNA MEKAR JAYA atau lebih dikenal dengan nama PT PATUNA TOUR  TRAVEL adalah salah satu perusahaan yang bergerak dalam bidang jasa ticketing, tour, pengurusan dokumen perjalanan (paspor dan visa) serta Pelayanan Haji dan Umrah atau dikenal dengan PPIH (Penyelenggara Perjalanan Ibadah Haji) khusus</string>
+    <string name="umrah_travel_pilgrims_info">Jamaah %s</string>
+    <string name="umrah_travel_permission_title">Travel Terverifikasi</string>
+    <string name="umrah_travel_permission_desc">Sesuai dengan SK Ditjen Penyelenggaraan Haji dan Umroh nomor %s</string>
+    <string name="umrah_travel_permission_close">Tutup</string>
+    <string name="umrah_travel_product_duration">%s Hari</string>
+    <string name="umrah_travel_read_more">Baca Selengkapnya</string>
+    <string name="umrah_travel_hide_more">Sembunyikan</string>
+    <string name="umrah_travel_empty_gallery_title">Belum ada foto atau video di sini
+</string>
+    <string name="umrah_travel_empty_gallery_sub_title">Kamu tetap bisa cek informasi tentang penyelenggara umroh ini di menu Info.</string>
+    <string name="umrah_travel_gallery_next_images">+%s</string>
+    <string name="UMRAH_GOOGLE_API_KEY">AIzaSyCRkgwGBe8ZxjcK07Cnl3Auf72BpgA6lLo</string>
+    <string name="umrah_agen_link_share">https://m.tokopedia.com/s/umroh/agen/%s</string>
+    <string name="umrah_agen_deeplink_share">tokopedia://s/umroh/agen/%s</string>
+    <string name="umrah_youtube_link">https://www.youtube.com/watch?v=%s</string>
+    <string name="umrah_travel_share_name">Cari Paket Umroh dari %s | Tokopedia Salam</string>
+    <string name="umrah_travel_share_desc">Paket perjalanan umroh %s terlengkap di Tokopedia Salam. Cek daftar paket umroh dari %s sekarang:</string>
+    <string name="umrah_travel_see_all_list">Lihat Semua</string>
+
+
+
+    <string name="umrah_search_empty_state_sub_title">Ubah detail pencarianmu dan cari sekali lagi.</string>
+    <string name="umrah_search_empty_state_title">Paket yang dicari belum tersedia</string>
+    <string name="umrah_search_empty_state_button">Cari Paket Umroh Lainnya</string>
+    <string name="umrah_search_empty_state_text">Pilihan paket terbaik untukmu</string>
 </resources>

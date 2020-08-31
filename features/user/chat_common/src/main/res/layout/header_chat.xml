@@ -9,22 +9,27 @@
     android:gravity="center_vertical"
     android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/user_avatar"
+    <FrameLayout
+        android:id="@+id/flPhotoContainer"
         android:layout_width="@dimen/avatar_thumb_size"
         android:layout_height="@dimen/avatar_thumb_size"
-        android:layout_centerVertical="true" />
+        android:layout_centerVertical="true">
 
-    <ImageView
-        android:id="@+id/online_status"
-        android:layout_width="@dimen/dp_7"
-        android:layout_height="@dimen/dp_7"
-        android:layout_alignEnd="@+id/user_avatar"
-        android:layout_alignRight="@+id/user_avatar"
-        android:layout_alignBottom="@+id/user_avatar"
-        android:visibility="gone"
-        app:srcCompat="@drawable/status_indicator_offline"
-        tools:visibility="visible" />
+        <ImageView
+            android:id="@+id/user_avatar"
+            android:layout_width="@dimen/avatar_thumb_size"
+            android:layout_height="@dimen/avatar_thumb_size"
+            tools:src="@color/red_800" />
+
+        <ImageView
+            android:id="@+id/online_status"
+            android:layout_width="@dimen/chatcommon_14dp"
+            android:layout_height="@dimen/chatcommon_14dp"
+            android:layout_gravity="end|bottom"
+            android:visibility="gone"
+            tools:srcCompat="@drawable/status_indicator_offline"
+            tools:visibility="visible" />
+    </FrameLayout>
 
     <ImageButton
         android:id="@+id/header_menu"
@@ -41,39 +46,57 @@
         tools:visibility="visible" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_toEndOf="@id/user_avatar"
-        android:layout_toRightOf="@id/user_avatar"
+        android:layout_marginStart="@dimen/chatcommon_9dp"
+        android:layout_marginLeft="@dimen/chatcommon_9dp"
+        android:layout_marginEnd="@dimen/chatcommon_60dp"
+        android:layout_marginRight="@dimen/chatcommon_60dp"
+        android:layout_toEndOf="@+id/flPhotoContainer"
+        android:layout_toRightOf="@+id/flPhotoContainer"
         android:gravity="center_vertical">
 
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="@dimen/dp_0"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_7"
-            android:layout_marginLeft="@dimen/dp_7"
-            android:ellipsize="end"
-            android:fontFamily="sans-serif-medium"
-            android:maxLines="1"
-            android:textColor="@color/black_70"
-            android:textSize="@dimen/sp_16"
-            android:textStyle="normal"
-            app:layout_constraintEnd_toStartOf="@+id/label"
-            app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintHorizontal_chainStyle="packed"
+        <ImageView
+            android:id="@+id/ivBadge"
+            android:layout_width="@dimen/chatcommon_26dp"
+            android:layout_height="@dimen/chatcommon_22dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="@dimen/chatcommon_1dp"
+            android:layout_marginEnd="@dimen/spacing_lvl2"
+            android:layout_marginRight="@dimen/spacing_lvl2"
+            android:paddingEnd="@dimen/spacing_lvl2"
+            android:paddingRight="@dimen/spacing_lvl2"
+            android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintWidth_default="wrap"
-            tools:text="Store name" />
+            tools:ignore="RtlSymmetry"
+            tools:src="@drawable/ic_badge_shop_official"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:textColor="@color/black_70"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/ivBadge"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_4"
+            tools:text="@tools:sample/lorem/random" />
 
         <TextView
             android:id="@id/label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/dp_7"
             android:layout_marginLeft="@dimen/dp_7"
-            android:layout_marginRight="@dimen/dp_7"
             android:background="@drawable/label_user_chat"
             android:fontFamily="sans-serif"
             android:padding="@dimen/dp_4"
@@ -81,25 +104,27 @@
             android:textSize="@dimen/chat_person_tag_text_size"
             android:textStyle="normal"
             android:visibility="gone"
-            app:layout_constraintBottom_toTopOf="@id/title"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toBottomOf="@+id/title"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintHorizontal_chainStyle="spread"
-            app:layout_constraintStart_toEndOf="@id/title"
-            app:layout_constraintTop_toBottomOf="@id/title"
-            tools:text="Penjual" />
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/title"
+            app:layout_constraintTop_toTopOf="@+id/title"
+            tools:text="Penjual"
+            tools:visibility="visible" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/subtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif"
-            android:lineSpacingExtra="@dimen/online_status_text_line_spacing"
+            android:layout_marginTop="@dimen/chatcommon_1dp"
+            android:includeFontPadding="false"
             android:textColor="@color/black_38"
-            android:textSize="@dimen/online_status_text_size"
-            android:textStyle="normal"
-            app:layout_constraintStart_toStartOf="@id/title"
-            app:layout_constraintTop_toBottomOf="@id/title"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/title"
+            app:typographyType="body_3"
+            tools:visibility="visible"
             tools:text="Terakhir online 3 menit yang lalu" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </RelativeLayout>

@@ -1,8 +1,10 @@
 package com.tokopedia.core.network.retrofit.interceptors;
 
+import com.tokopedia.authentication.AuthConstant;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.user.session.UserSession;
 
 import java.text.SimpleDateFormat;
@@ -35,6 +37,7 @@ public class TopAdsAuthInterceptor extends TkpdAuthInterceptor {
         headerMap.put("X-Date", date);
         headerMap.put("X-Device", "android-" + GlobalConfig.VERSION_NAME);
         headerMap.put("X-Tkpd-Authorization", headerMap.get("Authorization"));
+        headerMap.put(AuthConstant.HEADER_RELEASE_TRACK, GlobalConfig.VERSION_NAME_SUFFIX);
         UserSession userSession = new UserSession(CoreNetworkApplication.getAppContext());
         headerMap.put("Authorization", "Bearer " + userSession.getAccessToken());
         return headerMap;

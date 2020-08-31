@@ -20,4 +20,14 @@ data class Title (
     @SerializedName("action")
     var action: Action = Action()
 
-)
+) {
+    fun copy(): Title {
+        return Title(
+                text,
+                textBadge,
+                isIsClicked,
+                ctaLink,
+                action.copy()
+        )
+    }
+}

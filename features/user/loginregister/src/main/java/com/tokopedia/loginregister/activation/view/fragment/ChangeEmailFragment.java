@@ -2,8 +2,6 @@ package com.tokopedia.loginregister.activation.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,15 +9,19 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
-import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.loginregister.R;
 import com.tokopedia.loginregister.activation.di.DaggerActivationComponent;
 import com.tokopedia.loginregister.activation.view.listener.ChangeEmailContract;
 import com.tokopedia.loginregister.activation.view.presenter.ChangeEmailPresenter;
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent;
+import com.tokopedia.unifycomponents.Toaster;
 
 import javax.inject.Inject;
 
@@ -119,7 +121,7 @@ public class ChangeEmailFragment extends BaseDaggerFragment implements ChangeEma
     @Override
     public void onErrorChangeEmail(String message) {
         finishLoadingProgress();
-        ToasterError.make(getView(), message).show();
+        Toaster.INSTANCE.make(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, "", v->{});
     }
 
     @Override

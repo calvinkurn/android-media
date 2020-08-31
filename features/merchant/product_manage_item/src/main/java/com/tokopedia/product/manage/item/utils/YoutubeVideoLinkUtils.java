@@ -2,8 +2,7 @@ package com.tokopedia.product.manage.item.utils;
 
 import android.content.Context;
 
-import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.util.Pair;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.product.manage.item.R;
 import com.tokopedia.product.manage.item.main.base.data.source.cloud.model.youtube.ContentRating;
 import com.tokopedia.product.manage.item.main.base.data.source.cloud.model.youtube.YoutubeResponse;

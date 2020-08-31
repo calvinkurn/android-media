@@ -1,44 +1,47 @@
 package com.tokopedia.tradein.view.viewcontrollers;
 
 import android.app.Activity;
-import androidx.lifecycle.Observer;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
+import com.tokopedia.common_tradein.model.TradeInParams;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.tradein.Constants;
 import com.tokopedia.tradein.R;
 import com.tokopedia.tradein.TradeInGTMConstants;
 import com.tokopedia.tradein.model.DeviceAttr;
 import com.tokopedia.tradein.model.DeviceDataResponse;
 import com.tokopedia.tradein.model.KYCDetails;
-import com.tokopedia.common_tradein.model.TradeInParams;
 import com.tokopedia.tradein.viewmodel.FinalPriceViewModel;
-import com.tokopedia.tradein_common.Constants;
-import com.tokopedia.tradein_common.viewmodel.BaseViewModel;
+import com.tokopedia.basemvvm.viewmodel.BaseViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class FinalPriceActivity extends BaseTradeInActivity implements Observer<DeviceDataResponse> {
+public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel> implements Observer<DeviceDataResponse> {
+
     public static final int FINAL_PRICE_REQUEST_CODE = 22456;
     private final static int FLAG_ACTIVITY_KYC_FORM = 1301;
     private final static int PINPOINT_ACTIVITY_REQUEST_CODE = 1302;
     public static final String PARAM_PROJECTID_TRADEIN = "TRADEIN_PROJECT";
+    public static final String PARAM_TRADEIN_PHONE_TYPE = "PARAM_TRADEIN_PHONE_TYPE";
     private final static String EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW";
     private static final int PROJECT_ID = 4;
     private FinalPriceViewModel viewModel;
@@ -46,7 +49,6 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
     private String deviceId = "";
     private int checkoutString = R.string.buy_now;
     private int hargeTncString = R.string.harga_tnc;
-    private int tncStringId = R.string.tradein_tnc;
     /**
      * price_valid_until
      */
@@ -69,13 +71,21 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
     private int tradeInStringId = R.string.tukar_tambah;
     private String category = TradeInGTMConstants.CATEGORY_TRADEIN_HARGA_FINAL;
     private static final String KERO_TOKEN = "token";
+    private String phoneType = "", price = "";
 
     public static Intent getHargaFinalIntent(Context context) {
         return new Intent(context, FinalPriceActivity.class);
     }
 
     @Override
-    protected void initView() {
+    public void initInject() {
+        getComponent().inject(this);
+    }
+
+    @Override
+    public void initView() {
+        getComponent().inject(this);
+        setTradeInParams();
         viewsTradeIn = new ArrayList<>();
         mTvValidTill = findViewById(R.id.tv_valid_till);
         mTvModelName = findViewById(R.id.tv_model_name);
@@ -123,13 +133,22 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
         }
     }
 
+    private void setTradeInParams() {
+        if (getIntent().hasExtra(TradeInParams.class.getSimpleName())) {
+            viewModel.setTradeInParams(getIntent().getParcelableExtra(TradeInParams.class.getSimpleName()));
+        }
+        if (getIntent().hasExtra(ApplinkConstInternalCategory.PARAM_TRADEIN_TYPE)) {
+            viewModel.setTradeInType(getIntent().getIntExtra(ApplinkConstInternalCategory.PARAM_TRADEIN_TYPE, 1));
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (TRADEIN_TYPE == TRADEIN_MONEYIN) {
             checkoutString = R.string.moneyin_sell_now;
             hargeTncString = R.string.moneyin_harga_tnc;
-            tncStringId = R.string.money_in_tnc;
+            tncUrl = MONEYIN_TNC_URL;
             tradeInStringId = R.string.money_in;
             category = TradeInGTMConstants.CATEGORY_MONEYIN_HARGA_FINAL;
         }
@@ -155,12 +174,12 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
     }
 
     @Override
-    protected Class<FinalPriceViewModel> getViewModelType() {
+    public Class<FinalPriceViewModel> getViewModelType() {
         return FinalPriceViewModel.class;
     }
 
     @Override
-    protected void setViewModel(BaseViewModel viewModel) {
+    public void setViewModel(BaseViewModel viewModel) {
         this.viewModel = (FinalPriceViewModel) viewModel;
         getLifecycle().addObserver(this.viewModel);
     }
@@ -168,21 +187,6 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
     @Override
     protected int getMenuRes() {
         return -1;
-    }
-
-    @Override
-    protected Fragment getTncFragmentInstance(int TncResId) {
-        return TnCFragment.getInstance(TncResId);
-    }
-
-    @Override
-    protected int getBottomSheetLayoutRes() {
-        return 0;
-    }
-
-    @Override
-    protected boolean doNeedReattach() {
-        return false;
     }
 
     @Override
@@ -204,6 +208,8 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
         TradeInParams tradeInData = viewModel.getTradeInParams();
         tvTitle.setText(String.format(getString(R.string.moneyin_price_elligible), getString(tradeInStringId)));
         if (tradeInData != null && TRADEIN_TYPE != TRADEIN_MONEYIN) {
+            price = String.valueOf(deviceDataResponse.getOldPrice());
+            phoneType = getIntent().getStringExtra(PARAM_TRADEIN_PHONE_TYPE);
             mTvModelNew.setText(tradeInData.getProductName());
             mTvPriceNew.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeInData.getNewPrice(), true));
         }
@@ -245,7 +251,7 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
         sendGeneralEvent(viewEvent,
                 category,
                 TradeInGTMConstants.ACTION_VIEW_HARGA_FINAL,
-                TRADEIN_TYPE == TRADEIN_MONEYIN ? String.format("diagnostic id - %s", deviceId) : "");
+                TRADEIN_TYPE == TRADEIN_MONEYIN ? String.format("diagnostic id - %s", deviceId) : String.format("phone type : %s - phone price : %s - diagnostic id : %s", phoneType, price, deviceId));
     }
 
     private void setVisibilityGroup(int visibility) {
@@ -291,7 +297,11 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
         if (TRADEIN_TYPE == TRADEIN_MONEYIN) {
             viewModel.getAddress();
         } else {
-            setResult(Activity.RESULT_OK, new Intent(Constants.ACTION_GO_TO_SHIPMENT).putExtra(TradeInParams.PARAM_DEVICE_ID, deviceId));
+            Intent intent = new Intent(Constants.ACTION_GO_TO_SHIPMENT);
+            intent.putExtra(TradeInParams.PARAM_DEVICE_ID, deviceId);
+            intent.putExtra(TradeInParams.PARAM_PHONE_TYPE, phoneType);
+            intent.putExtra(TradeInParams.PARAM_PHONE_PRICE, price);
+            setResult(Activity.RESULT_OK, intent);
             finish();
         }
 
@@ -349,35 +359,14 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
             sendGeneralEvent(clickEvent,
                     category,
                     "click lanjut foto ktp",
-                    "");
-
+                    TRADEIN_TYPE != TRADEIN_MONEYIN ? String.format("phone type : %s - phone price : %s - diagnostic id : %s", phoneType, price, deviceId) : "");
         });
     }
 
-    @Override
-    public void onBackPressed() {
-        if (isTncShowing) {
-            setVisibilityGroup(View.VISIBLE);
-        }
-        super.onBackPressed();
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            if (isTncShowing) {
-                setVisibilityGroup(View.VISIBLE);
-            }
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     private void showtnc() {
-        showTnC(tncStringId);
-        setVisibilityGroup(View.INVISIBLE);
+        showTnC(tncUrl);
         sendGeneralEvent("clickTradeIn",
                 "harga final trade in",
                 "click syarat dan ketentuan",
-                "");
-    }
+                TRADEIN_TYPE != TRADEIN_MONEYIN ? String.format("phone type : %s - phone price : %s - diagnostic id : %s", phoneType, price, deviceId) : "");    }
 }

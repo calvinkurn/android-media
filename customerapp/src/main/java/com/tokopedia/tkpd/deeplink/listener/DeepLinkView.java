@@ -1,6 +1,5 @@
 package com.tokopedia.tkpd.deeplink.listener;
 
-import android.app.Fragment;
 import android.content.Intent;
 import android.net.Uri;
 
@@ -9,15 +8,9 @@ import android.net.Uri;
  */
 public interface DeepLinkView {
 
-    void inflateFragment(Fragment fragment, String tag);
-
     void initDeepLink();
 
     void networkError(Uri uriData);
-
-    void showLoading();
-
-    void finishLoading();
 
     void goToPage(Intent destination);
 }

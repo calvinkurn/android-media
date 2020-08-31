@@ -1,0 +1,78 @@
+query ratesV4($input : OngkirRatesV4Input!){
+  ratesV4(input: $input) {
+    data {
+      id
+      type
+      rates_id
+      services {
+        error {
+          id
+          message
+          status
+        }
+        products {
+          error {
+            id
+            message
+            status
+          }
+          shipper {
+            shipper_product {
+              id
+              name
+              description
+            }
+            id
+            name
+          }
+          price {
+            value
+            text
+          }
+          etd {
+            range {
+              min
+              max
+              text
+            }
+            value
+            text
+          }
+          features {
+            money_in {
+              shipper_name
+              value_price
+              text_price
+            }
+          }
+          status
+          is_show_map
+          priority
+        }
+        price {
+          range {
+            min
+            max
+            text
+          }
+        }
+        etd {
+          range {
+            min
+            max
+            text
+          }
+        }
+        status
+        index
+        id
+        name
+      }
+      error {
+        id
+        message
+        status
+      }
+    }
+  }
+}

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:padding="@dimen/spacing_lvl4">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivFlightEmpty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/spacing_lvl5"
+        android:layout_marginRight="@dimen/spacing_lvl5"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toTopOf="@+id/tvFlightEmptyTitle"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:srcCompat="@drawable/unify_globalerrors_404" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvFlightEmptyTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:gravity="center"
+        android:textColor="@color/Neutral_N700_96"
+        app:layout_constraintBottom_toTopOf="@+id/tvFlightEmptyDescription"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ivFlightEmpty"
+        app:typographyType="heading_2"
+        tools:text="Yaah... Rute ini nggak ada" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvFlightEmptyDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:gravity="center"
+        android:textColor="@color/Neutral_N700_68"
+        app:layout_constraintBottom_toTopOf="@+id/btnFlightEmpty"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvFlightEmptyTitle"
+        app:typographyType="body_3"
+        tools:text="Rute yang kamu cari belum tersedia. Coba cari rute lainnya, yuk!" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnFlightEmpty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvFlightEmptyDescription"
+        app:unifyButtonSize="large"
+        app:unifyButtonType="main"
+        tools:text="Cari Rute Lainnya" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

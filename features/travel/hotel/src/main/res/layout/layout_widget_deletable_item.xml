@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_recent_search_item"
+    android:paddingTop="@dimen/hotel_12dp"
+    android:paddingBottom="@dimen/hotel_12dp"
+    android:paddingLeft="@dimen/hotel_12dp"
+    android:paddingRight="@dimen/hotel_12dp"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/item_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="@dimen/hotel_12dp"
+        android:layout_marginRight="@dimen/hotel_10dp"
+        tools:text="Jalan Sudirman"
+        app:typographyType="body_2"
+        android:textColor="@color/Neutral_N700_68"
+        android:maxEms="5"
+        android:singleLine="true"
+        android:ellipsize="end"
+        />
+
+    <ImageView
+        android:id="@+id/delete_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/item_name"
+        android:layout_toEndOf="@+id/item_name"
+        app:srcCompat="@drawable/ic_system_action_close_grayscale_16"
+        />
+
+</RelativeLayout>

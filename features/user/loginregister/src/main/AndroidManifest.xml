@@ -1,27 +1,26 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.tokopedia.loginregister">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.tokopedia.loginregister">
 
     <uses-permission
         android:name="android.permission.GET_ACCOUNTS"
-        android:maxSdkVersion="22"/>
+        android:maxSdkVersion="22" />
 
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
-    <application
-        android:allowBackup="true"
-        android:label="@string/app_name"
-        android:supportsRtl="true">
+    <application>
 
         <activity
             android:name=".login.view.activity.LoginActivity"
             android:label="@string/login"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateHidden"/>
+            android:windowSoftInputMode="stateHidden" />
 
         <activity
             android:name=".registerinitial.view.activity.RegisterInitialActivity"
             android:label="@string/title_register"
+            android:configChanges="orientation|keyboard|keyboardHidden"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateHidden">
@@ -30,10 +29,11 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
-                    android:scheme="@string/internal_scheme"
                     android:host="@string/host_global"
-                    android:pathPattern="@string/path_init_register"/>
+                    android:pathPattern="@string/path_init_register"
+                    android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
 
@@ -49,16 +49,17 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
-                    android:scheme="@string/internal_scheme"
                     android:host="@string/host_global"
-                    android:pathPattern="@string/path_email_register"/>
+                    android:pathPattern="@string/path_email_register"
+                    android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
 
         <activity
             android:name=".loginthirdparty.google.SmartLockActivity"
-            android:theme="@style/AppTheme.Dialog"/>
+            android:theme="@style/AppTheme.Dialog" />
 
         <activity
             android:name=".activation.view.activity.ChangeEmailActivity"
@@ -71,10 +72,68 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
-                    android:scheme="@string/internal_scheme"
                     android:host="@string/host_global"
-                    android:pathPattern="@string/path_change_email_register"/>
+                    android:pathPattern="@string/path_change_email_register"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".shopcreation.view.activity.LandingShopCreationActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:windowSoftInputMode="stateHidden">
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_global"
+                    android:pathPattern="@string/path_landing_shop_creation"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".shopcreation.view.activity.PhoneShopCreationActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_global"
+                    android:pathPattern="@string/path_phone_shop_creation"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".shopcreation.view.activity.NameShopCreationActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_global"
+                    android:pathPattern="@string/path_name_shop_creation"
+                    android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
 
@@ -83,21 +142,58 @@
             android:label="@string/title_activity_activation"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"/>
-
-        <activity
-            android:name="com.tokopedia.sessioncommon.view.forbidden.activity.ServiceActivity"
-            android:label="@string/title_activity_service"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"/>
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
 
         <activity
             android:name=".welcomepage.WelcomePageActivity"
             android:label="@string/title_verify"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:windowSoftInputMode="adjustResize"/>
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".login.view.activity.SellerSeamlessLoginActivity"
+            android:label=""
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="adjustResize" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_sellerapp"
+                    android:path="@string/path_seller_seamless_choose_acc"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".login.view.activity.SeamlessLoginEmailPhoneActivity"
+            android:label=""
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="adjustResize" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_global"
+                    android:path="@string/path_seller_seamless_login"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
+        <service android:name=".seamlesslogin.RemoteService">
+            <intent-filter>
+                <action android:name="com.tokopedia.loginregister.seamlesslogin.RemoteService" />
+            </intent-filter>
+        </service>
 
     </application>
 </manifest>

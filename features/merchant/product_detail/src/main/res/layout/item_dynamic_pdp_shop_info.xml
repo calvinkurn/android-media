@@ -5,20 +5,26 @@
     android:id="@+id/base_shop_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
-    android:paddingStart="@dimen/dp_16"
-    android:paddingLeft="@dimen/dp_16"
-    android:paddingTop="@dimen/dp_16"
-    android:paddingEnd="@dimen/dp_16"
-    android:paddingRight="@dimen/dp_16"
     android:paddingBottom="@dimen/dp_16"
     android:visibility="visible">
 
+    <View
+        android:id="@+id/shop_separator"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_8"
+        android:background="@color/grey_separator"
+        app:layout_constraintTop_toTopOf="parent"/>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/pdp_shop_info_container"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_16"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/shop_separator"
         android:visibility="gone"
         tools:visibility="visible">
 
@@ -30,7 +36,7 @@
             android:scaleType="centerCrop"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/label_shop_title"
+            app:layout_constraintTop_toTopOf="parent"
             tools:ignore="ContentDescription"
             tools:src="@color/tkpd_main_green" />
 
@@ -124,7 +130,6 @@
             android:ellipsize="end"
             android:lines="1"
             android:maxLines="1"
-            android:textColor="@color/charcoal_grey_88"
             app:layout_constraintEnd_toStartOf="@+id/shop_feature"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintHorizontal_chainStyle="packed"
@@ -173,7 +178,7 @@
             android:drawablePadding="@dimen/dp_8"
             android:gravity="center"
             android:padding="@dimen/dp_8"
-            android:text="@string/label_favorite"
+            android:text="@string/label_follow"
             android:textColor="@color/dark_primary"
             android:textSize="@dimen/sp_12"
             app:drawableLeftCompat="@drawable/ic_plus_add_white_24"
@@ -192,10 +197,10 @@
     <include
         android:id="@+id/pdp_shimmering_shop_info"
         layout="@layout/shimmering_shop_info"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toBottomOf="@+id/shop_separator"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="gone" />
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

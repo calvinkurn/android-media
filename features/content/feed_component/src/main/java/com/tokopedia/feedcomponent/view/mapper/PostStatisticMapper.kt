@@ -4,7 +4,7 @@ import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.domain.model.statistic.FeedGetStatsPosts
 import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticDetailType
 import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticDetailUiModel
-import com.tokopedia.kotlin.extensions.view.toCompactAmountString
+import com.tokopedia.kotlin.extensions.view.toAmountString
 import rx.functions.Func1
 
 /**
@@ -32,13 +32,13 @@ class PostStatisticMapper(
                 PostStatisticDetailUiModel(
                         PostStatisticDetailType.Like,
                         R.drawable.ic_thumb,
-                        likeCount.toCompactAmountString(),
+                        likeCount.toAmountString(),
                         R.string.feed_post_statistic_like_count
                 ),
                 PostStatisticDetailUiModel(
                         PostStatisticDetailType.Comment,
                         R.drawable.ic_feed_comment,
-                        commentCount.toCompactAmountString(),
+                        commentCount.toAmountString(),
                         R.string.feed_post_statistic_comment_count,
                         true
                 )

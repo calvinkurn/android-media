@@ -1,0 +1,37 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.tokopedia.recharge_slice">
+    <uses-sdk tools:overrideLibrary="androidx.slice.builders.ktx"/>
+
+    <application>
+        <activity
+            android:name="com.tokopedia.recharge_slice.ui.activity.MainActivity"
+            android:theme="@style/Theme.AppCompat"
+            android:exported="true"
+            android:launchMode="singleTask"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/recharge_slice_host"
+                    android:pathPattern="@string/main_path"
+                    android:scheme="@string/tokopedia_scheme" />
+            </intent-filter>
+        </activity>
+
+        <provider
+            android:name="com.tokopedia.recharge_slice.ui.provider.MainSliceProvider"
+            android:authorities="${applicationId}.recharge_slice"
+            android:exported="true"
+            android:grantUriPermissions="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.app.slice.category.SLICE" />
+            </intent-filter>
+        </provider>
+    </application>
+</manifest>

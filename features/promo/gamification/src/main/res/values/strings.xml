@@ -1,7 +1,6 @@
 <resources>
     <string name="toko_points_title">Crack the Egg</string>
     <string name="tap_tap_title">Tap Tap</string>
-    <string name="title_activity_gamification">GamificationActivity</string>
     <string name="countdown_format" formatted="false">%02d:%02d:%02d</string>
     <string name="egg_crack_x_token_left">%1$s %2$s %3$s</string>
     <string name="default_info_token_text_crack">Klik untuk pecahkan Lucky Egg dan raih hadiah menarik!</string>
@@ -43,6 +42,28 @@
     <string name="gf_crack_token_response_error">Terjadi kendala pada server,  \nsilakan coba lagi ya</string>
     <string name="gf_placeholder_text">+%s</string>
 
-    <string name="path_gamification">/gamification</string>
-    <string name="path_gamification2">/gamification2</string>
+    <string name="gami_palai_kupon_ovo_points"><![CDATA[Palai Kupon & Ovo Points]]></string>
+    <string name="gami_gift_box_toolbar_title">Kotak Kejutan</string>
+    <string name="gami_gift_60_toolbar_title">Tap Tap Kotak</string>
+
+    <string name="gami_no_internet_title">Koneksi internetmu terganggu!</string>
+    <string name="gami_no_internet_message">Yuk, pastikan internetmu lancar dengan cek ulang paket data, WiFi, atau jaringan di tempatmu.</string>
+    <string name="gami_coba_lagi_refresh">Coba Lagi Refresh</string>
+    <string name="gami_ke_pengaturan">Ke Pengaturan</string>
+    <string name="gami_gift_share">Wah, %s sudah membuka Tap Tap Kotak hari ini! Ayo ikutan buka Tap Tap Kotak setiap hari &amp; dapatkan berbagai hadiah menarik! \nhttps://tokopedia.link/omlRG290A7</string>
+    <string name="gami_gift_60_share">%s sudah bermain Tap Tap Kotak dan mendapatkan berbagai hadiah menarik selama 30 detik! Yuk, ikutan juga! \nhttps://tokopedia.link/AxwsHyXZA7</string>
+    <string name="gami_gift_default_error_msg">Oops, terjadi kendala. Coba beberapa saat lagi, ya !</string>
+    <string name="gami_min_transaction">Min. transaksi</string>
+    <string name="gami_beli_ketupat">Beli ketupat, beli pepaya</string>
+    <string name="gami_penasaran_bakal_dapat">Penasaran bakal dapat hadiah apa, ya?</string>
+    <string name="gami_terima_kasih_sudah_ikutan">Terima kasih sudah ikutan serunya main Kotak Kejutan!</string>
+    <string name="gami_walaupun_telah_berakhir">Walaupun telah berakhir, tapi kamu tetap bisa seseruan dengan belanja di Tokopedia!</string>
+    <string name="gami_coba_serunya_belanja">Coba Serunya Belanja</string>
+    <string name="gami_hadiah_yang_didapatkan">Hadiah yang didapatkan</string>
+    <string name="gami_kamu_melewatkan">Yaah, kamu belum dapat hadiah</string>
+    <string name="gami_coba_ikutan">Coba ikutan Kotak Kejutan lagi di kesempatan berikutnya.</string>
+    <string name="gami_oke">Oke</string>
+    <string name="gami_ayo_tap">Ayo tap terus sebelum waktunya habis!</string>
+    <string name="gami_end_time">00:00:00</string>
+    <string name="gami_end_time_minute">0</string>
 </resources>

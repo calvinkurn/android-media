@@ -2,29 +2,30 @@ package com.tokopedia.topchat.chatlist.adapter.viewholder
 
 import android.graphics.Typeface.ITALIC
 import android.graphics.Typeface.NORMAL
-import androidx.annotation.LayoutRes
-import com.google.android.material.snackbar.Snackbar
-import android.text.format.DateFormat
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.LayoutRes
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.component.Menus
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.listener.ChatListItemListener
-import com.tokopedia.topchat.chatlist.pojo.ItemChatListPojo
 import com.tokopedia.topchat.chatlist.pojo.ChatStateItem
+import com.tokopedia.topchat.chatlist.pojo.ItemChatListPojo
 import com.tokopedia.topchat.chatlist.widget.LongClickMenu
+import com.tokopedia.topchat.common.util.ChatHelper
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import java.util.*
 
 /**
  * @author : Steven 2019-08-07
@@ -41,41 +42,70 @@ class ChatItemListViewHolder(
     private val time: Typography = itemView.findViewById(R.id.time)
     private val label: Label = itemView.findViewById(R.id.user_label)
     private val pin: ImageView = itemView.findViewById(R.id.ivPin)
-
-    private val statusPinned = 1
-    private val statusUnpinned = 0
+    private val smartReplyIndicator: View? = itemView.findViewById(R.id.view_smart_reply_indicator)
 
     private val menu = LongClickMenu()
 
     override fun bind(element: ItemChatListPojo) {
-        val attributes = element.attributes
-        val data = attributes?.contact
-
-        data?.let { contact ->
-            itemView.setOnClickListener {
-                onChatItemClicked(element)
-            }
-
-            itemView.setOnLongClickListener {
-                showLongClickMenu(element)
-                true
-            }
-
-            userName.text = contact.contactName
-            ImageHandler.loadImageCircle2(itemView.context, thumbnail, contact.thumbnail)
-
-            bindReadState(attributes.readStatus, attributes.unreads)
-            bindMessageState(attributes.lastReplyMessage)
-            bindTimeStamp(attributes.lastReplyTimeStr)
-            bindLabel(contact.tag)
-            bindPin(attributes.pinStatus)
-        }
-
+        bindItemChatClick(element)
+        bindItemChatLongClick(element)
+        bindName(element)
+        bindProfilePicture(element)
+        bindMessageState(element)
+        bindTimeStamp(element)
+        bindLabel(element)
+        bindPin(element)
+        bindSmartReplyIndicator(element)
     }
 
-    private fun bindPin(pinStatus: Int) {
-        val shouldShowPin = pinStatus == statusPinned
-        pin.showWithCondition(shouldShowPin)
+    private fun bindSmartReplyIndicator(element: ItemChatListPojo) {
+        if (element.isReplyTopBot() && element.isUnread() && listener.isTabSeller()) {
+            smartReplyIndicator?.show()
+            unreadCounter.hide()
+        } else {
+            smartReplyIndicator?.hide()
+            bindReadState(element)
+        }
+    }
+
+    override fun bind(element: ItemChatListPojo, payloads: MutableList<Any>) {
+        super.bind(element, payloads)
+        when (getFirstPayload(payloads)) {
+            PAYLOAD_READ_STATE -> bindReadState(element)
+            PAYLOAD_TYPING_STATE -> bindTypingState()
+            PAYLOAD_STOP_TYPING_STATE -> bindMessageState(element)
+            else -> bind(element)
+        }
+    }
+
+    private fun getFirstPayload(payloads: MutableList<Any>): Int? {
+        if (payloads.isNotEmpty() && payloads.first() is Int) return payloads.first() as Int
+        return null
+    }
+
+    private fun bindItemChatClick(element: ItemChatListPojo) {
+        itemView.setOnClickListener {
+            onChatItemClicked(element)
+        }
+    }
+
+    private fun bindItemChatLongClick(element: ItemChatListPojo) {
+        itemView.setOnLongClickListener {
+            showLongClickMenu(element)
+            true
+        }
+    }
+
+    private fun bindName(chat: ItemChatListPojo) {
+        userName.text = MethodChecker.fromHtml(chat.name)
+    }
+
+    private fun bindProfilePicture(chat: ItemChatListPojo) {
+        ImageHandler.loadImageCircle2(itemView.context, thumbnail, chat.thumbnail)
+    }
+
+    private fun bindPin(chat: ItemChatListPojo) {
+        pin.showWithCondition(chat.isPinned)
     }
 
     private fun onChatItemClicked(chat: ItemChatListPojo) {
@@ -84,7 +114,7 @@ class ChatItemListViewHolder(
         if (chat.isUnread() && attributes != null) {
             chat.markAsRead()
             listener.decreaseNotificationCounter()
-            bindReadState(attributes.readStatus, attributes.unreads)
+            bindSmartReplyIndicator(chat)
         }
 
         listener.chatItemClicked(chat, adapterPosition)
@@ -149,9 +179,9 @@ class ChatItemListViewHolder(
 
     private fun changeStateMarkAsRead(element: ItemChatListPojo) {
         element.attributes?.let {
-            with (it) {
+            with(it) {
                 readStatus = STATE_CHAT_READ
-                bindReadState(readStatus, unreads)
+                bindReadState(element)
                 listener.decreaseNotificationCounter()
                 listener.trackChangeReadStatus(element)
             }
@@ -168,9 +198,10 @@ class ChatItemListViewHolder(
 
     private fun changeStateMarkAsUnread(element: ItemChatListPojo) {
         element.attributes?.let {
-            with (it) {
+            with(it) {
                 readStatus = STATE_CHAT_UNREAD
-                bindReadState(readStatus, unreads)
+                unreadReply = 1
+                bindReadState(element)
                 listener.increaseNotificationCounter()
                 listener.trackChangeReadStatus(element)
             }
@@ -195,85 +226,44 @@ class ChatItemListViewHolder(
         }
     }
 
-    override fun bind(element: ItemChatListPojo, payloads: MutableList<Any>) {
-        super.bind(element, payloads)
-        if (payloads.isEmpty() || payloads.first() !is Int) return
-
-        when (payloads.first() as Int) {
-            PAYLOAD_READ_STATE -> bindReadState(element.attributes?.readStatus, element.attributes?.unreads)
-            PAYLOAD_TYPING_STATE -> bindTypingState()
-            PAYLOAD_STOP_TYPING_STATE -> bindMessageState(element.attributes?.lastReplyMessage.toBlankOrString())
-            else -> bind(element)
-        }
-    }
-
     private fun bindTypingState() {
         message.setText(R.string.is_typing)
         message.setTypeface(null, ITALIC)
-        message.setTextColor(MethodChecker.getColor(message.context, R.color.Green_G500))
+        message.setTextColor(MethodChecker.getColor(message.context, com.tokopedia.unifyprinciples.R.color.Green_G500))
     }
 
-    private fun bindMessageState(lastReplyMessage: String) {
-        message.text = MethodChecker.fromHtml(lastReplyMessage)
+    private fun bindMessageState(chat: ItemChatListPojo) {
+        message.text = MethodChecker.fromHtml(chat.lastReplyMessage)
+        message.setLines(2)
         message.setTypeface(null, NORMAL)
-        message.setTextColor(MethodChecker.getColor(message.context, R.color.Neutral_N700_68))
+        message.setTextColor(MethodChecker.getColor(message.context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
     }
 
-    private fun bindReadState(readStatus: Int?, unreads: Int?) {
-        when (readStatus) {
+    private fun bindReadState(chatItem: ItemChatListPojo) {
+        when (chatItem.attributes?.readStatus) {
             STATE_CHAT_UNREAD -> {
                 userName.setWeight(Typography.BOLD)
+                unreadCounter.text = chatItem.totalUnread
                 unreadCounter.show()
             }
-
             STATE_CHAT_READ -> {
-                userName.setWeight(Typography.REGULAR)
                 unreadCounter.hide()
             }
         }
     }
 
-    private fun bindTimeStamp(lastReplyTimeStr: String) {
-        time.text = convertToRelativeDate(lastReplyTimeStr)
+    private fun bindTimeStamp(chat: ItemChatListPojo) {
+        time.text = ChatHelper.convertToRelativeDate(chat.lastReplyTimeStr)
     }
 
-    private fun bindLabel(tag: String) {
-        when (tag) {
+    private fun bindLabel(chat: ItemChatListPojo) {
+        when (chat.tag) {
             OFFICIAL_TAG -> {
-                label.text = tag
+                label.text = chat.tag
                 label.setLabelType(Label.GENERAL_LIGHT_BLUE)
                 label.show()
             }
-            SELLER_TAG -> {
-                label.text = tag
-                label.setLabelType(Label.GENERAL_LIGHT_GREEN)
-                label.show()
-            }
             else -> label.hide()
-        }
-
-    }
-
-    private fun convertToRelativeDate(timeStamp: String): String {
-        val smsTime = Calendar.getInstance()
-        smsTime.timeInMillis = timeStamp.toLongOrZero()
-
-        val now = Calendar.getInstance()
-
-        val timeFormatString = "HH:mm"
-        val dateTimeFormatString = "dd MMM"
-        val dateTimeYearFormatString = "dd MMM yy"
-        val HOURS = (60 * 60 * 60).toLong()
-        return if ((now.get(Calendar.DATE) == smsTime.get(Calendar.DATE))
-                && (now.get(Calendar.MONTH) == smsTime.get(Calendar.MONTH))) {
-            DateFormat.format(timeFormatString, smsTime).toString()
-        } else if ((now.get(Calendar.DATE) - smsTime.get(Calendar.DATE) == 1)
-                && (now.get(Calendar.MONTH) == smsTime.get(Calendar.MONTH))) {
-            "Kemarin"
-        } else if (now.get(Calendar.YEAR) == smsTime.get(Calendar.YEAR)) {
-            DateFormat.format(dateTimeFormatString, smsTime).toString()
-        } else {
-            DateFormat.format(dateTimeYearFormatString, smsTime).toString()
         }
     }
 

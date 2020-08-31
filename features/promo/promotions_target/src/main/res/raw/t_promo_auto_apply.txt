@@ -1,0 +1,9 @@
+mutation AutoApply($code:String!, $serviceId:String!){
+  tokopointsSetAutoApply(code: $code, serviceID: $serviceId) {
+   resultStatus{
+         code
+         status
+         message
+     }
+   }
+}

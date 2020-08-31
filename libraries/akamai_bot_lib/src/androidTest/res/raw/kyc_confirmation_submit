@@ -1,0 +1,9 @@
+mutation goalKYCConfirm($kyc_request_id:Int!, $identity_document_type: String!, $identity_document_number: String!, $mother_maiden_name: String!, $documents: [DocumentInput!]!) {
+ goalKYCConfirm(kyc_request_id:$kyc_request_id, identity_document_type: $identity_document_type, identity_document_number: $identity_document_number, mother_maiden_name: $mother_maiden_name, documents: $documents) {
+   kyc_request_id
+   errors {
+     message
+     title
+   }
+ }
+}

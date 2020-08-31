@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fmParent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingStart="@dimen/dp_24"
+    android:paddingLeft="@dimen/dp_24"
+    android:paddingEnd="@dimen/dp_24"
+    android:paddingRight="@dimen/dp_24">
+
+    <FrameLayout
+        android:id="@+id/container_gami_gift_result"
+        style="@style/RewardSummary">
+        <include layout="@layout/gami_gift_result" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imageBox"
+            android:layout_width="@dimen/gami_reward_summary_box_w"
+            android:layout_height="@dimen/gami_reward_summary_box_h"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/gami_reward_summary_margin_top"
+            android:scaleType="centerCrop" />
+    </FrameLayout>
+
+</FrameLayout>

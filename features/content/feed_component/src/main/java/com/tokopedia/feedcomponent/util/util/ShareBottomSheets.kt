@@ -6,12 +6,15 @@ import android.content.pm.ResolveInfo
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import android.view.View
-import android.widget.*
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.linker.LinkerManager
@@ -21,8 +24,6 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.videoplayer.utils.showToast
-import android.content.Intent
-import android.content.ComponentName
 
 /**
  * @author by yfsx on 17/05/19.
@@ -177,8 +178,8 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
         IMAGE(TYPE_IMAGE)
     }
 
-    lateinit var data: LinkerData
-    private set
+    var data: LinkerData? = null
+        private set
 
     private var isAdding: Boolean = false
     private lateinit var listener: OnShareItemClickListener
@@ -206,7 +207,7 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
     }
 
     override fun title(): String {
-        return arguments?.getString(EXTRA_TITLE) ?: data.ogTitle
+        return arguments?.getString(EXTRA_TITLE) ?: data?.ogTitle ?: ""
     }
 
     private lateinit var mRecyclerView: RecyclerView
@@ -253,14 +254,15 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
     }
 
     private fun actionCopy() {
-        data.source = COPY
+        data?.source = COPY
         LinkerManager.getInstance().executeShareRequest(
                 LinkerUtils.createShareRequest(0,
                         DataMapper().getLinkerShareData(data),
                         object : ShareCallback {
                             override fun urlCreated(linkerShareData: LinkerShareResult) {
                                 activity?.let {
-                                    ClipboardHandler().CopyToClipboard(it, data.originalTextContent)
+                                    ClipboardHandler().copyToClipboard(it, data?.originalTextContent
+                                            ?: "")
                                 }
                             }
 
@@ -288,7 +290,7 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
                         0, DataMapper().getLinkerShareData(data),
                         object : ShareCallback {
                             override fun urlCreated(linkerShareData: LinkerShareResult) {
-                                val intent = getIntent(data.originalTextContent, TYPE_TEXT)
+                                val intent = getIntent(data?.originalTextContent ?: "", TYPE_TEXT)
                                 startActivity(Intent.createChooser(intent, getString(R.string.other)))
                                 sendTracker(KEY_OTHER)
                             }
@@ -304,8 +306,8 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
     private fun getIntent(textToShare: String, type: String): Intent {
         return Intent(Intent.ACTION_SEND)
                 .setType(type)
-                .putExtra(Intent.EXTRA_TITLE, data.name)
-                .putExtra(Intent.EXTRA_SUBJECT, data.name)
+                .putExtra(Intent.EXTRA_TITLE, data?.name ?: "")
+                .putExtra(Intent.EXTRA_SUBJECT, data?.name ?: "")
                 .putExtra(Intent.EXTRA_TEXT, textToShare)
     }
 
@@ -313,8 +315,8 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
         return Intent(Intent.ACTION_SEND)
                 .setType(MimeType.TEXT.typeString)
                 .setComponent(ComponentName(packageName, className))
-                .putExtra(Intent.EXTRA_TITLE, data.name)
-                .putExtra(Intent.EXTRA_SUBJECT, data.name)
+                .putExtra(Intent.EXTRA_TITLE, data?.name ?: "")
+                .putExtra(Intent.EXTRA_SUBJECT, data?.name ?: "")
                 .putExtra(Intent.EXTRA_TEXT, arguments?.getString(EXTRA_SHARE_FORMAT).orEmpty())
     }
 
@@ -416,7 +418,7 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
             add(ShareType.ActivityShare(KEY_TWITTER, getString(R.string.share_twitter), MimeType.TEXT, getTextIntent(PACKAGE_NAME_TWITTER, CLASS_NAME_TWITTER)))
 
             val mediaUrl: String? = arguments?.getString(EXTRA_MEDIA_URL)
-            if (typeList.contains(MimeType.IMAGE) && mediaUrl != null) {
+            if (typeList.contains(MimeType.IMAGE) && mediaUrl?.isNotEmpty() == true) {
                 add(ShareType.ActivityShare(KEY_INSTAGRAM_FEED, getString(R.string.share_instagram_feed), MimeType.IMAGE, getInstagramFeedIntent(Uri.parse(mediaUrl))))
                 add(ShareType.ActivityShare(KEY_INSTAGRAM_STORY, getString(R.string.share_instagram_story), MimeType.IMAGE, getInstagramStoryIntent(Uri.parse(mediaUrl))))
             }

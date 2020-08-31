@@ -16,6 +16,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.MaintenancePage;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -23,16 +24,12 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.retrofit.utils.DialogForceLogout;
-import com.tokopedia.core.router.CustomerRouter;
-import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.service.ErrorNetworkReceiver;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.core.util.AppWidgetUtil;
-import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core2.R;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -49,7 +46,7 @@ import rx.schedulers.Schedulers;
  * Extends one of BaseActivity from tkpd abstraction eg:BaseSimpleActivity, BaseStepperActivity, BaseTabActivity, etc
  */
 @Deprecated
-public class BaseActivity extends AppCompatActivity implements SessionHandler.onLogoutListener,
+public class BaseActivity extends AppCompatActivity implements
         ErrorNetworkReceiver.ReceiveListener, ScreenTracking.IOpenScreenAnalytics {
 
 
@@ -59,7 +56,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     private static final long DISMISS_TIME = 10000;
     protected Boolean isAllowFetchDepartmentView = false;
 
-    protected SessionHandler sessionHandler;
+    protected UserSessionInterface userSessionInterface;
 
     protected GCMHandler gcmHandler;
 
@@ -76,7 +73,8 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         if (MaintenancePage.isMaintenance(this)) {
             startActivity(MaintenancePage.createIntent(this));
         }
-        sessionHandler = new SessionHandler(getBaseContext());
+
+        userSessionInterface = new UserSession(getBaseContext());
         gcmHandler = new GCMHandler(this);
         logoutNetworkReceiver = new ErrorNetworkReceiver();
         globalCacheManager = new GlobalCacheManager();
@@ -122,7 +120,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
                 screenName = this.getClass().getSimpleName();
             }
         }
-        sessionHandler = null;
         gcmHandler = null;
         globalCacheManager = null;
     }
@@ -140,29 +137,13 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
                     @Override
                     public Boolean call(Boolean b) {
                         TrackApp.getInstance().getGTM()
-                                .pushUserId(SessionHandler.getGTMLoginID(MainApplication.getAppContext()));
+                                .pushUserId(userSessionInterface.getGTMLoginID());
                         TrackingUtils.eventOnline(BaseActivity.this,
-                                SessionHandler.getGTMLoginID(MainApplication.getAppContext()));
+                                userSessionInterface.getGTMLoginID());
                         return true;
                     }
                 })
                 .subscribe(ignored -> {}, throwable -> {});
-    }
-
-    @Override
-    public void onLogout(Boolean success) {
-        if (success) {
-            finish();
-            Intent intent;
-            if (GlobalConfig.isSellerApp()) {
-                intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getHomeIntent(this);
-            } else {
-                intent = HomeRouter.getHomeActivity(this);
-            }
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            AppWidgetUtil.sendBroadcastToAppWidget(this);
-        }
     }
 
     private void registerForceLogoutReceiver() {
@@ -224,27 +205,15 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
                 new DialogForceLogout.ActionListener() {
                     @Override
                     public void onDialogClicked() {
-                        sessionHandler.forceLogout();
                         try {
                             ((TkpdCoreRouter) getApplication()).onLogout(getApplicationComponent());
                         } catch (Exception ex) {
                         }
-                        if (GlobalConfig.isSellerApp()) {
-                            Intent intent = SellerRouter.getActivitySplashScreenActivity(getBaseContext());
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(intent);
-                        } else {
-                            invalidateCategoryCache();
-                            Intent intent = CustomerRouter.getSplashScreenIntent(getBaseContext());
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(intent);
-                        }
+                        Intent intent = ((TkpdCoreRouter) getApplicationContext()).getSplashScreenIntent(getBaseContext());
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
                     }
                 });
-    }
-
-    private void invalidateCategoryCache() {
-
     }
 
     public void checkIfForceLogoutMustShow() {
@@ -270,9 +239,5 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
 
     public BaseAppComponent getBaseAppComponent() {
         return ((MainApplication) getApplication()).getBaseAppComponent();
-    }
-
-    protected void setGoldMerchant(ShopModel shopModel) {
-        sessionHandler.setGoldMerchant(shopModel.info.shopIsGold);
     }
 }

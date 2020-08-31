@@ -1,13 +1,10 @@
 package com.tokopedia.logger.utils
 
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlin.coroutines.CoroutineContext
 
-fun CoroutineScope.launchCatchError(context: CoroutineContext = coroutineContext,
-                                    block: suspend (()->Unit),
-                                    onError: suspend (Throwable)-> Unit) =
-    launch (context){
+fun globalScopeLaunch(block: suspend (()->Unit), onError: suspend (Throwable)-> Unit = {}, onFinish: ()->Unit = {}) =
+    GlobalScope.launch {
         try{
             block()
         } catch (t: Throwable){
@@ -16,5 +13,7 @@ fun CoroutineScope.launchCatchError(context: CoroutineContext = coroutineContext
             } catch (e: Throwable){
 
             }
+        } finally {
+            onFinish()
         }
     }

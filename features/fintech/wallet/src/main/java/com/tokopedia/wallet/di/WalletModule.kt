@@ -25,7 +25,7 @@ class WalletModule {
     }
 
     @Provides
-    fun provideWalletProvider() : WalletProvider {
+    fun provideWalletProvider(): WalletProvider {
         return WalletScheduler()
     }
 }

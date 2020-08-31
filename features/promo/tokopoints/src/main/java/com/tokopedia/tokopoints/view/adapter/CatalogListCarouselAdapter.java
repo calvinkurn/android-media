@@ -3,13 +3,16 @@ package com.tokopedia.tokopoints.view.adapter;
 import android.content.Context;
 import android.graphics.Paint;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.MarginLayoutParams;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -17,8 +20,8 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.tokopoints.R;
-import com.tokopedia.tokopoints.view.activity.CouponCatalogDetailsActivity;
-import com.tokopedia.tokopoints.view.contract.CatalogPurchaseRedemptionPresenter;
+import com.tokopedia.tokopoints.view.catalogdetail.CouponCatalogDetailsActivity;
+import com.tokopedia.tokopoints.view.cataloglisting.CatalogPurchaseRedemptionPresenter;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
@@ -28,6 +31,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.tokopedia.tokopoints.view.util.CommanUtilsKt.convertDpToPixel;
 
 public class CatalogListCarouselAdapter extends RecyclerView.Adapter<CatalogListCarouselAdapter.ViewHolder> {
 
@@ -47,7 +52,6 @@ public class CatalogListCarouselAdapter extends RecyclerView.Adapter<CatalogList
             super(view);
             quota = view.findViewById(R.id.text_quota_count);
             description = view.findViewById(R.id.text_description);
-            pointLabel = view.findViewById(R.id.text_my_points_label);
             pointValue = view.findViewById(R.id.text_point_value);
             timeLabel = view.findViewById(R.id.text_time_label);
             timeValue = view.findViewById(R.id.text_time_value);
@@ -78,20 +82,26 @@ public class CatalogListCarouselAdapter extends RecyclerView.Adapter<CatalogList
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        MarginLayoutParams params =(MarginLayoutParams) holder.itemView.getLayoutParams();
+        if (position == 0) {
+            params.setMargins(convertDpToPixel(10, holder.itemView.getContext()), 0, 0, 0);
+        } else {
+            params.setMargins(0, 0, 0, 0);
+        }
         CatalogsValueEntity item = mItems.get(position);
         holder.btnContinue.setEnabled(!item.isDisabledButton());
         holder.description.setText(item.getTitle());
         holder.btnContinue.setText(R.string.tp_label_exchange); //TODO asked for server driven value
         ImageHandler.loadImageFitCenter(holder.imgBanner.getContext(), holder.imgBanner, item.getThumbnailUrlMobile());
+        holder.pointValue.setVisibility(View.VISIBLE);
         //setting points info if exist in response
         if (item.getPointsStr() == null || item.getPointsStr().isEmpty()) {
             holder.pointValue.setVisibility(View.GONE);
-            holder.imgPoint.setVisibility(View.GONE);
         } else {
             holder.pointValue.setVisibility(View.VISIBLE);
-            holder.imgPoint.setVisibility(View.VISIBLE);
             holder.pointValue.setText(item.getPointsStr());
         }
+
 
         //setting expiry time info if exist in response
         if (item.getExpiredLabel() == null || item.getExpiredLabel().isEmpty()) {
@@ -151,12 +161,11 @@ public class CatalogListCarouselAdapter extends RecyclerView.Adapter<CatalogList
         //disabling the coupons if not eligible for current membership
         if (item.isDisabled()) {
             ImageUtil.dimImage(holder.imgBanner);
-            holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.getContext(), com.tokopedia.design.R.color.black_54));
+            holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.getContext(), com.tokopedia.tokopoints.R.color.clr_31353b));
         } else {
             ImageUtil.unDimImage(holder.imgBanner);
-            holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.getContext(), com.tokopedia.design.R.color.orange_red));
+            holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.getContext(), com.tokopedia.tokopoints.R.color.clr_31353b));
         }
-
         if (item.isDisabledButton()) {
             holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.getContext(), com.tokopedia.abstraction.R.color.black_12));
         } else {
@@ -192,12 +201,12 @@ public class CatalogListCarouselAdapter extends RecyclerView.Adapter<CatalogList
         holder.imgBanner.setOnClickListener(v -> {
             Bundle bundle = new Bundle();
             bundle.putString(CommonConstant.EXTRA_CATALOG_CODE, mItems.get(position).getSlug());
-            holder.imgBanner.getContext().startActivity(CouponCatalogDetailsActivity.getCatalogDetail(holder.imgBanner.getContext(), bundle), bundle);
+            holder.imgBanner.getContext().startActivity(CouponCatalogDetailsActivity.Companion.getCatalogDetail(holder.imgBanner.getContext(), bundle), bundle);
             sendClickEvent(holder.imgBanner.getContext(), item, position);
         });
 
         holder.btnContinue.setVisibility(item.isShowTukarButton() ? View.VISIBLE : View.GONE);
-        setUpHeight(item);
+      //  setUpHeight(item);
     }
 
     @Override

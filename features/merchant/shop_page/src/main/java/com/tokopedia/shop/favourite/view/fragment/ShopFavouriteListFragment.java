@@ -13,7 +13,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.shop.R;
-import com.tokopedia.shop.analytic.ShopPageTrackingBuyer;
+import com.tokopedia.shop.analytic.OldShopPageTrackingBuyer;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.di.component.ShopComponent;
@@ -48,14 +48,14 @@ public class ShopFavouriteListFragment extends BaseListFragment<ShopFollowerUiMo
     @Inject
     ShopFavouriteListPresenter shopFavouriteListPresenter;
 
-    ShopPageTrackingBuyer shopPageTracking;
+    OldShopPageTrackingBuyer shopPageTracking;
     private ShopInfo shopInfo;
     private String shopId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        shopPageTracking = new ShopPageTrackingBuyer(
+        shopPageTracking = new OldShopPageTrackingBuyer(
                 new TrackingQueue(getContext()));
         shopId = getArguments().getString(ShopParamConstant.EXTRA_SHOP_ID);
         shopFavouriteListPresenter.attachView(this);
@@ -128,7 +128,7 @@ public class ShopFavouriteListFragment extends BaseListFragment<ShopFollowerUiMo
     @Override
     protected Visitable getEmptyDataViewModel() {
         EmptyModel emptyModel = new EmptyModel();
-        emptyModel.setIconRes(R.drawable.ic_empty_state);
+        emptyModel.setIconRes(com.tokopedia.design.R.drawable.ic_empty_state);
         if (shopFavouriteListPresenter.isMyShop(shopId)) {
             emptyModel.setTitle(getString(R.string.shop_product_my_empty_follower_title));
             emptyModel.setContent("");

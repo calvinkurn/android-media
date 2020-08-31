@@ -16,6 +16,7 @@ import android.view.ViewGroup
 import android.webkit.URLUtil
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -27,8 +28,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
-import com.tokopedia.design.component.ToasterError
-import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.design.utils.StringUtils
 import com.tokopedia.gm.common.data.source.cloud.model.GoldGetPmOsStatus
 import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
@@ -43,6 +42,7 @@ import com.tokopedia.shop.settings.basicinfo.view.presenter.ShopSettingsInfoPres
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.util.FORMAT_DATE
 import com.tokopedia.shop.settings.common.util.toReadableString
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_shop_settings_info.*
 import kotlinx.android.synthetic.main.partial_shop_settings_info_basic.*
@@ -187,7 +187,9 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
                 if (requestCode == REQUEST_EDIT_SCHEDULE && data != null) {
                     val message: String = data.getStringExtra(ShopEditScheduleActivity.EXTRA_MESSAGE)
                     if (!message.isEmpty()) {
-                        ToasterNormal.show(activity!!, message)
+                        view?.let {
+                            Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+                        }
                     }
                 }
             }
@@ -196,7 +198,9 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
                 if (requestCode == REQUEST_EDIT_BASIC_INFO && data != null) {
                     val message: String = data.getStringExtra(ShopEditBasicInfoActivity.EXTRA_MESSAGE)
                     if (!message.isEmpty()) {
-                        ToasterNormal.show(activity!!, message)
+                        view?.let {
+                            Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+                        }
                     }
                 }
             }
@@ -351,7 +355,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
             navigateToPMSubscribe()
         }
         iv_power_merchant_logo.visibility = View.VISIBLE
-        iv_power_merchant_logo.setImageResource(com.tokopedia.gm.resource.R.drawable.ic_power_merchant)
+        iv_power_merchant_logo.setImageResource(com.tokopedia.gm.common.R.drawable.ic_power_merchant)
         tv_shop_membership_title.text = getString(com.tokopedia.design.R.string.label_power_merchant)
         tv_shop_status.visibility = View.VISIBLE
         tv_shop_status.text = getString(if (shopStatusModel.isPowerMerchantActive()) {
@@ -414,7 +418,9 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
     override fun onSuccessUpdateShopSchedule(successMessage: String) {
         hideSubmitLoading()
         activity?.setResult(Activity.RESULT_OK)
-        ToasterNormal.show(activity!!, successMessage)
+        view?.let {
+            Toaster.make(it, successMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+        }
         loadShopBasicData()
     }
 
@@ -425,7 +431,9 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
 
     private fun showSnackbarErrorSubmitEdit(throwable: Throwable) {
         val message = ErrorHandler.getErrorMessage(context, throwable)
-        ToasterError.showClose(activity!!, message)
+        view?.let {
+            Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+        }
     }
 
     fun showSubmitLoading(message: String) {

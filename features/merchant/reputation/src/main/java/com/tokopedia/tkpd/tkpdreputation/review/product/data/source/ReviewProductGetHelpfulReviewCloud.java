@@ -1,8 +1,9 @@
 package com.tokopedia.tkpd.tkpdreputation.review.product.data.source;
 
 import com.tokopedia.network.data.model.response.DataResponse;
-import com.tokopedia.core.base.common.util.GetData;
+import com.tokopedia.tkpd.tkpdreputation.network.product.ReviewProductService;
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.DataResponseReviewHelpful;
+import com.tokopedia.tkpd.tkpdreputation.utils.GetData;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,14 +18,14 @@ import rx.functions.Func1;
 public class ReviewProductGetHelpfulReviewCloud {
     public static final String PRODUCT_ID = "product_id";
     public static final String SHOP_ID = "shop_id";
-    private ReviewProductApi reputationReviewApi;
+    private ReviewProductService reviewProductService;
 
-    public ReviewProductGetHelpfulReviewCloud(ReviewProductApi reputationReviewApi) {
-        this.reputationReviewApi = reputationReviewApi;
+    public ReviewProductGetHelpfulReviewCloud(ReviewProductService reputationReviewApi) {
+        this.reviewProductService = reputationReviewApi;
     }
 
     public Observable<DataResponseReviewHelpful> getReviewHelpfulList(String shopId, String productId) {
-        return reputationReviewApi.getReviewHelpfulList(generateParams(shopId, productId))
+        return reviewProductService.getApi().getReviewHelpfulList(generateParams(shopId, productId))
                 .map(new GetData<DataResponse<DataResponseReviewHelpful>>())
                 .map(new Func1<DataResponse<DataResponseReviewHelpful>, DataResponseReviewHelpful>() {
                     @Override

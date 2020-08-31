@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">atc_variant</string>
-    <string name="activity_title_checkout_variant">Detail Produk</string>
+    <string name="title_normal_checkout">Detail Produk</string>
     <string name="atc_variant_min_order_x">Jumlah minimum %1$d</string>
     <string name="atc_variant_max_order_x">Jumlah maksimum %1$d</string>
     <string name="atc_variant_label_discount_percentage">%1$d%%OFF</string>
@@ -17,4 +17,5 @@
     <string name="atc_variant_label_size_chart_guideline">Panduan Ukuran</string>
     <string name="atc_variant_label_prescription_warning">Wajib upload resep melalui formulir yang dikirim di Chat setelah pembayaran berhasil</string>
     <string name="atc_variant_label_total_price">Total Harga</string>
+    <string name="trade_in_event_label_phone_type_phone_price_diagnostic_id">phone type : %1$s - phone price : %2$s - diagnostic id : %3$s</string>
 </resources>

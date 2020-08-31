@@ -44,8 +44,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clickable="false"
-            android:drawableEnd="@drawable/ic_arrow_down_grey"
-            android:drawableRight="@drawable/ic_arrow_down_grey"
             android:focusable="false"
             android:singleLine="true"
             android:textColor="@color/Neutral_N700_96"
@@ -58,8 +56,8 @@
         style="@style/HintTextInputLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:clickable="false"
         android:layout_marginTop="@dimen/dp_39"
+        android:clickable="false"
         android:hint="@string/account_name_title"
         android:textColorHint="@color/white"
         android:visibility="gone"
@@ -71,13 +69,12 @@
             android:id="@+id/etManualAccountHolderName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ "
             android:inputType="textPersonName"
             android:singleLine="true"
-            android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ "
             android:textColor="@color/Neutral_N700_96"
             android:textSize="@dimen/sp_16" />
     </com.tokopedia.design.text.TkpdHintTextInputLayout>
-
 
 
     <com.tokopedia.design.text.TkpdHintTextInputLayout
@@ -100,8 +97,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:digits="01234567890"
-            android:singleLine="true"
             android:inputType="number"
+            android:singleLine="true"
             android:textColor="@color/Neutral_N700_96"
             android:textSize="@dimen/sp_16" />
     </com.tokopedia.design.text.TkpdHintTextInputLayout>
@@ -149,12 +146,12 @@
         tools:text="MOHAMAD RAVENA UTAMA" />
 
 
-    <com.tokopedia.unifyprinciples.Typography
+    <TextView
         android:id="@+id/btnPeriksa"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/sbank_bg_periksa"
-        android:enabled="true"
+        android:enabled="false"
         android:paddingStart="@dimen/dp_12"
         android:paddingLeft="@dimen/dp_12"
         android:paddingTop="@dimen/dp_8"
@@ -164,15 +161,14 @@
         android:text="@string/sbank_periksa"
         android:textColor="@color/sbank_periksa_text_color"
         app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
-        app:layout_constraintTop_toTopOf="@+id/guidelineNomorRekening"
-        app:typographyType="heading_6" />
+        app:layout_constraintTop_toTopOf="@+id/guidelineNomorRekening" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/groupAccountNameAuto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:constraint_referenced_ids="tvAccHolderNamePrefix,tvAccountHolderName,tvAccountHolderNameTag"/>
+        app:constraint_referenced_ids="tvAccHolderNamePrefix,tvAccountHolderName,tvAccountHolderNameTag" />
 
     <View
         android:id="@+id/view_btn_top_shadow"
@@ -182,7 +178,7 @@
         android:background="@drawable/sbank_bg_button_container"
         app:layout_constraintBottom_toTopOf="@+id/add_account_button" />
 
-    <com.tokopedia.unifyprinciples.Typography
+    <TextView
         android:id="@+id/add_account_button"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_40"
@@ -192,12 +188,11 @@
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_8"
         android:background="@drawable/sbank_bg_button_green"
-        android:enabled="true"
+        android:enabled="false"
         android:gravity="center"
         android:text="@string/sbank_save_account"
         android:textColor="@color/sbank_btn_text_color"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:typographyType="heading_5"
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -219,7 +214,6 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_begin="111dp" />
-
 
 
     <ProgressBar

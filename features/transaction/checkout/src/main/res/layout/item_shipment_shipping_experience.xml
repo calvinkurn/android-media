@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_shipping_experience_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/checkout_module_bg_shipping_container"
+    android:orientation="horizontal">
+
+    <include
+        android:id="@+id/ll_shipping_experience_state_loading"
+        layout="@layout/purchase_platform_partial_shimmering_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_16"
+        tools:visibility="gone" />
+
+    <FrameLayout
+        android:id="@+id/container_shipping_experience"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_16"
+        android:background="@drawable/checkout_module_bg_rounded_grey"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_state_no_selected_shipping"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/dp_13"
+                android:paddingTop="@dimen/dp_16"
+                android:paddingRight="@dimen/dp_13"
+                android:paddingBottom="@dimen/dp_16"
+                app:layout_constraintCircleRadius="@dimen/dp_4"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/icon_shipping_logo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/checkout_module_ic_shipping_logo" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/label_choose_shipping"
+                    android:contentDescription="@string/content_desc_label_choose_shipping"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/dp_9"
+                    android:paddingRight="@dimen/dp_9"
+                    android:text="@string/label_choose_shipping"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/icon_shipping_logo"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:typographyType="heading_5"
+                    app:typographyWeight="bold" />
+
+                <ImageView
+                    android:id="@+id/icon_chevron_choose_shipping"
+                    android:contentDescription="@string/content_desc_icon_chevron_choose_shipping"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:rotation="270"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/unify_chips_ic_chevron_normal" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_state_has_selected_normal_shipping"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/dp_16"
+                app:layout_constraintCircleRadius="@dimen/dp_4"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:visibility="gone">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/label_selected_shipping_duration"
+                    android:contentDescription="@string/content_desc_label_selected_shipping_duration"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="@+id/icon_chevron_choose_duration"
+                    app:layout_constraintEnd_toStartOf="@+id/icon_chevron_choose_duration"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:typographyType="heading_6"
+                    app:typographyWeight="bold"
+                    tools:text="Pengiriman Instan (3 Jam)" />
+
+                <ImageView
+                    android:id="@+id/icon_chevron_choose_duration"
+                    android:contentDescription="@string/content_desc_icon_chevron_choose_duration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:rotation="270"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/unify_chips_ic_chevron_normal" />
+
+                <View
+                    android:id="@+id/divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginTop="@dimen/dp_13"
+                    android:background="@color/color_e5e7e9"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/icon_chevron_choose_duration" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/label_selected_shipping_courier"
+                    android:contentDescription="@string/content_desc_label_selected_shipping_courier"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_13"
+                    app:layout_constraintEnd_toStartOf="@+id/icon_chevron_choose_courier"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/divider"
+                    app:typographyType="heading_6"
+                    app:typographyWeight="bold"
+                    tools:text="Grab" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/label_selected_shipping_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/color_AD31353B"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/label_selected_shipping_courier"
+                    app:typographyType="body_3"
+                    app:typographyWeight="reguler"
+                    tools:text="Rp999.000" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/label_description_courier"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_3"
+                    android:layout_marginLeft="@dimen/dp_3"
+                    android:textColor="@color/color_F531353B"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/label_selected_shipping_price"
+                    app:layout_constraintStart_toEndOf="@+id/label_selected_shipping_price"
+                    app:layout_constraintTop_toBottomOf="@+id/label_selected_shipping_courier"
+                    app:typographyType="small"
+                    app:typographyWeight="reguler"
+                    tools:text="Jaminan tepat waktu." />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/label_description_courier_tnc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_3"
+                    android:text="@string/label_otdg_tnc"
+                    android:textColor="@color/color_03AC0E"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/label_selected_shipping_price"
+                    app:layout_constraintStart_toEndOf="@+id/label_description_courier"
+                    app:layout_constraintTop_toBottomOf="@+id/label_selected_shipping_courier"
+                    app:typographyType="small"
+                    app:typographyWeight="reguler"
+                    tools:text="S&amp;K Berlaku" />
+
+                <ImageView
+                    android:id="@+id/icon_chevron_choose_courier"
+                    android:contentDescription="@string/content_desc_icon_chevron_choose_courier"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_13"
+                    android:rotation="270"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/divider"
+                    app:srcCompat="@drawable/unify_chips_ic_chevron_normal" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_state_has_selected_free_shipping"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/dp_16"
+                app:layout_constraintCircleRadius="@dimen/dp_4"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:visibility="visible">
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/icon_chevron_free_shipping_choose_duration"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/label_selected_free_shipping"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:typographyType="heading_6"
+                        app:typographyWeight="bold"
+                        tools:text="Pengiriman Bebas Ongkir (2-3 Hari)" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/label_free_shipping_courier_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/label_selected_free_shipping"
+                        android:textColor="@color/color_AD31353B"
+                        app:typographyType="body_3"
+                        app:typographyWeight="reguler"
+                        tools:text="SiCepat"
+                        tools:visibility="visible" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/label_free_shipping_original_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/label_free_shipping_courier_name"
+                        android:textColor="@color/color_AD31353B"
+                        app:typographyType="body_3"
+                        app:typographyWeight="reguler"
+                        tools:text="Rp40.000"
+                        tools:visibility="visible" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/label_free_shipping_discounted_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/label_free_shipping_courier_name"
+                        android:layout_marginStart="@dimen/dp_8"
+                        android:layout_marginLeft="@dimen/dp_8"
+                        android:layout_toEndOf="@+id/label_free_shipping_original_price"
+                        android:layout_toRightOf="@+id/label_free_shipping_original_price"
+                        android:textColor="@color/color_AD31353B"
+                        app:typographyType="body_3"
+                        app:typographyWeight="reguler"
+                        tools:text="Rp20.000"
+                        tools:visibility="gone" />
+
+                </RelativeLayout>
+
+                <ImageView
+                    android:id="@+id/icon_chevron_free_shipping_choose_duration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:rotation="270"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/unify_chips_ic_chevron_normal" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </FrameLayout>
+
+    </FrameLayout>
+
+</LinearLayout>

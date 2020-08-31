@@ -1,20 +1,23 @@
 package com.tokopedia.profilecompletion.addpin.view.fragment
 
 import android.app.Activity
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.pin.PinUnify
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addpin.data.AddChangePinData
 import com.tokopedia.profilecompletion.addpin.data.CheckPinData
@@ -22,6 +25,7 @@ import com.tokopedia.profilecompletion.addpin.data.SkipOtpPinData
 import com.tokopedia.profilecompletion.addpin.viewmodel.AddChangePinViewModel
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinConstant
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinUtil
+import com.tokopedia.profilecompletion.customview.focus
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.unifycomponents.Toaster
@@ -53,16 +57,21 @@ class AddPinFragment: BaseDaggerFragment(){
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
+
         val view = inflater.inflate(R.layout.fragment_add_pin, container, false)
         return view
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         initVar()
         displayInitPin()
-        inputPin.addTextChangedListener(object: TextWatcher{
+
+        inputPin.focus()
+
+        inputPin.pinTextField.addTextChangedListener(object: TextWatcher{
             override fun afterTextChanged(s: Editable?) {}
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -80,7 +89,7 @@ class AddPinFragment: BaseDaggerFragment(){
                         }else{
                             val errorMessage = getString(R.string.error_wrong_pin)
                             trackingPinUtil.trackFailedInputConfirmationPin(errorMessage)
-                            inputPin.setText("")
+                            inputPin.pinErrorMessageView.text = ""
                             inputPin.focus()
                             displayErrorPin(errorMessage)
                         }
@@ -155,11 +164,17 @@ class AddPinFragment: BaseDaggerFragment(){
     private fun onSuccessAddPin(addChangePinData: AddChangePinData){
         if(addChangePinData.success){
             trackingPinUtil.trackSuccessInputConfirmationPin()
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN_COMPLETE)
-            intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, PinCompleteFragment.SOURCE_ADD_PIN)
-            startActivity(intent)
-            activity?.finish()
+            if(arguments?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA) == true){
+                activity?.setResult(Activity.RESULT_OK)
+                activity?.finish()
+            }
+            else {
+                val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN_COMPLETE)
+                intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
+                intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, PinCompleteFragment.SOURCE_ADD_PIN)
+                startActivity(intent)
+                activity?.finish()
+            }
         }
     }
 
@@ -174,7 +189,7 @@ class AddPinFragment: BaseDaggerFragment(){
             checkPinData.errorMessage.isNotEmpty() -> {
                 trackingPinUtil.trackFailedInputCreatePin(checkPinData.errorMessage)
                 dismissLoading()
-                inputPin.setText("")
+                inputPin.pinErrorMessageView.text = ""
                 displayErrorPin(checkPinData.errorMessage)
                 inputPin.focus()
             }
@@ -245,7 +260,7 @@ class AddPinFragment: BaseDaggerFragment(){
         hideErrorPin()
         title.text = getString(R.string.create_pin)
         subtitle.text = getString(R.string.subtitle_create_pin)
-        inputPin.setText("")
+        inputPin.pinErrorMessageView.text = ""
         inputPin.focus()
         isConfirmPin = false
         pin = ""
@@ -256,18 +271,19 @@ class AddPinFragment: BaseDaggerFragment(){
         title.text = getString(R.string.confirm_create_pin)
         subtitle.text = getString(R.string.subtitle_confirm_create_pin)
         isConfirmPin = true
-        if(inputPin.text.toString().isNotEmpty()) pin = inputPin.text.toString()
-        inputPin.setText("")
+        if(inputPin.pinTextField.text.toString().isNotEmpty()) pin = inputPin.pinTextField.text.toString()
+        inputPin.pinErrorMessageView.text = ""
         inputPin.focus()
     }
 
     private fun displayErrorPin(error: String){
-        errorPin.visibility = View.VISIBLE
-        errorPin.text = error
+        inputPin.isError = true
+        inputPin.pinErrorMessageView.text = error
     }
 
     private fun hideErrorPin(){
-        errorPin.visibility = View.GONE
+        inputPin.isError = false
+        inputPin.pinErrorMessageView.text = ""
     }
 
     private fun showLoading() {

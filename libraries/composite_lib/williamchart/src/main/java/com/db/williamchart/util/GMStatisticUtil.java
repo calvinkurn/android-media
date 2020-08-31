@@ -6,6 +6,7 @@ import android.widget.LinearLayout;
 
 import com.db.williamchart.R;
 import com.db.williamchart.base.BaseWilliamChartModel;
+import com.db.williamchart.model.CustomValue;
 import com.db.williamchart.view.LineChartView;
 
 import java.util.ArrayList;
@@ -96,6 +97,29 @@ public final class GMStatisticUtil {
         return pairs;
     }
 
+    private static List<CustomValue> joinLabelsAndValuesWithCustomValues(List<String> yLabels, List<Integer> values, List<String> customValues) {
+        List<CustomValue> data = new ArrayList<>();
+        if (yLabels == null || values == null || customValues == null || yLabels.isEmpty() || values.isEmpty() || customValues.isEmpty())
+            return null;
+
+        int lowerSize = yLabels.size();
+        if (lowerSize > values.size()) {
+            lowerSize = values.size();
+        } else if (lowerSize > customValues.size()){
+            lowerSize = customValues.size();
+        }
+
+        for (int i = 0; i < lowerSize; i++) {
+            String label = yLabels.get(i);
+            Integer gross = values.get(i);
+            String customValue = customValues.get(i);
+
+            data.add(new CustomValue(label, gross, customValue));
+        }
+
+        return data;
+    }
+
     private static Pair<String[], float[]> joinDateAndGraph2(List<Integer> dateGraph, List<Integer> graph, String[] monthNamesAbrev) {
         List<Pair<Integer, String>> pairs = joinDateAndGraph(dateGraph, graph);
         if (pairs == null)
@@ -116,6 +140,25 @@ public final class GMStatisticUtil {
     public static BaseWilliamChartModel joinDateAndGraph3(List<Integer> dateGraph, List<Integer> graph, String[] monthNamesAbrev) {
         Pair<String[], float[]> pair = joinDateAndGraph2(dateGraph, graph, monthNamesAbrev);
         return (pair != null) ? new BaseWilliamChartModel(pair.getModel1(), pair.getModel2()) : null;
+    }
+
+    public static BaseWilliamChartModel getChartModel(List<String> labels, List<Integer> values, List<String> customValues) {
+        List<CustomValue> data = joinLabelsAndValuesWithCustomValues(labels, values, customValues);
+        if (data == null)
+            return null;
+
+        String[] mLabels = new String[data.size()];
+        float[] mValues = new float[data.size()];
+        String[] mCustomValues = new String[data.size()];
+        int i = 0;
+        for (CustomValue customValue : data) {
+            mLabels[i] = customValue.getLabel();
+            mValues[i] = customValue.getValue();
+            mCustomValues[i] = customValue.getCustomValue();
+            i++; // increment the index here
+        }
+
+        return new BaseWilliamChartModel(mLabels, mValues, mCustomValues);
     }
 
     public static List<Integer> sumTwoGraph(List<Integer> firstGraph, List<Integer> secondGraph) {

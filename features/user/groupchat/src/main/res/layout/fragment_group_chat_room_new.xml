@@ -37,7 +37,7 @@
                 app:layout_constraintEnd_toEndOf="@id/bottom"
                 app:layout_constraintRight_toRightOf="@id/bottom"
                 app:layout_constraintTop_toTopOf="@id/reply_edit_text"
-                app:srcCompat="@drawable/ic_send_24dp_green"
+                app:srcCompat="@drawable/groupchat_ic_send_24dp_green"
                 tools:layout_editor_absoluteX="42dp"
                 tools:layout_editor_absoluteY="460dp"
                 tools:visibility="visible" />

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txtTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        tools:text="Jordan x Tokopedia Exclusive Launch"
+        android:textColor="@color/charcoal_grey_96"
+        app:typographyType="heading_2"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txtDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/notif_dp_8"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:fontFamily="sans-serif"
+        tools:text="Dapatkan kesempatan mendapatkan sneakers terbaru Air Jordan I Retro"
+        android:textColor="@color/charcoal_grey_96"
+        app:typographyType="body_1" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/lstProduct"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/notif_dp_16"
+        android:layout_marginBottom="@dimen/notif_dp_16"
+        android:clipToPadding="false"
+        android:orientation="vertical"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/item_notification_product_card"/>
+
+</LinearLayout>

@@ -1,52 +1,74 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.addedit
 
-import android.content.Context
-import com.google.android.gms.common.api.GoogleApiClient
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.places.Places
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.logisticaddaddress.domain.mapper.AddAddressMapper
+import com.tokopedia.logisticaddaddress.common.AddressConstants
+import com.tokopedia.logisticaddaddress.domain.model.add_address.AddAddressResponse
 import com.tokopedia.logisticaddaddress.domain.usecase.AddAddressUseCase
+import com.tokopedia.logisticaddaddress.domain.usecase.AutoCompleteUseCase
+import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.GetZipCodeUseCase
+import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
+import com.tokopedia.logisticaddaddress.utils.SimpleIdlingResource
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
-import com.tokopedia.usecase.RequestParams
+import rx.Subscriber
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
  * Created by fwidjaja on 2019-05-22.
  */
 class AddEditAddressPresenter
-@Inject constructor(private val context: Context,
-                    private val addAddressUseCase: AddAddressUseCase,
-                    private val zipCodeUseCase: GetZipCodeUseCase,
-                    private val addAddressMapper: AddAddressMapper)
-    : BaseDaggerPresenter<AddEditAddressListener>() {
-    var googleApiClient: GoogleApiClient? = null
+@Inject constructor(
+        private val addAddressUseCase: AddAddressUseCase,
+        private val zipCodeUseCase: GetZipCodeUseCase,
+        private val getDistrictUseCase: GetDistrictUseCase,
+        private val autoCompleteUseCase: AutoCompleteUseCase)
+    : BaseDaggerPresenter<AddEditView>() {
 
-    fun connectGoogleApi(addEditAddressFragment: AddEditAddressFragment) {
-        this.googleApiClient = GoogleApiClient.Builder(context)
-                .addApi(LocationServices.API)
-                .addApi(Places.GEO_DATA_API)
-                .addConnectionCallbacks(addEditAddressFragment)
-                .addOnConnectionFailedListener(addEditAddressFragment)
-                .build()
-
-        this.googleApiClient?.connect()
+    override fun detachView() {
+        super.detachView()
+        addAddressUseCase.unsubscribe()
+        zipCodeUseCase.unsubscribe()
+        autoCompleteUseCase.unsubscribe()
+        getDistrictUseCase.unsubscribe()
     }
 
-    fun disconnectGoogleApi() {
-        googleApiClient?.let {
-            if (it.isConnected) {
-                it.disconnect()
-            }
-        }
-    }
+    fun saveAddress(model: SaveAddressDataModel, typeForm: String, isFullFlow: Boolean, isLogisticLabel: Boolean) {
+        val formType = if (typeForm == AddressConstants.ANA_POSITIVE) "1" else "0"
+        SimpleIdlingResource.increment()
+        addAddressUseCase
+                .execute(model, formType)
+                .subscribe(object : Subscriber<AddAddressResponse>() {
+                    override fun onNext(response: AddAddressResponse) {
+                        if (typeForm.equals(AddressConstants.ANA_POSITIVE, true)) {
+                            AddNewAddressAnalytics.eventClickButtonSimpanSuccess(isFullFlow, isLogisticLabel)
+                        } else {
+                            AddNewAddressAnalytics.eventClickButtonSimpanNegativeSuccess(isFullFlow, isLogisticLabel)
+                        }
+                        response.keroAddAddress.data.run {
+                            if (isSuccess == 1) {
+                                model.id = this.addrId
+                                view?.onSuccessAddAddress(model)
+                            } else {
+                                view?.showError(null)
+                            }
+                        }
+                    }
 
-    fun saveAddress(saveAddressDataModel: SaveAddressDataModel?, typeForm: String) {
-        saveAddressDataModel?.let {
-            addAddressUseCase.setParams(it)
-            addAddressUseCase.execute(RequestParams.create(), AddAddressSubscriber(view, addAddressMapper, it, typeForm))
-        }
+                    override fun onCompleted() {
+                        SimpleIdlingResource.decrement()
+                    }
+
+                    override fun onError(e: Throwable) {
+                        if (typeForm.equals(AddressConstants.ANA_POSITIVE, true)) {
+                            AddNewAddressAnalytics.eventClickButtonSimpanNotSuccess(e.printStackTrace().toString(), isFullFlow, isLogisticLabel)
+                        } else {
+                            AddNewAddressAnalytics.eventClickButtonSimpanNegativeNotSuccess(e.printStackTrace().toString(), isFullFlow, isLogisticLabel)
+                        }
+                        view?.showError(e)
+                    }
+                })
+
     }
 
     fun getZipCodes(districtId: String) {
@@ -56,9 +78,9 @@ class AddEditAddressPresenter
                             if (response.keroDistrictDetails.district.isNotEmpty()) {
                                 response.keroDistrictDetails.district[0].let {
                                     if (it.zipCode.isNotEmpty()) {
-                                        view.showZipCodes(it.zipCode)
+                                        view?.showZipCodes(it.zipCode)
                                     } else {
-                                        view.showManualZipCodes()
+                                        view?.showManualZipCodes()
                                     }
                                 }
                             }
@@ -66,9 +88,25 @@ class AddEditAddressPresenter
                 )
     }
 
-    override fun detachView() {
-        super.detachView()
-        addAddressUseCase.unsubscribe()
-        zipCodeUseCase.unsubscribe()
+    fun getAutoComplete(query: String) {
+        autoCompleteUseCase.execute(query)
+                .subscribe(
+                        { modelList ->
+                            getDistrict(modelList.first().placeId)
+                        }, { t -> Timber.d(t) }, {})
+    }
+
+    private fun getDistrict(placeId: String) {
+        getDistrictUseCase.execute(placeId)
+                .subscribe(
+                        { model ->
+                            val lat = model.latitude.toDouble()
+                            val long = model.longitude.toDouble()
+                            view?.moveMap(lat, long)
+                        },
+                        {
+                            Timber.d(it)
+                        }, {}
+                )
     }
 }

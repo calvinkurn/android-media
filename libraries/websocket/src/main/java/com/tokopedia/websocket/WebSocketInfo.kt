@@ -11,17 +11,20 @@ import okio.ByteString
 class WebSocketInfo {
 
     var webSocket: WebSocket? = null
+
     var response: WebSocketResponse? = null
     var string: String? = null
     var byteString: ByteString? = null
-    var isOnOpen: Boolean? = false
+    private var error: String = ""
+
+    var isOnOpen: Boolean = false
     var isOnReconnect: Boolean = false
         private set
-    private var error: String? = null
 
-    private constructor() {}
 
-    internal constructor(webSocket: WebSocket?, onOpen: Boolean) {
+    private constructor()
+
+    constructor(webSocket: WebSocket?, onOpen: Boolean) {
         this.webSocket = webSocket
         this.isOnOpen = onOpen
     }
@@ -31,23 +34,17 @@ class WebSocketInfo {
         this.byteString = byteString
     }
 
-    internal constructor(webSocket: WebSocket, data: String) {
+    constructor(webSocket: WebSocket, data: String) {
         this.webSocket = webSocket
         this.string = data
         this.response = GsonBuilder().create().fromJson(data, WebSocketResponse::class.java)
     }
 
-
     companion object {
 
-        private var DEFAULT_NO_POLL = 0
-        private var OPTION_TEXT = "Text"
-        private var OPTION_IMAGE = "Image"
-        private var FORMAT_DISCOUNT_LABEL = "%d%% OFF"
-
         @JvmOverloads
-        internal fun createReconnect(error: String = ""): WebSocketInfo {
-            var socketInfo = WebSocketInfo()
+        fun createReconnect(error: String = ""): WebSocketInfo {
+            val socketInfo = WebSocketInfo()
             socketInfo.isOnReconnect = true
             socketInfo.error = error
             return socketInfo

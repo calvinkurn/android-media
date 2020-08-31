@@ -1,0 +1,12 @@
+mutation ($qr_id: String!, $transfer_id: Int!, $amount: Float!, $fee: Float!, $use_point: Boolean!) {
+  goalQRConfirm(qr_id: $qr_id, transfer_id: $transfer_id, amount: $amount, fee: $fee, use_point: $use_point) {
+    transfer_id
+    transaction_id
+    status
+    pin_url
+    errors {
+      title
+      message
+    }
+  }
+}

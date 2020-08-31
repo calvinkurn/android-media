@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/layout_destination_summary"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include android:id="@+id/shimmering"
+        layout="@layout/layout_travel_destination_shimmering"/>
+
+    <LinearLayout
+        android:id="@+id/content_destination_summary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/layout_lvl2"
+        app:layout_constraintTop_toTopOf="parent">
+
+    <LinearLayout
+        android:id="@+id/peek_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/destination_summary_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Neutral_N700_96"
+            android:textSize="@dimen/fontSize_lvl7"
+            app:typographyType="heading_2"
+            tools:text="Jakarta, Indonesia" />
+
+        <ImageView
+            android:id="@+id/arrow_up"
+            android:layout_width="@dimen/layout_lvl2"
+            android:layout_height="@dimen/layout_lvl2"
+            android:layout_marginTop="@dimen/layout_lvl1"
+            app:srcCompat="@drawable/ic_system_action_arrow_up_gray_24"
+            android:layout_gravity="center"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_move_up"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:typographyType="body_2"
+            android:textColor="@color/Neutral_N700_68"
+            android:text="Geser ke atas"
+            android:layout_gravity="center"/>
+    </LinearLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/destination_summary_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:ellipsize="end"
+        android:lineSpacingExtra="@dimen/dp_3"
+        android:maxLines="6"
+        android:textColor="@color/Neutral_N700_68"
+        app:typographyType="body_2"
+        tools:text="Daerah Khusus Ibukota Jakarta adalah ibu kota negara dan kota terbesar di Indonesia. Jakarta merupakan satu-satunya kota di Indonesia yang memiliki status setingkat provinsi. Jakarta terletak di pesisir bagian barat laut Pulau Jawa." />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/destination_summary_read_more"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_12"
+        android:text="Baca Selengkapnya"
+        android:textColor="@color/Green_G500"
+        app:typographyType="body_3"
+        app:typographyWeight="bold" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

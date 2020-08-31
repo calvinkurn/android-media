@@ -1,0 +1,9 @@
+mutation chat_mark_unread($msgIDs: [String!]!) {
+   chatMarkUnread(msgIDs: $msgIDs){
+      list {
+         msgID
+         isSuccess
+         detailResponse
+      }
+   }
+}

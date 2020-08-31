@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="@dimen/hotel_5dp"
+        android:layout_height="@dimen/hotel_5dp"
+        android:tint="@color/hotel_grey_300"
+        app:srcCompat="@drawable/ic_dot_black" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/title_step"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:lineSpacingExtra="@dimen/sp_6"
+        android:textColor="@color/Neutral_N700_96"
+        app:typographyType="body_3"
+        tools:text="5.0" />
+
+</LinearLayout>

@@ -6,6 +6,22 @@ internal infix fun Any?.shouldBe(expectedValue: Any?) {
     }
 }
 
+internal fun Any?.shouldBe(expectedValue: Any?, customFailMessage: String = "") {
+    if (this != expectedValue) {
+        val message = if (customFailMessage.isNotEmpty()) customFailMessage else "$this should be $expectedValue"
+        throw AssertionError(message)
+    }
+}
+
+internal inline fun <reified T> Any?.shouldBeInstanceOf() {
+    if (this !is T) {
+        val actualClassName = if (this == null) "null" else this::class.simpleName
+        val expectedClassName = T::class.simpleName
+
+        throw AssertionError("$actualClassName should be instance of $expectedClassName")
+    }
+}
+
 internal infix fun Map<String, Any?>?.shouldContain(expectedKey: String) {
     if (this == null) {
         throw AssertionError("Map is null")
@@ -66,4 +82,12 @@ internal infix fun Collection<Any>?.shouldNotContain(expectedValue: Any) {
     if (this.contains(expectedValue)) {
         throw AssertionError("Collection still contain \"$expectedValue\"")
     }
+}
+
+internal fun <A, E> List<A>.listShouldBe(expectedList: List<E>, compare: (A, E) -> Unit) {
+    assert(size == expectedList.size) {
+        "Size should be equal. Actual size = $size, Expected size: ${expectedList.size}."
+    }
+
+    expectedList.forEachIndexed { index, t -> compare(this[index], t) }
 }

@@ -3,4 +3,21 @@
     <dimen name="image_no_result">156dp</dimen>
     <dimen name="half_screen">160dp</dimen>
     <dimen name="dp_half">0.5dp</dimen>
+    <dimen name="dp_0">0dp</dimen>
+    <dimen name="dp_2">2dp</dimen>
+    <dimen name="dp_4">4dp</dimen>
+    <dimen name="dp_5">5dp</dimen>
+    <dimen name="dp_8">8dp</dimen>
+    <dimen name="dp_10">10dp</dimen>
+    <dimen name="dp_12">12dp</dimen>
+    <dimen name="dp_14">14dp</dimen>
+    <dimen name="dp_16">16dp</dimen>
+    <dimen name="dp_20">20dp</dimen>
+    <dimen name="dp_24">24dp</dimen>
+    <dimen name="dp_40">40dp</dimen>
+    <dimen name="dp_48">48dp</dimen>
+    <dimen name="dp_72">72dp</dimen>
+
+    <dimen name="sp_14">14sp</dimen>
+    <dimen name="sp_34">34sp</dimen>
 </resources>

@@ -12,20 +12,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.*
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.shop.R
+import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.common.di.component.ShopComponent
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
 import com.tokopedia.shop.product.di.module.ShopProductModule
 import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils
-import com.tokopedia.shop.product.view.model.ShopProductPromoViewModel
+import com.tokopedia.shop.product.view.datamodel.ShopProductPromoViewModel
 import com.tokopedia.shop.product.view.widget.NestedWebView
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.item_shop_product_limited_promo.*
+import timber.log.Timber
 import javax.inject.Inject
 
 class HomeProductFragment : BaseDaggerFragment() {
@@ -35,32 +38,42 @@ class HomeProductFragment : BaseDaggerFragment() {
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    private var shopInfo: ShopInfo? = null
-
     private var isLogin: Boolean = false
     private var isBind: Boolean = false
     private var urlNeedTobBeProceed: String? = null
     lateinit var layoutLoading: View
-
+    private var shopId: String = ""
 
     private var shopProductPromoViewModel: ShopProductPromoViewModel = ShopProductPromoViewModel()
 
     companion object {
-        private const val MIN_SHOW_WEB_VIEW_PROGRESS = 100
+        private const val MIN_SHOW_WEB_VIEW_PROGRESS = 80
         private const val REQUEST_CODE_USER_LOGIN_FOR_WEBVIEW = 101
         private const val SHOP_STATIC_URL = "shop-static"
-        fun createInstance() = HomeProductFragment()
+        private const val SHOP_ID = "SHOP_ID"
+        private const val SHOP_TOP_CONTENT_URL = "SHOP_TOP_CONTENT_URL"
+        fun createInstance(shopId: String, topContentWebViewUrl: String) : Fragment {
+
+            return HomeProductFragment().apply {
+                val bundle = Bundle()
+                bundle.putString(SHOP_ID, shopId)
+                bundle.putString(SHOP_TOP_CONTENT_URL, topContentWebViewUrl)
+                arguments = bundle
+            }
+        }
     }
 
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
-        DaggerShopProductComponent
-                .builder()
-                .shopProductModule(ShopProductModule())
-                .shopComponent(getComponent(ShopComponent::class.java))
-                .build()
-                .inject(this)
+        activity?.let {
+            DaggerShopProductComponent
+                    .builder()
+                    .shopProductModule(ShopProductModule())
+                    .shopComponent(ShopComponentHelper().getComponent(it.application, it))
+                    .build()
+                    .inject(this)
+        }
     }
 
 
@@ -70,17 +83,16 @@ class HomeProductFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        shopId = arguments?.getString(SHOP_ID, "") ?: ""
         findViews()
         layoutLoading = view.findViewById(R.id.layout_loading)
-        shopProductPromoViewModel = getHomeData(getOfficialWebViewUrl(shopInfo))
+        shopProductPromoViewModel = getHomeData(getOfficialWebViewUrl())
         if (isBind && isLogin == shopProductPromoViewModel.isLogin) {
             return
         }
         clearCache(shopPageNestedWebView)
         if (shopProductPromoViewModel.isLogin) {
-            shopPageNestedWebView.loadAuthUrl(shopProductPromoViewModel.url,
-                    shopProductPromoViewModel.userId,
-                    shopProductPromoViewModel.accessToken)
+            shopPageNestedWebView.loadAuthUrl(shopProductPromoViewModel.url, userSession)
         } else {
             shopPageNestedWebView.loadUrl(shopProductPromoViewModel.url)
         }
@@ -89,15 +101,16 @@ class HomeProductFragment : BaseDaggerFragment() {
         isBind = true
     }
 
+    override fun onDestroy() {
+        isBind = false
+        super.onDestroy()
+    }
+
     private fun clearCache(webView: WebView?) {
         webView?.clearCache(true)
     }
 
-    fun setShopInfo(shopInfo: ShopInfo) {
-        this.shopInfo = shopInfo
-    }
-
-    fun getHomeData(contentUrl: String): ShopProductPromoViewModel {
+    private fun getHomeData(contentUrl: String): ShopProductPromoViewModel {
         if (contentUrl.isNotBlank()) {
             val url = if (userSession.isLoggedIn) {
                 ShopProductOfficialStoreUtils.getLogInUrl(contentUrl, userSession.deviceId, userSession.userId)
@@ -108,11 +121,8 @@ class HomeProductFragment : BaseDaggerFragment() {
         return ShopProductPromoViewModel()
     }
 
-    private fun getOfficialWebViewUrl(shopInfo: ShopInfo?): String {
-        if (shopInfo == null) {
-            return ""
-        }
-        var officialWebViewUrl = shopInfo.topContent.topUrl
+    private fun getOfficialWebViewUrl(): String {
+        var officialWebViewUrl = arguments?.getString(SHOP_TOP_CONTENT_URL, "") ?: ""
         officialWebViewUrl = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) officialWebViewUrl else ""
         officialWebViewUrl = if (TextApiUtils.isTextEmpty(officialWebViewUrl)) "" else officialWebViewUrl
         return officialWebViewUrl
@@ -142,7 +152,7 @@ class HomeProductFragment : BaseDaggerFragment() {
 
     fun promoClicked(url: String?) {
         activity?.let {
-            val urlProceed = ShopProductOfficialStoreUtils.proceedUrl(it, url, shopInfo?.shopCore?.shopID,
+            val urlProceed = ShopProductOfficialStoreUtils.proceedUrl(it, url, shopId,
                     userSession.isLoggedIn,
                     userSession.deviceId,
                     userSession.userId)
@@ -160,9 +170,15 @@ class HomeProductFragment : BaseDaggerFragment() {
             if (newProgress >= MIN_SHOW_WEB_VIEW_PROGRESS) {
                 view.visibility = View.VISIBLE
                 finishLoading()
+                stopPerformanceMonitoring()
             }
             super.onProgressChanged(view, newProgress)
         }
+
+    }
+
+    private fun stopPerformanceMonitoring(){
+        (activity as? ShopPageActivity)?.stopShopHomeWebViewTabPerformanceMonitoring()
     }
 
     private inner class OfficialStoreWebViewClient : WebViewClient() {
@@ -176,6 +192,7 @@ class HomeProductFragment : BaseDaggerFragment() {
             super.onReceivedSslError(view, handler, error)
             handler.cancel()
             finishLoading()
+            stopPerformanceMonitoring()
         }
 
         override fun onLoadResource(view: WebView, url: String) {
@@ -184,6 +201,8 @@ class HomeProductFragment : BaseDaggerFragment() {
         override fun onReceivedError(view: WebView, errorCode: Int, description: String, failingUrl: String) {
             super.onReceivedError(view, errorCode, description, failingUrl)
             finishLoading()
+            Timber.w("P1#WEBVIEW_ERROR#'%s';error_code=%s;desc='%s'", failingUrl, errorCode, description)
+            stopPerformanceMonitoring()
         }
 
         override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
@@ -192,7 +211,7 @@ class HomeProductFragment : BaseDaggerFragment() {
             uri.also {
                 if (url.contains(SHOP_STATIC_URL)) {
                     view.loadUrl(url)
-                } else if (uri.scheme == ShopProductOfficialStoreUtils.TOKOPEDIA_HOST || it.scheme.startsWith(ShopProductOfficialStoreUtils.HTTP)) {
+                } else if (uri.scheme == ShopProductOfficialStoreUtils.TOKOPEDIA_HOST || it.scheme?.startsWith(ShopProductOfficialStoreUtils.HTTP) == true) {
                     promoClicked(url)
                 }
             }

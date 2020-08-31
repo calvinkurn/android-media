@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "../../../compile-instrument-test.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: "de.mannodermaus.android-junit5"
 
 repositories {
     maven { url 'https://hansel.io/maven' }
@@ -17,31 +17,25 @@ buildscript {
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
-        classpath rootProject.ext.miscDependencies.androidjunit5
     }
 }
 
 android {
-    sourceSets.each {
-        it.java.srcDirs += "src/$it.name/kotlin"
+    packagingOptions {
+        exclude 'META-INF/**'
     }
-
-    testOptions {
-        junitPlatform {
-            filters {
-                engines {
-                    include 'spek2'
-                }
-            }
-        }
-        unitTests.all {
-            testLogging.events = ["passed", "skipped", "failed"]
-        }
+    kotlinOptions {
+        jvmTarget = "1.8"
     }
 
     defaultConfig {
         multiDexEnabled true
-        testInstrumentationRunner "com.tokopedia.search.application.SearchInstrumentationTestRunner"
+    }
+
+    testOptions {
+        unitTests.all {
+            testLogging.events = ["passed", "skipped", "failed"]
+        }
     }
 }
 
@@ -52,7 +46,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.baseList)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.wishlistCommon)
-    implementation project(rootProject.ext.features.goldMerchantResource)
+    implementation project(rootProject.ext.features.goldMerchantCommon)
     implementation project(rootProject.ext.features.discoveryCommon)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.applink)
@@ -68,15 +62,21 @@ dependencies {
     implementation project(rootProject.ext.features.recommendationWidgetCommon)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.features.seamlesslogin)
+    implementation project(rootProject.ext.libraries.iris)
+    implementation project(rootProject.ext.libraries.irisSession)
+    implementation project(rootProject.ext.features.carouselProductCard)
 
-    implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.global_error
+    implementation rootProject.ext.unifyDependencies.sortFilter
+    implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
     implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.network
-    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+    implementation project(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
 
@@ -95,9 +95,7 @@ dependencies {
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
-    implementation rootProject.ext.viewDependencies.ahBottomNavigation
-    implementation rootProject.ext.playServicesDependencies.analytics
-    implementation rootProject.ext.playServicesDependencies.tagManager
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.miscDependencies.parcelerApi
     annotationProcessor rootProject.ext.miscDependencies.parceler
@@ -111,27 +109,29 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
 
+    implementation rootProject.ext.dbDependencies.sqliteFramework
+
     testImplementation rootProject.ext.testDependencies.mockk
-    testImplementation rootProject.ext.testDependencies.spek2Api
-    testImplementation rootProject.ext.testDependencies.spek2Dsl
-    testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
-    testImplementation "org.json:json:20140107"
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.json
+
+    androidTestImplementation project(rootProject.ext.libraries.analyticsDebugger)
+    androidTestImplementation rootProject.ext.testDependencies.espressoCore
+    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
+    androidTestImplementation rootProject.ext.playServicesDependencies.analytics
+    androidTestImplementation rootProject.ext.firebase.messaging
+    androidTestImplementation rootProject.ext.testDependencies.benchmark
+    androidTestImplementation rootProject.ext.testDependencies.testCore
 }
 
 project.ext {
     artifactId = 'search'
     groupId = 'com.tokopedia.discovery'
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName ="search-release"
-    unitTestJavaIncludes = [
-            '**/UrlParamUtils.*'
-    ]
-    unitTestKotlinIncludes = [
-            '**/SearchShopViewModel.*',
-            '**/SearchViewModel.*',
-            '**/SearchKotlinExtKt.*',
-    ]
 }
 
 apply from: '../../../publish_local.gradle'
 apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'

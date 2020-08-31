@@ -8,6 +8,4 @@ public interface ApplinkTypeFactory {
     AbstractApplinkBuildAndShowNotification type(MessagePushNotificationWrapper messagePushNotificationWrapper);
 
     AbstractApplinkBuildAndShowNotification type(DiscussionPushNotificationWrapper elements);
-
-    AbstractApplinkBuildAndShowNotification buildAndShowNotification();
 }

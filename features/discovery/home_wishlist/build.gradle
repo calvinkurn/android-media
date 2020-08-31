@@ -1,26 +1,27 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: 'de.mannodermaus.android-junit5'
 
 android{
     testOptions {
         unitTests {
             includeAndroidResources = true
         }
-        junitPlatform {
-            filters {
-                engines {
-                    include 'spek2'
-                }
-            }
-        }
+    }
+    packagingOptions {
+        exclude 'META-INF/**'
+    }
+
+    defaultConfig {
+        multiDexEnabled true
+        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
     }
 }
 
 repositories {
     maven { url 'https://hansel.io/maven' }
 }
+
 
 buildscript {
     repositories {
@@ -32,36 +33,37 @@ buildscript {
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
-        classpath rootProject.ext.miscDependencies.androidjunit5
     }
 }
 
 dependencies {
+    implementation project(rootProject.ext.features.atc_common)
+    implementation project(rootProject.ext.features.carouselProductCard)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.recommendationWidgetCommon)
-    implementation project(rootProject.ext.features.productCard)
-    implementation project(rootProject.ext.features.atc_common)
-    implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.features.topAdsSdk)
-    implementation project(rootProject.ext.features.carouselProductCard)
-    implementation project(rootProject.ext.features.smartRecycler)
+    implementation project(rootProject.ext.features.productCard)
+    implementation project(rootProject.ext.features.wishlistCommon)
 
-    implementation project(rootProject.ext.libraries.tkpddesign)
-    implementation project(rootProject.ext.libraries.tkpdabstraction)
-    implementation project(rootProject.ext.libraries.baseList)
     implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.linker)
+    implementation project(rootProject.ext.libraries.baseList)
     implementation project(rootProject.ext.libraries.commonNetwork)
+    implementation project(rootProject.ext.libraries.diffUtilRecycler)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation project(rootProject.ext.libraries.linker)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.track)
 
     implementation rootProject.ext.unifyDependencies.icon
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.unifyDependencies.dialog
+    implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.principles
-    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+    implementation project(rootProject.ext.libraries.graphql)
+    implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
@@ -72,30 +74,36 @@ dependencies {
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.dagger
-    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    implementation rootProject.ext.playServicesDependencies.analytics
-    testImplementation rootProject.ext.testDependencies.archCoreTesting
-    testImplementation rootProject.ext.testDependencies.mockk
-    testImplementation rootProject.ext.testDependencies.kotlinMockito2
-    testImplementation rootProject.ext.testDependencies.powerMockito
-    testImplementation rootProject.ext.miscDependencies.coroutineCore
-    testImplementation rootProject.ext.testDependencies.spek2Api
-    testImplementation rootProject.ext.testDependencies.spek2Dsl
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
-    kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     kapt rootProject.ext.miscDependencies.daggerCompiler
+
+    // test
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.miscDependencies.coroutineCore
+
+    // instrument test
+    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
+    androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
+    androidTestImplementation rootProject.ext.testDependencies.junit
+    androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
+    androidTestImplementation rootProject.ext.testDependencies.espressoCore
+    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
+    androidTestAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+    androidTestImplementation project(rootProject.ext.libraries.analyticsDebugger)
+    androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
 }
 
 project.ext {
     artifactId = 'home-wishlist'
     groupId = 'com.tokopedia.discovery'
-    versionName = "1.0.0"
+    versionName = "0.0.2"
     artifactName ="home_wishlist-release"
-    unitTestKotlinIncludes = [
-            '**/WishlistViewModel.*'
-    ]
 }
 
 apply from: '../../../publish_local.gradle'
 apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'

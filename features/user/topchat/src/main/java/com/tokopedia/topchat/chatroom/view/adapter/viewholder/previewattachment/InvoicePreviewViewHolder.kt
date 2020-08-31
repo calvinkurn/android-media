@@ -7,13 +7,13 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.chat_common.data.OrderStatusCode
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewViewModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewUiModel
 import com.tokopedia.unifycomponents.Label
 
 class InvoicePreviewViewHolder(
         itemView: View,
         attachmentItemPreviewListener: AttachmentItemPreviewListener
-) : AttachmentPreviewViewHolder<InvoicePreviewViewModel>(itemView, attachmentItemPreviewListener) {
+) : AttachmentPreviewViewHolder<InvoicePreviewUiModel>(itemView, attachmentItemPreviewListener) {
 
     private val thumbnail: ImageView? = itemView.findViewById(R.id.iv_thumbnail)
     private val status: Label? = itemView.findViewById(R.id.tv_status)
@@ -23,12 +23,12 @@ class InvoicePreviewViewHolder(
         return itemView.findViewById(R.id.iv_close)
     }
 
-    override fun bind(model: InvoicePreviewViewModel) {
+    override fun bind(model: InvoicePreviewUiModel) {
         bindViewWithModel(model)
         super.bind(model)
     }
 
-    private fun bindViewWithModel(model: InvoicePreviewViewModel) {
+    private fun bindViewWithModel(model: InvoicePreviewUiModel) {
         val labelType = getLabelType(model.statusId)
 
         ImageHandler.loadImageRounded2(itemView.context, thumbnail, model.imageUrl, 8f.toPx())

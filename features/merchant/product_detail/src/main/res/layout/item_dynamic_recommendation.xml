@@ -6,16 +6,21 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingTop="@dimen/dp_16"
-    android:paddingBottom="@dimen/dp_16"
-    android:background="@color/white"
     android:visibility="gone"
     tools:ignore="RtlSymmetry"
+    android:paddingBottom="@dimen/dp_16"
     tools:visibility="visible">
+
+    <View
+        android:id="@+id/recom_separator"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_8"
+        android:background="@color/grey_separator" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dp_16"
         android:paddingStart="@dimen/dp_16"
         android:paddingLeft="@dimen/dp_16"
         android:paddingEnd="@dimen/dp_16"
@@ -27,7 +32,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/title_other_product"
-            android:textColor="@color/charcoal_grey_88"
             app:typographyType="heading_4"
             app:typographyWeight="bold" />
 
@@ -48,6 +52,7 @@
     </LinearLayout>
 
     <FrameLayout
+        android:id="@+id/recom_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -61,7 +66,6 @@
             android:scrollbars="none"
             android:visibility="gone"
             tools:layoutManager="LinearLayoutManager"
-            tools:listitem="@layout/item_product_recommendation"
             tools:orientation="horizontal"
             tools:visibility="visible" />
 
@@ -71,8 +75,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            tools:visibility="visible" />
+            tools:visibility="gone" />
 
     </FrameLayout>
-
 </LinearLayout>

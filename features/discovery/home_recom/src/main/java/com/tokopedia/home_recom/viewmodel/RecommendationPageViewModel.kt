@@ -1,8 +1,11 @@
 package com.tokopedia.home_recom.viewmodel
 
+import android.annotation.SuppressLint
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.home_recom.util.Response
+import com.tokopedia.home_recom.view.dispatchers.RecommendationDispatcher
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -13,65 +16,57 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import kotlinx.coroutines.CoroutineDispatcher
 import rx.Subscriber
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * A Class ViewModel For Recommendation Page.
  *
- * @param graphqlRepository gql repository for getResponse from network with GQL request
  * @param userSessionInterface the handler of user session
  * @param getRecommendationUseCase use case for Recommendation Widget
  * @param addWishListUseCase use case for add wishlist
  * @param removeWishListUseCase use case for remove wishlist
  * @param topAdsWishlishedUseCase use case for add wishlist topads product item
  * @param dispatcher the dispatcher for coroutine
- * @param primaryProductQuery the raw query for get primary product
  */
+@SuppressLint("SyntheticAccessor")
 open class RecommendationPageViewModel @Inject constructor(
-        private val graphqlRepository: GraphqlRepository,
         private val userSessionInterface: UserSessionInterface,
         private val getRecommendationUseCase: GetRecommendationUseCase,
         private val addWishListUseCase: AddWishListUseCase,
         private val removeWishListUseCase: RemoveWishListUseCase,
         private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
-        @Named("Main") val dispatcher: CoroutineDispatcher
-) : BaseViewModel(dispatcher) {
+        dispatcher: RecommendationDispatcher
+) : BaseViewModel(dispatcher.getMainDispatcher()) {
     /**
      * public variable
      */
-    val recommendationListModel = MutableLiveData<List<RecommendationWidget>>()
-
-    val xSource = "recom_landing_page"
-    val pageName = "recom_1,recom_2,recom_3"
+    val recommendationListLiveData : LiveData<Response<List<RecommendationWidget>>> get() = _recommendationListLiveData
+    private val _recommendationListLiveData = MutableLiveData<Response<List<RecommendationWidget>>>()
 
     /**
      * [getRecommendationList] is the void for get recommendation widgets from the network
      * @param productIds list of product Ids from deeplink
-     * @param onErrorGetRecommendation the callback for handling error for ui
      */
     fun getRecommendationList(
             productIds: List<String>,
-            queryParam: String,
-            onErrorGetRecommendation: ((errorMessage: String?) -> Unit)?) {
+            queryParam: String) {
         getRecommendationUseCase.execute(
                 getRecommendationUseCase.getRecomParams(
                         pageNumber = 1,
                         productIds = productIds,
                         pageName = "recom_1,recom_2,recom_3",
                         queryParam = queryParam), object : Subscriber<List<RecommendationWidget>>() {
-            override fun onNext(t: List<RecommendationWidget>?) {
-                recommendationListModel.value = t
+            override fun onNext(t: List<RecommendationWidget>) {
+                _recommendationListLiveData.postValue(Response.success(t.filter { it.recommendationItemList.isNotEmpty() }))
             }
 
             override fun onCompleted() {
 
             }
 
-            override fun onError(e: Throwable?) {
-                onErrorGetRecommendation?.invoke(e?.message)
+            override fun onError(e: Throwable) {
+                _recommendationListLiveData.postValue(Response.error(e.message))
             }
         }
         )
@@ -95,8 +90,10 @@ open class RecommendationPageViewModel @Inject constructor(
                 }
 
                 override fun onNext(wishlistModel: WishlistModel) {
-                    if (wishlistModel.data != null) {
+                    if (wishlistModel.data != null && wishlistModel.data.isSuccess) {
                         callback.invoke(true, null)
+                    } else {
+                        callback.invoke(false, Throwable())
                     }
                 }
             })
@@ -124,7 +121,6 @@ open class RecommendationPageViewModel @Inject constructor(
     /**
      * [addWishlist] is the void for handling removing wishlist item
      * @param model the recommendation item product is clicked
-     * @param wishlistCallback the callback for handling [added or removed, throwable] to UI
      */
     fun removeWishlist(model: RecommendationItem, wishlistCallback: (((Boolean, Throwable?) -> Unit))){
         removeWishListUseCase.createObservable(model.productId.toString(), userSessionInterface.userId, object: WishListActionListener{

@@ -1,11 +1,25 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
 project.ext {
     artifactId = 'user_session'
     groupId = 'com.tokopedia.user.session'
-    versionName = "1.0.8-encrypt"
-    artifactName = "user_session"
+    versionName = "1.0.21"
+    artifactName = "user_session-release"
+}
+
+dependencies {
+    implementation rootProject.ext.miscDependencies.javaxInject
 }
 
 apply from: '../publish_local.gradle'

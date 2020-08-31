@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -18,8 +19,6 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
-import com.tokopedia.design.component.ToasterError
-import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
@@ -29,6 +28,7 @@ import com.tokopedia.shop.settings.notes.view.adapter.ShopNoteAdapter
 import com.tokopedia.shop.settings.notes.view.adapter.factory.ShopNoteFactory
 import com.tokopedia.shop.settings.notes.view.presenter.ShopSettingNoteListPresenter
 import com.tokopedia.shop.settings.notes.view.viewholder.ShopNoteViewHolder
+import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 
 
@@ -38,7 +38,7 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteViewModel, ShopNo
         return inflater.inflate(com.tokopedia.baselist.R.layout.fragment_base_list, container, false)
     }
 
-    override fun getRecyclerViewResourceId() = com.tokopedia.abstraction.R.id.recycler_view
+    override fun getRecyclerViewResourceId() = com.tokopedia.baselist.R.id.recycler_view
 
     override fun getSwipeRefreshLayoutResourceId() = com.tokopedia.baselist.R.id.swipe_refresh_layout
 
@@ -164,12 +164,16 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteViewModel, ShopNo
     private fun goToAddNote(isTerms: Boolean) {
         if (isTerms) { // can only has 1 term
             if (shopNoteModels != null && shopNoteModels!!.size > 0 && shopNoteModels!![0].terms) {
-                ToasterError.showClose(activity!!, getString(R.string.can_only_have_one_term))
+                view?.let {
+                    Toaster.make(it, getString(R.string.can_only_have_one_term), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+                }
                 return
             }
         } else { // can only has 3 notes maks
             if (shopNoteModels != null && getNonTermsCount(shopNoteModels!!) >= 3) {
-                ToasterError.showClose(activity!!, getString(R.string.can_only_have_three_note))
+                view?.let {
+                    Toaster.make(it, getString(R.string.can_only_have_three_note), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+                }
                 return
             }
         }
@@ -229,11 +233,13 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteViewModel, ShopNo
             REQUEST_CODE_EDIT_NOTE, REQUEST_CODE_ADD_NOTE -> if (resultCode == Activity.RESULT_OK) {
                 needReload = true
                 if (requestCode == REQUEST_CODE_ADD_NOTE) {
-                    ToasterNormal.showClose(activity!!,
-                            getString( R.string.success_add_note ))
+                    view?.let {
+                        Toaster.make(it, getString(R.string.success_add_note), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+                    }
                 } else if (requestCode == REQUEST_CODE_EDIT_NOTE){
-                    ToasterNormal.showClose(activity!!,
-                            getString( R.string.success_edit_note ))
+                    view?.let {
+                        Toaster.make(it, getString(R.string.success_edit_note), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+                    }
                 }
             }
         }
@@ -249,7 +255,9 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteViewModel, ShopNo
 
     override fun onSuccessDeleteShopNote(successMessage: String) {
         hideSubmitLoading()
-        ToasterNormal.showClose(activity!!, getString(R.string.note_success_delete))
+        view?.let {
+            Toaster.make(it, getString(R.string.note_success_delete), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+        }
         loadInitialData()
     }
 
@@ -260,7 +268,9 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteViewModel, ShopNo
     override fun onErrorDeleteShopNote(throwable: Throwable) {
         hideSubmitLoading()
         val message = ErrorHandler.getErrorMessage(context, throwable)
-        ToasterError.showClose(activity!!, message)
+        view?.let {
+            Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+        }
     }
 
     fun showSubmitLoading(message: String) {

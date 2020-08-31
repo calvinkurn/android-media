@@ -18,44 +18,47 @@ buildscript {
 
 dependencies {
 
+    implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.remoteConfig)
-
+    implementation project(rootProject.ext.libraries.analytics)
+    if (rootProject.ext.debugToolsEnabled) {
+        implementation project(rootProject.ext.libraries.analyticsDebugger)
+    } else {
+        implementation project(rootProject.ext.libraries.analyticsDebuggerNoop)
+    }
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
+
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
 
     implementation rootProject.ext.supportLibDependencies.kotlinSupport
-
     api rootProject.ext.miscDependencies.coroutineCore
-
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
-
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
-
     implementation rootProject.ext.networkDependencies.retrofit
     implementation rootProject.ext.networkDependencies.retrofitKotlinCoroutine
-
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
+    implementation rootProject.ext.miscDependencies.workManager
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.miscDependencies.rxJava
+    implementation project(rootProject.ext.libraries.irisSession)
 
-    implementation (rootProject.ext.debugToolsDependencies.chuck) {
-        exclude group: 'com.squareup.okhttp3'
-        exclude group: 'com.squareup.okio'
-        exclude group: 'com.android.support'
-    }
+    implementation rootProject.ext.debugToolsDependencies.chuck
 
     testImplementation rootProject.ext.testDependencies.mockitorCore
     testImplementation rootProject.ext.testDependencies.junit
-    testImplementation 'org.assertj:assertj-core:3.8.0'
-    testImplementation 'org.json:json:20140107'
+    testImplementation rootProject.ext.testDependencies.assertJCore
+    testImplementation rootProject.ext.testDependencies.json
 }
 
 project.ext {
     artifactId = 'iris'
     groupId = 'com.tokopedia.library'
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName = "iris-release"
 }
 

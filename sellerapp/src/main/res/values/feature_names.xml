@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--Travel & Hotel-->
+    <string name="title_hotel_travel">Hotel</string>
+    <string name="hotel_app_name">Hotel</string>
+    <string name="hotel_order_detail_title">Detail Pesanan</string>
+    <string name="hotel_booking_activity_title">Pemesanan</string>
+    <string name="hotel_e_voucher">E-voucher</string>
+    <string name="title_activity_developer_options">DeveloperOptions</string>
+    <string name="title_flight_travel">Tiket Pesawat</string>
+    <string name="flight_dashboard_toolbar_title">Tiket Pesawat</string>
+    <string name="flight_order_list">Daftar Transaksi</string>
+    <string name="activity_label_flight_cancellation">Isi Data Pembatalan</string>
+    <string name="select_passenger_toolbar_title">Pilih Penumpang</string>
+    <string name="search_flight">Search Flight</string>
+    <string name="flight_filter_label">Filter</string>
+    <string name="flight_classes_toolbar_title">Kelas Penerbangan</string>
+    <string name="flight_booking_toolbar_title">Isi Data Penumpang</string>
+    <string name="flight_booking_luggage_toolbar_title">Bagasi</string>
+    <string name="flight_booking_passenger_toolbar_title">Data Penumpang</string>
+    <string name="activity_label_flight_nationality">Kewarganegaraan</string>
+    <string name="flight_booking_list_passenger_title">Daftar Penumpang</string>
+    <string name="activity_label_flight_issuing_country">Negara Penerbit</string>
+    <string name="activity_label_flight_review">Rincian Pesanan</string>
+    <string name="activity_label_flight_review_cancellation">Rincian Pembatalan Pesanan</string>
+    <string name="flight_cancellation_refund_detail_toolbar_title">Pembatalan Pesanan</string>
+    <string name="flight_passenger_update_title">Ubah Data Penumpang</string>
+    <string name="flight_cancellation_terms_and_condition_title">Syarat dan Ketentuan</string>
+    <string name="flight_cancellation_list_title">Detail Pembatalan</string>
+    <string name="flight_cancellation_reason_title">Pilih Alasan Pembatalan</string>
+    <string name="flight_insurance_webview_toolbar_title">Asuransi Perjalanan</string>
+    <string name="flight_order_invoice_toolbar_title">Tokopedia</string>
+
+    <!--Profile completion-->
+    <string name="title_module_setting_profile">Data Diri Module</string>
+    <string name="title_setting_profile">Data Diri</string>
+    <string name="title_profile_completion">Lengkapi Profil</string>
+    <string name="title_change_gender">Tambah Jenis Kelamin</string>
+    <string name="title_add_phone">Tambah Nomor Ponsel</string>
+    <string name="title_add_bod">Tambah Tanggal Lahir</string>
+    <string name="create_pin">Buat PIN Tokopedia</string>
+    <string name="title_change_pin">Ubah PIN Tokopedia</string>
+
+    <!--    Dynamic feature for Liveness Detection-->
+    <string name="title_liveness_detection">Liveness Detection</string>
+
+    <!-- Dynamic feature for Groupchat-->
+    <string name="groupchat_app_name">Play</string>
+    <string name="play_broadcaster_app_name">Play Broadcaster</string>
+
+    <!--    Change Phone Number-->
+    <string name="change_phone_number_app_module_name">changephonenumber</string>
+
+    <!-- Dynamic feature for Change Password -->
+    <string name="change_password_app_name">Ubah Kata Sandi</string>
+
+    <!-- Dynamic feature for Open Shop-->
+    <string name="title_open_shop">Buka Toko Gratis</string>
+    <string name="title_shop_postal_code">Kode Pos</string>
+    <string name="title_shop_is_active">Toko Sudah Aktif</string>
+    <string name="title_shop_setting">Pengaturan Toko</string>
+
+    <!-- Dynamic feature for Setting Bank-->
+    <string name="setting_bank_app_name">Rekening Bank</string>
+    <string name="title_setting_bank">Rekening Bank</string>
+    <string name="title_choose_bank">Pilih Bank</string>
+
+    <!-- Dynamic feature for Fintech-->
+    <string name="saldo_deposit_app_name">Saldo</string>
+    <string name="ovop2p_app_name">Saldo</string>
+
+    <!-- Dynamic feature for Travel Subhomepage-->
+    <string name="travel_subhomepage_app_name">Travel &amp; Entertainment</string>
+    <string name="travel_title_subhomepage">Travel &amp; Entertainment</string>
+
+    <!-- Dynamic feature for Digital Recharge -->
+    <string name="title_digital_topup"><![CDATA[Top-up & Tagihan]]></string>
+    <string name="digital_cart_toolbar_title">Checkout</string>
+    <string name="digital_title_fav_number">Nomor Favorit</string>
+    <string name="accessibility_service_description">Layanan ini digunakan untuk membaca saldo pulsa dari ussd popup</string>
+
+    <!-- Dynamic feature for Discovery-->
+    <string name="title_image_search">Pencarian Gambar</string>
+    <string name="title_image_search_module_name">Pencarian Gambar</string>
+    <string name="image_search_app_name">imagesearch</string>
+    <string name="choose_image">Pilih Gambar</string>
+    <string name="title_similar_search">Pencarian Serupa</string>
+    <string name="title_similar_search_module_name">Pencarian Serupa</string>
+    <string name="similar_search_app_name">similarsearch</string>
+    <string name="title_autocomplete">Pencarian</string>
+    <string name="title_autocomplete_module_name">Pencarian</string>
+    <string name="title_home_wishlist_module_name">Wishlist</string>
+    <string name="autocomplete_app_name">autocomplete</string>
+    <string name="title_search_result">Pencarian</string>
+    <string name="title_search_result_module_name">Pencarian</string>
+    <string name="search_result_app_name">search</string>
+    <string name="title_product_card_options">Product Card Options</string>
+
+    <!--TopAds Dashboard-->
+    <string name="title_module_top_ads_dashboard">TopAds Module</string>
+    <string name="top_ads_title_dashboard">TopAds</string>
+    <string name="title_top_ads_add_credit">Tambah Kredit TopAds</string>
+    <string name="title_top_ads_credit_history">Riwayat Kredit</string>
+    <string name="title_top_ads_auto_topup">Tambah Kredit Otomatis</string>
+    <string name="topads_menu_seller_centre">Seller Center</string>
+
+    <!--Auto Ads-->
+    <string name="title_module_auto_ads">AutoAds Module</string>
+    <string name="auto_ads_app_name">AutoTopAds</string>
+    <string name="autoads_topads">TopAds</string>
+    <string name="autoads_pengaturan_iklan">Pengaturan Iklan</string>
+    <string name="autoads_iklan_otomatis">Iklan Otomatis</string>
+    <string name="tambah_kredit_topads">Tambah Kredit TopAds</string>
+
+    <!--Report-->
+    <string name="title_module_report">Report Module</string>
+    <string name="product_report">Laporkan Produk</string>
+    <string name="detail_report">Detail Laporan</string>
+
+    <!--Age Restriction-->
+    <string name="title_module_age_restriction">Konten Dewasa</string>
+    <string name="title_trade_in">Tukar Tambah</string>
+    <string name="label_dob">Tanggal Lahir</string>
+
+    <!--Contact Us-->
+    <string name="title_module_contact_us">Pusat Bantuan</string>
+    <string name="contact_us_title_home">Pusat Bantuan</string>
+    <string name="invoice_list_title">Riwayat Transaksi</string>
+    <string name="order_query_ticket_title">Kendala</string>
+    <string name="submit_ticket_title">Form Bantuan</string>
+    <string name="survey_layanan">Survey Layanan</string>
+    <string name="detail_kendala">Detail Kendala</string>
+    <string name="contact_us_inbox">Pesan Bantuan</string>
+
+    <string name="instant_loan_app_name">Dana Instan</string>
+
+    <!-- Referral -->
+    <string name="title_module_referral">Referral</string>
+    <!--Ovo Wallet-->
+    <string name="wallet_title">Ovo</string>
+    <string name="wallet_title_header_ovo">TokoCash to OVO</string>
+    <string name="wallet_title_header_activation_ovo">Aktivasi OVO</string>
+
+    <!-- Digital-Deals-->
+    <string name="digital_deals">digital_deals</string>
+
+    <!-- Digital Emoney -->
+    <string name="title_digital_emoney">Electronic Money</string>
+    <string name="emoney_toolbar_title_etoll_check_balance">Cek Saldo</string>
+
+    <!--ChatBot-->
+    <string name="title_chat_bot">Chat Sekarang</string>
+    <string name="title_module_chat_bot">Chat Sekarang</string>
+
+
+    <!-- Dynamic feature for Setting Bank-->
+    <string name="onboarding_app_name">OnBoarding</string>
+
+    <!-- Dynamic feature for Power Merchant-->
+    <string name="pm_title_activity">Power Merchant</string>
+    <string name="pm_title_tnc">Syarat dan Ketentuan</string>
+    <string name="pm_title_cancellation_questionnaire">Berhenti Power Merchant</string>
+
+    <!-- Setting-Notif-->
+    <string name="setting_notif_app_name">Setting Notif</string>
+
+    <!-- Payment-Setting-->
+    <string name="payment_setting_app_name">payment_setting</string>
+    <string name="payment_title_list_card">Pengaturan Kartu Kredit</string>
+    <string name="payment_label_credit_card">Kartu Kredit</string>
+    <string name="payment_label_button_add_card">Tambah Kartu</string>
+    <string name="payment_label_credit_card_verification">Verifikasi Kartu Kredit</string>
+
+    <!--Dynamic feature for affiliate-->
+    <string name="title_af_affiliate">Affiliate</string>
+    <string name="title_affiliate">Affiliate</string>
+    <string name="title_af_dashboard">Pencapaian Saya</string>
+    <string name="title_af_tokopedia_byme">Tokopedia By Me</string>
+
+    <!-- Dynamic feature for manage product list-->
+    <string name="title_product_manage">Daftar Produk</string>
+
+    <!-- Dynamic feature for manage Seller Order Management-->
+    <string name="title_seller_order">Seller Order Management</string>
+    <string name="som_app_name">Seller Order Management</string>
+    <string name="title_som_list">Penjualan</string>
+    <string name="title_som_filter">Filter</string>
+    <string name="title_som_detail">Detail Pesanan</string>
+    <string name="title_som_confirm_req_pickup">Konfirmasi Request Pick-Up</string>
+    <string name="title_som_confirm_shipping">Konfirmasi Pengiriman</string>
+    <string name="title_som_change_courier">Ganti Kurir</string>
+    <string name="title_som_scan_barcode">Scan Resi</string>
+    <string name="title_som_booking_code">Detail Kode Booking</string>
+
+
+    <!-- Dynamic feature for Umrah-->
+    <string name="salam_title_df">Salam</string>
+    <string name="umrah_title_df">Umrah</string>
+    <string name="umrah_search_title">Cari Paket Umrah</string>
+    <string name="umrah_label_filter">Filter</string>
+    <string name="umrah_label_pdp">Pilih Detail</string>
+    <string name="umrah_checkout_pilgrims_title_activity">Isi Data Jamaah</string>
+    <string name="umrah_checkout_title_activity">Pemesanan Umrah</string>
+    <string name="umrah_checkout_contact_title_activity">Informasi Kontak</string>
+    <string name="umrah_checkout_installment_title_activity">Pilihan Cicilan</string>
+    <string name="umrah_travel_agent_title">Penyelenggara Umroh</string>
+
+    <!-- Dynamic feature for user identification commmon-->
+    <string name="title_upload_user_identification_common">Upload Foto</string>
+
+    <!-- Dynamic feature for user talk-->
+    <string name="write_new_talk">Kirim Pertanyaan</string>
+    <string name="title_product_discussion">Diskusi</string>
+    <string name="title_report_talk">Laporkan</string>
+
+    <string name="sbank_title_add_bank_account">Tambah Rekening</string>
+    <string name="sbank_confirm_bank_account">Konfirmasi rekening bank</string>
+
+    <!--Topchat-->
+    <string name="topchat_title">Chat</string>
+    <string name="title_inbox_chat">Chat</string>
+    <string name="chat_incoming_settings">Atur Penerimaan Chat</string>
+
+    <!-- Dynamic features Voucher Creation -->
+    <string name="title_voucher_creation">Voucher Creation</string>
+
+    <!-- Dynamic features Shop Score / Performa Toko -->
+    <string name="title_shop_score_seller">Skor Performa Toko</string>
+    <string name="title_shop_score_sellerapp">Performa Toko Penjual</string>
+    
+    <!-- Dynamic features Seller Search -->
+    <string name="title_global_search_seller">Seller Search</string>
+
+    <!-- Content -->
+    <string name="kol_title_comment">Comments</string>
+    <string name="kol_title_post_detail">Post Detail</string>
+    <string name="kol_title_media_preview">Media Preview</string>
+    <string name="kol_title_video_detail">Video Detail</string>
+    <string name="kol_title_post_youtube">Post Youtube</string>
+    <string name="kol_title_report">Laporan Konten</string>
+    <string name="cp_title_create_post">Create Post</string>
+    <string name="cp_title_edit">Edit</string>
+    <string name="cp_title_image_picker">Tambah Foto</string>
+    <string name="cp_title_image_video">Tambah Video</string>
+    <string name="cp_title_image_editor">Edit</string>
+
+    <!-- Shop Page -->
+    <string name="shop_info_title">Shop Info</string>
+    <string name="shop_info_label_physical_shop">Toko Fisik</string>
+    <string name="note_title">Catatan</string>
+    <string name="shop_sort_title">Urutkan</string>
+    <string name="shop_product_title">Produk</string>
+    <string name="favorited_shop_title">Followers Toko</string>
+    <string name="shop_search_product">Search Shop Product</string>
+    <string name="shop_page_setting_title">Toko Kamu</string>
+
+    <!-- Dynamic feature Statistic -->
+    <string name="title_statistic">Statistic</string>
+
+</resources>

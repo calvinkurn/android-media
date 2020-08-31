@@ -53,6 +53,7 @@
 -dontwarn com.comscore.**
 -dontwarn com.squareup.**
 -dontwarn oauth.signpost.**
+-dontwarn twitter4j.**
 -dontwarn com.google.ads.**
 -dontwarn javax.management.**
 -dontwarn javax.xml.**
@@ -173,9 +174,9 @@ public protected *;
 
 -keep class com.tokopedia.core.home.model.** { *; }
 
--keep class com.tokopedia.core.util.GlobalConfig
+-keep class com.tokopedia.config.GlobalConfig
 -keep class com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity
--keep class com.tokopedia.payment.model.PaymentPassData
+-keep class com.tokopedia.common.payment.model.PaymentPassData
 
 # -- Feeds --
 -keep class com.tkpdfeed.feeds.** { *; }
@@ -192,13 +193,18 @@ public protected *;
 }
 
 -keep public class com.tokopedia.design.component.BottomNavigation { *; }
--keep public class android.support.design.widget.BottomNavigationView { *; }
--keep public class android.support.design.internal.BottomNavigationMenuView { *; }
--keep public class android.support.design.internal.BottomNavigationPresenter { *; }
--keep public class android.support.design.internal.BottomNavigationItemView { *; }
+-keep public class com.google.android.material.bottomnavigation.** { *; }
 -keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
 -keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}
 -keep class com.github.anrwatchdog.** { *; }
 
-# -- laku6
 -dontwarn com.laku6.tradeinsdk.api.Laku6TradeIn
+
+-keep class com.google.firebase.perf.FirebasePerformance
+
+-dontwarn com.google.android.exoplayer2.audio.AudioAttributes
+-dontwarn com.google.android.exoplayer2.mediacodec.MediaCodecUtil
+-dontwarn com.google.android.exoplayer2.ui.DefaultTimeBar
+
+-keep class com.alibaba.livecloud.** { *; }
+-keep class com.alivc.** { *; }

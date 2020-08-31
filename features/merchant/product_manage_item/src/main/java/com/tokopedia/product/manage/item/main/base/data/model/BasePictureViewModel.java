@@ -1,6 +1,5 @@
 package com.tokopedia.product.manage.item.main.base.data.model;
 
-import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
@@ -80,7 +79,7 @@ public abstract class BasePictureViewModel implements Parcelable {
     }
 
     public String getUriOrPath(){
-        if (getId() <= 0 && !TextUtils.isEmpty(getFilePath())) {
+        if (getId() == 0 && !TextUtils.isEmpty(getFilePath())) {
             return getFilePath();
         }
         return getUrlOriginal();

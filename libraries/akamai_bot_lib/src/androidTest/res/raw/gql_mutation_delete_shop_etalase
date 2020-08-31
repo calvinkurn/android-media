@@ -1,0 +1,8 @@
+mutation deleteShopShowcase($id:String!){
+  deleteShopShowcase(input: {
+   id:$id
+  }){
+      success
+      message
+    }
+}

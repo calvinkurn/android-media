@@ -4,17 +4,18 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresPermission;
-import androidx.fragment.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.tokopedia.cameraview.Facing;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresPermission;
+import androidx.fragment.app.Fragment;
+
+import com.otaliastudios.cameraview.controls.Facing;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.homecredit.R;
 import com.tokopedia.homecredit.applink.Constants;
@@ -53,6 +54,7 @@ public class HomeCreditSelfieFragment extends HomeCreditBaseCameraFragment {
         captureImage = view.findViewById(R.id.iv_capture_image);
         reverseCamera = view.findViewById(R.id.iv_reverse_camera);
         cameraLayout = view.findViewById(R.id.hc_camera_layout);
+        headerText = view.findViewById(R.id.desc_1);
         cameraView.setFacing(Facing.FRONT);
         cameraView.setZoom(0f);
         cameraOverlayImage = view.findViewById(R.id.selfieid_cutout);
@@ -74,6 +76,9 @@ public class HomeCreditSelfieFragment extends HomeCreditBaseCameraFragment {
     private void setCameraOverlayImage(ImageView cameraOverlayImg){
         String cameraType = getActivity().getIntent().getStringExtra(Constants.CAMERA_TYPE);
         String cutOutImgUrl = getActivity().getIntent().getStringExtra(Constants.CUST_OVERLAY_URL);
+        String customHeader = getActivity().getIntent().getStringExtra(Constants.CUST_HEADER);
+        if(!TextUtils.isEmpty(customHeader))
+            headerText.setText(customHeader);
         if(Constants.SLFE_NO_OVERLAY.equalsIgnoreCase(cameraType)){
             cameraOverlayImg.setVisibility(View.GONE);
         }

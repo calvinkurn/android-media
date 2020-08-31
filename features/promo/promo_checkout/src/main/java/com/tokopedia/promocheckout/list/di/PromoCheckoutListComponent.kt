@@ -2,6 +2,7 @@ package com.tokopedia.promocheckout.list.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.promocheckout.list.view.fragment.*
+import com.tokopedia.user.session.UserSession
 import dagger.Component
 
 @PromoCheckoutListScope
@@ -12,4 +13,8 @@ interface PromoCheckoutListComponent{
     fun inject(promoCheckoutListDigitalFragment: PromoCheckoutListDigitalFragment)
     fun inject(promoCheckoutListFlightFragment: PromoCheckoutListFlightFragment)
     fun inject(promoCheckoutListHotelFragment: PromoCheckoutListHotelFragment)
+    fun inject(promoCheckoutListUmrahFragment: PromoCheckoutListUmrahFragment)
+
+    fun userSession(): UserSession
+    fun inject(promoCheckoutListEventFragment: PromoCheckoutListEventFragment)
 }

@@ -1,8 +1,11 @@
 <resources>
     <string name="app_name">tkpdreputation</string>
+    <string name="title_activity_reputation_review">Ulasan</string>
     <string name="title_tab_waiting_review">Menunggu Diulas</string>
+    <string name="title_rating_product">Rating Produk</string>
+    <string name="title_inbox_ulasan">Inbox Ulasan</string>
     <string name="title_tab_my_review">Ulasan Saya</string>
-    <string name="title_tab_buyer_review">Ulasan Pembeli</string>
+    <string name="title_tab_buyer_review">Penilaian Pembeli</string>
     <string name="empty_inbox_reputation">Reputasi kosong</string>
     <string name="deadline_prefix">Batas memberikan penilaian</string>
     <string name="deadline_suffix">hari lagi</string>
@@ -10,6 +13,7 @@
     <string name="product_quality">Kualitas Produk</string>
     <string name="hint_review">Ulasan Produk</string>
     <string name="upload_image">Upload Gambar Produk</string>
+    <string name="progress_dialog_loading">Loading</string>
     <string name="share_to_facebook">Bagikan ke Facebook</string>
     <string name="anonym">Anonim</string>
     <string name="hint_anonym">Profil ditampilkan sebagai</string>
@@ -24,6 +28,7 @@
     <string name="filter_this_month">Bulan Ini</string>
     <string name="filter_last_3_month">3 Bulan Terakhir</string>
     <string name="title_filter">Filter</string>
+    <string name="title_cancel">Batal</string>
     <string name="filter_status">Status</string>
     <string name="filter_all">Semua</string>
     <string name="filter_given_reputation">Sudah Dinilai</string>
@@ -33,9 +38,13 @@
     <string name="review_product">Ulas Produk</string>
     <string name="menu_edit">Ubah</string>
     <string name="menu_skip">Lewati</string>
+    <string name="title_skip">Lewatkan</string>
     <string name="reply">Balas</string>
     <string name="your_scoring">Penilaian dari Anda</string>
     <string name="reputation_prompt">Bagaimana pengalaman Anda bertransaksi dengan</string>
+    <string name="empty_desc">Deskripsi harus diisi.</string>
+    <string name="success_share_review">Sukses membagikan ulasan</string>
+    <string name="error_share_review">Gagal membagikan ulasan</string>
     <string name="smiley_bad">Kecewa</string>
     <string name="smiley_netral">Netral</string>
     <string name="smiley_good">Puas</string>
@@ -46,6 +55,7 @@
     <string name="smiley_prompt_suffix_shop">pada toko ini?</string>
     <string name="upload_product_image">Upload Gambar Produk</string>
     <string name="upload_product_info">Anda dapat mengupload 5 gambar dengan format .JPG, .JPEG, .PNG. Maksimal ukuran gambar 10 MB</string>
+    <string name="max_caption_character">Maksimal keterangan adalah 128 karakter</string>
     <string name="review">Ulasan</string>
     <string name="rating_title_0">Beri Peringkat</string>
     <string name="rating_title_1">Sangat Buruk</string>
@@ -89,6 +99,7 @@
     <string name="You_and">Anda dan </string>
     <string name="inbox_reputation_empty_title">Ulasan masih kosong\nMulai belanja sekarang</string>
     <string name="inbox_reputation_empty_button">Cari Produk</string>
+    <string name="search_review_hint">Cari Ulasan</string>
     <string name="inbox_reputation_search_empty_title">Hasil Pencarian tidak ditemukan</string>
     <string name="inbox_reputation_search_empty_button">Lihat Semua Ulasan</string>
     <string name="not_reviewed">Belum diulas</string>
@@ -99,6 +110,8 @@
     <string name="product_is_deleted">Produk telah dihapus</string>
     <string name="review_is_skipped">Ulasan ini telah dilewati</string>
     <string name="review_for">Ulasan untuk</string>
+    <string name="save_title">Simpan</string>
+    <string name="reset_title">Reset</string>
     <string name="is_done">sudah selesai</string>
     <string name="is_edited">telah diubah</string>
     <string name="is_send">sudah dikirim</string>
@@ -110,7 +123,7 @@
     <string name="inbox_reputation_seller_empty_title">Belum ada ulasan dari pembeli.\nPastikan Produk Anda sudah terjual.</string>
     <string name="see_my_shop">Lihat Toko Saya</string>
     <string name="query_hint_review_buyer">Cari toko atau invoice</string>
-    <string name="query_hint_review_seller">Cari toko atau invoice</string>
+    <string name="query_hint_review_seller">Cari invoice</string>
     <string name="product_is_banned">Produk telah diban</string>
     <string name="product_review_label_rating_comparison">/ 5</string>
     <string name="product_review_label_helpful_review">Ulasan Paling Membantu</string>
@@ -128,9 +141,12 @@
     <string name="review_min_character">Minimal 30 karakter</string>
     <string name="review_label_all">Semua</string>
     <string name="review_label_with_photo">Dengan Foto</string>
+    <string name="seller_migration_review_title">Ulasan produk dan template</string>
+    <string name="seller_migration_review_description">Fitur unggulan untuk mempermudah pantau dan balas ulasan pembeli.</string>
 
     <string name="review_add_photo_txt">Tambah \nfoto</string>
     <string name="image_picker_title">Pilih foto</string>
+    <string name="error_upload_image">Gagal mengunggah gambar</string>
     <string name="review_overlay_count">%1$d +</string>
     <string name="review_text_1">Hai %s, tuliskan hal yang <![CDATA[<b>tidak sesuai harapan</b>]]> dari barang ini?</string>
     <string name="review_text_2">Hai %s, tuliskan hal yang kamu <![CDATA[<b>tidak suka</b>]]> dari barang ini?</string>
@@ -142,5 +158,12 @@
     <string name="anonymous_review_prefix">Kirim sebagai anonim %s</string>
     <string name="txt_btn_submit_review">Kirim Ulasan</string>
     <string name="review_msg_placeholder">Ulasan saya</string>
+    <string name="image_description">Keterangan gambar...</string>
     <string name="txt_success_submit_review">Terima kasih %s sudah memberikan ulasanmu untuk barang ini</string>
+    <string-array name="talk_read">
+        <item>Semua</item>
+        <item>Belum Dibaca</item>
+    </string-array>
+
+    <string name="title_review_inbox">Inbox Ulasan</string>
 </resources>

@@ -4,10 +4,12 @@ import android.app.NotificationManager
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
+import com.google.gson.Gson
 import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.common.IrisAnalyticsEvents
 import com.tokopedia.notifications.common.PayloadConverter
 import com.tokopedia.notifications.common.launchCatchError
+import com.tokopedia.notifications.data.converters.JsonBundleConverter.jsonToBundle
 import com.tokopedia.notifications.database.pushRuleEngine.PushRepository
 import com.tokopedia.notifications.factory.CMNotificationFactory
 import com.tokopedia.notifications.image.ImageDownloadManager
@@ -48,11 +50,28 @@ class PushController(val context: Context) : CoroutineScope {
         }
     }
 
+    fun handleNotificationAmplification(payloadJson: String) {
+        try {
+            launchCatchError(block = {
+                val toModel = Gson().fromJson(
+                        payloadJson,
+                        BaseNotificationModel::class.java
+                )
+                if (!isOfflineNotificationActive(toModel.notificationId)) {
+                    val bundle = jsonToBundle(payloadJson)
+                    handleNotificationBundle(bundle)
+                }
+            }, onError = {})
+        } catch (e: Exception) { }
+    }
+
     private suspend fun onLivePushPayloadReceived(baseNotificationModel: BaseNotificationModel) {
 
         var updatedBaseNotificationModel: BaseNotificationModel? = null
-        if (baseNotificationModel.type == CMConstant.NotificationType.DELETE_NOTIFICATION)
+        if (baseNotificationModel.type == CMConstant.NotificationType.DELETE_NOTIFICATION) {
             baseNotificationModel.status = NotificationStatus.COMPLETED
+            createAndPostNotification(baseNotificationModel)
+        }
         else if (baseNotificationModel.startTime == 0L
                 || baseNotificationModel.endTime > System.currentTimeMillis()) {
 

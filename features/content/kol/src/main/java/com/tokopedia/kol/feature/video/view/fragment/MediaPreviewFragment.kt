@@ -1,19 +1,19 @@
 package com.tokopedia.kol.feature.video.view.fragment
 
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.graphics.PorterDuff
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.fragment.app.Fragment
-import androidx.core.content.ContextCompat
-import androidx.viewpager.widget.ViewPager
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.viewpager.widget.ViewPager
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.applink.ApplinkConst
@@ -32,13 +32,13 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.MultimediaGridViewModel
 import com.tokopedia.kol.R
 import com.tokopedia.kol.common.di.KolComponent
-import com.tokopedia.kolcommon.util.TimeConverter
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
 import com.tokopedia.kol.feature.post.view.viewmodel.PostDetailFooterModel
 import com.tokopedia.kol.feature.postdetail.view.adapter.MediaPagerAdapter
 import com.tokopedia.kol.feature.postdetail.view.viewmodel.PostDetailViewModel
 import com.tokopedia.kol.feature.video.view.adapter.MediaTagAdapter
 import com.tokopedia.kol.feature.video.view.viewmodel.FeedMediaPreviewViewModel
+import com.tokopedia.kolcommon.util.TimeConverter
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
@@ -342,7 +342,7 @@ class MediaPreviewFragment: BaseDaggerFragment() {
             label_like.text = if (footer.totalLike > 0) footer.totalLike.toString()
                 else getString(com.tokopedia.feedcomponent.R.string.kol_action_like)
             val color = context?.let { ContextCompat.getColor(it,
-                    if (footer.isLiked) R.color.Green_G500 else com.tokopedia.design.R.color.white ) }
+                    if (footer.isLiked) R.color.kol_green_g500 else com.tokopedia.design.R.color.white ) }
             color?.let {
                 icon_thumb.setColorFilter(it, PorterDuff.Mode.MULTIPLY)
                 label_like.setTextColor(it)

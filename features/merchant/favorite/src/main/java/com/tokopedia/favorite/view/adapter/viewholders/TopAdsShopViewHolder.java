@@ -1,0 +1,47 @@
+package com.tokopedia.favorite.view.adapter.viewholders;
+
+import android.content.Context;
+import androidx.annotation.LayoutRes;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import android.view.View;
+
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.favorite.R;
+import com.tokopedia.favorite.view.viewlistener.FavoriteClickListener;
+import com.tokopedia.favorite.view.viewmodel.TopAdsShopViewModel;
+import com.tokopedia.favorite.view.adapter.TopAdsShopAdapter;
+
+/**
+ * @author kulomady on 1/24/17.
+ */
+
+public class TopAdsShopViewHolder extends AbstractViewHolder<TopAdsShopViewModel> {
+
+    @LayoutRes
+    public static final int LAYOUT = R.layout.favorite_child_favorite_rec_shop;
+    private final FavoriteClickListener favoriteClickListener;
+
+    RecyclerView recShopRecyclerView;
+
+    private Context context;
+
+    public TopAdsShopViewHolder(View itemView, FavoriteClickListener favoriteClickListener) {
+        super(itemView);
+        context = itemView.getContext();
+        this.recShopRecyclerView = (RecyclerView) itemView.findViewById(R.id.rec_shop_recycler_view);
+        this.favoriteClickListener = favoriteClickListener;
+    }
+
+    @Override
+    public void bind(TopAdsShopViewModel element) {
+        TopAdsShopAdapter topAdsShopAdapter = new TopAdsShopAdapter(favoriteClickListener);
+        LinearLayoutManager linearLayoutManager
+                = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
+        recShopRecyclerView.setLayoutManager(linearLayoutManager);
+        recShopRecyclerView.setHasFixedSize(true);
+        recShopRecyclerView.setAdapter(topAdsShopAdapter);
+
+        topAdsShopAdapter.setData(element.getAdsShopItems());
+    }
+}

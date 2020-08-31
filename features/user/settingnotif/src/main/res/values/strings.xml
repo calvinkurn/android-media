@@ -4,4 +4,40 @@
     <string name="state_failed_set_user_setting">Gagal mengubah pengaturan notifikasi, mohon cek koneksi Anda</string>
     <string name="title_show_case_setting_type">Atur notifikasi yang ingin diterima</string>
     <string name="description_show_case_setting_type">Kamu bisa atur notifikasi mulai dari push notification, e-mail, atau SMS.</string>
+    <string name="settingnotif_onboarding_message">Atur bagaimana kamu menerima notifikasi berbelanja dan beraktivitas di Tokopedia.</string>
+
+    <string name="settingnotif_added_phone">Tambah Nomor HP</string>
+    <string name="settingnotif_information">Informasi</string>
+
+    <string name="settingnotif_title_activation">Aktifkan Push Notification</string>
+    <string name="settingnotif_desc_activation">Kamu belum mengaktifkan push notification di HP. Aktifkan sekarang untuk dapat info terbaru!</string>
+    <string name="settingnotif_activation">Aktifkan</string>
+
+    <string name="settingnotif_title_email">Tambah e-mail kamu, yuk!</string>
+    <string name="settingnotif_desc_email">Dapatkan notifikasi transaksi lewat e-mail hanya dengan tambah e-mail kamu ke sini.</string>
+    <string name="settingnotif_activation_email">Tambah E-mail</string>
+
+    <string name="settingnotif_title_sms">Tambah nomor HP, yuk!</string>
+    <string name="settingnotif_desc_sms">
+        Notifikasi yang dikirim ke HP kamu sifatnya penting karena berisi seputar keamanan akun dan status transaksi.
+        \n\nTambahkan nomor HP kamu ke sini agar selalu update dengan informasi penting.
+    </string>
+
+    <string name="settingnotif_settings_seller_title">Notifikasi Penjual</string>
+    <string name="settingnotif_desc_information">Push notification adalah notifikasi yang dikirimkan langsung ke HP kamu dari aplikasi Tokopedia</string>
+
+    <string name="settingnotif_title">Notifikasi</string>
+    <string name="settingnotif_dialog_info_title">Push Notification</string>
+    <string name="settingnotif_email">E-mail</string>
+    <string name="settingnotif_sms">SMS</string>
+    <string name="settingnotif_seller">Seller</string>
+
+    <string name="settingnotif_change">Ubah</string>
+    <string name="settingnotif_change_email">Notifikasi e-mail akan dikirim ke:</string>
+    <string name="settingnotif_change_phone_number">Notifikasi SMS akan dikirim ke:</string>
+
+    <string name="settingnotif_ticker_sms_desc">Notifikasi SMS sifatnya penting karena memberimu kabar soal keamanan akun dan status transaksi. Hati-hati saat terima SMS spam yang mengatasnamakan Tokopedia, ya.\n\nJika kamu menerima SMS tersebut,</string>
+    <string name="settingnotif_ticker_sms_more">pelajari selengkapnya di sini.</string>
+
+    <string name="settingnotif_security_guide_link">https://www.tokopedia.com/help/article/st-1030-jaga-keamanan-akun-tokopedia</string>
 </resources>

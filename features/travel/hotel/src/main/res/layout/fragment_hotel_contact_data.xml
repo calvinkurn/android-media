@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/layout_lvl2"
+    android:background="@color/Neutral_N0">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentTop="true">
+
+        <com.tokopedia.hotel.common.presentation.widget.HotelAutoCompleteTextField
+            android:id="@+id/til_contact_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/layout_lvl3"
+            />
+
+
+        <com.tokopedia.hotel.common.presentation.widget.HotelAutoCompleteTextField
+            android:id="@+id/til_contact_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/layout_lvl3"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_contact_phone_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/spacing_lvl1"
+            android:text="@string/travel_contact_data_phone_number_title"
+            app:typographyType="body_3"
+            android:textColor="@color/Neutral_N700_44"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/til_contact_email"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="@dimen/layout_lvl3">
+
+            <Spinner
+                android:id="@+id/sp_contact_phone_code"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/Base.Widget.AppCompat.Spinner.Underlined"/>
+
+            <com.tokopedia.hotel.common.presentation.widget.HotelAutoCompleteTextField
+                android:id="@+id/til_contact_phone_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+        <com.tokopedia.unifycomponents.ticker.Ticker
+            android:id="@+id/contact_data_info_ticker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tickerType="warning"
+            app:closeButtonVisibility="gone"
+            app:tickerShapeType="loose"
+            app:descriptionText="@string/travel_contact_data_notice"/>
+
+    </LinearLayout>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/contact_data_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/travel_select_passenger_submit_button"
+        android:layout_alignParentBottom="true"
+        app:unifyButtonType="main"
+        app:unifyButtonSize="large"/>
+
+</RelativeLayout>

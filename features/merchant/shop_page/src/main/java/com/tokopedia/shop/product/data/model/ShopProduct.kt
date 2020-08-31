@@ -4,6 +4,7 @@ package com.tokopedia.shop.product.data.model
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.shop.common.data.source.cloud.model.FreeOngkir
+import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
 
 data class ShopProduct(
         @SerializedName("campaign")
@@ -52,7 +53,11 @@ data class ShopProduct(
 
         @SerializedName("freeOngkir")
         @Expose
-        val freeOngkir: FreeOngkir = FreeOngkir()
+        val freeOngkir: FreeOngkir = FreeOngkir(),
+
+        @SerializedName("label_groups")
+        @Expose
+        val labelGroupList: List<LabelGroup> = listOf()
 ){
         data class Response(
                 @SerializedName("GetShopProduct")
@@ -104,6 +109,11 @@ data class ShopProduct(
 
                 @SerializedName("reviewCount")
                 @Expose
-                val reviewCount: Int = 0
+                val reviewCount: Int = 0,
+
+                @SerializedName("viewCount")
+                @Expose
+                val viewCount: Int = 0
+
         )
 }

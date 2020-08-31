@@ -3,7 +3,7 @@ package com.tokopedia.home.explore.domain.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.analyticconstant.DataLayer;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Map;

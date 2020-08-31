@@ -17,13 +17,18 @@ import javax.inject.Inject;
 
 import static com.tokopedia.home.account.AccountConstants.QUERY;
 import static com.tokopedia.home.account.AccountConstants.SALDO_QUERY;
+import static com.tokopedia.home.account.AccountConstants.SHOP_LOCATION_QUERY;
 import static com.tokopedia.home.account.AccountConstants.TOPADS_QUERY;
 import static com.tokopedia.home.account.AccountConstants.VARIABLES;
 
 /**
  * @author by alvinatin on 10/08/18.
+ *
+ *
+ * please use SellerAccountViewModel.kt instead
  */
 
+@Deprecated
 public class SellerAccountPresenter extends BaseDaggerPresenter<SellerAccount.View>
         implements SellerAccount.Presenter{
 
@@ -50,13 +55,14 @@ public class SellerAccountPresenter extends BaseDaggerPresenter<SellerAccount.Vi
     }
 
     @Override
-    public void getSellerData(String query, String topadsQuery, String saldoQuery) {
+    public void getSellerData(String query, String topadsQuery, String saldoQuery, String shopLocationQuery) {
         view.showLoading();
         RequestParams requestParams = RequestParams.create();
 
         requestParams.putString(QUERY, query);
         requestParams.putString(TOPADS_QUERY, topadsQuery);
         requestParams.putString(SALDO_QUERY, saldoQuery);
+        requestParams.putString(SHOP_LOCATION_QUERY, shopLocationQuery);
         Map<String, Object> variables = new HashMap<>();
         int[] shopId = new int[1];
         if(!TextUtils.isEmpty(userSession.getShopId())) {

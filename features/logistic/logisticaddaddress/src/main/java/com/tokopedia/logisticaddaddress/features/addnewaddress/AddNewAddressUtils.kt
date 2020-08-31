@@ -3,26 +3,22 @@ package com.tokopedia.logisticaddaddress.features.addnewaddress
 import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Context
-import android.content.res.Resources
-import android.graphics.Rect
 import android.location.LocationManager
 import android.os.Build
 import android.provider.Settings
 import android.provider.Settings.Secure.getInt
-import com.google.android.material.snackbar.Snackbar
-import androidx.core.content.ContextCompat
 import android.view.View
-import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
-import com.google.android.gms.maps.model.LatLng
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.logisticaddaddress.R
-import android.widget.EditText
 import com.tokopedia.logisticaddaddress.common.AddressConstants
 import kotlin.math.abs
 
@@ -36,14 +32,14 @@ object AddNewAddressUtils {
     fun showToastError(message: String, view: View, activity: Activity) {
         var msg = message
         if (message.isEmpty()) {
-            msg = activity.getString(R.string.default_request_error_unknown)
+            msg = activity.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown)
         }
         val snackbar = view.let { Snackbar.make(it, msg, BaseToaster.LENGTH_SHORT) }
         val snackbarTextView = snackbar.view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
         val snackbarActionButton = snackbar.view.findViewById<Button>(com.google.android.material.R.id.snackbar_action)
         snackbar.view.background = ContextCompat.getDrawable(activity, com.tokopedia.design.R.drawable.bg_snackbar_error)
-        snackbarTextView?.setTextColor(ContextCompat.getColor(activity, R.color.font_black_secondary_54))
-        snackbarActionButton?.setTextColor(ContextCompat.getColor(activity, R.color.font_black_primary_70))
+        snackbarTextView?.setTextColor(ContextCompat.getColor(activity, com.tokopedia.design.R.color.font_black_secondary_54))
+        snackbarActionButton?.setTextColor(ContextCompat.getColor(activity, com.tokopedia.design.R.color.font_black_primary_70))
         snackbarTextView?.maxLines = 5
         snackbar.setAction(activity.getString(R.string.label_action_snackbar_close)) { }.show()
     }
@@ -59,11 +55,6 @@ object AddNewAddressUtils {
             mode != Settings.Secure.LOCATION_MODE_OFF
 
         }
-    }
-
-    @JvmStatic
-    fun toDp(number: Int): Int {
-        return (number * Resources.getSystem().displayMetrics.density + 0.5f).toInt()
     }
 
     @JvmStatic
@@ -96,9 +87,8 @@ object AddNewAddressUtils {
         return isGpsOn
     }
 
-    @JvmStatic
     fun hideKeyboard(et: EditText, context: Context?) {
-        val inputMethodManager = context?.getSystemService(Activity.INPUT_METHOD_SERVICE)
+        val inputMethodManager = context?.getSystemService(Activity.INPUT_METHOD_SERVICE) ?: return
         (inputMethodManager as InputMethodManager).hideSoftInputFromWindow(et.windowToken, 0)
     }
 

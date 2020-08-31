@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.gcm.base.BaseNotification;
@@ -21,9 +23,9 @@ public class SellingOrderFinishedNotification extends BaseNotification {
 
     @Override
     protected void configureNotificationData(Bundle data) {
-        Intent intent = TkpdCoreRouter.getActivitySellingTransactionList(mContext);
+        Intent intent = RouteManager.getIntent(mContext, ApplinkConst.SELLER_PURCHASE_FINISHED, "");
         mNotificationPass.mIntent = NotificationUtils.configureGeneralIntent(intent);
-        mNotificationPass.classParentStack = TkpdCoreRouter.getSellingActivityClass(mContext);
+        mNotificationPass.classParentStack = ((TkpdCoreRouter) mContext.getApplicationContext()).getHomeClass();
         mNotificationPass.title = mContext.getString(R.string.title_transaction_order_finished);
         mNotificationPass.ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
         mNotificationPass.description = data.getString(ARG_NOTIFICATION_DESCRIPTION);

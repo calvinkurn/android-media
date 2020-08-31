@@ -5,10 +5,10 @@ import android.content.Intent;
 import android.net.Uri;
 import androidx.fragment.app.Fragment;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.di.component.AppComponent;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ import java.util.List;
  * use ApplinkConstInternalMarketplace.PRODUCT_REVIEW
  *
  */
-public class ReviewProductActivity extends BaseSimpleActivity implements HasComponent<AppComponent> {
+public class ReviewProductActivity extends BaseSimpleActivity implements HasComponent<BaseAppComponent> {
 
     public static final String EXTRA_PRODUCT_NAME = "x_prd_nm";
 
@@ -45,7 +45,7 @@ public class ReviewProductActivity extends BaseSimpleActivity implements HasComp
     }
 
     @Override
-    public AppComponent getComponent() {
-        return ((MainApplication) getApplication()).getAppComponent();
+    public BaseAppComponent getComponent() {
+        return ((BaseMainApplication) getApplication()).getBaseAppComponent();
     }
 }

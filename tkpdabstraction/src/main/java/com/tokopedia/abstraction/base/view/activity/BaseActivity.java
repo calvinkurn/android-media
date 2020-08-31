@@ -8,22 +8,22 @@ import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import com.crashlytics.android.Crashlytics;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.R;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.receiver.ErrorNetworkReceiver;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.DialogForceLogout;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
-import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
 import com.tokopedia.track.TrackApp;
 
 
@@ -44,8 +44,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
     private BroadcastReceiver inappReceiver;
     private boolean pauseFlag;
 
-    private GratificationSubscriber gratificationSubscriber;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,7 +62,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
         pauseFlag = true;
         unregisterForceLogoutReceiver();
         unregisterInAppReceiver();
-
     }
 
     @Override
@@ -201,23 +198,8 @@ public abstract class BaseActivity extends AppCompatActivity implements
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        if (gratificationSubscriber == null) {
-            gratificationSubscriber = new GratificationSubscriber(getApplicationContext());
-        }
-        gratificationSubscriber.onNewIntent(this, intent);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (gratificationSubscriber != null) {
-            gratificationSubscriber.onActivityDestroyed(this);
-        }
-        if (!GlobalConfig.isSellerApp() && getApplication() instanceof AbstractionRouter) {
-            String screenName = getScreenName();
-            if (screenName == null) {
-                screenName = this.getClass().getSimpleName();
-            }
+        if (getApplication() instanceof AbstractionRouter) {
+            ((AbstractionRouter) getApplication()).onNewIntent(this, intent);
         }
     }
 

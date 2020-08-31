@@ -7,12 +7,12 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics;
+import com.tokopedia.loginregister.common.analytics.SeamlessLoginAnalytics;
 import com.tokopedia.loginregister.common.data.LoginRegisterApi;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.sessioncommon.data.TokenApi;
 import com.tokopedia.sessioncommon.di.SessionCommonScope;
 import com.tokopedia.sessioncommon.di.SessionModule;
-import com.tokopedia.sessioncommon.network.TkpdOldAuthInterceptor;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Named;
@@ -26,7 +26,10 @@ import retrofit2.Retrofit;
  */
 @LoginRegisterScope
 @SessionCommonScope
-@Component(modules = {LoginRegisterModule.class, SessionModule.class}, dependencies = {BaseAppComponent.class})
+@Component(modules = {
+        LoginRegisterModule.class,
+        SessionModule.class
+}, dependencies = {BaseAppComponent.class})
 public interface LoginRegisterComponent {
 
     @ApplicationContext
@@ -57,4 +60,5 @@ public interface LoginRegisterComponent {
 
     PermissionCheckerHelper providePermissionCheckerHelper();
 
+    SeamlessLoginAnalytics provideSeamlessLoginAnalytics();
 }

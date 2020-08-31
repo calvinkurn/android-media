@@ -39,7 +39,7 @@ data class Media(
         @Expose
         var ctaLink: CtaLink = CtaLink(),
         @SerializedName("tags")
-        val tags: List<Tag> = ArrayList(),
+        val tags: List<TagsItem> = ArrayList(),
         @SerializedName("tracking")
         @Expose
         val tracking: List<Tracking> = ArrayList(),

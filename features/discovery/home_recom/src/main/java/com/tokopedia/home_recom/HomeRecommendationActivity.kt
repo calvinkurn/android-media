@@ -48,9 +48,16 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
         return when{
             intent.data != null -> {
                 if(isSimilarProduct(intent?.data?.toString() ?: "")) SimilarProductRecommendationFragment.newInstance(
-                        if(isNumber(intent.data?.pathSegments?.get(0) ?: "")) intent.data?.pathSegments?.get(0) ?: ""
-                        else "", intent.data?.getQueryParameter("ref") ?: "null", intent.data?.query ?: "")
-                else RecommendationFragment.newInstance(intent.data?.lastPathSegment ?: "", intent.data?.query ?: "", intent.data?.getQueryParameter("ref") ?: "")
+                        getSimilarRecomPageProductId(),
+                        getRef(),
+                        getSource(),
+                        getInternalRef())
+                else RecommendationFragment
+                        .newInstance(
+                                getRecomPageProductId(),
+                                getSource(),
+                                getRef(),
+                                getInternalRef())
             }
             else -> {
                 RouteManager.route(this, ApplinkConst.HOME)
@@ -58,6 +65,19 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
             }
         }
     }
+
+    private fun getRecomPageProductId() = intent.data?.lastPathSegment ?: ""
+
+    private fun getSource() = intent.data?.query ?: ""
+
+    private fun getRef() = intent.data?.getQueryParameter("ref") ?: "null"
+
+    private fun getInternalRef() = intent.data?.getQueryParameter("search_ref") ?: ""
+
+    private fun getSimilarRecomPageProductId() =
+            if (isNumber(intent.data?.pathSegments?.get(1) ?: "")) intent.data?.pathSegments?.get(1)
+                    ?: ""
+            else ""
 
     /**
      * Function [isSimilarProduct]

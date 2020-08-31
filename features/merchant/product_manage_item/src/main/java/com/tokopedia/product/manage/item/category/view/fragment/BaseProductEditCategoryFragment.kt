@@ -4,13 +4,13 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AlertDialog
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -37,8 +37,6 @@ abstract class BaseProductEditCategoryFragment : BaseDaggerFragment(),
     @Inject
     lateinit var presenter: ProductEditCategoryPresenter
 
-    private val appRouter : Context? by lazy { activity?.application as? Context }
-
     private lateinit var productCategoryRecommendationAdapter: ProductCategoryRecommendationAdapter
 
     override fun getScreenName(): String? = null
@@ -62,13 +60,13 @@ abstract class BaseProductEditCategoryFragment : BaseDaggerFragment(),
         }
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey(SAVED_PRODUCT_CATEGORY)) {
-                productCategory = savedInstanceState.getParcelable(SAVED_PRODUCT_CATEGORY)
+                productCategory = savedInstanceState.getParcelable(SAVED_PRODUCT_CATEGORY) ?: ProductCategory()
             }
             if (savedInstanceState.containsKey(SAVED_PRODUCT_CATALOG)) {
-                productCatalog = savedInstanceState.getParcelable(SAVED_PRODUCT_CATALOG)
+                productCatalog = savedInstanceState.getParcelable(SAVED_PRODUCT_CATALOG) ?: ProductCatalog()
             }
             if (savedInstanceState.containsKey(SAVED_NAME)) {
-                name = savedInstanceState.getString(SAVED_NAME)
+                name = savedInstanceState.getString(SAVED_NAME, "")
             }
             if (savedInstanceState.containsKey(SAVED_CATEGORY_ID)) {
                 presenter.categoryId = savedInstanceState.getLong(SAVED_CATEGORY_ID)
@@ -84,13 +82,13 @@ abstract class BaseProductEditCategoryFragment : BaseDaggerFragment(),
     open fun restoreSaveInstance(savedInstanceState: Bundle?) {
         savedInstanceState?.run {
             if(containsKey(EXTRA_NAME)){
-                name = getString(EXTRA_NAME)
+                name = getString(EXTRA_NAME, "")
             }
             if(containsKey(EXTRA_CATALOG)){
-                productCatalog = getParcelable(EXTRA_CATALOG)
+                productCatalog = getParcelable(EXTRA_CATALOG) ?: ProductCatalog()
             }
             if(containsKey(EXTRA_CATEGORY)){
-                productCategory = getParcelable(EXTRA_CATEGORY)
+                productCategory = getParcelable(EXTRA_CATEGORY)?: ProductCategory()
             }
         }
     }
@@ -176,8 +174,11 @@ abstract class BaseProductEditCategoryFragment : BaseDaggerFragment(),
         if (resultCode == Activity.RESULT_OK && data != null) {
             when (requestCode) {
                 REQUEST_CODE_GET_CATALOG -> {
-                    productCatalog = data.getParcelableExtra(EXTRA_CATALOG)
-                    setCatalogChosen(productCatalog)
+                    val productCatalogTemp: ProductCatalog? = data.getParcelableExtra(EXTRA_CATALOG)
+                    productCatalogTemp?.let {
+                        productCatalog = productCatalogTemp
+                        setCatalogChosen(productCatalog)
+                    }
                 }
                 REQUEST_CODE_GET_CATEGORY -> {
                     val newCategoryId = data.getLongExtra(ProductExtraConstant.CATEGORY_RESULT_ID, -1).toInt()

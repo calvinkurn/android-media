@@ -18,14 +18,33 @@
     <string name="path_promo_list_marketplace" translatable="false">/list/marketplace</string>
     <string name="path_promo_detail_marketplace" translatable="false">/detail/marketplace</string>
 
+    <string name="path_promo_checkout_marketplace">/checkout-marketplace</string>
+
     <string name="path_promo_campaign_shake_landing" translatable="false">/campaign-shake-landing/.*\\/</string>
+
+    <string name="path_promo_list_umroh" translatable="false">/list/umroh</string>
+    <string name="path_promo_detail_umroh" translatable="false">/detail/umroh</string>
+
+    <string name="path_promo_list_event" translatable="false">/list/event</string>
+    <string name="path_promo_detail_event" translatable="false">/detail/event</string>
 
     <!-- for tokopoint module -->
     <string name="host_tokopoints">tokopoints</string>
     <string name="path_tokopoint_home">/home</string>
     <string name="path_tokopoints_coupon">/kupon-saya</string>
+    <string name="path_tokopoints_history">/history</string>
     <string name="path_tokopoints_coupon_details">/kupon-detail</string>
     <string name="path_tokopoints_catalog_details">/tukar-detail</string>
     <string name="path_tokopoints_catalog_listing">/tukar-point</string>
+    <string name="path_tokopoints_introduction">/introduction</string>
     <string name="title_tokopoints">TokoPoints</string>
+
+    <!--gamification-->
+    <string name="path_gamification">/gamification</string>
+    <string name="path_gamification2">/gamification2</string>
+    <string name="path_daily_gift">/gamification_gift_daily</string>
+    <string name="path_gift_60s">/gamification_gift_60s</string>
+    <string name="path_smc_referral">/smc-referral</string>
+    <string name="internet_title_gamification">Gamification</string>
+
 </resources>

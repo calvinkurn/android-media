@@ -8,7 +8,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 
-import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 
@@ -17,6 +16,8 @@ import static android.content.Context.SENSOR_SERVICE;
 public class ShakeDetectManager implements ShakeDetector.Listener {
 
     private static String SHAKE_DETECT_CAMPAIGN_ACTIVITY_SCREEN_NAME = "ShakeDetectCampaignActivity";
+    private static final String SP_REACT_ENABLE_SHAKE = "SP_REACT_ENABLE_SHAKE";
+    private static final String IS_ENABLE_SHAKE_REACT = "IS_ENABLE_SHAKE_REACT";
 
     private static ShakeDetectManager shakeDetectManager = new ShakeDetectManager();
     ShakeDetector sd;
@@ -72,7 +73,6 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
             this.callback = callback;
             sd = new ShakeDetector();
             sensorManager = (SensorManager)mContext.getSystemService(SENSOR_SERVICE);
-            initRemoteConfig();
         }
 
     }
@@ -90,23 +90,26 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
         isNotificationOn = false;
     }
 
-    private void initRemoteConfig() {
-        remoteConfig = new FirebaseRemoteConfigImpl(mContext);
+    private RemoteConfig getRemoteConfig() {
+        if(remoteConfig == null){
+            remoteConfig = new FirebaseRemoteConfigImpl(mContext);
+        }
+        return remoteConfig;
     }
 
     private boolean isShakeShakeEnable() {
-        return remoteConfig.getBoolean(FIREBASE_SHAKE_SHAKE_REMOTE_CONFIG_KEY,true) && isNotificationOn;
+        return getRemoteConfig().getBoolean(FIREBASE_SHAKE_SHAKE_REMOTE_CONFIG_KEY,true) && isNotificationOn;
 
     }
 
     private boolean isAudioShakeEnable() {
-        return remoteConfig.getBoolean(FIREBASE_SHAKE_SHAKE_AUDIO_REMOTE_CONFIG_KEY,false);
+        return getRemoteConfig().getBoolean(FIREBASE_SHAKE_SHAKE_AUDIO_REMOTE_CONFIG_KEY,false);
 
     }
 
     private boolean isReactNativeOnReleaseMode() {
-        SharedPreferences reactSharedPreferences = mContext.getSharedPreferences(DeveloperOptionActivity.SP_REACT_ENABLE_SHAKE, Context.MODE_PRIVATE);
-        return reactSharedPreferences.getBoolean(DeveloperOptionActivity.IS_ENABLE_SHAKE_REACT, true);
+        SharedPreferences reactSharedPreferences = mContext.getSharedPreferences(SP_REACT_ENABLE_SHAKE, Context.MODE_PRIVATE);
+        return reactSharedPreferences.getBoolean(IS_ENABLE_SHAKE_REACT, true);
     }
 
     @Override

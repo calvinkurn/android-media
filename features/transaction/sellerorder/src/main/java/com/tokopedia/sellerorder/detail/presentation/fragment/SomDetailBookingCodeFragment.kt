@@ -20,7 +20,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_BARCODE_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_BOOKING_CODE
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailBookingCodeMessageAdapter
 import com.tokopedia.unifycomponents.Toaster
-import io.hansel.core.utils.HSLUtils.dpToPx
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import kotlinx.android.synthetic.main.fragment_som_booking_code.*
 
 /**
@@ -91,7 +91,7 @@ class SomDetailBookingCodeFragment: BaseDaggerFragment() {
         val code = booking_code?.text.toString().trim { it <= ' ' }
         activity?.let {
             val clipboardManager = it.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            clipboardManager.primaryClip = ClipData.newPlainText(LABEL_COPY_BOOKING_CODE, code)
+            clipboardManager.setPrimaryClip(ClipData.newPlainText(LABEL_COPY_BOOKING_CODE, code))
             showCommonToaster(getString(R.string.booking_code_copied))
         }
     }
@@ -108,9 +108,14 @@ class SomDetailBookingCodeFragment: BaseDaggerFragment() {
     }
 
     private fun changeBarcodeSize(dp: Int) {
+        val displayMetrics = context?.resources?.displayMetrics
         val params = barcode_img?.layoutParams
-        params?.width = barcode_img?.width?.plus(dpToPx(context, dp))
-        params?.height = barcode_img?.height?.plus(dpToPx(context, dp))
+        var widthHeight = dp
+        displayMetrics?.let {
+            widthHeight = dp.dpToPx(it)
+        }
+        params?.width = barcode_img?.width?.plus(widthHeight)
+        params?.height = barcode_img?.height?.plus(widthHeight)
         barcode_img?.layoutParams = params
     }
 

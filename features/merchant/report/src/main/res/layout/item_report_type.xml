@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:minHeight="@dimen/dp_56">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/dp_12"
-        android:paddingBottom="@dimen/dp_12"
-        android:minHeight="@dimen/dp_56">
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginBottom="@dimen/dp_12">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/image_arrow"

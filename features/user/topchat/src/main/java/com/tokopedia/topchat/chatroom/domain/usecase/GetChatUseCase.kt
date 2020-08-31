@@ -1,17 +1,15 @@
 package com.tokopedia.topchat.chatroom.domain.usecase
 
-import android.content.res.Resources
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.chat_common.data.ChatroomViewModel
+import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.graphql.data.source.cache.GraphqlCacheDataStore
-import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.topchat.R
-import rx.Subscriber
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMapper
+import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
+import kotlinx.coroutines.*
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 
 /**
@@ -19,48 +17,230 @@ import javax.inject.Inject
  */
 
 class GetChatUseCase @Inject constructor(
-        val resources: Resources,
-        private val graphqlUseCase: GraphqlUseCase,
-        private val cacheDataStore: GraphqlCacheDataStore
-) {
+        private val gqlUseCase: GraphqlUseCase<GetExistingChatPojo>,
+        private val mapper: TopChatRoomGetExistingChatMapper,
+        private var dispatchers: TopchatCoroutineContextProvider
+) : CoroutineScope {
 
-    fun execute(requestParams: Map<String, Any>, subscriber: Subscriber<GraphqlResponse>) {
-        val query = GraphqlHelper.loadRawString(resources, R.raw.query_get_topchat_replies)
-        val graphqlRequest = GraphqlRequest(query,
-                GetExistingChatPojo::class.java, requestParams, false)
+    var minReplyTime = "" // for param beforeReplyTime for top
+    var maxReplyTime = "" // for param afterReplyTime for bottom
+    var hasNext = false // has next top
+    var hasNextAfter = false // has next bottom
 
-        val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE)
-                .setSessionIncluded(true).build()
-        graphqlUseCase.clearRequest()
-        graphqlUseCase.addRequest(graphqlRequest)
-        graphqlUseCase.setCacheStrategy(cacheStrategy)
-        graphqlUseCase.execute(subscriber)
+    override val coroutineContext: CoroutineContext get() = dispatchers.Main + SupervisorJob()
+
+    fun getFirstPageChat(
+            messageId: String,
+            onSuccess: (ChatroomViewModel, ChatReplies) -> Unit,
+            onErrorGetChat: (Throwable) -> Unit
+    ) {
+        val topQuery = generateFirstPageQuery()
+        val params = generateFirstPageParam(messageId)
+        getChat(topQuery, params, onSuccess, onErrorGetChat) { _, chat ->
+            updateMinReplyTime(chat)
+            updateMaxReplyTime(chat)
+        }
     }
 
-    companion object {
-
-        private val PARAM_MESSAGE_ID: String = "msgId"
-        private val PARAM_PAGE: String = "page"
-        private val PARAM_CACHE_STRATEGY: String = "cache"
-
-
-        fun generateParamFirstTime(messageId: String): Map<String, Any> {
-            val requestParams = HashMap<String, Any>()
-            requestParams[PARAM_MESSAGE_ID] = if (messageId.isNotBlank()) messageId.toInt() else 0
-            requestParams[PARAM_PAGE] = 1
-            return requestParams
+    fun getTopChat(
+            messageId: String,
+            onSuccess: (ChatroomViewModel, ChatReplies) -> Unit,
+            onErrorGetChat: (Throwable) -> Unit
+    ) {
+        val topQuery = generateTopQuery()
+        val params = generateTopParam(messageId)
+        getChat(topQuery, params, onSuccess, onErrorGetChat) { _, chat ->
+            updateMinReplyTime(chat)
         }
+    }
 
-        fun generateParam(messageId: String, page: Int): Map<String, Any> {
-            val requestParams = HashMap<String, Any>()
-            requestParams[PARAM_MESSAGE_ID] = if (messageId.isNotBlank()) messageId.toInt() else 0
-            requestParams[PARAM_PAGE] = page
-            return requestParams
+    fun getBottomChat(
+            messageId: String,
+            onSuccess: (ChatroomViewModel, ChatReplies) -> Unit,
+            onErrorGetChat: (Throwable) -> Unit
+    ) {
+        val topQuery = generateBottomQuery()
+        val params = generateBottomParam(messageId)
+        getChat(topQuery, params, onSuccess, onErrorGetChat) { _, chat ->
+            updateMaxReplyTime(chat)
         }
+    }
+
+    private fun getChat(
+            query: String,
+            params: Map<String, Any>,
+            onSuccess: (ChatroomViewModel, ChatReplies) -> Unit,
+            onErrorGetChat: (Throwable) -> Unit,
+            onResponseReady: (ChatroomViewModel, GetExistingChatPojo) -> Unit
+    ) {
+        launchCatchError(
+                dispatchers.IO,
+                {
+                    val response = gqlUseCase.apply {
+                        setTypeClass(GetExistingChatPojo::class.java)
+                        setRequestParams(params)
+                        setGraphqlQuery(query)
+                    }.executeOnBackground()
+                    val chatroomViewModel = mapper.map(response)
+                    onResponseReady(chatroomViewModel, response)
+                    withContext(dispatchers.Main) {
+                        onSuccess(chatroomViewModel, response.chatReplies)
+                    }
+                },
+                {
+                    withContext(dispatchers.Main) {
+                        onErrorGetChat(it)
+                    }
+                }
+        )
+    }
+
+    private fun generateFirstPageParam(messageId: String): Map<String, Any> {
+        return mutableMapOf<String, Any>(
+                PARAM_MESSAGE_ID to messageId.toInt()
+        ).apply {
+            if (minReplyTime.isNotEmpty()) {
+                put(PARAM_BEFORE_REPLY_TIME, minReplyTime)
+            }
+        }
+    }
+
+    private fun generateBottomParam(messageId: String): Map<String, Any> {
+        return mapOf(
+                PARAM_MESSAGE_ID to messageId.toInt(),
+                PARAM_AFTER_REPLY_TIME to maxReplyTime
+        )
+    }
+
+    private fun generateFirstPageQuery(): String {
+        return if (minReplyTime.isNotEmpty()) {
+            generateTopQuery()
+        } else {
+            requestQuery.format("", "")
+        }
+    }
+
+    private fun generateBottomQuery(): String {
+        return requestQuery.format(
+                ", $$PARAM_AFTER_REPLY_TIME: String",
+                ", afterReplyTime: $$PARAM_AFTER_REPLY_TIME"
+        )
+    }
+
+    private fun generateTopQuery(): String {
+        return requestQuery.format(
+                ", $$PARAM_BEFORE_REPLY_TIME: String",
+                ", beforeReplyTime: $$PARAM_BEFORE_REPLY_TIME"
+        )
+    }
+
+    private fun updateMinReplyTime(chat: GetExistingChatPojo) {
+        minReplyTime = chat.chatReplies.minReplyTime
+        hasNext = chat.chatReplies.hasNext
+    }
+
+    private fun updateMaxReplyTime(chat: GetExistingChatPojo) {
+        maxReplyTime = chat.chatReplies.maxReplyTime
+        hasNextAfter = chat.chatReplies.hasNextAfter
+    }
+
+    private fun generateTopParam(messageId: String): Map<String, Any> {
+        return mapOf(
+                PARAM_MESSAGE_ID to messageId.toInt(),
+                PARAM_BEFORE_REPLY_TIME to minReplyTime
+        )
     }
 
     fun unsubscribe() {
-        graphqlUseCase.unsubscribe()
+        if (coroutineContext.isActive) {
+            cancel()
+        }
     }
+
+    fun isInTheMiddleOfThePage(): Boolean {
+        return hasNextAfter
+    }
+
+    fun reset() {
+        minReplyTime = ""
+        maxReplyTime = ""
+        hasNext = false
+        hasNextAfter = false
+    }
+
+    companion object {
+        private const val PARAM_MESSAGE_ID: String = "msgId"
+        private const val PARAM_BEFORE_REPLY_TIME: String = "beforeReplyTime"
+        private const val PARAM_AFTER_REPLY_TIME: String = "afterReplyTime"
+    }
+
+    private val requestQuery = """
+        query get_chat_replies($$PARAM_MESSAGE_ID: Int!%s) {
+          status
+          chatReplies(msgId: $$PARAM_MESSAGE_ID, isTextOnly: true%s) {
+            minReplyTime
+            maxReplyTime
+            block {
+              blockedUntil
+              isBlocked
+              isPromoBlocked
+            }
+            hasNext
+            hasNextAfter
+            textareaReply
+            attachmentIDs
+            contacts {
+              role
+              userId
+              shopId
+              interlocutor
+              name
+              tag
+              thumbnail
+              domain
+              isOfficial
+              isGold
+              badge
+              status {
+                timestamp
+                timestampStr
+                isOnline
+              }
+            }
+            list {
+              date
+              chats {
+                time
+                replies {
+                  msgId
+                  replyId
+                  senderId
+                  senderName
+                  role
+                  msg
+                  replyTime
+                  status
+                  attachmentID
+                  isOpposite
+                  isHighlight
+                  isRead
+                  blastId
+                  source
+                  attachment {
+                    id
+                    type
+                    attributes
+                    fallback {
+                      message
+                      html
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+
+    """.trimIndent()
 
 }

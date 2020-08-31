@@ -4,8 +4,6 @@ include "libraries:applink"
 //include "libraries:base_adapter"
 //include "libraries:base_list_seller"
 //include "libraries:bottom_sheet_builder"
-//include "libraries:camera_view"
-//include "libraries:cameraview"
 //include "libraries:cm_push_notifications"
 include "libraries:common_network"
 //include "libraries:core_legacy"
@@ -15,7 +13,6 @@ include "libraries:common_network"
 include "libraries:global_config"
 //include "libraries:graphql"
 include "libraries:cache_manager"
-//include "libraries:cache_manager_no_op"
 //include "libraries:image_picker"
 //include "libraries:image_preview"
 //include 'libraries:imageuploader'
@@ -62,4 +59,7 @@ include "features:common:resources_common"
 //include ":features:digital:digital_homepage"
 
 include 'libraries:play_core'
+include 'libraries:analytics_debugger'
+include 'libraries:analytics_debugger_noop'
+include 'libraries:base_list'
 include 'testapp'

@@ -4,12 +4,7 @@ import android.app.Activity;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
-import android.net.Uri;
 import android.os.Build;
-
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.ConstraintSet;
-
 import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -41,6 +36,9 @@ import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.C
 import java.lang.ref.WeakReference;
 import java.util.List;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
+
 /**
  * @author lalit.singh
  */
@@ -48,16 +46,13 @@ public class ViewEngine {
 
     private WeakReference<Activity> activityWeakReference;
 
-
     private View inAppView;
-
 
     private int resCmClose = R.id.iv_close;
     private int resCmImage = R.id.iv_cmImage;
     private int resCmTitle = R.id.tv_cmTitle;
     private int resCmMessage = R.id.tv_cmMessage;
     private int buttonContainer = R.id.ll_buttonContainer;
-
 
     public ViewEngine(Activity activity) {
         activityWeakReference = new WeakReference<>(activity);
@@ -395,8 +390,9 @@ public class ViewEngine {
                 String deepLink = v.getTag().toString();
                 CmInAppListener listener = CMInAppManager.getCmInAppListener();
                 if (listener != null && !TextUtils.isEmpty(deepLink)) {
-                    listener.onCMinAppDismiss();
-                    listener.onCMInAppLinkClick(Uri.parse(deepLink), cmInApp, elementType);
+                    listener.onCMinAppDismiss(cmInApp);
+                    listener.onCMinAppInteraction(cmInApp);
+                    listener.onCMInAppLinkClick(deepLink, cmInApp, elementType);
                 }
                 if (inAppView != null)
                     ((ViewGroup) inAppView.getParent()).removeView(inAppView);
@@ -444,7 +440,8 @@ public class ViewEngine {
             CmInAppListener listener = CMInAppManager.getCmInAppListener();
             if (listener != null) {
                 listener.onCMInAppClosed(cmInApp);
-                listener.onCMinAppDismiss();
+                listener.onCMinAppDismiss(cmInApp);
+                listener.onCMinAppInteraction(cmInApp);
             }
             ((ViewGroup) view.getParent()).removeView(view);
         };
@@ -461,7 +458,7 @@ public class ViewEngine {
                     CmInAppListener listener = CMInAppManager.getCmInAppListener();
                     if (listener != null) {
                         listener.onCMInAppClosed(cmInApp);
-                        listener.onCMinAppDismiss();
+                        listener.onCMinAppDismiss(cmInApp);
                     }
                     ((ViewGroup) v.getParent()).removeView(v);
                     return true;

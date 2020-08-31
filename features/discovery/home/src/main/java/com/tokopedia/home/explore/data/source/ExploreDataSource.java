@@ -1,18 +1,16 @@
 package com.tokopedia.home.explore.data.source;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
-import androidx.annotation.NonNull;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
+
+import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.network.data.model.response.GraphqlResponse;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.drawer2.data.pojo.profile.ProfileModel;
-import com.tokopedia.core.drawer2.data.source.CloudProfileSource;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.home.R;
 import com.tokopedia.home.common.HomeDataApi;
 import com.tokopedia.home.constant.ConstantKey;
@@ -26,6 +24,11 @@ import com.tokopedia.home.explore.view.adapter.viewmodel.CategoryGridListViewMod
 import com.tokopedia.home.explore.view.adapter.viewmodel.ExploreSectionViewModel;
 import com.tokopedia.home.explore.view.adapter.viewmodel.MyShopViewModel;
 import com.tokopedia.home.explore.view.adapter.viewmodel.SellViewModel;
+import com.tokopedia.network.data.model.response.GraphqlResponse;
+import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCaseRx;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -49,17 +52,24 @@ public class ExploreDataSource {
     private Context context;
     private HomeDataApi homeDataApi;
     private CacheManager cacheManager;
-    private CloudProfileSource profileSource;
+    private UserSessionInterface userSessionInterface;
+    private GetShopInfoUseCaseRx profileSource;
     private Gson gson;
+
+    private static final String SHOP_ID = "SHOP_ID";
+    private static final String USER_ID = "USER_ID";
+    private static final String DEVICE_ID = "DEVICE_ID";
 
     public ExploreDataSource(Context context, HomeDataApi homeDataApi,
                              CacheManager cacheManager,
-                             CloudProfileSource profileSource,
+                             GetShopInfoUseCaseRx profileSource,
+                             UserSessionInterface userSessionInterface,
                              Gson gson) {
         this.context = context;
         this.homeDataApi = homeDataApi;
         this.cacheManager = cacheManager;
         this.profileSource = profileSource;
+        this.userSessionInterface = userSessionInterface;
         this.gson = gson;
     }
 
@@ -67,15 +77,16 @@ public class ExploreDataSource {
         if (userId.isEmpty()) {
             return getData("");
         } else {
-            return profileSource.getProfile(RequestParams.EMPTY.getParameters())
-                    .flatMap(new Func1<ProfileModel, Observable<List<ExploreSectionViewModel>>>() {
-                        @Override
-                        public Observable<List<ExploreSectionViewModel>> call(ProfileModel profileModel) {
-                            if (profileModel.getProfileData().getShopInfo() != null) {
-                                return getData(profileModel.getProfileData().getShopInfo().getShopDomain());
-                            } else {
-                                return getData("");
-                            }
+            RequestParams requestParams = new RequestParams();
+            requestParams.putString(SHOP_ID, userSessionInterface.getShopId());
+            requestParams.putString(USER_ID, userSessionInterface.getUserId());
+            requestParams.putString(DEVICE_ID, userSessionInterface.getDeviceId());
+            return profileSource.createObservable(requestParams)
+                    .flatMap(shopInfo -> {
+                        if (shopInfo != null) {
+                            return getData(shopInfo.getShopCore().getDomain());
+                        } else {
+                            return getData("");
                         }
                     });
         }
@@ -110,6 +121,7 @@ public class ExploreDataSource {
             @Override
             public List<ExploreSectionViewModel> call(Response<GraphqlResponse<DataResponseModel>> response) {
                 if (response.isSuccessful()) {
+                    UserSessionInterface userSession = new UserSession(context);
                     List<ExploreSectionViewModel> models = new ArrayList<>();
 
                     DynamicHomeIcon model = response.body().getData().getDynamicHomeIcon();
@@ -122,7 +134,7 @@ public class ExploreDataSource {
                             sectionViewModel.addVisitable(mappingFavoriteCategory(model.getFavCategory()));
                         }
                         if (i == 4) {
-                            if (SessionHandler.isUserHasShop(context)) {
+                            if (userSession.hasShop()) {
                                 sectionViewModel.addVisitable(mappingManageShop(response.body().getData()
                                         .getShopInfo().getData()));
                             } else {
@@ -208,7 +220,10 @@ public class ExploreDataSource {
                 if (cache != null) {
                     DataResponseModel data = gson.fromJson(cache, DataResponseModel.class);
                     String cachedShopDomain = data.getShopInfo().getData().getDomain();
-                    if (!SessionHandler.getShopDomain(context).equals(cachedShopDomain)) {
+
+                    SharedPreferences mSettings = PreferenceManager.getDefaultSharedPreferences(context);
+                    String shopDomainPreference = mSettings.getString("shopDomain","");
+                    if (!shopDomainPreference.equals(cachedShopDomain)) {
                         throw new RuntimeException("Cached data shopInfo mismatch!!");
                     }
                     GraphqlResponse<DataResponseModel> graphqlResponse = new GraphqlResponse<>();

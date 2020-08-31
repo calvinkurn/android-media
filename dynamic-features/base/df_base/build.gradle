@@ -47,60 +47,103 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(rootProject.ext.app.customerapp)
 
+    //Base
+    implementation project(rootProject.ext.features.onboarding)
+
     //Category
+    implementation project(rootProject.ext.features.exploreCategory)
+    implementation project(rootProject.ext.features.catalog)
+    implementation project(rootProject.ext.features.kategori)
+    implementation project(rootProject.ext.features.categoryLevels)
+    implementation project(rootProject.ext.features.hotlist)
+    implementation project(rootProject.ext.features.findNative)
     //implementation project(rootProject.ext.features.agerestriction) //Need to fix the structure
+
     //Content
     implementation project(rootProject.ext.features.affiliate)
+    implementation project(rootProject.ext.features.createpost)
     implementation project(rootProject.ext.features.profile)
+    implementation project(rootProject.ext.features.play)
+    implementation project(rootProject.ext.features.kol)
+    implementation project(rootProject.ext.features.interestPick)
+
     //Digital
     implementation project(rootProject.ext.features.digitalTopupBills)
     implementation project(rootProject.ext.features.digitalHomepage)
     implementation project(rootProject.ext.features.voucherGame)
     implementation project(rootProject.ext.features.rechargeOcr)
     implementation project(rootProject.ext.features.rechargeGeneral)
-    implementation project(rootProject.ext.features.digitalDeals)
     implementation project(rootProject.ext.features.digitalproduct)
+    implementation project(rootProject.ext.features.rechargeCreditCard)
+    implementation project(rootProject.ext.features.digitalEmoney)
+    implementation project(rootProject.ext.features.digitalBrizzi)
+    implementation project(rootProject.ext.features.smartBills)
+
     //Discovery
-    implementation project(rootProject.ext.features.imageSearch)
     implementation project(rootProject.ext.features.similarSearch)
     implementation project(rootProject.ext.features.search)
     implementation project(rootProject.ext.features.autocomplete)
+    implementation project(rootProject.ext.features.homeRecom)
+    implementation project(rootProject.ext.features.homeWishlist)
+    implementation project(rootProject.ext.features.productCardOptions)
+
     //Fintech
     implementation project(rootProject.ext.features.ovoPayWithQr)
     implementation project(rootProject.ext.features.wallet)
-    implementation project(rootProject.ext.features.instantLoan)
     implementation project(rootProject.ext.features.ovop2p)
-    implementation project(rootProject.ext.features.saldodetails)
+
     //IM
     //implementation project(rootProject.ext.features.referral) //Need to fix the structure
+
+    //Logistic
+    implementation project(rootProject.ext.features.logisticorder)
+    implementation project(rootProject.ext.features.logisticaddaddress)
+    implementation project(rootProject.ext.features.manageaddress)
+
     //Merchant
-    implementation project(rootProject.ext.features.report)
     implementation project(rootProject.ext.features.shopOpen)
+    implementation project(rootProject.ext.features.talk)
+    implementation project(rootProject.ext.features.shopShowcase)
+    implementation project(rootProject.ext.features.brandlist)
+    implementation project(rootProject.ext.features.shopPage)
     //Operational
-    implementation project(rootProject.ext.features.contactUs)
-    implementation project(rootProject.ext.features.chatbot)
+
     //Payment
     implementation project(rootProject.ext.features.paymentSetting)
+    implementation project(rootProject.ext.features.instantDebitBca)
     //Promo
-    implementation project(rootProject.ext.features.tokopoints)
+
     //Salam
-    implementation project(rootProject.ext.features.umrah)
+
     //Travel
     implementation project(rootProject.ext.features.travelHomepage)
-    implementation project(rootProject.ext.features.flight)
     implementation project(rootProject.ext.features.hotel)
+
     //User
+    implementation project(rootProject.ext.features.attachinvoice)
+    implementation project(rootProject.ext.features.attachvoucher)
+    implementation project(rootProject.ext.features.settingnotif)
+    implementation project(rootProject.ext.features.campaignShakeLanding)
     implementation project(rootProject.ext.features.changePhoneNumber)
     implementation project(rootProject.ext.features.groupchat)
-    implementation project(rootProject.ext.features.profileCompletion)
-    implementation project(rootProject.ext.features.settingbank)
-    implementation project(rootProject.ext.features.settingnotif)
-    implementation project(rootProject.ext.features.attachinvoice)
     implementation project(rootProject.ext.features.kyccentralized)
+    implementation project(rootProject.ext.features.loginfingerprint)
+    implementation project(rootProject.ext.features.managename)
+    implementation project(rootProject.ext.features.managepassword)
     implementation project(rootProject.ext.features.notifCenter)
-    implementation project(rootProject.ext.features.talk)
-    implementation project(rootProject.ext.features.attachvoucher)
+    implementation project(rootProject.ext.features.notifTroubleshooter)
+    implementation project(rootProject.ext.features.topchat)
+    implementation project(rootProject.ext.features.otp)
+    implementation project(rootProject.ext.features.userIdentification)
+
+    //Entertainment
+    implementation project(rootProject.ext.features.orderhistory)
+
+    //Transaction
+    implementation project(rootProject.ext.features.checkout)
+    implementation project(rootProject.ext.features.oneclickcheckout)
+    implementation project(rootProject.ext.features.promoCheckoutMarketplace)
+    implementation project(rootProject.ext.features.atc_variant)
 }

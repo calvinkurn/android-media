@@ -1,8 +1,11 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.listener;
 
+import android.content.Context;
+
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.core.base.presentation.CustomerPresenter;
-import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.ProductRevIncentiveOvoDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationItemViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailItemViewModel;
@@ -21,16 +24,20 @@ public interface InboxReputationDetail {
 
         void showLoading();
 
-        void onErrorGetInboxDetail(String errorMessage);
+        void onErrorGetInboxDetail(Throwable throwable);
 
         void onSuccessGetInboxDetail(InboxReputationItemViewModel inboxReputationItemViewModel,
                                      List<Visitable> visitables);
 
+        void onErrorGetProductRevIncentiveOvo(Throwable throwable);
+
+        void onSuccessGetProductRevIncentiveOvo(ProductRevIncentiveOvoDomain productRevIncentiveOvoDomain);
+
         void finishLoading();
 
-        void onEditReview(InboxReputationDetailItemViewModel element);
+        void onEditReview(InboxReputationDetailItemViewModel element, int adapterPosition);
 
-        void onGoToGiveReview(String productId, int shopId, String orderId);
+        void onGoToGiveReview(String productId, int shopId, String orderId, int adapterPosition);
 
         void onErrorSendSmiley(String errorMessage);
 
@@ -40,7 +47,7 @@ public interface InboxReputationDetail {
 
         void showRefresh();
 
-        void onErrorRefreshInboxDetail(String errorMessage);
+        void onErrorRefreshInboxDetail(Throwable throwable);
 
         void onSuccessRefreshGetInboxDetail(InboxReputationItemViewModel inboxReputationViewModel,
                                             List<Visitable> visitables);
@@ -50,6 +57,8 @@ public interface InboxReputationDetail {
         void goToPreviewImage(int position, ArrayList<ImageUpload> list);
 
         int getTab();
+
+        Context getContext();
 
         void onGoToReportReview(int shopId, String reviewId);
 
@@ -71,7 +80,7 @@ public interface InboxReputationDetail {
 
         void onSuccessReplyReview();
 
-        void onShareReview(String productName, String productAvatar, String productUrl, String review);
+        void onShareReview(InboxReputationDetailItemViewModel inboxReputationDetailItemViewModel, int adapterPosition);
 
         void onGoToProductDetail(String productId, String productAvatar, String productName);
 
@@ -82,6 +91,12 @@ public interface InboxReputationDetail {
         void onGoToShopInfo(int shopId);
 
         UserSessionInterface getUserSession();
+
+        void onClickReviewOverflowMenu(InboxReputationDetailItemViewModel inboxReputationDetailItemViewModel,
+                                       int adapterPosition);
+
+        void onClickToggleReply(InboxReputationDetailItemViewModel inboxReputationDetailItemViewModel,
+                                       int adapterPosition);
     }
 
     interface Presenter extends CustomerPresenter<View> {

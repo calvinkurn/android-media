@@ -15,12 +15,12 @@
         android:layout_marginTop="@dimen/dp_12"
         android:layout_marginBottom="@dimen/dp_16"
         android:tint="@color/gf_tint_close_color"
-        app:srcCompat="@drawable/ic_close_button" />
+        app:srcCompat="@drawable/gami_ic_close_button" />
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:src="@drawable/no_connection" />
+        android:src="@drawable/unify_globalerrors_connection" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="match_parent"

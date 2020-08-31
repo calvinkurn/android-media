@@ -7,11 +7,11 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.logisticcart.shipping.model.Product;
 import com.tokopedia.logisticcart.shipping.model.ShippingParam;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
-import com.tokopedia.logisticcart.shipping.model.LogisticPromoViewModel;
-import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
+import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel;
+import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
-import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
-import com.tokopedia.logisticcart.shipping.model.ShippingDurationViewModel;
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
+import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 
 import java.util.List;
@@ -29,7 +29,7 @@ public interface ShippingDurationContract {
 
         void showErrorPage(String message);
 
-        void showData(List<ShippingDurationViewModel> serviceDataList, LogisticPromoViewModel promoViewModel);
+        void showData(List<ShippingDurationUiModel> serviceDataList, LogisticPromoUiModel promoViewModel);
 
         void showNoCourierAvailable(String message);
 
@@ -47,17 +47,11 @@ public interface ShippingDurationContract {
                                        List<Product> products, String cartString, boolean isTradeInDropOff,
                                        RecipientAddressModel recipientAddressModel);
 
-        void loadCourierRecommendation(ShippingParam shippingParam, int selectedServiceId, List<ShopShipment> shopShipmentList, int codHistory, boolean isCorner, boolean isLeasing);
+        void loadCourierRecommendation(ShippingParam shippingParam, int selectedServiceId, List<ShopShipment> shopShipmentList);
 
-        CourierItemData getCourierItemData(List<ShippingCourierViewModel> shippingCourierViewModels);
+        CourierItemData getCourierItemData(List<ShippingCourierUiModel> shippingCourierUiModels);
 
-        CourierItemData getCourierItemDataById(int spId, List<ShippingCourierViewModel> shippingCourierViewModels);
-
-        void setRecipientAddressModel(RecipientAddressModel recipientAddressModel);
-
-        RecipientAddressModel getRecipientAddressModel();
-
-        CourierItemData convertToCourierModel(LogisticPromoViewModel promoModel);
+        CourierItemData getCourierItemDataById(int spId, List<ShippingCourierUiModel> shippingCourierUiModels);
 
     }
 

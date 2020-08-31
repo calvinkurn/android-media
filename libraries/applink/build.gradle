@@ -13,13 +13,21 @@ buildscript {
 }
 
 dependencies {
+
+    if (rootProject.ext.debugToolsEnabled) {
+        implementation project(rootProject.ext.libraries.analyticsDebugger)
+    } else {
+        implementation project(rootProject.ext.libraries.analyticsDebuggerNoop)
+    }
+
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation rootProject.ext.playServicesDependencies.core
     implementation project(rootProject.ext.libraries.remoteConfig)
-
-    implementation project(rootProject.ext.libraries.playCore)
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation project(rootProject.ext.libraries.devMonitoringTools)
 
     implementation (rootProject.ext.serviceDependencies.crashlytics)
 }
@@ -27,7 +35,7 @@ dependencies {
 project.ext {
     artifactId = 'applink'
     groupId = 'com.tokopedia.library'
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName = "applink-release"
 }
 

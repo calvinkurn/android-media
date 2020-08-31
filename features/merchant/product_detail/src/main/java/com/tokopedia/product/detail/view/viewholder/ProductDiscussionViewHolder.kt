@@ -1,16 +1,19 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
+import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.utils.LabelUtils
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDiscussionDataModel
 import com.tokopedia.product.detail.data.model.talk.Talk
-import com.tokopedia.product.detail.data.util.thousandFormatted
+import com.tokopedia.product.detail.data.util.productThousandFormatted
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import kotlinx.android.synthetic.main.item_dynamic_discussion.view.*
 
@@ -23,12 +26,28 @@ class ProductDiscussionViewHolder(val view: View, val listener: DynamicProductDe
     }
 
     override fun bind(element: ProductDiscussionDataModel) {
-        element.latestTalk?.let {
-            renderData(it, element.shopId.toInt(), element.talkCount)
+        if (element.latestTalk == null) {
+            hideComponent()
+        } else {
+            showComponent()
+            element.latestTalk?.let {
+                renderData(it, element.shopId.toInt(), element.talkCount, getComponentTrackData(element))
+                view.addOnImpressionListener(element.impressHolder) {
+                    listener.onImpressComponent(getComponentTrackData(element))
+                }
+            }
         }
     }
 
-    private fun renderData(talk: Talk, productShopId: Int, totalTalk: Int) {
+    private fun hideComponent() = with(view) {
+        product_discussion_container.layoutParams.height = 0
+    }
+
+    private fun showComponent() = with(view) {
+        product_discussion_container.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+    }
+
+    private fun renderData(talk: Talk, productShopId: Int, totalTalk: Int, componentTrackData: ComponentTrackDataModel) {
         with(view) {
             ImageHandler.loadImageRounded2(context, iv_talk_user_ava, talk.userImage)
             txt_talk_user_name.text = MethodChecker.fromHtml(talk.userName)
@@ -49,13 +68,15 @@ class ProductDiscussionViewHolder(val view: View, val listener: DynamicProductDe
             } else {
                 removeCommentList()
             }
-            txt_see_all_talk.text = context.getString(R.string.label_see_all_talk, totalTalk.thousandFormatted())
-            txt_see_all_talk.setOnClickListener { listener.onDiscussionClicked() }
+            txt_see_all_talk.text = context.getString(R.string.label_see_all_talk, totalTalk.productThousandFormatted())
+            txt_see_all_talk.setOnClickListener { listener.onLastDiscussionClicked(talk.id, componentTrackData) }
             visible()
         }
     }
 
-    private fun removeCommentList(){
+    private fun getComponentTrackData(element: ProductDiscussionDataModel) = ComponentTrackDataModel(element.type, element.name, adapterPosition)
+
+    private fun removeCommentList() {
         with(view) {
             iv_resp_user_ava.gone()
             txt_resp_user_name.gone()
@@ -64,7 +85,7 @@ class ProductDiscussionViewHolder(val view: View, val listener: DynamicProductDe
         }
     }
 
-    private fun showCommentList(){
+    private fun showCommentList() {
         with(view) {
             iv_resp_user_ava.visible()
             txt_resp_user_name.visible()

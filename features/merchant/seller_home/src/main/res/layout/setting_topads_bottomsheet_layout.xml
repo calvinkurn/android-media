@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/setting_topads_padding_bottom"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/topAdsBottomSheetTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="2"
+        android:textColor="@color/default_black_text"
+        app:typographyType="heading_2"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/topAdsBottomSheetDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/setting_topads_bottomsheet_padding"
+        android:maxLines="3"
+        android:textSize="@dimen/top_ads_description_size"
+        android:textColor="@color/setting_grey_text"
+        android:paddingLeft="@dimen/setting_topads_description_padding_horizontal"
+        android:paddingStart="@dimen/setting_topads_description_padding_horizontal"
+        android:paddingRight="@dimen/setting_topads_description_padding_horizontal"
+        android:paddingEnd="@dimen/setting_topads_description_padding_horizontal"
+        android:lineSpacingExtra="@dimen/line_spacing_6"
+        app:layout_constraintTop_toBottomOf="@id/topAdsBottomSheetTitle"/>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/topAdsNextButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/setting_topads_button_margin"
+        android:text="@string/setting_topads_next"
+        android:textAllCaps="false"
+        app:unifyButtonVariant="filled"
+        app:unifyButtonSize="large"
+        app:unifyButtonType="main"
+        app:layout_constraintTop_toBottomOf="@id/topAdsBottomSheetDescription"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

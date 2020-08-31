@@ -11,26 +11,32 @@ import com.tokopedia.notifications.common.CMConstant
 data class PreDefineActions(
         @SerializedName(CMConstant.PayloadKeys.TYPE)
         var type: String? = null,
+
         @SerializedName(CMConstant.PayloadKeys.TITLE)
         var title: String? = null,
 
         @SerializedName(CMConstant.PayloadKeys.MESSAGE)
         var msg: String? = null,
-        @SerializedName(CMConstant.PayloadKeys.ELEMENT_ID)
-        var element_id: String? = ""
 
+        @SerializedName(CMConstant.PayloadKeys.ELEMENT_ID)
+        var element_id: String? = "",
+
+        @SerializedName(CMConstant.PayloadKeys.PRODUCT_ID)
+        var productId: Int? = 0
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString(),
             parcel.readString(),
             parcel.readString(),
-            parcel.readString())
+            parcel.readString(),
+            parcel.readInt())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(type)
         parcel.writeString(title)
         parcel.writeString(msg)
         parcel.writeString(element_id)
+        parcel.writeInt(productId?: 0)
     }
 
     override fun describeContents(): Int {

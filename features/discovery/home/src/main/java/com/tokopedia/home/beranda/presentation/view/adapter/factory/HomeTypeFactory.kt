@@ -3,52 +3,54 @@ package com.tokopedia.home.beranda.presentation.view.adapter.factory
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionViewModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightViewModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeolocationPromptViewModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel
-import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeoLocationPromptDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
+import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 
 /**
  * Created by Lukas on 2019-08-20
  */
 interface HomeTypeFactory {
 
-    fun type(inspirationHeaderViewModel: InspirationHeaderViewModel): Int
+    fun type(inspirationHeaderDataModel: InspirationHeaderDataModel): Int
 
-    fun type(bannerViewModel: BannerViewModel): Int
+    fun type(homepageBannerDataModel: HomepageBannerDataModel): Int
 
-    fun type(tickerViewModel: TickerViewModel): Int
+    fun type(tickerDataModel: TickerDataModel): Int
 
-    fun type(businessUnitViewModel: BusinessUnitViewModel): Int
+    fun type(businessUnitWidgetDataModel: NewBusinessUnitWidgetDataModel): Int
 
-    fun type(useCaseIconSectionViewModel: UseCaseIconSectionViewModel): Int
+    fun type(useCaseIconSectionDataModel: UseCaseIconSectionDataModel): Int
 
-    fun type(dynamicIconSectionViewModel: DynamicIconSectionViewModel): Int
+    fun type(dynamicIconSectionDataModel: DynamicIconSectionDataModel): Int
 
-    fun type(sellViewModel: SellViewModel): Int
+    fun type(sellDataModel: SellDataModel): Int
 
-    fun type(headerViewModel: HeaderViewModel): Int
-
-    fun type(topAdsViewModel: TopAdsViewModel): Int
-
-    fun type(topAdsDynamicChannelModel: TopAdsDynamicChannelModel): Int
+    fun type(headerDataModel: HeaderDataModel): Int
 
     fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*>
 
-    fun type(dynamicChannelViewModel: DynamicChannelViewModel): Int
+    fun type(dynamicChannelDataModel: DynamicChannelDataModel): Int
 
-    fun type(spotlightViewModel: SpotlightViewModel): Int
+    fun type(spotlightDataModel: SpotlightDataModel): Int
 
-    fun type(homeRecommendationFeedViewModel: HomeRecommendationFeedViewModel): Int
+    fun type(homeRecommendationFeedDataModel: HomeRecommendationFeedDataModel): Int
 
-    fun type(geolocationPromptViewModel: GeolocationPromptViewModel): Int
+    fun type(geoLocationPromptDataModel: GeoLocationPromptDataModel): Int
 
-    fun type(reviewViewModel: ReviewViewModel): Int
+    fun type(reviewDataModel: ReviewDataModel): Int
 
-    fun type(playCard: PlayCardViewModel): Int
+    fun type(playCard: PlayCardDataModel): Int
+
+    fun type(playCard: PlayCarouselCardDataModel): Int
 
     fun type(homeLoadingMoreModel: HomeLoadingMoreModel): Int
 
     fun type(homeRetryModel: HomeRetryModel): Int
+
+    fun type(popularKeywordListDataModel: PopularKeywordListDataModel): Int
+
+    fun type(homeTopAdsBannerDataModel: HomeTopAdsBannerDataModel): Int
 }

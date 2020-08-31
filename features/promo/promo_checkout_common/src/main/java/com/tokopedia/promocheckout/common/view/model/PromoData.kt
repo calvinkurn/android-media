@@ -1,9 +1,10 @@
 package com.tokopedia.promocheckout.common.view.model
 
-import android.os.Parcel
 import android.os.Parcelable
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class PromoData(var typePromo: Int = 0,
                      var promoCode: String = "",
                      var description: String = "",
@@ -19,41 +20,8 @@ data class PromoData(var typePromo: Int = 0,
         }
     }
 
-    constructor(parcel: Parcel) : this(
-            parcel.readInt(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readInt(),
-            parcel.readParcelable(TickerCheckoutView.State::class.java.classLoader)) {
-    }
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeInt(typePromo)
-        parcel.writeString(promoCode)
-        parcel.writeString(description)
-        parcel.writeString(title)
-        parcel.writeInt(amount)
-        parcel.writeParcelable(state, flags)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<PromoData> {
-
-        val TYPE_VOUCHER = 0
-        val TYPE_COUPON = 1
-        val VALUE_COUPON = 1
-
-        override fun createFromParcel(parcel: Parcel): PromoData {
-            return PromoData(parcel)
-        }
-
-        override fun newArray(size: Int): Array<PromoData?> {
-            return arrayOfNulls(size)
-        }
+    fun isActive(): Boolean {
+        return state == TickerCheckoutView.State.ACTIVE
     }
 
     class Builder {
@@ -79,5 +47,14 @@ data class PromoData(var typePromo: Int = 0,
                 amount,
                 state
         )
+    }
+
+    companion object {
+        @JvmField
+        val TYPE_VOUCHER = 0
+        @JvmField
+        val TYPE_COUPON = 1
+        @JvmField
+        val VALUE_COUPON = 1
     }
 }

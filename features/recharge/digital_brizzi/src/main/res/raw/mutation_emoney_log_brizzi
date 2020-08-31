@@ -1,0 +1,7 @@
+mutation rechargeBrizziLog($log: RechargeEmoneyInquiryLogRequest!){
+  rechargeEmoneyInquiryLog(log: $log){
+    inquiry_id
+    status
+    message
+  }
+}

@@ -3,6 +3,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:id="@+id/selfieid_intro_container"
     android:layout_marginRight="@dimen/dp_30"
@@ -30,12 +31,12 @@
         android:textColor="@color/clr_2d263b"
         android:textSize="@dimen/sp_14" />
 
-    <ImageView
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="@dimen/dp_30"
-        android:src="@drawable/img_selfie_id" />
+        app:remoteFileName="img_selfie_id.webp" />
 
     <Button
         android:id="@+id/selfieid_intro_proceed"

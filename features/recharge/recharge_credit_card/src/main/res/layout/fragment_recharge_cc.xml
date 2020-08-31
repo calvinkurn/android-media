@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/cc_ticker_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_marginLeft="@dimen/layout_lvl2"
+        android:layout_marginRight="@dimen/layout_lvl2"
+        app:tickerShapeType="loose"
+        app:tckv_content_text_size="@dimen/dp_11"
+        app:tckv_indicator_off_color="@color/grey_550"
+        app:tckv_indicator_on_color="@color/tkpd_main_green"
+        tools:visibility="visible" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/input_number_area"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/cc_ticker_view"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginLeft="@dimen/layout_lvl2"
+        android:layout_marginRight="@dimen/layout_lvl2"
+        app:cardCornerRadius="@dimen/layout_lvl1">
+
+        <com.tokopedia.recharge_credit_card.widget.CCClientNumberWidget
+            android:id="@+id/cc_widget_client_number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/layout_lvl1" />
+
+    </androidx.cardview.widget.CardView>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/list_bank_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/input_number_area"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/layout_lvl3"
+        app:drawableLeftCompat="@drawable/cc_ic_info_full_green"
+        android:drawablePadding="@dimen/layout_lvl1"
+        android:text="@string/cc_label_list_bank"
+        android:textColor="@color/light_G500"
+        app:typographyType="body_3" />
+
+    <FrameLayout
+        android:id="@+id/cc_progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/cc_transparent"
+        android:visibility="gone">
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:layout_width="@dimen/spacing_lvl7"
+            android:layout_height="@dimen/spacing_lvl7"
+            android:layout_gravity="center"
+            app:loader_type="circular" />
+
+    </FrameLayout>
+
+</RelativeLayout>

@@ -19,12 +19,16 @@ dependencies {
     implementation project(rootProject.ext.libraries.track)
     implementation rootProject.ext.networkDependencies.glide
 
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
-    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+    implementation project(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
 
-    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation rootProject.ext.miscDependencies.multiDex
 
 }
 
@@ -32,7 +36,7 @@ dependencies {
 project.ext {
     artifactId = 'gamification-common'
     groupId = 'com.tokopedia.promo'
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName = "promo_gamification_common-release"
 }
 

@@ -23,7 +23,6 @@ import okio.Buffer;
 
 @Deprecated
 public class GlobalTkpdAuthInterceptor extends TkpdAuthInterceptor {
-    private static final String TAG = GlobalTkpdAuthInterceptor.class.getSimpleName();
     private String AuthKey = AuthUtil.KEY.KEY_WSV4;
 
     public GlobalTkpdAuthInterceptor(String Key) {

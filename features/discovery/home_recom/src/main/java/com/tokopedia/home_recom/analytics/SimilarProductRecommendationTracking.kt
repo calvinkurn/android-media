@@ -1,6 +1,6 @@
 package com.tokopedia.home_recom.analytics
 
-import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.ContextAnalytics
@@ -45,6 +45,7 @@ object SimilarProductRecommendationTracking {
     private const val FIELD_ACTION_FIELD = "actionField"
     private const val FIELD_ATTRIBUTE = "attribution"
     private const val FIELD_DIMENSION_83 = "dimension83"
+    private const val FIELD_DIMENSION_90 = "dimension90"
 
     private const val LIST_PRODUCT_RECOMMENDATION = "/similarrecommendation - rekomendasi untuk anda - %s - ref: %s%s"
     private const val LIST_PRODUCT_RECOMMENDATION_NON_LOGIN = "/similarrecommendation - non login - rekomendasi untuk anda - %s - ref: %s%s"
@@ -62,7 +63,8 @@ object SimilarProductRecommendationTracking {
 
     private fun convertRecommendationItemToDataClickObject(item: RecommendationItem,
                                                            list: String,
-                                                           position: String): Any {
+                                                           position: String,
+                                                           internalRef: String): Any {
         return DataLayer.mapOf(
                 FIELD_ACTION_FIELD, DataLayer.mapOf(
                 FIELD_PRODUCT_LIST, list
@@ -71,14 +73,15 @@ object SimilarProductRecommendationTracking {
                 DataLayer.mapOf(
                         FIELD_PRODUCT_NAME, item.name,
                         FIELD_PRODUCT_ID, item.productId,
-                        FIELD_PRODUCT_PRICE, item.getPriceIntFromString(),
+                        FIELD_PRODUCT_PRICE, item.priceInt.toString(),
                         FIELD_PRODUCT_BRAND, VALUE_NONE_OTHER,
                         FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,
                         FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
                         FIELD_PRODUCT_LIST, list,
                         FIELD_PRODUCT_POSITION, position,
                         FIELD_ATTRIBUTE, VALUE_EMPTY,
-                        FIELD_DIMENSION_83, if(item.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER
+                        FIELD_DIMENSION_83, if(item.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER,
+                        FIELD_DIMENSION_90, internalRef
                 )
         )
         )
@@ -86,17 +89,19 @@ object SimilarProductRecommendationTracking {
 
     private fun convertRecommendationItemToDataImpressionObject(item: RecommendationItem,
                                                                 list: String,
-                                                                position: String): Any {
+                                                                position: String,
+                                                                internalRef: String): Any {
         return DataLayer.mapOf(
                 FIELD_PRODUCT_NAME, item.name,
                 FIELD_PRODUCT_ID, item.productId,
-                FIELD_PRODUCT_PRICE, item.getPriceIntFromString(),
+                FIELD_PRODUCT_PRICE, item.priceInt.toString(),
                 FIELD_PRODUCT_BRAND, VALUE_NONE_OTHER,
                 FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,
                 FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
                 FIELD_PRODUCT_LIST, list,
                 FIELD_PRODUCT_POSITION, position,
-                FIELD_DIMENSION_83, if(item.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER
+                FIELD_DIMENSION_83, if(item.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER,
+                FIELD_DIMENSION_90, internalRef
         )
     }
 
@@ -104,7 +109,8 @@ object SimilarProductRecommendationTracking {
             trackingQueue: TrackingQueue,
             recommendationItem: RecommendationItem,
             position: String,
-            ref: String
+            ref: String,
+            internalRef: String
     ) {
         trackingQueue.putEETracking(
                 DataLayer.mapOf(
@@ -122,7 +128,7 @@ object SimilarProductRecommendationTracking {
                                         recommendationItem.recommendationType,
                                         ref,
                                         if(recommendationItem.isTopAds) PRODUCT_TOP_ADS else ""
-                                ), position)
+                                ), position, internalRef)
                 )
                 )
                 ) as HashMap<String, Any>?
@@ -133,7 +139,8 @@ object SimilarProductRecommendationTracking {
             trackingQueue: TrackingQueue,
             recommendationItem: RecommendationItem,
             position: String,
-            ref: String
+            ref: String,
+            internalRef: String
     ) {
         trackingQueue.putEETracking(
                 DataLayer.mapOf(
@@ -151,7 +158,7 @@ object SimilarProductRecommendationTracking {
                                         recommendationItem.recommendationType,
                                         ref,
                                         if(recommendationItem.isTopAds) PRODUCT_TOP_ADS else ""
-                                ), position)
+                                ), position, internalRef)
                 )
                 )
                 ) as HashMap<String, Any>?
@@ -161,7 +168,8 @@ object SimilarProductRecommendationTracking {
     fun eventClick(
             recommendationItem: RecommendationItem,
             position: String,
-            ref: String
+            ref: String,
+            internalRef: String
     ) {
         val data =
                 DataLayer.mapOf(
@@ -178,7 +186,8 @@ object SimilarProductRecommendationTracking {
                                 ref,
                                 if (recommendationItem.isTopAds) PRODUCT_TOP_ADS else ""
                         ),
-                        position
+                        position,
+                        internalRef
                 )
                 )
                 )
@@ -189,7 +198,8 @@ object SimilarProductRecommendationTracking {
     fun eventClickNonLogin(
             recommendationItem: RecommendationItem,
             position: String,
-            ref: String
+            ref: String,
+            internalRef: String
     ) {
         val data =
                 DataLayer.mapOf(
@@ -206,7 +216,8 @@ object SimilarProductRecommendationTracking {
                                         ref,
                                         if(recommendationItem.isTopAds) PRODUCT_TOP_ADS else ""
                                 ),
-                                position
+                                position,
+                                internalRef
                             )
                         )
                 )

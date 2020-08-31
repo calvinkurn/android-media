@@ -1,51 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/spacing_lvl3"
-    android:paddingLeft="@dimen/dp_15"
-    android:paddingRight="@dimen/dp_15">
-
-    <LinearLayout
-        android:id="@+id/llChatHeaderContainer"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_marginBottom="@dimen/spacing_lvl2"
+        android:paddingLeft="@dimen/dp_topchat_15"
+        android:paddingRight="@dimen/dp_topchat_15">
 
-        <include layout="@layout/item_chatcommon_chat_header" />
-    </LinearLayout>
+    <FrameLayout
+            android:id="@+id/fl_image_container"
+            android:layout_width="@dimen/dp_topchat_240"
+            android:layout_height="@dimen/dp_topchat_240"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            tools:ignore="RtlHardcoded">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/card_group_chat_message"
-        android:layout_width="@dimen/topchat_240dp"
-        android:layout_height="@dimen/topchat_240dp"
-        android:layout_below="@+id/llChatHeaderContainer"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        app:cardCornerRadius="@dimen/dp_20"
-        app:cardElevation="0dp"
-        app:cardPreventCornerOverlap="false">
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <ImageView
+        <com.tokopedia.topchat.chatroom.view.custom.ImageUploadView
                 android:id="@+id/image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
+                app:borderRadius="@dimen/dp_topchat_20"
                 tools:srcCompat="@tools:sample/avatars" />
 
-            <LinearLayout
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_topchat_image_upload_gradient" />
+
+        <LinearLayout
                 android:id="@+id/llReadStatusContainer"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:background="@drawable/bg_topchat_image_upload_gradient"
-                android:gravity="end|bottom"
+                android:gravity="end|center_vertical"
                 android:orientation="horizontal"
                 android:paddingTop="@dimen/spacing_lvl2"
                 android:paddingEnd="@dimen/spacing_lvl4"
@@ -53,33 +42,34 @@
                 android:paddingBottom="10dp"
                 tools:ignore="RtlSymmetry">
 
-                <include layout="@layout/item_chatcommon_chat_read_status_attachment" />
+            <include layout="@layout/item_chatcommon_chat_read_status_attachment" />
 
-            </LinearLayout>
-        </FrameLayout>
-    </androidx.cardview.widget.CardView>
+        </LinearLayout>
+    </FrameLayout>
 
     <ImageView
-        android:id="@+id/left_action"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/card_group_chat_message"
-        android:layout_alignBottom="@+id/card_group_chat_message"
-        android:layout_toStartOf="@+id/card_group_chat_message"
-        android:layout_toLeftOf="@+id/card_group_chat_message"
-        android:visibility="visible"
-        app:srcCompat="@drawable/ic_error_to_send" />
+            android:id="@+id/left_action"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/fl_image_container"
+            android:layout_alignBottom="@+id/fl_image_container"
+            android:layout_marginEnd="@dimen/spacing_lvl3"
+            android:layout_marginRight="@dimen/spacing_lvl3"
+            android:layout_toStartOf="@+id/fl_image_container"
+            android:layout_toLeftOf="@+id/fl_image_container"
+            android:visibility="visible"
+            app:srcCompat="@drawable/ic_error_to_send" />
 
     <ProgressBar
-        android:id="@+id/progress_bar"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/card_group_chat_message"
-        android:layout_alignBottom="@+id/card_group_chat_message"
-        android:layout_toStartOf="@+id/card_group_chat_message"
-        android:layout_toLeftOf="@+id/card_group_chat_message"
-        android:indeterminateDrawable="@drawable/progress"
-        android:visibility="visible"
-        tools:visibility="gone" />
+            android:id="@+id/progress_bar"
+            android:layout_width="@dimen/spacing_lvl5"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/fl_image_container"
+            android:layout_alignBottom="@+id/fl_image_container"
+            android:layout_toStartOf="@+id/fl_image_container"
+            android:layout_toLeftOf="@+id/fl_image_container"
+            android:indeterminateDrawable="@drawable/progress"
+            android:visibility="visible"
+            tools:visibility="gone" />
 
 </RelativeLayout>

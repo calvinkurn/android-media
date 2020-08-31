@@ -8,9 +8,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.core2.R;
-import com.tokopedia.core.widgets.ShareItem;
-
+import com.tokopedia.tkpd.tkpdreputation.R;
+import com.tokopedia.tkpd.tkpdreputation.widgets.ShareItem;
 import java.util.ArrayList;
 
 /**
@@ -51,7 +50,7 @@ public class ShareAdapter extends BaseAdapter {
         final ViewHolder holder;
 
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.sheet_grid_item, parent, false);
+            convertView = inflater.inflate(R.layout.reputation_sheet_grid_item, parent, false);
             holder = new ViewHolder(convertView);
             convertView.setTag(holder);
         } else {

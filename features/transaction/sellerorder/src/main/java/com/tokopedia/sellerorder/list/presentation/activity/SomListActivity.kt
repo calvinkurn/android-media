@@ -28,7 +28,7 @@ class SomListActivity: BaseSimpleActivity(), HasComponent<SomListComponent> {
     override fun getNewFragment(): SomListFragment? {
         var bundle = Bundle()
         if (intent.extras != null) {
-            bundle = intent.extras
+            bundle = intent.extras ?: Bundle()
         } else {
             bundle.putString(TAB_ACTIVE, "")
         }
@@ -52,6 +52,7 @@ class SomListActivity: BaseSimpleActivity(), HasComponent<SomListComponent> {
     }
 
     private fun onChatClicked() {
+        (fragment as SomListFragment).onChatIconClicked()
         RouteManager.route(this, ApplinkConst.TOPCHAT_IDLESS)
     }
 

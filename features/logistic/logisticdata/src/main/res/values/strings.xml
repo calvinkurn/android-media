@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">logisticdata</string>
+    <string name="label_main_address">Utama</string>
 </resources>

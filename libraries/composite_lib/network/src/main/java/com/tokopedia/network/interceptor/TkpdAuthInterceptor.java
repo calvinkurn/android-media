@@ -116,7 +116,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             throwChainProcessCauseHttpError(response);
         }
 
-        checkForceLogout(chain, response, finalRequest);
+        response = checkForceLogout(chain, response, finalRequest);
         checkResponse(response);
 
         return response;
@@ -258,7 +258,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             json = new JSONObject(response);
             JSONArray errorMessage = json.optJSONArray(RESPONSE_PARAM_MESSAGE_ERROR);
             return errorMessage.length() > 0;
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
@@ -386,14 +386,6 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         }
     }
 
-    private Request recreateRequestWithNewAccessToken(Chain chain) {
-        String freshAccessToken = userSession.getAccessToken();
-        return chain.request().newBuilder()
-                .header(HEADER_PARAM_AUTHORIZATION, HEADER_PARAM_BEARER + " " + freshAccessToken)
-                .header(HEADER_ACCOUNTS_AUTHORIZATION, HEADER_PARAM_BEARER + " " + freshAccessToken)
-                .build();
-    }
-
     protected Response checkForceLogout(Chain chain, Response response, Request finalRequest) throws
             IOException {
         try {
@@ -413,10 +405,31 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         }
     }
 
+    private Request recreateRequestWithNewAccessToken(Chain chain) {
+        String freshAccessToken = userSession.getAccessToken();
+        Request.Builder newRequest = chain.request().newBuilder();
+
+        try {
+            generateHmacAuthRequest(chain.request(), newRequest);
+        }catch (IOException ex){
+            ex.printStackTrace();
+        }
+
+        return newRequest
+                .header(HEADER_PARAM_AUTHORIZATION, HEADER_PARAM_BEARER + " " + freshAccessToken)
+                .header(HEADER_ACCOUNTS_AUTHORIZATION, HEADER_PARAM_BEARER + " " + freshAccessToken)
+                .build();
+    }
 
     private Request recreateRequestWithNewAccessTokenAccountsAuth(Chain chain) {
         String freshAccessToken = userSession.getAccessToken();
-        return chain.request().newBuilder()
+        Request.Builder newRequest = chain.request().newBuilder();
+        try {
+            generateHmacAuthRequest(chain.request(), newRequest);
+        }catch (IOException ex){
+            ex.printStackTrace();
+        }
+        return newRequest
                 .header(HEADER_ACCOUNTS_AUTHORIZATION, HEADER_PARAM_BEARER + " " + freshAccessToken)
                 .build();
     }

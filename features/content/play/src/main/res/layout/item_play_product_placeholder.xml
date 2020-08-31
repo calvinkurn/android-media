@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/spacing_lvl4"
+    android:layout_marginEnd="@dimen/spacing_lvl4"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <View
+        android:id="@+id/ph_product_image"
+        style="@style/PlayPlaceholder"
+        android:layout_width="@dimen/play_product_line_image_size"
+        android:layout_height="@dimen/play_product_line_image_size"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@tools:sample/avatars"
+        />
+
+    <View
+        android:id="@+id/ph_product_title"
+        style="@style/PlayPlaceholder"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/play_placeholder_product_line_title"
+        android:layout_marginStart="@dimen/play_product_line_title_image_margin"
+        android:layout_marginLeft="@dimen/play_product_line_title_image_margin"
+        android:layout_marginTop="@dimen/spacing_lvl1"
+        android:layout_marginEnd="@dimen/spacing_lvl2"
+        android:layout_marginRight="@dimen/spacing_lvl2"
+        android:textColor="@color/Neutral_N700_96"
+        app:layout_constraintBottom_toTopOf="@id/ph_current_price"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/ph_product_image"
+        app:layout_constraintTop_toTopOf="@id/ph_product_image"
+        app:layout_constraintVertical_chainStyle="packed"
+        />
+
+    <View
+        android:id="@+id/ph_current_price"
+        style="@style/PlayPlaceholder"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/play_placeholder_product_line_price"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:textColor="@color/Neutral_N700_96"
+        app:layout_constraintBottom_toBottomOf="@id/ph_product_image"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="@id/ph_product_title"
+        app:layout_constraintTop_toBottomOf="@id/ph_product_title"
+        app:layout_constraintWidth_default="percent"
+        app:layout_constraintWidth_percent="0.4"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

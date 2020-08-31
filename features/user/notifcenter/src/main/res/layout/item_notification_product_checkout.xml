@@ -5,172 +5,79 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="@dimen/dp_16">
+    android:layout_height="wrap_content">
 
-    <include
-        android:id="@+id/parent_layout"
-        layout="@layout/item_notification_update_parent" />
-
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/title"
-        android:layout_width="@dimen/dp_0"
+    <LinearLayout
+        android:id="@+id/container_caption"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:lineSpacingExtra="@dimen/sp_4"
-        android:maxLines="2"
-        android:textColor="@color/charcoal_grey_88"
-        android:textSize="@dimen/sp_14"
-        android:textStyle="bold"
+        android:orientation="vertical"
+        android:paddingStart="@dimen/notif_dp_16"
+        android:paddingTop="@dimen/notif_dp_16"
+        android:paddingEnd="@dimen/notif_dp_16"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/parent_layout"
-        tools:text="Hari Terakhir Promo Cashback untuk Dapat Ekstra Lebih" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/body"
-        android:layout_width="@dimen/dp_0"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_2"
-        android:ellipsize="end"
-        android:lineSpacingExtra="@dimen/sp_4"
-        android:textColor="@color/charcoal_grey_40"
-        android:textSize="@dimen/sp_14"
-        app:layout_constraintEnd_toEndOf="@+id/title"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title"
-        tools:text="Spesial untuk Anda! Ekstra cashback 25% Rp 250.000" />
+        <include
+            android:id="@+id/parent_layout"
+            layout="@layout/item_notification_update_parent" />
 
-
-    <com.google.android.material.card.MaterialCardView
-        style="@style/Widget.MaterialComponents.CardView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_2"
-        android:layout_marginTop="@dimen/dp_6"
-        android:layout_marginEnd="@dimen/dp_2"
-        android:layout_marginBottom="@dimen/dp_2"
-        android:clipToPadding="false"
-        app:cardCornerRadius="@dimen/dp_8"
-        app:cardPreventCornerOverlap="false"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/body">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/cl_product"
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/dp_12"
-            android:paddingBottom="@dimen/dp_12"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/body">
+            android:lineSpacingExtra="@dimen/notif_sp_4"
+            android:maxLines="2"
+            android:textColor="@color/charcoal_grey_88"
+            android:textSize="@dimen/notif_sp_14"
+            android:textStyle="bold"
+            tools:text="Hari Terakhir Promo Cashback untuk Dapat Ekstra Lebih" />
 
-            <com.tokopedia.notifcenter.widget.RoundedImageView
-                android:id="@+id/iv_thumbnail"
-                android:layout_width="@dimen/dp_72"
-                android:layout_height="@dimen/dp_72"
-                android:scaleType="fitCenter"
-                app:borderRadius="@dimen/dp_8"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/body"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/notif_dp_2"
+            android:ellipsize="end"
+            android:lineSpacingExtra="@dimen/notif_sp_4"
+            android:textColor="@color/charcoal_grey_40"
+            android:textSize="@dimen/notif_sp_14"
+            tools:text="Spesial untuk Anda! Ekstra cashback 25% Rp 250.000" />
 
-            <com.tokopedia.notifcenter.widget.ProductVariantLayout
-                android:id="@+id/pvl_variant"
-                android:layout_width="@dimen/dp_0"
-                android:layout_height="@dimen/dp_20"
-                android:layout_marginStart="@dimen/dp_8"
-                android:layout_marginLeft="@dimen/dp_8"
-                android:layout_marginEnd="@dimen/dp_8"
-                android:layout_marginRight="@dimen/dp_8"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
-                app:layout_constraintTop_toTopOf="parent" />
+    </LinearLayout>
 
-            <TextView
-                android:id="@+id/tv_product_name"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_8"
-                android:layout_marginLeft="@dimen/dp_8"
-                android:layout_marginTop="@dimen/dp_2"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:textColor="@color/Neutral_N700_96"
-                android:textSize="@dimen/sp_14"
-                android:textStyle="bold"
-                app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
-                app:layout_constraintTop_toBottomOf="@+id/pvl_variant"
-                app:layout_constraintEnd_toEndOf="parent"
-                tools:text="This is really long product name that appear on the screen" />
+    <RelativeLayout
+        android:id="@+id/container_product_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:layout_marginStart="@dimen/notif_dp_4"
+        android:layout_marginEnd="@dimen/notif_dp_4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/container_caption"
+        android:layout_marginTop="@dimen/notif_dp_6">
 
-            <com.tokopedia.notifcenter.widget.CampaignRedView
-                android:id="@+id/cl_campaign"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_8"
-                android:layout_marginLeft="@dimen/dp_8"
-                android:layout_marginEnd="@dimen/dp_8"
-                android:layout_marginRight="@dimen/dp_8"
-                android:orientation="horizontal"
-                app:layout_constraintEnd_toStartOf="@+id/btn_checkout"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
-                app:layout_constraintTop_toBottomOf="@+id/tv_product_name" />
+        <include layout="@layout/item_notification_product_card" />
 
-            <com.tokopedia.design.component.TextViewCompat
-                android:id="@+id/tv_product_price"
-                android:layout_width="@dimen/dp_0"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="@dimen/dp_1"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:textColor="@color/orange_red"
-                android:textSize="@dimen/sp_14"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toStartOf="@+id/btn_checkout"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
-                app:layout_constraintTop_toBottomOf="@+id/cl_campaign"
-                tools:text="Rp 500.000" />
+    </RelativeLayout>
 
-            <ImageView
-                android:id="@+id/img_campaign"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/dp_20"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="@dimen/dp_1"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:scaleType="fitStart"
-                android:visibility="gone"
-                tools:visibility="visible"
-                tools:src="@mipmap/ic_launcher"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
-                app:layout_constraintTop_toBottomOf="@+id/tv_product_price"/>
-
-            <com.tokopedia.unifycomponents.UnifyButton
-                android:id="@+id/btn_checkout"
-                android:layout_width="@dimen/dp_80"
-                android:layout_height="@dimen/dp_32"
-                android:text="@string/notifcenter_btn_buy"
-                android:textSize="@dimen/sp_12"
-                app:unifyButtonType="transaction"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </com.google.android.material.card.MaterialCardView>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/lst_products"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/container_caption"
+        android:clipToPadding="false"
+        android:paddingStart="@dimen/notif_dp_4"
+        android:paddingEnd="@dimen/notif_dp_4"
+        android:orientation="horizontal"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/item_notification_product_card"
+        android:layout_marginTop="@dimen/notif_dp_6"
+        android:layout_marginBottom="@dimen/notif_dp_2"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

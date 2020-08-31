@@ -1,0 +1,19 @@
+{
+  "data": {
+    "fetchProgressBarWidgetData": {
+      "data": [
+        {
+          "dataKey": "shopScore",
+          "valueTxt": "37",
+          "maxValueTxt": "100",
+          "value": 37,
+          "maxValue": 100,
+          "state": "DANGER",
+          "subtitle": "Tingkatkan poin minimum 75 untuk bisa menjadi Power Merchant.",
+          "error": false,
+          "errorMsg": ""
+        }
+      ]
+    }
+  }
+}

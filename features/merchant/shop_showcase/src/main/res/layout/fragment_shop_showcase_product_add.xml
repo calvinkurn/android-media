@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/white"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/header_layout"
+        android:layout_width="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.tokopedia.header.HeaderUnify
+                android:id="@+id/add_product_showcase_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize"
+                app:unify_header_title="@string/choose_product_text"
+                app:unify_header_action_text="@string/save_product_action_text"
+                app:unify_header_is_show_back_button="true"
+                app:unify_header_is_show_shadow="false"
+                app:unify_header_transparent_mode="false" />
+
+            <com.tokopedia.unifycomponents.SearchBarUnify
+                android:id="@+id/searchbar_add_product"
+                app:search_bar_placeholder="@string/search_product_text"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_8"
+                android:paddingBottom="@dimen/dp_16"
+                app:search_bar_clearable="true"
+                app:search_bar_show_icon="false"
+                app:search_bar_enable="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loaderUnify"
+        app:loader_corner_radius="8dp"
+        app:loader_type="circular"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/header_layout"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="@dimen/dp_64"
+        android:layout_width="@dimen/dp_64"
+        />
+
+    <com.tokopedia.empty_state.EmptyStateUnify
+        android:id="@+id/empty_state_product_search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintLeft_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:unifyEmptyStateOrientation="vertical"
+        app:unifyEmptyStateDescription="@string/please_search_with_different_keyword_text"
+        app:unifyEmptyStateTitle="@string/title_empty_state_search_product"
+        app:unifyEmptyStateType="page"
+        android:visibility="visible"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_showcase_add_product"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginLeft="@dimen/dp_12"
+        android:layout_marginRight="@dimen/dp_12"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/header_layout"
+        tools:visibility="visible"
+        />
+
+    <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
+            android:id="@+id/btn_back_to_top"
+            app:fbType="back_to_top"
+            app:layout_constraintBottom_toTopOf="@id/product_choosen_counter"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginRight="@dimen/dp_4"
+            android:layout_marginEnd="@dimen/dp_4"
+            android:layout_marginBottom="@dimen/dp_4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            tools:visibility="visible"
+            />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/product_choosen_counter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:elevation="@dimen/dp_16"
+        app:cardCornerRadius="0dp"
+        app:cardElevation="@dimen/dp_16"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:visibility="visible"
+        >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp">
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/product_choosen_image"
+                android:layout_width="@dimen/dp_48"
+                android:layout_height="@dimen/dp_48"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_marginStart="@dimen/dp_8"
+                android:scaleType="centerCrop"
+                app:layout_constraintTop_toTopOf="parent"
+                 />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/total_selected_product_counter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/chosen_product_counter_text"
+                android:layout_toRightOf="@id/product_choosen_image"
+                android:layout_toEndOf="@id/product_choosen_image"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginStart="@dimen/dp_16"
+                app:typographyType="heading_5"
+                android:layout_marginTop="@dimen/dp_13"
+                android:textColor="@color/primary_text_color"
+                 />
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

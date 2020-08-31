@@ -6,23 +6,24 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.gcm.Visitable;
 import com.tokopedia.core.gcm.base.BaseAppNotificationReceiverUIBackground;
 import com.tokopedia.core.gcm.notification.applink.ApplinkPushNotificationBuildAndShow;
+import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.fcm.notification.TopAdsBelow20kNotification;
 import com.tokopedia.sellerapp.fcm.notification.TopAdsTopupSuccessNotification;
 import com.tokopedia.topchat.chatlist.view.ChatNotifInterface;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.Map;
+
 import timber.log.Timber;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_CODE;
@@ -35,10 +36,13 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
     public static final String DEFAULT_NOTIF_CODE_VALUE = "0";
     private static final int DEFAULT_CART_VALUE = 0;
     private RemoteConfig remoteConfig;
+    private AppNotificationReceiver receiver;
 
     public AppNotificationReceiverUIBackground(Application application) {
         super(application);
         remoteConfig = new FirebaseRemoteConfigImpl(application);
+        //Hack reflection error don't remove it if reflection is already delete
+        receiver = new AppNotificationReceiver();
     }
 
     public void prepareAndExecuteDedicatedNotification(Bundle data) {
@@ -55,6 +59,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
 
     @Override
     public void notifyReceiverBackgroundMessage(Bundle data) {
+        Timber.w("P2#PUSH_NOTIF_UNUSED#AppNotificationReceiverUIBackground_Seller");
         if (isSupportedApplinkNotification(data)) {
             handleApplinkNotification(data);
         } else if (isDedicatedNotification(data)) {
@@ -66,8 +71,9 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
 
     private void handleApplinkNotification(Bundle data) {
         if (data.getString(Constants.ARG_NOTIFICATION_APPLINK_LOGIN_REQUIRED, "false").equals("true")) {
-            if (SessionHandler.isV4Login(mContext)
-                    && SessionHandler.getLoginID(mContext).equals(data.getString(Constants.ARG_NOTIFICATION_TARGET_USER_ID))) {
+            UserSessionInterface userSession = new UserSession(mContext);
+            if (userSession.isLoggedIn()
+                    && userSession.getUserId().equals(data.getString(Constants.ARG_NOTIFICATION_TARGET_USER_ID))) {
 
                 resetNotificationStatus(data);
                 prepareAndExecuteApplinkNotification(data);
@@ -104,7 +110,8 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                     }
                     break;
                 case Constants.ARG_NOTIFICATION_APPLINK_SELLER_INFO:
-                    if (SessionHandler.isUserHasShop(mContext)) {
+                    UserSessionInterface userSession = new UserSession(mContext);
+                    if (userSession.hasShop()) {
                         buildNotifByData(data);
                     }
                     break;
@@ -122,8 +129,9 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
     }
 
     public void handleDedicatedNotification(Bundle data) {
-        if (SessionHandler.isV4Login(mContext)
-                && SessionHandler.getLoginID(mContext).equals(data.getString("to_user_id"))) {
+        UserSessionInterface userSession = new UserSession(mContext);
+        if (userSession.isLoggedIn()
+                && userSession.getUserId().equals(data.getString("to_user_id"))) {
 
             resetNotificationStatus(data);
             Timber.d("resetNotificationStatus");

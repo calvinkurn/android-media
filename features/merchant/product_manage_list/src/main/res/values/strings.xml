@@ -9,7 +9,6 @@
     <string name="pml_sticker_shop_link">https://tokopedia.com/%s</string>
     <string name="pml_label_subscribe">Berlangganan</string>
 
-
     <string name="sort_position">Posisi</string>
     <string name="sort_last">Pembaruan Terakhir</string>
     <string name="sort_new_product">Produk Baru</string>
@@ -54,6 +53,7 @@
     <string name="product_manage_filter_free_returns">Free Returns</string>
     <string name="product_manage_filter_preorder">Preorder</string>
     <string name="product_manage_filter_all_showcase">Semua Etalase</string>
+    <string name="product_manage_filter_product_sold">Produk Terjual</string>
     <string name="product_manage_stock_empty">Kosong</string>
     <string name="product_manage_stock_nonactive">Nonaktif</string>
     <string name="product_manage_label_change_search">Ubah pencarian produk Anda</string>
@@ -75,6 +75,7 @@
     <string name="product_manage_failed_set_featured_product">Oops, ada gangguan yang perlu kami bereskan.</string>
     <string name="product_manage_failed_no_internet">Wah, internet putus. Cek paket data atau WiFi-mu, ya.</string>
     <string name="product_manage_refresh">Refresh</string>
+    <string name="product_manage_dialog_delete_product">Apakah Anda ingin menghapus produk ini?</string>
 
     <string name="product_bs_etalase_title">Etalase produk</string>
     <string name="product_bs_stock_title">Status produk</string>
@@ -103,5 +104,185 @@
 
     <string name="product_manage_title_edit">Ubah</string>
     <string name="product_manage_title_share">Bagikan</string>
+    <string name="filter_see_all">Lihat semua</string>
+    <string name="filter_button">Tampilkan Produk</string>
+    <string name="filter_search_bar">Cari Kategori</string>
+    <string name="filter_expand_activity">Expand</string>
+    <string name="filter_expand_save_button">Simpan</string>
+    <string name="filter_expand_reset">Reset</string>
+    <string name="filter_expand_category_not_found">Oops, kategori yang kamu cari tidak ditemukan.</string>
+    <string name="product_manage_filter_sort_select_title">Urutkan</string>
+    <string name="product_manage_filter_etalase_select_title">Etalase</string>
+    <string name="product_manage_filter_all_categories_title">Semua Kategori</string>
+    <string name="product_manage_filter_other_filters_title">Filter Lainnya</string>
 
+    <string name="product_manage_menu_edit_price">Ubah Harga</string>
+    <string name="product_manage_menu_edit_stock">Ubah Stok</string>
+    <string name="product_manage_stock_format">Stok:</string>
+    <string name="product_manage_contact_cs">Bantuan</string>
+    <string name="product_manage_active">Aktif</string>
+    <string name="product_manage_variant">Varian</string>
+    <string name="product_manage_banned">Pelanggaran</string>
+    <string name="product_manage_draft">Draf</string>
+    <string name="product_manage_inactive">Nonaktif</string>
+    <string name="product_manage_campaign">Campaign</string>
+    <string name="product_manage_count_format">%d Produk</string>
+    <string name="product_manage_multiple_select">Pilih Sekaligus</string>
+    <string name="product_manage_filter">Filter</string>
+    <string name="product_manage_filter_active">Aktif (%d)</string>
+    <string name="product_manage_filter_variant">Varian (%d)</string>
+    <string name="product_manage_filter_banned">Pelanggaran (%d)</string>
+    <string name="product_manage_filter_featured">Produk Unggulan (%d)</string>
+    <string name="product_manage_filter_draft">Draf (%d)</string>
+    <string name="product_manage_filter_inactive">Nonaktif (%d)</string>
+    <string name="product_manage_bottom_sheet_title">Atur</string>
+    <string name="product_manage_preview_menu">Lihat Preview Produk</string>
+    <string name="product_manage_duplicate_product_menu">Duplikat Produk</string>
+    <string name="product_manage_stock_reminder_menu">Pengingat Stok</string>
+    <string name="product_manage_set_featured_menu">Jadikan Produk Unggulan</string>
+    <string name="product_manage_remove_featured_menu">Hapus dari Produk Unggulan</string>
+    <string name="product_manage_set_promo_ads_menu">TopAds</string>
+
+    <string name="product_stock_reminder_toaster_success_desc">Pengingat stok \"%1$s\" berhasil dipasang.</string>
+    <string name="product_stock_reminder_toaster_success_remove_desc">Pengingat stok \"%1$s\" berhasil dinonaktifkan.</string>
+    <string name="product_stock_reminder_toaster_failed_desc">Oops, permintaan kamu tidak dapat diproses.</string>
+    <string name="product_stock_reminder_toaster_action_text">Coba Lagi</string>
+    <string name="product_stock_reminder_loading_content_desc">Loading Stock Reminder</string>
+    <string name="product_stock_reminder_header_title">Pasang Pengingat Stok</string>
+    <string name="product_stock_reminder_typography_title">Pengingat Stok</string>
+    <string name="product_stock_reminder_typography_desc">Pengingat akan aktif jika stok produk kurang dari"</string>
+    <string name="product_stock_reminder_button">Simpan</string>
+    <string name="product_manage_search_hint">Cari produk atau SKU</string>
+    <string name="product_manage_cancel_multiple_select">Batalkan</string>
+    <string name="product_manage_edit_etalase">Pindah Etalase</string>
+    <string name="product_manage_edit_product_non_active">Nonaktifkan Produk</string>
+
+    <string name="product_featured_add_dialog_title">Tambah Produk Unggulan</string>
+    <string name="product_featured_add_dialog_desc">Produk Unggulan tampil di posisi teratas tokomu untuk lebih menarik perhatian pembeli.</string>
+    <string name="product_featured_add_dialog_primary_cta">Simpan</string>
+    <string name="product_featured_add_dialog_secondary_cta">Batalkan</string>
+
+    <string name="product_featured_special_dialog_title">Produk Unggulan khusus Power Merchant</string>
+    <string name="product_featured_special_dialog_desc">Produk Unggulan akan ditampilkan di posisi teratas etalase tokomu.</string>
+    <string name="product_featured_special_dialog_primary_cta">Pelajari Selengkapnya</string>
+    <string name="product_featured_special_dialog_secondary_cta">Batalkan</string>
+
+    <string name="product_featured_max_dialog_title">Maksimum Produk Unggulan Aktif (5/5)</string>
+    <string name="product_featured_max_dialog_desc">Hapus salah satu Produk Unggulan sebelum menambahkan produk yang ingin ditampilkan di tokomu.</string>
+    <string name="product_featured_max_dialog_primary_cta">Mengerti</string>
+    <string name="product_featured_max_dialog_secondary_cta">Lihat Produk Unggulan</string>
+
+    <string name="product_manage_quick_edit_currency">Rp</string>
+    <string name="product_manage_quick_edit_min_price_error">Min. Rp 100</string>
+    <string name="product_manage_quick_edit_max_price_error">Maks. Rp100.000.000</string>
+    <string name="product_manage_quick_edit_price_success">Harga produk \"%1$s\" berhasil diubah.</string>
+
+    <string name="product_manage_quick_edit_stock_title">Atur Stok</string>
+    <string name="product_manage_quick_edit_stock_active_product">Produk Aktif</string>
+    <string name="product_manage_quick_edit_stock_total_stock">Jumlah Stok</string>
+    <string name="product_manage_quick_edit_stock_success">Ketersediaan produk \"%1$s\" berhasil diubah.</string>
+
+    <string name="product_manage_delete_product_title">Hapus Produk?</string>
+    <string name="product_manage_delete_product_description">Penghapusan produk tidak dapat dibatalkan.</string>
+    <string name="product_manage_delete_product_delete_button">Ya, Hapus</string>
+    <string name="product_manage_delete_product_cancel_button">Batalkan</string>
+    <string name="product_manage_delete_product_success">\"%1$s\" berhasil dihapus</string>
+    <string name="product_manage_delete_product_fail">Produk gagal dihapus.\nSilakan coba lagi, ya!</string>
+
+    <string name="product_manage_snack_bar_retry">Coba lagi</string>
+    <string name="product_manage_snack_bar_fail">Oops, permintaan kamu tidak dapat diproses.</string>
+    <string name="product_manage_button_multi_edit">Atur Sekaligus</string>
+    <string name="product_manage_dialog_delete_products_title">Hapus %d Produk?</string>
+    <string name="product_manage_dialog_edit_products_inactive_title">Nonaktifkan %d Produk?</string>
+    <string name="product_manage_edit_products_inactive_button">Ya, Nonaktifkan</string>
+    <string name="product_manage_edit_products_inactive_success">%d produk berhasil dinonaktifkan.</string>
+    <string name="product_manage_delete_products_success">%d produk berhasil dihapus.</string>
+    <string name="product_manage_delete_products_retry">%1$d produk berhasil dihapus, %2$d gagal dihapus.</string>
+    <string name="product_manage_edit_products_inactive_retry">%1$d produk berhasil dinonaktifkan, %2$d gagal dinonaktifkan.</string>
+    <string name="product_manage_edit_products_retry">%1$d produk berhasil diubah, %2$d gagal diubah.</string>
+    <string name="product_manage_edit_products_success">%1$d produk berhasil diubah.</string>
+    <string name="product_manage_edit_products_inactive_description">Produk yang dinonaktifkan tidak dapat dilihat calon pembeli.</string>
+
+    <string name="product_manage_set_cashback">Cashback</string>
+    <string name="product_manage_set_cashback_success">Pengaturan Cashback untuk \"%1$s\" berhasil.</string>
+    <string name="product_manage_set_cashback_header_title">Atur Cashback</string>
+    <string name="product_manage_set_cashback_ticker_title">Info Cashback</string>
+    <string name="product_manage_set_cashback_ticker_info">Cashback akan otomatis dikurangi dari harga produkmu.</string>
+    <string name="product_manage_set_cashback_no_cashback">Tidak ada cashback</string>
+    <string name="product_manage_set_cashback_three_percent">3%% cashback %1$s </string>
+    <string name="product_manage_set_cashback_four_percent">4%% cashback %1$s </string>
+    <string name="product_manage_set_cashback_five_percent">5%% cashback %1$s </string>
+    <string name="product_manage_set_cashback_dialog_title">Promo cashback maksimum 5 produk</string>
+    <string name="product_manage_set_cashback_dialog_desc">Maksimalkan penjualanmu dengan upgrade jadi Power Merchant agar lebih bebas menggunakan promo cashback.</string>
+    <string name="product_manage_set_cashback_dialog_upgrade_button">Upgrade Tokomu</string>
+    <string name="product_manage_set_cashback_dialog_see_cashback_products_button">Lihat Produk Cashback</string>
+    <string name="product_manage_etalase_picker_title">Pindah Etalase</string>
+    <string name="product_manage_edit_products_etalase_retry">%1$d produk berhasil dipindahkan, %2$d gagal dipindahkan.</string>
+    <string name="product_manage_edit_products_etalase_success">%1$d produk berhasil dipindahkan.</string>
+    <string name="product_manage_save">Simpan</string>
+    <string name="product_manage_etalase_picker_empty_title">Etalase belum tersedia</string>
+    <string name="product_manage_etalase_picker_empty_description">Masukkan produk sesuai kategori ke dalam etalase agar mudah dicari calon pembeli</string>
+    <string name="product_manage_add_etalase">Tambah Etalase</string>
+    <string name="product_manage_etalase_search_hint">Cari nama etalase</string>
+    <string name="product_manage_stock_info_description">Produk ini tidak bisa dilihat calon pembeli karena stok 0.</string>
+    <string name="product_manage_stock_information">Informasi Stok</string>
+
+    <string name="add_product_text_description">Tambah Produk</string>
+    <string name="import_from_instagram_to_draft">Impor Instagram ke Draft</string>
+
+    <string name="title_picture_product">Gambar Produk</string>
+    <string name="product_label_variant">Varian</string>
+    <string name="product_label_wholesale">Harga Grosir</string>
+    <string name="product_label_po">PO</string>
+    <string name="product_manage_label_supervision">Pengawasan</string>
+    <string name="product_manage_list_empty_search">Oops, produk yang kamu cari tidak ditemukan.</string>
+    <string name="product_manage_list_empty_product">Kata orang, jutaan mimpi berawal dari satu langkah kecil. Tambah produk pertamamu.</string>
+
+    <string name="product_manage_close">>Tutup</string>
+    <string name="product_manage_error_description">Oops, ada gangguan yang perlu kami bereskan.</string>
+    <string name="product_manage_more_menu">Lainnya</string>
+    <string name="product_manage_shop_showcase_more_menu_text">Etalase Toko</string>
+    <string name="power_merchant_variant_stock_description">Varian ini tidak bisa dilihat calon pembeli karena stok 0.</string>
+    <string name="power_merchant_stock_warning_ticker_description">Produk ini tidak bisa dilihat calon pembeli karena stok 0.</string>
+
+    <string name="product_manage_campaign_stock_total_stock">Total Stok: &#160;</string>
+    <string name="product_manage_campaign_stock_allocation">Alokasi Stok</string>
+    <string name="product_manage_campaign_stock_save">Simpan</string>
+    <string name="product_manage_campaign_stock_active_product">Produk Aktif</string>
+    <string name="product_manage_campaign_stock_stock_amount">Jumlah Stok</string>
+    <string name="product_manage_campaign_stock_main_stock">Stok Utama (%s)</string>
+    <string name="product_manage_campaign_stock_campaign_stock">Stok Campaign (%s)</string>
+    <string name="product_manage_campaign_stock_event_action">Lihat varian produk</string>
+    <string name="product_manage_campaign_stock_variant_zero_desc">Varian produk yang memiliki jumlah stok 0 tidak akan ditampilkan di tokomu.</string>
+    <string name="product_manage_campaign_stock_open_campaign">Buka halaman Campaign lewat laptop atau komputer untuk ubah detail stok campaign.</string>
+    <string name="product_manage_campaign_stock_success_toast">Jumlah stok \"%1$s\" berhasil diubah.</string>
+    <string name="product_manage_campaign_stock_error_toast">Oops, permintaan kamu tidak dapat diproses,\nSilakan coba lagi, ya!</string>
+    <string name="product_manage_campaign_stock_redirection_title">Pantau pergerakan stok campaign \ndi manapun, kapanpun</string>
+    <string name="product_manage_campaign_stock_redirection_desc">Gunakan aplikasi Tokopedia Seller untuk lihat alokasi stok produk untuk campaign di tokomu.</string>
+
+    <string name="product_manage_max_count">%s+</string>
+
+    <string name="popup_tips_trick_clickable">baru di sini.</string>
+    <string name="popup_label_static">Produk pertamamu siap</string>
+    <string name="popup_label_tips_trick">Masih bingung? Cek tip &amp; trik penjual</string>
+
+    <string name="title_activity_manage_product">Daftar Produk</string>
+    <string name="title_currency_rp">Rp</string>
+    <string name="title_save">Simpan</string>
+    <string name="title_cancel">Batal</string>
+    <string name="title_etalase">Etalase</string>
+    <string name="title_category">Kategori</string>
+    <string name="title_condition">Kondisi</string>
+    <string name="title_catalog">Katalog</string>
+    <string name="title_edit">Ubah</string>
+    <string name="title_share">Bagikan</string>
+    <string name="title_add_product">TAMBAH PRODUK</string>
+
+    <string name="product_option">Lihat Produk</string>
+    <string name="product_label_product_price">Harga Produk</string>
+
+    <string name="action_reset">Reset</string>
+    <string name="label_delete">Delete</string>
+
+    <string name="courier_option">Atur Layanan Kurir</string>
 </resources>

@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">RemoteResourceRequest</string>
+    <string name="rem_res_req_exception_file_name_not_found">No fileName passed in DeferredImageView! Please use DeferredImageView(context, filename) or DeferredImageView(context, filename, dpiSupportType) constructor with correct remote file name!!</string>
+    <string name="rem_res_req_msg_unable_to_read_file">File could not be read. Please provide correct csv file with FILE_NAME, FILE_TYPE, FILE_VERSION, IS_FILE_USED_ANYWHERE columns entries!</string>
+    <string name="rem_res_req_worker_completed_message" formatted="false">%s successfully completed with taskcount = %s</string>
+    <string name="rem_res_req_worker_retry_message">%s RETRY NEXT TIME</string>
+    <string name="rem_res_req_worker_scheduled_message">%s Worker Scheduled</string>
+    <string name="rem_res_req_worker_schedule_not_required_message">%s Worker scheduling not required</string>
+</resources>

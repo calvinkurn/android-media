@@ -8,7 +8,7 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import com.google.gson.JsonSyntaxException
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
@@ -134,6 +134,8 @@ class ChatbotPresenter @Inject constructor(
                 if (GlobalConfig.isAllowDebuggingTools()) {
                     Log.d("RxWebSocket Presenter", " on WebSocket open")
                 }
+                view.showErrorWebSocket(false)
+
             }
 
             override fun onMessage(text: String) {
@@ -145,10 +147,10 @@ class ChatbotPresenter @Inject constructor(
             override fun onMessage(webSocketResponse: WebSocketResponse) {
                 try {
                     if (GlobalConfig.isAllowDebuggingTools()) {
-                        Log.d("RxWebSocket Presenter", webSocketResponse.getData().toString())
+                        Log.d("RxWebSocket Presenter", webSocketResponse.jsonObject.toString())
                     }
 
-                    val pojo: ChatSocketPojo = Gson().fromJson(webSocketResponse.getData(), ChatSocketPojo::class.java)
+                    val pojo: ChatSocketPojo = Gson().fromJson(webSocketResponse.jsonObject, ChatSocketPojo::class.java)
                     if (pojo.msgId.toString() != messageId) return
                     chatResponse = pojo
                     mappingEvent(webSocketResponse, messageId)
@@ -156,7 +158,7 @@ class ChatbotPresenter @Inject constructor(
                     val attachmentType = chatResponse.attachment?.type
 
                     if (attachmentType == OPEN_CSAT) {
-                        val csatResponse: WebSocketCsatResponse =Gson().fromJson(webSocketResponse.getData(),
+                        val csatResponse: WebSocketCsatResponse =Gson().fromJson(webSocketResponse.jsonObject,
                                 WebSocketCsatResponse::class.java)
                         view.openCsat(csatResponse)
                     }
@@ -190,6 +192,8 @@ class ChatbotPresenter @Inject constructor(
                 networkMode = MODE_WEBSOCKET
                 if (GlobalConfig.isAllowDebuggingTools()) {
                     Log.d("RxWebSocket Presenter", "onReconnect")
+                    view.showErrorWebSocket(true)
+
                 }
             }
 
@@ -200,6 +204,8 @@ class ChatbotPresenter @Inject constructor(
                     Log.d("RxWebSocket Presenter", "onClose")
                 }
                 destroyWebSocket()
+                view.showErrorWebSocket(true)
+                connectWebSocket(messageId)
 
             }
 
@@ -338,10 +344,10 @@ class ChatbotPresenter @Inject constructor(
     }
 
     override fun mappingEvent(webSocketResponse: WebSocketResponse, messageId: String) {
-        val pojo: ChatSocketPojo = Gson().fromJson(webSocketResponse.getData(), ChatSocketPojo::class.java)
+        val pojo: ChatSocketPojo = Gson().fromJson(webSocketResponse.jsonObject, ChatSocketPojo::class.java)
         if (pojo.msgId.toString() != messageId) return
 
-        when (webSocketResponse.getCode()) {
+        when (webSocketResponse.code) {
             EVENT_TOPCHAT_TYPING -> view.onReceiveStartTypingEvent()
             EVENT_TOPCHAT_END_TYPING -> view.onReceiveStopTypingEvent()
             EVENT_TOPCHAT_READ_MESSAGE -> view.onReceiveReadEvent()

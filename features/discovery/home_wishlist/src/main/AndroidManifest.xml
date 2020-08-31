@@ -1,9 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.tokopedia.home_wishlist">
+          package="com.tokopedia.home_wishlist"
+            android:versionCode="1"
+            android:versionName="1.0.0">
     <application>
         <activity
             android:name=".WishlistActivity"
-            android:label="@string/wishlist"
+            android:label="@string/title_home_wishlist_module_name"
             android:launchMode="singleTask"
             android:screenOrientation="portrait">
             <intent-filter android:autoVerify="true">

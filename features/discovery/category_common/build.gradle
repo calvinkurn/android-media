@@ -26,9 +26,19 @@ dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
-    implementation project(rootProject.ext.libraries.coreNetwork)
 
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
+    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation project(rootProject.ext.libraries.graphql)
+
+    implementation rootProject.ext.debugToolsDependencies.chuck
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
@@ -37,13 +47,13 @@ dependencies {
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
-    androidTestApi rootProject.ext.dbDependencies.dbRoomTesting
+    androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting
 }
 
 project.ext {
     artifactId = 'common'
     groupId = 'com.tokopedia.category'
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName = "category_common-release"
 }
 

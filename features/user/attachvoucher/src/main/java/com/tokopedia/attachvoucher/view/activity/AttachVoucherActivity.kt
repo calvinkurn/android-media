@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.attachvoucher.R
 import com.tokopedia.attachvoucher.di.AttachVoucherComponent
 import com.tokopedia.attachvoucher.di.DaggerAttachVoucherComponent
@@ -16,7 +17,7 @@ import com.tokopedia.attachvoucher.view.fragment.AttachVoucherFragment
 class AttachVoucherActivity : BaseSimpleActivity(), HasComponent<AttachVoucherComponent> {
 
     override fun getNewFragment(): Fragment? {
-        return AttachVoucherFragment.createInstance(intent.extras)
+        return AttachVoucherFragment.createInstance()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

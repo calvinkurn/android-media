@@ -3,7 +3,6 @@ package com.tokopedia.gm.common.di.component;
 import android.content.Context;
 
 import com.google.gson.Gson;
-import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
@@ -19,11 +18,9 @@ import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
 import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.datepicker.range.view.presenter.DatePickerPresenter;
 import com.tokopedia.gm.common.di.module.GMModule;
 import com.tokopedia.gm.common.di.scope.GMScope;
-import com.tokopedia.gm.featured.domain.interactor.GMFeaturedProductGetListUseCase;
 import com.tokopedia.gm.statistic.view.fragment.BaseDatePickerFragment;
 
 import dagger.Component;
@@ -81,11 +78,5 @@ public interface GMComponent {
 
     PostExecutionThread postExecutionThread();
 
-    SessionHandler sessionHandler();
-
     GCMHandler gcmHandler();
-
-    ImageHandler imageHandler();
-
-    GMFeaturedProductGetListUseCase getFeaturedProductGetListUseCase();
 }

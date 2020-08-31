@@ -154,11 +154,11 @@ class BannerViewDynamicBackground @JvmOverloads constructor(context: Context, at
     }
 
     override fun getIndicator(): Int {
-        return R.drawable.banner_dynamic_indicator
+        return R.drawable.ic_banner_dynamic_indicator
     }
 
     override fun getIndicatorFocus(): Int {
-        return R.drawable.banner_dynamic_indicator_focus
+        return R.drawable.ic_banner_dynamic_indicator_focus
     }
 
     fun shouldShowSeeAllButton(show: Boolean) {

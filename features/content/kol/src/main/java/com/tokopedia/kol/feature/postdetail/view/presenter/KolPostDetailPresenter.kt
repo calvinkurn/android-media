@@ -1,7 +1,7 @@
 package com.tokopedia.kol.feature.postdetail.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.affiliatecommon.domain.DeletePostUseCase
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
@@ -238,7 +238,7 @@ class KolPostDetailPresenter @Inject constructor(
         val isShopEmpty = postTagItem.shop.isEmpty()
         if (!isShopEmpty) {
             atcUseCase.execute(
-                    AddToCartUseCase.getMinimumParams(postTagItem.id, postTagItem.shop[0].shopId),
+                    AddToCartUseCase.getMinimumParams(postTagItem.id, postTagItem.shop[0].shopId, productName = postTagItem.text, price = postTagItem.price),
                     object : Subscriber<AddToCartDataModel>() {
                         override fun onCompleted() {
 

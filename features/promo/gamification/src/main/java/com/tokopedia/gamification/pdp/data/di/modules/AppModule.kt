@@ -12,6 +12,5 @@ class AppModule(val applicationContext: Context) {
 
     @Provides
     @GamificationPdpScope
-    @ApplicationContext
     fun provideContext() = applicationContext
 }

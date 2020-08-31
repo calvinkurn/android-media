@@ -44,8 +44,8 @@ class MoneyInScheduledTimeBottomSheet : BottomSheets() {
     override fun getLayoutResourceId(): Int = R.layout.money_in_bottom_sheet_scheduled_time
 
     override fun initView(view: View?) {
-        if (arguments != null) {
-            scheduleDate = arguments!!.getParcelableArrayList(KEY_SCHEDULE_DATA)
+        if (arguments != null && arguments?.getParcelableArrayList<ScheduleDate>(KEY_SCHEDULE_DATA) != null) {
+            scheduleDate = arguments!!.getParcelableArrayList(KEY_SCHEDULE_DATA)!!
         }
         dateAdapter.date.clear()
         for (date in scheduleDate) {
@@ -60,6 +60,7 @@ class MoneyInScheduledTimeBottomSheet : BottomSheets() {
             setMinValue(dateAdapter.getMinIndex())
             setWrapSelectorWheel(false)
             setWheelItemCount(3)
+            setTextSize(30)
         }
 
         timeSpinner?.setAdapter(timeAdapter)
@@ -107,6 +108,7 @@ class MoneyInScheduledTimeBottomSheet : BottomSheets() {
         timeSpinner?.setMinValue(timeAdapter.getMinIndex())
         timeSpinner?.setWrapSelectorWheel(false)
         timeSpinner?.setWheelItemCount(3)
+        timeSpinner?.setTextSize(30)
         timeAdapter.notifyDataSetChanged()
     }
 

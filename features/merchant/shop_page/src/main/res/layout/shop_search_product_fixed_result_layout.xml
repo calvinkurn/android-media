@@ -19,6 +19,7 @@
         app:layout_constraintRight_toLeftOf="@id/imageView2"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_2"
+        app:typographyWeight="reguler"
         tools:text="Search query" />
 
 
@@ -36,6 +37,7 @@
         app:layout_constraintRight_toLeftOf="@id/imageView2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_search_query"
+        app:typographyWeight="bold"
         app:typographyType="body_3"
         tools:text="Search type label" />
 

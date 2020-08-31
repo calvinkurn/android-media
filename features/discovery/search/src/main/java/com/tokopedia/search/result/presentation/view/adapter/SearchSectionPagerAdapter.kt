@@ -1,15 +1,13 @@
 package com.tokopedia.search.result.presentation.view.adapter
 
+import android.view.ViewGroup
+import androidx.collection.SparseArrayCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
-import androidx.collection.SparseArrayCompat
-import android.view.ViewGroup
-import com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition.*
+import com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition.TAB_FIRST_POSITION
 import com.tokopedia.discovery.common.model.SearchParameter
-import com.tokopedia.search.result.presentation.view.fragment.CatalogListFragment
 import com.tokopedia.search.result.presentation.view.fragment.ProductListFragment
-import com.tokopedia.search.result.presentation.view.fragment.ProfileListFragment
 import com.tokopedia.search.result.shop.presentation.fragment.ShopListFragment
 
 internal class SearchSectionPagerAdapter(
@@ -19,8 +17,6 @@ internal class SearchSectionPagerAdapter(
 
     private var productListFragment: ProductListFragment? = null
     private var shopListFragment: ShopListFragment? = null
-    private var profileListFragment: ProfileListFragment? = null
-    private var catalogListFragment: CatalogListFragment? = null
     private val titleList = mutableListOf<String>()
     private val registeredFragments = SparseArrayCompat<Fragment>()
 
@@ -36,14 +32,8 @@ internal class SearchSectionPagerAdapter(
             TAB_FIRST_POSITION -> {
                 createProductFragment()
             }
-            TAB_SECOND_POSITION -> {
-                createShopFragment()
-            }
-            TAB_THIRD_POSITION -> {
-                createProfileFragment()
-            }
             else -> {
-                createCatalogFragment()
+                createShopFragment()
             }
         }
     }
@@ -54,14 +44,6 @@ internal class SearchSectionPagerAdapter(
 
     private fun createShopFragment(): ShopListFragment {
         return ShopListFragment.newInstance()
-    }
-
-    private fun createProfileFragment(): ProfileListFragment {
-        return ProfileListFragment.newInstance(searchParameter)
-    }
-
-    private fun createCatalogFragment(): CatalogListFragment {
-        return CatalogListFragment.newInstance(searchParameter)
     }
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
@@ -77,8 +59,6 @@ internal class SearchSectionPagerAdapter(
         when (fragment) {
             is ProductListFragment -> productListFragment = fragment
             is ShopListFragment -> shopListFragment = fragment
-            is ProfileListFragment -> profileListFragment = fragment
-            is CatalogListFragment -> catalogListFragment = fragment
         }
     }
 
@@ -108,10 +88,6 @@ internal class SearchSectionPagerAdapter(
     fun getProductListFragment(): ProductListFragment? = productListFragment
 
     fun getShopListFragment(): ShopListFragment? = shopListFragment
-
-    fun getProfileListFragment(): ProfileListFragment? = profileListFragment
-
-    fun getCatalogListFragment(): CatalogListFragment? = catalogListFragment
 
     fun getRegisteredFragmentAtPosition(position: Int): Fragment? {
         return registeredFragments.get(position)

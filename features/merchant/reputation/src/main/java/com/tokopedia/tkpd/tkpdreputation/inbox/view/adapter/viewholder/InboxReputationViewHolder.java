@@ -1,23 +1,24 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.viewholder;
 
+import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
-import androidx.annotation.LayoutRes;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
+import androidx.annotation.LayoutRes;
+
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.util.TimeConverter;
-import com.tokopedia.design.reputation.ShopReputationView;
-import com.tokopedia.design.reputation.UserReputationView;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.tkpd.tkpdreputation.R;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.customview.ShopReputationView;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.customview.UserReputationView;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputation;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationItemViewModel;
+import com.tokopedia.tkpd.tkpdreputation.utils.TimeConverter;
 
 /**
  * @author by nisie on 8/19/17.
@@ -27,7 +28,7 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
 
     @LayoutRes
     public static final int LAYOUT = R.layout.inbox_reputation_item;
-    private final InboxReputation.View viewListener;
+    private final com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputation.View viewListener;
 
     private View mainView;
     private TextView textDeadline;
@@ -40,8 +41,9 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
     private TextView date;
     private TextView action;
     private ImageView unreadNotification;
+    private Context context;
 
-    public InboxReputationViewHolder(View itemView, InboxReputation.View viewListener) {
+    public InboxReputationViewHolder(Context context, View itemView, InboxReputation.View viewListener) {
         super(itemView);
         mainView = itemView.findViewById(R.id.main_view);
         textDeadline = itemView.findViewById(R.id.deadline_text);
@@ -55,6 +57,7 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
         action = itemView.findViewById(R.id.action);
         unreadNotification = itemView.findViewById(R.id.unread_notif);
         this.viewListener = viewListener;
+        this.context = context;
 
 
     }
@@ -74,6 +77,24 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
         mainView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                viewListener.clickFromWhitespace(true);
+                viewListener.onGoToDetail(
+                        element.getReputationId(),
+                        element.getInvoice(),
+                        element.getCreateTime(),
+                        element.getRevieweeName(),
+                        element.getRevieweePicture(),
+                        element.getReputationDataViewModel(),
+                        getTextDeadline(element),
+                        getAdapterPosition(),
+                        element.getRole());
+            }
+        });
+
+        action.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                viewListener.clickFromWhitespace(false);
                 viewListener.onGoToDetail(
                         element.getReputationId(),
                         element.getInvoice(),
@@ -139,35 +160,34 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
     }
 
     private String getTextDeadline(InboxReputationItemViewModel element) {
-        return MainApplication.getAppContext().getString(R.string.deadline_prefix)
+        return context.getString(R.string.deadline_prefix)
                 + " " + element.getReputationDaysLeft() + " " +
-                MainApplication.getAppContext().getString(R.string.deadline_suffix);
+                context.getString(R.string.deadline_suffix);
     }
 
     private void setIconDeadline(TextView deadline, String reputationDaysLeft) {
-        deadline.setText(reputationDaysLeft + " " + MainApplication.getAppContext().getString(R.string.deadline_suffix));
+        deadline.setText(reputationDaysLeft + " " + context.getString(R.string.deadline_suffix));
 
-        Drawable background = MethodChecker.getDrawable(MainApplication
-                .getAppContext(), R.drawable.custom_label);
+        Drawable background = MethodChecker.getDrawable(context, R.drawable.custom_label);
 
         switch (reputationDaysLeft) {
             case "1":
                 background.setColorFilter(new
-                        PorterDuffColorFilter(MethodChecker.getColor(MainApplication.getAppContext(), R
+                        PorterDuffColorFilter(MethodChecker.getColor(context, R
                         .color.red_500),
                         PorterDuff.Mode
                                 .MULTIPLY));
                 break;
             case "2":
                 background.setColorFilter(new
-                        PorterDuffColorFilter(MethodChecker.getColor(MainApplication.getAppContext(), R
+                        PorterDuffColorFilter(MethodChecker.getColor(context, R
                         .color.orange_300),
                         PorterDuff.Mode
                                 .MULTIPLY));
                 break;
             default:
                 background.setColorFilter(new
-                        PorterDuffColorFilter(MethodChecker.getColor(MainApplication.getAppContext(), R
+                        PorterDuffColorFilter(MethodChecker.getColor(context, R
                         .color.light_blue_300),
                         PorterDuff.Mode
                                 .MULTIPLY));

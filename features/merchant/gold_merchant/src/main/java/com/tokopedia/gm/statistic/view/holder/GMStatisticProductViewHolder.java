@@ -6,12 +6,12 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.design.card.TitleCardView;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.gm.statistic.view.widget.card.TitleCardView;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.gm.R;
 import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetPopularProduct;
@@ -58,7 +58,7 @@ public class GMStatisticProductViewHolder implements GMStatisticViewHolder {
             return;
         }
         this.getPopularProduct = getPopularProduct;
-        new ImageHandler(popularProductCardView.getContext()).loadImage(ivPopularProduct, getPopularProduct.getImageLink());
+        ImageHandler.LoadImage(ivPopularProduct, getPopularProduct.getImageLink());
         tvPopularProductDescription.setText(MethodChecker.fromHtml(getPopularProduct.getProductName()));
         long sold = getPopularProduct.getSold();
         String text = KMNumbers.getSummaryString(sold);

@@ -43,5 +43,6 @@ internal val live = Url(
         LAKU6 = "https://www.laku6.com",
         SELLER = "https://seller.tokopedia.com/",
         PLAY = "https://chat.tokopedia.com",
-        WS_PLAY = "wss://groupchat.tokopedia.com"
+        WS_PLAY = "wss://groupchat.tokopedia.com",
+        HUB = "https://hub.tokopedia.com/"
 )

@@ -2,19 +2,25 @@ package com.tokopedia.promocheckout.common.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
-import com.tokopedia.promocheckout.common.domain.*
+import com.tokopedia.promocheckout.common.domain.CancelPromoUseCase
+import com.tokopedia.promocheckout.common.domain.CheckPromoCodeUseCase
+import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeFinalUseCase
+import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.digital.DigitalCheckVoucherUseCase
 import com.tokopedia.promocheckout.common.domain.flight.FlightCancelVoucherUseCase
 import com.tokopedia.promocheckout.common.domain.flight.FlightCheckVoucherUseCase
+import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
+import com.tokopedia.promocheckout.common.domain.umroh.UmrahCheckPromoUseCase
 import com.tokopedia.user.session.UserSession
 import dagger.Module
 import dagger.Provides
 import okhttp3.Interceptor
 import okhttp3.logging.HttpLoggingInterceptor
+
 
 @Module
 class PromoCheckoutModule {
@@ -33,8 +39,9 @@ class PromoCheckoutModule {
 
     @PromoCheckoutQualifier
     @Provides
-    fun provideCheckPromoStackingCodeUseCase(@ApplicationContext context: Context): CheckPromoStackingCodeUseCase {
-        return CheckPromoStackingCodeUseCase(context.resources)
+    fun provideCheckPromoStackingCodeUseCase(@ApplicationContext context: Context,
+                                             mapper: CheckPromoStackingCodeMapper): CheckPromoStackingCodeUseCase {
+        return CheckPromoStackingCodeUseCase(context.resources, mapper)
     }
 
     @PromoCheckoutQualifier
@@ -63,6 +70,12 @@ class PromoCheckoutModule {
 
     @PromoCheckoutQualifier
     @Provides
+    fun provideUmrahCheckPromoUseCase(@ApplicationContext context: Context): UmrahCheckPromoUseCase {
+        return UmrahCheckPromoUseCase(context, GraphqlUseCase())
+    }
+
+    @PromoCheckoutQualifier
+    @Provides
     fun provideTkpdAuthInterceptor(@ApplicationContext context: Context, @PromoCheckoutQualifier networkRouter: NetworkRouter,
                                    @PromoCheckoutQualifier userSession: UserSession) : ArrayList<Interceptor>{
         val  listInterceptor =  ArrayList<Interceptor>()
@@ -79,11 +92,9 @@ class PromoCheckoutModule {
         return (context as NetworkRouter)
     }
 
-    @PromoCheckoutQualifier
     @Provides
     fun provideUserSession(@ApplicationContext context: Context) : UserSession {
         val userSession = UserSession(context)
         return userSession
     }
-
 }

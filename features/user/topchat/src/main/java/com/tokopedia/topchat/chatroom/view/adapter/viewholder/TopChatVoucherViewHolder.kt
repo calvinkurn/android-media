@@ -5,26 +5,25 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.common.widget.MerchantVoucherView
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.listener.TopChatVoucherListener
-import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherViewModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
 
 /**
  * Created by Steven on 18/03/19.
  */
 class TopChatVoucherViewHolder(itemView: View, private var voucherListener: TopChatVoucherListener)
-    : BaseChatViewHolder<TopChatVoucherViewModel>(itemView), MerchantVoucherView.OnMerchantVoucherViewListener {
+    : BaseChatViewHolder<TopChatVoucherUiModel>(itemView), MerchantVoucherView.OnMerchantVoucherViewListener {
 
-    private var chatStatus: ImageView = itemView.findViewById(R.id.chat_status)
+    private var chatStatus: ImageView = itemView.findViewById(com.tokopedia.chat_common.R.id.chat_status)
     private var isOwner: Boolean = false
-    private lateinit var model: TopChatVoucherViewModel
+    private lateinit var model: TopChatVoucherUiModel
     private var merchantVoucherView: MerchantVoucherView? = itemView.findViewById(R.id.merchantVoucherView)
 
-    override fun bind(viewModel: TopChatVoucherViewModel) {
+    override fun bind(viewModel: TopChatVoucherUiModel) {
         super.bind(viewModel)
         model = viewModel
         val element = viewModel.voucherModel
@@ -35,13 +34,14 @@ class TopChatVoucherViewHolder(itemView: View, private var voucherListener: TopC
         setupChatBubbleAlignment(isOwner, viewModel)
 
         itemView.setOnClickListener {
+            data.isPublic = !viewModel.hasCtaCopy()
             voucherListener.onVoucherClicked(data)
         }
     }
 
-    private fun bindVoucherView(viewModel: TopChatVoucherViewModel, data: MerchantVoucherViewModel) {
+    private fun bindVoucherView(viewModel: TopChatVoucherUiModel, data: MerchantVoucherViewModel) {
         merchantVoucherView?.onMerchantVoucherViewListener = this
-        merchantVoucherView?.setData(data)
+        merchantVoucherView?.setData(data, false)
     }
 
     override fun alwaysShowTime(): Boolean {
@@ -52,7 +52,7 @@ class TopChatVoucherViewHolder(itemView: View, private var voucherListener: TopC
         return R.id.tvDate
     }
 
-    private fun setupChatBubbleAlignment(isSender: Boolean, element: TopChatVoucherViewModel) {
+    private fun setupChatBubbleAlignment(isSender: Boolean, element: TopChatVoucherUiModel) {
         if (isSender) {
             setChatRight(element)
             bindChatReadStatus(element)
@@ -66,7 +66,7 @@ class TopChatVoucherViewHolder(itemView: View, private var voucherListener: TopC
         chatStatus.visibility = View.GONE
     }
 
-    private fun setChatRight(element: TopChatVoucherViewModel) {
+    private fun setChatRight(element: TopChatVoucherUiModel) {
         itemView.findViewById<LinearLayout>(R.id.topchat_voucher_container).gravity = Gravity.END
         chatStatus.visibility = View.VISIBLE
         bindChatReadStatus(element)

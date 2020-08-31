@@ -9,8 +9,8 @@ import com.google.gson.annotations.SerializedName
 class FreeOngkirInformation (
         @SerializedName("is_active")
         @Expose
-        val isActive: Boolean,
+        val isActive: Boolean = false,
         @SerializedName("image_url")
         @Expose
-        val imageUrl: String
+        val imageUrl: String = ""
 )

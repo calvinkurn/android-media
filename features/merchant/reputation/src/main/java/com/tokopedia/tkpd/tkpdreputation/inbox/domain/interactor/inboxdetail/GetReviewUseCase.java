@@ -1,12 +1,10 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.tkpd.tkpdreputation.constant.Constant;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepository;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ReviewDomain;
-import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import rx.Observable;
 
@@ -24,10 +22,8 @@ public class GetReviewUseCase extends UseCase<ReviewDomain> {
 
     protected ReputationRepository reputationRepository;
 
-    public GetReviewUseCase(ThreadExecutor threadExecutor,
-                            PostExecutionThread postExecutionThread,
-                            ReputationRepository reputationRepository) {
-        super(threadExecutor, postExecutionThread);
+    public GetReviewUseCase(ReputationRepository reputationRepository) {
+        super();
         this.reputationRepository = reputationRepository;
     }
 
@@ -47,11 +43,11 @@ public class GetReviewUseCase extends UseCase<ReviewDomain> {
 
     protected static int getRole(int tab) {
         switch (tab) {
-            case InboxReputationActivity.TAB_WAITING_REVIEW:
+            case Constant.TAB_WAITING_REVIEW:
                 return ROLE_BUYER;
-            case InboxReputationActivity.TAB_MY_REVIEW:
+            case Constant.TAB_MY_REVIEW:
                 return ROLE_BUYER;
-            case InboxReputationActivity.TAB_BUYER_REVIEW:
+            case Constant.TAB_BUYER_REVIEW:
                 return ROLE_SELLER;
             default:
                 return ROLE_BUYER;

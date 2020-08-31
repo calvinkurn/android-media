@@ -31,6 +31,8 @@ public interface ShakeDetectContract {
 
         public void setSnackBarErrorMessage();
 
+        void goToGeneralSetting();
+
         }
 
     public interface Presenter extends CustomerPresenter<View>{

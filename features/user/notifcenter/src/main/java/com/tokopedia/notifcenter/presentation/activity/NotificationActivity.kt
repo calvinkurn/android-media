@@ -2,6 +2,7 @@ package com.tokopedia.notifcenter.presentation.activity
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.Menu
@@ -15,16 +16,17 @@ import com.tokopedia.abstraction.base.view.activity.BaseTabActivity
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.getParamInt
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics
-import com.tokopedia.notifcenter.data.entity.NotifCenterSendNotifData
 import com.tokopedia.notifcenter.data.entity.NotificationTabItem
 import com.tokopedia.notifcenter.data.entity.NotificationUpdateUnread
-import com.tokopedia.notifcenter.di.DaggerNotificationUpdateComponent
+import com.tokopedia.notifcenter.di.DaggerNotificationComponent
+import com.tokopedia.notifcenter.di.NotificationComponent
+import com.tokopedia.notifcenter.di.module.CommonModule
+import com.tokopedia.notifcenter.listener.NotificationUpdateListener
 import com.tokopedia.notifcenter.presentation.adapter.NotificationFragmentAdapter
 import com.tokopedia.notifcenter.presentation.contract.NotificationActivityContract
 import com.tokopedia.notifcenter.presentation.fragment.NotificationTransactionFragment
@@ -41,7 +43,9 @@ import javax.inject.Inject
 
 class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
         NotificationActivityContract.View,
-        NotificationUpdateFragment.NotificationUpdateListener {
+        NotificationUpdateListener {
+
+    val notificationComponent by lazy { initInjector() }
 
     @Inject lateinit var presenter: NotificationActivityPresenter
     @Inject lateinit var analytics: NotificationUpdateAnalytics
@@ -49,6 +53,18 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
 
     private var fragmentAdapter: NotificationFragmentAdapter? = null
     private val tabList = ArrayList<NotificationTabItem>()
+
+    /*
+    * notification id for buyer info consume
+    * the id comes from tokopedia://notif-center/{id}
+    * notification id will be consuming on updateFragment
+    * */
+    var notificationId = ""
+
+    /*
+     * track mark all as read counter
+     * counting notification item to as read
+     * */
     private var updateCounter = 0L
 
     private val notificationLayout by lazy {
@@ -61,52 +77,71 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initTabLayoutItem()
-
+        setWindowBackground()
         super.onCreate(savedInstanceState)
-        initInjector()
-        initView(savedInstanceState)
 
+        notificationComponent.inject(this)
+        presenter.attachView(this)
+
+        onParameterHandler(savedInstanceState)
+        dotGimmickRemoteConfig()
+    }
+
+    private fun onParameterHandler(bundle: Bundle?) {
+        val intentData = intent?.data
+        intentData?.path?.let {
+            when {
+                it.contains(PATH_BUYER_INFO) -> {
+                    initViewTabLayout(INDEX_NOTIFICATION_UPDATE)
+
+                    // set notification id
+                    intentData.lastPathSegment?.let { id ->
+                        if (id != PATH_BUYER_INFO) notificationId = id
+                    }
+                }
+                else -> initView(bundle)
+            }
+        }?: initView(bundle)
+    }
+
+    private fun dotGimmickRemoteConfig() {
         baseContext?.let {
             val remoteConfig = FirebaseRemoteConfigImpl(it)
-            val redDotGimmickRemoteConfigStatus = remoteConfig.getBoolean(RED_DOT_GIMMICK_REMOTE_CONFIG_KEY, false)
-            val redDotGimmickLocalStatus = cacheManager.isDisplayedGimmick
-            if (redDotGimmickRemoteConfigStatus && !redDotGimmickLocalStatus) {
+            val gimmickLocalStatus = cacheManager.isDisplayedGimmick
+            val gimmickRemoteConfigStatus = remoteConfig.getBoolean(
+                    RED_DOT_GIMMICK_REMOTE_CONFIG_KEY,
+                    false
+            )
+            if (gimmickRemoteConfigStatus && !gimmickLocalStatus) {
                 cacheManager.isDisplayedGimmick = true
-                presenter.sendNotif(onSuccessSendNotification(), onErrorSendNotification())
+                presenter.sendNotif(
+                        ::onSuccessSendNotification,
+                        ::onErrorSendNotification
+                )
             }
         }
     }
 
     private fun initTabLayoutItem() {
-        //transaction
+        // transaction
         tabList.add(NotificationTabItem(
                 getString(R.string.title_notification_transaction),
                 NotificationTransactionFragment()
         ))
 
-        //update
+        // update
         tabList.add(NotificationTabItem(
                 getString(R.string.title_notification_update),
                 NotificationUpdateFragment()
         ))
     }
 
-    private fun onSuccessSendNotification(): (NotifCenterSendNotifData) -> Unit {
-        return {
-            presenter.getUpdateUnreadCounter(onSuccessGetUpdateUnreadCounter())
-        }
+    private fun onSuccessSendNotification() {
+        presenter.getUpdateUnreadCounter(onSuccessGetUpdateUnreadCounter())
     }
 
-    private fun onErrorSendNotification(): (Throwable) -> Unit {
-        return {
-            presenter.getUpdateUnreadCounter(onSuccessGetUpdateUnreadCounter())
-        }
-    }
-
-    private fun initInjector() {
-        DaggerNotificationUpdateComponent.builder()
-                .baseAppComponent(component).build().inject(this)
-        presenter.attachView(this)
+    private fun onErrorSendNotification() {
+        presenter.getUpdateUnreadCounter(onSuccessGetUpdateUnreadCounter())
     }
 
     private fun initView(savedInstanceState: Bundle?) {
@@ -118,22 +153,25 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
                     savedInstanceState,
                     INDEX_NOTIFICATION_ACTIVITY)
         }
-        initTabLayout(initialIndexPage)
+        initViewTabLayout(initialIndexPage)
+    }
+
+    private fun initViewTabLayout(page: Int) {
+        initTabLayout(page)
         presenter.getUpdateUnreadCounter(onSuccessGetUpdateUnreadCounter())
         presenter.getIsTabUpdate(this)
     }
 
     override fun goToUpdateTab() {
-        val updateTabPosition = 1
         if (cacheManager.isExist(KEY_TAB_POSITION)) {
             val position = cacheManager.read(KEY_TAB_POSITION)
             changeTabPager(position)
         } else {
-            viewPager.currentItem = updateTabPosition
+            viewPager.currentItem = INDEX_NOTIFICATION_UPDATE
         }
     }
 
-    override fun onSuccessLoadNotifUpdate() {
+    override fun onSuccessLoadNotificationUpdate() {
         clearTabCounter(INDEX_NOTIFICATION_UPDATE)
     }
 
@@ -217,15 +255,25 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
 
     private fun setCounterNotificationUpdate() {
         val defaultTitle = getString(R.string.title_notification_update)
-        val counter = getString(R.string.title_counter_update_notification, if (updateCounter > 0) {
-            updateCounter.toString()
-        } else {
-            getString(R.string.exceed_ninety_nine)
-        })
-
-        customTabView?.findViewById<TextView>(R.id.title)?.let {
-            it.text = String.format("%s%s", defaultTitle, counter)
+        var counter = ""
+        if (updateCounter > 0) {
+            counter = setCounterText(updateCounter.toString())
+        } else if (updateCounter > 99) {
+            counter = setCounterText(getString(R.string.exceed_ninety_nine))
         }
+
+        val title = String.format("%s%s", defaultTitle, counter)
+        setTabTitle(INDEX_NOTIFICATION_UPDATE, title)
+    }
+
+    private fun setTabTitle(tabIndex: Int, title: String) {
+        val tabView = tabLayout.getTabAt(tabIndex)?.customView
+        val textTab: TextView? = tabView?.findViewById(R.id.title)
+        textTab?.text = title
+    }
+
+    private fun setCounterText(text: String): String {
+        return getString(R.string.title_counter_update_notification, text)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -241,8 +289,12 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
     }
 
     private fun openNotificationSettingPage(): Boolean {
-        RouteManager.route(this, ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING)
+        RouteManager.route(this, USER_NOTIFICATION_SETTING)
         return true
+    }
+
+    private fun setWindowBackground() {
+        window.decorView.setBackgroundColor(Color.WHITE)
     }
 
     override fun onDestroy() {
@@ -250,16 +302,22 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
         presenter.detachView()
     }
 
-    override fun getPageLimit(): Int = tabList.size + 1
+    private fun initInjector(): NotificationComponent {
+        return DaggerNotificationComponent.builder()
+                .baseAppComponent(component)
+                .commonModule(CommonModule(this))
+                .build()
+    }
 
+    override fun getPageLimit(): Int = tabList.size + 1
     override fun getViewPagerResourceId(): Int = R.id.pager
     override fun getTabLayoutResourceId(): Int = R.id.indicator
     override fun getToolbarResourceID(): Int = R.id.toolbar
-
     override fun getLayoutRes(): Int = R.layout.activity_notification_page
 
     companion object {
         private const val KEY_TAB_POSITION = "tab_position"
+        private const val PATH_BUYER_INFO = "notif-center"
 
         var INDEX_NOTIFICATION_ACTIVITY = 0
         var INDEX_NOTIFICATION_UPDATE = 1

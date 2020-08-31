@@ -1,0 +1,30 @@
+mutation MpLogisticPreShipInfo($input: MpLogisticPreShipInfoInputs!)
+{
+  mpLogisticPreShipInfo(input: $input) {
+    status
+    message_error
+    data{
+      pickup_location{
+        title
+        address
+        phone
+      }
+      detail{
+        title
+        shippers{
+          name
+          service
+          note
+          courier_image
+          count_text
+          count
+        }
+      }
+      notes{
+        title
+        list
+      }
+    }
+
+  }
+}

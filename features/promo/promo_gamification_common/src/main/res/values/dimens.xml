@@ -2,4 +2,9 @@
 <resources>
     <dimen name="gami_core_floating_egg_widget_width">104dp</dimen>
     <dimen name="gami_core_floating_egg_widget_height">120dp</dimen>
+    <dimen name="gami_core_floating_shadow_margin">1dp</dimen>
+
+    <dimen name="dp_22">22dp</dimen>
+    <dimen name="dp_6">6dp</dimen>
+    <dimen name="dp_3">3dp</dimen>
 </resources>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/bg_big_divider"
+    android:paddingTop="@dimen/spacing_lvl4"
+    android:paddingStart="@dimen/spacing_lvl4"
+    android:paddingEnd="@dimen/spacing_lvl4"
+    android:paddingBottom="@dimen/spacing_lvl4">
+
+    <LinearLayout
+        android:id="@+id/container_seller"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/setting_notif_dp_56"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/spacing_lvl4"
+        android:paddingLeft="@dimen/spacing_lvl4"
+        android:paddingTop="@dimen/setting_notif_dp_18"
+        android:paddingEnd="@dimen/spacing_lvl4"
+        android:paddingRight="@dimen/spacing_lvl4"
+        android:paddingBottom="@dimen/setting_notif_dp_18"
+        android:background="@drawable/bg_notifsetting_seller_card">
+
+        <ImageView
+            android:id="@+id/img_icon"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
+            android:layout_marginEnd="@dimen/spacing_lvl3"
+            android:layout_marginRight="@dimen/spacing_lvl3"
+            android:layout_gravity="center_vertical"
+            app:srcCompat="@drawable/ic_notifsetting_seller" />
+
+        <TextView
+            android:id="@+id/txt_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:textColor="@color/settingnotif_black"
+            android:textStyle="bold"
+            tools:text="Notifikasi Penjual" />
+
+        <ImageView
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
+            android:layout_gravity="center_vertical"
+            android:padding="@dimen/spacing_lvl2"
+            app:srcCompat="@drawable/ic_notifsetting_arrow_right_grey" />
+
+    </LinearLayout>
+
+</LinearLayout>

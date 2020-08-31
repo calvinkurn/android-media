@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color category="global-color" name="kyc_centralized_00000000">#00000000</color>
+    <color category="global-color" name="kyc_centralized_f531353b">#f531353b</color>
+    <color category="global-color" name="kyc_centralized_dbdee2">#dbdee2</color>
+    <color category="global-color" name="kyc_centralized_31353b">#31353b</color>
+    <color category="global-color" name="kyc_centralized_42b549">#42b549</color>
+    <color category="global-color" name="kyc_centralized_70ffffff">#70ffffff</color>
+    <color category="global-color" name="kyc_centralized_00ffffff">#00ffffff</color>
+    <color category="global-color" name="kyc_centralized_8a000000">#8a000000</color>
+    <color category="global-color" name="kyc_centralized_A6ffffff">#A6ffffff</color>
+</resources>

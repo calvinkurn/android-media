@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="play_title">Play</string>
+    <string name="play_chat_placeholder">Chat di sini&#8230;</string>
+    <string name="play_action_view">Lihat</string>
+    <string name="play_duration_divider">/</string>
+    <string name="play_follow">Follow</string>
+    <string name="play_following">Following</string>
+    <string name="play_watch_mode">Watch Mode</string>
+    <string name="play_message_socket_reconnect">Menghubungkan socket&#8230;</string>
+    <string name="play_watch_again">Tonton Ulang</string>
+
+    <plurals name="play_likes">
+        <item quantity="one">%s Like</item>
+        <item quantity="other">%s Likes</item>
+    </plurals>
+
+    <string name="play_title_variant">Detail Produk</string>
+    <string name="play_product_buy">Beli</string>
+    <string name="play_product_empty">Kosong</string>
+    <string name="play_product_add_to_card">Tambah ke Keranjang</string>
+    <string name="play_discount_percent">%d%%</string>
+    <string name="play_stock_available">Stok Tersedia</string>
+    <string name="play_add_to_cart_message_success">Produk berhasil ditambahkan ke keranjang</string>
+    <string name="play_product_empty_title">Barang &amp; promo\n pilihan telah habis</string>
+    <string name="play_product_empty_desc">Wah, barang &amp; promo pilihan sudah habis, Yuk\n cek barang menarik lainnya dari toko ini!</string>
+    <string name="play_product_empty_action">Ke Halaman Toko</string>
+    <string name="play_product_updated">Produk telah diupdate</string>
+
+    <!--mock-->
+    <string name="play_mock_cart">99+</string>
+    <string name="play_mock_view">2k</string>
+    <string name="play_mock_like">0 Likes</string>
+    <string name="play_mock_pinned_message">Yoenik Apparel Visit my collections here!</string>
+    <string name="play_mock_shop_name">Yoenik Apparel</string>
+    <string name="play_transition_video">video_play</string>
+
+    <string name="play_general_err_message">Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti.</string>
+
+    <string name="play_error_image_edit_text">Gambar/GIF tidak diperbolehkan</string>
+
+</resources>

@@ -1,0 +1,3326 @@
+{
+  "shippingDurationUiModels": [
+    {
+      "codText": "",
+      "isCodAvailable": false,
+      "selected": false,
+      "serviceData": {
+        "cod": {
+          "cod_text": "",
+          "is_cod": 0
+        },
+        "error": {
+          "error_id": "",
+          "error_message": ""
+        },
+        "is_promo": 0,
+        "order_priority": {
+          "formatted_price": "Rp0",
+          "inactive_message": "",
+          "is_now": false,
+          "price": 0,
+          "static_messages": {
+            "checkbox_message": "",
+            "duration_message": "",
+            "fee_message": "",
+            "pdp_message": "",
+            "warningbox_message": ""
+          }
+        },
+        "products": [
+          {
+            "checksum": "0K6Qjo4egBqDwFq0jtzxrpvG1nE%3D",
+            "cod": {
+              "cod_price": 0,
+              "cod_text": "",
+              "formatted_price": "",
+              "is_cod_available": 0,
+              "tnc_text": "S&K Berlaku",
+              "tnc_link": "https://gw.tokopedia.com/cod_info"
+            },
+            "error": {
+              "error_id": "",
+              "error_message": ""
+            },
+            "etd": {
+              "max_etd": 10800,
+              "min_etd": 10800
+            },
+            "features": {
+              "ontime_delivery_guarantee": {
+                "available": false,
+                "icon_url": "",
+                "text_detail": "",
+                "text_label": "",
+                "url_detail": "",
+                "value": 0
+              }
+            },
+            "insurance": {
+              "insurance_price": 400,
+              "insurance_type": 2,
+              "insurance_type_info": "Optional insurance",
+              "insurance_used_default": 2,
+              "insurance_used_info": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.40% dari harga invoice dan berlaku pembulatan ke atas",
+              "insurance_used_type": 2
+            },
+            "is_show_map": 1,
+            "price": {
+              "formatted_price": "Rp63.000",
+              "price": 63000
+            },
+            "promo_code": "",
+            "recommend": false,
+            "shipper_id": 13,
+            "shipper_name": "Grab",
+            "shipper_product_desc": "Layanan pengiriman instan dengan durasi pengiriman beberapa jam saja (3 jam) sejak serah terima paket ke kurir.",
+            "shipper_product_id": 37,
+            "shipper_product_name": "Instant",
+            "shipper_weight": 1000,
+            "status": 200,
+            "texts": {
+              "text_etd": "Maks. 3 jam",
+              "text_price": "Rp63.000"
+            },
+            "ut": "1580204496"
+          },
+          {
+            "checksum": "Iq7bzwDEGopspxiwBHiIxrjqDik%3D",
+            "cod": {
+              "cod_price": 0,
+              "cod_text": "",
+              "formatted_price": "",
+              "is_cod_available": 0,
+              "tnc_text": "S&K Berlaku",
+              "tnc_link": "https://gw.tokopedia.com/cod_info"
+            },
+            "error": {
+              "error_id": "",
+              "error_message": ""
+            },
+            "etd": {
+              "max_etd": 10800,
+              "min_etd": 10800
+            },
+            "features": {
+              "ontime_delivery_guarantee": {
+                "available": false,
+                "icon_url": "",
+                "text_detail": "",
+                "text_label": "",
+                "url_detail": "",
+                "value": 0
+              }
+            },
+            "insurance": {
+              "insurance_price": 400,
+              "insurance_type": 2,
+              "insurance_type_info": "Optional insurance",
+              "insurance_used_default": 2,
+              "insurance_used_info": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.40% dari harga invoice dan berlaku pembulatan ke atas",
+              "insurance_used_type": 2
+            },
+            "is_show_map": 1,
+            "price": {
+              "formatted_price": "Rp58.000",
+              "price": 58000
+            },
+            "promo_code": "",
+            "recommend": true,
+            "shipper_id": 10,
+            "shipper_name": "GO-JEK",
+            "shipper_product_desc": "Layanan pengiriman instan dengan durasi pengiriman beberapa jam saja (3 jam) sejak serah terima paket ke kurir.",
+            "shipper_product_id": 28,
+            "shipper_product_name": "Instant Courier",
+            "shipper_weight": 1000,
+            "status": 200,
+            "texts": {
+              "text_etd": "Maks. 3 jam",
+              "text_price": "Rp58.000"
+            },
+            "ut": "1580204496"
+          }
+        ],
+        "range_price": {
+          "max_price": 63000,
+          "min_price": 58000
+        },
+        "service_id": 1000,
+        "service_name": "Instan (3 jam)",
+        "status": 200,
+        "texts": {
+          "text_etd": "Maks. 3 jam",
+          "text_range_price": "Rp58.000 - Rp63.000",
+          "text_service_desc": ""
+        }
+      },
+      "shippingCourierUiModelList": [
+        {
+          "additionalFee": 0,
+          "allowDropshipper": false,
+          "blackboxInfo": "",
+          "productData": {
+            "checksum": "0K6Qjo4egBqDwFq0jtzxrpvG1nE%3D",
+            "cod": {
+              "cod_price": 0,
+              "cod_text": "",
+              "formatted_price": "",
+              "is_cod_available": 0,
+              "tnc_text": "S&K Berlaku",
+              "tnc_link": "https://gw.tokopedia.com/cod_info"
+            },
+            "error": {
+              "error_id": "",
+              "error_message": ""
+            },
+            "etd": {
+              "max_etd": 10800,
+              "min_etd": 10800
+            },
+            "features": {
+              "ontime_delivery_guarantee": {
+                "available": false,
+                "icon_url": "",
+                "text_detail": "",
+                "text_label": "",
+                "url_detail": "",
+                "value": 0
+              }
+            },
+            "insurance": {
+              "insurance_price": 400,
+              "insurance_type": 2,
+              "insurance_type_info": "Optional insurance",
+              "insurance_used_default": 2,
+              "insurance_used_info": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.40% dari harga invoice dan berlaku pembulatan ke atas",
+              "insurance_used_type": 2
+            },
+            "is_show_map": 1,
+            "price": {
+              "formatted_price": "Rp63.000",
+              "price": 63000
+            },
+            "promo_code": "",
+            "recommend": false,
+            "shipper_id": 13,
+            "shipper_name": "Grab",
+            "shipper_product_desc": "Layanan pengiriman instan dengan durasi pengiriman beberapa jam saja (3 jam) sejak serah terima paket ke kurir.",
+            "shipper_product_id": 37,
+            "shipper_product_name": "Instant",
+            "shipper_weight": 1000,
+            "status": 200,
+            "texts": {
+              "text_etd": "Maks. 3 jam",
+              "text_price": "Rp63.000"
+            },
+            "ut": "1580204496"
+          },
+          "ratesId": "1580204496652984338",
+          "selected": false,
+          "serviceData": {
+            "cod": {
+              "cod_text": "",
+              "is_cod": 0
+            },
+            "error": {
+              "error_id": "",
+              "error_message": ""
+            },
+            "is_promo": 0,
+            "order_priority": {
+              "formatted_price": "Rp0",
+              "inactive_message": "",
+              "is_now": false,
+              "price": 0,
+              "static_messages": {
+                "checkbox_message": "",
+                "duration_message": "",
+                "fee_message": "",
+                "pdp_message": "",
+                "warningbox_message": ""
+              }
+            },
+            "products": [
+              {
+                "checksum": "0K6Qjo4egBqDwFq0jtzxrpvG1nE%3D",
+                "cod": {
+                  "cod_price": 0,
+                  "cod_text": "",
+                  "formatted_price": "",
+                  "is_cod_available": 0,
+              "tnc_text": "S&K Berlaku",
+              "tnc_link": "https://gw.tokopedia.com/cod_info"
+                },
+                "error": {
+                  "error_id": "",
+                  "error_message": ""
+                },
+                "etd": {
+                  "max_etd": 10800,
+                  "min_etd": 10800
+                },
+                "features": {
+                  "ontime_delivery_guarantee": {
+                    "available": false,
+                    "icon_url": "",
+                    "text_detail": "",
+                    "text_label": "",
+                    "url_detail": "",
+                    "value": 0
+                  }
+                },
+                "insurance": {
+                  "insurance_price": 400,
+                  "insurance_type": 2,
+                  "insurance_type_info": "Optional insurance",
+                  "insurance_used_default": 2,
+                  "insurance_used_info": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.40% dari harga invoice dan berlaku pembulatan ke atas",
+                  "insurance_used_type": 2
+                },
+                "is_show_map": 1,
+                "price": {
+                  "formatted_price": "Rp63.000",
+                  "price": 63000
+                },
+                "promo_code": "",
+                "recommend": false,
+                "shipper_id": 13,
+                "shipper_name": "Grab",
+                "shipper_product_desc": "Layanan pengiriman instan dengan durasi pengiriman beberapa jam saja (3 jam) sejak serah terima paket ke kurir.",
+                "shipper_product_id": 37,
+                "shipper_product_name": "Instant",
+                "shipper_weight": 1000,
+                "status": 200,
+                "texts": {
+                  "text_etd": "Maks. 3 jam",
+                  "text_price": "Rp63.000"
+                },
+                "ut": "1580204496"
+              },
+              {
+                "checksum": "Iq7bzwDEGopspxiwBHiIxrjqDik%3D",
+                "cod": {
+                  "cod_price": 0,
+                  "cod_text": "",
+                  "formatted_price": "",
+                  "is_cod_available": 0,
+              "tnc_text": "S&K Berlaku",
+              "tnc_link": "https://gw.tokopedia.com/cod_info"
+                },
+                "error": {
+                  "error_id": "",
+                  "error_message": ""
+                },
+                "etd": {
+                  "max_etd": 10800,
+                  "min_etd": 10800
+                },
+                "features": {
+                  "ontime_delivery_guarantee": {
+                    "available": false,
+                    "icon_url": "",
+                    "text_detail": "",
+                    "text_label": "",
+                    "url_detail": "",
+                    "value": 0
+                  }
+                },
+                "insurance": {
+                  "insurance_price": 400,
+                  "insurance_type": 2,
+                  "insurance_type_info": "Optional insurance",
+                  "insurance_used_default": 2,
+                  "insurance_used_info": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.40% dari harga invoice dan berlaku pembulatan ke atas",
+                  "insurance_used_type": 2
+                },
+                "is_show_map": 1,
+                "price": {
+                  "formatted_price": "Rp58.000",
+                  "price": 58000
+                },
+                "promo_code": "",
+                "recommend": true,
+                "shipper_id": 10,
+                "shipper_name": "GO-JEK",
+                "shipper_product_desc": "Layanan pengiriman instan dengan durasi pengiriman beberapa jam saja (3 jam) sejak serah terima paket ke kurir.",
+                "shipper_product_id": 28,
+                "shipper_product_name": "Instant Courier",
+                "shipper_weight": 1000,
+                "status": 200,
+                "texts": {
+                  "text_etd": "Maks. 3 jam",
+                  "text_price": "Rp58.000"
+                },
+                "ut": "1580204496"
+              }
+            ],
+            "range_price": {
+              "max_price": 63000,
+              "min_price": 58000
+            },
+            "service_id": 1000,
+            "service_name": "Instan (3 jam)",
+            "status": 200,
+            "texts": {
+              "text_etd": "Maks. 3 jam",
+              "text_range_price": "Rp58.000 - Rp63.000",
+              "text_service_desc": ""
+            }
+          }
+        },
+        {
+          "additionalFee": 0,
+          "allowDropshipper": false,
+          "blackboxInfo": "",
+          "productData": {
+            "checksum": "Iq7bzwDEGopspxiwBHiIxrjqDik%3D",
+            "cod": {
+              "cod_price": 0,
+              "cod_text": "",
+              "formatted_price": "",
+              "is_cod_available": 0,
+              "tnc_text": "S&K Berlaku",
+              "tnc_link": "https://gw.tokopedia.com/cod_info"
+            },
+            "error": {
+              "error_id": "",
+              "error_message": ""
+            },
+            "etd": {
+              "max_etd": 10800,
+              "min_etd": 10800
+            },
+            "features": {
+              "ontime_delivery_guarantee": {
+                "available": false,
+                "icon_url": "",
+                "text_detail": "",
+                "text_label": "",
+                "url_detail": "",
+                "value": 0
+              }
+            },
+            "insurance": {
+              "insurance_price": 400,
+              "insurance_type": 2,
+              "insurance_type_info": "Optional insurance",
+              "insurance_used_default": 2,
+              "insurance_used_info": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.40% dari harga invoice dan berlaku pembulatan ke atas",
+              "insurance_used_type": 2
+            },
+            "is_show_map": 1,
+            "price": {
+              "formatted_price": "Rp58.000",
+              "price": 58000
+            },
+            "promo_code": "",
+            "recommend": true,
+            "shipper_id": 10,
+            "shipper_name": "GO-JEK",
+            "shipper_product_desc": "Layanan pengiriman instan dengan durasi pengiriman beberapa jam saja (3 jam) sejak serah terima paket ke kurir.",
+            "shipper_product_id": 28,
+            "shipper_product_name": "Instant Courier",
+            "shipper_weight": 1000,
+            "status": 200,
+            "texts": {
+              "text_etd": "Maks. 3 jam",
+              "text_price": "Rp58.000"
+            },
+            "ut": "1580204496"
+          },
+          "ratesId": "1580204496652984338",
+          "selected": false,
+          "serviceData": {
+            "cod": {
+              "cod_text": "",
+              "is_cod": 0
+            },
+            "error": {
+              "error_id": "",
+              "error_message": ""
+            },
+            "is_promo": 0,
+            "order_priority": {
+              "formatted_price": "Rp0",
+              "inactive_message": "",
+              "is_now": false,
+              "price": 0,
+              "static_messages": {
+                "checkbox_message": "",
+                "duration_message": "",
+                "fee_message": "",
+                "pdp_message": "",
+                "warningbox_message": ""
+              }
+            },
+            "products": [
+              {
+                "checksum": "0K6Qjo4egBqDwFq0jtzxrpvG1nE%3D",
+                "cod": {
+                  "cod_price": 0,
+                  "cod_text": "",
+                  "formatted_price": "",
+                  "is_cod_available": 0,
+              "tnc_text": "S&K Berlaku",
+              "tnc_link": "https://gw.tokopedia.com/cod_info"
+                },
+                "error": {
+                  "error_id": "",
+                  "error_message": ""
+                },
+                "etd": {
+                  "max_etd": 10800,
+                  "min_etd": 10800
+                },
+                "features": {
+                  "ontime_delivery_guarantee": {
+                    "available": false,
+                    "icon_url": "",
+                    "text_detail": "",
+                    "text_label": "",
+                    "url_detail": "",
+                    "value": 0
+                  }
+                },
+                "insurance": {
+                  "insurance_price": 400,
+                  "insurance_type": 2,
+                  "insurance_type_info": "Optional insurance",
+                  "insurance_used_default": 2,
+                  "insurance_used_info": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.40% dari harga invoice dan berlaku pembulatan ke atas",
+                  "insurance_used_type": 2
+                },
+                "is_show_map": 1,
+                "price": {
+                  "formatted_price": "Rp63.000",
+                  "price": 63000
+                },
+                "promo_code": "",
+                "recommend": false,
+                "shipper_id": 13,
+                "shipper_name": "Grab",
+                "shipper_product_desc": "Layanan pengiriman instan dengan durasi pengiriman beberapa jam saja (3 jam) sejak serah terima paket ke kurir.",
+                "shipper_product_id": 37,
+                "shipper_product_name": "Instant",
+                "shipper_weight": 1000,
+                "status": 200,
+                "texts": {
+                  "text_etd": "Maks. 3 jam",
+                  "text_price": "Rp63.000"
+                },
+                "ut": "1580204496"
+              },
+              {
+                "checksum": "Iq7bzwDEGopspxiwBHiIxrjqDik%3D",
+                "cod": {
+                  "cod_price": 0,
+                  "cod_text": "",
+                  "formatted_price": "",
+                  "is_cod_available": 0,
+              "tnc_text": "S&K Berlaku",
+              "tnc_link": "https://gw.tokopedia.com/cod_info"
+                },
+                "error": {
+                  "error_id": "",
+                  "error_message": ""
+                },
+                "etd": {
+                  "max_etd": 10800,
+                  "min_etd": 10800
+                },
+                "features": {
+                  "ontime_delivery_guarantee": {
+                    "available": false,
+                    "icon_url": "",
+                    "text_detail": "",
+                    "text_label": "",
+                    "url_detail": "",
+                    "value": 0
+                  }
+                },
+                "insurance": {
+                  "insurance_price": 400,
+                  "insurance_type": 2,
+                  "insurance_type_info": "Optional insurance",
+                  "insurance_used_default": 2,
+                  "insurance_used_info": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.40% dari harga invoice dan berlaku pembulatan ke atas",
+                  "insurance_used_type": 2
+                },
+                "is_show_map": 1,
+                "price": {
+                  "formatted_price": "Rp58.000",
+                  "price": 58000
+                },
+                "promo_code": "",
+                "recommend": true,
+                "shipper_id": 10,
+                "shipper_name": "GO-JEK",
+                "shipper_product_desc": "Layanan pengiriman instan dengan durasi pengiriman beberapa jam saja (3 jam) sejak serah terima paket ke kurir.",
+                "shipper_product_id": 28,
+                "shipper_product_name": "Instant Courier",
+                "shipper_weight": 1000,
+                "status": 200,
+                "texts": {
+                  "text_etd": "Maks. 3 jam",
+                  "text_price": "Rp58.000"
+                },
+                "ut": "1580204496"
+              }
+            ],
+            "range_price": {
+              "max_price": 63000,
+              "min_price": 58000
+            },
+            "service_id": 1000,
+            "service_name": "Instan (3 jam)",
+            "status": 200,
+            "texts": {
+              "text_etd": "Maks. 3 jam",
+              "text_range_price": "Rp58.000 - Rp63.000",
+              "text_service_desc": ""
+            }
+          }
+        }
+      ],
+      "showShowCase": false
+    },
+    {
+      "codText": "",
+      "isCodAvailable": false,
+      "selected": false,
+      "serviceData": {
+        "cod": {
+          "cod_text": "",
+          "is_cod": 0
+        },
+        "error": {
+          "error_id": "",
+          "error_message": ""
+        },
+        "is_promo": 0,
+        "order_priority": {
+          "formatted_price": "",
+          "inactive_message": "",
+          "is_now": false,
+          "price": 0,
+          "static_messages": {
+            "checkbox_message": "",
+            "duration_message": "",
+            "fee_message": "",
+            "pdp_message": "",
+            "warningbox_message": ""
+          }
+        },
+        "products": [
+          {
+            "checksum": "PQIss7V2KTWsMIe3bDezfe%2BQiVI%3D",
+            "cod": {
+              "cod_price": 0,
+              "cod_text": "",
+              "formatted_price": "",
+              "is_cod_available": 0,
+              "tnc_text": "S&K Berlaku",
+              "tnc_link": "https://gw.tokopedia.com/cod_info"
+            },
+            "error": {
+              "error_id": "",
+              "error_message": ""
+            },
+            "etd": {
+              "max_etd": 21600,
+              "min_etd": 21600
+            },
+            "features": {
+              "ontime_delivery_guarantee": {
+                "available": false,
+                "icon_url": "",
+                "text_detail": "",
+                "text_label": "",
+                "url_detail": "",
+                "value": 0
+              }
+            },
+            "insurance": {
+              "insurance_price": 200,
+              "insurance_type": 2,
+              "insurance_type_info": "Optional insurance",
+              "insurance_used_default": 2,
+              "insurance_used_info": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.40% dari harga invoice dan berlaku pembulatan ke atas",
+              "insurance_used_type": 2
+            },
+            "is_show_map": 1,
+            "price": {
+              "formatted_price": "Rp24.000",
+              "price": 24000
+            },
+            "promo_code": "",
+            "recommend": true,
+            "shipper_id": 13,
+            "shipper_name": "Grab",
+            "shipper_product_desc": "Layanan pengiriman dengan durasi pengiriman beberapa jam (6 jam) sejak serah terima paket ke kurir dan akan sampai di hari yang sama.",
+            "shipper_product_id": 24,
+            "shipper_product_name": "Same Day",
+            "shipper_weight": 1000,
+            "status": 200,
+            "texts": {
+              "text_etd": "Maks. 6 jam",
+              "text_price": "Rp24.000"
+            },
+            "ut": "1580204496"
+          },
+          {
+            "checksum": "%2BlFi7M5Y5UrZyMZShueriPQ32Fk%3D",
+            "cod": {
+              "cod_price": 0,
+              "cod_text": "",
+              "formatted_price": "",
+              "is_cod_available": 0,
+              "tnc_text": "S&K Berlaku",
+              "tnc_link": "https://gw.tokopedia.com/cod_info"
+            },
+            "error": {
+              "error_id": "",
+              "error_message": ""
+            },
+            "etd": {
+              "max_etd": 21600,
+              "min_etd": 21600
+            },
+            "features": {
+              "ontime_delivery_guarantee": {
+                "available": false,
+                "icon_url": "",
+                "text_detail": "",
+                "text_label": "",
+                "url_detail": "",
+                "value": 0
+              }
+            },
+            "insurance": {
+              "insurance_price": 300,
+              "insurance_type": 2,
+              "insurance_type_info": "Optional insurance",
+              "insurance_used_default": 2,
+              "insurance_used_info": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.40% dari harga invoice dan berlaku pembulatan ke atas",
+              "insurance_used_type": 2
+            },
+            "is_show_map": 1,
+            "price": {
+              "formatted_price": "Rp28.000",
+              "price": 28000
+            },
+            "promo_code": "",
+            "recommend": false,
+            "shipper_id": 10,
+            "shipper_name": "GO-JEK",
+            "shipper_product_desc": "Layanan pengiriman dengan durasi pengiriman beberapa jam (6 jam) sejak serah terima paket ke kurir dan akan sampai di hari yang sama.",
+            "shipper_product_id": 20,
+            "shipper_product_name": "Same Day",
+            "shipper_weight": 1000,
+            "status": 200,
+            "texts": {
+              "text_etd": "Maks. 6 jam",
+              "text_price": "Rp28.000"
+            },
+            "ut": "1580204496"
+          }
+        ],
+        "range_price": {
+          "max_price": 28000,
+          "min_price": 24000
+        },
+        "service_id": 1002,
+        "service_name": "Same Day (6-8 jam)",
+        "status": 200,
+        "texts": {
+          "text_etd": "Maks. 6 jam",
+          "text_range_price": "Rp24.000 - Rp28.000",
+          "text_service_desc": ""
+        }
+      },
+      "shippingCourierUiModelList": [
+        {
+          "additionalFee": 0,
+          "allowDropshipper": false,
+          "blackboxInfo": "",
+          "productData": {
+            "checksum": "PQIss7V2KTWsMIe3bDezfe%2BQiVI%3D",
+            "cod": {
+              "cod_price": 0,
+              "cod_text": "",
+              "formatted_price": "",
+              "is_cod_available": 0,
+              "tnc_text": "S&K Berlaku",
+              "tnc_link": "https://gw.tokopedia.com/cod_info"
+            },
+            "error": {
+              "error_id": "",
+              "error_message": ""
+            },
+            "etd": {
+              "max_etd": 21600,
+              "min_etd": 21600
+            },
+            "features": {
+              "ontime_delivery_guarantee": {
+                "available": false,
+                "icon_url": "",
+                "text_detail": "",
+                "text_label": "",
+                "url_detail": "",
+                "value": 0
+              }
+            },
+            "insurance": {
+              "insurance_price": 200,
+              "insurance_type": 2,
+              "insurance_type_info": "Optional insurance",
+              "insurance_used_default": 2,
+              "insurance_used_info": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.40% dari harga invoice dan berlaku pembulatan ke atas",
+              "insurance_used_type": 2
+            },
+            "is_show_map": 1,
+            "price": {
+              "formatted_price": "Rp24.000",
+              "price": 24000
+            },
+            "promo_code": "",
+            "recommend": true,
+            "shipper_id": 13,
+            "shipper_name": "Grab",
+            "shipper_product_desc": "Layanan pengiriman dengan durasi pengiriman beberapa jam (6 jam) sejak serah terima paket ke kurir dan akan sampai di hari yang sama.",
+            "shipper_product_id": 24,
+            "shipper_product_name": "Same Day",
+            "shipper_weight": 1000,
+            "status": 200,
+            "texts": {
+              "text_etd": "Maks. 6 jam",
+              "text_price": "Rp24.000"
+            },
+            "ut": "1580204496"
+          },
+          "ratesId": "1580204496652984338",
+          "selected": false,
+          "serviceData": {
+            "cod": {
+              "cod_text": "",
+              "is_cod": 0
+            },
+            "error": {
+              "error_id": "",
+              "error_message": ""
+            },
+            "is_promo": 0,
+            "order_priority": {
+              "formatted_price": "",
+              "inactive_message": "",
+              "is_now": false,
+              "price": 0,
+              "static_messages": {
+                "checkbox_message": "",
+                "duration_message": "",
+                "fee_message": "",
+                "pdp_message": "",
+                "warningbox_message": ""
+              }
+            },
+            "products": [
+              {
+                "checksum": "PQIss7V2KTWsMIe3bDezfe%2BQiVI%3D",
+                "cod": {
+                  "cod_price": 0,
+                  "cod_text": "",
+                  "formatted_price": "",
+                  "is_cod_available": 0,
+              "tnc_text": "S&K Berlaku",
+              "tnc_link": "https://gw.tokopedia.com/cod_info"
+                },
+                "error": {
+                  "error_id": "",
+                  "error_message": ""
+                },
+                "etd": {
+                  "max_etd": 21600,
+                  "min_etd": 21600
+                },
+                "features": {
+                  "ontime_delivery_guarantee": {
+                    "available": false,
+                    "icon_url": "",
+                    "text_detail": "",
+                    "text_label": "",
+                    "url_detail": "",
+                    "value": 0
+                  }
+                },
+                "insurance": {
+                  "insurance_price": 200,
+                  "insurance_type": 2,
+                  "insurance_type_info": "Optional insurance",
+                  "insurance_used_default": 2,
+                  "insurance_used_info": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.40% dari harga invoice dan berlaku pembulatan ke atas",
+                  "insurance_used_type": 2
+                },
+                "is_show_map": 1,
+                "price": {
+                  "formatted_price": "Rp24.000",
+                  "price": 24000
+                },
+                "promo_code": "",
+                "recommend": true,
+                "shipper_id": 13,
+                "shipper_name": "Grab",
+                "shipper_product_desc": "Layanan pengiriman dengan durasi pengiriman beberapa jam (6 jam) sejak serah terima paket ke kurir dan akan sampai di hari yang sama.",
+                "shipper_product_id": 24,
+                "shipper_product_name": "Same Day",
+                "shipper_weight": 1000,
+                "status": 200,
+                "texts": {
+                  "text_etd": "Maks. 6 jam",
+                  "text_price": "Rp24.000"
+                },
+                "ut": "1580204496"
+              },
+              {
+                "checksum": "%2BlFi7M5Y5UrZyMZShueriPQ32Fk%3D",
+                "cod": {
+                  "cod_price": 0,
+                  "cod_text": "",
+                  "formatted_price": "",
+                  "is_cod_available": 0,
+              "tnc_text": "S&K Berlaku",
+              "tnc_link": "https://gw.tokopedia.com/cod_info"
+                },
+                "error": {
+                  "error_id": "",
+                  "error_message": ""
+                },
+                "etd": {
+                  "max_etd": 21600,
+                  "min_etd": 21600
+                },
+                "features": {
+                  "ontime_delivery_guarantee": {
+                    "available": false,
+                    "icon_url": "",
+                    "text_detail": "",
+                    "text_label": "",
+                    "url_detail": "",
+                    "value": 0
+                  }
+                },
+                "insurance": {
+                  "insurance_price": 300,
+                  "insurance_type": 2,
+                  "insurance_type_info": "Optional insurance",
+                  "insurance_used_default": 2,
+                  "insurance_used_info": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.40% dari harga invoice dan berlaku pembulatan ke atas",
+                  "insurance_used_type": 2
+                },
+                "is_show_map": 1,
+                "price": {
+                  "formatted_price": "Rp28.000",
+                  "price": 28000
+                },
+                "promo_code": "",
+                "recommend": false,
+                "shipper_id": 10,
+                "shipper_name": "GO-JEK",
+                "shipper_product_desc": "Layanan pengiriman dengan durasi pengiriman beberapa jam (6 jam) sejak serah terima paket ke kurir dan akan sampai di hari yang sama.",
+                "shipper_product_id": 20,
+                "shipper_product_name": "Same Day",
+                "shipper_weight": 1000,
+                "status": 200,
+                "texts": {
+                  "text_etd": "Maks. 6 jam",
+                  "text_price": "Rp28.000"
+                },
+                "ut": "1580204496"
+              }
+            ],
+            "range_price": {
+              "max_price": 28000,
+              "min_price": 24000
+            },
+            "service_id": 1002,
+            "service_name": "Same Day (6-8 jam)",
+            "status": 200,
+            "texts": {
+              "text_etd": "Maks. 6 jam",
+              "text_range_price": "Rp24.000 - Rp28.000",
+              "text_service_desc": ""
+            }
+          }
+        },
+        {
+          "additionalFee": 0,
+          "allowDropshipper": false,
+          "blackboxInfo": "",
+          "productData": {
+            "checksum": "%2BlFi7M5Y5UrZyMZShueriPQ32Fk%3D",
+            "cod": {
+              "cod_price": 0,
+              "cod_text": "",
+              "formatted_price": "",
+              "is_cod_available": 0,
+              "tnc_text": "S&K Berlaku",
+              "tnc_link": "https://gw.tokopedia.com/cod_info"
+            },
+            "error": {
+              "error_id": "",
+              "error_message": ""
+            },
+            "etd": {
+              "max_etd": 21600,
+              "min_etd": 21600
+            },
+            "features": {
+              "ontime_delivery_guarantee": {
+                "available": false,
+                "icon_url": "",
+                "text_detail": "",
+                "text_label": "",
+                "url_detail": "",
+                "value": 0
+              }
+            },
+            "insurance": {
+              "insurance_price": 300,
+              "insurance_type": 2,
+              "insurance_type_info": "Optional insurance",
+              "insurance_used_default": 2,
+              "insurance_used_info": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.40% dari harga invoice dan berlaku pembulatan ke atas",
+              "insurance_used_type": 2
+            },
+            "is_show_map": 1,
+            "price": {
+              "formatted_price": "Rp28.000",
+              "price": 28000
+            },
+            "promo_code": "",
+            "recommend": false,
+            "shipper_id": 10,
+            "shipper_name": "GO-JEK",
+            "shipper_product_desc": "Layanan pengiriman dengan durasi pengiriman beberapa jam (6 jam) sejak serah terima paket ke kurir dan akan sampai di hari yang sama.",
+            "shipper_product_id": 20,
+            "shipper_product_name": "Same Day",
+            "shipper_weight": 1000,
+            "status": 200,
+            "texts": {
+              "text_etd": "Maks. 6 jam",
+              "text_price": "Rp28.000"
+            },
+            "ut": "1580204496"
+          },
+          "ratesId": "1580204496652984338",
+          "selected": false,
+          "serviceData": {
+            "cod": {
+              "cod_text": "",
+              "is_cod": 0
+            },
+            "error": {
+              "error_id": "",
+              "error_message": ""
+            },
+            "is_promo": 0,
+            "order_priority": {
+              "formatted_price": "",
+              "inactive_message": "",
+              "is_now": false,
+              "price": 0,
+              "static_messages": {
+                "checkbox_message": "",
+                "duration_message": "",
+                "fee_message": "",
+                "pdp_message": "",
+                "warningbox_message": ""
+              }
+            },
+            "products": [
+              {
+                "checksum": "PQIss7V2KTWsMIe3bDezfe%2BQiVI%3D",
+                "cod": {
+                  "cod_price": 0,
+                  "cod_text": "",
+                  "formatted_price": "",
+                  "is_cod_available": 0,
+              "tnc_text": "S&K Berlaku",
+              "tnc_link": "https://gw.tokopedia.com/cod_info"
+                },
+                "error": {
+                  "error_id": "",
+                  "error_message": ""
+                },
+                "etd": {
+                  "max_etd": 21600,
+                  "min_etd": 21600
+                },
+                "features": {
+                  "ontime_delivery_guarantee": {
+                    "available": false,
+                    "icon_url": "",
+                    "text_detail": "",
+                    "text_label": "",
+                    "url_detail": "",
+                    "value": 0
+                  }
+                },
+                "insurance": {
+                  "insurance_price": 200,
+                  "insurance_type": 2,
+                  "insurance_type_info": "Optional insurance",
+                  "insurance_used_default": 2,
+                  "insurance_used_info": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.40% dari harga invoice dan berlaku pembulatan ke atas",
+                  "insurance_used_type": 2
+                },
+                "is_show_map": 1,
+                "price": {
+                  "formatted_price": "Rp24.000",
+                  "price": 24000
+                },
+                "promo_code": "",
+                "recommend": true,
+                "shipper_id": 13,
+                "shipper_name": "Grab",
+                "shipper_product_desc": "Layanan pengiriman dengan durasi pengiriman beberapa jam (6 jam) sejak serah terima paket ke kurir dan akan sampai di hari yang sama.",
+                "shipper_product_id": 24,
+                "shipper_product_name": "Same Day",
+                "shipper_weight": 1000,
+                "status": 200,
+                "texts": {
+                  "text_etd": "Maks. 6 jam",
+                  "text_price": "Rp24.000"
+                },
+                "ut": "1580204496"
+              },
+              {
+                "checksum": "%2BlFi7M5Y5UrZyMZShueriPQ32Fk%3D",
+                "cod": {
+                  "cod_price": 0,
+                  "cod_text": "",
+                  "formatted_price": "",
+                  "is_cod_available": 0,
+              "tnc_text": "S&K Berlaku",
+              "tnc_link": "https://gw.tokopedia.com/cod_info"
+                },
+                "error": {
+                  "error_id": "",
+                  "error_message": ""
+                },
+                "etd": {
+                  "max_etd": 21600,
+                  "min_etd": 21600
+                },
+                "features": {
+                  "ontime_delivery_guarantee": {
+                    "available": false,
+                    "icon_url": "",
+                    "text_detail": "",
+                    "text_label": "",
+                    "url_detail": "",
+                    "value": 0
+                  }
+                },
+                "insurance": {
+                  "insurance_price": 300,
+                  "insurance_type": 2,
+                  "insurance_type_info": "Optional insurance",
+                  "insurance_used_default": 2,
+                  "insurance_used_info": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.40% dari harga invoice dan berlaku pembulatan ke atas",
+                  "insurance_used_type": 2
+                },
+                "is_show_map": 1,
+                "price": {
+                  "formatted_price": "Rp28.000",
+                  "price": 28000
+                },
+                "promo_code": "",
+                "recommend": false,
+                "shipper_id": 10,
+                "shipper_name": "GO-JEK",
+                "shipper_product_desc": "Layanan pengiriman dengan durasi pengiriman beberapa jam (6 jam) sejak serah terima paket ke kurir dan akan sampai di hari yang sama.",
+                "shipper_product_id": 20,
+                "shipper_product_name": "Same Day",
+                "shipper_weight": 1000,
+                "status": 200,
+                "texts": {
+                  "text_etd": "Maks. 6 jam",
+                  "text_price": "Rp28.000"
+                },
+                "ut": "1580204496"
+              }
+            ],
+            "range_price": {
+              "max_price": 28000,
+              "min_price": 24000
+            },
+            "service_id": 1002,
+            "service_name": "Same Day (6-8 jam)",
+            "status": 200,
+            "texts": {
+              "text_etd": "Maks. 6 jam",
+              "text_range_price": "Rp24.000 - Rp28.000",
+              "text_service_desc": ""
+            }
+          }
+        }
+      ],
+      "showShowCase": false
+    },
+    {
+      "codText": "",
+      "isCodAvailable": false,
+      "selected": false,
+      "serviceData": {
+        "cod": {
+          "cod_text": "",
+          "is_cod": 0
+        },
+        "error": {
+          "error_id": "",
+          "error_message": ""
+        },
+        "is_promo": 0,
+        "order_priority": {
+          "formatted_price": "",
+          "inactive_message": "",
+          "is_now": false,
+          "price": 0,
+          "static_messages": {
+            "checkbox_message": "",
+            "duration_message": "",
+            "fee_message": "",
+            "pdp_message": "",
+            "warningbox_message": ""
+          }
+        },
+        "products": [
+          {
+            "checksum": "xidZRKYqHPkrLEbwJzCOOD3LlF0%3D",
+            "cod": {
+              "cod_price": 0,
+              "cod_text": "",
+              "formatted_price": "",
+              "is_cod_available": 0,
+              "tnc_text": "S&K Berlaku",
+              "tnc_link": "https://gw.tokopedia.com/cod_info"
+            },
+            "error": {
+              "error_id": "",
+              "error_message": ""
+            },
+            "etd": {
+              "max_etd": 0,
+              "min_etd": 0
+            },
+            "features": {
+              "ontime_delivery_guarantee": {
+                "available": false,
+                "icon_url": "",
+                "text_detail": "",
+                "text_label": "",
+                "url_detail": "",
+                "value": 0
+              }
+            },
+            "insurance": {
+              "insurance_price": 200,
+              "insurance_type": 2,
+              "insurance_type_info": "Optional insurance",
+              "insurance_used_default": 2,
+              "insurance_used_info": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.40% dari harga invoice dan berlaku pembulatan ke atas",
+              "insurance_used_type": 2
+            },
+            "is_show_map": 0,
+            "price": {
+              "formatted_price": "Rp13.000",
+              "price": 13000
+            },
+            "promo_code": "",
+            "recommend": true,
+            "shipper_id": 23,
+            "shipper_name": "AnterAja",
+            "shipper_product_desc": "Layanan pengiriman express dengan durasi pengiriman 1 hari dihitung sejak serah terima paket ke kurir.",
+            "shipper_product_id": 46,
+            "shipper_product_name": "Next Day",
+            "shipper_weight": 1000,
+            "status": 200,
+            "texts": {
+              "text_etd": "",
+              "text_price": "Rp13.000"
+            },
+            "ut": "1580204496"
+          },
+          {
+            "checksum": "4Lo8lpRU7QTjVlMlDuynCn1mZnU%3D",
+            "cod": {
+              "cod_price": 0,
+              "cod_text": "",
+              "formatted_price": "",
+              "is_cod_available": 0,
+              "tnc_text": "S&K Berlaku",
+              "tnc_link": "https://gw.tokopedia.com/cod_info"
+            },
+            "error": {
+              "error_id": "",
+              "error_message": ""
+            },
+            "etd": {
+              "max_etd": 86400,
+              "min_etd": 86400
+            },
+            "features": {
+              "ontime_delivery_guarantee": {
+                "available": false,
+                "icon_url": "",
+                "text_detail": "",
+                "text_label": "",
+                "url_detail": "",
+                "value": 0
+              }
+            },
+            "insurance": {
+              "insurance_price": 200,
+              "insurance_type": 2,
+              "insurance_type_info": "Optional insurance",
+              "insurance_used_default": 2,
+              "insurance_used_info": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.40% dari harga invoice dan berlaku pembulatan ke atas",
+              "insurance_used_type": 2
+            },
+            "is_show_map": 0,
+            "price": {
+              "formatted_price": "Rp18.000",
+              "price": 18000
+            },
+            "promo_code": "",
+            "recommend": false,
+            "shipper_id": 1,
+            "shipper_name": "JNE",
+            "shipper_product_desc": "JNE YES adalah paket dengan prioritas pengiriman tercepat yang ditawarkan JNE. Hanya saja perlu diperhatikan kecepatan barang diterima juga dipengaruhi oleh kecepatan penjual melakukan pengiriman barang.",
+            "shipper_product_id": 6,
+            "shipper_product_name": "YES",
+            "shipper_weight": 1000,
+            "status": 200,
+            "texts": {
+              "text_etd": "1 hari",
+              "text_price": "Rp18.000"
+            },
+            "ut": "1580204496"
+          }
+        ],
+        "range_price": {
+          "max_price": 18000,
+          "min_price": 13000
+        },
+        "service_id": 1003,
+        "service_name": "Next Day (1 hari)",
+        "status": 200,
+        "texts": {
+          "text_etd": "1 hari",
+          "text_range_price": "Rp13.000 - Rp18.000",
+          "text_service_desc": ""
+        }
+      },
+      "shippingCourierUiModelList": [
+        {
+          "additionalFee": 0,
+          "allowDropshipper": true,
+          "blackboxInfo": "",
+          "productData": {
+            "checksum": "xidZRKYqHPkrLEbwJzCOOD3LlF0%3D",
+            "cod": {
+              "cod_price": 0,
+              "cod_text": "",
+              "formatted_price": "",
+              "is_cod_available": 0,
+              "tnc_text": "S&K Berlaku",
+              "tnc_link": "https://gw.tokopedia.com/cod_info"
+            },
+            "error": {
+              "error_id": "",
+              "error_message": ""
+            },
+            "etd": {
+              "max_etd": 0,
+              "min_etd": 0
+            },
+            "features": {
+              "ontime_delivery_guarantee": {
+                "available": false,
+                "icon_url": "",
+                "text_detail": "",
+                "text_label": "",
+                "url_detail": "",
+                "value": 0
+              }
+            },
+            "insurance": {
+              "insurance_price": 200,
+              "insurance_type": 2,
+              "insurance_type_info": "Optional insurance",
+              "insurance_used_default": 2,
+              "insurance_used_info": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.40% dari harga invoice dan berlaku pembulatan ke atas",
+              "insurance_used_type": 2
+            },
+            "is_show_map": 0,
+            "price": {
+              "formatted_price": "Rp13.000",
+              "price": 13000
+            },
+            "promo_code": "",
+            "recommend": true,
+            "shipper_id": 23,
+            "shipper_name": "AnterAja",
+            "shipper_product_desc": "Layanan pengiriman express dengan durasi pengiriman 1 hari dihitung sejak serah terima paket ke kurir.",
+            "shipper_product_id": 46,
+            "shipper_product_name": "Next Day",
+            "shipper_weight": 1000,
+            "status": 200,
+            "texts": {
+              "text_etd": "",
+              "text_price": "Rp13.000"
+            },
+            "ut": "1580204496"
+          },
+          "ratesId": "1580204496652984338",
+          "selected": false,
+          "serviceData": {
+            "cod": {
+              "cod_text": "",
+              "is_cod": 0
+            },
+            "error": {
+              "error_id": "",
+              "error_message": ""
+            },
+            "is_promo": 0,
+            "order_priority": {
+              "formatted_price": "",
+              "inactive_message": "",
+              "is_now": false,
+              "price": 0,
+              "static_messages": {
+                "checkbox_message": "",
+                "duration_message": "",
+                "fee_message": "",
+                "pdp_message": "",
+                "warningbox_message": ""
+              }
+            },
+            "products": [
+              {
+                "checksum": "xidZRKYqHPkrLEbwJzCOOD3LlF0%3D",
+                "cod": {
+                  "cod_price": 0,
+                  "cod_text": "",
+                  "formatted_price": "",
+                  "is_cod_available": 0,
+              "tnc_text": "S&K Berlaku",
+              "tnc_link": "https://gw.tokopedia.com/cod_info"
+                },
+                "error": {
+                  "error_id": "",
+                  "error_message": ""
+                },
+                "etd": {
+                  "max_etd": 0,
+                  "min_etd": 0
+                },
+                "features": {
+                  "ontime_delivery_guarantee": {
+                    "available": false,
+                    "icon_url": "",
+                    "text_detail": "",
+                    "text_label": "",
+                    "url_detail": "",
+                    "value": 0
+                  }
+                },
+                "insurance": {
+                  "insurance_price": 200,
+                  "insurance_type": 2,
+                  "insurance_type_info": "Optional insurance",
+                  "insurance_used_default": 2,
+                  "insurance_used_info": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.40% dari harga invoice dan berlaku pembulatan ke atas",
+                  "insurance_used_type": 2
+                },
+                "is_show_map": 0,
+                "price": {
+                  "formatted_price": "Rp13.000",
+                  "price": 13000
+                },
+                "promo_code": "",
+                "recommend": true,
+                "shipper_id": 23,
+                "shipper_name": "AnterAja",
+                "shipper_product_desc": "Layanan pengiriman express dengan durasi pengiriman 1 hari dihitung sejak serah terima paket ke kurir.",
+                "shipper_product_id": 46,
+                "shipper_product_name": "Next Day",
+                "shipper_weight": 1000,
+                "status": 200,
+                "texts": {
+                  "text_etd": "",
+                  "text_price": "Rp13.000"
+                },
+                "ut": "1580204496"
+              },
+              {
+                "checksum": "4Lo8lpRU7QTjVlMlDuynCn1mZnU%3D",
+                "cod": {
+                  "cod_price": 0,
+                  "cod_text": "",
+                  "formatted_price": "",
+                  "is_cod_available": 0,
+              "tnc_text": "S&K Berlaku",
+              "tnc_link": "https://gw.tokopedia.com/cod_info"
+                },
+                "error": {
+                  "error_id": "",
+                  "error_message": ""
+                },
+                "etd": {
+                  "max_etd": 86400,
+                  "min_etd": 86400
+                },
+                "features": {
+                  "ontime_delivery_guarantee": {
+                    "available": false,
+                    "icon_url": "",
+                    "text_detail": "",
+                    "text_label": "",
+                    "url_detail": "",
+                    "value": 0
+                  }
+                },
+                "insurance": {
+                  "insurance_price": 200,
+                  "insurance_type": 2,
+                  "insurance_type_info": "Optional insurance",
+                  "insurance_used_default": 2,
+                  "insurance_used_info": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.40% dari harga invoice dan berlaku pembulatan ke atas",
+                  "insurance_used_type": 2
+                },
+                "is_show_map": 0,
+                "price": {
+                  "formatted_price": "Rp18.000",
+                  "price": 18000
+                },
+                "promo_code": "",
+                "recommend": false,
+                "shipper_id": 1,
+                "shipper_name": "JNE",
+                "shipper_product_desc": "JNE YES adalah paket dengan prioritas pengiriman tercepat yang ditawarkan JNE. Hanya saja perlu diperhatikan kecepatan barang diterima juga dipengaruhi oleh kecepatan penjual melakukan pengiriman barang.",
+                "shipper_product_id": 6,
+                "shipper_product_name": "YES",
+                "shipper_weight": 1000,
+                "status": 200,
+                "texts": {
+                  "text_etd": "1 hari",
+                  "text_price": "Rp18.000"
+                },
+                "ut": "1580204496"
+              }
+            ],
+            "range_price": {
+              "max_price": 18000,
+              "min_price": 13000
+            },
+            "service_id": 1003,
+            "service_name": "Next Day (1 hari)",
+            "status": 200,
+            "texts": {
+              "text_etd": "1 hari",
+              "text_range_price": "Rp13.000 - Rp18.000",
+              "text_service_desc": ""
+            }
+          }
+        },
+        {
+          "additionalFee": 0,
+          "allowDropshipper": true,
+          "blackboxInfo": "",
+          "productData": {
+            "checksum": "4Lo8lpRU7QTjVlMlDuynCn1mZnU%3D",
+            "cod": {
+              "cod_price": 0,
+              "cod_text": "",
+              "formatted_price": "",
+              "is_cod_available": 0,
+              "tnc_text": "S&K Berlaku",
+              "tnc_link": "https://gw.tokopedia.com/cod_info"
+            },
+            "error": {
+              "error_id": "",
+              "error_message": ""
+            },
+            "etd": {
+              "max_etd": 86400,
+              "min_etd": 86400
+            },
+            "features": {
+              "ontime_delivery_guarantee": {
+                "available": false,
+                "icon_url": "",
+                "text_detail": "",
+                "text_label": "",
+                "url_detail": "",
+                "value": 0
+              }
+            },
+            "insurance": {
+              "insurance_price": 200,
+              "insurance_type": 2,
+              "insurance_type_info": "Optional insurance",
+              "insurance_used_default": 2,
+              "insurance_used_info": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.40% dari harga invoice dan berlaku pembulatan ke atas",
+              "insurance_used_type": 2
+            },
+            "is_show_map": 0,
+            "price": {
+              "formatted_price": "Rp18.000",
+              "price": 18000
+            },
+            "promo_code": "",
+            "recommend": false,
+            "shipper_id": 1,
+            "shipper_name": "JNE",
+            "shipper_product_desc": "JNE YES adalah paket dengan prioritas pengiriman tercepat yang ditawarkan JNE. Hanya saja perlu diperhatikan kecepatan barang diterima juga dipengaruhi oleh kecepatan penjual melakukan pengiriman barang.",
+            "shipper_product_id": 6,
+            "shipper_product_name": "YES",
+            "shipper_weight": 1000,
+            "status": 200,
+            "texts": {
+              "text_etd": "1 hari",
+              "text_price": "Rp18.000"
+            },
+            "ut": "1580204496"
+          },
+          "ratesId": "1580204496652984338",
+          "selected": false,
+          "serviceData": {
+            "cod": {
+              "cod_text": "",
+              "is_cod": 0
+            },
+            "error": {
+              "error_id": "",
+              "error_message": ""
+            },
+            "is_promo": 0,
+            "order_priority": {
+              "formatted_price": "",
+              "inactive_message": "",
+              "is_now": false,
+              "price": 0,
+              "static_messages": {
+                "checkbox_message": "",
+                "duration_message": "",
+                "fee_message": "",
+                "pdp_message": "",
+                "warningbox_message": ""
+              }
+            },
+            "products": [
+              {
+                "checksum": "xidZRKYqHPkrLEbwJzCOOD3LlF0%3D",
+                "cod": {
+                  "cod_price": 0,
+                  "cod_text": "",
+                  "formatted_price": "",
+                  "is_cod_available": 0,
+              "tnc_text": "S&K Berlaku",
+              "tnc_link": "https://gw.tokopedia.com/cod_info"
+                },
+                "error": {
+                  "error_id": "",
+                  "error_message": ""
+                },
+                "etd": {
+                  "max_etd": 0,
+                  "min_etd": 0
+                },
+                "features": {
+                  "ontime_delivery_guarantee": {
+                    "available": false,
+                    "icon_url": "",
+                    "text_detail": "",
+                    "text_label": "",
+                    "url_detail": "",
+                    "value": 0
+                  }
+                },
+                "insurance": {
+                  "insurance_price": 200,
+                  "insurance_type": 2,
+                  "insurance_type_info": "Optional insurance",
+                  "insurance_used_default": 2,
+                  "insurance_used_info": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.40% dari harga invoice dan berlaku pembulatan ke atas",
+                  "insurance_used_type": 2
+                },
+                "is_show_map": 0,
+                "price": {
+                  "formatted_price": "Rp13.000",
+                  "price": 13000
+                },
+                "promo_code": "",
+                "recommend": true,
+                "shipper_id": 23,
+                "shipper_name": "AnterAja",
+                "shipper_product_desc": "Layanan pengiriman express dengan durasi pengiriman 1 hari dihitung sejak serah terima paket ke kurir.",
+                "shipper_product_id": 46,
+                "shipper_product_name": "Next Day",
+                "shipper_weight": 1000,
+                "status": 200,
+                "texts": {
+                  "text_etd": "",
+                  "text_price": "Rp13.000"
+                },
+                "ut": "1580204496"
+              },
+              {
+                "checksum": "4Lo8lpRU7QTjVlMlDuynCn1mZnU%3D",
+                "cod": {
+                  "cod_price": 0,
+                  "cod_text": "",
+                  "formatted_price": "",
+                  "is_cod_available": 0,
+              "tnc_text": "S&K Berlaku",
+              "tnc_link": "https://gw.tokopedia.com/cod_info"
+                },
+                "error": {
+                  "error_id": "",
+                  "error_message": ""
+                },
+                "etd": {
+                  "max_etd": 86400,
+                  "min_etd": 86400
+                },
+                "features": {
+                  "ontime_delivery_guarantee": {
+                    "available": false,
+                    "icon_url": "",
+                    "text_detail": "",
+                    "text_label": "",
+                    "url_detail": "",
+                    "value": 0
+                  }
+                },
+                "insurance": {
+                  "insurance_price": 200,
+                  "insurance_type": 2,
+                  "insurance_type_info": "Optional insurance",
+                  "insurance_used_default": 2,
+                  "insurance_used_info": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.40% dari harga invoice dan berlaku pembulatan ke atas",
+                  "insurance_used_type": 2
+                },
+                "is_show_map": 0,
+                "price": {
+                  "formatted_price": "Rp18.000",
+                  "price": 18000
+                },
+                "promo_code": "",
+                "recommend": false,
+                "shipper_id": 1,
+                "shipper_name": "JNE",
+                "shipper_product_desc": "JNE YES adalah paket dengan prioritas pengiriman tercepat yang ditawarkan JNE. Hanya saja perlu diperhatikan kecepatan barang diterima juga dipengaruhi oleh kecepatan penjual melakukan pengiriman barang.",
+                "shipper_product_id": 6,
+                "shipper_product_name": "YES",
+                "shipper_weight": 1000,
+                "status": 200,
+                "texts": {
+                  "text_etd": "1 hari",
+                  "text_price": "Rp18.000"
+                },
+                "ut": "1580204496"
+              }
+            ],
+            "range_price": {
+              "max_price": 18000,
+              "min_price": 13000
+            },
+            "service_id": 1003,
+            "service_name": "Next Day (1 hari)",
+            "status": 200,
+            "texts": {
+              "text_etd": "1 hari",
+              "text_range_price": "Rp13.000 - Rp18.000",
+              "text_service_desc": ""
+            }
+          }
+        }
+      ],
+      "showShowCase": false
+    },
+    {
+      "codText": "",
+      "isCodAvailable": false,
+      "selected": true,
+      "serviceData": {
+        "cod": {
+          "cod_text": "",
+          "is_cod": 0
+        },
+        "error": {
+          "error_id": "",
+          "error_message": ""
+        },
+        "is_promo": 0,
+        "order_priority": {
+          "formatted_price": "",
+          "inactive_message": "",
+          "is_now": false,
+          "price": 0,
+          "static_messages": {
+            "checkbox_message": "",
+            "duration_message": "",
+            "fee_message": "",
+            "pdp_message": "",
+            "warningbox_message": ""
+          }
+        },
+        "products": [
+          {
+            "checksum": "ar4BIPoOomYslN5nUIsAnv7lY3I%3D",
+            "cod": {
+              "cod_price": 0,
+              "cod_text": "",
+              "formatted_price": "",
+              "is_cod_available": 0,
+              "tnc_text": "S&K Berlaku",
+              "tnc_link": "https://gw.tokopedia.com/cod_info"
+            },
+            "error": {
+              "error_id": "",
+              "error_message": ""
+            },
+            "etd": {
+              "max_etd": 172800,
+              "min_etd": 86400
+            },
+            "features": {
+              "ontime_delivery_guarantee": {
+                "available": false,
+                "icon_url": "",
+                "text_detail": "",
+                "text_label": "",
+                "url_detail": "",
+                "value": 0
+              }
+            },
+            "insurance": {
+              "insurance_price": 200,
+              "insurance_type": 2,
+              "insurance_type_info": "Optional insurance",
+              "insurance_used_default": 2,
+              "insurance_used_info": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.40% dari harga invoice dan berlaku pembulatan ke atas",
+              "insurance_used_type": 2
+            },
+            "is_show_map": 0,
+            "price": {
+              "formatted_price": "Rp10.000",
+              "price": 10000
+            },
+            "promo_code": "",
+            "recommend": true,
+            "shipper_id": 23,
+            "shipper_name": "AnterAja",
+            "shipper_product_desc": "Layanan pengiriman standard dengan kecepatan pengiriman tergantung dari lokasi pengiriman dan lokasi tujuan. Umumnya 2-4 hari/ 5-9 hari/ >9 hari tergantung rute pengiriman.",
+            "shipper_product_id": 45,
+            "shipper_product_name": "Reguler",
+            "shipper_weight": 1000,
+            "status": 200,
+            "texts": {
+              "text_etd": "1-2 hari",
+              "text_price": "Rp10.000"
+            },
+            "ut": "1580204496"
+          },
+          {
+            "checksum": "4kbAMw8v65o1ILH1LwGJDa4PYGQ%3D",
+            "cod": {
+              "cod_price": 0,
+              "cod_text": "",
+              "formatted_price": "",
+              "is_cod_available": 0,
+              "tnc_text": "S&K Berlaku",
+              "tnc_link": "https://gw.tokopedia.com/cod_info"
+            },
+            "error": {
+              "error_id": "",
+              "error_message": ""
+            },
+            "etd": {
+              "max_etd": 172800,
+              "min_etd": 86400
+            },
+            "features": {
+              "ontime_delivery_guarantee": {
+                "available": false,
+                "icon_url": "",
+                "text_detail": "",
+                "text_label": "",
+                "url_detail": "",
+                "value": 0
+              }
+            },
+            "insurance": {
+              "insurance_price": 200,
+              "insurance_type": 2,
+              "insurance_type_info": "Optional insurance",
+              "insurance_used_default": 2,
+              "insurance_used_info": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.40% dari harga invoice dan berlaku pembulatan ke atas",
+              "insurance_used_type": 2
+            },
+            "is_show_map": 0,
+            "price": {
+              "formatted_price": "Rp9.000",
+              "price": 9000
+            },
+            "promo_code": "",
+            "recommend": false,
+            "shipper_id": 1,
+            "shipper_name": "JNE Reg",
+            "shipper_product_desc": "JNE Reguler adalah paket reguler yang ditawarkan JNE. Kecepatan pengiriman tergantung dari lokasi pengiriman dan lokasi tujuan. Untuk kota yang sama, umumnya memakan waktu 2-3 hari.",
+            "shipper_product_id": 1,
+            "shipper_product_name": "Reguler",
+            "shipper_weight": 1000,
+            "status": 200,
+            "texts": {
+              "text_etd": "1-2 hari",
+              "text_price": "Rp9.000"
+            },
+            "ut": "1580204496"
+          },
+          {
+            "checksum": "Ohv6DyJ%2FTk33bWg%2BJHOfAwSM5Tk%3D",
+            "cod": {
+              "cod_price": 0,
+              "cod_text": "",
+              "formatted_price": "",
+              "is_cod_available": 0,
+              "tnc_text": "S&K Berlaku",
+              "tnc_link": "https://gw.tokopedia.com/cod_info"
+            },
+            "error": {
+              "error_id": "",
+              "error_message": ""
+            },
+            "etd": {
+              "max_etd": 172800,
+              "min_etd": 86400
+            },
+            "features": {
+              "ontime_delivery_guarantee": {
+                "available": false,
+                "icon_url": "",
+                "text_detail": "",
+                "text_label": "",
+                "url_detail": "",
+                "value": 0
+              }
+            },
+            "insurance": {
+              "insurance_price": 200,
+              "insurance_type": 2,
+              "insurance_type_info": "Optional insurance",
+              "insurance_used_default": 2,
+              "insurance_used_info": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.40% dari harga invoice dan berlaku pembulatan ke atas",
+              "insurance_used_type": 2
+            },
+            "is_show_map": 0,
+            "price": {
+              "formatted_price": "Rp8.000",
+              "price": 8000
+            },
+            "promo_code": "",
+            "recommend": false,
+            "shipper_id": 12,
+            "shipper_name": "Ninja Xpress",
+            "shipper_product_desc": "Layanan pengiriman standard dengan kecepatan pengiriman tergantung dari lokasi pengiriman dan lokasi tujuan. Umumnya 2-4 hari/ 5-9 hari/ >9 hari tergantung rute pengiriman.",
+            "shipper_product_id": 25,
+            "shipper_product_name": "Reguler",
+            "shipper_weight": 1000,
+            "status": 200,
+            "texts": {
+              "text_etd": "1-2 hari",
+              "text_price": "Rp8.000"
+            },
+            "ut": "1580204496"
+          },
+          {
+            "checksum": "Sz6ex%2FoH%2BdSkVzxyp%2FGmP6V9KyU%3D",
+            "cod": {
+              "cod_price": 0,
+              "cod_text": "",
+              "formatted_price": "",
+              "is_cod_available": 0,
+              "tnc_text": "S&K Berlaku",
+              "tnc_link": "https://gw.tokopedia.com/cod_info"
+            },
+            "error": {
+              "error_id": "",
+              "error_message": ""
+            },
+            "etd": {
+              "max_etd": 172800,
+              "min_etd": 86400
+            },
+            "features": {
+              "ontime_delivery_guarantee": {
+                "available": false,
+                "icon_url": "",
+                "text_detail": "",
+                "text_label": "",
+                "url_detail": "",
+                "value": 0
+              }
+            },
+            "insurance": {
+              "insurance_price": 200,
+              "insurance_type": 2,
+              "insurance_type_info": "Optional insurance",
+              "insurance_used_default": 2,
+              "insurance_used_info": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.40% dari harga invoice dan berlaku pembulatan ke atas",
+              "insurance_used_type": 2
+            },
+            "is_show_map": 0,
+            "price": {
+              "formatted_price": "Rp8.500",
+              "price": 8500
+            },
+            "promo_code": "",
+            "recommend": false,
+            "shipper_id": 24,
+            "shipper_name": "Lion Parcel",
+            "shipper_product_desc": "Layanan pengiriman standard dengan kecepatan pengiriman tergantung dari lokasi pengiriman dan lokasi tujuan. Umumnya 2-4 hari/ 5-9 hari/ >9 hari tergantung rute pengiriman.",
+            "shipper_product_id": 47,
+            "shipper_product_name": "Reguler",
+            "shipper_weight": 1000,
+            "status": 200,
+            "texts": {
+              "text_etd": "1-2 hari",
+              "text_price": "Rp8.500"
+            },
+            "ut": "1580204496"
+          }
+        ],
+        "range_price": {
+          "max_price": 10000,
+          "min_price": 8000
+        },
+        "service_id": 1104,
+        "service_name": "Reguler (2-4 hari)",
+        "status": 200,
+        "texts": {
+          "text_etd": "1-2 hari",
+          "text_range_price": "Rp8.000 - Rp10.000",
+          "text_service_desc": ""
+        }
+      },
+      "shippingCourierUiModelList": [
+        {
+          "additionalFee": 0,
+          "allowDropshipper": true,
+          "blackboxInfo": "",
+          "productData": {
+            "checksum": "ar4BIPoOomYslN5nUIsAnv7lY3I%3D",
+            "cod": {
+              "cod_price": 0,
+              "cod_text": "",
+              "formatted_price": "",
+              "is_cod_available": 0,
+              "tnc_text": "S&K Berlaku",
+              "tnc_link": "https://gw.tokopedia.com/cod_info"
+            },
+            "error": {
+              "error_id": "",
+              "error_message": ""
+            },
+            "etd": {
+              "max_etd": 172800,
+              "min_etd": 86400
+            },
+            "features": {
+              "ontime_delivery_guarantee": {
+                "available": false,
+                "icon_url": "",
+                "text_detail": "",
+                "text_label": "",
+                "url_detail": "",
+                "value": 0
+              }
+            },
+            "insurance": {
+              "insurance_price": 200,
+              "insurance_type": 2,
+              "insurance_type_info": "Optional insurance",
+              "insurance_used_default": 2,
+              "insurance_used_info": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.40% dari harga invoice dan berlaku pembulatan ke atas",
+              "insurance_used_type": 2
+            },
+            "is_show_map": 0,
+            "price": {
+              "formatted_price": "Rp10.000",
+              "price": 10000
+            },
+            "promo_code": "",
+            "recommend": true,
+            "shipper_id": 23,
+            "shipper_name": "AnterAja",
+            "shipper_product_desc": "Layanan pengiriman standard dengan kecepatan pengiriman tergantung dari lokasi pengiriman dan lokasi tujuan. Umumnya 2-4 hari/ 5-9 hari/ >9 hari tergantung rute pengiriman.",
+            "shipper_product_id": 45,
+            "shipper_product_name": "Reguler",
+            "shipper_weight": 1000,
+            "status": 200,
+            "texts": {
+              "text_etd": "1-2 hari",
+              "text_price": "Rp10.000"
+            },
+            "ut": "1580204496"
+          },
+          "ratesId": "1580204496652984338",
+          "selected": true,
+          "serviceData": {
+            "cod": {
+              "cod_text": "",
+              "is_cod": 0
+            },
+            "error": {
+              "error_id": "",
+              "error_message": ""
+            },
+            "is_promo": 0,
+            "order_priority": {
+              "formatted_price": "",
+              "inactive_message": "",
+              "is_now": false,
+              "price": 0,
+              "static_messages": {
+                "checkbox_message": "",
+                "duration_message": "",
+                "fee_message": "",
+                "pdp_message": "",
+                "warningbox_message": ""
+              }
+            },
+            "products": [
+              {
+                "checksum": "ar4BIPoOomYslN5nUIsAnv7lY3I%3D",
+                "cod": {
+                  "cod_price": 0,
+                  "cod_text": "",
+                  "formatted_price": "",
+                  "is_cod_available": 0,
+              "tnc_text": "S&K Berlaku",
+              "tnc_link": "https://gw.tokopedia.com/cod_info"
+                },
+                "error": {
+                  "error_id": "",
+                  "error_message": ""
+                },
+                "etd": {
+                  "max_etd": 172800,
+                  "min_etd": 86400
+                },
+                "features": {
+                  "ontime_delivery_guarantee": {
+                    "available": false,
+                    "icon_url": "",
+                    "text_detail": "",
+                    "text_label": "",
+                    "url_detail": "",
+                    "value": 0
+                  }
+                },
+                "insurance": {
+                  "insurance_price": 200,
+                  "insurance_type": 2,
+                  "insurance_type_info": "Optional insurance",
+                  "insurance_used_default": 2,
+                  "insurance_used_info": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.40% dari harga invoice dan berlaku pembulatan ke atas",
+                  "insurance_used_type": 2
+                },
+                "is_show_map": 0,
+                "price": {
+                  "formatted_price": "Rp10.000",
+                  "price": 10000
+                },
+                "promo_code": "",
+                "recommend": true,
+                "shipper_id": 23,
+                "shipper_name": "AnterAja",
+                "shipper_product_desc": "Layanan pengiriman standard dengan kecepatan pengiriman tergantung dari lokasi pengiriman dan lokasi tujuan. Umumnya 2-4 hari/ 5-9 hari/ >9 hari tergantung rute pengiriman.",
+                "shipper_product_id": 45,
+                "shipper_product_name": "Reguler",
+                "shipper_weight": 1000,
+                "status": 200,
+                "texts": {
+                  "text_etd": "1-2 hari",
+                  "text_price": "Rp10.000"
+                },
+                "ut": "1580204496"
+              },
+              {
+                "checksum": "4kbAMw8v65o1ILH1LwGJDa4PYGQ%3D",
+                "cod": {
+                  "cod_price": 0,
+                  "cod_text": "",
+                  "formatted_price": "",
+                  "is_cod_available": 0,
+              "tnc_text": "S&K Berlaku",
+              "tnc_link": "https://gw.tokopedia.com/cod_info"
+                },
+                "error": {
+                  "error_id": "",
+                  "error_message": ""
+                },
+                "etd": {
+                  "max_etd": 172800,
+                  "min_etd": 86400
+                },
+                "features": {
+                  "ontime_delivery_guarantee": {
+                    "available": false,
+                    "icon_url": "",
+                    "text_detail": "",
+                    "text_label": "",
+                    "url_detail": "",
+                    "value": 0
+                  }
+                },
+                "insurance": {
+                  "insurance_price": 200,
+                  "insurance_type": 2,
+                  "insurance_type_info": "Optional insurance",
+                  "insurance_used_default": 2,
+                  "insurance_used_info": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.40% dari harga invoice dan berlaku pembulatan ke atas",
+                  "insurance_used_type": 2
+                },
+                "is_show_map": 0,
+                "price": {
+                  "formatted_price": "Rp9.000",
+                  "price": 9000
+                },
+                "promo_code": "",
+                "recommend": false,
+                "shipper_id": 1,
+                "shipper_name": "JNE Reg",
+                "shipper_product_desc": "JNE Reguler adalah paket reguler yang ditawarkan JNE. Kecepatan pengiriman tergantung dari lokasi pengiriman dan lokasi tujuan. Untuk kota yang sama, umumnya memakan waktu 2-3 hari.",
+                "shipper_product_id": 1,
+                "shipper_product_name": "Reguler",
+                "shipper_weight": 1000,
+                "status": 200,
+                "texts": {
+                  "text_etd": "1-2 hari",
+                  "text_price": "Rp9.000"
+                },
+                "ut": "1580204496"
+              },
+              {
+                "checksum": "Ohv6DyJ%2FTk33bWg%2BJHOfAwSM5Tk%3D",
+                "cod": {
+                  "cod_price": 0,
+                  "cod_text": "",
+                  "formatted_price": "",
+                  "is_cod_available": 0,
+              "tnc_text": "S&K Berlaku",
+              "tnc_link": "https://gw.tokopedia.com/cod_info"
+                },
+                "error": {
+                  "error_id": "",
+                  "error_message": ""
+                },
+                "etd": {
+                  "max_etd": 172800,
+                  "min_etd": 86400
+                },
+                "features": {
+                  "ontime_delivery_guarantee": {
+                    "available": false,
+                    "icon_url": "",
+                    "text_detail": "",
+                    "text_label": "",
+                    "url_detail": "",
+                    "value": 0
+                  }
+                },
+                "insurance": {
+                  "insurance_price": 200,
+                  "insurance_type": 2,
+                  "insurance_type_info": "Optional insurance",
+                  "insurance_used_default": 2,
+                  "insurance_used_info": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.40% dari harga invoice dan berlaku pembulatan ke atas",
+                  "insurance_used_type": 2
+                },
+                "is_show_map": 0,
+                "price": {
+                  "formatted_price": "Rp8.000",
+                  "price": 8000
+                },
+                "promo_code": "",
+                "recommend": false,
+                "shipper_id": 12,
+                "shipper_name": "Ninja Xpress",
+                "shipper_product_desc": "Layanan pengiriman standard dengan kecepatan pengiriman tergantung dari lokasi pengiriman dan lokasi tujuan. Umumnya 2-4 hari/ 5-9 hari/ >9 hari tergantung rute pengiriman.",
+                "shipper_product_id": 25,
+                "shipper_product_name": "Reguler",
+                "shipper_weight": 1000,
+                "status": 200,
+                "texts": {
+                  "text_etd": "1-2 hari",
+                  "text_price": "Rp8.000"
+                },
+                "ut": "1580204496"
+              },
+              {
+                "checksum": "Sz6ex%2FoH%2BdSkVzxyp%2FGmP6V9KyU%3D",
+                "cod": {
+                  "cod_price": 0,
+                  "cod_text": "",
+                  "formatted_price": "",
+                  "is_cod_available": 0,
+              "tnc_text": "S&K Berlaku",
+              "tnc_link": "https://gw.tokopedia.com/cod_info"
+                },
+                "error": {
+                  "error_id": "",
+                  "error_message": ""
+                },
+                "etd": {
+                  "max_etd": 172800,
+                  "min_etd": 86400
+                },
+                "features": {
+                  "ontime_delivery_guarantee": {
+                    "available": false,
+                    "icon_url": "",
+                    "text_detail": "",
+                    "text_label": "",
+                    "url_detail": "",
+                    "value": 0
+                  }
+                },
+                "insurance": {
+                  "insurance_price": 200,
+                  "insurance_type": 2,
+                  "insurance_type_info": "Optional insurance",
+                  "insurance_used_default": 2,
+                  "insurance_used_info": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.40% dari harga invoice dan berlaku pembulatan ke atas",
+                  "insurance_used_type": 2
+                },
+                "is_show_map": 0,
+                "price": {
+                  "formatted_price": "Rp8.500",
+                  "price": 8500
+                },
+                "promo_code": "",
+                "recommend": false,
+                "shipper_id": 24,
+                "shipper_name": "Lion Parcel",
+                "shipper_product_desc": "Layanan pengiriman standard dengan kecepatan pengiriman tergantung dari lokasi pengiriman dan lokasi tujuan. Umumnya 2-4 hari/ 5-9 hari/ >9 hari tergantung rute pengiriman.",
+                "shipper_product_id": 47,
+                "shipper_product_name": "Reguler",
+                "shipper_weight": 1000,
+                "status": 200,
+                "texts": {
+                  "text_etd": "1-2 hari",
+                  "text_price": "Rp8.500"
+                },
+                "ut": "1580204496"
+              }
+            ],
+            "range_price": {
+              "max_price": 10000,
+              "min_price": 8000
+            },
+            "service_id": 1104,
+            "service_name": "Reguler (2-4 hari)",
+            "status": 200,
+            "texts": {
+              "text_etd": "1-2 hari",
+              "text_range_price": "Rp8.000 - Rp10.000",
+              "text_service_desc": ""
+            }
+          }
+        },
+        {
+          "additionalFee": 0,
+          "allowDropshipper": true,
+          "blackboxInfo": "",
+          "productData": {
+            "checksum": "4kbAMw8v65o1ILH1LwGJDa4PYGQ%3D",
+            "cod": {
+              "cod_price": 0,
+              "cod_text": "",
+              "formatted_price": "",
+              "is_cod_available": 0,
+              "tnc_text": "S&K Berlaku",
+              "tnc_link": "https://gw.tokopedia.com/cod_info"
+            },
+            "error": {
+              "error_id": "",
+              "error_message": ""
+            },
+            "etd": {
+              "max_etd": 172800,
+              "min_etd": 86400
+            },
+            "features": {
+              "ontime_delivery_guarantee": {
+                "available": false,
+                "icon_url": "",
+                "text_detail": "",
+                "text_label": "",
+                "url_detail": "",
+                "value": 0
+              }
+            },
+            "insurance": {
+              "insurance_price": 200,
+              "insurance_type": 2,
+              "insurance_type_info": "Optional insurance",
+              "insurance_used_default": 2,
+              "insurance_used_info": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.40% dari harga invoice dan berlaku pembulatan ke atas",
+              "insurance_used_type": 2
+            },
+            "is_show_map": 0,
+            "price": {
+              "formatted_price": "Rp9.000",
+              "price": 9000
+            },
+            "promo_code": "",
+            "recommend": false,
+            "shipper_id": 1,
+            "shipper_name": "JNE Reg",
+            "shipper_product_desc": "JNE Reguler adalah paket reguler yang ditawarkan JNE. Kecepatan pengiriman tergantung dari lokasi pengiriman dan lokasi tujuan. Untuk kota yang sama, umumnya memakan waktu 2-3 hari.",
+            "shipper_product_id": 1,
+            "shipper_product_name": "Reguler",
+            "shipper_weight": 1000,
+            "status": 200,
+            "texts": {
+              "text_etd": "1-2 hari",
+              "text_price": "Rp9.000"
+            },
+            "ut": "1580204496"
+          },
+          "ratesId": "1580204496652984338",
+          "selected": false,
+          "serviceData": {
+            "cod": {
+              "cod_text": "",
+              "is_cod": 0
+            },
+            "error": {
+              "error_id": "",
+              "error_message": ""
+            },
+            "is_promo": 0,
+            "order_priority": {
+              "formatted_price": "",
+              "inactive_message": "",
+              "is_now": false,
+              "price": 0,
+              "static_messages": {
+                "checkbox_message": "",
+                "duration_message": "",
+                "fee_message": "",
+                "pdp_message": "",
+                "warningbox_message": ""
+              }
+            },
+            "products": [
+              {
+                "checksum": "ar4BIPoOomYslN5nUIsAnv7lY3I%3D",
+                "cod": {
+                  "cod_price": 0,
+                  "cod_text": "",
+                  "formatted_price": "",
+                  "is_cod_available": 0,
+              "tnc_text": "S&K Berlaku",
+              "tnc_link": "https://gw.tokopedia.com/cod_info"
+                },
+                "error": {
+                  "error_id": "",
+                  "error_message": ""
+                },
+                "etd": {
+                  "max_etd": 172800,
+                  "min_etd": 86400
+                },
+                "features": {
+                  "ontime_delivery_guarantee": {
+                    "available": false,
+                    "icon_url": "",
+                    "text_detail": "",
+                    "text_label": "",
+                    "url_detail": "",
+                    "value": 0
+                  }
+                },
+                "insurance": {
+                  "insurance_price": 200,
+                  "insurance_type": 2,
+                  "insurance_type_info": "Optional insurance",
+                  "insurance_used_default": 2,
+                  "insurance_used_info": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.40% dari harga invoice dan berlaku pembulatan ke atas",
+                  "insurance_used_type": 2
+                },
+                "is_show_map": 0,
+                "price": {
+                  "formatted_price": "Rp10.000",
+                  "price": 10000
+                },
+                "promo_code": "",
+                "recommend": true,
+                "shipper_id": 23,
+                "shipper_name": "AnterAja",
+                "shipper_product_desc": "Layanan pengiriman standard dengan kecepatan pengiriman tergantung dari lokasi pengiriman dan lokasi tujuan. Umumnya 2-4 hari/ 5-9 hari/ >9 hari tergantung rute pengiriman.",
+                "shipper_product_id": 45,
+                "shipper_product_name": "Reguler",
+                "shipper_weight": 1000,
+                "status": 200,
+                "texts": {
+                  "text_etd": "1-2 hari",
+                  "text_price": "Rp10.000"
+                },
+                "ut": "1580204496"
+              },
+              {
+                "checksum": "4kbAMw8v65o1ILH1LwGJDa4PYGQ%3D",
+                "cod": {
+                  "cod_price": 0,
+                  "cod_text": "",
+                  "formatted_price": "",
+                  "is_cod_available": 0,
+              "tnc_text": "S&K Berlaku",
+              "tnc_link": "https://gw.tokopedia.com/cod_info"
+                },
+                "error": {
+                  "error_id": "",
+                  "error_message": ""
+                },
+                "etd": {
+                  "max_etd": 172800,
+                  "min_etd": 86400
+                },
+                "features": {
+                  "ontime_delivery_guarantee": {
+                    "available": false,
+                    "icon_url": "",
+                    "text_detail": "",
+                    "text_label": "",
+                    "url_detail": "",
+                    "value": 0
+                  }
+                },
+                "insurance": {
+                  "insurance_price": 200,
+                  "insurance_type": 2,
+                  "insurance_type_info": "Optional insurance",
+                  "insurance_used_default": 2,
+                  "insurance_used_info": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.40% dari harga invoice dan berlaku pembulatan ke atas",
+                  "insurance_used_type": 2
+                },
+                "is_show_map": 0,
+                "price": {
+                  "formatted_price": "Rp9.000",
+                  "price": 9000
+                },
+                "promo_code": "",
+                "recommend": false,
+                "shipper_id": 1,
+                "shipper_name": "JNE Reg",
+                "shipper_product_desc": "JNE Reguler adalah paket reguler yang ditawarkan JNE. Kecepatan pengiriman tergantung dari lokasi pengiriman dan lokasi tujuan. Untuk kota yang sama, umumnya memakan waktu 2-3 hari.",
+                "shipper_product_id": 1,
+                "shipper_product_name": "Reguler",
+                "shipper_weight": 1000,
+                "status": 200,
+                "texts": {
+                  "text_etd": "1-2 hari",
+                  "text_price": "Rp9.000"
+                },
+                "ut": "1580204496"
+              },
+              {
+                "checksum": "Ohv6DyJ%2FTk33bWg%2BJHOfAwSM5Tk%3D",
+                "cod": {
+                  "cod_price": 0,
+                  "cod_text": "",
+                  "formatted_price": "",
+                  "is_cod_available": 0,
+              "tnc_text": "S&K Berlaku",
+              "tnc_link": "https://gw.tokopedia.com/cod_info"
+                },
+                "error": {
+                  "error_id": "",
+                  "error_message": ""
+                },
+                "etd": {
+                  "max_etd": 172800,
+                  "min_etd": 86400
+                },
+                "features": {
+                  "ontime_delivery_guarantee": {
+                    "available": false,
+                    "icon_url": "",
+                    "text_detail": "",
+                    "text_label": "",
+                    "url_detail": "",
+                    "value": 0
+                  }
+                },
+                "insurance": {
+                  "insurance_price": 200,
+                  "insurance_type": 2,
+                  "insurance_type_info": "Optional insurance",
+                  "insurance_used_default": 2,
+                  "insurance_used_info": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.40% dari harga invoice dan berlaku pembulatan ke atas",
+                  "insurance_used_type": 2
+                },
+                "is_show_map": 0,
+                "price": {
+                  "formatted_price": "Rp8.000",
+                  "price": 8000
+                },
+                "promo_code": "",
+                "recommend": false,
+                "shipper_id": 12,
+                "shipper_name": "Ninja Xpress",
+                "shipper_product_desc": "Layanan pengiriman standard dengan kecepatan pengiriman tergantung dari lokasi pengiriman dan lokasi tujuan. Umumnya 2-4 hari/ 5-9 hari/ >9 hari tergantung rute pengiriman.",
+                "shipper_product_id": 25,
+                "shipper_product_name": "Reguler",
+                "shipper_weight": 1000,
+                "status": 200,
+                "texts": {
+                  "text_etd": "1-2 hari",
+                  "text_price": "Rp8.000"
+                },
+                "ut": "1580204496"
+              },
+              {
+                "checksum": "Sz6ex%2FoH%2BdSkVzxyp%2FGmP6V9KyU%3D",
+                "cod": {
+                  "cod_price": 0,
+                  "cod_text": "",
+                  "formatted_price": "",
+                  "is_cod_available": 0,
+              "tnc_text": "S&K Berlaku",
+              "tnc_link": "https://gw.tokopedia.com/cod_info"
+                },
+                "error": {
+                  "error_id": "",
+                  "error_message": ""
+                },
+                "etd": {
+                  "max_etd": 172800,
+                  "min_etd": 86400
+                },
+                "features": {
+                  "ontime_delivery_guarantee": {
+                    "available": false,
+                    "icon_url": "",
+                    "text_detail": "",
+                    "text_label": "",
+                    "url_detail": "",
+                    "value": 0
+                  }
+                },
+                "insurance": {
+                  "insurance_price": 200,
+                  "insurance_type": 2,
+                  "insurance_type_info": "Optional insurance",
+                  "insurance_used_default": 2,
+                  "insurance_used_info": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.40% dari harga invoice dan berlaku pembulatan ke atas",
+                  "insurance_used_type": 2
+                },
+                "is_show_map": 0,
+                "price": {
+                  "formatted_price": "Rp8.500",
+                  "price": 8500
+                },
+                "promo_code": "",
+                "recommend": false,
+                "shipper_id": 24,
+                "shipper_name": "Lion Parcel",
+                "shipper_product_desc": "Layanan pengiriman standard dengan kecepatan pengiriman tergantung dari lokasi pengiriman dan lokasi tujuan. Umumnya 2-4 hari/ 5-9 hari/ >9 hari tergantung rute pengiriman.",
+                "shipper_product_id": 47,
+                "shipper_product_name": "Reguler",
+                "shipper_weight": 1000,
+                "status": 200,
+                "texts": {
+                  "text_etd": "1-2 hari",
+                  "text_price": "Rp8.500"
+                },
+                "ut": "1580204496"
+              }
+            ],
+            "range_price": {
+              "max_price": 10000,
+              "min_price": 8000
+            },
+            "service_id": 1104,
+            "service_name": "Reguler (2-4 hari)",
+            "status": 200,
+            "texts": {
+              "text_etd": "1-2 hari",
+              "text_range_price": "Rp8.000 - Rp10.000",
+              "text_service_desc": ""
+            }
+          }
+        },
+        {
+          "additionalFee": 0,
+          "allowDropshipper": false,
+          "blackboxInfo": "",
+          "productData": {
+            "checksum": "Ohv6DyJ%2FTk33bWg%2BJHOfAwSM5Tk%3D",
+            "cod": {
+              "cod_price": 0,
+              "cod_text": "",
+              "formatted_price": "",
+              "is_cod_available": 0,
+              "tnc_text": "S&K Berlaku",
+              "tnc_link": "https://gw.tokopedia.com/cod_info"
+            },
+            "error": {
+              "error_id": "",
+              "error_message": ""
+            },
+            "etd": {
+              "max_etd": 172800,
+              "min_etd": 86400
+            },
+            "features": {
+              "ontime_delivery_guarantee": {
+                "available": false,
+                "icon_url": "",
+                "text_detail": "",
+                "text_label": "",
+                "url_detail": "",
+                "value": 0
+              }
+            },
+            "insurance": {
+              "insurance_price": 200,
+              "insurance_type": 2,
+              "insurance_type_info": "Optional insurance",
+              "insurance_used_default": 2,
+              "insurance_used_info": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.40% dari harga invoice dan berlaku pembulatan ke atas",
+              "insurance_used_type": 2
+            },
+            "is_show_map": 0,
+            "price": {
+              "formatted_price": "Rp8.000",
+              "price": 8000
+            },
+            "promo_code": "",
+            "recommend": false,
+            "shipper_id": 12,
+            "shipper_name": "Ninja Xpress",
+            "shipper_product_desc": "Layanan pengiriman standard dengan kecepatan pengiriman tergantung dari lokasi pengiriman dan lokasi tujuan. Umumnya 2-4 hari/ 5-9 hari/ >9 hari tergantung rute pengiriman.",
+            "shipper_product_id": 25,
+            "shipper_product_name": "Reguler",
+            "shipper_weight": 1000,
+            "status": 200,
+            "texts": {
+              "text_etd": "1-2 hari",
+              "text_price": "Rp8.000"
+            },
+            "ut": "1580204496"
+          },
+          "ratesId": "1580204496652984338",
+          "selected": false,
+          "serviceData": {
+            "cod": {
+              "cod_text": "",
+              "is_cod": 0
+            },
+            "error": {
+              "error_id": "",
+              "error_message": ""
+            },
+            "is_promo": 0,
+            "order_priority": {
+              "formatted_price": "",
+              "inactive_message": "",
+              "is_now": false,
+              "price": 0,
+              "static_messages": {
+                "checkbox_message": "",
+                "duration_message": "",
+                "fee_message": "",
+                "pdp_message": "",
+                "warningbox_message": ""
+              }
+            },
+            "products": [
+              {
+                "checksum": "ar4BIPoOomYslN5nUIsAnv7lY3I%3D",
+                "cod": {
+                  "cod_price": 0,
+                  "cod_text": "",
+                  "formatted_price": "",
+                  "is_cod_available": 0,
+              "tnc_text": "S&K Berlaku",
+              "tnc_link": "https://gw.tokopedia.com/cod_info"
+                },
+                "error": {
+                  "error_id": "",
+                  "error_message": ""
+                },
+                "etd": {
+                  "max_etd": 172800,
+                  "min_etd": 86400
+                },
+                "features": {
+                  "ontime_delivery_guarantee": {
+                    "available": false,
+                    "icon_url": "",
+                    "text_detail": "",
+                    "text_label": "",
+                    "url_detail": "",
+                    "value": 0
+                  }
+                },
+                "insurance": {
+                  "insurance_price": 200,
+                  "insurance_type": 2,
+                  "insurance_type_info": "Optional insurance",
+                  "insurance_used_default": 2,
+                  "insurance_used_info": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.40% dari harga invoice dan berlaku pembulatan ke atas",
+                  "insurance_used_type": 2
+                },
+                "is_show_map": 0,
+                "price": {
+                  "formatted_price": "Rp10.000",
+                  "price": 10000
+                },
+                "promo_code": "",
+                "recommend": true,
+                "shipper_id": 23,
+                "shipper_name": "AnterAja",
+                "shipper_product_desc": "Layanan pengiriman standard dengan kecepatan pengiriman tergantung dari lokasi pengiriman dan lokasi tujuan. Umumnya 2-4 hari/ 5-9 hari/ >9 hari tergantung rute pengiriman.",
+                "shipper_product_id": 45,
+                "shipper_product_name": "Reguler",
+                "shipper_weight": 1000,
+                "status": 200,
+                "texts": {
+                  "text_etd": "1-2 hari",
+                  "text_price": "Rp10.000"
+                },
+                "ut": "1580204496"
+              },
+              {
+                "checksum": "4kbAMw8v65o1ILH1LwGJDa4PYGQ%3D",
+                "cod": {
+                  "cod_price": 0,
+                  "cod_text": "",
+                  "formatted_price": "",
+                  "is_cod_available": 0,
+              "tnc_text": "S&K Berlaku",
+              "tnc_link": "https://gw.tokopedia.com/cod_info"
+                },
+                "error": {
+                  "error_id": "",
+                  "error_message": ""
+                },
+                "etd": {
+                  "max_etd": 172800,
+                  "min_etd": 86400
+                },
+                "features": {
+                  "ontime_delivery_guarantee": {
+                    "available": false,
+                    "icon_url": "",
+                    "text_detail": "",
+                    "text_label": "",
+                    "url_detail": "",
+                    "value": 0
+                  }
+                },
+                "insurance": {
+                  "insurance_price": 200,
+                  "insurance_type": 2,
+                  "insurance_type_info": "Optional insurance",
+                  "insurance_used_default": 2,
+                  "insurance_used_info": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.40% dari harga invoice dan berlaku pembulatan ke atas",
+                  "insurance_used_type": 2
+                },
+                "is_show_map": 0,
+                "price": {
+                  "formatted_price": "Rp9.000",
+                  "price": 9000
+                },
+                "promo_code": "",
+                "recommend": false,
+                "shipper_id": 1,
+                "shipper_name": "JNE Reg",
+                "shipper_product_desc": "JNE Reguler adalah paket reguler yang ditawarkan JNE. Kecepatan pengiriman tergantung dari lokasi pengiriman dan lokasi tujuan. Untuk kota yang sama, umumnya memakan waktu 2-3 hari.",
+                "shipper_product_id": 1,
+                "shipper_product_name": "Reguler",
+                "shipper_weight": 1000,
+                "status": 200,
+                "texts": {
+                  "text_etd": "1-2 hari",
+                  "text_price": "Rp9.000"
+                },
+                "ut": "1580204496"
+              },
+              {
+                "checksum": "Ohv6DyJ%2FTk33bWg%2BJHOfAwSM5Tk%3D",
+                "cod": {
+                  "cod_price": 0,
+                  "cod_text": "",
+                  "formatted_price": "",
+                  "is_cod_available": 0,
+              "tnc_text": "S&K Berlaku",
+              "tnc_link": "https://gw.tokopedia.com/cod_info"
+                },
+                "error": {
+                  "error_id": "",
+                  "error_message": ""
+                },
+                "etd": {
+                  "max_etd": 172800,
+                  "min_etd": 86400
+                },
+                "features": {
+                  "ontime_delivery_guarantee": {
+                    "available": false,
+                    "icon_url": "",
+                    "text_detail": "",
+                    "text_label": "",
+                    "url_detail": "",
+                    "value": 0
+                  }
+                },
+                "insurance": {
+                  "insurance_price": 200,
+                  "insurance_type": 2,
+                  "insurance_type_info": "Optional insurance",
+                  "insurance_used_default": 2,
+                  "insurance_used_info": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.40% dari harga invoice dan berlaku pembulatan ke atas",
+                  "insurance_used_type": 2
+                },
+                "is_show_map": 0,
+                "price": {
+                  "formatted_price": "Rp8.000",
+                  "price": 8000
+                },
+                "promo_code": "",
+                "recommend": false,
+                "shipper_id": 12,
+                "shipper_name": "Ninja Xpress",
+                "shipper_product_desc": "Layanan pengiriman standard dengan kecepatan pengiriman tergantung dari lokasi pengiriman dan lokasi tujuan. Umumnya 2-4 hari/ 5-9 hari/ >9 hari tergantung rute pengiriman.",
+                "shipper_product_id": 25,
+                "shipper_product_name": "Reguler",
+                "shipper_weight": 1000,
+                "status": 200,
+                "texts": {
+                  "text_etd": "1-2 hari",
+                  "text_price": "Rp8.000"
+                },
+                "ut": "1580204496"
+              },
+              {
+                "checksum": "Sz6ex%2FoH%2BdSkVzxyp%2FGmP6V9KyU%3D",
+                "cod": {
+                  "cod_price": 0,
+                  "cod_text": "",
+                  "formatted_price": "",
+                  "is_cod_available": 0,
+              "tnc_text": "S&K Berlaku",
+              "tnc_link": "https://gw.tokopedia.com/cod_info"
+                },
+                "error": {
+                  "error_id": "",
+                  "error_message": ""
+                },
+                "etd": {
+                  "max_etd": 172800,
+                  "min_etd": 86400
+                },
+                "features": {
+                  "ontime_delivery_guarantee": {
+                    "available": false,
+                    "icon_url": "",
+                    "text_detail": "",
+                    "text_label": "",
+                    "url_detail": "",
+                    "value": 0
+                  }
+                },
+                "insurance": {
+                  "insurance_price": 200,
+                  "insurance_type": 2,
+                  "insurance_type_info": "Optional insurance",
+                  "insurance_used_default": 2,
+                  "insurance_used_info": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.40% dari harga invoice dan berlaku pembulatan ke atas",
+                  "insurance_used_type": 2
+                },
+                "is_show_map": 0,
+                "price": {
+                  "formatted_price": "Rp8.500",
+                  "price": 8500
+                },
+                "promo_code": "",
+                "recommend": false,
+                "shipper_id": 24,
+                "shipper_name": "Lion Parcel",
+                "shipper_product_desc": "Layanan pengiriman standard dengan kecepatan pengiriman tergantung dari lokasi pengiriman dan lokasi tujuan. Umumnya 2-4 hari/ 5-9 hari/ >9 hari tergantung rute pengiriman.",
+                "shipper_product_id": 47,
+                "shipper_product_name": "Reguler",
+                "shipper_weight": 1000,
+                "status": 200,
+                "texts": {
+                  "text_etd": "1-2 hari",
+                  "text_price": "Rp8.500"
+                },
+                "ut": "1580204496"
+              }
+            ],
+            "range_price": {
+              "max_price": 10000,
+              "min_price": 8000
+            },
+            "service_id": 1104,
+            "service_name": "Reguler (2-4 hari)",
+            "status": 200,
+            "texts": {
+              "text_etd": "1-2 hari",
+              "text_range_price": "Rp8.000 - Rp10.000",
+              "text_service_desc": ""
+            }
+          }
+        },
+        {
+          "additionalFee": 0,
+          "allowDropshipper": true,
+          "blackboxInfo": "",
+          "productData": {
+            "checksum": "Sz6ex%2FoH%2BdSkVzxyp%2FGmP6V9KyU%3D",
+            "cod": {
+              "cod_price": 0,
+              "cod_text": "",
+              "formatted_price": "",
+              "is_cod_available": 0,
+              "tnc_text": "S&K Berlaku",
+              "tnc_link": "https://gw.tokopedia.com/cod_info"
+            },
+            "error": {
+              "error_id": "",
+              "error_message": ""
+            },
+            "etd": {
+              "max_etd": 172800,
+              "min_etd": 86400
+            },
+            "features": {
+              "ontime_delivery_guarantee": {
+                "available": false,
+                "icon_url": "",
+                "text_detail": "",
+                "text_label": "",
+                "url_detail": "",
+                "value": 0
+              }
+            },
+            "insurance": {
+              "insurance_price": 200,
+              "insurance_type": 2,
+              "insurance_type_info": "Optional insurance",
+              "insurance_used_default": 2,
+              "insurance_used_info": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.40% dari harga invoice dan berlaku pembulatan ke atas",
+              "insurance_used_type": 2
+            },
+            "is_show_map": 0,
+            "price": {
+              "formatted_price": "Rp8.500",
+              "price": 8500
+            },
+            "promo_code": "",
+            "recommend": false,
+            "shipper_id": 24,
+            "shipper_name": "Lion Parcel",
+            "shipper_product_desc": "Layanan pengiriman standard dengan kecepatan pengiriman tergantung dari lokasi pengiriman dan lokasi tujuan. Umumnya 2-4 hari/ 5-9 hari/ >9 hari tergantung rute pengiriman.",
+            "shipper_product_id": 47,
+            "shipper_product_name": "Reguler",
+            "shipper_weight": 1000,
+            "status": 200,
+            "texts": {
+              "text_etd": "1-2 hari",
+              "text_price": "Rp8.500"
+            },
+            "ut": "1580204496"
+          },
+          "ratesId": "1580204496652984338",
+          "selected": false,
+          "serviceData": {
+            "cod": {
+              "cod_text": "",
+              "is_cod": 0
+            },
+            "error": {
+              "error_id": "",
+              "error_message": ""
+            },
+            "is_promo": 0,
+            "order_priority": {
+              "formatted_price": "",
+              "inactive_message": "",
+              "is_now": false,
+              "price": 0,
+              "static_messages": {
+                "checkbox_message": "",
+                "duration_message": "",
+                "fee_message": "",
+                "pdp_message": "",
+                "warningbox_message": ""
+              }
+            },
+            "products": [
+              {
+                "checksum": "ar4BIPoOomYslN5nUIsAnv7lY3I%3D",
+                "cod": {
+                  "cod_price": 0,
+                  "cod_text": "",
+                  "formatted_price": "",
+                  "is_cod_available": 0,
+              "tnc_text": "S&K Berlaku",
+              "tnc_link": "https://gw.tokopedia.com/cod_info"
+                },
+                "error": {
+                  "error_id": "",
+                  "error_message": ""
+                },
+                "etd": {
+                  "max_etd": 172800,
+                  "min_etd": 86400
+                },
+                "features": {
+                  "ontime_delivery_guarantee": {
+                    "available": false,
+                    "icon_url": "",
+                    "text_detail": "",
+                    "text_label": "",
+                    "url_detail": "",
+                    "value": 0
+                  }
+                },
+                "insurance": {
+                  "insurance_price": 200,
+                  "insurance_type": 2,
+                  "insurance_type_info": "Optional insurance",
+                  "insurance_used_default": 2,
+                  "insurance_used_info": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.40% dari harga invoice dan berlaku pembulatan ke atas",
+                  "insurance_used_type": 2
+                },
+                "is_show_map": 0,
+                "price": {
+                  "formatted_price": "Rp10.000",
+                  "price": 10000
+                },
+                "promo_code": "",
+                "recommend": true,
+                "shipper_id": 23,
+                "shipper_name": "AnterAja",
+                "shipper_product_desc": "Layanan pengiriman standard dengan kecepatan pengiriman tergantung dari lokasi pengiriman dan lokasi tujuan. Umumnya 2-4 hari/ 5-9 hari/ >9 hari tergantung rute pengiriman.",
+                "shipper_product_id": 45,
+                "shipper_product_name": "Reguler",
+                "shipper_weight": 1000,
+                "status": 200,
+                "texts": {
+                  "text_etd": "1-2 hari",
+                  "text_price": "Rp10.000"
+                },
+                "ut": "1580204496"
+              },
+              {
+                "checksum": "4kbAMw8v65o1ILH1LwGJDa4PYGQ%3D",
+                "cod": {
+                  "cod_price": 0,
+                  "cod_text": "",
+                  "formatted_price": "",
+                  "is_cod_available": 0,
+              "tnc_text": "S&K Berlaku",
+              "tnc_link": "https://gw.tokopedia.com/cod_info"
+                },
+                "error": {
+                  "error_id": "",
+                  "error_message": ""
+                },
+                "etd": {
+                  "max_etd": 172800,
+                  "min_etd": 86400
+                },
+                "features": {
+                  "ontime_delivery_guarantee": {
+                    "available": false,
+                    "icon_url": "",
+                    "text_detail": "",
+                    "text_label": "",
+                    "url_detail": "",
+                    "value": 0
+                  }
+                },
+                "insurance": {
+                  "insurance_price": 200,
+                  "insurance_type": 2,
+                  "insurance_type_info": "Optional insurance",
+                  "insurance_used_default": 2,
+                  "insurance_used_info": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.40% dari harga invoice dan berlaku pembulatan ke atas",
+                  "insurance_used_type": 2
+                },
+                "is_show_map": 0,
+                "price": {
+                  "formatted_price": "Rp9.000",
+                  "price": 9000
+                },
+                "promo_code": "",
+                "recommend": false,
+                "shipper_id": 1,
+                "shipper_name": "JNE Reg",
+                "shipper_product_desc": "JNE Reguler adalah paket reguler yang ditawarkan JNE. Kecepatan pengiriman tergantung dari lokasi pengiriman dan lokasi tujuan. Untuk kota yang sama, umumnya memakan waktu 2-3 hari.",
+                "shipper_product_id": 1,
+                "shipper_product_name": "Reguler",
+                "shipper_weight": 1000,
+                "status": 200,
+                "texts": {
+                  "text_etd": "1-2 hari",
+                  "text_price": "Rp9.000"
+                },
+                "ut": "1580204496"
+              },
+              {
+                "checksum": "Ohv6DyJ%2FTk33bWg%2BJHOfAwSM5Tk%3D",
+                "cod": {
+                  "cod_price": 0,
+                  "cod_text": "",
+                  "formatted_price": "",
+                  "is_cod_available": 0,
+              "tnc_text": "S&K Berlaku",
+              "tnc_link": "https://gw.tokopedia.com/cod_info"
+                },
+                "error": {
+                  "error_id": "",
+                  "error_message": ""
+                },
+                "etd": {
+                  "max_etd": 172800,
+                  "min_etd": 86400
+                },
+                "features": {
+                  "ontime_delivery_guarantee": {
+                    "available": false,
+                    "icon_url": "",
+                    "text_detail": "",
+                    "text_label": "",
+                    "url_detail": "",
+                    "value": 0
+                  }
+                },
+                "insurance": {
+                  "insurance_price": 200,
+                  "insurance_type": 2,
+                  "insurance_type_info": "Optional insurance",
+                  "insurance_used_default": 2,
+                  "insurance_used_info": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.40% dari harga invoice dan berlaku pembulatan ke atas",
+                  "insurance_used_type": 2
+                },
+                "is_show_map": 0,
+                "price": {
+                  "formatted_price": "Rp8.000",
+                  "price": 8000
+                },
+                "promo_code": "",
+                "recommend": false,
+                "shipper_id": 12,
+                "shipper_name": "Ninja Xpress",
+                "shipper_product_desc": "Layanan pengiriman standard dengan kecepatan pengiriman tergantung dari lokasi pengiriman dan lokasi tujuan. Umumnya 2-4 hari/ 5-9 hari/ >9 hari tergantung rute pengiriman.",
+                "shipper_product_id": 25,
+                "shipper_product_name": "Reguler",
+                "shipper_weight": 1000,
+                "status": 200,
+                "texts": {
+                  "text_etd": "1-2 hari",
+                  "text_price": "Rp8.000"
+                },
+                "ut": "1580204496"
+              },
+              {
+                "checksum": "Sz6ex%2FoH%2BdSkVzxyp%2FGmP6V9KyU%3D",
+                "cod": {
+                  "cod_price": 0,
+                  "cod_text": "",
+                  "formatted_price": "",
+                  "is_cod_available": 0,
+              "tnc_text": "S&K Berlaku",
+              "tnc_link": "https://gw.tokopedia.com/cod_info"
+                },
+                "error": {
+                  "error_id": "",
+                  "error_message": ""
+                },
+                "etd": {
+                  "max_etd": 172800,
+                  "min_etd": 86400
+                },
+                "features": {
+                  "ontime_delivery_guarantee": {
+                    "available": false,
+                    "icon_url": "",
+                    "text_detail": "",
+                    "text_label": "",
+                    "url_detail": "",
+                    "value": 0
+                  }
+                },
+                "insurance": {
+                  "insurance_price": 200,
+                  "insurance_type": 2,
+                  "insurance_type_info": "Optional insurance",
+                  "insurance_used_default": 2,
+                  "insurance_used_info": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.40% dari harga invoice dan berlaku pembulatan ke atas",
+                  "insurance_used_type": 2
+                },
+                "is_show_map": 0,
+                "price": {
+                  "formatted_price": "Rp8.500",
+                  "price": 8500
+                },
+                "promo_code": "",
+                "recommend": false,
+                "shipper_id": 24,
+                "shipper_name": "Lion Parcel",
+                "shipper_product_desc": "Layanan pengiriman standard dengan kecepatan pengiriman tergantung dari lokasi pengiriman dan lokasi tujuan. Umumnya 2-4 hari/ 5-9 hari/ >9 hari tergantung rute pengiriman.",
+                "shipper_product_id": 47,
+                "shipper_product_name": "Reguler",
+                "shipper_weight": 1000,
+                "status": 200,
+                "texts": {
+                  "text_etd": "1-2 hari",
+                  "text_price": "Rp8.500"
+                },
+                "ut": "1580204496"
+              }
+            ],
+            "range_price": {
+              "max_price": 10000,
+              "min_price": 8000
+            },
+            "service_id": 1104,
+            "service_name": "Reguler (2-4 hari)",
+            "status": 200,
+            "texts": {
+              "text_etd": "1-2 hari",
+              "text_range_price": "Rp8.000 - Rp10.000",
+              "text_service_desc": ""
+            }
+          }
+        }
+      ],
+      "showShowCase": false
+    }
+  ]
+}

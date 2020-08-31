@@ -1,21 +1,30 @@
 package com.tokopedia.topchat.chatsearch.view.activity
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.widget.RelativeLayout
 import android.widget.TextView
-import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatsearch.data.GetChatSearchResponse
 import com.tokopedia.topchat.chatsearch.di.ChatSearchComponent
 import com.tokopedia.topchat.chatsearch.di.DaggerChatSearchComponent
 import com.tokopedia.topchat.chatsearch.view.fragment.ChatSearchFragment
+import com.tokopedia.topchat.chatsearch.view.fragment.ChatSearchFragmentListener
+import com.tokopedia.topchat.chatsearch.view.fragment.ContactLoadMoreChatFragment
+import com.tokopedia.topchat.chatsearch.view.fragment.ContactLoadMoreChatListener
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.activity_chat_search.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,25 +36,42 @@ import kotlin.coroutines.CoroutineContext
  * @author by steven on 14/08/19.
  * For navigate: use {@link ApplinkConstInternalMarketplace.CHAT_SEARCH}
  */
-class ChatSearchActivity : BaseSimpleActivity(),
-        HasComponent<ChatSearchComponent>, CoroutineScope {
+class ChatSearchActivity : BaseSimpleActivity(), HasComponent<ChatSearchComponent>,
+        CoroutineScope, ChatSearchFragmentListener, ContactLoadMoreChatListener {
 
-    private val textDebounce = 200L
+    private val textDebounce = 500L
+    private var containerSearch: RelativeLayout? = null
+    private var txtToolbarTittle: Typography? = null
     override val coroutineContext: CoroutineContext = Dispatchers.Main
 
     interface Listener {
         fun onSearchQueryChanged(query: String)
     }
 
-    override fun getNewFragment(): Fragment {
-        return ChatSearchFragment.createFragment()
-    }
+    override fun getNewFragment() = ChatSearchFragment.createFragment()
+    override fun getParentViewResourceID() = R.id.parent_view
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat_search)
+        bindView()
+        initWindowBackground()
         useLightNotificationBar()
         setupToolbar()
+    }
+
+    private fun bindView() {
+        containerSearch = findViewById(R.id.container_search)
+        txtToolbarTittle = findViewById(R.id.txt_toolbar_tittle)
+    }
+
+    override fun onClickContactLoadMore(query: String, firstPageContacts: GetChatSearchResponse) {
+        KeyboardHandler.hideSoftKeyboard(this)
+        val loadMoreContactDetail = ContactLoadMoreChatFragment.create(query, firstPageContacts)
+        supportFragmentManager.beginTransaction()
+                .addToBackStack(null)
+                .replace(parentViewResourceID, loadMoreContactDetail, "ContactLoadMoreChatFragment")
+                .commit()
     }
 
     override fun getComponent(): ChatSearchComponent {
@@ -53,6 +79,26 @@ class ChatSearchActivity : BaseSimpleActivity(),
                 .builder()
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
                 .build()
+    }
+
+    @SuppressLint("SetTextI18n")
+    override fun changeToolbarTitle(tittle: String) {
+        containerSearch?.hide()
+        txtToolbarTittle?.show()
+        txtToolbarTittle?.text = "\"$tittle\""
+    }
+
+    override fun showSearchBar() {
+        containerSearch?.show()
+        txtToolbarTittle?.hide()
+    }
+
+    override fun hideKeyboard() {
+        KeyboardHandler.hideSoftKeyboard(this)
+    }
+
+    private fun initWindowBackground() {
+        window.decorView.setBackgroundColor(Color.WHITE)
     }
 
     private fun useLightNotificationBar() {
@@ -70,7 +116,7 @@ class ChatSearchActivity : BaseSimpleActivity(),
 
     private fun assignBackButtonClick() {
         ivBack?.setOnClickListener {
-            finish()
+            onBackPressed()
         }
     }
 
@@ -125,5 +171,11 @@ class ChatSearchActivity : BaseSimpleActivity(),
     override fun onDestroy() {
         searchTextView?.removeTextChangedListener(textWatcher)
         super.onDestroy()
+    }
+
+    override fun onClickChangeKeyword() {
+        searchTextView?.requestFocus()
+        searchTextView?.performClick()
+        KeyboardHandler.showSoftKeyboard(this)
     }
 }

@@ -1,0 +1,43 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+
+    defaultConfig {
+        vectorDrawables.useSupportLibrary=vectorDrawable.toBoolean()
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+        multiDexEnabled (project.hasProperty('coverage'))
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+}
+
+dependencies {
+    implementation rootProject.ext.supportLibDependencies.kotlinSupport
+    testImplementation rootProject.ext.testDependencies.junit
+}
+
+project.ext {
+    artifactId = 'utils'
+    groupId = 'com.tokopedia.library'
+    versionName = "0.0.2"
+    artifactName = "utils-release"
+}
+
+apply from: '../../publish_local.gradle'

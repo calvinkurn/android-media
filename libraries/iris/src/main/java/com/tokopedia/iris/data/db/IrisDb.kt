@@ -4,6 +4,8 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import android.content.Context
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.tokopedia.iris.util.DATABASE_NAME
 import com.tokopedia.iris.data.db.dao.TrackingDao
 import com.tokopedia.iris.data.db.table.Tracking
@@ -12,7 +14,7 @@ import com.tokopedia.iris.data.db.table.Tracking
  * @author okasurya on 10/18/18.
  */
 
-@Database(entities = [Tracking::class], version = 1)
+@Database(entities = [Tracking::class], version = 2)
 abstract class IrisDb : RoomDatabase() {
     abstract fun trackingDao(): TrackingDao
 
@@ -27,8 +29,19 @@ abstract class IrisDb : RoomDatabase() {
             }
         }
 
+        val MIGRATION_1_2 = object : Migration(1, 2) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                try {
+                    database.execSQL("ALTER TABLE tracking ADD COLUMN appVersion TEXT not null default ''")
+                } catch (e:Exception) {
+                    // noop
+                }
+            }
+        }
+
         private fun buildDatabase(context: Context): IrisDb {
-            return Room.databaseBuilder(context, IrisDb::class.java, DATABASE_NAME).build()
+            return Room.databaseBuilder(context, IrisDb::class.java, DATABASE_NAME)
+                .addMigrations(MIGRATION_1_2).build()
         }
     }
 }

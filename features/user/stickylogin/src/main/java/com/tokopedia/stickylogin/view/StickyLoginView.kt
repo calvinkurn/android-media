@@ -1,42 +1,48 @@
 package com.tokopedia.stickylogin.view
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
-import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Build
-import androidx.appcompat.content.res.AppCompatResources
-import android.text.Spannable
 import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
-import android.text.style.StyleSpan
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
-import com.tokopedia.design.base.BaseCustomView
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
+import com.tokopedia.kotlin.extensions.view.loadImageCircle
 import com.tokopedia.stickylogin.R
+import com.tokopedia.stickylogin.analytics.StickyLoginReminderTracker
 import com.tokopedia.stickylogin.analytics.StickyLoginTracking
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
+import kotlinx.coroutines.*
 import java.util.concurrent.TimeUnit
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.design.utils.StripedUnderlineUtil
+import kotlin.coroutines.CoroutineContext
 
+class StickyLoginView : FrameLayout, CoroutineScope {
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main
 
-class StickyLoginView : BaseCustomView {
-
-    private lateinit var layoutContainer: LinearLayout
+    private lateinit var layoutContainer: ConstraintLayout
     private lateinit var imageViewLeft: ImageView
     private lateinit var imageViewRight: ImageView
-    private lateinit var textContent: TextView
+    private lateinit var textContent: EllipsizedTextView
     private var leftImage: Drawable? = null
-    private var spannable: SpannableString? = null
+
+    private var content = ""
+    private var highlight = ""
+    private var highlightColor = -1
 
     val tracker: StickyLoginTracking
         get() = StickyLoginTracking()
+
+    val trackerLoginReminder: StickyLoginReminderTracker
+        get() = StickyLoginReminderTracker()
 
     private var timeDelay = DEFAULT_DELAY_TIME_IN_MINUTES
 
@@ -47,19 +53,29 @@ class StickyLoginView : BaseCustomView {
 
     constructor(context: Context, attributeSet: AttributeSet) : super(context, attributeSet) {
         inflateLayout()
-        initAttributeSet(attributeSet)
-        initView()
+        launch {
+            val result = initAttrsInBg(attributeSet)
+            result.await()
+            initView()
+        }
     }
 
     constructor(context: Context, attributeSet: AttributeSet, styleAttr: Int) : super(context, attributeSet, styleAttr) {
         inflateLayout()
+        launch {
+            val result = initAttrsInBg(attributeSet)
+            result.await()
+            initView()
+        }
+    }
+
+    fun initAttrsInBg(attributeSet: AttributeSet) : Deferred<Unit> = async(Dispatchers.IO) {
         initAttributeSet(attributeSet)
-        initView()
     }
 
     private fun inflateLayout() {
         val layout: LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val view = layout.inflate(R.layout.widget_sticky_login_text, this, true)
+        val view = layout.inflate(R.layout.layout_widget_sticky_login, this, true)
 
         layoutContainer = view.findViewById(R.id.layout_sticky_container)
         textContent = view.findViewById(R.id.layout_sticky_content)
@@ -70,21 +86,9 @@ class StickyLoginView : BaseCustomView {
     private fun initAttributeSet(attributeSet: AttributeSet) {
         val styleable = context.obtainStyledAttributes(attributeSet, R.styleable.StickyLoginView, 0, 0)
         try {
-            var text = styleable.getString(R.styleable.StickyLoginView_sticky_text)
-            val textHighlight = styleable.getString(R.styleable.StickyLoginView_sticky_text_highlight)
-            val highlightColor = styleable.getColor(R.styleable.StickyLoginView_sticky_highlight_color, -1)
-
-            spannable = SpannableString("")
-            if (text != null) {
-                if (textHighlight != null) {
-                    text += " $textHighlight"
-                    spannable = SpannableString(text)
-                    if (highlightColor != -1) {
-                        spannable.run { this?.setSpan(ForegroundColorSpan(highlightColor), text.length - textHighlight.length, text.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE) }
-                    }
-                    spannable.run { this?.setSpan(StyleSpan(Typeface.BOLD), text.length - textHighlight.length, text.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE) }
-                }
-            }
+            content = styleable.getString(R.styleable.StickyLoginView_sticky_text) ?: ""
+            highlight = styleable.getString(R.styleable.StickyLoginView_sticky_text_highlight) ?: ""
+            highlightColor = styleable.getColor(R.styleable.StickyLoginView_sticky_highlight_color, -1)
 
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
                 leftImage = styleable.getDrawable(R.styleable.StickyLoginView_sticky_left_icon)
@@ -95,22 +99,15 @@ class StickyLoginView : BaseCustomView {
                 }
             }
         } finally {
+            setContent(content, highlight)
             styleable.recycle()
         }
     }
 
     private fun initView() {
-        if (!spannable.isNullOrEmpty() || !spannable.isNullOrEmpty()) {
-            textContent.text = spannable
-        }
-
         if (leftImage != null) {
             imageViewLeft.setImageDrawable(leftImage)
         }
-    }
-
-    override fun setBackgroundColor(color: Int) {
-        layoutContainer.setBackgroundColor(color)
     }
 
     override fun setOnClickListener(listener: OnClickListener?) {
@@ -122,8 +119,17 @@ class StickyLoginView : BaseCustomView {
     }
 
     fun setContent(stickyLoginTickerDetail: StickyLoginTickerPojo.TickerDetail) {
-        textContent.text = MethodChecker.fromHtml(stickyLoginTickerDetail.message)
-        StripedUnderlineUtil.stripUnderlines(textContent)
+        val content = stickyLoginTickerDetail.message
+        if (content.contains(REGEX_HTML_TAG)) {
+            val contents = content.split(REGEX_HTML_TAG)
+            setContent(contents[0], " ${contents[2]}")
+        } else {
+            setContent(stickyLoginTickerDetail.message, "")
+        }
+    }
+
+    fun setContent(content: String, highlight: String) {
+        textContent.setContent(content, highlight)
     }
 
     fun show(page: StickyLoginConstant.Page) {
@@ -146,13 +152,6 @@ class StickyLoginView : BaseCustomView {
         }
     }
 
-    /**
-     * @param minutes delay time in minutes
-     **/
-    fun setDelayTime(minutes: Int) {
-        this.timeDelay = minutes
-    }
-
     fun isShowing(): Boolean {
         return this.visibility == View.VISIBLE
     }
@@ -166,20 +165,21 @@ class StickyLoginView : BaseCustomView {
         return null
     }
 
-    private fun getSharedPreference(): SharedPreferences {
-        return context.getSharedPreferences(STICKY_PREF, Context.MODE_PRIVATE)
+    private fun getSharedPreference(file: String): SharedPreferences {
+        return context.getSharedPreferences(file, Context.MODE_PRIVATE)
     }
 
     private fun getLastSeen(page: StickyLoginConstant.Page): Long {
+        val sharedPref = getSharedPreference(STICKY_PREF)
         val lastSeen = when (page) {
             StickyLoginConstant.Page.HOME -> {
-                getSharedPreference().getLong(KEY_LAST_SEEN_AT_HOME, 0)
+                sharedPref.getLong(KEY_LAST_SEEN_AT_HOME, 0)
             }
             StickyLoginConstant.Page.PDP -> {
-                getSharedPreference().getLong(KEY_LAST_SEEN_AT_PDP, 0)
+                sharedPref.getLong(KEY_LAST_SEEN_AT_PDP, 0)
             }
             StickyLoginConstant.Page.SHOP -> {
-                getSharedPreference().getLong(KEY_LAST_SEEN_AT_SHOP, 0)
+                sharedPref.getLong(KEY_LAST_SEEN_AT_SHOP, 0)
             }
         }
         return if (lastSeen > 0) lastSeen
@@ -188,7 +188,7 @@ class StickyLoginView : BaseCustomView {
 
     private fun setLastSeen(page: StickyLoginConstant.Page, epoch: Long) {
         val inMinute = TimeUnit.MILLISECONDS.toMinutes(epoch)
-        val sharedPref = getSharedPreference()
+        val sharedPref = getSharedPreference(STICKY_PREF)
         when (page) {
             StickyLoginConstant.Page.HOME -> {
                 sharedPref.edit().putLong(KEY_LAST_SEEN_AT_HOME, inMinute).apply()
@@ -202,6 +202,30 @@ class StickyLoginView : BaseCustomView {
         }
     }
 
+    /**
+     * Login Reminder content
+     */
+    fun isLoginReminder(): Boolean {
+        val pref = getSharedPreference(STICKY_LOGIN_REMINDER_PREF)
+        val name = pref.getString(KEY_USER_NAME, "") ?: ""
+        val picture = pref.getString(KEY_PROFILE_PICTURE, "") ?: ""
+        return name.isNotEmpty() && picture.isNotEmpty()
+    }
+
+    @SuppressLint("SetTextI18n")
+    fun showLoginReminder(page: StickyLoginConstant.Page) {
+        val name = getSharedPreference(STICKY_LOGIN_REMINDER_PREF).getString(KEY_USER_NAME, "")
+        val profilePicture = getSharedPreference(STICKY_LOGIN_REMINDER_PREF).getString(KEY_PROFILE_PICTURE, "")
+
+        textContent.setContent(TEXT_RE_LOGIN + name)
+        textContent.setTextColor(ContextCompat.getColor(context, R.color.Green_G500))
+
+        profilePicture?.let {
+            imageViewLeft.loadImageCircle(it)
+        }
+        show(page)
+    }
+
     companion object {
         const val TAG = "StickyTextButton"
 
@@ -211,5 +235,13 @@ class StickyLoginView : BaseCustomView {
         private const val KEY_LAST_SEEN_AT_HOME = "last_seen_at_home"
         private const val KEY_LAST_SEEN_AT_PDP = "last_seen_at_pdp"
         private const val KEY_LAST_SEEN_AT_SHOP = "last_seen_at_shop"
+
+        private const val STICKY_LOGIN_REMINDER_PREF = "sticky_login_reminder.pref"
+        private const val KEY_USER_NAME = "user_name"
+        private const val KEY_PROFILE_PICTURE = "profile_picture"
+
+        private const val TEXT_RE_LOGIN = "Masuk sebagai "
+
+        private val REGEX_HTML_TAG = "<[^>]+>".toRegex()
     }
 }

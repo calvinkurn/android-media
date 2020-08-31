@@ -6,6 +6,7 @@ query dynamicHomeChannel($type: String) {
             layout
             type
             campaignID
+            campaignCode
             header {
                 id
                 name
@@ -39,9 +40,15 @@ query dynamicHomeChannel($type: String) {
                 productClickUrl
                 impression
                 cashback
+                discountPercentage
                 freeOngkir {
                     isActive
                     imageUrl
+                }
+                labelGroup {
+                    position
+                    title
+                    type
                 }
             }
             banner {
@@ -58,8 +65,14 @@ query dynamicHomeChannel($type: String) {
                 applink
                 text_color
                 image_url
+                back_color
+                gradient_color
                 attribution
             }
+            galaxy_attribution
+	        persona
+       	    category_persona
+       	    brand_id
         }
     }
 }

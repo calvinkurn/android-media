@@ -2,32 +2,39 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_
 
 import android.content.Context
 import android.graphics.Color
-import android.os.Bundle
-import androidx.core.content.ContextCompat
 import android.text.TextUtils
 import android.view.View
+import android.view.ViewStub
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import com.crashlytics.android.Crashlytics
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.home.R
-import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.helper.DateHelper
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
-import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.unifyprinciples.Typography
+import androidx.constraintlayout.widget.ConstraintLayout
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.UnifyButton
+import androidx.constraintlayout.widget.ConstraintSet
+import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
+import com.tokopedia.home.beranda.helper.benchmark.TRACE_ON_BIND_DYNAMIC_CHANNEL
 
 abstract class DynamicChannelViewHolder(itemView: View,
-                                        private val listener: HomeCategoryListener,
-                                        private val countDownListener: CountDownView.CountDownListener) : AbstractViewHolder<DynamicChannelViewModel>(itemView) {
+                                        private val listener: HomeCategoryListener?) : AbstractViewHolder<DynamicChannelDataModel>(itemView) {
     private val context: Context = itemView.context
 
-    lateinit var countDownView: CountDownView
+    var countDownView: CountDownView? = null
+    var seeAllButton: TextView? = null
+    var channelTitle: Typography? = null
+    var seeAllButtonUnify: UnifyButton? = null
+    var channelSubtitle: TextView? = null
 
     /**
      * List of possible layout from backend
@@ -42,99 +49,64 @@ abstract class DynamicChannelViewHolder(itemView: View,
         const val TYPE_BANNER = 6
         const val TYPE_BANNER_CAROUSEL = 7
         const val TYPE_GIF_BANNER = 8
-    }
+        const val TYPE_FOUR_GRID_LEGO = 9
+        const val TYPE_MIX_TOP = 10
+        const val TYPE_MIX_LEFT = 20
+        const val TYPE_RECOMMENDATION_LIST = 14
+        const val TYPE_PRODUCT_HIGHLIGHT = 11
+        const val TYPE_CATEGORY_WIDGET = 15
 
-    protected fun getLayoutType(channels: DynamicHomeChannel.Channels): Int {
-        when(channels.layout) {
-            DynamicHomeChannel.Channels.LAYOUT_6_IMAGE -> return TYPE_SIX_GRID_LEGO
-            DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE -> return TYPE_THREE_GRID_LEGO
-            DynamicHomeChannel.Channels.LAYOUT_SPRINT -> return TYPE_SPRINT_SALE
-            DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO -> return TYPE_SPRINT_LEGO
-            DynamicHomeChannel.Channels.LAYOUT_ORGANIC -> return TYPE_ORGANIC
-            DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL -> return TYPE_BANNER_CAROUSEL
-            DynamicHomeChannel.Channels.LAYOUT_BANNER_ORGANIC -> return TYPE_BANNER
-            DynamicHomeChannel.Channels.LAYOUT_BANNER_GIF -> return TYPE_GIF_BANNER
-
-        }
-        return TYPE_CURATED
-    }
-
-    override fun bind(element: DynamicChannelViewModel, payloads: MutableList<Any>) {
-        val channel = element.channel
-
-        if (payloads.isNotEmpty()) {
-            payloads.forEach { payload->
-                if (payload is Bundle && !payload.getBoolean(DynamicChannelViewModel.HOME_RV_DC_IMPRESSED)) {
-                    channel?.let {
-                        setViewPortImpression(element, channel)
-                    }
-                }
+        fun getLayoutType(channels: DynamicHomeChannel.Channels): Int {
+            when(channels.layout) {
+                DynamicHomeChannel.Channels.LAYOUT_6_IMAGE -> return TYPE_SIX_GRID_LEGO
+                DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE -> return TYPE_THREE_GRID_LEGO
+                DynamicHomeChannel.Channels.LAYOUT_LEGO_4_IMAGE -> return TYPE_FOUR_GRID_LEGO
+                DynamicHomeChannel.Channels.LAYOUT_SPRINT -> return TYPE_SPRINT_SALE
+                DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO -> return TYPE_SPRINT_LEGO
+                DynamicHomeChannel.Channels.LAYOUT_ORGANIC -> return TYPE_ORGANIC
+                DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL -> return TYPE_BANNER_CAROUSEL
+                DynamicHomeChannel.Channels.LAYOUT_BANNER_ORGANIC -> return TYPE_BANNER
+                DynamicHomeChannel.Channels.LAYOUT_BANNER_GIF -> return TYPE_GIF_BANNER
+                DynamicHomeChannel.Channels.LAYOUT_MIX_TOP -> return TYPE_MIX_TOP
+                DynamicHomeChannel.Channels.LAYOUT_PRODUCT_HIGHLIGHT -> return TYPE_PRODUCT_HIGHLIGHT
+                DynamicHomeChannel.Channels.LAYOUT_MIX_LEFT -> return TYPE_MIX_LEFT
+                DynamicHomeChannel.Channels.LAYOUT_LIST_CAROUSEL -> return TYPE_RECOMMENDATION_LIST
+                DynamicHomeChannel.Channels.LAYOUT_CATEGORY_WIDGET -> return TYPE_CATEGORY_WIDGET
             }
+            return TYPE_CURATED
         }
     }
 
-    override fun bind(element: DynamicChannelViewModel) {
+    override fun bind(element: DynamicChannelDataModel, payloads: MutableList<Any>) {
+        BenchmarkHelper.beginSystraceSection(TRACE_ON_BIND_DYNAMIC_CHANNEL+element.channel?.layout)
+        super.bind(element, payloads)
         try {
-            val channelTitle: Typography = itemView.findViewById(R.id.channel_title)
-            val seeAllButton: TextView = itemView.findViewById(R.id.see_all_button)
-            val channelTitleContainer: View? = itemView.findViewById(R.id.channel_title_container)
-            countDownView = itemView.findViewById(R.id.count_down)
-
             val channel = element.channel
             val channelHeaderName = element.channel?.header?.name
+            val channelSubtitleName = element.channel?.header?.subtitle
 
-            channel?.let { channel->
-                setViewPortImpression(element, channel)
-
+            channel?.let {
+                handleHeaderComponent(channelHeaderName, channel, channelSubtitleName, element)
                 /**
-                 * Requirement:
-                 * Only show channel header name when it is exist
+                 * setup recyclerview content
                  */
-                if (!TextUtils.isEmpty(channelHeaderName)) {
-                    channelTitleContainer?.visibility = View.VISIBLE
-                    channelTitle.text = channelHeaderName
-                    channelTitle.setTextColor(
-                            if(channel.header.textColor != null && channel.header.textColor.isNotEmpty()) Color.parseColor(channel.header.textColor)
-                            else ContextCompat.getColor(channelTitle.context, R.color.Neutral_N700)
-                    )
-                } else {
-                    channelTitleContainer?.visibility = View.GONE
-                }
+                setupContent(channel, payloads)
+            }
+        } catch (e: Exception) {
+            Crashlytics.log(0, getViewHolderClassName(), e.localizedMessage)
+        }
+        BenchmarkHelper.endSystraceSection()
+    }
 
-                /**
-                 * Requirement:
-                 * Only show `see all` button when it is exist
-                 * Don't show `see all` button on dynamic channel mix carousel
-                 */
-                if (isHasSeeMoreApplink(channel) &&
-                        getLayoutType(channel) != TYPE_BANNER_CAROUSEL) {
-                    seeAllButton.visibility = View.VISIBLE
-                    seeAllButton.setOnClickListener {
-                        listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.header))
-                        HomeTrackingUtils.homeDiscoveryWidgetViewAll(context,
-                                DynamicLinkHelper.getActionLink(channel.header))
-                        onSeeAllClickTracker(channel, DynamicLinkHelper.getActionLink(channel.getHeader()))
-                    }
-                } else {
-                    seeAllButton.visibility = View.GONE
-                }
+    override fun bind(element: DynamicChannelDataModel) {
+        BenchmarkHelper.beginSystraceSection(TRACE_ON_BIND_DYNAMIC_CHANNEL+element.channel?.layout)
+        try {
+            val channel = element.channel
+            val channelHeaderName = element.channel?.header?.name
+            val channelSubtitleName = element.channel?.header?.subtitle
 
-                /**
-                 * Requirement:
-                 * Only show countDownView when expired time exist
-                 * Don't start countDownView when it is expired from backend (possibly caused infinite refresh)
-                 *  since onCountDownFinished would getting called and refresh home
-                 */
-                if (hasExpiredTime(channel)) {
-                    val expiredTime = DateHelper.getExpiredTime(channel.header.expiredTime)
-                    if (!DateHelper.isExpired(element.serverTimeOffset, expiredTime)) {
-                        countDownView.setup(element.serverTimeOffset, expiredTime, countDownListener)
-                        countDownView.visibility = View.VISIBLE
-                    }
-                } else {
-                    countDownView.visibility = View.GONE
-                }
-
+            channel?.let {
+                handleHeaderComponent(channelHeaderName, channel, channelSubtitleName, element)
                 /**
                  * setup recyclerview content
                  */
@@ -143,16 +115,189 @@ abstract class DynamicChannelViewHolder(itemView: View,
         } catch (e: Exception) {
             Crashlytics.log(0, getViewHolderClassName(), e.localizedMessage)
         }
+        BenchmarkHelper.endSystraceSection()
     }
 
-    private fun setViewPortImpression(element: DynamicChannelViewModel, channel: DynamicHomeChannel.Channels) {
+    private fun handleHeaderComponent(channelHeaderName: String?, channel: DynamicHomeChannel.Channels, channelSubtitleName: String?, element: DynamicChannelDataModel) {
+        val channelTitleContainer: ConstraintLayout? = itemView.findViewById(R.id.channel_title_container)
+        val stubChannelTitle: View? = itemView.findViewById(R.id.channel_title)
+        val stubCountDownView: View? = itemView.findViewById(R.id.count_down)
+        val stubSeeAllButton: View? = itemView.findViewById(R.id.see_all_button)
+        val stubSeeAllButtonUnify: View? = itemView.findViewById(R.id.see_all_button_unify)
+        val stubChannelSubtitle: View? = itemView.findViewById(R.id.channel_subtitle)
+        channelTitleContainer?.let {
+            handleTitle(channelHeaderName, channelTitleContainer, stubChannelTitle, channel)
+            handleSubtitle(channelSubtitleName, stubChannelSubtitle, channel)
+            handleSeeAllApplink(channel, stubSeeAllButton, channelSubtitleName, channelTitleContainer)
+            handleBackImage(channel, stubSeeAllButtonUnify, channelSubtitleName, channelTitleContainer)
+            handleHeaderExpiredTime(channel, stubCountDownView, element)
+        }
+    }
+
+    private fun handleTitle(channelHeaderName: String?, channelTitleContainer: ConstraintLayout, stubChannelTitle: View?, channel: DynamicHomeChannel.Channels) {
         /**
          * Requirement:
-         * Only hit impression tracker when get data from cloud
+         * Only show channel header name when it is exist
          */
-        if (!element.isCache && !channel.isInvoke) {
-            listener.addRecyclerViewScrollImpressionListener(adapterPosition) {
-                sendIrisTracker(getLayoutType(channel), channel, adapterPosition)
+        if (channelHeaderName?.isNotEmpty() == true) {
+            channelTitleContainer.visibility = View.VISIBLE
+            channelTitle = if (stubChannelTitle is ViewStub &&
+                    !isViewStubHasBeenInflated(stubChannelTitle)) {
+                val stubChannelView = stubChannelTitle.inflate()
+                stubChannelView?.findViewById(R.id.channel_title)
+            } else {
+                itemView.findViewById(R.id.channel_title)
+            }
+            channelTitle?.text = channelHeaderName
+            channelTitle?.visibility = View.VISIBLE
+            channelTitle?.setTextColor(
+                    if (channel.header.textColor.isNotEmpty()) Color.parseColor(channel.header.textColor)
+                    else ContextCompat.getColor(context, R.color.Neutral_N700)
+            )
+        } else {
+            channelTitleContainer.visibility = View.GONE
+        }
+    }
+
+    private fun handleSubtitle(channelSubtitleName: String?, stubChannelSubtitle: View?, channel: DynamicHomeChannel.Channels) {
+        /**
+         * Requirement:
+         * Only show channel subtitle when it is exist
+         */
+        if (channelSubtitleName?.isNotEmpty() == true) {
+            channelSubtitle = if (stubChannelSubtitle is ViewStub &&
+                    !isViewStubHasBeenInflated(stubChannelSubtitle)) {
+                val stubChannelView = stubChannelSubtitle.inflate()
+                stubChannelView?.findViewById(R.id.channel_subtitle)
+            } else {
+                itemView.findViewById(R.id.channel_subtitle)
+            }
+            channelSubtitle?.text = channelSubtitleName
+            channelSubtitle?.visibility = View.VISIBLE
+            channelSubtitle?.setTextColor(
+                    if (channel.header.textColor.isNotEmpty()) Color.parseColor(channel.header.textColor)
+                    else ContextCompat.getColor(context, R.color.Neutral_N700)
+            )
+        } else {
+            channelSubtitle?.visibility = View.GONE
+        }
+    }
+
+    private fun handleSeeAllApplink(channel: DynamicHomeChannel.Channels, stubSeeAllButton: View?, channelSubtitleName: String?, channelTitleContainer: ConstraintLayout?) {
+        /**
+         * Requirement:
+         * Only show `see all` button when it is exist
+         * Don't show `see all` button on dynamic channel mix carousel
+         */
+        if (isHasSeeMoreApplink(channel) &&
+                getLayoutType(channel) != TYPE_BANNER_CAROUSEL) {
+            seeAllButton = if (stubSeeAllButton is ViewStub &&
+                    !isViewStubHasBeenInflated(stubSeeAllButton)) {
+                val stubSeeAllView = stubSeeAllButton.inflate()
+                stubSeeAllView?.findViewById(R.id.see_all_button)
+            } else {
+                itemView.findViewById(R.id.see_all_button)
+            }
+
+            handleSubtitlePosition(channelSubtitleName, channel, channelTitleContainer)
+
+            seeAllButton?.show()
+            seeAllButton?.setOnClickListener {
+                listener?.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.header))
+                HomeTrackingUtils.homeDiscoveryWidgetViewAll(context,
+                        DynamicLinkHelper.getActionLink(channel.header))
+                onSeeAllClickTracker(channel, DynamicLinkHelper.getActionLink(channel.header))
+            }
+        }
+    }
+
+    private fun handleSubtitlePosition(channelSubtitleName: String?, channel: DynamicHomeChannel.Channels, channelTitleContainer: ConstraintLayout?) {
+        /**
+         * Requirement:
+         * `see all` button align to subtitle and countdown timer
+         */
+        if (channelSubtitleName?.isEmpty() != false && !hasExpiredTime(channel)) {
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(channelTitleContainer)
+            constraintSet.connect(R.id.see_all_button, ConstraintSet.TOP, R.id.channel_title, ConstraintSet.TOP, 0)
+            constraintSet.connect(R.id.see_all_button, ConstraintSet.BOTTOM, R.id.channel_title, ConstraintSet.BOTTOM, 0)
+            constraintSet.applyTo(channelTitleContainer)
+        } else {
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(channelTitleContainer)
+            constraintSet.connect(R.id.see_all_button, ConstraintSet.TOP, R.id.count_down, ConstraintSet.TOP, 0)
+            constraintSet.connect(R.id.see_all_button, ConstraintSet.BOTTOM, R.id.count_down, ConstraintSet.BOTTOM, 0)
+            constraintSet.applyTo(channelTitleContainer)
+        }
+    }
+
+    private fun handleBackImage(channel: DynamicHomeChannel.Channels, stubSeeAllButtonUnify: View?, channelSubtitleName: String?, channelTitleContainer: ConstraintLayout?) {
+        /**
+         * Requirement:
+         * Show unify button of see more button for dc sprint if back image is not empty
+         */
+        if (channel.header.backImage.isNotBlank() && getLayoutType(channel) == TYPE_SPRINT_LEGO) {
+            seeAllButtonUnify = if (stubSeeAllButtonUnify is ViewStub &&
+                    !isViewStubHasBeenInflated(stubSeeAllButtonUnify)) {
+                val stubSeeAllButtonView = stubSeeAllButtonUnify.inflate()
+                stubSeeAllButtonView?.findViewById(R.id.see_all_button_unify)
+            } else {
+                itemView.findViewById(R.id.see_all_button_unify)
+            }
+
+            handleUnifySeeAllButton(channelSubtitleName, channel, channelTitleContainer)
+        }
+    }
+
+    private fun handleUnifySeeAllButton(channelSubtitleName: String?, channel: DynamicHomeChannel.Channels, channelTitleContainer: ConstraintLayout?) {
+        /**
+         * Requirement:
+         * `see all unify` button align to subtitle and countdown timer
+         */
+        if (channelSubtitleName?.isEmpty() != false && !hasExpiredTime(channel)) {
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(channelTitleContainer)
+            constraintSet.connect(R.id.see_all_button_unify, ConstraintSet.TOP, R.id.channel_title, ConstraintSet.TOP, 0)
+            constraintSet.connect(R.id.see_all_button_unify, ConstraintSet.BOTTOM, R.id.channel_title, ConstraintSet.BOTTOM, 0)
+            constraintSet.applyTo(channelTitleContainer)
+        } else {
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(channelTitleContainer)
+            constraintSet.connect(R.id.see_all_button_unify, ConstraintSet.TOP, R.id.count_down, ConstraintSet.TOP, 0)
+            constraintSet.connect(R.id.see_all_button_unify, ConstraintSet.BOTTOM, R.id.count_down, ConstraintSet.BOTTOM, 0)
+            constraintSet.applyTo(channelTitleContainer)
+        }
+
+        seeAllButtonUnify?.show()
+        seeAllButton?.hide()
+    }
+
+    private fun handleHeaderExpiredTime(channel: DynamicHomeChannel.Channels, stubCountDownView: View?, element: DynamicChannelDataModel) {
+        /**
+         * Requirement:
+         * Only show countDownView when expired time exist
+         * Don't start countDownView when it is expired from backend (possibly caused infinite refresh)
+         *  since onCountDownFinished would getting called and refresh home
+         */
+        if (hasExpiredTime(channel)) {
+            countDownView = if (stubCountDownView is ViewStub &&
+                    !isViewStubHasBeenInflated(stubCountDownView)) {
+                val inflatedStubCountDownView = stubCountDownView.inflate()
+                inflatedStubCountDownView.findViewById<CountDownView>(R.id.count_down)
+            } else {
+                itemView.findViewById(R.id.count_down)
+            }
+
+            val expiredTime = DateHelper.getExpiredTime(channel.header.expiredTime)
+            if (!DateHelper.isExpired(element.serverTimeOffset, expiredTime)) {
+                countDownView?.setup(element.serverTimeOffset, expiredTime) {
+                    listener?.updateExpiredChannel(element, adapterPosition)
+                }
+                countDownView?.visibility = View.VISIBLE
+            }
+        } else {
+            countDownView?.let {
+                it.visibility = View.GONE
             }
         }
     }
@@ -167,6 +312,10 @@ abstract class DynamicChannelViewHolder(itemView: View,
      */
     protected abstract fun setupContent(channel: DynamicHomeChannel.Channels)
 
+    protected open fun setupContent(channel: DynamicHomeChannel.Channels, payloads: MutableList<Any>) {
+        setupContent(channel)
+    }
+
     protected abstract fun getViewHolderClassName(): String
 
     /**
@@ -179,58 +328,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
         return channel.header.expiredTime != null && !TextUtils.isEmpty(channel.header.expiredTime)
     }
 
-    private fun sendIrisTracker(layoutType: Int, channel: DynamicHomeChannel.Channels, position: Int) {
-        when(layoutType) {
-            TYPE_SPRINT_SALE -> {
-                listener.putEEToIris(
-                        HomePageTracking.getEnhanceImpressionSprintSaleHomePage(
-                                channel.id, channel.grids, position
-                        )
-                )
-            }
-
-            TYPE_SPRINT_LEGO, TYPE_ORGANIC -> {
-                listener.putEEToIris(
-                        HomePageTracking.getIrisEnhanceImpressionDynamicSprintLegoHomePage(
-                                channel.id, channel.grids, channel.header.name
-                        )
-                )
-            }
-            TYPE_SIX_GRID_LEGO -> {
-                listener.putEEToIris(
-                        HomePageTracking.getEnhanceImpressionLegoBannerHomePage(
-                                channel.id, channel.grids, channel.header.name, position
-                        )
-                )
-            }
-            TYPE_THREE_GRID_LEGO -> {
-                listener.putEEToIris(
-                        HomePageTracking.getIrisEnhanceImpressionLegoThreeBannerHomePage(
-                                channel.id, channel.grids, channel.header.name, position
-                        )
-                )
-            }
-            TYPE_GIF_BANNER -> {
-                listener.putEEToIris(
-                        HomePageTracking.getEnhanceImpressionPromoGifBannerDC(channel)
-                )
-            }
-            TYPE_BANNER, TYPE_BANNER_CAROUSEL -> {
-                val bannerType = when(layoutType) {
-                    TYPE_BANNER -> BannerOrganicViewHolder.TYPE_NON_CAROUSEL
-                    TYPE_BANNER_CAROUSEL -> BannerOrganicViewHolder.TYPE_CAROUSEL
-                    else -> BannerOrganicViewHolder.TYPE_NON_CAROUSEL
-                }
-                listener.putEEToIris(
-                        HomePageTracking.getEnhanceImpressionProductChannelMix(
-                                channel, bannerType
-                        )
-                )
-                listener.putEEToIris(
-                        HomePageTracking.getIrisEnhanceImpressionBannerChannelMix(channel)
-                )
-            }
-        }
-        channel.invoke()
+    private fun isViewStubHasBeenInflated(viewStub: ViewStub?): Boolean {
+        return viewStub?.parent == null
     }
 }

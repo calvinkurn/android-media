@@ -5,6 +5,7 @@ import android.text.TextUtils
 
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.shop.common.R
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
 import com.tokopedia.shop.common.graphql.domain.mapper.GraphQLSuccessMapper
@@ -28,8 +29,9 @@ constructor(@ApplicationContext context: Context) : UseCase<String>() {
     init {
         graphQLUseCase = object : SingleGraphQLUseCase<CloseShopScheduleMutation>(context, CloseShopScheduleMutation::class.java) {
 
-            override val graphQLRawResId: Int
-                get() = R.raw.gql_mutation_close_shop_schedule
+            override fun getRawString(): String {
+                return GraphqlHelper.loadRawString(context.resources, R.raw.gql_mutation_close_shop_schedule)
+            }
 
             override fun createGraphQLVariable(requestParams: RequestParams): HashMap<String, Any> {
                 val variables = HashMap<String, Any>()

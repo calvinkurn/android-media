@@ -16,7 +16,7 @@
     <string name="title_touch_id_setting">Touch ID</string>
     <string name="title_tnc_setting">Syarat dan Ketentuan</string>
     <string name="title_privacy_setting">Kebijakan Privasi</string>
-    <string name="title_help_center_setting">Pusat Bantuan</string>
+    <string name="title_help_center_setting">Tokopedia Care</string>
     <string name="subtitle_account_setting">Data Diri, Alamat, dan Keamanan Akun</string>
     <string name="account_home_subtitle_shop_setting">Lokasi, Etalase, Pengiriman, dan lainnya</string>
     <string name="subtitle_template_setting">Nikmati Transaksi Mudah dan Cepat</string>
@@ -25,7 +25,7 @@
     <string name="account_home_label_logout">Keluar dari Tokopedia</string>
     <string name="account_home_button_logout">Keluar</string>
     <string name="title_personal_data_setting">Data Diri</string>
-    <string name="title_password_setting">Kata Sandi</string>
+    <string name="title_password_setting">Ubah Kata Sandi</string>
     <string name="title_kyc_setting">Verifikasi Data Diri</string>
     <string name="title_setting_pin">PIN Tokopedia</string>
     <string name="title_address_setting">Daftar Alamat</string>
@@ -47,7 +47,8 @@
     <string name="screentitle_notification_setting">Atur Notifikasi</string>
     <string name="save_setting_label">Simpan</string>
     <string name="header_privacy_account_setting">Keamanan</string>
-    <string name="title_favorite_page">Favorit</string>
+    <string name="title_occ_preference_setting">Beli Langsung</string>
+    <string name="subtitle_occ_preference_setting">Atur pengiriman &amp; pembayaranmu favoritmu</string>
 
     <string name="label_chat">Chat</string>
     <string name="label_chat_admin">Chat Tokopedia Administrator</string>
@@ -80,6 +81,7 @@
     <string name="pref_receive_seller_info" translatable="false">notification_seller_info</string>
     <string name="pref_receive_group_chat" translatable="false">notification_group_chat</string>
     <string name="pref_receive_shake" translatable="false">notification_shake_shake</string>
+    <string name="pref_safe_mode" translatable="false">notification_safe_mode</string>
 
     <string name="application_version_fmt">Versi %1$s</string>
     <string name="error_bank_no_password_title">Anda tidak memiliki kata sandi</string>
@@ -125,10 +127,10 @@
     <string name="label_menu_wallet_referral">Bagikan Aplikasi ini ke teman Anda</string>
     <string name="title_menu_help">Bantuan</string>
     <string name="title_menu_resolution_center">Pusat Bantuan</string>
-    <string name="label_menu_resolution_center">Lihat solusi terbaik atau hubungi kami</string>
+    <string name="label_menu_resolution_center">Lihat solusi terbaik dari Tokopedia Care</string>
     <string name="title_menu_top_up_bill"><![CDATA[Top-up & Tagihan]]></string>
     <string name="title_menu_market_place">Belanja</string>
-    <string name="title_menu_deals">Deals</string>
+    <string name="title_menu_deals">Food &amp; Voucher</string>
     <string name="title_menu_train">Kereta</string>
     <string name="title_menu_flight">Pesawat</string>
     <string name="title_menu_hotel">Hotel</string>
@@ -155,11 +157,12 @@
     <string name="title_menu_product_draft">Draft Produk</string>
     <string name="label_menu_product_draft">Selesaikan kelengkapan detail Produk</string>
     <string name="title_menu_other_features">Fitur Lainnya</string>
-    <string name="title_menu_opportunity">Peluang Pesanan</string>
-    <string name="label_menu_opportunity">Pesanan yang dibatalkan penjual lain</string>
-    <string name="title_menu_seller_center">Pusat Seller</string>
+    <string name="title_menu_seller_center">Pusat Edukasi Seller</string>
     <string name="title_menu_topads">TopAds</string>
     <string name="label_menu_topads">Lihat dan atur promo Anda</string>
+    <string name="title_menu_voucher_toko">Voucher Cashback</string>
+    <string name="description_menu_voucher_toko">Lihat dan kelola promo tokomu</string>
+    <string name="label_menu_voucher_toko">Khusus aplikasi Tokopedia Seller</string>
     <string name="label_menu_seller_center">Edukasi dan inspirasi berjualan</string>
     <string name="title_menu_loan">Modal usaha untuk Toko Anda</string>
     <string name="label_menu_loan">Potensi pinjaman senilai</string>
@@ -173,7 +176,9 @@
     <string name="title_shake_setting">Shake Shake</string>
     <string name="subtitle_shake_setting">Aktifkan untuk mendapatkan penawaran menarik</string>
     <string name="title_geolocation_setting">Lokasi</string>
+    <string name="title_safe_mode_setting">Safe Mode</string>
     <string name="subtitle_geolocation_setting">Mendeteksi lokasi secara otomatis</string>
+    <string name="subtitle_safe_mode_setting">Saring hasil pencarian sesuai usia</string>
     <string name="account_home_label_logout_confirmation">Apakah Anda ingin keluar?</string>
     <string name="account_home_label_cancel">Batal</string>
     <string name="title_app_review_setting">Review Aplikasi</string>
@@ -188,7 +193,7 @@
     <string name="top_features">Top Features</string>
     <string name="topads_desc">Media iklan Produk dan Toko</string>
     <string name="gold_merchant_desc">Fitur-fitur Berjualan Eksklusif</string>
-    <string name="seller_center">Pusat Seller</string>
+    <string name="seller_center">Pusat Edukasi Seller</string>
     <string name="seller_center_desc">Potensi pinjaman senilai Rp. 1.000.000</string>
     <string name="open_shop">Buka Toko</string>
     <string name="learn_more">Pelajari Selengkapnya</string>
@@ -203,7 +208,7 @@
     <string name="title_menu_affiliate">Raih Komisi di By Me</string>
     <string name="label_menu_affiliate">Ajak teman beli produk pilihanmu!</string>
     <string name="curate_product_by_me">Post Rekomendasi By Me</string>
-    <string name="create_post_by_me">Buat Post</string>
+    <string name="create_post_by_me">+ Rekomendasi</string>
     <string name="selesai">Selesai</string>
     <string name="title_seller_saldo">Saldo</string>
 
@@ -224,8 +229,15 @@
     <string name="account_home_ok_geolocation_alertdialog">OK</string>
     <string name="account_home_batal_geolocation_alertdialog">Batal</string>
 
+    <string name="account_home_safe_mode_selected_dialog_title">Aktifkan Safe Mode</string>
+    <string name="account_home_safe_mode_selected_dialog_msg">Fitur ini akan otomatis menyaring hasil pencarian sesuai kebijakan dan batasan usia pengguna</string>
+    <string name="account_home_safe_mode_unselected_dialog_msg">Hasil pencarian tidak disaring otomais sesuai kebijakan dan batasan usia pengguna</string>
+    <string name="account_home_safe_mode_unselected_dialog_title">Nonaktifkan Safe Mode</string>
+    <string name="account_home_safe_mode_selected_dialog_positive_button">Aktifkan</string>
+    <string name="account_home_safe_mode_unselected_dialog_positive_button">Nonaktifkan</string>
     <string name="account_go_to_wishlist">Lihat Wishlist</string>
     <string name="tokopedia_care">Tokopedia Care</string>
+    <string name="title_about_us">Tentang Tokopedia</string>
     <string name="label_tokopedia_pay_action">Atur</string>
 
     <string name="title_app_advanced_setting">Pengaturan Tambahan</string>
@@ -239,5 +251,6 @@
 
     <string name="account_home_add_phone_title">Tambah Nomor Ponsel</string>
     <string name="account_home_add_phone_message">Tambah dan verifikasi nomor ponsel terlebih dahulu sebelum membuat PIN</string>
+    <string name="clear_cache">clear cache</string>
 
 </resources>

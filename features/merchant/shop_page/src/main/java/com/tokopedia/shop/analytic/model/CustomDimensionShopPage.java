@@ -26,5 +26,11 @@ public class CustomDimensionShopPage {
         return customDimensionShopPage;
     }
 
+    public void updateCustomDimensionData(String shopId, boolean isOfficialStore, boolean isGoldMerchant){
+        this.shopId = shopId;
+        shopType = isOfficialStore ? TrackShopTypeDef.OFFICIAL_STORE:
+                isGoldMerchant ? TrackShopTypeDef.GOLD_MERCHANT: TrackShopTypeDef.REGULAR_MERCHANT;
+    }
+
 
 }

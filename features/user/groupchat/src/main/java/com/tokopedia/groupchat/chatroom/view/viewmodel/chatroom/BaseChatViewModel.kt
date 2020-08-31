@@ -28,6 +28,8 @@ open class BaseChatViewModel() : Parcelable {
     var formattedHeaderTime: String? = ""
         private set
 
+    var isChatDisabled: Boolean = false
+
     var senderId: String? = ""
 
     var senderName: String? = ""
@@ -38,6 +40,7 @@ open class BaseChatViewModel() : Parcelable {
 
     var isAdministrator: Boolean = false
 
+    var isQuickReply: Boolean = false
 
     internal constructor(message: String, createdAt: Long, updatedAt: Long, messageId: String): this() {
         this.isShowHeaderTime = false

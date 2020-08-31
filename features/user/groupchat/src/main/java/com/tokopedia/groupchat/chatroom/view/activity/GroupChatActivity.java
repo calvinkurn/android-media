@@ -15,18 +15,6 @@ import android.os.Handler;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.Fragment.SavedState;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.collection.ArrayMap;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -40,6 +28,19 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.appcompat.widget.Toolbar;
+import androidx.collection.ArrayMap;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.Fragment.SavedState;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -52,9 +53,9 @@ import com.tokopedia.abstraction.constant.TkpdState;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.design.card.ToolTipUtils;
+import com.tokopedia.groupchat.chatroom.utils.ToolTipUtils;
 import com.tokopedia.design.component.ButtonCompat;
-import com.tokopedia.design.component.ToasterError;
+import com.tokopedia.globalerror.GlobalError;
 import com.tokopedia.groupchat.R;
 import com.tokopedia.groupchat.channel.view.activity.ChannelActivity;
 import com.tokopedia.groupchat.channel.view.model.ChannelViewModel;
@@ -100,6 +101,7 @@ import com.tokopedia.groupchat.common.util.TextFormatter;
 import com.tokopedia.groupchat.common.util.TransparentStatusBarHelper;
 import com.tokopedia.groupchat.vote.view.model.VoteInfoViewModel;
 import com.tokopedia.groupchat.vote.view.model.VoteViewModel;
+import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.youtubeutils.common.YoutubePlayerConstant;
@@ -194,8 +196,6 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     private int initialFragment;
     private GroupChatViewModel viewModel;
-
-    private Snackbar snackbarError;
 
     @Inject
     GroupChatPresenter presenter;
@@ -467,35 +467,24 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     public void setSnackBarErrorLoading() {
         if (userSession.isLoggedIn()) {
-            snackbarError = ToasterError.make(findViewById(android.R.id.content), getString(R.string.connecting));
-            snackbarError.getView().setMinimumHeight((int) getResources().getDimension(R.dimen.snackbar_height));
-            snackbarError.show();
+            Toaster.INSTANCE.make(findViewById(android.R.id.content), getString(R.string.connecting),
+                    Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, "", v->{});
         }
     }
 
     public void setSnackBarRetry() {
         if (userSession.isLoggedIn()) {
-            snackbarError = ToasterError.make(findViewById(android.R.id.content), getString(R.string.sendbird_error_retry));
-            snackbarError.getView().setMinimumHeight((int) getResources().getDimension(R.dimen.snackbar_height));
-            snackbarError.setAction(getString(R.string.retry), new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-//                    presenter.connectWebSocket(userSession, viewModel.getChannelInfoViewModel().getChannelId()
-//                            , viewModel.getChannelInfoViewModel().getGroupChatToken()
-//                            , viewModel.getChannelInfoViewModel().getSettingGroupChat());
-                    presenter.getChannelInfo(viewModel.getChannelUuid(), true);
-                    setSnackBarErrorLoading();
-                }
-            });
-            snackbarError.show();
+            Toaster.INSTANCE.make(findViewById(android.R.id.content), getString(R.string.sendbird_error_retry),
+                    Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.retry), v->{
+                        presenter.getChannelInfo(viewModel.getChannelUuid(), true);
+                        setSnackBarErrorLoading();
+                    });
         }
     }
 
     @Override
     public void onOpenWebSocket() {
-        if (snackbarError != null) {
-            snackbarError.dismiss();
-        }
+        try { Toaster.snackBar.dismiss(); } catch (Exception e) {}
     }
 
     private void initData() {
@@ -843,29 +832,20 @@ public class GroupChatActivity extends BaseSimpleActivity
         AlertDialog.Builder myAlertDialog = new android.app.AlertDialog.Builder(this);
         myAlertDialog.setTitle(getExitMessage().getTitle());
         myAlertDialog.setMessage(getExitMessage().getBody());
-        final Context context = this;
-        myAlertDialog.setPositiveButton(getString(R.string.exit_group_chat_yes), new
-                DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        analytics.eventUserExit(getChannelInfoViewModel().getChannelId() + " "+ getDurationOnGroupChat());
-                        if (isTaskRoot()) {
-                            startActivity(RouteManager.getIntent(getApplicationContext(), ApplinkConst.GROUPCHAT_LIST));
-                        }
-                        if (onPlayTime != 0) {
-                            analytics.eventWatchVideoDuration(getChannelInfoViewModel().getChannelId(), getDurationWatchVideo());
-                        }
-                        finish();
-                        GroupChatActivity.super.onBackPressed();
-                    }
-                });
-        myAlertDialog.setNegativeButton(getString(R.string.exit_group_chat_no), new
-                DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.cancel();
-                    }
-                });
+        myAlertDialog.setPositiveButton(getString(R.string.exit_group_chat_yes), (dialogInterface, i) -> {
+            if (getChannelInfoViewModel() != null)  {
+                analytics.eventUserExit(getChannelInfoViewModel().getChannelId() + " "+ getDurationOnGroupChat());
+            }
+            if (isTaskRoot()) {
+                startActivity(RouteManager.getIntent(getApplicationContext(), ApplinkConst.GROUPCHAT_LIST));
+            }
+            if (onPlayTime != 0 && getChannelInfoViewModel() != null) {
+                analytics.eventWatchVideoDuration(getChannelInfoViewModel().getChannelId(), getDurationWatchVideo());
+            }
+            finish();
+            GroupChatActivity.super.onBackPressed();
+        });
+        myAlertDialog.setNegativeButton(getString(R.string.exit_group_chat_no), (dialogInterface, i) -> dialogInterface.cancel());
 
         return myAlertDialog;
     }
@@ -948,13 +928,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     @Override
     public void onErrorGetChannelInfo(String errorMessage) {
-        NetworkErrorHelper.showEmptyState(this, rootView, errorMessage, new NetworkErrorHelper
-                .RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                initData();
-            }
-        });
+        NetworkErrorHelper.showEmptyState(this, rootView, errorMessage, () -> initData());
         setVisibilityHeader(View.GONE);
         stopTrace();
     }
@@ -1039,8 +1013,11 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     private void refreshChat() {
-        ((GroupChatFragment) getSupportFragmentManager().findFragmentByTag
-                (GroupChatFragment.class.getSimpleName())).refreshChat();
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag
+                (GroupChatFragment.class.getSimpleName());
+        if (fragment != null && fragment instanceof GroupChatFragment) {
+            ((GroupChatFragment)fragment).refreshChat();
+        }
     }
 
     private void trackAdsEE(ChannelInfoViewModel channelInfoViewModel) {
@@ -1167,7 +1144,6 @@ public class GroupChatActivity extends BaseSimpleActivity
                                        ChannelInfoViewModel channelInfoViewModel) {
         View view = getLayoutInflater().inflate(R.layout.channel_info_bottom_sheet_dialog, null);
 
-        TextView actionButton = view.findViewById(R.id.action_button);
         ImageView image = view.findViewById(R.id.product_image);
         ImageView profile = view.findViewById(R.id.prof_pict);
         TextView title = view.findViewById(com.tokopedia.design.R.id.title);
@@ -1214,35 +1190,32 @@ public class GroupChatActivity extends BaseSimpleActivity
                     viewModel.getChannelInfoViewModel().getAdsImageUrl(),
                     com.tokopedia.abstraction.R.drawable.loading_page);
 
-            sponsorImage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+            sponsorImage.setOnClickListener(v -> {
 
-                    ArrayList<EEPromotion> list = new ArrayList<>();
-                    list.add(new EEPromotion(viewModel.getChannelInfoViewModel().getAdsId(),
-                            EEPromotion.NAME_GROUPCHAT,
-                            GroupChatAnalytics.DEFAULT_EE_POSITION,
-                            viewModel.getChannelInfoViewModel().getAdsName(),
-                            viewModel.getChannelInfoViewModel().getAdsImageUrl(),
-                            getAttributionTracking(GroupChatAnalytics
-                                    .ATTRIBUTE_BANNER)
-                    ));
+                ArrayList<EEPromotion> list = new ArrayList<>();
+                list.add(new EEPromotion(viewModel.getChannelInfoViewModel().getAdsId(),
+                        EEPromotion.NAME_GROUPCHAT,
+                        GroupChatAnalytics.DEFAULT_EE_POSITION,
+                        viewModel.getChannelInfoViewModel().getAdsName(),
+                        viewModel.getChannelInfoViewModel().getAdsImageUrl(),
+                        getAttributionTracking(GroupChatAnalytics
+                                .ATTRIBUTE_BANNER)
+                ));
 
-                    eventClickComponentEnhancedEcommerce(
-                            GroupChatAnalytics.COMPONENT_BANNER,
-                            viewModel.getChannelInfoViewModel().getAdsName(),
-                            GroupChatAnalytics.ATTRIBUTE_BANNER,
-                            list);
+                eventClickComponentEnhancedEcommerce(
+                        GroupChatAnalytics.COMPONENT_BANNER,
+                        viewModel.getChannelInfoViewModel().getAdsName(),
+                        GroupChatAnalytics.ATTRIBUTE_BANNER,
+                        list);
 
-                    analytics.eventClickBanner(String.format("%s - %s"
-                            , getChannelInfoViewModel().getChannelId(), getChannelInfoViewModel().getAdsId()));
+                analytics.eventClickBanner(String.format("%s - %s"
+                        , getChannelInfoViewModel().getChannelId(), getChannelInfoViewModel().getAdsId()));
 
-                    openSponsor(generateAttributeApplink(
-                            viewModel.getChannelInfoViewModel().getAdsLink(),
-                            GroupChatAnalytics.ATTRIBUTE_BANNER,
-                            viewModel.getChannelUrl(),
-                            viewModel.getChannelName()));
-                }
+                openSponsor(generateAttributeApplink(
+                        viewModel.getChannelInfoViewModel().getAdsLink(),
+                        GroupChatAnalytics.ATTRIBUTE_BANNER,
+                        viewModel.getChannelUrl(),
+                        viewModel.getChannelName()));
             });
         } else {
             sponsorLayout.setVisibility(View.GONE);
@@ -1532,14 +1505,12 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     private void setChannelNotFoundView(int visibility) {
         if (findViewById(R.id.card_retry) != null) {
-            findViewById(R.id.card_retry).setVisibility(visibility);
-            findViewById(R.id.card_retry).findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String adsLink = "tokopedia://webview?url=https://tokopedia.link/playfreezestate";
-                    openSponsor(adsLink);
-                    finish();
-                }
+            GlobalError globalError = findViewById(R.id.card_retry);
+            globalError.setVisibility(visibility);
+            globalError.getErrorAction().setOnClickListener(v -> {
+                String adsLink = "tokopedia://webview?url=https://tokopedia.link/playfreezestate";
+                openSponsor(adsLink);
+                finish();
             });
         }
     }

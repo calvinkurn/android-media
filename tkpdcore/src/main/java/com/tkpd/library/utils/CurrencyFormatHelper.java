@@ -2,12 +2,7 @@ package com.tkpd.library.utils;
 
 import android.widget.EditText;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.text.FieldPosition;
 import java.text.NumberFormat;
-import java.text.ParsePosition;
-import java.util.Currency;
 import java.util.Locale;
 
 /**
@@ -17,58 +12,12 @@ import java.util.Locale;
  */
 @Deprecated
 public final class CurrencyFormatHelper {
-	private static final NumberFormat RupiahFormat = NumberFormat.getCurrencyInstance(Locale.US);
 	private static final NumberFormat DollarFormat = NumberFormat.getCurrencyInstance(new Locale("en", "US"));
 	// this flag intend to block textwatcher to be called recursively
 	private static boolean LockTextWatcher = false;
 
 	public static final int RUPIAH = 1;
 	public static final int OTHER = -1;
-
-
-	public static String ConvertToRupiah(String string){
-		try{
-			String inrupiah;
-			inrupiah = RupiahFormat.format(Long.parseLong(string.replace("Rp", ""))).replace("$", "").replace("Rp", "").replace(".00", "");
-			return inrupiah;
-		}
-		catch(NumberFormatException e){
-			e.printStackTrace();
-			return "Exception raised";
-		}
-	}
-
-	public static String ConvertToDollar(String string){
-		try {
-			String indollar;
-			indollar = DollarFormat.format(Double.parseDouble(string)).replace("$", "");
-			return indollar;
-		} catch (NumberFormatException e) {
-			e.printStackTrace();
-			return "Exception raised";
-		}
-	}
-
-	public static String RemoveNonNumeric(String string){
-		String numeric;
-		numeric = string.replace(",", "");
-		return numeric;
-	}
-
-	public static String removeCurrencyPrefix(String string){
-		if (string == null) return null;
-		int count = 0;
-		for (int i=0, sizei = string.length();i<sizei ; i++) {
-			char charString = string.charAt(i);
-			if (Character.isDigit(charString)){
-				break;
-			}
-			else {
-				count++;
-			}
-		}
-		return string.substring(count);
-	}
 
 	public static int SetToDollar(EditText et){
 		try {

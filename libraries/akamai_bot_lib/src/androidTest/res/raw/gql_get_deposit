@@ -1,0 +1,39 @@
+query TopAdsDashboardDeposits($shop_id: Int!){
+    topadsDashboardDeposits(shop_id:$shop_id,shop_data:"1"){
+        data{
+            ad_usage
+            amount
+            amount_fmt
+            voucher {
+                benefit_type
+                benefit_value
+                code
+                link
+                max_limit
+                name
+                period_lang_en
+                period_lang_id
+                remaining_days
+            }
+            free_deposit {
+                deposit_id
+                nominal
+                nominal_fmt
+                remaining_days
+                status
+                usage_fmt
+                usage
+            }
+            free_deposit_usage {
+                remaining_days
+                status
+                usage
+            }
+        }
+        errors {
+            code
+            detail
+            title
+        }
+    }
+}

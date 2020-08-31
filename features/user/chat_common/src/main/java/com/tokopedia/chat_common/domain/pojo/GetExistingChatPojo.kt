@@ -2,6 +2,7 @@ package com.tokopedia.chat_common.domain.pojo
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.chat_common.data.AttachmentType
 
 /**
  * @author by nisie on 10/12/18.
@@ -14,6 +15,12 @@ data class GetExistingChatPojo(
 
 data class ChatReplies(
         @Expose
+        @SerializedName("minReplyTime")
+        val minReplyTime: String = "0",
+        @Expose
+        @SerializedName("maxReplyTime")
+        val maxReplyTime: String = "0",
+        @Expose
         @SerializedName("contacts")
         val contacts: List<Contact> = ArrayList(),
         @Expose
@@ -22,6 +29,12 @@ data class ChatReplies(
         @Expose
         @SerializedName("hasNext")
         val hasNext: Boolean = false,
+        @Expose
+        @SerializedName("hasNextAfter")
+        val hasNextAfter: Boolean = false,
+        @Expose
+        @SerializedName("attachmentIDs")
+        val attachmentIds: String = "",
         @Expose
         @SerializedName("textareaReply")
         val textAreaReply: Int = 0,
@@ -58,6 +71,15 @@ data class Contact(
         @Expose
         @SerializedName("domain")
         val domain: String = "",
+        @Expose
+        @SerializedName("isOfficial")
+        val isOfficial: Boolean = false,
+        @Expose
+        @SerializedName("isGold")
+        val isGold: Boolean = false,
+        @Expose
+        @SerializedName("badge")
+        val badge: String = "",
         @Expose
         @SerializedName("status")
         val status: Status = Status()
@@ -132,8 +154,24 @@ data class Reply(
         val isRead: Boolean = true,
         @Expose
         @SerializedName("blastId")
-        val blastId: Int = 0
-)
+        val blastId: Int = 0,
+        @Expose
+        @SerializedName("source")
+        val source: String = ""
+) {
+    fun isMultipleProductAttachment(nextItem: Reply): Boolean {
+        return isProductAttachment() && nextItem.isProductAttachment()
+    }
+
+    fun isProductAttachment(): Boolean {
+        return attachment?.type.toString() == AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT
+    }
+
+    fun isBroadCast(): Boolean {
+        return blastId == 0
+    }
+
+}
 
 data class Attachment(
         @Expose

@@ -17,23 +17,8 @@
         android:orientation="horizontal"
         android:padding="@dimen/dp_8">
 
-        <ImageButton
-            android:visibility="gone"
-            android:id="@+id/btn_qrcode"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@null"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginRight="@dimen/dp_4"
-            android:layout_marginEnd="@dimen/dp_4"
-            android:layout_centerVertical="true"
-            app:srcCompat="@drawable/ic_product_fintech_qr_normal_24"/>
-
         <LinearLayout
             android:id="@+id/layout_search"
-            android:layout_toRightOf="@+id/btn_qrcode"
-            android:layout_toEndOf="@+id/btn_qrcode"
             android:layout_toLeftOf="@+id/btn_wishlist"
             android:layout_toStartOf="@+id/btn_wishlist"
             android:layout_marginLeft="@dimen/dp_8"

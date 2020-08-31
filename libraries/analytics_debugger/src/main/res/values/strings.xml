@@ -1,0 +1,14 @@
+<resources>
+    <string name="analytics_debugger_label_search">Search</string>
+    <string name="fpm_save_failed_to_open_document">Failed to open file chooser</string>
+    <string name="fpm_file_saved">File was saved successfully!</string>
+    <string name="fpm_file_not_saved">Failed to save file</string>
+    <string name="status">status</string>
+    <string name="analytics_validator_search_label">Insert test case name</string>
+    <string name="topads_debugger_detail_product_id_label">Product Id</string>
+    <string name="topads_debugger_detail_product_name_label">Product Name</string>
+    <string name="topads_debugger_detail_product_image_url_label">Product Image</string>
+    <string name="topads_debugger_detail_param_list_label">Url Param List</string>
+    <string name="topads_debugger_detail_topads_url_label">Full TopAds Url</string>
+    <string name="topads_debugger_detail_verificator_response_label">Full Verificator Response</string>
+</resources>

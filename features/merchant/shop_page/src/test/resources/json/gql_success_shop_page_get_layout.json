@@ -1,0 +1,592 @@
+{
+  "data": {
+    "shopPageGetLayout": {
+      "layoutID": 123,
+      "masterLayoutID": 1,
+      "merchantTierID": 1,
+      "status": 4,
+      "maxWidgets": 3,
+      "publishDate": "2020-02-14 17:00:00",
+      "widgets": [
+        {
+          "widgetID": 0,
+          "layoutOrder": 1,
+          "name": "slider_banner",
+          "type": "display",
+          "header": {
+            "title": "Anniversary Deals 1:1",
+            "ctaText": "",
+            "ctaLink": "",
+            "cover": ""
+          },
+          "data": [
+            {
+              "imageUrl": "https://ecs7.tokopedia.net/shop-page/display-widget//1%20x%201.png",
+              "videoUrl": "",
+              "appLink": "tokopedia://shop/2400899/etalase/21735836",
+              "webLink": "https://m.tokopedia.com/etalase/21735836"
+            },
+            {
+              "imageUrl": "https://ecs7.tokopedia.net/shop-page/display-widget//1%20x%201.png",
+              "videoUrl": "",
+              "appLink": "tokopedia://shop/2400899/etalase/21735836",
+              "webLink": "https://m.tokopedia.com/etalase/21735836"
+            }
+          ]
+        },
+        {
+          "widgetID": 0,
+          "layoutOrder": 2,
+          "name": "slider_banner",
+          "type": "display",
+          "header": {
+            "title": "Anniversary Deals 2:1",
+            "ctaText": "",
+            "ctaLink": "",
+            "cover": ""
+          },
+          "data": [
+            {
+              "imageUrl": "https://ecs7.tokopedia.net/shop-page/display-widget/2%20x%201.png",
+              "videoUrl": "",
+              "appLink": "tokopedia://shop/2400899/etalase/21735836",
+              "webLink": "https://m.tokopedia.com/etalase/21735836"
+            },
+            {
+              "imageUrl": "https://ecs7.tokopedia.net/shop-page/display-widget/2%20x%201.png",
+              "videoUrl": "",
+              "appLink": "tokopedia://shop/2400899/etalase/21735836",
+              "webLink": "https://m.tokopedia.com/etalase/21735836"
+            }
+          ]
+        },
+        {
+          "widgetID": 0,
+          "layoutOrder": 3,
+          "name": "slider_banner",
+          "type": "display",
+          "header": {
+            "title": "Anniversary Deals 3:4",
+            "ctaText": "",
+            "ctaLink": "",
+            "cover": ""
+          },
+          "data": [
+            {
+              "imageUrl": "https://ecs7.tokopedia.net/shop-page/display-widget/3%20x%204.png",
+              "videoUrl": "",
+              "appLink": "tokopedia://shop/2400899/etalase/21735836",
+              "webLink": "https://m.tokopedia.com/etalase/21735836"
+            },
+            {
+              "imageUrl": "https://ecs7.tokopedia.net/shop-page/display-widget/3%20x%204.png",
+              "videoUrl": "",
+              "appLink": "tokopedia://shop/2400899/etalase/21735836",
+              "webLink": "https://m.tokopedia.com/etalase/21735836"
+            }
+          ]
+        },
+        {
+          "widgetID": 0,
+          "layoutOrder": 4,
+          "name": "slider_square",
+          "type": "display",
+          "header": {
+            "title": "Anniversary Deals 1:1",
+            "ctaText": "",
+            "ctaLink": "",
+            "cover": ""
+          },
+          "data": [
+            {
+              "imageUrl": "https://ecs7.tokopedia.net/shop-page/display-widget//1%20x%201.png",
+              "videoUrl": "",
+              "appLink": "tokopedia://shop/2400899/etalase/21735836",
+              "webLink": "tokopedia://shop/2400899/etalase/21735836"
+            },
+            {
+              "imageUrl": "https://ecs7.tokopedia.net/shop-page/display-widget//1%20x%201.png",
+              "videoUrl": "",
+              "appLink": "tokopedia://shop/2400899/etalase/21735836",
+              "webLink": "tokopedia://shop/2400899/etalase/21735836"
+            }
+          ]
+        },
+        {
+          "widgetID": 0,
+          "layoutOrder": 5,
+          "name": "display_single_column",
+          "type": "display",
+          "header": {
+            "title": "Anniversary Deals 1:1",
+            "ctaText": "",
+            "ctaLink": "",
+            "cover": ""
+          },
+          "data": [
+            {
+              "imageUrl": "https://ecs7.tokopedia.net/shop-page/display-widget//1%20x%201.png",
+              "videoUrl": "",
+              "appLink": "tokopedia://shop/2400899/etalase/21735836",
+              "webLink": "https://m.tokopedia.com/etalase/21735836"
+            }
+          ]
+        },
+        {
+          "widgetID": 0,
+          "layoutOrder": 6,
+          "name": "display_single_column",
+          "type": "display",
+          "header": {
+            "title": "Anniversary Deals 2:1",
+            "ctaText": "",
+            "ctaLink": "",
+            "cover": ""
+          },
+          "data": [
+            {
+              "imageUrl": "https://ecs7.tokopedia.net/shop-page/display-widget/2%20x%201.png",
+              "videoUrl": "",
+              "appLink": "tokopedia://shop/2400899/etalase/21735836",
+              "webLink": "https://m.tokopedia.com/etalase/21735836"
+            }
+          ]
+        },
+        {
+          "widgetID": 0,
+          "layoutOrder": 7,
+          "name": "display_single_column",
+          "type": "display",
+          "header": {
+            "title": "Anniversary Deals 3:4",
+            "ctaText": "",
+            "ctaLink": "",
+            "cover": ""
+          },
+          "data": [
+            {
+              "imageUrl": "https://ecs7.tokopedia.net/shop-page/display-widget/3%20x%204.png",
+              "videoUrl": "",
+              "appLink": "tokopedia://shop/2400899/etalase/21735836",
+              "webLink": "https://m.tokopedia.com/etalase/21735836"
+            }
+          ]
+        },
+        {
+          "widgetID": 0,
+          "layoutOrder": 8,
+          "name": "display_double_column",
+          "type": "display",
+          "header": {
+            "title": "Anniversary Deals 1:1",
+            "ctaText": "",
+            "ctaLink": "",
+            "cover": ""
+          },
+          "data": [
+            {
+              "imageUrl": "https://ecs7.tokopedia.net/shop-page/display-widget//1%20x%201.png",
+              "videoUrl": "",
+              "appLink": "tokopedia://shop/2400899/etalase/21735836",
+              "webLink": "https://m.tokopedia.com/etalase/21735836"
+            },
+            {
+              "imageUrl": "https://ecs7.tokopedia.net/shop-page/display-widget//1%20x%201.png",
+              "videoUrl": "",
+              "appLink": "tokopedia://shop/2400899/etalase/21735836",
+              "webLink": "https://m.tokopedia.com/etalase/21735836"
+            }
+          ]
+        },
+        {
+          "widgetID": 0,
+          "layoutOrder": 9,
+          "name": "display_double_column",
+          "type": "display",
+          "header": {
+            "title": "Anniversary Deals 2:1",
+            "ctaText": "",
+            "ctaLink": "",
+            "cover": ""
+          },
+          "data": [
+            {
+              "imageUrl": "https://ecs7.tokopedia.net/shop-page/display-widget/2%20x%201.png",
+              "videoUrl": "",
+              "appLink": "tokopedia://shop/2400899/etalase/21735836",
+              "webLink": "https://m.tokopedia.com/etalase/21735836"
+            },
+            {
+              "imageUrl": "https://ecs7.tokopedia.net/shop-page/display-widget/2%20x%201.png",
+              "videoUrl": "",
+              "appLink": "tokopedia://shop/2400899/etalase/21735836",
+              "webLink": "https://m.tokopedia.com/etalase/21735836"
+            }
+          ]
+        },
+        {
+          "widgetID": 0,
+          "layoutOrder": 10,
+          "name": "display_double_column",
+          "type": "display",
+          "header": {
+            "title": "Anniversary Deals 3:4",
+            "ctaText": "",
+            "ctaLink": "",
+            "cover": ""
+          },
+          "data": [
+            {
+              "imageUrl": "https://ecs7.tokopedia.net/shop-page/display-widget/3%20x%204.png",
+              "videoUrl": "",
+              "appLink": "tokopedia://shop/2400899/etalase/21735836",
+              "webLink": "https://m.tokopedia.com/etalase/21735836"
+            },
+            {
+              "imageUrl": "https://ecs7.tokopedia.net/shop-page/display-widget/3%20x%204.png",
+              "videoUrl": "",
+              "appLink": "tokopedia://shop/2400899/etalase/21735836",
+              "webLink": "https://m.tokopedia.com/etalase/21735836"
+            }
+          ]
+        },
+        {
+          "widgetID": 0,
+          "layoutOrder": 11,
+          "name": "display_triple_column",
+          "type": "display",
+          "header": {
+            "title": "Anniversary Deals 1:1",
+            "ctaText": "",
+            "ctaLink": "",
+            "cover": ""
+          },
+          "data": [
+            {
+              "imageUrl": "https://ecs7.tokopedia.net/shop-page/display-widget//1%20x%201.png",
+              "videoUrl": "",
+              "appLink": "tokopedia://shop/2400899/etalase/21735836",
+              "webLink": "https://m.tokopedia.com/etalase/21735836"
+            },
+            {
+              "imageUrl": "https://ecs7.tokopedia.net/shop-page/display-widget//1%20x%201.png",
+              "videoUrl": "",
+              "appLink": "tokopedia://shop/2400899/etalase/21735836",
+              "webLink": "https://m.tokopedia.com/etalase/21735836"
+            },
+            {
+              "imageUrl": "https://ecs7.tokopedia.net/shop-page/display-widget//1%20x%201.png",
+              "videoUrl": "",
+              "appLink": "tokopedia://shop/2400899/etalase/21735836",
+              "webLink": "https://m.tokopedia.com/etalase/21735836"
+            }
+          ]
+        },
+        {
+          "widgetID": 0,
+          "layoutOrder": 12,
+          "name": "display_triple_column",
+          "type": "display",
+          "header": {
+            "title": "Anniversary Deals 2:1",
+            "ctaText": "",
+            "ctaLink": "",
+            "cover": ""
+          },
+          "data": [
+            {
+              "imageUrl": "https://ecs7.tokopedia.net/shop-page/display-widget/2%20x%201.png",
+              "videoUrl": "",
+              "appLink": "tokopedia://shop/2400899/etalase/21735836",
+              "webLink": "https://m.tokopedia.com/etalase/21735836"
+            },
+            {
+              "imageUrl": "https://ecs7.tokopedia.net/shop-page/display-widget/2%20x%201.png",
+              "videoUrl": "",
+              "appLink": "tokopedia://shop/2400899/etalase/21735836",
+              "webLink": "https://m.tokopedia.com/etalase/21735836"
+            },
+            {
+              "imageUrl": "https://ecs7.tokopedia.net/shop-page/display-widget/2%20x%201.png",
+              "videoUrl": "",
+              "appLink": "tokopedia://shop/2400899/etalase/21735836",
+              "webLink": "https://m.tokopedia.com/etalase/21735836"
+            }
+          ]
+        },
+        {
+          "widgetID": 0,
+          "layoutOrder": 13,
+          "name": "display_triple_column",
+          "type": "display",
+          "header": {
+            "title": "Anniversary Deals 3:4",
+            "ctaText": "",
+            "ctaLink": "",
+            "cover": ""
+          },
+          "data": [
+            {
+              "imageUrl": "https://ecs7.tokopedia.net/shop-page/display-widget/3%20x%204.png",
+              "videoUrl": "",
+              "appLink": "tokopedia://shop/2400899/etalase/21735836",
+              "webLink": "https://m.tokopedia.com/etalase/21735836"
+            },
+            {
+              "imageUrl": "https://ecs7.tokopedia.net/shop-page/display-widget/3%20x%204.png",
+              "videoUrl": "",
+              "appLink": "tokopedia://shop/2400899/etalase/21735836",
+              "webLink": "https://m.tokopedia.com/etalase/21735836"
+            },
+            {
+              "imageUrl": "https://ecs7.tokopedia.net/shop-page/display-widget/3%20x%204.png",
+              "videoUrl": "",
+              "appLink": "tokopedia://shop/2400899/etalase/21735836",
+              "webLink": "https://m.tokopedia.com/etalase/21735836"
+            }
+          ]
+        },
+        {
+          "widgetID": 0,
+          "layoutOrder": 14,
+          "name": "video",
+          "type": "display",
+          "header": {
+            "title": "Anniversary Deals",
+            "ctaText": "",
+            "ctaLink": "",
+            "cover": ""
+          },
+          "data": [
+            {
+              "imageUrl": "",
+              "videoUrl": "https://www.youtube.com/watch?v=z8PPZ9eTlv0",
+              "appLink": "tokopedia://shop/2400899/etalase/21735836",
+              "webLink": "https://m.tokopedia.com/etalase/21735836"
+            }
+          ]
+        },
+        {
+          "widgetID": 0,
+          "layoutOrder": 15,
+          "name": "product",
+          "type": "product",
+          "header": {
+            "title": "On Promotion",
+            "ctaText": "Lihat Semua",
+            "ctaLink": "https://www.tokopedia.com/vyattaid/discount",
+            "cover": "https://ecs7.tokopedia.net/img/cache/1190/attachment/2019/10/29/42515971/42515971_f244eb12-bbf2-4b63-85b5-b27acc2826fe.jpg"
+          },
+          "data": [
+            {
+              "productID": "495907921",
+              "name": "HP Notebook 15-db1037au - AMD Ryzen 3 3200U - 4GB - 1TB - W10 - Silver",
+              "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/27/16234150/16234150_8e306584-05a3-4eda-8736-7340d559a123_1919_1919",
+              "productUrl": "https://m.tokopedia.com/vyattaid/vyatta-fitme-prime-smartwatch-colorlcd-heartrate-oxygen-waterprooftrkid=f%3DCa0000L000P0W0S0Sh%2CCo0P",
+              "displayPrice": "Rp 5.639.900",
+              "originalPrice": "Rp 5.749.000",
+              "discountPercentage": "2",
+              "isShowFreeOngkir": true,
+              "freeOngkirPromoIcon": "https://ecs7.tokopedia.net/img/cache/700/product-1/2016/11/18/724037/724037_21d9a8e6-2148-45a9-895b-017ec8eba422.jpg",
+              "isSoldOut": true,
+              "rating": 4.5,
+              "totalReview": "100",
+              "isPO": true,
+              "cashback": 1000
+            }
+          ]
+        },
+        {
+          "widgetID": 0,
+          "layoutOrder": 16,
+          "name": "product",
+          "type": "product",
+          "header": {
+            "title": "New Arrival",
+            "ctaText": "Lihat Semua",
+            "ctaLink": "https://www.tokopedia.com/vyattaid/...",
+            "cover": "https://ecs7.tokopedia.net/img/cache/1190/attachment/2019/10/29/42515971/42515971_f244eb12-bbf2-4b63-85b5-b27acc2826fe.jpg"
+          },
+          "data": [
+            {
+              "productID": "495907921",
+              "name": "HP Notebook 15-db1037au - AMD Ryzen 3 3200U - 4GB - 1TB - W10 - Silver",
+              "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/27/16234150/16234150_8e306584-05a3-4eda-8736-7340d559a123_1919_1919",
+              "productUrl": "https://m.tokopedia.com/vyattaid/vyatta-fitme-prime-smartwatch-colorlcd-heartrate-oxygen-waterprooftrkid=f%3DCa0000L000P0W0S0Sh%2CCo0P",
+              "displayPrice": "Rp 5.639.900",
+              "originalPrice": "Rp 5.749.000",
+              "discountPercentage": "2",
+              "isShowFreeOngkir": true,
+              "freeOngkirPromoIcon": "https://ecs7.tokopedia.net/img/cache/700/product-1/2016/11/18/724037/724037_21d9a8e6-2148-45a9-895b-017ec8eba422.jpg",
+              "isSoldOut": true,
+              "rating": 4.5,
+              "totalReview": "100",
+              "isPO": true,
+              "cashback": 1000
+            }
+          ]
+        },
+        {
+          "widgetID": 0,
+          "layoutOrder": 17,
+          "name": "product",
+          "type": "product",
+          "header": {
+            "title": "Best Selling",
+            "ctaText": "Lihat Semua",
+            "ctaLink": "https://www.tokopedia.com/vyattaid/...",
+            "cover": "https://ecs7.tokopedia.net/img/cache/1190/attachment/2019/10/29/42515971/42515971_f244eb12-bbf2-4b63-85b5-b27acc2826fe.jpg"
+          },
+          "data": [
+            {
+              "productID": "495907921",
+              "name": "HP Notebook 15-db1037au - AMD Ryzen 3 3200U - 4GB - 1TB - W10 - Silver",
+              "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/27/16234150/16234150_8e306584-05a3-4eda-8736-7340d559a123_1919_1919",
+              "productUrl": "https://m.tokopedia.com/vyattaid/vyatta-fitme-prime-smartwatch-colorlcd-heartrate-oxygen-waterprooftrkid=f%3DCa0000L000P0W0S0Sh%2CCo0P",
+              "displayPrice": "Rp 5.639.900",
+              "originalPrice": "Rp 5.749.000",
+              "discountPercentage": "2",
+              "isShowFreeOngkir": true,
+              "freeOngkirPromoIcon": "https://ecs7.tokopedia.net/img/cache/700/product-1/2016/11/18/724037/724037_21d9a8e6-2148-45a9-895b-017ec8eba422.jpg",
+              "isSoldOut": true,
+              "rating": 4.5,
+              "totalReview": "100",
+              "isPO": true,
+              "cashback": 1000
+            }
+          ]
+        },
+        {
+          "widgetID": 0,
+          "layoutOrder": 18,
+          "name": "product",
+          "type": "product",
+          "header": {
+            "title": "Custom Product Selection",
+            "ctaText": "Lihat Semua",
+            "ctaLink": "https://www.tokopedia.com/vyattaid/...",
+            "cover": "https://ecs7.tokopedia.net/img/cache/1190/attachment/2019/10/29/42515971/42515971_f244eb12-bbf2-4b63-85b5-b27acc2826fe.jpg"
+          },
+          "data": [
+            {
+              "productID": "495907921",
+              "name": "HP Notebook 15-db1037au - AMD Ryzen 3 3200U - 4GB - 1TB - W10 - Silver",
+              "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/27/16234150/16234150_8e306584-05a3-4eda-8736-7340d559a123_1919_1919",
+              "productUrl": "https://m.tokopedia.com/vyattaid/vyatta-fitme-prime-smartwatch-colorlcd-heartrate-oxygen-waterprooftrkid=f%3DCa0000L000P0W0S0Sh%2CCo0P",
+              "displayPrice": "Rp 5.639.900",
+              "originalPrice": "Rp 5.749.000",
+              "discountPercentage": "2",
+              "isShowFreeOngkir": true,
+              "freeOngkirPromoIcon": "https://ecs7.tokopedia.net/img/cache/700/product-1/2016/11/18/724037/724037_21d9a8e6-2148-45a9-895b-017ec8eba422.jpg",
+              "isSoldOut": true,
+              "rating": 4.5,
+              "totalReview": "100",
+              "isPO": true,
+              "cashback": 1000
+            }
+          ]
+        },
+        {
+          "widgetID": 0,
+          "layoutOrder": 19,
+          "name": "product",
+          "type": "product",
+          "header": {
+            "title": "Custom Showcase Selection",
+            "ctaText": "Lihat Semua",
+            "ctaLink": "https://www.tokopedia.com/vyattaid/...",
+            "cover": "https://ecs7.tokopedia.net/img/cache/1190/attachment/2019/10/29/42515971/42515971_f244eb12-bbf2-4b63-85b5-b27acc2826fe.jpg"
+          },
+          "data": [
+            {
+              "productID": "495907921",
+              "name": "HP Notebook 15-db1037au - AMD Ryzen 3 3200U - 4GB - 1TB - W10 - Silver",
+              "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/27/16234150/16234150_8e306584-05a3-4eda-8736-7340d559a123_1919_1919",
+              "productUrl": "https://m.tokopedia.com/vyattaid/vyatta-fitme-prime-smartwatch-colorlcd-heartrate-oxygen-waterprooftrkid=f%3DCa0000L000P0W0S0Sh%2CCo0P",
+              "displayPrice": "Rp 5.639.900",
+              "originalPrice": "Rp 5.749.000",
+              "discountPercentage": "2",
+              "isShowFreeOngkir": true,
+              "freeOngkirPromoIcon": "https://ecs7.tokopedia.net/img/cache/700/product-1/2016/11/18/724037/724037_21d9a8e6-2148-45a9-895b-017ec8eba422.jpg",
+              "isSoldOut": true,
+              "rating": 4.5,
+              "totalReview": "100",
+              "isPO": true,
+              "cashback": 1000
+            }
+          ]
+        },
+        {
+          "widgetID": 0,
+          "layoutOrder": 20,
+          "name": "voucher",
+          "type": "voucher",
+          "header": {
+            "title": "Voucher Toko",
+            "ctaText": "Lihat Semua",
+            "ctaLink": "https://m.tokopedia.com/vyattaid/voucher",
+            "cover": ""
+          },
+          "data": [
+            {
+              "voucherID": 450998,
+              "imageUrl": "https://ecs7.tokopedia.net/img/attachment/2019/10/29/5605351/5605351_a6d29f7a-ab54-494c-acdb-42b2aa9f3151",
+              "name": "KOPER ID DISKON 10000 IDR NOV",
+              "voucherType": {
+                "voucherType": 3,
+                "identifier": "cashback"
+              },
+              "voucherCode": "KOPERID10",
+              "amount": {
+                "amountType": 1,
+                "amount": 10000,
+                "amountFormatted": "10rb"
+              },
+              "minimumSpend": 200000,
+              "minimumSpendFormatted": "200rb",
+              "owner": {
+                "ownerID": 1,
+                "identifier": "merchant-voucher"
+              },
+              "validThru": "1575156600",
+              "tnc": "<ol>\n    <li>Cashback sebesar  Rp 10.000</li>\n    <li>Berlaku minimal transaksi  Rp 200.000 (total harga produk, belum termasuk ongkos kirim dan biaya tambahan lainnya)</li>\n    <li>Voucher hanya berlaku untuk satu kali untuk pembelanjaan di Koper ID.</li>\n    <li>Cashback akan dikirimkan pada user yang memiliki nomor ponsel yang aktif</li>\n    <li>Tidak bisa digabung dengan promo lain.</li>\n    <li>Satu pengguna Tokopedia hanya boleh menggunakan 1 (satu) akun Tokopedia untuk menggunakan Voucher ini.</li>\n    <li>Tokopedia berhak melakukan tindakan yang diperlukan apabila diduga terjadi tindakan kecurangan dari pengguna yang merugikan pihak Tokopedia.</li>\n    <li>Dengan menggunakan Voucher ini, pengguna dianggap mengerti dan menyetujui semua syarat & ketentuan yang berlaku.</li>\n</ol>",
+              "inUseExpiry": "121220",
+              "status": {
+                "status": 2,
+                "identifier": "available"
+              }
+            },
+            {
+              "voucherID": 450999,
+              "imageUrl": "https://ecs7.tokopedia.net/img/attachment/2019/10/29/5605351/5605351_a6d29f7a-ab54-494c-acdb-42b2aa9f3151",
+              "name": "KOPER ID DISKON 25000 IDR NOV",
+              "voucherType": {
+                "voucherType": 3,
+                "identifier": "cashback"
+              },
+              "voucherCode": "KOPERID25",
+              "amount": {
+                "amountType": 1,
+                "amount": 25000,
+                "amountFormatted": "25rb"
+              },
+              "minimumSpend": 500000,
+              "minimumSpendFormatted": "500rb",
+              "owner": {
+                "ownerID": 1,
+                "identifier": "merchant-voucher"
+              },
+              "validThru": "1575156600",
+              "tnc": "<ol>\n    <li>Cashback sebesar  Rp 25.000</li>\n    <li>Berlaku minimal transaksi  Rp 500.000 (total harga produk, belum termasuk ongkos kirim dan biaya tambahan lainnya)</li>\n    <li>Voucher hanya berlaku untuk satu kali untuk pembelanjaan di Koper ID.</li>\n    <li>Cashback akan dikirimkan pada user yang memiliki nomor ponsel yang aktif</li>\n    <li>Tidak bisa digabung dengan promo lain.</li>\n    <li>Satu pengguna Tokopedia hanya boleh menggunakan 1 (satu) akun Tokopedia untuk menggunakan Voucher ini.</li>\n    <li>Tokopedia berhak melakukan tindakan yang diperlukan apabila diduga terjadi tindakan kecurangan dari pengguna yang merugikan pihak Tokopedia.</li>\n    <li>Dengan menggunakan Voucher ini, pengguna dianggap mengerti dan menyetujui semua syarat & ketentuan yang berlaku.</li>\n</ol>",
+              "inUseExpiry": "121220",
+              "status": {
+                "status": 2,
+                "identifier": "available"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

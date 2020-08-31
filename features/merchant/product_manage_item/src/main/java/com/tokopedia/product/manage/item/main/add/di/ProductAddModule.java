@@ -2,33 +2,20 @@ package com.tokopedia.product.manage.item.main.add.di;
 
 import android.content.Context;
 
-import com.google.gson.JsonArray;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.common.category.data.repository.CategoryRepositoryImpl;
 import com.tokopedia.core.common.category.data.source.CategoryDataSource;
-import com.tokopedia.core.common.category.data.source.CategoryVersionDataSource;
 import com.tokopedia.core.common.category.data.source.FetchCategoryDataSource;
-import com.tokopedia.core.common.category.data.source.cloud.api.HadesCategoryApi;
 import com.tokopedia.core.common.category.data.source.db.CategoryDB;
 import com.tokopedia.core.common.category.data.source.db.CategoryDao;
 import com.tokopedia.core.common.category.domain.CategoryRepository;
 import com.tokopedia.core.network.di.qualifier.AceQualifier;
-import com.tokopedia.core.network.di.qualifier.HadesQualifier;
 import com.tokopedia.core.network.di.qualifier.MerlinQualifier;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.graphql.FingerprintManager;
-import com.tokopedia.graphql.GraphqlCacheManager;
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
-import com.tokopedia.graphql.coroutines.data.repository.GraphqlRepositoryImpl;
-import com.tokopedia.graphql.coroutines.data.source.GraphqlCacheDataStore;
-import com.tokopedia.graphql.coroutines.data.source.GraphqlCloudDataStore;
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase;
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
-import com.tokopedia.graphql.data.model.GraphqlRequest;
-import com.tokopedia.graphql.data.source.cloud.api.GraphqlApi;
-import com.tokopedia.graphql.data.source.cloud.api.GraphqlApiSuspend;
 import com.tokopedia.product.manage.item.catalog.data.repository.CatalogRepositoryImpl;
 import com.tokopedia.product.manage.item.catalog.data.source.CatalogDataSource;
 import com.tokopedia.product.manage.item.catalog.domain.CatalogRepository;
@@ -55,14 +42,8 @@ import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
-
 import dagger.Module;
 import dagger.Provides;
-import kotlin.coroutines.Continuation;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 
@@ -117,16 +98,9 @@ public class ProductAddModule {
 
     @ProductAddScope
     @Provides
-    CategoryRepository provideCategoryRepository(CategoryVersionDataSource categoryVersionDataSource,
-                                                 CategoryDataSource categoryDataSource,
+    CategoryRepository provideCategoryRepository(CategoryDataSource categoryDataSource,
                                                  FetchCategoryDataSource fetchCategoryDataSource){
-        return new CategoryRepositoryImpl(categoryVersionDataSource, categoryDataSource, fetchCategoryDataSource);
-    }
-
-    @ProductAddScope
-    @Provides
-    HadesCategoryApi provideHadesCategoryApi(@HadesQualifier Retrofit retrofit){
-        return retrofit.create(HadesCategoryApi.class);
+        return new CategoryRepositoryImpl(categoryDataSource, fetchCategoryDataSource);
     }
 
     @ProductAddScope

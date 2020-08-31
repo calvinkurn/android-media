@@ -15,7 +15,7 @@
     <dimen name="invoice_item_carousel_width">298dp</dimen>
     <dimen name="item_carousel_next_invoice_width">68dp</dimen>
     <dimen name="item_carousel_next_arrow_size">49dp</dimen>
-    <dimen name="avatar_thumb_size">34dp</dimen>
+    <dimen name="avatar_thumb_size">40dp</dimen>
     <dimen name="online_status_text_size">11sp</dimen>
     <dimen name="online_status_text_line_spacing">9sp</dimen>
     <dimen name="chat_person_tag_text_size">9sp</dimen>
@@ -26,5 +26,10 @@
     <dimen name="chatcommon_14dp">14dp</dimen>
     <dimen name="chatcommon_1dp">1dp</dimen>
     <dimen name="chatcommon_12dp">12dp</dimen>
+    <dimen name="chatcommon_3dp">3dp</dimen>
+    <dimen name="chatcommon_9dp">9dp</dimen>
+    <dimen name="chatcommon_22dp">22dp</dimen>
+    <dimen name="chatcommon_26dp">26dp</dimen>
+    <dimen name="chatcommon_60dp">60dp</dimen>
 
 </resources>

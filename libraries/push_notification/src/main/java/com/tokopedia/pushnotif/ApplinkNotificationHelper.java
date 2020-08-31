@@ -9,11 +9,12 @@ import android.preference.PreferenceManager;
 
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
+import com.tokopedia.pushnotif.data.constant.Constant;
+import com.tokopedia.pushnotif.data.model.ApplinkNotificationModel;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
-import static com.tokopedia.pushnotif.Constant.Host.CHATBOT;
+import static com.tokopedia.pushnotif.data.constant.Constant.Host.CHATBOT;
 
 /**
  * @author ricoharisin .
@@ -160,7 +161,7 @@ public class ApplinkNotificationHelper {
         return Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT;
     }
 
-    private static Boolean isTargetApp(ApplinkNotificationModel applinkNotificationModel) {
+    public static Boolean isTargetApp(ApplinkNotificationModel applinkNotificationModel) {
         return (applinkNotificationModel.getTargetApp() == null) ||
                 (applinkNotificationModel.getTargetApp() != null && applinkNotificationModel.getTargetApp().contains(GlobalConfig.APPLICATION_ID));
     }

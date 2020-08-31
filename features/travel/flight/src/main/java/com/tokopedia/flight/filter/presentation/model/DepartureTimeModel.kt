@@ -1,0 +1,16 @@
+package com.tokopedia.flight.filter.presentation.model
+
+import com.tokopedia.flight.filter.presentation.adapter.FlightFilterSortAdapterTypeFactory
+import com.tokopedia.flight.searchV4.presentation.model.filter.DepartureTimeEnum
+
+/**
+ * @author by jessica on 2020-02-21
+ */
+
+class DepartureTimeModel(
+        val departureTimeEnum: DepartureTimeEnum,
+        title: String = "",
+        isSelected: Boolean = false)
+    : BaseFilterSortModel(title, isSelected) {
+    override fun type(typeFactory: FlightFilterSortAdapterTypeFactory): Int = typeFactory.type(this)
+}

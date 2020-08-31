@@ -53,6 +53,7 @@ public interface ConstantTransactionAnalytics {
         String VIEW_REGISTER = "viewRegister";
         String CLICK_CHECKOUT_EXPRESS = "clickCheckoutExpress";
         String VIEW_CHECKOUT_EXPRESS = "viewCheckoutExpress";
+        String VIEW_CHECKOUT_EXPRESS_IRIS = "viewCheckoutExpressIris";
         String VIEW_SOM = "viewSOM";
         String CLICK_RECOMMENDATION = "clickRecommendation";
         String VIEW_COURIER_IRIS = "viewCourierIris";
@@ -80,6 +81,10 @@ public interface ConstantTransactionAnalytics {
         String TRACK_SOM = "track seller order management";
         String FIN_INSURANCE_CART = "fin - cart page";
         String FIN_INSURANCE_CHECKOUT = "fin - mp checkout";
+
+        //OCC
+        String PURCHASE_SETTING = "purchase setting";
+        String ORDER_SUMMARY = "order summary";
     }
 
     interface EventAction {
@@ -207,6 +212,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_PRODUCT_WISHLIST_ON_CART_LIST = "click product wishlist on cart list";
         String CLICK_PRODUCT_LAST_SEEN_ON_CART_LIST = "click product last seen on cart list";
         String CLICK_DONATION = "click donation";
+        String VIEW_AUTO_CHECK_ON_DONATION = "view autocheck on donation";
 
         String VALIDATION_ERROR_ALAMAT_SEBAGAI_PADA_TAMBAH_ADDRESS = "validation error alamat sebagai pada + address";
         String VALIDATION_ERROR_NAMA_PADA_TAMBAH_ADDRESS = "validation error nama pada + address";
@@ -364,6 +370,99 @@ public interface ConstantTransactionAnalytics {
         String FIN_INSURANCE_CLICK_BUY = "ins - click buy";
         String FIN_INSURANCE_CHECKOUT = "ins - click pilih pembayaran";
         String FIN_INSURANCE_CHECKOUT_IMPRESSION = "ins - impression insurance box in checkout page";
+
+        //Campaign
+        String VIEW_POP_UP_MESSAGE_TIMER = "view pop up message payment time expired";
+        String CLICK_BELANJA_LAGI_ON_POP_UP = "click belanja lagi on pop up message payment time expired";
+
+        // Promo checkout revamp
+        String CLICK_BUTTON_VERIFIKASI_NOMOR_HP = "click button verifikasi nomor HP promo page";
+        String VIEW_AVAILABLE_PROMO_LIST = "view available promo list";
+        String CLICK_PILIH_PROMO_RECOMMENDATION = "click pilih promo recommendation";
+        String SELECT_KUPON = "select kupon";
+        String DESELECT_KUPON = "deselect kupon";
+        String CLICK_LIHAT_DETAIL_KUPON = "click lihat detail kupon";
+        String CLICK_EXPAND_PROMO_LIST = "click expand promo list";
+        String CLICK_REMOVE_PROMO_CODE = "click remove promo code";
+        String CLICK_TERAPKAN_PROMO = "click terapkan promo";
+        String SELECT_PROMO = "select promo";
+        String DESELECT_PROMO = "deselect promo";
+        String VIEW_POP_UP_SAVE_PROMO = "view pop up save promo";
+        String CLICK_PAKAI_PROMO = "click pakai promo";
+        String VIEW_ERROR_POP_UP = "view error pop up";
+        String CLICK_COBA_LAGI = "click coba lagi";
+        String CLICK_SIMPAN_PROMO_BARU = "click simpan promo baru";
+        String CLICK_PILIH_PROMO = "click pilih promo";
+        String CLICK_KELUAR_HALAMAN = "click keluar halaman";
+        String CLICK_RESET_PROMO = "click reset promo";
+        String CLICK_BELI_TANPA_PROMO = "click beli tanpa promo";
+        String VIEW_PROMO_MESSAGE = "view promo message";
+        String SELECT_PROMO_CODE_FROM_LAST_SEEN = "select promo code from Last Seen";
+        String DISMISS_LAST_SEEN = "dismiss Last Seen";
+        String CLICK_INPUT_FIELD = "click input field";
+        String SHOW_LAST_SEEN_POP_UP = "show Last Seen pop-up";
+
+        //OCC
+        String ADD_PREFERENCE_OCC = "click tambah preferensi from tambah pilihan";
+        String CLICK_TRASH_ICON_OCC = "click trash bin on edit preference";
+        String CLICK_HAPUS_ON_TRASH_ICON_OCC = "click hapus preferensi from trash bin";
+        String CLICK_PILIH_DURASI_PENGIRIMAN_IN_ANA_OCC = "click pilih durasi pengiriman in add new address step";
+        String CLICK_DURASI_OPTION_IN_DURASI_PAGE = "click duration option in duration step";
+        String CLICK_PILIH_METODE_PEMBAYARAN_IN_DURATION_PAGE = "click pilih metode pembayaran in duration step";
+        String CLICK_PAYMENT_METHOD_OPTION_IN_PAYMENT_METHOD_PAGE = "click payment method option in payment method step";
+        String CLICK_UBAH_ADDRESS_IN_PREFERENCE_SETTING_PAGE = "click ubah in address section on edit preference";
+        String CLICK_UBAH_SHIPPING_IN_PREFERENCE_SETTING_PAGE = "click ubah in duration section on edit preference";
+        String CLICK_UBAH_PAYMENT_IN_PREFERENCE_SETTING_PAGE = "click ubah in payment section on edit preference";
+        String CLICK_ADDRESS_OPTION_IN_PILIH_ALAMAT_PAGE = "click available address option";
+        String CLICK_SIMPAN_ALAMAT_IN_PILIH_ALAMAT_PAGE = "click simpan alamat on pilih alamat pengiriman";
+        String CLICK_GEAR_LOGO_IN_PREFERENCE_LIST_PAGE = "click gear logo from tambah pilihan";
+        String CLICK_JADIKAN_PILIHAN_UTAMA = "click button jadikan pilihan utama from tambah pilihan";
+        String CLICK_BACK_ARROW_IN_EDIT_PREFERENCE = "click back in edit preference";
+        String CLICK_BACK_ARROW_IN_PILIH_ALAMAT = "click back in pilih alamat";
+        String CLICK_BACK_ARROW_IN_PILIH_DURASI = "click back in pilih durasi";
+        String CLICK_BACK_ARROW_IN_PILIH_METHOD_PAYMENT = "click back in pilih metode bayar";
+        String CLICK_SIMPAN_ON_SUMMARY_PURCHASE_SETTING = "click simpan on summary purchase setting";
+
+        String EDIT_QUANTITY_INCRESE = "product - click button plus";
+        String EDIT_QUANTITY_DECREASE = "product - click button minus";
+        String EDIT_SELLER_NOTES = "product - click tulis catatan";
+        String FIND_SIMILAR_PRODUCT = "product - click cari barang serupa";
+        String USER_CHANGE_COURIER_OSP = "courier - click arrow to change courier option";
+        String CLICK_UBAH_WHEN_DURATION_ERROR = "click ubah when duration error";
+        String CLICK_SELECTED_DURATION_OPTION = "click selected duration option";
+        String CLICK_ON_INSURANCE = "courier - click on asuransi pengiriman";
+        String CLICK_BAYAR_NOT_SUCCESS = "click bayar - not success";
+        String CLICK_PILIH_PEMBAYARAN_NOT_SUCCESS = "click pilih pembayaran - not success";
+        String CLICK_PILIH_PEMBAYARAN = "click pilih pembayaran";
+        String VIEW_ERROR_ON_OSP = "view error message";
+        String CLICK_ADD_PREFERENSI_FROM_OSP = "preference - click tambah pilihan from ganti pilihan";
+        String USER_CHANGES_PROFILE = "preference - click ganti pilihan on order summary";
+        String USER_SETS_FIRST_PREFERENCE = "preference - click atur preferensi for new buyer";
+        String CHOOSE_BBO_AS_DURATION = "courier - click pilih on tersedia bebas ongkir";
+        String CHOOSE_COURIER_FROM_COURIER_SELECTION_OSP = "courier - click selected courier option";
+        String CLICK_RINGKASAN_BELANJA_OSP = "click arrow on ringkasan belanja";
+        String CLICK_GEAR_LOGO_IN_PREFERENCE_FROM_GANTI_PILIHAN_OSP = "preference - click gear logo from ganti pilihan";
+        String GUNAKAN_PILIHAN_INI_FROM_GANTI_PILIHAN_OSP = "preference -  click gunakan pilihan ini from ganti pilihan";
+        String CLICK_BACK_FROM_OSP = "click back in order summary page";
+        String CLICK_BUTTON_INFO_ON_OSP = "click button info on order summary page";
+        String CLICK_YUK_COBA_LAGI_IN_ONBOARDING_TICKER = "click yuk coba lagi in onboarding ticker";
+        String VIEW_ONBOARDING_TICKER = "view onboarding ticker";
+        String CLICK_PROMO_SECTION_APPLIED_OSP = "click promo section with promo applied";
+        String CLICK_PROMO_SECTION_NOT_APPLIED_OSP = "click promo section with promo not applied";
+        String CLICK_LANJUT_BAYAR_PROMO_ERROR_OSP = "promo - click lanjut bayar on bottom sheet promo error";
+        String CLICK_PILIH_PROMO_LAIN_PROMO_ERROR_OSP = "promo - click pilih promo lain on bottom sheet promo error";
+
+        String VIEW_ORDER_SUMMARY_PAGE = "view order summary page";
+        String VIEW_ONBOARDING_INFO = "view onboarding info";
+        String VIEW_BOTTOMSHEET_PROMO_ERROR = "view bottom sheet promo error";
+        String VIEW_PROMO_ALREADY_APPLIED = "view promo already applied in order summary list";
+        String VIEW_PROMO_RELEASED = "view promo released after adjust item";
+        String VIEW_PROMO_DECREASED = "view promo decreased after adjust item";
+
+        // Shipping experience
+        String VIEW_SUMMARY_TRANSACTION_TICKER_COURIER_NOT_COMPLETE = "view summary transaction ticker courier not complete";
+        String CLICK_CEK_ON_SUMMARY_TRANSACTION_TICKER_COURIER_NOT_COMPLETE = "click cek on summary transaction ticker courier not complete";
+
     }
 
     interface EventLabel {
@@ -410,6 +509,25 @@ public interface ConstantTransactionAnalytics {
         String COD = "cod";
 
         String SOURCE_CART = "source: cart";
+
+        // Promo checkout revamp
+        String INELIGIBLE_PRODUCT = "ineligible product";
+        String NO_PROMO = "no promo";
+        String INELIGIBLE_PROMO_LIST = "ineligible promo list";
+        String ELIGIBLE_PROMO = "eligible promo";
+        String FAILED_TERJADI_KESALAHAN_SERVER = "failed - error terjadi kesalahan server";
+        String BLACKLIST_ERROR = "blacklist error";
+        String PHONE_VERIFICATION_MESSAGE = "phone verification message";
+
+        String NEW_OCC = "new occ";
+        String NEW_BUYER = "new buyer";
+        String SHOP_CLOSED = "shop closed";
+        String EMPTY_STOCK = "empty_stock";
+    }
+
+    interface ExtraKey {
+        String USER_ID = "userId";
+        String PROMO_CODE = "promoCode";
     }
 
     interface ScreenName {

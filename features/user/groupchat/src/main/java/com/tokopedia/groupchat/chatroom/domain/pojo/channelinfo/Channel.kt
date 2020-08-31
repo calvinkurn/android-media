@@ -6,6 +6,7 @@ import com.tokopedia.groupchat.chatroom.domain.pojo.ButtonsPojo
 import com.tokopedia.groupchat.chatroom.domain.pojo.ExitMessage
 import com.tokopedia.groupchat.chatroom.domain.pojo.PinnedMessagePojo
 import com.tokopedia.groupchat.chatroom.domain.pojo.poll.ActivePollPojo
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ChatPermitModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.FreezeViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel
 
@@ -144,7 +145,8 @@ data class Channel(
         val freezeState: FreezeViewModel = FreezeViewModel(),
         @SerializedName("link_info_url")
         @Expose
-        val linkInfoUrl: String = ""
-
-
-) {}
+        val linkInfoUrl: String = "",
+        @SerializedName("chat_permit")
+        @Expose
+        val chatPermit: ChatPermitModel = ChatPermitModel()
+)

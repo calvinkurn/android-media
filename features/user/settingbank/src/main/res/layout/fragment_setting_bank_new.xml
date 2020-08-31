@@ -27,7 +27,7 @@
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/add_account_button" />
 
-    <com.tokopedia.unifyprinciples.Typography
+    <TextView
         android:id="@+id/add_account_button"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_40"
@@ -43,7 +43,6 @@
         android:textColor="@color/sbank_btn_text_color"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:typographyType="heading_5"
         tools:visibility="visible" />
 
     <ProgressBar
@@ -58,11 +57,11 @@
         app:layout_constraintTop_toTopOf="parent" />
 
 
-    <ImageView
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
         android:id="@+id/iv_noBankAccountAdded"
         android:layout_width="@dimen/dp_240"
         android:layout_height="@dimen/dp_240"
-        android:src="@drawable/sbank_no_bank_added"
+        app:remoteFileName="sbank_no_bank_added.png"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/guidelineBlankPage"
         app:layout_constraintEnd_toEndOf="parent"

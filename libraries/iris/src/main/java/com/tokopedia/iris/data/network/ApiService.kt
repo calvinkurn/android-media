@@ -1,12 +1,12 @@
 package com.tokopedia.iris.data.network
 
 import android.content.Context
-import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
-import com.readystatesoftware.chuck.ChuckInterceptor
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iris.util.*
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import okhttp3.OkHttpClient
@@ -20,16 +20,14 @@ import java.util.concurrent.TimeUnit
  */
 class ApiService(private val context: Context) {
 
-    private val session: Session = IrisSession(context)
     private val userSession: UserSessionInterface = UserSession(context)
     private var apiInterface: ApiInterface? = null
 
     fun makeRetrofitService(): ApiInterface {
         if (apiInterface == null)
             apiInterface = Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(TokopediaUrl.getInstance().HUB + VERSION)
                 .addConverterFactory(StringResponseConverter())
-                .addCallAdapterFactory(CoroutineCallAdapterFactory())
                 .client(createClient())
                 .build().create(ApiInterface::class.java)
         return apiInterface!!
@@ -41,8 +39,9 @@ class ApiService(private val context: Context) {
                     val original = it.request()
                     val request = original.newBuilder()
                     request.header(HEADER_CONTENT_TYPE, HEADER_JSON)
-                    if (!session.getUserId().isBlank()) {
-                        request.header(HEADER_USER_ID, session.getUserId())
+                    val userId = userSession.userId
+                    if (userId.isNotEmpty()) {
+                        request.header(HEADER_USER_ID, userId)
                     }
                     request.header(HEADER_DEVICE, HEADER_ANDROID + GlobalConfig.VERSION_NAME)
                     request.method(original.method(), original.body())
@@ -55,7 +54,7 @@ class ApiService(private val context: Context) {
                 .readTimeout(10000, TimeUnit.MILLISECONDS)
         addFringerInterceptor(builder)
         if (GlobalConfig.isAllowDebuggingTools()) {
-            builder.addInterceptor(ChuckInterceptor(context))
+            builder.addInterceptor(ChuckerInterceptor(context))
         }
         return builder.build()
     }

@@ -76,7 +76,7 @@
             android:textColor="@color/white" />
 
         <TextView
-            android:id="@+id/rn_dev_options"
+            android:id="@+id/goto_screen_recorder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -84,7 +84,7 @@
             android:background="@drawable/btn_share"
             android:gravity="center"
             android:padding="@dimen/margin_small"
-            android:text="RN Dev Options"
+            android:text="Open Screen Recorder"
             android:textColor="@color/white" />
 
         <CheckBox
@@ -119,6 +119,78 @@
             android:text="Device ID: 1213124" />
 
         <CheckBox
+            android:id="@+id/toggle_topads_debugger_notif"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:padding="@dimen/margin_small"
+            android:text="Enable TopAds Log on Notification" />
+
+        <TextView
+            android:id="@+id/goto_topads_debugger"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:background="@drawable/btn_share"
+            android:gravity="center"
+            android:padding="@dimen/margin_small"
+            android:text="View TopAds Log"
+            android:textColor="@color/white" />
+
+        <CheckBox
+            android:id="@+id/toggle_applink_debugger_notif"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:padding="@dimen/margin_small"
+            android:text="Enable Applink Log on Notification" />
+
+        <TextView
+            android:id="@+id/goto_applink_debugger"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:background="@drawable/btn_share"
+            android:gravity="center"
+            android:padding="@dimen/margin_small"
+            android:text="View Applink Log"
+            android:textColor="@color/white" />
+
+        <CheckBox
+            android:id="@+id/toggle_fpm_auto_file_log"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:padding="@dimen/margin_small"
+            android:text="Enable FPM Log on File (Download/fpm-auto-log.txt)" />
+
+        <CheckBox
+            android:id="@+id/toggle_fpm_notif"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:padding="@dimen/margin_small"
+            android:text="Enable FPM Log on Notification" />
+
+        <TextView
+            android:id="@+id/goto_fpm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:background="@drawable/btn_share"
+            android:gravity="center"
+            android:padding="@dimen/margin_small"
+            android:text="View FPM Log"
+            android:textColor="@color/white" />
+
+        <CheckBox
             android:id="@+id/toggle_analytics"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -126,6 +198,18 @@
             android:layout_marginTop="@dimen/margin_small"
             android:padding="@dimen/margin_small"
             android:text="Enable Analytics Log on Notification" />
+
+        <TextView
+            android:id="@+id/goto_cassava"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:background="@drawable/btn_share"
+            android:gravity="center"
+            android:padding="@dimen/margin_small"
+            android:text="Client Analytics Validator"
+            android:textColor="@color/white" />
 
         <TextView
             android:id="@+id/goto_analytics"
@@ -138,6 +222,62 @@
             android:padding="@dimen/margin_small"
             android:text="View Analytics Log"
             android:textColor="@color/white" />
+
+        <TextView
+            android:id="@+id/goto_analytics_error"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:background="@drawable/btn_share"
+            android:gravity="center"
+            android:padding="@dimen/margin_small"
+            android:text="View Analytics Error Log"
+            android:textColor="@color/white" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_small"
+            android:orientation="horizontal" >
+            <TextView
+                android:id="@+id/goto_iris_save_log"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/margin_small"
+                android:background="@drawable/btn_share"
+                android:gravity="center"
+                android:padding="@dimen/margin_small"
+                android:text="View Iris Save Log"
+                android:textColor="@color/white" />
+
+            <TextView
+                android:id="@+id/goto_iris_send_log"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/margin_small"
+                android:background="@drawable/btn_share"
+                android:gravity="center"
+                android:padding="@dimen/margin_small"
+                android:text="View Iris Send Log"
+                android:textColor="@color/white" />
+        </LinearLayout>
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/et_block_canary_delay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:textSize="@dimen/fontSize_lvl4"
+            android:lines="1"
+            android:gravity="center_vertical"
+            android:inputType="text"
+            android:hint="Minimum Block Delay to Captured in ms (default = 500)"
+            app:backgroundTint="@color/Green_G500" />
 
         <CheckBox
             android:id="@+id/toggle_ui_block_debugger"
@@ -173,26 +313,30 @@
             android:text="@string/remote_config_start_button"
             android:textColor="@color/Neutral_N0" />
 
-        <TableLayout
-            android:stretchColumns="1"
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/et_route_manager"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <TableRow>
-                <TextView
-                    android:text="@string/react_native_developer_mode"
-                    android:paddingRight="25dip"
-                    style="@style/TextView.Title.Bold"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-                <ToggleButton
-                    android:id="@+id/toggle_reactnative_mode"
-                    android:background="@drawable/btn_share"
-                    android:textColor="@color/white"
-                    android:layout_marginRight="0dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </TableRow>
-        </TableLayout>
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:textSize="@dimen/fontSize_lvl4"
+            android:lines="1"
+            android:gravity="center_vertical"
+            android:inputType="text"
+            android:hint="String to be put in RouteManager.route(...)"
+            app:backgroundTint="@color/Green_G500" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/btn_route_manager"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
+            android:background="@drawable/btn_share"
+            android:gravity="center"
+            android:padding="@dimen/spacing_lvl3"
+            android:text="Try RouteManager.route"
+            android:textColor="@color/Neutral_N0" />
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/ip_groupchat"
@@ -231,15 +375,16 @@
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <TableRow>
                 <TextView
-                    android:text="Enable RN Developer Option"
+                    android:text="Enable Timber Logging To Server"
                     android:paddingRight="25dip"
                     style="@style/TextView.Title.Bold"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
                 <ToggleButton
-                    android:id="@+id/toggle_reactnative_dev_options"
+                    android:id="@+id/toggle_timber_dev_options"
                     android:background="@drawable/btn_share"
                     android:textColor="@color/white"
                     android:layout_marginRight="1dp"
@@ -247,6 +392,76 @@
                     android:layout_height="wrap_content" />
             </TableRow>
         </TableLayout>
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/et_timber_send"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:textSize="@dimen/fontSize_lvl4"
+            android:lines="1"
+            android:gravity="center_vertical"
+            android:inputType="text"
+            android:hint="Pno#TAG#message (required Server Logging ON)"
+            app:backgroundTint="@color/Green_G500" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/btn_send_timber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
+            android:background="@drawable/btn_share"
+            android:gravity="center"
+            android:padding="@dimen/spacing_lvl3"
+            android:text="Send Log to Server"
+            android:textColor="@color/Neutral_N0" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/spacing_lvl4">
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/et_change_version_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:textSize="@dimen/fontSize_lvl4"
+                android:inputType="text"
+                android:hint="3.99"
+                app:backgroundTint="@color/Green_G500" />
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/et_change_version_code"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:textSize="@dimen/fontSize_lvl4"
+                android:inputType="number"
+                android:maxLength="9"
+                android:hint="399123456"
+                app:backgroundTint="@color/Green_G500" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/btn_change_version"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:background="@drawable/btn_share"
+                android:gravity="center"
+                android:padding="@dimen/spacing_lvl3"
+                android:text="Change"
+                android:textColor="@color/Neutral_N0" />
+        </LinearLayout>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
+            android:text="Version change is for api purpose - app kill will change back" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -268,12 +483,22 @@
                 android:layout_weight="2"/>
 
         </LinearLayout>
-<!--
+
+        <TextView
+            android:id="@+id/tv_fake_response"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_small"
+            android:background="@drawable/btn_share"
+            android:gravity="center"
+            android:padding="@dimen/margin_small"
+            android:text="Fake response Activity"
+            android:textColor="@color/white" />
+
         <com.tokopedia.translator.ui.TranslatorSettingView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             />
--->
 
         <Button
             android:layout_width="match_parent"

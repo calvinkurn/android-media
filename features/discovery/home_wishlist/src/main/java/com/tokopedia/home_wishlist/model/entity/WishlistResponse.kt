@@ -88,6 +88,12 @@ data class WishlistItem(
     @SerializedName("minimum_order")
     @Expose
     val minimumOrder: Int = -1,
+    @SerializedName("discount_percentage")
+    @Expose
+    val discountPercentage: Int = 0,
+    @SerializedName("slash_price")
+    @Expose
+    val slashPrice: String = "",
     @SerializedName("wholesale_price")
     @Expose
     val wholesalePrice: List<WholesalePrice> = listOf(),

@@ -3,6 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply from: "$rootProject.projectDir/buildconfig/dependencies/dependency-libraries.gradle"
 apply from: "$rootProject.projectDir/buildconfig/dependencies/dependencies.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: "de.mannodermaus.android-junit5"
 
 buildscript {
@@ -15,11 +16,17 @@ buildscript {
     }
 }
 
-
 android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
     defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
         multiDexEnabled(project.hasProperty('coverage') ? true : false)
-        testInstrumentationRunner 'com.tokopedia.home.application.MyRunner'
+        consumerProguardFiles 'consumer-rules.pro'
+        versionCode 1
+        versionName "1.0"
     }
     sourceSets.each {
         it.java.srcDirs += "src/$it.name/kotlin"
@@ -37,22 +44,6 @@ android {
             testLogging.events = ["passed", "skipped", "failed"]
         }
     }
-}
-
-android {
-    compileSdkVersion 29
-    buildToolsVersion "29.0.0"
-
-
-    defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
-
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles 'consumer-rules.pro'
-    }
 
     buildTypes {
         release {
@@ -60,7 +51,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-
 }
 
 dependencies {
@@ -71,38 +61,80 @@ dependencies {
     implementation(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    implementation("androidx.test:runner:1.1.0") {
+    implementation rootProject.ext.testDependencies.espressoContrib
+    implementation rootProject.ext.testDependencies.androidTestRunner, {
         exclude module: 'support-annotations'
     }
     implementation rootProject.ext.testDependencies.mockitorCore, { exclude group: 'net.bytebuddy' }
-    implementation 'org.mockito:mockito-android:2.6.3'
+    implementation rootProject.ext.testDependencies.mockitorAndroid
 
-    implementation 'org.assertj:assertj-core:3.8.0'
-
-    implementation "androidx.multidex:multidex:2.0.0"
-    implementation "com.google.android.play:core:1.6.3"
-    implementation "com.google.firebase:firebase-core:16.0.6"
-    implementation 'androidx.test:rules:1.1.0'
+    implementation rootProject.ext.testDependencies.assertJCore
 
     implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.core_legacy)
+    implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.libraries.remoteResourceRequest)
+
+    implementation project(rootProject.ext.libraries.analytics)
+    implementation project(rootProject.ext.libraries.analyticsDebugger)
+    implementation rootProject.ext.firebase.core
+    implementation rootProject.ext.testDependencies.androidRulesVersion
+
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
-    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
-    implementation project(rootProject.ext.libraries.core_legacy)
-    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+    implementation project(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.network
-    implementation project(rootProject.ext.libraries.track)
-    implementation "com.squareup.retrofit2:retrofit:2.6.0"
-    implementation "io.mockk:mockk:1.9"
-    implementation ("org.spekframework.spek2:spek-runner-junit5:2.0.8") {
+
+    implementation rootProject.ext.tkpdInternalLibDependencies.betaNotif
+    implementation rootProject.ext.supportLibDependencies.design
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.playServicesDependencies.core
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation rootProject.ext.miscDependencies.multiDex
+    implementation rootProject.ext.networkDependencies.retrofit
+    implementation rootProject.ext.miscDependencies.gson
+    if (rootProject.ext.debugToolsEnabled) {
+        implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponse
+    } else {
+        implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponseNoOp
+    }
+
+    implementation rootProject.ext.testDependencies.mockk
+    implementation rootProject.ext.testDependencies.spek2Api, {
         exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
         exclude group: 'org.jetbrains.kotlin:kotlin-reflect'
         exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk7'
     }
-    implementation ("org.spekframework.spek2:spek-dsl-jvm:2.0.8") {
+    implementation rootProject.ext.testDependencies.spek2Dsl, {
         exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
         exclude group: 'org.jetbrains.kotlin:kotlin-reflect'
         exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk7'
     }
+    implementation rootProject.ext.tkpdInternalLibDependencies.betaNotif
+
+    implementation rootProject.ext.testDependencies.benchmark
+    implementation project(rootProject.ext.libraries.commonNetwork)
+    implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
+    implementation project(rootProject.ext.libraries.akamaiBotLib)
+
+    implementation project(rootProject.ext.libraries.linker)
+    implementation (project(rootProject.ext.features.sessioncommon))
+    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
+    implementation rootProject.ext.miscDependencies.rxJava
+    implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.remoteConfig)
 }
+
+project.ext {
+    artifactId = 'instrumentation-test'
+    groupId = 'com.tokopedia.library'
+    versionName = "0.0.2"
+    artifactName = "instrumentation_test-release"
+}
+
+apply from: '../../publish_local.gradle'

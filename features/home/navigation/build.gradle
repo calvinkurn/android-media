@@ -1,6 +1,8 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 buildscript {
     repositories {
@@ -9,6 +11,16 @@ buildscript {
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+android {
+    packagingOptions {
+        exclude 'META-INF/**'
+    }
+
+    defaultConfig {
+        multiDexEnabled true
+        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
     }
 }
 
@@ -36,13 +48,16 @@ dependencies {
     implementation project(rootProject.ext.features.recommendationWidgetCommon)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.dynamicFeatures)
-    implementation project(rootProject.ext.features.tkpdcore)
     implementation project(rootProject.ext.features.topAdsManagementCommon)
+    implementation project(rootProject.ext.features.discoveryCommon)
+    implementation project(rootProject.ext.libraries.weaver)
+    implementation project(rootProject.ext.libraries.core_legacy)
 
-    implementation rootProject.ext.unifyDependencies.components
-    implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.unifyDependencies.principles
-    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.global_error
+    implementation rootProject.ext.unifyDependencies.coach_mark
+    implementation project(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.network
@@ -52,7 +67,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.playServicesDependencies.maps
-    implementation rootProject.ext.playServicesDependencies.analytics
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
     implementation rootProject.ext.miscDependencies.dagger
@@ -67,20 +82,38 @@ dependencies {
         exclude group: "com.android.support"
     }
     implementation rootProject.ext.miscDependencies.chips
-    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     testImplementation "org.robolectric:robolectric:3.8"
     testImplementation "org.robolectric:multidex:3.4.2"
-    testImplementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    testAnnotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
-    testImplementation "androidx.arch.core:core-testing:2.0.0-rc01"
+    testImplementation rootProject.ext.testDependencies.assertJ
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.spek2Api
+    testImplementation rootProject.ext.testDependencies.spek2Dsl
+    testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
+    testImplementation rootProject.ext.testDependencies.json
+    testImplementation rootProject.ext.miscDependencies.coroutineCore
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
+
+    // UI Test
+    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
+    androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
+    androidTestImplementation rootProject.ext.testDependencies.junit
+    androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
+    androidTestImplementation rootProject.ext.testDependencies.espressoCore
+    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
+    androidTestAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+    androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
+    androidTestImplementation rootProject.ext.testDependencies.benchmark
+    androidTestImplementation rootProject.ext.testDependencies.testCore
+    androidTestImplementation project(rootProject.ext.libraries.analyticsDebugger)
 }
 
 project.ext {
     artifactId = 'navigation'
     groupId = 'com.tokopedia.home'
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName = "navigation-release"
 }
 

@@ -32,16 +32,15 @@
                 android:minWidth="@dimen/dp_22"
                 android:layout_height="@dimen/dp_22"
                 android:layout_gravity="center_vertical|end"
-                android:background="@drawable/circle_red_shadow"
+                android:background="@drawable/gami_core_circle_red_shadow"
                 android:gravity="center"
                 android:layout_marginRight="@dimen/dp_6"
                 android:layout_marginBottom="@dimen/dp_16"
                 android:textColor="@color/white"
                 tools:text="99+"/>
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_floating_timer"
-                style="@style/TextView.Small.Bold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
@@ -52,6 +51,8 @@
                 android:paddingTop="@dimen/dp_3"
                 android:paddingBottom="@dimen/dp_3"
                 android:textColor="@color/gami_core_yellow"
+                app:typographyType="body_2"
+                app:typographyWeight="bold"
                 tools:text="01:12:12"/>
         </FrameLayout>
         <ImageView

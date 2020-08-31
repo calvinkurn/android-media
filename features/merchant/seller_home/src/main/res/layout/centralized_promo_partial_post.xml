@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layoutCentralizedPromoPostList"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/centralized_promo_post_widget_horizontal_margin"
+    android:layout_marginLeft="@dimen/centralized_promo_post_widget_horizontal_margin"
+    android:layout_marginTop="@dimen/layout_lvl2"
+    android:layout_marginEnd="@dimen/centralized_promo_post_widget_horizontal_margin"
+    android:layout_marginRight="@dimen/centralized_promo_post_widget_horizontal_margin"
+    android:layout_marginBottom="@dimen/layout_lvl1"
+    android:descendantFocusability="blocksDescendants"
+    app:card_type="shadow">
+
+    <include layout="@layout/centralized_promo_partial_post_success" />
+
+    <include layout="@layout/centralized_promo_partial_post_shimmering" />
+
+    <ViewStub
+        android:id="@+id/stubLayoutCentralizedPromoPostListError"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/sah_large_widget_height"
+        android:layout="@layout/centralized_promo_partial_post_error"
+        android:padding="@dimen/layout_lvl2" />
+
+</com.tokopedia.unifycomponents.CardUnify>

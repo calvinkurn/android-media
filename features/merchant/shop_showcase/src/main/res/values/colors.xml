@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary_text_color">#f531353b</color>
+    <color name="text_color_green">#03ac0e</color>
+    <color name="secondary_subtitle_text_color">#ae31353b</color>
+    <color name="line_separator">#e5e7e9</color>
+    <color name="text_color_grey">#ae31353b</color>
+    <color name="text_color_orange">#fa591d</color>
+    <color name="clr_FF5C84">#FF5C84</color>
+</resources>

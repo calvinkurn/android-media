@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.tokopedia.cameraview.CameraView
+        <com.otaliastudios.cameraview.CameraView
             android:id="@+id/cameraView"
             android:keepScreenOn="true"
             android:layout_width="match_parent"
@@ -98,7 +98,7 @@
                     style="@style/ProgressBar.Tokopedia"
                     android:layout_width="@dimen/dp_80"
                     android:layout_height="@dimen/dp_80"
-                    android:progressDrawable="@drawable/circular_progress_bar_green"
+                    android:progressDrawable="@drawable/ip_circular_progress_bar_green"
                     android:max="100"
                     android:layout_gravity="center"
                     android:layout_centerInParent="true"

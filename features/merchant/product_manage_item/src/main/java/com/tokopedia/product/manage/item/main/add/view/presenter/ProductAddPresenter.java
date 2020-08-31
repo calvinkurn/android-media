@@ -1,6 +1,7 @@
 package com.tokopedia.product.manage.item.main.add.view.presenter;
 
 
+import com.tokopedia.product.manage.item.common.util.AddEditPageType;
 import com.tokopedia.product.manage.item.main.add.view.listener.ProductAddView;
 import com.tokopedia.product.manage.item.main.base.data.model.ProductViewModel;
 
@@ -10,6 +11,6 @@ import com.tokopedia.product.manage.item.main.base.data.model.ProductViewModel;
 
 public interface ProductAddPresenter<T extends ProductAddView> {
     void saveDraft(ProductViewModel viewModel, boolean isUploading);
-    void getShopInfo();
+    void getShopInfo(AddEditPageType addEditPageType);
     void fetchProductVariantByCat(long categoryId);
 }

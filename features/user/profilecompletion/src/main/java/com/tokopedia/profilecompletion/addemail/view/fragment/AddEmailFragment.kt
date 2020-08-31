@@ -1,6 +1,5 @@
 package com.tokopedia.profilecompletion.addemail.view.fragment
 
-//import com.tokopedia.unifycomponents.Toaster
 import android.app.Activity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -18,7 +17,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addemail.viewmodel.AddEmailViewModel
 import com.tokopedia.profilecompletion.addemail.data.AddEmailResult
@@ -27,14 +25,15 @@ import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_add_email_setting_profile.*
 import javax.inject.Inject
 
 
 class AddEmailFragment : BaseDaggerFragment() {
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject lateinit var userSession: UserSessionInterface
 
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
 
@@ -62,7 +61,7 @@ class AddEmailFragment : BaseDaggerFragment() {
     }
 
     private fun setListener() {
-        et_email.addTextChangedListener(object : TextWatcher {
+        et_email.textFieldInput.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
 
             }
@@ -79,7 +78,7 @@ class AddEmailFragment : BaseDaggerFragment() {
         })
 
         buttonSubmit.setOnClickListener {
-            val email = et_email.text.toString()
+            val email = et_email.textFieldInput.text.toString()
             if (email.isBlank()) {
                 setErrorText(getString(R.string.error_field_required))
             } else if (!isValidEmail(email)) {
@@ -110,16 +109,13 @@ class AddEmailFragment : BaseDaggerFragment() {
             tv_message.visibility = View.VISIBLE
             tv_error.visibility = View.GONE
             buttonSubmit.isEnabled = true
-            buttonSubmit.buttonCompatType = ButtonCompat.PRIMARY
-            wrapper_email.setErrorEnabled(true)
+            et_email.setError(false)
         } else {
-            wrapper_email.setErrorEnabled(false)
             tv_error.visibility = View.VISIBLE
             tv_error.text = s
             tv_message.visibility = View.GONE
             buttonSubmit.isEnabled = false
-            buttonSubmit.buttonCompatType = ButtonCompat.PRIMARY_DISABLED
-
+            et_email.setError(true)
         }
     }
 
@@ -162,6 +158,10 @@ class AddEmailFragment : BaseDaggerFragment() {
 
     private fun onSuccessAddEmail(result: AddEmailResult) {
         dismissLoading()
+
+        // update userSession for a new email
+        userSession.email = result.email
+
         activity?.run {
             val intent = Intent()
             val bundle = Bundle()
@@ -196,7 +196,7 @@ class AddEmailFragment : BaseDaggerFragment() {
         data?.extras?.run {
             val otpCode = getString(ApplinkConstInternalGlobal.PARAM_OTP_CODE, "")
             if (otpCode.isNotBlank()) {
-                val email = et_email.text.toString().trim()
+                val email = et_email.textFieldInput.text.toString().trim()
                 viewModel.mutateAddEmail(context!!, email, otpCode)
             } else {
                 onErrorShowSnackbar(MessageErrorException(getString(com.tokopedia.abstraction.R.string.default_request_error_unknown),

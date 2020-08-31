@@ -1,6 +1,6 @@
 package com.tokopedia.core.network.core;
 
-import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
@@ -17,7 +17,7 @@ import com.tokopedia.core.network.retrofit.interceptors.TkpdErrorResponseInterce
 import com.tokopedia.core.network.retrofit.interceptors.TopAdsAuthInterceptor;
 import com.tokopedia.core.network.retrofit.response.TkpdV4ResponseError;
 import com.tokopedia.core.network.retrofit.response.TopAdsResponseError;
-import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.network.interceptor.DebugInterceptor;
 import com.tokopedia.network.interceptor.TkpdBaseInterceptor;
 import com.tokopedia.network.utils.OkHttpRetryPolicy;
@@ -73,15 +73,6 @@ public class OkHttpFactory {
     public OkHttpFactory addOkHttpRetryPolicy(OkHttpRetryPolicy okHttpRetryPolicy) {
         this.okHttpRetryPolicy = okHttpRetryPolicy;
         return this;
-    }
-
-    public OkHttpClient buildClientAuth(String authKey) {
-        return new TkpdOkHttpBuilder(builder)
-                .addInterceptor(new FingerprintInterceptor(CoreNetworkApplication.getAppContext()))
-                .addInterceptor(new GlobalTkpdAuthInterceptor(authKey))
-                .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
-                .addDebugInterceptor()
-                .build();
     }
 
     public OkHttpClient buildClientDefaultAuth() {
@@ -149,7 +140,7 @@ public class OkHttpFactory {
     public OkHttpClient buildDaggerClientAuth(FingerprintInterceptor fingerprintInterceptor,
                                               GlobalTkpdAuthInterceptor globalTkpdAuthInterceptor,
                                               OkHttpRetryPolicy okHttpRetryPolicy,
-                                              ChuckInterceptor chuckInterceptor,
+                                              ChuckerInterceptor chuckInterceptor,
                                               DebugInterceptor debugInterceptor,
                                               CacheApiInterceptor cacheApiInterceptor) {
 
@@ -169,7 +160,7 @@ public class OkHttpFactory {
     public OkHttpClient buildDaggerClientDefaultAuth(FingerprintInterceptor fingerprintInterceptor,
                                                      TkpdAuthInterceptor tkpdAuthInterceptor,
                                                      OkHttpRetryPolicy okHttpRetryPolicy,
-                                                     ChuckInterceptor chuckInterceptor,
+                                                     ChuckerInterceptor chuckInterceptor,
                                                      DebugInterceptor debugInterceptor,
                                                      CacheApiInterceptor cacheApiInterceptor) {
 
@@ -189,7 +180,7 @@ public class OkHttpFactory {
     public OkHttpClient buildDaggerClientBearerAuth(FingerprintInterceptor fingerprintInterceptor,
                                                     StandardizedInterceptor standardizedInterceptor,
                                                     OkHttpRetryPolicy okHttpRetryPolicy,
-                                                    ChuckInterceptor chuckInterceptor,
+                                                    ChuckerInterceptor chuckInterceptor,
                                                     DebugInterceptor debugInterceptor) {
 
         TkpdOkHttpBuilder tkpdbBuilder = new TkpdOkHttpBuilder(builder)
@@ -207,7 +198,7 @@ public class OkHttpFactory {
     public OkHttpClient buildDaggerClientNoAuth(FingerprintInterceptor fingerprintInterceptor,
                                                 TkpdBaseInterceptor tkpdBaseInterceptor,
                                                 OkHttpRetryPolicy okHttpRetryPolicy,
-                                                ChuckInterceptor chuckInterceptor,
+                                                ChuckerInterceptor chuckInterceptor,
                                                 DebugInterceptor debugInterceptor,
                                                 CacheApiInterceptor cacheApiInterceptor) {
 
@@ -229,7 +220,7 @@ public class OkHttpFactory {
             FingerprintInterceptor fingerprintInterceptor,
             TkpdBaseInterceptor tkpdBaseInterceptor,
             OkHttpRetryPolicy okHttpRetryPolicy,
-            ChuckInterceptor chuckInterceptor,
+            ChuckerInterceptor chuckInterceptor,
             DebugInterceptor debugInterceptor,
             CacheApiInterceptor cacheApiInterceptor) {
 
@@ -249,7 +240,7 @@ public class OkHttpFactory {
 
     public OkHttpClient buildDaggerClientNoAuthNoFingerPrint(TkpdBaseInterceptor tkpdBaseInterceptor,
                                                              OkHttpRetryPolicy okHttpRetryPolicy,
-                                                             ChuckInterceptor chuckInterceptor,
+                                                             ChuckerInterceptor chuckInterceptor,
                                                              DebugInterceptor debugInterceptor) {
 
         TkpdOkHttpBuilder tkpdbBuilder = new TkpdOkHttpBuilder(builder)
@@ -265,7 +256,7 @@ public class OkHttpFactory {
 
     public OkHttpClient buildDaggerClientBearerWithClientDefaultAuth(TkpdBearerWithAuthTypeJsonUtInterceptor tkpdBearerWithAuthTypeJsonUtInterceptor,
                                                                      OkHttpRetryPolicy okHttpRetryPolicy,
-                                                                     ChuckInterceptor chuckInterceptor,
+                                                                     ChuckerInterceptor chuckInterceptor,
                                                                      DebugInterceptor debugInterceptor,
                                                                      CacheApiInterceptor cacheApiInterceptor) {
 
@@ -286,7 +277,7 @@ public class OkHttpFactory {
     public OkHttpClient buildDaggerClientDefaultAuthWithErrorHandler(FingerprintInterceptor fingerprintInterceptor,
                                                                      TkpdAuthInterceptor tkpdAuthInterceptor,
                                                                      OkHttpRetryPolicy okHttpRetryPolicy,
-                                                                     ChuckInterceptor chuckInterceptor,
+                                                                     ChuckerInterceptor chuckInterceptor,
                                                                      DebugInterceptor debugInterceptor,
                                                                      Interceptor tkpdErrorHandlerInterceptor,
                                                                      CacheApiInterceptor cacheApiInterceptor) {
@@ -307,7 +298,7 @@ public class OkHttpFactory {
     public OkHttpClient buildDaggerClientResolutionAuth(FingerprintInterceptor fingerprintInterceptor,
                                                         TkpdAuthInterceptor resolutionInterceptor,
                                                         OkHttpRetryPolicy okHttpRetryPolicy,
-                                                        ChuckInterceptor chuckInterceptor,
+                                                        ChuckerInterceptor chuckInterceptor,
                                                         DebugInterceptor debugInterceptor) {
         TkpdOkHttpBuilder tkpdbBuilder = new TkpdOkHttpBuilder(builder)
                 .addInterceptor(fingerprintInterceptor)
@@ -353,16 +344,6 @@ public class OkHttpFactory {
                 .addInterceptor(new FingerprintInterceptor(CoreNetworkApplication.getAppContext()))
                 .addInterceptor(new TopAdsAuthInterceptor())
                 .addInterceptor(new TkpdErrorResponseInterceptor(TopAdsResponseError.class))
-                .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
-                .addDebugInterceptor()
-                .build();
-    }
-
-    public OkHttpClient buildClientTopChatAuth(String authorizationString) {
-        return new TkpdOkHttpBuilder(builder)
-                .addInterceptor(new FingerprintInterceptor(CoreNetworkApplication.getAppContext()))
-                .addInterceptor(new CacheApiInterceptor(CoreNetworkApplication.getAppContext()))
-                .addInterceptor(new DigitalHmacAuthInterceptor(authorizationString))
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .addDebugInterceptor()
                 .build();

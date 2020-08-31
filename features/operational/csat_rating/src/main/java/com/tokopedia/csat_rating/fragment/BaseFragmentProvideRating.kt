@@ -4,25 +4,29 @@ import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
-import androidx.recyclerview.widget.GridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.csat_rating.ProvideRatingContract
 import com.tokopedia.csat_rating.R
-import com.tokopedia.csat_rating.adapter.CustomQuickOptionView
 import com.tokopedia.csat_rating.data.BadCsatReasonListItem
 import com.tokopedia.csat_rating.di.CsatComponent
 import com.tokopedia.csat_rating.di.CsatModule
 import com.tokopedia.csat_rating.di.DaggerCsatComponent
-import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.quickfilter.QuickFilterItem
+import com.tokopedia.design.quickfilter.QuickSingleFilterView
 import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterItem
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.Toaster
 import java.util.*
 
 
@@ -37,7 +41,7 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(), ProvideRatingContra
     protected lateinit var mTxtFinished: TextView
     private var progress: ProgressDialog?=null
     private var selectedOption: MutableList<String> = ArrayList()
-    protected lateinit var mFilterReview: CustomQuickOptionView
+    protected lateinit var mFilterReview: QuickSingleFilterView
 
     companion object {
         const val CSAT_TITLE = "csatTitle"
@@ -131,22 +135,19 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(), ProvideRatingContra
     }
 
     override fun showErrorMessage(errorMessage: String) {
-        ToasterError.make(view, errorMessage).show()
+        view?.let {
+            Toaster.make(it, errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+        }
+
     }
 
 
+    open fun getLayoutManager(filterList: List<BadCsatReasonListItem>): RecyclerView.LayoutManager {
+        return LinearLayoutManager(context)
+    }
+
     override fun setFilterList(filterList: List<BadCsatReasonListItem>) {
-        val gridLayoutManager = GridLayoutManager(context, 2)
-        gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-            override fun getSpanSize(i: Int): Int {
-                return if (filterList.size % 2 == 0) {
-                    1
-                } else {
-                    if (i == filterList.size - 1) 2 else 1
-                }
-            }
-        }
-        mFilterReview.updateLayoutManager(gridLayoutManager)
+        mFilterReview.updateLayoutManager(getLayoutManager(filterList))
         val filterItems = ArrayList<QuickFilterItem>()
         var finishFilter: CustomViewQuickFilterItem? = null
         for (filter in filterList) {
@@ -161,6 +162,9 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(), ProvideRatingContra
             if (selectedOption.contains(typeFilter)) {
                 selectedOption.remove(typeFilter)
             } else {
+                if (!(filterList.isNotEmpty() && filterList[0].id > 0)) {
+                    sendEventClickReason(filterList[typeFilter.toIntOrNull() ?: 0].message)
+                }
                 selectedOption.add(typeFilter)
             }
 
@@ -172,12 +176,16 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(), ProvideRatingContra
         }
     }
 
+    open fun sendEventClickReason(message: String?) {}
+
     override fun getSelectedItem(): String {
         var filters = ""
         for (filter in selectedOption) {
             filters += "$filter;"
         }
-        filters = filters.substring(0, filters.length - 1)
+        if (filters.isNotEmpty()){
+            filters = filters.substring(0, filters.length - 1)
+        }
         return filters
     }
 
@@ -242,6 +250,14 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(), ProvideRatingContra
     fun enableSubmitButton() {
         mTxtFinished.setTextColor(MethodChecker.getColor(context, R.color.white))
         mTxtFinished.isEnabled = true
+    }
+
+    override fun hideSubmitButton(){
+        mTxtFinished.hide()
+    }
+
+    override fun showSubmitButton() {
+        mTxtFinished.show()
     }
 
 }

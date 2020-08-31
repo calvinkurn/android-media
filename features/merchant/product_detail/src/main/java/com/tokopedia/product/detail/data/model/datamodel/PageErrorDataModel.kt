@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.data.model.datamodel
 
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 
 data class PageErrorDataModel(
@@ -10,6 +11,9 @@ data class PageErrorDataModel(
         val shouldShowTobacoError: Boolean = false,
         val tobacoErrorData: TobacoErrorData? = null
 ) : DynamicPdpDataModel {
+
+    override val impressHolder: ImpressHolder = ImpressHolder()
+
     override fun type(): String = type
 
     override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int {

@@ -7,23 +7,6 @@
     android:layout_marginBottom="@dimen/spacing_lvl2"
     android:orientation="vertical">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/spacing_lvl4"
-        android:paddingBottom="@dimen/spacing_lvl4"
-        android:textColor="@color/topchat_chat_hour_time"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_3"
-        tools:text="Hari Ini"
-        tools:visibility="visible" />
-
     <LinearLayout
         android:id="@+id/llRoleUser"
         android:layout_width="0dp"
@@ -36,7 +19,7 @@
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline"
-        app:layout_constraintTop_toBottomOf="@id/tvDate"
+        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="RtlSymmetry"
         tools:visibility="visible">
 
@@ -62,9 +45,9 @@
             android:layout_height="wrap_content"
             android:background="@drawable/bg_topchat_right_chat_message"
             android:paddingLeft="@dimen/spacing_lvl4"
-            android:paddingTop="@dimen/dimen_topchat_10dp"
+            android:paddingTop="@dimen/dp_topchat_10"
             android:paddingRight="@dimen/spacing_lvl4"
-            android:paddingBottom="@dimen/dimen_topchat_10dp" />
+            android:paddingBottom="@dimen/dp_topchat_10" />
 
     </LinearLayout>
 

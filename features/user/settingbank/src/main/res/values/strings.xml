@@ -1,48 +1,16 @@
 <resources>
     <string name="app_name">SettingBank</string>
     <string name="title_setting_bank">Rekening Bank</string>
-    <string name="title_choose_bank">Pilih Bank</string>
-    <string name="sbank_title_add_bank_account">Tambah Rekening</string>
-    <string name="menu_make_main_account">Jadikan Rekening Utama</string>
-    <string name="menu_edit">Ubah</string>
     <string name="menu_delete">Hapus</string>
-    <string name="main_account">Rekening Utama</string>
-    <string name="make_main_account_prompt_title">Jadikan Rekening Utama?</string>
-    <string name="you_will_make_account">Anda akan menjadikan rekening Bank</string>
-    <string name="under_name">atas nama</string>
-    <string name="become_default">menjadi rekening utama</string>
-    <string name="yes_delete">Ya, Hapus</string>
-    <string name="yes_correct">Ya, Benar</string>
     <string name="cancel">Batal</string>
-    <string name="yes">Ya</string>
-    <string name="delete_bank_account_prompt_title">Hapus Rekening Bank?</string>
-    <string name="you_will_delete">Anda akan menghapus rekening Bank</string>
-    <string name="empty_bank_title">Oops, rekening bank masih kosong</string>
-    <string name="empty_bank_subtitle">Tambahkan rekening bank untuk
-mempermudah proses penarikan dana</string>
-    <string
-        name="add_bank_prompt">Pastikan Nomor Rekening &amp; Nama Pemilik Rekening sesuai buku tabungan</string>
     <string name="bank_name_title">Nama Bank</string>
     <string name="account_number_title">Nomor Rekening</string>
     <string name="account_name_title">Nama Pemilik Rekening</string>
     <string name="button_next">Selanjutnya</string>
     <string name="title_add_bank">Tambah Rekening</string>
-    <string name="title_edit_bank">Ubah Rekening</string>
     <string name="menu_info">Info</string>
-    <string name="_1">1</string>
-    <string name="_2">2</string>
-    <string name="bottom_dialog_add_bank_info">Keterangan dapat ditemukan pada halaman depan buku tabungan</string>
-    <string name="bottom_dialog_add_bank_title">Contoh Buku Tabungan</string>
-    <string name="search_bank_hint">Cari Bank</string>
-    <string name="hint_search_bank_no_result">Pencarian tidak ditemukan</string>
 
-    <string name="add_bank_account_prompt_title">Apakah Rekening sudah benar?</string>
-    <string name="you_will_add_account">Anda akan menambahkan rekening</string>
-    <string name="success_add_bank_account">Rekening bank berhasil ditambahkan</string>
-    <string name="success_edit_bank_account">Rekening bank berhasil diubah</string>
-    <string name="success_delete_bank_account">Rekening bank telah dihapus</string>
-    <string name="success_set_main_bank_account">Rekening utama berhasil diubah</string>
-    <string name="you_will_change_account_into">Anda akan mengubah rekening menjadi rekening</string>
+    <string name="sbank_title_add_bank_account">Tambah Rekening</string>
     <string name="sbank_no_saved_account">Belum ada rekening tersimpan</string>
     <string name="sbank_comeon_add_bank_Account">Yuk, tambah rekening bank kamu biar lebih mudah saat tarik Saldo Tokopedia!</string>
     <string name="sbank_terms_and_condition">Syarat dan Ketentuan</string>
@@ -88,5 +56,6 @@ mempermudah proses penarikan dana</string>
     <string name="sbank_no_bank_account">Tidak ada Bank yang ditemukan</string>
     <string name="sbank_please_select_photo">Silakan pilih foto dokumen</string>
     <string name="sbank_name_char_limit_error">Panjang harus dalam min 3 dan maks 128</string>
+    <string name="sbank_oke">oke</string>
 
 </resources>

@@ -55,11 +55,11 @@
         android:layout_height="@dimen/dp_48"
         android:layout_marginTop="@dimen/tp_margin_top_error_button"
         android:gravity="center"
-        android:text="@string/try_again_btn"
+        android:text="@string/tp_try_again"
         android:textAllCaps="false"
         android:textColor="@color/tkpd_main_green"
         android:textSize="@dimen/tp_text_size_small"
-        app:cornerRadius="8dp"
+        app:tpRbCornerRadius="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_label_error" />

@@ -3,7 +3,6 @@ package com.tokopedia.search.result.presentation.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.filter.common.data.DataValue;
 import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.topads.sdk.domain.model.CpmModel;
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
@@ -14,7 +13,6 @@ import java.util.List;
 public class ProductViewModel implements Parcelable {
 
     private List<ProductItemViewModel> productList = new ArrayList<>();
-    private String query;
     private String additionalParams;
     private String autocompleteApplink;
     private String responseCode;
@@ -24,15 +22,15 @@ public class ProductViewModel implements Parcelable {
     private SuggestionViewModel suggestionModel;
     private int totalData;
     private int totalItem;
-    private boolean imageSearch;
     private boolean isQuerySafe;
-    private DynamicFilterModel dynamicFilterModel;
-    private QuickFilterViewModel quickFilterModel;
     private TopAdsModel adsModel;
     private CpmModel cpmModel;
-    private RelatedSearchViewModel relatedSearchModel;
     private GlobalNavViewModel globalNavViewModel;
+    private List<InspirationCarouselViewModel> inspirationCarouselViewModel = new ArrayList<>();
+    private List<InspirationCardViewModel> inspirationCardViewModel = new ArrayList<>();
     private int defaultView;
+    private RelatedViewModel relatedViewModel;
+    private String totalDataText = "";
 
     public TopAdsModel getAdsModel() {
         return adsModel;
@@ -50,36 +48,12 @@ public class ProductViewModel implements Parcelable {
         this.cpmModel = cpmModel;
     }
 
-    public boolean isImageSearch() {
-        return imageSearch;
-    }
-
-    public void setImageSearch(boolean imageSearch) {
-        this.imageSearch = imageSearch;
-    }
-
     public boolean isQuerySafe() {
         return isQuerySafe;
     }
 
     public void setIsQuerySafe(boolean querySafe) {
         isQuerySafe = querySafe;
-    }
-
-    public DynamicFilterModel getDynamicFilterModel() {
-        return dynamicFilterModel;
-    }
-
-    public void setDynamicFilterModel(DynamicFilterModel dynamicFilterModel) {
-        this.dynamicFilterModel = dynamicFilterModel;
-    }
-
-    public QuickFilterViewModel getQuickFilterModel() {
-        return quickFilterModel;
-    }
-
-    public void setQuickFilterModel(QuickFilterViewModel quickFilterModel) {
-        this.quickFilterModel = quickFilterModel;
     }
 
     public ProductViewModel() {
@@ -93,20 +67,20 @@ public class ProductViewModel implements Parcelable {
         this.totalData = totalData;
     }
 
+    public String getTotalDataText() {
+        return totalDataText;
+    }
+
+    public void setTotalDataText(String totalDataText) {
+        this.totalDataText = totalDataText;
+    }
+
     public List<ProductItemViewModel> getProductList() {
         return productList;
     }
 
     public void setProductList(List<ProductItemViewModel> productList) {
         this.productList = productList;
-    }
-
-    public String getQuery() {
-        return query;
-    }
-
-    public void setQuery(String query) {
-        this.query = query;
     }
 
     public String getAdditionalParams() {
@@ -165,20 +139,28 @@ public class ProductViewModel implements Parcelable {
         this.suggestionModel = suggestionModel;
     }
 
-    public RelatedSearchViewModel getRelatedSearchModel() {
-        return relatedSearchModel;
-    }
-
-    public void setRelatedSearchModel(RelatedSearchViewModel relatedSearchModel) {
-        this.relatedSearchModel = relatedSearchModel;
-    }
-
     public GlobalNavViewModel getGlobalNavViewModel() {
         return globalNavViewModel;
     }
 
     public void setGlobalNavViewModel(GlobalNavViewModel globalNavViewModel) {
         this.globalNavViewModel = globalNavViewModel;
+    }
+
+    public List<InspirationCarouselViewModel> getInspirationCarouselViewModel() {
+        return inspirationCarouselViewModel;
+    }
+
+    public void setInspirationCarouselViewModel(List<InspirationCarouselViewModel> inspirationCarouselViewModel) {
+        this.inspirationCarouselViewModel = inspirationCarouselViewModel;
+    }
+
+    public List<InspirationCardViewModel> getInspirationCardViewModel() {
+        return inspirationCardViewModel;
+    }
+
+    public void setInspirationCardViewModel(List<InspirationCardViewModel> inspirationCardViewModel) {
+        this.inspirationCardViewModel = inspirationCardViewModel;
     }
 
     public int getDefaultView() {
@@ -193,6 +175,14 @@ public class ProductViewModel implements Parcelable {
         return getProductList().size() + getAdsModel().getData().size();
     }
 
+    public void setRelatedViewModel(RelatedViewModel relatedViewModel) {
+        this.relatedViewModel = relatedViewModel;
+    }
+
+    public RelatedViewModel getRelatedViewModel() {
+        return this.relatedViewModel;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -201,7 +191,6 @@ public class ProductViewModel implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeTypedList(this.productList);
-        dest.writeString(this.query);
         dest.writeString(this.additionalParams);
         dest.writeString(this.autocompleteApplink);
         dest.writeString(this.responseCode);
@@ -210,19 +199,15 @@ public class ProductViewModel implements Parcelable {
         dest.writeParcelable(this.suggestionModel, flags);
         dest.writeInt(this.totalData);
         dest.writeInt(this.totalItem);
-        dest.writeByte(this.imageSearch ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isQuerySafe ? (byte) 1 : (byte) 0);
-        dest.writeParcelable(this.dynamicFilterModel, flags);
         dest.writeParcelable(this.adsModel, flags);
         dest.writeParcelable(this.cpmModel, flags);
-        dest.writeParcelable(this.relatedSearchModel, flags);
         dest.writeParcelable(this.globalNavViewModel, flags);
         dest.writeInt(this.defaultView);
     }
 
     protected ProductViewModel(Parcel in) {
         this.productList = in.createTypedArrayList(ProductItemViewModel.CREATOR);
-        this.query = in.readString();
         this.additionalParams = in.readString();
         this.autocompleteApplink = in.readString();
         this.responseCode = in.readString();
@@ -231,12 +216,9 @@ public class ProductViewModel implements Parcelable {
         this.suggestionModel = in.readParcelable(SuggestionViewModel.class.getClassLoader());
         this.totalData = in.readInt();
         this.totalItem = in.readInt();
-        this.imageSearch = in.readByte() != 0;
         this.isQuerySafe = in.readByte() != 0;
-        this.dynamicFilterModel = in.readParcelable(DynamicFilterModel.class.getClassLoader());
         this.adsModel = in.readParcelable(TopAdsModel.class.getClassLoader());
         this.cpmModel = in.readParcelable(CpmModel.class.getClassLoader());
-        this.relatedSearchModel = in.readParcelable(RelatedSearchViewModel.class.getClassLoader());
         this.globalNavViewModel = in.readParcelable(GlobalNavViewModel.class.getClassLoader());
         this.defaultView = in.readInt();
     }

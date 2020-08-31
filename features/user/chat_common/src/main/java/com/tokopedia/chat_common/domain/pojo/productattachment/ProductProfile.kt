@@ -31,7 +31,7 @@ class ProductProfile {
     val categoryId: Int = 0
     @SerializedName("variant")
     @Expose
-    val variant: List<AttachmentVariant> = listOf()
+    val variant: List<AttachmentVariant>? = listOf()
     @SerializedName("drop_percentage")
     @Expose
     val dropPercentage: String = ""
@@ -53,4 +53,19 @@ class ProductProfile {
     @SerializedName("status")
     @Expose
     val status: Int = 1
+    @SerializedName("wishlist")
+    @Expose
+    val wishList: Boolean = false
+    @SerializedName("list_image_url")
+    @Expose
+    val images: List<String> = emptyList()
+    @SerializedName("rating")
+    @Expose
+    val rating: TopchatProductRating = TopchatProductRating()
+    @SerializedName("is_preorder")
+    @Expose
+    val isPreOrder: Boolean = false
+    @SerializedName("campaign_id")
+    @Expose
+    val campaignId: Int = 0
 }

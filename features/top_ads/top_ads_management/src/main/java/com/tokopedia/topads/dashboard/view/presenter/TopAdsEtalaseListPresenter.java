@@ -1,6 +1,6 @@
 package com.tokopedia.topads.dashboard.view.presenter;
 
-import com.tokopedia.core.base.presentation.CustomerPresenter;
+import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsEtalaseListView;
 
 /**
@@ -8,5 +8,5 @@ import com.tokopedia.topads.dashboard.view.listener.TopAdsEtalaseListView;
  */
 public interface TopAdsEtalaseListPresenter extends CustomerPresenter<TopAdsEtalaseListView> {
 
-    void populateEtalaseList(String shopId);
+    void populateEtalaseList(String shopId, String userId, String deviceId);
 }

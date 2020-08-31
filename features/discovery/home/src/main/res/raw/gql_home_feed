@@ -1,6 +1,6 @@
 query getHomeRecom($recomID: Int!, $count: Int!, $page: Int!){
   get_home_recommendation{
-    recommendation_product(recomID:$recomID, count:$count, page:$page, type:"banner,position"){
+    recommendation_product(recomID:$recomID, count:$count, page:$page, type:"banner,banner_ads,position"){
       product{
         id
           name
@@ -15,6 +15,7 @@ query getHomeRecom($recomID: Int!, $count: Int!, $page: Int!){
           tracker_image_url
           price
           price_int
+          clusterID
           discount_percentage
           slashed_price
           slashed_price_int

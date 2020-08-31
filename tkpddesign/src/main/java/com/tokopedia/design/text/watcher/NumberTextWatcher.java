@@ -43,7 +43,12 @@ public class NumberTextWatcher extends AfterTextWatcher {
             editText.setSelection(editText.getText().length());
             return;
         }
-        double value = Double.parseDouble(valueString);
+        double value;
+        try {
+            value = Double.parseDouble(valueString);
+        } catch (NumberFormatException e) {
+            value = 0d;
+        }
         onNumberChanged(value);
     }
 

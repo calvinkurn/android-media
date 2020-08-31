@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">loginregister</string>
 
-
     <string name="title_resend_activation_email">Kirim Ulang</string>
     <string name="january">Januari</string>
     <string name="february">Februari</string>
@@ -91,6 +90,9 @@
 
     <string name="error_empty_provider">Gagal mendownload provider.</string>
     <string name="facebook_error_not_authorized">Gagal login facebook. Silahkan coba lagi.</string>
+    <string name="facebook_error_empty_token">Gagal mendapatkan token facebook. Silahkan coba lagi.</string>
+    <string name="error_login_using_facebook">Gagal login menggunakan akun facebook. Silahkan coba lagi.</string>
+    <string name="error_login_using_facebook_with_exception">Gagal login menggunakan akun facebook. </string>
     <string name="default_datepicker">Tanggal / Bulan / Tahun</string>
     <string name="terms_and_conditions">Syarat dan Ketentuan</string>
     <string name="privacy">Kebijakan Privasi</string>
@@ -136,6 +138,8 @@
     <string name="verification_sms_to"><![CDATA[Melalui <b>SMS</b> ke nomor]]></string>
     <string name="verification_call_to"><![CDATA[Melalui <b>panggilan telepon</b> ke
     nomor]]></string>
+    <string name="need_help_call_tokopedia_care">Butuh bantuan? Hubungi Tokopedia Care</string>
+    <string name="call_tokopedia_care">Hubungi Tokopedia Care</string>
 
     <string name="verification_masking_x">**** - **** - %1$s</string>
     <string name="verification_code_sent_to_call"><![CDATA[Kode verifikasi telah dikirimkan
@@ -193,9 +197,10 @@
     <string name="wrong_email_format">Format email salah</string>
     <string name="send_verif_to_email">Kami akan mengirimkan kode aktivasi melalui email</string>
     <string name="error_minimal_name">Minimum 3 karakter</string>
+    <string name="error_maximal_name">Nama terlalu panjang</string>
     <string name="error_minimal_phone">Nomor ponsel terlalu pendek, minimum 8 angka</string>
-    <string name="error_minimal_password">Kata sandi terlalu pendek, minimum 6 karakter</string>
-    <string name="minimal_6_character">Minimum 6 karakter</string>
+    <string name="error_minimal_password">Kata sandi terlalu pendek, minimum 8 karakter</string>
+    <string name="minimal_8_character">minimum 8 karakter</string>
     <string name="please_click_this_button_to_continue">Silahkan klik tombol ini untuk melanjutkan</string>
     <string name="to_verify_sms">Untuk memastikan akun ini benar milik Anda, kami akan mengirimkan kode verifikasi melalui SMS ke</string>
     <string name="send_sms_verification">Kirim SMS Verifikasi</string>
@@ -255,7 +260,7 @@
     <string name="title_add_password">Buat Kata Sandi</string>
     <string name="add_password_top">Membuat kata sandi membantu Anda menjaga keamanan akun dan transaksi di Tokopedia.</string>
     <string name="title_add_password_hint">Masukkan Kata Sandi Baru</string>
-    <string name="info_password_min_char">Minimum 6 karakter</string>
+    <string name="info_password_min_char">minimum 8 karakter</string>
     <string name="button_password_continue">Buat Kata Sandi</string>
 
 
@@ -283,6 +288,8 @@
     <string name="not_registered_yes">Ya, Daftar</string>
     <string name="default_request_error_unknown">Terjadi kesalahan. Ulangi beberapa saat lagi</string>
     <string name="social_media">Akun Media Sosial</string>
+    <string name="fingerprint_login">Sidik Jari</string>
+
     <string name="choose_social_media">Pilih akun untuk masuk</string>
     <string name="bottom_sheet_show">BottomSheet Show</string>
 
@@ -326,6 +333,19 @@
 
     <string name="socmed_account_as">sebagai</string>
 
+    <!-- SHOP CREATION -->
+    <string name="title_landing_shop_creation">Ciptakan Peluangmu!</string>
+    <string name="desc_landing_shop_creation">Raih 90 juta pembeli dimulai dari satu tempat! Buka usaha tanpa biaya dan dapatkan pengalaman mengelola usaha semudah update status</string>
+    <string name="free_open_shop">Buka Toko Gratis</string>
+    <string name="welcome_title">Selamat datang!</string>
+    <string name="your_phone_number">Nomor handphonemu</string>
+    <string name="your_fullname">Nama lengkapmu</string>
+    <string name="phone_id_idn">+62</string>
+    <string name="desc_phone_shop_creation">Pastikan nomor Kamu aktif agar proses pendaftaran lebih cepat</string>
+    <string name="desc_name_shop_creation">Kerahasiaan datamu akan kami jaga</string>
+    <string name="btn_continue_shop_creation">Lanjut</string>
+    <string name="please_fill_name">Harap isi Nama anda</string>
+
     <!-- ERROR LOGIN -->
     <string name="error_login_user_cancel_create_password">Cancel create password</string>
     <string name="error_login_user_cancel_activate_account">Cancel activate account</string>
@@ -334,5 +354,10 @@
     <!--  TICKER  -->
     <string name="title_ticker_from_atc">Yuk, lanjutin belanjanya sekarang!</string>
     <string name="desc_ticker_from_atc">Khusus pengguna baru, dapetin cashback 80% hingga Rp30.000.</string>
+
+    <string name="seller_direct_login">Masuk ke toko ini?</string>
+    <string name="button_direct_login">Masuk</string>
+    <string name="button_use_another_acc">Gunakan Akun Lain</string>
+    <string name="seamless_footer_text">Akun toko ini adalah akun yang terhubung di aplikasi Tokopedia mu</string>
 
 </resources>

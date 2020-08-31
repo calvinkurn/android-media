@@ -6,30 +6,34 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.notifcenter.data.entity.DataNotification
 import com.tokopedia.notifcenter.data.entity.NotificationOptions
 import com.tokopedia.notifcenter.data.entity.ProductData
+import com.tokopedia.notifcenter.data.entity.UserInfo
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.base.BaseNotificationTypeFactory
 
-open class NotificationItemViewBean(
-        var notificationId: String = "",
-        var isRead: Boolean = false,
-        var iconUrl: String? = "",
-        var contentUrl: String = "",
-        var time: String = "",
-        var label: Int = 1,
-        var title: String = "",
-        var sectionTitle: String = "",
-        var body: String = "",
-        var bodyHtml: String = "",
-        var templateKey: String = "",
-        var appLink: String = "",
-        var hasShop: Boolean = false,
-        var typeLink: Int = 0,
-        var totalProduct: Int = 0,
-        var btnText: String = "",
-        var dataNotification: DataNotification = DataNotification(),
-        var products: List<ProductData> = emptyList(),
-        var isLongerContent: Boolean = false,
-        var options: NotificationOptions = NotificationOptions()
-) : Parcelable, Visitable<BaseNotificationTypeFactory> {
+class NotificationItemViewBean(
+        override var notificationId: String = "",
+        override var isRead: Boolean = false,
+        override var iconUrl: String? = "",
+        override var contentUrl: String = "",
+        override var time: String = "",
+        override var label: Int = 1,
+        override var title: String = "",
+        override var sectionTitle: String = "",
+        override var body: String = "",
+        override var bodyHtml: String = "",
+        override var templateKey: String = "",
+        override var appLink: String = "",
+        override var hasShop: Boolean = false,
+        override var typeLink: Int = 0,
+        override var totalProduct: Int = 0,
+        override var btnText: String = "",
+        override var dataNotification: DataNotification = DataNotification(),
+        override var products: List<ProductData> = emptyList(),
+        override var isLongerContent: Boolean = false,
+        override var isShowBottomSheet: Boolean = false,
+        override var typeBottomSheet: Int = 0,
+        override var options: NotificationOptions = NotificationOptions(),
+        override var userInfo: UserInfo = UserInfo()
+) : BaseNotificationItemViewBean(), Parcelable, Visitable<BaseNotificationTypeFactory> {
 
     override fun type(typeFactory: BaseNotificationTypeFactory): Int {
         return typeFactory.type(this)
@@ -50,6 +54,9 @@ open class NotificationItemViewBean(
         hasShop = `in`.readInt() != 0
         typeLink = `in`.readInt()
         totalProduct = `in`.readInt()
+        isLongerContent = `in`.readInt() != 0
+        isShowBottomSheet = `in`.readInt() != 0
+        typeBottomSheet = `in`.readInt()
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -67,6 +74,9 @@ open class NotificationItemViewBean(
         parcel.writeInt(if (hasShop) 1 else 0)
         parcel.writeInt(typeLink)
         parcel.writeInt(totalProduct)
+        parcel.writeInt(if (isLongerContent) 1 else 0)
+        parcel.writeInt(if (isShowBottomSheet) 1 else 0)
+        parcel.writeInt(typeBottomSheet)
     }
 
     override fun describeContents(): Int = 0
@@ -79,20 +89,11 @@ open class NotificationItemViewBean(
         return product
     }
 
-    private fun getProductIdImpression(): String {
-        if (products.isEmpty()) return ""
-        val product = products.first()
-        return if (isWishlistPriceDrop()) product.productId else ""
+    fun getAtcEventLabel(): String {
+        return "$SOURCE - $templateKey - $notificationId - ${getAtcProduct()?.productId}"
     }
 
-    private fun isWishlistPriceDrop(): Boolean {
-        return typeLink == 3
-    }
-
-    fun getImpressionTrackLabel(location: String): String {
-        val productId = getProductIdImpression()
-        return "$location - $templateKey - $notificationId - $productId"
-    }
+    fun getBuyEventAction(): String = BUY_ACTION
 
     companion object {
         const val BUYER_TYPE = 1
@@ -105,6 +106,7 @@ open class NotificationItemViewBean(
         const val TYPE_BANNER_2X1 = 4
         const val TYPE_PRODUCT_CHECKOUT = 5
 
+        private const val BUY_ACTION = "click on by button"
         const val SOURCE = "notifcenter"
 
         @JvmField

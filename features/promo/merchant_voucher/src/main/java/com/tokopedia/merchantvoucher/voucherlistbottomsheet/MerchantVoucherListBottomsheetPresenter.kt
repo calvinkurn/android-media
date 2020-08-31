@@ -2,7 +2,6 @@ package com.tokopedia.merchantvoucher.voucherlistbottomsheet
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherModel
 import com.tokopedia.merchantvoucher.common.gql.data.request.CartItemDataVoucher
 import com.tokopedia.merchantvoucher.common.gql.domain.usecase.GetMerchantVoucherListUseCase
@@ -10,8 +9,8 @@ import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.promocheckout.common.data.entity.request.CurrentApplyCode
 import com.tokopedia.promocheckout.common.data.entity.request.Promo
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
-import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.promocheckout.common.util.mapToStatePromoStackingCheckout
+import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
@@ -23,8 +22,7 @@ import javax.inject.Inject
 
 class MerchantVoucherListBottomsheetPresenter @Inject constructor(
         private val getMerchantVoucherListUseCase: GetMerchantVoucherListUseCase,
-        private val checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase,
-        private val checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper
+        private val checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase
 ) : BaseDaggerPresenter<MerchantVoucherListBottomsheetContract.View>(), MerchantVoucherListBottomsheetContract.Presenter {
     private val paramMerchant = "merchant"
     private val statusOK = "OK"
@@ -79,48 +77,45 @@ class MerchantVoucherListBottomsheetPresenter @Inject constructor(
 
             view.showLoadingDialog()
             checkPromoStackingCodeUseCase.setParams(promo)
-            checkPromoStackingCodeUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
-                override fun onCompleted() {
+            checkPromoStackingCodeUseCase.createObservable(RequestParams.create())
+                    .subscribe(object : Subscriber<ResponseGetPromoStackUiModel>() {
+                        override fun onCompleted() {
 
-                }
+                        }
 
-                override fun onError(e: Throwable) {
-                    if (isViewAttached) {
-                        view.hideLoadingDialog()
-                        view.onErrorCheckPromoFirstStep(ErrorHandler.getErrorMessage(view.getActivityContext(), e), "", false)
-                    }
-                }
+                        override fun onError(e: Throwable) {
+                            if (isViewAttached) {
+                                view.hideLoadingDialog()
+                                view.onErrorCheckPromoFirstStep(ErrorHandler.getErrorMessage(view.getActivityContext(), e), "", false)
+                            }
+                        }
 
-                override fun onNext(response: GraphqlResponse?) {
-                    if (isViewAttached) {
-                        view.hideLoadingDialog()
-                        val responseGetPromoStack = checkPromoStackingCodeMapper.call(response)
-
-                        if (responseGetPromoStack.status.equals(statusOK, true)) {
-                            if (responseGetPromoStack.data.clashings.isClashedPromos) {
-                                view.onClashCheckPromoFirstStep(responseGetPromoStack.data.clashings, paramMerchant)
-                            } else {
-                                responseGetPromoStack.data.voucherOrders.forEach {
-                                    if (it.code.equals(promoMerchantCode, true)) {
-
-                                        val promoId = if (isFromList) voucherId else responseGetPromoStack.data.promoCodeId.toString()
-
-                                        if (it.message.state.mapToStatePromoStackingCheckout() == TickerPromoStackingCheckoutView.State.FAILED) {
-                                            view?.hideProgressLoading()
-                                            view.onErrorCheckPromoFirstStep(it.message.text, promoId, isFromList)
-                                        } else {
-                                            view.onSuccessCheckPromoFirstStep(responseGetPromoStack, promoMerchantCode, isFromList, promoId)
+                        override fun onNext(responseGetPromoStack: ResponseGetPromoStackUiModel) {
+                            if (isViewAttached) {
+                                view.hideLoadingDialog()
+                                if (responseGetPromoStack.status.equals(statusOK, true)) {
+                                    if (responseGetPromoStack.data.clashings.isClashedPromos) {
+                                        view.onClashCheckPromoFirstStep(responseGetPromoStack.data.clashings, paramMerchant)
+                                    } else {
+                                        responseGetPromoStack.data.voucherOrders.forEach {
+                                            if (it.code.equals(promoMerchantCode, true)) {
+                                                val promoId = if (isFromList) voucherId else responseGetPromoStack.data.promoCodeId.toString()
+                                                if (it.message.state.mapToStatePromoStackingCheckout() == TickerPromoStackingCheckoutView.State.FAILED) {
+                                                    view?.hideProgressLoading()
+                                                    view.onErrorCheckPromoFirstStep(it.message.text, promoId, isFromList)
+                                                } else {
+                                                    view.onSuccessCheckPromoFirstStep(responseGetPromoStack, promoMerchantCode, isFromList, promoId)
+                                                }
+                                            }
                                         }
                                     }
+                                } else {
+                                    view?.hideProgressLoading()
+                                    view.onErrorCheckPromoFirstStep(responseGetPromoStack.data.message.text, "", isFromList)
                                 }
                             }
-                        } else {
-                            view?.hideProgressLoading()
-                            view.onErrorCheckPromoFirstStep(responseGetPromoStack.data.message.text, "", isFromList)
                         }
-                    }
-                }
-            })
+                    })
         }
     }
 
@@ -131,6 +126,7 @@ class MerchantVoucherListBottomsheetPresenter @Inject constructor(
     override fun detachView() {
         super.detachView()
         getMerchantVoucherListUseCase.unsubscribe()
+        checkPromoStackingCodeUseCase.unsubscribe()
     }
 
 }

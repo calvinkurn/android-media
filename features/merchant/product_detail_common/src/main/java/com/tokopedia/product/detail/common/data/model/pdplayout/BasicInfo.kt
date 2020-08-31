@@ -8,13 +8,15 @@ import com.tokopedia.product.detail.common.data.model.constant.ProductConditionT
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.constant.WeightTypeDef
 import com.tokopedia.product.detail.common.data.model.product.Category
-import com.tokopedia.product.detail.common.data.model.product.Menu
+import com.tokopedia.product.detail.common.data.model.product.Etalase
 import com.tokopedia.product.detail.common.data.model.product.Stats
 import com.tokopedia.product.detail.common.data.model.product.TxStatsDynamicPdp
 
 data class BasicInfo(
         @SerializedName("alias")
         val alias: String = "",
+        @SerializedName("shopName")
+        val shopName: String = "",
         @SerializedName("blacklistMessage")
         val blacklistMessage: BlacklistMessage = BlacklistMessage(),
         @SerializedName("catalogID")
@@ -34,7 +36,7 @@ data class BasicInfo(
         @SerializedName("maxOrder")
         val maxOrder: Int = 0,
         @SerializedName("menu")
-        val menu: Menu = Menu(),
+        val menu: Etalase = Etalase(),
         @SerializedName("minOrder")
         val minOrder: Int = 0,
         @SerializedName("needPrescription")
@@ -58,7 +60,9 @@ data class BasicInfo(
         @SerializedName("stats")
         val stats: Stats = Stats(),
         @SerializedName("txStats")
-        val txStats: TxStatsDynamicPdp = TxStatsDynamicPdp()
+        val txStats: TxStatsDynamicPdp = TxStatsDynamicPdp(),
+        @SerializedName("defaultOngkirEstimation")
+        val defaultOngkirEstimation: String = "30000"
 ) {
 
     companion object {
@@ -69,6 +73,7 @@ data class BasicInfo(
         const val LABEL_GRAM = "gram"
     }
 
+    fun getDefaultOngkirInt(): Int = defaultOngkirEstimation.toIntOrNull() ?: 30000
     fun getWeightUnit(): Float = if (weightUnit.toLowerCase() == KG) weight.toFloat() else weight.toFloat() / KILO
     fun getProductId(): Int = productID.toIntOrNull() ?: 0
     fun getShopId(): Int = shopID.toIntOrNull() ?: 0

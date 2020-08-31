@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:baselineAligned="false"
         android:gravity="center_vertical"
-        android:minHeight="@dimen/dp_50"
+        android:minHeight="@dimen/dp_topchat_50"
         android:orientation="horizontal"
         android:weightSum="1">
 
@@ -24,7 +24,7 @@
             android:layout_weight="0.5"
             android:gravity="center"
             android:orientation="vertical"
-            android:padding="@dimen/dp_8">
+            android:padding="@dimen/spacing_lvl3">
 
 
             <com.tokopedia.unifyprinciples.Typography
@@ -46,7 +46,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tvVoucherTitle"
-                android:layout_marginTop="@dimen/dp_2"
+                android:layout_marginTop="@dimen/spacing_lvl1"
                 android:textColor="@color/Neutral_N700"
                 android:visibility="gone"
                 app:typographyType="small"
@@ -57,9 +57,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tvVoucherSubtitle"
-                android:layout_marginTop="@dimen/dp_3"
+                android:layout_marginTop="@dimen/dp_topchat_3"
                 android:textColor="@color/Neutral_N700"
-                android:textSize="@dimen/sp_10"
+                android:textSize="@dimen/fontSize_lvl1"
                 app:typographyType="small"
                 tools:text="*Min Pembelian 300Rb" />
 
@@ -82,7 +82,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:padding="@dimen/dp_8">
+                android:padding="@dimen/spacing_lvl3">
 
                 <Button
                     android:id="@+id/btnUseVoucher"
@@ -92,16 +92,16 @@
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
                     android:background="@drawable/bg_voucher_button"
-                    android:minWidth="@dimen/dp_76"
-                    android:minHeight="@dimen/dp_24"
-                    android:paddingLeft="@dimen/dp_12"
-                    android:paddingTop="@dimen/dp_4"
-                    android:paddingRight="@dimen/dp_12"
-                    android:paddingBottom="@dimen/dp_4"
+                    android:minWidth="@dimen/dp_topchat_76"
+                    android:minHeight="@dimen/spacing_lvl5"
+                    android:paddingLeft="@dimen/dp_topchat_12"
+                    android:paddingTop="@dimen/spacing_lvl2"
+                    android:paddingRight="@dimen/dp_topchat_12"
+                    android:paddingBottom="@dimen/spacing_lvl2"
                     android:text="@string/use_voucher"
                     android:textAllCaps="false"
                     android:textColor="@color/text_color_voucher_button"
-                    android:textSize="@dimen/sp_12"
+                    android:textSize="@dimen/fontSize_lvl2"
                     android:textStyle="bold" />
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -129,7 +129,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_topchat_chat_voucher_read_status"
-        android:gravity="end"
+        android:gravity="end|center_vertical"
         android:orientation="horizontal"
         android:paddingTop="@dimen/spacing_lvl2"
         android:paddingEnd="@dimen/spacing_lvl4"

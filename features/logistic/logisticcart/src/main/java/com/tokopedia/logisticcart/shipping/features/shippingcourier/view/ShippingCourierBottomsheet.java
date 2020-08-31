@@ -1,28 +1,29 @@
 package com.tokopedia.logisticcart.shipping.features.shippingcourier.view;
 
 import android.os.Bundle;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.component.BottomSheets;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.logisticcart.R;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.di.DaggerShippingCourierComponent;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.di.ShippingCourierComponent;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.di.ShippingCourierModule;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
-import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
+import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
-import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,20 +47,21 @@ public class ShippingCourierBottomsheet extends BottomSheets
     private ProgressBar pbLoading;
 
     private ShippingCourierBottomsheetListener shippingCourierBottomsheetListener;
+    private List<ShippingCourierUiModel> mCourierModelList = new ArrayList<>();
     private RecipientAddressModel mRecipientAddress;
 
     @Inject
-    ShippingCourierContract.Presenter presenter;
-    @Inject
     ShippingCourierAdapter shippingCourierAdapter;
+    @Inject
+    ShippingCourierConverter courierConverter;
 
-    public static ShippingCourierBottomsheet newInstance(List<ShippingCourierViewModel> shippingCourierViewModels,
+    public static ShippingCourierBottomsheet newInstance(List<ShippingCourierUiModel> shippingCourierUiModels,
                                                          RecipientAddressModel recipientAddressModel,
                                                          int cartPosition) {
         ShippingCourierBottomsheet shippingCourierBottomsheet = new ShippingCourierBottomsheet();
         Bundle bundle = new Bundle();
-        if (shippingCourierViewModels != null) {
-            bundle.putParcelableArrayList(ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST, new ArrayList<>(shippingCourierViewModels));
+        if (shippingCourierUiModels != null) {
+            bundle.putParcelableArrayList(ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST, new ArrayList<>(shippingCourierUiModels));
         }
         bundle.putParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL, recipientAddressModel);
         bundle.putInt(ARGUMENT_CART_POSITION, cartPosition);
@@ -81,20 +83,20 @@ public class ShippingCourierBottomsheet extends BottomSheets
         this.shippingCourierBottomsheetListener = shippingCourierBottomsheetListener;
     }
 
-    public void updateArguments(List<ShippingCourierViewModel> shippingCourierViewModels) {
+    public void updateArguments(List<ShippingCourierUiModel> shippingCourierUiModels) {
         Bundle bundle = new Bundle();
-        if (shippingCourierViewModels != null) {
-            bundle.putParcelableArrayList(ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST, new ArrayList<>(shippingCourierViewModels));
+        if (shippingCourierUiModels != null) {
+            bundle.putParcelableArrayList(ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST, new ArrayList<>(shippingCourierUiModels));
         }
         setArguments(bundle);
     }
 
-    public void setShippingCourierViewModels(List<ShippingCourierViewModel> shippingCourierViewModels,
+    public void setShippingCourierViewModels(List<ShippingCourierUiModel> shippingCourierUiModels,
                                              int cartPosition, ShipmentCartItemModel shipmentCartItemModel,
                                              List<ShopShipment> shopShipmentList) {
         hideLoading();
-        if (shippingCourierViewModels != null && shippingCourierViewModels.size() > 0) {
-            presenter.setData(shippingCourierViewModels);
+        if (shippingCourierUiModels != null && shippingCourierUiModels.size() > 0) {
+            mCourierModelList = shippingCourierUiModels;
             setupRecyclerView(cartPosition);
             updateHeight();
         } else {
@@ -117,6 +119,19 @@ public class ShippingCourierBottomsheet extends BottomSheets
     }
 
     @Override
+    public int getBaseLayoutResourceId() {
+        return R.layout.widget_bottomsheet_shipping;
+    }
+
+    @Override
+    public void setupDialog(android.app.Dialog dialog, int style) {
+        super.setupDialog(dialog, style);
+        if (dialog != null) {
+            dialog.findViewById(R.id.design_bottom_sheet).setBackgroundResource(android.R.color.transparent);
+        }
+    }
+
+    @Override
     protected String title() {
         return getString(R.string.title_shipment_courier_bottomsheet);
     }
@@ -129,14 +144,13 @@ public class ShippingCourierBottomsheet extends BottomSheets
         pbLoading = view.findViewById(R.id.pb_loading);
 
         initializeInjector();
-        presenter.attachView(this);
         if (getArguments() != null) {
             mRecipientAddress = getArguments().getParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL);
             int cartPosition = getArguments().getInt(ARGUMENT_CART_POSITION);
-            List<ShippingCourierViewModel> shippingCourierViewModels =
+            List<ShippingCourierUiModel> shippingCourierUiModels =
                     getArguments().getParcelableArrayList(ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST);
-            if (shippingCourierViewModels != null) {
-                presenter.setData(shippingCourierViewModels);
+            if (shippingCourierUiModels != null) {
+                mCourierModelList = shippingCourierUiModels;
                 setupRecyclerView(cartPosition);
             } else {
                 showLoading();
@@ -146,7 +160,7 @@ public class ShippingCourierBottomsheet extends BottomSheets
 
     private void setupRecyclerView(int cartPosition) {
         shippingCourierAdapter.setShippingCourierAdapterListener(this);
-        shippingCourierAdapter.setShippingCourierViewModels(presenter.getShippingCourierViewModels());
+        shippingCourierAdapter.setShippingCourierViewModels(mCourierModelList);
         shippingCourierAdapter.setCartPosition(cartPosition);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
                 getContext(), LinearLayoutManager.VERTICAL, false);
@@ -163,20 +177,22 @@ public class ShippingCourierBottomsheet extends BottomSheets
     }
 
     @Override
-    public void onCourierChoosen(ShippingCourierViewModel shippingCourierViewModel, int cartPosition, boolean isNeedPinpoint) {
-        ProductData productData = shippingCourierViewModel.getProductData();
-        if (shippingCourierViewModel.getProductData().getError() != null) {
-            if (!shippingCourierViewModel.getProductData().getError().getErrorId().equals(ErrorProductData.ERROR_PINPOINT_NEEDED)) {
-                presenter.updateSelectedCourier(shippingCourierViewModel);
+    public void onCourierChoosen(ShippingCourierUiModel shippingCourierUiModel, int cartPosition, boolean isNeedPinpoint) {
+        ProductData productData = shippingCourierUiModel.getProductData();
+        int spId = shippingCourierUiModel.getProductData().getShipperProductId();
+        if (shippingCourierUiModel.getProductData().getError() != null) {
+            // Not updating when it has Error Pinpoint Needed
+            if (!shippingCourierUiModel.getProductData().getError().getErrorId().equals(ErrorProductData.ERROR_PINPOINT_NEEDED)) {
+                courierConverter.updateSelectedCourier(mCourierModelList, spId);
             }
         } else {
-            presenter.updateSelectedCourier(shippingCourierViewModel);
+            courierConverter.updateSelectedCourier(mCourierModelList, spId);
         }
-        CourierItemData courierItemData = presenter.getCourierItemData(shippingCourierViewModel);
+        CourierItemData courierItemData = courierConverter.convertToCourierItemData(shippingCourierUiModel);
         boolean isCod = productData.getCodProductData() != null && (productData.getCodProductData().getIsCodAvailable() == 1);
         if (shippingCourierBottomsheetListener != null) {
             shippingCourierBottomsheetListener.onCourierChoosen(
-                    shippingCourierViewModel, courierItemData, mRecipientAddress, cartPosition, isCod,
+                    shippingCourierUiModel, courierItemData, mRecipientAddress, cartPosition, isCod,
                     !TextUtils.isEmpty(productData.getPromoCode()), isNeedPinpoint);
         }
         dismiss();

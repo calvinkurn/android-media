@@ -2,6 +2,7 @@ package com.tokopedia.product.manage.item.main.add.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils;
+import com.tokopedia.product.manage.item.common.util.AddEditPageType;
 import com.tokopedia.product.manage.item.common.util.ViewUtils;
 import com.tokopedia.product.manage.item.main.add.view.listener.ProductAddView;
 import com.tokopedia.product.manage.item.main.base.data.model.ProductViewModel;
@@ -19,6 +20,9 @@ import java.util.List;
 import kotlin.Unit;
 import rx.Subscriber;
 import timber.log.Timber;
+
+import static com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.PRODUCT_ADD_SOURCE;
+import static com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.PRODUCT_EDIT_SOURCE;
 
 /**
  * @author sebastianuskh on 4/13/17.
@@ -48,7 +52,7 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends BaseDagge
     }
 
     @Override
-    public void getShopInfo() {
+    public void getShopInfo(AddEditPageType addEditPageType) {
         ArrayList<Integer> shopIds = new ArrayList<>();
         try {
             shopIds.add(Integer.parseInt(userSession.getShopId()));
@@ -56,7 +60,18 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends BaseDagge
         catch (NumberFormatException exception) {
             Timber.d("Failed to convert shop ID to integer");
         }
-        gqlGetShopInfoUseCase.setParams(GQLGetShopInfoUseCase.createParams(shopIds, null , GQLGetShopInfoUseCase.getDefaultShopFields()));
+        String gqlShopInfoSoure = "";
+        if (addEditPageType == AddEditPageType.ADD) {
+            gqlShopInfoSoure = PRODUCT_ADD_SOURCE;
+        } else if (addEditPageType == AddEditPageType.EDIT) {
+            gqlShopInfoSoure = PRODUCT_EDIT_SOURCE;
+        }
+        gqlGetShopInfoUseCase.setParams(GQLGetShopInfoUseCase.createParams(
+                shopIds,
+                null ,
+                GQLGetShopInfoUseCase.getDefaultShopFields(),
+                gqlShopInfoSoure
+        ));
         gqlGetShopInfoUseCase.execute(
                 shopInfo -> {
                     if (isViewAttached()) {

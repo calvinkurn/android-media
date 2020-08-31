@@ -174,7 +174,7 @@ public protected *;
 
 -keep class com.tokopedia.core.home.model.** { *; }
 
--keep class com.tokopedia.core.util.GlobalConfig
+-keep class com.tokopedia.config.GlobalConfig
 -keep class com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity
 -keep class com.tokopedia.common.payment.model.PaymentPassData
 
@@ -200,8 +200,8 @@ public protected *;
 
 -dontwarn com.laku6.tradeinsdk.api.Laku6TradeIn
 
--assumenosideeffects class com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity {
-    public void initTranslator();
-}
-
 -keep class com.google.firebase.perf.FirebasePerformance
+
+-dontwarn com.google.android.exoplayer2.audio.AudioAttributes
+-dontwarn com.google.android.exoplayer2.mediacodec.MediaCodecUtil
+-dontwarn com.google.android.exoplayer2.ui.DefaultTimeBar

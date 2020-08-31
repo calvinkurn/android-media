@@ -2,29 +2,11 @@ apply plugin: 'com.android.application'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'io.hansel.preprocessor'
+apply from: '../tools/set_debug_tools.gradle'
 
 kapt {
     correctErrorTypes = true
     generateStubs = false
-}
-
-def getDpiId(String density) {
-    def DPI_ID = ['null': 0, 'mdpi': 1, 'hdpi': 2, 'xhdpi': 3, 'xxhdpi': 4]
-    if (density != null)
-        return DPI_ID.get(density);
-    return 0;
-}
-def getAbiId(String abi) {
-    def ABI_ID = ['null': 0, 'armeabi-v7a': 10, 'x86': 20]
-    if (abi != null)
-        return ABI_ID.get(abi);
-    return 0;
-}
-def generateBuildId(String density, String abi) {
-    return getAbiId(abi) + getDpiId(density);
-}
-def getAPKArchiveFolder(variant) {
-    return "/Android/launching-android/" + "V" + variant.mergedFlavor.versionCode;
 }
 def allowSplit() {
     return gradle.startParameter.taskNames.contains("assembleLiveRelease") &&
@@ -36,22 +18,11 @@ def allowDistribution() {
     }
     return "false";
 }
-def allowProguard() {
-    return project.hasProperty('tkpdBuildType')
-}
 def getTkpdVersionCode() {
     return project.hasProperty('versionCode') ? Integer.parseInt(versionCode) : project.defaultVersionCode;
 }
 def getTkpdVersionName() {
     return project.hasProperty('versionName') ? versionName : project.defaultVersionName;
-}
-def renameAPKFile(variant, density, versionCode) {
-    def fileName = variant.name.toUpperCase()
-    fileName += "-" + variant.mergedFlavor.versionName;
-    fileName += "-V" + versionCode;
-    fileName += "-" + density;
-    fileName += ".apk";
-    return fileName;
 }
 buildscript {
     repositories {
@@ -73,8 +44,8 @@ android {
     }
 
     project.ext {
-        defaultVersionCode = 221001101;
-        defaultVersionName = "2.21";
+        defaultVersionCode = 299800000;
+        defaultVersionName = "3.80";
         react = [
                 nodeExecutableAndArgs: ["${nodeExecutableAndArgs}"]
         ]
@@ -137,7 +108,7 @@ android {
         }
     }
     defaultConfig {
-        minSdkVersion rootProject.ext.minSdkVersion
+        minSdkVersion 21
         targetSdkVersion rootProject.ext.targetSdkVersion
         multiDexEnabled = true
         applicationId "com.tokopedia.tkpd"
@@ -155,50 +126,40 @@ android {
     }
 }
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
-
     implementation rootProject.ext.miscDependencies.multiDex
-
-    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.applink)
-
-    implementation rootProject.ext.supportLibDependencies.recyclerViewV7
-
-    implementation rootProject.ext.supportLibDependencies.supportV4
-    implementation rootProject.ext.supportLibDependencies.appCompactV7
-
     implementation (project(rootProject.ext.features.sessioncommon))
-
     implementation (project(rootProject.ext.libraries.remoteConfig))
-
-    implementation rootProject.ext.networkDependencies.okHttp
-    implementation rootProject.ext.networkDependencies.loggingInterceptor
+    implementation (project(rootProject.ext.libraries.remoteResourceRequest))
 
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation project(rootProject.ext.libraries.track)
+    if (rootProject.ext.debugToolsEnabled) {
+        implementation project(rootProject.ext.libraries.analyticsDebugger)
+    } else {
+        implementation project(rootProject.ext.libraries.analyticsDebuggerNoop)
+    }
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
-    compileOnly rootProject.ext.miscDependencies.javaxAnnotation
-    implementation rootProject.ext.miscDependencies.dagger
-    kapt rootProject.ext.miscDependencies.daggerCompiler
-
-    implementation rootProject.ext.networkDependencies.retrofit
-    implementation rootProject.ext.networkDependencies.converterGson
-    implementation rootProject.ext.networkDependencies.adapterRxJava
-    implementation rootProject.ext.networkDependencies.okHttp
-    implementation rootProject.ext.networkDependencies.loggingInterceptor
-
     implementation project(rootProject.ext.libraries.commonNetwork)
-    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
+    implementation project(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
+    implementation rootProject.ext.tkpdInternalLibDependencies.betaNotif
+    implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
+    if (rootProject.ext.debugToolsEnabled) {
+        implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponse
+    } else {
+        implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponseNoOp
+    }
 
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icon
@@ -207,17 +168,28 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.base
 
     implementation rootProject.ext.firebase.core
-    implementation (rootProject.ext.debugToolsDependencies.chuck) {
-        exclude group: 'com.squareup.okhttp3'
-        exclude group: 'com.squareup.okio'
-        exclude group: 'com.android.support'
-    }
+    implementation rootProject.ext.debugToolsDependencies.chuck
     androidTestImplementation(rootProject.ext.testDependencies.espressoContrib, {
         exclude group: 'com.android.support', module: 'appcompat'
         exclude group: 'com.android.support', module: 'support-v4'
         exclude module: 'recyclerview-v7'
     })
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
+
+    implementation project(rootProject.ext.libraries.akamaiBotLib)
+
+    implementation project(rootProject.ext.libraries.core_legacy)
+    implementation project(rootProject.ext.libraries.iris)
+
+    //you can delete below line if you use old login, then Build -> Switch to TestApp again
+    //you have to DELETE, not only COMMENT, because testapp plugins still add it to compile list even when commented
+    //logintestapp should not appear in compile-testapp-plugin.gradle if it is successfully excluded
+    implementation project(rootProject.ext.features.logintestapp)
+
+    //you can delete below line if you are not using developer options, then Build -> Switch to TestApp again
+    //you have to DELETE, not only COMMENT, because testapp plugins still add it to compile list even when commented
+    //developer_options should not appear in compile-testapp-plugin.gradle if it is successfully excluded
+    implementation project(rootProject.ext.features.developerOptions)
 
 //    implementation project(rootProject.ext.libraries.logger)
 //    implementation (rootProject.ext.debugToolsDependencies.timber){

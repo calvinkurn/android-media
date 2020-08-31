@@ -2,6 +2,7 @@ package com.tokopedia.sellerorder.detail.data.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.sellerorder.common.domain.model.TickerInfo
 
 /**
  * Created by fwidjaja on 2019-08-27.
@@ -23,7 +24,7 @@ data class SomDetailOrder(
 
                 @SerializedName("status")
                 @Expose
-                val statusId: Int = 0,
+                val statusCode: Int = 0,
 
                 @SerializedName("status_text")
                 @Expose
@@ -107,7 +108,15 @@ data class SomDetailOrder(
 
                 @SerializedName("online_booking")
                 @Expose
-                val onlineBooking: OnlineBookingRoot = OnlineBookingRoot()) {
+                val onlineBooking: OnlineBookingRoot = OnlineBookingRoot(),
+
+                @SerializedName("penalty_reject_info")
+                @Expose
+                val penaltyRejectInfo: PenaltyRejectInfo = PenaltyRejectInfo(),
+
+                @SerializedName("ticker_info")
+                @Expose
+                val tickerInfo: TickerInfo = TickerInfo()) {
 
             data class Products(
                     @SerializedName("id")
@@ -438,7 +447,11 @@ data class SomDetailOrder(
 
                     @SerializedName("param")
                     @Expose
-                    val param: String = "")
+                    val param: String = "",
+
+                    @SerializedName("popup")
+                    @Expose
+                    val popUp: PopUp = PopUp())
 
             data class OnlineBookingRoot(
                     @SerializedName("is_hide_input_awb")
@@ -456,6 +469,44 @@ data class SomDetailOrder(
                     @SerializedName("info_text")
                     @Expose
                     val infoText: String = "")
+
+            data class PenaltyRejectInfo(
+                    @SerializedName("is_penalty_reject")
+                    @Expose
+                    val isPenaltyReject: Boolean = false,
+
+                    @SerializedName("penalty_reject_wording")
+                    @Expose
+                    val penaltyRejectWording: String = ""
+            )
+
+            data class PopUp(
+                    @SerializedName("title")
+                    @Expose
+                    val title: String = "",
+
+                    @SerializedName("body")
+                    @Expose
+                    val body: String = "",
+
+                    @SerializedName("actionButton")
+                    @Expose
+                    val actionButtons: List<ActionButton> = emptyList()
+            ) {
+                data class ActionButton(
+                        @SerializedName("displayName")
+                        @Expose
+                        val displayName: String = "",
+
+                        @SerializedName("color")
+                        @Expose
+                        val color: String = "",
+
+                        @SerializedName("type")
+                        @Expose
+                        val type: String = ""
+                )
+            }
         }
     }
 }

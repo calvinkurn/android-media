@@ -1,23 +1,17 @@
 package com.tokopedia.shop.common.graphql.domain.usecase.shopnotes
 
 import android.content.Context
-
-import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.shop.common.R
 import com.tokopedia.shop.common.graphql.data.shopnote.gql.ReorderShopNoteMutation
 import com.tokopedia.shop.common.graphql.domain.mapper.GraphQLSuccessMapper
 import com.tokopedia.shop.common.graphql.domain.usecase.base.SingleGraphQLUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
-
-import java.util.ArrayList
-import java.util.HashMap
-
-import javax.inject.Inject
-
 import rx.Observable
-import rx.functions.Func1
+import java.util.*
+import javax.inject.Inject
 
 class ReorderShopNoteUseCase @Inject
 constructor(@ApplicationContext context: Context) : UseCase<String>() {
@@ -26,8 +20,10 @@ constructor(@ApplicationContext context: Context) : UseCase<String>() {
 
     init {
         graphQLUseCase = object : SingleGraphQLUseCase<ReorderShopNoteMutation>(context, ReorderShopNoteMutation::class.java) {
-            override val graphQLRawResId: Int
-                get() = R.raw.gql_mutation_reorder_shop_note
+
+            override fun getRawString(): String {
+                return GraphqlHelper.loadRawString(context.resources, R.raw.gql_mutation_reorder_shop_note)
+            }
 
             override fun createGraphQLVariable(requestParams: RequestParams): HashMap<String, Any> {
                 val variables = HashMap<String, Any>()

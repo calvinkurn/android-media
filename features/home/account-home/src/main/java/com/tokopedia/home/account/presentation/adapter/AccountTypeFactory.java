@@ -1,27 +1,27 @@
 package com.tokopedia.home.account.presentation.adapter;
 
 import androidx.annotation.NonNull;
+
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder;
-import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingShimmeringGridViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingShimmeringListViewHolder;
-import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingViewholder;
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 import com.tokopedia.home.account.presentation.viewholder.AccountLoadingMoreViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.AccountRecommendationTitleViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.AddProductViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.BuyerCardViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.InfoCardViewHolder;
+import com.tokopedia.home.account.presentation.viewholder.LabelledMenuListViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.MenuGridViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.MenuListViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.MenuTitleViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.PowerMerchantViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.RecommendationProductViewHolder;
+import com.tokopedia.home.account.presentation.viewholder.RekeningPremiumViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.SellerEmptyViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.SellerSaldoViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.ShopCardViewHolder;
@@ -31,16 +31,20 @@ import com.tokopedia.home.account.presentation.viewmodel.AccountRecommendationTi
 import com.tokopedia.home.account.presentation.viewmodel.AddProductViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.BuyerCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.InfoCardViewModel;
+import com.tokopedia.home.account.presentation.viewmodel.LabelledMenuListUiModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuTitleViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.PowerMerchantCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.RecommendationProductViewModel;
+import com.tokopedia.home.account.presentation.viewmodel.RekeningPremiumViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.SellerEmptyViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.SellerSaldoViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.TickerViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayViewModel;
+
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author okasurya on 7/17/18.
@@ -64,6 +68,8 @@ public class AccountTypeFactory extends BaseAdapterTypeFactory {
             return new MenuTitleViewHolder(parent);
         } else if (type == MenuGridViewHolder.LAYOUT) {
             return new MenuGridViewHolder(parent, listener);
+        } else if (type == LabelledMenuListViewHolder.Companion.getLAYOUT()) {
+            return new LabelledMenuListViewHolder(parent, listener);
         } else if (type == MenuListViewHolder.LAYOUT) {
             return new MenuListViewHolder(parent, listener);
         } else if (type == InfoCardViewHolder.LAYOUT) {
@@ -86,6 +92,8 @@ public class AccountTypeFactory extends BaseAdapterTypeFactory {
             return new LoadingShimmeringListViewHolder(parent);
         } else if (type == AccountLoadingMoreViewHolder.LAYOUT) {
             return new AccountLoadingMoreViewHolder(parent);
+        } else if (type == RekeningPremiumViewHolder.Companion.getLAYOUT()) {
+            return new RekeningPremiumViewHolder(parent, listener);
         }
         return super.createViewHolder(parent, type);
     }
@@ -146,6 +154,10 @@ public class AccountTypeFactory extends BaseAdapterTypeFactory {
         return RecommendationProductViewHolder.Companion.getLAYOUT();
     }
 
+    public int type(LabelledMenuListUiModel vm) {
+        return LabelledMenuListViewHolder.Companion.getLAYOUT();
+    }
+
     @Override
     public int type(LoadingModel viewModel) {
         return LoadingShimmeringListViewHolder.LAYOUT;
@@ -154,5 +166,9 @@ public class AccountTypeFactory extends BaseAdapterTypeFactory {
     @Override
     public int type(LoadingMoreModel viewModel) {
         return AccountLoadingMoreViewHolder.LAYOUT;
+    }
+
+    public int type(@NotNull RekeningPremiumViewModel rekeningPremiumViewModel) {
+        return RekeningPremiumViewHolder.Companion.getLAYOUT();
     }
 }

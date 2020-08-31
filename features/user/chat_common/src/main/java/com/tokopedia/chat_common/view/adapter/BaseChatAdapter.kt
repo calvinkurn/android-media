@@ -21,7 +21,7 @@ import java.util.*
 open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl) :
         BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory>(adapterTypeFactory) {
 
-    private val SECONDS: Long = 1000000
+    protected val SECONDS: Long = 1000000
 
     var typingModel = TypingChatModel()
 
@@ -64,7 +64,7 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl) :
     }
 
     fun showTyping() {
-        if(this.visitables.none{it == typingModel}) {
+        if (this.visitables.none { it == typingModel }) {
             this.visitables.add(0, typingModel)
             notifyItemInserted(0)
         }
@@ -72,8 +72,8 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl) :
 
     fun removeTyping() {
         var index = visitables.indexOf(typingModel)
-        var isContainsTyping = this.visitables.remove(typingModel)
-        if (isContainsTyping) {
+        if (index != -1) {
+            this.visitables.removeAt(index)
             notifyItemRemoved(index)
         }
     }
@@ -122,13 +122,13 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl) :
 
                 val now: BaseChatViewModel = visitables[position] as BaseChatViewModel
                 var next: BaseChatViewModel = visitables[position - 1] as BaseChatViewModel
-                val myTime = java.lang.Long.parseLong(now.replyTime) / SECONDS
+                val myTime = ((now.replyTime)?.toLong() ?: 0L) / SECONDS
                 var nextItemTime: Long = 0
 
                 if (visitables[position - 1] != null
                         && visitables[position - 1] is BaseChatViewModel) {
                     next = visitables[position - 1] as BaseChatViewModel
-                    nextItemTime = java.lang.Long.parseLong(next.replyTime) / SECONDS
+                    nextItemTime = ((next.replyTime)?.toLong() ?: 0L) / SECONDS
                 }
 
                 (visitables[position] as BaseChatViewModel)
@@ -161,13 +161,13 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl) :
                 }
 
                 var prev: SendableViewModel? = null
-                val myTime = java.lang.Long.parseLong(now.replyTime) / SECONDS
+                val myTime = ((now.replyTime)?.toLong() ?: 0) / SECONDS
                 var prevTime: Long = 0
 
                 if (visitables[position + 1] != null && visitables[position + 1] is SendableViewModel) {
                     prev = visitables.get(position + 1) as SendableViewModel
                     if (prev.replyTime != null) {
-                        prevTime = (prev!!.replyTime)!!.toLong() / SECONDS
+                        prevTime = (prev.replyTime)!!.toLong() / SECONDS
                     }
                 }
 
@@ -211,15 +211,15 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl) :
         return current.fromRole == compare.fromRole
     }
 
-    private fun compareTime(context: Context, calCurrent: Long, calBefore: Long): Boolean {
+    protected fun compareTime(context: Context, calCurrent: Long, calBefore: Long): Boolean {
         return DateFormat.getLongDateFormat(context).format(Date(calCurrent)) == DateFormat.getLongDateFormat(context).format(Date(calBefore))
     }
 
-    protected fun enableShowDate(): Boolean {
+    protected open fun enableShowDate(): Boolean {
         return true
     }
 
-    protected fun enableShowTime(): Boolean {
+    protected open fun enableShowTime(): Boolean {
         return true
     }
 
@@ -229,7 +229,7 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl) :
         if (visitables.size > 1) notifyItemRangeChanged(0, 1)
     }
 
-    fun addNewMessage(item: Visitable<*>){
+    fun addNewMessage(item: Visitable<*>) {
         addElement(item)
     }
 
@@ -260,6 +260,11 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl) :
                 } else {
                     (visitables.get(i) as MessageViewModel).isRead = true
                     notifyItemRangeChanged(i, 1)
+                }
+            } else if (currentItem is SendableViewModel && currentItem.isSender) {
+                if (!currentItem.isRead) {
+                    currentItem.isRead = true
+                    notifyItemChanged(i, SendableViewModel.PAYLOAD_EVENT_READ)
                 }
             }
         }

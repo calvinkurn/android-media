@@ -21,6 +21,9 @@ class UmrahCheckoutMetaDataParams(
         @SerializedName("product_variant_id")
         @Expose
         val product_variant_id: Int = 0,
+        @SerializedName("promo_code")
+        @Expose
+        val promo_code: String = "",
         @SerializedName("contact")
         @Expose
         val contact: Contact = Contact(),

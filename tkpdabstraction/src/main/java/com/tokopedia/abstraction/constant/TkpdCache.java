@@ -13,9 +13,9 @@ public class TkpdCache {
         public static final String URL = "URL";
         public static final String KEY_DEALS_LOCATION = "KEY_DEALS_LOCATION";
         public static final String KEY_ADVERTISINGID = "KEY_ADVERTISINGID";
-        public static final String KEY_TOKOPOINT_DRAWER_DATA = "KEY_TOKOPOINT_DRAWER_DATA";
         public static final String KEY_LOCATION = "KEY_FP_LOCATION";
         public static final String KEY_LOCATION_LAT = "KEY_FP_LOCATION_LAT";
         public static final String KEY_LOCATION_LONG = "KEY_FP_LOCATION_LONG";
+        public static final String ETALASE_ADD_PROD = "ETALASE_ADD_PROD";
     }
 }

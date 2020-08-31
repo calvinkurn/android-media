@@ -1,0 +1,36 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+dependencies {
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.principles
+
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.libraries.iris)
+    implementation project(rootProject.ext.libraries.irisSession)
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+}
+
+project.ext {
+    artifactId = 'seller_onboarding'
+    groupId = 'com.tokopedia.seller_onboarding'
+    versionName = "0.0.1"
+    artifactName ="seller_onboarding-release"
+}
+
+apply from: '../../../publish_local.gradle'

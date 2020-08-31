@@ -11,6 +11,4 @@ import rx.Subscriber;
 
 public interface IPushNotificationDataInteractor {
     void updateTokenServer(FCMTokenUpdate data, Subscriber<FCMTokenUpdateEntity> subscriber);
-
-    void unSubscribeObservable();
 }

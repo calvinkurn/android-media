@@ -27,9 +27,5 @@ public interface PushNotificationRepository {
 
     Observable<List<DiscussionPushNotification>> getSavedDiscussionPushNotification();
 
-    Observable<Boolean> clearPushNotificationStorage(String category, String serverId);
-
-    Observable<Boolean> clearPushNotificationStorage(String category);
-
     Observable<Boolean> clearPushNotificationStorage();
 }

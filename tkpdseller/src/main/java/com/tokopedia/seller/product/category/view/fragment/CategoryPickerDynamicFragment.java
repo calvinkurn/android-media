@@ -10,12 +10,11 @@ import android.view.View;
 import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
 import com.tokopedia.base.list.seller.view.adapter.BaseRetryDataBinder;
 import com.tokopedia.base.list.seller.view.old.RetryDataBinder;
-import com.tokopedia.core.common.category.view.model.CategoryLevelViewModel;
 import com.tokopedia.core.common.category.view.model.CategoryViewModel;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.widget.DividerItemDecoration;
 import com.tokopedia.seller.product.manage.view.adapter.ProductManageCategoryPickerAdapter;
-import com.tokopedia.seller.product.manage.view.model.ProductManageCategoryViewModel;
+import com.tokopedia.product.manage.item.category.view.model.ProductManageCategoryViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,7 +70,7 @@ public class CategoryPickerDynamicFragment extends CategoryPickerFragment implem
 
     @Override
     protected void initVar() {
-        presenter.fetchCategoryLevelOne();
+        presenter.getCategoryLiteTree();
     }
 
     @Override
@@ -85,10 +84,6 @@ public class CategoryPickerDynamicFragment extends CategoryPickerFragment implem
                     categoryViewModel.getId(), categoryViewModel.isHasChild()));
         }
         productManageCategoryPickerAdapter.addData(categoryViewModelList);
-    }
-
-    @Override
-    public void renderCategoryFromSelected(List<CategoryLevelViewModel> categoryLevelDomainModels) {
     }
 
     @Override

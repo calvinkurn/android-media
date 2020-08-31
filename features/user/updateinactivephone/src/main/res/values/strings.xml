@@ -42,7 +42,13 @@
     <string name="invalid_email_error" >Format email salah</string>
     <string name="phone_field_empty">Nomor ponsel harus diisi</string>
     <string name="email_field_empty">Email harus diisi</string>
+    <string name="title_next">Selanjutnya</string>
+    <string name="drawer_title_login">Masuk</string>
+    <string name="title_cancel">Batal</string>
+    <string name="error_upload_image">Gagal mengunggah gambar</string>
 
     <string name="error_invalid_phone_number">Nomor Telepon tidak valid</string>
     <string name="error_invalid_email">Email ini tidak valid.</string>
+
+    <string name="error_general">Terjadi gangguan di rumah Toped, silakan coba lagi nanti.</string>
 </resources>

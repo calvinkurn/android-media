@@ -10,10 +10,14 @@ import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.File;
+import java.io.InterruptedIOException;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.Map;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
+import okhttp3.internal.http2.ConnectionShutdownException;
 import rx.Observable;
 import rx.functions.Func1;
 import timber.log.Timber;
@@ -81,7 +85,13 @@ public class UploadImageUseCase<T> extends UseCase<ImageUploadDomainModel<T>> {
                                 });
                     }
                 })
-                .doOnError(throwable -> Timber.e(throwable, "P1#IMAGE_UPLOADER#"));
+                .doOnError(throwable -> {
+                    if (!(throwable instanceof UnknownHostException) &&
+                            !(throwable instanceof SocketException) &&
+                            !(throwable instanceof InterruptedIOException) &&
+                            !(throwable instanceof ConnectionShutdownException))
+                        Timber.e(throwable, "P1#IMAGE_UPLOADER#");
+                });
     }
 
     private Map<String, RequestBody> getParamsUploadImage(String serverIdUpload, Map<String, RequestBody> maps) {

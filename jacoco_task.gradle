@@ -1,3 +1,5 @@
+apply from: "$rootProject.projectDir/buildconfig/jacoco.gradle"
+
 def fileExecute = [
         '**/*ViewModel.*',
         '**/*Presenter.*'
@@ -15,6 +17,9 @@ task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest']) {
         xml.enabled = true
         html.enabled = true
         csv.enabled = true
+        xml.destination file("${rootProject.buildDir}/reports/jacocoTestReport-${project.name}.xml")
+        html.destination file("${buildDir}/reports/jacoco")
+        csv.destination file("${buildDir}/reports/jacocoTestReport.csv")
     }
 
     sourceDirectories.setFrom([javaSrc, kotlinSrc])

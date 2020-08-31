@@ -1,14 +1,8 @@
 package com.tokopedia.home.account.presentation.listener
 
-import com.tokopedia.home.account.presentation.viewmodel.BuyerCardViewModel
-import com.tokopedia.home.account.presentation.viewmodel.InfoCardViewModel
-import com.tokopedia.home.account.presentation.viewmodel.MenuGridItemViewModel
-import com.tokopedia.home.account.presentation.viewmodel.MenuGridViewModel
-import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel
-import com.tokopedia.home.account.presentation.viewmodel.SellerSaldoViewModel
-import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel
-import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayBSModel
+import com.tokopedia.home.account.presentation.viewmodel.*
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
 /**
@@ -20,11 +14,13 @@ interface AccountItemListener {
 
     fun onProfileCompletionClicked(element: BuyerCardViewModel)
 
-    fun onBuyerTokopointClicked(element: BuyerCardViewModel)
+    fun onBuyerTokopointClicked(element: String , title: String)
 
-    fun onBuyerVoucherClicked(element: BuyerCardViewModel)
+    fun onBuyerVoucherClicked(element: String , title: String)
 
     fun onByMeClicked()
+
+    fun onClickMemberDetail()
 
     fun onTokopediaPayLinkClicked()
 
@@ -78,11 +74,17 @@ interface AccountItemListener {
 
     fun onProductRecommendationWishlistClicked(product: RecommendationItem, wishlistStatus: Boolean, callback: ((Boolean, Throwable?) -> Unit))
 
+    fun onProductRecommendationThreeDotsClicked(product: RecommendationItem, adapterPosition: Int)
+
     fun onPowerMerchantSettingClicked()
 
-    fun onTokomemberClicked()
+    fun onTokomemberClicked(url: String, title:String)
 
     fun onAccountItemImpression(data: HashMap<String, Any>)
 
     fun getTrackingQueue(): TrackingQueue
+
+    fun openRekeningPremiumWebLink(rekeningPremiumViewModel: RekeningPremiumViewModel)
+
+    fun getRemoteConfig(): RemoteConfig
 }

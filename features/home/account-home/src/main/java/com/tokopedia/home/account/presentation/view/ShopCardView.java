@@ -24,8 +24,6 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.design.label.LabelView;
-import com.tokopedia.design.widget.WarningTickerView;
-import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.R;
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant;
 import com.tokopedia.topads.common.data.model.DataDeposit;
@@ -167,9 +165,7 @@ public class ShopCardView extends BaseCustomView {
         FreeDeposit freeDeposit = dataDeposit.getFreeDeposit();
         if (freeDeposit.getStatus() == 1 && freeDeposit.getNominal() > 0) {
             labelViewTopAds.setContentClick(v -> {
-                if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
-                    openApplink(String.format("%s?url=%s", ApplinkConst.WEBVIEW, TopAdsCommonConstant.TOPADS_FREE_CLAIM_URL));
-                }
+                openApplink(String.format("%s?url=%s", ApplinkConst.WEBVIEW, TopAdsCommonConstant.TOPADS_FREE_CLAIM_URL));
             });
             SpannableString claimKredits = new SpannableString(getContext().getString(R.string.top_ads_free_claim_label, freeDeposit.getNominalFmt()));
             claimKredits.setSpan(new StyleSpan(Typeface.BOLD), claimKredits.length() - freeDeposit.getNominalFmt().length(), claimKredits.length(),

@@ -1,0 +1,14 @@
+mutation post_rating_reason($msgId: String!, $reason: String!, $timestamp: String!) {
+  postRatingReason(msgID: $msgId, reason: $reason, timestamp: $timestamp) {
+    Header {
+      ProcessTime
+      TotalData
+      Reason
+      ErrorCode
+    }
+    Data {
+      Message
+      IsSuccess
+    }
+  }
+}

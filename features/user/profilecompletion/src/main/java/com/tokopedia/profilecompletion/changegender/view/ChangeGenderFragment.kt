@@ -1,31 +1,28 @@
 package com.tokopedia.profilecompletion.changegender.view
 
 import android.app.Activity
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
 import android.widget.RadioGroup
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.changegender.data.ChangeGenderResult
 import com.tokopedia.profilecompletion.changegender.viewmodel.ChangeGenderViewModel
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.unifycomponents.Toaster
-//import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_change_gender.*
 import javax.inject.Inject
-
 
 class ChangeGenderFragment : BaseDaggerFragment() {
 
@@ -54,20 +51,19 @@ class ChangeGenderFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         setListener()
         setObserver()
-
     }
 
     private fun setListener() {
-        radioGroup.setOnCheckedChangeListener { _: RadioGroup, _: Int ->
-            buttonSubmit.buttonCompatType = ButtonCompat.PRIMARY
+        rg_gender?.setOnCheckedChangeListener { _: RadioGroup, _: Int ->
+            buttonSubmit.isEnabled = true
         }
 
         buttonSubmit.setOnClickListener {
             if (radioGroupIsSelected()) {
                 showLoading()
-                val selectedGenderView = radioGroup.findViewById<RadioButton>(radioGroup.checkedRadioButtonId)
-                val selectedGender = radioGroup.indexOfChild(selectedGenderView)
-                viewModel.mutateChangeGender(context!!, mapSelectedGender(selectedGender))
+                val selectedGenderView = rg_gender?.findViewById<RadioButton>(rg_gender?.checkedRadioButtonId?: 0)
+                val selectedGender = rg_gender?.indexOfChild(selectedGenderView)
+                context?.let { ctx -> viewModel.mutateChangeGender(ctx, mapSelectedGender(selectedGender?: 0)) }
             }
         }
     }
@@ -76,9 +72,8 @@ class ChangeGenderFragment : BaseDaggerFragment() {
         return if (selectedGender > 1) TYPE_WOMAN else TYPE_MAN
     }
 
-
     private fun radioGroupIsSelected(): Boolean {
-        return radioGroup.checkedRadioButtonId != -1
+        return rg_gender?.checkedRadioButtonId != -1
     }
 
     private fun setObserver() {
@@ -91,7 +86,6 @@ class ChangeGenderFragment : BaseDaggerFragment() {
                     }
                 }
         )
-
     }
 
     private fun onErrorChangeGender(throwable: Throwable) {
@@ -134,8 +128,6 @@ class ChangeGenderFragment : BaseDaggerFragment() {
         super.onDestroy()
         viewModel.mutateChangeGenderResponse.removeObservers(this)
         viewModel.flush()
-
-
     }
 
     companion object {
@@ -152,6 +144,4 @@ class ChangeGenderFragment : BaseDaggerFragment() {
             return fragment
         }
     }
-
-
 }

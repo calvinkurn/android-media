@@ -2,10 +2,12 @@ package com.tokopedia.salam.umrah.common.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.salam.umrah.pdp.data.UmrahFAQContent
 import com.tokopedia.salam.umrah.pdp.data.UmrahPdpAirlineModel
 import com.tokopedia.salam.umrah.pdp.data.UmrahPdpFeaturedFacilityModel
 import com.tokopedia.salam.umrah.pdp.data.UmrahPdpItineraryModel
+import com.tokopedia.salam.umrah.travel.presentation.adapter.UmrahTravelProductAdapterTypeFactory
 
 /**
  * @author by M on 30/10/19
@@ -90,7 +92,9 @@ data class UmrahProductModel(
 
             @SerializedName("faq")
             val faqs: UmrahFAQ = UmrahFAQ()
-    ) {
+    ): Visitable<UmrahTravelProductAdapterTypeFactory> {
+            override fun type(typeFactory: UmrahTravelProductAdapterTypeFactory?): Int =
+                    typeFactory?.type() ?: 0
         data class UmrahProductUI(
                 @SerializedName("travelDates")
                 val travelDates: String = "",

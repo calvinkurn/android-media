@@ -6,7 +6,8 @@
             android:screenOrientation="portrait"
             android:hardwareAccelerated="true"
             android:label="@string/tokopedia"
-            android:theme="@style/Theme.White" >
+            android:theme="@style/Theme.White"
+            android:configChanges="uiMode" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -21,6 +22,7 @@
         <activity android:name="com.tokopedia.webview.download.BaseDownloadAppLinkActivity"
             android:label="@string/tokopedia"
             android:screenOrientation="portrait"
+            android:configChanges="uiMode"
             android:theme="@style/Theme.White"/>
     </application>
 

@@ -1,0 +1,9 @@
+{
+  rechargeBanner(platformID: 31) {
+    id
+    img_url
+    title
+    app_link
+    filename
+  }
+}

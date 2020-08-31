@@ -3,7 +3,7 @@ package com.tokopedia.tradein.view.viewcontrollers;
 import android.Manifest;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
-import androidx.lifecycle.Observer;
+import androidx.fragment.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -21,27 +21,40 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.laku6.tradeinsdk.api.Laku6TradeIn;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
+import com.tokopedia.common_tradein.utils.TradeInUtils;
+import com.tokopedia.design.dialog.AccessRequestDialogFragment;
+import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.tradein.R;
 import com.tokopedia.tradein.TradeInGTMConstants;
 import com.tokopedia.common_tradein.model.TradeInParams;
 import com.tokopedia.tradein.viewmodel.HomeResult;
 import com.tokopedia.tradein.viewmodel.TradeInHomeViewModel;
-import com.tokopedia.tradein_common.Constants;
-import com.tokopedia.tradein_common.IAccessRequestListener;
-import com.tokopedia.tradein_common.viewmodel.BaseViewModel;
+import com.tokopedia.tradein.Constants;
+import com.tokopedia.design.dialog.IAccessRequestListener;
+import com.tokopedia.basemvvm.viewmodel.BaseViewModel;
+import com.tokopedia.unifyprinciples.Typography;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
 
 import timber.log.Timber;
 
-public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessRequestListener {
+import static com.tokopedia.tradein.view.viewcontrollers.FinalPriceActivity.PARAM_TRADEIN_PHONE_TYPE;
+
+public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewModel> implements IAccessRequestListener, Laku6TradeIn.TradeInListener {
 
 
     private TextView mTvPriceElligible;
@@ -58,6 +71,12 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
     private boolean isShowingPermissionPopup;
     private String category = TradeInGTMConstants.CATEGORY_TRADEIN_START_PAGE;
     private String errorDialogGTMLabel = "";
+    private String productName = "";
+    private LinearLayout imeiView;
+    private EditText editTextImei;
+    private Typography typographyImeiDescription;
+    private Typography typographyImeiHelp;
+    private boolean inputImei;
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
@@ -111,7 +130,13 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
     }
 
     @Override
-    protected void initView() {
+    public void initInject() {
+        getComponent().inject(this);
+    }
+
+    @Override
+    public void initView() {
+        setTradeInParams();
         mTvPriceElligible = findViewById(R.id.tv_price_elligible);
         mButtonRemove = findViewById(R.id.button_remove);
         mTvModelName = findViewById(R.id.tv_model_name);
@@ -120,18 +145,35 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
         mTvNotUpto = findViewById(R.id.tv_not_upto);
         mTvGoToProductDetails = findViewById(R.id.tv_go_to_product_details);
         tvIndicateive = findViewById(R.id.tv_indicative);
+        imeiView = findViewById(R.id.imei_view);
+        editTextImei = findViewById(R.id.edit_text_imei);
+        typographyImeiDescription = findViewById(R.id.typography_imei_description);
+        typographyImeiHelp = findViewById(R.id.typography_imei_help);
         mTvModelName.setText(new StringBuilder().append(Build.MANUFACTURER).append(" ").append(Build.MODEL).toString());
         if (TRADEIN_TYPE == TRADEIN_MONEYIN) {
             closeButtonText = R.string.tradein_return;
             notElligibleText = R.string.not_elligible_money_in;
-            tncStringId = R.string.money_in_tnc;
+            tncUrl = MONEYIN_TNC_URL;
             category = TradeInGTMConstants.CATEGORY_MONEYIN_PRICERANGE_PAGE;
         } else {
             closeButtonText = R.string.go_to_product_details;
             notElligibleText = R.string.not_elligible;
-            tncStringId = R.string.tradein_tnc;
+            tncUrl = TRADEIN_TNC_URL;
         }
         mTvGoToProductDetails.setText(closeButtonText);
+        mTvGoToProductDetails.setOnClickListener(v -> {
+            finish();
+        });
+        typographyImeiHelp.setOnClickListener(v -> {
+            TradeInImeiHelpBottomSheet tradeInImeiHelpBottomSheet = TradeInImeiHelpBottomSheet.Companion.newInstance();
+            tradeInImeiHelpBottomSheet.show(getSupportFragmentManager(), "");
+        });
+    }
+
+    private void setTradeInParams() {
+        if (getIntent().hasExtra(TradeInParams.class.getSimpleName())) {
+            tradeInHomeViewModel.setTradeInParams(getIntent().getParcelableExtra(TradeInParams.class.getSimpleName()));
+        }
     }
 
     @Override
@@ -140,7 +182,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
     }
 
     @Override
-    protected void setViewModel(BaseViewModel viewModel) {
+    public void setViewModel(BaseViewModel viewModel) {
         tradeInHomeViewModel = (TradeInHomeViewModel) viewModel;
         getLifecycle().addObserver(tradeInHomeViewModel);
     }
@@ -161,12 +203,22 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
                 });
             } else {
                 HomeResult.PriceState state = homeResult.getPriceStatus();
+                productName = tradeInHomeViewModel.getTradeInParams().getProductName() != null
+                        ? tradeInHomeViewModel.getTradeInParams().getProductName().toLowerCase()
+                        : "";
                 switch (state) {
                     case DIAGNOSED_INVALID:
                         tvIndicateive.setVisibility(View.GONE);
                         mTvGoToProductDetails.setText(closeButtonText);
                         mTvGoToProductDetails.setOnClickListener(v -> {
                             sendGoToProductDetailGTM();
+                            if (TRADEIN_TYPE != TRADEIN_MONEYIN) {
+                                sendGeneralEvent(clickEvent,
+                                        category,
+                                        TradeInGTMConstants.ACTION_KEMBALI_KE_DETAIL_PRODUK,
+                                        getString(R.string.trade_in_event_label_phone_type_min_price_max_price,
+                                                productName, homeResult.minPrice.toString(), homeResult.maxPrice.toString()));
+                            }
                             finish();
                         });
 
@@ -181,20 +233,44 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
                         mTvModelName.setText(homeResult.getDeviceDisplayName());
                         mTvInitialPrice.setText(homeResult.getDisplayMessage());
                         mTvGoToProductDetails.setText(R.string.moneyin_sell_now);
-                        mTvGoToProductDetails.setOnClickListener(v -> goToHargaFinal());
-                        goToHargaFinal();
+                        if (TRADEIN_TYPE != TRADEIN_MONEYIN) {
+                            sendIrisEvent(homeResult.maxPrice != null ? homeResult.maxPrice : 0 , homeResult.minPrice!= null ? homeResult.minPrice : 0 );
+                        }
+                        mTvGoToProductDetails.setOnClickListener(v -> goToHargaFinal(homeResult.getDeviceDisplayName()));
+                        goToHargaFinal(homeResult.getDeviceDisplayName());
                         break;
                     case NOT_DIAGNOSED:
                         mTvInitialPrice.setText(homeResult.getDisplayMessage());
                         mTvGoToProductDetails.setText(getString(R.string.text_check_functionality));
                         mTvGoToProductDetails.setOnClickListener(v -> {
-                            laku6TradeIn.startGUITest();
+                            if (imeiView.getVisibility() == View.VISIBLE) {
+                                if (editTextImei.getText().length() == 15) {
+                                    showProgressBar();
+                                    laku6TradeIn.checkImeiValidation(this, editTextImei.getText().toString());
+                                } else if (editTextImei.getText().length() == 0){
+                                    typographyImeiDescription.setText(getString(R.string.enter_the_imei_number_text));
+                                    typographyImeiDescription.setTextColor(MethodChecker.getColor(this,R.color.tradein_hint_red));
+                                } else {
+                                    typographyImeiDescription.setText(getString(R.string.wrong_imei_string));
+                                    typographyImeiDescription.setTextColor(MethodChecker.getColor(this,R.color.tradein_hint_red));
+                                }
+                            } else {
+                                laku6TradeIn.startGUITest();
+                            }
                             sendGeneralEvent(clickEvent,
                                     category,
                                     TradeInGTMConstants.ACTION_CLICK_MULAI_FUNGSI,
-                                    "");
+                                    TRADEIN_TYPE != TRADEIN_MONEYIN ? getString(R.string.trade_in_event_label_phone_type_min_price_max_price,
+                                            productName, homeResult.minPrice.toString(), homeResult.maxPrice.toString()) : "");
 
                         });
+                        if (TRADEIN_TYPE != TRADEIN_MONEYIN) {
+                            sendIrisEvent(homeResult.maxPrice != null ? homeResult.maxPrice : 0 , homeResult.minPrice!= null ? homeResult.minPrice : 0 );
+                        }
+                        if(inputImei){
+                            laku6TradeIn.startGUITest();
+                            break;
+                        }
                         viewMoneyInPriceGTM(homeResult.getDeviceDisplayName() + " - " + homeResult.getDisplayMessage());
                         break;
                     case MONEYIN_ERROR:
@@ -213,6 +289,23 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
                 showPermissionDialog();
             }
         }));
+        tradeInHomeViewModel.getImeiStateLiveData().observe(this, showImei -> {
+            if(showImei){
+                imeiView.setVisibility(View.VISIBLE);
+            } else {
+                imeiView.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    protected void showDialogFragment(String titleText, String bodyText, String positiveButton, String negativeButton) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        AccessRequestDialogFragment accessDialog = AccessRequestDialogFragment.Companion.newInstance();
+        accessDialog.setBodyText(bodyText);
+        accessDialog.setTitle(titleText);
+        accessDialog.setPositiveButton(positiveButton);
+        accessDialog.setNegativeButton(negativeButton);
+        accessDialog.show(fragmentManager, AccessRequestDialogFragment.TAG);
     }
 
     private void sendGoToProductDetailGTM() {
@@ -229,10 +322,12 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
                 label);
     }
 
-    private void goToHargaFinal() {
+    private void goToHargaFinal(String deviceDisplayName) {
         Intent finalPriceIntent = new Intent(this, FinalPriceActivity.class);
         TradeInParams params = tradeInHomeViewModel.getTradeInParams();
         finalPriceIntent.putExtra(TradeInParams.class.getSimpleName(), params);
+        if(deviceDisplayName!=null)
+            finalPriceIntent.putExtra(PARAM_TRADEIN_PHONE_TYPE, deviceDisplayName.toLowerCase());
         finalPriceIntent.putExtra(ApplinkConstInternalCategory.PARAM_TRADEIN_TYPE, TRADEIN_TYPE);
         navigateToActivityRequest(finalPriceIntent, ApplinkConstInternalCategory.FINAL_PRICE_REQUEST_CODE);
     }
@@ -285,23 +380,8 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
     }
 
     @Override
-    protected Fragment getTncFragmentInstance(int TncResId) {
-        return TnCFragment.getInstance(TncResId);
-    }
-
-    @Override
     protected int getLayoutRes() {
         return R.layout.layout_activity_tradeinhome;
-    }
-
-    @Override
-    protected int getBottomSheetLayoutRes() {
-        return 0;
-    }
-
-    @Override
-    protected boolean doNeedReattach() {
-        return false;
     }
 
     @Override
@@ -362,12 +442,17 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(@NotNull View widget) {
-                showTnC(tncStringId);
+                showTnC(tncUrl);
             }
         };
         SpannableString spannableString = new SpannableString(getString(messageStringId));
-        spannableString.setSpan(foregroundColorSpan, 67, 84, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-        spannableString.setSpan(clickableSpan, 67, 84, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        if(messageStringId == R.string.money_in_need_permission) {
+            spannableString.setSpan(foregroundColorSpan, 62, 83, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+            spannableString.setSpan(clickableSpan, 62, 83, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        } else {
+            spannableString.setSpan(foregroundColorSpan, 67, 84, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+            spannableString.setSpan(clickableSpan, 67, 84, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        }
         mTvPriceElligible.setText(spannableString);
         mTvPriceElligible.setVisibility(View.VISIBLE);
         mButtonRemove.setVisibility(View.VISIBLE);
@@ -392,6 +477,8 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
         } else if (requestCode == LOGIN_REQUEST) {
             if (resultCode == Activity.RESULT_OK)
                 tradeInHomeViewModel.checkLogin();
+            else
+                finish();
         }
     }
 
@@ -431,5 +518,41 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
             }
         } else {
         }
+    }
+
+    private void sendIrisEvent(Integer maxPrice, Integer minPrice){
+        HashMap<String, Object> values = new HashMap<>();
+        values.put(TradeInGTMConstants.EVENT, TradeInGTMConstants.ACTION_VIEW_TRADEIN_IRIS);
+        values.put(TradeInGTMConstants.EVENT_CATEGORY, TradeInGTMConstants.CATEGORY_TRADEIN_START_PAGE);
+        values.put(TradeInGTMConstants.EVENT_ACTION, TradeInGTMConstants.VIEW_PRICE_RANGE_PAGE);
+        values.put(TradeInGTMConstants.EVENT_LABEL,  getString(R.string.trade_in_event_label_phone_type_min_price_max_price,
+                productName, minPrice.toString(), maxPrice.toString()));
+        values.put(TradeInGTMConstants.PRODUCT_ID,  tradeInHomeViewModel.getTradeInParams().getProductId());
+
+        IrisAnalytics.getInstance(this).sendEvent(values);
+    }
+
+    @Override
+    public void onFinished(JSONObject jsonObject) {
+        hideProgressBar();
+        tradeInHomeViewModel.setDeviceId(editTextImei.getText().toString());
+        inputImei = true;
+        TradeInUtils.setImeiNumber(this, editTextImei.getText().toString());
+        getPriceFromSDK(this);
+        typographyImeiDescription.setText(getString(R.string.enter_the_imei_number_text));
+        typographyImeiDescription.setTextColor(MethodChecker.getColor(this,R.color.tradein_black));
+    }
+
+    @Override
+    public void onError(JSONObject error) {
+        hideProgressBar();
+        String errorMessage = getString(R.string.wrong_imei_string);
+        try {
+            errorMessage = error.getString("message");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        typographyImeiDescription.setText(errorMessage);
+        typographyImeiDescription.setTextColor(MethodChecker.getColor(this,R.color.tradein_hint_red));
     }
 }

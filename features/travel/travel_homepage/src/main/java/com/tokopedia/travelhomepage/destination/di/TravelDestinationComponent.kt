@@ -1,0 +1,25 @@
+package com.tokopedia.travelhomepage.destination.di
+
+import android.content.Context
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.travelhomepage.destination.presentation.activity.TravelDestinationActivity
+import com.tokopedia.travelhomepage.destination.presentation.fragment.TravelDestinationFragment
+import dagger.Component
+
+/**
+ * @author by jessica on 2019-12-23
+ */
+
+@TravelDestinationScope
+@Component(modules = [TravelDestinationModule::class, TravelDestinationViewModelModule::class], dependencies = [BaseAppComponent::class])
+interface TravelDestinationComponent {
+
+    @ApplicationContext
+    fun context(): Context
+
+    fun inject(travelDestinationActivity: TravelDestinationActivity)
+
+    fun inject(travelDestinationFragment: TravelDestinationFragment)
+
+}

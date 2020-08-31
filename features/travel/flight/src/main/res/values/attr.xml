@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="mister">Tuan</string>
+    <string name="misiz">Nyonya</string>
+    <string name="miss">Nona</string>
+    <string-array name="flight_adult_titles">
+        <item>@string/mister</item>
+        <item>@string/misiz</item>
+        <item>@string/miss</item>
+    </string-array>
+    <string-array name="flight_child_infant_titles">
+        <item>@string/mister</item>
+        <item>@string/miss</item>
+    </string-array>
+
+
+    <declare-styleable name="FlightRadioLabelView">
+        <attr name="frlv_title" format="string" />
+    </declare-styleable>
+</resources>

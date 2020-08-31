@@ -22,32 +22,28 @@ dependencies {
         transitive = true
     }
 
-    implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
-    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
-    implementation rootProject.ext.tkpdInternalLibDependencies.url
-    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
     implementation project(rootProject.ext.features.sessioncommon)
 
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
-    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+    implementation project(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
-    implementation rootProject.ext.unifyDependencies.principles
-    implementation rootProject.ext.unifyDependencies.components
-    implementation rootProject.ext.miscDependencies.multiDex
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
+    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
 
+    implementation rootProject.ext.miscDependencies.multiDex
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
 
-    implementation(rootProject.ext.debugToolsDependencies.chuck) {
-        exclude group: 'com.squareup.okhttp3'
-        exclude group: 'com.squareup.okio'
-        exclude group: 'com.android.support'
-    }
+    implementation rootProject.ext.debugToolsDependencies.chuck
 
     //test
     testImplementation rootProject.ext.testDependencies.junit
@@ -56,3 +52,12 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
 }
+
+project.ext {
+    artifactId = 'seamless-login'
+    groupId = 'com.tokopedia.user'
+    versionName = "0.0.2"
+    artifactName ="seamless_login-release"
+}
+
+apply from: '../../../publish_local.gradle'

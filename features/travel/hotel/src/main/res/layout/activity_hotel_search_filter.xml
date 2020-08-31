@@ -1,0 +1,43 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToPadding="false"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:elevation="@dimen/spacing_lvl2"
+        android:theme="?toolbarTheme"
+        app:contentInsetLeft="@dimen/layout_lvl0"
+        app:contentInsetStart="@dimen/layout_lvl0"
+        app:contentInsetStartWithNavigation="@dimen/layout_lvl0"
+        app:elevation="@dimen/spacing_lvl2"
+        app:subtitleTextAppearance="?subtitleTextAppearance"
+        app:titleTextAppearance="?titleTextAppearance">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_view_menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginEnd="@dimen/hotel_14dp"
+            android:layout_marginRight="@dimen/hotel_14dp"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:paddingLeft="@dimen/layout_lvl1"
+            android:text="@string/hotel_filter_reset"
+            android:textColor="@color/Green_G500"
+            app:typographyType="body_1" />
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <FrameLayout
+        android:id="@+id/parent_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

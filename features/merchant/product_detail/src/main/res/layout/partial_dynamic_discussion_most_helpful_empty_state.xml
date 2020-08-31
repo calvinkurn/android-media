@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    android:padding="@dimen/layout_lvl2"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/product_detail_discussion_empty_subtitle"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:text="@string/product_detail_discussion_empty_subtitle"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:layout_marginRight="@dimen/layout_lvl2"
+        app:typographyType="heading_4"
+        app:typographyWeight="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/productDetailDiscussionEmptyImage" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/product_detail_discussion_empty_description"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:text="@string/product_detail_discussion_empty_description"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:layout_marginRight="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:textColor="@color/Neutral_N700_68"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler"
+        app:layout_constraintTop_toBottomOf="@id/product_detail_discussion_empty_subtitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/productDetailDiscussionEmptyImage"/>
+
+    <ImageView
+        android:id="@+id/productDetailDiscussionEmptyImage"
+        android:layout_width="@dimen/dp_114"
+        android:layout_height="@dimen/dp_110"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/productDetailDiscussionEmptyButton"
+        android:layout_width="@dimen/dp_160"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:text="@string/product_detail_discussion_empty_button"
+        app:layout_constraintTop_toBottomOf="@id/product_detail_discussion_empty_description"
+        app:unifyButtonVariant="ghost"
+        app:unifyButtonSize="small"
+        app:layout_constraintStart_toStartOf="@id/product_detail_discussion_empty_subtitle" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

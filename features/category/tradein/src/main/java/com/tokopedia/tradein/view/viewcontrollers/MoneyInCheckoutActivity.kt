@@ -22,23 +22,20 @@ import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
-import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel
+import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.tradein.R
 import com.tokopedia.tradein.TradeInGTMConstants
 import com.tokopedia.tradein.model.MoneyInCourierResponse.ResponseData.RatesV4
 import com.tokopedia.tradein.model.MoneyInKeroGetAddressResponse.ResponseData.KeroGetAddress
 import com.tokopedia.tradein.model.MoneyInScheduleOptionResponse.ResponseData.GetPickupScheduleOption.ScheduleDate
-import com.tokopedia.tradein.viewmodel.CourierPriceError
-import com.tokopedia.tradein.viewmodel.MoneyInCheckoutViewModel
-import com.tokopedia.tradein.viewmodel.MutationCheckoutError
-import com.tokopedia.tradein.viewmodel.ScheduleTimeError
-import com.tokopedia.tradein_common.viewmodel.BaseViewModel
+import com.tokopedia.tradein.viewmodel.*
+import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Success
 
 
-class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBottomSheet.ActionListener, MoneyInCourierBottomSheet.ActionListener {
+class MoneyInCheckoutActivity : BaseTradeInActivity<MoneyInCheckoutViewModel>(), MoneyInScheduledTimeBottomSheet.ActionListener, MoneyInCourierBottomSheet.ActionListener {
 
     private lateinit var moneyInCheckoutViewModel: MoneyInCheckoutViewModel
     private lateinit var scheduleTime: ScheduleDate.ScheduleTime
@@ -59,6 +56,10 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
         const val MONEY_IN_ORDER_VALUE = "MONEY_IN_PRICE"
         const val MONEY_IN_HARDWARE_ID = "HARDWARE_ID"
         const val STATUS_SUCCESS = 2
+    }
+
+    override fun initInject() {
+        component.inject(this)
     }
 
     override fun initView() {
@@ -88,7 +89,7 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
             }
 
         }
-        moneyInCheckoutViewModel.getPickupScheduleOption(getMeGQlString(R.raw.gql_get_pickup_schedule_option))
+        moneyInCheckoutViewModel.getPickupScheduleOption()
         setObservers()
         val terms = getString(R.string.checkout_terms_and_conditions_text)
         val spannableString = SpannableString(terms)
@@ -117,7 +118,7 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
     }
 
     private fun showtnc() {
-        showTnC(R.string.money_in_tnc)
+        showTnC(MONEYIN_TNC_URL)
     }
 
     private fun setObservers() {
@@ -173,12 +174,12 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
             when (it) {
                 is ScheduleTimeError -> {
                     showMessageWithAction(it.errMsg, getString(com.tokopedia.abstraction.R.string.retry_label)) {
-                        moneyInCheckoutViewModel.getPickupScheduleOption(getMeGQlString(R.raw.gql_get_pickup_schedule_option))
+                        moneyInCheckoutViewModel.getPickupScheduleOption()
                     }
                 }
                 is CourierPriceError -> {
                     showMessageWithAction(it.errMsg, getString(com.tokopedia.abstraction.R.string.retry_label)) {
-                        moneyInCheckoutViewModel.getCourierRates(getMeGQlString(R.raw.gql_courier_rates), destination)
+                        moneyInCheckoutViewModel.getCourierRates(destination)
                     }
                 }
                 is MutationCheckoutError -> {
@@ -187,7 +188,7 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
                             TradeInGTMConstants.ACTION_CLICK_PILIH_PEMBAYARAN,
                             TradeInGTMConstants.FAILURE)
                     showMessageWithAction(it.errMsg, getString(com.tokopedia.abstraction.R.string.retry_label)) {
-                        moneyInCheckoutViewModel.makeCheckoutMutation(getMeGQlString(R.raw.gql_mutation_checkout_general), hardwareId, addrId, spId, scheduleTime.minTimeUnix, scheduleTime.maxTimeUnix)
+                        moneyInCheckoutViewModel.makeCheckoutMutation(hardwareId, addrId, spId, scheduleTime.minTimeUnix, scheduleTime.maxTimeUnix)
                     }
                 }
             }
@@ -304,12 +305,12 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
 
         destination = "${(recipientAddress.district)}|${(recipientAddress.postalCode)}|${(recipientAddress.latitude)},${(recipientAddress.longitude)}"
         addrId = recipientAddress.addrId
-        moneyInCheckoutViewModel.getCourierRates(getMeGQlString(R.raw.gql_courier_rates), destination)
+        moneyInCheckoutViewModel.getCourierRates(destination)
 
         val btBuy = findViewById<Button>(R.id.bt_buy)
         btBuy.setOnClickListener {
             if (isTimeSet && isCourierSet) {
-                moneyInCheckoutViewModel.makeCheckoutMutation(getMeGQlString(R.raw.gql_mutation_checkout_general), hardwareId, addrId, spId, scheduleTime.minTimeUnix, scheduleTime.maxTimeUnix)
+                moneyInCheckoutViewModel.makeCheckoutMutation(hardwareId, addrId, spId, scheduleTime.minTimeUnix, scheduleTime.maxTimeUnix)
             } else if (!isCourierSet) {
                 sendGeneralEvent(TradeInGTMConstants.ACTION_CLICK_MONEYIN,
                         TradeInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION,
@@ -404,24 +405,12 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
         return MoneyInCheckoutViewModel::class.java
     }
 
-    override fun setViewModel(viewModel: BaseViewModel?) {
+    override fun setViewModel(viewModel: BaseViewModel) {
         moneyInCheckoutViewModel = viewModel as MoneyInCheckoutViewModel
     }
 
     override fun getMenuRes(): Int {
         return -1
-    }
-
-    override fun getTncFragmentInstance(TncResId: Int): Fragment? {
-        return TnCFragment.getInstance(TncResId)
-    }
-
-    override fun getBottomSheetLayoutRes(): Int {
-        return -1
-    }
-
-    override fun doNeedReattach(): Boolean {
-        return false
     }
 
     override fun getNewFragment(): Fragment? {

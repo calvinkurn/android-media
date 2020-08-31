@@ -1,11 +1,15 @@
 package com.tokopedia.logisticcart.shipping.features.shippingcourier.view;
 
 
+import com.tokopedia.logisticcart.shipping.model.CashOnDeliveryProduct;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
 import com.tokopedia.logisticcart.shipping.model.OntimeDelivery;
-import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.CodProductData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.OntimeDeliveryGuarantee;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -19,58 +23,83 @@ public class ShippingCourierConverter {
     public ShippingCourierConverter() {
     }
 
-    public CourierItemData convertToCourierItemData(ShippingCourierViewModel shippingCourierViewModel) {
+    public void updateSelectedCourier(List<ShippingCourierUiModel> courierModels, int spId) {
+        if (courierModels != null) {
+            for (ShippingCourierUiModel courierModel : courierModels) {
+                if (courierModel.getProductData().getShipperProductId() == spId) {
+                    courierModel.setSelected(true);
+                } else {
+                    courierModel.setSelected(false);
+                }
+            }
+        }
+    }
+
+    public CourierItemData convertToCourierItemData(ShippingCourierUiModel shippingCourierUiModel) {
         CourierItemData courierItemData = new CourierItemData();
-        courierItemData.setShipperId(shippingCourierViewModel.getProductData().getShipperId());
-        courierItemData.setServiceId(shippingCourierViewModel.getServiceData().getServiceId());
-        courierItemData.setShipperProductId(shippingCourierViewModel.getProductData().getShipperProductId());
-        courierItemData.setName(shippingCourierViewModel.getProductData().getShipperName());
-        courierItemData.setEstimatedTimeDelivery(shippingCourierViewModel.getServiceData().getServiceName());
-        courierItemData.setMinEtd(shippingCourierViewModel.getProductData().getEtd().getMinEtd());
-        courierItemData.setMaxEtd(shippingCourierViewModel.getProductData().getEtd().getMaxEtd());
-        courierItemData.setShipperPrice(shippingCourierViewModel.getProductData().getPrice().getPrice());
-        courierItemData.setShipperFormattedPrice(shippingCourierViewModel.getProductData().getPrice().getFormattedPrice());
-        courierItemData.setInsurancePrice(shippingCourierViewModel.getProductData().getInsurance().getInsurancePrice());
-        courierItemData.setInsuranceType(shippingCourierViewModel.getProductData().getInsurance().getInsuranceType());
-        courierItemData.setInsuranceUsedType(shippingCourierViewModel.getProductData().getInsurance().getInsuranceUsedType());
-        courierItemData.setInsuranceUsedInfo(shippingCourierViewModel.getProductData().getInsurance().getInsuranceUsedInfo());
-        courierItemData.setInsuranceUsedDefault(shippingCourierViewModel.getProductData().getInsurance().getInsuranceUsedDefault());
-        courierItemData.setUsePinPoint(shippingCourierViewModel.getProductData().getIsShowMap() == 1);
+        courierItemData.setShipperId(shippingCourierUiModel.getProductData().getShipperId());
+        courierItemData.setServiceId(shippingCourierUiModel.getServiceData().getServiceId());
+        courierItemData.setShipperProductId(shippingCourierUiModel.getProductData().getShipperProductId());
+        courierItemData.setName(shippingCourierUiModel.getProductData().getShipperName());
+        courierItemData.setEstimatedTimeDelivery(shippingCourierUiModel.getServiceData().getServiceName());
+        courierItemData.setMinEtd(shippingCourierUiModel.getProductData().getEtd().getMinEtd());
+        courierItemData.setMaxEtd(shippingCourierUiModel.getProductData().getEtd().getMaxEtd());
+        courierItemData.setShipperPrice(shippingCourierUiModel.getProductData().getPrice().getPrice());
+        courierItemData.setShipperFormattedPrice(shippingCourierUiModel.getProductData().getPrice().getFormattedPrice());
+        courierItemData.setInsurancePrice(shippingCourierUiModel.getProductData().getInsurance().getInsurancePrice());
+        courierItemData.setInsuranceType(shippingCourierUiModel.getProductData().getInsurance().getInsuranceType());
+        courierItemData.setInsuranceUsedType(shippingCourierUiModel.getProductData().getInsurance().getInsuranceUsedType());
+        courierItemData.setInsuranceUsedInfo(shippingCourierUiModel.getProductData().getInsurance().getInsuranceUsedInfo());
+        courierItemData.setInsuranceUsedDefault(shippingCourierUiModel.getProductData().getInsurance().getInsuranceUsedDefault());
+        courierItemData.setUsePinPoint(shippingCourierUiModel.getProductData().getIsShowMap() == 1);
         if (!courierItemData.isUsePinPoint()) {
-            if (shippingCourierViewModel.getProductData().getError() != null &&
-                    shippingCourierViewModel.getProductData().getError().getErrorId().equals(ErrorProductData.ERROR_PINPOINT_NEEDED)) {
+            if (shippingCourierUiModel.getProductData().getError() != null &&
+                    shippingCourierUiModel.getProductData().getError().getErrorId().equals(ErrorProductData.ERROR_PINPOINT_NEEDED)) {
                 courierItemData.setUsePinPoint(true);
             }
         }
-        if (shippingCourierViewModel.getServiceData().getOrderPriority() != null) {
-            courierItemData.setNow(shippingCourierViewModel.getServiceData().getOrderPriority().getNow());
-            courierItemData.setPriorityPrice(shippingCourierViewModel.getServiceData().getOrderPriority().getPrice());
-            courierItemData.setPriorityFormattedPrice(shippingCourierViewModel.getServiceData().getOrderPriority().getFormattedPrice());
-            courierItemData.setPriorityInnactiveMessage(shippingCourierViewModel.getServiceData().getOrderPriority().getInactiveMessage());
-            courierItemData.setPriorityDurationMessage(shippingCourierViewModel.getServiceData().getOrderPriority().getStaticMessage().getDurationMessage());
-            courierItemData.setPriorityFeeMessage(shippingCourierViewModel.getServiceData().getOrderPriority().getStaticMessage().getFeeMessage());
-            courierItemData.setPriorityWarningboxMessage(shippingCourierViewModel.getServiceData().getOrderPriority().getStaticMessage().getWarningBoxMessage());
-            courierItemData.setPriorityCheckboxMessage(shippingCourierViewModel.getServiceData().getOrderPriority().getStaticMessage().getCheckboxMessage());
-            courierItemData.setPriorityPdpMessage(shippingCourierViewModel.getServiceData().getOrderPriority().getStaticMessage().getPdpMessage());
+        if (shippingCourierUiModel.getServiceData().getOrderPriority() != null) {
+            courierItemData.setNow(shippingCourierUiModel.getServiceData().getOrderPriority().getNow());
+            courierItemData.setPriorityPrice(shippingCourierUiModel.getServiceData().getOrderPriority().getPrice());
+            courierItemData.setPriorityFormattedPrice(shippingCourierUiModel.getServiceData().getOrderPriority().getFormattedPrice());
+            courierItemData.setPriorityInnactiveMessage(shippingCourierUiModel.getServiceData().getOrderPriority().getInactiveMessage());
+            courierItemData.setPriorityDurationMessage(shippingCourierUiModel.getServiceData().getOrderPriority().getStaticMessage().getDurationMessage());
+            courierItemData.setPriorityFeeMessage(shippingCourierUiModel.getServiceData().getOrderPriority().getStaticMessage().getFeeMessage());
+            courierItemData.setPriorityWarningboxMessage(shippingCourierUiModel.getServiceData().getOrderPriority().getStaticMessage().getWarningBoxMessage());
+            courierItemData.setPriorityCheckboxMessage(shippingCourierUiModel.getServiceData().getOrderPriority().getStaticMessage().getCheckboxMessage());
+            courierItemData.setPriorityPdpMessage(shippingCourierUiModel.getServiceData().getOrderPriority().getStaticMessage().getPdpMessage());
         }
-        courierItemData.setAllowDropshiper(shippingCourierViewModel.isAllowDropshipper());
-        courierItemData.setAdditionalPrice(shippingCourierViewModel.getAdditionalFee());
-        courierItemData.setPromoCode(shippingCourierViewModel.getProductData().getPromoCode());
-        courierItemData.setChecksum(shippingCourierViewModel.getProductData().getCheckSum());
-        courierItemData.setUt(shippingCourierViewModel.getProductData().getUnixTime());
-        courierItemData.setBlackboxInfo(shippingCourierViewModel.getBlackboxInfo());
+        courierItemData.setAllowDropshiper(shippingCourierUiModel.isAllowDropshipper());
+        courierItemData.setAdditionalPrice(shippingCourierUiModel.getAdditionalFee());
+        courierItemData.setPromoCode(shippingCourierUiModel.getProductData().getPromoCode());
+        courierItemData.setChecksum(shippingCourierUiModel.getProductData().getCheckSum());
+        courierItemData.setUt(shippingCourierUiModel.getProductData().getUnixTime());
+        courierItemData.setBlackboxInfo(shippingCourierUiModel.getBlackboxInfo());
         courierItemData.setSelected(true);
-        if (shippingCourierViewModel.getProductData().getFeatures() != null &&
-                shippingCourierViewModel.getProductData().getFeatures().getOntimeDeliveryGuarantee() != null) {
-            OntimeDeliveryGuarantee otd_prev = shippingCourierViewModel.getProductData().getFeatures().getOntimeDeliveryGuarantee();
+        if (shippingCourierUiModel.getProductData().getFeatures() != null &&
+                shippingCourierUiModel.getProductData().getFeatures().getOntimeDeliveryGuarantee() != null) {
+            OntimeDeliveryGuarantee otdPrev = shippingCourierUiModel.getProductData().getFeatures().getOntimeDeliveryGuarantee();
             OntimeDelivery otd = new OntimeDelivery(
-                    otd_prev.getAvailable(),
-                    otd_prev.getTextLabel(),
-                    otd_prev.getTextDetail(),
-                    otd_prev.getUrlDetail(),
-                    otd_prev.getValue()
+                    otdPrev.getAvailable(),
+                    otdPrev.getTextLabel(),
+                    otdPrev.getTextDetail(),
+                    otdPrev.getUrlDetail(),
+                    otdPrev.getValue(),
+                    otdPrev.getIconUrl()
             );
             courierItemData.setOntimeDelivery(otd);
+        }
+        if (shippingCourierUiModel.getProductData().getCodProductData() != null) {
+            CodProductData codProductData = shippingCourierUiModel.getProductData().getCodProductData();
+            CashOnDeliveryProduct codProduct = new CashOnDeliveryProduct(
+                    codProductData.getIsCodAvailable(),
+                    codProductData.getCodText(),
+                    codProductData.getCodPrice(),
+                    codProductData.getFormattedPrice(),
+                    codProductData.getTncText(),
+                    codProductData.getTncLink()
+            );
+            courierItemData.setCodProductData(codProduct);
         }
         return courierItemData;
     }

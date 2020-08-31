@@ -23,7 +23,7 @@ class RestCloudDataStore(
         mApi = RestUtil.getApiInterface(interceptors, context)
     }
 
-    private fun getResponseJob(request: RestRequest): Deferred<Response<String>> {
+    private suspend fun getResponseJob(request: RestRequest): Response<String>{
         return when (request.requestType) {
             RequestType.PATCH -> doPatch(request)
             RequestType.GET -> doGet(request)
@@ -52,7 +52,7 @@ class RestCloudDataStore(
     }
 
     override suspend fun getResponse(request: RestRequest): RestResponse =
-            withContext(Dispatchers.IO) { processData(request, getResponseJob(request).await()) }
+            withContext(Dispatchers.IO) { processData(request, getResponseJob(request)) }
 
     /**
      * Helper method to Invoke HTTP get request
@@ -60,7 +60,7 @@ class RestCloudDataStore(
      * @param request - Request object
      * @return Observable which represent server response
      */
-    private fun doGet(request: RestRequest): Deferred<Response<String>> {
+    private suspend fun doGet(request: RestRequest): Response<String> {
         return mApi.getDeferred(request.url, request.queryParams,
                 request.headers)
     }
@@ -72,7 +72,7 @@ class RestCloudDataStore(
      * @return Observable which represent server response
      */
 
-    private fun doPatch(request: RestRequest): Deferred<Response<String>> {
+    private suspend fun doPatch(request: RestRequest): Response<String> {
         if (request.body != null && request.body is Map<*, *>) {
             return mApi.patchDeferred(request.url,
                     request.body as Map<String, String>,
@@ -103,7 +103,7 @@ class RestCloudDataStore(
      * @param request - Request object
      * @return Observable which represent server response
      */
-    private fun doPost(request: RestRequest): Deferred<Response<String>> {
+    private suspend fun doPost(request: RestRequest): Response<String> {
         if (request.body != null && request.body is Map<*, *>) {
             return mApi.postDeferred(request.url,
                     request.body as Map<String, String>,
@@ -135,7 +135,7 @@ class RestCloudDataStore(
      * @param request - Request object
      * @return Observable which represent server response
      */
-    private fun doPut(request: RestRequest): Deferred<Response<String>> {
+    private suspend fun doPut(request: RestRequest): Response<String> {
         if (request.body != null && request.body is Map<*, *>) {
             return mApi.putDeferred(request.url,
                     request.body as Map<String, String>,
@@ -166,13 +166,13 @@ class RestCloudDataStore(
      * @param request - Request object
      * @return Observable which represent server response
      */
-    private fun delete(request: RestRequest): Deferred<Response<String>> {
+    private suspend fun delete(request: RestRequest): Response<String> {
         return mApi.deleteDeferred(request.url,
                 request.queryParams,
                 request.headers)
     }
 
-    private fun postMultipart(request: RestRequest): Deferred<Response<String>> {
+    private suspend fun postMultipart(request: RestRequest): Response<String> {
         val file = File(request.body.toString())
         val reqFile = RequestBody.create(MediaType.parse("image/*"), file)
         val multipartBody = MultipartBody.Part.createFormData("upload", file.name, reqFile)
@@ -182,12 +182,12 @@ class RestCloudDataStore(
                 request.headers)
     }
 
-    private fun postPartMap(request: RestRequest): Deferred<Response<String>> {
+    private suspend fun postPartMap(request: RestRequest): Response<String> {
         return mApi
                 .postMultipartDeferred(request.url, request.body as Map<String, RequestBody>, request.queryParams, request.headers)
     }
 
-    private fun putMultipart(request: RestRequest): Deferred<Response<String>> {
+    private suspend fun putMultipart(request: RestRequest): Response<String> {
         val file = File(request.body.toString())
         val reqFile = RequestBody.create(MediaType.parse("image/*"), file)
         val multipartBody = MultipartBody.Part.createFormData("upload", file.name, reqFile)
@@ -196,11 +196,11 @@ class RestCloudDataStore(
                 .putMultipartDeferred(request.url, multipartBody, request.queryParams, request.headers)
     }
 
-    private fun putRequestBody(request: RestRequest): Deferred<Response<String>> {
+    private suspend fun putRequestBody(request: RestRequest): Response<String> {
         return mApi.putRequestBodyDeferred(request.url, request.body as RequestBody, request.headers)
     }
 
-    private fun putPartMap(request: RestRequest): Deferred<Response<String>> {
+    private suspend fun putPartMap(request: RestRequest): Response<String> {
         return mApi.putMultipartDeferred(request.url, request.body as Map<String, RequestBody>, request.queryParams, request.headers)
     }
 

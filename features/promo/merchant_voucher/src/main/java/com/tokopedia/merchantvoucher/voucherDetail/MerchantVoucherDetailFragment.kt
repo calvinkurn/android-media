@@ -8,12 +8,11 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.abstraction.AbstractionRouter
+import androidx.fragment.app.Fragment
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -21,10 +20,9 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.Dialog
-import com.tokopedia.design.component.ToasterError
-import com.tokopedia.merchantvoucher.MerchantVoucherModuleRouter
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.analytic.MerchantVoucherTracking
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDef
@@ -35,6 +33,7 @@ import com.tokopedia.merchantvoucher.voucherDetail.presenter.MerchantVoucherDeta
 import com.tokopedia.merchantvoucher.voucherDetail.presenter.MerchantVoucherDetailView
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
 import com.tokopedia.shop.common.di.ShopCommonModule
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_merchant_voucher_detail.*
 import kotlinx.android.synthetic.main.partial_merchant_voucher_detail_loading.*
 import javax.inject.Inject
@@ -126,13 +125,19 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
                 snackbar.show()
             }
         }
+        if (merchantVoucherViewModel?.isPublic == false) {
+            btnContainer?.show()
+            btnUseVoucher?.show()
+        } else {
+            btnUseVoucher.hide()
+        }
     }
 
     private fun copyVoucherCodeToClipboard() {
         val voucherCode = merchantVoucherViewModel?.voucherCode
         val clipboard = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText(voucherCode, voucherCode)
-        clipboard.primaryClip = clip
+        clipboard.setPrimaryClip(clip)
     }
 
     override fun onSuccessUseVoucher(useMerchantVoucherQueryResult: UseMerchantVoucherQueryResult) {
@@ -157,14 +162,13 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
     override fun onErrorUseVoucher(e: Throwable) {
         hideUseMerchantVoucherLoading()
         activity?.run {
-            ToasterError.make(this.findViewById(android.R.id.content),
-                    ErrorHandler.getErrorMessage(this, e), BaseToaster.LENGTH_LONG)
-                    .setAction(this.getString(R.string.retry)) { _ ->
-                        merchantVoucherViewModel?.let {
-                            showUseMerchantVoucherLoading()
-                            presenter.useMerchantVoucher(it.voucherCode, voucherId)
-                        }
-                    }.show()
+            Toaster.make(findViewById(android.R.id.content), ErrorHandler.getErrorMessage(this, e),
+                    Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.retry), View.OnClickListener {
+                merchantVoucherViewModel?.let {
+                    showUseMerchantVoucherLoading()
+                    presenter.useMerchantVoucher(it.voucherCode, voucherId)
+                }
+            })
         }
     }
 

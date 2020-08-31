@@ -47,7 +47,7 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_launcher_customerapp"
         android:label="@string/app_name"
         android:logo="@drawable/ic_new_logo"
         android:resizeableActivity="false"
@@ -66,9 +66,6 @@
             android:name="android.app.default_searchable"
             android:value=".BrowseCategory" />
         <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="@string/GOOGLE_API_KEY" />
-        <meta-data
             android:name="HANSEL_APP_ID"
             android:value="JM8LWF8S5B951JQOAZAFRNX14"/>
         <meta-data
@@ -86,93 +83,19 @@
 
         <activity
             android:name="com.facebook.react.devsupport.DevSettingsActivity"
-            android:label="com.tokopedia.tkpd:string/app_name" />
+            android:label="@string/app_name" />
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name" />
-        <activity
-            android:name="com.tokopedia.core.manage.people.notification.activity.ManageNotificationActivity"
-            android:label="@string/title_activity_manage_notification"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.PreviewProductImage"
-            android:label="@string/title_activity_preview_product_image"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.NoTitleBar.Fullscreen" />
         <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity" />
         <activity
             android:name="com.tokopedia.core.MaintenancePage"
             android:label="@string/title_activity_maintenance_page"
             android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.ManageGeneral"
-            android:label="@string/title_activity_manage_general"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.invoice.activity.InvoiceRendererActivity"
-            android:label="@string/title_activity_download_invoice" />
-        <activity
-            android:name="com.tokopedia.core.tracking.activity.TrackingActivity"
-            android:label="Tracking"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.TermPrivacy"
-            android:label="@string/title_activity_term_and_privacy"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <category android:name="android.intent.category.DEFAULT" />
-
-                <action android:name="android.intent.action.VIEW" />
-
-                <data android:scheme="launch.TermPrivacy" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name="com.tokopedia.core.loyaltysystem.LoyaltyDetail"
-            android:label="@string/title_activity_loyalty_detail"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.home.TopPicksWebView"
-            android:label="@string/title_activity_top_picks"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.geolocation.activity.GeolocationActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:label="@string/choose_location"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.share.ShareActivity"
-            android:label="@string/title_activity_share"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity"
-            android:label="@string/app_name"
-            android:theme="@style/Toolbar.White"
-            android:screenOrientation="portrait" />
 
         <!-- ======================================================= -->
-        <!-- RECEIVERS REGISTRY -->
-        <!-- ======================================================= -->
-        <activity
-            android:name="com.tokopedia.core.manage.general.ManageWebViewActivity"
-            android:screenOrientation="portrait" />
-
-        <!-- ======================================================= -->
-        <!-- RECEIVERS REGISTRY -->
-        <!-- ======================================================= -->
-        <receiver
-            android:name="com.tokopedia.core.InstallReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.android.vending.INSTALL_REFERRER" />
-            </intent-filter>
-
-            <meta-data
-                android:name="forward.Kochava"
-                android:value="com.kochava.android.tracker.ReferralCapture" />
-        </receiver>
 
         <!-- ======================================================= -->
         <!-- PROVIDERS REGISTRY -->
@@ -187,8 +110,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
-        <service android:name="com.tokopedia.core.drawer2.service.DrawerGetNotificationService"
-            android:permission="android.permission.BIND_JOB_SERVICE"/>
     </application>
 
 </manifest>

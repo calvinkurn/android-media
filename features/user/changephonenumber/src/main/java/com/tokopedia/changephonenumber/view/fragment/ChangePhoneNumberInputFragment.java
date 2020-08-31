@@ -21,18 +21,19 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.changephonenumber.ChangePhoneNumberInstance;
 import com.tokopedia.changephonenumber.R;
 import com.tokopedia.changephonenumber.analytics.ChangePhoneNumberAnalytics;
 import com.tokopedia.changephonenumber.di.input.ChangePhoneNumberInputComponent;
 import com.tokopedia.changephonenumber.di.input.ChangePhoneNumberInputModule;
 import com.tokopedia.changephonenumber.di.input.DaggerChangePhoneNumberInputComponent;
-import com.tokopedia.changephonenumber.util.CustomPhoneNumberUtil;
 import com.tokopedia.changephonenumber.view.customview.BottomSheetInfo;
 import com.tokopedia.changephonenumber.view.listener.ChangePhoneNumberInputFragmentListener;
-import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
-import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
+import com.tokopedia.otp.verification.domain.data.OtpConstant;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.utils.phonenumber.PhoneNumberUtil;
 
 import java.util.ArrayList;
 
@@ -49,6 +50,8 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
     public static final String PARAM_EMAIL = "email";
     public static final int REQUEST_VERIFY_CODE = 1;
     public static final String SCREEN_CHANGE_PHONE_NUMBER_INPUT = "Change Number";
+    private static final int OTP_CHANGE_PHONE_NUMBER = 20;
+    private static final int OTP_REGISTER_PHONE_NUMBER = 116;
 
     @Inject
     ChangePhoneNumberInputFragmentListener.Presenter presenter;
@@ -114,7 +117,7 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
         nextButton = view.findViewById(R.id.next_button);
         progressDialog = (RelativeLayout) view.findViewById(R.id.loading_view);
 
-        oldPhoneNumber.setText(CustomPhoneNumberUtil.transform(phoneNumber));
+        oldPhoneNumber.setText(PhoneNumberUtil.transform(phoneNumber));
     }
 
     private void setViewListener() {
@@ -263,14 +266,13 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
     }
 
     private void goToVerification() {
-        Intent intent = VerificationActivity.getCallingIntent(
-                getActivity(),
-                cleanPhoneNumber(newPhoneNumber),
-                email,
-                RequestOtpUseCase.OTP_TYPE_CHANGE_PHONE_NUMBER,
-                true,
-                RequestOtpUseCase.MODE_SMS
-        );
+        Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.COTP);
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email);
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, cleanPhoneNumber(newPhoneNumber));
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_CHANGE_PHONE_NUMBER);
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true);
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, false);
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_REQUEST_OTP_MODE, OtpConstant.OtpMode.SMS);
         startActivityForResult(intent, REQUEST_VERIFY_CODE);
     }
 

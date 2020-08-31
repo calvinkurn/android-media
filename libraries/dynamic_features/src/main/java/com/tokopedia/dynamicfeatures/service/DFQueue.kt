@@ -2,14 +2,14 @@ package com.tokopedia.dynamicfeatures.service
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.tokopedia.dynamicfeatures.config.DFRemoteConfig
 import com.tokopedia.dynamicfeatures.service.DFDownloader.DELIMITER
 import com.tokopedia.dynamicfeatures.service.DFDownloader.DELIMITER_2
 import com.tokopedia.dynamicfeatures.service.DFDownloader.KEY_SHARED_PREF_MODULE
-import com.tokopedia.dynamicfeatures.service.DFDownloader.MAX_ATTEMPT_DOWNLOAD
 import com.tokopedia.dynamicfeatures.service.DFDownloader.SHARED_PREF_NAME
 
 object DFQueue {
-    lateinit var sharedPreferences: SharedPreferences
+    private lateinit var sharedPreferences: SharedPreferences
 
     private fun getSharedPref(context: Context): SharedPreferences {
         if (!::sharedPreferences.isInitialized) {
@@ -53,10 +53,10 @@ object DFQueue {
      * Basically this is put the sharedPreference value from the given input.
      * @param moduleList moduleList to replace the current queue
      */
-    fun putDFModuleList(context: Context, moduleList: List<Pair<String, Int>>?) {
+    fun putDFModuleList(context: Context, moduleList: List<Pair<String, Int>>) {
         try {
             val sp = getSharedPref(context)
-            if (moduleList == null || moduleList.isEmpty()) {
+            if (moduleList.isEmpty()) {
                 sp.edit().clear().apply()
             } else {
                 val moduleListString = moduleListToString(moduleList)
@@ -67,7 +67,7 @@ object DFQueue {
     }
 
     fun clear(context: Context) {
-        putDFModuleList(context, null)
+        putDFModuleList(context, emptyList())
     }
 
     /**
@@ -121,7 +121,7 @@ object DFQueue {
                 val indexAppendFind = moduleListToAppendList.indexOf(item.first)
                 if (indexAppendFind > -1) {
                     moduleListToAppend?.get(indexAppendFind)?.let {
-                        if (it.second < MAX_ATTEMPT_DOWNLOAD) {
+                        if (it.second <= DFRemoteConfig.getConfig(context).downloadInBackgroundMaxRetry) {
                             finalList.add(it)
                         }
                     }
@@ -141,24 +141,26 @@ object DFQueue {
      * moduleList = module_seller, module_travel
      * output: module_seller, 1; module_travel, 1; module_digital,2
      */
-    fun combineListAndPut(context: Context, moduleListToDownload: List<String>?) {
+    fun combineListAndPut(context: Context, moduleListToDownload: List<String>) {
         val queueList = getDFModuleList(context)
         val list = if (queueList.isEmpty()) {
-            moduleListToDownload?.distinct()?.map { Pair(it, 1) } ?: emptyList()
+            moduleListToDownload.distinct().map { Pair(it, 1) }
         } else {
-            combineList(moduleListToDownload?.distinct(), queueList)
+            combineList(moduleListToDownload.distinct(), queueList,
+                    DFRemoteConfig.getConfig(context).downloadInBackgroundMaxRetry)
         }
         putDFModuleList(context, list)
     }
 
     private fun combineList(
-        moduleListToDownload: List<String>?,
-        queueList: List<Pair<String, Int>>
+        moduleListToDownload: List<String>,
+        queueList: List<Pair<String, Int>>,
+        maxAttempDownload: Int
     ): List<Pair<String, Int>> {
-        val list = moduleListToDownload?.map { Pair(it, 1) }?.toMutableList() ?: mutableListOf()
+        val list = moduleListToDownload.map { Pair(it, 1) }.toMutableList()
         queueList.forEach {
-            if (it.second < MAX_ATTEMPT_DOWNLOAD) {
-                if (moduleListToDownload?.contains(it.first) != true) {
+            if (it.second < maxAttempDownload) {
+                if (!moduleListToDownload.contains(it.first)) {
                     list.add(Pair(it.first, it.second))
                 }
             }

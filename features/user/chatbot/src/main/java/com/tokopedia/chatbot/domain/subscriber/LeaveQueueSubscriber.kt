@@ -5,13 +5,13 @@ import com.tokopedia.chatbot.domain.pojo.leavequeue.LeaveQueueResponse
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import rx.Subscriber
 
-class LeaveQueueSubscriber(val onError: (Throwable) -> Unit,
+class LeaveQueueSubscriber(val onLeaveQueueError: (Throwable) -> Unit,
                            val onSuccess: (String) -> Unit)
     : Subscriber<GraphqlResponse>() {
 
     override fun onNext(graphqlResponse: GraphqlResponse) {
         handleError(graphqlResponse, LeaveQueueResponse::class.java,
-                routingOnNext(graphqlResponse), onError)
+                routingOnNext(graphqlResponse), onLeaveQueueError)
     }
 
     private fun routingOnNext(graphqlResponse: GraphqlResponse): (GraphqlResponse) -> Unit {
@@ -26,7 +26,7 @@ class LeaveQueueSubscriber(val onError: (Throwable) -> Unit,
     }
 
     override fun onError(e: Throwable) {
-        onError(e)
+        onLeaveQueueError(e)
     }
 
 }

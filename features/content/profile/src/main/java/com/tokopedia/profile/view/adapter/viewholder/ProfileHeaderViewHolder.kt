@@ -9,7 +9,7 @@ import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.component.ButtonCompat
@@ -45,7 +45,7 @@ class ProfileHeaderViewHolder(val v: View, val viewListener: ProfileEmptyContrac
             itemView.followers.text = getFollowersText(element)
             itemView.followers.movementMethod = LinkMovementMethod.getInstance()
 
-            if (!element.isOwner && GlobalConfig.isCustomerApp()) {
+            if (!element.isOwner && !GlobalConfig.isSellerApp()) {
                 updateButtonState(element.isFollowed)
             } else {
                 itemView.followBtn.visibility = View.GONE
@@ -121,22 +121,22 @@ class ProfileHeaderViewHolder(val v: View, val viewListener: ProfileEmptyContrac
                 viewListener.goToFollower()
             }
 
-            override fun updateDrawState(ds: TextPaint?) {
+            override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
-                ds?.setUnderlineText(false)
-                ds?.color = MethodChecker.getColor(itemView.context, com.tokopedia.design.R.color.black_54)
+                ds.setUnderlineText(false)
+                ds.color = MethodChecker.getColor(itemView.context, com.tokopedia.design.R.color.black_54)
             }
         }
 
         val goToFollowing = object : ClickableSpan() {
-            override fun onClick(p0: View?) {
+            override fun onClick(p0: View) {
                 viewListener.goToFollowing()
             }
 
-            override fun updateDrawState(ds: TextPaint?) {
+            override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
-                ds?.setUnderlineText(false)
-                ds?.color = MethodChecker.getColor(itemView.context, com.tokopedia.design.R.color.black_54)
+                ds.setUnderlineText(false)
+                ds.color = MethodChecker.getColor(itemView.context, com.tokopedia.design.R.color.black_54)
             }
         }
         if (spannableString.indexOf(followers) != -1) {

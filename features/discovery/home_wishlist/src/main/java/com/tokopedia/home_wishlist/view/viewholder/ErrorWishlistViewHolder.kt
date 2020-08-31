@@ -13,16 +13,13 @@ class ErrorWishlistViewHolder(
         view: View
 ) : SmartAbstractViewHolder<ErrorWishlistDataModel>(view) {
 
-    private val title: Typography by lazy { view.findViewById<Typography>(R.id.title) }
     private val description: Typography by lazy { view.findViewById<Typography>(R.id.description) }
     private val retry: UnifyButton by lazy { view.findViewById<UnifyButton>(R.id.retry_button) }
 
     override fun bind(element: ErrorWishlistDataModel, listener: SmartListener) {
-        element.error?.let {
-            description.text = element.error
-            retry.setOnClickListener {
-                (listener as WishlistListener).onTryAgainClick()
-            }
+        description.text = element.error ?: itemView.context.getString(R.string.wishlist_default_error_message)
+        retry.setOnClickListener {
+            (listener as WishlistListener).onTryAgainClick()
         }
     }
 

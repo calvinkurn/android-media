@@ -1,25 +1,22 @@
 package com.tokopedia.search.result.shop.presentation.viewholder
 
 import android.content.Context
-import android.graphics.Typeface
-import androidx.annotation.LayoutRes
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import android.text.Spannable
-import android.text.SpannableStringBuilder
-import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import androidx.annotation.LayoutRes
+import androidx.core.view.ViewCompat
+import androidx.recyclerview.widget.RecyclerView
+import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.search.R
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.LinearHorizontalSpacingDecoration
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.SpacingItemDecoration
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener
 import com.tokopedia.search.result.shop.presentation.model.ShopEmptySearchViewModel
-import kotlinx.android.synthetic.main.search_result_shop_empty.view.*
+import kotlinx.android.synthetic.main.search_result_shop_empty_layout.view.*
+import kotlinx.android.synthetic.main.search_result_shop_empty_selected_filter_item.view.*
 import java.util.*
 
 internal class ShopEmptySearchViewHolder(
@@ -29,7 +26,7 @@ internal class ShopEmptySearchViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.search_result_shop_empty
+        val LAYOUT = R.layout.search_result_shop_empty_layout
     }
 
     private val context: Context = itemView.context
@@ -46,30 +43,16 @@ internal class ShopEmptySearchViewHolder(
         val contentText = getContentText(element)
 
         itemView.textViewSearchShopEmptyContent?.shouldShowWithAction(contentText.isNotEmpty()) {
-            itemView.textViewSearchShopEmptyContent?.text = boldTextBetweenQuotes(contentText)
+            itemView.textViewSearchShopEmptyContent?.text = contentText
         }
     }
 
     private fun getContentText(element: ShopEmptySearchViewModel): String {
         return if (element.isFilterActive) {
-            String.format(context.getString(R.string.msg_empty_search_with_filter_2), element.query)
+            String.format(context.getString(R.string.msg_empty_search_shop_content_with_filter), element.query)
         } else {
-            String.format(context.getString(R.string.empty_search_content_template), element.query)
+            String.format(context.getString(R.string.msg_empty_search_shop_content), element.query)
         }
-    }
-
-    private fun boldTextBetweenQuotes(text: String): CharSequence {
-        val quoteSymbol = "\""
-        val firstQuotePos = text.indexOf(quoteSymbol)
-        val lastQuotePos = text.lastIndexOf(quoteSymbol)
-
-        if (firstQuotePos < 0) {
-            return text
-        }
-
-        val str = SpannableStringBuilder(text)
-        str.setSpan(StyleSpan(Typeface.BOLD), firstQuotePos, lastQuotePos + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        return str
     }
 
     private fun bindRecyclerViewSelectedFilter(element: ShopEmptySearchViewModel) {
@@ -88,17 +71,21 @@ internal class ShopEmptySearchViewHolder(
         if (itemView.recyclerViewSearchShopEmptySelectedFilter?.itemDecorationCount == 0) {
             itemView.recyclerViewSearchShopEmptySelectedFilter?.addItemDecoration(createSelectedFilterRecyclerViewItemDecoration())
         }
+
+        itemView.recyclerViewSearchShopEmptySelectedFilter?.let {
+            ViewCompat.setLayoutDirection(it, ViewCompat.LAYOUT_DIRECTION_LTR)
+        }
     }
 
     private fun createSelectedFilterRecyclerViewLayoutManager(): RecyclerView.LayoutManager {
-        return LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        return ChipsLayoutManager.newBuilder(context)
+                .setOrientation(ChipsLayoutManager.HORIZONTAL)
+                .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
+                .build()
     }
 
     private fun createSelectedFilterRecyclerViewItemDecoration(): RecyclerView.ItemDecoration {
-        return LinearHorizontalSpacingDecoration(
-                context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
-                context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16)
-        )
+        return SpacingItemDecoration(context.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_8))
     }
 
     private fun populateSelectedFilterToRecylerView(selectedFilterAdapter: SelectedFilterAdapter) {
@@ -127,7 +114,7 @@ internal class ShopEmptySearchViewHolder(
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SelectedFilterItemViewHolder {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.search_filter_empty_state_selected_filter_item, parent, false)
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.search_result_shop_empty_selected_filter_item, parent, false)
             return SelectedFilterItemViewHolder(view, clickListener)
         }
 
@@ -141,12 +128,10 @@ internal class ShopEmptySearchViewHolder(
     }
 
     private class SelectedFilterItemViewHolder(itemView: View, private val clickListener: EmptyStateListener) : RecyclerView.ViewHolder(itemView) {
-        private val filterText: TextView = itemView.findViewById(R.id.filter_text)
-        private val deleteButton: View = itemView.findViewById(R.id.delete_button)
 
         fun bind(option: Option) {
-            filterText.text = option.name
-            deleteButton.setOnClickListener { clickListener.onSelectedFilterRemoved(option.uniqueId) }
+            itemView.filterText?.text = option.name
+            itemView.filterText?.setOnClickListener { clickListener.onSelectedFilterRemoved(option.uniqueId) }
         }
     }
 }

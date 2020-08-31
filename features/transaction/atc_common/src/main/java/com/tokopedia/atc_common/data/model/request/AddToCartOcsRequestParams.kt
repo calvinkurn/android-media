@@ -31,9 +31,17 @@ data class AddToCartOcsRequestParams(
         @SerializedName("tracker_list_name")
         var trackerListName: String = "",
 
-        @SerializedName("ut_param")
+        @SerializedName("uc_ut_param")
         var utParam: String = "",
 
         @SerializedName("is_trade_in")
-        var isTradeIn: Boolean = false
+        var isTradeIn: Boolean = false,
+
+        @SerializedName("shipping_price")
+        var shippingPrice: Int = 0,
+
+        // appflyer analytics data
+        var productName: String = "",
+        var category: String = "",
+        var price: String = ""
 )

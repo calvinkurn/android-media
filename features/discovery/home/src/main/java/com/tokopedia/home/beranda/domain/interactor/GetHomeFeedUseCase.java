@@ -8,14 +8,14 @@ import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.data.mapper.HomeFeedMapper;
 import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedContentGqlResponse;
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeFeedListModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationDataModel;
 import com.tokopedia.kotlin.util.NullCheckerKt;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 import rx.Observable;
 import rx.functions.Func1;
 
-public class GetHomeFeedUseCase extends UseCase<HomeFeedListModel> {
+public class GetHomeFeedUseCase extends UseCase<HomeRecommendationDataModel> {
     public static final String PARAM_RECOM_ID = "recomID";
     public static final String PARAM_COUNT = "count";
     public static final String PARAM_PAGE = "page";
@@ -33,7 +33,7 @@ public class GetHomeFeedUseCase extends UseCase<HomeFeedListModel> {
     }
 
     @Override
-    public Observable<HomeFeedListModel> createObservable(RequestParams requestParams) {
+    public Observable<HomeRecommendationDataModel> createObservable(RequestParams requestParams) {
         GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(),
         R.raw.gql_home_feed), HomeFeedContentGqlResponse.class, requestParams.getParameters());
 
@@ -44,7 +44,7 @@ public class GetHomeFeedUseCase extends UseCase<HomeFeedListModel> {
                 .map(checkForNull());
     }
 
-    private Func1<HomeFeedListModel, HomeFeedListModel> checkForNull() {
+    private Func1<HomeRecommendationDataModel, HomeRecommendationDataModel> checkForNull() {
         return responseMap -> {
             NullCheckerKt.throwIfNull(responseMap, GetHomeFeedUseCase.class);
             return responseMap;

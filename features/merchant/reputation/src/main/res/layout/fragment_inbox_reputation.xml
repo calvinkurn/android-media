@@ -19,15 +19,15 @@
             android:id="@+id/search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/hint_search_review"
-            android:textSize="@dimen/text_size_small"
+            android:hint="@string/search_review_hint"
+            android:textSize="@dimen/text_small"
             android:layout_marginRight="@dimen/dp_6"
             android:layout_marginLeft="@dimen/dp_6"
             android:layout_marginTop="@dimen/dp_6" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <com.tokopedia.core.customwidget.SwipeToRefresh
+    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -35,14 +35,14 @@
         android:layout_below="@id/search"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/review_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:scrollbars="vertical"/>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/review_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:scrollbars="vertical"/>
 
-    </com.tokopedia.core.customwidget.SwipeToRefresh>
+    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
     <LinearLayout
         android:id="@+id/container_action_view"

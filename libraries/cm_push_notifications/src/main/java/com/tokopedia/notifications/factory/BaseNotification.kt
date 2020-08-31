@@ -133,7 +133,7 @@ abstract class BaseNotification internal constructor(protected var context: Cont
         get() = if (GlobalConfig.isSellerApp())
             R.mipmap.ic_big_notif_seller
         else
-            R.mipmap.ic_launcher
+            com.tokopedia.resources.common.R.mipmap.ic_launcher_customerapp
     internal val bitmapLargeIcon : Bitmap
     get() = createBitmap()
 

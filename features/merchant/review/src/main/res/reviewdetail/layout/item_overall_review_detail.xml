@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/spacing_lvl4"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/rating_star"
+        android:layout_width="@dimen/dp_28"
+        android:layout_height="@dimen/dp_28"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        app:srcCompat="@drawable/ic_rating_star_item"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/total_review"
+        android:contentDescription="@string/rating_star_icon_content_description" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/rating_star_overall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="@string/product_average_rating"
+        android:textColor="@color/typography_black"
+        android:layout_marginLeft="@dimen/spacing_lvl3"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        app:typographyType="heading_1"
+        app:typographyWeight="bold"
+        app:layout_constraintStart_toEndOf="@id/rating_star"
+        app:layout_constraintEnd_toStartOf="@id/maximum_rating_star_value"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/total_review"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/maximum_rating_star_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/maximum_product_rating"
+        android:textColor="@color/clr_f531353b"
+        app:typographyType="body_1"
+        app:typographyWeight="reguler"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginLeft="@dimen/spacing_lvl1"
+        android:layout_marginStart="@dimen/spacing_lvl1"
+        app:layout_constraintLeft_toRightOf="@id/rating_star_overall"
+        app:layout_constraintTop_toTopOf="@id/rating_star_overall" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/total_review"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="@string/total_product_review"
+        android:textColor="@color/typography_black"
+        app:typographyType="body_2"
+        app:layout_constraintTop_toBottomOf="@id/rating_star_overall"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl2" />
+
+    <com.tokopedia.unifycomponents.ChipsUnify
+        android:id="@+id/review_period_filter_button_detail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:chipSize="medium"
+        app:chipType="normal"
+        app:centerText="true"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/rating_star_overall" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

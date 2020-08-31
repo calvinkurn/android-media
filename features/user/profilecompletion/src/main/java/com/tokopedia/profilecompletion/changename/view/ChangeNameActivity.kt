@@ -9,6 +9,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.profilecompletion.changename.data.analytics.ChangeNameTracker
 import com.tokopedia.profilecompletion.di.DaggerProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
+import com.tokopedia.profilecompletion.di.ProfileCompletionSettingModule
 
 /**
  * created by rival 23/10/19
@@ -35,8 +36,10 @@ class ChangeNameActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionS
     }
 
     override fun getComponent(): ProfileCompletionSettingComponent {
-        return DaggerProfileCompletionSettingComponent.builder().baseAppComponent(
-                (application as BaseMainApplication).baseAppComponent).build()
+        return DaggerProfileCompletionSettingComponent.builder()
+                    .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                    .profileCompletionSettingModule(ProfileCompletionSettingModule(this))
+                    .build()
     }
 
     override fun onBackPressed() {

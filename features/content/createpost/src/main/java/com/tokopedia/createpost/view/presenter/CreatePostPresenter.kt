@@ -15,6 +15,7 @@ import com.tokopedia.feedcomponent.data.pojo.profileheader.ProfileHeaderData
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.feedcomponent.domain.usecase.GetProfileHeaderUseCase
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.decodeToUtf8
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopFavoriteStatusUseCase
@@ -152,11 +153,12 @@ class CreatePostPresenter @Inject constructor(
     }
 
     private fun authenticateTwitter() {
-        launch {
+        launchCatchError(coroutineContext, {
             view?.onAuthenticateTwitter(
-                    twitterManager.getAuthenticator()
-            )
-        }
+                    twitterManager.getAuthenticator())
+        }, {
+            view?.onErrorGetPostEdit(it)
+        })
     }
 
     private fun getShareOptions(): List<ShareType> {

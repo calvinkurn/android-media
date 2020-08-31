@@ -3,7 +3,6 @@ package com.tokopedia.campaign.shake.landing.view.presenter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Handler;
 import android.os.Vibrator;
 import android.text.TextUtils;
@@ -14,7 +13,6 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.campaign.shake.landing.R;
 import com.tokopedia.campaign.shake.landing.analytics.CampaignTracking;
 import com.tokopedia.campaign.shake.landing.data.entity.CampaignGqlResponse;
@@ -197,7 +195,7 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
 
                                 Intent intentFromRouter = RouteManager.getIntentNoFallback(context, campaign.getUrl());
                                 if(intentFromRouter == null){
-                                    getView().showErrorNetwork(context.getString(R.string.shake_shake_wrong_deeplink));
+                                    getView().showErrorNetwork(context.getString(R.string.shake_landing_shake_shake_wrong_deeplink));
                                     CampaignTracking.eventShakeShake("fail", ShakeDetectManager.sTopActivity, "", "");
                                     return;
                                 }
@@ -267,7 +265,7 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
                 activity.getApplicationContext());
         locationDetectorHelper.getLocation(onGetLocation(), activity,
                 LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
-                activity.getString(R.string.rationale_need_location_for_promotion));
+                activity.getString(R.string.shake_landing_rationale_need_location_for_promotion));
 
     }
 
@@ -324,8 +322,7 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
         //disable the shake shake
         ShakeDetectManager.getShakeDetectManager().disableShakeShake();
         if (userSession.isLoggedIn()) {
-            RouteManager.route(context, ApplinkConstInternalGlobal.GENERAL_SETTING);
-            getView().finish();
+            getView().goToGeneralSetting();
         } else {
             getView().makeInvisibleShakeShakeDisableView();
             getView().setSnackBarErrorMessage();

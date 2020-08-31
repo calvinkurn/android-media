@@ -5,14 +5,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.otaliastudios.cameraview.CameraListener
+import com.otaliastudios.cameraview.CameraOptions
+import com.otaliastudios.cameraview.VideoResult
+import com.otaliastudios.cameraview.controls.Audio
+import com.otaliastudios.cameraview.controls.Flash
+import com.otaliastudios.cameraview.controls.Mode
+import com.otaliastudios.cameraview.gesture.Gesture
+import com.otaliastudios.cameraview.gesture.GestureAction
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.cameraview.*
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
-import com.tokopedia.permissionchecker.request
 import com.tokopedia.videorecorder.R
-import com.tokopedia.videorecorder.main.state.StateRecorder
 import com.tokopedia.videorecorder.main.VideoPickerCallback
+import com.tokopedia.videorecorder.main.state.StateRecorder
 import com.tokopedia.videorecorder.utils.*
 import kotlinx.android.synthetic.main.fragment_recorder.*
 import java.util.*
@@ -88,7 +94,7 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
         cameraView.audio = Audio.ON
         cameraView.clearCameraListeners()
         cameraView.addCameraListener(cameraListener())
-        cameraView.mapGesture(Gesture.TAP, GestureAction.FOCUS_WITH_MARKER)
+        cameraView.mapGesture(Gesture.TAP, GestureAction.AUTO_FOCUS)
     }
 
     override fun onResume() {
@@ -206,9 +212,9 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
 
     private fun setUIFlashCamera(flashEnum: Int) {
         when (flashEnum) {
-            Flash.AUTO.ordinal -> btnFlash.setImageDrawable(MethodChecker.getDrawable(btnFlash.getContext(),R.drawable.ic_auto_flash))
-            Flash.ON.ordinal -> btnFlash.setImageDrawable(MethodChecker.getDrawable(btnFlash.getContext(),R.drawable.ic_on_flash))
-            Flash.OFF.ordinal -> btnFlash.setImageDrawable(MethodChecker.getDrawable(btnFlash.getContext(),R.drawable.ic_off_flash))
+            Flash.AUTO.ordinal -> btnFlash.setImageDrawable(MethodChecker.getDrawable(btnFlash.getContext(), com.tokopedia.imagepicker.R.drawable.ic_auto_flash))
+            Flash.ON.ordinal -> btnFlash.setImageDrawable(MethodChecker.getDrawable(btnFlash.getContext(), com.tokopedia.imagepicker.R.drawable.ic_on_flash))
+            Flash.OFF.ordinal -> btnFlash.setImageDrawable(MethodChecker.getDrawable(btnFlash.getContext(), com.tokopedia.imagepicker.R.drawable.ic_off_flash))
         }
     }
 

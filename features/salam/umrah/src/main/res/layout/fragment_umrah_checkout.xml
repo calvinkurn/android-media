@@ -21,13 +21,24 @@
                 android:layout_height="wrap_content">
 
                 <include
+                    android:id="@+id/partial_umrah_checkout_promo"
+                    layout="@layout/partial_umrah_checkout_promo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    />
+
+                <include
+                    android:layout_marginTop="@dimen/dp_8"
                     android:id="@+id/partial_umrah_checkout_header"
                     layout="@layout/partial_umrah_checkout_header"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@+id/partial_umrah_checkout_promo" />
 
                 <include
                     android:id="@+id/partial_umrah_checkout_content_order"

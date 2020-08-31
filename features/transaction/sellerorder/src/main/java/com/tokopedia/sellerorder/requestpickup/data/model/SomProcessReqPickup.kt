@@ -4,6 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
 /**
  * Created by fwidjaja on 2019-11-14.
@@ -22,31 +23,12 @@ data class SomProcessReqPickup (
             @Expose
             val mpLogisticRequestPickup: MpLogisticRequestPickup = MpLogisticRequestPickup()){
 
+        @Parcelize
         data class MpLogisticRequestPickup(
                 @SerializedName("message")
                 @Expose
                 val listMessage: List<String> = listOf()
-        ) : Parcelable {
-            constructor(parcel: Parcel) : this(parcel.createStringArrayList() ?: arrayListOf())
-
-            override fun writeToParcel(parcel: Parcel, flags: Int) {
-                parcel.writeStringList(listMessage)
-            }
-
-            override fun describeContents(): Int {
-                return 0
-            }
-
-            companion object CREATOR : Parcelable.Creator<MpLogisticRequestPickup> {
-                override fun createFromParcel(parcel: Parcel): MpLogisticRequestPickup {
-                    return MpLogisticRequestPickup(parcel)
-                }
-
-                override fun newArray(size: Int): Array<MpLogisticRequestPickup?> {
-                    return arrayOfNulls(size)
-                }
-            }
-        }
+        ) : Parcelable
     }
 
     data class Error(

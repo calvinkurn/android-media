@@ -1,0 +1,129 @@
+package com.tokopedia.saldodetails.viewmodels
+
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
+import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.kotlin.extensions.view.toZeroIfNull
+import com.tokopedia.saldodetails.di.DispatcherModule
+import com.tokopedia.saldodetails.response.model.*
+import com.tokopedia.saldodetails.usecase.*
+import com.tokopedia.saldodetails.utils.ErrorMessage
+import com.tokopedia.saldodetails.utils.Resources
+import com.tokopedia.saldodetails.utils.Success
+import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
+import java.util.*
+import javax.inject.Inject
+import javax.inject.Named
+
+class SaldoDetailViewModel @Inject constructor(
+        val getSaldoBalanceUseCase: GetSaldoBalanceUseCase,
+        val getTickerWithdrawalMessageUseCase: GetTickerWithdrawalMessageUseCase,
+        var getMerchantSaldoDetails: GetMerchantSaldoDetails,
+        val getMerchantCreditDetails: GetMerchantCreditDetails,
+        val getMCLLateCountUseCase: GetMCLLateCountUseCase,
+        @Named(DispatcherModule.MAIN) val uiDispatcher: CoroutineDispatcher,
+        @Named(DispatcherModule.IO) val workerDispatcher: CoroutineDispatcher
+) : BaseViewModel(uiDispatcher) {
+
+    companion object {
+        private const val MERCHANT_CREDIT_ELIGIBLE_STATUS = 101
+        private const val SALDO_PRIORITY_ELIGIBLE_STATUS = 1
+    }
+
+    var isSeller: Boolean = false
+
+    val gqlMerchantSaldoDetailLiveData: MutableLiveData<Resources<GqlMerchantSaldoDetailsResponse>> = MutableLiveData()
+    val gqlMerchantCreditDetailLiveData: MutableLiveData<Resources<GqlMerchantCreditDetailsResponse>> = MutableLiveData()
+    val gqlLateCountResponseLiveData: MutableLiveData<Resources<GqlMclLateCountResponse>> = MutableLiveData()
+    val gqlTickerWithdrawalLiveData: MutableLiveData<Resources<GqlWithdrawalTickerResponse>> = MutableLiveData()
+    val gqlUserSaldoBalanceLiveData: MutableLiveData<Resources<GqlSaldoBalanceResponse>> = MutableLiveData()
+
+    private val mTickerMigrationEligibilityLiveData = MediatorLiveData<Pair<Boolean, Boolean>>().apply {
+        addSource(gqlMerchantCreditDetailLiveData) { merchantCredit ->
+            gqlMerchantSaldoDetailLiveData.value?.let { saldoPriority ->
+                value = checkMigrationEligibility(merchantCredit, saldoPriority)
+            }
+        }
+        addSource(gqlMerchantSaldoDetailLiveData) { saldoPriority ->
+            gqlMerchantCreditDetailLiveData.value?.let { merchantCredit ->
+                value = checkMigrationEligibility(merchantCredit, saldoPriority)
+            }
+        }
+    }
+    val tickerMigrationEligibilityLiveData: LiveData<Pair<Boolean, Boolean>>
+        get() = mTickerMigrationEligibilityLiveData
+
+    fun getUserSaldoBalance() {
+        launchCatchError(block = {
+            withContext(workerDispatcher) {
+                val response = getSaldoBalanceUseCase.getResponse()
+                gqlUserSaldoBalanceLiveData.postValue(Success(response))
+            }
+
+        }, onError = {
+            it.printStackTrace()
+            if (it is UnknownHostException ||
+                    it is SocketTimeoutException) {
+                gqlUserSaldoBalanceLiveData.postValue(ErrorMessage(it.toString()))
+            } else {
+                gqlUserSaldoBalanceLiveData.postValue(ErrorMessage(com.tokopedia.saldodetails.R.string.sp_empty_state_error))
+            }
+        })
+    }
+
+    fun getTickerWithdrawalMessage() {
+        launchCatchError(block = {
+            withContext(workerDispatcher) {
+                val response = getTickerWithdrawalMessageUseCase.getResponse()
+                gqlTickerWithdrawalLiveData.postValue(Success(response))
+            }
+        }, onError = {
+            gqlTickerWithdrawalLiveData.postValue(ErrorMessage(it.toString()))
+
+        })
+    }
+
+    fun getMerchantSaldoDetails() {
+        launchCatchError(block = {
+            withContext(workerDispatcher) {
+                val response = getMerchantSaldoDetails.getResponse()
+                gqlMerchantSaldoDetailLiveData.postValue(Success(response))
+            }
+        }, onError = {
+            gqlMerchantSaldoDetailLiveData.postValue(ErrorMessage(it.toString()))
+        })
+    }
+
+    fun getMerchantCreditLineDetails() {
+        launchCatchError(block = {
+            val response = getMerchantCreditDetails.execute()
+            gqlMerchantCreditDetailLiveData.postValue(Success(response))
+        }, onError = {
+            gqlMerchantCreditDetailLiveData.postValue(ErrorMessage(it.toString()))
+        })
+    }
+
+    fun getMerchantCreditLateCountValue() {
+        launchCatchError(block = {
+            withContext(workerDispatcher) {
+                val response = getMCLLateCountUseCase.getResponse()
+                gqlLateCountResponseLiveData.postValue(Success(response))
+            }
+        }, onError = {
+            gqlLateCountResponseLiveData.postValue(ErrorMessage(it.toString()))
+        })
+    }
+
+    private fun checkMigrationEligibility(merchantCreditResult: Resources<GqlMerchantCreditDetailsResponse>,
+                                          saldoPriorityResult: Resources<GqlMerchantSaldoDetailsResponse>): Pair<Boolean, Boolean> {
+        val isMerchantCreditEligible = (merchantCreditResult as? Success)?.data?.data?.status.toZeroIfNull() >= MERCHANT_CREDIT_ELIGIBLE_STATUS
+        val isSaldoPriorityEligible = (saldoPriorityResult as? Success)?.data?.data?.status.toZeroIfNull() >= SALDO_PRIORITY_ELIGIBLE_STATUS
+        return Pair(isMerchantCreditEligible, isSaldoPriorityEligible)
+    }
+
+}

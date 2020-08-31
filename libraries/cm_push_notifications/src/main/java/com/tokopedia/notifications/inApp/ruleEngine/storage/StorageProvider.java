@@ -26,7 +26,9 @@ public class StorageProvider implements InterfaceDataStore {
         return Completable.fromAction(new Action0() {
             @Override
             public void call() {
-                inAppDataDao.insert(value);
+                List<CMInApp> dataFromParentID = inAppDataDao.getDataFromParentIdForPerstOff(value.parentId);
+                if (dataFromParentID == null || dataFromParentID.isEmpty())
+                    inAppDataDao.insert(value);
             }
         }).subscribeOn(Schedulers.io());
     }
@@ -104,5 +106,16 @@ public class StorageProvider implements InterfaceDataStore {
                 inAppDataDao.updateVisibleState(id);
             }
         }).subscribeOn(Schedulers.io());
+    }
+
+    @Override
+    public void interactedWithView(final long id) {
+        Completable.fromAction(new Action0() {
+            @Override
+            public void call() {
+                inAppDataDao.updateFreqWithPerst(id);
+            }
+        }).subscribeOn(Schedulers.io())
+                .subscribe();
     }
 }

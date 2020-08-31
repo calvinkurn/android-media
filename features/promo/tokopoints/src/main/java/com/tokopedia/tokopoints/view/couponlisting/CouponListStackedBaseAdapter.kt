@@ -6,12 +6,6 @@ import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.os.CountDownTimer
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
-import androidx.cardview.widget.CardView
-import androidx.fragment.app.FragmentActivity
-import androidx.recyclerview.widget.RecyclerView
-
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -19,7 +13,11 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-
+import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentActivity
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
@@ -35,14 +33,11 @@ import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.tokopoints.view.util.CommonConstant
 import com.tokopedia.tokopoints.view.util.DEFAULT_TIME_STRING
 import com.tokopedia.tokopoints.view.util.convertLongToHourMinuteSec
-
-import java.util.Arrays
-import java.util.HashMap
-import java.util.Locale
+import java.util.*
 
 class CouponListStackedBaseAdapter(private val mPresenter: CouponLisitingStackedViewModel, callback: AdapterCallback) : BaseAdapter<CouponValueEntity>(callback) {
     private var mRecyclerView: RecyclerView? = null
-    private var mStackedID : String? = null
+    private var mStackedID: String? = null
 
     fun couponCodeVisible(code: String, isStacked: Boolean) {
         for (i in 0 until items.size) {
@@ -57,10 +52,10 @@ class CouponListStackedBaseAdapter(private val mPresenter: CouponLisitingStacked
         }
     }
 
-    fun couponStackedVisible(){
+    fun couponStackedVisible() {
         val id = mStackedID
         id?.let {
-            couponCodeVisible(it,true)
+            couponCodeVisible(it, true)
         }
     }
 
@@ -69,7 +64,7 @@ class CouponListStackedBaseAdapter(private val mPresenter: CouponLisitingStacked
         isLastPage = !data.coupon.paging.isHasNext
     }
 
-    fun onError(){
+    fun onError() {
         loadCompletedWithError()
     }
 
@@ -83,6 +78,7 @@ class CouponListStackedBaseAdapter(private val mPresenter: CouponLisitingStacked
         internal var imgLabel: ImageView
         internal var ivMinTxn: ImageView
         var isVisited = false
+
         /*This section is exclusively for handling timer*/
         var timer: CountDownTimer? = null
         var progressTimer: ProgressBar
@@ -205,7 +201,7 @@ class CouponListStackedBaseAdapter(private val mPresenter: CouponLisitingStacked
             holder.label.show()
             holder.value.show()
             holder.imgLabel.show()
-            holder.value.text = item.usage.usageStr.trim(' ' )
+            holder.value.text = item.usage.usageStr.trim(' ')
             holder.label.text = item.usage.text
         } else {
             holder.label.hide()
@@ -299,14 +295,14 @@ class CouponListStackedBaseAdapter(private val mPresenter: CouponLisitingStacked
                 if (item.usage.expiredCountDown > 0 && item.usage.expiredCountDown <= CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S) {
                     holder.progressTimer.max = CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S.toInt()
                     holder.progressTimer.show()
-
+                    holder.label.hide()
                     if (holder.timer != null)
                         holder.timer!!.cancel()
                     holder.timer = object : CountDownTimer(item.usage.expiredCountDown * 1000, 1000) {
                         override fun onTick(l: Long) {
                             item.usage.expiredCountDown = l / 1000
                             holder.value.text = convertLongToHourMinuteSec(l)
-                            holder.value.setTextColor(ContextCompat.getColor(holder.value.context, com.tokopedia.design.R.color.medium_green))
+                            holder.value.setTextColor(ContextCompat.getColor(holder.value.context, R.color.tp_coupon_flash_sale_timer_text_color))
                             holder.progressTimer.progress = l.toInt() / 1000
                             try {
                                 holder.value.setPadding(holder.label.resources.getDimensionPixelSize(R.dimen.tp_padding_regular),
@@ -333,7 +329,7 @@ class CouponListStackedBaseAdapter(private val mPresenter: CouponLisitingStacked
                 holder.value.setTextColor(ContextCompat.getColor(holder.value.context, com.tokopedia.design.R.color.black_70))
             }
             holder.itemView?.let {
-                holder.itemView.setOnClickListener{ v ->
+                holder.itemView.setOnClickListener { v ->
                     if (item.isStacked) {
                         mStackedID = item.stackId
                         mPresenter.getCouponInStack(item.stackId)
@@ -405,8 +401,10 @@ class CouponListStackedBaseAdapter(private val mPresenter: CouponLisitingStacked
 
     fun onDestroyView() {
         for (i in 0 until mRecyclerView!!.childCount) {
-            val viewHolder = mRecyclerView!!.getChildViewHolder(mRecyclerView!!.getChildAt(i)) as ViewHolder
-            viewHolder.onDetach()
+            val viewHolder = mRecyclerView!!.getChildViewHolder(mRecyclerView!!.getChildAt(i))
+            if (viewHolder is ViewHolder) {
+                viewHolder.onDetach()
+            }
         }
     }
 

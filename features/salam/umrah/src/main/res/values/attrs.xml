@@ -28,4 +28,9 @@
     <declare-styleable name="UmrahSeekbarRangeWidget">
 
     </declare-styleable>
+
+    <declare-styleable name="TruncateDescription">
+        <attr name="descriptionText" format="string" />
+        <attr name="truncateDescription" format="boolean" />
+    </declare-styleable>
 </resources>

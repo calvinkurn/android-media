@@ -1,7 +1,9 @@
 package com.tokopedia.core.network.retrofit.interceptors;
 
 
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.authentication.AuthConstant;
+import com.tokopedia.authentication.AuthHelper;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.exception.SessionExpiredException;
 import com.tokopedia.network.interceptor.TkpdBaseInterceptor;
 
@@ -20,8 +22,6 @@ import okhttp3.ResponseBody;
  */
 
 public class StandardizedInterceptor extends TkpdBaseInterceptor {
-
-    private static final String TAG = StandardizedInterceptor.class.getSimpleName();
 
     private static final String HEADER_X_APP_VERSION = "X-APP-VERSION";
     private String authorizationString;
@@ -53,11 +53,6 @@ public class StandardizedInterceptor extends TkpdBaseInterceptor {
     private void handleError(String errorMessage) throws SessionExpiredException {
         if(errorMessage.equals("invalid_request") || errorMessage.equals("invalid_grant"))
             throw new SessionExpiredException(errorMessage);
-        /*if(errorMessage.equals("invalid_request"))
-            throw new SessionExpiredExce
-            ption("invalid_request");
-        else if(errorMessage.equals("invalid_grant"))
-            throw new SessionExpiredException("invalid_grant");*/
     }
 
     private Response createNewResponse(Response oldResponse, String oldBodyResponse) {
@@ -85,6 +80,7 @@ public class StandardizedInterceptor extends TkpdBaseInterceptor {
                 .header("X-Device", "android-" + GlobalConfig.VERSION_NAME)
                 .header("Content-Type", "application/x-www-form-urlencoded")
                 .header(HEADER_X_APP_VERSION, "android-" + String.valueOf(GlobalConfig.VERSION_NAME))
+                .header(AuthConstant.HEADER_RELEASE_TRACK, GlobalConfig.VERSION_NAME_SUFFIX)
                 .method(request.method(), request.body());
     }
 

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="dp_1">1dp</dimen>
+    <dimen name="dp_14">14dp</dimen>
+    <dimen name="dp_18">18dp</dimen>
+    <dimen name="dp_19">19dp</dimen>
+    <dimen name="dp_29">29dp</dimen>
+    <dimen name="dp_36">36dp</dimen>
+    <dimen name="dp_44">44dp</dimen>
+    <dimen name="dp_46">46dp</dimen>
+    <dimen name="dp_60">60dp</dimen>
+    <dimen name="dp_80">80dp</dimen>
+    <dimen name="dp_104">104dp</dimen>
+    <dimen name="dp_120">120dp</dimen>
+    <dimen name="dp_168">168dp</dimen>
+    <dimen name="dp_171">171dp</dimen>
+    <dimen name="dp_188">188dp</dimen>
+    <dimen name="dp_204">204dp</dimen>
+    <dimen name="dp_215">215dp</dimen>
+    <dimen name="dp_217">217dp</dimen>
+    <dimen name="dp_234">234dp</dimen>
+    <dimen name="empty_icon_talk_width">203dp</dimen>
+    <dimen name="empty_icon_talk_height">116dp</dimen>
+    <dimen name="margin_comment_seperator_left">58dp</dimen>
+</resources>

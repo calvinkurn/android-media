@@ -2,10 +2,13 @@
 <resources>
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
 
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
+    <color name="charcoal_grey_96">#f531353b</color>
+    <color name="green_tokopedia">#03ac0e</color>
+    <color name="gray_line">#e5e7e9</color>
+
     <color name="transparent">#00000000</color>
 
     <color name="black_54">#8a000000</color>
@@ -14,10 +17,11 @@
     <color name="shop_item_product_price_color">#ff5722</color>
     <color name="shop_item_product_empty_color">#f3f4f5</color>
 
-    <color name="shop_total_count_text_color">#61000000</color>
     <color name="shop_status_background">#ae31353b</color>
     <color name="shop_status_text_background">#e131353b</color>
     <color name="shop_status_text_color">#f5ffffff</color>
+    <color name="shop_empty_search_title_color">#f531353b</color>
+    <color name="shop_empty_search_recommendation_title_color">#f531353b</color>
     <color name="shadow">#AD31353B</color>
     <color name="grey_400">#bdbdbd</color>
 
@@ -26,7 +30,8 @@
     <color name="free_ongkir_promo_show_case_background">#ae31353b</color>
     <color name="free_ongkir_promo_show_case_title_color">#f531353b</color>
 
+    <color name="search_result_empty_divider_color">#f3f4f5</color>
+
     <color name="cart_count_color">#ef144a</color>
     <color name="search_text_view_color">#F531353B</color>
-
 </resources>

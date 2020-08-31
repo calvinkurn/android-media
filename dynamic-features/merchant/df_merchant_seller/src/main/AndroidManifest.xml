@@ -3,8 +3,10 @@
     package="com.tokopedia.df.merchant.seller">
 
     <dist:module
-        dist:onDemand="true"
-        dist:title="@string/title_product_manage">
+        dist:title="@string/title_df_merchant">
+        <dist:delivery>
+            <dist:on-demand/>
+        </dist:delivery>
         <dist:fusing dist:include="true" />
     </dist:module>
 

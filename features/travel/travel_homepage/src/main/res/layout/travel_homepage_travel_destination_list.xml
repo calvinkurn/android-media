@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/section_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/layout_lvl1">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/section_title"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/layout_lvl2"
+            android:layout_marginLeft="@dimen/layout_lvl2"
+            android:layout_marginTop="@dimen/layout_lvl2"
+            android:layout_marginEnd="@dimen/layout_lvl2"
+            android:layout_marginRight="@dimen/layout_lvl2"
+            android:textColor="@color/Neutral_N700_96"
+            app:layout_constraintEnd_toStartOf="@+id/section_see_all"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_2"
+            tools:text="Travel Activity" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/travel_homepage_destination_subtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/travel_homepage_dp_4"
+            android:layout_marginStart="@dimen/layout_lvl2"
+            android:layout_marginLeft="@dimen/layout_lvl2"
+            android:layout_marginEnd="@dimen/layout_lvl2"
+            android:layout_marginRight="@dimen/layout_lvl2"
+            android:textColor="@color/Neutral_N700_96"
+            app:typographyType="body_2"
+            app:layout_constraintTop_toBottomOf="@+id/section_title"
+            tools:text="Akhir pekan? Waktunya makan-makan!" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/section_see_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/layout_lvl2"
+            android:layout_marginRight="@dimen/layout_lvl2"
+            android:textColor="@color/Green_G500"
+            app:layout_constraintBottom_toBottomOf="@+id/section_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:typographyType="body_3"
+            app:typographyWeight="bold"
+            android:text="@string/travel_homepage_section_see_all"
+            android:visibility="gone"
+            />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/list_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/layout_lvl1"
+            app:layout_constraintTop_toBottomOf="@+id/travel_homepage_destination_subtitle"
+            android:paddingLeft="@dimen/layout_lvl2"
+            android:paddingRight="@dimen/layout_lvl2"
+            android:paddingStart="@dimen/layout_lvl2"
+            android:paddingEnd="@dimen/layout_lvl2"
+            android:clipToPadding="false"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <include android:id="@+id/shimmering"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/travel_homepage_destination_section_shimmering"
+        android:visibility="gone"
+        />
+
+</FrameLayout>

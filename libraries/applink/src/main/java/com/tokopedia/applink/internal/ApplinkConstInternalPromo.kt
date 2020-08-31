@@ -14,7 +14,8 @@ object ApplinkConstInternalPromo {
     const val PROMO_LIST_FLIGHT = "${INTERNAL_PROMO}/list/flight"
     const val PROMO_DETAIL_FLIGHT = "${INTERNAL_PROMO}/detail/flight"
 
-    const val PROMO_CAMPAIGN_SHAKE_LANDING = "${INTERNAL_PROMO}/campaign-shake-landing/{is_long_shake}/"
+    const val PROMO_CAMPAIGN_SHAKE_LANDING_PREFIX = "${INTERNAL_PROMO}/campaign-shake-landing"
+    const val PROMO_CAMPAIGN_SHAKE_LANDING = "${PROMO_CAMPAIGN_SHAKE_LANDING_PREFIX}/{is_long_shake}/"
 
     /**
      * PromoCheckoutListHotelActivity
@@ -26,6 +27,7 @@ object ApplinkConstInternalPromo {
     const val PROMO_LIST_MARKETPLACE = "${INTERNAL_PROMO}/list/marketplace"
     const val PROMO_DETAIL_MARKETPLACE = "${INTERNAL_PROMO}/detail/marketplace"
 
+    const val PROMO_CHECKOUT_MARKETPLACE = "${INTERNAL_PROMO}/checkout-marketplace"
 
 
     private const val HOST_TOKOPOINTS = "tokopoints"
@@ -36,4 +38,30 @@ object ApplinkConstInternalPromo {
     const val TOKOPOINTS_COUPON = "${INTERNAL_TOKOPOINTS}/kupon-saya"
     const val TOKOPOINTS_CATALOG_DETAIL = "${INTERNAL_TOKOPOINTS}/tukar-detail/{catalog_code}"
     const val TOKOPOINTS_CATALOG_LISTING = "${INTERNAL_TOKOPOINTS}/tukar-point/{slug_category}/{slug_sub_category}"
+
+    /**
+     * This const used to redirect to PromoCheckoutListUmrahActivity
+     * This const used to redirect to PromoCheckoutDetailUmrahActivity
+     */
+    const val PROMO_LIST_UMROH = "$INTERNAL_PROMO/list/umroh"
+    const val PROMO_DETAIL_UMROH = "$INTERNAL_PROMO/detail/umroh"
+
+    /**
+     * This const used to redirect to PromoCheckoutListEventActivity
+     * This const used to redirect to PromoCheckoutDetailEventActivity
+     */
+    const val PROMO_LIST_EVENT = "$INTERNAL_PROMO/list/event"
+    const val PROMO_DETAIL_EVENT = "$INTERNAL_PROMO/detail/event"
+
+    /**
+    * Gamification
+    * */
+    private const val HOST_GLOBAL = "global"
+    const val INTERNAL_GLOBAL = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_GLOBAL}"
+    const val INTERNAL_GAMIFICATION_CRACK = "$INTERNAL_GLOBAL/gamification"
+    const val INTERNAL_GAMIFICATION_TAP_TAP_MANTAP = "$INTERNAL_GLOBAL/gamification2"
+    const val INTERNAL_GAMIFICATION_SMC_REFERRAL = "$INTERNAL_GLOBAL/smc-referral"
+    const val INTERNAL_GAMIFICATION_DAILY_GIFT = "$INTERNAL_GLOBAL/gamification_gift_daily"
+    const val INTERNAL_GAMIFICATION_TAP_TAP_GIFT = "$INTERNAL_GLOBAL/gamification_gift_60s"
+
 }

@@ -126,6 +126,18 @@ public abstract class ChartSet {
 		return mEntries.get(index).getValue();
 	}
 
+	/**
+	 * Get {@link ChartEntry} value from specific index.
+	 *
+	 * @param index Value's index
+	 *
+	 * @return Custom Value of given index.
+	 */
+	public String getCustomValue(int index) {
+
+		return mEntries.get(index).getmCustomValue();
+	}
+
 
 	/**
 	 * Get {@link ChartEntry} label from specific index.

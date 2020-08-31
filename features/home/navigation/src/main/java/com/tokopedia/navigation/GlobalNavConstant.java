@@ -11,7 +11,7 @@ public class GlobalNavConstant {
 
     public class Analytics {
 
-        static final String CLICK_HOMEPAGE = "clickHomePage";
+        static final String CLICK_HOMEPAGE = "clickHomepage";
 
         static final String HOME_PAGE = "homepage";
 
@@ -80,4 +80,6 @@ public class GlobalNavConstant {
 
     public static final int NEWEST_INFO = 15;
 
+    public static final String ACCOUNT_TAB = "ACCOUNT_TAB";
+    public static final String ACCOUNT_TAB_SELLER = "ACCOUNT_TAB_SELLER";
 }

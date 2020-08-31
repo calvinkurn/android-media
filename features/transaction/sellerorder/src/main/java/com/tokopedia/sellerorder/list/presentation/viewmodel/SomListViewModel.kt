@@ -3,25 +3,31 @@ package com.tokopedia.sellerorder.list.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.sellerorder.common.SomDispatcherProvider
+import com.tokopedia.sellerorder.common.domain.usecase.SomGetUserRoleUseCase
+import com.tokopedia.sellerorder.common.presenter.model.SomGetUserRoleUiModel
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CLIENT
-import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_INPUT
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SELLER
 import com.tokopedia.sellerorder.list.data.model.*
+import com.tokopedia.sellerorder.list.domain.list.SomGetFilterListUseCase
+import com.tokopedia.sellerorder.list.domain.list.SomGetOrderListUseCase
+import com.tokopedia.sellerorder.list.domain.list.SomGetOrderStatusListUseCase
+import com.tokopedia.sellerorder.list.domain.list.SomGetTickerListUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Job
 import javax.inject.Inject
 
 /**
  * Created by fwidjaja on 2019-08-27.
  */
-class SomListViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
-                                           private val graphqlRepository: GraphqlRepository) : BaseViewModel(dispatcher) {
+class SomListViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
+                                           private val getTickerListUseCase: SomGetTickerListUseCase,
+                                           private val getOrderStatusListUseCase: SomGetOrderStatusListUseCase,
+                                           private val getFilterListUseCase: SomGetFilterListUseCase,
+                                           private val getOrderListUseCase: SomGetOrderListUseCase,
+                                           private val getUserRoleUseCase: SomGetUserRoleUseCase) : BaseViewModel(dispatcher.ui()) {
 
     private val _tickerListResult = MutableLiveData<Result<MutableList<SomListTicker.Data.OrderTickers.Tickers>>>()
     val tickerListResult: LiveData<Result<MutableList<SomListTicker.Data.OrderTickers.Tickers>>>
@@ -39,83 +45,57 @@ class SomListViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
     val orderListResult: LiveData<Result<SomListOrder.Data.OrderList>>
         get() = _orderListResult
 
+    private val _userRoleResult = MutableLiveData<Result<SomGetUserRoleUiModel>>()
+    val userRoleResult: LiveData<Result<SomGetUserRoleUiModel>>
+        get() = _userRoleResult
+
+    private var getUserRolesJob: Job? = null
+
     fun loadTickerList(tickerQuery: String) {
-        launch { getTickerList(tickerQuery) }
-    }
-
-    fun loadStatusList(rawQuery: String) {
-        launch { getFilterStatusList(rawQuery) }
-    }
-
-    fun loadFilterList(filterQuery: String) {
-        launch { getFilterList(filterQuery) }
-    }
-
-    fun loadOrderList(orderQuery: String, paramOrder: SomListOrderParam) {
-        launch { getOrderList(orderQuery, paramOrder) }
-    }
-
-    suspend fun getTickerList(rawQuery: String) {
-        val requestTickerParams = SomListTickerParam(requestBy = PARAM_SELLER, client = PARAM_CLIENT)
-        val tickerParams = mapOf(PARAM_INPUT to requestTickerParams)
         launchCatchError(block = {
-            val tickerListData = withContext(Dispatchers.IO) {
-                val tickerRequest = GraphqlRequest(rawQuery, POJO_TICKER, tickerParams as Map<String, Any>?)
-                graphqlRepository.getReseponse(listOf(tickerRequest))
-                        .getSuccessData<SomListTicker.Data>()
-            }
-            _tickerListResult.value = Success(tickerListData.orderTickers.listTicker.toMutableList())
+            val requestTickerParams = SomListTickerParam(requestBy = PARAM_SELLER, client = PARAM_CLIENT)
+            _tickerListResult.postValue(getTickerListUseCase.execute(requestTickerParams, tickerQuery))
         }, onError = {
             _tickerListResult.postValue(Fail(it))
         })
     }
 
-    suspend fun getFilterList(rawQuery: String) {
+    fun loadStatusOrderList(rawQuery: String) {
         launchCatchError(block = {
-            val filterListData = withContext(Dispatchers.IO) {
-                val filterRequest = GraphqlRequest(rawQuery, POJO_FILTER)
-                graphqlRepository.getReseponse(listOf(filterRequest))
-                        .getSuccessData<SomListFilter.Data>()
-            }
-            _filterListResult.postValue(Success(filterListData.orderFilterSom.statusList.toMutableList()))
-        }, onError = {
-            _filterListResult.postValue(Fail(it))
-        })
-    }
-
-    suspend fun getFilterStatusList(rawQuery: String) {
-        launchCatchError(block = {
-            val filterListData = withContext(Dispatchers.IO) {
-                val filterRequest = GraphqlRequest(rawQuery, POJO_FILTER_ALL)
-                graphqlRepository.getReseponse(listOf(filterRequest))
-                        .getSuccessData<SomListAllFilter.Data>()
-            }
-            _statusOrderListResult.postValue(Success(filterListData.orderFilterSomSingle.statusList.toMutableList()))
-
+            _statusOrderListResult.postValue(getOrderStatusListUseCase.execute(rawQuery))
         }, onError = {
             _statusOrderListResult.postValue(Fail(it))
         })
     }
 
+    fun loadFilterList(filterQuery: String) {
+        launchCatchError(block =  {
+            _filterListResult.postValue(getFilterListUseCase.execute(filterQuery))
+        }, onError = {
+            _filterListResult.postValue(Fail(it))
+        })
+    }
 
-    suspend fun getOrderList(rawQuery: String, requestOrderParams: SomListOrderParam) {
-        val orderParams = mapOf(PARAM_INPUT to requestOrderParams)
-        launchCatchError(block = {
-            val orderListData = withContext(Dispatchers.IO) {
-                val orderRequest = GraphqlRequest(rawQuery, POJO_ORDER, orderParams)
-                graphqlRepository.getReseponse(listOf(orderRequest))
-                        .getSuccessData<SomListOrder.Data>()
-            }
-            _orderListResult.postValue(Success(orderListData.orderList))
+    fun loadOrderList(paramOrder: SomListOrderParam) {
+        launchCatchError(block =  {
+            _orderListResult.postValue(getOrderListUseCase.execute(paramOrder))
         }, onError = {
             _orderListResult.postValue(Fail(it))
         })
     }
 
-    companion object {
-        private val POJO_TICKER = SomListTicker.Data::class.java
-        private val POJO_FILTER = SomListFilter.Data::class.java
-        private val POJO_ORDER = SomListOrder.Data::class.java
-        private val POJO_FILTER_ALL = SomListAllFilter.Data::class.java
+    fun loadUserRoles(userId: Int) {
+        if (getUserRolesJob == null || getUserRolesJob?.isCompleted != false) {
+            getUserRolesJob = launchCatchError(block = {
+                getUserRoleUseCase.setUserId(userId)
+                _userRoleResult.postValue(getUserRoleUseCase.execute())
+            }, onError = {
+                _userRoleResult.postValue(Fail(it))
+            })
+        }
+    }
+
+    fun clearUserRoles() {
+        _userRoleResult.postValue(null)
     }
 }

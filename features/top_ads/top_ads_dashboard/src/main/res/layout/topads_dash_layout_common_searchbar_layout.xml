@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="horizontal">
+
+    <com.tokopedia.unifycomponents.SearchBarUnify
+        android:id="@+id/searchBar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_10"
+        android:paddingEnd="@dimen/dp_16"
+        android:paddingBottom="@dimen/dp_10"
+        app:layout_constraintEnd_toStartOf="@id/search_filter_layout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:search_bar_clearable="true"
+        app:search_bar_enable="true"
+        app:search_bar_placeholder="@string/topads_dash_search_hint"
+        app:search_bar_show_icon="false" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/search_filter_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/dp_10"
+        app:layout_constraintBottom_toBottomOf="@id/searchBar"
+        app:layout_constraintEnd_toStartOf="@id/divider"
+        app:layout_constraintStart_toEndOf="@id/searchBar"
+        app:layout_constraintTop_toTopOf="@id/searchBar">
+
+        <ImageButton
+            android:id="@+id/btnFilter"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="@dimen/dp_10"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/topads_ic_filter" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/filterCount"
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="@dimen/dp_16"
+            android:background="@drawable/topads_dash_filter_bubble"
+            android:gravity="center"
+            android:padding="@dimen/dp_2"
+            android:textColor="@color/white"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/btnFilter"
+            app:layout_constraintTop_toTopOf="@id/btnFilter"
+            app:typographyType="small"
+            tools:text="2"
+            tools:visibility="visible" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="1dp"
+        android:layout_height="@dimen/dp_40"
+        android:layout_marginStart="@dimen/dp_4"
+        android:layout_marginLeft="@dimen/dp_4"
+        android:background="@color/topads_common_line_color"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/search_filter_layout"
+        app:layout_constraintEnd_toStartOf="@id/btnAddItem"
+        app:layout_constraintStart_toEndOf="@id/search_filter_layout"
+        app:layout_constraintTop_toTopOf="@id/search_filter_layout"
+        tools:visibility="visible" />
+
+    <ImageButton
+        android:id="@+id/btnAddItem"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        android:layout_marginStart="@dimen/dp_10"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:padding="@dimen/dp_10"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/divider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@id/divider"
+        app:layout_constraintTop_toTopOf="@id/divider"
+        app:srcCompat="@drawable/ic_add_topads"
+        tools:visibility="visible" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

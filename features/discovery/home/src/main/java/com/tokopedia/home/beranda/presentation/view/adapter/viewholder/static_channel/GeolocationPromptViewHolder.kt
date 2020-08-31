@@ -2,7 +2,7 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_c
 
 import android.widget.ImageView
 import com.tokopedia.home.R
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeolocationPromptViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeoLocationPromptDataModel
 import com.tokopedia.unifyprinciples.Typography
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -13,19 +13,18 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 
-class GeolocationPromptViewHolder(itemView :View, val homeCategoryListener: HomeCategoryListener) :
-        AbstractViewHolder<GeolocationPromptViewModel>(itemView) {
+class GeolocationPromptViewHolder(itemView :View, val homeCategoryListener: HomeCategoryListener?) :
+        AbstractViewHolder<GeoLocationPromptDataModel>(itemView) {
 
-    val remoteConfig = FirebaseRemoteConfigImpl(itemView.context)
+    private val remoteConfig = FirebaseRemoteConfigImpl(itemView.context)
+    private val btnClose = itemView.findViewById<ImageView>(R.id.img_close)
+    private val tvTitle = itemView.findViewById<Typography>(R.id.typography_title)
+    private val tvDesc = itemView.findViewById<Typography>(R.id.typography_description)
 
     companion object {
         val LAYOUT = R.layout.layout_prompt_to_enable_geolocation
     }
-    override fun bind(element: GeolocationPromptViewModel?) {
-        val btnClose = itemView.findViewById<ImageView>(R.id.img_close)
-        val tvTitle = itemView.findViewById<Typography>(R.id.typography_title)
-        val tvDesc = itemView.findViewById<Typography>(R.id.typography_description)
-
+    override fun bind(element: GeoLocationPromptDataModel?) {
         val titleValue = remoteConfig.getString(
                 RemoteConfigKey.HOME_GEOLOCATION_COMPONENT_TITLE,
                 itemView.context.resources.getString(R.string.discovery_home_title_geolocation_title_default)
@@ -53,12 +52,12 @@ class GeolocationPromptViewHolder(itemView :View, val homeCategoryListener: Home
 
         tvDesc.setOnClickListener {
             HomePageTracking.eventClickGeolocationComponent(itemView.context)
-            homeCategoryListener.launchPermissionChecker()
+            homeCategoryListener?.launchPermissionChecker()
         }
 
         btnClose.setOnClickListener {
             HomePageTracking.eventClickCloseGeolocationComponent(itemView.context)
-            homeCategoryListener.onCloseGeolocationView()
+            homeCategoryListener?.onCloseGeolocationView()
         }
     }
 }

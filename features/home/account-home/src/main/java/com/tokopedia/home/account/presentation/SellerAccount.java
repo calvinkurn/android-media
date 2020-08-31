@@ -16,6 +16,6 @@ public interface SellerAccount {
     }
 
     interface Presenter extends CustomerPresenter<View> {
-        void getSellerData(String query, String topadsQuery, String saldoQuery);
+        void getSellerData(String query, String topadsQuery, String saldoQuery, String shopLocationQuery);
     }
 }

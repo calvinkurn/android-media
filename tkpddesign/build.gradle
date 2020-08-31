@@ -2,22 +2,6 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
-sonarqube {
-    properties {
-        def libraries = project.android.sdkDirectory.getPath() + "/platforms/android-27/android.jar"/* + ", build/intermediates/exploded-aar*//**//*classes.jar"*/
-        property "sonar.sources", "src/main/java"
-        property "sonar.binaries", "build/intermediates/classes/debug"
-        property "sonar.libraries", libraries
-        property "sonar.tests", "src/test/java, src/androidTest/java"
-        property "sonar.java.test.binaries", "build/intermediates/javac/debugUnitTest/compileDebugUnitTestJavaWithJavac/classes/"
-        property "sonar.java.test.libraries", libraries
-        property "sonar.jacoco.reportPath", "build/jacoco/testDebugUnitTest.exec"
-        property "sonar.java.coveragePlugin", "jacoco"
-        property "sonar.junit.reportsPath", "build/test-results/testDebugUnitTest"
-        property "sonar.android.lint.report", "build/reports/lint-results.xml"
-    }
-}
-
 buildscript {
     repositories {
         mavenCentral()
@@ -37,15 +21,17 @@ dependencies {
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.networkDependencies.glide
 
+    implementation project(rootProject.ext.libraries.utils)
+
     androidTestImplementation rootProject.ext.testDependencies.mockitorCore
-    testImplementation "org.robolectric:robolectric:4.1"
 }
 
 project.ext {
     artifactId = 'design'
     groupId = 'com.tokopedia.design'
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName ="tkpddesign-release"
 }
 
 apply from: '../publish_local.gradle'
+apply from: '../jacoco_task.gradle'

@@ -19,13 +19,6 @@ object ApplinkConstInternalLogistic {
     val SHIPPING_CONFIRMATION = "$INTERNAL_LOGISTIC/shipping-confirmation/{mode}"
 
     /**
-     * @see logistic/tracking/.../UploadAwbLogisticActivity.java
-     * @param EXTRA_URL_UPLOAD [type: String] upload-awb url (mandatory)
-     * */
-    @JvmField
-    val UPLOAD_AWB = "$INTERNAL_LOGISTIC/upload-awb"
-
-    /**
      * @see logistic/logisticaddaddress/.../AddAddressActivity.java
      * @param {ref} = caller id
      * @param token [type: Token (logisticdata) ] token for District Recommendation api hit (mandatory)
@@ -44,5 +37,11 @@ object ApplinkConstInternalLogistic {
 
     @JvmField
     val DROPOFF_PICKER = "$INTERNAL_LOGISTIC/dropoff/"
+
+    @JvmField
+    val ORDER_TRACKING = "$INTERNAL_LOGISTIC/shipping/tracking/"
+
+    @JvmField
+    val MANAGE_ADDRESS = "$INTERNAL_LOGISTIC/manageaddress/"
 
 }

@@ -1,18 +1,20 @@
 package com.tokopedia.sessioncommon.view.forbidden.fragment;
 
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.sessioncommon.R;
-import com.tokopedia.sessioncommon.view.forbidden.activity.ServiceActivity;
+import com.tokopedia.unifycomponents.UnifyButton;
 
 /**
  * Created by meyta on 2/22/18.
@@ -33,7 +35,7 @@ public class ForbiddenFragment extends TkpdBaseV4Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_forbidden, container, false);
+        return inflater.inflate(R.layout.fragment_forbidden_session, container, false);
     }
 
     @Override
@@ -41,14 +43,14 @@ public class ForbiddenFragment extends TkpdBaseV4Fragment {
         super.onViewCreated(view, savedInstanceState);
         TextView title = view.findViewById(R.id.tv_title);
         TextView desc = view.findViewById(R.id.tv_message);
-        Button btnRetry = view.findViewById(R.id.btn_retry);
+        UnifyButton btnRetry = view.findViewById(R.id.btn_retry);
 
         title.setText(MethodChecker.fromHtml(getString(R.string.forbidden_title)));
         desc.setText(MethodChecker.fromHtml(getString(R.string.forbidden_msg)));
 
-        desc.setOnClickListener(v -> ServiceActivity.startActivity(getActivity(), URL));
+        desc.setOnClickListener(v ->
+                        RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, URL));
 
-        btnRetry.setText(R.string.forbidden_button);
         btnRetry.setOnClickListener(v -> getActivity().finish());
 
     }

@@ -19,19 +19,18 @@ buildscript {
 project.ext {
     artifactId = 'tracking-optimizer'
     groupId = 'com.tokopedia.library'
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName = "tracking_optimizer-release"
 }
 
 dependencies {
     implementation rootProject.ext.miscDependencies.gson
-
-    
+    implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.track)
 
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
-    androidTestApi rootProject.ext.dbDependencies.dbRoomTesting
+    androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting
 }
 
 apply from: '../../publish_local.gradle'

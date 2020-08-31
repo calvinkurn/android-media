@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_88"
+    android:gravity="center_vertical"
+    android:padding="@dimen/layout_lvl2">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/hotel_check_in_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/hotel_homepage_check_in"
+            android:textColor="@color/Neutral_N700_68"
+            app:typographyType="body_3" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/hotel_check_in_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Neutral_N700_96"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            tools:text="18 Des 2018" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/hotel_check_in_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:textColor="@color/Neutral_N700_68"
+            app:typographyType="body_3"
+            tools:text="Senin, 14:00"
+            tools:visibility="visible"/>
+
+    </LinearLayout>
+
+    <Space
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="match_parent"
+        android:layout_weight="1" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/hotel_check_out_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/hotel_homepage_check_out"
+            android:textColor="@color/Neutral_N700_68"
+            app:typographyType="body_3" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/hotel_check_out_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            android:textColor="@color/Neutral_N700_96"
+            tools:text="28 Des 2018" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/hotel_check_out_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:typographyType="body_3"
+            android:textColor="@color/Neutral_N700_68"
+            tools:text="Kamis, 12:00"
+            tools:visibility="visible" />
+
+    </LinearLayout>
+
+    <Space
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="match_parent"
+        android:layout_weight="1" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/hotel_room_night_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_search_destination_tag"
+        android:paddingLeft="@dimen/hotel_6dp"
+        android:paddingTop="@dimen/spacing_lvl1"
+        android:paddingRight="@dimen/hotel_6dp"
+        android:paddingBottom="@dimen/spacing_lvl1"
+        android:text="@string/hotel_room_night_count"
+        android:textColor="#9e9fa3"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:text="10 Malam" />
+</LinearLayout>

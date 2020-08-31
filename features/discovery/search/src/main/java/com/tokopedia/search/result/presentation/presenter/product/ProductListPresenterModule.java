@@ -12,7 +12,7 @@ public class ProductListPresenterModule {
 
     @SearchScope
     @Provides
-    ProductListSectionContract.Presenter provideProductListSectionPresenter() {
-        return new ProductListPresenter();
+    ProductListSectionContract.Presenter provideProductListPresenter(ProductListPresenter presenter) {
+        return presenter;
     }
 }

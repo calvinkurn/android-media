@@ -2,12 +2,13 @@ package com.tokopedia.design.base;
 
 import android.content.Context;
 import android.os.Parcelable;
-import androidx.annotation.AttrRes;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.widget.FrameLayout;
+
+import androidx.annotation.AttrRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * Created by nathan on 6/2/17.
@@ -50,10 +51,14 @@ public class BaseCustomView extends FrameLayout {
 
     @Override
     protected void onRestoreInstanceState(Parcelable state) {
-        SavedState ss = (SavedState) state;
-        super.onRestoreInstanceState(ss.getSuperState());
-        for (int i = 0; i < getChildCount(); i++) {
-            getChildAt(i).restoreHierarchyState(ss.getChildrenStates());
+        if (state instanceof SavedState) {
+            SavedState ss = (SavedState) state;
+            super.onRestoreInstanceState(ss.getSuperState());
+            for (int i = 0; i < getChildCount(); i++) {
+                getChildAt(i).restoreHierarchyState(ss.getChildrenStates());
+            }
+        } else {
+            super.onRestoreInstanceState(state);
         }
     }
 }

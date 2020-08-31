@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.product.detail.common.data.model.product.*
 
 data class ComponentData(
+        //region General data
         @SerializedName("applink")
         val applink: String = "",
         @SerializedName("content")
@@ -17,8 +18,13 @@ data class ComponentData(
         val isApplink: Boolean = true,
         @SerializedName("icon")
         val icon: String = "",
+        @SerializedName("separator")
+        val separator: String = "",
+        @SerializedName("description")
+        val description: String = "",
+        //endregion
 
-        // Snapshot data
+        //region Content data
         @SerializedName("campaign")
         val campaign: CampaignModular = CampaignModular(),
         @SerializedName("isCOD")
@@ -39,8 +45,6 @@ data class ComponentData(
         val media: List<Media> = listOf(),
         @SerializedName("name")
         val name: String = "",
-        @SerializedName("pictures")
-        val pictures: List<Picture> = listOf(),
         @SerializedName("price")
         val price: Price = Price(),
         @SerializedName("stock")
@@ -52,9 +56,23 @@ data class ComponentData(
         @SerializedName("wholesale")
         val wholesale: List<Wholesale>? = null,
         @SerializedName("preorder")
-        val preOrder: PreOrder = PreOrder()
-
-) {
+        val preOrder: PreOrder = PreOrder(),
+        //endregion
+        //region Variant data
+        @SerializedName("parentID")
+        val parentId: String = "",
+        @SerializedName("errorCode")
+        val errorCode: Int = 0,
+        @SerializedName("sizeChart")
+        val sizeChart: String = "",
+        @SerializedName("defaultChild")
+        val defaultChild: String = "",
+        @SerializedName("variants")
+        val variants: List<ProductP1Variant> = listOf(),
+        @SerializedName("children")
+        val children : List<ProductP1VariantChild> = listOf()
+        //endregion
+)  {
 
     val hasWholesale: Boolean
         get() = wholesale != null && wholesale.isNotEmpty()
@@ -68,9 +86,9 @@ data class ComponentData(
 
         return if (firstImage != null) {
             when {
-                firstImage.uRLThumbnail.isNotEmpty() -> pictures[0].urlThumbnail
-                firstImage.uRL300.isNotEmpty() -> pictures[0].url300
-                firstImage.uRLOriginal.isNotEmpty() -> pictures[0].urlOriginal
+                firstImage.uRLThumbnail.isNotEmpty() -> firstImage.uRLThumbnail
+                firstImage.uRL300.isNotEmpty() -> firstImage.uRL300 ?: ""
+                firstImage.uRLOriginal.isNotEmpty() -> firstImage.uRLOriginal
                 else -> ""
             }
         } else {

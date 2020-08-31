@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/spacing_lvl2">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:text="@string/hotel_order_detail_transaction_date"
+        app:typographyType="body_3"
+        android:textColor="@color/Neutral_N700_68"
+        app:typographyWeight="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/text"
+        app:textViewTheme="lightPrimary"
+        tools:textSize="@dimen/sp_12"
+        tools:textStyle="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginLeft="@dimen/layout_lvl2"
+        android:gravity="end"
+        android:textColor="@color/hotel_dark_orange_300"
+        app:typographyType="heading_4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/title"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="1 Sep 2017, 05:00 WIB"
+        tools:textSize="@dimen/sp_17"
+        tools:textStyle="bold" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

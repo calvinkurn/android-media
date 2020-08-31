@@ -1,11 +1,9 @@
 package com.tokopedia.profile.view.activity
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.profile.view.fragment.ProfileEmptyFragment
 import com.tokopedia.profile.view.fragment.ProfileFragment
@@ -21,18 +19,11 @@ class ProfileActivity : BaseSimpleActivity() {
         const val IS_FOLLOWING_FALSE = 0
 
         const val EXTRA_PARAM_USER_ID = "user_id"
-        const val EXTRA_PARAM_POST_ID = "post_id"
         const val EXTRA_PARAM_AFTER_POST = "after_post"
         const val EXTRA_PARAM_AFTER_EDIT = "after_edit"
         const val EXTRA_PARAM_SUCCESS_POST = "success_post"
         const val TRUE = "true"
         const val ZERO = "0"
-
-        fun createIntent(context: Context?, userId: String): Intent {
-            val intent = Intent(context, ProfileActivity::class.java)
-            intent.putExtra(EXTRA_PARAM_USER_ID, userId)
-            return intent
-        }
     }
 
     override fun getNewFragment(): Fragment {
@@ -44,7 +35,7 @@ class ProfileActivity : BaseSimpleActivity() {
         intent.extras.let {
             bundle.putAll(it)
         }
-        return if (GlobalConfig.isCustomerApp()) {
+        return if (!GlobalConfig.isSellerApp()) {
             hideToolbar()
             ProfileFragment.createInstance(bundle)
         } else {
@@ -58,7 +49,7 @@ class ProfileActivity : BaseSimpleActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (GlobalConfig.isCustomerApp()) {
+        if (!GlobalConfig.isSellerApp()) {
             hideToolbar()
         }
     }

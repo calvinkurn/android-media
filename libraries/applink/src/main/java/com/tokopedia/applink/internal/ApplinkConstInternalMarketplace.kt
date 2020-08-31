@@ -46,10 +46,20 @@ object ApplinkConstInternalMarketplace {
     // CartAddressChoiceActivity
     @JvmField
     val CHECKOUT_ADDRESS_SELECTION = "$INTERNAL_MARKETPLACE/checkout-address-selection"
+    // PreferenceListActivity
+    @JvmField
+    val PREFERENCE_LIST = "$INTERNAL_MARKETPLACE/preference-list"
+    // PreferenceEditActivity
+    @JvmField
+    val PREFERENCE_EDIT = "$INTERNAL_MARKETPLACE/preference-edit"
+    // OrderSummaryPageActivity
+    @JvmField
+    val ONE_CLICK_CHECKOUT = "$INTERNAL_MARKETPLACE/one-click-checkout"
 
     // ProductDetailActivity
     @JvmField
     val PRODUCT_ADD_ITEM = "$INTERNAL_MARKETPLACE/product-add-item"
+    // CategoryPickerActivity
     @JvmField
     val PRODUCT_CATEGORY_PICKER = "$INTERNAL_MARKETPLACE/product-category-picker/{id}/"
     @JvmField
@@ -73,9 +83,27 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val PRODUCT_REVIEW = "$INTERNAL_MARKETPLACE/product/{id}/review"
 
+    // StockReminderActivity
+    @JvmField
+    val STOCK_REMINDER = "$INTERNAL_MARKETPLACE/stock-reminder/{productId}/{productName}/{stock}/"
+
+    // SetCashbackActivity
+    @JvmField
+    val SET_CASHBACK = "$INTERNAL_MARKETPLACE/set-cashback/{productId}/"
+
+    // CampaignStockActivity
+    @JvmField
+    val RESERVED_STOCK = "$INTERNAL_MARKETPLACE/reserved-stock/{productId}/{shopId}/"
+
     // CreateReviewActivity
     @JvmField
-    val CREATE_REVIEW = "$INTERNAL_MARKETPLACE/product-review/create/{reputation_id}/{product_id}/?rating={rating}"
+    val CREATE_REVIEW = "$INTERNAL_MARKETPLACE/product-review/create/{reputation_id}/{product_id}/"
+
+    // InboxReputationActivity
+    val INBOX_REPUTATION = "$INTERNAL_MARKETPLACE/review"
+
+    // InboxReputationDetailActivity
+    val INBOX_REPUTATION_DETAIL = "$INTERNAL_MARKETPLACE/review/{feedback_id}/"
 
     @JvmField
     val HOME_RECOMMENDATION = "$INTERNAL_MARKETPLACE/rekomendasi/{id}/?ref={ref}"
@@ -89,12 +117,38 @@ object ApplinkConstInternalMarketplace {
     val OPEN_SHOP = "$INTERNAL_MARKETPLACE/shop-open"
 
     @JvmField
-    val SHOP_PAGE_DOMAIN = "$INTERNAL_MARKETPLACE/shop-page/?domain={domain}"
+    val SHOP_PAGE_BASE = "$INTERNAL_MARKETPLACE/shop-page"
+
+    @JvmField
+    val SHOP_PAGE_DOMAIN = "$SHOP_PAGE_BASE?domain={domain}"
+
+    //ShopInfoActivity
+    @JvmField
+    val SHOP_INFO = "$INTERNAL_MARKETPLACE/shop-info/{shop_id}/"
+
+    //ShopPageActivity
+    @JvmField
+    val SHOP_PAGE = "$SHOP_PAGE_BASE/{shop_id}/"
+
+    @JvmField
+    val SHOP_PAGE_HOME = "$SHOP_PAGE_BASE/{shop_id}/home"
+
+    @JvmField
+    val SHOP_PAGE_INFO = "$SHOP_PAGE_BASE/{shop_id}/info"
+
+    @JvmField
+    val SHOP_PAGE_REVIEW = "$SHOP_PAGE_BASE/{shop_id}/review"
+
+    @JvmField
+    val SHOP_PAGE_PRODUCT_LIST = "$SHOP_PAGE_BASE-product-list/{shop_id}/etalase/{etalase_id}/"
+
+    //ReviewShopInfoActiviy
+    @JvmField
+    val SHOP_REVIEW_APPLINK = "$INTERNAL_MARKETPLACE/shop/{shop_id}/review"
 
     // GmSubscribeHomeActivity
     @JvmField
     val GOLD_MERCHANT_SUBSCRIBE_DASHBOARD = "$INTERNAL_MARKETPLACE/gold-merchant-subscribe-dashboard"
-
 
     @JvmField
     val CONTACT_US = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://customercare/{ticket_id}"
@@ -129,6 +183,12 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val SHOP_SETTINGS_ADDRESS = "$SHOP_SETTINGS_BASE-address"
 
+    @JvmField
+    val SHOP_EDIT_SCHEDULE = "$SHOP_SETTINGS_BASE-edit-schedule"
+
+    @JvmField
+    val SHOP_SETTINGS_SHIPPING = "$SHOP_SETTINGS_BASE-shipping"
+
     //DistrictRecommendationShopSettingsActivity
     @JvmField
     val DISTRICT_RECOMMENDATION_SHOP_SETTINGS = "$INTERNAL_MARKETPLACE/district-recommendation-shop-settings"
@@ -155,6 +215,8 @@ object ApplinkConstInternalMarketplace {
     //Report Product
     @JvmField
     val REPORT_PRODUCT = "$INTERNAL_MARKETPLACE/product-report/{id}/"
+    @JvmField
+    val REPORT_PRODUCT_URL = "$INTERNAL_MARKETPLACE/product-report/{id}/?url={url}"
 
     // ShopScoreDetailActivity
     @JvmField
@@ -168,6 +230,12 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val NOTIFICATION_CENTER = "$INTERNAL_MARKETPLACE/notification"
 
+    @JvmField
+    val NOTIFICATION_BUYER_INFO = "$INTERNAL_MARKETPLACE/notif-center"
+
+    @JvmField
+    val NOTIFICATION_BUYER_INFO_WITH_ID = "$INTERNAL_MARKETPLACE/notif-center/{id}/"
+
     // PowerMerchantSubscribeActivity
     @JvmField
     val POWER_MERCHANT_SUBSCRIBE = "$INTERNAL_MARKETPLACE/power-merchant-subscribe"
@@ -179,8 +247,75 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val ATTACH_INVOICE = "$INTERNAL_MARKETPLACE/user-attach-invoice"
 
+    @JvmField
+    val SHOP_PAGE_SETTING = "$SHOP_PAGE_BASE-setting"
+
     // AttachVoucherActivity
     @JvmField
     val ATTACH_VOUCHER = "$INTERNAL_MARKETPLACE/user-attach-voucher"
 
+    // OrderHistoryActivity
+    @JvmField
+    val ORDER_HISTORY = "$INTERNAL_MARKETPLACE/user-order-history/{shop_id}/"
+
+    // DashboardActivity
+    @JvmField
+    val SELLER_APP_DASHBOARD = "$INTERNAL_MARKETPLACE/sellerapp-dashboard"
+
+    // EtalaseDynamicPickerActivity
+    // tokopedia-android-internal://marketplace/etalase-dynamic-picker
+    @JvmField
+    val ETALASE_DYNAMIC_PICKER = "$INTERNAL_MARKETPLACE/etalase-dynamic-picker"
+
+
+    // CategoryDynamicPickerActivity
+    // tokopedia-android-internal://marketplace/category-dynamic-picker
+    @JvmField
+    val CATEGORY_DYNAMIC_PICKER = "$INTERNAL_MARKETPLACE/category-dynamic-picker"
+    // ActivitySellingTransaction
+    @JvmField
+    val SELLING_TRANSACTION = "$INTERNAL_MARKETPLACE/selling-transaction/{tab_position}/"
+
+    // ProductDraftListActivity
+    @JvmField
+    val PRODUCT_DRAFT_LIST = "$INTERNAL_MARKETPLACE/product-draft-list"
+
+    // GMStatisticDashboardActivity
+    @JvmField
+    val GOLD_MERCHANT_STATISTIC_DASHBOARD = "$INTERNAL_MARKETPLACE/gold-merchant-statistic-dashboard"
+
+    //MitraToppersDashboardActivity
+    @JvmField
+    val MITRA_TOPPERS_DASHBOARD = "$INTERNAL_MARKETPLACE/mitra-toppers-dashboard"
+
+    //SellerInfoActivity
+    @JvmField
+    val SELLER_INFO = "$INTERNAL_MARKETPLACE/seller-info"
+
+    @JvmField
+    val PARAM_IS_NEED_LOC = "IS_NEED_LOC"
+
+    @JvmField
+    val PARAM_FIRST_CREATE_SHOP = "FIRST_CREATE_SHOP"
+
+    //SellerReviewListActivity
+    @JvmField
+    val REVIEW_SELLER = "$INTERNAL_MARKETPLACE/seller-review-page"
+
+    //InboxReputationReportActivity
+    @JvmField
+    val REVIEW_SELLER_REPORT = "$INTERNAL_MARKETPLACE/review-report"
+
+    //ShopFavouriteListActivity
+    @JvmField
+    val SHOP_FAVOURITE_LIST = "$INTERNAL_MARKETPLACE/shop-favourites"
+
+    @JvmField
+    val ARGS_SHOP_ID = "ARGS_SHOP_ID"
+
+    @JvmField
+    val ARGS_REVIEW_ID = "ARGS_REVIEW_ID"
+
+    @JvmField
+    val ARGS_LAYOUT_ID = "layoutID"
 }

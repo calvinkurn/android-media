@@ -1,6 +1,7 @@
 package com.tokopedia.officialstore.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.officialstore.TestDispatcherProvider
 import com.tokopedia.officialstore.category.data.model.OfficialStoreCategories
 import com.tokopedia.officialstore.category.domain.GetOfficialStoreCategoriesUseCase
 import com.tokopedia.officialstore.category.presentation.viewmodel.OfficialStoreCategoryViewModel
@@ -27,7 +28,7 @@ class OfficialStoreCategoryViewModelTest {
     private val viewModelStore: OfficialStoreCategoryViewModel by lazy {
         OfficialStoreCategoryViewModel(
                 getOfficialStoreCategoriesUseCase,
-                Dispatchers.Unconfined
+                TestDispatcherProvider()
         )
     }
 

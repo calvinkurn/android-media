@@ -2,20 +2,20 @@ package com.tokopedia.seller.product.category.view.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tokopedia.base.list.seller.view.adapter.BaseRetryDataBinder;
 import com.tokopedia.base.list.seller.view.old.RetryDataBinder;
-import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.common.category.di.module.CategoryPickerModule;
 import com.tokopedia.core.common.category.presenter.CategoryPickerPresenter;
 import com.tokopedia.core.common.category.view.listener.CategoryPickerView;
-import com.tokopedia.core.common.category.view.model.CategoryLevelViewModel;
 import com.tokopedia.core.common.category.view.model.CategoryViewModel;
 import com.tokopedia.product.manage.item.category.view.istener.CategoryPickerFragmentListener;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
@@ -57,7 +57,7 @@ public class CategoryPickerFragment extends BaseDaggerFragment implements Catego
         DaggerCategoryPickerComponent
                 .builder()
                 .productComponent(getComponent(ProductComponent.class))
-                .categoryPickerModule(new CategoryPickerModule())
+                .categoryPickerModule(new CategoryPickerModule(requireActivity().getApplicationContext()))
                 .build()
                 .inject(this);
     }
@@ -112,11 +112,7 @@ public class CategoryPickerFragment extends BaseDaggerFragment implements Catego
     }
 
     protected void initVar() {
-        if (selectedCategoryId == INIT_UNSELECTED) {
-            presenter.fetchCategoryLevelOne();
-        } else {
-            presenter.fetchCategoryFromSelected(selectedCategoryId);
-        }
+        presenter.getCategoryLiteTree();
     }
 
     @Override
@@ -135,11 +131,6 @@ public class CategoryPickerFragment extends BaseDaggerFragment implements Catego
     }
 
     @Override
-    public void renderCategoryFromSelected(List<CategoryLevelViewModel> categoryLevelDomainModels) {
-        adapter.render(categoryLevelDomainModels);
-    }
-
-    @Override
     public void showRetryEmpty() {
         adapter.showRetryFull(true);
     }
@@ -151,7 +142,7 @@ public class CategoryPickerFragment extends BaseDaggerFragment implements Catego
 
     @Override
     public void selectParent(long categoryId) {
-        presenter.fetchCategoryChild(categoryId);
+        presenter.getCategoryChild(categoryId);
     }
 
     @Override

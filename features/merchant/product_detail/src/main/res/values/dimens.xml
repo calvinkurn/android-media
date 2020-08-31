@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <dimen name="dp_320">320dp</dimen>
     <dimen name="dp_360">360dp</dimen>
     <dimen name="dp_140">140dp</dimen>
     <dimen name="dp_55">55dp</dimen>
+    <dimen name="dp_110">110dp</dimen>
+    <dimen name="dp_114">114dp</dimen>
+    <dimen name="dp_160">160dp</dimen>
+    <dimen name="dp_10">10dp</dimen>
+    <dimen name="dp_204">204dp</dimen>
+
+    <dimen name="design_fab_image_size" tools:override="true">32dp</dimen>
+    <dimen name="viewpager_next_item_visible">78dp</dimen>
+    <dimen name="viewpager_current_item_horizontal_margin">84dp</dimen>
 </resources>

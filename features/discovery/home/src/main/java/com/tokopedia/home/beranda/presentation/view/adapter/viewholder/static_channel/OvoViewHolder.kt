@@ -3,7 +3,9 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_c
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ContextWrapper
-import android.graphics.*
+import android.graphics.Color
+import android.graphics.PorterDuff
+import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.text.TextUtils
 import android.util.TypedValue
@@ -11,7 +13,6 @@ import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
@@ -27,16 +28,20 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.common_wallet.analytics.CommonWalletAnalytics
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
+import com.tokopedia.home.analytics.v2.OvoWidgetTracking
 import com.tokopedia.home.beranda.data.model.SectionContentItem
+import com.tokopedia.home.beranda.helper.benchmark.TRACE_ON_BIND_OVO_VIEWHOLDER
+import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.util.ViewUtils
+import com.tokopedia.kotlin.extensions.view.getResColor
 import kotlin.math.roundToInt
 
 /**
  * Created by Lukas on 2019-08-20
  */
-class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : AbstractViewHolder<HeaderViewModel>(itemView) {
+class OvoViewHolder(itemView: View, val listener: HomeCategoryListener?) : AbstractViewHolder<HeaderDataModel>(itemView) {
     private val context = itemView.context
 
     companion object {
@@ -45,7 +50,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
         @LayoutRes
         val NON_LOGIN_LAYOUT = R.layout.layout_item_widget_ovo_tokopoint_nonlogin
 
-        private const val TITLE_HEADER_WEBSITE = "TokoPoints"
+        private const val TITLE_HEADER_WEBSITE = "Tokopedia"
         private const val TITLE = "OVO"
         private const val WALLET_TYPE = "OVO"
         private const val CDN_URL = "https://ecs7.tokopedia.net/img/android/"
@@ -55,9 +60,11 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
 
     private val walletAnalytics: CommonWalletAnalytics = CommonWalletAnalytics()
 
-    override fun bind(element: HeaderViewModel) {
+    override fun bind(element: HeaderDataModel) {
+        BenchmarkHelper.beginSystraceSection(TRACE_ON_BIND_OVO_VIEWHOLDER)
         if (element.isUserLogin) renderLogin(element)
         else renderNonLogin()
+        BenchmarkHelper.endSystraceSection()
     }
 
     private fun renderNonLogin() {
@@ -68,7 +75,6 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
         containerOvo.background = ViewUtils.generateBackgroundWithShadow(containerOvo, R.color.white, R.dimen.dp_8, R.color.shadow_6, R.dimen.dp_2, Gravity.CENTER)
         val radius = TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP, 16f, itemView.resources.displayMetrics).roundToInt()
-
         Glide.with(itemView.context.applicationContext)
                 .load(BG_CONTAINER_URL)
                 .transform(RoundedCorners(radius))
@@ -76,12 +82,12 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
 
         container.setOnClickListener {
             HomePageTracking.eventTokopointNonLogin(itemView.context)
-            listener.onTokopointCheckNowClicked(ApplinkConstInternalPromo.TOKOPOINTS_HOME)
+            listener?.onTokopointCheckNowClicked(ApplinkConstInternalPromo.TOKOPOINTS_HOME)
         }
         scanHolder.setOnClickListener { goToScanner() }
     }
 
-    private fun renderLogin(element: HeaderViewModel) {
+    private fun renderLogin(element: HeaderDataModel) {
         val containerOvo = itemView.findViewById<LinearLayout>(R.id.container_ovo)
         containerOvo.background = ViewUtils.generateBackgroundWithShadow(containerOvo, R.color.white, R.dimen.dp_8, R.color.shadow_6, R.dimen.dp_2, Gravity.CENTER)
         renderOvoLayout(element)
@@ -94,20 +100,21 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
     }
 
     @SuppressLint("SetTextI18n")
-    private fun renderOvoLayout(element: HeaderViewModel) {
+    private fun renderOvoLayout(element: HeaderDataModel) {
         val scanHolder = itemView.findViewById<View>(R.id.container_action_scan)
         val tokoCashHolder = itemView.findViewById<View>(R.id.container_tokocash)
         val tvActionTokocash = itemView.findViewById<TextView>(R.id.tv_btn_action_tokocash)
         val tvTitleTokocash = itemView.findViewById<TextView>(R.id.tv_title_tokocash)
         val tvBalanceTokocash = itemView.findViewById<TextView>(R.id.tv_balance_tokocash)
         val ivLogoTokocash = itemView.findViewById<ImageView>(R.id.iv_logo_tokocash)
-        val tokocashProgressBar = itemView.findViewById<ProgressBar>(R.id.progress_bar_tokocash)
+        val tokocashProgressBar = itemView.findViewById<View>(R.id.progress_bar_tokocash)
         scanHolder.setOnClickListener { goToScanner() }
+        tvBalanceTokocash.setTextColor(itemView.context.getResColor(R.color.font_black_disabled_38))
 
         if (element.homeHeaderWalletActionData == null && element.isWalletDataError) {
             tokoCashHolder.setOnClickListener {
                 tokocashProgressBar.visibility = View.VISIBLE
-                listener.onRefreshTokoCashButtonClicked()
+                listener?.onRefreshTokoCashButtonClicked()
             }
             tvTitleTokocash.setText(R.string.home_header_tokocash_unable_to_load_label)
             tvActionTokocash.setText(R.string.home_header_tokocash_refresh_label)
@@ -131,12 +138,20 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
                     tokoCashHolder.setOnClickListener { goToOvoAppLink(homeHeaderWalletAction.isLinked, homeHeaderWalletAction.appLinkBalance) }
 
                     if (homeHeaderWalletAction.isLinked) {
+
                         tvTitleTokocash.text = homeHeaderWalletAction.cashBalance
                         tvActionTokocash.visibility = View.VISIBLE
                         tvBalanceTokocash.visibility = View.VISIBLE
-                        tvBalanceTokocash.text = itemView.resources.getString(R.string.home_header_fintech_points, homeHeaderWalletAction.pointBalance)
                         tvActionTokocash.visibility = if (homeHeaderWalletAction.isVisibleActionButton) View.VISIBLE else View.GONE
                         tvTitleTokocash.visibility = if (homeHeaderWalletAction.isVisibleActionButton) View.GONE else View.VISIBLE
+                        if (homeHeaderWalletAction.isShowTopup) {
+                            tvBalanceTokocash.setTextColor(itemView.context.getResColor(R.color.tkpd_main_green))
+                            tvBalanceTokocash.text = itemView.resources.getString(R.string.home_header_topup_ovo)
+                            tvBalanceTokocash.setTypeface(tvBalanceTokocash.getTypeface(), Typeface.BOLD)
+                            tokoCashHolder.setOnClickListener { gotToTopupOvo(homeHeaderWalletAction.topupUrl) }
+                        } else {
+                            tvBalanceTokocash.text = itemView.resources.getString(R.string.home_header_fintech_points, homeHeaderWalletAction.pointBalance)
+                        }
                     } else {
                         tvTitleTokocash.text = TITLE
                         tvActionTokocash.visibility = View.VISIBLE
@@ -146,8 +161,9 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
                                 tvTitleTokocash.text = "(+ ${element?.cashBackData?.amountText} )"
                             }
                         } else {
-                            listener.onRequestPendingCashBack()
+                            listener?.onRequestPendingCashBack()
                         }
+                        tvTitleTokocash.visibility = View.VISIBLE
                     }
                 } else {
                     tokocashProgressBar.visibility = View.GONE
@@ -157,7 +173,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
                         if (!homeHeaderWalletAction.appLinkActionButton.contains("webview") && !homeHeaderWalletAction.isLinked) {
                             HomePageTracking.eventTokoCashActivateClick(itemView.context)
                         }
-                        listener.actionAppLinkWalletHeader(homeHeaderWalletAction.appLinkActionButton)
+                        listener?.actionAppLinkWalletHeader(homeHeaderWalletAction.appLinkActionButton)
                     }
                     tokoCashHolder.setOnClickListener {
                         if (homeHeaderWalletAction.appLinkBalance != "" &&
@@ -166,7 +182,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
                             HomePageTracking.eventTokoCashCheckSaldoClick(itemView.context)
                         }
 
-                        listener.actionAppLinkWalletHeader(homeHeaderWalletAction.appLinkBalance)
+                        listener?.actionAppLinkWalletHeader(homeHeaderWalletAction.appLinkBalance)
                     }
                     ivLogoTokocash.setImageResource(R.drawable.ic_tokocash)
 
@@ -179,19 +195,17 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
                     } else {
                         tvBalanceTokocash.visibility = View.GONE
                         tvActionTokocash.visibility = View.VISIBLE
-                        if (element.isPendingTokocashChecked && element.cashBackData != null) {
-                            if (element.cashBackData?.amount?:0 > 0) {
-                                tvActionTokocash.visibility = View.GONE
-                                tvBalanceTokocash.visibility = View.VISIBLE
-                                tvBalanceTokocash.text = element?.cashBackData?.amountText?:""
-                                tvBalanceTokocash.setOnClickListener {
-                                    element.cashBackData?.let {
-                                        listener.actionInfoPendingCashBackTokocash(it, homeHeaderWalletAction.appLinkActionButton)
-                                    }
+                        if (element.isPendingTokocashChecked && element.cashBackData != null && element.cashBackData?.amount?:0 > 0) {
+                            tvActionTokocash.visibility = View.GONE
+                            tvBalanceTokocash.visibility = View.VISIBLE
+                            tvBalanceTokocash.text = element?.cashBackData?.amountText?:""
+                            tvBalanceTokocash.setOnClickListener {
+                                element.cashBackData?.let {
+                                    listener?.actionInfoPendingCashBackTokocash(it, homeHeaderWalletAction.appLinkActionButton)
                                 }
                             }
                         } else {
-                            listener.onRequestPendingCashBack()
+                            listener?.onRequestPendingCashBack()
                         }
                     }
                 }
@@ -199,18 +213,19 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
         }
     }
 
-    private fun renderTokoPoint(element: HeaderViewModel) {
+    private fun renderTokoPoint(element: HeaderDataModel) {
         val tokoPointHolder = itemView.findViewById<View>(R.id.container_tokopoint)
         val tvBalanceTokoPoint = itemView.findViewById<TextView>(R.id.tv_balance_tokopoint)
         val tvActionTokopoint = itemView.findViewById<TextView>(R.id.tv_btn_action_tokopoint)
         val ivLogoTokoPoint = itemView.findViewById<ImageView>(R.id.iv_logo_tokopoint)
-        val tokopointProgressBarLayout = itemView.findViewById<ProgressBar>(R.id.progress_bar_tokopoint_layout)
+        val tokopointProgressBarLayout = itemView.findViewById<View>(R.id.progress_bar_tokopoint_layout)
         val tokopointActionContainer = itemView.findViewById<View>(R.id.container_action_tokopoint)
         val mTextCouponCount = itemView.findViewById<TextView>(R.id.text_coupon_count)
+        ivLogoTokoPoint.setImageResource(R.drawable.ic_product_fintech_tokopoint_green_24)
         if (element.tokopointsDrawerHomeData == null && element.isTokoPointDataError) {
             tokoPointHolder.setOnClickListener {
                 tokopointProgressBarLayout.visibility = View.VISIBLE
-                listener.onRefreshTokoPointButtonClicked()
+                listener?.onRefreshTokoPointButtonClicked()
             }
             mTextCouponCount.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
             mTextCouponCount.visibility = View.VISIBLE
@@ -237,7 +252,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
             ImageHandler.loadImageAndCache(ivLogoTokoPoint, element.tokopointsDrawerHomeData?.iconImageURL)
             mTextCouponCount.setTypeface(mTextCouponCount.typeface, Typeface.BOLD)
             element.tokopointsDrawerHomeData?.sectionContent?.let { sectionContent ->
-                if (sectionContent.size > 0) {
+                if (sectionContent.isNotEmpty()) {
                     setTokopointHeaderData(sectionContent[0], tvBalanceTokoPoint)
                     if (sectionContent.size >= 2) {
                         setTokopointHeaderData(sectionContent[1], mTextCouponCount)
@@ -254,7 +269,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
                 if (element.tokopointsDrawerHomeData != null) {
                     HomePageTracking.eventUserProfileTokopoints(itemView.context)
                     element.tokopointsDrawerHomeData?.let {tokopointsDrawerHomeData->
-                        listener.actionTokoPointClicked(
+                        listener?.actionTokoPointClicked(
                                 tokopointsDrawerHomeData.redirectAppLink,
                                 tokopointsDrawerHomeData.redirectURL,
                                 if (TextUtils.isEmpty(tokopointsDrawerHomeData.mainPageTitle))
@@ -262,6 +277,13 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
                                 else
                                     tokopointsDrawerHomeData.mainPageTitle
                         )
+
+                        if (tokopointsDrawerHomeData.sectionContent.isNotEmpty() &&
+                                tokopointsDrawerHomeData.sectionContent[0].tagAttributes?.text?.isNotEmpty() == true) {
+                            HomePageTracking.sendClickOnTokopointsNewCouponTracker()
+                        } else {
+                            HomePageTracking.sendTokopointTrackerClick()
+                        }
                     }
                 }
             }
@@ -301,7 +323,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
                 } else {
                     tokopointsTextView.setTextColor(ContextCompat.getColor(itemView.context, R.color.font_black_primary_70))
                 }
-                if (sectionContentItem.textAttributes.isIsBold) {
+                if (sectionContentItem.textAttributes.isBold) {
                     tokopointsTextView.setTypeface(null, Typeface.BOLD)
                 } else {
                     tokopointsTextView.setTypeface(null, Typeface.NORMAL)
@@ -324,8 +346,15 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
                 }
                 walletAnalytics.eventClickActivationOvoHomepage()
             } else {
-                HomePageTracking.eventOvo(itemView.context)
+                OvoWidgetTracking.eventOvo(itemView.context)
             }
+            val intentBalanceWallet = RouteManager.getIntent(context, applinkString)
+            context.startActivity(intentBalanceWallet)
+        }
+    }
+    private fun gotToTopupOvo(applinkString: String) {
+        if (RouteManager.isSupportApplink(context, applinkString)) {
+            OvoWidgetTracking.eventTopupOvo(listener?.userId)
             val intentBalanceWallet = RouteManager.getIntent(context, applinkString)
             context.startActivity(intentBalanceWallet)
         }

@@ -5,7 +5,7 @@ import com.tokopedia.topchat.chattemplate.domain.usecase.CreateTemplateUseCase;
 import com.tokopedia.topchat.chattemplate.domain.usecase.DeleteTemplateUseCase;
 import com.tokopedia.topchat.chattemplate.domain.usecase.EditTemplateUseCase;
 import com.tokopedia.topchat.chattemplate.view.listener.EditTemplateChatContract;
-import com.tokopedia.topchat.chattemplate.view.viewmodel.EditTemplateViewModel;
+import com.tokopedia.topchat.chattemplate.view.viewmodel.EditTemplateUiModel;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -56,7 +56,7 @@ public class EditTemplateChatPresenter extends BaseDaggerPresenter<EditTemplateC
         temp.addAll(list);
         if (index < 0) {
             temp.add(s);
-            createTemplateUseCase.execute(CreateTemplateUseCase.generateParam(s, isSeller), new Subscriber<EditTemplateViewModel>() {
+            createTemplateUseCase.execute(CreateTemplateUseCase.generateParam(s, isSeller), new Subscriber<EditTemplateUiModel>() {
                 @Override
                 public void onCompleted() {
 
@@ -68,7 +68,7 @@ public class EditTemplateChatPresenter extends BaseDaggerPresenter<EditTemplateC
                 }
 
                 @Override
-                public void onNext(EditTemplateViewModel editTemplateViewModel) {
+                public void onNext(EditTemplateUiModel editTemplateViewModel) {
                     if (editTemplateViewModel.isSuccess()) {
                         getView().onResult(editTemplateViewModel, index, s);
                         getView().finish();
@@ -79,7 +79,7 @@ public class EditTemplateChatPresenter extends BaseDaggerPresenter<EditTemplateC
             });
         } else {
             temp.set(index, s);
-            editTemplateUseCase.execute(EditTemplateUseCase.generateParam(index + 1, s, isSeller), new Subscriber<EditTemplateViewModel>() {
+            editTemplateUseCase.execute(EditTemplateUseCase.generateParam(index + 1, s, isSeller), new Subscriber<EditTemplateUiModel>() {
                 @Override
                 public void onCompleted() {
 
@@ -91,7 +91,7 @@ public class EditTemplateChatPresenter extends BaseDaggerPresenter<EditTemplateC
                 }
 
                 @Override
-                public void onNext(EditTemplateViewModel editTemplateViewModel) {
+                public void onNext(EditTemplateUiModel editTemplateViewModel) {
                     if (editTemplateViewModel.isSuccess()) {
                         getView().onResult(editTemplateViewModel, index, s);
                         getView().finish();
@@ -105,7 +105,7 @@ public class EditTemplateChatPresenter extends BaseDaggerPresenter<EditTemplateC
 
     @Override
     public void deleteTemplate(final int index) {
-        deleteTemplateUseCase.execute(DeleteTemplateUseCase.generateParam(index + 1, isSeller), new Subscriber<EditTemplateViewModel>() {
+        deleteTemplateUseCase.execute(DeleteTemplateUseCase.generateParam(index + 1, isSeller), new Subscriber<EditTemplateUiModel>() {
             @Override
             public void onCompleted() {
 
@@ -117,7 +117,7 @@ public class EditTemplateChatPresenter extends BaseDaggerPresenter<EditTemplateC
             }
 
             @Override
-            public void onNext(EditTemplateViewModel editTemplateViewModel) {
+            public void onNext(EditTemplateUiModel editTemplateViewModel) {
                 if (editTemplateViewModel.isSuccess()) {
                     getView().onResult(editTemplateViewModel, index);
                     getView().finish();

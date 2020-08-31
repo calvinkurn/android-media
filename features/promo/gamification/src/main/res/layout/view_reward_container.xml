@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/image_green_glow"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:srcCompat="@drawable/gf_ic_green_glow"
+        tools:layout_height="960px" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/image_glow_circle_small"
+        android:layout_width="@dimen/dp_148"
+        android:layout_height="@dimen/dp_148"
+        android:layout_gravity="center_horizontal"
+        app:srcCompat="@drawable/gf_ic_circle_1" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/image_glow_circle_large"
+        android:layout_width="214dp"
+        android:layout_height="214dp"
+        android:layout_gravity="center_horizontal"
+        app:srcCompat="@drawable/gf_ic_circle_2" />
+
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
+        android:id="@+id/image_circle_reward"
+        android:layout_width="95dp"
+        android:layout_height="95dp"
+        android:scaleType="centerCrop"
+        android:layout_gravity="center_horizontal"
+        app:remoteFileName="ic_ovo.png" />
+
+    <RelativeLayout
+        android:id="@+id/ll_reward_text"
+        android:layout_width="wrap_content"
+        android:layout_height="44dp"
+        android:layout_gravity="center_horizontal">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_small_reward"
+            android:layout_width="wrap_content"
+            android:layout_height="31dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="-20dp"
+            android:layout_marginLeft="-20dp"
+            android:layout_toEndOf="@+id/image_small_reward"
+            android:layout_toRightOf="@+id/image_small_reward"
+            android:background="@drawable/gf_bg_reward_text"
+            android:gravity="center_vertical"
+            android:paddingStart="25dp"
+            android:paddingLeft="25dp"
+            android:paddingEnd="15dp"
+            android:paddingRight="15dp"
+            tools:text="50 OVO Points"
+            android:textColor="@android:color/white"
+            app:typographyType="heading_5"
+            app:typographyWeight="bold" />
+
+        <com.tkpd.remoteresourcerequest.view.DeferredImageView
+            android:id="@+id/image_small_reward"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:background="@drawable/gf_bf_white_circle"
+            android:padding="@dimen/dp_7" />
+
+
+    </RelativeLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_coupons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</FrameLayout>

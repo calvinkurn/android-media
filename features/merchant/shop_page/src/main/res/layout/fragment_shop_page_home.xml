@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.tokopedia.shop.product.view.widget.StickySingleHeaderView
+        android:id="@+id/stickySingleHeaderView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:descendantFocusability="blocksDescendants"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:paddingLeft="@dimen/dp_12"
+            android:paddingRight="@dimen/dp_12"
+            android:paddingBottom="@dimen/dp_8" />
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/scrollView_globalError_shopPage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+
+            <com.tokopedia.globalerror.GlobalError
+                android:id="@+id/globalError_shopPage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/spacing_lvl5"
+                android:layout_marginBottom="@dimen/spacing_lvl5"
+                android:visibility="gone" />
+
+        </androidx.core.widget.NestedScrollView>
+    </com.tokopedia.shop.product.view.widget.StickySingleHeaderView>
+</LinearLayout>

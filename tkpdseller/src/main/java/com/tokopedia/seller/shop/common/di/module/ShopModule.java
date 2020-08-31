@@ -2,9 +2,9 @@ package com.tokopedia.seller.shop.common.di.module;
 
 import android.content.Context;
 
-import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
-import com.tokopedia.url.TokopediaUrl;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
@@ -13,7 +13,6 @@ import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.network.retrofit.interceptors.BearerInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.product.manage.item.common.data.mapper.SimpleDataResponseMapper;
 import com.tokopedia.product.manage.item.common.data.source.ShopInfoDataSource;
 import com.tokopedia.product.manage.item.common.data.source.cloud.ShopApi;
@@ -24,6 +23,7 @@ import com.tokopedia.seller.common.exception.model.TomeErrorResponse;
 import com.tokopedia.seller.shop.common.di.ShopQualifier;
 import com.tokopedia.seller.shop.common.di.ShopScope;
 import com.tokopedia.seller.shop.common.interceptor.HeaderErrorResponseInterceptor;
+import com.tokopedia.url.TokopediaUrl;
 
 import dagger.Module;
 import dagger.Provides;
@@ -84,7 +84,7 @@ public class ShopModule {
                                                           BearerInterceptor bearerInterceptor,
                                                           @ShopQualifier ErrorResponseInterceptor errorResponseInterceptor,
                                                           FingerprintInterceptor fingerprintInterceptor,
-                                                          ChuckInterceptor chuckInterceptor
+                                                          ChuckerInterceptor chuckInterceptor
     ) {
 
         OkHttpClient.Builder builder = new OkHttpClient.Builder()

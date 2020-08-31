@@ -1,11 +1,11 @@
 package com.tokopedia.linker;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.linker.model.PaymentData;
 import com.tokopedia.linker.model.UserData;
+import com.tokopedia.linker.validation.BranchHelperValidation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,7 +50,7 @@ public class BranchHelper {
                         .setTitle(product.get(LinkerConstants.NAME))
                         .setContentMetadata(
                                 new ContentMetadata()
-                                        .setPrice(LinkerUtils.convertToDouble(product.get(LinkerConstants.PRICE_IDR_TO_DOUBLE)), CurrencyType.IDR)
+                                        .setPrice(LinkerUtils.convertToDouble(product.get(LinkerConstants.PRICE_IDR_TO_DOUBLE),"Product price"), CurrencyType.IDR)
                                         .setProductName(product.get(LinkerConstants.NAME))
                                         .setQuantity(LinkerUtils.convertStringToDouble(product.get(LinkerConstants.QTY)))
                                         .setSku(product.get(LinkerConstants.ID))
@@ -61,14 +61,13 @@ public class BranchHelper {
             }
 
             double revenuePrice;
-            double shippingPrice;
-            if (LinkerConstants.PRODUCTTYPE_MARKETPLACE.equalsIgnoreCase(branchIOPayment.getProductType())) {
+            if (!branchIOPayment.isFromNative
+                    && LinkerConstants.PRODUCTTYPE_MARKETPLACE.equalsIgnoreCase(branchIOPayment.getProductType())) {
                 revenuePrice = Double.parseDouble(branchIOPayment.getItemPrice());
-                shippingPrice = Double.parseDouble(branchIOPayment.getShipping());
             } else {
-                revenuePrice = LinkerUtils.convertToDouble(branchIOPayment.getRevenue());
-                shippingPrice = LinkerUtils.convertToDouble(branchIOPayment.getShipping());
+                revenuePrice = LinkerUtils.convertToDouble(branchIOPayment.getRevenue(), "Revenue");
             }
+            double shippingPrice = LinkerUtils.convertToDouble(branchIOPayment.getShipping(), "Shipping");
 
             new BranchEvent(BRANCH_STANDARD_EVENT.PURCHASE)
                     .setTransactionID(branchIOPayment.getOrderId())
@@ -82,8 +81,14 @@ public class BranchHelper {
                     .addCustomDataProperty(LinkerConstants.KEY_NEW_BUYER, String.valueOf(branchIOPayment.isNewBuyer()))
                     .addCustomDataProperty(LinkerConstants.KEY_MONTHLY_NEW_BUYER, String.valueOf(branchIOPayment.isMonthlyNewBuyer()))
                     .logEvent(context);
+
+            if (branchIOPayment.isNewBuyer()) {
+                sendMarketPlaceFirstTxnEvent(context, branchIOPayment, userData.getUserId(), revenuePrice, shippingPrice);
+            }
+            new BranchHelperValidation().validatePurchaseEvent(branchIOPayment,revenuePrice,shippingPrice);
         } catch (Exception ex) {
             ex.printStackTrace();
+            new BranchHelperValidation().exceptionToSendEvent("" + ex.getMessage(), BRANCH_STANDARD_EVENT.PURCHASE.getName());
         }
     }
 
@@ -132,6 +137,7 @@ public class BranchHelper {
                 .addCustomDataProperty(LinkerConstants.QTY, linkerData.getQuantity())
                 .addCustomDataProperty(LinkerConstants.CURRENCY, linkerData.getCurrency())
                 .logEvent(context);
+        new BranchHelperValidation().validateCartQuantity( linkerData.getQuantity());
     }
 
     public static void sendAddToWishListEvent(Context context, LinkerData linkerData){
@@ -153,6 +159,19 @@ public class BranchHelper {
                 .addCustomDataProperty(LinkerConstants.INVOICE_ID, linkerData.getInvoiceId())
                 .addCustomDataProperty(LinkerConstants.KEY_PAYMENT, linkerData.getPaymentId())
                 .addCustomDataProperty(LinkerConstants.PRICE, linkerData.getPrice())
+                .logEvent(context);
+    }
+    private static void sendMarketPlaceFirstTxnEvent(Context context, PaymentData branchIOPayment,  String userId, double revenuePrice,double shippingPrice){
+        new BranchEvent(LinkerConstants.EVENT_MARKETPLACE_FIRST_TXN)
+                .setTransactionID(branchIOPayment.getOrderId())
+                .setCurrency(CurrencyType.IDR)
+                .setShipping(shippingPrice)
+                .setRevenue(revenuePrice)
+                .addCustomDataProperty(LinkerConstants.KEY_PAYMENT, branchIOPayment.getPaymentId())
+                .addCustomDataProperty(LinkerConstants.KEY_PRODUCTTYPE, branchIOPayment.getProductType())
+                .addCustomDataProperty(LinkerConstants.KEY_USERID, userId)
+                .addCustomDataProperty(LinkerConstants.KEY_NEW_BUYER, String.valueOf(branchIOPayment.isNewBuyer()))
+                .addCustomDataProperty(LinkerConstants.KEY_MONTHLY_NEW_BUYER, String.valueOf(branchIOPayment.isMonthlyNewBuyer()))
                 .logEvent(context);
     }
 

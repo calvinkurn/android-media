@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="host_event" translatable="false">event</string>
+    <string name="path_event_search" translatable="false">/search</string>
+    <string name="path_event_category" translatable="false">/category</string>
+    <string name="path_event_location" translatable="false">/location</string>
+</resources>

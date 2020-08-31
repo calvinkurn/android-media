@@ -1,51 +1,63 @@
 package com.tokopedia.product.detail.view.widget
 
+import android.annotation.SuppressLint
 import android.app.Dialog
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
-import android.content.Intent
+import android.content.DialogInterface
+import android.graphics.Paint
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.design.component.BottomSheets
-import com.tokopedia.discovery.common.constants.SearchConstant.Wishlist.WISHLIST_STATUS_IS_WISHLIST
+import com.tokopedia.design.component.BottomSheets.BottomSheetDismissListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
-import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationDataModel
+import com.tokopedia.product.detail.data.model.addtocartrecommendation.*
+import com.tokopedia.product.detail.data.util.DynamicProductDetailTracking
 import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.di.DaggerProductDetailComponent
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.adapter.AddToCartDoneAdapter
 import com.tokopedia.product.detail.view.adapter.AddToCartDoneTypeFactory
+import com.tokopedia.product.detail.view.util.ProductDetailErrorHandler
 import com.tokopedia.product.detail.view.viewholder.AddToCartDoneAddedProductViewHolder
-import com.tokopedia.product.detail.view.viewholder.AddToCartDoneRecommendationViewHolder
 import com.tokopedia.product.detail.view.viewmodel.AddToCartDoneViewModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.topads.sdk.utils.ImpresionTask
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class AddToCartDoneBottomSheet :
-        BottomSheets(),
+        BottomSheetDialogFragment(),
         AddToCartDoneAddedProductViewHolder.AddToCartDoneAddedProductListener,
         HasComponent<ProductDetailComponent>,
         RecommendationListener {
@@ -54,6 +66,9 @@ class AddToCartDoneBottomSheet :
         private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
         private const val REQUEST_FROM_PDP = 394
         const val KEY_ADDED_PRODUCT_DATA_MODEL = "addedProductDataModel"
+        private const val abNewPdpAfterAtcKey = "PDP ATC 2020"
+        private const val oldVariantPDP = "PDP after ATC"
+        private const val className: String = "com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet"
     }
 
     @Inject
@@ -65,36 +80,71 @@ class AddToCartDoneBottomSheet :
     private lateinit var atcDoneAdapter: AddToCartDoneAdapter
     private var lastAdapterPosition = -1
     private lateinit var recyclerView: RecyclerView
-    private lateinit var containerLayout: FrameLayout
+    private lateinit var containerLayout: ConstraintLayout
     private lateinit var viewShimmeringLoading: View
+    private lateinit var headerPrice: Typography
+    private lateinit var discountPercentage: Label
+    private lateinit var slashedPrice: Typography
+    private lateinit var price: Typography
+    private lateinit var shadow: View
+    private lateinit var stateAtcView: View
+    private lateinit var addToCartButton: UnifyButton
     private var addedProductDataModel: AddToCartDoneAddedProductDataModel? = null
 
-    override fun getLayoutResourceId(): Int {
-        return R.layout.add_to_cart_done_bottomsheet
+    private var inflatedView: View? = null
+    private var dismissListener: BottomSheetDismissListener? = null
+    private var bottomSheetBehavior: BottomSheetBehavior<*>? = null
+
+    fun setDismissListener(dismissListener: BottomSheetDismissListener) {
+        this.dismissListener = dismissListener
     }
 
-    override fun getBaseLayoutResourceId(): Int {
-        return R.layout.widget_bottomsheet_add_to_cart_done
+    private fun configView(parentView: View) {
+        val closeButton = parentView.findViewById<View>(R.id.btn_close)
+        closeButton?.setOnClickListener { this@AddToCartDoneBottomSheet.dismiss() }
+        shadow = parentView.findViewById(R.id.shadow)
+        recyclerView = parentView.findViewById(R.id.recycler_view_add_to_cart_done)
+        containerLayout = parentView.findViewById(R.id.container_layout)
+        viewShimmeringLoading = parentView.findViewById(R.id.atc_done_bottomsheet_shimmering_loading)
+        headerPrice = parentView.findViewById(R.id.heading_price)
+        discountPercentage = parentView.findViewById(R.id.discount_percentage)
+        stateAtcView = parentView.findViewById<Label>(R.id.state_atc)
+        slashedPrice = parentView.findViewById(R.id.slashed_price)
+        price = parentView.findViewById(R.id.price)
+        addToCartButton = parentView.findViewById(R.id.btn_add_to_cart)
+
     }
 
-    override fun initView(view: View?) {
-        view?.let {
-            recyclerView = it.findViewById(R.id.recycler_view_add_to_cart_done)
-            containerLayout = it.findViewById(R.id.container_layout)
-            viewShimmeringLoading = it.findViewById(R.id.atc_done_bottomsheet_shimmering_loading)
-        }
-    }
-
-    override fun title(): String {
-        return ""
-    }
-
+    @SuppressLint("RestrictedApi")
     override fun setupDialog(dialog: Dialog, style: Int) {
         super.setupDialog(dialog, style)
-        dialog?.run {
-            findViewById<FrameLayout>(R.id.design_bottom_sheet).setBackgroundResource(android.R.color.transparent)
+        dialog.run {
+            inflatedView = View.inflate(context, R.layout.add_to_cart_done_bottomsheet, null)
+            inflatedView?.let{
+                configView(it)
+                dialog.setContentView(it)
+                val parent = it.parent as View
+                bottomSheetBehavior = BottomSheetBehavior.from(parent)
+                val bottomSheetView = findViewById<FrameLayout>(R.id.design_bottom_sheet)
+                bottomSheetView.setBackgroundResource(android.R.color.transparent)
+                if(RemoteConfigInstance.getInstance().abTestPlatform.getString(abNewPdpAfterAtcKey) != oldVariantPDP){
+                    dialog.setCanceledOnTouchOutside(false)
+                    recyclerView.isNestedScrollingEnabled = false
+                    val bottomSheetBehavior = BottomSheetBehavior.from<View>(bottomSheetView)
+                    bottomSheetBehavior.setBottomSheetCallback(object : BottomSheetCallback() {
+                        override fun onStateChanged(bottomSheet: View, newState: Int) {
+                            if(newState == BottomSheetBehavior.STATE_DRAGGING){
+                                bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+                            }
+                        }
+
+                        override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+                    })
+                }
+            }
         }
     }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initInjector()
         initViewModel()
@@ -104,8 +154,51 @@ class AddToCartDoneBottomSheet :
         }
         initAdapter()
         observeRecommendationProduct()
+        observeAtcStatus()
         getRecommendationProduct()
         return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
+
+        dialog.setOnShowListener {
+            val bottomSheet = (it as BottomSheetDialog).findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as FrameLayout?
+            val behavior = BottomSheetBehavior.from(bottomSheet)
+            behavior.state = BottomSheetBehavior.STATE_EXPANDED
+            dialog.setCancelable(false)
+            dialog.setCanceledOnTouchOutside(true)
+        }
+
+        return dialog
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        if (dismissListener != null) {
+            dismissListener!!.onDismiss()
+        }
+        super.onDismiss(dialog)
+    }
+
+    override fun onCancel(dialog: DialogInterface) {
+        if (dismissListener != null) {
+            dismissListener!!.onDismiss()
+        }
+        super.onCancel(dialog)
+    }
+
+    override fun onDestroy() {
+        if (dismissListener != null) {
+            dismissListener!!.onDismiss()
+        }
+        super.onDestroy()
+    }
+
+    override fun onDetach() {
+        if (dismissListener != null) {
+            dismissListener!!.onDismiss()
+        }
+        super.onDetach()
     }
 
     private fun getRecommendationProduct() {
@@ -119,7 +212,28 @@ class AddToCartDoneBottomSheet :
         val factory = AddToCartDoneTypeFactory(this, this)
         atcDoneAdapter = AddToCartDoneAdapter(factory)
         recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.animation= null
         recyclerView.adapter = atcDoneAdapter
+    }
+
+    private fun observeAtcStatus(){
+        addToCartDoneViewModel.addToCartLiveData.observe(this, Observer { result ->
+            addToCartButton.isLoading = false
+            if(result is Success){
+                stateAtcView.visible()
+                addToCartButton.hide()
+            } else if(result is Fail){
+                dialog?.run{
+                    Toaster.toasterCustomBottomHeight = resources.getDimensionPixelOffset(R.dimen.dp_80)
+                    Toaster.make(findViewById(android.R.id.content),
+                            ProductDetailErrorHandler.getErrorMessage(context, result.throwable),
+                            Snackbar.LENGTH_LONG,
+                            Toaster.TYPE_ERROR
+                    )
+
+                }
+            }
+        })
     }
 
     private fun observeRecommendationProduct() {
@@ -128,8 +242,13 @@ class AddToCartDoneBottomSheet :
                 is Success -> {
                     viewShimmeringLoading.hide()
                     atcDoneAdapter.clearAllElements()
-                    for (res in it.data) {
-                        atcDoneAdapter.addElement(AddToCartDoneRecommendationDataModel(res))
+                    val abValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(abNewPdpAfterAtcKey)
+                    if(abValue.isNotEmpty() && abValue != oldVariantPDP){
+                        atcDoneAdapter.addElement(AddToCartDoneRecommendationCarouselDataModel(mapRecommendationWidgetToAddToCartRecommendationDataModel(it.data.first()), addedProductDataModel?.shopId ?: -1))
+                    } else {
+                        for (res in it.data) {
+                            atcDoneAdapter.addElement(AddToCartDoneRecommendationDataModel(res))
+                        }
                     }
                     atcDoneAdapter.addElement(0, addedProductDataModel)
                     atcDoneAdapter.notifyDataSetChanged()
@@ -147,6 +266,24 @@ class AddToCartDoneBottomSheet :
         })
     }
 
+    private fun mapRecommendationWidgetToAddToCartRecommendationDataModel(recommendationWidget: RecommendationWidget): AddToCartDoneRecommendationWidgetDataModel{
+        return AddToCartDoneRecommendationWidgetDataModel(
+                title = recommendationWidget.title,
+                currentPage = recommendationWidget.currentPage,
+                foreignTitle = recommendationWidget.foreignTitle,
+                hasNext = recommendationWidget.hasNext,
+                layoutType = recommendationWidget.layoutType,
+                nextPage = recommendationWidget.nextPage,
+                pageName = recommendationWidget.pageName,
+                prevPage = recommendationWidget.prevPage,
+                recommendationItemList = recommendationWidget.recommendationItemList.map { AddToCartDoneRecommendationItemDataModel(it) },
+                seeMoreAppLink = recommendationWidget.seeMoreAppLink,
+                source = recommendationWidget.source,
+                tid = recommendationWidget.tid,
+                widgetUrl = recommendationWidget.widgetUrl
+        )
+    }
+
     private fun showToasterRequestError(throwable: Throwable, onClickListener: View.OnClickListener) {
         dialog?.run {
             Toaster.showErrorWithAction(
@@ -160,19 +297,17 @@ class AddToCartDoneBottomSheet :
     }
 
     private fun configBottomSheetHeight() {
-        dialog?.run {
-            val parent = findViewById<FrameLayout>(R.id.design_bottom_sheet)
-            val displaymetrics = DisplayMetrics()
-            activity?.windowManager?.defaultDisplay?.getMetrics(displaymetrics)
-            val screenHeight = displaymetrics.heightPixels
-            val maxHeight = (screenHeight * 0.9f).toInt()
-            parent.measure(
-                    View.MeasureSpec.makeMeasureSpec(parent.width, View.MeasureSpec.EXACTLY),
-                    View.MeasureSpec.makeMeasureSpec(maxHeight, View.MeasureSpec.AT_MOST)
-            )
-            val params = parent.layoutParams
-            params.height = parent.measuredHeight
-            parent.layoutParams = params
+        if(RemoteConfigInstance.getInstance().abTestPlatform.getString(abNewPdpAfterAtcKey) == oldVariantPDP) {
+            dialog?.run {
+                val parent = findViewById<FrameLayout>(R.id.design_bottom_sheet)
+                val displaymetrics = DisplayMetrics()
+                activity?.windowManager?.defaultDisplay?.getMetrics(displaymetrics)
+                val screenHeight = displaymetrics.heightPixels
+                val maxHeight = (screenHeight * 0.9f).toInt()
+                val params = parent.layoutParams
+                params.height = maxHeight
+                parent.layoutParams = params
+            }
         }
     }
 
@@ -210,35 +345,19 @@ class AddToCartDoneBottomSheet :
         dismiss()
     }
 
-    private fun updateWishlist(isWishlist: Boolean, position: Int) {
-        if (recyclerView.findViewHolderForAdapterPosition(lastAdapterPosition) is AddToCartDoneRecommendationViewHolder) {
-            (recyclerView.findViewHolderForAdapterPosition(lastAdapterPosition) as AddToCartDoneRecommendationViewHolder).updateWishlist(
-                    position,
-                    isWishlist
-            )
-        }
-    }
-
-    override fun state(): BottomSheetsState {
-        return BottomSheetsState.FLEXIBLE
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_FROM_PDP) {
-            data?.let {
-                val wishlistStatusFromPdp = data.getBooleanExtra(WISHLIST_STATUS_IS_WISHLIST,
-                        false)
-                val position = data.getIntExtra(PDP_EXTRA_UPDATED_POSITION, -1)
-                updateWishlist(wishlistStatusFromPdp, position)
-            }
-            lastAdapterPosition = -1
-        }
-    }
-
     override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {
-        if (item.isTopAds) ImpresionTask().execute(item.clickUrl)
-        productDetailTracking.eventAddToCartRecommendationClick(
+        if (item.isTopAds) {
+            context?.run {
+                TopAdsUrlHitter(className).hitClickUrl(
+                        this,
+                        item.clickUrl,
+                        item.productId.toString(),
+                        item.name,
+                        item.imageUrl
+                )
+            }
+        }
+        DynamicProductDetailTracking.Click.eventAddToCartRecommendationClick(
                 item,
                 item.position,
                 addToCartDoneViewModel.isLoggedIn(),
@@ -254,7 +373,17 @@ class AddToCartDoneBottomSheet :
     }
 
     override fun onProductImpression(item: RecommendationItem) {
-        if (item.isTopAds) ImpresionTask().execute(item.trackerImageUrl)
+        if (item.isTopAds) {
+            context?.run {
+                TopAdsUrlHitter(className).hitImpressionUrl(
+                        this,
+                        item.trackerImageUrl,
+                        item.productId.toString(),
+                        item.name,
+                        item.imageUrl
+                )
+            }
+        }
         productDetailTracking.eventAddToCartRecommendationImpression(
                 item.position,
                 item,
@@ -272,6 +401,36 @@ class AddToCartDoneBottomSheet :
             addToCartDoneViewModel.removeWishList(item.productId.toString(), callback)
         }
         productDetailTracking.eventAddToCartRecommendationWishlist(item, addToCartDoneViewModel.isLoggedIn(), isAddWishlist)
+    }
+
+    override fun onRecommendationItemSelected(dataModel: AddToCartDoneRecommendationItemDataModel, position: Int) {
+        val item = dataModel.recommendationItem
+        shadow.visible()
+        price.visible()
+        addToCartButton.visible()
+        stateAtcView.visibility = if(dataModel.isAddedToCart) View.VISIBLE else View.GONE
+        addToCartButton.visibility = if(!dataModel.isAddedToCart) View.VISIBLE else View.GONE
+        discountPercentage.visibility = if(item.discountPercentage.isNotBlank()) View.VISIBLE else View.GONE
+        slashedPrice.visibility = if(item.discountPercentage.isNotBlank()) View.VISIBLE else View.GONE
+        headerPrice.visibility = if(!item.discountPercentage.isNotBlank()) View.VISIBLE else View.GONE
+        discountPercentage.text = item.discountPercentage
+        slashedPrice.text = item.slashedPrice
+        slashedPrice.paintFlags = slashedPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+        price.text = item.price
+
+        addToCartButton.setOnClickListener {
+            if(!addToCartButton.isLoading){
+                addToCartButton.isLoading = true
+                addToCartDoneViewModel.addToCart(dataModel)
+                productDetailTracking.eventAddToCartRecommendationATCClick(
+                        item,
+                        item.position,
+                        addToCartDoneViewModel.isLoggedIn(),
+                        item.pageName,
+                        item.header
+                )
+            }
+        }
     }
 
     override fun onButtonGoToCartClicked() {

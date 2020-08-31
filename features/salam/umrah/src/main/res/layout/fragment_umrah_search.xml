@@ -13,17 +13,18 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="@color/white">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/umrah_search_recycler_view"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:clipToPadding="false"
-                android:paddingLeft="@dimen/dp_12"
+                android:fillViewport="true"
                 android:paddingTop="@dimen/dp_16"
-                android:paddingRight="@dimen/dp_12"
-                android:paddingBottom="@dimen/dp_64" />
+                android:paddingBottom="@dimen/dp_64"
+                android:scrollbars="vertical" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fab_umrah_search_message"
@@ -39,20 +40,16 @@
                 app:srcCompat="@drawable/ic_umrah_message" />
 
         </FrameLayout>
+
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
-    <com.tokopedia.design.button.BottomActionView
+    <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
         android:id="@+id/umrah_search_bottom_action_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_16"
         android:visibility="gone"
-        app:bav_1_display="true"
-        app:bav_2_display="true"
-        app:bav_icon_1="@drawable/ic_system_action_sort_grayscale_24"
-        app:bav_icon_2="@drawable/ic_system_action_filter_grayscale_24"
-        app:bav_label_1="@string/travel_title_sort_search"
-        app:bav_label_2="@string/label_filter"
+        app:fbType="group"
         app:layout_anchor="@+id/umrah_search_recycler_view"
         app:layout_anchorGravity="bottom|center_horizontal" />
 

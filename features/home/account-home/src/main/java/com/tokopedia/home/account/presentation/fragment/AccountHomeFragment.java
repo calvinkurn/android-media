@@ -2,14 +2,6 @@ package com.tokopedia.home.account.presentation.fragment;
 
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.tabs.TabLayout;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,16 +9,26 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.tabs.TabLayout;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.badge.BadgeView;
-import com.tokopedia.home.account.AccountHomeRouter;
+import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.analytics.AccountAnalytics;
 import com.tokopedia.home.account.di.component.AccountHomeComponent;
+import com.tokopedia.home.account.di.component.DaggerAccountHomeComponent;
 import com.tokopedia.home.account.presentation.AccountHome;
 import com.tokopedia.home.account.presentation.activity.GeneralSettingActivity;
 import com.tokopedia.home.account.presentation.adapter.AccountFragmentItem;
@@ -46,6 +48,8 @@ import javax.inject.Inject;
 public class AccountHomeFragment extends TkpdBaseV4Fragment implements
         AccountHome.View, AllNotificationListener, FragmentListener {
 
+    public static final int SELLER_TAB_INDEX = 1;
+
     @Inject
     AccountHome.Presenter presenter;
     private TabLayout tabLayout;
@@ -61,8 +65,10 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
 
     private AccountAnalytics accountAnalytics;
 
-    public static Fragment newInstance() {
-        return new AccountHomeFragment();
+    public static Fragment newInstance(Bundle extras) {
+        Fragment fragment = new AccountHomeFragment();
+        fragment.setArguments(extras);
+        return fragment;
     }
 
     @Override
@@ -83,7 +89,13 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         setPage();
+
+        if (getArguments() != null && getArguments().containsKey(AccountConstants.ACCOUNT_TAB)) {
+            String param = getArguments().getString(AccountConstants.ACCOUNT_TAB);
+            presenter.openTabByParam(param);
+        }
     }
 
     @Override
@@ -108,7 +120,7 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
             fragmentItems.add(item);
 
             item = new AccountFragmentItem();
-            item.setFragment(SellerAccountFragment.newInstance());
+            item.setFragment(SellerAccountFragment.Companion.newInstance());
             item.setTitle(getContext().getString(R.string.label_account_seller));
             fragmentItems.add(item);
 
@@ -117,19 +129,18 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     }
 
     @Override
+    public void openSellerTab() {
+        viewPager.setCurrentItem(SELLER_TAB_INDEX);
+    }
+
+    @Override
     protected String getScreenName() {
         return null;
     }
 
     private void initInjector() {
-        AccountHomeComponent component =
-                ((AccountHomeRouter) getActivity().getApplicationContext())
-                        .getAccountHomeInjection()
-                        .getAccountHomeComponent(
-                                ((BaseMainApplication) getActivity().getApplicationContext())
-                                        .getBaseAppComponent()
-                        );
-
+        AccountHomeComponent component = DaggerAccountHomeComponent.builder().baseAppComponent(((BaseMainApplication) getActivity().getApplicationContext())
+                .getBaseAppComponent()).build();
         component.inject(this);
         presenter.attachView(this);
     }
@@ -157,7 +168,7 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
 
         ImageButton menuSettings = toolbar.findViewById(R.id.action_settings);
 
-        menuSettings.setOnClickListener(v -> startActivity(GeneralSettingActivity.createIntent
+        menuSettings.setOnClickListener(v -> startActivity(GeneralSettingActivity.Companion.createIntent
                 (getActivity())));
         menuNotification.setOnClickListener(v -> {
             accountAnalytics.eventTrackingNotifCenter();
@@ -223,10 +234,10 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     }
 
     @Override
-    public void showError(Throwable e) {
+    public void showError(Throwable e, String errorCode) {
         Fragment currentFragment = adapter.getItem(viewPager.getCurrentItem());
         if (currentFragment != null && currentFragment instanceof BaseAccountView) {
-            ((BaseAccountView) currentFragment).showError(e);
+            ((BaseAccountView) currentFragment).showError(e, errorCode);
         }
     }
 

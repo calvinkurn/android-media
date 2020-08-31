@@ -1,7 +1,7 @@
 package com.tokopedia.topchat.chattemplate.data.source;
 
 import com.tokopedia.topchat.chattemplate.data.mapper.TemplateChatMapper;
-import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateViewModel;
+import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel;
 import com.tokopedia.topchat.common.chat.api.ChatApi;
 
 import java.util.HashMap;
@@ -23,7 +23,7 @@ public class CloudGetTemplateChatDataSource {
         this.chatApi = chatApi;
     }
 
-    public Observable<GetTemplateViewModel> getTemplate(HashMap<String, Object> parameters) {
+    public Observable<GetTemplateUiModel> getTemplate(HashMap<String, Object> parameters) {
         return chatApi.getTemplate(parameters).map(templateChatMapper);
     }
 }

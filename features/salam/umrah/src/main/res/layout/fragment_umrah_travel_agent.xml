@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/umrah_travel_swipe_to_refresh"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white">
+
+            <LinearLayout
+                android:id="@+id/container_umrah_travel"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <com.tokopedia.salam.umrah.common.presentation.widget.UmrahItemWidget
+                    android:id="@+id/iw_umrah_travel_agent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_16" />
+
+                <com.tokopedia.unifycomponents.UnifyButton
+                    android:id="@+id/btn_umrah_travel_contact"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:text="@string/umrah_travel_contact"
+                    app:unifyButtonSize="small"
+                    app:unifyButtonType="alternate"
+                    app:unifyButtonVariant="ghost" />
+
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/tl_umrah_travel_agent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:tabMaxWidth="0dp"
+                    app:tabGravity="fill"
+                    app:tabMode="fixed"
+                    app:tabIndicatorColor="@color/Green_G500"
+                    app:tabSelectedTextColor="@color/Green_G500"
+                    app:tabTextAppearance="@style/tabUmrahStyle"
+                    app:tabTextColor="@color/grey_450" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_1"
+                    android:background="@color/shadow_5"
+                    />
+
+                <androidx.viewpager.widget.ViewPager
+                    android:id="@+id/vp_umrah_travel_agent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/dp_8" />
+
+            </LinearLayout>
+
+            <ProgressBar
+                android:id="@+id/umrah_pb_travel_share"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <include
+                android:id="@+id/container_umrah_travel_shimmering"
+                layout="@layout/fragment_umrah_travel_shimmering"
+                android:visibility="visible" />
+        </FrameLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

@@ -1,9 +1,9 @@
 package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 
-import androidx.annotation.LayoutRes
 import android.view.View
-import com.tokopedia.productcard.v2.ProductCardView
+import androidx.annotation.LayoutRes
 import com.tokopedia.search.R
+import com.tokopedia.search.result.presentation.model.ProductItemViewModel
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
 import kotlinx.android.synthetic.main.search_result_product_card_small_grid.view.*
 
@@ -18,11 +18,32 @@ class SmallGridProductItemViewHolder(
         val LAYOUT = R.layout.search_result_product_card_small_grid
     }
 
-    override fun getProductCardView(): ProductCardView? {
-        return itemView.productCardView ?: null
+    override fun bind(productItem: ProductItemViewModel?) {
+        if (productItem == null) return
+
+        itemView.productCardView?.setProductModel(productItem.toProductCardModel(productItem.imageUrl300))
+
+        itemView.productCardView?.setThreeDotsOnClickListener {
+            productListener.onThreeDotsClick(productItem, adapterPosition)
+        }
+
+        itemView.productCardView?.setOnLongClickListener {
+            productListener.onThreeDotsClick(productItem, adapterPosition)
+            true
+        }
+
+        itemView.productCardView?.setOnClickListener {
+            productListener.onItemClicked(productItem, adapterPosition)
+        }
+
+        itemView.productCardView?.setImageProductViewHintListener(productItem, createImageProductViewHintListener(productItem))
     }
 
-    override fun isUsingBigImageUrl(): Boolean {
-        return false
+    override fun bind(productItem: ProductItemViewModel?, payloads: MutableList<Any>) {
+        payloads.getOrNull(0) ?: return
+
+        itemView.productCardView?.setThreeDotsOnClickListener {
+            productListener.onThreeDotsClick(productItem, adapterPosition)
+        }
     }
 }

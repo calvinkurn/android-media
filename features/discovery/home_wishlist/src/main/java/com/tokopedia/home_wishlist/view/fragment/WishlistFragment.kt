@@ -11,6 +11,7 @@ import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -18,24 +19,20 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.appbar.AppBarLayout
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
-import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.home_wishlist.R
 import com.tokopedia.home_wishlist.analytics.WishlistTracking
+import com.tokopedia.home_wishlist.common.EndlessRecyclerViewScrollListener
 import com.tokopedia.home_wishlist.common.ToolbarElevationOffsetListener
+import com.tokopedia.home_wishlist.component.HasComponent
 import com.tokopedia.home_wishlist.di.WishlistComponent
 import com.tokopedia.home_wishlist.model.action.*
-import com.tokopedia.home_wishlist.model.datamodel.RecommendationCarouselItemDataModel
-import com.tokopedia.home_wishlist.model.datamodel.RecommendationItemDataModel
-import com.tokopedia.home_wishlist.model.datamodel.WishlistDataModel
-import com.tokopedia.home_wishlist.model.datamodel.WishlistItemDataModel
+import com.tokopedia.home_wishlist.model.datamodel.*
 import com.tokopedia.home_wishlist.util.GravitySnapHelper
 import com.tokopedia.home_wishlist.view.adapter.WishlistAdapter
 import com.tokopedia.home_wishlist.view.adapter.WishlistTypeFactoryImpl
@@ -49,11 +46,13 @@ import com.tokopedia.home_wishlist.view.fragment.WishlistFragment.Companion.SAVE
 import com.tokopedia.home_wishlist.view.fragment.WishlistFragment.Companion.SHARE_PRODUCT_TITLE
 import com.tokopedia.home_wishlist.view.fragment.WishlistFragment.Companion.SPAN_COUNT
 import com.tokopedia.home_wishlist.view.fragment.WishlistFragment.Companion.WIHSLIST_STATUS_IS_WISHLIST
+import com.tokopedia.home_wishlist.view.listener.TopAdsListener
 import com.tokopedia.home_wishlist.view.listener.WishlistListener
 import com.tokopedia.home_wishlist.viewmodel.WishlistViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.smart_recycler_helper.SmartExecutors
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -82,7 +81,7 @@ import javax.inject.Inject
  * @constructor Creates an empty recommendation.
  */
 @SuppressLint("SyntheticAccessor")
-open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
+open class WishlistFragment: Fragment(), WishlistListener, TopAdsListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -118,7 +117,7 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
         private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
         private const val COACH_MARK_TAG = "wishlist"
         private const val REQUEST_FROM_PDP = 394
-
+        private const val className = "com.tokopedia.home_wishlist.view.fragment.WishlistFragment"
         fun newInstance() = WishlistFragment()
     }
 
@@ -128,6 +127,7 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initInjector()
         activity?.let {
             trackingQueue = TrackingQueue(it)
         }
@@ -166,10 +166,13 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
         if(this::trackingQueue.isInitialized) trackingQueue.sendAll()
     }
 
-    override fun getScreenName(): String = getString(R.string.wishlist_global)
 
-    override fun initInjector() {
-        getComponent(WishlistComponent::class.java).inject(this)
+    private fun initInjector() {
+        getComponent(WishlistComponent::class.java)?.inject(this)
+    }
+
+    private fun <C> getComponent(componentType: Class<C>): C? {
+        return componentType.cast((activity as HasComponent<C>?)?.getComponent())
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -220,20 +223,20 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
             updateBottomMargin()
             endlessRecyclerViewScrollListener?.resetState()
             menu?.findItem(R.id.manage)?.isVisible = false
-            viewModel.getWishlistData(searchView?.searchText ?: "")
+            viewModel.getWishlistData(searchView?.getSearchText() ?: "")
         }
     }
 
     private fun initSearchView(){
         searchView?.setDelayTextChanged(250)
-        searchView?.setListener(object : SearchInputView.Listener{
+        searchView?.setListener(object : CustomSearchView.Listener {
             override fun onSearchSubmitted(text: String?) {
                 searchView?.hideKeyboard()
             }
 
-            override fun onSearchTextChanged(text: String) {
-                updateScrollFlagForSearchView(text.isNotEmpty())
-                viewModel.getWishlistData(text)
+            override fun onSearchTextChanged(text: String?) {
+                updateScrollFlagForSearchView(text?.isNotEmpty() ?: false)
+                viewModel.getWishlistData(text ?: "")
             }
         })
     }
@@ -289,9 +292,7 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
             endlessRecyclerViewScrollListener?.let {
                 recyclerView?.removeOnScrollListener(it)
             }
-            endlessRecyclerViewScrollListener = object : EndlessRecyclerViewScrollListener(recyclerView?.layoutManager) {
-                override fun getCurrentPage(): Int = 1
-
+            endlessRecyclerViewScrollListener = object : EndlessRecyclerViewScrollListener(recyclerView?.layoutManager, 1) {
                 override fun onLoadMore(page: Int, totalItemsCount: Int) {
                     if(state.isEmpty()){
                         updateBottomMargin()
@@ -396,6 +397,13 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
             }
             is RecommendationCarouselItemDataModel -> {
                 WishlistTracking.clickRecommendation(dataModel.recommendationItem, position)
+                TopAdsUrlHitter(context).hitClickUrl(
+                        className,
+                        dataModel.recommendationItem.clickUrl,
+                        dataModel.recommendationItem.productId.toString(),
+                        dataModel.recommendationItem.name,
+                        dataModel.recommendationItem.imageUrl
+                )
                 viewModel.onProductClick(
                         dataModel.recommendationItem.productId,
                         parentPosition,
@@ -404,6 +412,13 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
             }
             is RecommendationItemDataModel -> {
                 WishlistTracking.clickRecommendation(dataModel.recommendationItem, position)
+                TopAdsUrlHitter(context).hitClickUrl(
+                        className,
+                        dataModel.recommendationItem.clickUrl,
+                        dataModel.recommendationItem.productId.toString(),
+                        dataModel.recommendationItem.name,
+                        dataModel.recommendationItem.imageUrl
+                )
                 viewModel.onProductClick(
                         dataModel.recommendationItem.productId,
                         parentPosition,
@@ -437,7 +452,7 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
     }
 
     override fun onClickCheckboxDeleteWishlist(position: Int, isChecked: Boolean) {
-        viewModel.setWishlistOnMarkDelete(position, isChecked)
+        if(position != -1) viewModel.setWishlistOnMarkDelete(position, isChecked)
     }
 
     override fun onWishlistClick(parentPosition: Int, childPosition: Int, wishlistStatus: Boolean) {
@@ -447,9 +462,50 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
     override fun onProductImpression(dataModel: WishlistDataModel, position: Int) {
         when (dataModel) {
             is WishlistItemDataModel -> WishlistTracking.impressionProduct(trackingQueue, dataModel.productItem, position.toString())
-            is RecommendationItemDataModel -> WishlistTracking.impressionEmptyWishlistRecommendation(trackingQueue, dataModel.recommendationItem, position)
-            is RecommendationCarouselItemDataModel -> WishlistTracking.impressionRecommendation(trackingQueue, dataModel.recommendationItem, position)
+            is RecommendationItemDataModel -> {
+                TopAdsUrlHitter(context).hitImpressionUrl(
+                        className,
+                        dataModel.recommendationItem.trackerImageUrl,
+                        dataModel.recommendationItem.productId.toString(),
+                        dataModel.recommendationItem.name,
+                        dataModel.recommendationItem.imageUrl
+                )
+                WishlistTracking.impressionEmptyWishlistRecommendation(trackingQueue, dataModel.recommendationItem, position)
+            }
+            is RecommendationCarouselItemDataModel -> {
+                TopAdsUrlHitter(context).hitImpressionUrl(
+                        className,
+                        dataModel.recommendationItem.trackerImageUrl,
+                        dataModel.recommendationItem.productId.toString(),
+                        dataModel.recommendationItem.name,
+                        dataModel.recommendationItem.imageUrl
+                )
+                WishlistTracking.impressionRecommendation(trackingQueue, dataModel.recommendationItem, position)
+            }
         }
+    }
+
+    override fun onBannerTopAdsClick(item: BannerTopAdsDataModel, position: Int) {
+        TopAdsUrlHitter(context).hitClickUrl(
+                this::class.java.simpleName,
+                item.topAdsDataModel.adClickUrl,
+                "",
+                "",
+                item.topAdsDataModel.imageUrl
+        )
+        WishlistTracking.clickTopAdsBanner(item, viewModel.getUserId(), position)
+        RouteManager.route(context, item.topAdsDataModel.applink)
+    }
+
+    override fun onBannerTopAdsImpress(item: BannerTopAdsDataModel, position: Int) {
+        TopAdsUrlHitter(context).hitImpressionUrl(
+                this::class.java.simpleName,
+                item.topAdsDataModel.adViewUrl,
+                "",
+                "",
+                item.topAdsDataModel.imageUrl
+        )
+        WishlistTracking.impressionTopAdsBanner(item, viewModel.getUserId(), position)
     }
 
     private fun handleAddToCartActionData(addToCartActionData: AddToCartActionData?){

@@ -10,6 +10,7 @@ data class SomDetailShipping (
         val receiverPhone: String = "",
         val receiverStreet: String = "",
         val receiverDistrict: String = "",
+        val receiverProvince: String = "",
         val isFreeShipping: Boolean = false,
         val driverPhoto: String = "",
         val driverName: String = "",

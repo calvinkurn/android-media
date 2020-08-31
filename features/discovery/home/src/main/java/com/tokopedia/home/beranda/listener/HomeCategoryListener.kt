@@ -2,14 +2,16 @@ package com.tokopedia.home.beranda.listener
 
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCarouselCardDataModel
+import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselItemDataModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import kotlinx.coroutines.CoroutineScope
 
 import java.util.HashMap
-import kotlin.coroutines.CoroutineContext
 
 /**
  * @author by errysuprayogi on 11/29/17.
@@ -25,13 +27,15 @@ interface HomeCategoryListener {
 
     val eggListener: HomeEggListener
 
-    val trackingQueue: TrackingQueue
+    fun getTrackingQueueObj(): TrackingQueue?
 
-    val childFragmentManager: FragmentManager
+    val childsFragmentManager: FragmentManager
 
     val windowHeight: Int
 
     val homeMainToolbarHeight: Int
+
+    val userId: String
 
     fun onSectionItemClicked(actionLink: String)
 
@@ -40,6 +44,12 @@ interface HomeCategoryListener {
     fun onPromoClick(position: Int, slidesModel: BannerSlidesModel)
 
     fun openShop()
+
+    fun onOpenPlayChannelList(appLink: String)
+
+    fun sendIrisTrackerHashMap(tracker: HashMap<String, Any>)
+
+    fun onOpenPlayActivity(root: android.view.View, channelId: String?)
 
     fun actionAppLinkWalletHeader(appLinkBalance: String)
 
@@ -79,11 +89,33 @@ interface HomeCategoryListener {
 
     fun onCloseGeolocationView()
 
+    fun sendEETracking(data: HashMap<String, Any>)
+
     fun putEEToTrackingQueue(data: HashMap<String, Any>)
 
     fun putEEToIris(data: HashMap<String, Any>)
 
     fun getWindowWidth(): Int
 
-    fun addRecyclerViewScrollImpressionListener(adapterPosition: Int, onImpressionListener: ()->Unit)
+    fun refreshHomeData()
+
+    fun isShowSeeAllCard(): Boolean
+
+    fun getTabBusinessWidget(position: Int)
+
+    fun getBusinessUnit(tabId: Int, position: Int, tabName: String)
+
+    fun getPlayChannel(position: Int)
+
+    fun updateExpiredChannel(dynamicChannelDataModel: DynamicChannelDataModel, position: Int)
+
+    fun onBuyAgainCloseChannelClick(channel: DynamicHomeChannel.Channels, position: Int)
+
+    fun removeViewHolderAtPosition(position: Int)
+
+    fun onPlayBannerCarouselRefresh(playCarouselCardDataModel: PlayCarouselCardDataModel, position: Int)
+
+    fun onPlayBannerReminderClick(playBannerCarouselItemDataModel: PlayBannerCarouselItemDataModel)
+
+    fun onPlayV2Click(playBannerCarouselItemDataModel: PlayBannerCarouselItemDataModel)
 }

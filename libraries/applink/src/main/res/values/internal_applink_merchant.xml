@@ -2,4 +2,13 @@
 <resources>
     <string name="host_merchant" translatable="false">merchant</string>
     <string name="path_redirect_create_shop" translatable="false">/redirect-create-shop</string>
+    <string name="path_open_catalog_picker">/open-catalog-picker</string>
+    <string name="path_open_product_preview" translatable="false">/open-product-preview</string>
+    <string name="path_brandlist" translatable="false">/official-store/brand/.*\\/</string>
+    <string name="path_brandlist_search" translatable="false">/official-store/brand/search</string>
+
+    <string name="path_shop_showcase_list" translatable="false">/shop-showcase-list</string>
+    <string name="path_shop_showcase_add" translatable="false">/shop-showcase-add</string>
+    <string name="path_shop_showcase_edit" translatable="false">/shop-showcase-edit</string>
+    <string name="path_statistic_dashboard">/statistic_dashboard</string>
 </resources>

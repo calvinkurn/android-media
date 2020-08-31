@@ -9,16 +9,16 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
-import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
+import com.tokopedia.product.detail.data.model.datamodel.UpcomingNplDataModel
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.data.util.numberFormatted
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.util.isGivenDateIsBelowThan24H
+import com.tokopedia.product.detail.view.viewholder.ProductNotifyMeViewHolder
 import kotlinx.android.synthetic.main.partial_product_detail_header.view.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -27,106 +27,183 @@ import java.util.concurrent.TimeUnit
 class PartialSnapshotView(private val view: View,
                           private val listener: DynamicProductDetailListener) {
 
-    fun renderData(product: DynamicProductInfoP1) {
+    companion object {
+        const val ONE_SECOND = 1000L
+    }
+
+    fun renderData(product: DynamicProductInfoP1, isUpcomingNplType: Boolean, upcomingNplDataModel: UpcomingNplDataModel) = with(view) {
         val data = product.data
         val basic = product.basic
-        with(view) {
-            product_name.text = MethodChecker.fromHtml(data.name)
-            when {
-                data.isFreeOngkir.isActive -> {
-                    ImageHandler.loadImageRounded2(context, img_free_ongkir, data.isFreeOngkir.imageURL)
-                    img_free_ongkir.visibility = View.VISIBLE
-                }
-                else -> img_free_ongkir.visibility = View.GONE
-            }
-            if (data.isCashback.percentage > 0) {
-                text_cashback.text = context.getString(R.string.template_cashback, data.isCashback.percentage.toString())
-                text_cashback.visibility = View.VISIBLE
-            } else
-                text_cashback.visibility = View.GONE
+        val campaign = data.campaign
 
-            val campaign = data.campaign
-            if (campaign.isActive) {
-                tv_price_pdp.text = context.getString(R.string.template_price, "",
-                        campaign.discountedPrice.getCurrencyFormatted())
-                text_title_discount_timer.text = data.campaign.campaignTypeName
-                if (campaign.hideGimmick) {
-                    text_original_price.visibility = View.GONE
-                    text_discount.visibility = View.GONE
-                } else {
-                    text_original_price.visibility = View.VISIBLE
-                    text_discount.visibility = View.VISIBLE
-                }
+        product_name.text = MethodChecker.fromHtml(data.name)
 
-                text_original_price.text = context.getString(R.string.template_price, "",
-                        campaign.originalPrice.getCurrencyFormatted())
-
-                text_original_price.paintFlags = text_original_price.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-                text_discount.text = context.getString(R.string.template_campaign_off, campaign.percentageAmount.numberFormatted())
-
-                sale_text_stock_available.text = MethodChecker.fromHtml(data.stock.stockWording)
-                text_stock_available.text = MethodChecker.fromHtml(data.stock.stockWording)
-                if (campaign.activeAndHasId) {
-                    discount_timer_holder.visibility = View.VISIBLE
-                    showCountDownTimer(data.campaign)
-                    sale_text_stock_available.visible()
-                    text_stock_available.gone()
-                } else {
-                    discount_timer_holder.gone()
-                    sale_text_stock_available.gone()
-                    text_stock_available.visible()
-                }
-            } else {
-                tv_price_pdp.text = context.getString(R.string.template_price, "",
-                        data.price.value.getCurrencyFormatted())
-                text_original_price.visibility = View.GONE
-                text_discount.visibility = View.GONE
-                discount_timer_holder.visibility = View.GONE
-                text_stock_available.text = MethodChecker.fromHtml(data.stock.stockWording)
-                sale_text_stock_available.gone()
-                text_stock_available.visible()
-            }
-            label_prescription.showWithCondition(basic.needPrescription)
-            divider.visible()
+        img_free_ongkir.shouldShowWithAction(data.isFreeOngkir.isActive) {
+            ImageHandler.loadImageRounded2(context, img_free_ongkir, data.isFreeOngkir.imageURL)
         }
-    }
 
-    private fun hideProductCampaign(campaign: CampaignModular) {
-        with(view) {
-            discount_timer_holder.visibility = View.GONE
-            text_discount.visibility = View.GONE
-            text_original_price.visibility = View.GONE
-            tv_price_pdp.text = context.getString(R.string.template_price, "",
-                    campaign.originalPrice.getCurrencyFormatted())
-            sale_text_stock_available.gone()
-            text_stock_available.visible()
+        text_cashback.shouldShowWithAction(data.isCashback.percentage > 0) {
+            text_cashback.text = context.getString(R.string.template_cashback, data.isCashback.percentage.toString())
         }
-    }
 
-    fun updateStockAndPriceWarehouse(nearestWarehouse: MultiOriginWarehouse, campaign: CampaignModular) {
-        with(view) {
-            if (campaign.activeAndHasId) {
-                tv_price_pdp.text = context.getString(R.string.template_price, "",
-                        nearestWarehouse.price.getCurrencyFormatted())
-                sale_text_stock_available.text = MethodChecker.fromHtml(nearestWarehouse.stockWording)
-            } else {
-                tv_price_pdp.text = context.getString(R.string.template_price, "",
-                        nearestWarehouse.price.getCurrencyFormatted())
-                text_stock_available.text = MethodChecker.fromHtml(nearestWarehouse.stockWording)
+        when {
+            isUpcomingNplType -> {
+                renderNplRibbon(upcomingNplDataModel.ribbonCopy, upcomingNplDataModel.startDate, data.campaign)
+                renderCampaignInactiveNpl(data.price.value.getCurrencyFormatted())
+            }
+            campaign.isActive -> {
+                renderCampaignActive(campaign, data.stock.stockWording)
+            }
+            else -> {
+                renderCampaignInactive(data.price.value.getCurrencyFormatted())
             }
         }
+
+        renderStockAvailable(campaign, data.variant.isVariant, data.stock.stockWording, basic.isActive())
+        label_prescription.showWithCondition(basic.needPrescription)
+        divider.show()
     }
 
-    fun renderCod(showCod: Boolean) {
-        if (showCod) view.layout_cod_content.visible() else view.layout_cod_content.gone()
-    }
-
-    fun renderTradein(showTradein: Boolean) {
-        if (showTradein) {
-            view.tradein_header_container.visible()
+    fun updateWishlist(wishlisted: Boolean, shouldShowWishlist: Boolean) = with(view) {
+        if (!shouldShowWishlist) {
+            fab_detail_pdp.hide()
         } else {
-            view.tradein_header_container.gone()
+            if (wishlisted) {
+                fab_detail_pdp.hide()
+                fab_detail_pdp.isActivated = true
+                fab_detail_pdp.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_wishlist_selected_pdp))
+                fab_detail_pdp.show()
+            } else {
+                fab_detail_pdp.hide()
+                fab_detail_pdp.isActivated = false
+                fab_detail_pdp.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_wishlist_unselected_pdp))
+                fab_detail_pdp.show()
+            }
         }
+    }
+
+    private fun renderCampaignActive(campaign: CampaignModular, stockWording: String) = with(view) {
+        setTextCampaignActive(campaign)
+        renderFlashSale(campaign, stockWording)
+    }
+
+    private fun renderCampaignInactive(price: String) = with(view) {
+        tv_price_pdp.text = price
+        text_original_price.gone()
+        text_discount.gone()
+        discount_timer_holder.gone()
+    }
+
+    private fun renderCampaignInactiveNpl(price: String) = with(view) {
+        tv_price_pdp.text = price
+        discount_timer_holder.show()
+        text_original_price.gone()
+        text_discount.gone()
+    }
+
+    private fun setTextCampaignActive(campaign: CampaignModular) = with(view) {
+        tv_price_pdp?.run {
+            text = context.getString(R.string.template_price, "",
+                    campaign.discountedPrice.getCurrencyFormatted())
+            show()
+        }
+
+        text_original_price?.run {
+            paintFlags = text_original_price.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+            text = context.getString(R.string.template_price, "",
+                    campaign.originalPrice.getCurrencyFormatted())
+            show()
+        }
+
+        text_discount?.run {
+            text = context.getString(R.string.template_campaign_off, campaign.percentageAmount.numberFormatted())
+            show()
+        }
+
+        hideGimmick(campaign)
+    }
+
+    private fun renderStockAvailable(campaign: CampaignModular, isVariant: Boolean, stockWording: String, isProductActive: Boolean) = with(view) {
+        text_stock_available.text = MethodChecker.fromHtml(stockWording)
+        text_stock_available.showWithCondition(!campaign.activeAndHasId && !isVariant && stockWording.isNotEmpty() && isProductActive)
+    }
+
+    private fun hideGimmick(campaign: CampaignModular) = with(view) {
+        if (campaign.hideGimmick) {
+            text_original_price.visibility = View.GONE
+            text_discount.visibility = View.GONE
+        } else {
+            text_original_price.visibility = View.VISIBLE
+            text_discount.visibility = View.VISIBLE
+        }
+    }
+
+    private fun renderFlashSale(campaign: CampaignModular, stockWording: String) = with(view) {
+        if (campaign.isCampaignNewUser && !campaign.shouldShowRibbonCampaign) {
+            renderFlashSaleNewUserAbove24H(campaign, stockWording)
+        } else if (campaign.shouldShowRibbonCampaign) {
+            if (campaign.campaignID.toInt() > 0) {
+                renderStockBarFlashSale(campaign, stockWording)
+            } else {
+                renderSlashPriceFlashSale()
+            }
+            text_title_discount_timer.text = campaign.campaignTypeName
+            showCountDownTimer(campaign)
+            discount_timer_holder.show()
+        } else {
+            discount_timer_holder.gone()
+        }
+    }
+
+    private fun renderFlashSaleNewUserAbove24H(campaign: CampaignModular, stockWording: String) = with(view) {
+        renderStockBarFlashSale(campaign, stockWording)
+        text_title_discount_timer.text = campaign.campaignTypeName
+        count_down.hide()
+        discount_timer_holder.show()
+    }
+
+    private fun renderStockBarFlashSale(campaign: CampaignModular, stockWording: String) = with(view) {
+        discount_timer_holder.setBackgroundColor(MethodChecker.getColor(view.context, R.color.Neutral_N50))
+        showStockBarFlashSale()
+        setProgressStockBar(campaign, stockWording)
+    }
+
+    private fun renderSlashPriceFlashSale() {
+        hideStockBarAndBackgroundColor()
+    }
+
+    private fun renderNplRibbon(ribbonCopy: String, startDate: String, campaign: CampaignModular) = with(view) {
+        if (startDate.isGivenDateIsBelowThan24H()) {
+            text_title_discount_timer.text = context.getString(R.string.campaign_npl_start)
+            showCountDownTimerUpcomingNpl(startDate, campaign)
+        } else {
+            text_title_discount_timer.text = MethodChecker.fromHtml(ribbonCopy)
+            count_down.hide()
+        }
+
+        hideStockBarAndBackgroundColor()
+        discount_timer_holder.show()
+        count_down.hide()
+    }
+
+    private fun hideProductCampaign(campaign: CampaignModular) = with(view) {
+        tv_price_pdp.text = context.getString(R.string.template_price, "",
+                campaign.originalPrice.getCurrencyFormatted())
+        discount_timer_holder.gone()
+        text_discount.gone()
+        text_original_price.gone()
+        sale_text_stock_available.gone()
+        text_stock_available.show()
+    }
+
+    fun renderCod(showCod: Boolean) = with(view) {
+        cod_header_container.showWithCondition(showCod)
+        cod_header_container.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(view.context, R.drawable.ic_cod_white), null, null, null)
+    }
+
+    fun renderTradein(showTradein: Boolean) = with(view) {
+        tradein_header_container.showWithCondition(showTradein)
+        tradein_header_container.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(view.context, R.drawable.tradein_white), null, null, null)
     }
 
     fun showOfficialStore(isGoldMerchant: Boolean, isOfficialStore: Boolean) {
@@ -150,54 +227,94 @@ class PartialSnapshotView(private val view: View,
             imageIc = ImageSpan(drawableOs, ImageSpan.ALIGN_BOTTOM)
             colorIc = ContextCompat.getColor(context, R.color.purple_official_store)
             renderTxtIcon(labelIc, colorIc, imageIc)
-            view.layout_guarantee.visible()
-            view.layout_guarantee.setOnClickListener {
-            listener.onValuePropositionClicked(R.id.layout_guarantee)
-            }
         } else {
-            view.layout_guarantee.gone()
             view.label_official_store.gone()
         }
-
     }
 
-    private fun renderTxtIcon(labelIc: String, colorIc: Int, imageIc: ImageSpan) {
-        with(view.label_official_store) {
-            val blackString = context.getString(R.string.product_from) + "  "
-            val startSpan = blackString.length
-            val spanText = android.text.SpannableString(blackString + "   " +
-                    labelIc)
+    private fun renderTxtIcon(labelIc: String, colorIc: Int, imageIc: ImageSpan) = with(view.label_official_store) {
+        val blackString = context.getString(R.string.product_from) + "  "
+        val startSpan = blackString.length
+        val spanText = android.text.SpannableString(blackString + "   " +
+                labelIc)
 
-            spanText.setSpan(imageIc, startSpan, startSpan + 1, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            spanText.setSpan(
-                    android.text.style.ForegroundColorSpan(colorIc),
-                    startSpan, spanText.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            spanText.setSpan(StyleSpan(Typeface.BOLD),
-                    startSpan, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            setText(spanText, android.widget.TextView.BufferType.SPANNABLE)
+        spanText.setSpan(imageIc, startSpan, startSpan + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spanText.setSpan(
+                android.text.style.ForegroundColorSpan(colorIc),
+                startSpan, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spanText.setSpan(StyleSpan(Typeface.BOLD),
+                startSpan, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        setText(spanText, android.widget.TextView.BufferType.SPANNABLE)
+
+        visible()
+    }
+
+    private fun showCountDownTimerUpcomingNpl(startDateData: String, campaign: CampaignModular) = with(view) {
+        try {
+            val now = System.currentTimeMillis()
+            val startTime = startDateData.toLongOrZero() * ProductNotifyMeViewHolder.SECOND
+            val startDate = Date(startTime)
+            val delta = startDate.time - startTime
+
+            if (TimeUnit.MILLISECONDS.toDays(startDate.time - now) < 1) {
+                count_down.show()
+                count_down.setup(delta, startDate) {
+                    hideProductCampaign(campaign)
+                    listener.showAlertCampaignEnded()
+                }
+                discount_timer_holder.show()
+            } else {
+                layout_discount_timer.gone()
+            }
+        } catch (e: Throwable) {
+            discount_timer_holder.hide()
         }
-        view.label_official_store.visible()
-
     }
 
-    private fun showCountDownTimer(campaign: CampaignModular) {
+    private fun showCountDownTimer(campaign: CampaignModular) = with(view) {
         try {
             val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-            val endDateTimeMs = campaign.getEndDataInt * PartialHeaderView.ONE_SECOND
+            val endDateTimeMs = campaign.getEndDataInt * ONE_SECOND
             val now = System.currentTimeMillis()
             val endDate = dateFormat.parse(campaign.endDate)
             val delta = endDate.time - endDateTimeMs
 
-            if (TimeUnit.MICROSECONDS.toDays(now - endDate.time) < 1) {
-                view.count_down.setup(delta, endDate) {
+            if (TimeUnit.MILLISECONDS.toDays(endDate.time - now) < 1) {
+                count_down.show()
+                count_down.setup(delta, endDate) {
                     hideProductCampaign(campaign)
                     listener.showAlertCampaignEnded()
                 }
-                view.discount_timer_holder.visible()
+                discount_timer_holder.show()
+            } else {
+                layout_discount_timer.gone()
             }
         } catch (ex: Exception) {
-            view.discount_timer_holder.visibility = View.GONE
+            discount_timer_holder.hide()
         }
     }
 
+    private fun setProgressStockBar(campaign: CampaignModular, stockWording: String) = with(view) {
+        try {
+            sale_text_stock_available.text = MethodChecker.fromHtml(stockWording)
+            stock_bar_sold_product.progress = campaign.stockSoldPercentage
+        } catch (ex: Exception) {
+            stock_bar_sold_product.hide()
+        }
+    }
+
+    private fun showStockBarFlashSale() = with(view) {
+        stock_bar_sold_product.show()
+        sale_text_stock_available.show()
+    }
+
+    private fun hideStockBarFlashSale() = with(view) {
+        stock_bar_sold_product.hide()
+        sale_text_stock_available.hide()
+    }
+
+    private fun hideStockBarAndBackgroundColor() = with(view) {
+        hideStockBarFlashSale()
+        discount_timer_holder.setBackgroundColor(MethodChecker.getColor(view.context, R.color.white))
+    }
 }

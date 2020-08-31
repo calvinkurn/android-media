@@ -16,7 +16,7 @@
         android:paddingRight="@dimen/padding_activity"
         android:paddingTop="@dimen/dp_8">
 
-        <com.tokopedia.core.customView.RoundedCornerImageView
+        <ImageView
             android:id="@+id/user_avatar"
             android:layout_width="@dimen/user_avatar"
             android:layout_height="@dimen/user_avatar"
@@ -41,7 +41,7 @@
                 tools:text="Pretty Sugar Shop"
                 />
 
-            <com.tokopedia.design.reputation.UserReputationView
+            <com.tokopedia.tkpd.tkpdreputation.inbox.view.customview.UserReputationView
                 android:id="@+id/user_reputation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -50,7 +50,7 @@
                 app:usv_show_tooltip="true"
                 android:layout_marginTop="@dimen/dp_4"/>
 
-            <com.tokopedia.design.reputation.ShopReputationView
+            <com.tokopedia.tkpd.tkpdreputation.inbox.view.customview.ShopReputationView
                 android:id="@+id/shop_reputation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -63,13 +63,14 @@
         <LinearLayout
             android:id="@+id/favorite_button"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_40"
+            android:layout_height="@dimen/layout_lvl6"
             android:layout_gravity="center_vertical"
             android:background="@drawable/green_button_rounded"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:visibility="gone"
-            android:padding="@dimen/dp_12"
+            android:paddingLeft="@dimen/dp_12"
+            android:paddingRight="@dimen/dp_12"
             tools:visibility="visible">
 
             <TextView
@@ -86,6 +87,15 @@
         </LinearLayout>
 
     </LinearLayout>
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ovoPointsTicker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginBottom="@dimen/layout_lvl1"
+        app:tickerType="announcement" />
 
     <View
         android:layout_width="match_parent"

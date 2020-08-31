@@ -399,7 +399,8 @@ public class RangeInputView extends BaseCustomView {
     public interface GestureListener {
         void onButtonRelease(int minValue, int maxValue);
         void onButtonPressed(int minValue, int maxValue);
-        void onValueEditedFromTextInput(int minValue, int maxValue);
+        void onMinValueEditedFromTextInput(int minValue);
+        void onMaxValueEditedFromTextInput(int maxValue);
     }
 
     private class MinInputListener extends InputTextFocusChangeListener {
@@ -454,10 +455,11 @@ public class RangeInputView extends BaseCustomView {
             updateValue(inputValue);
             refreshInputText();
             refreshButtonPosition();
-            if (minValue != lastMinValue || maxValue != lastMaxValue) {
-                if (gestureListener != null) {
-                    gestureListener.onValueEditedFromTextInput(minValue, maxValue);
-                }
+            if (minValue != lastMinValue && gestureListener != null) {
+                gestureListener.onMinValueEditedFromTextInput(minValue);
+            }
+            if (maxValue != lastMaxValue && gestureListener != null) {
+                gestureListener.onMaxValueEditedFromTextInput(maxValue);
             }
         }
 

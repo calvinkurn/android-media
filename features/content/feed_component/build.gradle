@@ -23,6 +23,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.baseList)
     implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.deviceInfo)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.linker)
     implementation project(rootProject.ext.libraries.remoteConfig)
@@ -30,6 +31,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.libraries.videoplayer)
     implementation project(rootProject.ext.libraries.youtubeutil)
+    implementation project(rootProject.ext.libraries.remoteResourceRequest)
 
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.resourcesCommon)
@@ -38,13 +40,14 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
-    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+    implementation project(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
-    implementation rootProject.ext.playServicesDependencies.analytics
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.miscDependencies.multiDex
@@ -61,7 +64,7 @@ dependencies {
 project.ext {
     artifactId = 'feed-component'
     groupId = 'com.tokopedia.content'
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName ="feed_component-release"
 }
 

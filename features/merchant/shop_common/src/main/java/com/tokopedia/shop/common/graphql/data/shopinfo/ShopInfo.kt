@@ -2,6 +2,7 @@ package com.tokopedia.shop.common.graphql.data.shopinfo
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.shop.common.data.model.ShopInfoData
 import com.tokopedia.shop.common.data.source.cloud.model.FreeOngkir
 
 data class ShopInfo(
@@ -63,9 +64,58 @@ data class ShopInfo(
 
         @SerializedName("addressData")
         @Expose
-        val addressData: AddressData = AddressData()
+        val addressData: AddressData = AddressData(),
+
+        @SerializedName("shopHomeType")
+        @Expose
+        val shopHomeType: String = "",
+
+        @SerializedName("os")
+        @Expose
+        val os: Os = Os(),
+
+        @SerializedName("gold")
+        @Expose
+        val gold: Gold = Gold(),
+
+        @SerializedName("activeProduct")
+        @Expose
+        val activeProduct: Int = 0,
+
+        @SerializedName("shopStats")
+        @Expose
+        val shopStats: ShopStats = ShopStats(),
+
+        @SerializedName("shopSnippetURL")
+        @Expose
+        val shopSnippetUrl: String = ""
 
 ) {
+    fun isShopInfoNotEmpty():Boolean {
+        return shopCore.shopID.isNotEmpty()
+    }
+
+    fun mapToShopInfoData(): ShopInfoData {
+        val shipmentsData = shipments.map {
+            it.mapToShipmentData()
+        }
+
+        return ShopInfoData(
+                shopCore.shopID,
+                shopCore.name,
+                shopCore.description,
+                shopCore.url,
+                location,
+                shopAssets.cover,
+                shopCore.tagLine,
+                goldOS.isOfficial,
+                goldOS.isGold,
+                createdInfo.openSince,
+                shipmentsData,
+                shopSnippetUrl
+        )
+    }
+
     companion object{
         @JvmField
         val TAG : String = ShopInfo::class.java.simpleName
@@ -103,7 +153,11 @@ data class ShopInfo(
 
         @SerializedName("statusTitle")
         @Expose
-        val statusTitle: String = ""
+        val statusTitle: String = "",
+
+        @SerializedName("isIdle")
+        @Expose
+        val isIdle: Boolean = false
     )
 
     data class FavoriteData(
@@ -148,15 +202,33 @@ data class ShopInfo(
             @Expose
             val note: String = "",
 
+            @SerializedName("reason")
+            @Expose
+            val reason: String = "",
+
             @SerializedName("until")
             @Expose
-            val closeUntil: String = ""
+            val closeUntil: String = "",
+
+            @SerializedName("detail")
+            @Expose
+            val closeDetail: CloseDetail = CloseDetail()
+    )
+
+    data class CloseDetail(
+            @SerializedName("openDate")
+            @Expose
+            val openDateUnix: String = ""
     )
 
     data class CreatedInfo(
             @SerializedName("openSince")
             @Expose
-            val openSince: String = ""
+            val openSince: String = "",
+
+            @SerializedName("shopCreated")
+            @Expose
+            val shopCreated: String = ""
     )
 
     data class TopContent(
@@ -193,5 +265,19 @@ data class ShopInfo(
             @SerializedName("fax")
             @Expose
             val fax: String = ""
+    )
+
+    data class ShopStats(
+            @SerializedName("productSold")
+            @Expose
+            val productSold: String = "",
+
+            @SerializedName("totalTx")
+            @Expose
+            val totalTx: String = "",
+
+            @SerializedName("totalShowcase")
+            @Expose
+            val totalShowcase: String = ""
     )
 }

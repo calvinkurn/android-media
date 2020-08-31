@@ -18,7 +18,6 @@
     <string name="label_top_ads_choose_credit">Pilih</string>
     <string name="title_activity_category_picker">Pilih Kategori</string>
     <string name="title_activity_catalog_picker">Pilih Katalog</string>
-    <string name="header_opportunity">Di halaman ini anda dapat mengambil pesanan yang ditolak oleh seller lain.</string>
     <string name="top_ads_label_stepper">%1$d dari %2$d step</string>
     <string name="error_no_browser">\"Tidak ada aplikasi untuk membuka link\"</string>
 
@@ -53,53 +52,10 @@
 
     <string name="list_sold_product_text">Daftar Produk Terjual</string>
 
-    <!-- reputation history -->
-    <string name="shop_reputation">Reputasi Toko</string>
-    <string name="reputation_point_calculation">Perhitungan Poin Reputasi</string>
-
-    <string name="point"> poin</string>
-    <string name="reputation_history_label_good_job">Tidak ada penalti pada periode ini</string>
-    <string name="reputation_history_label_info_no_penalty">Ubah tanggal untuk melihat penalti pada periode sebelumnya.</string>
-    <string name="reputation_history_label_change_date">Ubah Tanggal</string>
-    <string name="reputation_history_label_congrats_no_penalty">Anda tidak memiliki Penalti</string>
-    <string name="reputation_history_label_improve_selling_get_badge">Tingkatkan terus penjualan &amp; pelayanan toko Anda untuk mendapatkan badge &amp; poin reputasi</string>
-    <string name="best_deal">BEST DEAL!</string>
-    <string name="message_exception_description">Terjadi kesalahan koneksi.\nSilahkan coba kembali"</string>
-    <string name="try_again">COBA KEMBALI</string>
-
-
     <!-- SHOP SETTING-->
     <string name="title_activity_payment_editor">Pembayaran</string>
     <string name="title_activity_etalase_shop_editor">Pengaturan Etalase Toko</string>
     <string name="label_manage_your_shop">Kelola Toko Anda</string>
-
-    <!-- OPPORTUNITY -->
-    <string name="same_day">Same Day</string>
-    <string name="next_day">Next Day</string>
-    <string name="reguler">Reguler</string>
-    <string name="supported_courier">Dukungan Pengiriman</string>
-    <string name="deadline">Jatuh Tempo</string>
-    <string name="highest_transaction_price">Nilai Transaksi Tertinggi</string>
-    <string name="lowest_transaction_price">Nilai Transaksi Terendah</string>
-    <string name="message_dialog_accept_opportunity">Dengan klik tombol “Setuju” anda menyetujui bahwa barang yang akan anda kirim sesuai dengan pesanan pembeli.\n\nPembatalan akan dikenakan penalti reputasi -10</string>
-    <string name="action_agree">Setuju</string>
-    <string name="action_back">Kembali</string>
-    <string name="cashback">Cashback :</string>
-    <string name="cashback_for_buyer">Cashback Untuk Pembeli:</string>
-    <string name="respond_deadline">Batas Respon:</string>
-    <string name="destination_city">Kota Tujuan:</string>
-    <string name="shipping">Pengiriman:</string>
-    <string name="title_quantity_colon">Jumlah:</string>
-    <string name="item">barang</string>
-    <string name="title_supported_shipping">Dukungan Pengiriman</string>
-    <string name="message_dialog_reject_opportunity">Apakah anda yakin ingin menghapus peluang ini?</string>
-    <string name="action_sort">Urutkan</string>
-    <string name="take_opportunity">Ambil Peluang</string>
-    <string name="delete_opportunity">Hapus Peluang</string>
-    <string name="cashbak_info">Dapatkan cashback ke TopPoints</string>
-    <string name="appwidget_text">EXAMPLE</string>
-    <string name="add_widget">Add widget</string>
-    <string name="couldn_t_add_videos">tidak dapat menambahkan video</string>
 
 
     <string name="product_no_have_product_name_yet">Belum ada nama produk</string>
@@ -113,9 +69,6 @@
 
     <string name="app_widget_title_new_order">Order</string>
     <string name="app_widget_new_order_wording_empty">Belum ada data</string>
-    <string name="app_widget_label_today">Hari ini</string>
-    <string name="app_widget_label_tomorrow">Besok</string>
-    <string name="app_widget_label_left_day">%d Hari Lagi</string>
     <string name="product_instagram_draft_error_save_unknown">Terjadi kesalahan ketika mengupload draft instagram.</string>
     <string name="product_instagram_draft_error_save_resolution">Gambar instagram memiliki resolusi di bawah 300 pixel.</string>
     <string name="product_draft_instagram_save_success">%1$d Produk Instagram Anda berhasil ditambahkan di draft.</string>
@@ -195,17 +148,6 @@
     <string name="shipping_location_pinpoint_label">Pinpoint Lokasi Pengiriman</string>
     <string name="shipping_location_pinpoint_detail">Isi pinpoint lokasi toko Anda untuk mengaktifkan Layanan Pengiriman Ekspress.</string>
 
-    <!-- Opportunity -->
-    <string name="opportunity_showcase_reputation_value_title">Nilai Reputasi Peluang</string>
-    <string name="opportunity_showcase_reputation_value_content">Ini adalah angka pengali nilai reputasi yang akan diperbaharui setiap 30 menit. Ayo ambil order peluang sebanyak-banyaknya dan tingkatkan reputasi tokomu!</string>
-    <string name="opportunity_detail_info_reputation_multiplier_title">Nilai Reputasi</string>
-    <string name="opportunity_detail_info_reputation_multiplier_content">Ini adalah Nilai Kelipatan Reputasi. Reputasi dari pesanan ini akan dikalikan dengan Nilai Kelipatan Reputasi.</string>
-    <string name="opportunity_detail_info_product_price_title">Harga Barang</string>
-    <string name="opportunity_detail_info_product_price_content">Estimasi harga barang telah disesuaikan dengan lokasi Anda.</string>
-    <string name="opportunity_detail_info_different_product_price_content">Harga yang dicoret akan dicantumkan di invoice. Estimasi harga barang baru telah disesuaikan dengan lokasi Anda.</string>
-    <string name="opportunity_detail_info_shipping_price_title">Ongkos Kirim</string>
-    <string name="opportunity_detail_info_delivery_price_content">Estimasi ongkos kirim telah disesuaikan dengan lokasi Anda.</string>
-    <string name="opportunity_detail_info_different_delivery_price_content">Ongkos kirim yang dicoret akan dicantumkan di invoice. Estimasi ongkos kirim baru telah disesuaikan dengan lokasi Anda.</string>
     <string name="format_rupiah_with_prefix">Rp %s</string>
     <string name="product_label_product_delivery">Pengiriman Produk</string>
     <string name="product_label_product_manage">Pengelolaan Produk</string>
@@ -219,8 +161,6 @@
     <string name="change_all_variant_price">Ubah Semua Harga Varian</string>
     <string name="product_add_sku_title">SKU (Stock Keeping Unit)</string>
     <string name="choose_shop_picture">Pilih Gambar Toko</string>
-    <string name="opportunity_desc_message">Cek Peluang dan ambil pesanan yang tidak diproses penjual lain.</string>
-    <string name="btn_check_opportunity">Cek Peluang</string>
 
     <string name="sticker_shop_link">https://tokopedia.com/%s</string>
     <string name="sticker_cashback">Cashback %1$d%%</string>
@@ -381,5 +321,9 @@
 
     <string name="error_field_required">Harus diisi</string>
     <string name="action_sign_in_short">Masuk</string>
+
+    <!--Charge BO-->
+    <string name="charge_bo_ticker_title">Bebas Ongkir untuk PM akan dikenai biaya</string>
+    <string name="charge_bo_ticker_content">Power Merchant (PM) bisa nonaktifkan Bebas Ongkir saja tanpa harus nonaktifkan SiCepat &amp; AntarAja &lt;a href="#"&gt;di sini.&lt;/a&gt;</string>
 
 </resources>

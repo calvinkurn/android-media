@@ -2,45 +2,50 @@ package com.tokopedia.product.detail.view.fragment.partialview
 
 import android.view.View
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.relativeWeekDay
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.model.shopfeature.ShopFeatureData
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
+import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import kotlinx.android.synthetic.main.item_dynamic_pdp_shop_info.view.*
 
-class PartialDynamicShopInfoView(val view: View, private val clickListener: View.OnClickListener) :
-        View.OnClickListener by clickListener {
+class PartialDynamicShopInfoView(val view: View, private val listener: DynamicProductDetailListener) {
 
     companion object {
         private const val TRUE_VALUE = 1
     }
 
-    fun renderShop(shop: ShopInfo, isOwned: Boolean = false) {
+    fun renderShop(shopName: String, shopLocation: String, shopLastActive: String, shopAvatar: String, isAllowManage: Int,
+                   isOs: Boolean, isPm: Boolean, isOwned: Boolean = false, isFavorite:Boolean,
+                   componentTrackDataModel: ComponentTrackDataModel) {
         with(view) {
-            shop_name.text = com.tokopedia.abstraction.common.utils.view.MethodChecker.fromHtml(shop.shopCore.name)
-            ImageHandler.LoadImage(shop_ava, shop.shopAssets.avatar)
+            shop_name.text = MethodChecker.fromHtml(shopName)
+            ImageHandler.LoadImage(shop_ava, shopAvatar)
 
-            var templateLocOnline = "${shop.location} "
-            if (shop.shopLastActive.isNotBlank()) {
+            var templateLocOnline = "${shopLocation} "
+            if (shopLastActive.isNotBlank()) {
                 try {
                     val cal = java.util.Calendar.getInstance()
-                    cal.timeInMillis = shop.shopLastActive.toLong() * 1000
+                    cal.timeInMillis = shopLastActive.toLong() * 1000
                     templateLocOnline += context.getString(R.string.template_shop_last_login, cal.time.relativeWeekDay)
                 } catch (t: Throwable) {
                 }
             }
             shop_location_online.text = templateLocOnline
-            if (shop.isAllowManage == TRUE_VALUE) btn_favorite.visible() else btn_favorite.gone()
-            val drawable = if (shop.goldOS.isOfficial == TRUE_VALUE) {
-                androidx.core.content.ContextCompat.getDrawable(context, R.drawable.ic_official_store_product)
-            } else if (shop.goldOS.isGold == TRUE_VALUE && shop.goldOS.isGoldBadge == TRUE_VALUE) {
-                androidx.core.content.ContextCompat.getDrawable(context, R.drawable.ic_power_merchant)
-            } else {
-                null
+            if (isAllowManage == TRUE_VALUE) btn_favorite.visible() else btn_favorite.gone()
+            val drawable = when {
+                isOs -> {
+                    androidx.core.content.ContextCompat.getDrawable(context, R.drawable.ic_official_store_product)
+                }
+                isPm -> {
+                    androidx.core.content.ContextCompat.getDrawable(context, R.drawable.ic_power_merchant)
+                }
+                else -> {
+                    null
+                }
             }
 
             if (drawable == null) iv_badge.gone()
@@ -57,12 +62,20 @@ class PartialDynamicShopInfoView(val view: View, private val clickListener: View
                 btn_favorite.visible()
             }
 
-            updateFavorite(shop.favoriteData.alreadyFavorited == TRUE_VALUE)
+            updateFavorite(isFavorite)
 
-            shop_name.setOnClickListener(this@PartialDynamicShopInfoView)
-            shop_ava.setOnClickListener(this@PartialDynamicShopInfoView)
-            btn_favorite.setOnClickListener(this@PartialDynamicShopInfoView)
-            send_msg_shop.setOnClickListener(this@PartialDynamicShopInfoView)
+            shop_name.setOnClickListener {
+                listener.onShopInfoClicked(it.id, componentTrackDataModel)
+            }
+            shop_ava.setOnClickListener {
+                listener.onShopInfoClicked(it.id, componentTrackDataModel)
+            }
+            btn_favorite.setOnClickListener {
+                listener.onShopInfoClicked(it.id, componentTrackDataModel)
+            }
+            send_msg_shop.setOnClickListener {
+                listener.onShopInfoClicked(it.id, componentTrackDataModel)
+            }
             visible()
         }
     }
@@ -82,14 +95,14 @@ class PartialDynamicShopInfoView(val view: View, private val clickListener: View
         }
     }
 
-    fun renderShopBadge(shopBadge: ShopBadge) {
-        ImageHandler.LoadImage(view.l_medal, shopBadge.badge)
+    fun renderShopBadge(shopBadge: String) {
+        ImageHandler.LoadImage(view.l_medal, shopBadge)
     }
 
-    fun renderShopFeature(shopFeatureData: ShopFeatureData) {
+    fun renderShopFeature(isGoApotik: Boolean) {
         with(view) {
-            shop_feature.shouldShowWithAction(shopFeatureData.value) {
-                shop_feature.text = shopFeatureData.title
+            shop_feature.shouldShowWithAction(isGoApotik) {
+                shop_feature.text = context.getString(R.string.label_go_apotik)
             }
         }
     }
@@ -103,7 +116,7 @@ class PartialDynamicShopInfoView(val view: View, private val clickListener: View
                 btn_favorite.setCompoundDrawablesWithIntrinsicBounds(
                         androidx.core.content.ContextCompat.getDrawable(context, R.drawable.ic_check_green_24), null, null, null)
             } else {
-                btn_favorite.text = context.getString(R.string.label_favorite)
+                btn_favorite.text = context.getString(R.string.label_follow)
                 btn_favorite.setTextColor(androidx.core.content.ContextCompat.getColor(context, R.color.dark_primary))
                 btn_favorite.background = androidx.core.content.ContextCompat.getDrawable(context, R.drawable.bg_button_green)
                 btn_favorite.setCompoundDrawablesWithIntrinsicBounds(

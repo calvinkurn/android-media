@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bottom_sheet_promo_last_seen"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bottomsheet_background"
+    android:orientation="vertical"
+    android:visibility="visible"
+    app:behavior_hideable="true"
+    app:behavior_peekHeight="250dp"
+    app:layout_behavior="com.tokopedia.promocheckoutmarketplace.presentation.LockableBottomSheetBehavior"
+    tools:visibility="visible">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bottom_sheet_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="visible">
+
+        <ImageView
+            android:id="@+id/bottom_sheet_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:paddingLeft="@dimen/dp_12"
+            android:paddingTop="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_12"
+            android:paddingBottom="@dimen/dp_16"
+            app:srcCompat="@drawable/ic_close_default"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/bottom_sheet_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:paddingTop="@dimen/dp_16"
+            android:paddingBottom="@dimen/dp_16"
+            android:text="@string/label_promo_last_seen_title"
+            android:textColor="@color/light_N700_96"
+            app:layout_constraintBottom_toBottomOf="@+id/bottom_sheet_close"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/bottom_sheet_close"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_3" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_promo_last_seen"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:paddingLeft="@dimen/dp_12"
+            android:paddingRight="@dimen/dp_12"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/bottom_sheet_title" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>

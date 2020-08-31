@@ -4,37 +4,35 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import androidx.core.content.ContextCompat;
 import android.text.TextUtils;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.tkpd.library.utils.CommonUtils;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.design.bottomsheet.BottomSheetView;
-import com.tokopedia.topads.R;
 import com.tokopedia.datepicker.range.view.constant.DatePickerConstant;
+import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.seller.common.widget.LabelView;
+import com.tokopedia.topads.R;
 import com.tokopedia.topads.TopAdsManagementRouter;
+import com.tokopedia.topads.common.data.source.local.TopAdsCacheDataSourceImpl;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.BulkAction;
 import com.tokopedia.topads.dashboard.data.model.data.ProductAd;
 import com.tokopedia.topads.dashboard.data.model.data.ProductAdBulkAction;
 import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.TopAdsManagementService;
-import com.tokopedia.topads.common.data.source.local.TopAdsCacheDataSourceImpl;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsProductAdInteractorImpl;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDetailGroupActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsEditProductMainPageActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupEditPromoActivity;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailProductPresenter;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailProductViewPresenterImpl;
+import com.tokopedia.user.session.UserSession;
 
 import timber.log.Timber;
 /**
@@ -114,7 +112,7 @@ public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<T
     protected void initialPresenter() {
         super.initialPresenter();
         presenter = new TopAdsDetailProductViewPresenterImpl(getActivity(), this, new TopAdsProductAdInteractorImpl(
-                new TopAdsManagementService(new SessionHandler(getActivity())),
+                new TopAdsManagementService(new UserSession(getActivity())),
                 new TopAdsCacheDataSourceImpl(getActivity())));
     }
 

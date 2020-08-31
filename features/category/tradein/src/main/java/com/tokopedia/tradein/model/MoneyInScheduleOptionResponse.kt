@@ -8,20 +8,19 @@ import com.google.gson.annotations.SerializedName
 data class MoneyInScheduleOptionResponse(
         val data: ResponseData?
 ) : Parcelable {
-    constructor(parcel: Parcel) : this(parcel.readParcelable(ResponseData::class.java.classLoader) as ResponseData)
+    constructor(parcel: Parcel) : this(parcel.readParcelable<ResponseData>(ResponseData::class.java.classLoader))
 
     data class ResponseData(
             @SerializedName("getPickupScheduleOption")
-            val getPickupScheduleOption: GetPickupScheduleOption
+            val getPickupScheduleOption: GetPickupScheduleOption?
     ) : Parcelable {
-        constructor(parcel: Parcel) : this(parcel.readParcelable(GetPickupScheduleOption::class.java.classLoader)
-                as GetPickupScheduleOption)
+        constructor(parcel: Parcel) : this(parcel.readParcelable<GetPickupScheduleOption>(GetPickupScheduleOption::class.java.classLoader))
 
         data class GetPickupScheduleOption(
                 @SerializedName("ScheduleDate")
                 val scheduleDate: ArrayList<ScheduleDate>
         ) : Parcelable {
-            constructor(parcel: Parcel) : this(parcel.createTypedArrayList(ScheduleDate))
+            constructor(parcel: Parcel) : this(parcel.createTypedArrayList(ScheduleDate) as ArrayList<ScheduleDate>)
 
             data class ScheduleDate(
                     @SerializedName("DateFmt")
@@ -31,7 +30,7 @@ data class MoneyInScheduleOptionResponse(
             ) : Parcelable {
                 constructor(parcel: Parcel) : this(
                         parcel.readString() ?: "",
-                        parcel.createTypedArrayList(ScheduleTime)
+                        parcel.createTypedArrayList(ScheduleTime) as ArrayList<ScheduleTime>
                 )
 
                 data class ScheduleTime(

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <!-- SP -->
+  <dimen name="change_password_sp_9">9sp</dimen>
+  <dimen name="change_password_sp_12">12sp</dimen>
+  <dimen name="change_password_sp_13">13sp</dimen>
+  
+  <!-- DP -->
+  <dimen name="change_password_dp_10">10dp</dimen>
+  <dimen name="change_password_dp_20">20dp</dimen>
+
+</resources>

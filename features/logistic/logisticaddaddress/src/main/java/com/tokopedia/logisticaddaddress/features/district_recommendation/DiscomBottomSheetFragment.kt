@@ -1,18 +1,21 @@
 package com.tokopedia.logisticaddaddress.features.district_recommendation
 
+import android.os.Bundle
 import android.os.Handler
-import androidx.core.view.ViewCompat
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.*
+import androidx.core.view.ViewCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.logisticaddaddress.R
+import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_FULL_FLOW
+import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_LOGISTIC_LABEL
 import com.tokopedia.logisticaddaddress.di.DaggerDistrictRecommendationComponent
 import com.tokopedia.logisticaddaddress.domain.model.Address
 import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecoration
@@ -60,9 +63,19 @@ class DiscomBottomSheetFragment : BottomSheets(),
     private val mCompositeSubs: CompositeSubscription = CompositeSubscription()
     val handler = Handler()
     private lateinit var actionListener: ActionListener
+    private var isFullFlow: Boolean = true
+    private var isLogisticLabel: Boolean = true
 
     @Inject
     lateinit var presenter: DiscomContract.Presenter
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            isFullFlow = it.getBoolean(EXTRA_IS_FULL_FLOW, true)
+            isLogisticLabel = it.getBoolean(EXTRA_IS_LOGISTIC_LABEL, true)
+        }
+    }
 
     override fun getLayoutResourceId(): Int {
         return R.layout.bottomsheet_district_recommendation
@@ -128,9 +141,9 @@ class DiscomBottomSheetFragment : BottomSheets(),
 
     override fun configView(parentView: View?) {
         super.configView(parentView)
-        parentView?.findViewById<View>(R.id.layout_title)?.setOnClickListener(null)
-        parentView?.findViewById<View>(R.id.btn_close)?.setOnClickListener {
-            AddNewAddressAnalytics.eventClickBackArrowOnNegativePage()
+        parentView?.findViewById<View>(com.tokopedia.purchase_platform.common.R.id.layout_title)?.setOnClickListener(null)
+        parentView?.findViewById<View>(com.tokopedia.purchase_platform.common.R.id.btn_close)?.setOnClickListener {
+            AddNewAddressAnalytics.eventClickBackArrowOnNegativePage(isFullFlow, isLogisticLabel)
             onCloseButtonClick()
         }
     }
@@ -182,7 +195,7 @@ class DiscomBottomSheetFragment : BottomSheets(),
     override fun onCityChipClicked(city: String) {
         etSearch.setText(city)
         etSearch.setSelection(city.length)
-        AddNewAddressAnalytics.eventClickChipsKotaKecamatanChangeAddressNegative()
+        AddNewAddressAnalytics.eventClickChipsKotaKecamatanChangeAddressNegative(isFullFlow, isLogisticLabel)
     }
 
     fun setActionListener(actionListener: ActionListener) {
@@ -224,7 +237,7 @@ class DiscomBottomSheetFragment : BottomSheets(),
         context?.let {
             districtModel.run {
                 actionListener.onGetDistrict(districtModel)
-                AddNewAddressAnalytics.eventClickSuggestionKotaKecamatanChangeAddressNegative()
+                AddNewAddressAnalytics.eventClickSuggestionKotaKecamatanChangeAddressNegative(isFullFlow, isLogisticLabel)
                 dismiss()
             }
         }
@@ -259,8 +272,12 @@ class DiscomBottomSheetFragment : BottomSheets(),
 
     companion object {
         @JvmStatic
-        fun newInstance(): DiscomBottomSheetFragment {
-            return DiscomBottomSheetFragment()
+        fun newInstance(isLogisticLabel: Boolean): DiscomBottomSheetFragment {
+            return DiscomBottomSheetFragment().apply {
+                arguments = Bundle().apply {
+                    putBoolean(EXTRA_IS_LOGISTIC_LABEL, isLogisticLabel)
+                }
+            }
         }
     }
 }

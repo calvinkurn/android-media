@@ -10,25 +10,15 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
+import com.tokopedia.applink.AppUtil;
 import com.tokopedia.applink.DeeplinkMapper;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.SessionApplinkModule;
-import com.tokopedia.applink.SessionApplinkModuleLoader;
-import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModule;
-import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModuleLoader;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.deeplink.CoreDeeplinkModule;
-import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.developer_options.presentation.applink.RNDevOptionsApplinkModule;
-import com.tokopedia.developer_options.presentation.applink.RNDevOptionsApplinkModuleLoader;
-import com.tokopedia.flashsale.management.applink.FlashsaleDeeplinkModule;
-import com.tokopedia.flashsale.management.applink.FlashsaleDeeplinkModuleLoader;
 import com.tokopedia.gm.applink.GMApplinkModule;
 import com.tokopedia.gm.applink.GMApplinkModuleLoader;
-import com.tokopedia.inbox.deeplink.InboxDeeplinkModule;
-import com.tokopedia.inbox.deeplink.InboxDeeplinkModuleLoader;
+import com.tokopedia.homecredit.applink.HomeCreditAppLinkModule;
+import com.tokopedia.homecredit.applink.HomeCreditAppLinkModuleLoader;
 import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModule;
 import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModuleLoader;
 import com.tokopedia.phoneverification.applink.PhoneVerificationApplinkModule;
@@ -41,26 +31,16 @@ import com.tokopedia.sellerapp.SplashScreenActivity;
 import com.tokopedia.sellerapp.applink.SellerappAplinkModule;
 import com.tokopedia.sellerapp.applink.SellerappAplinkModuleLoader;
 import com.tokopedia.sellerapp.deeplink.presenter.DeepLinkAnalyticsImpl;
-import com.tokopedia.shop.applink.ShopAppLinkModule;
-import com.tokopedia.shop.applink.ShopAppLinkModuleLoader;
-import com.tokopedia.talk.common.applink.InboxTalkApplinkModule;
-import com.tokopedia.talk.common.applink.InboxTalkApplinkModuleLoader;
-import com.tokopedia.tkpd.tkpdreputation.applink.ReputationApplinkModule;
-import com.tokopedia.tkpd.tkpdreputation.applink.ReputationApplinkModuleLoader;
 import com.tokopedia.topads.applink.TopAdsApplinkModule;
 import com.tokopedia.topads.applink.TopAdsApplinkModuleLoader;
-import com.tokopedia.topchat.deeplink.TopChatAppLinkModule;
-import com.tokopedia.topchat.deeplink.TopChatAppLinkModuleLoader;
 import com.tokopedia.track.TrackApp;
-import com.tokopedia.tracking.applink.TrackingAppLinkModule;
-import com.tokopedia.tracking.applink.TrackingAppLinkModuleLoader;
-import com.tokopedia.transaction.applink.TransactionApplinkModule;
-import com.tokopedia.transaction.applink.TransactionApplinkModuleLoader;
-import com.tokopedia.updateinactivephone.applink.ChangeInactivePhoneApplinkModule;
-import com.tokopedia.updateinactivephone.applink.ChangeInactivePhoneApplinkModuleLoader;
+import com.tokopedia.updateinactivephone.common.applink.ChangeInactivePhoneApplinkModule;
+import com.tokopedia.updateinactivephone.common.applink.ChangeInactivePhoneApplinkModuleLoader;
 import com.tokopedia.url.TokopediaUrl;
-import com.tokopedia.useridentification.applink.UserIdentificationApplinkModule;
-import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleLoader;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.webview.WebViewApplinkModule;
+import com.tokopedia.webview.WebViewApplinkModuleLoader;
 
 import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
 
@@ -70,26 +50,14 @@ import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPE
 @DeepLinkHandler({
         SellerApplinkModule.class,
         TopAdsApplinkModule.class,
-        TransactionApplinkModule.class,
         GMApplinkModule.class,
         SellerappAplinkModule.class,
-        InboxDeeplinkModule.class,
-        ShopAppLinkModule.class,
-        TrackingAppLinkModule.class,
-        TopChatAppLinkModule.class,
-        CoreDeeplinkModule.class,
-        ReputationApplinkModule.class,
-        SessionApplinkModule.class,
         ProductDetailApplinkModule.class,
-        InboxTalkApplinkModule.class,
         LoginRegisterApplinkModule.class,
         ChangeInactivePhoneApplinkModule.class,
         PhoneVerificationApplinkModule.class,
-        ChangePasswordDeeplinkModule.class,
-        UserIdentificationApplinkModule.class,
-        AutoAdsLinkModule.class,
-        FlashsaleDeeplinkModule.class,
-        RNDevOptionsApplinkModule.class
+        WebViewApplinkModule.class,
+        HomeCreditAppLinkModule.class
 })
 /* **
  * Navigation will via RouteManager -> manifest instead.
@@ -103,26 +71,14 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
         return new DeepLinkDelegate(
                 new SellerApplinkModuleLoader(),
                 new TopAdsApplinkModuleLoader(),
-                new TransactionApplinkModuleLoader(),
                 new GMApplinkModuleLoader(),
                 new SellerappAplinkModuleLoader(),
-                new InboxDeeplinkModuleLoader(),
-                new ShopAppLinkModuleLoader(),
-                new TrackingAppLinkModuleLoader(),
-                new TopChatAppLinkModuleLoader(),
-                new CoreDeeplinkModuleLoader(),
-                new ReputationApplinkModuleLoader(),
-                new SessionApplinkModuleLoader(),
                 new ProductDetailApplinkModuleLoader(),
-                new InboxTalkApplinkModuleLoader(),
                 new LoginRegisterApplinkModuleLoader(),
                 new ChangeInactivePhoneApplinkModuleLoader(),
                 new PhoneVerificationApplinkModuleLoader(),
-                new ChangePasswordDeeplinkModuleLoader(),
-                new UserIdentificationApplinkModuleLoader(),
-                new AutoAdsLinkModuleLoader(),
-                new FlashsaleDeeplinkModuleLoader(),
-                new RNDevOptionsApplinkModuleLoader()
+                new WebViewApplinkModuleLoader(),
+                new HomeCreditAppLinkModuleLoader()
         );
     }
 
@@ -132,8 +88,9 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
         DeepLinkDelegate deepLinkDelegate = getDelegateInstance();
         DeepLinkAnalyticsImpl presenter = new DeepLinkAnalyticsImpl();
         if (getIntent() != null) {
-            if (!SessionHandler.isV4Login(this) || !SessionHandler.isUserHasShop(this)) {
-                if (SessionHandler.isV4Login(this)) {
+            UserSessionInterface userSession = new UserSession(this);
+            if (!userSession.isLoggedIn() || !userSession.hasShop()) {
+                if (userSession.isLoggedIn()) {
                     startActivity(moveToCreateShop(this));
                 } else {
                     startActivity(new Intent(this, SplashScreenActivity.class));
@@ -173,6 +130,7 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
                 Bundle bundle = getIntent().getExtras();
                 eventPersonalizedClicked(bundle.getString(Constants.EXTRA_APPLINK_CATEGORY));
             }
+            AppUtil.logAirBnbUsage(applinkString);
         } else {
             Intent intent = RouteManager.getIntent(this, applinkString);
             startActivity(intent);
@@ -199,13 +157,4 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
         return intent;
     }
 
-    @DeepLink(Constants.Applinks.SellerApp.BROWSER)
-    public static Intent getCallingIntentOpenBrowser(Context context, Bundle extras) {
-        String webUrl = extras.getString(
-                Constants.ARG_NOTIFICATION_URL, TokopediaUrl.Companion.getInstance().getWEB()
-        );
-        Intent destination = new Intent(Intent.ACTION_VIEW);
-        destination.setData(Uri.parse(webUrl));
-        return destination;
-    }
 }

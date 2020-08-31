@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    android:padding="@dimen/spacing_lvl4"
     android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -12,73 +13,54 @@
 
         <ImageView
             android:id="@+id/completeImage"
-            android:layout_width="@dimen/dp_200"
-            android:layout_height="@dimen/dp_200"
-            android:layout_marginTop="@dimen/dp_8"
+            android:layout_width="@dimen/complete_pin_image_200"
+            android:layout_height="@dimen/complete_pin_image_200"
+            android:layout_marginTop="@dimen/spacing_lvl3"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/titleComplete"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/title_complete_add_pin"
-            android:textSize="@dimen/sp_16"
-            android:textStyle="bold"
+            app:typographyWeight="bold"
+            android:textColor="@color/Neutral_N700_96"
+            app:typographyType="heading_2"
             android:textAlignment="center"
-            android:textColor="#b3000000"
-            android:layout_marginTop="@dimen/dp_8"
-            android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginTop="@dimen/spacing_lvl3"
             app:layout_constraintTop_toBottomOf="@+id/completeImage" />
 
-        <TextView
-            android:id="@+id/subtiteComplete"
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/subtitleComplete"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/subtitle_complete_add_pin"
-            android:textSize="@dimen/sp_12"
             android:textAlignment="center"
-            android:textColor="#85000000"
-            android:layout_marginTop="@dimen/dp_8"
-            android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginStart="@dimen/dp_16"
+            app:typographyType="body_2"
+            android:layout_marginTop="@dimen/spacing_lvl3"
             app:layout_constraintTop_toBottomOf="@+id/titleComplete" />
 
         <com.tokopedia.unifycomponents.ticker.Ticker
+            android:id="@+id/tickerCompletePin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_8"
-            android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginStart="@dimen/dp_16"
-            app:layout_constraintTop_toBottomOf="@+id/subtiteComplete"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            app:layout_constraintTop_toBottomOf="@+id/subtitleComplete"
             app:closeButtonVisibility="gone"
             app:tickerType="warning"
             app:tickerShapeType="loose"
             app:descriptionText="@string/ticker_complete_add_pin"/>
 
-        <com.tokopedia.design.component.ButtonCompat
+        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btnComplete"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_48"
+            android:layout_height="@dimen/layout_lvl6"
             android:layout_gravity="center_horizontal"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
             android:gravity="center"
             android:text="@string/complete_add_pin"
-            android:textColor="@color/black_70"
-            app:buttonCompatSize="big"
-            app:buttonCompatType="primary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

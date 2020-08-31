@@ -42,8 +42,8 @@ class ShopSettingsEtalaseAddEditActivity: BaseSimpleActivity(), HasComponent<Sho
         super.onCreate(savedInstanceState)
 
         saveTextView?.run {
-            setOnClickListener { (fragment as ShopSettingsEtalaseAddEditFragment).saveAddEditEtalase() }
-            visibility = View.VISIBLE
+            setOnClickListener { (fragment as? ShopSettingsEtalaseAddEditFragment)?.saveAddEditEtalase() }
+            visibility = View.GONE
         }
 
         supportActionBar?.setTitle(if (!isEdit) R.string.shop_settings_add_etalase else R.string.shop_settings_edit_etalase)
@@ -73,4 +73,10 @@ class ShopSettingsEtalaseAddEditActivity: BaseSimpleActivity(), HasComponent<Sho
 
     override fun getComponent() = DaggerShopSettingsComponent.builder().baseAppComponent(
             (application as BaseMainApplication).getBaseAppComponent()).build()
+
+    fun showSaveButton() {
+        saveTextView?.apply {
+            visibility =  View.VISIBLE
+        }
+    }
 }

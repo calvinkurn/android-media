@@ -2,12 +2,13 @@ package com.tokopedia.shop.feed.view.presenter
 
 import android.text.TextUtils
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.affiliatecommon.domain.DeletePostUseCase
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.config.GlobalConfig
+import com.tokopedia.feedcomponent.analytics.topadstracker.SendTopAdsUseCase
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
@@ -34,7 +35,8 @@ class FeedShopPresenter @Inject constructor(
         private val likeKolPostUseCase: LikeKolPostUseCase,
         private val deletePostUseCase: DeletePostUseCase,
         private val trackAffiliateClickUseCase: TrackAffiliateClickUseCase,
-        private val atcUseCase: AddToCartUseCase
+        private val atcUseCase: AddToCartUseCase,
+        private val sendTopAdsUseCase: SendTopAdsUseCase
 ):
         BaseDaggerPresenter<FeedShopContract.View>(),
         FeedShopContract.Presenter {
@@ -83,32 +85,7 @@ class FeedShopPresenter @Inject constructor(
                     }
             )
         } else {
-            getDynamicFeedUseCase.execute(
-                    GetDynamicFeedUseCase.createRequestParams(
-                            userId = getUserId(),
-                            cursor = cursor,
-                            source = GetDynamicFeedUseCase.FeedV2Source.Shop,
-                            sourceId = shopId),
-                    object : Subscriber<DynamicFeedDomainModel>() {
-                        override fun onNext(t: DynamicFeedDomainModel?) {
-                            t?.let {
-                                view.onSuccessGetFeed(t.postList, t.cursor)
-                            }
-                        }
-
-                        override fun onCompleted() {
-                        }
-
-                        override fun onError(e: Throwable?) {
-                            if (isViewAttached) {
-                                if (GlobalConfig.isAllowDebuggingTools()) {
-                                    e?.printStackTrace()
-                                }
-                                view.showGetListError(e)
-                            }
-                        }
-                    }
-            )
+            getFeed(shopId)
         }
     }
 
@@ -322,7 +299,7 @@ class FeedShopPresenter @Inject constructor(
     override fun addPostTagItemToCart(postTagItem: PostTagItem) {
         if (postTagItem.shop.isNotEmpty()) {
             atcUseCase.execute(
-                    AddToCartUseCase.getMinimumParams(postTagItem.id, postTagItem.shop.first().shopId),
+                    AddToCartUseCase.getMinimumParams(postTagItem.id, postTagItem.shop.first().shopId, productName = postTagItem.text, price = postTagItem.price),
                     object : Subscriber<AddToCartDataModel>() {
                         override fun onNext(model: AddToCartDataModel?) {
                             if (model?.data?.success != 1) {
@@ -350,6 +327,16 @@ class FeedShopPresenter @Inject constructor(
     override fun clearCache() {
         getDynamicFeedFirstUseCase.clearFeedFirstCache()
     }
+
+    override fun doTopAdsTracker(url: String, shopId: String, shopName: String, imageUrl: String, isClick: Boolean) {
+        if (isClick) {
+            sendTopAdsUseCase.hitClick(url, shopId, shopName, imageUrl)
+        } else {
+            sendTopAdsUseCase.hitImpressions(url, shopId, shopName, imageUrl)
+        }
+    }
+
+
 
     private fun getUserId(): String {
         var userId = "0"

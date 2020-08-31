@@ -1,0 +1,233 @@
+{
+  "data": {
+    "filter": [
+      {
+        "title": "Lokasi",
+        "search": {
+          "searchable": 1,
+          "placeholder": "Cari Lokasi"
+        },
+        "template_name": "template_location",
+        "options": []
+      },
+      {
+        "title": "Pengiriman",
+        "search": {
+          "searchable": 0,
+          "placeholder": ""
+        },
+        "template_name": "",
+        "options": []
+      },
+      {
+        "title": "Harga",
+        "search": {
+          "searchable": 0,
+          "placeholder": ""
+        },
+        "template_name": "template_price",
+        "options": [
+          {
+            "name": "Harga Minimum",
+            "key": "pmin",
+            "icon": "",
+            "Description": "",
+            "value": "0",
+            "inputType": "textbox",
+            "totalData": "",
+            "valMax": "",
+            "valMin": "",
+            "isPopular": false,
+            "isNew": false,
+            "hexColor": "",
+            "child": []
+          },
+          {
+            "name": "Harga Maksimum",
+            "key": "pmax",
+            "icon": "",
+            "Description": "",
+            "value": "",
+            "inputType": "textbox",
+            "totalData": "",
+            "valMax": "",
+            "valMin": "",
+            "isPopular": false,
+            "isNew": false,
+            "hexColor": "",
+            "child": []
+          },
+          {
+            "name": "",
+            "key": "pmin-pmax",
+            "icon": "",
+            "Description": "",
+            "value": "",
+            "inputType": "slider",
+            "totalData": "",
+            "valMax": "40000000",
+            "valMin": "100",
+            "isPopular": false,
+            "isNew": false,
+            "hexColor": "",
+            "child": []
+          },
+          {
+            "name": "12 rb - 17 rb",
+            "key": "price_range_1",
+            "icon": "",
+            "Description": "",
+            "value": "",
+            "inputType": "radio",
+            "totalData": "",
+            "valMax": "17000",
+            "valMin": "12000",
+            "isPopular": false,
+            "isNew": false,
+            "hexColor": "",
+            "child": []
+          },
+          {
+            "name": "17 rb - 69 rb",
+            "key": "price_range_2",
+            "icon": "",
+            "Description": "",
+            "value": "",
+            "inputType": "radio",
+            "totalData": "",
+            "valMax": "69000",
+            "valMin": "17000",
+            "isPopular": false,
+            "isNew": false,
+            "hexColor": "",
+            "child": []
+          },
+          {
+            "name": "69 rb - 121 rb",
+            "key": "price_range_3",
+            "icon": "",
+            "Description": "",
+            "value": "",
+            "inputType": "radio",
+            "totalData": "",
+            "valMax": "121000",
+            "valMin": "69000",
+            "isPopular": false,
+            "isNew": false,
+            "hexColor": "",
+            "child": []
+          }
+        ]
+      },
+      {
+        "title": "Penawaran",
+        "search": {
+          "searchable": 0,
+          "placeholder": ""
+        },
+        "template_name": "template_offer",
+        "options": []
+      },
+      {
+        "title": "Toko",
+        "search": {
+          "searchable": 0,
+          "placeholder": ""
+        },
+        "template_name": "",
+        "options": []
+      },
+      {
+        "title": "Kondisi",
+        "search": {
+          "searchable": 0,
+          "placeholder": ""
+        },
+        "template_name": "",
+        "options": []
+      },
+      {
+        "title": "Rating",
+        "search": {
+          "searchable": 0,
+          "placeholder": ""
+        },
+        "template_name": "template_rating",
+        "options":[]
+      },
+      {
+        "title": "Warna",
+        "search": {
+          "searchable": 0,
+          "placeholder": "Cari Warna"
+        },
+        "template_name": "template_color",
+        "options": []
+      },
+      {
+        "title": "Lainnya",
+        "search": {
+          "searchable": 0,
+          "placeholder": ""
+        },
+        "template_name": "",
+        "options": []
+      },
+      {
+        "title": "Kategori",
+        "search": {
+          "searchable": 0,
+          "placeholder": ""
+        },
+        "template_name": "template_category",
+        "options": []
+      },
+      {
+        "title": "Terakhir Ditambahkan",
+        "search": {
+          "searchable": 0,
+          "placeholder": ""
+        },
+        "template_name": "",
+        "options": []
+      }
+    ],
+    "sort": [
+      {
+        "name": "Paling Sesuai",
+        "key": "ob",
+        "value": "23",
+        "inputType": "checkbox",
+        "applyFilter": ""
+      },
+      {
+        "name": "Ulasan",
+        "key": "ob",
+        "value": "5",
+        "inputType": "checkbox",
+        "applyFilter": ""
+      },
+      {
+        "name": "Terbaru",
+        "key": "ob",
+        "value": "9",
+        "inputType": "checkbox",
+        "applyFilter": ""
+      },
+      {
+        "name": "Harga Tertinggi",
+        "key": "ob",
+        "value": "4",
+        "inputType": "checkbox",
+        "applyFilter": ""
+      },
+      {
+        "name": "Harga Terendah",
+        "key": "ob",
+        "value": "3",
+        "inputType": "checkbox",
+        "applyFilter": "pmin=400000&origin_filter=sort_price"
+      }
+    ]
+  }
+}

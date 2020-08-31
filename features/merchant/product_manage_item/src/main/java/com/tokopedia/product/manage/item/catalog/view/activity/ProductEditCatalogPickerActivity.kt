@@ -14,12 +14,13 @@ import com.tokopedia.product.manage.item.utils.ProductEditItemComponentInstance
 class ProductEditCatalogPickerActivity : BaseSimpleActivity(), HasComponent<ProductComponent> {
     private var productName: String = ""
     private var categoryId = -1L
+    private var jsonChosenCatalog = ""
     private var choosenCatalog: ProductCatalog = ProductCatalog()
 
     companion object {
-        private const val EXTRA_PRODUCT_NAME = "product_name"
-        private const val EXTRA_CATEGORY_ID = "category_id"
-        private const val EXTRA_CATALOG = "catalog"
+        const val EXTRA_PRODUCT_NAME = "product_name"
+        const val EXTRA_CATEGORY_ID = "category_id"
+        const val EXTRA_CATALOG = "catalog"
 
         fun createIntent(context: Context, productName: String, categoryId: Long, choosenCatalog: ProductCatalog) =
                 Intent(context, ProductEditCatalogPickerActivity::class.java).apply {
@@ -32,14 +33,14 @@ class ProductEditCatalogPickerActivity : BaseSimpleActivity(), HasComponent<Prod
     override fun onCreate(savedInstanceState: Bundle?) {
         productName = intent.getStringExtra(EXTRA_PRODUCT_NAME) ?: ""
         categoryId = intent.getLongExtra(EXTRA_CATEGORY_ID, -1L)
-        choosenCatalog = intent.getParcelableExtra(EXTRA_CATALOG)
+        choosenCatalog = intent.getParcelableExtra(EXTRA_CATALOG) ?: ProductCatalog()
         super.onCreate(savedInstanceState)
     }
 
     override fun getComponent() = ProductEditItemComponentInstance.getComponent(application)
 
     override fun getNewFragment() = ProductEditCatalogPickerFragment
-            .createInstance(productName, categoryId, choosenCatalog)
+            .createInstance(productName, categoryId, jsonChosenCatalog, choosenCatalog)
 
     override fun getLayoutRes() = R.layout.activity_product_edit_with_menu
 }

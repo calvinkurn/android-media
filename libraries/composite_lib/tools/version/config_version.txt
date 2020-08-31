@@ -1,5 +1,5 @@
 // incrementCount number Major.MinorPatch
-Head=1000000
-Mid=10
+Mid=100
 Tail=100
 Step=1
+Suffix=

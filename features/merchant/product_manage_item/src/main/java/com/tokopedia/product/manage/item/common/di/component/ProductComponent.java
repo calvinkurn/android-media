@@ -3,7 +3,6 @@ package com.tokopedia.product.manage.item.common.di.component;
 import android.content.Context;
 
 import com.google.gson.Gson;
-import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
@@ -22,11 +21,9 @@ import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.network.di.qualifier.YoutubeQualifier;
 import com.tokopedia.core.network.retrofit.interceptors.BearerInterceptor;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase;
-import com.tokopedia.product.manage.item.common.di.scope.ProductScope;
-import com.tokopedia.product.manage.item.common.di.module.ProductModule;
 import com.tokopedia.product.manage.item.common.data.source.cloud.TomeProductApi;
+import com.tokopedia.product.manage.item.common.di.module.ProductModule;
+import com.tokopedia.product.manage.item.common.di.scope.ProductScope;
 import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepository;
 
 import dagger.Component;
@@ -89,11 +86,7 @@ public interface ProductComponent {
 
     PostExecutionThread postExecutionThread();
 
-    SessionHandler sessionHandler();
-
     GCMHandler gcmHandler();
-
-    ImageHandler imageHandler();
 
     ShopInfoRepository shopInfoRepository();
 

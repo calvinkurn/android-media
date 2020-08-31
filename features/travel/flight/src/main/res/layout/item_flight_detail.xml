@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/spacing_lvl4">
+
+    <include layout="@layout/include_header_detail_flight" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:paddingLeft="@dimen/spacing_lvl4"
+        android:paddingTop="@dimen/spacing_lvl4"
+        android:paddingRight="@dimen/spacing_lvl4"
+        android:paddingBottom="@dimen/spacing_lvl4">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/departure_time_circle"
+            android:layout_width="@dimen/dp_8"
+            android:layout_height="@dimen/dp_8"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/container_departure_info"
+            app:srcCompat="@drawable/flight_circle_green_stroke" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:background="@color/flight_dashed_line"
+            app:layout_constraintBottom_toTopOf="@+id/arrival_time_circle"
+            app:layout_constraintLeft_toLeftOf="@+id/departure_time_circle"
+            app:layout_constraintRight_toRightOf="@+id/departure_time_circle"
+            app:layout_constraintTop_toBottomOf="@+id/departure_time_circle" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/arrival_time_circle"
+            android:layout_width="@dimen/dp_8"
+            android:layout_height="@dimen/dp_8"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/container_arrival_info"
+            app:srcCompat="@drawable/flight_circle_green_fill" />
+
+        <LinearLayout
+            android:id="@+id/container_departure_info"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:layout_marginLeft="@dimen/spacing_lvl3"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:orientation="horizontal"
+            app:layout_constraintLeft_toRightOf="@+id/departure_time_circle"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/departure_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/Neutral_N700_96"
+                    app:typographyType="heading_5"
+                    tools:text="14:25" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/departure_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/Neutral_N700_68"
+                    app:typographyType="body_3"
+                    tools:text="Min, 27 Agu 2020" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/departure_airport_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/Neutral_N700_96"
+                    app:typographyType="heading_5"
+                    tools:text="Jakarta (CGK)" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/departure_desc_airport_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/Neutral_N700_68"
+                    app:typographyType="body_3"
+                    tools:text="Soekarno Hatta International Airport" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/departure_terminal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/Neutral_N700_68"
+                    app:typographyType="body_3"
+                    tools:text="Terminal 1*" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/container_departure_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:orientation="horizontal"
+            app:layout_constraintLeft_toLeftOf="@+id/container_departure_info"
+            app:layout_constraintTop_toBottomOf="@+id/container_departure_info">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="@dimen/layout_lvl2"
+                android:layout_height="@dimen/layout_lvl2"
+                app:srcCompat="@drawable/flight_ic_time" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/flight_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_lvl2"
+                android:layout_marginLeft="@dimen/spacing_lvl2"
+                android:textColor="@color/Neutral_N700_44"
+                app:typographyType="body_3"
+                tools:text="8j 20m" />
+
+        </LinearLayout>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_flight_stop_over"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:background="@drawable/bg_flight_gray_rounded_radius_3"
+            android:paddingLeft="@dimen/spacing_lvl2"
+            android:paddingTop="@dimen/spacing_lvl1"
+            android:paddingRight="@dimen/spacing_lvl2"
+            android:paddingBottom="@dimen/spacing_lvl1"
+            android:textColor="@color/Neutral_N700_68"
+            app:layout_constraintLeft_toLeftOf="@+id/container_departure_time"
+            app:layout_constraintTop_toBottomOf="@+id/container_departure_time"
+            app:typographyType="small"
+            app:typographyWeight="bold"
+            tools:text="Berhenti di Muscat" />
+
+        <LinearLayout
+            android:id="@+id/container_arrival_info"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl5"
+            android:orientation="horizontal"
+            app:layout_constraintLeft_toLeftOf="@+id/tv_flight_stop_over"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_flight_stop_over">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/arrival_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/Neutral_N700_96"
+                    app:typographyType="heading_5"
+                    tools:text="06:30" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/arrival_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/Neutral_N700_68"
+                    app:typographyType="body_3"
+                    tools:text="Sen, 28 Agu 2020" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/arrival_airport_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/Neutral_N700_96"
+                    app:typographyType="heading_5"
+                    tools:text="Banda Aceh (BTJ)" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/arrival_desc_airport_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/Neutral_N700_68"
+                    app:typographyType="body_3"
+                    tools:text="Sultan Iskandar Muda International Airport" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/arrival_terminal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/Neutral_N700_68"
+                    app:typographyType="body_3"
+                    tools:text="Terminal 1*" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <com.tokopedia.unifycomponents.ticker.Ticker
+            android:id="@+id/transit_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            app:closeButtonVisibility="gone"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/container_arrival_info"
+            app:tickerShapeType="loose"
+            app:tickerType="information" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

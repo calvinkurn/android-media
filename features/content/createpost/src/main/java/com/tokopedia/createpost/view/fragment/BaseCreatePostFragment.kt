@@ -4,10 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSmoothScroller
-import androidx.recyclerview.widget.RecyclerView
 import android.text.InputFilter
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
@@ -15,9 +11,11 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.affiliatecommon.analytics.AffiliateAnalytics
 import com.tokopedia.affiliatecommon.analytics.AffiliateEventTracking
@@ -36,10 +34,7 @@ import com.tokopedia.createpost.data.pojo.getcontentform.FeedContentForm
 import com.tokopedia.createpost.di.CreatePostModule
 import com.tokopedia.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.createpost.domain.entity.FeedDetail
-import com.tokopedia.createpost.view.activity.CreatePostActivity
-import com.tokopedia.createpost.view.activity.CreatePostImagePickerActivity
-import com.tokopedia.createpost.view.activity.CreatePostVideoPickerActivity
-import com.tokopedia.createpost.view.activity.CreatePostMediaPreviewActivity
+import com.tokopedia.createpost.view.activity.*
 import com.tokopedia.createpost.view.adapter.DefaultCaptionsAdapter
 import com.tokopedia.createpost.view.adapter.ProductAttachmentAdapter
 import com.tokopedia.createpost.view.adapter.ProductSuggestionAdapter
@@ -56,6 +51,10 @@ import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.MediaItem
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.seller_migration_common.presentation.fragment.bottomsheet.SellerMigrationCommunicationBottomSheet
+import com.tokopedia.seller_migration_common.presentation.model.CommunicationInfo
+import com.tokopedia.seller_migration_common.presentation.util.initializeSellerMigrationCommunicationTicker
 import com.tokopedia.twitter_share.TwitterAuthenticator
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
@@ -104,6 +103,10 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         ProductSuggestionAdapter(::onSuggestionItemClicked, ::onSuggestionItemFirstView)
     }
 
+    private val sellerMigrationCommunicationBottomSheet by lazy {
+        context?.let { SellerMigrationCommunicationBottomSheet.createInstance(it, CommunicationInfo.PostFeed, screenName, userSession.userId, userSession.shopId) }
+    }
+
     private lateinit var shareDialogView: View
 
     private val shareDialog: CloseableBottomSheetDialog by lazy {
@@ -122,7 +125,6 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         private const val MILLISECONDS_PER_INCH = 200f
         private const val VIEW_MODEL = "view_model"
         private const val PARAM_USER_ID = "{user_id}"
-        private const val PRODUCT_ID_QUERY_PARAM = "?product_id="
         private const val REQUEST_IMAGE_PICKER = 1234
         private const val REQUEST_VIDEO_PICKER = 1235
         private const val REQUEST_PREVIEW = 13
@@ -183,7 +185,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         if (userSession.isLoggedIn) {
             presenter.getFollowersCount(isTypeAffiliate())
             presenter.invalidateShareOptions()
-            if (viewModel.isEditState){
+            if (viewModel.isEditState) {
                 presenter.getFeedDetail(viewModel.postId, isTypeAffiliate())
             } else {
                 fetchContentForm()
@@ -213,11 +215,11 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         super.onPause()
     }
 
-    protected inline val isPostEnabled: Boolean
+    private inline val isPostEnabled: Boolean
         get() = viewModel.postId.isNotBlank() ||
                 (viewModel.completeImageList.isNotEmpty()
-                && viewModel.relatedProducts.isNotEmpty()
-                && (viewModel.adIdList.isNotEmpty()) || viewModel.productIdList.isNotEmpty())
+                        && viewModel.relatedProducts.isNotEmpty()
+                        && (viewModel.adIdList.isNotEmpty()) || viewModel.productIdList.isNotEmpty())
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -362,8 +364,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
     override fun onErrorNoQuota() {
         activity?.let {
-            Toast.makeText(it, R.string.text_full_affiliate_title, Toast.LENGTH_LONG)
-                    .show()
+            showUnifyErrorToaster(getString(R.string.cp_text_full_affiliate_title))
             it.finish()
             affiliateAnalytics.onJatahRekomendasiHabisDialogShow()
         }
@@ -383,7 +384,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
     open fun updateRelatedProduct() {
         adapter.updateProduct(viewModel.relatedProducts)
-        if (viewModel.relatedProducts.isEmpty() || viewModel.isEditState){
+        if (viewModel.relatedProducts.isEmpty() || viewModel.isEditState) {
             product_attachment.gone()
             label_title_product_attachment.gone()
         } else {
@@ -409,8 +410,8 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             if (arguments!!.getString(DRAFT_ID) != null) {
                 initDraft(arguments!!)
             } else {
-                viewModel.postId = arguments!!.getString(CreatePostActivity.PARAM_POST_ID, "")
-                viewModel.authorType = arguments!!.getString(CreatePostActivity.PARAM_TYPE, "")
+                viewModel.postId = arguments!!.getString(PARAM_POST_ID, "")
+                viewModel.authorType = arguments!!.getString(PARAM_TYPE, "")
 
                 initProductIds()
             }
@@ -420,13 +421,13 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     }
 
     protected fun initProductIds() {
-        val productIds = arguments!!.getString(CreatePostActivity.PARAM_PRODUCT_ID, "")
+        val productIds = arguments!!.getString(PARAM_PRODUCT_ID, "")
                 .split(',')
                 .filterNot { it == "-1" }
                 .toMutableList()
                 .apply { removeAll { it.trim() == "" } }
 
-        val adIds = arguments!!.getString(CreatePostActivity.PARAM_AD_ID, "")
+        val adIds = arguments!!.getString(PARAM_AD_ID, "")
                 .split(',')
                 .filterNot { it == "-1" }
                 .toMutableList()
@@ -437,7 +438,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             viewModel.adIdList.addAll(adIds)
         } else {
             view?.let {
-                Toaster.make(it, getString(R.string.af_duplicate_product), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.af_title_ok))
+                Toaster.make(it, getString(R.string.cp_duplicate_product), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(com.tokopedia.affiliatecommon.R.string.af_title_ok))
             }
         }
     }
@@ -449,10 +450,8 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             affiliateAnalytics.onTambahTagButtonClicked()
         } else {
             view?.run {
-                Toaster.showErrorWithAction(this,
-                        getString(R.string.string_attach_product_warning_max_product_format,
-                                viewModel.maxProduct.toString()),
-                        Snackbar.LENGTH_LONG, getString(R.string.general_label_ok), View.OnClickListener {  })
+                Toaster.make(this, getString(com.tokopedia.attachproduct.R.string.string_attach_product_warning_max_product_format, viewModel.maxProduct.toString()), Snackbar.LENGTH_LONG,
+                        Toaster.TYPE_ERROR, getString(com.tokopedia.resources.common.R.string.general_label_ok))
             }
         }
     }
@@ -489,7 +488,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         product_attachment.adapter = adapter
         product_attachment.setHasFixedSize(true)
         product_attachment.layoutManager = productAttachmentLayoutManager
-        product_attachment.addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(R.dimen.dp_8),
+        product_attachment.addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
                 LinearLayoutManager.HORIZONTAL))
 
         image_picker.setOnClickListener {
@@ -501,7 +500,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             goToVideoPicker()
         }
         media_attachment.setOnFileClickListener(object : FeedMultipleImageView.OnFileClickListener {
-            private fun deleteMedia(position: Int){
+            private fun deleteMedia(position: Int) {
                 viewModel.fileImageList.removeAt(position)
                 if (position < viewModel.urlImageList.size)
                     viewModel.urlImageList.removeAt(position)
@@ -512,17 +511,17 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
             override fun onDeleteItem(item: MediaItem, position: Int) {
                 if (viewModel.fileImageList.size == 1 &&
-                        (viewModel.productIdList.isNotEmpty() || viewModel.adIdList.isNotEmpty())){
+                        (viewModel.productIdList.isNotEmpty() || viewModel.adIdList.isNotEmpty())) {
                     val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
-                    dialog.setTitle(getString(R.string.af_update_post))
-                    dialog.setDesc(getString(R.string.af_delete_warning_desc))
-                    dialog.setBtnOk(getString(R.string.cancel))
-                    dialog.setBtnCancel(getString(R.string.title_delete))
-                    dialog.setOnOkClickListener{
+                    dialog.setTitle(getString(R.string.cp_update_post))
+                    dialog.setDesc(getString(R.string.cp_delete_warning_desc))
+                    dialog.setBtnOk(getString(com.tokopedia.imagepicker.R.string.cancel))
+                    dialog.setBtnCancel(getString(com.tokopedia.design.R.string.title_delete))
+                    dialog.setOnOkClickListener {
                         dialog.dismiss()
                         media_attachment.bind(listOf(item))
                     }
-                    dialog.setOnCancelClickListener{
+                    dialog.setOnCancelClickListener {
                         dialog.dismiss()
                         deleteMedia(position)
                     }
@@ -534,7 +533,9 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
             }
 
-            override fun onClickItem(item: MediaItem, position: Int) { goToMediaPreview() }
+            override fun onClickItem(item: MediaItem, position: Int) {
+                goToMediaPreview()
+            }
         })
         updateMediaPreview()
         caption.filters = arrayOf(InputFilter.LengthFilter(MAX_CHAR))
@@ -554,8 +555,8 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         }
         caption.hint = viewModel.defaultPlaceholder
         caption.setText(viewModel.caption)
-        caption.onFocusChangeListener = View.OnFocusChangeListener{ _, hasFocus ->
-            if (hasFocus){
+        caption.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
                 layout_default_caption.visible()
                 hideProductSuggestion()
                 action_bottom.gone()
@@ -567,17 +568,19 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         }
         list_captions.adapter = captionsAdapter
         list_captions.layoutManager = LinearLayoutManager(activity, RecyclerView.HORIZONTAL, false)
-        list_captions.addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(R.dimen.dp_8), LinearLayoutManager.HORIZONTAL))
+        list_captions.addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8), LinearLayoutManager.HORIZONTAL))
         icon_add_product.setOnClickListener { onAddProduct() }
         label_add_product.setOnClickListener { onAddProduct() }
 
-        if (viewModel.isEditState){
+        if (viewModel.isEditState) {
             media_attachment.gone()
         }
+
+        showMigrationTicker()
     }
 
-    private fun updateMediaPreview(){
-        val mItems = if (viewModel.fileImageList.isEmpty()){
+    private fun updateMediaPreview() {
+        val mItems = if (viewModel.fileImageList.isEmpty()) {
             viewModel.urlImageList.map { MediaItem(thumbnail = it.path, type = it.type, isSelected = true) }
         } else viewModel.fileImageList.map { MediaItem(thumbnail = it.path, type = it.type) }
         media_attachment.bind(mItems)
@@ -585,8 +588,8 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
     }
 
-    private fun onDefaultCaptionClicked(_caption: String){
-        if ((caption.text?.length ?: 0) + _caption.length <= MAX_CHAR ){
+    private fun onDefaultCaptionClicked(_caption: String) {
+        if ((caption.text?.length ?: 0) + _caption.length <= MAX_CHAR) {
             caption.text?.append(_caption)
         }
     }
@@ -661,34 +664,37 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         var isFormInvalid = false
         if (isTypeAffiliate() && viewModel.adIdList.isEmpty() && !viewModel.isEditState) {
             isFormInvalid = true
-            showUnifyErrorToaster(getString(R.string.af_warning_empty_product), getString(R.string.label_add)){
+            showUnifyErrorToaster(getString(R.string.cp_warning_empty_product), getString(com.tokopedia.abstraction.R.string.label_add)) {
                 onRelatedAddProductClick()
             }
         } else if (!isTypeAffiliate() && viewModel.productIdList.isEmpty() && !viewModel.isEditState) {
             isFormInvalid = true
-            showUnifyErrorToaster(getString(R.string.af_warning_empty_product), getString(R.string.label_add)) {
+            showUnifyErrorToaster(getString(R.string.cp_warning_empty_product), getString(com.tokopedia.abstraction.R.string.label_add)) {
                 onRelatedAddProductClick()
             }
         } else if (viewModel.completeImageList.isEmpty() && !viewModel.isEditState) {
             isFormInvalid = true
-            showUnifyErrorToaster(getString(R.string.af_warning_empty_photo), getString(R.string.label_add)) {
+            showUnifyErrorToaster(getString(R.string.cp_warning_empty_photo), getString(com.tokopedia.abstraction.R.string.label_add)) {
                 goToImagePicker()
             }
-        } else if ((caption.text?.length ?: 0) > MAX_CHAR){
+        } else if ((caption.text?.length ?: 0) > MAX_CHAR) {
             isFormInvalid = true
-            showUnifyErrorToaster(getString(R.string.af_warning_over_char, MAX_CHAR.toString()), getString(R.string.general_label_ok))
+            showUnifyErrorToaster(getString(R.string.cp_warning_over_char, MAX_CHAR.toString()), getString(com.tokopedia.resources.common.R.string.general_label_ok))
         }
         return isFormInvalid
     }
 
-    private fun showUnifyErrorToaster(message: CharSequence, action: CharSequence? = null, actionClick: ((View) -> Unit)? = null){
-        view?.let {v ->
-            if (action.isNullOrBlank()){
-                Toaster.showError(v, message.toString(), Snackbar.LENGTH_LONG)
+    private fun showUnifyErrorToaster(message: CharSequence, action: CharSequence? = null, actionClick: ((View) -> Unit)? = null) {
+        view?.let { v ->
+            if (action.isNullOrBlank()) {
+                Toaster.make(v, message.toString(), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
             } else {
-                Toaster.showErrorWithAction(v, message.toString(), Snackbar.LENGTH_LONG, action.toString(), View.OnClickListener {
-                    actionClick?.invoke(it)
-                })
+                Toaster.apply {
+                    toasterCustomCtaWidth = resources.getDimension(com.tokopedia.design.R.dimen.dp_100).toPx().toInt()
+                    make(v, message.toString(), Snackbar.LENGTH_LONG, TYPE_ERROR, action.toString(), View.OnClickListener {
+                        actionClick?.invoke(it)
+                    })
+                }
             }
         }
     }
@@ -736,7 +742,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     private fun updateHeader(authors: List<Author>) {
         if (viewModel.isEditState) {
             activityListener?.updateHeader(HeaderViewModel(
-                    getString(R.string.af_title_edit_post),
+                    getString(R.string.cp_title_edit_post),
                     "",
                     ""
 
@@ -758,8 +764,8 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun onDeleteProduct(position: Int){
-        if (adapter.itemCount < 1){
+    private fun onDeleteProduct(position: Int) {
+        if (adapter.itemCount < 1) {
             label_title_product_attachment.gone()
             product_attachment.gone()
         } else {
@@ -816,7 +822,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         context?.let {
             Timber.d(t)
             val errorMessage = ErrorHandler.getErrorMessage(context, t)
-            Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
+            showUnifyErrorToaster(errorMessage)
             hideProductSuggestionLoading()
         }
     }
@@ -860,12 +866,12 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
         val item: CoachMarkItem = if (isTypeAffiliate()) {
             CoachMarkItem(layout_product_suggestion,
-                    getString(R.string.af_suggestion_aff_cm_title),
-                    getString(R.string.af_suggestion_aff_cm_desc))
+                    getString(R.string.cp_suggestion_aff_cm_title),
+                    getString(R.string.cp_suggestion_aff_cm_desc))
         } else {
             CoachMarkItem(layout_product_suggestion,
-                    getString(R.string.af_suggestion_shop_cm_title),
-                    getString(R.string.af_suggestion_shop_cm_desc))
+                    getString(R.string.cp_suggestion_shop_cm_title),
+                    getString(R.string.cp_suggestion_shop_cm_desc))
         }
         val list: ArrayList<CoachMarkItem> = arrayListOf(item)
 
@@ -896,8 +902,8 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     }
 
     private fun getShareTitleAndSubtitle(): Pair<String, String> {
-        return if (isTypeAffiliate()) context?.getString(R.string.af_share_title).orEmpty() to context?.getString(R.string.af_share_subtitle).orEmpty()
-        else context?.getString(R.string.af_merchant_share_title).orEmpty() to context?.getString(R.string.af_merchant_share_subtitle).orEmpty()
+        return if (isTypeAffiliate()) context?.getString(R.string.cp_share_title).orEmpty() to context?.getString(R.string.cp_share_subtitle).orEmpty()
+        else context?.getString(R.string.cp_merchant_share_title).orEmpty() to context?.getString(R.string.cp_merchant_share_subtitle).orEmpty()
     }
 
     private fun createBottomSheetView(): View {
@@ -917,5 +923,9 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         activity?.let {
             (it.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
         }
+    }
+
+    private fun showMigrationTicker() {
+        initializeSellerMigrationCommunicationTicker(sellerMigrationCommunicationBottomSheet, ticker_seller_migration_create_post, CommunicationInfo.PostFeed)
     }
 }

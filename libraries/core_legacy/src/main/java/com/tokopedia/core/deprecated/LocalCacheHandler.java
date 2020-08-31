@@ -35,10 +35,6 @@ public class LocalCacheHandler {
         editor.putInt(key, value);
     }
 
-    public void putFloat(String key, float value) {
-        editor.putFloat(key, value);
-    }
-
     public void putBoolean(String key, Boolean value) {
         editor.putBoolean(key, value);
     }
@@ -79,38 +75,12 @@ public class LocalCacheHandler {
         return sharedPrefs.getInt(key, defVal);
     }
 
-    public float getFloat(String key) {
-        return sharedPrefs.getFloat(key, 0f);
-    }
-
-    public float getFloat(String key, float defVal) {
-        return sharedPrefs.getFloat(key, defVal);
-    }
-
     public Boolean getBoolean(String key) {
         return sharedPrefs.getBoolean(key, false);
     }
 
     public Boolean getBoolean(String key, boolean defValue) {
         return sharedPrefs.getBoolean(key, defValue);
-    }
-
-    public ArrayList<String> getArrayListString(String key) {
-        int total = sharedPrefs.getInt(key + "_total", 0);
-        ArrayList<String> value = new ArrayList<String>();
-        for (int i = 0; i < total; i++) {
-            value.add(getString(key + i));
-        }
-        return value;
-    }
-
-    public ArrayList<Integer> getArrayListInteger(String key) {
-        int total = sharedPrefs.getInt(key + "_total", 0);
-        ArrayList<Integer> value = new ArrayList<Integer>();
-        for (int i = 0; i < total; i++) {
-            value.add(getInt(key + i));
-        }
-        return value;
     }
 
     public void setExpire(int time) {
@@ -125,13 +95,6 @@ public class LocalCacheHandler {
         Long time = getLong("timestamp");
         Long curr_time = System.currentTimeMillis() / 1000;
         return (curr_time - time) > interval;
-    }
-
-    public int getRemainingTime() {
-        int interval = getInt("expired_time");
-        Long time = getLong("timestamp");
-        Long curr_time = System.currentTimeMillis() / 1000;
-        return (int) (interval - (curr_time - time));
     }
 
     public void clearCache(String name) {

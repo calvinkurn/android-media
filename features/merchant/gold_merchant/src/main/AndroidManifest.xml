@@ -9,22 +9,33 @@
             android:name=".statistic.view.activity.GMStatisticDashboardActivity"
             android:label="@string/gm_statistic_title"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3" />
+            android:theme="@style/Theme.White">
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_marketplace"
+                    android:pathPattern="@string/path_gold_merchant_statistic_dashboard"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".statistic.view.activity.GMStatisticTransactionActivity"
             android:exported="true"
-            android:label="@string/gm_statistic_transaction_label" />
+            android:label="@string/gm_statistic_transaction_label"
+            android:theme="@style/Theme.White" />
         <activity
             android:name=".statistic.view.activity.GMStatisticTransactionTableActivity"
             android:exported="true"
-            android:label="@string/list_sold_product_text" />
+            android:label="@string/list_sold_product_text"
+            android:theme="@style/Theme.White" />
         <activity
             android:name=".statistic.view.activity.GMStatisticDatePickerActivity"
             android:exported="true"
-            android:label="@string/title_date_setting" />
-        <activity
-            android:name=".featured.view.activity.GMFeaturedProductActivity"
-            android:exported="true"
-            android:label="@string/featured_product_title" />
+            android:label="@string/title_date_setting"
+            android:theme="@style/Theme.White" />
     </application>
 </manifest>

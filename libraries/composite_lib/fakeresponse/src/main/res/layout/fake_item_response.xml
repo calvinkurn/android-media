@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="8dp"
+    android:paddingEnd="8dp"
+    android:paddingBottom="8dp">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/imageCheck"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/fake_grey_circle"
+        android:scaleType="centerInside"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/fake_ic_done" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvQueryName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="10dp"
+        android:fontFamily="sans-serif-medium"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toStartOf="@id/cb"
+        app:layout_constraintStart_toEndOf="@id/imageCheck"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="CatalogDetail" />
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvCustomName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toStartOf="@id/tvResponseType"
+        app:layout_constraintStart_toEndOf="@id/imageCheck"
+        app:layout_constraintTop_toBottomOf="@id/tvQueryName"
+        tools:text="Custom name" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvResponseType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:background="@drawable/fake_round_bg"
+        android:paddingStart="4dp"
+        android:paddingLeft="4dp"
+        android:paddingEnd="4dp"
+        android:paddingRight="4dp"
+        android:textColor="@android:color/white"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toStartOf="@id/cb"
+        app:layout_constraintTop_toBottomOf="@id/tvCustomName"
+        app:textAllCaps="true"
+        tools:backgroundTint="@color/gqlColorBlue"
+        tools:text="GQL" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvLastUpdated"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        tools:text="02:43 AM"
+        android:textSize="12sp"
+        app:layout_constraintStart_toEndOf="@id/imageCheck"
+        app:layout_constraintTop_toBottomOf="@id/tvCustomName" />
+
+
+    <CheckBox
+        android:id="@+id/cb"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

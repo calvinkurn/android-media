@@ -51,6 +51,7 @@ class FeedMainToolbar : MainToolbar {
 
     override fun inflateResource(context: Context) {
         View.inflate(context, R.layout.feed_main_toolbar, this)
+        actionAfterInflation(context, this)
     }
 
     companion object {

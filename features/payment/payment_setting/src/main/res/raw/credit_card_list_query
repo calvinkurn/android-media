@@ -1,4 +1,17 @@
 {
+PaymentQuery{
+    paymentSignature {
+      merchantCode
+      profileCode
+      ipAddress
+      date
+      userId
+      customerName
+      customerEmail
+      callbackUrl
+      hash
+      customerMsisdn
+    }
     creditCard{
         error
         cards {
@@ -25,4 +38,5 @@
             is_registered_fingerprint
         }
     }
+   }
 }

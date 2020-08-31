@@ -18,4 +18,5 @@ public interface InterfaceDataStore {
     Completable updateInAppDataFreq(long id);
     Completable updateInAppDataFreq(long id, long newSt);
     Completable viewDismissed(long id);
+    Completable interactedWithView(long id);
 }

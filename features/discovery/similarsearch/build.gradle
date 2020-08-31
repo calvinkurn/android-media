@@ -1,8 +1,25 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: "de.mannodermaus.android-junit5"
+
+
+android {
+    testOptions {
+        junitPlatform {
+            filters {
+                engines {
+                    include 'spek2'
+                }
+            }
+        }
+        unitTests.all {
+            testLogging.events = ["passed", "skipped", "failed"]
+        }
+    }
+}
 
 repositories {
     maven { url 'https://hansel.io/maven' }
@@ -17,25 +34,37 @@ buildscript {
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
+        classpath rootProject.ext.miscDependencies.androidjunit5
+    }
+}
+
+// For instrumentation test
+android {
+    defaultConfig {
+        testInstrumentationRunner "com.tokopedia.test.application.InstrumentationTestRunner"
     }
 }
 
 dependencies {
-    
+    implementation project(rootProject.ext.features.atc_common)
+    implementation project(rootProject.ext.features.discoveryCommon)
+    implementation project(rootProject.ext.features.productCard)
     implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.features.wishlistCommon)
+    implementation project(rootProject.ext.features.topAdsSdk)
+    implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.baseList)
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
-    implementation project(rootProject.ext.libraries.kotlinExtensions)
-    implementation project(rootProject.ext.features.discoveryCommon)
-    implementation project(rootProject.ext.features.wishlistCommon)
-    implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.track)
 
-    implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+    implementation project(rootProject.ext.libraries.graphql)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
@@ -44,15 +73,39 @@ dependencies {
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
-    implementation rootProject.ext.playServicesDependencies.analytics
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.networkDependencies.glide
+    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.spek2Api
+    testImplementation rootProject.ext.testDependencies.spek2Dsl
+    testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
+    testImplementation rootProject.ext.testDependencies.junitJupiterApi
+
+    // instrumentation test - disabled for now
+//    implementation 'com.android.support:multidex:1.0.3'
+//    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
+//    androidTestImplementation 'androidx.test:rules:1.2.0'
+//    androidTestImplementation rootProject.ext.playServicesDependencies.core
+//    androidTestImplementation rootProject.ext.firebase.core
+//    androidTestImplementation project(rootProject.ext.libraries.core_legacy)
+//    testImplementation rootProject.ext.testDependencies.junit
+//    androidTestImplementation project(rootProject.ext.libraries.commonNetwork)
+//    androidTestImplementation project(rootProject.ext.libraries.akamaiBotLib)
+//    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.network
+//    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.authentication
+//    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
 }
 
 project.ext {
     artifactId = 'similar-search'
     groupId = 'com.tokopedia.discovery'
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName = "similarsearch-release"
 }
 
 apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'

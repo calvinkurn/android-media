@@ -1,6 +1,8 @@
 package com.tokopedia.oms.scrooge;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -141,21 +143,34 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
                 Timber.d("ScroogeActivity :: onPageFinished url " + inUrl);
             }
 
-            public synchronized void onReceivedError(WebView inView, int iniErrorCode, String inDescription, String inFailingUrl) {
-                super.onReceivedError(inView, iniErrorCode, inDescription, inFailingUrl);
-                Timber.d("ScroogeActivity :: Error occured while loading url " + inFailingUrl);
+            public synchronized void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+                super.onReceivedError(view, errorCode, description, failingUrl);
+                Timber.d("ScroogeActivity :: Error occured while loading url " + failingUrl);
+                Timber.w("P1#WEBVIEW_ERROR#'%s';error_code=%s;desc='%s'", failingUrl, errorCode, description);
                 Intent responseIntent = new Intent();
-                responseIntent.putExtra(ScroogePGUtil.RESULT_EXTRA_MSG, inDescription);
+                responseIntent.putExtra(ScroogePGUtil.RESULT_EXTRA_MSG, description);
                 setResult(ScroogePGUtil.RESULT_CODE_RECIEVED_ERROR, responseIntent);
                 finish();
             }
 
-            public synchronized void onReceivedSslError(WebView inView, SslErrorHandler inHandler, SslError inError) {
-                Timber.d("ScroogeActivity :: SSL Error occured " + inError.toString());
-                Timber.d("ScroogeActivity :: SSL Handler is " + inHandler);
-                if (inHandler != null) {
-                    inHandler.proceed();
-                }
+            public synchronized void onReceivedSslError(WebView view, final SslErrorHandler handler, SslError error) {
+                super.onReceivedSslError(view, handler, error);
+                final AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                builder.setMessage(R.string.cs_notification_error_ssl_cert_invalid);
+                builder.setPositiveButton(R.string.title_ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        handler.proceed();
+                    }
+                });
+                builder.setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        handler.cancel();
+                    }
+                });
+                final AlertDialog dialog = builder.create();
+                dialog.show();
             }
 
             @Override

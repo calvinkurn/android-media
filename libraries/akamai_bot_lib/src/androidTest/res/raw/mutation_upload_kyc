@@ -1,0 +1,6 @@
+mutation kycUploadV3($kycType: Int, $picObjKYC: String) {
+  kycUploadV3(picObjKYC: $picObjKYC, kycType: $kycType) {
+    isSuccess
+    error
+  }
+}

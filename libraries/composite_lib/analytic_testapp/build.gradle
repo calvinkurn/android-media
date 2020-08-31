@@ -1,0 +1,55 @@
+apply plugin: 'com.android.application'
+
+apply plugin: 'kotlin-android'
+
+apply plugin: 'kotlin-android-extensions'
+
+apply plugin: 'kotlin-kapt'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+    defaultConfig {
+        applicationId "com.example.googletagmanagerwithannotation"
+        minSdkVersion 21
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.core:core-ktx:1.1.0'
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.playServicesDependencies.tagManager
+    implementation rootProject.ext.playServicesDependencies.measurementApi
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticAnnotation
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticFirebaseRules
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticParam
+    kapt rootProject.ext.tkpdInternalLibDependencies.analyticProcessor
+
+    testImplementation files("${System.getProperty('java.home')}/lib/rt.jar")
+    testImplementation rootProject.ext.tkpdInternalLibDependencies.analyticProcessor
+    testImplementation rootProject.ext.miscDependencies.guava24
+    testImplementation 'com.google.truth:truth:0.30'
+    testImplementation 'com.google.testing.compile:compile-testing:0.10'
+    testImplementation 'org.codehaus.groovy:groovy-all:2.4.15'
+    testImplementation 'org.spockframework:spock-core:1.0-groovy-2.4'
+    testImplementation rootProject.ext.testDependencies.junit
+    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
+    androidTestImplementation rootProject.ext.testDependencies.espressoCore
+}

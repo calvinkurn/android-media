@@ -31,6 +31,8 @@ import com.tokopedia.imagepicker.picker.instagram.view.presenter.InstagramLoginP
 
 import javax.inject.Inject;
 
+import timber.log.Timber;
+
 import static com.tokopedia.imagepicker.picker.instagram.util.InstagramConstant.SESSIONID;
 
 /**
@@ -167,6 +169,7 @@ public class InstagramLoginFragment extends BaseDaggerFragment{
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
             super.onReceivedError(view, errorCode, description, failingUrl);
             progressBar.setVisibility(View.GONE);
+            Timber.w("P1#WEBVIEW_ERROR#'%s';error_code=%s;desc='%s'",failingUrl, errorCode, description);
         }
 
     }

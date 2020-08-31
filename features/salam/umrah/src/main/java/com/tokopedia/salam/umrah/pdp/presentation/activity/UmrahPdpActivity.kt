@@ -32,12 +32,22 @@ class UmrahPdpActivity : UmrahBaseActivity(), HasComponent<UmrahPdpComponent> {
     }
 
     override fun getMenuButton() = R.menu.umrah_base_menu_white
-    override fun getShareLink(): String = getString(R.string.umrah_pdp_link_share,slugName)
+    override fun onClickSalam() {
+
+    }
+
+    override fun onClickHelp() {
+
+    }
+
+    override fun onClickShare() {
+
+    }
 
     private fun getIntentData() {
         val uri = intent.data
         @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-        slugName = if (uri != null) uri.lastPathSegment
+        slugName = if (uri != null) uri.lastPathSegment ?: ""
         else intent.getStringExtra(EXTRA_SLUG_NAME)
     }
 

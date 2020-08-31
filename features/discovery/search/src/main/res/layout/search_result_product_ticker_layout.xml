@@ -5,9 +5,10 @@
     android:id="@+id/tickerView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/dp_16"
-    android:layout_marginLeft="@dimen/dp_16"
-    android:layout_marginRight="@dimen/dp_16"
+    android:layout_marginTop="@dimen/dp_13"
+    android:layout_marginLeft="@dimen/dp_14"
+    android:layout_marginRight="@dimen/dp_14"
+    android:layout_marginBottom="-3dp"
     app:closeButtonVisibility="visible"
     app:tickerShapeType="loose"
     app:tickerType="announcement"/>

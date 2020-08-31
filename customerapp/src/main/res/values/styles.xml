@@ -33,4 +33,20 @@
         <item name="android:windowBackground">@android:color/transparent</item>
 
     </style>
+
+    <style name="TokopediaTransparentStatus" parent="Theme.Tokopedia3">
+        <item name="android:windowBackground">@android:color/white</item>
+        <item name="android:windowSharedElementsUseOverlay">false</item>
+        <item name="android:windowContentTransitions">true</item>
+    </style>
+
+    <style name="ShopPageActivityTheme" parent="Theme.White">
+        <item  name="android:actionButtonStyle">@style/ShopPageActionBarMenuItemStyle</item>
+    </style>
+
+    <style name="ShopPageActionBarMenuItemStyle" >
+        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
+        <item name="android:padding">@dimen/dp_4</item>
+    </style>
+
 </resources>

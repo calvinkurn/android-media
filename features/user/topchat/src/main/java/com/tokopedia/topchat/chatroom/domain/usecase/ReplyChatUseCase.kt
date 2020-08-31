@@ -26,6 +26,14 @@ class ReplyChatUseCase @Inject constructor(
         private val PARAM_MESSAGE_ID: String = "msg_id"
         private val PARAM_PAGE: String = "page"
 
+        fun generateParamWithSource(messageId: String, messageReply: String, source: String): RequestParams {
+            val requestParams = generateParam(messageId, messageReply)
+            if (!source.isBlank()) {
+                requestParams.putString("source", source)
+            }
+            return requestParams
+        }
+
         fun generateParam(messageId: String, messageReply: String): RequestParams {
             val requestParams = RequestParams.create()
             requestParams.putString("msg_id", messageId)

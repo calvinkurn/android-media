@@ -1,5 +1,6 @@
 package com.tokopedia.webview;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -13,36 +14,53 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
 import android.webkit.GeolocationPermissions;
+import android.webkit.JavascriptInterface;
+import android.webkit.PermissionRequest;
 import android.webkit.SslErrorHandler;
 import android.webkit.URLUtil;
 import android.webkit.ValueCallback;
 import android.webkit.WebBackForwardList;
 import android.webkit.WebChromeClient;
+import android.webkit.WebHistoryItem;
+import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.RouteManagerKt;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.network.utils.URLGenerator;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.webview.ext.UrlEncoderExtKt;
 
+import java.lang.ref.WeakReference;
+
+import timber.log.Timber;
+
 import static android.app.Activity.RESULT_OK;
 import static com.tokopedia.abstraction.common.utils.image.ImageHandler.encodeToBase64;
+import static com.tokopedia.webview.ConstantKt.DEFAULT_TITLE;
 import static com.tokopedia.webview.ConstantKt.JS_TOKOPEDIA;
 import static com.tokopedia.webview.ConstantKt.KEY_ALLOW_OVERRIDE;
 import static com.tokopedia.webview.ConstantKt.KEY_NEED_LOGIN;
@@ -64,15 +82,26 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     public final static int ATTACH_FILE_REQUEST = 1;
     private static final String HCI_CAMERA_KTP = "android-js-call://ktp";
     private static final String HCI_CAMERA_SELFIE = "android-js-call://selfie";
+    private static final String LOGIN_APPLINK = "tokopedia://login";
+    private static final String REGISTER_APPLINK = "tokopedia://registration";
+
+    private static final String CLEAR_CACHE_PREFIX = "/clear-cache";
+    private static final String KEY_CLEAR_CACHE = "android_webview_clear_cache";
+
     String mJsHciCallbackFuncName;
     public static final int HCI_CAMERA_REQUEST_CODE = 978;
     private static final int REQUEST_CODE_LOGIN = 1233;
+    private static final int REQUEST_CODE_LOGOUT = 1234;
     private static final int LOGIN_GPLUS = 458;
     private static final String HCI_KTP_IMAGE_PATH = "ktp_image_path";
     private static final String KOL_URL = "tokopedia.com/content";
     private static final String PLAY_GOOGLE_URL = "play.google.com";
+    private static final String BRANCH_IO_HOST = "tokopedia.link";
     private static final String PARAM_EXTERNAL = "tokopedia_external=true";
     private static final String PARAM_WEBVIEW_BACK = "tokopedia://back";
+    public static final String CUST_OVERLAY_URL = "imgurl";
+    private static final String CUST_HEADER = "header_text";
+    private static final String HELP_URL = "tokopedia.com/help";
 
     @NonNull
     protected String url = "";
@@ -90,6 +119,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
     private UserSession userSession;
     private PermissionCheckerHelper permissionCheckerHelper;
+    private RemoteConfig remoteConfig;
 
     /**
      * return the url to load in the webview
@@ -129,6 +159,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         allowOverride = args.getBoolean(KEY_ALLOW_OVERRIDE, true);
         String host = Uri.parse(url).getHost();
         isTokopediaUrl = host != null && host.contains(TOKOPEDIA_STRING);
+        remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
     }
 
     private String getUrlFromArguments(Bundle args) {
@@ -160,10 +191,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         webView = view.findViewById(setWebView());
         progressBar = view.findViewById(setProgressBar());
 
-        CookieManager.getInstance().setAcceptCookie(true);
-
         webView.clearCache(true);
+        webView.addJavascriptInterface(new WebToastInterface(getActivity()),"Android");
         WebSettings webSettings = webView.getSettings();
+        webSettings.setUserAgentString(webSettings.getUserAgentString() + " webview ");
         webSettings.setJavaScriptEnabled(true);
         webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
         webSettings.setDomStorageEnabled(true);
@@ -175,7 +206,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             webSettings.setMediaPlaybackRequiresUserGesture(false);
         }
 
-        if(GlobalConfig.isAllowDebuggingTools() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+        if (GlobalConfig.isAllowDebuggingTools() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             webView.setWebContentsDebuggingEnabled(true);
         }
         return view;
@@ -204,6 +235,36 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             webView.loadAuthUrl(getUrl(), new UserSession(getContext()));
         } else {
             webView.loadAuthUrl(getUrl(), null);
+        }
+    }
+
+
+    private final class WebToastInterface {
+
+        private WeakReference<Activity> mContextRef;
+        private Toast toast;
+
+        public WebToastInterface(Activity context) {
+            this.mContextRef = new WeakReference<Activity>(context);
+        }
+
+        @JavascriptInterface
+        public void showToast(final String toastMsg) {
+
+            if (TextUtils.isEmpty(toastMsg) || mContextRef.get() == null) {
+                return;
+            }
+            mContextRef.get().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (toast != null) {
+                        toast.cancel();
+                    }
+                    toast = Toast.makeText(mContextRef.get(), toastMsg, Toast.LENGTH_SHORT);
+                    toast.show();
+                }
+            });
+
         }
     }
 
@@ -263,12 +324,16 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             WebBackForwardList mWebBackForwardList = webView.copyBackForwardList();
             if (mWebBackForwardList.getCurrentIndex() > 0)
                 historyUrl = mWebBackForwardList.getItemAtIndex(mWebBackForwardList.getCurrentIndex() - 1).getUrl();
-            if (historyUrl.contains(SEAMLESS)){
+            if (historyUrl.contains(SEAMLESS)) {
                 webView.loadAuthUrl(historyUrl, null);
-            }
-            else {
+            } else {
                 webView.loadAuthUrl(historyUrl, userSession);
             }
+        }
+
+        if (requestCode == REQUEST_CODE_LOGOUT && resultCode == RESULT_OK) {
+            hasMoveToNativePage = true;
+            startActivity(RouteManager.getIntent(getContext(), ApplinkConst.LOGIN));
         }
     }
 
@@ -276,6 +341,35 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         @Override
         public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
             checkLocationPermission(callback, origin);
+        }
+
+        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+        @Override
+        public void onPermissionRequest(PermissionRequest request) {
+            for (String resource:
+                    request.getResources()) {
+                if (resource.equals(PermissionRequest.RESOURCE_VIDEO_CAPTURE)) {
+                    permissionCheckerHelper = new PermissionCheckerHelper();
+                    permissionCheckerHelper.checkPermission(BaseWebViewFragment.this, PermissionCheckerHelper.Companion.PERMISSION_CAMERA, new PermissionCheckerHelper.PermissionCheckListener() {
+                        @Override
+                        public void onPermissionDenied(String permissionText) {
+                            request.deny();
+                        }
+                        @Override
+                        public void onNeverAskAgain(String permissionText) {
+                            request.deny();
+                        }
+                        @Override
+                        public void onPermissionGranted() {
+                            request.grant(request.getResources());
+                        }
+                    }, getString(R.string.need_permission_camera));
+                }
+            }
+        }
+        @Override
+        public void onPermissionRequestCanceled(PermissionRequest request) {
+            super.onPermissionRequestCanceled(request);
         }
 
         @Override
@@ -339,13 +433,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                             && Uri.parse(title).getScheme() == null
                             && isKolUrl(decodedUrl)) {
                         actionBar.setTitle(title);
-                    } else {
-                        String activityExtraTitle = getActivity().getIntent().getStringExtra(ConstantKt.KEY_TITLE);
-                        if (TextUtils.isEmpty(activityExtraTitle)) {
-                            actionBar.setTitle(getString(R.string.tokopedia));
-                        } else {
-                            actionBar.setTitle(activityExtraTitle);
-                        }
+                    } else if (!isHelpUrl(decodedUrl)) {
+                        actionBar.setTitle(getString(R.string.tokopedia));
                     }
                 }
             }
@@ -396,6 +485,55 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
     class MyWebViewClient extends WebViewClient {
         @Override
+        public void onPageFinished(WebView view, String url) {
+            super.onPageFinished(view, url);
+            String title = view.getTitle();
+            if (view.getContext() instanceof BaseSimpleWebViewActivity) {
+                BaseSimpleWebViewActivity activity = (BaseSimpleWebViewActivity) view.getContext();
+                String activityTitle = activity.getWebViewTitle();
+                if (TextUtils.isEmpty(activityTitle) || activityTitle.equals(DEFAULT_TITLE)) {
+                    if (activity.getShowTitleBar()) {
+                        if (TextUtils.isEmpty(title)) {
+                            title = DEFAULT_TITLE;
+                        }
+                        activity.setWebViewTitle(title);
+                        activity.updateTitle(title);
+                    }
+                }
+            } else if (view.getContext() instanceof BaseSimpleActivity) {
+                ActionBar actionBar = ((AppCompatActivity) view.getContext()).getSupportActionBar();
+                if (actionBar != null) {
+                    if (isHelpUrl(url) && !title.isEmpty()) {
+                        actionBar.setTitle(title);
+                    } else {
+                        String activityExtraTitle = getExtraTitle();
+                        if (!TextUtils.isEmpty(activityExtraTitle)) {
+                            actionBar.setTitle(activityExtraTitle);
+                        } else {
+                            actionBar.setTitle(getString(R.string.tokopedia));
+                        }
+                    }
+                }
+            }
+        }
+
+        private String getExtraTitle() {
+            Activity activity = getActivity();
+            if (activity != null) {
+                return activity.getIntent().getStringExtra(ConstantKt.KEY_TITLE);
+            } else
+                return "";
+        }
+
+
+        @Nullable
+        @Override
+        public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+            webViewClientShouldInterceptRequest(view, request);
+            return super.shouldInterceptRequest(view, request);
+        }
+
+        @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
             try {
@@ -420,7 +558,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             return shouldOverrideUrlLoading(webView, request.getUrl().toString());
         }
 
-        boolean hasCheckOverrideAtInitialization(String requestUrl){
+        boolean hasCheckOverrideAtInitialization(String requestUrl) {
             return (allowOverride && requestUrl.equals(url));
         }
 
@@ -434,25 +572,77 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
             super.onReceivedError(view, errorCode, description, failingUrl);
             progressBar.setVisibility(View.GONE);
+            String webUrl = view.getUrl();
+            Timber.w("P1#WEBVIEW_ERROR#'%s';error_code=%s;desc='%s';web_url='%s'",
+                    failingUrl, errorCode, description, webUrl);
         }
+
+        @TargetApi(android.os.Build.VERSION_CODES.M)
+        @Override
+        public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+            super.onReceivedError(view, request, error);
+            String webUrl = view.getUrl();
+            Timber.w("P1#WEBVIEW_ERROR#'%s';error_code=%s;desc='%s';web_url='%s'",
+                    request.getUrl(), error.getErrorCode(), error.getDescription(), webUrl);
+        }
+
+        @TargetApi(android.os.Build.VERSION_CODES.M)
+        @Override
+        public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
+            super.onReceivedHttpError(view, request, errorResponse);
+            String webUrl = view.getUrl();
+            Timber.w("P1#WEBVIEW_ERROR_RESPONSE#'%s';status_code=%s;reason='%s';web_url='%s'",
+                    request.getUrl(), errorResponse.getStatusCode(), errorResponse.getReasonPhrase(), webUrl);
+        }
+    }
+
+    private boolean isHelpUrl(String url) {
+        return url.contains(HELP_URL);
+    }
+
+    // to be overridden
+    protected void webViewClientShouldInterceptRequest(WebView view, WebResourceRequest request) {
+        //noop
     }
 
     protected boolean shouldOverrideUrlLoading(@Nullable WebView webview, @NonNull String url) {
         if (getActivity() == null) {
             return false;
         }
-        if (goToLoginGoogle(url)) return true;
+        Uri uri = Uri.parse(url);
+        if (uri.isOpaque()) {
+            return false;
+        }
+        if (goToLoginGoogle(uri)) return true;
+
+        String queryParam = null;
+        String headerText = null;
+
+        try {
+            queryParam = uri.getQueryParameter(CUST_OVERLAY_URL);
+            headerText = uri.getQueryParameter(CUST_HEADER);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         if (url.contains(HCI_CAMERA_KTP)) {
-            mJsHciCallbackFuncName = Uri.parse(url).getLastPathSegment();
-            startActivityForResult(RouteManager.getIntent(getActivity(), ApplinkConst.HOME_CREDIT_KTP_WITH_TYPE), HCI_CAMERA_REQUEST_CODE);
+            mJsHciCallbackFuncName = uri.getLastPathSegment();
+            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.HOME_CREDIT_KTP_WITH_TYPE);
+            if (queryParam != null)
+                intent.putExtra(CUST_OVERLAY_URL, queryParam);
+            startActivityForResult(intent, HCI_CAMERA_REQUEST_CODE);
             return true;
         } else if (url.contains(HCI_CAMERA_SELFIE)) {
-            mJsHciCallbackFuncName = Uri.parse(url).getLastPathSegment();
-            startActivityForResult(RouteManager.getIntent(getActivity(), ApplinkConst.HOME_CREDIT_SELFIE_WITHOUT_TYPE), HCI_CAMERA_REQUEST_CODE);
+            mJsHciCallbackFuncName = uri.getLastPathSegment();
+            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.HOME_CREDIT_SELFIE_WITHOUT_TYPE);
+            if (queryParam != null)
+                intent.putExtra(CUST_OVERLAY_URL, queryParam);
+            if(headerText != null)
+                intent.putExtra(CUST_HEADER, headerText);
+            startActivityForResult(intent, HCI_CAMERA_REQUEST_CODE);
             return true;
         } else if (PARAM_WEBVIEW_BACK.equalsIgnoreCase(url)
-                && getActivity()!= null) {
+                && getActivity() != null) {
             if (getActivity().isTaskRoot()) {
                 RouteManager.route(getContext(), ApplinkConst.HOME);
             } else {
@@ -462,9 +652,17 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         } else if (url.contains(PLAY_GOOGLE_URL)) {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
             startActivity(intent);
-        }
-        if (!allowOverride) {
-            return false;
+            return true;
+        } else if (BRANCH_IO_HOST.equalsIgnoreCase(uri.getHost()) && !GlobalConfig.isSellerApp()) {
+            //Avoid crash in app that doesn't support branch IO
+            try {
+                Intent intent = RouteManager.getIntentNoFallback(getActivity(), url);
+                if (intent != null) {
+                    startActivity(intent);
+                }
+            } catch (ActivityNotFoundException e) {
+                e.printStackTrace();
+            }
         }
         if (url.contains(PARAM_EXTERNAL)) {
             try {
@@ -477,32 +675,55 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 return false;
             }
         }
+        if (url.contains(LOGIN_APPLINK)||url.contains(REGISTER_APPLINK)) {
+            boolean isCanClearCache = remoteConfig.getBoolean(KEY_CLEAR_CACHE, false);
+            if (isCanClearCache && url.contains(CLEAR_CACHE_PREFIX)) {
+                Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalGlobal.LOGOUT);
+                intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_RETURN_HOME, false);
+                intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_CLEAR_DATA_ONLY, true);
+                startActivityForResult(intent, REQUEST_CODE_LOGOUT);
+            } else {
+                startActivityForResult(RouteManager.getIntent(getActivity(), url), REQUEST_CODE_LOGIN);
+            }
+            return true;
+        }
         boolean isNotNetworkUrl = !URLUtil.isNetworkUrl(url);
         if (isNotNetworkUrl) {
             Intent intent = RouteManager.getIntentNoFallback(getActivity(), url);
-            if (intent!= null) {
-                hasMoveToNativePage = true;
-                startActivity(intent);
+            if (intent != null) {
+                try {
+                    hasMoveToNativePage = true;
+                    startActivity(intent);
+                } catch (Exception ignored) {
+                }
                 return true;
             } else {
-                // logging here, url might return blank page
-                // ask user to update app
+                logApplinkErrorOpen(url);
             }
+        }
+        if (!allowOverride) {
+            return false;
         }
         hasMoveToNativePage = RouteManagerKt.moveToNativePageFromWebView(getActivity(), url);
         return hasMoveToNativePage;
     }
 
-    private void checkActivityFinish(){
-        if (hasMoveToNativePage && !webViewHasContent && getActivity()!= null) {
+    private void logApplinkErrorOpen(String url) {
+        String referrer = getPreviousUri();
+        Timber.w("P1#APPLINK_OPEN_ERROR#Webview;source='%s';referrer='%s';uri='%s';journey='-'",
+                getClass().getSimpleName(), referrer, url);
+    }
+
+    private void checkActivityFinish() {
+        if (hasMoveToNativePage && !webViewHasContent && getActivity() != null) {
             getActivity().finish();
         }
     }
 
-    private boolean goToLoginGoogle(@NonNull String url){
+    private boolean goToLoginGoogle(@NonNull Uri uri) {
         String loginType;
         try {
-            loginType = Uri.parse(url).getQueryParameter("login_type");
+            loginType = uri.getQueryParameter("login_type");
         } catch (Exception e) {
             return false;
         }
@@ -525,11 +746,26 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
     }
 
+    private String getPreviousUri() {
+        if (webView == null) {
+            return "";
+        }
+        WebBackForwardList webBackForwardList = webView.copyBackForwardList();
+        if (webBackForwardList == null || webBackForwardList.getCurrentIndex() <= 0) {
+            return "";
+        }
+        WebHistoryItem webHistoryItem = webBackForwardList.getItemAtIndex(webBackForwardList.getCurrentIndex() - 1);
+        if (webHistoryItem == null) {
+            return "";
+        }
+        return webHistoryItem.getUrl();
+    }
+
     public TkpdWebView getWebView() {
         return webView;
     }
 
-    public int setWebView(){
+    public int setWebView() {
         return R.id.webview;
     }
 
@@ -537,7 +773,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         return R.id.progressbar;
     }
 
-    public void reloadPage(){
+    public void reloadPage() {
         webView.reload();
     }
 

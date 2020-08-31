@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.viewmodel
 
+import androidx.annotation.Keep
 import com.tokopedia.attachcommon.data.VoucherPreview
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_VOUCHER_ATTACHMENT
 import com.tokopedia.chat_common.data.SendableViewModel
@@ -11,7 +12,7 @@ import com.tokopedia.websocket.RxWebSocket
 import okhttp3.Interceptor
 
 class SendableVoucherPreview(
-        val voucherPreview: VoucherPreview
+        private val voucherPreview: VoucherPreview
 ) : SendablePreview {
 
     val voucherViewModel = MerchantVoucherModel(
@@ -32,7 +33,7 @@ class SendableVoucherPreview(
         return attachmentPreviewFactory.type(this)
     }
 
-    override fun sendTo(messageId: String, opponentId: String, listInterceptor: List<Interceptor>) {
+    override fun sendTo(messageId: String, opponentId: String, message: String, listInterceptor: List<Interceptor>) {
         val voucherPayload = generatePayload(messageId, opponentId)
         val stringJsonPayload = CommonUtil.toJson(voucherPayload)
         RxWebSocket.send(stringJsonPayload, listInterceptor)
@@ -52,7 +53,8 @@ class SendableVoucherPreview(
                 voucherPreview.amount,
                 voucherPreview.amountType,
                 voucherPreview.identifier,
-                voucherPreview.voucherType
+                voucherPreview.voucherType,
+                voucherPreview.isPublic
         )
         val data = WebsocketAttachmentData(
                 messageId.toInt(),
@@ -78,6 +80,7 @@ class SendableVoucherPreview(
         return false
     }
 
+    @Keep
     class WebsocketVoucherPayload(
             val voucher_id: Int,
             val tnc: String,
@@ -90,6 +93,7 @@ class SendableVoucherPreview(
             val amount: Int,
             val amount_type: Int,
             val identifier: String,
-            val voucher_type: Int
+            val voucher_type: Int,
+            val is_public: Int
     )
 }

@@ -1,0 +1,20 @@
+query TravelCollectiveOrderList($page: Int!, $perPage: Int!, $filterStatus: String!, $cityID: Int) {
+  TravelCollectiveOrderList(product: ALL, page: $page, perPage: $perPage, filterStatus: $filterStatus, cityID: $cityID) {
+      orders{
+        product
+        title
+        subtitle
+        prefix
+        value
+        webURL
+        appURL
+        imageURL
+      }
+
+      meta{
+        title
+        appURL
+        webURL
+      }
+  }
+}

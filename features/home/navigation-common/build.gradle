@@ -19,7 +19,10 @@ dependencies {
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.remoteConfig)
 
-    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.global_error
+    implementation project(rootProject.ext.libraries.graphql)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
@@ -29,12 +32,13 @@ dependencies {
     }
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.coroutineAndroid
+    implementation project(rootProject.ext.libraries.analytics)
 }
 
 project.ext {
     artifactId = 'navigation-common'
     groupId = 'com.tokopedia.home'
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName ="navigation-common-release"
 }
 

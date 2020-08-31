@@ -1,6 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.home_page_banner.presenter.widgets.HomePageBannerView
-    android:id="@+id/home_page_banner"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:android="http://schemas.android.com/apk/res/android" />
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularViewPager
+        android:id="@+id/circular_view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:autoScroll="true"
+        app:isInfinite="true"
+        app:layout_constraintDimensionRatio="4:3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.PageControl
+        android:id="@+id/indicator_banner"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:orientation="horizontal"
+        app:indicator_type="CIRCLE"
+        app:indicator_color="DEFAULT"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/circular_view_pager"
+        tools:background="@android:color/holo_blue_bright" />
+    <androidx.cardview.widget.CardView
+        app:cardCornerRadius="@dimen/dp_4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/circular_view_pager"
+        android:backgroundTint="@color/banner_see_more_bg"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/see_all_promo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginBottom="@dimen/dp_4"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackground"
+            android:focusableInTouchMode="false"
+            android:text="@string/home_banner_see_all"
+            android:textColor="@color/white"
+            android:fontFamily="sans-serif-medium"
+            android:textSize="12sp"
+            android:lineSpacingExtra="3sp"/>
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,16 +4,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+
 import androidx.core.app.TaskStackBuilder;
 
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.core.R;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.gcm.BuildAndShowNotification;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationConfiguration;
 import com.tokopedia.core.gcm.model.ApplinkNotificationPass;
-import com.tokopedia.core.router.home.HomeRouter;
 
 /**
  * Created by alvarisi on 5/22/17.
@@ -48,12 +47,7 @@ public class ApplinkPushNotificationBuildAndShow extends AbstractApplinkBuildAnd
         handlerIntent.putExtras(bundle);
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-        Intent homeIntent = null;
-        if (GlobalConfig.isSellerApp()) {
-            homeIntent = TkpdCoreRouter.getSellerHomeActivity(context);
-        } else {
-            homeIntent = HomeRouter.getHomeActivity(context);
-        }
+        Intent homeIntent = ((TkpdCoreRouter) context.getApplicationContext()).getHomeIntent(context);
         stackBuilder.addNextIntentWithParentStack(homeIntent);
         stackBuilder.addNextIntent(handlerIntent);
 

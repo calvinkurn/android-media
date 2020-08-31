@@ -120,7 +120,7 @@ public class WidgetTokenView extends FrameLayout {
     }
 
     private void init() {
-        rootView = LayoutInflater.from(getContext()).inflate(R.layout.widget_token, this, true);
+        rootView = LayoutInflater.from(getContext()).inflate(com.tokopedia.gamification.R.layout.widget_token, this, true);
         imageViewFull = rootView.findViewById(R.id.imagefull);
         imageViewCracked = rootView.findViewById(R.id.imagecracked);
         imageViewLeft = rootView.findViewById(R.id.imageleft);
@@ -146,7 +146,7 @@ public class WidgetTokenView extends FrameLayout {
     }
 
     @SuppressWarnings("SuspiciousNameCombination")
-    public void initImageBound(float scaleFactor, float translation) {
+    public void initImageBound(float drawableHeight, float scaleFactor, float translation) {
         int rootWidth = rootView.getWidth();
         int rootHeight = rootView.getHeight();
         int imageWidth = TokenMarginUtil.getEggWidth(rootWidth, rootHeight);
@@ -156,7 +156,10 @@ public class WidgetTokenView extends FrameLayout {
             int screenHeight = getContext().getResources().getDisplayMetrics().heightPixels - getStatusBarHeight();
             imageMarginTop = (int) (screenHeight - (screenHeight * TokenMarginUtil.RATIO_IMAGE_MARGIN_TOP));
         } else {
-            imageMarginTop = (int) ((TokenMarginUtil.STAGE_PIXEL * scaleFactor) - imageHeight + translation);
+            float baseDrawableHeight = TokenMarginUtil.BASE_DRAWABLE_HEIGHT;
+            float baseStageHeight = TokenMarginUtil.STAGE_PIXEL;
+            float point = drawableHeight / (baseDrawableHeight / baseStageHeight);
+            imageMarginTop = (int) ((point * scaleFactor) - imageHeight + translation);
         }
 
         FrameLayout.LayoutParams ivFullLp = (FrameLayout.LayoutParams) imageViewFull.getLayoutParams();
@@ -164,6 +167,7 @@ public class WidgetTokenView extends FrameLayout {
         ivFullLp.height = imageHeight;
         ivFullLp.gravity = CENTER_HORIZONTAL;
         ivFullLp.topMargin = imageMarginTop;
+
         imageViewFull.requestLayout();
 
         FrameLayout.LayoutParams ivCrackedLp = (FrameLayout.LayoutParams) imageViewCracked.getLayoutParams();
@@ -317,11 +321,11 @@ public class WidgetTokenView extends FrameLayout {
     }
 
     private void playCrack() {
-        playSound(R.raw.crack);
+        playSound(com.tokopedia.gamification.R.raw.crack);
     }
 
     private void playRewardSound() {
-        playSound(R.raw.reward);
+        playSound(com.tokopedia.gamification.R.raw.reward);
     }
 
     public void playSound(int resId) {
@@ -469,8 +473,8 @@ public class WidgetTokenView extends FrameLayout {
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                rotateRightAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.animation_rotate_right_and_translate);
-                rotateLeftAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.animation_rotate_left_and_translate);
+                rotateRightAnimation = AnimationUtils.loadAnimation(getContext(), com.tokopedia.gamification.R.anim.animation_rotate_right_and_translate);
+                rotateLeftAnimation = AnimationUtils.loadAnimation(getContext(), com.tokopedia.gamification.R.anim.animation_rotate_left_and_translate);
                 imageViewRight.startAnimation(rotateRightAnimation);
                 imageViewLeft.startAnimation(rotateLeftAnimation);
                 imageViewCracked.setVisibility(View.GONE);

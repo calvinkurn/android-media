@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.attachinvoice.R
 import com.tokopedia.attachinvoice.di.AttachInvoiceComponent
 import com.tokopedia.attachinvoice.di.DaggerAttachInvoiceComponent
@@ -19,7 +20,9 @@ class AttachInvoiceActivity : BaseSimpleActivity(), HasComponent<AttachInvoiceCo
         AttachInvoiceFragment.Listener {
 
     override fun getNewFragment(): Fragment? {
-        return AttachInvoiceFragment.createInstance(intent.extras)
+        val messageId = intent.getStringExtra(ApplinkConst.AttachInvoice.PARAM_MESSAGE_ID) ?: ""
+        val opponentName = intent.getStringExtra(ApplinkConst.AttachInvoice.PARAM_OPPONENT_NAME) ?: ""
+        return AttachInvoiceFragment.createInstance(messageId, opponentName)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -1,16 +1,26 @@
 package com.tokopedia.chat_common.data
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.chat_common.domain.pojo.productattachment.FreeShipping
 import com.tokopedia.chat_common.domain.pojo.productattachment.PlayStoreData
+import com.tokopedia.chat_common.domain.pojo.productattachment.ProductAttachmentAttributes
+import com.tokopedia.chat_common.domain.pojo.productattachment.TopchatProductRating
 import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactory
 import java.util.*
 
 /**
  * @author by nisie on 5/14/18.
  */
-open class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> {
+open class ProductAttachmentViewModel : SendableViewModel,
+        Visitable<BaseChatTypeFactory>,
+        DeferredAttachment {
 
+    override var isLoading: Boolean = true
+    override var isError: Boolean = false
+    override val id: String get() = attachmentId
+
+    var isLoadingOcc: Boolean = false
     var productId: Int = 0
         private set
     var productName: String = ""
@@ -36,32 +46,83 @@ open class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTyp
     var priceBefore: String = ""
         private set
     var shopId: Int = 0
-
     var freeShipping: FreeShipping = FreeShipping()
-
     var playStoreData: PlayStoreData = PlayStoreData()
-
     var categoryId: Int = 0
-
     var minOrder: Int = 1
-
     var variants: List<AttachmentVariant> = emptyList()
-
     var colorVariantId: String = ""
     var colorVariant: String = ""
     var colorHexVariant: String = ""
     var sizeVariantId: String = ""
     var sizeVariant: String = ""
-
     var remainingStock: Int = 1
     var status: Int = 0
+    var wishList: Boolean = false
+    var rating: TopchatProductRating = TopchatProductRating()
+    var isPreOrder: Boolean = false
+    var images: List<String> = emptyList()
+        get() {
+            return if (field.isNotEmpty()) {
+                field
+            } else {
+                listOf(productImage)
+            }
+        }
+    val hasDiscount: Boolean
+        get() {
+            return priceBefore.isNotEmpty() && dropPercentage.isNotEmpty()
+        }
+    val stringBlastId: String get() = blastId.toString()
+    var campaignId: Int = 0
 
-    constructor(messageId: String, fromUid: String, from: String,
-                fromRole: String, attachmentId: String, attachmentType: String,
-                replyTime: String, startTime: String, isRead: Boolean, isDummy: Boolean,
-                isSender: Boolean, message: String)
-            : super(messageId, fromUid, from, fromRole, attachmentId,
-            attachmentType, replyTime, startTime, isRead, isDummy, isSender, message) {
+    override fun updateData(attribute: Any?) {
+        if (attribute is ProductAttachmentAttributes) {
+            productId = attribute.productId
+            productName = attribute.productProfile.name
+            productPrice = attribute.productProfile.price
+            productUrl = attribute.productProfile.url
+            productImage = attribute.productProfile.imageUrl
+            priceInt = attribute.productProfile.priceInt
+            category = attribute.productProfile.category
+            variants = attribute.productProfile.variant ?: emptyList()
+            dropPercentage = attribute.productProfile.dropPercentage
+            priceBefore = attribute.productProfile.priceBefore
+            shopId = attribute.productProfile.shopId
+            freeShipping = attribute.productProfile.freeShipping
+            categoryId = attribute.productProfile.categoryId
+            playStoreData = attribute.productProfile.playStoreData
+            minOrder = attribute.productProfile.minOrder
+            remainingStock = attribute.productProfile.remainingStock
+            status = attribute.productProfile.status
+            wishList = attribute.productProfile.wishList
+            images = attribute.productProfile.images
+            rating = attribute.productProfile.rating
+            isPreOrder = attribute.productProfile.isPreOrder
+            campaignId = attribute.productProfile.campaignId
+            if (variants.isNotEmpty()) {
+                setupVariantsField()
+            }
+            this.isLoading = false
+        }
+    }
+
+    override fun syncError() {
+        this.isLoading = false
+        this.isError = true
+    }
+
+    constructor(
+            messageId: String, fromUid: String, from: String, fromRole: String,
+            attachmentId: String, attachmentType: String, replyTime: String, startTime: String,
+            isRead: Boolean, isDummy: Boolean, isSender: Boolean, message: String,
+            source: String
+    ) : super(
+            messageId, fromUid, from, fromRole,
+            attachmentId, attachmentType, replyTime, startTime,
+            isRead, isDummy, isSender, message,
+            source
+    ) {
     }
 
     /**
@@ -83,20 +144,30 @@ open class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTyp
      * @param productImage   product image url
      */
     constructor(
-            messageId: String, fromUid: String,
-            from: String, fromRole: String,
-            attachmentId: String, attachmentType: String,
-            replyTime: String, isRead: Boolean,
-            productId: Int, productName: String,
-            productPrice: String, productUrl: String,
-            productImage: String, isSender: Boolean, message: String,
-            canShowFooter: Boolean, blastId: Int, productPriceInt: Int, category: String,
-            variants: List<AttachmentVariant>, dropPercentage: String, priceBefore: String, shopId: Int,
-            freeShipping: FreeShipping, categoryId: Int, playStoreData: PlayStoreData,
-            minOrder: Int, remainingStock: Int, status: Int
+            messageId: String, fromUid: String, from: String, fromRole: String,
+            attachmentId: String, attachmentType: String, replyTime: String, isRead: Boolean,
+            productId: Int, productName: String, productPrice: String, productUrl: String,
+            productImage: String, isSender: Boolean, message: String, canShowFooter: Boolean,
+            blastId: Int, productPriceInt: Int, category: String, variants: List<AttachmentVariant>,
+            dropPercentage: String, priceBefore: String, shopId: Int, freeShipping: FreeShipping,
+            categoryId: Int, playStoreData: PlayStoreData, minOrder: Int, remainingStock: Int,
+            status: Int, wishList: Boolean, images: List<String>, source: String,
+            rating: TopchatProductRating, replyId: String
     ) : super(
-            messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime,
-            "", isRead, false, isSender, message
+            messageId = messageId,
+            fromUid = fromUid,
+            from = from,
+            fromRole = fromRole,
+            attachmentId = attachmentId,
+            attachmentType = attachmentType,
+            replyTime = replyTime,
+            startTime = "",
+            isRead = isRead,
+            isDummy = false,
+            isSender = isSender,
+            message = message,
+            source = source,
+            replyId = replyId
     ) {
         this.productId = productId
         this.productName = productName
@@ -117,10 +188,13 @@ open class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTyp
         this.minOrder = minOrder
         this.remainingStock = remainingStock
         this.status = status
+        this.rating = rating
         if (variants.isNotEmpty()) {
             this.variants = variants
             setupVariantsField()
         }
+        this.wishList = wishList
+        this.images = images
     }
 
     /**
@@ -142,20 +216,19 @@ open class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTyp
      * @param startTime
      */
     constructor(
-            messageId: String, fromUid: String,
-            from: String, fromRole: String,
-            attachmentId: String, attachmentType: String,
-            replyTime: String, productId: Int,
-            productName: String, productPrice: String,
-            productUrl: String, productImage: String,
-            isSender: Boolean, message: String, startTime: String,
-            canShowFooter: Boolean, blastId: Int, productPriceInt: Int, category: String,
-            variants: List<AttachmentVariant>, dropPercentage: String, priceBefore: String, shopId: Int,
-            freeShipping: FreeShipping, categoryId: Int, playStoreData: PlayStoreData,
-            remainingStock: Int, status: Int
+            messageId: String, fromUid: String, from: String, fromRole: String,
+            attachmentId: String, attachmentType: String, replyTime: String, productId: Int,
+            productName: String, productPrice: String, productUrl: String, productImage: String,
+            isSender: Boolean, message: String, startTime: String, canShowFooter: Boolean,
+            blastId: Int, productPriceInt: Int, category: String, variants: List<AttachmentVariant>,
+            dropPercentage: String, priceBefore: String, shopId: Int, freeShipping: FreeShipping,
+            categoryId: Int, playStoreData: PlayStoreData, remainingStock: Int, status: Int,
+            source: String, rating: TopchatProductRating
     ) : super(
-            messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime,
-            startTime, false, false, isSender, message
+            messageId, fromUid, from, fromRole,
+            attachmentId, attachmentType, replyTime, startTime,
+            false, false, isSender, message,
+            source
     ) {
         this.productId = productId
         this.productName = productName
@@ -175,6 +248,7 @@ open class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTyp
         this.playStoreData = playStoreData
         this.remainingStock = remainingStock
         this.status = status
+        this.rating = rating
         if (variants.isNotEmpty()) {
             this.variants = variants
             setupVariantsField()
@@ -206,12 +280,16 @@ open class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTyp
      * @param productImage product image url
      * @param startTime    send time to validate dummy mesages.
      */
-    constructor(loginID: String, productId: Int, productName: String,
-                productPrice: String, productUrl: String,
-                productImage: String, startTime: String, canShowFooter: Boolean, shopId: Int) : super("",
-            loginID, "", "", "",
-            AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT, SendableViewModel.SENDING_TEXT,
-            startTime, false, true, true, productUrl) {
+    constructor(
+            loginID: String, productId: Int, productName: String, productPrice: String,
+            productUrl: String, productImage: String, startTime: String, canShowFooter: Boolean,
+            shopId: Int
+    ) : super(
+            "", loginID, "", "",
+            "", AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT, SENDING_TEXT, startTime,
+            false, true, true, productUrl,
+            ""
+    ) {
         this.productId = productId
         this.productName = productName
         this.productPrice = productPrice
@@ -254,6 +332,10 @@ open class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTyp
         return "click buy on bottom sheet"
     }
 
+    fun hasVariant(): Boolean {
+        return variants.isNotEmpty()
+    }
+
     fun doesNotHaveVariant(): Boolean {
         return variants.isEmpty()
     }
@@ -267,7 +349,60 @@ open class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTyp
     }
 
     fun hasEmptyStock(): Boolean {
-        return status == 0
+        return status != statusActive
     }
 
+    fun isWishListed(): Boolean {
+        return wishList
+    }
+
+    fun getStringProductId(): String {
+        return productId.toString()
+    }
+
+    fun getIdString(): String {
+        return productId.toString()
+    }
+
+    override fun finishLoading() {
+        this.isLoading = false
+        this.isError = false
+    }
+
+    fun getAtcDimension40(sourcePage: String): String {
+        return when (sourcePage) {
+            ApplinkConst.Chat.SOURCE_CHAT_SEARCH -> "/chat - search chat"
+            else -> getField()
+        }
+    }
+
+    private fun getField(): String {
+        return if (blastId > 0) {
+            "/broadcast"
+        } else {
+            "/chat"
+        }
+    }
+
+    fun hasReview(): Boolean {
+        return rating.count > 0
+    }
+
+    fun fromBroadcast(): Boolean {
+        return blastId != 0
+    }
+
+    fun isEligibleOcc(): Boolean {
+        return !isPreOrder && !isFlashSaleProduct()
+    }
+
+    fun isFlashSaleProduct(): Boolean {
+        return campaignId == -10000
+    }
+
+    companion object {
+        const val statusDeleted = 0
+        const val statusActive = 1
+        const val statusWarehouse = 3
+    }
 }

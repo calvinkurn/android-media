@@ -2,23 +2,13 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
-android{
-    /*dataBinding {
-        enabled = true
-    }*/
-    testOptions {
-        unitTests {
-            includeAndroidResources = true
-        }
-    }
-}
-
 repositories {
     maven { url 'https://hansel.io/maven' }
 }
 buildscript {
     repositories {
         mavenCentral()
+        jcenter()
         maven { url 'https://hansel.io/maven' }
     }
     dependencies {
@@ -26,39 +16,62 @@ buildscript {
     }
 }
 
+android{
+    testOptions {
+        unitTests.all {
+            testLogging.events = ["passed", "skipped", "failed"]
+        }
+    }
+}
+
 dependencies {
+    implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.features.sellerMigrationCommon)
+    implementation project(rootProject.ext.features.sellerActiveCommon)
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.webview)
-    implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.unifyDependencies.components
-    implementation rootProject.ext.unifyDependencies.dialog
-    implementation rootProject.ext.unifyDependencies.principles
-    implementation rootProject.ext.unifyDependencies.datepicker
 
-    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.global_error
+    implementation rootProject.ext.unifyDependencies.dialog
+    implementation rootProject.ext.unifyDependencies.datepicker
+    implementation rootProject.ext.unifyDependencies.coach_mark
+
+    implementation project(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    implementation rootProject.ext.miscDependencies.scannerZxing
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 
-    testImplementation rootProject.ext.testDependencies.mockk
-    testImplementation rootProject.ext.testDependencies.archCoreTesting
-    testImplementation rootProject.ext.miscDependencies.coroutineCore
+    implementation (rootProject.ext.serviceDependencies.crashlytics) {
+        transitive = true
+    }
 
-    implementation rootProject.ext.miscDependencies.scannerZxing
+    testImplementation rootProject.ext.testDependencies.mockk
+    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.androidxTest
 }
 
 project.ext {
     artifactId = "sellerorder"
     groupId = "com.tokopedia.sellerorder"
-    versionName = "1.0.0"
+    versionName = "0.0.2"
     artifactName = "sellerorder-release"
 }
 
 apply from: "$rootProject.projectDir/publish_local.gradle"
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'

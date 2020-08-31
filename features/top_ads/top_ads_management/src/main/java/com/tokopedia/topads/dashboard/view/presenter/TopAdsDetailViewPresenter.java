@@ -1,7 +1,5 @@
 package com.tokopedia.topads.dashboard.view.presenter;
 
-import java.util.Date;
-
 /**
  * Created by zulfikarrahman on 12/29/16.
  */

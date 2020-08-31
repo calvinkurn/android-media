@@ -57,7 +57,7 @@
                     android:layout_height="wrap_content"
                     android:background="@color/white">
 
-                    <com.tokopedia.design.component.Tabs
+                    <com.google.android.material.tabs.TabLayout
                         android:id="@+id/tabs_sort_type"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -77,19 +77,6 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/container_fab_egg_token"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|center_horizontal"
-                android:layout_marginBottom="@dimen/tp_margin_large"
-                android:background="@color/transparent"
-                android:visibility="gone"
-                app:layout_behavior="com.tokopedia.tokopoints.view.util.QuickReturnFloaterBehavior">
-
-                <include layout="@layout/tp_layout_floating_token" />
-            </LinearLayout>
-
-            <LinearLayout
                 android:id="@+id/bottom_view_membership"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -106,6 +93,7 @@
         <com.tokopedia.tokopoints.view.customview.ServerErrorView
             android:id="@+id/server_error_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent" />
+
     </ViewFlipper>
 </FrameLayout>

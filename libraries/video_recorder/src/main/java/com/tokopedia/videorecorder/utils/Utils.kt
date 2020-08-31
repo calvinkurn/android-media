@@ -5,7 +5,7 @@ import com.google.android.material.tabs.TabLayout
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 
 /**
  * Created by isfaaghyth on 04/03/19.

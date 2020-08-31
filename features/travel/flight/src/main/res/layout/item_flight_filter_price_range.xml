@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/layout_lvl2"
+            android:layout_marginBottom="@dimen/layout_lvl2"
+            android:layout_weight="1"
+            android:text="@string/flight_search_filter_ticket_price_label"
+            android:textColor="@color/Neutral_N700_96"
+            app:typographyType="heading_4" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/icFlightFoldableArrow"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
+            android:layout_gravity="center_vertical"
+            app:srcCompat="@drawable/ic_system_action_arrow_up_gray_24" />
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/containerPriceText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/layout_lvl2">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/flightLowestLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/flight_filter_lowest_price_label"
+            app:layout_constraintLeft_toLeftOf="@id/etFlightLowestPrice"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="body_3" />
+
+        <com.tokopedia.flight.filter.presentation.widget.FlightPriceEditText
+            android:id="@+id/etFlightLowestPrice"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:tag="@string/flight_rupiah_label"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/etFlightHighestPrice"
+            app:layout_constraintTop_toBottomOf="@+id/flightLowestLabel" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/flightHighestLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/flight_filter_highest_price_label"
+            app:layout_constraintLeft_toLeftOf="@+id/etFlightHighestPrice"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="body_3" />
+
+        <com.tokopedia.flight.filter.presentation.widget.FlightPriceEditText
+            android:id="@+id/etFlightHighestPrice"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
+            android:tag="@string/flight_rupiah_label"
+            app:layout_constraintLeft_toRightOf="@id/etFlightLowestPrice"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/flightHighestLabel" />
+
+        <com.tokopedia.unifycomponents.RangeSliderUnify
+            android:id="@+id/rsuFlightFilterPrice"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            app:layout_constraintLeft_toLeftOf="@id/etFlightLowestPrice"
+            app:layout_constraintRight_toRightOf="@id/etFlightHighestPrice"
+            app:layout_constraintTop_toBottomOf="@id/etFlightLowestPrice"
+            app:step="1000" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:background="@color/Neutral_N75" />
+
+</LinearLayout>

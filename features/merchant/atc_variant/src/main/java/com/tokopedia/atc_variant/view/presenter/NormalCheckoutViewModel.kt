@@ -1,8 +1,8 @@
 package com.tokopedia.atc_variant.view.presenter
 
-import androidx.lifecycle.MutableLiveData
 import android.content.res.Resources
 import android.os.Bundle
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
@@ -14,6 +14,9 @@ import com.tokopedia.atc_variant.data.request.AddInsuranceProductToCartRequest
 import com.tokopedia.atc_variant.data.request.AddMarketPlaceToCartRequest
 import com.tokopedia.atc_variant.data.request.InsuranceRecommendationRequest
 import com.tokopedia.atc_variant.data.response.AddInsuranceProductToCartGqlResponse
+import com.tokopedia.atc_variant.di.RawQueryKeyConstant
+import com.tokopedia.atc_variant.domain.usecase.AddInsuranceProductUsecase
+import com.tokopedia.atc_variant.model.*
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
@@ -28,11 +31,8 @@ import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.variant.ProductDetailVariantResponse
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
-import com.tokopedia.atc_variant.di.RawQueryKeyConstant
-import com.tokopedia.atc_variant.domain.usecase.AddInsuranceProductUsecase
-import com.tokopedia.atc_variant.model.*
-import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceRecommendationGqlResponse
-import com.tokopedia.purchase_platform.common.insurance.utils.INSURANCE_RECOMMENDATION_PARAM_GQL
+import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceRecommendationGqlResponse
+import com.tokopedia.purchase_platform.common.feature.insurance.INSURANCE_RECOMMENDATION_PARAM_GQL
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
@@ -186,11 +186,7 @@ class NormalCheckoutViewModel @Inject constructor(private val graphqlRepository:
     }
 
     private fun getCacheType(): CacheType {
-        var cacheType = CacheType.CACHE_FIRST
-        if (needRefresh) {
-            cacheType = CacheType.CLOUD_THEN_CACHE
-        }
-        return cacheType
+        return  CacheType.ALWAYS_CLOUD
     }
 
     fun isShopOwner(shopId: Int): Boolean = userSessionInterface.shopId.toIntOrNull() == shopId

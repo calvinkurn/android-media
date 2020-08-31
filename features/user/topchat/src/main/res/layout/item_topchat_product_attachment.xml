@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
+        android:id="@+id/containerProductAttachment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_topchat_12"
+        android:layout_marginEnd="@dimen/dp_topchat_12"
+        android:layout_marginBottom="@dimen/spacing_lvl1"
+        android:background="@drawable/bg_shadow_attach_product"
+        android:orientation="vertical"
+        tools:layout_gravity="end">
+
+        <include layout="@layout/item_topchat_product_card" />
+    </com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer>
+
+</LinearLayout>

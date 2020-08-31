@@ -1,12 +1,9 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inbox;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepository;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.source.CloudInboxReputationDataSource;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.InboxReputationDomain;
-
+import com.tokopedia.usecase.RequestParams;
 import rx.Observable;
 
 /**
@@ -22,14 +19,12 @@ public class GetFirstTimeInboxReputationUseCase extends GetInboxReputationUseCas
 
     protected ReputationRepository reputationRepository;
 
-    public GetFirstTimeInboxReputationUseCase(ThreadExecutor threadExecutor,
-                                              PostExecutionThread postExecutionThread,
-                                              GetInboxReputationUseCase
+    public GetFirstTimeInboxReputationUseCase(GetInboxReputationUseCase
                                                       getInboxReputationUseCase,
                                               GetCacheInboxReputationUseCase
                                                       getCacheInboxReputationUseCase,
                                               ReputationRepository reputationRepository) {
-        super(threadExecutor, postExecutionThread, reputationRepository);
+        super(reputationRepository);
         this.getInboxReputationUseCase = getInboxReputationUseCase;
         this.getCacheInboxReputationUseCase = getCacheInboxReputationUseCase;
     }

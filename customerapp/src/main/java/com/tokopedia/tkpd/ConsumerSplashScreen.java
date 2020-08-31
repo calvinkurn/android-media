@@ -6,16 +6,25 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.gcm.FCMCacheManager;
+import com.tokopedia.fcmcommon.service.SyncFcmTokenService;
+import com.tokopedia.installreferral.InstallReferral;
+import com.tokopedia.installreferral.InstallReferralKt;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.tkpd.timber.TimberWrapper;
+import com.tokopedia.weaver.WeaveInterface;
+import com.tokopedia.weaver.Weaver;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -48,42 +57,65 @@ public class ConsumerSplashScreen extends SplashScreen {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        checkApkTempered();
-
-        startWarmStart();
-        startSplashTrace();
-
         super.onCreate(savedInstanceState);
+        executeInBackground();
+    }
 
-        if (isApkTempered) {
-            startActivity(new Intent(this, FallbackActivity.class));
-            finish();
+    private void checkInstallReferrerInitialised() {
+        LocalCacheHandler localCacheHandler=new LocalCacheHandler(ConsumerSplashScreen.this, InstallReferralKt.KEY_INSTALL_REF_SHARED_PREF_FILE_NAME);
+        Boolean installRefInitialised = localCacheHandler.getBoolean(InstallReferralKt.KEY_INSTALL_REF_INITIALISED);
+        if (!installRefInitialised) {
+            localCacheHandler.applyEditor();
+            new InstallReferral().initilizeInstallReferral(this);
         }
+    }
 
-        finishWarmStart();
+    private void executeInBackground(){
+        WeaveInterface chkTmprApkWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Boolean execute() {
+                trackIrisEventForAppOpen();
+                CMPushNotificationManager.getInstance()
+                        .refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(ConsumerSplashScreen.this.getApplicationContext()), false);
 
-        CMPushNotificationManager.getInstance()
-                .refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(this.getApplicationContext()), false);
+                checkInstallReferrerInitialised();
+                syncFcmToken();
+                return checkApkTempered();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(chkTmprApkWeave,
+                RemoteConfigKey.ENABLE_SEQ4_ASYNC, ConsumerSplashScreen.this);
+    }
 
-
-        trackIrisEventForAppOpen();
-
+    private void syncFcmToken() {
+        SyncFcmTokenService.Companion.startService(this);
     }
 
     private void trackIrisEventForAppOpen() {
-        Iris instance = IrisAnalytics.Companion.getInstance(this);
+        Iris instance = IrisAnalytics.Companion.getInstance(ConsumerSplashScreen.this);
         Map<String, Object> map = new HashMap<>();
         map.put(IRIS_ANALYTICS_EVENT_KEY, IRIS_ANALYTICS_APP_SITE_OPEN);
         instance.saveEvent(map);
     }
 
-    private void checkApkTempered() {
+    @NotNull
+    private Boolean checkApkTempered() {
         isApkTempered = false;
         try {
             getResources().getDrawable(R.drawable.launch_screen);
         } catch (Exception e) {
             isApkTempered = true;
-            setTheme(R.style.Theme_Tokopedia3_PlainGreen);
+            runOnUiThread(() -> setTheme(R.style.Theme_Tokopedia3_PlainGreen));
+        }
+        checkExecTemperedFlow();
+        return true;
+    }
+
+    private void checkExecTemperedFlow(){
+        if (isApkTempered) {
+            startActivity(new Intent(this, FallbackActivity.class));
+            finish();
         }
     }
 
@@ -93,12 +125,18 @@ public class ConsumerSplashScreen extends SplashScreen {
             return;
         }
 
-        Intent homeIntent = new Intent(this, MainParentActivity.class)
-                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        Intent homeIntent = new Intent(this, MainParentActivity.class);
+        boolean needClearTask = getIntent()== null || !getIntent().hasExtra("branch");
+        if (needClearTask) {
+            homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        }
         startActivity(homeIntent);
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-        finishSplashTrace();
-        finishAffinity();
+        if (needClearTask) {
+            finishAffinity();
+        } else {
+            finish();
+        }
     }
 
     private void startWarmStart() {
@@ -122,7 +160,7 @@ public class ConsumerSplashScreen extends SplashScreen {
         return new RemoteConfig.Listener() {
             @Override
             public void onComplete(RemoteConfig remoteConfig) {
-                TimberWrapper.initByConfig(getApplication(), remoteConfig);
+                TimberWrapper.initByRemoteConfig(getApplication(), remoteConfig);
             }
 
             @Override

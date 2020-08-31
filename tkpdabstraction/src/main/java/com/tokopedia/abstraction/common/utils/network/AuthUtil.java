@@ -2,12 +2,15 @@ package com.tokopedia.abstraction.common.utils.network;
 
 import android.content.Context;
 import android.os.Build;
-import androidx.collection.ArrayMap;
 import android.util.Base64;
 
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import androidx.collection.ArrayMap;
+
 import com.tokopedia.abstraction.common.utils.MapNulRemover;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
+import com.tokopedia.authentication.AuthConstant;
+import com.tokopedia.authentication.AuthHelper;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.security.InvalidKeyException;
@@ -29,7 +32,6 @@ import javax.crypto.spec.SecretKeySpec;
 @Deprecated
 public class AuthUtil {
     public static final String CONTENT_TYPE = "application/x-www-form-urlencoded";
-    private static final String CONTENT_TYPE_JSON = "application/json";
     private static final String MAC_ALGORITHM = "HmacSHA1";
     private static final String DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss ZZZ";
 
@@ -41,15 +43,11 @@ public class AuthUtil {
     public static final String HEADER_AUTHORIZATION = "Authorization";
     private static final String HEADER_USER_ID = "X-User-ID";
     public static final String HEADER_X_TKPD_USER_ID = "X-Tkpd-UserId";
-    public static final String HEADER_TKPD_USER_ID = "Tkpd-UserId";
     public static final String HEADER_DEVICE = "X-Device";
     private static final String HEADER_X_APP_VERSION = "X-APP-VERSION";
     public static final String HEADER_X_TKPD_APP_NAME = "X-Tkpd-App-Name";
     private static final String HEADER_X_TKPD_APP_VERSION = "X-Tkpd-App-Version";
     private static final String HEADER_CACHE_CONTROL = "cache-control";
-    private static final String HEADER_PATH = "x-tkpd-path";
-    private static final String X_TKPD_HEADER_AUTHORIZATION = "X-TKPD-Authorization";
-    private static final String HEADER_X_MSISDN = "x-msisdn";
     private static final String HEADER_OS_TYPE = "os-type";
     private static final String HEADER_SESSION_ID = "tkpd-SessionId";
 
@@ -79,11 +77,6 @@ public class AuthUtil {
      */
     public static class KEY {
         public static final String KEY_WSV4 = "web_service_v4";
-        public static final String KEY_MOJITO = "mojito_api_v1";
-        public static final String KEY_KEROPPI = "Keroppi";
-        public static final String TOKO_CASH_HMAC = "CPAnAGpC3NIg7ZSj";
-        public static String KEY_CREDIT_CARD_VAULT = "AdKc1ag2NmYgRUF97eQQ8J";
-        public static String ZEUS_WHITELIST = "abf49d067c9ca8585f3a1059464d22b9";
     }
 
     public static Map<String, String> generateHeadersWithXUserId(
@@ -113,6 +106,7 @@ public class AuthUtil {
         headerMap.put(HEADER_ACCOUNTS_AUTHORIZATION, BEARER_SPACE + session.getAccessToken());
         headerMap.put(HEADER_X_APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
         headerMap.put(HEADER_X_TKPD_APP_NAME, GlobalConfig.getPackageApplicationName());
+        headerMap.put(AuthConstant.HEADER_RELEASE_TRACK, GlobalConfig.VERSION_NAME_SUFFIX);
         headerMap.put(HEADER_X_TKPD_APP_VERSION, "android-" + GlobalConfig.VERSION_NAME);
         headerMap.put(HEADER_USER_ID, userId);
         headerMap.put(HEADER_X_TKPD_USER_ID, userId);
@@ -149,41 +143,8 @@ public class AuthUtil {
         headerMap.put(HEADER_ACCOUNTS_AUTHORIZATION, BEARER_SPACE + userSessionInterface.getAccessToken());
         headerMap.put(HEADER_X_APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
         headerMap.put(HEADER_X_TKPD_APP_NAME, GlobalConfig.getPackageApplicationName());
+        headerMap.put(AuthConstant.HEADER_RELEASE_TRACK, GlobalConfig.VERSION_NAME_SUFFIX);
         headerMap.put(HEADER_X_TKPD_APP_VERSION, "android-" + GlobalConfig.VERSION_NAME);
-        headerMap.put(HEADER_USER_ID, userId);
-        headerMap.put(HEADER_X_TKPD_USER_ID, userId);
-        headerMap.put(HEADER_DEVICE, "android-" + GlobalConfig.VERSION_NAME);
-        return headerMap;
-    }
-
-    public static Map<String, String> generateHeadersWithXUserIdXMsisdn(
-            String path, String method, String authKey, String contentType,
-            String msisdn, String userId, UserSessionInterface userSessionInterface
-    ) {
-        String date = generateDate(DATE_FORMAT);
-
-        String authString = method
-                + "\n" + ""
-                + "\n" + ""
-                + "\n" + date
-                + "\n" + PARAM_X_TKPD_USER_ID + ":" + userId
-                + "\n" + HEADER_X_MSISDN + ":" + msisdn
-                + "\n" + path;
-        String signature = calculateRFC2104HMAC(authString, authKey);
-
-        Map<String, String> headerMap = new ArrayMap<>();
-        headerMap.put(HEADER_USER_AGENT, getUserAgent());
-        headerMap.put(HEADER_CONTENT_TYPE, contentType != null ? contentType : CONTENT_TYPE);
-        headerMap.put(HEADER_X_METHOD, method);
-        headerMap.put(HEADER_REQUEST_METHOD, method);
-        headerMap.put(HEADER_DATE, date);
-        headerMap.put(HEADER_AUTHORIZATION, "TKPD Tokopedia:" + signature.trim());
-        headerMap.remove(HEADER_ACCOUNTS_AUTHORIZATION);
-        headerMap.put(HEADER_ACCOUNTS_AUTHORIZATION, BEARER_SPACE + userSessionInterface.getAccessToken());
-        headerMap.put(HEADER_X_APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
-        headerMap.put(HEADER_X_TKPD_APP_NAME, GlobalConfig.getPackageApplicationName());
-        headerMap.put(HEADER_X_TKPD_APP_VERSION, "android-" + GlobalConfig.VERSION_NAME);
-        headerMap.put(HEADER_X_MSISDN, msisdn);
         headerMap.put(HEADER_USER_ID, userId);
         headerMap.put(HEADER_X_TKPD_USER_ID, userId);
         headerMap.put(HEADER_DEVICE, "android-" + GlobalConfig.VERSION_NAME);
@@ -232,6 +193,7 @@ public class AuthUtil {
         headerMap.put(HEADER_AUTHORIZATION, "TKPD Tokopedia:" + signature.trim());
         headerMap.put(HEADER_X_APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
         headerMap.put(HEADER_X_TKPD_APP_NAME, GlobalConfig.getPackageApplicationName());
+        headerMap.put(AuthConstant.HEADER_RELEASE_TRACK, GlobalConfig.VERSION_NAME_SUFFIX);
         headerMap.put(HEADER_X_TKPD_APP_VERSION, "android-" + GlobalConfig.VERSION_NAME);
 
         headerMap.put(HEADER_USER_ID, userId);
@@ -257,6 +219,7 @@ public class AuthUtil {
         finalHeader.put(HEADER_DEVICE, "android-" + GlobalConfig.VERSION_NAME);
         finalHeader.put(HEADER_X_APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
         finalHeader.put(HEADER_X_TKPD_APP_NAME, GlobalConfig.getPackageApplicationName());
+        finalHeader.put(AuthConstant.HEADER_RELEASE_TRACK, GlobalConfig.VERSION_NAME_SUFFIX);
         finalHeader.put(HEADER_X_TKPD_APP_VERSION, "android-" + GlobalConfig.VERSION_NAME);
         return finalHeader;
     }

@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/dp_15">
+
+        <TextView
+            android:id="@+id/sourceNameText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/TextView"
+            android:textColor="@color/topads_item_source_name"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            tools:text="com.tokopedia.home.HomeFragment"/>
+
+        <TextView
+            android:id="@+id/eventTypeText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/TextView"
+            android:textColor="@color/topads_item_source_name"
+            android:textSize="14sp"
+            tools:text="Impression"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/topads_debugger_detail_item_vertical_spacing"
+            style="@style/TextView"
+            android:textColor="@color/topads_item_label"
+            android:textSize="12sp"
+            android:text="@string/topads_debugger_detail_product_id_label"/>
+
+        <TextView
+            android:id="@+id/productIdText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/TextView"
+            android:textColor="@color/topads_item_source_name"
+            android:textSize="14sp"
+            android:textIsSelectable="true"
+            tools:text="12345678"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/topads_debugger_detail_item_vertical_spacing"
+            style="@style/TextView"
+            android:textColor="@color/topads_item_label"
+            android:textSize="12sp"
+            android:text="@string/topads_debugger_detail_product_name_label"/>
+
+        <TextView
+            android:id="@+id/productNameText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/TextView"
+            android:textColor="@color/topads_item_source_name"
+            android:textSize="14sp"
+            android:textIsSelectable="true"
+            tools:text="Baju Keren Warna Merah XL"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/topads_debugger_detail_item_vertical_spacing"
+            style="@style/TextView"
+            android:textColor="@color/topads_item_label"
+            android:textSize="12sp"
+            android:text="@string/topads_debugger_detail_product_image_url_label"/>
+
+        <TextView
+            android:id="@+id/imageUrlText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/TextView"
+            android:textColor="@color/topads_item_source_name"
+            android:textSize="14sp"
+            android:textIsSelectable="true"
+            tools:text="https://ecs.tokopedia.com/abcde.png"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/topads_debugger_detail_item_vertical_spacing"
+            style="@style/TextView"
+            android:textColor="@color/topads_item_label"
+            android:textSize="12sp"
+            android:text="@string/topads_debugger_detail_param_list_label"/>
+
+        <TextView
+            android:id="@+id/paramListText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/TextView"
+            android:textColor="@color/topads_item_source_name"
+            android:textSize="14sp"
+            android:textIsSelectable="true"
+            tools:text="sid: 1234\nsrc: home_recommondation"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/topads_debugger_detail_item_vertical_spacing"
+            style="@style/TextView"
+            android:textColor="@color/topads_item_label"
+            android:textSize="12sp"
+            android:text="@string/topads_debugger_detail_topads_url_label"/>
+
+        <TextView
+            android:id="@+id/urlText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/TextView"
+            android:textColor="@color/topads_item_source_name"
+            android:textSize="14sp"
+            android:textIsSelectable="true"
+            tools:text="https://ta.tokopedia.com/blablabla"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/topads_debugger_detail_item_vertical_spacing"
+            style="@style/TextView"
+            android:textColor="@color/topads_item_label"
+            android:textSize="12sp"
+            android:text="@string/topads_debugger_detail_verificator_response_label"/>
+
+        <TextView
+            android:id="@+id/fullResponseText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/TextView"
+            android:textColor="@color/topads_item_source_name"
+            android:textSize="14sp"
+            android:textIsSelectable="true"
+            tools:text="{\ntype:click,\nstatus:true\n}"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/topads_debugger_detail_item_vertical_spacing"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/timestampText"
+                style="@style/TextView"
+                android:textColor="@color/topads_item_source_name"
+                android:textSize="12sp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                tools:text="2017-01-01 01:01:01.111" />
+
+            <TextView
+                android:id="@+id/statusText"
+                style="@style/TextView"
+                android:textColor="@color/topads_status_match"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Status"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

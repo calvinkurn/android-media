@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/dp_4">
+
+    <ViewStub
+        android:id="@+id/channel_title"
+        android:inflatedId="@+id/channel_title"
+        android:layout="@layout/view_stub_pk_title"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toStartOf="@+id/iv_reload"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+    <ViewStub
+        android:id="@+id/iv_reload"
+        android:inflatedId="@+id/iv_reload"
+        android:layout="@layout/view_stub_iv_reload"
+        android:layout_width="@dimen/dp_20"
+        android:layout_height="@dimen/dp_20"
+        android:layout_marginRight="@dimen/dp_4"
+        app:layout_constraintRight_toLeftOf="@+id/tv_reload"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/channel_title"/>
+
+    <ViewStub
+        android:id="@+id/tv_reload"
+        android:inflatedId="@+id/tv_reload"
+        android:layout="@layout/view_stub_tv_reload"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/channel_title" />
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_popular_keyword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_10"
+        android:layout_marginLeft="@dimen/dp_10"
+        tools:spanCount="2"
+        tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        tools:itemCount="4"
+        tools:listitem="@layout/layout_popular_keyword_item"
+        app:layout_constraintTop_toBottomOf="@+id/channel_title"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="@+id/channel_title"
+        app:layout_constraintRight_toRightOf="@+id/tv_reload"/>
+
+    <ViewStub
+        android:id="@+id/loading_popular"
+        android:inflatedId="@+id/loading_popular"
+        android:layout="@layout/stub_popular_keyword_loading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_13"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        app:layout_constraintTop_toBottomOf="@+id/channel_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

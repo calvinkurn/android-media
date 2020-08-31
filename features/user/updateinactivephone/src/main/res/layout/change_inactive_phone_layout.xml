@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/white"
-        android:elevation="@dimen/dp_4"
+        android:elevation="@dimen/updateinactivephone_4dp"
         android:gravity="top"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
@@ -22,13 +22,13 @@
             android:fontFamily="sans-serif-medium"
             android:text="@string/title_change_inactive_phone_number"
             android:textColor="@color/black_70"
-            android:textSize="16sp" />
+            android:textSize="@dimen/fontSize_lvl3" />
 
     </androidx.appcompat.widget.Toolbar>
 
     <FrameLayout
         android:id="@+id/parent_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent" />
 
 </LinearLayout>

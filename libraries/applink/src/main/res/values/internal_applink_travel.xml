@@ -17,11 +17,10 @@
     <string name="path_hotel_booking" translatable="false">/booking/.*\</string>
     <string name="path_hotel_order" translatable="false">/order</string>
     <string name="path_hotel_order_detail" translatable="false">/order/.*\</string>
+    <string name="path_hotel_cancellation" translatable="false">/cancel/.*\</string>
 
     <string name="path_travel_entertainment_home" translatable="false">/home</string>
     <string name="path_travel_entertainment_destination" translatable="false">/home/city</string>
-
-    <string name="path_flight_phone_verification" translatable="false">/phone-verification</string>
 
     <string name="title_hotel">Hotel</string>
     <string name="title_flight">Tiket Pesawat</string>

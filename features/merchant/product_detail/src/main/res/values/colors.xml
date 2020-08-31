@@ -6,5 +6,16 @@
     <color name="green_power_badge">#43b449</color>
     <color name="green_go_apotik">#d6ffde</color>
     <color name="sticky_bg_color">#E6EBFFEF</color>
+    <color name="red_ribbon">#EF144A</color>
+    <color name="bg_contdown_white">#F8F8F8</color>
+    <color name="bg_grey_unselected">#E5E7E9</color>
+    <color name="border_circle_grey">#D3D3D3</color>
+    <color name="light_N700_AE">#ae31353b</color>
+    <color name="bg_countdown_red">#fd412b</color>
+    <color name="bg_notify_me">#4c03ac0e</color>
+    <color name="grey_separator">#f3f4f5</color>
+    <color name="cod_bg_color">#689C9E</color>
+    <color name="pink_discount">#FFEAEF</color>
 
+    <color name="gray_text_color">#f531353b</color>
 </resources>

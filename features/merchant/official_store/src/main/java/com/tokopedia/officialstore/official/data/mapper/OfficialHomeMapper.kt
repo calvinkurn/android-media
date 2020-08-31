@@ -1,21 +1,21 @@
 package com.tokopedia.officialstore.official.data.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
+import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.officialstore.DynamicChannelIdentifiers
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.officialstore.common.listener.FeaturedShopListener
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBenefits
 import com.tokopedia.officialstore.official.data.model.OfficialStoreFeaturedShop
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.DynamicChannel
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapter
-import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapterTypeFactory
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelViewModel
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.*
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 
 class OfficialHomeMapper {
 
@@ -47,19 +47,41 @@ class OfficialHomeMapper {
             )
         }
 
-        fun mappingDynamicChannel(dynamicChannel: DynamicChannel, adapter: OfficialHomeAdapter?) {
+        fun mappingDynamicChannel(dynamicChannel: DynamicChannel, adapter: OfficialHomeAdapter?, remoteConfig: RemoteConfig?) {
             if (dynamicChannel.channels.isNotEmpty()) {
-                val availableScreens = setOf(
-                        DynamicChannelIdentifiers.LAYOUT_BANNER_CAROUSEL,
-                        DynamicChannelIdentifiers.LAYOUT_SPRINT_LEGO,
-                        DynamicChannelIdentifiers.LAYOUT_6_IMAGE,
-                        DynamicChannelIdentifiers.LAYOUT_LEGO_3_IMAGE
-                )
-                val views = mutableListOf<Visitable<OfficialHomeAdapterTypeFactory>>()
+                var availableScreens = setOf<String>()
+                var availableLegoBannerScreens = setOf<String>()
+                if (remoteConfig?.getBoolean(RemoteConfigKey.HOME_USE_GLOBAL_COMPONENT) == true) {
+                    availableScreens = setOf(
+                            DynamicChannelIdentifiers.LAYOUT_BANNER_CAROUSEL,
+                            DynamicChannelIdentifiers.LAYOUT_SPRINT_LEGO,
+                            DynamicChannelIdentifiers.LAYOUT_MIX_LEFT,
+                            DynamicChannelIdentifiers.LAYOUT_MIX_TOP
+                    )
+                    availableLegoBannerScreens = setOf(
+                            DynamicChannelIdentifiers.LAYOUT_6_IMAGE,
+                            DynamicChannelIdentifiers.LAYOUT_LEGO_3_IMAGE
+                    )
+                } else {
+                    availableScreens = setOf(
+                            DynamicChannelIdentifiers.LAYOUT_BANNER_CAROUSEL,
+                            DynamicChannelIdentifiers.LAYOUT_SPRINT_LEGO,
+                            DynamicChannelIdentifiers.LAYOUT_6_IMAGE,
+                            DynamicChannelIdentifiers.LAYOUT_LEGO_3_IMAGE,
+                            DynamicChannelIdentifiers.LAYOUT_MIX_LEFT,
+                            DynamicChannelIdentifiers.LAYOUT_MIX_TOP
+                    )
+                }
 
-                dynamicChannel.channels.forEach { channel ->
+                val views = mutableListOf<Visitable<*>>()
+
+                dynamicChannel.channels.forEachIndexed { position, channel ->
                     if (availableScreens.contains(channel.layout)) {
                         views.add(DynamicChannelViewModel(channel))
+                    } else if (availableLegoBannerScreens.contains(channel.layout)) {
+                        views.add(DynamicLegoBannerDataModel(
+                                OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(channel, position)
+                        ))
                     }
                 }
                 adapter?.getVisitables()?.addAll(views)

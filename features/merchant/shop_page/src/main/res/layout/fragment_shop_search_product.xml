@@ -1,34 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ly_parent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:id="@+id/ly_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:background="@color/white"
+    android:orientation="vertical">
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
         android:background="@color/white"
+        android:gravity="center_vertical"
         app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp"
         app:contentInsetStartWithNavigation="0dp"
+        app:elevation="0dp"
         app:subtitleTextAppearance="?subtitleTextAppearance"
-        app:titleTextAppearance="?titleTextAppearance"
-        app:elevation="0dp" >
+        app:titleTextAppearance="?titleTextAppearance">
 
-        <com.tokopedia.design.text.SearchInputView
-            android:id="@+id/search_input_view"
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
-            android:clickable="true"
             android:layout_height="wrap_content"
-            app:siv_search_hint="@string/shop_product_search_hint"/>
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <com.tokopedia.design.text.SearchInputView
+                android:id="@+id/search_input_view"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_weight="1"
+                android:clickable="true"
+                app:siv_search_hint="@string/shop_product_search_hint" />
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/linearLayoutNewDesign"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_4"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginBottom="@dimen/dp_4"
+                android:layout_weight="1"
+                android:background="@drawable/bg_shop_page_search"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingStart="@dimen/spacing_lvl2"
+                android:paddingTop="@dimen/spacing_lvl3"
+                android:paddingEnd="@dimen/spacing_lvl2"
+                android:paddingBottom="@dimen/spacing_lvl3">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/shopPageMainSearchIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_shop_search" />
+
+                <EditText
+                    android:id="@+id/editTextSearchProduct"
+                    style="@style/EditText"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/dp_4"
+                    android:layout_marginLeft="@dimen/dp_4"
+                    android:layout_marginEnd="@dimen/dp_4"
+                    android:layout_marginRight="@dimen/dp_4"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:ellipsize="end"
+                    android:hint="@string/shop_product_search_hint"
+                    android:imeOptions="actionSearch"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:textColor="@color/clr_ae31353b"
+                    android:textSize="@dimen/sp_14" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/image_view_clear_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/ic_shop_page_clear_button"
+                    tools:visibility="visible" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/textCancel"
+                style="@style/TextView.Small"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:text="@string/button_cancel"
+                android:textColor="@color/bg_button_green_border_outline"
+                app:typographyType="body_2" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
 
     </androidx.appcompat.widget.Toolbar>
+
     <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:clipToPadding="false"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:clipToPadding="false" />
 </LinearLayout>

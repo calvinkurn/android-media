@@ -3,12 +3,20 @@
     <string name="host_category" translatable="false">category</string>
     <string name="host_moneyin" translatable="false">money_in</string>
     <string name="host_tradein" translatable="false">tradein</string>
+    <string name="host_category_explore" translatable="false">category-explore</string>
     <string name="path_final_price" translatable="false">/host_final_price</string>
     <string name="path_age_restriction" translatable="false">/age_restriction</string>
     <string name="path_tradein" translatable="false">/tradein</string>
     <string name="path_device_validation" translatable="false">/device_validation</string>
     <string name="applink_title_age_restriction" >Konten Dewasa</string>
     <string name="applink_title_tradein" >Tukar Tambah</string>
+    <string name="applink_title_explore_category" >Jelajah Tokopedia</string>
+    <string name="applink_title_find_native" >Find</string>
     <string name="applink_harga_final">Harga Final</string>
+    <string name="applink_title_catalog">Katalog</string>
     <string name="money_in">Langsung Laku</string>
+    <string name="host_belanja_kategori" translatable="false">category_belanja</string>
+    <string name="label_kategori">Belanja di Tokopedia</string>
+    <string name="label_category">category</string>
+    <string name="hotlist_label">hotlist</string>
 </resources>

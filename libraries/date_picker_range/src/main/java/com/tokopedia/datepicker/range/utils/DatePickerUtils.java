@@ -8,14 +8,9 @@ import com.tokopedia.datepicker.range.model.DatePickerViewModel;
 import com.tokopedia.datepicker.range.view.constant.DatePickerConstant;
 
 import java.text.DateFormat;
-import java.text.Format;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Nathaniel on 2/3/2017.
@@ -59,47 +54,6 @@ public class DatePickerUtils {
             reverse += split[i];
         }
         return reverse;
-    }
-
-    public static long convertStringToTimestamp(String dateFormat, String dateString) {
-        try {
-            return convertStringToDate(dateFormat, dateString).getTime();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return -1;
-    }
-
-    public static Date convertStringToDate(String dateFormat, String dateString) {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat, Locale.US);
-        try {
-            Date date = simpleDateFormat.parse(dateString);
-            return date;
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public static boolean isDateEqual(String dateFormat, long startDate, long endDate, long comparedStartDate, long comparedEndDate) {
-        return isDateEqual(dateFormat, startDate, comparedStartDate) && isDateEqual(dateFormat, endDate, comparedEndDate);
-    }
-
-    private static boolean isDateEqual(String dateFormat, long date, long comparedDate) {
-        String dateString = convertTimestampToString(date, dateFormat);
-        String comparedDateString = convertTimestampToString(comparedDate, dateFormat);
-        return dateString.equalsIgnoreCase(comparedDateString);
-    }
-
-    private static String convertTimestampToString(long timestamp, String dateFormat) {
-        Date date = new Date(timestamp);
-        Format format = new SimpleDateFormat(dateFormat, Locale.US);
-        return format.format(date);
-    }
-
-    public static long getDateDiff(long date1, long date2, TimeUnit timeUnit) {
-        long diffInMillis = date2 - date1;
-        return timeUnit.convert(diffInMillis, TimeUnit.MILLISECONDS);
     }
 
     public static DatePickerViewModel convertDatePickerFromIntent(Intent intent) {

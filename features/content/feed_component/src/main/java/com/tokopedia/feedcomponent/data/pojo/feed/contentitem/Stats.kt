@@ -14,4 +14,8 @@ data class Stats(
         @SerializedName("productIDs")
         @Expose
         val productIDs: List<String> = emptyList()
-)
+) {
+        fun copy(): Stats {
+                return Stats(text, productIDs)
+        }
+}

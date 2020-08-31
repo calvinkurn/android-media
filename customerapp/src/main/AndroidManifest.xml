@@ -5,6 +5,7 @@
 
     <uses-sdk tools:overrideLibrary="com.tokopedia.core"/>
 
+    <uses-permission android:name="android.permission.NFC" />
     <uses-permission android:name="android.permission.CALL_PHONE"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
@@ -39,16 +40,16 @@
 
     <application
         android:name=".ConsumerMainApplication"
-        android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:allowBackup="false"
+        android:icon="@mipmap/ic_launcher_customerapp"
+        android:roundIcon="@mipmap/ic_launcher_customerapp_round"
         android:label="@string/app_name"
         android:hasCode="true"
         android:networkSecurityConfig="@xml/network_security_config"
         android:supportsRtl="true"
         android:fullBackupContent="@xml/backup_descriptor"
         android:theme="@style/Theme.Tokopedia3"
-        tools:replace="name,android:label,android:hasCode">
+        tools:replace="name,android:label,android:hasCode,android:fullBackupContent,android:allowBackup">
         <meta-data android:name="com.facebook.sdk.AutoLogAppEventsEnabled"
            android:value="false"/>
         <meta-data android:name="com.facebook.sdk.AutoInitEnabled"
@@ -77,14 +78,14 @@
             android:value="/data/local/tmp/pre_install.appsflyer"/>
         <meta-data
             android:name="firebase_performance_logcat_enabled"
-            android:value="false"/>
+            android:value="${firebasePerformanceLogEnabled}"/>
         <meta-data
             android:name="NOTIFICATION_ICON"
             android:value="@drawable/ic_stat_notify_white"
             tools:replace="android:value"/>
         <meta-data
             android:name="NOTIFICATION_LARGE_ICON"
-            android:value="@mipmap/ic_launcher"
+            android:value="@mipmap/ic_launcher_customerapp"
             tools:replace="android:value"/>
         <meta-data
             android:name="HANSEL_APP_ID"
@@ -92,6 +93,10 @@
         <meta-data
             android:name="HANSEL_APP_KEY"
             android:value="8CDH74MC9EZLPFIHNNJPT39ERKS5BODETYX2LBFQ83ECSV86WY"/>
+        <meta-data android:name="com.google.android.actions" android:resource="@xml/actions" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/GOOGLE_API_KEY" />
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
@@ -120,6 +125,9 @@
                     android:scheme="https"/>
                 <data
                     android:host="tokopedia-alternate.app.link"
+                    android:scheme="https"/>
+                <data
+                    android:host="tokopedia.app.link"
                     android:scheme="https"/>
             </intent-filter>
         </activity>
@@ -175,15 +183,22 @@
             android:theme="@style/TokopediaTransparentStatus"
             android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait">
+
             <meta-data
                 android:name="APPS_HOME"
                 android:value="true"/>
+
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_home"
+                    android:path="@string/path_navigation"/>
+            </intent-filter>
+
         </activity>
-        <activity
-            android:name=".home.SimpleHomeActivity"
-            android:label="@string/title_activity_simple_home"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
         <activity
             android:name=".goldmerchant.GoldMerchantRedirectActivity"
             android:label="@string/label_gold_merchant"
@@ -257,12 +272,6 @@
             android:name=".home.ReactNativeDiscoveryActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".home.ReactNativeOfficialStorePromoActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".home.ReactNativePromoSaleActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".thankyou.view.ReactNativeThankYouPageActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".home.ReactNativeSubPromoPageActivity"
@@ -272,39 +281,6 @@
             android:permission="android.permission.BIND_JOB_SERVICE"
             android:exported="false"/>
 
-        <activity
-            android:name=".qrscanner.QrScannerActivity"
-            android:label="@string/title_scan_qr"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" >
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-                <data
-                    android:scheme="@string/internal_scheme"
-                    android:host="@string/host_marketplace"
-                    android:pathPattern="@string/path_qr_scanner" />
-            </intent-filter>
-        </activity>
-
-        <activity
-            android:name=".flight.presentation.FlightPhoneVerificationActivity"
-            android:label="@string/flight_title_activity_phone_verification"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="@string/host_flight"
-                    android:path="@string/path_flight_phone_verification"
-                    android:scheme="@string/internal_scheme" />
-            </intent-filter>
-        </activity>
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.tokopedia.tkpd.provider"
@@ -320,6 +296,17 @@
         <activity
             android:name=".home.TkpdYoutubeVideoActivity"
             android:screenOrientation="sensor"/>
+
+        <activity android:name=".nfc.NFCHandlerActivity"
+            android:theme="@style/Theme.White" >
+            <intent-filter>
+                <action android:name="android.nfc.action.TECH_DISCOVERED" />
+            </intent-filter>
+            <meta-data
+                android:name="android.nfc.action.TECH_DISCOVERED"
+                android:resource="@xml/nfc_tech_filter" />
+        </activity>
+
 
         <receiver
             android:name="com.tokopedia.tkpd.utils.NotificationBroadcast">
@@ -340,6 +327,12 @@
             </intent-filter>
         </activity>
 
+        <receiver android:name=".receiver.AppMediaButtonReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
+            </intent-filter>
+        </receiver>
+      
     </application>
 
 </manifest>

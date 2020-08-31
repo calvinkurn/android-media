@@ -19,33 +19,60 @@ buildscript {
 
 dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
-    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.dynamicFeatures)
+    implementation project(rootProject.ext.libraries.weaver)
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation project(rootProject.ext.libraries.adapterDelegate)
 
     implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.global_error
+
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
+    implementation project(rootProject.ext.libraries.graphql)
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
-    implementation rootProject.ext.supportLibDependencies.constraintLayout
+
+    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
+
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.dagger
-    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
-    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
     implementation rootProject.ext.miscDependencies.rxKotlin
+    implementation (rootProject.ext.miscDependencies.viewPager2){
+        ['androidx.collection', 'androidx.fragment'].each {
+            exclude group: it
+        }
+    }
+
+
+    testImplementation rootProject.ext.testDependencies.assertJ
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.spek2Api
+    testImplementation rootProject.ext.testDependencies.spek2Dsl
+    testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
+    testImplementation rootProject.ext.testDependencies.json
+    testImplementation rootProject.ext.miscDependencies.coroutineCore
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
 }
 
 project.ext {
     artifactId = 'onboarding'
     groupId = 'com.tokopedia.user'
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName ="onboarding-release"
 }
 

@@ -34,36 +34,8 @@ public class UserInfo {
     @Expose
     private String userImage;
 
-    public String getUserMessenger() {
-        return userMessenger;
-    }
-
-    public void setUserMessenger(String userMessenger) {
-        this.userMessenger = userMessenger;
-    }
-
-    public String getUserBirth() {
-        return userBirth;
-    }
-
-    public void setUserBirth(String userBirth) {
-        this.userBirth = userBirth;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
     public void setUserName(String userName) {
         this.userName = userName;
-    }
-
-    public UserReputation getUserReputation() {
-        return userReputation;
-    }
-
-    public void setUserReputation(UserReputation userReputation) {
-        this.userReputation = userReputation;
     }
 
     public String getUserEmail() {
@@ -82,28 +54,8 @@ public class UserInfo {
         this.userId = userId;
     }
 
-    public String getUserPhone() {
-        return userPhone;
-    }
-
-    public void setUserPhone(String userPhone) {
-        this.userPhone = userPhone;
-    }
-
-    public String getUserHobbies() {
-        return userHobbies;
-    }
-
-    public void setUserHobbies(String userHobbies) {
-        this.userHobbies = userHobbies;
-    }
-
     public String getUserImage() {
         return userImage;
-    }
-
-    public void setUserImage(String userImage) {
-        this.userImage = userImage;
     }
 
     @Override

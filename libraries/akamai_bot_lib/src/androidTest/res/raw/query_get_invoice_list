@@ -1,0 +1,29 @@
+query get_invoice_list($msgId: String!, $showAll: Boolean!, $startTime: String!, $limit: Int!, $page: Int!) {
+  getInvoiceList(msgID: $msgId, showAll: $showAll, startTime: $startTime, limit: $limit, page: $page) {
+    TypeID
+    Type
+    IsError
+    Attributes {
+      ID
+      PaymentID
+      Code
+      Title
+      Description
+      CreateTime
+      CreateTimeSort
+      StatusID
+      Status
+      StatusTime
+      TotalAmount
+      ImageURL
+      InvoiceURL
+      PaymentMethod
+      ResolutionID
+      FailedTime
+    }
+    Status {
+      Code
+      ErrorDetails
+    }
+  }
+}

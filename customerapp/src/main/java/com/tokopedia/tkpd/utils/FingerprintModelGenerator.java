@@ -17,6 +17,7 @@ import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.device.info.DeviceConnectionInfo;
 import com.tokopedia.device.info.DeviceInfo;
+import com.tokopedia.device.info.DevicePerformanceInfo;
 import com.tokopedia.device.info.DeviceScreenInfo;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -46,7 +47,13 @@ public class FingerprintModelGenerator {
             fingerprintString = "";
         }
 
-        fingerprintModel.setAdsId(getGoogleAdId(context));
+        // temporary fix until moving this into fingerprint library, because some module do not need this ads id
+        // handle exception if called from main thread
+        try {
+            fingerprintModel.setAdsId(getGoogleAdId(context));
+        } catch (Exception e) {
+            fingerprintModel.setAdsId("");
+        }
         fingerprintModel.setFingerprintHash(fingerprintString);
         fingerprintModel.setRegistrarionId(FCMCacheManager.getRegistrationIdWithTemp(context));
 
@@ -116,10 +123,17 @@ public class FingerprintModelGenerator {
         String deviceLanguage = DeviceInfo.getLanguage();
         String ssid         = DeviceConnectionInfo.getSSID(context);
         String carrier      = DeviceConnectionInfo.getCarrierName(context);
+        String imei         = DeviceInfo.getImei(context);
         String isNakama = "False";
         if(context instanceof UserSessionInterface)
             isNakama = Utilities.isNakama((UserSessionInterface)context);
         String adsId = getGoogleAdId(context);
+        String deviceAvailableProcessor = DevicePerformanceInfo.INSTANCE.getAvailableProcessor(context.getApplicationContext());
+        String deviceMemoryClass = DevicePerformanceInfo.INSTANCE.getDeviceMemoryClassCapacity(context.getApplicationContext());
+        String deviceDpi = DevicePerformanceInfo.INSTANCE.getDeviceDpi(context.getApplicationContext());
+        String androidId = DeviceInfo.getAndroidId(context);
+        boolean isx86 = DeviceInfo.isx86();
+        String packageName = DeviceInfo.getPackageName(context);
 
         FingerPrint fp = new FingerPrint.FingerPrintBuilder()
                 .uniqueId(adsId)
@@ -140,6 +154,13 @@ public class FingerprintModelGenerator {
                 .carrier(carrier)
                 .deviceLat(new LocationCache(context).getLatitudeCache())
                 .deviceLng(new LocationCache(context).getLongitudeCache())
+                .availableProcessor(deviceAvailableProcessor)
+                .deviceMemoryClassCapacity(deviceMemoryClass)
+                .deviceDpi(deviceDpi)
+                .androidId(androidId)
+                .isx86(isx86)
+                .packageName(packageName)
+                .imei(imei)
                 .build();
 
         return new Gson().toJson(fp);

@@ -5,6 +5,7 @@ import android.view.View
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.product.Rating
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import kotlinx.android.synthetic.main.partial_product_rating_talk_courier.view.*
 
 class PartialProductStatisticView private constructor(private val view: View) {
@@ -13,14 +14,15 @@ class PartialProductStatisticView private constructor(private val view: View) {
     }
 
     fun renderData(countReview: Int, countTalk: Int, onReviewClicked: (() -> Unit)? = null,
-                   onDiscussionClicked: (() -> Unit)? = null) {
+                   onDiscussionClicked: ((ComponentTrackDataModel?) -> Unit)? = null,
+                   componentTrackDataModel: ComponentTrackDataModel? = null) {
         with(view) {
             txt_review.text = context.getString(R.string.template_review, countReview)
             base_layout_rating.setOnClickListener { onReviewClicked?.invoke() }
             txt_review.setOnClickListener { onReviewClicked?.invoke() }
             txt_discussion.text = context.getString(R.string.template_talk, countTalk)
-            txt_discussion.setOnClickListener { onDiscussionClicked?.invoke() }
-            icon_discussion.setOnClickListener { onDiscussionClicked?.invoke() }
+            txt_discussion.setOnClickListener { onDiscussionClicked?.invoke(componentTrackDataModel) }
+            icon_discussion.setOnClickListener { onDiscussionClicked?.invoke(componentTrackDataModel) }
             visible()
         }
     }
@@ -28,13 +30,6 @@ class PartialProductStatisticView private constructor(private val view: View) {
     fun renderRatingNew(rating: String) {
         with(view) {
             tv_rating.text = rating
-            visible()
-        }
-    }
-
-    fun renderRating(rating: Rating) {
-        with(view) {
-            tv_rating.text = rating.ratingScore
             visible()
         }
     }

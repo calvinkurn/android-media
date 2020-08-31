@@ -18,7 +18,7 @@
     <dimen name="text_size_16">16sp</dimen>
 
     <dimen name="feed_margin_s">4.2dp</dimen>
-    <dimen name="feed_detail_product">110dp</dimen>
+    <dimen name="feed_detail_product">96dp</dimen>
 
     <dimen name="padding_info">16dp</dimen>
     <dimen name="cactus_height">100dp</dimen>

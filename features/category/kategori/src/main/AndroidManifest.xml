@@ -1,0 +1,26 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.kategori">
+
+    <application>
+        <activity
+            android:name="com.tokopedia.kategori.view.activity.CategoryBrowseActivity"
+            android:label="@string/label_kategori"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="adjustResize">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_belanja_kategori"
+                    android:scheme="@string/internal_scheme" />
+
+            </intent-filter>
+
+        </activity>
+    </application>
+</manifest>

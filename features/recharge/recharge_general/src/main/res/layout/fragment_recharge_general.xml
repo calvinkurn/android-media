@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
+
+    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+        android:id="@+id/recharge_general_swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <com.tokopedia.unifycomponents.ticker.Ticker
+                    android:id="@+id/recharge_general_ticker"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <com.tokopedia.unifycomponents.CardUnify
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/spacing_lvl4"
+                    app:card_type="shadow" >
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/spacing_lvl4"
+                        android:orientation="vertical">
+
+                        <com.tokopedia.common.topupbills.widget.TopupBillsInputFieldWidget
+                            android:id="@+id/operator_cluster_select"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/spacing_lvl3"
+                            android:visibility="gone"
+                            app:isDropdown="true"
+                            tools:visibility="visible" />
+
+                        <com.tokopedia.common.topupbills.widget.TopupBillsInputFieldWidget
+                            android:id="@+id/operator_select"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/spacing_lvl3"
+                            android:visibility="gone"
+                            app:isDropdown="true" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rv_digital_product"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            tools:listitem="@layout/view_topup_bills_input_field" />
+
+                        <com.tokopedia.unifycomponents.ticker.Ticker
+                            android:id="@+id/ticker_recharge_general_product_info"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone"
+                            app:tickerType="announcement" />
+
+                        <com.tokopedia.unifycomponents.UnifyButton
+                            android:id="@+id/recharge_general_enquiry_button"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing_lvl3"
+                            android:text="@string/enquiry_label"
+                            app:unifyButtonType="main" />
+
+                    </LinearLayout>
+
+                </com.tokopedia.unifycomponents.CardUnify>
+
+                <com.tokopedia.design.component.Tabs
+                    android:id="@+id/tab_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/spacing_lvl7"
+                    android:layout_marginTop="@dimen/spacing_lvl4"
+                    android:background="@color/white"
+                    android:theme="@style/ThemeOverlay.AppCompat.Light"
+                    android:visibility="gone"
+                    app:tabGravity="fill"
+                    app:tabIndicatorColor="@color/tkpd_main_green"
+                    app:tabMode="fixed"
+                    app:tabSelectedTextColor="@color/tkpd_main_green"
+                    app:tabTextAppearance="@style/Tabs.Secondary"
+                    app:tabTextColor="@color/font_black_disabled_38"
+                    tools:visibility="visible" />
+
+                <View
+                    android:id="@+id/separator"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/recharge_general_seperator_size"
+                    android:background="@color/separator_voucher"
+                    android:visibility="gone" />
+
+                <com.tokopedia.design.viewpager.WrapContentViewPager
+                    android:id="@+id/product_view_pager"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/spacing_lvl4"
+                    android:layout_marginRight="@dimen/spacing_lvl4"
+                    android:layout_marginBottom="@dimen/spacing_lvl4"
+                    android:visibility="visible"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
+
+    <FrameLayout
+        android:id="@+id/loading_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        tools:visibility="gone">
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:layout_width="@dimen/spacing_lvl8"
+            android:layout_height="@dimen/spacing_lvl8"
+            android:layout_gravity="center" />
+
+    </FrameLayout>
+
+</RelativeLayout>

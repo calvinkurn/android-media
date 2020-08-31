@@ -17,15 +17,6 @@ import rx.Observable;
 @Deprecated
 public interface PeopleApi {
 
-    @GET(TkpdBaseURL.User.PATH_GET_ADDRESS)
-    Observable<Response<TkpdResponse>> getAddress(@QueryMap Map<String, String> params);
-
-    @GET(TkpdBaseURL.User.PATH_GET_FAVORITE_SHOP)
-    Observable<Response<TkpdResponse>> getFavoriteShop(@QueryMap Map<String, String> params);
-
-    @GET(TkpdBaseURL.User.PATH_GET_NOTIFICATION)
-    Observable<Response<TkpdResponse>> getNotification(@QueryMap Map<String, String> params);
-
     @GET(TkpdBaseURL.User.PATH_GET_PEOPLE_INFO)
     Observable<Response<TkpdResponse>> getPeopleInfo(@QueryMap Map<String, String> params);
 

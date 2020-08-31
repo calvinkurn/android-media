@@ -5,7 +5,7 @@ import android.content.Intent;
 import androidx.fragment.app.Fragment;
 
 import com.tokopedia.seller.product.etalase.view.fragment.EtalaseDynamicPickerFragment;
-import com.tokopedia.seller.product.etalase.view.model.MyEtalaseItemViewModel;
+import com.tokopedia.product.manage.item.etalase.view.model.MyEtalaseItemViewModel;
 
 import java.util.ArrayList;
 

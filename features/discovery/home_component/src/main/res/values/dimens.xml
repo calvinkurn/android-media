@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="home_reminder_card_min_height">110dp</dimen>
+    <dimen name="home_reminder_background_margin">6dp</dimen>
+    <dimen name="home_reminder_product_icon_card_padding">10dp</dimen>
+    <dimen name="home_reminder_shimmering_card_size">120dp</dimen>
+    <dimen name="home_banner_mix_carousel_width">125dp</dimen>
+    <dimen name="home_banner_mix_arrow_icon_size">50dp</dimen>
+</resources>

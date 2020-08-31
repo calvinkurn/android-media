@@ -2,21 +2,22 @@ package com.tokopedia.settingnotif.usersetting.view.adapter.viewholder
 
 import androidx.annotation.LayoutRes
 import android.view.View
-import android.widget.ImageView
 import android.widget.Switch
 import android.widget.TextView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.settingnotif.R
-import com.tokopedia.settingnotif.usersetting.domain.pojo.ParentSetting
+import com.tokopedia.settingnotif.usersetting.data.pojo.ParentSetting
+import com.tokopedia.settingnotif.usersetting.util.componentTextColor
+import androidx.core.content.ContextCompat.getColor as color
 
 class ParentSettingViewHolder(
         itemView: View?,
         settingListener: SettingListener
 ) : SettingViewHolder<ParentSetting>(itemView, settingListener) {
 
-    private val settingIcon: ImageView? = itemView?.findViewById(R.id.iv_icon)
     private val switchTitle: TextView? = itemView?.findViewById(R.id.tv_sw_title)
     private val description: TextView? = itemView?.findViewById(R.id.tv_desc)
+
+    private val context by lazy { itemView?.context }
 
     override fun getSwitchView(itemView: View?): Switch? {
         return itemView?.findViewById(R.id.sw_setting)
@@ -24,10 +25,23 @@ class ParentSettingViewHolder(
 
     override fun bind(element: ParentSetting?) {
         if (element == null) return
-        super.bind(element)
         setSettingTitle(element)
         setSettingDesc(element)
-        setSettingIcon(element)
+        switchComponentHandler(element)
+        super.bind(element)
+    }
+
+    private fun switchComponentHandler(element: ParentSetting?) {
+        element?.let { setting ->
+            // change switch state
+            getSwitchView(itemView)?.isEnabled = setting.isEnabled
+
+            // change text color
+            context?.let {
+                val colorId = componentTextColor(setting.isEnabled)
+                switchTitle?.setTextColor(color(it, colorId))
+            }
+        }
     }
 
     private fun setSettingTitle(element: ParentSetting) {
@@ -41,11 +55,6 @@ class ParentSettingViewHolder(
         } else {
             description?.visibility = View.GONE
         }
-    }
-
-    private fun setSettingIcon(element: ParentSetting) {
-        val iconSettingUrl = element.icon
-        ImageHandler.LoadImage(settingIcon, iconSettingUrl)
     }
 
     override fun updateSiblingAndChild(element: ParentSetting, checked: Boolean) {
@@ -65,7 +74,9 @@ class ParentSettingViewHolder(
         if (childToChangeIndex.isEmpty()) return
 
         val currentSettingPosition = adapterPosition
-        val childToChangeAdapterIndex = childToChangeIndex.map { index -> currentSettingPosition + 1 + index }
+        val childToChangeAdapterIndex = childToChangeIndex.map {
+            index -> currentSettingPosition + 1 + index
+        }
         settingListener.updateSettingView(childToChangeAdapterIndex)
     }
 
@@ -86,7 +97,6 @@ class ParentSettingViewHolder(
     }
 
     companion object {
-        @LayoutRes
-        val LAYOUT = R.layout.item_parent_setting
+        @LayoutRes val LAYOUT = R.layout.item_parent_setting
     }
 }

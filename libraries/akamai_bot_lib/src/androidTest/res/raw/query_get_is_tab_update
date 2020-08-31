@@ -1,0 +1,5 @@
+query {
+  notifications{
+    is_tab_update
+  }
+}

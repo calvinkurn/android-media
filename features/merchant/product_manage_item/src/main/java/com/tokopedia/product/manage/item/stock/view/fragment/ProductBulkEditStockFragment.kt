@@ -8,14 +8,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.manage.item.R
 import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_STOCK
 import com.tokopedia.product.manage.item.utils.LabelRadioButton
 import kotlinx.android.synthetic.main.fragment_bulk_edit_stock.*
 
 class ProductBulkEditStockFragment : Fragment() {
-
-    private var stockStatus: Boolean = false
 
     private val texViewMenu: TextView? by lazy { activity?.findViewById(R.id.texViewMenu) as? TextView }
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,14 +29,8 @@ class ProductBulkEditStockFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        radioButtonAvailable.isChecked = true
-        radioButtonAvailable.setOnClickListener {
-            setRadioButtonChosen(radioButtonAvailable)
-        }
 
-        radioButtonEmpty.setOnClickListener {
-            setRadioButtonChosen(radioButtonEmpty)
-        }
+        texViewMenu?.hide()
 
         texViewMenu?.run {
             text = getString(R.string.label_save)
@@ -44,22 +38,18 @@ class ProductBulkEditStockFragment : Fragment() {
                 setResult()
             }
         }
-    }
 
-    private fun setRadioButtonChosen(labelRadioButton: LabelRadioButton) {
-        radioButtonAvailable.isChecked = false
-        radioButtonEmpty.isChecked = false
-        labelRadioButton.isChecked = true
-    }
-
-    private fun saveData(): Boolean {
-        stockStatus = !radioButtonEmpty.isChecked
-        return stockStatus
+        radioButtonEmpty.setOnClickListener {
+            radioButtonEmpty.isChecked = !radioButtonEmpty.isChecked
+            if (radioButtonEmpty.isChecked) {
+                texViewMenu?.show()
+            }
+        }
     }
 
     private fun setResult() {
         activity?.run {
-            setResult(Activity.RESULT_OK, Intent().apply { putExtra(EXTRA_STOCK, saveData()) })
+            setResult(Activity.RESULT_OK, Intent().apply { putExtra(EXTRA_STOCK, !radioButtonEmpty.isChecked) })
             finish()
         }
     }

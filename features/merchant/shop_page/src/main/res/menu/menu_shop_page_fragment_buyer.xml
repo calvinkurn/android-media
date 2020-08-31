@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_action_share"
+        android:title="@string/shop_menu_action_share"
+        android:icon="@drawable/ic_shop_share_dark"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/menu_action_cart"
+        android:title="@string/shop_menu_action_cart"
+        android:icon="@drawable/ic_cart_grayscale_20"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/menu_action_shop_info"
+        android:title="@string/shop_menu_action_store_info"
+        android:icon="@drawable/ic_shop_info"
+        app:showAsAction="always" />
+
+</menu>

@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:paddingBottom="@dimen/spacing_lvl4">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/icFlightPassengerAdult"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        app:layout_constraintBottom_toBottomOf="@+id/tvFlightPassengerAdultDesc"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvFlightPassengerAdultLabel"
+        app:srcCompat="@drawable/ic_flight_passenger" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvFlightPassengerAdultLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:text="@string/select_passenger_adult_title"
+        android:textColor="@color/Neutral_N700_96"
+        app:layout_constraintLeft_toRightOf="@+id/icFlightPassengerAdult"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_2"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvFlightPassengerAdultDesc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/select_passenger_adult_subtitle"
+        android:textColor="@color/flight_search_form_field_title"
+        app:layout_constraintLeft_toLeftOf="@+id/tvFlightPassengerAdultLabel"
+        app:layout_constraintTop_toBottomOf="@+id/tvFlightPassengerAdultLabel"
+        app:typographyType="body_3" />
+
+    <com.tokopedia.unifycomponents.QuantityEditorUnify
+        android:id="@+id/qtyFlightPassengerAdult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        app:layout_constraintBottom_toBottomOf="@+id/tvFlightPassengerAdultDesc"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvFlightPassengerAdultLabel"
+        app:qty_default_value="1"
+        app:qty_max_value="7"
+        app:qty_min_value="1" />
+
+    <View
+        android:id="@+id/separatorFlightPassengerAdult"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:background="@color/flight_search_list_background"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvFlightPassengerAdultDesc" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/icFlightPassengerChild"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        app:layout_constraintBottom_toBottomOf="@+id/tvFlightPassengerChildDesc"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvFlightPassengerChildLabel"
+        app:srcCompat="@drawable/ic_flight_child" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvFlightPassengerChildLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:text="@string/select_passenger_children_title"
+        android:textColor="@color/Neutral_N700_96"
+        app:layout_constraintLeft_toRightOf="@+id/icFlightPassengerChild"
+        app:layout_constraintTop_toBottomOf="@+id/separatorFlightPassengerAdult"
+        app:typographyType="body_2"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvFlightPassengerChildDesc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/select_passenger_children_subtitle"
+        android:textColor="@color/flight_search_form_field_title"
+        app:layout_constraintLeft_toLeftOf="@+id/tvFlightPassengerChildLabel"
+        app:layout_constraintTop_toBottomOf="@+id/tvFlightPassengerChildLabel"
+        app:typographyType="body_3" />
+
+    <com.tokopedia.unifycomponents.QuantityEditorUnify
+        android:id="@+id/qtyFlightPassengerChild"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        app:layout_constraintBottom_toBottomOf="@+id/tvFlightPassengerChildDesc"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvFlightPassengerChildLabel"
+        app:qty_default_value="0"
+        app:qty_max_value="7"
+        app:qty_min_value="0" />
+
+    <View
+        android:id="@+id/separatorFlightPassengerChild"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:background="@color/flight_search_list_background"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvFlightPassengerChildDesc" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/icFlightPassengerInfant"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="@dimen/layout_lvl2"
+        app:layout_constraintBottom_toBottomOf="@+id/tvFlightPassengerInfantDesc"
+        app:layout_constraintLeft_toLeftOf="@+id/icFlightPassengerChild"
+        app:layout_constraintRight_toRightOf="@+id/icFlightPassengerChild"
+        app:layout_constraintTop_toTopOf="@+id/tvFlightPassengerInfantLabel"
+        app:srcCompat="@drawable/ic_flight_infant" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvFlightPassengerInfantLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:text="@string/select_passenger_infant_title"
+        android:textColor="@color/Neutral_N700_96"
+        app:layout_constraintLeft_toRightOf="@+id/icFlightPassengerInfant"
+        app:layout_constraintTop_toBottomOf="@+id/separatorFlightPassengerChild"
+        app:typographyType="body_2"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvFlightPassengerInfantDesc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/select_passenger_infant_subtitle"
+        android:textColor="@color/flight_search_form_field_title"
+        app:layout_constraintLeft_toLeftOf="@+id/tvFlightPassengerInfantLabel"
+        app:layout_constraintTop_toBottomOf="@+id/tvFlightPassengerInfantLabel"
+        app:typographyType="body_3" />
+
+    <com.tokopedia.unifycomponents.QuantityEditorUnify
+        android:id="@+id/qtyFlightPassengerInfant"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        app:layout_constraintBottom_toBottomOf="@+id/tvFlightPassengerInfantDesc"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvFlightPassengerInfantLabel"
+        app:qty_default_value="0"
+        app:qty_max_value="4"
+        app:qty_min_value="0" />
+
+    <View
+        android:id="@+id/separatorFlightPassengerInfant"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:background="@color/flight_search_list_background"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvFlightPassengerInfantDesc" />
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/tickerPassengerInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        app:closeButtonVisibility="gone"
+        app:descriptionText="@string/select_passenger_infant_greater_than_adult_error_message"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/separatorFlightPassengerInfant"
+        app:tickerShapeType="loose"
+        app:tickerType="information" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnFlightPassenger"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:text="@string/select_passenger_submit_button"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tickerPassengerInfo" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

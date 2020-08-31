@@ -1,5 +1,6 @@
 package com.tokopedia.adapterdelegate
 
+import android.os.Bundle
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 
@@ -38,7 +39,14 @@ abstract class BaseAdapter<T: Any> : RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        return delegatesManager.onBindViewHolder(itemList, position, holder)
+        delegatesManager.onBindViewHolder(itemList, position, holder)
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int, payloads: List<Any>) {
+        if (payloads.isEmpty()) onBindViewHolder(holder, position)
+        else delegatesManager.onBindViewHolder(itemList, position, holder, payloads = payloads.filterIsInstance<Bundle>().reduce {
+            acc, bundle -> acc.apply { putAll(bundle) }
+        })
     }
 
     override fun onViewRecycled(holder: RecyclerView.ViewHolder) {

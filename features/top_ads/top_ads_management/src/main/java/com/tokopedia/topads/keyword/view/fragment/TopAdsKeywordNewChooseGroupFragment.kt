@@ -11,7 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import com.tokopedia.core.util.MethodChecker
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.topads.R
 import com.tokopedia.topads.common.view.fragment.TopAdsNewBaseStepperFragment
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant
@@ -110,7 +110,7 @@ class TopAdsKeywordNewChooseGroupFragment : TopAdsNewBaseStepperFragment<TopAdsK
 
         var groupName: String? = null
         savedInstanceState?.run {
-            chosenId = getString(SAVED_GROUP_ID)
+            chosenId = getString(SAVED_GROUP_ID, "")
             groupName = getString(SAVED_GROUP_NAME)
             keywordCount = getInt(SAVED_KEYWORD_COUNT)
         }

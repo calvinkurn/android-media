@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/bg_big_divider"
+    android:paddingTop="@dimen/spacing_lvl4"
+    android:paddingStart="@dimen/spacing_lvl4"
+    android:paddingEnd="@dimen/spacing_lvl4"
+    android:paddingBottom="@dimen/spacing_lvl4">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container_seller"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/setting_notif_dp_60"
+        android:orientation="horizontal"
+        android:background="@drawable/bg_notifsetting_seller_card">
+
+        <ImageView
+            android:id="@+id/imgIcon"
+            android:layout_width="@dimen/setting_notif_dp_40"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:adjustViewBounds="true"
+            app:srcCompat="@drawable/ic_notifsetting_change_email" />
+
+        <LinearLayout
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:layout_marginLeft="@dimen/spacing_lvl3"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imgIcon"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/txtTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/charcoal_grey_68"
+                app:typographyType="body_2"
+                app:typographyWeight="reguler"
+                tools:text="Notifikasi e-mail akan dikirim ke:" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/txtChangeType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/charcoal_grey_68"
+                app:typographyType="body_2"
+                app:typographyWeight="bold"
+                tools:text="isfaaghyth@gmail.com" />
+
+        </LinearLayout>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/btnChange"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/settingnotif_green_600"
+            android:layout_marginEnd="@dimen/setting_notif_dp_12"
+            android:layout_marginRight="@dimen/setting_notif_dp_12"
+            android:layout_marginBottom="@dimen/setting_notif_dp_14"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            android:text="@string/settingnotif_change"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</RelativeLayout>

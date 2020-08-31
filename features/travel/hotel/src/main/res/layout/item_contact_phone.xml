@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/layout_lvl2"
+        android:paddingLeft="@dimen/layout_lvl2"
+        android:paddingTop="@dimen/hotel_18dp"
+        android:paddingEnd="@dimen/layout_lvl2"
+        android:paddingRight="@dimen/layout_lvl2"
+        android:paddingBottom="@dimen/hotel_18dp">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/contact_number"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/layout_lvl4"
+            android:layout_marginRight="@dimen/layout_lvl4"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/contact_button"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="+62 21 345 6788" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/contact_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hubungi"
+            android:textColor="@color/Green_G500"
+            app:typographyType="body_3"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+        android:id="@+id/seperator_2"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/hotel_1dp"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginLeft="@dimen/layout_lvl2"
+        android:background="@color/hotel_grey_300"
+        app:layout_constraintTop_toBottomOf="@+id/transaction_status" />
+
+
+</LinearLayout>

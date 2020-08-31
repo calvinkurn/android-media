@@ -2,28 +2,34 @@ package com.tokopedia.seller.product.draft.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
+import androidx.fragment.app.Fragment;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.core.base.presentation.BaseTemporaryDrawerActivity;
-import com.tokopedia.core.drawer2.service.DrawerGetNotificationService;
-import com.tokopedia.core.myproduct.utils.ImageDownloadHelper;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
-import com.tokopedia.product.manage.item.main.draft.view.activity.ProductDraftAddActivity;
 import com.tokopedia.seller.ProductEditItemComponentInstance;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.draft.di.component.DaggerProductDraftSaveBulkComponent;
 import com.tokopedia.seller.product.draft.di.module.ProductDraftSaveBulkModule;
+import com.tokopedia.seller.product.draft.utils.ImageDownloadHelper;
 import com.tokopedia.seller.product.draft.view.fragment.ProductDraftListFragment;
 import com.tokopedia.seller.product.draft.view.listener.ProductDraftSaveBulkView;
 import com.tokopedia.seller.product.draft.view.model.InstagramMediaModel;
@@ -36,7 +42,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 @DeepLink(ApplinkConst.PRODUCT_DRAFT)
-public class ProductDraftListActivity extends BaseTemporaryDrawerActivity
+public class ProductDraftListActivity extends BaseSimpleActivity
         implements HasComponent<ProductComponent>, ProductDraftSaveBulkView,
         ProductDraftListFragment.OnProductDraftListFragmentListener {
     public static final String TAG = ProductDraftListActivity.class.getSimpleName();
@@ -73,12 +79,8 @@ public class ProductDraftListActivity extends BaseTemporaryDrawerActivity
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        inflateView(R.layout.activity_simple_fragment);
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, ProductDraftListFragment.newInstance(), TAG)
-                    .commit();
-        } else {
+
+        if (null != savedInstanceState) {
             hasSaveInstagramToDraft = savedInstanceState.getBoolean(HAS_SAVED_INSTA_TO_DRAFT);
         }
 
@@ -105,7 +107,7 @@ public class ProductDraftListActivity extends BaseTemporaryDrawerActivity
                             public void onError(Throwable e) {
                                 hideProgressDialog();
                                 NetworkErrorHelper.showCloseSnackbar(
-                                        getActivity(), ErrorHandler.getErrorMessage(e));
+                                        ProductDraftListActivity.this, ErrorHandler.getErrorMessage(e));
                             }
 
                             @Override
@@ -122,11 +124,14 @@ public class ProductDraftListActivity extends BaseTemporaryDrawerActivity
                         });
             }
         }
+
+        setWhiteStatusBar();
     }
 
+    @Nullable
     @Override
-    protected void startDrawerGetNotificationServiceOnResume() {
-        DrawerGetNotificationService.startService(this,true,true);
+    protected Fragment getNewFragment() {
+        return ProductDraftListFragment.newInstance();
     }
 
     public void saveValidImagesToDraft(ArrayList<String> localPaths, @NonNull ArrayList<String> imageDescriptionList) {
@@ -142,9 +147,17 @@ public class ProductDraftListActivity extends BaseTemporaryDrawerActivity
                 localPaths, imageDescriptionList);
     }
 
+    private void setWhiteStatusBar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            getWindow().setStatusBarColor(Color.WHITE);
+        }
+    }
+
     private void showProgressDialog() {
         if (progressDialog == null) {
-            progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+            progressDialog = new TkpdProgressDialog(this, TkpdProgressDialog.NORMAL_PROGRESS);
             progressDialog.setCancelable(false);
         }
         if (!progressDialog.isProgress()) {
@@ -159,78 +172,12 @@ public class ProductDraftListActivity extends BaseTemporaryDrawerActivity
     }
 
     @Override
-    public void onErrorGetDeposit(String errorMessage) {
-        // no op
-    }
-
-    @Override
-    public void onErrorGetNotificationDrawer(String errorMessage) {
-        // no op
-    }
-
-    @Override
-    public void onErrorGetProfile(String errorMessage) {
-        // no op
-    }
-
-    @Override
-    public void onErrorGetTokoCash(String errorMessage) {
-        // no op
-    }
-
-    @Override
-    public void onErrorGetTopPoints(String errorMessage) {
-        // no op
-    }
-
-    @Override
     public void onServerError() {
         // no op
     }
 
     @Override
     public void onTimezoneError() {
-        // no op
-    }
-
-
-    @Override
-    protected int setDrawerPosition() {
-        return TkpdState.DrawerPosition.DRAFT_PRODUCT;
-    }
-
-    @Override
-    protected void setupURIPass(Uri data) {
-        // no op
-    }
-
-    @Override
-    protected void setupBundlePass(Bundle extras) {
-        // no op
-    }
-
-    @Override
-    protected void initialPresenter() {
-        // no op
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return 0;
-    }
-
-    @Override
-    protected void setViewListener() {
-        // no op
-    }
-
-    @Override
-    protected void initVar() {
-        // no op
-    }
-
-    @Override
-    protected void setActionVar() {
         // no op
     }
 
@@ -244,10 +191,22 @@ public class ProductDraftListActivity extends BaseTemporaryDrawerActivity
         hideProgressDialog();
         hasSaveInstagramToDraft = true;
         if (draftProductIdList.size() == 1) {
-            startActivity(ProductDraftAddActivity.Companion.createInstance(this, draftProductIdList.get(0)));
+            //TODO milhamj remove comment
+//            if(GlobalConfig.isSellerApp()) {
+            String uri = Uri.parse(ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW)
+                    .buildUpon()
+                    .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_ID, draftProductIdList.get(0).toString())
+                    .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_MODE, ApplinkConstInternalMechant.MODE_EDIT_DRAFT)
+                    .build()
+                    .toString();
+            Intent intent = RouteManager.getIntent(this, uri);
+            startActivity(intent);
+//            } else {
+//                startActivity(ProductDraftAddActivity.Companion.createInstance(this,
+//                draftProductIdList.get(0)));
+//            }
         } else {
-            CommonUtils.UniversalToast(this, getString(R.string.product_draft_instagram_save_success,
-                    draftProductIdList.size()));
+            Toast.makeText(this, MethodChecker.fromHtml(getString(R.string.product_draft_instagram_save_success, draftProductIdList.size())), Toast.LENGTH_LONG).show();
             ProductDraftListFragment productDraftListFragment = (ProductDraftListFragment) getSupportFragmentManager().findFragmentByTag(TAG);
             if (productDraftListFragment != null) {
                 productDraftListFragment.resetPageAndSearch();
@@ -264,10 +223,10 @@ public class ProductDraftListActivity extends BaseTemporaryDrawerActivity
     public void onErrorSaveBulkDraft(Throwable throwable) {
         hideProgressDialog();
         if (throwable instanceof ResolutionImageException) {
-            NetworkErrorHelper.showCloseSnackbar(getActivity(),
+            NetworkErrorHelper.showCloseSnackbar(this,
                     getString(R.string.product_instagram_draft_error_save_resolution));
         } else {
-            NetworkErrorHelper.showCloseSnackbar(getActivity(),
+            NetworkErrorHelper.showCloseSnackbar(this,
                     getString(R.string.product_instagram_draft_error_save_unknown));
         }
     }

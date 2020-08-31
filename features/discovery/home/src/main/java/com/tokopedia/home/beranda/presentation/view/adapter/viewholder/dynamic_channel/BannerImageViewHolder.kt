@@ -3,7 +3,6 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_
 import android.view.View
 import android.widget.ImageView
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
@@ -14,12 +13,10 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
  * Created by Lukas on 17/09/19
  */
 class BannerImageViewHolder(itemView: View,
-                            homeCategoryListener: HomeCategoryListener,
-                            countDownListener: CountDownView.CountDownListener
+                            homeCategoryListener: HomeCategoryListener
 ) : DynamicChannelViewHolder(
         itemView,
-        homeCategoryListener,
-        countDownListener
+        homeCategoryListener
 ) {
     companion object{
         val LAYOUT = R.layout.banner_image

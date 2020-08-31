@@ -2,6 +2,7 @@ package com.tokopedia.feedplus.data.pojo;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.TagsItem;
 
 import java.util.List;
 
@@ -21,6 +22,14 @@ public class ProductFeedType {
   @SerializedName("price_int")
   @Expose
   private Integer priceInt;
+
+  @SerializedName("price_original")
+  @Expose
+  private String priceOriginal;
+
+  @SerializedName("price_original_int")
+  @Expose
+  private Integer priceOriginalInt;
 
   @SerializedName("image")
   @Expose
@@ -61,6 +70,15 @@ public class ProductFeedType {
   @SerializedName("rating")
   @Expose
   private Float rating;
+
+  @SerializedName("countReview")
+  @Expose
+  private String countReview;
+
+  @SerializedName("tags")
+  @Expose
+  private List<TagsItem> tags;
+
 
   public void setId(Integer id) {
     this.id = id;
@@ -172,5 +190,37 @@ public class ProductFeedType {
 
   public Float getRating() {
     return this.rating;
+  }
+
+  public String getPriceOriginal() {
+    return priceOriginal;
+  }
+
+  public void setPriceOriginal(String priceOriginal) {
+    this.priceOriginal = priceOriginal;
+  }
+
+  public Integer getPriceOriginalInt() {
+    return priceOriginalInt;
+  }
+
+  public void setPriceOriginalInt(Integer priceOriginalInt) {
+    this.priceOriginalInt = priceOriginalInt;
+  }
+
+  public List<TagsItem> getTags() {
+    return tags;
+  }
+
+  public void setTags(List<TagsItem> tags) {
+    this.tags = tags;
+  }
+
+  public String getCountReview() {
+    return countReview;
+  }
+
+  public void setCountReview(String countReview) {
+    this.countReview = countReview;
   }
 }

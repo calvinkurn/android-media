@@ -6,20 +6,19 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.attachvoucher.R
-import com.tokopedia.attachvoucher.data.Voucher
+import com.tokopedia.attachvoucher.data.VoucherUiModel
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import kotlinx.android.synthetic.main.item_attach_voucher.view.*
 
-class AttachVoucherViewHolder(itemView: View?, val listener: Listener) : AbstractViewHolder<Voucher>(itemView) {
+class AttachVoucherViewHolder(itemView: View?, val listener: Listener) : AbstractViewHolder<VoucherUiModel>(itemView) {
 
     interface Listener {
-        fun checkCurrentItem(element: Voucher, position: Int)
+        fun checkCurrentItem(element: VoucherUiModel, position: Int)
         fun uncheckPreviousItem()
-        fun isChecked(element: Voucher): Boolean
+        fun isChecked(element: VoucherUiModel): Boolean
     }
 
-    override fun bind(voucher: Voucher?) {
-        if (voucher == null) return
+    override fun bind(voucher: VoucherUiModel) {
         bindState(voucher)
         bindVoucherTitle(voucher)
         bindVoucherStatus(voucher)
@@ -27,7 +26,7 @@ class AttachVoucherViewHolder(itemView: View?, val listener: Listener) : Abstrac
         bindClick(voucher)
     }
 
-    override fun bind(element: Voucher?, payloads: MutableList<Any>) {
+    override fun bind(element: VoucherUiModel?, payloads: MutableList<Any>) {
         if (payloads.isNotEmpty()) {
             val payload = payloads[0]
             if (payload == PAYLOAD_UNCHECK) stateUnchecked()
@@ -36,7 +35,7 @@ class AttachVoucherViewHolder(itemView: View?, val listener: Listener) : Abstrac
         }
     }
 
-    private fun bindState(voucher: Voucher) {
+    private fun bindState(voucher: VoucherUiModel) {
         if (listener.isChecked(voucher)) {
             stateChecked()
         } else {
@@ -44,29 +43,29 @@ class AttachVoucherViewHolder(itemView: View?, val listener: Listener) : Abstrac
         }
     }
 
-    private fun bindVoucherTitle(voucher: Voucher) {
+    private fun bindVoucherTitle(voucher: VoucherUiModel) {
         itemView.title?.text = voucher.voucherName
     }
 
-    private fun bindVoucherStatus(voucher: Voucher) {
+    private fun bindVoucherStatus(voucher: VoucherUiModel) {
         val validDate = DateFormatUtils.getFormattedDate(voucher.validThru, "dd MMM yyyy")
         val status = itemView.context?.getString(R.string.desc_attachvoucher_status, validDate)
 
         itemView.validStatus?.text = status
     }
 
-    private fun bindVoucherView(voucher: Voucher) {
+    private fun bindVoucherView(voucher: VoucherUiModel) {
         val voucherModel = MerchantVoucherViewModel(voucher)
         itemView.voucher?.setData(voucherModel, hasActionButton = false)
     }
 
-    private fun bindClick(voucher: Voucher) {
+    private fun bindClick(voucher: VoucherUiModel) {
         itemView.clContainer?.setOnClickListener {
             toggle(voucher)
         }
     }
 
-    private fun toggle(voucher: Voucher) {
+    private fun toggle(voucher: VoucherUiModel) {
         itemView.rbSelect?.apply {
             val checkState = !isChecked
             isChecked = checkState

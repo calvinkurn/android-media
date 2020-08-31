@@ -1,7 +1,6 @@
 package com.tokopedia.core.app;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Build;
@@ -17,48 +16,57 @@ import com.tokopedia.core.analytics.fingerprint.LocationUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.AppModule;
-import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.router.InboxRouter;
-import com.tokopedia.core.router.SellerAppRouter;
-import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.util.toolargetool.TooLargeTool;
 import com.tokopedia.core2.BuildConfig;
 import com.tokopedia.linker.LinkerConstants;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.LinkerUtils;
 import com.tokopedia.linker.model.UserData;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.weaver.WeaveInterface;
+import com.tokopedia.weaver.Weaver;
+
+import org.jetbrains.annotations.NotNull;
 
 import io.fabric.sdk.android.Fabric;
 
 public abstract class MainApplication extends MainRouterApplication{
 
     public static final int DATABASE_VERSION = 7;
-    private static final String TAG = "MainApplication";
     public static String PACKAGE_NAME;
     public static MainApplication instance;
-    private static Boolean isResetNotification = false;
-    private static Boolean isResetCart = false;
-    private static Boolean isResetTickerState = true;
     private LocationUtils locationUtils;
     private DaggerAppComponent.Builder daggerBuilder;
     private AppComponent appComponent;
     private UserSession userSession;
+    protected RemoteConfig remoteConfig;
+    private String MAINAPP_ADDGAIDTO_BRANCH = "android_addgaid_to_branch";
+    private static final String ENABLE_ASYNC_REMOTECONFIG_MAINAPP_INIT = "android_async_remoteconfig_mainapp_init";
+
 
     public static MainApplication getInstance() {
         return instance;
+    }
+
+    protected void initRemoteConfig() {
+        WeaveInterface remoteConfigWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                return remoteConfig = new FirebaseRemoteConfigImpl(MainApplication.this);
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(remoteConfigWeave, ENABLE_ASYNC_REMOTECONFIG_MAINAPP_INIT, MainApplication.this);
     }
 
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
         MultiDex.install(MainApplication.this);
-    }
-
-    public static Boolean resetCartStatus(Boolean status) {
-        isResetCart = status;
-        return isResetCart;
     }
 
     public static int getCurrentVersion(Context context) {
@@ -81,22 +89,41 @@ public abstract class MainApplication extends MainRouterApplication{
         super.onCreate();
         instance = this;
         userSession = new UserSession(this);
-        init();
         initCrashlytics();
         PACKAGE_NAME = getPackageName();
-        isResetTickerState = true;
 
         daggerBuilder = DaggerAppComponent.builder()
                 .appModule(new AppModule(this));
         getApplicationComponent().inject(this);
 
-        locationUtils = new LocationUtils(this);
-        locationUtils.initLocationBackground();
-        TooLargeTool.startLogging(this);
-
         initBranch();
         NotificationUtils.setNotificationChannel(this);
-        upgradeSecurityProvider();
+        if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
+            upgradeSecurityProvider();
+        }
+        createAndCallBgWork();
+    }
+
+    private void createAndCallBgWork(){
+        WeaveInterface executeBgWorkWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Boolean execute() {
+                return executeInBackground();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(executeBgWorkWeave,
+                RemoteConfigKey.ENABLE_SEQ3_ASYNC, context);
+    }
+
+    @NotNull
+    private Boolean executeInBackground(){
+        locationUtils = new LocationUtils(MainApplication.this);
+        locationUtils.initLocationBackground();
+        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
+            upgradeSecurityProvider();
+        }
+        return true;
     }
 
     private void upgradeSecurityProvider() {
@@ -114,12 +141,8 @@ public abstract class MainApplication extends MainRouterApplication{
     @Override
     public void onTerminate() {
         super.onTerminate();
-        locationUtils.deInitLocationBackground();
-    }
-
-    private void init() {
-        if (BuildConfig.DEBUG && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            registerActivityLifecycleCallbacks(new ActivityFrameMetrics.Builder().build());
+        if(locationUtils != null) {
+            locationUtils.deInitLocationBackground();
         }
     }
 
@@ -127,6 +150,8 @@ public abstract class MainApplication extends MainRouterApplication{
         if (!BuildConfig.DEBUG) {
             Fabric.with(this, new Crashlytics());
             Crashlytics.setUserIdentifier(userSession.getUserId());
+            Crashlytics.setUserEmail(userSession.getEmail());
+            Crashlytics.setUserName(userSession.getName());
         }
     }
 
@@ -145,9 +170,13 @@ public abstract class MainApplication extends MainRouterApplication{
         this.appComponent = appComponent;
     }
 
-    private void initBranch() {
-        LinkerManager.initLinkerManager(getApplicationContext()).setGAClientId(TrackingUtils.getClientID(getApplicationContext()));
-
+    //this method needs to be called from here in case of migration get it tested from CM team
+    @NotNull
+    private Boolean initBranch(){
+        LinkerManager.initLinkerManager(getApplicationContext());
+        if(remoteConfig.getBoolean(MAINAPP_ADDGAIDTO_BRANCH, false)){
+            LinkerManager.getInstance().setGAClientId(TrackingUtils.getClientID(getApplicationContext()));
+        }
         if(userSession.isLoggedIn()) {
             UserData userData = new UserData();
             userData.setUserId(userSession.getUserId());
@@ -155,16 +184,7 @@ public abstract class MainApplication extends MainRouterApplication{
             LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_IDENTITY,
                     userData));
         }
-    }
-
-    @Override
-    public Intent getSellerHomeActivityReal(Context context) {
-        return SellerAppRouter.getSellerHomeActivity(context);
-    }
-
-    @Override
-    public IAppNotificationReceiver getAppNotificationReceiver() {
-        return SellerAppRouter.getAppNotificationReceiver();
+        return true;
     }
 
     @Override
@@ -175,25 +195,5 @@ public abstract class MainApplication extends MainRouterApplication{
     @Override
     public Class<?> getInboxResCenterActivityClassReal() {
         return InboxRouter.getInboxResCenterActivityClass();
-    }
-
-    @Override
-    public Intent getActivitySellingTransactionShippingStatusReal(Context mContext) {
-        return SellerRouter.getActivitySellingTransactionShippingStatus(mContext);
-    }
-
-    @Override
-    public Class getSellingActivityClassReal() {
-        return SellerRouter.getSellingActivityClass();
-    }
-
-    @Override
-    public Intent getActivitySellingTransactionListReal(Context mContext) {
-        return SellerRouter.getActivitySellingTransactionList(mContext);
-    }
-
-    @Override
-    public Intent getInboxTalkCallingIntent(Context mContext){
-        return null;
     }
 }

@@ -5,9 +5,6 @@ import android.content.Context;
 import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
-import com.tokopedia.core.analytics.nishikino.model.Checkout;
-import com.tokopedia.core.analytics.nishikino.model.Purchase;
-import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.track.TrackApp;
 
 import org.json.JSONArray;
@@ -48,21 +45,4 @@ public class PaymentTracking extends TrackingUtils {
         TrackApp.getInstance().getAppsFlyer().sendTrackEvent(AFInAppEventType.PURCHASE, afValue);
         TrackApp.getInstance().getAppsFlyer().sendTrackEvent(Jordan.AF_KEY_CRITEO, afValue);
     }
-
-    public static void atcAF(Context context,Map<String, Object> values) {
-        TrackApp.getInstance().getAppsFlyer().sendTrackEvent(AFInAppEventType.ADD_TO_CART, values);
-    }
-
-    public static void checkoutEventAppsflyer(Context context,ProductCartPass param) {
-        Map<String, Object> values = new HashMap<>();
-        values.put(AFInAppEventParameterName.CONTENT_ID, param.getProductId());
-        values.put(AFInAppEventParameterName.CONTENT_TYPE, Jordan.AF_VALUE_PRODUCTTYPE);
-        values.put(AFInAppEventParameterName.DESCRIPTION, param.getProductName());
-        values.put(AFInAppEventParameterName.CURRENCY, Jordan.VALUE_IDR);
-        values.put(AFInAppEventParameterName.QUANTITY, param.getOrderQuantity());
-        values.put(AFInAppEventParameterName.PRICE, param.getPrice());
-        values.put(Jordan.AF_SHOP_ID,param.getShopId());
-        TrackApp.getInstance().getAppsFlyer().sendTrackEvent(AFInAppEventType.INITIATED_CHECKOUT, values);
-    }
-
 }

@@ -6,13 +6,12 @@ import com.tokopedia.abstraction.common.data.model.response.TkpdV4ResponseError;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
-import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.network.NetworkRouter;
-import com.tokopedia.shop.common.R;
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant;
+import com.tokopedia.shop.common.constant.GqlQueryConstant;
 import com.tokopedia.shop.common.constant.ShopCommonParamApiConstant;
 import com.tokopedia.shop.common.constant.ShopCommonUrl;
 import com.tokopedia.shop.common.data.interceptor.ShopAuthInterceptor;
@@ -38,6 +37,15 @@ import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 
+import static com.tokopedia.shop.common.constant.GQLQueryNamedConstant.DEFAULT_SHOP_INFO_QUERY_NAME;
+import static com.tokopedia.shop.common.constant.GQLQueryNamedConstant.SHOP_INFO_CORE_AND_ASSETS_QUERY_NAME;
+import static com.tokopedia.shop.common.constant.GQLQueryNamedConstant.SHOP_INFO_FAVORITE_QUERY_NAME;
+import static com.tokopedia.shop.common.constant.GQLQueryNamedConstant.SHOP_INFO_HEADER_CONTENT_DATA_QUERY_NAME;
+import static com.tokopedia.shop.common.constant.GQLQueryNamedConstant.SHOP_TOP_CONTENT_QUERY_NAME;
+import static com.tokopedia.shop.common.constant.GqlQueryConstant.GQL_GET_SHOP_OPERATIONAL_HOUR_STATUS_QUERY_STRING;
+import static com.tokopedia.shop.common.constant.GqlQueryConstant.QUERY_SHOP_SCORE_STRING;
+import static com.tokopedia.shop.common.constant.GqlQueryConstant.SHOP_REPUTATION_QUERY_STRING;
+
 @Module
 public class ShopCommonModule {
     @Provides
@@ -53,14 +61,60 @@ public class ShopCommonModule {
     @Provides
     @Named(GQLQueryNamedConstant.SHOP_INFO)
     public String provideGqlQueryShopInfo(@ApplicationContext Context context){
-        return GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_get_shop_info);
+        return GqlQueryConstant.INSTANCE.getShopInfoQuery(
+                GqlQueryConstant.SHOP_INFO_REQUEST_QUERY_STRING,
+                DEFAULT_SHOP_INFO_QUERY_NAME
+        );
+    }
+
+    @Provides
+    @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_HEADER)
+    public String provideGqlQueryShopInfoForHeader(@ApplicationContext Context context){
+        return GqlQueryConstant.INSTANCE.getShopInfoQuery(
+                GqlQueryConstant.SHOP_INFO_FOR_HEADER_REQUEST_QUERY_STRING,
+                SHOP_INFO_HEADER_CONTENT_DATA_QUERY_NAME
+        );
+    }
+
+    @Provides
+    @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_TOP_CONTENT)
+    public String provideGqlQueryShopInfoForTopContent(@ApplicationContext Context context){
+        return GqlQueryConstant.INSTANCE.getShopInfoQuery(
+                GqlQueryConstant.SHOP_INFO_FOR_TOP_CONTENT_REQUEST_QUERY_STRING,
+                SHOP_TOP_CONTENT_QUERY_NAME
+        );
+    }
+
+    @Provides
+    @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_CORE_AND_ASSETS)
+    public String provideGqlQueryShopInfoForCoreAndAssets(@ApplicationContext Context context){
+        return GqlQueryConstant.INSTANCE.getShopInfoQuery(
+                GqlQueryConstant.SHOP_INFO_FOR_CORE_AND_ASSETS_REQUEST_QUERY_STRING,
+                SHOP_INFO_CORE_AND_ASSETS_QUERY_NAME
+        );
+    }
+
+    @Provides
+    @Named(GQLQueryNamedConstant.FAVORITE_STATUS_GQL)
+    public String provideGqlQueryFavoriteStatus(@ApplicationContext Context context) {
+        return GqlQueryConstant.INSTANCE.getShopInfoQuery(
+                GqlQueryConstant.FAVORITE_STATUS_GQL_STRING,
+                SHOP_INFO_FAVORITE_QUERY_NAME
+        );
     }
 
     @Provides
     @Named(GQLQueryNamedConstant.SHOP_REPUTATION)
     public String provideGqlQueryShopReputation(@ApplicationContext Context context){
-        return GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_get_shop_badge);
+        return SHOP_REPUTATION_QUERY_STRING;
     }
+
+    @Provides
+    @Named(GQLQueryNamedConstant.GQL_GET_SHOP_OPERATIONAL_HOUR_STATUS)
+    public String provideGqlQueryShopOperationalHourStatus(@ApplicationContext Context context){
+        return GQL_GET_SHOP_OPERATIONAL_HOUR_STATUS_QUERY_STRING;
+    }
+
 
     @Provides
     public GetShopInfoByDomainUseCase provideGetShopInfoByDomainUseCase(ShopCommonRepository shopCommonRepository) {
@@ -138,13 +192,7 @@ public class ShopCommonModule {
     @Provides
     @Named(ShopCommonParamApiConstant.QUERY_SHOP_SCORE)
     public String provideQueryShopScore(@ApplicationContext Context context) {
-        return GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_query_shop_score);
-    }
-
-    @Provides
-    @Named(GQLQueryNamedConstant.FAVORITE_STATUS_GQL)
-    public String provideGqlQueryFavoriteStatus(@ApplicationContext Context context) {
-        return GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_get_favorite);
+        return QUERY_SHOP_SCORE_STRING;
     }
 
     @Provides
@@ -160,4 +208,29 @@ public class ShopCommonModule {
                                                                     String gqlQuery) {
         return new GQLGetShopInfoUseCase(gqlQuery, graphqlUseCase);
     }
+
+    @GqlGetShopInfoForHeaderUseCaseQualifier
+    @Provides
+    public GQLGetShopInfoUseCase provideGqlGetShopInfoForHeaderUseCase(MultiRequestGraphqlUseCase graphqlUseCase,
+                                                                    @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_HEADER)
+                                                                            String gqlQuery) {
+        return new GQLGetShopInfoUseCase(gqlQuery, graphqlUseCase);
+    }
+
+    @GqlGetShopInfoUseCaseTopContentQualifier
+    @Provides
+    public GQLGetShopInfoUseCase provideGqlGetShopInfoUseCaseTopContent(MultiRequestGraphqlUseCase graphqlUseCase,
+                                                                    @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_TOP_CONTENT)
+                                                                            String gqlQuery) {
+        return new GQLGetShopInfoUseCase(gqlQuery, graphqlUseCase);
+    }
+
+    @GqlGetShopInfoUseCaseCoreAndAssetsQualifier
+    @Provides
+    public GQLGetShopInfoUseCase provideGqlGetShopInfoUseCaseCoreAndAssets(MultiRequestGraphqlUseCase graphqlUseCase,
+                                                                    @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_CORE_AND_ASSETS)
+                                                                            String gqlQuery) {
+        return new GQLGetShopInfoUseCase(gqlQuery, graphqlUseCase);
+    }
+
 }

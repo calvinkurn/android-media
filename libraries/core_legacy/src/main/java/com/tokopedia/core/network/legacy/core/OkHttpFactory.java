@@ -3,12 +3,11 @@ package com.tokopedia.core.network.legacy.core;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.network.TkpdOkHttpBuilder;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.StandardizedInterceptor;
 import com.tokopedia.network.utils.OkHttpRetryPolicy;
 
-import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 
@@ -35,10 +34,6 @@ public class OkHttpFactory {
                 .build();
     }
 
-    private TkpdOkHttpBuilder getDefaultClientConfig() {
-        return getDefaultClientConfig(builder);
-    }
-
     private TkpdOkHttpBuilder getDefaultClientConfig(OkHttpClient.Builder builder) {
         return new TkpdOkHttpBuilder(builder).addInterceptor(getHttpLoggingInterceptor());
     }
@@ -47,14 +42,6 @@ public class OkHttpFactory {
         HttpLoggingInterceptor.Level loggingLevel = HttpLoggingInterceptor.Level.NONE;
         if (GlobalConfig.isAllowDebuggingTools()) {
             loggingLevel = HttpLoggingInterceptor.Level.BODY;
-        }
-        return new HttpLoggingInterceptor().setLevel(loggingLevel);
-    }
-
-    private Interceptor getHeaderHttpLoggingInterceptor() {
-        HttpLoggingInterceptor.Level loggingLevel = HttpLoggingInterceptor.Level.NONE;
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            loggingLevel = HttpLoggingInterceptor.Level.HEADERS;
         }
         return new HttpLoggingInterceptor().setLevel(loggingLevel);
     }

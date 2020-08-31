@@ -2,7 +2,10 @@ package com.tokopedia.imagepicker.picker.main.builder;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
 import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 
@@ -25,7 +28,75 @@ public class ImagePickerMultipleSelectionBuilder implements Parcelable {
     // for ex: (R.drawable.primary_example, R.drawable.product_in_use}
     private ArrayList<Integer> placeholderImagePathResList;
 
-    public static ImagePickerMultipleSelectionBuilder getDefaultBuilder(){
+    @Nullable
+    private PreviewExtension previewExtension;
+
+    public static class PreviewExtension implements Parcelable {
+        // usually when the user already select the image, it will show the preview at the bottom
+        // this option is to hide/show it
+        boolean hideThumbnailListPreview = false;
+
+        // show counter "1", "2" when selecting image
+        boolean showCounterAtSelectedImage = false;
+
+        // in gallery, if select true, will make the span smaller, resulting in bigger image
+        boolean showBiggerPreviewWhenThumbnailHidden = true;
+
+        // in set to true, will append the selected Images in gallery (all albums)
+        // example: previously user has select "data/image1.png".
+        // this image will be appended at the gallery in the first rows.
+        boolean appendInitialSelectedImageInGallery = false;
+
+        public static PreviewExtension createPreview() {
+            return new PreviewExtension(false, false, true, false);
+        }
+
+        public static PreviewExtension createNoPreview() {
+            return new PreviewExtension(true, true, true, true);
+        }
+
+        public PreviewExtension(boolean hideThumbnailListPreview, boolean showCounterAtSelectedImage,
+                                boolean showBiggerPreviewWhenThumbnailHidden, boolean appendInitialSelectedImageInGallery) {
+            this.hideThumbnailListPreview = hideThumbnailListPreview;
+            this.showCounterAtSelectedImage = showCounterAtSelectedImage;
+            this.showBiggerPreviewWhenThumbnailHidden = showBiggerPreviewWhenThumbnailHidden;
+            this.appendInitialSelectedImageInGallery = appendInitialSelectedImageInGallery;
+        }
+
+        protected PreviewExtension(Parcel in) {
+            hideThumbnailListPreview = in.readByte() != 0;
+            showCounterAtSelectedImage = in.readByte() != 0;
+            showBiggerPreviewWhenThumbnailHidden = in.readByte() != 0;
+            appendInitialSelectedImageInGallery = in.readByte() != 0;
+        }
+
+        public static final Creator<PreviewExtension> CREATOR = new Creator<PreviewExtension>() {
+            @Override
+            public PreviewExtension createFromParcel(Parcel in) {
+                return new PreviewExtension(in);
+            }
+
+            @Override
+            public PreviewExtension[] newArray(int size) {
+                return new PreviewExtension[size];
+            }
+        };
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeByte((byte) (hideThumbnailListPreview ? 1 : 0));
+            dest.writeByte((byte) (showCounterAtSelectedImage ? 1 : 0));
+            dest.writeByte((byte) (showBiggerPreviewWhenThumbnailHidden ? 1 : 0));
+            dest.writeByte((byte) (appendInitialSelectedImageInGallery ? 1 : 0));
+        }
+    }
+
+    public static ImagePickerMultipleSelectionBuilder getDefaultBuilder() {
         return new ImagePickerMultipleSelectionBuilder(
                 null,
                 null,
@@ -52,11 +123,22 @@ public class ImagePickerMultipleSelectionBuilder implements Parcelable {
         this.canReorder = canReorder;
     }
 
+    public ImagePickerMultipleSelectionBuilder(ArrayList<String> initialSelectedImagePathList,
+                                               @DrawableRes ArrayList<Integer> placeholderImagePathResList,
+                                               int primaryImageStringRes,
+                                               int maximumNoPick,
+                                               boolean canReorder,
+                                               PreviewExtension previewExtension) {
+        this(initialSelectedImagePathList, placeholderImagePathResList, primaryImageStringRes, maximumNoPick);
+        this.canReorder = canReorder;
+        this.previewExtension = previewExtension;
+    }
+
     public boolean isCanReorder() {
         return canReorder;
     }
 
-    private void setInitialSelectedImagePathList(ArrayList<String> initialSelectedImagePathList){
+    private void setInitialSelectedImagePathList(ArrayList<String> initialSelectedImagePathList) {
         if (initialSelectedImagePathList == null) {
             this.initialSelectedImagePathList = new ArrayList<>();
         } else {
@@ -84,27 +166,20 @@ public class ImagePickerMultipleSelectionBuilder implements Parcelable {
         this.maximumNoPick = maximumNoPick;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.primaryImageStringRes);
-        dest.writeInt(this.maximumNoPick);
-        dest.writeByte(this.canReorder ? (byte) 1 : (byte) 0);
-        dest.writeStringList(this.initialSelectedImagePathList);
-        dest.writeList(this.placeholderImagePathResList);
+    @NonNull
+    public PreviewExtension getPreviewExtension() {
+        if (previewExtension == null) {
+            previewExtension = PreviewExtension.createPreview();
+        }
+        return previewExtension;
     }
 
     protected ImagePickerMultipleSelectionBuilder(Parcel in) {
-        this.primaryImageStringRes = in.readInt();
-        this.maximumNoPick = in.readInt();
-        this.canReorder = in.readByte() != 0;
-        this.initialSelectedImagePathList = in.createStringArrayList();
-        this.placeholderImagePathResList = new ArrayList<Integer>();
-        in.readList(this.placeholderImagePathResList, Integer.class.getClassLoader());
+        primaryImageStringRes = in.readInt();
+        maximumNoPick = in.readInt();
+        canReorder = in.readByte() != 0;
+        initialSelectedImagePathList = in.createStringArrayList();
+        previewExtension = in.readParcelable(PreviewExtension.class.getClassLoader());
     }
 
     public static final Creator<ImagePickerMultipleSelectionBuilder> CREATOR = new Creator<ImagePickerMultipleSelectionBuilder>() {
@@ -118,4 +193,19 @@ public class ImagePickerMultipleSelectionBuilder implements Parcelable {
             return new ImagePickerMultipleSelectionBuilder[size];
         }
     };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(primaryImageStringRes);
+        dest.writeInt(maximumNoPick);
+        dest.writeByte((byte) (canReorder ? 1 : 0));
+        dest.writeStringList(initialSelectedImagePathList);
+        dest.writeParcelable(previewExtension, flags);
+    }
+
 }

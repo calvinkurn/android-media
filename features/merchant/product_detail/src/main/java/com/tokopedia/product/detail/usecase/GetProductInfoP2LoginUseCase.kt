@@ -10,20 +10,22 @@ import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.common.data.model.product.TopAdsGetProductManage
 import com.tokopedia.product.detail.common.data.model.product.TopAdsGetProductManageResponse
 import com.tokopedia.product.detail.data.model.ProductInfoP2Login
-import com.tokopedia.product.detail.data.model.checkouttype.GetCheckoutTypeResponse
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
+import com.tokopedia.product.detail.view.util.doActionIfNotNull
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import timber.log.Timber
 import javax.inject.Inject
 
 class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: Map<String, String>,
-                                                       private val graphqlRepository: GraphqlRepository) : UseCase<ProductInfoP2Login>() {
+                                                       private val graphqlRepository: GraphqlRepository
+) : UseCase<ProductInfoP2Login>() {
 
     companion object {
-        fun createParams(shopId: Int, productId: Int): RequestParams = RequestParams.create().apply {
+        fun createParams(shopId: Int, productId: Int, isShopOwner: Boolean): RequestParams = RequestParams.create().apply {
             putInt(ProductDetailCommonConstant.PARAM_SHOP_IDS, shopId)
             putInt(ProductDetailCommonConstant.PARAM_PRODUCT_ID, productId)
+            putBoolean(ProductDetailCommonConstant.PARAM_IS_SHOP_OWNER, isShopOwner)
         }
     }
 
@@ -33,13 +35,11 @@ class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: M
         val p2Login = ProductInfoP2Login()
         val productId = requestParams.getInt(ProductDetailCommonConstant.PARAM_PRODUCT_ID, 0)
         val shopId = requestParams.getInt(ProductDetailCommonConstant.PARAM_SHOP_IDS, 0)
+        val isShopOwner = requestParams.getBoolean(ProductDetailCommonConstant.PARAM_IS_SHOP_OWNER, false)
 
         val isWishlistedParams = mapOf(ProductDetailCommonConstant.PARAM_PRODUCT_ID to productId.toString())
         val isWishlistedRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_WISHLIST_STATUS],
                 ProductInfo.WishlistStatus::class.java, isWishlistedParams)
-
-        val getCheckoutTypeRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_CHECKOUTTYPE],
-                GetCheckoutTypeResponse::class.java)
 
         val affilateParams = mapOf(ProductDetailCommonConstant.PRODUCT_ID_PARAM to listOf(productId),
                 ProductDetailCommonConstant.SHOP_ID_PARAM to shopId,
@@ -53,8 +53,9 @@ class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: M
 
 
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
+        val requests = mutableListOf(isWishlistedRequest, affiliateRequest)
 
-        val requests = mutableListOf(isWishlistedRequest, getCheckoutTypeRequest, affiliateRequest, topAdsManageRequest)
+        if (isShopOwner) requests.add(topAdsManageRequest)
 
         try {
             val gqlResponse = graphqlRepository.getReseponse(requests, cacheStrategy)
@@ -71,17 +72,12 @@ class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: M
                         .topAdsPDPAffiliate.data.affiliate.firstOrNull()
             }
 
-            if (gqlResponse.getError(GetCheckoutTypeResponse::class.java)?.isNotEmpty() != true) {
-                p2Login.cartType = gqlResponse
-                        .getData<GetCheckoutTypeResponse>(GetCheckoutTypeResponse::class.java)
-                        .getCartType.data.cartType
-            }
-
             if (gqlResponse.getError(TopAdsGetProductManageResponse::class.java)?.isNotEmpty() != true) {
-                p2Login.topAdsGetProductManage = gqlResponse.getData<TopAdsGetProductManageResponse>(TopAdsGetProductManageResponse::class.java).topAdsGetProductManage
-                        ?: TopAdsGetProductManage()
+                gqlResponse.doActionIfNotNull<TopAdsGetProductManageResponse> {
+                    p2Login.topAdsGetProductManage = gqlResponse.getData<TopAdsGetProductManageResponse>(TopAdsGetProductManageResponse::class.java).topAdsGetProductManage
+                            ?: TopAdsGetProductManage()
+                }
             }
-
         } catch (t: Throwable) {
             Timber.d(t)
         }

@@ -1,0 +1,18 @@
+query {
+  getSurveyData(id:1){
+    result{
+      questions{
+        ID
+        type
+        question
+        choices{
+          ID
+          choice
+        }
+      }
+    }
+    error{
+      message
+    }
+  }
+}

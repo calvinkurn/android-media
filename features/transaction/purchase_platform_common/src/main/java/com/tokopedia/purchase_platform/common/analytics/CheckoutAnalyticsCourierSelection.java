@@ -3,8 +3,9 @@ package com.tokopedia.purchase_platform.common.analytics;
 import android.os.Bundle;
 import android.text.TextUtils;
 
-import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,6 +16,7 @@ import static com.tokopedia.purchase_platform.common.analytics.ConstantTransacti
 import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventCategory;
 import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventLabel;
 import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventName;
+import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.ExtraKey;
 
 
 /**
@@ -304,6 +306,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
     }
 
     public void sendEnhancedECommerceCheckout(Map<String, Object> cartMap,
+                                              String irisSessionId,
                                               String transactionId,
                                               boolean isTradeIn,
                                               String eventAction,
@@ -332,17 +335,6 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                 ConstantTransactionAnalytics.Key.CURRENT_SITE, null
         );
         sendEnhancedEcommerce(dataLayer);
-    }
-
-    // GTM v5 EE Step 2 - 4
-    public void sendEnhancedECommerceCheckoutV5(Bundle eCommerceBundle,
-                                                int step,
-                                                String checkoutOption,
-                                                String transactionId,
-                                                boolean isTradeIn,
-                                                String eventAction,
-                                                String eventLabel) {
-
     }
 
     public void eventClickCourierSelectionClickPilihAlamatLain() {
@@ -974,6 +966,15 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         );
     }
 
+    public void eventViewPromoAfterAdjustItem(String msg) {
+        sendEventCategoryActionLabel(
+                EventName.VIEW_COURIER_IRIS,
+                EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_PROMO_MESSAGE,
+                msg
+        );
+    }
+
     public void eventViewPromoLogisticTickerDisable(String promoCode){
         sendEventCategoryActionLabel(
                 EventName.VIEW_COURIER_IRIS,
@@ -998,4 +999,60 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                 check ? "check" : "uncheck"
         );
     }
+
+    public void eventViewAutoCheckDonation(String userId) {
+        Map<String, Object> gtmMap = TrackAppUtils.gtmData(
+                EventName.VIEW_COURIER_IRIS,
+                EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_AUTO_CHECK_ON_DONATION,
+                ""
+        );
+        gtmMap.put(ExtraKey.USER_ID, userId);
+        sendGeneralEvent(gtmMap);
+    }
+
+    public void eventViewCampaignDialog(int productId, String userId) {
+        Map<String, Object> gtmMap = TrackAppUtils.gtmData(
+                EventName.VIEW_COURIER_IRIS,
+                EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_POP_UP_MESSAGE_TIMER,
+                String.valueOf(productId)
+        );
+        gtmMap.put(ExtraKey.USER_ID, userId);
+        sendGeneralEvent(gtmMap);
+    }
+
+    public void eventClickBelanjaLagiOnDialog(int productId, String userId) {
+        Map<String, Object> gtmMap = TrackAppUtils.gtmData(
+                EventName.VIEW_COURIER_IRIS,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_BELANJA_LAGI_ON_POP_UP,
+                String.valueOf(productId)
+        );
+        gtmMap.put(ExtraKey.USER_ID, userId);
+        sendGeneralEvent(gtmMap);
+    }
+
+    public void eventViewSummaryTransactionTickerCourierNotComplete(String userId) {
+        Map<String, Object> gtmMap = TrackAppUtils.gtmData(
+                EventName.VIEW_COURIER_IRIS,
+                EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_SUMMARY_TRANSACTION_TICKER_COURIER_NOT_COMPLETE,
+                ""
+        );
+        gtmMap.put(ExtraKey.USER_ID, userId);
+        sendGeneralEvent(gtmMap);
+    }
+
+    public void clickCekOnSummaryTransactionTickerCourierNotComplete(String userId) {
+        Map<String, Object> gtmMap = TrackAppUtils.gtmData(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_CEK_ON_SUMMARY_TRANSACTION_TICKER_COURIER_NOT_COMPLETE,
+                ""
+        );
+        gtmMap.put(ExtraKey.USER_ID, userId);
+        sendGeneralEvent(gtmMap);
+    }
+
 }

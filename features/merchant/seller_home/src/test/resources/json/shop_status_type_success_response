@@ -1,0 +1,15 @@
+{
+  "data": {
+    "goldGetPMOSStatus": {
+      "data": {
+        "power_merchant": {
+          "status": "active"
+        },
+        "official_store": {
+          "status": "active",
+          "error": ""
+        }
+      }
+    }
+  }
+}

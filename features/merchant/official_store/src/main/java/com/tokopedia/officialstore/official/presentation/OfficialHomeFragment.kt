@@ -1,11 +1,16 @@
 package com.tokopedia.officialstore.official.presentation
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -17,10 +22,18 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
+import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
+import com.tokopedia.discovery.common.manager.showProductCardOptions
+import com.tokopedia.discovery.common.model.ProductCardOptionsModel
+import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitoringListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.officialstore.FirebasePerformanceMonitoringConstant
 import com.tokopedia.officialstore.OfficialStoreInstance
@@ -32,19 +45,25 @@ import com.tokopedia.officialstore.common.listener.RecyclerViewScrollListener
 import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper
 import com.tokopedia.officialstore.official.data.model.Shop
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
+import com.tokopedia.officialstore.official.data.model.dynamic_channel.Cta
+import com.tokopedia.officialstore.official.data.model.dynamic_channel.Grid
 import com.tokopedia.officialstore.official.di.DaggerOfficialStoreHomeComponent
 import com.tokopedia.officialstore.official.di.OfficialStoreHomeComponent
 import com.tokopedia.officialstore.official.di.OfficialStoreHomeModule
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapter
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapterTypeFactory
-import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.OfficialFeaturedShopViewModel
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.ProductRecommendationTitleViewModel
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.ProductRecommendationViewModel
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelEventHandler
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelViewModel
+import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
+import com.tokopedia.officialstore.official.presentation.listener.OfficialStoreHomeComponentCallback
+import com.tokopedia.officialstore.official.presentation.listener.OfficialStoreLegoBannerComponentCallback
 import com.tokopedia.officialstore.official.presentation.viewmodel.OfficialStoreHomeViewModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -55,8 +74,7 @@ class OfficialHomeFragment :
         HasComponent<OfficialStoreHomeComponent>,
         RecommendationListener,
         FeaturedShopListener,
-        DynamicChannelEventHandler
-{
+        DynamicChannelEventHandler {
 
     companion object {
         const val PRODUCT_RECOMM_GRID_SPAN_COUNT = 2
@@ -67,10 +85,13 @@ class OfficialHomeFragment :
         private const val PDP_EXTRA_PRODUCT_ID = "product_id"
         private const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
         private const val SLUG_CONST = "{slug}"
+        private const val PERFORMANCE_OS_PAGE_NAME = "OS"
+
         @JvmStatic
         fun newInstance(bundle: Bundle?) = OfficialHomeFragment().apply { arguments = bundle }
     }
 
+    private var officialStorePerformanceMonitoringListener: OfficialStorePerformanceMonitoringListener? = null
     private val sentDynamicChannelTrackers = mutableSetOf<String>()
 
     @Inject
@@ -86,6 +107,7 @@ class OfficialHomeFragment :
     private var counterTitleShouldBeRendered = 0
     private var isLoadedOnce: Boolean = false
     private var isScrolling = false
+    private var remoteConfig: RemoteConfig? = null
 
     private lateinit var bannerPerformanceMonitoring: PerformanceMonitoring
     private lateinit var shopPerformanceMonitoring: PerformanceMonitoring
@@ -98,9 +120,12 @@ class OfficialHomeFragment :
                 if (swipeRefreshLayout?.isRefreshing == false) {
                     val CATEGORY_CONST: String = category?.slug.orEmpty()
                     val recomConstant = (FirebasePerformanceMonitoringConstant.PRODUCT_RECOM).replace(SLUG_CONST, CATEGORY_CONST)
+                    val categories = category?.categories.toString()
+                    val categoriesWithoutOpeningSquare = categories.replace("[", "") // Remove Square bracket from the string
+                    val categoriesWithoutClosingSquare = categoriesWithoutOpeningSquare.replace("]", "") // Remove Square bracket from the string
                     counterTitleShouldBeRendered += 1
                     productRecommendationPerformanceMonitoring = PerformanceMonitoring.start(recomConstant)
-                    viewModel.loadMore(category, page)
+                    viewModel.loadMoreProducts(categoriesWithoutClosingSquare, page)
 
                     if (adapter?.getVisitables()?.lastOrNull() is ProductRecommendationViewModel) {
                         adapter?.showLoading()
@@ -116,6 +141,8 @@ class OfficialHomeFragment :
             category = it.getParcelable(BUNDLE_CATEGORY)
         }
         context?.let { tracking = OfficialStoreTracking(it) }
+        officialStorePerformanceMonitoringListener = context?.let { castContextToOfficialStorePerformanceMonitoring(it) }
+        remoteConfig = FirebaseRemoteConfigImpl(activity)
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
@@ -132,11 +159,25 @@ class OfficialHomeFragment :
         layoutManager = StaggeredGridLayoutManager(PRODUCT_RECOMM_GRID_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
         recyclerView?.layoutManager = layoutManager
 
-        val adapterTypeFactory = OfficialHomeAdapterTypeFactory(this, this, this)
+        val adapterTypeFactory = OfficialHomeAdapterTypeFactory(
+                this,
+                this,
+                this,
+                OfficialStoreHomeComponentCallback(),
+                OfficialStoreLegoBannerComponentCallback(this))
         adapter = OfficialHomeAdapter(adapterTypeFactory)
         recyclerView?.adapter = adapter
 
         return view
+    }
+
+    private fun setPerformanceListenerForRecyclerView() {
+        recyclerView?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                officialStorePerformanceMonitoringListener?.stopOfficialStorePerformanceMonitoring()
+                recyclerView?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+            }
+        })
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -149,6 +190,7 @@ class OfficialHomeFragment :
         resetData()
         loadData()
         setListener()
+        getOfficialStorePageLoadTimeCallback()?.stopPreparePagePerformanceMonitoring()
     }
 
     override fun onPause() {
@@ -159,7 +201,7 @@ class OfficialHomeFragment :
     private fun resetData() {
         adapter?.clearAllElements()
         adapter?.resetState(this)
-        endlessScrollListener?.resetState()
+        endlessScrollListener.resetState()
     }
 
     private fun loadData(isRefresh: Boolean = false) {
@@ -169,6 +211,8 @@ class OfficialHomeFragment :
             if (!isLoadedOnce || isRefresh) {
                 viewModel.loadFirstData(category)
                 isLoadedOnce = true
+
+                getOfficialStorePageLoadTimeCallback()?.startNetworkRequestPerformanceMonitoring()
 
                 if (!isRefresh) {
                     tracking?.sendScreen(category?.title.toEmptyStringIfNull())
@@ -237,7 +281,8 @@ class OfficialHomeFragment :
                     swipeRefreshLayout?.isRefreshing = false
                     OfficialHomeMapper.mappingDynamicChannel(
                             result.data,
-                            adapter
+                            adapter,
+                            remoteConfig
                     )
                 }
                 is Fail -> {
@@ -250,7 +295,7 @@ class OfficialHomeFragment :
     }
 
     private fun observeProductRecommendation() {
-        viewModel.officialStoreProductRecommendationResult.observe(this, Observer {
+        viewModel.productRecommendation.observe(this, Observer {
             when (it) {
                 is Success -> {
                     PRODUCT_RECOMMENDATION_TITLE_SECTION = it.data.title
@@ -274,7 +319,8 @@ class OfficialHomeFragment :
     private fun observeTopAdsWishlist() {
         viewModel.topAdsWishlistResult.observe(this, Observer {
             when (it) {
-                is Success -> { }
+                is Success -> {
+                }
                 is Fail -> {
                     showErrorNetwork(it.throwable)
                 }
@@ -299,6 +345,7 @@ class OfficialHomeFragment :
                         || it is ProductRecommendationViewModel
                         || it is ProductRecommendationTitleViewModel
                         || it is LoadingMoreModel
+                        || it is DynamicLegoBannerDataModel
             }
             counterTitleShouldBeRendered = 0
             adapter?.notifyDataSetChanged()
@@ -357,7 +404,7 @@ class OfficialHomeFragment :
         viewModel.officialStoreBenefitsResult.removeObservers(this)
         viewModel.officialStoreFeaturedShopResult.removeObservers(this)
         viewModel.officialStoreDynamicChannelResult.removeObservers(this)
-        viewModel.officialStoreProductRecommendationResult.removeObservers(this)
+        viewModel.productRecommendation.removeObservers(this)
         viewModel.flush()
         super.onDestroy()
     }
@@ -373,6 +420,75 @@ class OfficialHomeFragment :
             }
             lastClickLayoutType = null
             lastParentPosition = null
+        }
+
+        handleProductCardOptionsActivityResult(
+                requestCode, resultCode, data, object : ProductCardOptionsWishlistCallback {
+            override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
+                handleWishlistAction(productCardOptionsModel)
+            }
+        }
+        )
+    }
+
+    private fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel) {
+        val wishlistResult = productCardOptionsModel.wishlistResult
+
+        if (wishlistResult.isUserLoggedIn)
+            handleWishlistActionForLoggedInUser(productCardOptionsModel)
+        else
+            RouteManager.route(context, ApplinkConst.LOGIN)
+
+        tracking?.eventClickWishlist(
+                category?.title.toEmptyStringIfNull(),
+                !productCardOptionsModel.isWishlisted,
+                viewModel.isLoggedIn(),
+                productCardOptionsModel.productId.toIntOrZero(),
+                productCardOptionsModel.isTopAds
+        )
+    }
+
+    private fun handleWishlistActionForLoggedInUser(productCardOptionsModel: ProductCardOptionsModel) {
+        if (productCardOptionsModel.wishlistResult.isSuccess)
+            handleWishlistActionSuccess(productCardOptionsModel)
+        else
+            showErrorWishlist()
+    }
+
+    private fun handleWishlistActionSuccess(productCardOptionsModel: ProductCardOptionsModel) {
+        if (productCardOptionsModel.wishlistResult.isAddWishlist)
+            showSuccessAddWishlist()
+        else
+            showSuccessRemoveWishlist()
+
+        updateWishlist(productCardOptionsModel.wishlistResult.isAddWishlist, productCardOptionsModel.productPosition)
+    }
+
+    private fun showSuccessAddWishlist() {
+        activity?.let { activity ->
+            val view = activity.findViewById<View>(android.R.id.content) ?: return
+            val message = getString(R.string.msg_success_add_wishlist)
+
+            Snackbar.make(view, message, Snackbar.LENGTH_LONG)
+                    .setAction("Lihat Wishlist") { RouteManager.route(activity, ApplinkConst.WISHLIST) }
+                    .show()
+
+        }
+    }
+
+    private fun showSuccessRemoveWishlist() {
+        activity?.let {
+            val view = it.findViewById<View>(android.R.id.content) ?: return
+            val message = getString(R.string.msg_success_remove_wishlist)
+
+            Snackbar.make(view, message, Snackbar.LENGTH_LONG).show()
+        }
+    }
+
+    private fun showErrorWishlist() {
+        activity?.let {
+            val view = it.findViewById<View>(android.R.id.content) ?: return
+            Toaster.showError(view, ErrorHandler.getErrorMessage(it, null), Snackbar.LENGTH_LONG)
         }
     }
 
@@ -408,8 +524,17 @@ class OfficialHomeFragment :
         if (position > -1 && adapter != null) {
             (adapter?.list?.getOrNull(position) as?
                     ProductRecommendationViewModel)?.productItem?.isWishlist = isWishlist
-            adapter?.notifyItemChanged(position)
+            adapter?.notifyItemChanged(position, isWishlist)
         }
+    }
+
+    private fun copyCoupon(view: View, cta: Cta) {
+        val clipboard = view.context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clipData = ClipData.newPlainText(getString(R.string.os_coupon_code_label), cta.couponCode)
+        clipboard.setPrimaryClip(clipData)
+        Toaster.make(view.parent as ViewGroup,
+                getString(R.string.os_toaster_coupon_copied),
+                Snackbar.LENGTH_LONG)
     }
 
     override fun onProductImpression(item: RecommendationItem) {
@@ -442,6 +567,20 @@ class OfficialHomeFragment :
         )
     }
 
+    override fun onThreeDotsClick(item: RecommendationItem, vararg position: Int) {
+        showProductCardOptions(
+                this,
+                ProductCardOptionsModel(
+                        hasWishlist = true,
+                        productId = item.productId.toString(),
+                        isWishlisted = item.isWishlist,
+                        isTopAds = item.isTopAds,
+                        topAdsWishlistUrl = item.wishlistUrl,
+                        productPosition = position.getOrElse(0) { 0 }
+                )
+        )
+    }
+
     override fun onCountDownFinished() {
         recyclerView?.post {
             adapter?.getVisitables()?.removeAll {
@@ -452,7 +591,35 @@ class OfficialHomeFragment :
         loadData(true)
     }
 
-    override fun onClickLegoHeaderActionText(applink: String): View.OnClickListener {
+    override fun onClickLegoHeaderActionText(applink: String) {
+        RouteManager.route(context, applink)
+    }
+
+    override fun onClickLegoImage(channelModel: ChannelModel, position: Int) {
+        val gridData = channelModel.channelGrids[position]
+        val applink = gridData.applink ?: ""
+
+        gridData.let {
+            tracking?.dynamicChannelHomeComponentClick(
+                    viewModel.currentSlug,
+                    channelModel.channelHeader.name ?: "",
+                    (position + 1).toString(10),
+                    it,
+                    channelModel
+            )
+        }
+
+        RouteManager.route(context, applink)
+    }
+
+    override fun legoImpression(channelModel: ChannelModel) {
+        if (!sentDynamicChannelTrackers.contains(channelModel.id)) {
+            tracking?.dynamicChannelHomeComponentImpression(viewModel.currentSlug, channelModel)
+            sentDynamicChannelTrackers.add(channelModel.id)
+        }
+    }
+
+    override fun onClickLegoHeaderActionTextListener(applink: String): View.OnClickListener {
         return View.OnClickListener {
             RouteManager.route(context, applink)
         }
@@ -468,7 +635,8 @@ class OfficialHomeFragment :
                         viewModel.currentSlug,
                         channelData.header?.name ?: "",
                         (position + 1).toString(10),
-                        it
+                        it,
+                        channelData
                 )
             }
 
@@ -483,9 +651,9 @@ class OfficialHomeFragment :
         }
     }
 
-    override fun onClickFlashSaleActionText(applink: String): View.OnClickListener {
+    override fun onClickFlashSaleActionText(applink: String, headerId: Long): View.OnClickListener {
         return View.OnClickListener {
-            tracking?.flashSaleActionTextClick(viewModel.currentSlug)
+            tracking?.flashSaleActionTextClick(viewModel.currentSlug, headerId)
             RouteManager.route(context, applink)
         }
     }
@@ -495,6 +663,7 @@ class OfficialHomeFragment :
             val gridData = channelData.grids?.get(position)
             val applink = gridData?.applink ?: ""
             val campaignId = channelData.campaignID
+            val campaignCode = channelData.campaignCode
 
             gridData?.let {
                 tracking?.flashSalePDPClick(
@@ -502,7 +671,8 @@ class OfficialHomeFragment :
                         channelData.header?.name ?: "",
                         (position + 1).toString(10),
                         it,
-                        campaignId
+                        campaignId,
+                        campaignCode
                 )
             }
 
@@ -534,7 +704,8 @@ class OfficialHomeFragment :
                         viewModel.currentSlug,
                         channelData.header?.name ?: "",
                         (position + 1).toString(10),
-                        it
+                        it,
+                        channelData.campaignCode
                 )
             }
 
@@ -551,7 +722,8 @@ class OfficialHomeFragment :
                 tracking?.dynamicChannelMixBannerClick(
                         viewModel.currentSlug,
                         channelData.header?.name ?: "",
-                        it
+                        it,
+                        channelData
                 )
             }
 
@@ -577,7 +749,73 @@ class OfficialHomeFragment :
         }
     }
 
+    override fun onFlashSaleCardImpressed(position: Int, grid: Grid, channel: Channel) {
+        tracking?.flashSaleCardImpression(
+                viewModel.currentSlug,
+                channel,
+                grid,
+                position.toString(),
+                viewModel.isLoggedIn()
+        )
+    }
+
+    override fun onMixFlashSaleSeeAllClicked(channel: Channel, applink: String) {
+        tracking?.seeAllMixFlashSaleClicked(
+                viewModel.currentSlug,
+                channel
+        )
+        if (!TextUtils.isEmpty(applink)) {
+            RouteManager.route(context, applink)
+        }
+    }
+
+    override fun onFlashSaleCardClicked(position: Int, channel: Channel, grid: Grid, applink: String) {
+        tracking?.flashSaleCardClicked(
+                viewModel.currentSlug,
+                channel,
+                grid,
+                position.toString(),
+                viewModel.isLoggedIn()
+        )
+        RouteManager.route(context, applink)
+    }
+
+    override fun onClickMixTopBannerItem(applink: String) {
+        RouteManager.route(context, applink)
+    }
+
+    override fun onClickMixTopBannerCtaButton(cta: Cta, channelId: String, applink: String) {
+        tracking?.mixTopBannerCtaButtonClicked(
+                viewModel.currentSlug,
+                cta.text,
+                channelId
+        )
+        if (cta.couponCode.isEmpty()) {
+            RouteManager.route(context, applink)
+        } else {
+            view?.let {
+                copyCoupon(it, cta)
+            }
+        }
+    }
+
+    override fun onClickMixLeftBannerImage(channel: Channel, position: Int) {
+        if (RouteManager.route(context, channel.banner?.applink.orEmpty())) {
+            tracking?.eventClickMixLeftImageBanner(channel, category?.title.orEmpty(), position)
+        }
+    }
+
+    override fun onMixLeftBannerImpressed(channel: Channel, position: Int) {
+        tracking?.eventImpressionMixLeftImageBanner(channel, category?.title.orEmpty(), position)
+    }
+
     private fun removeLoading() {
+        val osPltCallback = getOfficialStorePageLoadTimeCallback()
+        if (osPltCallback != null) {
+            osPltCallback.stopNetworkRequestPerformanceMonitoring()
+            osPltCallback.startRenderPerformanceMonitoring()
+        }
+        setPerformanceListenerForRecyclerView()
         recyclerView?.post {
             adapter?.getVisitables()?.removeAll {
                 it is LoadingModel
@@ -608,7 +846,8 @@ class OfficialHomeFragment :
                 shopData.additionalInformation.orEmpty(),
                 shopData.featuredBrandId.orEmpty(),
                 viewModel.isLoggedIn(),
-                shopData.shopId.orEmpty()
+                shopData.shopId.orEmpty(),
+                shopData.campaignCode.orEmpty()
         )
         RouteManager.route(context, shopData.url)
     }
@@ -624,5 +863,15 @@ class OfficialHomeFragment :
 
         val dynamicChannelConstant = (FirebasePerformanceMonitoringConstant.DYNAMIC_CHANNEL).replace(SLUG_CONST, CATEGORY_CONST)
         dynamicChannelPerformanceMonitoring = PerformanceMonitoring.start(dynamicChannelConstant)
+    }
+
+    private fun castContextToOfficialStorePerformanceMonitoring(context: Context): OfficialStorePerformanceMonitoringListener? {
+        return if (context is OfficialStorePerformanceMonitoringListener) {
+            context
+        } else null
+    }
+
+    private fun getOfficialStorePageLoadTimeCallback(): PageLoadTimePerformanceInterface? {
+        return officialStorePerformanceMonitoringListener?.officialStorePageLoadTimePerformanceInterface
     }
 }

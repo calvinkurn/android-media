@@ -4,31 +4,44 @@
     <string name="sellerapp_scheme" translatable="false">sellerapp</string>
     <string name="internal_scheme" translatable="false">tokopedia-android-internal</string>
 
+    <!--Base DF-->
+    <string name="onboarding_sellerapp_name">OnBoarding</string>
+
     <!--Product Page-->
     <string name="host_product" translatable="false">product</string>
     <string name="path_add" translatable="false">/add</string>
+
+    <!--Developer Options-->
+    <string name="host_setting" translatable="false">setting</string>
+    <string name="path_dev_opt" translatable="false">/dev-opts</string>
 
     <!--Shop Settings-->
     <string name="shop_settings_title">Pengaturan Toko</string>
 
     <!--Merchant Seller-->
     <string name="merchant_seller">Penjualan</string>
+    <string name="favorite_shop">Toko Favorit</string>
 
     <!--Digital Topup-->
     <string name="instant_loan_title">Dana Instan</string>
+    <string name="digital_topup_title">Digital Topup</string>
+    <string name="title_digital_deals" >Deals</string>
+
+    <!-- Discovery Search -->
     <string name="title_image_search" >Pencarian Gambar</string>
-    <string name="title_similar_search" >Pencarian Serupa</string>
+    <string name="title_similar_search" >Produk Serupa</string>
     <string name="title_autocomplete" >Pencarian</string>
     <string name="title_search_result" >Pencarian</string>
-    <string name="title_digital_deals" >Deals</string>
 
     <string name="title_applink_pm_subscribe">Power Merchant</string>
     <string name="title_applink_product_manage">Atur Produk</string>
 
     <string name="notif_settings_title">Pengaturan Notifikasi</string>
     <string name="payment_settings_title">Pengaturan Pembayaran</string>
-
-    <string name="opportunity_title">Peluang</string>
+    <string name="payment_instant_debit_bca_title">Instant Debit BCA</string>
+    <string name="title_wishlist">Wishlist</string>
+    <string name="recom_home_recommendation">Pilihan Tokopedia</string>
+    <string name="title_recent_view">Terakhir Dilihat</string>
 
     <string name="title_module_attachinvoice">Lampirkan Invoice</string>
     <string name="title_module_attachvoucher">Lampirkan Voucher</string>
@@ -38,4 +51,46 @@
 
     <string name="user_identification_common_title">Verifikasi Data Diri</string>
     <string name="talk_title">Diskusi Produk</string>
+
+    <string name="title_topchat">Chat</string>
+
+
+    <string name="fingerprint_onboarding">Daftar Fingerprint</string>
+    <string name="title_otp">Verifikasi</string>
+
+    <!--Transaction-->
+    <string name="title_one_click_checkout">Beli Langsung</string>
+    <string name="checkout_module_title_activity_checkout">Pengiriman</string>
+    <string name="checkout_module_title_activity_shipping_address">Alamat Pengiriman</string>
+    <string name="promo_checkout_marketplace_module_title_activity_promo_list">Pakai Promo</string>
+
+    <!--Official Store -->
+    <string name="title_brandlist">Brand List</string>
+
+    <!-- Voucher Creation -->
+    <string name="title_voucher_creation">Voucher Creation</string>
+
+    <!-- Shop Score -->
+    <string name="title_shop_score_sellerapp">Performa Toko Penjual</string>
+    
+    <!--Product Add Edit-->
+    <string name="title_product_add_edit">Product Add Edit</string>
+
+    <!-- Seller Search -->
+    <string name="title_global_search_seller">Seller Search</string>
+
+    <!-- ATC Variant -->
+    <string name="title_normal_checkout">Detail Produk</string>
+
+
+    <!-- Seller Onboarding -->
+    <string name="title_seller_onboarding">Seller Onboarding</string>
+
+
+    <!-- Shop Page -->
+    <string name="title_shop_page">Shop Page</string>
+
+    <!-- Statistic -->
+    <string name="title_statistic">Statistic</string>
+
 </resources>

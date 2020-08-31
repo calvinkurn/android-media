@@ -1,0 +1,8 @@
+mutation updatePin($pin: String!, $pinConfirm: String!, $pinOld: String!){
+    update_pin(input:{pin: $pin, pin_confirm: $pinConfirm, pin_old: $pinOld}) {
+        success
+        errors {
+            message
+        }
+    }
+}

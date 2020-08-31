@@ -12,7 +12,7 @@ import androidx.core.view.ViewCompat;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.SnapHelper;
+
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -27,7 +27,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.crashlytics.android.Crashlytics;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.design.component.TextViewCompat;
 import com.tokopedia.design.countdown.CountDownView;
@@ -40,7 +40,7 @@ import com.tokopedia.home.beranda.helper.GravitySnapHelper;
 import com.tokopedia.home.beranda.listener.GridItemClickListener;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SpacingItemDecoration;
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.unifyprinciples.Typography;
 
@@ -57,7 +57,7 @@ import java.util.Map;
  */
 
 @Deprecated
-public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChannelViewModel>
+public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChannelDataModel>
         implements GridItemClickListener {
 
     @LayoutRes
@@ -115,7 +115,7 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
     }
 
     @Override
-    public void bind(DynamicChannelViewModel element) {
+    public void bind(DynamicChannelDataModel element) {
         try {
             this.channels = element.getChannel();
             title.setText(channels.getHeader().getName());

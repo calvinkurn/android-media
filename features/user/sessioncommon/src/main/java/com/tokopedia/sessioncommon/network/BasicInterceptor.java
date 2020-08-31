@@ -3,7 +3,9 @@ package com.tokopedia.sessioncommon.network;
 import android.content.Context;
 import android.util.Base64;
 
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.authentication.AuthConstant;
+import com.tokopedia.authentication.AuthHelper;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -60,6 +62,7 @@ public class BasicInterceptor extends TkpdOldAuthInterceptor {
         authHeaders.put(HEADER_CACHE_CONTROL, "no-cache");
         authHeaders.put(HEADER_AUTHORIZATION, "Basic " + asB64);
         authHeaders.put(HEADER_DEVICE, "android-" + GlobalConfig.VERSION_NAME);
+        authHeaders.put(AuthConstant.HEADER_RELEASE_TRACK, GlobalConfig.VERSION_NAME_SUFFIX);
         authHeaders.put(HEADER_X_APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
         authHeaders.put(HEADER_X_TKPD_APP_NAME, GlobalConfig.getPackageApplicationName());
         authHeaders.put(HEADER_X_TKPD_APP_VERSION, "android-" + GlobalConfig.VERSION_NAME);

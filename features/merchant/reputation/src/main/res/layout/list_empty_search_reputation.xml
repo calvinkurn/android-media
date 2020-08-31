@@ -10,7 +10,7 @@
     <ImageView
         android:layout_width="@dimen/search_not_found_icon_size"
         android:layout_height="@dimen/search_not_found_icon_size"
-        app:srcCompat="@drawable/ic_toped_empty_search"/>
+        app:srcCompat="@drawable/reputation_ic_toped_empty_search"/>
 
     <TextView
         android:id="@+id/title"
@@ -29,7 +29,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/padding_activity"
-        android:background="@drawable/green_button_rounded_unify"
+        android:background="@drawable/reputation_green_button_rounded_unify"
         android:fontFamily="sans-serif-medium"
         android:gravity="center_horizontal"
         android:lineSpacingExtra="7sp"

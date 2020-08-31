@@ -1,6 +1,5 @@
 package com.tokopedia.recommendation_widget_common.presentation.model
 
-import com.tokopedia.design.utils.CurrencyFormatHelper
 import com.tokopedia.kotlin.model.ImpressHolder
 
 data class RecommendationItem(val productId: Int = 0,
@@ -29,7 +28,7 @@ data class RecommendationItem(val productId: Int = 0,
                               val shopId: Int = 0,
                               val shopType: String = "",
                               val shopName: String = "",
-                              var cartId: Int = 0,
+                              var cartId: String = "",
                               val quantity: Int = 0,
                               val header: String = "",
                               val pageName: String = "",
@@ -39,12 +38,8 @@ data class RecommendationItem(val productId: Int = 0,
                               val type: String = "",
                               val isFreeOngkirActive: Boolean = false,
                               val freeOngkirImageUrl: String = "",
-                              val labelPromo: RecommendationLabel = RecommendationLabel(),
-                              val labelOffers: RecommendationLabel = RecommendationLabel(),
-                              val labelCredibility: RecommendationLabel = RecommendationLabel(),
+                              val labelGroupList: List<RecommendationLabel> = listOf(),
                               val isGold: Boolean = false): ImpressHolder(){
-
-    fun getPriceIntFromString() = CurrencyFormatHelper.convertRupiahToInt(price)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -88,9 +83,7 @@ data class RecommendationItem(val productId: Int = 0,
         if (type != other.type) return false
         if (isFreeOngkirActive != other.isFreeOngkirActive) return false
         if (freeOngkirImageUrl != other.freeOngkirImageUrl) return false
-        if (labelPromo != other.labelPromo) return false
-        if (labelOffers != other.labelOffers) return false
-        if (labelCredibility != other.labelCredibility) return false
+        if (labelGroupList != other.labelGroupList) return false
         if (isGold != other.isGold) return false
 
         return true
@@ -123,7 +116,7 @@ data class RecommendationItem(val productId: Int = 0,
         result = HASH_CODE * result + shopId
         result = HASH_CODE * result + shopType.hashCode()
         result = HASH_CODE * result + shopName.hashCode()
-        result = HASH_CODE * result + cartId
+        result = HASH_CODE * result + cartId.hashCode()
         result = HASH_CODE * result + quantity
         result = HASH_CODE * result + header.hashCode()
         result = HASH_CODE * result + pageName.hashCode()
@@ -133,9 +126,7 @@ data class RecommendationItem(val productId: Int = 0,
         result = HASH_CODE * result + type.hashCode()
         result = HASH_CODE * result + isFreeOngkirActive.hashCode()
         result = HASH_CODE * result + freeOngkirImageUrl.hashCode()
-        result = HASH_CODE * result + labelPromo.hashCode()
-        result = HASH_CODE * result + labelOffers.hashCode()
-        result = HASH_CODE * result + labelCredibility.hashCode()
+        result = HASH_CODE * result + labelGroupList.hashCode()
         result = HASH_CODE * result + isGold.hashCode()
         return result
     }
@@ -146,4 +137,4 @@ data class RecommendationItem(val productId: Int = 0,
 
 }
 
-data class RecommendationLabel(var title: String = "", val type: String = "")
+data class RecommendationLabel(var title: String = "", val type: String = "", val position: String = "")

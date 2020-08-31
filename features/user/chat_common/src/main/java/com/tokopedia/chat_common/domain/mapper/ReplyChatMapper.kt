@@ -36,7 +36,7 @@ class ReplyChatMapper @Inject constructor() : Func1<Response<DataResponse<ReplyC
     fun map(pojo: ReplyChatItemPojo): ReplyChatViewModel {
 
         return when (pojo.chatItemPojo.attachment?.attributes) {
-            null -> ReplyChatViewModel(generateMessage(pojo.chatItemPojo), pojo.isSuccess)
+            null, "" -> ReplyChatViewModel(generateMessage(pojo.chatItemPojo), pojo.isSuccess)
             else -> ReplyChatViewModel(generateImageMessage(pojo.chatItemPojo), pojo.isSuccess)
         }
     }
@@ -54,7 +54,8 @@ class ReplyChatMapper @Inject constructor() : Func1<Response<DataResponse<ReplyC
                 temp.msg,
                 false,
                 false,
-                true
+                true,
+                temp.source.orEmpty()
         )
         return viewModel
     }
@@ -63,18 +64,19 @@ class ReplyChatMapper @Inject constructor() : Func1<Response<DataResponse<ReplyC
         val pojoAttribute = GsonBuilder().create().fromJson<ImageUploadAttributes>( temp.attachment?.attributes,
                 ImageUploadAttributes::class.java)
         var viewModel = ImageUploadViewModel(
-                temp.msgId.toString(),
-                temp.senderId,
-                temp.senderName,
-                temp.role,
-                temp.attachmentId.toString(),
-                temp.attachment?.type.toString(),
-                System.currentTimeMillis().toString(),
-                !temp.isOpposite,
-                pojoAttribute.imageUrl,
-                pojoAttribute.thumbnail,
-                temp.messageIsRead,
-                temp.msg
+                messageId = temp.msgId.toString(),
+                fromUid = temp.senderId,
+                from = temp.senderName,
+                fromRole = temp.role,
+                attachmentId = temp.attachmentId.toString(),
+                attachmentType = temp.attachment?.type.toString(),
+                replyTime = System.currentTimeMillis().toString(),
+                isSender = !temp.isOpposite,
+                imageUrl = pojoAttribute.imageUrl,
+                imageUrlThumbnail = pojoAttribute.thumbnail,
+                isRead = temp.messageIsRead,
+                message = temp.msg,
+                source = temp.source.orEmpty()
         )
         return viewModel
     }

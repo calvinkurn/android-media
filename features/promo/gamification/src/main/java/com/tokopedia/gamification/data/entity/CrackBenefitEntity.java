@@ -55,6 +55,29 @@ public class CrackBenefitEntity {
     @SerializedName("animationType")
     public String animationType;
 
+    @SerializedName("imageUrl")
+    public String imageUrl;
+
+    @Ignore
+    @SerializedName("referenceID")
+    public String referenceID;
+
+    @Ignore
+    @SerializedName("isBigPrize")
+    public boolean isBigPrize;
+
+    @Ignore
+    @SerializedName("isAutoApply")
+    public boolean isAutoApply;
+
+    @Ignore
+    @SerializedName("autoApplyMsg")
+    public String autoApplyMsg;
+
+    @Ignore
+    @SerializedName("dummyCode")
+    public String dummyCode;
+
     public void setColor(String color) {
         this.color = color;
     }

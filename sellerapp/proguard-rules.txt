@@ -181,7 +181,7 @@
 # this is retrofit
 -dontwarn retrofit2.**
 -keep class retrofit2.** { *; }
--keepattributes Signature
+-keepattributes Signature,SourceFile,LineNumberTable
 -keepattributes Exceptions
 # this is retrofit
 
@@ -204,6 +204,32 @@
 }
 -keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueConsumerNodeRef {
     rx.internal.util.atomic.LinkedQueueNode consumerNode;
+}
+
+-keepclassmembers class com.wandroid.traceroute.TraceRoute {
+    void clearResult();
+    void appendResult(***);
+    int execute(***);
+}
+
+# InAppReview
+-keep class com.google.android.play.core.inappreview.InAppReviewManager {
+  public com.google.android.play.core.tasks.Task requestInAppReviewFlow();
+  public com.google.android.play.core.tasks.Task launchInAppReviewFlow(android.app.Activity, com.google.android.play.core.inappreview.InAppReviewInfo);
+}
+
+-keepnames class com.google.android.play.core.inappreview.InAppReviewInfo
+
+-keep class com.google.android.play.core.inappreview.InAppReviewManagerFactory {
+  <init>();
+
+  public static com.google.android.play.core.inappreview.InAppReviewManager create(android.content.Context);
+}
+
+-keep class com.google.android.play.core.inappreview.testing.FakeInAppReviewManager {
+  public <init>(android.content.Context);
+  public com.google.android.play.core.tasks.Task requestInAppReviewFlow();
+  public com.google.android.play.core.tasks.Task launchInAppReviewFlow(android.app.Activity, com.google.android.play.core.inappreview.InAppReviewInfo);
 }
 
 # Gson specific classes
@@ -241,6 +267,7 @@
 -keep class com.tokopedia.seller.selling.model.** { *; }
 
 -keep class com.tokopedia.tkpd.fcm.** { *; }
+-keep class com.tokopedia.sellerapp.fcm.** { *; }
 
 -keep class com.airbnb.deeplinkdispatch.** { *; }
 -keepclasseswithmembers class * {
@@ -261,7 +288,7 @@
 
 -keep class com.tokopedia.core.home.model.** { *; }
 
--keep class com.tokopedia.core.util.GlobalConfig
+-keep class com.tokopedia.config.GlobalConfig
 -keep class com.tokopedia.tkpdpdp.fragment.ProductDetailFragment
 -keep class com.tokopedia.core.network.entity.** { *; }
 -dontwarn com.akexorcist.roundcornerprogressbar.TextRoundCornerProgressBar
@@ -315,6 +342,9 @@
 #tradein
 -keep class com.tokopedia.tradein.viewmodel.** { *; }
 
+#agerestriction
+-keep class com.tokopedia.age_restriction.viewmodel.** { *; }
+
 #image search
 -keep class com.tokopedia.discovery.imagesearch.domain.model.** { *; }
 
@@ -349,3 +379,61 @@
 -keep class com.scottyab.rootbeer.** { *; }
 -dontwarn com.scottyab.rootbeer.**
 -dontwarn com.laku6.tradeinsdk.api.Laku6TradeIn
+-dontwarn kotlinx.coroutines.flow.**inlined**
+
+# -- Unit Test
+-keep class junit.framework.** { *; }
+-keep class android.test.** { *; }
+-keep class org.mockito.** { *; }
+-keep class org.junit.** { *; }
+-dontwarn junit.framework.**
+-dontwarn android.test.**
+-dontwarn org.mockito.**
+-dontwarn org.junit.**
+
+-keep public class com.google.android.material.bottomnavigation.** { *; }
+-keep class com.google.android.material.bottomsheet.BottomSheetBehavior { *** findScrollingChild(...); }
+
+-keepclassmembers public class com.google.android.material.bottomsheet.BottomSheetDialog {
+    private <fields>;
+}
+
+-keepclassmembers enum com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.** { *; }
+
+-dontwarn com.tokopedia.graphql.coroutines.domain.interactor.**
+
+-keep class com.google.errorprone.annotations.** { *; }
+-keep class com.google.j2objc.annotations.** { *; }
+-keep class java.lang.ClassValue
+-dontwarn com.google.j2objc.annotations.**
+-dontwarn com.google.errorprone.annotations.**
+-dontwarn java.lang.ClassValue
+
+# -- product manage
+ -keep class com.tokopedia.product.manage.feature.cashback.data.** { *; }
+ -keep class com.tokopedia.product.manage.feature.filter.data.** { *; }
+ -keep class com.tokopedia.product.manage.feature.multiedit.data.** { *; }
+ -keep class com.tokopedia.product.manage.feature.quickedit.common.data.** { *; }
+ -keep class com.tokopedia.product.manage.feature.quickedit.delete.data.** { *; }
+ -keep class com.tokopedia.product.manage.feature.quickedit.price.data.** { *; }
+ -keep class com.tokopedia.product.manage.feature.quickedit.stock.data.** { *; }
+ -keep class com.tokopedia.shop.common.data.source.cloud.model.productlist.** { *; }
+ -keep class com.tokopedia.product.manage.feature.stockreminder.data.** { *; }
+
+# -- annotation analytic
+-keep class com.analytic.paramchecker.** { *; }
+-keep class com.analytic.util.** { *; }
+-keep class com.tokopedia.abstraction.processor.** { *; }
+-keep class com.tokopedia.product.util.processor.** { *; }
+-dontwarn com.squareup.javapoet.**
+
+-dontwarn com.tokopedia.empty_state.**
+-dontwarn com.tokopedia.topads.dashboard.view.sheet.**
+-optimizations !class/unboxing/enum,!code/simplification/arithmetic
+
+-dontwarn com.google.android.exoplayer2.audio.AudioAttributes
+-dontwarn com.google.android.exoplayer2.mediacodec.MediaCodecUtil
+-dontwarn com.google.android.exoplayer2.ui.DefaultTimeBar
+
+-keep class com.alibaba.livecloud.** { *; }
+-keep class com.alivc.** { *; }

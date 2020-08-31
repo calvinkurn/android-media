@@ -23,4 +23,16 @@ data class PostTag (
         @SerializedName("items")
         @Expose
         var items: List<PostTagItem> = ArrayList()
-){}
+){
+        fun copy(): PostTag {
+                val newItems: ArrayList<PostTagItem> = arrayListOf()
+                for (item in items) {
+                        newItems.add(item.copy())
+                }
+                return PostTag(id,
+                        text,
+                        type,
+                        totalItems,
+                        newItems)
+        }
+}

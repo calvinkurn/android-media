@@ -40,6 +40,7 @@ public class BannerShopProductViewHolder extends AbstractViewHolder<BannerShopPr
     private Context context;
     private View container;
     private ImageView rating1, rating2, rating3, rating4, rating5;
+    private static final String className = "com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShopProductViewHolder";
 
 
     public BannerShopProductViewHolder(View itemView, TopAdsBannerClickListener topAdsBannerClickListener,
@@ -101,7 +102,7 @@ public class BannerShopProductViewHolder extends AbstractViewHolder<BannerShopPr
                 if (topAdsBannerClickListener != null) {
                     topAdsBannerClickListener.onBannerAdsClicked((getAdapterPosition()),
                             element.getProduct().getApplinks(), element.getCpmData());
-                    new ImpresionTask().execute(element.getProduct().getImageProduct().getImageClickUrl());
+                    new ImpresionTask(className).execute(element.getProduct().getImageProduct().getImageClickUrl());
                 }
             }
         });

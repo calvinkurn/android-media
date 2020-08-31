@@ -14,7 +14,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.common.category.di.module.CategoryPickerModule;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.datepicker.range.model.DatePickerViewModel;
@@ -37,6 +39,7 @@ import com.tokopedia.gm.statistic.view.holder.GmStatisticBuyerViewHolder;
 import com.tokopedia.gm.statistic.view.listener.GMStatisticDashboardView;
 import com.tokopedia.gm.statistic.view.model.GMTransactionGraphMergeModel;
 import com.tokopedia.gm.statistic.view.presenter.GMDashboardPresenter;
+import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.List;
@@ -80,6 +83,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        fetchAbTestRemoteConfig();
         datePickerPresenter.clearDatePickerSetting();
     }
 
@@ -88,6 +92,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
         DaggerGMStatisticDashboardComponent
                 .builder()
                 .gMComponent(getComponent(GMComponent.class))
+                .categoryPickerModule(new CategoryPickerModule(requireActivity().getApplicationContext()))
                 .gMStatisticModule(new GMStatisticModule())
                 .build().inject(this);
         gmDashboardPresenter.attachView(this);
@@ -325,5 +330,16 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     @Override
     public void onBottomSheetButtonClicked() {
         RouteManager.route(getContext(), ApplinkConstInternalGlobal.WEBVIEW, URL_POWER_MERCHANT_SCORE_TIPS);
+    }
+
+    private void fetchAbTestRemoteConfig() {
+        if (getActivity() != null) {
+            String variantName = "StatsOverApp";
+            String variant = RemoteConfigInstance.getInstance().getABTestPlatform().getString(variantName, "");
+            if (variantName.equals(variant)) {
+                RouteManager.route(getActivity(), ApplinkConstInternalMechant.MERCHANT_STATISTIC_DASHBOARD);
+                getActivity().finish();
+            }
+        }
     }
 }

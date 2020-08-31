@@ -53,10 +53,48 @@
                 android:padding="@dimen/dp_4"
                 android:scaleType="fitXY"
                 android:visibility="gone"
+                android:foreground="?attr/selectableItemBackground"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:srcCompat="@drawable/product_card_ic_wishlist"
                 tools:visibility="visible" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_empty_stock"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:adjustViewBounds="true"
+                android:gravity="center"
+                android:background="@color/product_card_layout_sold_out_background_color"
+                app:layout_constraintDimensionRatio="H,1:1"
+                android:scaleType="centerCrop"
+                android:visibility="visible"
+                android:src="@drawable/error_drawable"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:visibility="visible">
+                <com.tokopedia.unifycomponents.Label
+                    android:layout_gravity="center"
+                    android:id="@+id/labelEmptyStock"
+                    android:layout_width="@dimen/dp_100"
+                    android:layout_height="@dimen/dp_26"
+                    android:layout_marginLeft="@dimen/dp_18"
+                    android:layout_marginRight="@dimen/dp_18"
+                    android:layout_marginTop="@dimen/dp_60"
+                    android:layout_marginBottom="@dimen/dp_60"
+                    android:visibility="gone"
+                    android:gravity="center"
+                    app:layout_constraintDimensionRatio="104:26"
+                    android:text="@string/product_card_module_text_sold_out"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    tools:visibility="visible"
+                    tools:text="Terjual Habis" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
 
             <com.tokopedia.unifycomponents.Label
                 android:id="@+id/labelPromo"
@@ -331,18 +369,48 @@
                 tools:visibility="visible"
                 tools:text="Offers Label" />
 
-            <ImageView
-                android:id="@+id/imageTopAds"
-                android:layout_width="@dimen/dp_20"
-                android:layout_height="@dimen/dp_20"
-                android:layout_marginRight="@dimen/dp_8"
-                android:layout_marginEnd="@dimen/dp_8"
-                android:scaleType="fitXY"
-                android:visibility="gone"
-                app:layout_constraintTop_toTopOf="@id/imageFreeOngkirPromo"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:srcCompat="@drawable/product_card_v2_ic_topads"
-                tools:visibility="visible" />
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/label_pre_order"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8"
+            android:visibility="gone"
+            android:text="@string/product_card_module_text_pre_order"
+            app:labelType="general_light_grey"
+            app:layout_constraintTop_toBottomOf="@id/labelOffers"
+            app:layout_constraintLeft_toLeftOf="@id/imageProduct"
+            tools:visibility="visible"
+            tools:text="PO" />
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/label_wholesale"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8"
+            android:visibility="gone"
+            android:text="@string/product_card_module_text_wholesale"
+            app:labelType="general_light_grey"
+            app:layout_constraintTop_toBottomOf="@id/labelOffers"
+            app:layout_constraintLeft_toRightOf="@id/label_pre_order"
+            tools:visibility="visible"
+            tools:text="Grosir" />
+
+        <ImageView
+            android:id="@+id/imageTopAds"
+            android:layout_width="@dimen/dp_20"
+            android:layout_height="@dimen/dp_20"
+            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:scaleType="fitXY"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="@id/imageFreeOngkirPromo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/product_card_v2_ic_topads"
+            tools:visibility="visible" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/textViewAddToCart"
@@ -351,11 +419,11 @@
                 android:layout_marginLeft="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_10"
                 android:layout_marginRight="@dimen/dp_8"
-                android:background="@drawable/productcard_module_bg_button_atc"
+                android:background="@drawable/product_card_bg_button_atc"
                 android:foreground="?selectableItemBackground"
                 android:gravity="center"
                 android:padding="@dimen/dp_8"
-                android:text="@string/product_card_module_label_add_to_card"
+                android:text="@string/product_card_text_add_to_cart_grid"
                 android:textAllCaps="false"
                 android:textColor="@color/orange_red"
                 android:visibility="gone"

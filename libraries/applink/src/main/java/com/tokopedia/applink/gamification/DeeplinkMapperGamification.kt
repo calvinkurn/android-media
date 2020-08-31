@@ -12,4 +12,12 @@ object DeeplinkMapperGamification {
     fun getGamificationTapTapDeeplink(deeplink: String): String {
         return deeplink.replace(ApplinkConst.Gamification.TAP_TAP_MANTAP, ApplinkConstInternalGlobal.GAMIFICATION_TAP_TAP_MANTAP)
     }
+
+    fun getDailyGiftBoxDeeplink(deeplink: String): String {
+        return deeplink.replace(ApplinkConst.Gamification.DAILY_GIFT_BOX, ApplinkConstInternalGlobal.GAMIFICATION_DAILY_GIFT)
+    }
+
+    fun getGiftBoxTapTapDeeplink(deeplink: String): String {
+        return deeplink.replace(ApplinkConst.Gamification.GIFT_TAP_TAP, ApplinkConstInternalGlobal.GAMIFICATION_TAP_TAP_GIFT)
+    }
 }

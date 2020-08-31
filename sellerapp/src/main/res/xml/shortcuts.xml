@@ -9,7 +9,7 @@
         <intent
             android:action="android.intent.action.VIEW"
             android:targetPackage="com.tokopedia.sellerapp"
-            android:targetClass="com.tokopedia.seller.selling.view.activity.ActivitySellingTransaction" />
+            android:data="tokopedia-android-internal://sellerapp/sellerhome-som-neworder"/>
         <categories android:name="android.shortcut.conversation" />
     </shortcut>
     <shortcut
@@ -22,7 +22,7 @@
         <intent
             android:action="android.intent.action.VIEW"
             android:targetPackage="com.tokopedia.sellerapp"
-            android:targetClass="com.tokopedia.product.manage.list.view.activity.ProductManageActivity" />
+            android:data="tokopedia-android-internal://sellerapp/sellerhome-product-list"/>
         <categories android:name="android.shortcut.conversation" />
     </shortcut>
 </shortcuts>

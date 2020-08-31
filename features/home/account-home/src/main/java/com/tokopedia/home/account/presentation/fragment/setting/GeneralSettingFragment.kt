@@ -1,59 +1,65 @@
 package com.tokopedia.home.account.presentation.fragment.setting
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.app.AlertDialog
 import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.provider.Settings
-import com.google.android.material.snackbar.Snackbar
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.TextView
-import com.facebook.FacebookSdk
-import com.facebook.login.LoginManager
+import androidx.fragment.app.Fragment
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Dialog
-import com.tokopedia.home.account.AccountConstants.Analytics.*
-import com.tokopedia.home.account.AccountHomeRouter
+import com.tokopedia.design.dialog.AccessRequestDialogFragment
+import com.tokopedia.home.account.AccountConstants.Analytics.ABOUT_US
+import com.tokopedia.home.account.AccountConstants.Analytics.ACCOUNT
+import com.tokopedia.home.account.AccountConstants.Analytics.ADVANCED_SETTING
+import com.tokopedia.home.account.AccountConstants.Analytics.APPLICATION_REVIEW
+import com.tokopedia.home.account.AccountConstants.Analytics.DEVELOPER_OPTIONS
+import com.tokopedia.home.account.AccountConstants.Analytics.HELP_CENTER
+import com.tokopedia.home.account.AccountConstants.Analytics.LOGOUT
+import com.tokopedia.home.account.AccountConstants.Analytics.NOTIFICATION
+import com.tokopedia.home.account.AccountConstants.Analytics.PAYMENT_METHOD
+import com.tokopedia.home.account.AccountConstants.Analytics.PRIVACY_POLICY
+import com.tokopedia.home.account.AccountConstants.Analytics.SAFE_MODE
+import com.tokopedia.home.account.AccountConstants.Analytics.SETTING
+import com.tokopedia.home.account.AccountConstants.Analytics.SHAKE_SHAKE
+import com.tokopedia.home.account.AccountConstants.Analytics.SHOP
+import com.tokopedia.home.account.AccountConstants.Analytics.TERM_CONDITION
 import com.tokopedia.home.account.R
 import com.tokopedia.home.account.analytics.AccountAnalytics
 import com.tokopedia.home.account.constant.SettingConstant
 import com.tokopedia.home.account.constant.SettingConstant.Url.PATH_CHECKOUT_TEMPLATE
 import com.tokopedia.home.account.data.util.NotifPreference
 import com.tokopedia.home.account.di.component.DaggerAccountLogoutComponent
-import com.tokopedia.home.account.presentation.activity.AccountSettingActivity
-import com.tokopedia.home.account.presentation.activity.SettingWebViewActivity
+import com.tokopedia.home.account.di.module.SettingsModule
 import com.tokopedia.home.account.presentation.activity.StoreSettingActivity
 import com.tokopedia.home.account.presentation.activity.TkpdPaySettingActivity
 import com.tokopedia.home.account.presentation.adapter.setting.GeneralSettingAdapter
-import com.tokopedia.home.account.presentation.listener.LogoutView
-import com.tokopedia.home.account.presentation.presenter.LogoutPresenter
+import com.tokopedia.home.account.presentation.listener.RedDotGimmickView
+import com.tokopedia.home.account.presentation.listener.SettingOptionsView
+import com.tokopedia.home.account.presentation.presenter.RedDotGimmickPresenter
+import com.tokopedia.home.account.presentation.presenter.SettingsPresenter
 import com.tokopedia.home.account.presentation.viewmodel.SettingItemViewModel
 import com.tokopedia.home.account.presentation.viewmodel.base.SwitchSettingItemViewModel
 import com.tokopedia.navigation_common.model.WalletPref
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.data.Token.Companion.GOOGLE_API_KEY
@@ -62,12 +68,15 @@ import com.tokopedia.url.TokopediaUrl
 import java.util.*
 import javax.inject.Inject
 
-class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, GeneralSettingAdapter.SwitchSettingListener {
-
+class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, GeneralSettingAdapter.SwitchSettingListener, SettingOptionsView {
     @Inject
-    internal lateinit var presenter: LogoutPresenter
+    internal lateinit var presenter: RedDotGimmickPresenter
     @Inject
     internal lateinit var walletPref: WalletPref
+
+    @Inject
+    internal lateinit var settingsPresenter: SettingsPresenter
+
 
     private lateinit var loadingView: View
     private lateinit var baseSettingView: View
@@ -76,6 +85,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
     private lateinit var permissionCheckerHelper: PermissionCheckerHelper
     private lateinit var notifPreference: NotifPreference
     private lateinit var googleSignInClient: GoogleSignInClient
+    private val remoteConfig by lazy { FirebaseRemoteConfigImpl(context) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -114,8 +124,11 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
         activity?.let {
             val component = DaggerAccountLogoutComponent.builder().baseAppComponent(
                     (it.application as BaseMainApplication)
-                            .baseAppComponent).build()
+                            .baseAppComponent).settingsModule(SettingsModule(activity)).build()
             component.inject(this)
+            settingsPresenter.attachView(this)
+            settingsPresenter.verifyUserAge()
+
         }
         presenter.attachView(this)
 
@@ -130,7 +143,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
         recyclerView.isNestedScrollingEnabled = false
         recyclerView.addItemDecoration(DividerItemDecoration(activity))
         val appVersion = view.findViewById<TextView>(R.id.text_view_app_version)
-        appVersion.text = getString(R.string.application_version_fmt, GlobalConfig.VERSION_NAME)
+        appVersion.text = getString(R.string.application_version_fmt, GlobalConfig.RAW_VERSION_NAME)
     }
 
     override fun getSettingItems(): List<SettingItemViewModel> {
@@ -153,13 +166,17 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
         settingItems.add(SettingItemViewModel(SettingConstant.SETTING_TKPD_PAY_ID,
                 getString(R.string.title_tkpd_pay_setting), settingDescTkpdPay))
         activity?.let {
-            if (it.application is AccountHomeRouter
-                    && (it.application as AccountHomeRouter).getBooleanRemoteConfig(
+            if (remoteConfig.getBoolean(
                             RemoteConfigKey.CHECKOUT_TEMPLATE_SETTING_TOGGLE, false)
             ) {
                 settingItems.add(SettingItemViewModel(SettingConstant.SETTING_TEMPLATE_ID,
                         getString(R.string.title_tkpd_template_setting), getString(R.string.subtitle_template_setting)))
             }
+        }
+
+        if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_ONE_CLICK_CHECKOUT, true)) {
+            settingItems.add(SettingItemViewModel(SettingConstant.SETTING_OCC_PREFERENCE_ID,
+                    getString(R.string.title_occ_preference_setting), getString(R.string.subtitle_occ_preference_setting)))
         }
 
         settingItems.add(SettingItemViewModel(SettingConstant.SETTING_NOTIFICATION_ID,
@@ -169,6 +186,12 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
         settingItems.add(SwitchSettingItemViewModel(SettingConstant.SETTING_GEOLOCATION_ID,
                 getString(R.string.title_geolocation_setting), getString(R.string.subtitle_geolocation_setting), true))
 
+        if (settingsPresenter.adultAgeVerified)
+            settingItems.add(SwitchSettingItemViewModel(SettingConstant.SETTING_SAFE_SEARCH_ID,
+                    getString(R.string.title_safe_mode_setting), getString(R.string.subtitle_safe_mode_setting), true))
+
+        settingItems.add(SettingItemViewModel(SettingConstant.SETTING_ABOUT_US,
+                getString(R.string.title_about_us)))
         settingItems.add(SettingItemViewModel(SettingConstant.SETTING_TNC_ID,
                 getString(R.string.title_tnc_setting)))
         settingItems.add(SettingItemViewModel(SettingConstant.SETTING_PRIVACY_ID,
@@ -200,7 +223,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
         when (settingId) {
             SettingConstant.SETTING_ACCOUNT_ID -> {
                 accountAnalytics.eventClickSetting(ACCOUNT)
-                startActivity(AccountSettingActivity.createIntent(activity))
+                RouteManager.route(activity, ApplinkConstInternalGlobal.ACCOUNT_SETTING)
             }
             SettingConstant.SETTING_SHOP_ID -> {
                 accountAnalytics.eventClickSetting(String.format("%s %s", SHOP, SETTING))
@@ -220,11 +243,19 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
             }
             SettingConstant.SETTING_TNC_ID -> {
                 accountAnalytics.eventClickSetting(TERM_CONDITION)
-                gotoWebviewActivity(SettingConstant.Url.PATH_TERM_CONDITION, getString(R.string.title_tnc_setting))
+                RouteManager.route(activity, SettingConstant.Url.BASE_WEBVIEW_APPLINK + SettingConstant.Url.BASE_MOBILE + SettingConstant.Url.PATH_TERM_CONDITION)
+            }
+            SettingConstant.SETTING_ABOUT_US -> {
+                accountAnalytics.eventClickSetting(ABOUT_US)
+                RouteManager.getIntent(activity, SettingConstant.Url.BASE_WEBVIEW_APPLINK
+                        + SettingConstant.Url.BASE_MOBILE
+                        + SettingConstant.Url.PATH_ABOUT_US).run {
+                    startActivity(this)
+                }
             }
             SettingConstant.SETTING_PRIVACY_ID -> {
                 accountAnalytics.eventClickSetting(PRIVACY_POLICY)
-                gotoWebviewActivity(SettingConstant.Url.PATH_PRIVACY_POLICY, getString(R.string.title_privacy_setting))
+                RouteManager.route(activity, SettingConstant.Url.BASE_WEBVIEW_APPLINK + SettingConstant.Url.BASE_MOBILE + SettingConstant.Url.PATH_PRIVACY_POLICY)
             }
             SettingConstant.SETTING_APP_REVIEW_ID -> {
                 accountAnalytics.eventClickSetting(APPLICATION_REVIEW)
@@ -246,6 +277,9 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
                 accountAnalytics.eventClickSetting(DEVELOPER_OPTIONS)
                 RouteManager.route(activity, ApplinkConst.DEVELOPER_OPTIONS)
             }
+            SettingConstant.SETTING_OCC_PREFERENCE_ID -> {
+                RouteManager.route(context, ApplinkConstInternalMarketplace.PREFERENCE_LIST)
+            }
             else -> {
             }
         }
@@ -257,17 +291,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
         val redDotGimmickLocalStatus = notifPreference.isDisplayedGimmickNotif
         if (redDotGimmickRemoteConfigStatus && !redDotGimmickLocalStatus) {
             notifPreference.isDisplayedGimmickNotif = true
-            presenter.sendNotif({ (_) ->
-                doLogout()
-                null
-            }, { throwable ->
-                        doLogout()
-                        if (view != null) {
-                            val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
-                            Toaster.showError(view!!, errorMessage, Snackbar.LENGTH_LONG)
-                        }
-                        null
-                    })
+            presenter.sendNotif()
         } else {
             doLogout()
         }
@@ -303,38 +327,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
 
     private fun doLogout() {
         activity?.let {
-            FacebookSdk.sdkInitialize(it.applicationContext)
-        }
-        showLoading(true)
-        presenter.doLogout()
-    }
-
-    private fun showLoading(isLoading: Boolean) {
-        val shortAnimTime = resources.getInteger(
-                android.R.integer.config_shortAnimTime)
-
-        loadingView.let {
-            it.animate().setDuration(shortAnimTime.toLong())
-                    .alpha((if (isLoading) 1 else 0).toFloat())
-                    .setListener(object : AnimatorListenerAdapter() {
-                        override fun onAnimationEnd(animation: Animator) {
-                            loadingView.let { view ->
-                                view.visibility = if (isLoading) View.VISIBLE else View.GONE
-                            }
-                        }
-                    })
-        }
-
-        baseSettingView.let {
-            it.animate().setDuration(shortAnimTime.toLong())
-                    .alpha((if (isLoading) 0 else 1).toFloat())
-                    .setListener(object : AnimatorListenerAdapter() {
-                        override fun onAnimationEnd(animation: Animator) {
-                            baseSettingView.let { view ->
-                                view.visibility = if (isLoading) View.GONE else View.VISIBLE
-                            }
-                        }
-                    })
+            startActivity(RouteManager.getIntent(it, ApplinkConstInternalGlobal.LOGOUT))
         }
     }
 
@@ -349,6 +342,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
         when (settingId) {
             SettingConstant.SETTING_SHAKE_ID -> return isItemSelected(getString(R.string.pref_receive_shake), true)
             SettingConstant.SETTING_GEOLOCATION_ID -> return hasLocationPermission()
+            SettingConstant.SETTING_SAFE_SEARCH_ID -> return isItemSelected(getString(R.string.pref_safe_mode), false)
             else -> return false
         }
     }
@@ -359,6 +353,8 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
                 accountAnalytics.eventClickSetting(SHAKE_SHAKE)
                 saveSettingValue(getString(R.string.pref_receive_shake), value)
             }
+            SettingConstant.SETTING_SAFE_SEARCH_ID ->
+                    accountAnalytics.eventClickSetting(SAFE_MODE)
             else -> {
             }
         }
@@ -368,6 +364,9 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
     override fun onClicked(settingId: Int, currentValue: Boolean) {
         when (settingId) {
             SettingConstant.SETTING_GEOLOCATION_ID -> createAndShowLocationAlertDialog(currentValue)
+            SettingConstant.SETTING_SAFE_SEARCH_ID ->
+                    createAndShowSafeModeAlertDialog(currentValue)
+
         }
     }
 
@@ -381,18 +380,6 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
         return settings.getBoolean(key, defaultValue)
     }
 
-    private fun gotoWebviewActivity(path: String, title: String) {
-        val intent: Intent
-        val url = String.format("%s%s", SettingConstant.Url.BASE_MOBILE, path)
-        if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            intent = SettingWebViewActivity.createIntent(activity, url, title)
-        } else {
-            intent = Intent(Intent.ACTION_VIEW)
-            intent.data = Uri.parse(url)
-        }
-        startActivity(intent)
-    }
-
     private fun goToApplicationDetailActivity() {
         activity?.let {
             val intent = Intent()
@@ -401,33 +388,6 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
             intent.data = uri
             it.startActivity(intent)
         }
-    }
-
-    override fun logoutFacebook() {
-        LoginManager.getInstance().logOut()
-    }
-
-    override fun onErrorLogout(throwable: Throwable) {
-        showLoading(false)
-        NetworkErrorHelper.showCloseSnackbar(activity, ErrorHandler.getErrorMessage(activity, throwable))
-    }
-
-    override fun onSuccessLogout() {
-        showLoading(false)
-        activity?.let {
-            if (it.application is AccountHomeRouter) {
-                (it.application as AccountHomeRouter).doLogoutAccount(activity)
-            }
-        }
-
-        RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
-
-        if (isGoogleAccount()) {
-            googleSignInClient.signOut()
-        }
-
-        val stickyPref = activity!!.getSharedPreferences("sticky_login_widget.pref", Context.MODE_PRIVATE)
-        stickyPref.edit().clear().apply()
     }
 
     override fun onDestroyView() {
@@ -452,9 +412,52 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
         dialog.show()
     }
 
-    private fun isGoogleAccount(): Boolean {
-        val acct = GoogleSignIn.getLastSignedInAccount(context!!)
-        return acct != null
+
+    private fun createAndShowSafeModeAlertDialog(currentValue: Boolean) {
+        var dialogTitleMsg = getString(R.string.account_home_safe_mode_selected_dialog_title)
+        var dialogBodyMsg = getString(R.string.account_home_safe_mode_selected_dialog_msg)
+        var dialogPositiveButton = getString(R.string.account_home_safe_mode_selected_dialog_positive_button)
+        val dialogNegativeButton = getString(R.string.account_home_label_cancel)
+
+        if (currentValue) {
+            dialogTitleMsg = getString(R.string.account_home_safe_mode_unselected_dialog_title)
+            dialogBodyMsg = getString(R.string.account_home_safe_mode_unselected_dialog_msg)
+            dialogPositiveButton = getString(R.string.account_home_safe_mode_unselected_dialog_positive_button)
+        }
+
+        val accessDialog = AccessRequestDialogFragment.newInstance()
+        accessDialog.setTitle(dialogTitleMsg)
+        accessDialog.setBodyText(dialogBodyMsg)
+        accessDialog.setPositiveButton(dialogPositiveButton)
+        accessDialog.setNegativeButton(dialogNegativeButton)
+        accessDialog.show(activity!!.supportFragmentManager, AccessRequestDialogFragment.TAG)
+    }
+
+    override fun refreshSafeSearchOption() {
+        if (adapter != null)
+            adapter.updateSettingItem(SettingConstant.SETTING_SAFE_SEARCH_ID)
+    }
+
+    override fun refreshSettingOptionsList() {
+        if (adapter != null) {
+            adapter.setSettingItems(settingItems)
+            adapter.notifyDataSetChanged()
+        }
+    }
+
+    fun onClickAcceptButton() {
+        settingsPresenter.onClickAcceptButton()
+    }
+
+    override fun onSuccessSendNotif() {
+        doLogout()
+    }
+
+    override fun onErrorSendNotif(throwable: Throwable) {
+        if (view != null) {
+            val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
+            Toaster.showError(view!!, errorMessage, Snackbar.LENGTH_LONG)
+        }
     }
 
     companion object {

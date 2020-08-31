@@ -1,0 +1,179 @@
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardViewProductCard"
+    app:cardCornerRadius="@dimen/dp_8"
+    app:cardElevation="@dimen/dp_4"
+    app:cardPreventCornerOverlap="false"
+    app:cardUseCompatPadding="true"
+    android:foreground="?attr/selectableItemBackground"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayoutProductCard"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/product_card_padding_bottom"
+        tools:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/imageProduct"
+            android:contentDescription="@string/content_desc_imageProduct"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/dp_0"
+            android:adjustViewBounds="true"
+            android:gravity="center"
+            android:scaleType="centerCrop"
+            android:visibility="visible"
+            app:layout_constraintDimensionRatio="H,1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
+
+        <View
+            android:id="@+id/outOfStockOverlay"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/unify_N700_44"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="@+id/imageProduct"
+            app:layout_constraintBottom_toBottomOf="@+id/imageProduct"
+            app:layout_constraintStart_toStartOf="@+id/imageProduct"
+            app:layout_constraintEnd_toEndOf="@+id/imageProduct"/>
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/labelProductStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_20"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginLeft="@dimen/dp_4"
+            android:layout_marginBottom="@dimen/dp_4"
+            android:gravity="center"
+            android:paddingStart="@dimen/dp_4"
+            android:paddingEnd="@dimen/dp_4"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/imageProduct"
+            app:layout_constraintLeft_toLeftOf="@id/imageProduct"
+            tools:text="Preorder"
+            tools:visibility="visible"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/textTopAds"
+            android:contentDescription="@string/content_desc_textTopAds"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_20"
+            android:layout_marginEnd="@dimen/dp_4"
+            android:layout_marginRight="@dimen/dp_4"
+            android:layout_marginBottom="@dimen/dp_4"
+            android:gravity="center"
+            android:paddingStart="@dimen/dp_4"
+            android:paddingEnd="@dimen/dp_4"
+            android:text="@string/product_card_topads"
+            android:textColor="@color/white"
+            android:visibility="gone"
+            android:shadowColor="#5c000000"
+            android:shadowDy="1"
+            android:shadowRadius="2"
+            app:layout_constraintBottom_toBottomOf="@id/imageProduct"
+            app:layout_constraintRight_toRightOf="@id/imageProduct"
+            app:typographyType="small"
+            app:typographyWeight="bold"
+            tools:visibility="visible"/>
+
+        <include
+            android:id="@+id/productCardContentLayout"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/product_card_content_margin"
+            app:layout_constraintStart_toStartOf="@id/imageProduct"
+            app:layout_constraintTop_toBottomOf="@id/imageProduct"
+            app:layout_constraintEnd_toEndOf="@id/imageProduct"
+            layout="@layout/product_card_content_layout" />
+
+        <ImageView
+            android:id="@+id/imageThreeDots"
+            android:contentDescription="@string/content_desc_imageThreeDots"
+            android:layout_width="@dimen/dp_32"
+            android:layout_height="@dimen/dp_16"
+            android:paddingLeft="@dimen/dp_8"
+            android:paddingStart="@dimen/dp_8"
+            android:paddingEnd="@dimen/dp_8"
+            android:paddingRight="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:visibility="gone"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"
+            app:layout_goneMarginBottom="@dimen/dp_0"
+            app:layout_constraintBottom_toTopOf="@id/buttonAddToCart"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/product_card_ic_three_dots"
+            tools:visibility="visible" />
+
+        <ProgressBar
+            android:id="@+id/progressBarStock"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/product_card_flashsale_progressbar_height"
+            android:layout_marginTop="@dimen/product_card_flashsale_progressbar_margintop"
+            android:layout_marginLeft="@dimen/product_card_content_margin"
+            android:layout_marginRight="@dimen/product_card_content_margin"
+            android:layout_marginBottom="@dimen/product_card_flashsale_label_margintop"
+            android:max="100"
+            android:progressDrawable="@drawable/progressbar_flashsale"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/productCardContentLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/textViewStockLabel"
+            app:layout_constraintVertical_bias="1.0"
+            app:layout_goneMarginTop="@dimen/product_card_flashsale_progressbar_gone_margintop" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/textViewStockLabel"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/product_card_flashsale_label_height"
+            app:srcCompat="@drawable/ic_pdp_view"
+            android:textStyle="bold"
+            android:textColor="@color/charcoal_grey_68"
+            android:textSize="@dimen/sp_10"
+            android:layout_marginLeft="@dimen/product_card_content_margin"
+            android:layout_marginRight="@dimen/product_card_content_margin"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintVertical_bias="1.0"
+            app:typographyType="small"
+            app:typographyWeight="bold"
+            tools:text="989jt orang"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/buttonAddToCart"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/product_card_button_add_to_cart_height"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginTop="@dimen/product_card_button_add_to_cart_margin_top"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8"
+            android:background="@drawable/product_card_bg_button_atc"
+            android:foreground="?selectableItemBackground"
+            android:gravity="center"
+            android:padding="@dimen/dp_8"
+            android:text="@string/product_card_text_add_to_cart_grid"
+            android:textColor="@color/orange_red"
+            android:visibility="gone"
+            android:clickable="true"
+            android:focusable="true"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/productCardContentLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintVertical_bias="1.0"
+            app:typographyType="heading_6"
+            tools:visibility="visible" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

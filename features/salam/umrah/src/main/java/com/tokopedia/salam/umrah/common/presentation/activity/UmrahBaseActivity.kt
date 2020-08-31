@@ -9,6 +9,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.View.GONE
+import android.view.View.VISIBLE
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.salam.umrah.R
@@ -38,7 +39,9 @@ abstract class UmrahBaseActivity : BaseSimpleActivity() {
     }
 
     abstract fun getMenuButton(): Int
-    abstract fun getShareLink(): String
+    abstract fun onClickShare()
+    abstract fun onClickHelp()
+    abstract fun onClickSalam()
 
     private fun initInjector() {
         getUmrahComponent().inject(this)
@@ -68,7 +71,7 @@ abstract class UmrahBaseActivity : BaseSimpleActivity() {
         val menuBottomSheet = BottomSheetUnify()
         menuBottomSheet.setCloseClickListener { menuBottomSheet.dismiss() }
         menuBottomSheet.setTitle(resources.getString(R.string.umrah_menu_title))
-        val view = LayoutInflater.from(applicationContext).inflate(R.layout.bottom_sheets_umrah_menu, null)
+        val view = LayoutInflater.from(applicationContext).inflate(com.tokopedia.salam.umrah.R.layout.bottom_sheets_umrah_menu, null)
         menuBottomSheet.setChild(view)
         menuBottomSheet.show(supportFragmentManager, "")
         setMenuListener(menuBottomSheet, view)
@@ -78,22 +81,17 @@ abstract class UmrahBaseActivity : BaseSimpleActivity() {
     private fun setMenuListener(menuBottomSheet: BottomSheetUnify, view: View) {
         view.apply {
             tg_umrah_help.setOnClickListener {
+                onClickHelp()
                 RouteManager.route(this@UmrahBaseActivity, getString(R.string.umrah_help_link))
                 menuBottomSheet.dismiss()
             }
-            tg_umrah_share.visibility = GONE
+            tg_umrah_share.visibility = VISIBLE
             tg_umrah_share.setOnClickListener {
-                try {
-                    val intent = Intent(Intent.ACTION_SEND)
-                    intent.putExtra(Intent.EXTRA_TEXT, getShareLink())
-                    intent.type = "text/plain"
-                    startActivity(intent)
-                } catch (e: Exception) {
-
-                }
+                onClickShare()
                 menuBottomSheet.dismiss()
             }
             tg_umrah_salam.setOnClickListener {
+                onClickSalam()
                 RouteManager.route(this@UmrahBaseActivity, getString(R.string.umrah_salam_app_link))
                 menuBottomSheet.dismiss()
             }

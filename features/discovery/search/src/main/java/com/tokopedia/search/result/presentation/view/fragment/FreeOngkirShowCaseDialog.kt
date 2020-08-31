@@ -16,23 +16,29 @@ class FreeOngkirShowCaseDialog: Fragment() {
 
     companion object {
         @JvmStatic
-        fun show(activity: FragmentActivity?, hasFreeOngkirBadge: Boolean) {
+        fun show(activity: FragmentActivity?, hasFreeOngkirBadge: Boolean, listener: Listener?) {
             try {
                 if (activity == null) return
 
-                tryShowFragment(activity, hasFreeOngkirBadge)
+                tryShowFragment(activity, hasFreeOngkirBadge, listener)
             }
             catch(e: Exception) {
 
             }
         }
 
-        private fun tryShowFragment(activity: FragmentActivity, hasFreeOngkirBadge: Boolean) {
+        private fun tryShowFragment(activity: FragmentActivity, hasFreeOngkirBadge: Boolean, listener: Listener?) {
             if (isShowCaseHasNotShown(activity)
                     && hasFreeOngkirBadge) {
+                val freeOngkirShowCaseDialog = FreeOngkirShowCaseDialog()
+                freeOngkirShowCaseDialog.listener = listener
+
                 val supportFragmentManager = activity.supportFragmentManager.beginTransaction()
-                supportFragmentManager.add(R.id.rootSearchResult, FreeOngkirShowCaseDialog())
+                supportFragmentManager.add(R.id.rootSearchResult, freeOngkirShowCaseDialog)
                 supportFragmentManager.commit()
+            }
+            else {
+                listener?.onFreeOngkirOnBoardingShown()
             }
         }
 
@@ -45,6 +51,8 @@ class FreeOngkirShowCaseDialog: Fragment() {
             return LocalCacheHandler(activity, FREE_ONGKIR_LOCAL_CACHE_NAME)
         }
     }
+
+    private var listener: Listener? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.search_result_free_ongkir_show_case_dialog, container, false)
@@ -60,6 +68,7 @@ class FreeOngkirShowCaseDialog: Fragment() {
         activity?.let { activity ->
             setFreeOngkirShowCaseAlreadyShown(activity)
             dismiss(activity)
+            listener?.onFreeOngkirOnBoardingShown()
         }
     }
 
@@ -71,5 +80,9 @@ class FreeOngkirShowCaseDialog: Fragment() {
 
     private fun dismiss(activity: FragmentActivity) {
         activity.supportFragmentManager.beginTransaction().remove(this).commit()
+    }
+
+    interface Listener {
+        fun onFreeOngkirOnBoardingShown()
     }
 }

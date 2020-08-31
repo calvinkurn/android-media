@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/talkReplyContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/replyProfilePicture"
+        android:layout_width="@dimen/layout_lvl4"
+        android:layout_height="@dimen/layout_lvl4"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginLeft="@dimen/layout_lvl2"
+        app:unify_image_type="circle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/replySellerLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/reading_seller_label"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginLeft="@dimen/layout_lvl2"
+        android:visibility="gone"
+        app:labelType="general_light_green"
+        app:layout_constraintTop_toTopOf="@id/replyProfilePicture"
+        app:layout_constraintStart_toEndOf="@id/replyProfilePicture" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/replyDisplayName"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_18"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_marginLeft="@dimen/spacing_lvl2"
+        android:textColor="@color/Neutral_N700_68"
+        app:layout_goneMarginStart="@dimen/layout_lvl2"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:text="Budi"
+        app:layout_constraintTop_toTopOf="@id/replyProfilePicture"
+        app:layout_constraintStart_toEndOf="@id/replySellerLabel" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrierReplyLabelName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="replyDisplayName, replySellerLabel"
+        app:barrierDirection="end" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/replyDate"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_18"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_marginLeft="@dimen/spacing_lvl2"
+        android:textColor="@color/Neutral_N700_68"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:text="Kemarin"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        app:layout_constraintStart_toEndOf="@+id/barrierReplyLabelName"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrierReplyMessage"
+        android:layout_width="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="replyDisplayName, replySellerLabel, replyDate"
+        android:layout_height="wrap_content"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/replyMessage"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:layout_marginRight="@dimen/layout_lvl2"
+        app:layout_goneMarginStart="@dimen/layout_lvl2"
+        tools:text="Hai"
+        app:layout_constraintStart_toStartOf="@id/replySellerLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/barrierReplyMessage"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/replyAttachedProductsRecyclerView"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:clipToPadding="false"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/layout_lvl2"
+        android:paddingEnd="@dimen/layout_lvl2"
+        android:paddingTop="@dimen/layout_lvl1"
+        android:paddingBottom="@dimen/layout_lvl1"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/replyMessage"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+    <ImageView
+        android:id="@+id/likeIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_12"
+        android:visibility="gone"
+        app:layout_goneMarginTop="@dimen/dp_12"
+        app:layout_goneMarginStart="@dimen/layout_lvl2"
+        app:srcCompat="@drawable/talk_ic_like"
+        app:layout_constraintStart_toStartOf="@id/replyMessage"
+        app:layout_constraintTop_toBottomOf="@id/replyAttachedProductsRecyclerView" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/replyLikeCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/talk_like_count_place_holder"
+        android:layout_marginStart="@dimen/layout_lvl1"
+        android:layout_marginLeft="@dimen/layout_lvl1"
+        android:visibility="gone"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        app:layout_constraintStart_toEndOf="@id/likeIcon"
+        app:layout_constraintTop_toTopOf="@id/likeIcon" />
+
+    <ImageView
+        android:id="@+id/replyKebab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:layout_marginRight="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:visibility="gone"
+        app:layout_goneMarginTop="@dimen/dp_12"
+        app:layout_constraintTop_toBottomOf="@id/replyAttachedProductsRecyclerView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/talk_ic_kebab" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        app:layout_constraintTop_toBottomOf="@id/replyKebab"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

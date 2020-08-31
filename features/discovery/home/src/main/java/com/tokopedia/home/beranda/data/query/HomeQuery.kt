@@ -2,7 +2,9 @@ package com.tokopedia.home.beranda.data.query
 
 object HomeQuery{
     fun getQuery() = """
+        query homeData
         {
+        status
           ticker {
             meta {
               total_data
@@ -14,6 +16,8 @@ object HomeQuery{
               message
               color
               layout
+              ticker_type
+              title
             }
           }
           slides(device: 32) {
@@ -24,28 +28,18 @@ object HomeQuery{
               persona
               brand_id
               category_persona
-              title
               image_url
               redirect_url
               applink
               topads_view_url
               promo_code
-              message
               creative_name
-              start_time
-              expire_time
-              slide_index
               type
+              category_id
+              campaignCode
             }
           }
           dynamicHomeIcon {
-            useCaseIcon {
-              id
-              name
-              url
-              imageUrl
-              applinks
-            }
             dynamicIcon {
               id
               galaxy_attribution
@@ -62,6 +56,7 @@ object HomeQuery{
           dynamicHomeChannel {
             channels {
               id
+              group_id
               galaxy_attribution
               persona
               brand_id
@@ -70,26 +65,25 @@ object HomeQuery{
               layout
               type
               showPromoBadge
+              categoryID
+              perso_type
+              campaignCode
+              has_close_button
               header {
                 id
                 name
+                subtitle
                 url
                 applink
                 serverTime
                 expiredTime
                 backColor
                 backImage
-              }
-              hero {
-                id
-                name
-                url
-                applink
-                imageUrl
-                attribution
+                textColor
               }
               grids {
                 id
+                back_color
                 name
                 url
                 applink
@@ -103,16 +97,38 @@ object HomeQuery{
                 productClickUrl
                 impression
                 cashback
+                isTopads
                 freeOngkir {
                   isActive
                   imageUrl
                 }
+                productViewCountFormatted
+                isOutOfStock
+                warehouseID
+                minOrder
+                shop{
+                    shopID
+                }
+                labelGroup {
+                  title
+                  position
+                  type
+                }
+                has_buy_button
+                rating
+                count_review
+                benefit {
+                    type
+                    value
+                }
+                textColor
               }
               banner {
                 id
                 title
                 description
                 url
+                back_color
                 cta {
                   type
                   mode
@@ -123,35 +139,19 @@ object HomeQuery{
                 text_color
                 image_url
                 attribution
-
+                gradient_color
               }
             }
           }
-          spotlight {
-            spotlights {
-              id
-              galaxy_attribution
-              persona
-              brand_id
-              category_persona
-              title
-              description
-              background_image_url
-              tag_name
-              tag_name_hexcolor
-              tag_hexcolor
-              cta_text
-              cta_text_hexcolor
-              url
-              applink
-            }
-          }
           homeFlag{
-            flags(name: "has_recom_nav_button,dynamic_icon_wrap,has_tokopoints"){
-              name
-              is_active
+                event_time
+                server_time
+                flags(name: "has_recom_nav_button,dynamic_icon_wrap,has_tokopoints,is_autorefresh"){
+                    name
+                    is_active
+                }
             }
-          }
         }
     """.trimIndent()
 }
+

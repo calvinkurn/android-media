@@ -54,4 +54,13 @@
         <item name="android:background">@drawable/bg_button_border_green</item>
     </style>
 
+    <style name="CreateAdsBottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/CreateAdsBottomSheetStyle</item>
+    </style>
+
+    <style name="CreateAdsBottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+
 </resources>

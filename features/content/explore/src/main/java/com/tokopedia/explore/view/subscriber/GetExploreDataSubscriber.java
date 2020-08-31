@@ -2,7 +2,7 @@ package com.tokopedia.explore.view.subscriber;
 
 import android.text.TextUtils;
 
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.explore.domain.entity.Category;
 import com.tokopedia.explore.domain.entity.Content;

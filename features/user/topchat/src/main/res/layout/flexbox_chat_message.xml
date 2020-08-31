@@ -21,7 +21,7 @@
         android:id="@+id/llStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="right|bottom"
+        android:layout_gravity="end|bottom|center_vertical"
         android:layout_marginStart="@dimen/spacing_lvl3"
         android:layout_marginLeft="@dimen/spacing_lvl3"
         android:layout_marginTop="@dimen/spacing_lvl2"
@@ -29,8 +29,8 @@
 
         <ImageView
             android:id="@+id/ivCheckMark"
-            android:layout_width="@dimen/topchat_14dp"
-            android:layout_height="@dimen/topchat_14dp"
+            android:layout_width="@dimen/dp_topchat_14"
+            android:layout_height="@dimen/dp_topchat_14"
             android:layout_gravity="center_vertical"
             android:layout_marginEnd="@dimen/spacing_lvl1"
             android:layout_marginRight="@dimen/spacing_lvl1"
@@ -40,9 +40,25 @@
             android:id="@+id/tvTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="center_vertical"
             android:includeFontPadding="false"
-            android:textColor="@color/topchat_chat_hour_time"
+            android:textColor="@color/topchat_grey"
             app:typographyType="body_3"
             tools:text="11:00" />
     </LinearLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:layout_marginTop="@dimen/dp_topchat_6"
+        android:text="@string/tittle_info_auto_reply"
+        android:textColor="@color/topchat_grey"
+        android:textIsSelectable="true"
+        android:visibility="gone"
+        app:typographyType="body_3"
+        tools:ignore="RtlHardcoded,RtlSymmetry"
+        tools:visibility="visible" />
+
 </merge>

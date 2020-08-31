@@ -10,11 +10,15 @@ public interface SearchEventTracking {
         String CLICK_TOP_NAV = "clickTopNav";
         String VIEW_SEARCH_RESULT_IRIS = "viewSearchResultIris";
         String CLICK_SEARCH_RESULT_IRIS = "clickSearchResultIris";
+        String PROMO_VIEW = "promoView";
+        String PROMO_CLICK = "promoClick";
+        String PRODUCT_VIEW = "productView";
+        String PRODUCT_CLICK = "productClick";
     }
 
     interface Category {
         String EVENT_TOP_NAV = "top nav";
-        String EVENT_TOP_NAV_SEARCH_SRP = "top nav - search - search result page";
+        String EVENT_TOP_NAV_SEARCH_SRP = "top nav - search result page";
         String SEARCH = "Search";
         String FILTER_PRODUCT = "filter product";
         String SEARCH_RESULT = "search result";
@@ -44,10 +48,31 @@ public interface SearchEventTracking {
         String IMPRESSION_BANNED_PRODUCT_TICKER_EMPTY = "impression - banned product ticker - empty";
         String CLICK_BANNED_PRODUCT_TICKER_EMPTY = "click - banned product ticker - empty";
         String IMPRESSION_BANNED_PRODUCT_TICKER_RELATED = "impression - banned product ticker - related";
-        String IMPRESSION_SORT_PRICE_MIN_TICKER = "impression - sort terendah ticker";
-        String CLICK_SORT_PRICE_MIN_TICKER = "click - sort terendah ticker";
+        String IMPRESSION_TICKER = "impression - ticker";
+        String CLICK_TICKER = "click - ticker";
         String CLICK_BANNED_PRODUCT_TICKER_RELATED = "click - banned product ticker - related";
         String GENERAL_SEARCH = "general search";
+        String CLICK_CHANGE_KEYWORD = "click ganti kata kunci";
+        String IMPRESSION_SHOP = "impression - shop";
+        String IMPRESSION_SHOP_ALTERNATIVE = "impression - shop - alternative";
+        String CLICK_SHOP = "click - shop";
+        String CLICK_SHOP_INACTIVE = "click - shop - inactive";
+        String CLICK_SHOP_ALTERNATIVE = "click - shop - alternative";
+        String IMPRESSION_PRODUCT_SHOP_TAB = "impression - product - shop tab";
+        String IMPRESSION_PRODUCT_SHOP_TAB_ALTERNATIVE = "impression - product - shop tab - alternative";
+        String CLICK_PRODUCT_SHOP_TAB = "click - product - shop tab";
+        String CLICK_PRODUCT_SHOP_TAB_ALTERNATIVE = "click - product - shop tab - alternative";
+        String IMPRESSION_INSPIRATION_CAROUSEL_PRODUCT = "impression - inspiration carousel product";
+        String IMPRESSION_INSPIRATION_CAROUSEL_INFO_PRODUCT = "impression - carousel banner";
+        String CLICK_INSPIRATION_CAROUSEL_SEARCH = "click - inspiration carousel search";
+        String CLICK_INSPIRATION_CAROUSEL_PRODUCT = "click - inspiration carousel product";
+        String CLICK_INSPIRATION_CAROUSEL_INFO_PRODUCT = "click - carousel banner";
+        String CLICK = "click";
+        String CLICK_FUZZY_KEYWORDS_SUGGESTION = "click - fuzzy keywords - suggestion";
+        String IMPRESSION_BROAD_MATCH = "impression - broad match";
+        String CLICK_BROAD_MATCH_LIHAT_SEMUA = "click - broad match lihat semua";
+        String CLICK_BROAD_MATCH = "click - broad match";
+        String CLICK_INSPIRATION_CARD = "click inspiration card";
     }
 
     interface Label {
@@ -67,4 +92,6 @@ public interface SearchEventTracking {
     interface EventMoEngage {
         String SEARCH_ATTEMPT = "Search_Attempt";
     }
+
+    String NONE = "none";
 }

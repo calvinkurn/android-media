@@ -27,7 +27,7 @@
                 android:layout_height="@dimen/height_egg"
                 android:layout_gravity="center"
                 android:scaleType="fitCenter"
-                tools:srcCompat="@drawable/ic_empty_egg"/>
+                tools:srcCompat="@drawable/gami_ic_empty_egg"/>
 
             <Button
                 android:id="@+id/get_more_token_button"
@@ -89,7 +89,7 @@
                             android:id="@+id/empty_daily_prize"
                             android:layout_width="@dimen/dp_32"
                             android:layout_height="@dimen/dp_32"
-                            tools:src="@drawable/ic_empty_egg" />
+                            tools:src="@drawable/gami_ic_empty_egg" />
                     </FrameLayout>
 
                 </FrameLayout>

@@ -24,23 +24,17 @@ object AttachInvoiceViewModelTest : Spek({
         val viewmodel by memoized { AttachInvoiceViewModel(useCase) }
 
         group("No message id") {
-            beforeEachTest {
-                viewmodel.messageId = ""
-            }
             test("Do nothing when messgeId is empty") {
-                viewmodel.loadInvoices(1)
+                viewmodel.loadInvoices(1, "")
                 verify(exactly = 0) { useCase.getInvoices(any(), any(), any(), any()) }
             }
         }
 
         group("With message id") {
-            beforeEachTest {
-                viewmodel.messageId = exMsgId
-            }
 
             test("Call the exact same page provided in argument") {
                 every { useCase.getInvoices(any(), any(), any(), any()) } just Runs
-                viewmodel.loadInvoices(1)
+                viewmodel.loadInvoices(1, exMsgId)
 
                 verify(exactly = 1) { useCase.getInvoices(any(), any(), eq(exMsgId.toInt()), eq(1)) }
             }
@@ -56,7 +50,7 @@ object AttachInvoiceViewModelTest : Spek({
 
                 viewmodel.invoices.observeForever(observer)
 
-                viewmodel.loadInvoices(1)
+                viewmodel.loadInvoices(1, exMsgId)
 
                 verify { observer.onChanged(Success(exInvoiceResponse.invoices)) }
             }
@@ -70,7 +64,7 @@ object AttachInvoiceViewModelTest : Spek({
 
                 viewmodel.invoices.observeForever(observer)
 
-                viewmodel.loadInvoices(1)
+                viewmodel.loadInvoices(1, exMsgId)
 
                 verify { observer.onChanged(Fail(exErrorInvoiceResponse)) }
             }

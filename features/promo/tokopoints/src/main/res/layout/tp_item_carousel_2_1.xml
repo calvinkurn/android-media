@@ -11,10 +11,11 @@
         android:layout_height="wrap_content"
         android:background="@color/white">
 
-        <com.tokopedia.design.image.RoundedCornerImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iv_col_1"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            app:unify_image_corner_radius="8"
             android:background="@drawable/bg_tp_section_border"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="h,2:1"

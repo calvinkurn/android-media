@@ -7,10 +7,9 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 
 public class SuggestionViewModel implements Parcelable, Visitable<ProductListTypeFactory> {
-    private String suggestionText;
-    private String suggestionCurrentKeyword;
-    private String suggestedQuery;
-    private String formattedResultCount;
+    private String suggestionText = "";
+    private String suggestedQuery = "";
+    private String suggestion = "";
 
     public String getSuggestionText() {
         return suggestionText;
@@ -18,14 +17,6 @@ public class SuggestionViewModel implements Parcelable, Visitable<ProductListTyp
 
     public void setSuggestionText(String suggestionText) {
         this.suggestionText = suggestionText;
-    }
-
-    public String getSuggestionCurrentKeyword() {
-        return suggestionCurrentKeyword;
-    }
-
-    public void setSuggestionCurrentKeyword(String suggestionCurrentKeyword) {
-        this.suggestionCurrentKeyword = suggestionCurrentKeyword;
     }
 
     public String getSuggestedQuery() {
@@ -36,12 +27,12 @@ public class SuggestionViewModel implements Parcelable, Visitable<ProductListTyp
         this.suggestedQuery = suggestedQuery;
     }
 
-    public String getFormattedResultCount() {
-        return formattedResultCount;
+    public void setSuggestion(String suggestion) {
+        this.suggestion = suggestion;
     }
 
-    public void setFormattedResultCount(String formattedResultCount) {
-        this.formattedResultCount = formattedResultCount;
+    public String getSuggestion() {
+        return this.suggestion;
     }
 
     @Override
@@ -60,16 +51,14 @@ public class SuggestionViewModel implements Parcelable, Visitable<ProductListTyp
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.suggestionText);
-        dest.writeString(this.suggestionCurrentKeyword);
         dest.writeString(this.suggestedQuery);
-        dest.writeString(this.formattedResultCount);
+        dest.writeString(this.suggestion);
     }
 
     protected SuggestionViewModel(Parcel in) {
         this.suggestionText = in.readString();
-        this.suggestionCurrentKeyword = in.readString();
         this.suggestedQuery = in.readString();
-        this.formattedResultCount = in.readString();
+        this.suggestion = in.readString();
     }
 
     public static final Creator<SuggestionViewModel> CREATOR = new Creator<SuggestionViewModel>() {

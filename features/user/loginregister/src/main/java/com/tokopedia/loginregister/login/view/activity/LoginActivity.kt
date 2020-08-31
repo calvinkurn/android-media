@@ -2,18 +2,21 @@ package com.tokopedia.loginregister.login.view.activity
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.config.GlobalConfig
+import com.tokopedia.kotlin.extensions.view.setLightStatusBar
+import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.di.DaggerLoginRegisterComponent
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent
@@ -24,7 +27,7 @@ import com.tokopedia.user.session.UserSession
 /**
  * @author by nisie on 10/1/18.
  */
-class LoginActivity : BaseSimpleActivity(), HasComponent<LoginRegisterComponent> {
+open class LoginActivity : BaseSimpleActivity(), HasComponent<LoginRegisterComponent> {
 
     companion object {
 
@@ -133,6 +136,20 @@ class LoginActivity : BaseSimpleActivity(), HasComponent<LoginRegisterComponent>
         return DaggerLoginRegisterComponent.builder().baseAppComponent((application as BaseMainApplication).baseAppComponent).build()
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        setWhiteStatusBarIfSellerApp()
+        removeBackButtonIfSellerApp()
+    }
+
+    private fun setWhiteStatusBarIfSellerApp() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && GlobalConfig.isSellerApp()) {
+            setStatusBarColor(Color.WHITE)
+            setLightStatusBar(true)
+        }
+    }
+
     override fun onBackPressed() {
         if (supportFragmentManager.findFragmentById(R.id.parent_view) is LoginEmailPhoneContract.View) {
             (supportFragmentManager.findFragmentById(R.id
@@ -142,4 +159,10 @@ class LoginActivity : BaseSimpleActivity(), HasComponent<LoginRegisterComponent>
         }
     }
 
+    private fun removeBackButtonIfSellerApp() {
+        if (GlobalConfig.isSellerApp()) {
+            toolbar?.setPadding(30, 0, 0, 0)
+            supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        }
+    }
 }

@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.design.list.adapter.SpaceItemDecoration
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.salam.umrah.R
@@ -61,6 +62,9 @@ class UmrahHomepageCategoryViewHolder(view: View, val onBindListener: onItemBind
                     })
                 }
             }
+        } else if(element.isLoaded && element.umrahCategories.isEmpty()){
+            itemView.shimmering.gone()
+            itemView.section_layout.gone()
         } else {
             itemView.shimmering.show()
             itemView.section_layout.hide()

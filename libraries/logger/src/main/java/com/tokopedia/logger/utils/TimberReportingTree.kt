@@ -14,6 +14,7 @@ import java.util.*
 class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
 
     var userId: String = ""
+    var partDeviceId: String = ""
     var versionName: String = ""
     var versionCode: Int = 0
     var tagMaps: HashMap<String, Tag> = hashMapOf()
@@ -22,36 +23,57 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
         populateTagMaps(tags)
     }
 
+    fun setClientLogs(clientLogs: List<String>?) {
+        if (clientLogs == null || clientLogs.isEmpty()) {
+            LogManager.logentriesEnabled = true
+            LogManager.scalyrEnabled = false
+            LogManager.isPrimaryLogentries = true
+            LogManager.isPrimaryScalyr = false
+        } else {
+            // curently logentries are always enabled.
+            LogManager.logentriesEnabled = clientLogs.contains(Constants.CLIENT_LOGENTRIES)
+            LogManager.scalyrEnabled = clientLogs.contains(Constants.CLIENT_SCALYR)
+            LogManager.isPrimaryLogentries = (clientLogs[0] == Constants.CLIENT_LOGENTRIES)
+            LogManager.isPrimaryScalyr = (clientLogs[0] == Constants.CLIENT_SCALYR)
+        }
+    }
+
+    fun setQueryLimits(queryLimit: List<Int>?) {
+        if (queryLimit != null) {
+            LogManager.queryLimits = queryLimit
+        }
+    }
+
     override fun log(logPriority: Int, tag: String?, message: String, t: Throwable?) {
-        val timeStamp = System.currentTimeMillis()
-        if (logPriority == Log.VERBOSE || logPriority == Log.DEBUG || LogManager.instance == null) {
-            return
-        }
-        if (!message.startsWith(PREFIX) || tags.isEmpty()) {
-            return
-        }
-        val messageSplit = listOf(*message.split("#".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray())
-        if (messageSplit.size != SIZE_MESSAGE) {
-            return
-        }
-        val messageKey = StringBuilder().append(messageSplit[0])
-                .append("#")
-                .append(messageSplit[1])
-                .toString()
-        tagMaps[messageKey]?.let {
-            val priority = it.postPriority
-            val classLine = tag ?: ""
-            val processedMessage = getMessage(messageSplit[1], timeStamp, classLine, replaceNewline(messageSplit[2]))
-            LogManager.log(processedMessage, timeStamp, priority, messageSplit.first())
-        }
+        globalScopeLaunch({
+            val timeStamp = System.currentTimeMillis()
+            if (logPriority == Log.VERBOSE || logPriority == Log.DEBUG || LogManager.instance == null) {
+                return@globalScopeLaunch
+            }
+            if (!message.startsWith(PREFIX) || tags.isEmpty()) {
+                return@globalScopeLaunch
+            }
+            val messageSplit = message.split(DELIMITER.toRegex()).dropLastWhile { it.isEmpty() }
+            if (messageSplit.size < SIZE_MESSAGE) {
+                return@globalScopeLaunch
+            }
+            val messageKey = messageSplit[0].plus(DELIMITER).plus(messageSplit[1])
+            val messageToBeSend = message.substringAfter(messageKey.plus(DELIMITER))
+            tagMaps[messageKey]?.let {
+                val priority = it.postPriority
+                val classLine = tag ?: ""
+                val processedMessage = getMessage(messageSplit[1], timeStamp, classLine, replaceNewline(messageToBeSend))
+                LogManager.log(processedMessage, timeStamp, priority, messageSplit.first())
+            }
+        })
     }
 
     override fun createStackElementTag(element: StackTraceElement): String? {
         return String.format(
-                "[%s:%s:%s]",
-                super.createStackElementTag(element),
-                element.methodName,
-                element.lineNumber
+            "[%s:%s:%s]",
+            super.createStackElementTag(element),
+            element.methodName,
+            element.lineNumber
         )
     }
 
@@ -62,34 +84,37 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
     private fun getMessage(tag: String, timeStamp: Long, classLine: String, message: String): String {
         val stringBuilder = StringBuilder()
         stringBuilder.append("tag=")
-                .append(tag)
-                .append("#")
+            .append(tag)
+            .append(DELIMITER)
         stringBuilder.append("timestamp=")
-                .append(timeStamp)
-                .append("#")
+            .append(timeStamp)
+            .append(DELIMITER)
         stringBuilder.append("time=")
-                .append(getReadableTimeStamp(timeStamp))
-                .append("#")
+            .append("'${getReadableTimeStamp(timeStamp)}'")
+            .append(DELIMITER)
+        stringBuilder.append("did=")
+            .append(partDeviceId)
+            .append(DELIMITER)
         stringBuilder.append("uid=")
-                .append(userId)
-                .append("#")
+            .append(userId)
+            .append(DELIMITER)
         stringBuilder.append("vernm=")
-                .append(versionName)
-                .append("#")
+            .append(versionName)
+            .append(DELIMITER)
         stringBuilder.append("vercd=")
-                .append(versionCode)
-                .append("#")
+            .append(versionCode)
+            .append(DELIMITER)
         stringBuilder.append("os=")
-                .append(Build.VERSION.RELEASE)
-                .append("#")
+            .append(Build.VERSION.RELEASE)
+            .append(DELIMITER)
         stringBuilder.append("device=")
-                .append(Build.MODEL)
-                .append("#")
+            .append("'${Build.MODEL}'")
+            .append(DELIMITER)
         stringBuilder.append("cls=")
-                .append(classLine)
-                .append("#")
+            .append("'${classLine}'")
+            .append(DELIMITER)
         stringBuilder.append("msg=")
-                .append(message)
+            .append(message)
         return stringBuilder.toString()
     }
 
@@ -101,7 +126,7 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
     }
 
     private fun replaceNewline(message: String): String {
-        return message.replace("\n"," ")
+        return message.trim().replace("\\s+".toRegex(), " ")
     }
 
     private fun populateTagMaps(tags: List<String>?) {
@@ -109,19 +134,18 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
             return
         }
         for (tag in tags) {
-            val tagSplit = listOf(*tag.split("#".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray())
+            val tagSplit = tag.split(DELIMITER.toRegex()).dropLastWhile { it.isEmpty() }
             if (tagSplit.size != SIZE_REMOTE_CONFIG_TAG) {
                 continue
             }
             tagSplit[2].toDoubleOrNull()?.let {
                 val randomNumber = Random().nextDouble() * MAX_RANDOM_NUMBER
-                Timber.d("${tagSplit[0]}#${tagSplit[1]} randomNumber = $randomNumber")
-                if (randomNumber < it) {
+                if (randomNumber <= it) {
                     val tagKey = StringBuilder()
-                            .append(tagSplit[0])
-                            .append("#")
-                            .append(tagSplit[1])
-                            .toString()
+                        .append(tagSplit[0])
+                        .append(DELIMITER)
+                        .append(tagSplit[1])
+                        .toString()
                     tagMaps[tagKey] = Tag(getPriority(tagSplit[3]))
                 }
             }
@@ -129,6 +153,7 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
     }
 
     companion object {
+        const val DELIMITER = "#"
         const val MAX_RANDOM_NUMBER = 100
 
         const val SIZE_MESSAGE = 3

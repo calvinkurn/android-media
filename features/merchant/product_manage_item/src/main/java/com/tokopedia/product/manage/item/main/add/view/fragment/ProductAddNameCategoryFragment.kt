@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.core.content.ContextCompat
 import android.view.*
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.core.common.category.di.module.CategoryPickerModule
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
 import com.tokopedia.product.manage.item.R
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent
@@ -33,6 +34,7 @@ class ProductAddNameCategoryFragment : BaseProductEditCategoryFragment(), Produc
     override fun initInjector() {
         DaggerProductEditCategoryCatalogComponent.builder()
                 .productComponent(getComponent(ProductComponent::class.java))
+                .categoryPickerModule(CategoryPickerModule(requireActivity().applicationContext))
                 .productEditCategoryCatalogModule(ProductEditCategoryCatalogModule())
                 .build()
                 .inject(this)
@@ -47,7 +49,7 @@ class ProductAddNameCategoryFragment : BaseProductEditCategoryFragment(), Produc
                 flagReset = savedInstanceState.getBoolean(SAVED_RESET_DATA)
             }
             if (savedInstanceState.containsKey(SAVED_PRODUCT_NAME)) {
-                productName = savedInstanceState.getParcelable(SAVED_PRODUCT_NAME)
+                productName = savedInstanceState.getParcelable(SAVED_PRODUCT_NAME)?: ProductName()
             }
             if (savedInstanceState.containsKey(SAVED_PRODUCT_IMAGES)){
                 productPictureList = savedInstanceState.getStringArrayList(SAVED_PRODUCT_IMAGES)

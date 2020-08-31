@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/telco_page_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:descendantFocusability="beforeDescendants">
+
+    <include layout="@layout/layout_telco_shimmering_product_telco" />
+
+    <com.tokopedia.topupbills.telco.prepaid.widget.TelcoNestedCoordinatorLayout
+        android:id="@+id/telco_main_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/telco_main_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:descendantFocusability="blocksDescendants"
+            android:focusable="true"
+            android:focusableInTouchMode="true">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/layout_lvl1"
+                app:layout_scrollFlags="scroll"/>
+
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/telco_ticker_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_marginLeft="@dimen/layout_lvl2"
+                android:layout_marginTop="@dimen/layout_lvl1"
+                android:layout_marginRight="@dimen/layout_lvl2"
+                app:closeButtonVisibility="visible"
+                app:enableAutoSlide="true"
+                app:tickerShapeType="loose"
+                app:layout_scrollFlags="scroll"
+                tools:visibility="gone" />
+
+            <com.tokopedia.topupbills.telco.postpaid.widget.DigitalPostpaidClientNumberWidget
+                android:id="@+id/telco_input_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/telco_ticker_view"
+                android:layout_marginLeft="@dimen/layout_lvl2"
+                android:layout_marginTop="@dimen/layout_lvl1"
+                android:layout_marginRight="@dimen/layout_lvl2"
+                android:layout_marginBottom="@dimen/layout_lvl1"/>
+
+
+            <com.tokopedia.unifycomponents.TabsUnify
+                android:id="@+id/telco_tab_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/telco_input_number"
+                tools:visibility="visible" />
+
+            <View
+                android:id="@+id/separator"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/telco_space_1"
+                android:layout_below="@+id/telco_tab_layout"
+                android:background="@color/Neutral_N75" />
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/telco_view_pager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/separator"
+                android:layout_marginLeft="@dimen/layout_lvl2"
+                android:layout_marginRight="@dimen/layout_lvl2"
+                android:orientation="horizontal"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginTop="@dimen/spacing_lvl1"
+                app:cardElevation="@dimen/spacing_lvl2">
+
+                <com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
+                    android:id="@+id/telco_buy_widget"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/layout_lvl2"
+                    android:layout_marginRight="@dimen/layout_lvl2" />
+
+            </androidx.cardview.widget.CardView>
+
+        </RelativeLayout>
+    </com.tokopedia.topupbills.telco.prepaid.widget.TelcoNestedCoordinatorLayout>
+</RelativeLayout>

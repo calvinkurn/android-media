@@ -1,0 +1,14 @@
+query DepositActivityQuery($page: Int!, $maxRows: Int!, $dateFrom: String!, $dateTo: String!, $isSeller: Boolean!) {
+    buyerDepositHistory: depositActivity(page: $page, maxRows: $maxRows, dateFrom: $dateFrom, dateTo: $dateTo, isSeller: $isSeller) {
+    message
+    have_error
+    have_next_page
+    deposit_history_list {
+          note
+          amount
+          class
+          image
+          create_time
+    }
+    }
+}

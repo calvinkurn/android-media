@@ -9,6 +9,7 @@ import android.graphics.PixelFormat
 import android.graphics.Rect
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
+import androidx.annotation.ColorRes
 
 import androidx.core.content.ContextCompat
 
@@ -38,9 +39,18 @@ class CountDrawable(context: Context) : Drawable() {
 
     private fun createBadgePaint(context: Context) {
         badgePaint
-        badgePaint.color = ContextCompat.getColor(context.applicationContext, R.color.cart_count_color)
+        badgePaint.color = safeGetColor(context, R.color.cart_count_color)
         badgePaint.isAntiAlias = true
         badgePaint.style = Paint.Style.FILL
+    }
+
+    private fun safeGetColor(context: Context, @ColorRes colorId: Int): Int {
+        return try {
+            ContextCompat.getColor(context, colorId)
+        }
+        catch (throwable: Throwable) {
+            0
+        }
     }
 
     override fun draw(canvas: Canvas) {

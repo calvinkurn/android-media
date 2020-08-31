@@ -1,24 +1,20 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.addedit
 
-import android.content.Context
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.logisticaddaddress.R
-import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
 import kotlinx.android.synthetic.main.chips_item.view.*
 
 /**
  * Created by fwidjaja on 2019-06-21.
  */
-class LabelAlamatChipsAdapter(context: Context?, private var actionListener: ActionListener) : RecyclerView.Adapter<LabelAlamatChipsAdapter.ViewHolder>() {
-    var labelAlamatList = mutableListOf<String>()
+class LabelAlamatChipsAdapter(private var actionListener: ActionListener)
+    : RecyclerView.Adapter<LabelAlamatChipsAdapter.ViewHolder>() {
 
-    interface ActionListener {
-        fun onLabelAlamatChipClicked(labelAlamat: String)
-    }
+    private val labelAlamatList = mutableListOf<String>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.chips_item, parent, false))
@@ -28,17 +24,28 @@ class LabelAlamatChipsAdapter(context: Context?, private var actionListener: Act
         return labelAlamatList.size
     }
 
-    @Suppress("DEPRECATION")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val res = holder.itemView.context.resources
+        val ctx = holder.itemView.context
         holder.itemView.tv_chips_item.run {
             text = labelAlamatList[position]
-            setTextColor(res.getColor(R.color.font_black_secondary_54))
+            setTextColor(ContextCompat.getColor(ctx, com.tokopedia.design.R.color.font_black_secondary_54))
             setOnClickListener {
-                setTextColor(res.getColor(R.color.tkpd_green))
-                actionListener.onLabelAlamatChipClicked(labelAlamatList[position])
+                setTextColor(ContextCompat.getColor(ctx, R.color.tkpd_green))
+                labelAlamatList.getOrNull(position)?.let {
+                    actionListener.onLabelAlamatChipClicked(it)
+                }
             }
         }
+    }
+
+    fun submitList(addressLabels: List<String>) {
+        labelAlamatList.clear()
+        labelAlamatList.addAll(addressLabels)
+        notifyDataSetChanged()
+    }
+
+    interface ActionListener {
+        fun onLabelAlamatChipClicked(labelAlamat: String)
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)

@@ -1,7 +1,7 @@
 package com.tokopedia.recommendation_widget_common.data.mapper
 
 import com.tokopedia.kotlin.util.throwIfNull
-import com.tokopedia.recommendation_widget_common.data.RecomendationEntity
+import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationLabel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -11,20 +11,17 @@ import rx.functions.Func1
  * Created by devara fikry on 16/04/19.
  */
 
-class RecommendationEntityMapper : Func1<List<RecomendationEntity.RecomendationData>,
+class RecommendationEntityMapper : Func1<List<RecommendationEntity.RecomendationData>,
         List<RecommendationWidget>> {
 
-    override fun call(recommendations: List<RecomendationEntity.RecomendationData>): List<RecommendationWidget> {
+    override fun call(recommendations: List<RecommendationEntity.RecomendationData>): List<RecommendationWidget> {
         throwIfNull(recommendations, RecommendationEntityMapper::class.java)
         return mappingToRecommendationModel(recommendations)
     }
 
     companion object {
-        private const val LABEL_POSITION_OFFERS = "offers"
-        private const val LABEL_POSITION_PROMO = "promo"
-        private const val LABEL_POSITION_CREDIBILITY = "credibility"
 
-        fun mappingToRecommendationModel(recommendations: List<RecomendationEntity.RecomendationData>): List<RecommendationWidget> {
+        fun mappingToRecommendationModel(recommendations: List<RecommendationEntity.RecomendationData>): List<RecommendationWidget> {
             val recommendationWidgetList = arrayListOf<RecommendationWidget>()
 
             recommendationWidgetList.addAll(
@@ -34,62 +31,43 @@ class RecommendationEntityMapper : Func1<List<RecomendationEntity.RecomendationD
             return recommendationWidgetList
         }
 
-        fun convertToRecommendationWidget(recomendationData: RecomendationEntity.RecomendationData): RecommendationWidget {
+        fun convertToRecommendationWidget(recommendationData: RecommendationEntity.RecomendationData): RecommendationWidget {
             val recommendationItemList = arrayListOf<RecommendationItem>()
             recommendationItemList.addAll(
-                    recomendationData.recommendation?.mapIndexed { index, recommendation ->
+                    recommendationData.recommendation?.mapIndexed { index, recommendation ->
                         convertToRecommendationItem(
                                 recommendation,
-                                recomendationData.title ?: "",
-                                recomendationData.pageName ?: "",
+                                recommendationData.title ?: "",
+                                recommendationData.pageName ?: "",
                                 index + 1,
-                                recomendationData.layoutType ?: "")
+                                recommendationData.layoutType ?: "")
                     } ?: emptyList())
             return RecommendationWidget(
                     recommendationItemList,
-                    recomendationData.title ?: "",
-                    recomendationData.foreignTitle ?: "",
-                    recomendationData.source ?: "",
-                    recomendationData.tid ?: "",
-                    recomendationData.widgetUrl ?: "",
-                    recomendationData.layoutType?:"",
-                    recomendationData.seeMoreAppLink ?: "",
-                    recomendationData.pagination.currentPage,
-                    recomendationData.pagination.nextPage,
-                    recomendationData.pagination.prevPage,
-                    recomendationData.pagination.hasNext,
-                    recomendationData.pageName?:"")
+                    recommendationData.title ?: "",
+                    recommendationData.foreignTitle ?: "",
+                    recommendationData.source ?: "",
+                    recommendationData.tid ?: "",
+                    recommendationData.widgetUrl ?: "",
+                    recommendationData.layoutType?:"",
+                    recommendationData.seeMoreAppLink ?: "",
+                    recommendationData.pagination.currentPage,
+                    recommendationData.pagination.nextPage,
+                    recommendationData.pagination.prevPage,
+                    recommendationData.pagination.hasNext,
+                    recommendationData.pageName?:"")
         }
 
         private fun convertToRecommendationItem(
-                data: RecomendationEntity.Recommendation,
+                data: RecommendationEntity.Recommendation,
                 title: String,
                 pageName: String,
                 position: Int,
                 layoutType: String): RecommendationItem {
 
-            val labelCredibility = RecommendationLabel()
-            val labelPromo = RecommendationLabel()
-            val labelOffers = RecommendationLabel()
-
-            data.labelGroups?.let {
-                for (label: RecomendationEntity.Recommendation.LabelGroup in it){
-                    when(label.position){
-                        LABEL_POSITION_CREDIBILITY -> {
-                            labelCredibility.title = label.title?:""
-                            labelCredibility.title = label.type?:""
-                        }
-                        LABEL_POSITION_PROMO -> {
-                            labelPromo.title = label.title?:""
-                            labelPromo.title = label.type?:""
-                        }
-                        LABEL_POSITION_OFFERS -> {
-                            labelOffers.title = label.title?:""
-                            labelOffers.title = label.type?:""
-                        }
-                    }
-                }
-            }
+            val labelGroupList = data.labelGroups?.map {
+                RecommendationLabel(title = it.title ?: "", type = it.type ?: "", position = it.position)
+            } ?: listOf()
 
             return RecommendationItem(
                     data.id,
@@ -101,7 +79,7 @@ class RecommendationEntityMapper : Func1<List<RecomendationEntity.RecomendationD
                     data.wishlistUrl ?: "",
                     data.trackerImageUrl ?: "",
                     data.imageUrl ?: "",
-                    data.price ?: "",
+                    data.price ?: "0",
                     data.priceInt,
                     data.departmentId,
                     data.rating,
@@ -118,7 +96,7 @@ class RecommendationEntityMapper : Func1<List<RecomendationEntity.RecomendationD
                     data.shop?.id ?: -1,
                     "",
                     data.shop?.name ?: "",
-                    -1,
+                    "",
                     1,
                     title,
                     pageName,
@@ -128,15 +106,13 @@ class RecommendationEntityMapper : Func1<List<RecomendationEntity.RecomendationD
                     layoutType,
                     data.freeOngkirInformation?.isActive?:false,
                     data.freeOngkirInformation?.imageUrl?:"",
-                    labelPromo,
-                    labelOffers,
-                    labelCredibility,
+                    labelGroupList,
                     data.shop?.isGold ?: false
             )
 
         }
 
-        private fun isLabelDiscountVisible(productItem: RecomendationEntity.Recommendation): Boolean {
+        private fun isLabelDiscountVisible(productItem: RecommendationEntity.Recommendation): Boolean {
             return productItem.discountPercentage > 0
         }
     }

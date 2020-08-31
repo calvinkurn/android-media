@@ -1,5 +1,5 @@
-query RolloutFeatureVariants($rev: Int!, $client_id: Int!){
-     RolloutFeatureVariants(rev:$rev, client_id:$client_id){
+query RolloutFeatureVariants($rev: Int!, $client_id: Int!, $id: String, $iris_session_id: String){
+     RolloutFeatureVariants(rev:$rev, client_id:$client_id, id:$id, iris_session_id: $iris_session_id){
          featureVariants {
            feature
            variant

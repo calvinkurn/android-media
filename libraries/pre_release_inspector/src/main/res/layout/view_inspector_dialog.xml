@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/view_inspector_white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+        <TextView
+            android:id="@+id/dialogTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/view_inspector_default_item_padding"
+            android:gravity="center"
+            style="@style/ViewInspectorTextStyle.Large"
+            android:background="@color/view_inspector_white"
+            android:text="@string/view_inspector_dialog_title"
+            />
+
+        <CheckBox
+            android:id="@+id/closeDialogCheckBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="@string/view_inspector_close_dialog_after_apply_checkbox_text"/>
+
+        <EditText
+            android:id="@+id/searchInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/view_inspector_search_input_hint"
+            android:singleLine="true"
+            android:visibility="gone"
+            />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/dialogRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/emptyView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="@string/view_inspector_empty_result_text"
+        style="@style/ViewInspectorTextStyle.Large.Bold"
+        android:visibility="gone"/>
+
+    <androidx.core.widget.ContentLoadingProgressBar
+        android:id="@+id/loadingView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/view_inspector_white"
+        style="?android:attr/progressBarStyleLarge"
+        android:indeterminate="true"
+        />
+
+</RelativeLayout>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title_entertainment">Entertainment</string>
+    <string name="title_event_entertainment">Event</string>
+    <string name="title_home_event">Event Home</string>
+    <string name="host_event" translatable="false">event</string>
+    <string name="path_event_home" translatable="false">/home</string>
+    <string name="path_event_favorite" translatable="false">/favorite</string>
+    <string name="path_event_search" translatable="false">/search</string>
+    <string name="path_event_category" translatable="false">/category</string>
+    <string name="path_event_location" translatable="false">/location</string>
+
+    <string name="path_event_pdp" translatable="false">/detail/.*\</string>
+    <string name="path_event_choose_package" translatable="false">/choose-package/.*\</string>
+
+    <string name="path_event_checkout" translatable="false">/checkout</string>
+    <string name="path_event_form" translatable="false">/form/.*\</string>
+</resources>

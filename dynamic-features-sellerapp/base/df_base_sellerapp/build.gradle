@@ -1,0 +1,105 @@
+apply plugin: 'com.android.dynamic-feature'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply plugin: 'io.hansel.preprocessor.feature'
+
+repositories{
+    flatDir {
+        dirs 'libs'
+        dirs project(rootProject.ext.libraries.liveness_lib).file('libs')
+    }
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+android {
+
+    signingConfigs {
+        debug {
+            storeFile file("debug.keystore")
+        }
+    }
+
+    compileSdkVersion rootProject.ext.compileSdkVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+    }
+
+    // Specifies 4 flavor dimensions.
+    flavorDimensions "tier", "client"
+
+    productFlavors {
+        live {
+            dimension "tier"
+        }
+        staging {
+            dimension "tier"
+        }
+        dev {
+            dimension "client"
+        }
+        prod {
+            dimension "client"
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(rootProject.ext.app.sellerapp)
+
+    implementation project(rootProject.ext.features.paymentSetting)
+    implementation project(rootProject.ext.features.productManageList)
+    implementation project(rootProject.ext.features.shopSettings)
+    implementation project(rootProject.ext.features.layanan)
+
+    //Content
+//    implementation project(rootProject.ext.features.profile)
+    implementation project(rootProject.ext.features.playBroadcaster)
+
+    //Discovery
+    implementation project(rootProject.ext.features.productCardOptions)
+    //Fintech
+//    implementation project(rootProject.ext.features.instantLoan)
+//    implementation project(rootProject.ext.features.saldodetails)
+
+    //Merchant
+//    implementation project(rootProject.ext.features.report)
+//    implementation project(rootProject.ext.features.shopOpen)
+
+    //User
+//    implementation project(rootProject.ext.features.changePhoneNumber)
+    implementation project(rootProject.ext.features.managepassword)
+//    implementation project(rootProject.ext.features.profileCompletion)
+    implementation project(rootProject.ext.features.productAddEdit)
+    implementation project(rootProject.ext.features.settingbank)
+    implementation project(rootProject.ext.features.settingnotif)
+    implementation project(rootProject.ext.features.attachinvoice)
+    implementation project(rootProject.ext.features.kyccentralized)
+//    implementation project(rootProject.ext.features.notifCenter)
+    implementation project(rootProject.ext.features.talk)
+    implementation project(rootProject.ext.features.attachvoucher)
+//    implementation project(rootProject.ext.features.topchat)
+    implementation project(rootProject.ext.features.liveness)
+    implementation project(rootProject.ext.features.sellerOnboarding)
+    implementation project(rootProject.ext.features.shopShowcase)
+    implementation project(rootProject.ext.features.voucherCreation)
+    implementation project(rootProject.ext.features.sellerSearch)
+    implementation project(rootProject.ext.features.userIdentification)
+    implementation project(rootProject.ext.features.createpost)
+    implementation project(rootProject.ext.features.kol)
+    implementation project(rootProject.ext.features.notifTroubleshooter)
+
+//    Merchant
+    implementation project(rootProject.ext.features.shopPage)
+    implementation project(rootProject.ext.features.statistic)
+}

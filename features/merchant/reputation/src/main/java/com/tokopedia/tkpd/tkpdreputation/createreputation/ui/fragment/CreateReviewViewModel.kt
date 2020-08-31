@@ -3,10 +3,8 @@ package com.tokopedia.tkpd.tkpdreputation.createreputation.ui.fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.tkpd.tkpdreputation.createreputation.model.BaseImageReviewViewModel
-import com.tokopedia.tkpd.tkpdreputation.createreputation.model.DefaultImageReviewModel
-import com.tokopedia.tkpd.tkpdreputation.createreputation.model.ImageReviewViewModel
-import com.tokopedia.tkpd.tkpdreputation.createreputation.model.ProductRevGetForm
+import com.tokopedia.tkpd.tkpdreputation.createreputation.model.*
+import com.tokopedia.tkpd.tkpdreputation.createreputation.usecase.GetProductIncentiveOvo
 import com.tokopedia.tkpd.tkpdreputation.createreputation.usecase.GetProductReputationForm
 import com.tokopedia.tkpd.tkpdreputation.createreputation.util.*
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SendReviewUseCase
@@ -30,6 +28,7 @@ import com.tokopedia.usecase.coroutines.Success as CoroutineSuccess
 class CreateReviewViewModel @Inject constructor(@Named("Main")
                                                 val dispatcher: CoroutineDispatcher,
                                                 private val getProductReputationForm: GetProductReputationForm,
+                                                private val getProductIncentiveOvo: GetProductIncentiveOvo,
                                                 private val sendReviewWithoutImage: SendReviewValidateUseCase,
                                                 private val sendReviewWithImage: SendReviewUseCase) : BaseViewModel(dispatcher) {
 
@@ -41,16 +40,19 @@ class CreateReviewViewModel @Inject constructor(@Named("Main")
     private var reputationDataForm = MutableLiveData<Result<ProductRevGetForm>>()
     val getReputationDataForm = reputationDataForm
 
+    private var _incentiveOvo = MutableLiveData<Result<ProductRevIncentiveOvo>>()
+    val incentiveOvo: LiveData<Result<ProductRevIncentiveOvo>> = _incentiveOvo
+
     private var submitReviewResponse = MutableLiveData<LoadingDataState<SendReviewValidateDomain>>()
     val getSubmitReviewResponse: LiveData<LoadingDataState<SendReviewValidateDomain>> = submitReviewResponse
 
     fun submitReview(reviewId: String, reputationId: String, productId: String, shopId: String, reviewDesc: String,
-                     ratingCount: Float, listOfImages: List<String>, isAnonymous: Boolean) {
+                     ratingCount: Float, listOfImages: List<String>, isAnonymous: Boolean, utmSource: String) {
 
         if (listOfImages.isEmpty()) {
-            sendReviewWithoutImage(reviewId, reputationId, productId, shopId, reviewDesc, ratingCount, isAnonymous)
+            sendReviewWithoutImage(reviewId, reputationId, productId, shopId, reviewDesc, ratingCount, isAnonymous, utmSource)
         } else {
-            sendReviewWithImage(reviewId, reputationId, productId, shopId, reviewDesc, ratingCount, isAnonymous, listOfImages)
+            sendReviewWithImage(reviewId, reputationId, productId, shopId, reviewDesc, ratingCount, isAnonymous, listOfImages, utmSource)
         }
     }
 
@@ -78,7 +80,7 @@ class CreateReviewViewModel @Inject constructor(@Named("Main")
 
     fun initImageData(): MutableList<BaseImageReviewViewModel> {
         imageData.clear()
-        imageData.add(DefaultImageReviewModel())
+        imageData.add(DefaultImageReviewViewModel())
         return imageData
     }
 
@@ -95,11 +97,20 @@ class CreateReviewViewModel @Inject constructor(@Named("Main")
         }
     }
 
+    fun getProductIncentiveOvo() {
+        launchCatchError(block = {
+            val data = withContext(Dispatchers.IO) { getProductIncentiveOvo.getIncentiveOvo() }
+            _incentiveOvo.value = CoroutineSuccess(data)
+        }) {
+            _incentiveOvo.value = CoroutineFail(it)
+        }
+    }
+
     private fun sendReviewWithoutImage(reviewId: String, reputationId: String, productId: String, shopId: String,
-                                       reviewDesc: String, ratingCount: Float, isAnonymous: Boolean) {
+                                       reviewDesc: String, ratingCount: Float, isAnonymous: Boolean, utmSource: String) {
         submitReviewResponse.value = LoadingView
         sendReviewWithoutImage.execute(SendReviewValidateUseCase.getParam(reviewId, productId,
-                reputationId, shopId, ratingCount.toString(), reviewDesc, isAnonymous)
+                reputationId, shopId, ratingCount.toString(), reviewDesc, isAnonymous, utmSource)
                 , object : Subscriber<SendReviewValidateDomain>() {
             override fun onNext(data: SendReviewValidateDomain) {
                 submitReviewResponse.value = Success(data)
@@ -117,10 +128,10 @@ class CreateReviewViewModel @Inject constructor(@Named("Main")
     }
 
     private fun sendReviewWithImage(reviewId: String, reputationId: String, productId: String, shopId: String,
-                                    reviewDesc: String, ratingCount: Float, isAnonymous: Boolean, listOfImages: List<String>) {
+                                    reviewDesc: String, ratingCount: Float, isAnonymous: Boolean, listOfImages: List<String>, utmSource: String) {
         submitReviewResponse.value = LoadingView
         sendReviewWithImage.execute(SendReviewUseCase.getParam(reviewId, productId, reputationId, shopId, ratingCount.toString(),
-                reviewDesc, mapImageToObjectUpload(listOfImages), listOf(), isAnonymous), object : Subscriber<SendReviewDomain>() {
+                reviewDesc, mapImageToObjectUpload(listOfImages), listOf(), isAnonymous, utmSource), object : Subscriber<SendReviewDomain>() {
             override fun onNext(data: SendReviewDomain) {
                 if (data.isSuccess) {
                     submitReviewResponse.value = Success(SendReviewValidateDomain("", 0, if (data.isSuccess) 1 else 0))

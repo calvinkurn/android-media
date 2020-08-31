@@ -5,6 +5,8 @@ public class ConstantKey {
         public static final String APP_SHOW_RECOMENDATION_BUTTON = "mainapp_show_recomendation_button";
         public static final String APP_SHOW_TOKOPOINT_NATIVE = "app_enable_tokopoint_native";
         public static final String MAINAPP_NATIVE_PROMO_LIST = "mainapp_native_promo_list";
+        public static final String REMOTE_CONFIG_KEY_FIRST_INSTALL_SEARCH = "android_user_first_install_search";
+        public static final String AB_TEST_REVIEW_KEY = "InboxUlasanRevamp2";
     }
 
     public class TkpdCache {
@@ -31,5 +33,14 @@ public class ConstantKey {
         public static final String KEY_LOCATION = "KEY_FP_LOCATION";
         public static final String KEY_LOCATION_LAT = "KEY_FP_LOCATION_LAT";
         public static final String KEY_LOCATION_LONG = "KEY_FP_LOCATION_LONG";
+    }
+
+    public class FirstInstallCache {
+        public static final String KEY_FIRST_INSTALL_SEARCH = "KEY_FIRST_INSTALL_SEARCH";
+        public static final String KEY_FIRST_INSTALL_TIME_SEARCH = "KEY_IS_FIRST_INSTALL_TIME_SEARCH";
+    }
+
+    public class ABtestValue {
+        public static final String VALUE_NEW_REVIEW_FLOW = "New Review Flow";
     }
 }

@@ -9,37 +9,39 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.settingnotif.R
+import com.tokopedia.settingnotif.usersetting.const.Unify.Neutral_N700_96
 import com.tokopedia.settingnotif.usersetting.view.adapter.SettingTypeAdapter
-import com.tokopedia.settingnotif.usersetting.view.viewmodel.SettingType
+import com.tokopedia.settingnotif.usersetting.view.dataview.SettingTypeDataView
 import com.tokopedia.showcase.*
 import java.util.*
 
 class SettingTypeFragment : BaseDaggerFragment() {
 
     private lateinit var rvSettingType: RecyclerView
-
     private lateinit var settingTypeContract: SettingTypeContract
 
     interface SettingTypeContract {
-        fun openSettingField(settingType: SettingType)
+        fun openSettingField(settingType: SettingTypeDataView)
     }
-
-    override fun getScreenName(): String {
-        return "Notifikasi"
-    }
-
-    override fun initInjector() {}
 
     override fun onAttachActivity(context: Context?) {
         if (context is SettingTypeContract) {
             settingTypeContract = context
         } else {
-            throw IllegalStateException("The activity must implement SettingTypeContract interface")
+            throw IllegalStateException(ILLEGAL_EXCEPTION_MESSAGE)
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return LayoutInflater.from(context).inflate(R.layout.fragment_setting_type, container, false).also {
+    override fun onCreateView(
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
+    ): View? {
+        return LayoutInflater.from(context).inflate(
+                R.layout.fragment_setting_type,
+                container,
+                false
+        ).also {
             bindView(it)
             setupToolbar()
             setupSettingTypes()
@@ -60,12 +62,15 @@ class SettingTypeFragment : BaseDaggerFragment() {
     private fun setupSettingTypes() {
         with (rvSettingType) {
             setHasFixedSize(true)
-            adapter = SettingTypeAdapter(SettingType.createSettingTypes(), settingTypeContract)
+            adapter = SettingTypeAdapter(
+                    SettingTypeDataView.createSettingTypes(),
+                    settingTypeContract
+            )
         }
     }
 
     private fun showShowCaseIfNeeded() {
-        val tag = javaClass.name + ".BroadcastMessage"
+        val tag = javaClass.name + BROADCAST_MESSAGE
         val hasBeenShown = ShowCasePreference.hasShown(context, tag)
         if (hasBeenShown) return
         showShowCase(tag)
@@ -79,20 +84,18 @@ class SettingTypeFragment : BaseDaggerFragment() {
 
     private fun generateShowCaseDialog(): ShowCaseDialog {
         return ShowCaseBuilder()
-                .backgroundContentColorRes(com.tokopedia.design.R.color.black)
+                .backgroundContentColorRes(Neutral_N700_96)
                 .shadowColorRes(R.color.shadow)
-                .textColorRes(com.tokopedia.design.R.color.grey_400)
-                .textSizeRes(com.tokopedia.design.R.dimen.sp_12)
-                .titleTextSizeRes(com.tokopedia.design.R.dimen.sp_16)
+                .textColorRes(R.color.grey_400)
+                .textSizeRes(com.tokopedia.unifyprinciples.R.dimen.fontSize_lvl2)
+                .titleTextSizeRes(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
                 .clickable(true)
                 .useArrow(true)
                 .build()
     }
 
     private fun generateShowCaseList(): ArrayList<ShowCaseObject> {
-        return arrayListOf(
-                generateShowCaseSettingObject()
-        )
+        return arrayListOf(generateShowCaseSettingObject())
     }
 
     private fun generateShowCaseSettingObject(): ShowCaseObject {
@@ -101,4 +104,14 @@ class SettingTypeFragment : BaseDaggerFragment() {
         val position = ShowCaseContentPosition.BOTTOM
         return ShowCaseObject(rvSettingType, title, description, position)
     }
+
+    override fun getScreenName() = getString(R.string.settingnotif_title)
+
+    override fun initInjector() {}
+
+    companion object {
+        private const val ILLEGAL_EXCEPTION_MESSAGE = "The activity must implement SettingTypeContract interface"
+        private const val BROADCAST_MESSAGE = ".BroadcastMessage"
+    }
+
 }

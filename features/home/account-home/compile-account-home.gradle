@@ -10,11 +10,14 @@ include ':features:discovery:topadssdk'
 include ':features:discovery:wishlist_common'
 include ':features:fintech:common_wallet'
 include ':features:home:navigation-common'
-include ':features:merchant:gold_merchant_resource'
+include "features:merchant:gold_merchant_common"
 include ':features:top_ads:top_ads_management_common'
 include ':features:user:user_identification_common'
 include ':features:user:logout'
 include ':features:user:sessioncommon'
+include "features:fcm_common"
+include "features:discovery:discovery_common"
+include "features:im:common_promo"
 
 include ':libraries:analytics'
 include ':libraries:applink'
@@ -35,6 +38,13 @@ include ':libraries:testing'
 include ':libraries:track'
 include ':libraries:tracking_optimizer'
 include ':libraries:webview'
+include "libraries:play_core"
+include "libraries:base_list"
+include "libraries:analytics_debugger"
+include "libraries:device_info"
+include "libraries:weaver"
+include "libraries:instrumentation_test"
+include "libraries:cm_push_notifications"
 
 include ':tkpddesign'
 include ':tkpdabstraction'

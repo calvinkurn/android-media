@@ -75,7 +75,6 @@
     <string name="total_price_label">Total Pembayaran</string>
     <string name="show_bottomsheet">Show Bottomsheet</string>
     <string name="tolak_pesanan">Tolak Pesanan</string>
-    <string name="kembali">Kembali</string>
     <string name="placeholder_reject_reason">Contoh: Kurir menolak paket saya</string>
     <string name="additional_invalid_resi"><br><font color="#03ac0e">Unggah Sekarang</font></br></string>
 
@@ -183,9 +182,11 @@
     <string name="confirm_msg_2b">sebelum batas respons berakhir</string>
     <string name="confirm_msg_3">Cetak label pengiriman atau tulis kode booking di kemasan paket</string>
     <string name="title_bottomsheet_accept_order">Konfirmasi terima pesanan</string>
+    <string name="title_dialog_set_delivered">Ubah Status Pengiriman</string>
     <string name="ic_checklist_desc">ic_checklist</string>
     <string name="action_batal">Batal</string>
     <string name="action_terima">Terima</string>
+    <string name="action_ubah">Ubah Status</string>
 
     <string name="title_dialog_cancel_order">Batalkan Pesanan</string>
 
@@ -232,7 +233,7 @@
     </string>
 
     <string name="som_chat_buyer">Chat Pembeli</string>
-    <string name="som_shop_performance_info">Skor performa toko tidak akan dikurangi untuk pembatalan ini</string>
+    <string name="som_shop_performance_info">Skor performa tokomu tidak akan dikurangi untuk pembatalan pesanan ini.</string>
     <string name="som_request_buyer_notes_1">telah mengajukan pembatalan pesanan</string>
     <string name="som_request_buyer_notes_2">dengan alasan : </string>
 
@@ -247,5 +248,53 @@
     <string name="som_penalty_subtitle">Apakah Anda yakin ingin membatalkan pesanan?</string>
 
     <string name="som_dropshipper_label">Dropshipper</string>
+
+    <!--Coachmark-->
+    <string name="coachmark_search">Temukan pesanan lebih cepat</string>
+    <string name="coachmark_search_info">Cari berdasarkan nama produk atau klik status pesanan yang kamu inginkan.</string>
+    <string name="coachmark_pesanan">Lihat daftar pesanan</string>
+    <string name="coachmark_pesanan_info">Klik di sini untuk menerima pesananmu. Jangan lupa cek batas respons, ya!</string>
+    <string name="coachmark_filter">Pilih filter</string>
+    <string name="coachmark_filter_info">Tampilkan daftar pesanan sesuai jenis kurir, tipe pesanan, dan jatuh tempo.</string>
+    <string name="coachmark_chat">Chat pembeli</string>
+    <string name="coachmark_chat_info">Ada detail pesanan yang kurang jelas? Yuk, tanya langsung ke pembelimu.</string>
+    <string name="coachmark_header">Cek info pesananmu</string>
+    <string name="coachmark_header_info">Temukan info seputar nama pembeli, tanggal transaksi, hingga batas respons di sini.</string>
+    <string name="coachmark_product">Produk yang dipesan</string>
+    <string name="coachmark_product_info">Pastikan barang yang kamu kirim sudah sesuai dengan yang dipesan oleh pembeli.</string>
+    <string name="coachmark_shipping">Detail pengiriman</string>
+    <string name="coachmark_shipping_info">Kirim pesanan ke alamat pembeli dengan menggunakan kurir yang telah ditentukan.</string>
+    <string name="coachmark_edit">Edit kurir atau resi di sini</string>
+    <string name="coachmark_edit_info">Klik ini jika butuh mengganti kurir, edit resi, atau menolak pesanan yang masuk.</string>
+    <string name="coachmark_terima_pesanan">Saatnya proses pesananmu!</string>
+    <string name="coachmark_terima_pesanan_info">Setelah menerima pesanan, kamu bisa langsung mengemas barang untuk segera dikirimkan.</string>
+    <string name="coachmark_booking">Wajib Tulis Kode Booking</string>
+    <string name="coachmark_booking_info">Cetak label pengiriman atau tulis kode booking di paket yang akan di kirim.</string>
+    <string name="dialog_receiver_name">Nama Penerima</string>
+    <string name="et_empty_error">Tidak Boleh Kosong</string>
+    <string name="default_confirm_shipping_success">Terima kasih telah melakukan pengiriman.</string>
+    <string name="dialog_title_cannot_access_page">Kamu tidak memiliki akses ke halaman ini</string>
+    <string name="dialog_description_cannot_access_page">Akses ke halaman penjualan hanya dapat diberikan oleh pemilik toko</string>
+    <string name="button_understand">Ya, saya mengerti</string>
+
+    <!--  instant cancel  -->
+    <string name="bottomsheet_buyer_request_cancel">Alasan pembeli mengajukan pembatalan pesanan:</string>
+    <string name="bottomsheet_order_cancellation_response_negative_button_code_220">Terima Pesanan</string>
+    <string name="bottomsheet_order_cancellation_response_positive_button_code_220">Batalkan Pesanan</string>
+    <string name="bottomsheet_order_cancellation_response_negative_button_code_400">Konfirmasi Pengiriman</string>
+    <string name="bottomsheet_order_cancellation_response_positive_button_code_400">Batalkan Pesanan</string>
+    <string name="som_error_message_no_internet_connection">Oops, koneksi internetmu terganggu. Silahkan cek koneksi internet dan coba lagi, ya.</string>
+    <string name="som_error_message_server_fault">Oops, ada gangguan yang perlu kami bereskan. Silahkan coba lagi, ya.</string>
+    <string name="som_buyer_cancellation_confirm_shipping_title">Kirim pesanan ini?</string>
+    <string name="som_buyer_cancellation_confirm_shipping_description">Pastikan kamu sudah berdiskusi dengan pembeli. Pesanan yang diproses secara paksa berpotensi komplain.</string>
+    <string name="som_buyer_cancellation_confirm_shipping_button">Kirim Pesanan</string>
+    <string name="som_buyer_cancellation_confirm_accept_cancellation_title">Batalkan pesanan ini?</string>
+    <string name="som_buyer_cancellation_confirm_accept_cancellation_description">Skor performa tokomu tidak akan dikurangi untuk pembatalan ini.</string>
+    <string name="som_buyer_cancellation_confirm_accept_cancellation_button">Batalkan Pesanan</string>
+    <string name="som_buyer_cancellation_confirm_accept_order_title">Konfirmasi terima pesanan?</string>
+    <string name="som_buyer_cancellation_confirm_accept_order_description">Lanjut memproses pesanan tanpa konfirmasi dari pembeli dapat menyebabkan pengajuan komplain</string>
+    <string name="som_buyer_cancellation_confirm_accept_order_button">Lanjut Terima</string>
+    <string name="som_buyer_cancellation_cancel_button">Kembali</string>
+    <string name="som_header_detail_ticker_cancellation">Dibatalkan karena</string>
 
 </resources>

@@ -1,5 +1,10 @@
 package com.tokopedia.core.analytics.fingerprint.domain.model;
 
+import android.text.TextUtils;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 /**
  * Created by Herdi_WORK on 20.06.17.
  */
@@ -24,6 +29,13 @@ public class FingerPrint {
     private String location_longitude;
     private String is_nakama;
     private String unique_id;
+    private String deviceMemoryClassCapacity;
+    private String availableProcessor;
+    private String deviceDpi;
+    private String packageName;
+    private String androidId;
+    private boolean isx86;
+    private String pid;
 
     private FingerPrint(FingerPrintBuilder fingerPrintBuilder) {
         device_model = fingerPrintBuilder.deviceModel;
@@ -44,142 +56,17 @@ public class FingerPrint {
         carrier = fingerPrintBuilder.carrier;
         is_nakama = fingerPrintBuilder.is_nakama;
         unique_id = fingerPrintBuilder.unique_id;
-    }
-
-    public String getUnique_id() {
-        return unique_id;
-    }
-
-    public void setUnique_id(String unique_id) {
-        this.unique_id = unique_id;
-    }
-
-    public String getDevice_model() {
-        return device_model;
-    }
-
-    public void setDevice_model(String device_model) {
-        this.device_model = device_model;
-    }
-
-    public void setSsid(String ssid) {
-        this.ssid = ssid;
-    }
-
-    public String getSsid() {
-        return ssid;
-    }
-
-    public String getCarrier() {
-        return carrier;
-    }
-
-    public void setCarrier(String carrier) {
-        this.carrier = carrier;
-    }
-
-    public String getDevice_system() {
-        return device_system;
-    }
-
-    public void setDevice_system(String device_system) {
-        this.device_system = device_system;
-    }
-
-    public String getLanguage() {
-        return language;
-    }
-
-    public void setLanguage(String language) {
-        this.language = language;
-    }
-
-    public String getScreen_resolution() {
-        return screen_resolution;
-    }
-
-    public void setScreen_resolution(String screen_resolution) {
-        this.screen_resolution = screen_resolution;
-    }
-
-    public boolean istablet() {
-        return is_tablet;
-    }
-
-    public void setIs_tablet(boolean is_tablet) {
-        this.is_tablet = is_tablet;
-    }
-
-    public String getLocation_latitude() {
-        return location_latitude;
-    }
-
-    public void setLocation_latitude(String location_latitude) {
-        this.location_latitude = location_latitude;
-    }
-
-    public void setLocation_longitude(String location_longitude) {
-        this.location_longitude = location_longitude;
-    }
-
-    public String getLocation_longitude() {
-        return location_longitude;
-    }
-
-    public boolean isIs_emulator() {
-        return is_emulator;
-    }
-
-    public void setIs_emulator(boolean is_emulator) {
-        this.is_emulator = is_emulator;
-    }
-
-    public String getDevice_name() {
-        return device_name;
-    }
-
-    public void setDevice_name(String device_name) {
-        this.device_name = device_name;
-    }
-
-    public String getDevice_manufacturer() {
-        return device_manufacturer;
-    }
-
-    public void setDevice_manufacturer(String device_manufacturer) {
-        this.device_manufacturer = device_manufacturer;
-    }
-
-    public String getCurrent_os() {
-        return current_os;
-    }
-
-    public void setCurrent_os(String current_os) {
-        this.current_os = current_os;
-    }
-
-    public boolean isIs_jailbroken_rooted() {
-        return is_jailbroken_rooted;
-    }
-
-    public void setIs_jailbroken_rooted(boolean is_jailbroken_rooted) {
-        this.is_jailbroken_rooted = is_jailbroken_rooted;
-    }
-
-    public String getTimezone() {
-        return timezone;
-    }
-
-    public void setTimezone(String timezone) {
-        this.timezone = timezone;
-    }
-
-    public String getUser_agent() {
-        return user_agent;
-    }
-
-    public void setUser_agent(String user_agent) {
-        this.user_agent = user_agent;
+        deviceMemoryClassCapacity = fingerPrintBuilder.deviceMemoryClassCapacity;
+        availableProcessor = fingerPrintBuilder.availableProcessor;
+        deviceDpi = fingerPrintBuilder.deviceDpi;
+        androidId = fingerPrintBuilder.androidId;
+        isx86 = fingerPrintBuilder.isx86;
+        packageName = fingerPrintBuilder.packageName;
+        if (TextUtils.isEmpty(fingerPrintBuilder.imei)) {
+            pid = "";
+        } else {
+            pid = fingerPrintBuilder.imei;
+        }
     }
 
     public static class FingerPrintBuilder {
@@ -201,6 +88,13 @@ public class FingerPrint {
         private String carrier;
         private String is_nakama;
         private String unique_id;
+        private String deviceMemoryClassCapacity;
+        private String availableProcessor;
+        private String deviceDpi;
+        private String androidId;
+        private boolean isx86;
+        private String packageName;
+        private String imei;
 
         public FingerPrintBuilder() {
 
@@ -212,7 +106,7 @@ public class FingerPrint {
         }
 
         public FingerPrintBuilder isNakama(String isNakama){
-            this.is_nakama = is_nakama;
+            this.is_nakama = isNakama;
             return this;
         }
 
@@ -293,6 +187,41 @@ public class FingerPrint {
 
         public FingerPrintBuilder jailbreak(boolean isJailBreak) {
             this.isJailBreak = isJailBreak;
+            return this;
+        }
+
+        public FingerPrintBuilder deviceMemoryClassCapacity(String deviceMemoryClassCapacity) {
+            this.deviceMemoryClassCapacity = deviceMemoryClassCapacity;
+            return this;
+        }
+
+        public FingerPrintBuilder availableProcessor(String availableProcessor) {
+            this.availableProcessor = availableProcessor;
+            return this;
+        }
+
+        public FingerPrintBuilder deviceDpi(String deviceDpi) {
+            this.deviceDpi = deviceDpi;
+            return this;
+        }
+
+        public FingerPrintBuilder androidId(String androidId) {
+            this.androidId = androidId;
+            return this;
+        }
+
+        public FingerPrintBuilder isx86(boolean isx86) {
+            this.isx86 = isx86;
+            return this;
+        }
+
+        public FingerPrintBuilder packageName(String packageName) {
+            this.packageName = packageName;
+            return this;
+        }
+
+        public FingerPrintBuilder imei(String imei) {
+            this.imei = imei;
             return this;
         }
 

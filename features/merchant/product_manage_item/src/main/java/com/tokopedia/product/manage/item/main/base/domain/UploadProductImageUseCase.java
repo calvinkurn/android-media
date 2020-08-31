@@ -95,7 +95,7 @@ public class UploadProductImageUseCase extends UseCase<List<BasePictureViewModel
             if (notificationCountListener != null) {
                 notificationCountListener.addProgress();
             }
-            if (productPictureViewModel.getId()<= 0) {
+            if (productPictureViewModel.getId() == 0) {
                 return uploadImageUseCase.createObservable(uploadImageUseCase.createRequestParams(
                         ProductNetworkConstant.UPLOAD_PRODUCT_IMAGE_PATH, productPictureViewModel.getFilePath(),
                         ProductNetworkConstant.LOGO_FILENAME_IMAGE_JPG, String.valueOf(productId)))

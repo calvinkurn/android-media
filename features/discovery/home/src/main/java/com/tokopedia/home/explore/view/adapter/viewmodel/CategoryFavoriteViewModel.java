@@ -3,7 +3,7 @@ package com.tokopedia.home.explore.view.adapter.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.home.explore.domain.model.LayoutRows;
 import com.tokopedia.home.explore.view.adapter.TypeFactory;

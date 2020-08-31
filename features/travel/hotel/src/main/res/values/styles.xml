@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.White.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="TitlePageWhiteIndicator.Hotel">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="ErrorTextAppearance">
+        <item name="android:textColor">@color/pink_property</item>
+    </style>
+
+    <style name="HelperTextAppearance">
+        <item name="android:textColor">@color/light_secondary</item>
+    </style>
+
+    <style name="DialogStyle" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
+    </style>
+
+    <style name="TextInputLayouts">
+        <item name="colorControlNormal">@color/hotel_grey_200</item>
+        <item name="colorControlActivated">@color/hotel_color_active_rail</item>
+    </style>
+    <style name="TextInputLayoutHintText" parent="TextAppearance.Design.Hint">
+        <item name="android:textSize">1sp</item>
+    </style>
+</resources>

@@ -15,7 +15,7 @@ import android.view.animation.LinearInterpolator
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.utils.StringUtils
-import com.tokopedia.design.widget.ExpandableView.ExpandableLayoutListener
+import com.tokopedia.topads.widget.ExpandableView.ExpandableLayoutListener
 import com.tokopedia.topads.R
 import com.tokopedia.topads.keyword.domain.model.keywordadd.AddKeywordDomainModelDatum
 import com.tokopedia.topads.keyword.helper.KeywordTypeMapper
@@ -41,15 +41,17 @@ class TopAdsKeywordNewItemFragment: BaseDaggerFragment() {
         val PARAM_ADDED_KEYWORDS = "PARAM_ADDED_KEYWORDS"
         val PARAM_POSITIVE_KEYWORD = "PARAM_POSITIVE_KEYWORD"
         val PARAM_GROUP_ID = "PARAM_GROUP_ID"
+        val PARAM_PRICE_BID = "PARAM_PRICE_BID"
         private const val MIN_WORDS = 5
 
-        fun newInstance(localKeywords:List<AddKeywordDomainModelDatum>, maxCount: Int, positiveKeyword: Boolean, groupId: String): Fragment {
+        fun newInstance(localKeywords: List<AddKeywordDomainModelDatum>, maxCount: Int, positiveKeyword: Boolean, groupId: String, priceBid: Int): Fragment {
             return TopAdsKeywordNewItemFragment().apply {
                 arguments = Bundle().apply {
                     putParcelableArrayList(TopAdsKeywordNewItemActivity.LOCAL_KEYWORDS_PARAM, ArrayList(localKeywords))
                     putInt(TopAdsKeywordNewItemActivity.MAX_COUNT_PARAM, maxCount)
                     putBoolean(PARAM_POSITIVE_KEYWORD, positiveKeyword)
                     putString(PARAM_GROUP_ID, groupId)
+                    putInt(PARAM_PRICE_BID,priceBid)
                 }
             }
         }
@@ -67,7 +69,7 @@ class TopAdsKeywordNewItemFragment: BaseDaggerFragment() {
         super.onCreate(savedInstanceState)
         arguments?.let {
             localKeywords.clear()
-            localKeywords.addAll(it.getParcelableArrayList(TopAdsKeywordNewItemActivity.LOCAL_KEYWORDS_PARAM))
+            localKeywords.addAll(it.getParcelableArrayList(TopAdsKeywordNewItemActivity.LOCAL_KEYWORDS_PARAM) ?: emptyList())
             maxCount = it.getInt(TopAdsKeywordNewItemActivity.MAX_COUNT_PARAM, 50)
             positiveKeyword = it.getBoolean(PARAM_POSITIVE_KEYWORD)
             groupId = it.getString(PARAM_GROUP_ID, "")
@@ -94,7 +96,7 @@ class TopAdsKeywordNewItemFragment: BaseDaggerFragment() {
                 return@setOnClickListener
             }
             val keywordAdded = keywordsString.filter { !TextUtils.isEmpty(it) }.map {
-                convertToAddKeywordDomainModelDatum(it)
+                convertToAddKeywordDomainModelDatum(it,arguments?.getInt(PARAM_PRICE_BID))
             }
 
             val intent = Intent().apply {
@@ -107,9 +109,9 @@ class TopAdsKeywordNewItemFragment: BaseDaggerFragment() {
         }
     }
 
-    private fun convertToAddKeywordDomainModelDatum(keyword: String): AddKeywordDomainModelDatum{
+    private fun convertToAddKeywordDomainModelDatum(keyword: String, priceBid: Int?): AddKeywordDomainModelDatum{
         return AddKeywordDomainModelDatum(keyword, KeywordTypeMapper.mapToDef(positiveKeyword, selectedType),
-                groupId, userSession.shopId)
+                groupId, userSession.shopId,priceBid!!)
     }
 
     private fun setupTextArea(){

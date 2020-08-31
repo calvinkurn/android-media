@@ -23,6 +23,8 @@ interface BaseChatContract {
 
         fun onReceiveMessageEvent(visitable: Visitable<*>)
 
+        fun showErrorWebSocket(isWebSocketError: Boolean)
+
     }
 
     interface Presenter<V : CustomerView> : CustomerPresenter<V> {

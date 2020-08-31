@@ -134,4 +134,7 @@
 
     <string name="play_atc_success">Produk berhasil ditambah ke keranjang</string>
 
+    <string name="play_chat_blocked_message">Maaf, fitur chat lagi dinonaktifkan</string>
+    <string name="play_chat_blocked_button">Cek Info</string>
+
 </resources>

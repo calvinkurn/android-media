@@ -49,4 +49,8 @@ public class RulesManager {
     public void viewDismissed(long id) {
         dataConsumer.viewDismissed(id);
     }
+
+    public void interactedWithView(long id){
+        dataConsumer.interactedWithView(id);
+    }
 }

@@ -4,6 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import timber.log.Timber;
+
 /**
  * Created by ricoharisin on 7/26/16.
  */
@@ -13,12 +15,17 @@ public class ErrorNetworkReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (mReceiver != null) {
-            if (intent.getAction().equals("com.tokopedia.tkpd.FORCE_LOGOUT")) {
+        if (mReceiver != null && intent != null) {
+            String action = intent.getAction();
+            Timber.w("P1#BROADCAST_RECEIVER#ErrorNetworkReceiver;action='%s'", action);
+            if (action == null) {
+                return;
+            }
+            if (action.equals("com.tokopedia.tkpd.FORCE_LOGOUT")) {
                 mReceiver.onForceLogout();
-            } else if (intent.getAction().equals("com.tokopedia.tkpd.SERVER_ERROR")) {
+            } else if (action.equals("com.tokopedia.tkpd.SERVER_ERROR")) {
                 mReceiver.onServerError();
-            } else if (intent.getAction().equals("com.tokopedia.tkpd.TIMEZONE_ERROR")) {
+            } else if (action.equals("com.tokopedia.tkpd.TIMEZONE_ERROR")) {
                 mReceiver.onTimezoneError();
             }
         }

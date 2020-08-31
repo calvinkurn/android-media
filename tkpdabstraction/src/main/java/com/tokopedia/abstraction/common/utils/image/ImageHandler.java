@@ -38,7 +38,9 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestBuilder;
+import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
@@ -231,6 +233,30 @@ public class ImageHandler {
                     .centerCrop()
                     .dontAnimate()
                     .error(R.drawable.error_drawable)
+                    .into(imageview);
+        }
+    }
+
+    public static void loadImageWithoutPlaceholder(ImageView imageview, String url, ImageLoaderStateListener imageLoaderStateListener) {
+        if (imageview.getContext() != null) {
+            Glide.with(imageview.getContext())
+                    .load(url)
+                    .centerCrop()
+                    .dontAnimate()
+                    .error(R.drawable.error_drawable)
+                    .addListener(new RequestListener<Drawable>() {
+                        @Override
+                        public boolean onLoadFailed(@androidx.annotation.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                            imageLoaderStateListener.failedLoad();
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                            imageLoaderStateListener.successLoad();
+                            return false;
+                        }
+                    })
                     .into(imageview);
         }
     }
@@ -434,19 +460,6 @@ public class ImageHandler {
                 .into(imageView);
     }
 
-    public static void loadImageFitTransformation(Context context, ImageView imageView, String url,
-                                                  BitmapTransformation transformation) {
-        Glide.with(context)
-                .load(url)
-                .dontAnimate()
-                .placeholder(R.drawable.loading_page)
-                .error(R.drawable.error_drawable)
-                .diskCacheStrategy(DiskCacheStrategy.DATA)
-                .centerCrop()
-                .transform(transformation)
-                .into(imageView);
-    }
-
     public static void loadImageFitCenter(Context context, ImageView imageView, String url) {
         Glide.with(context)
                 .load(url)
@@ -554,28 +567,6 @@ public class ImageHandler {
                 .load(url)
                 .placeholder(drawable)
                 .into(imageView);
-    }
-
-    public static void loadRoundedImage(
-            ImageView imageView,
-            String imageUrl,
-            float cornerRadius,
-            int imgPlaceHolderRes,
-            int errorImageRes
-    ) {
-        RequestBuilder<Bitmap> glideBuilder = Glide.with(imageView.getContext())
-                .asBitmap()
-                .load(imageUrl)
-                .dontAnimate()
-                .error(errorImageRes < 0 ? R.drawable.error_drawable : errorImageRes)
-                .skipMemoryCache(true)
-                .diskCacheStrategy(DiskCacheStrategy.DATA);
-
-        if (imgPlaceHolderRes >= 0) {
-            glideBuilder = glideBuilder.placeholder(imgPlaceHolderRes);
-        }
-
-        glideBuilder.into(getRoundedImageViewTarget(imageView, cornerRadius));
     }
 
     public static void loadImage(Context context, ImageView imageview, String url, int placeholder) {
@@ -762,8 +753,12 @@ public class ImageHandler {
     }
 
     public static void clearImage(ImageView imageView) {
-        if (imageView != null) {
-            Glide.with(imageView.getContext()).clear(imageView);
+        try {
+            if (imageView != null) {
+                Glide.with(imageView.getContext()).clear(imageView);
+            }
+        } catch (IllegalArgumentException e){
+            Timber.e("%s", e.getMessage());
         }
     }
 
@@ -844,4 +839,9 @@ public class ImageHandler {
                     }
                 });
     }
+    public interface ImageLoaderStateListener{
+        void successLoad();
+        void failedLoad();
+    }
 }
+

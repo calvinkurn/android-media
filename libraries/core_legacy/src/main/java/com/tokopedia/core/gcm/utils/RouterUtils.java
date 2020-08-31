@@ -1,10 +1,6 @@
 package com.tokopedia.core.gcm.utils;
 
-import android.app.Activity;
-import android.app.Application;
 import android.app.Fragment;
-import android.app.Service;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 
@@ -29,15 +25,6 @@ public class RouterUtils {
 
     public static Fragment getFragment(Context context, String className) {
         return Fragment.instantiate(context, className);
-    }
-
-    public static ComponentName getActivityComponentName(Context context, String activityFullPath) {
-        ComponentName componentName = new ComponentName(context.getPackageName(), activityFullPath);
-        return componentName;
-    }
-
-    public static ComponentName getActivityComponentName(Context context, Class<?> clss) {
-        return new ComponentName(context, clss);
     }
 
     public static Class<?> getActivityClass(String activityFullPath) throws ClassNotFoundException {

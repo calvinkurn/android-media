@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
  */
 class Label (
         @SerializedName("title")
-        val title: String,
+        val title: String = "",
         @SerializedName("color")
-        val color: String
+        val color: String = ""
 )

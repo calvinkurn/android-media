@@ -10,23 +10,29 @@
     <string name="path_change_inactive_phone_form">/change-inactive-phone-form</string>
     <string name="path_choose_account">/choose-account</string>
     <string name="path_withdraw">/withdraw</string>
+    <string name="path_autoWithdrawSettings">/autoWithdrawSettings</string>
     <string name="path_add_name_register">/add-name-register</string>
     <string name="path_forgot_password">/forgot-password</string>
     <string name="path_add_password">/add-password</string>
     <string name="path_profile_completion">/profile-completion</string>
     <string name="path_setting_profile">/setting-profile</string>
+    <string name="path_liveness_detection">/liveness-detection</string>
 
+    <string name="path_landing_shop_creation">/landing-shop-creation</string>
+    <string name="path_phone_shop_creation">/phone-shop-creation</string>
+    <string name="path_name_shop_creation">/name-shop-creation</string>
     <string name="path_inbox_talk">/inbox-talk</string>
-    <string name="path_product_talk">/product-talk</string>
-    <string name="path_detail_talk">/detail-talk</string>
+    <string name="path_product_talk">/product-talk/.*\\/</string>
+    <string name="path_detail_talk">/detail-talk/.*\\/</string>
     <string name="path_add_talk">/add-talk</string>
-    <string name="path_shop_talk">/shop-talk</string>
-
+    <string name="path_shop_talk">/shop-talk/.*\\/</string>
     <string name="path_user_identification_info">/user-identification-info</string>
     <string name="path_user_identification_form">/user-identification-form</string>
     <string name="path_change_name">/change-name</string>
     <string name="path_change_gender">/change-gender</string>
     <string name="path_change_phone_number">/change-phone-number</string>
+    <string name="path_change_password">/change-password</string>
+    <string name="path_has_password">/has-password</string>
     <string name="path_change_pin">/change-pin</string>
     <string name="path_add_email">/add-email</string>
     <string name="path_add_phone">/add-phone</string>
@@ -45,12 +51,28 @@
     <string name="path_setting_bank" translatable="false">/setting-bank</string>
     <string name="path_add_bank" translatable="false">/add-bank</string>
     <string name="path_general_setting" translatable="false">/general-setting</string>
+    <string name="path_account_setting" translatable="false">/account-setting</string>
     <string name="path_advanced_setting" translatable="false">/advanced-setting</string>
     <string name="path_push_notification_troubleshooter" translatable="false">/push-notification-troubleshooter</string>
     <string name="path_change_email_register">/change-email-register</string>
     <string name="path_login">/login</string>
     <string name="path_init_register">/init-register</string>
+    <string name="path_manage_name">/manage-name</string>
+
     <string name="path_email_register">/email-register</string>
     <string name="path_ovo_pay_with_qr">/ovo-pay-with-qr</string>
     <string name="path_oqr_pin_url_response">/ovoqrthanks/.*\\/</string>
+
+    <string name="path_chat">/topchat</string>
+    <string name="path_chat_room" translatable="false">/topchat/.*\</string>
+
+
+    <string name="path_add_fingerprint_onboarding">/add-fingerprint-onboarding</string>
+    <string name="path_manage_notification">/manage-notification</string>
+
+    <string name="path_seller_seamless_login" translatable="false">/login-seamless</string>
+    <string name="path_reply_talk" translatable="false">/reply-talk/.*\\/</string>
+    <string name="two_factor_register">/two-factor-register</string>
+
+    <string name="path_screen_recorder">/screen-recorder</string>
 </resources>

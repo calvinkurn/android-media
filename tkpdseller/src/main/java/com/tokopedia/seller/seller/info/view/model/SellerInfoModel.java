@@ -19,6 +19,7 @@ public class SellerInfoModel implements ItemType {
     private boolean isRead;
     private long createTimeUnix;
     private long expireTimeUnix;
+    private String notifId;
 
     private boolean isToday, isYesterday;
 
@@ -120,6 +121,14 @@ public class SellerInfoModel implements ItemType {
 
     public void setExpireTimeUnix(long expireTimeUnix) {
         this.expireTimeUnix = expireTimeUnix;
+    }
+
+    public String getNotifId() {
+        return notifId;
+    }
+
+    public void setNotifId(String notifId) {
+        this.notifId = notifId;
     }
 
     @Override

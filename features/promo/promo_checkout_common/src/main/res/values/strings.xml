@@ -3,4 +3,15 @@
     <string name="promo_global_title">Gunakan promo Tokopedia</string>
     <string name="promo_merchant_title">Gunakan Promo dari Toko</string>
     <string name="promo_none_applied">Tidak ada promo yang sedang dipakai</string>
+
+    <string name="promo_checkout_icon_desc">promo_funnel_icon</string>
+    <string name="promo_checkout_label">Makin hemat pakai promo</string>
+    <string name="promo_checkout_benefit_info">3 promo dipakai</string>
+    <string name="promo_checkout_icon_chev_desc">promo_funnel_icon_2</string>
+
+    <string name="promo_checkout_summary_label">Ringkasan keuntungan</string>
+    <string name="promo_checkout_total_label">Total Cashback</string>
+
+    <string name="promo_checkout_failed_label">Promo gagal ditampilkan</string>
+    <string name="promo_checkout_failed_info">Coba refresh beberapa saat lagi</string>
 </resources>

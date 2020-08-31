@@ -7,6 +7,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.constant.IRouterConstant
 import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.analytics.PromoCheckoutAnalytics.Companion.promoCheckoutAnalytics
@@ -15,22 +18,37 @@ import com.tokopedia.promocheckout.common.util.*
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
+import com.tokopedia.promocheckout.customview.PromoTicketItemDecoration
 import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailMarketplaceActivity
 import com.tokopedia.promocheckout.detail.view.fragment.CheckoutCatalogDetailFragment
 import com.tokopedia.promocheckout.list.di.PromoCheckoutListComponent
 import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
+import com.tokopedia.promocheckout.list.model.listpromocatalog.CatalogListItem
+import com.tokopedia.promocheckout.list.model.listpromocatalog.TokopointsCatalogHighlight
+import com.tokopedia.promocheckout.list.model.listpromolastseen.GetPromoSuggestion
 import com.tokopedia.promocheckout.list.model.listpromolastseen.PromoHistoryItem
+import com.tokopedia.promocheckout.list.view.adapter.MarketplacePromoLastSeenAdapter
+import com.tokopedia.promocheckout.list.view.adapter.MarketplacePromoLastSeenViewHolder
+import com.tokopedia.promocheckout.list.view.adapter.PromoCheckOutExchangeCouponAdapter
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListMarketplaceContract
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListMarketplacePresenter
+import com.tokopedia.unifyprinciples.Typography
+import kotlinx.android.synthetic.main.fragment_list_exchange_coupon.view.*
 import kotlinx.android.synthetic.main.fragment_promo_checkout_list.*
+import kotlinx.android.synthetic.main.fragment_promo_checkout_list.view.*
 import javax.inject.Inject
 
 
-class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), PromoCheckoutListMarketplaceContract.View {
+class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(),
+        PromoCheckoutListMarketplaceContract.View,
+        MarketplacePromoLastSeenViewHolder.ListenerLastSeen,
+        PromoCheckOutExchangeCouponAdapter.ListenerCouponExchange {
 
     private var containerParent: ViewGroup? = null
     @Inject
     lateinit var promoCheckoutListMarketplacePresenter: PromoCheckoutListMarketplacePresenter
+    val marketplacePromoLastSeenAdapter: MarketplacePromoLastSeenAdapter by lazy { MarketplacePromoLastSeenAdapter(arrayListOf(), this) }
+    val promoCheckoutExchangeCouponAdapter: PromoCheckOutExchangeCouponAdapter by lazy { PromoCheckOutExchangeCouponAdapter(ArrayList(), this) }
 
     private var isOneClickShipment: Boolean = false
     private var promo: Promo? = null
@@ -71,6 +89,67 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
         progressDialog = ProgressDialog(activity)
         progressDialog.setMessage(getString(R.string.title_loading))
         textInputCoupon.setText(promoCode)
+        view.recyclerViewLastSeenPromo.addItemDecoration(PromoTicketItemDecoration(resources.getDimension(R.dimen.dp_16).toInt()))
+        // Change last seen promo text style
+        promo_checkout_list_last_seen_label.setType(Typography.HEADING_4)
+        initViewExchangeCoupon(view)
+    }
+
+    private fun initViewExchangeCoupon(view: View) {
+        context?.let { context ->
+            val dividerDrawable = ContextCompat.getDrawable(context, R.drawable.divider_horizontal_custom_quick_filter)
+            dividerDrawable?.let { drawable ->
+                val dividerItemDecoration = DividerItemDecoration(context, DividerItemDecoration.HORIZONTAL)
+                dividerItemDecoration.setDrawable(drawable)
+                view.rv_carousel.addItemDecoration(dividerItemDecoration)
+            }
+        }
+        view.rv_carousel.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+        view.rv_carousel.adapter = promoCheckoutExchangeCouponAdapter
+
+        populateExchangeCouponList()
+
+        if (isCouponActive) {
+            getRecyclerView(view).visibility = View.VISIBLE
+        } else {
+            getRecyclerView(view).visibility = View.GONE
+        }
+    }
+
+    override fun renderListExchangeCoupon(data: TokopointsCatalogHighlight) {
+        view?.text_title?.text = data.title
+        view?.text_sub_title?.text = data.subTitle
+        promoCheckoutExchangeCouponAdapter.items?.clear()
+        promoCheckoutExchangeCouponAdapter.items?.addAll(data.catalogList as ArrayList<CatalogListItem>)
+        promoCheckoutExchangeCouponAdapter.notifyDataSetChanged()
+        populateExchangeCouponList()
+    }
+
+    override fun renderListLastSeen(data: GetPromoSuggestion?) {
+        marketplacePromoLastSeenAdapter.listData.clear()
+        marketplacePromoLastSeenAdapter.listData.addAll(data?.promoHistory as Collection<PromoHistoryItem>)
+        marketplacePromoLastSeenAdapter.notifyDataSetChanged()
+        populateLastSeen()
+    }
+
+    override fun showListCatalogHighlight(e: Throwable) {
+        populateExchangeCouponList()
+    }
+
+    private fun populateExchangeCouponList() {
+        if (promoCheckoutExchangeCouponAdapter.items?.isEmpty() == true) {
+            container_exchange_coupon.visibility = View.GONE
+        } else {
+            container_exchange_coupon.visibility = View.VISIBLE
+        }
+    }
+
+    override fun showProgressBar() {
+        view?.progressBarCatalog?.visibility = View.VISIBLE
+    }
+
+    override fun hideProgressBar() {
+        view?.progressBarCatalog?.visibility = View.GONE
     }
 
     override fun onItemClicked(promoCheckoutListModel: PromoCheckoutListModel?) {
@@ -172,7 +251,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
             pageNo = page
             promoCheckoutListPresenter.getListPromo(serviceId, categoryId, pageNo, resources)
         }
-        promoCheckoutListPresenter.getListLastSeen(serviceId, resources)
+        promoCheckoutListMarketplacePresenter.getListLastSeen(serviceId, resources)
         promoCheckoutListMarketplacePresenter.getListExchangeCoupon(resources)
     }
 

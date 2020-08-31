@@ -3,13 +3,15 @@ package com.tokopedia.mlp.adapter
 import android.content.Context
 import android.graphics.Color
 import android.graphics.PorterDuff
-import androidx.recyclerview.widget.RecyclerView
 import android.view.*
 import android.webkit.URLUtil
 import android.widget.LinearLayout
 import android.widget.PopupWindow
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.HexValidator
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -19,7 +21,6 @@ import com.tokopedia.mlp.R
 import com.tokopedia.mlp.callback.MLPWidgetAdapterCallBack
 import com.tokopedia.mlp.contractModel.*
 import com.tokopedia.mlp.fragment.MerchantLendingFragment
-import com.tokopedia.mlp.router.MLPRouter
 import kotlinx.android.synthetic.main.fragment_merchant_lending.view.*
 import kotlinx.android.synthetic.main.mlp_bottomsheet.view.*
 import kotlinx.android.synthetic.main.mlp_box_layout.view.*
@@ -285,9 +286,7 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
                 checkValidFilteredUrl = URLUtil.isValidUrl(filteredUrl)
 
                 if (checkValidFilteredUrl) {
-                    val mlpRouter = context.applicationContext as MLPRouter
-                    context.startActivity(mlpRouter.getSellerWebViewIntent(context, filteredUrl))
-
+                    RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, filteredUrl)
                 }
             } else {
                 val bottomSheetLength: Int = boxList[position].bottomSheet?.size!!

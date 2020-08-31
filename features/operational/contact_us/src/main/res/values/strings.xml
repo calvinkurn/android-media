@@ -4,7 +4,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
-    <string name="contact_us_title_home">Pusat Bantuan</string>
+    <string name="contact_us_title_home">Tokopedia Care</string>
     <string name="invoice_list_title">Riwayat Transaksi</string>
     <string name="order_query_ticket_title">Kendala</string>
     <string name="submit_ticket_title">Form Bantuan</string>
@@ -15,7 +15,8 @@
     <string name="penjualan">Penjualan</string>
     <string name="error_msg_wrong_size">Ups! Ukuran gambar yang di-upload lebih dari 10MB</string>
     <string name="error_msg_wrong_height_width">Ups! Ukuran gambar yang Anda pilih terlalu kecil. Minimal 300 x 300 piksel.</string>
-    <string name="hubungi_kami">Hubungi Kami</string>
+    <string name="masih_butuh_bantuan">Masih butuh bantuan?</string>
+    <string name="hubungi_kami">Hubungi Tokopedia Care</string>
     <string name="attachment_required">Mohon lampirkan data yang diminta</string>
     <string name="chat_dengan_toped">Chat dengan Toped</string>
     <string name="tim_customer_service">Tim Customer Service kami selalu siap untuk melayani Anda selama 24/7</string>
@@ -41,7 +42,7 @@
     <string name="app_name">contact_us</string>
     <string name="finish_contact_us">Terima kasih telah menghubungi, senang bisa membantu anda.</string>
     <string name="thanks_input">Terima kasih atas masukan Anda</string>
-    <string name="display_a_problem_report_here">Seluruh kendala yang Anda laporkan akan ditampilkan disini</string>
+    <string name="contact_us_display_a_problem_report_here">Oops, laporanmu tidak ditemukan</string>
 
     <string name="title_help">Bantuan</string>
     <string name="please_wait">Please Wait...</string>
@@ -54,7 +55,7 @@
     <string name="more_items">+ %1$d barang lainnya</string>
     <string name="belum_ada_transaksi">Belum Ada Transaksi</string>
     <string name="segera_laporkan">Segera laporkan jika menemukan kendala seputar transaksi di Tokopedia</string>
-    <string name="contact_us_type_here">Tulis di sini (minimum 15 karakter)</string>
+    <string name="contact_us_type_here">Tulis di sini (Min. 15 karakter)</string>
     <string name="on_going">Dalam Proses</string>
     <string name="closed">Ditutup</string>
     <string name="invoice_id">ID: #%1$s</string>
@@ -94,7 +95,7 @@
     <string name="layanan_prioritas">Layanan Prioritas</string>
     <string name="contact_us_minimum_length_error_text">Pesan terlalu pendek, minimum 15 karakter</string>
     <string name="detail_kendala">Detail Kendala</string>
-    <string name="inbox">Inbox</string>
+    <string name="contact_us_inbox">Pesan Bantuan</string>
     <string name="choose_image">Pilih Gambar</string>
     <string name="contact_us_search_error">Ada Yang Salah</string>
     <string name="title_activity_contact_us">Pusat Bantuan</string>
@@ -106,4 +107,29 @@
     <string name="error_attachment">Mohon tambahkan lampiran.</string>
     <string name="contactus_error_field_required">Harus diisi</string>
     <string name="contactus_error_invalid_email">Email ini tidak valid.</string>
+    <string name="contact_us_something_went_wrong">Something went wrong</string>
+    <string name="contact_us_no_ticket_message">Di sini tempatmu mengecek seluruh balasan dari Tim Tokopedia Care. Butuh bantuan lainnya?</string>
+    <string name="contact_us_tokopedia_care">Ke Tokopedia Care</string>
+    <string name="contact_us_transaction_details">Detail Transaksi</string>
+    <string name="contact_us_tokopedia_care_team">Tim Tokopedia Care</string>
+    <string name="contact_us_ticket_id_prefix">ID: %s</string>
+    <string name="contact_us_show_all_ticket">Tampilkan Semua</string>
+    <string name="contact_us_greet_user">Halo, %s!</string>
+
+    <string-array name="contactus_csat_question">
+        <item>Apa yang bisa diperbaiki dari layanan kami?</item>
+        <item>Apa yang bisa diperbaiki dari layanan kami?</item>
+        <item>Apa yang bisa ditingkatkan dari layanan kami?</item>
+        <item>Apa yang bisa ditingkatkan dari layanan kami?</item>
+        <item>Apa yang sebaiknya dipertahankan dari layanan kami?</item>
+    </string-array>
+
+    <string-array name="contactus_csat_caption">
+        <item>Tidak Memuaskan</item>
+        <item>Kurang Memuaskan</item>
+        <item>Cukup Memuaskan</item>
+        <item>Memuaskan</item>
+        <item>Sangat Memuaskan</item>
+    </string-array>
+
 </resources>

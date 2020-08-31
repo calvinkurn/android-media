@@ -6,7 +6,7 @@ import com.tokopedia.changephonenumber.domain.interactor.ValidateOtpStatusUseCas
 import com.tokopedia.changephonenumber.view.listener.ChangePhoneNumberWarningFragmentListener;
 import com.tokopedia.changephonenumber.view.subscriber.GetWarningSubscriber;
 import com.tokopedia.changephonenumber.view.subscriber.ValidateOtpStatusSubscriber;
-import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
+import com.tokopedia.otp.verification.domain.data.OtpConstant;
 
 /**
  * Created by milhamj on 18/12/17.
@@ -56,8 +56,7 @@ public class ChangePhoneNumberWarningPresenter
     public void validateOtpStatus(int userId) {
         view.showLoading();
         getValidateOtpStatusUseCase.execute(ValidateOtpStatusUseCase.
-                getValidateOtpParam(userId, RequestOtpUseCase.
-                        OTP_TYPE_VERIFY_USER_CHANGE_PHONE_NUMBER),
+                getValidateOtpParam(userId, OtpConstant.OtpType.VERIFY_USER_CHANGE_PHONE_NUMBER),
                 new ValidateOtpStatusSubscriber(view));
     }
 }

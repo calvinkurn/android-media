@@ -1,6 +1,5 @@
 package com.tokopedia.recommendation_widget_common.data.mapper
 
-import com.tokopedia.recommendation_widget_common.data.RecomendationEntity
 import com.tokopedia.recommendation_widget_common.data.SingleProductRecommendationEntity
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationLabel
@@ -10,9 +9,6 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
  * Created by Lukas on 29/08/19
  */
 object SingleProductRecommendationMapper {
-    private const val LABEL_POSITION_OFFERS = "offers"
-    private const val LABEL_POSITION_PROMO = "promo"
-    private const val LABEL_POSITION_CREDIBILITY = "credibility"
 
     fun convertIntoRecommendationList(
             recommendations: List<SingleProductRecommendationEntity.Recommendation>?,
@@ -21,28 +17,9 @@ object SingleProductRecommendationMapper {
             layoutType: String?
     ): List<RecommendationItem>{
         return recommendations?.mapIndexed { index, data ->
-            val labelCredibility = RecommendationLabel()
-            val labelPromo = RecommendationLabel()
-            val labelOffers = RecommendationLabel()
-
-            data.labelGroups?.let {
-                for (label: SingleProductRecommendationEntity.Recommendation.LabelGroup in it){
-                    when(label.position){
-                        LABEL_POSITION_CREDIBILITY -> {
-                            labelCredibility.title = label.title?:""
-                            labelCredibility.title = label.type?:""
-                        }
-                        LABEL_POSITION_PROMO -> {
-                            labelPromo.title = label.title?:""
-                            labelPromo.title = label.type?:""
-                        }
-                        LABEL_POSITION_OFFERS -> {
-                            labelOffers.title = label.title?:""
-                            labelOffers.title = label.type?:""
-                        }
-                    }
-                }
-            }
+            val labelGroupList = data.labelGroups?.map {
+                RecommendationLabel(title = it.title ?: "", type = it.type ?: "", position = it.position)
+            } ?: listOf()
 
             RecommendationItem(
                     data.id,
@@ -71,7 +48,7 @@ object SingleProductRecommendationMapper {
                     data.shop?.id ?: -1,
                     "",
                     data.shop?.name ?: "",
-                    -1,
+                    "",
                     1,
                     title ?: "",
                     pageName ?: "",
@@ -81,9 +58,7 @@ object SingleProductRecommendationMapper {
                     layoutType ?: "",
                     data.freeOngkirInformation?.isActive?:false,
                     data.freeOngkirInformation?.imageUrl?:"",
-                    labelPromo,
-                    labelOffers,
-                    labelCredibility,
+                    labelGroupList,
                     false
             )
          } ?: emptyList()

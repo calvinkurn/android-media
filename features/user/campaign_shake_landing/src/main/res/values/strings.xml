@@ -1,10 +1,15 @@
 <resources>
 
-    <string name="shake_default_error">Untuk saat ini, Tokopedia sedang kepenuhan pengunjung</string>
-    <string name="shake_login_error">Login sekarang untuk menghidupkan kembali fitur shake-shake!</string>
-    <string name="masuk_sekarang">Ok</string>
-    <string name="shake_shake_wrong_deeplink">Sedang terjadi kendala. Mohon coba beberapa saat lagi.</string>
-    <string name="rationale_need_location_for_promotion">Akses lokasi diperlukan untuk memudahkan
+    <string name="shake_landing_shake_default_error">Untuk saat ini, Tokopedia sedang kepenuhan pengunjung</string>
+    <string name="shake_landing_shake_login_error">Login sekarang untuk menghidupkan kembali fitur shake-shake!</string>
+    <string name="shake_landing_masuk_sekarang">Ok</string>
+    <string name="shake_landing_shake_shake_wrong_deeplink">Sedang terjadi kendala. Mohon coba beberapa saat lagi.</string>
+    <string name="shake_landing_rationale_need_location_for_promotion">Akses lokasi diperlukan untuk memudahkan
         pengiriman dan mendapatkan rekomendasi produk. Perbolehkan?</string>
-
+    <string name="shake_landing_oops">Oops!</string>
+    <string name="shake_landing_shake_lagi">Shake Lagi</string>
+    <string name="shake_landing_sepertinya_sistem_shake">Sepertinya sistem Shake di hp-mu sedang lelah. Istirahat dulu yuk!</string>
+    <string name="shake_landing_matikan_shake">Matikan Shake</string>
+    <string name="shake_landing_shake_shake_terus">Ayo Shake Terus</string>
+    <string name="shake_landing_cancel_shake_shake">Memuat Shake-Shake</string>
 </resources>

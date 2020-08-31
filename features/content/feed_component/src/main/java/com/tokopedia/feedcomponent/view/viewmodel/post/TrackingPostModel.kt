@@ -15,4 +15,17 @@ data class TrackingPostModel (
         val postId: Int = 0,
         val totalContent: Int = 0,
         val recomId: Int = 0
-)
+) {
+    fun copy(): TrackingPostModel {
+        return TrackingPostModel(templateType,
+                activityName,
+                trackingType,
+                mediaType,
+                mediaUrl,
+                tagsType,
+                redirectUrl,
+                authorId,
+                postId,
+                totalContent)
+    }
+}

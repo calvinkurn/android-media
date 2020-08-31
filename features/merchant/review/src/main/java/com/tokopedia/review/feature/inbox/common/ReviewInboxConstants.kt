@@ -1,0 +1,9 @@
+package com.tokopedia.review.feature.inbox.common
+
+object ReviewInboxConstants {
+    const val REVIEW_INBOX_INITIAL_PAGE = 1
+    const val REVIEW_INBOX_DATA_PER_PAGE = 10
+    const val NO_SHADOW_ELEVATION = 0F
+    const val REVIEW_INBOX_NO_PRODUCTS_BOUGHT_IMAGE = "https://ecs7.tokopedia.net/android/others/review_inbox_no_products.png"
+    const val REVIEW_INBOX_NO_PRODUCTS_SEARCH_IMAGE = "https://ecs7.tokopedia.net/android/others/review_inbox_search_empty.png"
+}

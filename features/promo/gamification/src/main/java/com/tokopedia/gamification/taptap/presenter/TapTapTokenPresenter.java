@@ -80,7 +80,7 @@ public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContrac
         queryParams.put(GamificationConstants.GraphQlVariableKeys.TOKEN_ID, tokenUserId);
         queryParams.put(GamificationConstants.GraphQlVariableKeys.CAMPAIGN_ID, campaignId);
         getCrackResultEggUseCase.clearRequest();
-        GraphqlRequest sumTokenRequest = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.crack_egg_result_mutation),
+        GraphqlRequest sumTokenRequest = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), com.tokopedia.gamification.R.raw.crack_egg_result_mutation),
                 ResponseCrackResultEntity.class, queryParams, false);
         getCrackResultEggUseCase.addRequest(sumTokenRequest);
         getCrackResultEggUseCase.execute(new Subscriber<GraphqlResponse>() {
@@ -95,10 +95,10 @@ public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContrac
                     return;
                 }
                 if (e instanceof UnknownHostException) {
-                    showErrorView(R.drawable.gf_internet_not_connected_error
-                            , getView().getResources().getString(R.string.internet_not_connected_error_occured), true);
+                    showErrorView(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection
+                            , getView().getResources().getString(com.tokopedia.gamification.R.string.internet_not_connected_error_occured), true);
                 } else {
-                    getView().showErrorSnackBarOnCrackError(getView().getResources().getString(R.string.gf_server_error_crack_token_tap_tap), true);
+                    getView().showErrorSnackBarOnCrackError(getView().getResources().getString(com.tokopedia.gamification.R.string.gf_server_error_crack_token_tap_tap), true);
 
                 }
 
@@ -115,20 +115,20 @@ public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContrac
                     if (crackResult.isCrackTokenSuccess() || crackResult.isTokenHasBeenCracked()) {
                         getView().onSuccessCrackToken(crackResult);
                     } else if (crackResult.isCrackTokenExpired()) {
-                        getView().showErrorSnackBarOnCrackError(getView().getResources().getString(R.string.gf_server_error_crack_token_tap_tap), true);
+                        getView().showErrorSnackBarOnCrackError(getView().getResources().getString(com.tokopedia.gamification.R.string.gf_server_error_crack_token_tap_tap), true);
                     } else if (crackResult.getResultStatus() != null
                             && crackResult.isCrackButtonErrorTapTap()) {
                         if(crackResult.getResultStatus().getMessage() != null
                                 && crackResult.getResultStatus().getMessage().size() != 0){
                             getView().showErrorSnackBarOnCrackError(TextUtils.join(",", crackResult.getResultStatus().getMessage()), false);
                         }else{
-                            getView().showErrorSnackBarOnCrackError(getView().getResources().getString(R.string.error_campaign_expired), false);
+                            getView().showErrorSnackBarOnCrackError(getView().getResources().getString(com.tokopedia.gamification.R.string.error_campaign_expired), false);
                         }
                     } else {
-                        getView().showErrorSnackBarOnCrackError(getView().getResources().getString(R.string.gf_server_error_crack_token_tap_tap), true);
+                        getView().showErrorSnackBarOnCrackError(getView().getResources().getString(com.tokopedia.gamification.R.string.gf_server_error_crack_token_tap_tap), true);
                     }
                 } else {
-                    getView().showErrorSnackBarOnCrackError(getView().getResources().getString(R.string.gf_server_error_crack_token_tap_tap), true);
+                    getView().showErrorSnackBarOnCrackError(getView().getResources().getString(com.tokopedia.gamification.R.string.gf_server_error_crack_token_tap_tap), true);
                 }
                 getView().onFinishCrackToken();
             }
@@ -185,7 +185,7 @@ public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContrac
         if (showLoading)
             getView().showLoading();
         getTokenTokopointsUseCase.clearRequest();
-        GraphqlRequest tokenTokopointsRequest = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.gf_token_tap_tap),
+        GraphqlRequest tokenTokopointsRequest = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), com.tokopedia.gamification.R.raw.gf_token_tap_tap),
                 TapTapBaseEntity.class, false);
         getTokenTokopointsUseCase.addRequest(tokenTokopointsRequest);
         getTokenTokopointsUseCase.execute(new Subscriber<GraphqlResponse>() {
@@ -201,11 +201,11 @@ public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContrac
                 }
                 getView().hideLoading();
                 if (e instanceof UnknownHostException) {
-                    showErrorView(R.drawable.gf_internet_not_connected_error
-                            , getView().getResources().getString(R.string.internet_not_connected_error_occured));
+                    showErrorView(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection
+                            , getView().getResources().getString(com.tokopedia.gamification.R.string.internet_not_connected_error_occured));
                 } else {
-                    showErrorView(R.drawable.gf_server_full_error
-                            , getView().getResources().getString(R.string.error_server_full));
+                    showErrorView(com.tokopedia.gamification.R.drawable.gf_server_full_error
+                            , getView().getResources().getString(com.tokopedia.gamification.R.string.error_server_full));
 
                 }
 
@@ -334,7 +334,7 @@ public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContrac
         getView().showLoading();
 
         getCrackResultEggUseCase.clearRequest();
-        GraphqlRequest tokenTokopointsRequest = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.gf_play_with_tokopoints),
+        GraphqlRequest tokenTokopointsRequest = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), com.tokopedia.gamification.R.raw.gf_play_with_tokopoints),
                 PlayWithPointsEntity.class, false);
         getCrackResultEggUseCase.addRequest(tokenTokopointsRequest);
         getCrackResultEggUseCase.execute(new Subscriber<GraphqlResponse>() {

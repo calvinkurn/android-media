@@ -1,5 +1,6 @@
 package com.tokopedia.adapterdelegate
 
+import android.os.Bundle
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 
@@ -13,4 +14,6 @@ interface AdapterDelegate<T> {
     fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder
 
     fun onBindViewHolder(itemList: List<T>, position: Int, holder: RecyclerView.ViewHolder)
+
+    fun onBindViewHolder(itemList: List<T>, position: Int, payloads: Bundle, holder: RecyclerView.ViewHolder)
 }

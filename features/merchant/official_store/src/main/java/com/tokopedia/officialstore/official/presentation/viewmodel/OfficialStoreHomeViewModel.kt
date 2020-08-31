@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.officialstore.OfficialStoreDispatcherProvider
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBenefits
@@ -26,10 +27,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class OfficialStoreHomeViewModel @Inject constructor(
@@ -42,14 +41,15 @@ class OfficialStoreHomeViewModel @Inject constructor(
         private val addWishListUseCase: AddWishListUseCase,
         private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
         private val removeWishListUseCase: RemoveWishListUseCase,
-        dispatchers: CoroutineDispatcher
-) : BaseViewModel(dispatchers) {
+        private val dispatchers: OfficialStoreDispatcherProvider
+) : BaseViewModel(dispatchers.ui()) {
 
     var currentSlug: String = ""
         private set
 
     val userId: String
         get() = userSessionInterface.userId
+
 
     val officialStoreBannersResult: LiveData<Result<OfficialStoreBanners>>
         get() = _officialStoreBannersResult
@@ -65,15 +65,8 @@ class OfficialStoreHomeViewModel @Inject constructor(
     val officialStoreDynamicChannelResult: LiveData<Result<DynamicChannel>>
         get() = _officialStoreDynamicChannelResult
 
-    val officialStoreProductRecommendationResult: LiveData<Result<RecommendationWidget>>
-        get() = _officialStoreProductRecommendation
-
     val topAdsWishlistResult: LiveData<Result<WishlistModel>>
         get() = _topAdsWishlistResult
-
-    val wishlistResult: LiveData<Result<WishlistModel>> by lazy {
-        _wishlistResult
-    }
 
     private val _officialStoreBannersResult by lazy {
         MutableLiveData<Result<OfficialStoreBanners>>()
@@ -89,24 +82,23 @@ class OfficialStoreHomeViewModel @Inject constructor(
 
     private val _officialStoreDynamicChannelResult = MutableLiveData<Result<DynamicChannel>>()
 
-    private val _officialStoreProductRecommendation by lazy {
-        MutableLiveData<Result<RecommendationWidget>>()
-    }
+    private val _productRecommendation = MutableLiveData<Result<RecommendationWidget>>()
+    val productRecommendation: LiveData<Result<RecommendationWidget>>
+        get() = _productRecommendation
 
     private val _topAdsWishlistResult by lazy {
         MutableLiveData<Result<WishlistModel>>()
     }
 
-    private val _wishlistResult by lazy {
-        MutableLiveData<Result<WishlistModel>>()
-    }
-
     fun loadFirstData(category: Category?) {
         launchCatchError(block = {
+            val categoryId = category?.categoryId?.toIntOrNull() ?: 0
             currentSlug = "${category?.prefixUrl}${category?.slug}"
-            _officialStoreBannersResult.value = Success(getOfficialStoreBanners(currentSlug).await())
-            _officialStoreBenefitResult.value = Success(getOfficialStoreBenefit().await())
-            _officialStoreFeaturedShopResult.value = Success(getOfficialStoreFeaturedShop(category?.categoryId?: "").await())
+
+            _officialStoreBannersResult.value = getOfficialStoreBanners(currentSlug)
+            _officialStoreBenefitResult.value = getOfficialStoreBenefit()
+            _officialStoreFeaturedShopResult.value = getOfficialStoreFeaturedShop(categoryId)
+
             getOfficialStoreDynamicChannel(currentSlug)
         }) {
             _officialStoreBannersResult.value = Fail(it)
@@ -115,56 +107,52 @@ class OfficialStoreHomeViewModel @Inject constructor(
         }
     }
 
-    fun loadMore(category: Category?, page: Int) {
-        val categories = category?.categories.toString()
-        val categoriesWithoutOpeningSquare = categories.replace("[", "") // Remove Square bracket from the string
-        val categoriesWithoutClosingSquare = categoriesWithoutOpeningSquare.replace("]", "") // Remove Square bracket from the string
-        launchCatchError(block = {
-            _officialStoreProductRecommendation.value = Success(getOfficialStoreProductRecommendation(categoriesWithoutClosingSquare, page).await())
-        }) {
-
-        }
-    }
-
-    private fun getOfficialStoreBanners(categoryId: String): Deferred<OfficialStoreBanners> {
-        return async(Dispatchers.IO) {
-            var banner = OfficialStoreBanners()
+    fun loadMoreProducts(categoryId: String, pageNumber: Int, pageName: String = "official-store") {
+        launch {
             try {
-                getOfficialStoreBannersUseCase.params = GetOfficialStoreBannerUseCase.
-                        createParams(categoryId)
-                banner = getOfficialStoreBannersUseCase.executeOnBackground()
-            } catch (t:  Throwable) {
-                _officialStoreFeaturedShopResult.value = Fail(t)
+                withContext(dispatchers.io()) {
+                    val recomData = getRecommendationUseCase.createObservable(getRecommendationUseCase
+                            .getOfficialStoreRecomParams(pageNumber, pageName, categoryId)).toBlocking()
+                    _productRecommendation.postValue(Success(recomData.first().get(0)))
+                }
+            } catch (e: Throwable) {
+                _productRecommendation.value = Fail(e)
             }
-            banner
         }
     }
 
-    private fun getOfficialStoreBenefit(): Deferred<OfficialStoreBenefits> {
-        return async(Dispatchers.IO) {
-            var benefits = OfficialStoreBenefits()
+    private suspend fun getOfficialStoreBanners(categoryId: String): Result<OfficialStoreBanners> {
+        return withContext(dispatchers.io()) {
             try {
-                benefits = getOfficialStoreBenefitUseCase.executeOnBackground()
+                getOfficialStoreBannersUseCase.params = GetOfficialStoreBannerUseCase.createParams(categoryId)
+                val banner = getOfficialStoreBannersUseCase.executeOnBackground()
+                Success(banner)
             } catch (t: Throwable) {
-                _officialStoreBenefitResult.value = Fail(t)
+                Fail(t)
             }
-            benefits
         }
     }
 
+    private suspend fun getOfficialStoreBenefit(): Result<OfficialStoreBenefits> {
+        return withContext(dispatchers.io()) {
+            try {
+                val benefits = getOfficialStoreBenefitUseCase.executeOnBackground()
+                Success(benefits)
+            } catch (t: Throwable) {
+                Fail(t)
+            }
+        }
+    }
 
-    private fun getOfficialStoreFeaturedShop(categoryId: String): Deferred<OfficialStoreFeaturedShop>  {
-       return async(Dispatchers.IO) {
-           var featuredShop = OfficialStoreFeaturedShop()
-           try {
-               getOfficialStoreFeaturedShopUseCase.params = GetOfficialStoreFeaturedUseCase.
-                       createParams(categoryId.toIntOrNull() ?: 0)
-               featuredShop = getOfficialStoreFeaturedShopUseCase.executeOnBackground()
-           } catch (t: Throwable) {
-               _officialStoreFeaturedShopResult.value = Fail(t)
-           }
-
-           featuredShop
+    private suspend fun getOfficialStoreFeaturedShop(categoryId: Int): Result<OfficialStoreFeaturedShop> {
+        return withContext(dispatchers.io()) {
+            try {
+                getOfficialStoreFeaturedShopUseCase.params = GetOfficialStoreFeaturedUseCase.createParams(categoryId)
+                val featuredShop = getOfficialStoreFeaturedShopUseCase.executeOnBackground()
+                Success(featuredShop)
+            } catch (t: Throwable) {
+                Fail(t)
+            }
         }
     }
 
@@ -176,59 +164,44 @@ class OfficialStoreHomeViewModel @Inject constructor(
         )
     }
 
-    private fun getOfficialStoreProductRecommendation(categoryId: String, page: Int): Deferred<RecommendationWidget> {
-        return async(Dispatchers.IO) {
-            val defaultValue = ""
-            val pageName = "official-store"
-            val pageNumber = page
-            var productRecommendation = RecommendationWidget(emptyList(), defaultValue, defaultValue, defaultValue, defaultValue, defaultValue, defaultValue,
-                    defaultValue, pageNumber, 0, 0, true, pageName)
-
+    private suspend fun addTopAdsWishlist(model: RecommendationItem): Result<WishlistModel> {
+        return withContext(dispatchers.io()) {
             try {
-                val dataProduct = getRecommendationUseCase.createObservable(
-                        getRecommendationUseCase.getOfficialStoreRecomParams(pageNumber, pageName, categoryId))
-                        .toBlocking()
-                dataProduct.first()[0].let {
-                    productRecommendation = it
+                val params = RequestParams.create().apply {
+                    putString(TopAdsWishlishedUseCase.WISHSLIST_URL, model.wishlistUrl)
                 }
-            } catch (t: Throwable) {
-                _officialStoreProductRecommendation.value = Fail(t)
-            }
+                val dataTopAdsWishlist = topAdsWishlishedUseCase.createObservable(params).toBlocking()
+                val topAdsWishList = dataTopAdsWishlist.first()
 
-            productRecommendation
+                Success(topAdsWishList)
+            } catch (t: Throwable) {
+                Fail(t)
+            }
         }
     }
 
-    private fun addTopAdsWishlist(model: RecommendationItem): Deferred<WishlistModel> {
-        val params = RequestParams.create()
-        params.putString(TopAdsWishlishedUseCase.WISHSLIST_URL, model.wishlistUrl)
-
-        return async(Dispatchers.IO) {
-            var wishlistResponse = WishlistModel()
-
+    private suspend fun getProductRecommendation(categoryId: String, pageNumber: Int, pageName: String): Result<RecommendationWidget> {
+        return withContext(dispatchers.io()) {
             try {
-                val dataTopAdsWishlist = topAdsWishlishedUseCase.createObservable(params).toBlocking()
-                dataTopAdsWishlist.first().let {
-                    wishlistResponse = it
-                }
+                val requestParams = getRecommendationUseCase.getOfficialStoreRecomParams(pageNumber, pageName, categoryId)
+                val dataProductResponse = getRecommendationUseCase.createObservable(requestParams).toBlocking()
+                Success(dataProductResponse.first().get(0))
             } catch (t: Throwable) {
-                _topAdsWishlistResult.value = Fail(t)
+                Fail(t)
             }
-            wishlistResponse
         }
     }
 
     fun addWishlist(model: RecommendationItem, callback: ((Boolean, Throwable?) -> Unit)) {
         if (model.isTopAds) {
-            launchCatchError (block = {
-                _topAdsWishlistResult.value = Success(addTopAdsWishlist(model).await())
-                callback.invoke(true, null)
+            launchCatchError(block = {
+                _topAdsWishlistResult.value = addTopAdsWishlist(model)
+                _topAdsWishlistResult.value?.handleResult(callback)
             }) {
                 callback.invoke(false, it)
             }
-
         } else {
-            addWishListUseCase.createObservable(model.productId.toString(), userSessionInterface.userId, object: WishListActionListener {
+            addWishListUseCase.createObservable(model.productId.toString(), userSessionInterface.userId, object : WishListActionListener {
                 override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
                     callback.invoke(false, Throwable(errorMessage))
                 }
@@ -237,19 +210,19 @@ class OfficialStoreHomeViewModel @Inject constructor(
                     callback.invoke(true, null)
                 }
 
-                override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) { }
+                override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
 
-                override fun onSuccessRemoveWishlist(productId: String?) { }
+                override fun onSuccessRemoveWishlist(productId: String?) {}
 
             })
         }
     }
 
     fun removeWishlist(model: RecommendationItem, callback: ((Boolean, Throwable?) -> Unit)) {
-        removeWishListUseCase.createObservable(model.productId.toString(), userSessionInterface.userId, object: WishListActionListener {
-            override fun onErrorAddWishList(errorMessage: String?, productId: String?) { }
+        removeWishListUseCase.createObservable(model.productId.toString(), userSessionInterface.userId, object : WishListActionListener {
+            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {}
 
-            override fun onSuccessAddWishlist(productId: String?) { }
+            override fun onSuccessAddWishlist(productId: String?) {}
 
             override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
                 callback.invoke(false, Throwable(errorMessage))
@@ -259,6 +232,13 @@ class OfficialStoreHomeViewModel @Inject constructor(
                 callback.invoke(true, null)
             }
         })
+    }
+
+    private fun Result<Any>.handleResult(callback: (Boolean, Throwable?) -> Unit) {
+        when (this) {
+            is Success -> callback.invoke(true, null)
+            is Fail -> callback.invoke(false, throwable)
+        }
     }
 
     fun isLoggedIn() = userSessionInterface.isLoggedIn

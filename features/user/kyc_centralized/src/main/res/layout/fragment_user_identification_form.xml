@@ -1,97 +1,135 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<androidx.core.widget.NestedScrollView xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    android:fillViewport="true"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    android:background="@color/Neutral_N0">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/dp_64"
-        android:background="@color/transparent">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/fragment_user_identification_form_container"
+            android:orientation="vertical"
+            android:padding="@dimen/spacing_lvl4">
 
         <ImageView
-            android:id="@+id/correct_image"
-            android:layout_width="@dimen/dp_128"
-            android:layout_height="@dimen/dp_128"
-            android:layout_marginBottom="@dimen/dp_16"
-            app:layout_constraintBottom_toTopOf="@+id/title"
+            android:id="@+id/image_selfie_correct"
+            android:layout_width="@dimen/layout_lvl9"
+            android:layout_height="@dimen/layout_lvl9"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@+id/wrong_image"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintRight_toLeftOf="@id/image_selfie_wrong"
+            app:layout_constraintBottom_toTopOf="@id/vertical_guide"
+            android:visibility="gone"/>
 
         <ImageView
-            android:id="@+id/wrong_image"
-            android:layout_width="@dimen/dp_128"
-            android:layout_height="@dimen/dp_128"
-            app:layout_constraintBottom_toBottomOf="@+id/correct_image"
-            app:layout_constraintLeft_toRightOf="@+id/correct_image"
+            android:id="@+id/image_selfie_wrong"
+            android:layout_width="@dimen/layout_lvl9"
+            android:layout_height="@dimen/layout_lvl9"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/correct_image" />
+            app:layout_constraintLeft_toRightOf="@id/image_selfie_correct"
+            app:layout_constraintBottom_toTopOf="@id/vertical_guide"
+            android:visibility="gone"/>
 
-        <TextView
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/form_onboarding_image"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/vertical_guide"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            android:layout_width="@dimen/kyc_centralized_218dp"
+            android:layout_height="@dimen/kyc_centralized_144dp"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/vertical_guide"
+            android:layout_width="@dimen/kyc_centralized_0dp"
+            android:layout_height="@dimen/kyc_centralized_0dp"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_begin="@dimen/kyc_centralized_144dp" />
+
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/title"
+            app:typographyType="heading_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
-            android:textColor="@color/black_70"
-            android:textSize="@dimen/sp_18"
+            android:textColor="@color/kyc_centralized_f531353b"
+            android:textSize="@dimen/fontSize_lvl5"
+            android:layout_marginTop="@dimen/kyc_centralized_17_9dp"
             app:layout_constraintBottom_toTopOf="@+id/subtitle"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/correct_image"
-            tools:text="Foto Diri Bersama KTP" />
+            app:layout_constraintTop_toBottomOf="@+id/vertical_guide"
+            tools:text="Foto bagian depan KTP"/>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/subtitle"
+            app:typographyType="body_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:lineSpacingExtra="@dimen/kyc_centralized_6sp"
             android:gravity="center"
-            android:lineSpacingExtra="@dimen/sp_6"
-            android:paddingEnd="@dimen/dp_16"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"
-            android:paddingStart="@dimen/dp_16"
-            android:textColor="@color/black_54"
-            android:textSize="@dimen/sp_14"
-            app:layout_constraintHorizontal_bias="0.0"
+            android:textColor="@color/Neutral_N700_68"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/title"
-            tools:text="Tunjukkan bagian depan KTP dengan posisi di bawah dagu tanpa menutupi wajah." />
+            tools:text="@string/face_subtitle" />
 
-        <TextView
-            android:id="@+id/subtitle_body"
+        <LinearLayout
+            android:id="@+id/layout_info_bullet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="@dimen/spacing_lvl3"
+            android:paddingBottom="@dimen/spacing_lvl4"
+            app:layout_constraintTop_toBottomOf="@id/subtitle"
+            app:layout_constraintLeft_toLeftOf="@id/subtitle"
+            app:layout_constraintRight_toRightOf="@id/subtitle"/>
+
+        <ImageView
+            android:id="@+id/security_shield"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_4"
-            android:lineSpacingExtra="@dimen/sp_6"
-            android:paddingEnd="@dimen/dp_16"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"
-            android:visibility="gone"
-            tools:visibility="visible"
-            android:paddingStart="@dimen/dp_16"
-            android:textColor="@color/black_54"
-            android:textSize="@dimen/sp_14"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintTop_toTopOf="@id/security_textview"
+            app:layout_constraintBottom_toBottomOf="@id/security_textview"
+            app:layout_constraintRight_toLeftOf="@id/security_textview"
+            app:srcCompat="@drawable/ic_shield" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/security_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:typographyType="body_3"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/subtitle"
-            tools:text="Tunjukkan bagian depan KTP dengan posisi di bawah dagu tanpa menutupi wajah." />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            app:layout_constraintTop_toBottomOf="@id/layout_info_bullet"
+            android:paddingLeft="@dimen/spacing_lvl3"
+            android:paddingStart="@dimen/spacing_lvl3"
+            android:layout_marginTop="@dimen/spacing_lvl5"
+            android:layout_marginBottom="@dimen/kyc_centralized_17dp"
+            android:drawablePadding="@dimen/spacing_lvl3"
+            android:text="@string/kyc_data_security" />
 
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/button"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_48"
-        android:layout_margin="@dimen/dp_16"
-        android:gravity="center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        tools:text="Ambil Foto KTP" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/button"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/layout_lvl6"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:gravity="center"
+            app:layout_constraintTop_toBottomOf="@id/security_textview"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            tools:text="Ambil Foto KTP" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

@@ -2,10 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tokopedia.sellerorder">
 
-    <application
-        android:allowBackup="true"
-        android:label="@string/som_app_name"
-        android:supportsRtl="true">
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <application>
 
         <activity
             android:name="com.tokopedia.sellerorder.list.presentation.activity.SomListActivity"
@@ -115,7 +113,7 @@
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_seller"
-                    android:path="@string/path_order"/>
+                    android:pathPattern="@string/path_order"/>
 
             </intent-filter>
 
@@ -124,6 +122,7 @@
         <activity
             android:name=".detail.presentation.activity.SomSeeInvoiceActivity"
             android:screenOrientation="portrait"
+            android:configChanges="uiMode"
             android:theme="@style/Theme.White"/>
 
         <activity

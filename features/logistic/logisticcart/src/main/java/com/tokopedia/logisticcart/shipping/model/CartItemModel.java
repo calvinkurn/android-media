@@ -56,6 +56,8 @@ public class CartItemModel implements Parcelable {
     private String preOrderInfo;
     private boolean freeShipping;
     private String freeShippingBadgeUrl;
+    private boolean showTicker;
+    private String tickerMessage;
 
     // Trade in
     private boolean isValidTradeIn;
@@ -392,6 +394,22 @@ public class CartItemModel implements Parcelable {
         this.freeShippingBadgeUrl = freeShippingBadgeUrl;
     }
 
+    public boolean isShowTicker() {
+        return showTicker;
+    }
+
+    public void setShowTicker(boolean showTicker) {
+        this.showTicker = showTicker;
+    }
+
+    public String getTickerMessage() {
+        return tickerMessage;
+    }
+
+    public void setTickerMessage(String tickerMessage) {
+        this.tickerMessage = tickerMessage;
+    }
+
     public CartItemModel() {
     }
 
@@ -507,6 +525,8 @@ public class CartItemModel implements Parcelable {
         dest.writeByte(this.protectionCheckboxDisabled ? (byte) 1 : (byte) 0);
         dest.writeByte(this.freeShipping ? (byte) 1 : (byte) 0);
         dest.writeString(this.freeShippingBadgeUrl);
+        dest.writeByte(this.showTicker ? (byte) 1: (byte) 0);
+        dest.writeString(this.tickerMessage);
     }
 
     protected CartItemModel(Parcel in) {
@@ -543,6 +563,8 @@ public class CartItemModel implements Parcelable {
         this.protectionCheckboxDisabled = in.readByte() != 0;
         this.freeShipping = in.readByte() != 0;
         this.freeShippingBadgeUrl = in.readString();
+        this.showTicker = in.readByte() != 0;
+        this.tickerMessage = in.readString();
     }
 
     public static final Creator<CartItemModel> CREATOR = new Creator<CartItemModel>() {

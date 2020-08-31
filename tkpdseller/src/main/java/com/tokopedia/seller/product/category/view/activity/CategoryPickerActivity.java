@@ -9,11 +9,12 @@ import androidx.fragment.app.Fragment;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.product.manage.item.category.view.istener.CategoryPickerFragmentListener;
 import com.tokopedia.seller.ProductEditItemComponentInstance;
-import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.category.view.fragment.CategoryPickerFragment;
 import com.tokopedia.core.common.category.view.model.CategoryViewModel;
+import com.tokopedia.seller.product.draft.tracking.ProductAddEditDraftListPageTracking;
+import com.tokopedia.user.session.UserSession;
 
 import org.parceler.Parcels;
 
@@ -30,6 +31,7 @@ public class CategoryPickerActivity extends BaseSimpleActivity implements
     public static final String CATEGORY_RESULT_LEVEL = "CATEGORY_RESULT_LEVEL";
     public static final String CATEGORY_RESULT_ID = "CATEGORY_RESULT_ID";
     public static final String CATEGORY_RESULT_NAME = "CATEGORY_RESULT_NAME";
+    public static final String CATEGORY_RESULT_FULL_NAME = "CATEGORY_RESULT_FULL_NAME";
 
     public static void start(Activity activity, int requestCode, long depId) {
         Intent intent = createIntent(activity, depId);
@@ -54,6 +56,19 @@ public class CategoryPickerActivity extends BaseSimpleActivity implements
         return intent;
     }
 
+    private String getCategoryResultFullName(List<CategoryViewModel> listCategory) {
+        StringBuilder sb = new StringBuilder();
+        if (listCategory != null) {
+            String prefix = "";
+            for(CategoryViewModel category: listCategory) {
+                sb.append(prefix);
+                prefix = "/";
+                sb.append(category.getName());
+            }
+        }
+        return sb.toString();
+    }
+
     @Override
     public void selectSetCategory(List<CategoryViewModel> listCategory) {
         Intent intent = new Intent();
@@ -61,6 +76,7 @@ public class CategoryPickerActivity extends BaseSimpleActivity implements
         CategoryViewModel chosenCategory = listCategory.get(listCategory.size() - 1);
         intent.putExtra(CATEGORY_RESULT_ID, chosenCategory.getId());
         intent.putExtra(CATEGORY_RESULT_NAME, chosenCategory.getName());
+        intent.putExtra(CATEGORY_RESULT_FULL_NAME, getCategoryResultFullName(listCategory));
         setResult(Activity.RESULT_OK, intent);
         finish();
     }
@@ -86,5 +102,13 @@ public class CategoryPickerActivity extends BaseSimpleActivity implements
     @Override
     protected boolean isToolbarWhite() {
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (getIntent().getBooleanExtra(ProductAddEditDraftListPageTracking.EXTRA_IS_EDIT_MODE, false)) {
+            ProductAddEditDraftListPageTracking.INSTANCE.clickBackOtherCategory(new UserSession(this).getShopId());
+        }
     }
 }

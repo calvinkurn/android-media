@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
+        android:id="@+id/image_star1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:remoteFileName="ic_star_1.png"
+        tools:alpha="1"
+        tools:scaleX="1"
+        tools:scaleY="1"
+        tools:translationX="-70dp"
+        tools:translationY="250px" />
+
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
+        android:id="@+id/image_star2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:remoteFileName="ic_star_2.png"
+        tools:alpha="1"
+        tools:scaleX="1"
+        tools:scaleY="1"
+        tools:translationX="855px"
+        tools:translationY="510px" />
+
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
+        android:id="@+id/image_star3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:remoteFileName="ic_star_3.png"
+        tools:alpha="1"
+        tools:scaleX="1"
+        tools:scaleY="1"
+        tools:translationX="60px"
+        tools:translationY="1000px" />
+
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
+        android:id="@+id/image_star4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:remoteFileName="ic_star_4.png"
+        tools:alpha="1"
+        tools:scaleX="2"
+        tools:scaleY="2"
+        tools:translationX="864px"
+        tools:translationY="1070px" />
+</FrameLayout>

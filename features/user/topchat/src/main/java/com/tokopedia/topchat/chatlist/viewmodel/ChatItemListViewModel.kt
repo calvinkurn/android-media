@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatlist.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -9,10 +10,12 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.MUTATION_MARK_CHAT_AS_READ
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.MUTATION_MARK_CHAT_AS_UNREAD
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_ALL
+import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_TOPBOT
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_UNREAD
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_UNREPLIED
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_MESSAGE_ID
@@ -23,12 +26,14 @@ import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.QUERY_BLAST_S
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.QUERY_CHAT_LIST_MESSAGE
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.QUERY_DELETE_CHAT_MESSAGE
 import com.tokopedia.topchat.chatlist.pojo.ChatChangeStateResponse
-import com.tokopedia.topchat.chatlist.model.IncomingChatWebSocketModel
 import com.tokopedia.topchat.chatlist.pojo.ChatDelete
 import com.tokopedia.topchat.chatlist.pojo.ChatDeleteStatus
 import com.tokopedia.topchat.chatlist.pojo.ChatListPojo
 import com.tokopedia.topchat.chatlist.pojo.chatblastseller.BlastSellerMetaDataResponse
 import com.tokopedia.topchat.chatlist.pojo.chatblastseller.ChatBlastSellerMetadata
+import com.tokopedia.topchat.chatlist.pojo.whitelist.ChatWhitelistFeatureResponse
+import com.tokopedia.topchat.chatlist.usecase.ChatBanedSellerUseCase
+import com.tokopedia.topchat.chatlist.usecase.GetChatWhitelistFeature
 import com.tokopedia.topchat.chatroom.view.viewmodel.ReplyParcelableModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -46,12 +51,15 @@ interface ChatItemListContract {
     fun chatMoveToTrash(messageId: Int)
     fun markChatAsRead(msgIds: List<String>, result: (Result<ChatChangeStateResponse>) -> Unit)
     fun markChatAsUnread(msgIds: List<String>, result: (Result<ChatChangeStateResponse>) -> Unit)
+    fun loadChatBannedSellerStatus()
 }
 
 class ChatItemListViewModel @Inject constructor(
         private val repository: GraphqlRepository,
         private val chatListUseCase: GraphqlUseCase<ChatListPojo>,
         private val queries: Map<String, String>,
+        private val chatWhitelistFeature: GetChatWhitelistFeature,
+        private val chatBannedSellerUseCase: ChatBanedSellerUseCase,
         private val dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher), ChatItemListContract {
 
@@ -71,7 +79,9 @@ class ChatItemListViewModel @Inject constructor(
     val broadCastButtonUrl: LiveData<String>
         get() = _broadCastButtonUrl
 
-    private val recentMessage: HashMap<String, String> = hashMapOf()
+    private val _chatBannedSellerStatus = MutableLiveData<Result<Boolean>>()
+    val chatBannedSellerStatus: LiveData<Result<Boolean>>
+        get() = _chatBannedSellerStatus
 
     companion object {
         val arrayFilterParam = arrayListOf(
@@ -135,6 +145,14 @@ class ChatItemListViewModel @Inject constructor(
         changeMessageState(query, msgIds, result)
     }
 
+    override fun loadChatBannedSellerStatus() {
+        chatBannedSellerUseCase.getStatus({
+            _chatBannedSellerStatus.value = Success(it)
+        }, {
+            _chatBannedSellerStatus.value = Fail(it)
+        })
+    }
+
     private fun changeMessageState(
             query: String,
             msgIds: List<String>,
@@ -189,11 +207,31 @@ class ChatItemListViewModel @Inject constructor(
         return (lastItem.replyTime.toLongOrZero() / 1000000L).toString()
     }
 
-    fun updateLastReply(newChat: IncomingChatWebSocketModel) {
-        recentMessage[newChat.msgId] = newChat.time
+    fun loadTopBotWhiteList() {
+        chatWhitelistFeature.getWhiteList(
+                GetChatWhitelistFeature.PARAM_VALUE_FEATURE_TOPBOT, ::onSuccessLoadWhiteList, ::onErrorGetWhiteList
+        )
     }
 
-    fun hasBeenUpdated(newChat: IncomingChatWebSocketModel): Boolean {
-        return recentMessage[newChat.msgId] == newChat.time
+    private fun onSuccessLoadWhiteList(chatWhitelistFeatureResponse: ChatWhitelistFeatureResponse) {
+        if (chatWhitelistFeatureResponse.chatWhitelistFeature.isWhitelist) {
+            arrayFilterParam.add(PARAM_FILTER_TOPBOT)
+        }
+    }
+
+    private fun onErrorGetWhiteList(throwable: Throwable) {
+        throwable.printStackTrace()
+    }
+
+    fun getFilterTittles(context: Context, isTabSeller: Boolean): List<String> {
+        val filters = arrayListOf(
+                context.getString(R.string.filter_chat_all),
+                context.getString(R.string.filter_chat_unread),
+                context.getString(R.string.filter_chat_unreplied)
+        )
+        if (arrayFilterParam.size > 3 && isTabSeller) {
+            filters.add(context.getString(R.string.filter_chat_smart_reply))
+        }
+        return filters
     }
 }

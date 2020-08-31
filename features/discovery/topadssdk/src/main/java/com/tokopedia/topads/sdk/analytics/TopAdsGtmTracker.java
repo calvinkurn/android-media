@@ -5,7 +5,8 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
-import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.analyticconstant.DataLayer;
+import com.tokopedia.iris.util.IrisSession;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.Analytics;
 import com.tokopedia.topads.sdk.domain.model.CpmData;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import com.tokopedia.iris.util.ConstantKt;
 
 /**
  * Author errysuprayogi on 24,January,2019
@@ -86,7 +88,7 @@ public class TopAdsGtmTracker {
         tracker.sendEnhanceEcommerceEvent(map);
     }
 
-    public void eventSearchResultProductView(TrackingQueue trackingQueue, String keyword, String screenName) {
+    public void eventSearchResultProductView(TrackingQueue trackingQueue, String keyword, String screenName, String irisSessionId) {
         if (!dataLayerList.isEmpty()) {
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "productView",
@@ -98,6 +100,8 @@ public class TopAdsGtmTracker {
                                     dataLayerList.toArray(new Object[dataLayerList.size()])
                             )
                     ));
+            if(!TextUtils.isEmpty(irisSessionId))
+                map.put(ConstantKt.KEY_SESSION_IRIS, irisSessionId);
             trackingQueue.putEETracking((HashMap<String, Object>) map);
             clearDataLayerList();
         }
@@ -109,23 +113,26 @@ public class TopAdsGtmTracker {
                 "price", item.getPriceFormat().replaceAll("[^0-9]", ""),
                 "brand", "none/other",
                 "variant", "none/other",
-                "category", item.getCategory().getId(),
+                "category", getCategoryBreadcrumb(item),
                 "list", "/searchproduct - topads productlist",
                 "position", position,
                 "dimension83", isFreeOngkirActive(item) ? "bebas ongkir" : "none / other"));
 
         //GTMv5
         Bundle product = new Bundle();
-        String itemCategory = !TextUtils.isEmpty(item.getCategoryBreadcrumb()) ?
-                item.getCategoryBreadcrumb() : "none / other";
         product.putString(FirebaseAnalytics.Param.ITEM_ID, item.getId());
         product.putString(FirebaseAnalytics.Param.ITEM_NAME, item.getName());
         product.putString(FirebaseAnalytics.Param.ITEM_BRAND, "none / other");
-        product.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, itemCategory);
+        product.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, getCategoryBreadcrumb(item));
         product.putString(FirebaseAnalytics.Param.ITEM_VARIANT, "none / other");
         product.putDouble(FirebaseAnalytics.Param.PRICE, safeParseDouble(item.getPriceFormat().replaceAll("[^0-9]", "")));
         product.putLong(FirebaseAnalytics.Param.INDEX, position);
         this.dataBundleList.add(product);
+    }
+
+    private static String getCategoryBreadcrumb(Product product) {
+        return !TextUtils.isEmpty(product.getCategoryBreadcrumb()) ?
+                product.getCategoryBreadcrumb() : "none / other";
     }
 
     public void eventInboxProductView(TrackingQueue trackingQueue) {
@@ -290,11 +297,14 @@ public class TopAdsGtmTracker {
                                             "id", item.getId(),
                                             "price", item.getPriceFormat().replaceAll("[^0-9]", ""),
                                             "brand", "none/other",
-                                            "category", item.getCategory().getId(),
+                                            "category", getCategoryBreadcrumb(item),
                                             "variant", "none/other",
                                             "position", position,
                                             "dimension83", isFreeOngkirActive(item) ? "bebas ongkir" : "none / other"))))
             );
+            IrisSession irisSession = new IrisSession(context);
+            if(!TextUtils.isEmpty(irisSession.getSessionId()))
+                map.put(ConstantKt.KEY_SESSION_IRIS, irisSession.getSessionId());
             tracker.sendEnhanceEcommerceEvent(map);
         }
     }

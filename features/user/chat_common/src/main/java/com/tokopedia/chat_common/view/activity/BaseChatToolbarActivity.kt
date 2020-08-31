@@ -30,7 +30,7 @@ abstract class BaseChatToolbarActivity : BaseChatActivity() {
         setupToolbar()
     }
 
-    protected fun setupToolbar() {
+    protected open fun setupToolbar() {
         val mInflater = LayoutInflater.from(this)
         val mCustomView = mInflater.inflate(R.layout.header_chat, null)
         toolbar.removeAllViews()
@@ -59,7 +59,6 @@ abstract class BaseChatToolbarActivity : BaseChatActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.elevation = 10f
         }
-
 
         intent.getParcelableExtra<ChatRoomHeaderViewModel>(ApplinkConst.Chat.PARAM_HEADER)?.let {
 

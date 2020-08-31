@@ -50,7 +50,20 @@
         <activity
             android:name=".catalog.view.activity.ProductEditCatalogPickerActivity"
             android:label="@string/product_label_catalog"
-            android:theme="@style/Theme.White" />
+            android:theme="@style/Theme.White">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_merchant"
+                    android:path="@string/path_open_catalog_picker"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
 
         <activity
             android:name=".category.view.activity.ProductEditCategoryActivity"

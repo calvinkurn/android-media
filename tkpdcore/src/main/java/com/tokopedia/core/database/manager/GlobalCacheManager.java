@@ -1,6 +1,5 @@
 package com.tokopedia.core.database.manager;
 
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -78,14 +77,6 @@ public class GlobalCacheManager implements CacheManager {
         Gson gson = new Gson();
         return gson.fromJson(getValueString(key), clazz);
     }
-
-    public boolean isExpired(long expiredTime) {
-        if (expiredTime == 0) return false;
-        Log.i(TAG, "Cache expired time: " + expiredTime);
-        Log.i(TAG, "Cache current time: " + System.currentTimeMillis());
-        return expiredTime < System.currentTimeMillis();
-    }
-
 
     @Deprecated
     public void deleteAll() {

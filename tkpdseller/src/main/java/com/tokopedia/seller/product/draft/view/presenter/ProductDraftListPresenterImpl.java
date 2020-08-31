@@ -1,9 +1,12 @@
 package com.tokopedia.seller.product.draft.view.presenter;
 
 import com.tokopedia.product.manage.item.main.draft.data.model.ProductDraftViewModel;
-import com.tokopedia.product.manage.item.main.draft.domain.DeleteSingleDraftProductUseCase;
+import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProductLegacyUseCase;
 import com.tokopedia.product.manage.item.main.draft.domain.UpdateUploadingDraftProductUseCase;
+import com.tokopedia.seller.product.common.utils.ProductDraftErrorHandler;
 import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProductUseCase;
+import com.tokopedia.seller.product.draft.domain.interactor.DeleteSingleDraftProductUseCase;
+import com.tokopedia.seller.product.draft.domain.interactor.FetchAllDraftProductLegacyUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.FetchAllDraftProductUseCase;
 import com.tokopedia.usecase.RequestParams;
 
@@ -21,21 +24,29 @@ public class ProductDraftListPresenterImpl extends ProductDraftListPresenter {
     private DeleteSingleDraftProductUseCase deleteSingleDraftProductUseCase;
     private UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase;
     private ClearAllDraftProductUseCase clearAllDraftProductUseCase;
+    private FetchAllDraftProductLegacyUseCase fetchAllDraftProductLegacyUseCase;
+    private ClearAllDraftProductLegacyUseCase clearAllDraftProductLegacyUseCase;
 
-    public ProductDraftListPresenterImpl (FetchAllDraftProductUseCase fetchAllDraftProductUseCase,
-                                          DeleteSingleDraftProductUseCase deleteSingleDraftProductUseCase,
-                                          UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase,
-                                          ClearAllDraftProductUseCase clearAllDraftProductUseCase){
+    public ProductDraftListPresenterImpl(FetchAllDraftProductUseCase fetchAllDraftProductUseCase,
+                                         FetchAllDraftProductLegacyUseCase fetchAllDraftProductLegacyUseCase,
+                                         DeleteSingleDraftProductUseCase deleteSingleDraftProductUseCase,
+                                         UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase,
+                                         ClearAllDraftProductUseCase clearAllDraftProductUseCase,
+                                         ClearAllDraftProductLegacyUseCase clearAllDraftProductLegacyUseCase) {
         this.fetchAllDraftProductUseCase = fetchAllDraftProductUseCase;
+        this.fetchAllDraftProductLegacyUseCase = fetchAllDraftProductLegacyUseCase;
         this.deleteSingleDraftProductUseCase = deleteSingleDraftProductUseCase;
         this.updateUploadingDraftProductUseCase = updateUploadingDraftProductUseCase;
         this.clearAllDraftProductUseCase = clearAllDraftProductUseCase;
+        this.clearAllDraftProductLegacyUseCase = clearAllDraftProductLegacyUseCase;
     }
 
     @Override
     public void fetchAllDraftData() {
-        fetchAllDraftProductUseCase.execute(FetchAllDraftProductUseCase.createRequestParams(),
-                getSubscriber());
+        fetchAllDraftProductUseCase.execute(
+                FetchAllDraftProductUseCase.createRequestParams(),
+                getSubscriber()
+        );
     }
 
     @Override
@@ -46,13 +57,25 @@ public class ProductDraftListPresenterImpl extends ProductDraftListPresenter {
 
     @Override
     public void deleteProductDraft(long draftProductId) {
-        deleteSingleDraftProductUseCase.execute(DeleteSingleDraftProductUseCase.createRequestParams(draftProductId),
-                getDeleteSubscriber());
+        //TODO milhamj
+//        if (GlobalConfig.isSellerApp()) {
+            deleteSingleDraftProductUseCase.execute(DeleteSingleDraftProductUseCase.Companion.createRequestParams(draftProductId),
+                    getDeleteSubscriber());
+//        } else {
+//            deleteSingleDraftProductLegacyUseCase.execute(DeleteSingleDraftProductLegacyUseCase.createRequestParams(draftProductId),
+//                    getDeleteSubscriber());
+//        }
+
     }
 
     @Override
     public void clearAllDraftData() {
-        clearAllDraftProductUseCase.execute(RequestParams.EMPTY,getClearAllDraftSubscriber());
+        //TODO milhamj
+//        if (GlobalConfig.isSellerApp()) {
+            clearAllDraftProductUseCase.execute(RequestParams.EMPTY, getClearAllDraftSubscriber());
+//        } else {
+//            clearAllDraftProductLegacyUseCase.execute(RequestParams.EMPTY, getClearAllDraftSubscriber());
+//        }
     }
 
     private Subscriber<Boolean> getClearAllDraftSubscriber() {
@@ -63,8 +86,9 @@ public class ProductDraftListPresenterImpl extends ProductDraftListPresenter {
             }
 
             @Override
-            public void onError(Throwable e) {
+            public void onError(Throwable t) {
                 getView().onErrorDeleteAllDraft();
+                ProductDraftErrorHandler.INSTANCE.logExceptionToCrashlytics(t);
             }
 
             @Override
@@ -74,7 +98,7 @@ public class ProductDraftListPresenterImpl extends ProductDraftListPresenter {
         };
     }
 
-    private Subscriber<List<ProductDraftViewModel>> getSubscriber(){
+    private Subscriber<List<ProductDraftViewModel>> getSubscriber() {
         return new Subscriber<List<ProductDraftViewModel>>() {
             @Override
             public void onCompleted() {
@@ -83,14 +107,15 @@ public class ProductDraftListPresenterImpl extends ProductDraftListPresenter {
 
             @Override
             public void onError(Throwable t) {
-                if(isViewAttached()) {
+                if (isViewAttached()) {
                     getView().onLoadSearchError(t);
                 }
+                ProductDraftErrorHandler.INSTANCE.logExceptionToCrashlytics(t);
             }
 
             @Override
             public void onNext(List<ProductDraftViewModel> productViewModels) {
-                if (productViewModels == null || productViewModels.size() == 0 ) {
+                if (productViewModels == null || productViewModels.size() == 0) {
                     getView().onSearchLoaded(new ArrayList<ProductDraftViewModel>(), 0);
                 } else {
                     getView().onSearchLoaded(productViewModels, productViewModels.size());
@@ -122,6 +147,7 @@ public class ProductDraftListPresenterImpl extends ProductDraftListPresenter {
     @Override
     public void detachView() {
         super.detachView();
+        fetchAllDraftProductLegacyUseCase.unsubscribe();
         fetchAllDraftProductUseCase.unsubscribe();
         deleteSingleDraftProductUseCase.unsubscribe();
         updateUploadingDraftProductUseCase.unsubscribe();
@@ -135,8 +161,9 @@ public class ProductDraftListPresenterImpl extends ProductDraftListPresenter {
             }
 
             @Override
-            public void onError(Throwable e) {
+            public void onError(Throwable t) {
                 fetchAllDraftData();
+                ProductDraftErrorHandler.INSTANCE.logExceptionToCrashlytics(t);
             }
 
             @Override

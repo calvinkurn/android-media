@@ -4,8 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.discovery.common.DispatcherProvider
-import com.tokopedia.search.result.common.Event
-import com.tokopedia.search.result.presentation.model.ChildViewVisibilityChangedModel
+import com.tokopedia.discovery.common.Event
 
 internal class SearchViewModel(
         coroutineDispatcher: DispatcherProvider
@@ -13,7 +12,7 @@ internal class SearchViewModel(
 
     private val showAutoCompleteEventLiveData = MutableLiveData<Event<Boolean>>()
     private val hideLoadingEventLiveData = MutableLiveData<Event<Boolean>>()
-    private val childViewVisibleEventLiveData = MutableLiveData<Event<ChildViewVisibilityChangedModel>>()
+    private val bottomNavigationVisibilityLiveData = MutableLiveData<Boolean>()
 
     fun showAutoCompleteView() {
         showAutoCompleteEventLiveData.postValue(Event(true))
@@ -23,12 +22,8 @@ internal class SearchViewModel(
         hideLoadingEventLiveData.postValue(Event(true))
     }
 
-    fun onChildViewVisibilityChanged(childViewVisibilityChangedModel: ChildViewVisibilityChangedModel) {
-        if (childViewVisibilityChangedModel.isChildViewVisibleToUser
-                && childViewVisibilityChangedModel.isChildViewReady) {
-
-            childViewVisibleEventLiveData.postValue(Event(childViewVisibilityChangedModel))
-        }
+    fun changeBottomNavigationVisibility(isVisible: Boolean) {
+        bottomNavigationVisibilityLiveData.postValue(isVisible)
     }
 
     fun getShowAutoCompleteViewEventLiveData(): LiveData<Event<Boolean>> {
@@ -39,7 +34,7 @@ internal class SearchViewModel(
         return hideLoadingEventLiveData
     }
 
-    fun getChildViewVisibleEventLiveData(): LiveData<Event<ChildViewVisibilityChangedModel>> {
-        return childViewVisibleEventLiveData
+    fun getBottomNavigationVisibilityLiveData(): LiveData<Boolean> {
+        return bottomNavigationVisibilityLiveData
     }
 }

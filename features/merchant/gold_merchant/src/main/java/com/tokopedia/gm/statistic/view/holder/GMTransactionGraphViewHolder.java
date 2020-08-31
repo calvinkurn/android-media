@@ -1,15 +1,19 @@
 package com.tokopedia.gm.statistic.view.holder;
 
 import android.content.Context;
+
 import androidx.annotation.LayoutRes;
 import androidx.annotation.Nullable;
+
+import com.db.williamchart.config.GrossGraphChartConfig;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.design.card.TitleCardView;
+import com.tokopedia.gm.statistic.view.widget.card.TitleCardView;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.gm.R;
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
@@ -198,7 +202,7 @@ public class GMTransactionGraphViewHolder implements GMStatisticViewHolder {
         tooltipModels = joinTooltipData(baseWilliamChartModels.get(1).getValues(), baseWilliamChartModels.get(0).getValues());
         gmStatisticIncomeGraph.addDataDisplayDots(tooltipModels);
         BaseWilliamChartConfig baseWilliamChartConfig = Tools.getCommonWilliamChartConfig(gmStatisticIncomeGraph, baseWilliamChartModels.get(0),
-                new EmptyDataTransactionDataSetConfig(), getTooltip(gmStatisticIncomeGraph.getContext(), getTooltipResLayout()), getTooltipConfiguration());
+                new EmptyDataTransactionDataSetConfig(), getTooltip(gmStatisticIncomeGraph.getContext(), getTooltipResLayout()), getTooltipConfiguration(), new GrossGraphChartConfig());
         baseWilliamChartConfig.addBaseWilliamChartModels(baseWilliamChartModels.get(1), new GrossGraphDataSetConfig());
         baseWilliamChartConfig.buildChart(gmStatisticIncomeGraph);
         setViewState(LoadingStateView.VIEW_CONTENT);

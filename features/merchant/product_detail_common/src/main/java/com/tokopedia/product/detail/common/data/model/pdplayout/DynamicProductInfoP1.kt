@@ -1,9 +1,35 @@
 package com.tokopedia.product.detail.common.data.model.pdplayout
 
+
 data class DynamicProductInfoP1(
         val basic: BasicInfo = BasicInfo(),
-        val data: ComponentData = ComponentData()
+        val data: ComponentData = ComponentData(),
+        val layoutName: String = "",
+        val pdpSession:String = ""
 ) {
+
+    fun isProductVariant(): Boolean = data.variant.isVariant
+
+    fun isProductActive(): Boolean = getFinalStock().toIntOrNull() ?: 0 > 0 && basic.isActive()
+
+    val isPreOrder: Boolean
+        get() = data.preOrder.isActive
+
+    val isUsingOvo: Boolean
+        get() = data.campaign.isUsingOvo
+
+    val isLeasing: Boolean
+        get() = basic.isLeasing
+
+    val shopTypeString: String
+        get() {
+            return if (data.isOS)
+                "official_store"
+            else if (data.isPowerMerchant)
+                "gold_merchant"
+            else
+                "reguler"
+        }
 
     val parentProductId: String
         get() =
@@ -19,4 +45,42 @@ data class DynamicProductInfoP1(
     val getProductName: String
         get() = data.name
 
+    val finalPrice: Int
+        get() {
+            return if (data.campaign.isActive) {
+                data.campaign.discountedPrice
+            } else {
+                data.price.value
+            }
+        }
+
+    val priceBeforeInt: Int
+        get() {
+            return if (data.campaign.isActive) {
+                data.campaign.originalPrice
+            } else {
+                0
+            }
+        }
+
+    val dropPercentage: String?
+        get() {
+            return if (data.campaign.isActive) {
+                data.campaign.percentageAmount.toString()
+            } else {
+                ""
+            }
+        }
+
+    fun checkImei(imeiRemoteConfig: Boolean): Boolean {
+        return imeiRemoteConfig && data.campaign.isCheckImei
+    }
+
+    fun getFinalStock(): String {
+        return if (data.campaign.isActive) {
+            data.campaign.stock.toString()
+        } else {
+            data.stock.value.toString()
+        }
+    }
 }

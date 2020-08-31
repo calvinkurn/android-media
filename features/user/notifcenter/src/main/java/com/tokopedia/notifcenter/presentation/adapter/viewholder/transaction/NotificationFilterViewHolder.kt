@@ -11,14 +11,15 @@ import com.tokopedia.notifcenter.data.viewbean.NotificationFilterSectionViewBean
 import com.tokopedia.notifcenter.presentation.adapter.NotificationUpdateFilterAdapter
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.filter.NotificationUpdateFilterSectionTypeFactoryImpl
 import com.tokopedia.notifcenter.data.viewbean.NotificationUpdateFilterViewBean
+import com.tokopedia.notifcenter.listener.NotificationFilterListener
 import com.tokopedia.notifcenter.widget.ChipFilterItemDivider
 import com.tokopedia.user.session.UserSessionInterface
 
 class NotificationFilterViewHolder(
         val view: View,
-        val listener: NotifFilterListener,
+        val listener: NotificationFilterListener,
         val userSession: UserSessionInterface
-): AbstractViewHolder<NotificationFilterSectionViewBean>(view), NotificationUpdateFilterAdapter.FilterAdapterListener {
+) : AbstractViewHolder<NotificationFilterSectionViewBean>(view), NotificationFilterListener {
 
     private val lstFilter = view.findViewById<RecyclerView>(R.id.filter_list)
     private var filterAdapter: NotificationUpdateFilterAdapter?= null
@@ -47,6 +48,8 @@ class NotificationFilterViewHolder(
         listener.updateFilter(filter)
     }
 
+    override fun isHasNotification(): Boolean = false
+
     companion object {
         @LayoutRes val LAYOUT = R.layout.item_notification_filter
 
@@ -60,12 +63,6 @@ class NotificationFilterViewHolder(
             }
             return filterItem
         }
-    }
-
-    interface NotifFilterListener {
-        fun updateFilter(filter: HashMap<String, Int>)
-        fun sentFilterAnalytic(analyticData: String)
-        fun isHasNotification(): Boolean
     }
 
 }

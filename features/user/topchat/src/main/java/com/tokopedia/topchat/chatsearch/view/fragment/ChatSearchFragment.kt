@@ -1,45 +1,103 @@
 package com.tokopedia.topchat.chatsearch.view.fragment
 
+import android.content.Context
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatsearch.analytic.ChatSearchAnalytic
 import com.tokopedia.topchat.chatsearch.data.RecentSearch
 import com.tokopedia.topchat.chatsearch.di.ChatSearchComponent
 import com.tokopedia.topchat.chatsearch.view.activity.ChatSearchActivity
+import com.tokopedia.topchat.chatsearch.view.adapter.ChatSearchAdapter
 import com.tokopedia.topchat.chatsearch.view.adapter.ChatSearchTypeFactory
 import com.tokopedia.topchat.chatsearch.view.adapter.ChatSearchTypeFactoryImpl
-import com.tokopedia.topchat.chatsearch.view.adapter.viewholder.ItemSearchChatViewHolder
+import com.tokopedia.topchat.chatsearch.view.adapter.viewholder.ContactLoadMoreViewHolder
+import com.tokopedia.topchat.chatsearch.view.adapter.viewholder.EmptySearchChatViewHolder
+import com.tokopedia.topchat.chatsearch.view.adapter.viewholder.ItemSearchChatReplyViewHolder
 import com.tokopedia.topchat.chatsearch.viewmodel.ChatSearchViewModel
-import com.tokopedia.unifycomponents.toPx
 import javax.inject.Inject
 
 /**
  * @author : Steven 2019-08-06
  */
 class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>(),
-        ChatSearchActivity.Listener, LifecycleOwner, ItemSearchChatViewHolder.Listener {
+        ChatSearchActivity.Listener, LifecycleOwner, EmptySearchChatViewHolder.Listener,
+        ContactLoadMoreViewHolder.Listener, ItemSearchChatReplyViewHolder.Listener {
 
     @Inject
     lateinit var analytic: ChatSearchAnalytic
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+    private lateinit var adapter: ChatSearchAdapter
     private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val viewModel by lazy { viewModelFragmentProvider.get(ChatSearchViewModel::class.java) }
+    private var listener: ChatSearchFragmentListener? = null
+    private var alreadyLoaded = false
+
+    override fun getRecyclerViewResourceId() = R.id.recycler_view
+
+    override fun isAutoLoadEnabled(): Boolean = true
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_chat_search, container, false)
+    }
+
+    override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, ChatSearchTypeFactory> {
+        this.adapter = ChatSearchAdapter(adapterTypeFactory)
+        return this.adapter
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        showRecentSearch()
-        setupRecyclerView()
-        setupObserver()
+        listener?.showSearchBar()
+        updateTouchListener(view)
+        if (!alreadyLoaded) {
+            super.onViewCreated(view, savedInstanceState)
+            showRecentSearch()
+            setupRecyclerView()
+            setupObserver()
+            alreadyLoaded = true
+        } else {
+            viewModel.resetLiveData()
+            setupRecyclerView()
+            setupObserver()
+        }
+    }
+
+    private fun updateTouchListener(view: View) {
+        view.setOnTouchListener { _, event ->
+            when (event?.action) {
+                MotionEvent.ACTION_DOWN,
+                MotionEvent.ACTION_MOVE -> listener?.hideKeyboard()
+            }
+            false
+        }
+    }
+
+    override fun onAttachActivity(context: Context?) {
+        if (context is ChatSearchFragmentListener) {
+            listener = context
+        }
+    }
+
+    override fun onClickContactLoadMore() {
+        listener?.onClickContactLoadMore(viewModel.query, viewModel.firstContactSearchResults)
+    }
+
+    override fun onClickChangeKeyword() {
+        listener?.onClickChangeKeyword()
     }
 
     private fun showRecentSearch() {
@@ -50,24 +108,20 @@ class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>
     private fun setupRecyclerView() {
         view?.findViewById<VerticalRecyclerView>(recyclerViewResourceId)?.apply {
             clearItemDecoration()
+            adapter = this@ChatSearchFragment.adapter
             overScrollMode = RecyclerView.OVER_SCROLL_NEVER
-            setPadding(paddingLeft, 16.toPx(), paddingRight, 16.toPx())
             clipToPadding = false
+            endlessRecyclerViewScrollListener.updateLayoutManager(layoutManager)
+            addOnScrollListener(endlessRecyclerViewScrollListener)
         }
     }
 
     private fun setupObserver() {
-        observeSearchResult()
         observeLoadInitialData()
         observeEmptyQuery()
         observeErrorSearch()
         observeSearchTriggered()
-    }
-
-    private fun observeSearchResult() {
-        viewModel.searchResult.observe(viewLifecycleOwner, Observer {
-            renderList(it, viewModel.hasNext)
-        })
+        observeSearchResult()
     }
 
     private fun observeLoadInitialData() {
@@ -88,6 +142,7 @@ class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>
 
     private fun observeErrorSearch() {
         viewModel.errorMessage.observe(viewLifecycleOwner, Observer { error ->
+            if (error == null) return@Observer
             if (viewModel.isFirstPage()) {
                 clearAllData()
             }
@@ -101,6 +156,13 @@ class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>
         })
     }
 
+    private fun observeSearchResult() {
+        viewModel.searchResults.observe(viewLifecycleOwner, Observer {
+            if (it == null) return@Observer
+            renderList(it, viewModel.hasNext)
+        })
+    }
+
     override fun onSearchQueryChanged(query: String) {
         viewModel.onSearchQueryChanged(query)
     }
@@ -110,7 +172,7 @@ class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>
     }
 
     override fun getAdapterTypeFactory(): ChatSearchTypeFactory {
-        return ChatSearchTypeFactoryImpl(this)
+        return ChatSearchTypeFactoryImpl(this, this, this)
     }
 
     override fun onItemClicked(t: Visitable<*>) {}
@@ -121,8 +183,8 @@ class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>
         getComponent(ChatSearchComponent::class.java).inject(this)
     }
 
-    override fun finishSearchActivity() {
-        activity?.finish()
+    override fun getSearchKeyWord(): String {
+        return viewModel.query
     }
 
     companion object {

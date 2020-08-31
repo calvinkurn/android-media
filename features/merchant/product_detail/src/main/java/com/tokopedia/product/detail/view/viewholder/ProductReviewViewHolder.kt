@@ -1,19 +1,16 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.gallery.customview.RatingView
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.data.model.product.Rating
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMostHelpfulReviewDataModel
 import com.tokopedia.product.detail.data.model.review.Review
 import com.tokopedia.product.detail.view.adapter.ImageReviewAdapter
@@ -21,10 +18,10 @@ import com.tokopedia.product.detail.view.adapter.MostHelpfulReviewAdapter
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.util.PaddingItemDecoration
 import com.tokopedia.product.detail.view.util.ProductDetailUtil
+import kotlinx.android.synthetic.main.item_dynamic_image_review.view.*
 import kotlinx.android.synthetic.main.item_dynamic_mosthelpful_review.view.*
 import kotlinx.android.synthetic.main.item_dynamic_mosthelpful_review.view.container_most_helpful_review
-import kotlinx.android.synthetic.main.item_dynamic_review.view.*
-import kotlinx.android.synthetic.main.partial_product_image_review.view.*
+import kotlinx.android.synthetic.main.item_dynamic_review.view.container_image_review
 
 class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetailListener) :
         AbstractViewHolder<ProductMostHelpfulReviewDataModel>(view) {
@@ -43,32 +40,37 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
 
     override fun bind(element: ProductMostHelpfulReviewDataModel?) {
         element?.let {
-            renderMostHelpfulReview(it.listOfReviews)
+            view.addOnImpressionListener(element.impressHolder) {
+                listener.onImpressComponent(getComponentTrackData(element))
+            }
+
+            renderMostHelpfulReview(it.listOfReviews, getComponentTrackData(element))
         }
 
-
         element?.imageReviews?.let {
-            renderImageReview(it, element.rating ?: Rating())
+            renderImageReview(it, element.totalRating, element.ratingScore, getComponentTrackData(element))
         }
     }
 
-    private fun renderImageReview(imageReviews: List<ImageReviewItem>, rating: Rating) {
+    private fun renderImageReview(imageReviews: List<ImageReviewItem>, totalRating: Int, ratingScore: Float, componentTrackDataModel: ComponentTrackDataModel) {
         val showSeeAll = if (imageReviews.isNotEmpty()) {
             imageReviews.first().hasNext
         } else {
             false
         }
 
-        view.image_review_list.adapter = ImageReviewAdapter(imageReviews.toMutableList(), showSeeAll, listener::onImageReviewClick, listener::onSeeAllReviewClick)
+        view.image_review_list.adapter = ImageReviewAdapter(imageReviews.toMutableList(), showSeeAll, listener::onImageReviewClick, listener::onSeeAllLastItemImageReview,
+                componentTrackDataModel)
+
         with(view) {
             txt_see_all_partial.setOnClickListener {
-                listener.onReviewClick()
+                listener.onSeeAllTextView(componentTrackDataModel)
             }
-            review_count.text = context.getString(R.string.review_counter, rating.totalRating)
+            review_count.text = context.getString(R.string.review_counter, totalRating)
             review_rating.setCompoundDrawablesWithIntrinsicBounds(null, null, MethodChecker.getDrawable(context, R.drawable.ic_rating_gold), null)
-            review_rating.text = context.getString(R.string.counter_pattern_string, rating.ratingScore, 5)
+            review_rating.text = ratingScore.toString()
 
-            if (rating.totalRating > 0) container_image_review.visible() else container_image_review.gone()
+            if (totalRating > 0) container_image_review.visible() else container_image_review.gone()
 
             if (imageReviews.isNotEmpty())
                 image_review_list.visible()
@@ -77,7 +79,10 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
         }
     }
 
-    private fun renderMostHelpfulReview(reviews: List<Review>) {
+    private fun getComponentTrackData(data: ProductMostHelpfulReviewDataModel): ComponentTrackDataModel =
+            ComponentTrackDataModel(data.type, data.name, adapterPosition + 1)
+
+    private fun renderMostHelpfulReview(reviews: List<Review>, componentTrackDataModel: ComponentTrackDataModel) {
         with(view) {
             if (reviews.isEmpty()) {
                 container_most_helpful_review.gone()
@@ -98,10 +103,10 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
                     txt_variant_review_pdp.text = reviews.first().productVariantReview.variantTitle
                 } else {
                     txt_variant_review_pdp.hide()
+
                 }
 
-                rating_review_pdp.setImageDrawable(ContextCompat.getDrawable(view.context,
-                        RatingView.getRatingDrawable(reviewData.productRating)))
+                ImageHandler.loadImageRounded2(context, rating_review_pdp, RatingView.getRatingDrawable(reviewData.productRating), 0f)
                 txt_date_user_pdp.text = MethodChecker.fromHtml(
                         view.context.getString(R.string.date_review_pattern, reviewData.reviewCreateTime, "<b>" + reviewData.user.fullName + "</b>"))
                 txt_desc_review_pdp.maxLines = 4
@@ -120,7 +125,7 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
                     if (itemDecorationCount == 0)
                         addItemDecoration(PaddingItemDecoration())
 
-                    adapter = MostHelpfulReviewAdapter(imageData, reviewData.reviewId.toString(), moreItemCount, listener::onImageHelpfulReviewClick)
+                    adapter = MostHelpfulReviewAdapter(imageData, reviewData.reviewId.toString(), moreItemCount, listener::onImageHelpfulReviewClick, componentTrackDataModel)
                     if (reviewData.imageAttachments.isNotEmpty()) {
                         show()
                     } else {

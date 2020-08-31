@@ -4,19 +4,10 @@ import android.content.Context;
 import android.content.res.AssetManager;
 
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
-import com.tokopedia.core.common.category.data.repository.CategoryRepositoryImpl;
-import com.tokopedia.core.common.category.data.source.CategoryDataSource;
-import com.tokopedia.core.common.category.data.source.CategoryVersionDataSource;
-import com.tokopedia.core.common.category.data.source.FetchCategoryDataSource;
-import com.tokopedia.core.common.category.data.source.cloud.api.HadesCategoryApi;
-import com.tokopedia.core.common.category.data.source.db.CategoryDao;
-import com.tokopedia.core.common.category.data.source.db.CategoryDbCreation;
-import com.tokopedia.core.common.category.domain.CategoryRepository;
+import com.tokopedia.core.common.category.di.module.CategoryPickerModule;
 import com.tokopedia.core.network.di.qualifier.GoldMerchantQualifier;
-import com.tokopedia.core.network.di.qualifier.HadesQualifier;
 import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.gm.GMModuleRouter;
 import com.tokopedia.gm.statistic.data.repository.GMStatRepositoryImpl;
 import com.tokopedia.gm.statistic.data.source.GMStatDataSource;
@@ -37,12 +28,12 @@ import com.tokopedia.gm.statistic.view.presenter.GMStatisticTransactionPresenter
 import com.tokopedia.gm.statistic.view.presenter.GMStatisticTransactionPresenterImpl;
 import com.tokopedia.gm.statistic.view.presenter.GMStatisticTransactionTablePresenter;
 import com.tokopedia.gm.statistic.view.presenter.GMStatisticTransactionTablePresenterImpl;
-import com.tokopedia.product.manage.item.common.data.source.cloud.TomeProductApi;
-import com.tokopedia.product.manage.item.common.domain.interactor.AddProductShopInfoUseCase;
-import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepositoryImpl;
 import com.tokopedia.product.manage.item.common.data.source.ShopInfoDataSource;
 import com.tokopedia.product.manage.item.common.data.source.cloud.ShopApi;
+import com.tokopedia.product.manage.item.common.data.source.cloud.TomeProductApi;
+import com.tokopedia.product.manage.item.common.domain.interactor.AddProductShopInfoUseCase;
 import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepository;
+import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepositoryImpl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -54,7 +45,7 @@ import retrofit2.Retrofit;
  * @author normansyahputa on 7/6/17.
  */
 @GMStatisticScope
-@Module
+@Module(includes = {CategoryPickerModule.class})
 public class GMStatisticModule {
 
     @GMStatisticScope
@@ -103,8 +94,8 @@ public class GMStatisticModule {
     @Provides
     GMStatisticTransactionPresenter provideGmStatisticTransactionPresenter(
             GMStatGetTransactionGraphUseCase gmStatGetTransactionGraphUseCase,
-            SessionHandler sessionHandler) {
-        return new GMStatisticTransactionPresenterImpl(gmStatGetTransactionGraphUseCase, sessionHandler);
+            UserSessionInterface userSessionInterface) {
+        return new GMStatisticTransactionPresenterImpl(gmStatGetTransactionGraphUseCase, userSessionInterface);
     }
 
     @GMStatisticScope
@@ -123,24 +114,6 @@ public class GMStatisticModule {
     @Provides
     public AssetManager provideAssetManager(@ApplicationContext Context context) {
         return context.getAssets();
-    }
-
-    @GMStatisticScope
-    @Provides
-    public CategoryDao provideCategoryDao(@ApplicationContext Context context){
-        return CategoryDbCreation.getCategoryDao(context);
-    }
-
-    @GMStatisticScope
-    @Provides
-    CategoryRepository provideCategoryRepository(CategoryVersionDataSource categoryVersionDataSource, CategoryDataSource categoryDataSource, FetchCategoryDataSource fetchCategoryDataSource){
-        return new CategoryRepositoryImpl(categoryVersionDataSource, categoryDataSource, fetchCategoryDataSource);
-    }
-
-    @GMStatisticScope
-    @Provides
-    HadesCategoryApi provideHadesCategoryApi(@HadesQualifier Retrofit retrofit){
-        return retrofit.create(HadesCategoryApi.class);
     }
 
     @GMStatisticScope

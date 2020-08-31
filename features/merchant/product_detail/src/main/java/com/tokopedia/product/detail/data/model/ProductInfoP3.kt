@@ -1,15 +1,13 @@
 package com.tokopedia.product.detail.data.model
 
-import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
-import com.tokopedia.product.detail.data.model.checkouttype.CART_TYPE_DEFAULT
-import com.tokopedia.product.detail.data.model.checkouttype.CART_TYPE_EXPRESS
-import com.tokopedia.product.detail.data.model.checkouttype.CART_TYPE_OCS
+import com.tokopedia.product.detail.estimasiongkir.data.model.v3.AddressModel
 import com.tokopedia.product.detail.estimasiongkir.data.model.v3.RatesModel
 import com.tokopedia.product.detail.estimasiongkir.data.model.v3.SummaryText
-import com.tokopedia.topads.sdk.domain.model.TopAdsModel
+import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 
 data class ProductInfoP3(
         var rateEstSummarizeText: SummaryText? = null,
         var ratesModel: RatesModel? = null,
-        var userCod: Boolean = false
-)
+        var userCod: Boolean = false,
+        var addressModel: AddressModel? = null,
+        var tickerInfo: List<StickyLoginTickerPojo.TickerDetail> = ArrayList())

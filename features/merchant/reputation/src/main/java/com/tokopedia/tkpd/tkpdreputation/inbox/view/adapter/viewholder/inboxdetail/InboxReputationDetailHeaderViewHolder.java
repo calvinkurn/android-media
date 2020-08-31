@@ -1,25 +1,38 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.viewholder.inboxdetail;
 
 import androidx.annotation.LayoutRes;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.content.Context;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.design.reputation.ShopReputationView;
-import com.tokopedia.design.reputation.UserReputationView;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
+import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTrackingConstant;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.ProductRevIncentiveOvoDomain;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.ProductRevIncentiveOvoResponse;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.bottomsheet.IncentiveOvoBottomSheet;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.customview.ShopReputationView;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.customview.UserReputationView;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.ReputationAdapter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationItemViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailHeaderViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.RevieweeBadgeSellerViewModel;
+import com.tokopedia.unifycomponents.BottomSheetUnify;
+import com.tokopedia.unifycomponents.ticker.Ticker;
+import com.tokopedia.unifycomponents.ticker.TickerCallback;
+
+import org.jetbrains.annotations.NotNull;
+
 
 /**
  * @author by nisie on 8/19/17.
@@ -33,6 +46,7 @@ public class InboxReputationDetailHeaderViewHolder extends
     public static final int SMILEY_NEUTRAL = 1;
     public static final int SMILEY_GOOD = 2;
     private final ReputationAdapter.ReputationListener reputationListener;
+    private final ProductRevIncentiveOvoDomain productRevIncentiveOvoDomain;
 
     ImageView userAvatar;
     TextView name;
@@ -52,14 +66,22 @@ public class InboxReputationDetailHeaderViewHolder extends
     ReputationAdapter adapter;
     GridLayoutManager gridLayout;
     LinearLayoutManager linearLayoutManager;
+    Context context;
+    Ticker ovoTicker;
+    FragmentManager fragmentManager;
 
     @LayoutRes
     public static final int LAYOUT = R.layout.inbox_reputation_detail_header;
 
     public InboxReputationDetailHeaderViewHolder(View itemView,
-                                                 final ReputationAdapter.ReputationListener reputationListener) {
+                                                 final ReputationAdapter.ReputationListener reputationListener,
+                                                 final ProductRevIncentiveOvoDomain productRevIncentiveOvoDomain,
+                                                 final FragmentManager fragmentManager) {
         super(itemView);
         this.reputationListener = reputationListener;
+        this.productRevIncentiveOvoDomain = productRevIncentiveOvoDomain;
+        this.context = itemView.getContext();
+        this.fragmentManager = fragmentManager;
         userAvatar = itemView.findViewById(R.id.user_avatar);
         name = (TextView) itemView.findViewById(R.id.name);
         userReputationView =  itemView.findViewById(R.id.user_reputation);
@@ -75,13 +97,14 @@ public class InboxReputationDetailHeaderViewHolder extends
         smiley = (RecyclerView) itemView.findViewById(R.id.smiley);
         opponentSmileyText = (TextView) itemView.findViewById(R.id.opponent_smiley_text);
         opponentSmiley = (ImageView) itemView.findViewById(R.id.opponent_smiley);
-        adapter = ReputationAdapter.createInstance(reputationListener);
+        adapter = ReputationAdapter.createInstance(itemView.getContext(), reputationListener);
         gridLayout = new GridLayoutManager(itemView.getContext(), 3,
                 LinearLayoutManager.VERTICAL, false);
         linearLayoutManager = new LinearLayoutManager(itemView.getContext(), LinearLayoutManager
                 .HORIZONTAL, false);
         smiley.setLayoutManager(gridLayout);
         smiley.setAdapter(adapter);
+        ovoTicker = itemView.findViewById(R.id.ovoPointsTicker);
     }
 
     @Override
@@ -100,6 +123,7 @@ public class InboxReputationDetailHeaderViewHolder extends
                 goToInfoPage(element);
             }
         });
+        showIncentiveOvo();
 
         setReputation(element);
 
@@ -114,25 +138,25 @@ public class InboxReputationDetailHeaderViewHolder extends
         if (element.getReputationDataViewModel().isAutoScored()) {
             lockedLayout.setVisibility(View.VISIBLE);
             lockedText.setText(R.string.review_auto_scored);
-            promptMessage.setText(MainApplication.getAppContext().getString(R.string.your_scoring));
+            promptMessage.setText(context.getString(R.string.your_scoring));
             smiley.setLayoutManager(linearLayoutManager);
             setSmiley(element, adapter);
         } else if (element.getReputationDataViewModel().isLocked()
                 && element.getReputationDataViewModel().isInserted()) {
             lockedLayout.setVisibility(View.VISIBLE);
             lockedText.setText(R.string.review_is_saved);
-            promptMessage.setText(MainApplication.getAppContext().getString(R.string.your_scoring));
+            promptMessage.setText(context.getString(R.string.your_scoring));
             smiley.setLayoutManager(linearLayoutManager);
             setSmiley(element, adapter);
         } else if (element.getReputationDataViewModel().isLocked()) {
             lockedLayout.setVisibility(View.VISIBLE);
             lockedText.setText(R.string.locked_reputation);
-            promptMessage.setText(MainApplication.getAppContext().getString(R.string.your_scoring));
+            promptMessage.setText(context.getString(R.string.your_scoring));
             smiley.setLayoutManager(linearLayoutManager);
             adapter.showLockedSmiley();
         } else if (element.getReputationDataViewModel().isInserted()) {
             lockedLayout.setVisibility(View.GONE);
-            promptMessage.setText(MainApplication.getAppContext().getString(R.string.your_scoring));
+            promptMessage.setText(context.getString(R.string.your_scoring));
             smiley.setLayoutManager(linearLayoutManager);
             setSmiley(element, adapter);
         } else {
@@ -146,14 +170,14 @@ public class InboxReputationDetailHeaderViewHolder extends
             changeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (changeButton.getText().equals(MainApplication.getAppContext().getString(R.string
+                    if (changeButton.getText().equals(context.getString(R.string
                             .change))) {
                         adapter.showChangeSmiley(element.getReputationDataViewModel().getReviewerScore());
-                        changeButton.setText(MainApplication.getAppContext().getString(R.string
+                        changeButton.setText(context.getString(R.string
                                 .title_cancel));
                     } else {
                         setSmiley(element, adapter);
-                        changeButton.setText(MainApplication.getAppContext().getString(R.string
+                        changeButton.setText(context.getString(R.string
                                 .change));
                     }
                 }
@@ -211,7 +235,7 @@ public class InboxReputationDetailHeaderViewHolder extends
         if (!element.getReputationDataViewModel().isShowRevieweeScore()
                 && element.getReputationDataViewModel().
                 getRevieweeScore() != NO_REPUTATION) {
-            ImageHandler.loadImageWithIdWithoutPlaceholder(opponentSmiley, R.drawable.ic_done_24dp);
+            ImageHandler.loadImageWithIdWithoutPlaceholder(opponentSmiley, R.drawable.reputation_ic_done_24dp);
         } else {
             switch (element.getReputationDataViewModel().getRevieweeScore()) {
                 case NO_REPUTATION:
@@ -234,18 +258,18 @@ public class InboxReputationDetailHeaderViewHolder extends
     private String getOpponentSmileyPromptText(InboxReputationDetailHeaderViewModel element) {
         if (element.getReputationDataViewModel().getRevieweeScore() == NO_REPUTATION)
             return element.getRole() == InboxReputationItemViewModel
-                    .ROLE_SELLER ? MainApplication.getAppContext().getString(R.string
-                    .seller_has_not_review) : MainApplication.getAppContext().getString(R.string
+                    .ROLE_SELLER ? context.getString(R.string
+                    .seller_has_not_review) : context.getString(R.string
                     .buyer_has_not_review);
         else
             return element.getRole() == InboxReputationItemViewModel
-                    .ROLE_SELLER ? MainApplication.getAppContext().getString(R.string
-                    .score_from_seller) : MainApplication.getAppContext().getString(R.string
+                    .ROLE_SELLER ? context.getString(R.string
+                    .score_from_seller) : context.getString(R.string
                     .score_from_buyer);
     }
 
     private void setSmiley(InboxReputationDetailHeaderViewModel element, ReputationAdapter adapter) {
-        changeButton.setText(MainApplication.getAppContext().getString(R.string
+        changeButton.setText(context.getString(R.string
                 .change));
         switch (element.getReputationDataViewModel().getReviewerScore()) {
             case SMILEY_BAD:
@@ -262,7 +286,7 @@ public class InboxReputationDetailHeaderViewHolder extends
     }
 
     private String getPromptText(InboxReputationDetailHeaderViewModel element) {
-        return MainApplication.getAppContext().getString(R.string
+        return context.getString(R.string
                 .reputation_prompt) + " " + element.getName() + "?";
     }
 
@@ -285,6 +309,38 @@ public class InboxReputationDetailHeaderViewHolder extends
                     element.getRevieweeBadgeSellerViewModel().getReputationBadge().getLevel(),
                     String.valueOf(element.getRevieweeBadgeSellerViewModel().getScore()));
 
+        }
+    }
+
+    public void showIncentiveOvo() {
+        if (productRevIncentiveOvoDomain != null) {
+            ProductRevIncentiveOvoResponse productRevIncentiveOvo = productRevIncentiveOvoDomain.getProductrevIncentiveOvo();
+            if (productRevIncentiveOvo == null) {
+                ovoTicker.setVisibility(View.GONE);
+            } else {
+                ReputationTracking reputationTracking = new ReputationTracking();
+                String title = productRevIncentiveOvo.getTicker().getTitle();
+                String subtitle = productRevIncentiveOvo.getTicker().getSubtitle();
+                ovoTicker.setVisibility(View.VISIBLE);
+                ovoTicker.setTickerTitle(title);
+                ovoTicker.setHtmlDescription(subtitle);
+                ovoTicker.setDescriptionClickEvent(new TickerCallback() {
+                    @Override
+                    public void onDescriptionViewClick(@NotNull CharSequence charSequence) {
+                        BottomSheetUnify bottomSheet = new IncentiveOvoBottomSheet(productRevIncentiveOvoDomain, ReputationTrackingConstant.INVOICE);
+                        if(fragmentManager != null) {
+                            bottomSheet.show(fragmentManager,IncentiveOvoBottomSheet.Companion.getTAG());
+                        }
+                        reputationTracking.onClickReadSkIncentiveOvoTracker(title, ReputationTrackingConstant.INVOICE);
+                    }
+
+                    @Override
+                    public void onDismiss() {
+                        reputationTracking.onClickDismissIncentiveOvoTracker(title, ReputationTrackingConstant.INVOICE);
+                    }
+                });
+                reputationTracking.onSuccessGetIncentiveOvoTracker(title, ReputationTrackingConstant.INVOICE);
+            }
         }
     }
 }

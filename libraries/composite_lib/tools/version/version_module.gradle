@@ -1,15 +1,27 @@
-import com.tokopedia.plugin.ScanReleaseDateTask
 import com.tokopedia.plugin.ReadVersionConfigTask
 import com.tokopedia.plugin.ScanProjectTask
+import com.tokopedia.plugin.ScanLatestVersionTask
+import com.tokopedia.plugin.ScanModuleToPublishTask
 import com.tokopedia.plugin.PublishCompositeTask
-import com.tokopedia.plugin.WriteLatestLogTask
+import com.tokopedia.plugin.PrintLatestVersionTask
 
-task scanReleaseDate(type: ScanReleaseDateTask){
+// -PmoduleLatestVersion=<location of latest Version File Path>
+task scanLatestVersion(type: ScanLatestVersionTask){
     doFirst {
-        println("[SCAN RELEASE DATE TASK START]")
+        println("[SCAN LATEST VERSION TASK START]")
     }
     doLast{
-        println("[SCAN RELEASE DATE TASK FINISHED]")
+        println("[SCAN LATEST VERSION TASK FINISHED]")
+    }
+}
+
+// -PmoduleToPublish=<list Of module To Publish File Path> and
+task scanModuleToPublish(type: ScanModuleToPublishTask){
+    doFirst {
+        println("[SCAN MODULE TO PUBLISH TASK START]")
+    }
+    doLast{
+        println("[SCAN MODULE TO PUBLISH TASK FINISHED]")
     }
 }
 
@@ -22,43 +34,60 @@ task readVersionConfigTask(type: ReadVersionConfigTask) {
     }
 }
 
+
 task scanProjectTask(type: ScanProjectTask) {
-    dependsOn 'scanReleaseDate'
     dependsOn 'readVersionConfigTask'
+    dependsOn 'scanLatestVersion'
+    dependsOn 'scanModuleToPublish'
     doFirst {
-        println("[VERSION TASK START]")
-        versionConfigMap = readVersionConfigTask.versionConfigMap
-        moduleLatestLogMap = scanReleaseDate.moduleLatestLogMap
+        if (!scanLatestVersion.successScan) {
+            throw new StopExecutionException()
+        } else if (!scanModuleToPublish.successScan) {
+            throw new StopExecutionException()
+        } else {
+            println("[VERSION TASK START]")
+            versionConfigMap = readVersionConfigTask.versionConfigMap
+            versionSuffix = readVersionConfigTask.versionSuffix
+            moduleLatestVersionMap = scanLatestVersion.moduleLatestVersionMap
+            moduleToPublishList = scanModuleToPublish.moduleToPublishList
+        }
     }
     doLast {
         println("[VERSION TASK END]")
     }
 }
 
-task writeLatestGitLog(type: WriteLatestLogTask){
+task writeLatestVersion(type: PrintLatestVersionTask){
+    dependsOn 'scanLatestVersion'
     doFirst {
         if (!versionDependency.successPublish) {
             throw new StopExecutionException()
         }
-        println("[WRITE LATEST GIT LOG START]")
+        println("[WRITE LATEST VERSION START]")
+        projectToArtifactInfoList = versionDependency.projectToArtifactInfoList
+        artifactIdToProjectNameList = versionDependency.artifactIdToProjectNameList
+        successModuleList = versionDependency.successModuleList
+        moduleLatestVersionMap = scanLatestVersion.moduleLatestVersionMap
     }
     doLast {
-        println("[WRITE LATEST GIT LOG FINISHED]")
+        println("[WRITE LATEST VERSION FINISHED]")
     }
 }
 
-task versionDependency(type: PublishCompositeTask, dependsOn: scanProjectTask){
+// need parameter
+// -PmoduleToPublish=<list Of module To Publish> and
+// -PmoduleLatestVersion=<location of latest Version>
+task versionDependency(type: PublishCompositeTask){
+    dependsOn 'scanProjectTask'
     doFirst {
         println("[PUBLISH COMPOSITE TASK START]")
-        moduleLatestLogMap = scanProjectTask.moduleLatestLogMap
         dependenciesProjectNameHashSet = scanProjectTask.dependenciesProjectNameHashSet
-        candidateModuleListToUpdate = scanProjectTask.candidateModuleListToUpdate
         projectToArtifactInfoList = scanProjectTask.projectToArtifactInfoList
         artifactIdToProjectNameList = scanProjectTask.artifactIdToProjectNameList
-        versionConfigMap = scanProjectTask.versionConfigMap
+        moduleToPublishList = scanProjectTask.moduleToPublishList
     }
     doLast{
         println("[PUBLISH COMPOSITE TASK FINISHED]")
     }
-    finalizedBy writeLatestGitLog
+    finalizedBy writeLatestVersion
 }

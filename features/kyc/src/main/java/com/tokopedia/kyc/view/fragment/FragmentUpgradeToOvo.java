@@ -2,18 +2,18 @@ package com.tokopedia.kyc.view.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.google.android.material.snackbar.Snackbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.kyc.Constants;
-import com.tokopedia.kyc.KYCRouter;
 import com.tokopedia.kyc.R;
 import com.tokopedia.kyc.di.KYCComponent;
 import com.tokopedia.kyc.model.EligibilityBase;
@@ -23,6 +23,8 @@ import com.tokopedia.kyc.view.interfaces.ActivityListener;
 import com.tokopedia.kyc.view.interfaces.GenericOperationsView;
 import com.tokopedia.kyc.view.interfaces.LoaderUiListener;
 import com.tokopedia.kyc.view.presenter.EligibilityCheckPresenter;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
 
@@ -101,21 +103,23 @@ public class FragmentUpgradeToOvo extends BaseDaggerFragment
 
     private void executeUpgrd(){
         makeEligibilityRequest();
+        UserSessionInterface userSession = new UserSession(getContext());
         AnalyticsUtil.sendEvent(getContext(),
                 AnalyticsUtil.EventName.CLICK_OVO,
                 AnalyticsUtil.EventCategory.OVO_KYC,
                 "",
-                ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                userSession.getUserId(),
                 AnalyticsUtil.EventAction.CLK_LNJKTN);
     }
 
     private void executeLtrBtn(){
         getActivity().finish();
+        UserSessionInterface userSession = new UserSession(getContext());
         AnalyticsUtil.sendEvent(getContext(),
                 AnalyticsUtil.EventName.CLICK_OVO,
                 AnalyticsUtil.EventCategory.OVO_KYC,
                 "",
-                ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                userSession.getUserId(),
                 AnalyticsUtil.EventAction.CLK_NNT_SJA);
     }
 

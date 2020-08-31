@@ -2,24 +2,22 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_
 
 import android.content.Context
 import android.graphics.Paint
-import androidx.annotation.LayoutRes
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.RelativeLayout
 import android.widget.TextView
-import com.tokopedia.design.countdown.CountDownView
+import androidx.annotation.LayoutRes
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.circular_view_pager.presentation.widgets.shimmeringImageView.ShimmeringImageView
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper
 import com.tokopedia.home.beranda.helper.glide.FPM_PRODUCT_ORGANIC_CHANNEL
-import com.tokopedia.home.beranda.helper.glide.loadImageRounded
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.GridSpacingItemDecoration
 import com.tokopedia.kotlin.extensions.view.displayTextOrHide
 
@@ -29,10 +27,9 @@ import com.tokopedia.kotlin.extensions.view.displayTextOrHide
 
 class ProductOrganicChannelViewHolder(sprintView: View,
                                       private val homeCategoryListener: HomeCategoryListener,
-                                      countDownListener: CountDownView.CountDownListener,
                                       private val parentRecycledViewPool: RecyclerView.RecycledViewPool) :
         DynamicChannelViewHolder(
-                sprintView, homeCategoryListener, countDownListener
+                sprintView, homeCategoryListener
         ) {
 
     companion object {
@@ -76,8 +73,7 @@ class ProductOrganicChannelViewHolder(sprintView: View,
             adapter = OrganicAdapter(context,
                     homeCategoryListener,
                     channel,
-                    getLayoutType(channel),
-                    countDownView)
+                    getLayoutType(channel))
             recyclerView.adapter = adapter
         } else {
             adapter?.grids = channel.grids
@@ -85,7 +81,7 @@ class ProductOrganicChannelViewHolder(sprintView: View,
         }
     }
 
-    override fun bind(element: DynamicChannelViewModel, payloads: MutableList<Any>) {
+    override fun bind(element: DynamicChannelDataModel, payloads: MutableList<Any>) {
         if (adapter != null) {
             element.channel?.let {
                 adapter?.grids = it.grids
@@ -97,8 +93,7 @@ class ProductOrganicChannelViewHolder(sprintView: View,
     class OrganicAdapter(private val context: Context,
                          private val listener: HomeCategoryListener,
                          private val channels: DynamicHomeChannel.Channels,
-                         private val sprintType: Int,
-                         private val countDownView: CountDownView) : RecyclerView.Adapter<OrganicViewHolder>() {
+                         private val sprintType: Int) : RecyclerView.Adapter<OrganicViewHolder>() {
         var grids: Array<DynamicHomeChannel.Grid> = channels.grids
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OrganicViewHolder {
@@ -154,13 +149,13 @@ class ProductOrganicChannelViewHolder(sprintView: View,
     }
 
     class OrganicViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val channelImage1: ImageView = view.findViewById(R.id.channel_image_1)
+        val channelImage1: ShimmeringImageView = view.findViewById(R.id.channel_image_1)
         val channelName: TextView = view.findViewById(R.id.product_name)
         val channelPrice1: TextView = view.findViewById(R.id.channel_price_1)
         val channelDiscount1: TextView = view.findViewById(R.id.channel_discount_1)
         val channelCashback: TextView = view.findViewById(R.id.channel_cashback)
         val channelBeforeDiscPrice1: TextView = view.findViewById(R.id.channel_before_disc_price_1)
-        val itemContainer1: RelativeLayout = view.findViewById(R.id.channel_item_container_1)
+        val itemContainer1: ConstraintLayout = view.findViewById(R.id.channel_item_container_1)
         val context: Context
             get() = itemView.context
     }

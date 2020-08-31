@@ -1,7 +1,10 @@
 package com.tokopedia.kotlin.extensions.view
 
+import android.text.Html
 import java.net.URLDecoder
 import java.net.URLEncoder
+import java.util.*
+import kotlin.collections.HashMap
 
 /**
  * @author by nisie on 12/02/19.
@@ -27,6 +30,10 @@ fun String?.toDoubleOrZero(): Double {
 
 fun String?.toEmptyStringIfNull(): String {
     return this ?: ""
+}
+
+fun String?.toZeroStringIfNull(): String {
+    return this ?: "0"
 }
 
 fun CharSequence?.hasValue(): Boolean {
@@ -69,3 +76,18 @@ fun String?.convertStrObjToHashMap(): HashMap<String, Any> {
     }
     return map
 }
+
+fun String.parseAsHtml(): CharSequence {
+    return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+        Html.fromHtml(this, Html.FROM_HTML_MODE_LEGACY)
+    } else {
+        Html.fromHtml(this)
+    }
+}
+
+fun String.asUpperCase(): String {
+    val locale = Locale("id")
+    return this.toUpperCase(locale)
+}
+
+fun String?.toEmpty(): String = ""

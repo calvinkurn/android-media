@@ -1,14 +1,16 @@
 package com.tokopedia.campaign.shake.landing.view.activity;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -16,17 +18,15 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.campaign.shake.landing.R;
 import com.tokopedia.campaign.shake.landing.di.CampaignComponent;
 import com.tokopedia.campaign.shake.landing.di.DaggerCampaignComponent;
 import com.tokopedia.campaign.shake.landing.view.presenter.ShakeDetectContract;
 import com.tokopedia.campaign.shake.landing.view.presenter.ShakeDetectPresenter;
-import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
-
-import androidx.annotation.NonNull;
-import android.os.Build;
+import com.tokopedia.unifycomponents.Toaster;
 
 import java.util.List;
 
@@ -108,7 +108,7 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
 
     @Override
     protected int getLayoutRes() {
-        return R.layout.activity_shake;
+        return R.layout.shake_landing_activity_shake;
     }
 
     void attachToPresenter() {
@@ -148,7 +148,7 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
 
     @Override
     public void showErrorGetInfo() {
-        shakeShakeErrorMsg.setText(getString(R.string.shake_default_error));
+        shakeShakeErrorMsg.setText(getString(R.string.shake_landing_shake_default_error));
         layoutshakeShakeErrorMsg.setVisibility(View.VISIBLE);
         cancelButton.setVisibility(View.GONE);
     }
@@ -188,20 +188,11 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
 
     @Override
     public void setSnackBarErrorMessage() {
-
-        ToasterNormal
-                .make(parent,
-                        getResources().getString(R.string.shake_login_error),
-                        TOAST_LENGTH)
-                .setAction(getResources().getString(R.string.masuk_sekarang),
-                        new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                RouteManager.route(ShakeDetectCampaignActivity.this, ApplinkConst.LOGIN);
-                                finish();
-                            }
-                        })
-                .show();
+        Toaster.INSTANCE.make(parent, getResources().getString(R.string.shake_landing_shake_login_error), TOAST_LENGTH, Toaster.TYPE_ERROR,
+                getResources().getString(R.string.shake_landing_masuk_sekarang), v->{
+                    RouteManager.route(ShakeDetectCampaignActivity.this, ApplinkConst.LOGIN);
+                    finish();
+                });
     }
 
     @Override
@@ -253,5 +244,12 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
                     requestCode, permissions,
                     grantResults);
         }
+    }
+
+    @Override
+    public void goToGeneralSetting() {
+        Intent intent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.GENERAL_SETTING);
+        startActivity(intent);
+        finish();
     }
 }

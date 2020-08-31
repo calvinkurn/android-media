@@ -28,13 +28,12 @@ import androidx.annotation.Nullable;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
-import com.tokopedia.design.base.BaseToaster;
-import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.di.AddressModule;
 import com.tokopedia.logisticaddaddress.di.DaggerAddressComponent;
@@ -49,6 +48,7 @@ import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeA
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsMultipleAddress;
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics;
 import com.tokopedia.purchase_platform.common.analytics.ITransactionAnalyticsAddAddress;
+import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
@@ -244,7 +244,8 @@ public class AddAddressFragment extends BaseDaggerFragment
                         this.address.setCityName(address.getCityName());
                         this.address.setDistrictName(address.getDistrictName());
 
-                        if(address.getZipCodes() != null) zipCodes = new ArrayList<>(address.getZipCodes());
+                        if (address.getZipCodes() != null)
+                            zipCodes = new ArrayList<>(address.getZipCodes());
                         initializeZipCodes();
                     }
                 }
@@ -290,7 +291,7 @@ public class AddAddressFragment extends BaseDaggerFragment
     @Override
     public void finishActivity() {
         Intent intent = getActivity().getIntent();
-            intent.putExtra(EXTRA_ADDRESS, address);
+        intent.putExtra(EXTRA_ADDRESS, address);
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
     }
@@ -299,12 +300,13 @@ public class AddAddressFragment extends BaseDaggerFragment
     public void showErrorSnackbar(String message) {
         if (getActivity() == null) return;
         if (message == null || TextUtils.isEmpty(message)) {
-            ToasterError.make(BaseToaster.getContentView(getActivity()),
-                    getActivity().getResources().getString(R.string.msg_network_error),
-                    BaseToaster.LENGTH_SHORT).show();
+            Toaster.INSTANCE.make(getView(),
+                    getActivity().getResources().getString(com.tokopedia.abstraction.R.string.msg_network_error),
+                    Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, "", v -> {
+                    });
         } else {
-            ToasterError.make(BaseToaster.getContentView(getActivity()),
-                    message, BaseToaster.LENGTH_SHORT).show();
+            Toaster.INSTANCE.make(getView(),message, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR,
+                    "", v -> {});
         }
     }
 
@@ -619,8 +621,8 @@ public class AddAddressFragment extends BaseDaggerFragment
 
         ArrayAdapter<String> zipCodeAdapter = new ArrayAdapter<>(
                 getContext(),
-                R.layout.item_autocomplete_text_double_row,
-                R.id.item,
+                com.tokopedia.design.R.layout.item_autocomplete_text_double_row,
+                com.tokopedia.design.R.id.item,
                 zipCodes);
 
         zipCodeTextView.setAdapter(zipCodeAdapter);

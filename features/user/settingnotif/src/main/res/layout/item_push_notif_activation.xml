@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@android:color/white"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/spacing_lvl4">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txtTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/settingnotif_title_activation"
+        android:textColor="@color/charcoal_grey_96"
+        app:typographyType="heading_3"
+        app:typographyWeight="reguler" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txtDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:text="@string/settingnotif_desc_activation"
+        android:textColor="@color/charcoal_grey_68"
+        app:typographyType="body_1"
+        app:typographyWeight="reguler" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnActivation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="filled"
+        android:text="@string/settingnotif_activation" />
+
+</LinearLayout>

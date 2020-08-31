@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/imageBg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/imageShadow"
+        android:layout_width="423dp"
+        android:layout_height="119dp"
+        android:visibility="visible"
+        app:srcCompat="@drawable/gf_ic_box_shadow"
+        android:layout_gravity="center_horizontal"
+        tools:translationX="0dp"
+        tools:translationY="530dp" />
+
+    <FrameLayout
+        android:id="@+id/fm_gift_box"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="7dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+
+        <RelativeLayout
+            android:id="@+id/ll_gift_box"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/image_gift_box_lid"
+                android:layout_width="325dp"
+                android:layout_height="130dp"
+                tools:srcCompat="@drawable/gf_ic_lid_7" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/image_box_front"
+                android:layout_width="210dp"
+                android:layout_height="97dp"
+                android:layout_below="@id/image_gift_box_lid"
+                android:layout_centerHorizontal="true"
+                android:scaleType="centerCrop"
+                tools:src="@color/green_200" />
+
+
+        </RelativeLayout>
+
+    </FrameLayout>
+
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
+        android:id="@+id/image_flat_glow"
+        android:layout_width="373dp"
+        android:layout_height="251dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginEnd="@dimen/dp_7"
+        android:layout_marginRight="@dimen/dp_7"
+        app:remoteFileName="ic_box_stage_glow.png"
+        tools:translationY="240dp"
+        tools:visibility="visible" />
+
+</FrameLayout>

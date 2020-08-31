@@ -2,108 +2,74 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
+import android.view.MenuItem;
+
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.widget.Toolbar;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.tkpd.tkpdreputation.R;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationDetailFragment;
-import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailPassModel;
 
-import javax.inject.Inject;
+import java.util.Objects;
+
 
 /**
  * @author by nisie on 8/19/17.
  */
 
-public class InboxReputationDetailActivity extends BasePresenterActivity implements HasComponent {
+public class InboxReputationDetailActivity extends BaseSimpleActivity implements HasComponent {
 
     public static final String ARGS_POSITION = "ARGS_POSITION";
     public static final String ARGS_TAB = "ARGS_TAB";
     public static final String ARGS_IS_FROM_APPLINK = "ARGS_IS_FROM_APPLINK";
     public static final String REPUTATION_ID = "reputation_id";
     public static final String CACHE_PASS_DATA = InboxReputationDetailActivity.class.getName() + "-passData";
+    public static final String DEFAULT_REPUTATION_ID = "0";
+
+    private ReputationTracking reputationTracking;
 
     @Override
-    protected void setupURIPass(Uri data) {
-
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        reputationTracking = new ReputationTracking();
     }
 
+    @Nullable
     @Override
-    protected void setupBundlePass(Bundle extras) {
+    protected Fragment getNewFragment() {
 
-    }
-
-    @Override
-    protected void initialPresenter() {
-
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_simple_fragment;
-    }
-
-    @Override
-    protected void initView() {
         int tab = -1;
         boolean isFromApplink = false;
-        String reputationId = "0";
-        if (getIntent().getExtras() != null) {
-            if (getIntent().getExtras().getInt(ARGS_TAB, -1) != -1) {
-                tab = getIntent().getExtras().getInt(ARGS_TAB);
+        String reputationId = DEFAULT_REPUTATION_ID;
+        Uri intentData = getIntent().getData();
+        Bundle intentExtras = getIntent().getExtras();
+
+        // if from applink
+        if(intentData != null && intentData.getPathSegments().size() >= 2) {
+            isFromApplink = true;
+            reputationId = intentData.getPathSegments().get(1);
+        }
+
+        if(intentExtras != null && !isFromApplink) {
+            if(intentExtras.getInt(ARGS_TAB, -1) != -1) {
+                tab = intentExtras.getInt(ARGS_TAB);
             }
-            isFromApplink = getIntent().getExtras().getBoolean(ARGS_IS_FROM_APPLINK, false);
-            reputationId = getIntent().getExtras().getString(REPUTATION_ID, "");
+            reputationId = intentExtras.getString(REPUTATION_ID, "");
+            isFromApplink = intentExtras.getBoolean(ARGS_IS_FROM_APPLINK, false);
         }
 
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag(InboxReputationDetailFragment
-                .class.getSimpleName());
-        if (fragment == null) {
-            fragment = InboxReputationDetailFragment.createInstance(tab, isFromApplink, reputationId);
-        }
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.container,
-                fragment,
-                fragment.getClass().getSimpleName());
-        fragmentTransaction.commit();
-
+        return InboxReputationDetailFragment.createInstance(tab, isFromApplink, reputationId);
     }
 
     @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
-    }
-
-    @Override
-    public AppComponent getComponent() {
-        return getApplicationComponent();
+    public BaseAppComponent getComponent() {
+        return ((BaseMainApplication) getApplication()).getBaseAppComponent();
     }
 
     public static Intent getCallingIntent(Context context,
@@ -116,33 +82,24 @@ public class InboxReputationDetailActivity extends BasePresenterActivity impleme
         return intent;
     }
 
-    @DeepLink(ApplinkConst.REPUTATION_DETAIL)
-    public static Intent getCallingIntent(Context context, Bundle extras) {
-        extras.putBoolean(ARGS_IS_FROM_APPLINK, true);
-
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, InboxReputationDetailActivity.class)
-                .setData(uri.build())
-                .putExtras(extras);
+    public static Intent getCallingIntent(Context context,
+                                          String reputationId) {
+        Intent intent = new Intent(context, InboxReputationDetailActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(REPUTATION_ID, reputationId);
+        bundle.putBoolean(ARGS_IS_FROM_APPLINK, true);
+        intent.putExtras(bundle);
+        return intent;
     }
 
     @Override
-    protected void setupToolbar() {
-        super.setupToolbar();
-
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
-                .getColor(R.color.white)));
-        toolbar.setTitleTextColor(getResources().getColor(R.color.grey_700));
-        toolbar.setSubtitleTextColor(getResources().getColor(R.color.grey_500));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            toolbar.setElevation(10);
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(getFragment() != null && getFragment() instanceof InboxReputationDetailFragment) {
+            InboxReputationDetailFragment fragment = (InboxReputationDetailFragment) getFragment();
+            reputationTracking.onClickBackButtonReputationDetailTracker(Objects.requireNonNull(fragment).getOrderId());
         }
-
-        Drawable upArrow = ContextCompat.getDrawable(this, R.drawable.ic_action_back);
-        if (upArrow != null) {
-            upArrow.setColorFilter(ContextCompat.getColor(this, R.color.grey_700),
-                    PorterDuff.Mode.SRC_ATOP);
-            getSupportActionBar().setHomeAsUpIndicator(upArrow);
-        }
+        return super.onOptionsItemSelected(item);
     }
+
+
 }

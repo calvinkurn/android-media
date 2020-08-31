@@ -1,16 +1,6 @@
 package com.tokopedia.search.utils
 
-fun <T> List<T>?.betweenFirstAndLast(): List<T> {
-    if (this == null || this.size < 3) return listOf()
-
-    return this.subList(1, this.size - 1)
-}
-
-fun <T> List<T>?.secondToLast(): List<T> {
-    if (this == null || this.size < 2) return listOf()
-
-    return this.subList(1, this.size)
-}
+import androidx.recyclerview.widget.RecyclerView
 
 fun Map<String, Any>?.convertValuesToString(): Map<String, String> {
     if (this == null) return mapOf()
@@ -24,12 +14,20 @@ fun Map<String, Any>?.convertValuesToString(): Map<String, String> {
     return mapValuesInString
 }
 
-inline fun <reified T> List<Any>?.exists(): Boolean {
-    if (this == null) return false
+internal fun RecyclerView.addItemDecorationIfNotExists(itemDecoration: RecyclerView.ItemDecoration) {
+    val hasNoItemDecoration = itemDecorationCount == 0
+    if (hasNoItemDecoration) addItemDecoration(itemDecoration)
+}
 
-    this.forEach {
-        if (it is T) return true
-    }
+internal fun String?.decodeQueryParameter(): String {
+    this ?: return ""
 
-    return false
+    val queryParametersSplitIndex = this.indexOf("?")
+    if (queryParametersSplitIndex < 0) return this
+
+    val path = this.substring(0, queryParametersSplitIndex)
+    val queryParameters = this.substring(queryParametersSplitIndex + 1, length)
+    val queryParameterEncoded = UrlParamUtils.generateUrlParamString(UrlParamUtils.getParamMap(queryParameters))
+
+    return "$path?$queryParameterEncoded"
 }

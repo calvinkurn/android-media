@@ -2,6 +2,8 @@
     <string name="app_name">Tokopedia</string>
     <string name="lihat_smua_promo">Lihat Semua Promo</string>
 
+    <string name="GOOGLE_API_KEY">AIzaSyAqJLm1orGnm6BYnTu0a9uIjwS4gd8ThRY</string>
+
     <!-- Push Notif -->
     <string name="purchase_finish">Pesanan Selesai</string>
     <string name="purchase_confirm">Konfirmasi Pesanan</string>
@@ -75,9 +77,6 @@
     <string name="wishlist_empty_message">Masuk untuk melihat produk-produk pilihan Anda</string>
     <string name="wishlist_check_cart">Cek Keranjang</string>
 
-    <string name="flight_title_activity_phone_verification">Verifikasi Nomor Ponsel</string>
-    <string name="flight_phone_verification_header">Jaga akun Anda tetap aman dengan \nmelakukan verifikasi nomor ponsel.</string>
-
 
     <!-- Shake Shake Campaign -->
 
@@ -86,24 +85,14 @@
     <string name="drawer_title_shopping_list">Daftar Belanja</string>
     <string name="drawer_title_payment_list">Menunggu Pembayaran</string>
     <string name="drawer_title_digital_transaction_list"><![CDATA[Daftar Top-Up & Tagihan]]></string>
-    <string name="drawer_title_travel_flight_transaction_list">Daftar Tiket Pesawat</string>
-    <string name="drawer_title_travel_train_transaction_list">Daftar Tiket Kereta Api</string>
-    <string name="drawer_title_events_transaction_list">Daftar Events</string>
-    <string name="drawer_title_deals_transaction_list">Daftar Deals</string>
     <string name="exit_message">Tekan sekali lagi untuk keluar</string>
     <string name="sedang_dalam_proses_shake">Sedang dalam Proses Shake</string>
-    <string name="cancel_shake_shake">Memuat Shake-Shake</string>
-    <string name="shake_shake_terus">Ayo Shake Terus</string>
     <string name="ok">OK</string>
     <string name="disable_shake_shake">“Sepertinya sistem Shake di hp-mu sedang lelah. Istirahat dulu yuk main Shake Shake-nya.” OK
 </string>
     <string name="yes">Ya</string>
     <string name="mainapp_extend_gold_merchant">Perpanjang Gold Merchant</string>
     <string name="mainapp_upgrade_gold_merchant">Upgrade ke Gold Merchant</string>
-    <string name="oops">Oops!</string>
-    <string name="shake_lagi">Shake Lagi</string>
-    <string name="sepertinya_sistem_shake">Sepertinya sistem Shake di hp-mu sedang lelah. Istirahat dulu yuk!</string>
-    <string name="matikan_shake">Matikan Shake</string>
     <string name="video_not_play_error">Video can not be played.</string>
     <string name="cta_here">CTA Here</string>
     <string name="video_title_bar_lable">Tokopedia</string>
@@ -148,6 +137,7 @@
     <!-- Home Recommendation Extras -->
     <string name="home_recommendation_extra_product_id">PRODUCT_ID</string>
     <string name="home_recommendation_extra_ref">REF</string>
+    <string name="home_recommendation_extra_internal_ref">INTERNAL_REF</string>
     <string name="title_homepage_digital">Digital</string>
     <string name="title_saldo_deposit">Saldo Deposit</string>
     <string name="df_ovo_pay_with_qr_title">Ovo Pay By Qr DF</string>
@@ -177,4 +167,16 @@
     <string name="text_button_sort" translatable="false">Sort</string>
 
     <string name="saldo_webview_title">Tokopedia</string>
+  
+    <string name="title_logout" translatable="false">logout</string>
+
+    <!--Talk-->
+    <string name="title_reading_page">Diskusi</string>
+    <string name="title_reply_page">Balas Pertanyaan</string>
+
+    <!-- Dynamic feature Product Add Edit -->
+    <string name="action_pick_photo">Pilih Foto</string>
+    <string name="action_edit_photo">Ubah Foto</string>
+    <string name="label_title_add_product">Tambah Produk</string>
+
 </resources>

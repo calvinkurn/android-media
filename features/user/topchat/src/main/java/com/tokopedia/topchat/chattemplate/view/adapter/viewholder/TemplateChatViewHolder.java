@@ -1,9 +1,8 @@
 package com.tokopedia.topchat.chattemplate.view.adapter.viewholder;
 
-import androidx.annotation.LayoutRes;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
+
+import androidx.annotation.LayoutRes;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.topchat.R;
@@ -31,7 +30,7 @@ public class TemplateChatViewHolder extends AbstractViewHolder<TemplateChatModel
 
     @Override
     public void bind(final TemplateChatModel element) {
-        textHolder.setChipText(element.getMessage());
+        textHolder.setChipText(element.getEllipsizedMessage());
         textHolder.setOnClickListener(view ->
                 viewListener.addTemplateString(element.getMessage())
         );

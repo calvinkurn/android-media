@@ -1,0 +1,18 @@
+query topAdsPDPAffiliate($productId:[Int]!, $shopId:Int, $includeUI: Boolean){
+ topAdsPDPAffiliate(productId:$productId, shopId:$shopId, includeUI:$includeUI){
+   data{
+     affiliate{
+       AdId
+       ProductId
+       AffiliatedByUser
+       CommissionPercent
+       CommissionValue
+       CommissionPercentDispay
+       CommissionValueDisplay
+       UniqueURL
+       AdTitle
+       Image
+     }
+   }
+ }
+}

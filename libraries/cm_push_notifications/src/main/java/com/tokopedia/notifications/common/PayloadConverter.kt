@@ -6,6 +6,7 @@ import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.notifications.CMPushNotificationManager
 import com.tokopedia.notifications.model.*
 import org.json.JSONObject
 import java.util.*
@@ -16,7 +17,7 @@ object PayloadConverter {
 
     private val TAG = PayloadConverter::class.java.simpleName
 
-    public fun convertMapToBundle(map: Map<String, String>?): Bundle {
+    fun convertMapToBundle(map: Map<String, String>?): Bundle {
         val bundle = Bundle(map?.size ?: 0)
         if (map != null) {
             for ((key, value) in map) {
@@ -55,8 +56,9 @@ object PayloadConverter {
             model.carouselList = carouselList
             model.carouselIndex = data.getInt(CMConstant.PayloadKeys.CAROUSEL_INDEX, 0)
         }
-        model.isVibration = data.getBoolean(CMConstant.PayloadKeys.VIBRATE, true)
-        model.isUpdateExisting = data.getBoolean(CMConstant.PayloadKeys.UPDATE_NOTIFICATION, false)
+        model.isVibration = (data.getString(CMConstant.PayloadKeys.VIBRATE) ?: "true").toBoolean()
+        model.isUpdateExisting = (data.getString(CMConstant.PayloadKeys.UPDATE_NOTIFICATION) ?: "false").toBoolean()
+        model.isTest = (data.getString(CMConstant.PayloadKeys.IS_TEST) ?: "false").toBoolean()
         val gridList = getGridList(data)
         if (gridList != null)
             model.gridList = gridList
@@ -73,14 +75,14 @@ object PayloadConverter {
 
         model.startTime = if (data.containsKey(CMConstant.PayloadKeys.NOTIFICATION_START_TIME)) {
             try {
-                data.getString(CMConstant.PayloadKeys.NOTIFICATION_START_TIME).toLong()
+                data.getString(CMConstant.PayloadKeys.NOTIFICATION_START_TIME)?.toLong() ?: 0
             } catch (e: Exception) {
                 0L
             }
         } else 0L
         model.endTime = if (data.containsKey(CMConstant.PayloadKeys.NOTIFICATION_END_TIME)) {
             try {
-                data.getString(CMConstant.PayloadKeys.NOTIFICATION_END_TIME).toLong()
+                data.getString(CMConstant.PayloadKeys.NOTIFICATION_END_TIME)?.toLong() ?: 0
             } catch (e: Exception) {
                 0L
             }
@@ -88,10 +90,21 @@ object PayloadConverter {
         if (model.notificationMode != NotificationMode.OFFLINE && (model.startTime == 0L ||
                         model.endTime == 0L)) {
             model.startTime = System.currentTimeMillis()
-            model.endTime = System.currentTimeMillis() + HOURS_24_IN_MILLIS
+            model.endTime = System.currentTimeMillis() + CMPushNotificationManager.instance.cmPushEndTimeInterval
         }
 
         model.status = NotificationStatus.PENDING
+        model.notificationProductType = data.getString(CMConstant.PayloadKeys.NOTIFICATION_PRODUCT_TYPE)
+
+        // notification attribution
+        model.transactionId = data.getString(CMConstant.PayloadKeys.TRANSACTION_ID)
+        model.userTransactionId = data.getString(CMConstant.PayloadKeys.USER_TRANSACTION_ID)
+        model.userId = data.getString(CMConstant.PayloadKeys.USER_ID)
+        model.shopId = data.getString(CMConstant.PayloadKeys.SHOP_ID)
+        model.blastId = data.getString(CMConstant.PayloadKeys.BLAST_ID)
+
+        // webHook parameters
+        model.webHookParam = data.getString(CMConstant.PayloadKeys.WEBHOOK_PARAM)
 
         return model
     }
@@ -99,7 +112,7 @@ object PayloadConverter {
     private fun getNotificationMode(data: Bundle): NotificationMode {
         try {
             if (data.containsKey(CMConstant.PayloadKeys.NOTIFICATION_MODE)) {
-                return if (data.getString(CMConstant.PayloadKeys.NOTIFICATION_MODE).toBoolean()) NotificationMode.OFFLINE
+                return if (data.getString(CMConstant.PayloadKeys.NOTIFICATION_MODE)?.toBoolean() == true) NotificationMode.OFFLINE
                 else NotificationMode.POST_NOW
             }
         } catch (e: Exception) {

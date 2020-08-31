@@ -44,6 +44,8 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.gamification.GamificationEventTracking;
 import com.tokopedia.gamification.R;
@@ -66,7 +68,6 @@ import com.tokopedia.gamification.di.GamificationComponentInstance;
 import com.tokopedia.gamification.pdp.presentation.views.PdpGamificationView;
 import com.tokopedia.gamification.pdp.presentation.views.Wishlist;
 import com.tokopedia.gamification.taptap.compoundview.NetworkErrorHelper;
-import com.tokopedia.promogamification.common.GamificationRouter;
 import com.tokopedia.promogamification.common.applink.ApplinkUtil;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
@@ -145,7 +146,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.fragment_crack_token, container, false);
+        rootView = inflater.inflate(com.tokopedia.gamification.R.layout.fragment_crack_token, container, false);
 
         ivContainer = rootView.findViewById(R.id.iv_container);
         crackLayoutTooltip = rootView.findViewById(R.id.tooltip_crack_layout);
@@ -159,7 +160,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         progressBar = rootView.findViewById(R.id.progress_bar);
         toolbar = rootView.findViewById(R.id.toolbar);
         toolbarTitle = toolbar.findViewById(R.id.toolbar_title);
-        toolbarTitle.setText(getString(R.string.toko_points_title));
+        toolbarTitle.setText(getString(com.tokopedia.gamification.R.string.toko_points_title));
         imageRemainingToken = toolbar.findViewById(R.id.image_remaining_token);
         tvCounter = toolbar.findViewById(R.id.tv_floating_counter);
         flRemainingToken = toolbar.findViewById(R.id.fl_remaining_token);
@@ -224,7 +225,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
             @Override
             public void onCrackResultCleared() {
-                setToolbarColor(getResources().getColor(R.color.black), getResources().getColor(R.color.toolbar_color));
+                setToolbarColor(getResources().getColor(com.tokopedia.design.R.color.black), getResources().getColor(com.tokopedia.gamification.R.color.toolbar_color));
             }
 
             @Override
@@ -294,8 +295,8 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
     private void setUpToolBar() {
         ((BaseSimpleActivity) getActivity()).setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_action_back));
-        setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), R.color.black));
+        toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), com.tokopedia.abstraction.R.drawable.ic_action_back));
+        setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), com.tokopedia.design.R.color.black));
     }
 
     private void setToolbarColor(int titleColor, int toolbarBackgroundColor) {
@@ -314,9 +315,11 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
     @Override
     protected void initInjector() {
-        GamificationComponent gamificationComponent =
-                GamificationComponentInstance.getComponent(getActivity().getApplication());
-        gamificationComponent.inject(this);
+        if (getActivity() != null) {
+            GamificationComponent gamificationComponent =
+                    GamificationComponentInstance.getComponent(getActivity());
+            gamificationComponent.inject(this);
+        }
         crackTokenPresenter.attachView(this);
     }
 
@@ -392,7 +395,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             if (isLoaded) {
                 float imageMatrixValues[] = new float[9];
                 ivContainer.getImageMatrix().getValues(imageMatrixValues);
-                widgetTokenView.initImageBound(imageMatrixValues[0], imageMatrixValues[5]);
+                widgetTokenView.initImageBound(ivContainer.getDrawable().getIntrinsicHeight(), imageMatrixValues[0], imageMatrixValues[5]);
             }
             return null;
         });
@@ -427,7 +430,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
                 if (getActivity() == null || getActivity().isFinishing() || getContext() == null || !isAdded() || isRemoving()) {
                     return;
                 }
-                setToolbarColor(getResources().getColor(R.color.white), getResources().getColor(R.color.transparent));
+                setToolbarColor(getResources().getColor(com.tokopedia.design.R.color.white), getResources().getColor(com.tokopedia.design.R.color.transparent));
                 widgetCrackResult.showCrackResult(crackResult);
 
             }
@@ -558,7 +561,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             int hours = minutes / 60;
             minutes = minutes % 60;
             seconds = seconds % 60;
-            textCountdownTimer.setText(String.format(getString(R.string.countdown_format), hours, minutes, seconds));
+            textCountdownTimer.setText(String.format(getString(com.tokopedia.gamification.R.string.countdown_format), hours, minutes, seconds));
             textCountdownTimer.setVisibility(View.VISIBLE);
         }
     }
@@ -579,10 +582,8 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
     @Override
     public void navigateToLoginPage() {
-        if (getActivity().getApplication() instanceof GamificationRouter
-                && ((GamificationRouter) getActivity().getApplication()).getLoginIntent() != null) {
-            startActivityForResult(((GamificationRouter) getActivity().getApplication()).getLoginIntent(), REQUEST_CODE_LOGIN);
-        }
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.LOGIN);
+        startActivityForResult(intent, REQUEST_CODE_LOGIN);
     }
 
     @Override
@@ -592,7 +593,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
     @Override
     public String getSuccessRewardLabel() {
-        return getString(R.string.success_reward_label);
+        return getString(com.tokopedia.gamification.R.string.success_reward_label);
     }
 
     @Override
@@ -602,7 +603,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
     @Override
     public void onSuccessGetToken(TokenDataEntity tokenData) {
-        setToolbarColor(getResources().getColor(R.color.black), getResources().getColor(R.color.toolbar_color));
+        setToolbarColor(getResources().getColor(com.tokopedia.design.R.color.black), getResources().getColor(com.tokopedia.gamification.R.color.toolbar_color));
         if (tokenData.getSumToken() == 0) {
             listener.directPageToCrackEmpty(tokenData);
         } else {
@@ -638,7 +639,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         if (activeNetwork == null || !activeNetwork.isConnected()) {
             loadNetworkConnectionErrorBottomSheet();
         } else {
-            setToolbarColor(getResources().getColor(R.color.white), getResources().getColor(R.color.transparent));
+            setToolbarColor(getResources().getColor(com.tokopedia.design.R.color.white), getResources().getColor(com.tokopedia.design.R.color.transparent));
             widgetCrackResult.showCrackResult(crackResult);
         }
     }
@@ -716,9 +717,9 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
     private void loadNetworkConnectionErrorBottomSheet() {
         CloseableBottomSheetDialog bottomSheet = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
-        View view = getLayoutInflater().inflate(R.layout.gf_network_connection_bottomsheet, null, true);
-        ImageView closeBtn = view.findViewById(R.id.gf_close_button);
-        Typography tryAgainButton = view.findViewById(R.id.gf_no_internet_try_again);
+        View view = getLayoutInflater().inflate(com.tokopedia.gamification.R.layout.gf_network_connection_bottomsheet, null, true);
+        ImageView closeBtn = view.findViewById(com.tokopedia.gamification.R.id.gf_close_button);
+        Typography tryAgainButton = view.findViewById(com.tokopedia.gamification.R.id.gf_no_internet_try_again);
         tryAgainButton.setOnClickListener(v -> {
             widgetCrackResult.clearCrackResult();
 
@@ -745,9 +746,9 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
                     NetworkErrorHelper.showErrorSnackBar(crackResult.getResultStatus().getMessage().get(0), getContext(), rootView, true);
 
                 } else {
-                    NetworkErrorHelper.showErrorSnackBar(getString(R.string.gf_crack_token_response_error), getContext(), rootView, true);
+                    NetworkErrorHelper.showErrorSnackBar(getString(com.tokopedia.gamification.R.string.gf_crack_token_response_error), getContext(), rootView, true);
                 }
-                trackingSnackbarError(getString(R.string.gf_crack_token_response_error));
+                trackingSnackbarError(getString(com.tokopedia.gamification.R.string.gf_crack_token_response_error));
             }
         }
     }

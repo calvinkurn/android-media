@@ -1,17 +1,18 @@
 package com.tokopedia.gm.statistic.view.widget;
 
 import android.content.Context;
-import androidx.annotation.DrawableRes;
-import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.DrawableRes;
+import androidx.annotation.Nullable;
+
 import com.db.williamchart.util.GoldMerchantDateUtils;
-import com.tokopedia.gm.statistic.view.model.GMDateRangeDateViewModel;
 import com.tokopedia.gm.R;
+import com.tokopedia.gm.statistic.view.model.GMDateRangeDateViewModel;
 
 /**
  * Created by normansyahputa on 7/11/17.
@@ -20,11 +21,6 @@ import com.tokopedia.gm.R;
 public class GMDateRangeView extends RelativeLayout {
     private ImageView dateRangePercentageDotImage;
     private TextView dateRangePercentageDotText;
-
-    @DrawableRes
-    private int circleGreen = R.drawable.circle_green;
-    @DrawableRes
-    private int circleGrey = R.drawable.circle_grey;
 
     private String[] monthNamesAbrev;
 

@@ -27,4 +27,26 @@
     <color name="red_150">#d43000</color>
 
     <color name="card_border">#f2f2f2</color>
+    <color name="black_87">#de000000</color>
+
+
+    <color name="contact_us_in_process">#fa591d</color>
+    <color name="contact_us_need_rating">#ff5c84</color>
+    <color name="contact_us_closed">#9fa6b0</color>
+    <color name="contact_us_unread_ticket_background">#66ebffef</color>
+    <color name="contact_us_grey_n_75">#e5e7e9</color>
+    <color name="contact_us_input_field_bg_color">#f4f5f7</color>
+    <color name="contact_us_ticket_status_bg_color_grey">#f3f4f5</color>
+    <color name="contact_us_ticket_status_bg_color_pink">#ffeaef</color>
+    <color name="contact_us_ticket_status_bg_color_yellow">#fff0b3</color>
+    <color name="contact_us_thumbs_up_down_bg_color">#f7f8f9</color>
+    <color name="contact_us_text_field_color">#ae31353b</color>
+    <color name="contact_us_grey_n_700_44">#7031353b</color>
+    <color name="contact_us_grey_n_700_96">#f531353b</color>
+    <color name="contact_us_unread_ticket_bg_color">#66ebffef</color>
+    <color name="contact_us_priority_label_color">#7a08c9</color>
+    <color name="contact_us_g_500">#03ac0e</color>
+
+
+
 </resources>

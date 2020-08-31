@@ -6,14 +6,17 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.webkit.URLUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalCategory
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 
 object DeepLinkChecker {
 
     private val APP_EXCLUDED_URL = "app_excluded_url"
     private val APP_EXCLUDED_HOST_V2 = "app_excluded_host_v2"
+    private const val AMP = "amp"
+    private const val EXCLUDED_AMP = "excluded_amp"
+    private const val DEFAULT_EXCLUDED_AMP_VALUE = "stories"
 
     @JvmField
     val WEB_HOST = "www.tokopedia.com"
@@ -26,7 +29,6 @@ object DeepLinkChecker {
     const val CATALOG = 2
     const val PRODUCT = 3
     const val SHOP = 4
-    const val TOPPICKS = 5
     const val HOT_LIST = 6
     const val CATEGORY = 7
     const val HOME = 8
@@ -37,7 +39,6 @@ object DeepLinkChecker {
     const val ACCOUNTS = 13
     const val RECHARGE = 14
     const val BLOG = 15
-    const val PELUANG = 16
     const val DISCOVERY_PAGE = 17
     const val FLIGHT = 18
     const val REFERRAL = 19
@@ -58,6 +59,7 @@ object DeepLinkChecker {
     const val PROMO_LIST = 34
     const val PRODUCT_REVIEW = 35
     const val DEALS = 36
+    const val TRAVEL_HOMEPAGE = 37
 
     private val deeplinkMatcher: DeeplinkMatcher by lazy { DeeplinkMatcher() }
 
@@ -73,8 +75,8 @@ object DeepLinkChecker {
         path = path.replaceLastSlash()
         val uriWithoutParam = "$host$path"
         val excludedHostList = excludedHost.split(",".toRegex())
-                .filter { it.isNotEmpty() }
-                .map { it.replaceFirstWww().replaceFirstM().replaceLastSlash() }
+            .filter { it.isNotEmpty() }
+            .map { it.replaceFirstWww().replaceFirstM().replaceLastSlash() }
         for (excludedString in excludedHostList) {
             if (uriWithoutParam.startsWith(excludedString)) {
                 return true
@@ -92,8 +94,8 @@ object DeepLinkChecker {
         var path = uriData.path ?: return false
         path = path.replaceLastSlash()
         val excludedUrlList = excludedUrl.split(",".toRegex())
-                .filter { it.isNotEmpty() }
-                .map { it.replaceLastSlash() }
+            .filter { it.isNotEmpty() }
+            .map { it.replaceLastSlash() }
         for (excludedString in excludedUrlList) {
             if (path.endsWith(excludedString)) {
                 return true
@@ -147,9 +149,34 @@ object DeepLinkChecker {
 
     }
 
+    @JvmStatic
+    fun getRemoveAmpLink(context: Context, uriData: Uri): Uri? {
+        val path = uriData.pathSegments
+        return if (path != null && path.size > 1 && path[0] == AMP &&
+            !isExcludedAmpPath(context, path[1])) {
+            Uri.parse(uriData.toString().replaceFirst(AMP + "/".toRegex(), ""))
+        } else uriData
+    }
+
+    private fun isExcludedAmpPath(context: Context, path: String): Boolean {
+        val firebaseRemoteConfig = FirebaseRemoteConfigImpl(context)
+        val excludedPath = firebaseRemoteConfig.getString(EXCLUDED_AMP, defaultExcludedAmpValue())
+        val excludedPathList = excludedPath.split(",".toRegex())
+            .filter { it.isNotEmpty() }
+            .map { it.replaceLastSlash() }
+        for (excludedString in excludedPathList) {
+            if (path == excludedString) {
+                return true
+            }
+        }
+        return false
+    }
+
+    private fun defaultExcludedAmpValue() = DEFAULT_EXCLUDED_AMP_VALUE
+
     private fun isHome(uriData: Uri): Boolean {
         return uriData.pathSegments.isEmpty() &&
-                (uriData.host?.contains(WEB_HOST) ?: false || uriData.host?.contains(MOBILE_HOST) ?: false)
+            (uriData.host?.contains(WEB_HOST) ?: false || uriData.host?.contains(MOBILE_HOST) ?: false)
     }
 
     @JvmStatic
@@ -196,12 +223,13 @@ object DeepLinkChecker {
 
     // function for enable Hansel
 
-    private fun getCatalogDetailClassName() = "com.tokopedia.discovery.catalog.activity.CatalogDetailActivity"
+    private fun getCatalogDetailClassName() = "com.tokopedia.discovery.catalogrevamp.ui.activity.CatalogDetailPageActivity"
 
     private fun getHotIntent(context: Context, url: String): Intent {
         val uri = Uri.parse(url)
-        uri.pathSegments[1]
-        return RouteManager.getIntent(context, DeeplinkMapper.getRegisteredNavigation(context, ApplinkConst.HOME_HOTLIST + "/" + if (uri.pathSegments.size > 1) uri.pathSegments[1] else ""))
+        val query = if (uri.pathSegments.size > 1) uri.pathSegments[1] else ""
+        query.replace("-","+")
+        return RouteManager.getIntent(context, DeeplinkMapper.getRegisteredNavigation(context, ApplinkConst.DISCOVERY_SEARCH + "?q=" + query))
     }
 
     private fun getFindIntent(context: Context, url: String): Intent {
@@ -213,7 +241,7 @@ object DeepLinkChecker {
     private fun getCatalogIntent(context: Context, url: String): Intent {
         val catalogId = getLinkSegment(url)[1]
         val intent = getIntentByClassName(context, getCatalogDetailClassName())
-        intent.putExtra("ARG_EXTRA_CATALOG_ID", catalogId)
+        intent.putExtra("EXTRA_CATALOG_ID", catalogId)
         return intent
     }
 
@@ -238,7 +266,7 @@ object DeepLinkChecker {
             intent = RouteManager.getIntent(context, constructSearchApplink(uriData))
             intent.putExtras(bundle)
         } else {
-            intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL, departmentId)
+            intent = RouteManager.getIntent(context, ApplinkConstInternalCategory.INTERNAL_CATEGORY_DETAIL, departmentId)
         }
         return openIfExist(context, intent)
     }

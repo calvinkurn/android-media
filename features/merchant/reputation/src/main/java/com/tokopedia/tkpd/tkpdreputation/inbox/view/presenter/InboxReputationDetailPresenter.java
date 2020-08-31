@@ -1,9 +1,9 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.presenter;
 
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.tkpd.tkpdreputation.domain.interactor.DeleteReviewResponseUseCase;
 import com.tokopedia.tkpd.tkpdreputation.domain.interactor.LikeDislikeReviewUseCase;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inbox.GetProductIncentiveOvoUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.FavoriteShopUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.GetInboxReputationDetailUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.SendReplyReviewUseCase;
@@ -12,9 +12,11 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationDeta
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.DeleteReviewResponseSubscriber;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.FavoriteShopSubscriber;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.GetInboxReputationDetailSubscriber;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.GetProductIncentiveOvoDetailSubscriber;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.RefreshInboxReputationDetailSubscriber;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.ReplyReviewSubscriber;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.SendSmileySubscriber;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
 
@@ -28,7 +30,8 @@ public class InboxReputationDetailPresenter
 
     private static final String SRC_INBOX_REPUTATION_DETAIL = "inbox_reputation_detail";
     private final GetInboxReputationDetailUseCase getInboxReputationDetailUseCase;
-    private final SessionHandler sessionHandler;
+    private final GetProductIncentiveOvoUseCase getProductIncentiveOvoUseCase;
+    private final UserSessionInterface userSession;
     private final SendSmileyReputationUseCase sendSmileyReputationUseCase;
     private final FavoriteShopUseCase favoriteShopUseCase;
     private final DeleteReviewResponseUseCase deleteReviewResponseUseCase;
@@ -38,18 +41,20 @@ public class InboxReputationDetailPresenter
     @Inject
     InboxReputationDetailPresenter(
             GetInboxReputationDetailUseCase getInboxReputationDetailUseCase,
+            GetProductIncentiveOvoUseCase getProductIncentiveOvoUseCase,
             SendSmileyReputationUseCase sendSmileyReputationUseCase,
             FavoriteShopUseCase favoriteShopUseCase,
             DeleteReviewResponseUseCase deleteReviewResponseUseCase,
             SendReplyReviewUseCase sendReplyReviewUseCase,
             LikeDislikeReviewUseCase likeDislikeReviewUseCase,
-            SessionHandler sessionHandler) {
+            UserSessionInterface userSession) {
         this.getInboxReputationDetailUseCase = getInboxReputationDetailUseCase;
+        this.getProductIncentiveOvoUseCase = getProductIncentiveOvoUseCase;
         this.sendSmileyReputationUseCase = sendSmileyReputationUseCase;
         this.favoriteShopUseCase = favoriteShopUseCase;
         this.deleteReviewResponseUseCase = deleteReviewResponseUseCase;
         this.sendReplyReviewUseCase = sendReplyReviewUseCase;
-        this.sessionHandler = sessionHandler;
+        this.userSession = userSession;
     }
 
     @Override
@@ -62,6 +67,7 @@ public class InboxReputationDetailPresenter
     public void detachView() {
         super.detachView();
         getInboxReputationDetailUseCase.unsubscribe();
+        getProductIncentiveOvoUseCase.unsubscribe();
         sendSmileyReputationUseCase.unsubscribe();
         favoriteShopUseCase.unsubscribe();
         deleteReviewResponseUseCase.unsubscribe();
@@ -73,7 +79,7 @@ public class InboxReputationDetailPresenter
         viewListener.showLoading();
         getInboxReputationDetailUseCase.execute(
                 GetInboxReputationDetailUseCase.getParam(reputationId,
-                        sessionHandler.getLoginID(),
+                        userSession.getUserId(),
                         tab),
                 new GetInboxReputationDetailSubscriber(viewListener));
     }
@@ -124,10 +130,13 @@ public class InboxReputationDetailPresenter
         viewListener.showRefresh();
         getInboxReputationDetailUseCase.execute(
                 GetInboxReputationDetailUseCase.getParam(reputationId,
-                        sessionHandler.getLoginID(),
+                        userSession.getUserId(),
                         tab),
                 new RefreshInboxReputationDetailSubscriber(viewListener));
     }
 
+    public void getProductIncentiveOvo() {
+        getProductIncentiveOvoUseCase.execute(new GetProductIncentiveOvoDetailSubscriber(viewListener));
+    }
 }
 

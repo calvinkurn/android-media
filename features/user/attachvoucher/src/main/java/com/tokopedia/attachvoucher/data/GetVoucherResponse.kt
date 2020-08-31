@@ -7,5 +7,5 @@ data class GetVoucherResponse(
         @SerializedName("getPublicMerchantVoucherList")
         val getPublicMerchantVoucherList: GetPublicMerchantVoucherList = GetPublicMerchantVoucherList()
 ) {
-    val vouchers: List<Voucher> get() = getPublicMerchantVoucherList.vouchers
+    val vouchers: List<VoucherUiModel> get() = getPublicMerchantVoucherList.vouchers
 }

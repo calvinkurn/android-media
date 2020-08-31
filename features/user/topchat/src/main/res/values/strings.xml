@@ -33,11 +33,8 @@ yang ditemukan</string>
     <string name="time_machine">Untuk melihat percakapan sebelumnya,\nkunjungi Riwayat
         Pesan</string>
     <string name="string_general_error">Terjadi kesalahan, mohon coba kembali.</string>
-    <string name="error_no_connection_retrying">Terjadi gangguan pada koneksi. Mencoba
-        menghubungkan…</string>
+    <string name="error_no_connection_retrying">Tunggu sebentar, ya. Kami sedang menghubungkanmu.</string>
     <string name="title_time_machine_message">Tokopedia</string>
-    <string name="security_info_chat">Mohon berhati-hati bila pengguna lain meminta Anda berkomunikasi dan bertransaksi di luar Tokopedia.</string>
-    <string name="security_info_chat_link">Cek panduan keamanan disini.</string>
 
     <!-- Chat Room -->
     <string name="time_machine_chat">Untuk melihat percakapan sebelumnya, kunjungi\nRiwayat
@@ -78,24 +75,19 @@ yang ditemukan</string>
     <string name="already_follow_store">Following</string>
     <string name="view_profile_container_string">Lihat Profil %s</string>
     <string name="delete_conversation">Hapus Percakapan</string>
-    <string name="chat_incoming_settings">Atur Penerimaan Chat</string>
     <string name="chat_report_user">Laporkan Pengguna</string>
     <string name="delete_chat_question">Hapus chat?</string>
     <string name="delete_chat_warning_message">Chat akan terhapus selamanya</string>
 
     <string name="chat_promotion_text">Chat Promosi</string>
     <string name="chat_information_text">Berisi informasi promo, notifikasi harga, dan penawaran menarik lainnya</string>
-    <string name="chat_promotion_blocked_validity">Anda berhenti menerima chat promosi dari %1$s hingga %2$s</string>
     <string name="chat_personal_text">Chat Personal</string>
     <string name="chat_personal_info_text">Berisi tanggapan langsung dari penjual atas pertanyaan Anda</string>
-    <string name="chat_personal_blocked_validity">Anda berhenti menerima chat personal dari %1$s hingga %2$s</string>
-    <string name="enable_chat_settings">Kembali Menerima Chat</string>
-    <string name="enable_chat_personal_settings" formatted="false">Anda berhenti menerima semua chat dari %s</string>
-    <string name="disable_chat_personal_settings" formatted="false">Anda kembali menerima semua chat dari %s</string>
+    <string name="enable_chat_settings">klik di sini.</string>
     <string name="enable_chat_promotion_settings" formatted="false">Anda berhenti menerima chat promosi dari %s</string>
     <string name="disable_chat_promotion_settings" formatted="false">Anda kembali menerima chat promosi dari %s</string>
     <string name="enable_chat_promotion_blocked_settings">Anda wajib mengaktifkan penerimaan chat personal untuk menerima chat promosi</string>
-    <string name="chat_blocked_text">Anda berhenti menerima %1$s dari %2$s hingga %3$s</string>
+    <string name="desc_chat_blocked">Kamu telah memblokir pengguna ini dan tidak akan terima chat darinya. Untuk menerima chat-nya kembali,</string>
     <string name="enable_chat_toast">Anda berhasil menerima %1$s dari %2$s</string>
     <string name="error_chat_message">Mohon maaf, terjadi kendala teknis, cobalah beberapa saat lagi</string>
     <string name="bm_title">Broadcast Chat</string>
@@ -119,22 +111,23 @@ yang ditemukan</string>
     <string name="menu_chat_filter">Filter</string>
     <string name="menu_chat_setting">Pengaturan</string>
     <string name="menu_chat_search">Pencarian</string>
-    <string name="search_chat_by_username">Cari nama pengguna</string>
+    <string name="search_chat_hint">Cari di Chat</string>
 
     <string name="filter_chat_all">Semua</string>
     <string name="filter_chat_unread">Belum Dibaca</string>
     <string name="filter_chat_read">Sudah Dibaca</string>
     <string name="filter_chat_unreplied">Belum Dibalas</string>
 
-    <string name="seller_empty_chat_subtitle">Lengkapi tokomu dengan produk unggulan dulu, yuk!</string>
+    <string name="seller_empty_chat_subtitle">Yuk, bikin tokomu ramai pengunjung dengan beriklan dan promosikan produk-produkmu.</string>
     <string name="buyer_empty_chat_subtitle">Coba ngobrol dengan teman penjual, yuk!</string>
     <string name="empty_chat_read_all_title">Mantap! Semua chat sudah kamu baca</string>
+    <string name="empty_chat_smart_reply">Belum ada chat yang dibalas Smart Reply</string>
 
     <!--Delete Chat Popup-->
     <string name="topchat_chat_delete_title">Hapus Chat?</string>
     <string name="topchat_chat_delete_body">Percakapan kamu dengan pengguna ini akan dihapus selamanya</string>
     <string name="topchat_chat_delete_cancel">Batalkan</string>
-    <string name="topchat_chat_delete_confirm">Ya, Hapus</string>
+    <string name="topchat_chat_delete_confirm">Hapus</string>
 
     <string name="chat_check_cart">Lihat</string>
     <string name="error_compress_image">Gagal mengkompres gambar. Silahkan pilih gambar lain.</string>
@@ -147,8 +140,49 @@ yang ditemukan</string>
     <string name="coach_tab_title_buyer">Chat sebagai pembeli</string>
     <string name="coach_tab_description_buyer">Semua chat dari penjual bisa dilihat di sini</string>
     <string name="empty_state_search_chat">Hiks, nggak ada hasil. Coba cari ulang pakai kata kunci lain</string>
-    <string name="empty_state_recent_search_chat">Belum ada hasil pencarian</string>
+    <string name="empty_state_recent_search_chat">Kamu bisa cari pengguna dan produk yang pernah dilampirkan.</string>
 
-    <string name="title_topchat_empty_chat">Belum ada chat</string>
-    <string name="title_topchat_manage_product">Atur Toko</string>
+    <string name="title_topchat_empty_chat">Belum ada chat, nih</string>
+    <string name="title_topchat_manage_product">Coba Iklan dan Promosi</string>
+    <string name="title_topchat_success_atw">Sukses menambah wishlist</string>
+    <string name="title_topchat_already_success_atw">Barang sudah di wishlist kamu</string>
+    <string name="title_topchat_success_rfw">Anda berhasil menghapus wishlist</string>
+    <string name="title_topchat_list_template">Daftar Template</string>
+    <string name="action_atc">+ Keranjang</string>
+    <string name="action_wishlist">Tambah ke Wishlist</string>
+    <string name="cta_topchat_success_atw">Lihat</string>
+    <string name="title_topchat_empty_stock">Stok habis</string>
+    <string name="title_topchat_pre_order">Preorder</string>
+    <string name="title_topchat_pre_order_camel">PreOrder</string>
+    <string name="desc_sub_error_message">Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti.</string>
+    <string name="title_empty_chat_search_result">Oops, tidak ada hasil</string>
+    <string name="desc_empty_chat_search_result">Coba cari ulang pakai kata kunci lain.</string>
+    <string name="title_cta_change_chat_search_keywoard">Ganti Kata Kunci</string>
+    <string name="tittle_load_more">Lihat Lebih</string>
+    <string name="tittle_header_smart_reply">Dibalas oleh Smart Reply</string>
+    <string name="tittle_header_auto_reply">Dibalas oleh Balasan Otomatis</string>
+    <string name="tittle_info_auto_reply">Pesan ini dibalas oleh sistem</string>
+    <string name="filter_chat_smart_reply">Dibalas oleh Smart Reply</string>
+    <string name="title_topchat_tooltip_sticker_onboarding">Kami punya stiker lucu buatmu, lho. Cobain, yuk!</string>
+    <string name="title_topchat_tooltip_search_onboarding">Kamu bisa cari pengguna, pesan, atau produk. Coba ketik sesuatu.</string>
+    <string name="title_broadcast_handle_not_follow">Kamu menerima chat promosi ini karena pernah melihat produk toko ini</string>
+    <string name="title_broadcast_stop_promo">Berhenti Terima Promo</string>
+    <string name="title_broadcast_follow_shop">Follow Toko</string>
+    <string name="title_success_follow_shop">Toko berhasil di-follow</string>
+    <string name="title_success_unfollow_shop">Toko berhasil di-unfollow</string>
+    <string name="title_success_block_promo">Kamu berhenti menerima chat promosi dari toko ini sampai %1$s.</string>
+    <string name="title_success_allow_promo">Kamu akan menerima chat promosi dari toko ini lagi.</string>
+    <string name="title_allow_promo">Terima Kembali Chat Promosi</string>
+    <string name="title_block_promo">Berhenti Terima Chat Promosi</string>
+    <string name="title_confirm_block_promo">Yakin ingin diblokir?</string>
+    <string name="desc_confirm_block_promo">Kalau diblokir, kamu tidak akan menerima chat dari pengguna ini.</string>
+    <string name="title_block_user_chat">Blokir Pengguna</string>
+    <string name="title_block_and_report_user_chat">Blokir &amp; Laporkan Pengguna</string>
+    <string name="title_unblock_user_chat">Batalkan blokir pengguna</string>
+    <string name="title_success_block_chat">Blokir pengguna berhasil</string>
+    <string name="title_success_unblock_chat">Kamu akan menerima chat dari pengguna ini lagi.</string>
+    <string name="title_success_delete_chat">Chat berhasil dihapus</string>
+    <string name="title_topchat_chat_banned_seller">Kamu diblokir dari Chat Tokopedia</string>
+    <string name="desc_topchat_chat_banned_seller"><![CDATA[Menurut laporan pengguna, kamu mengirimkan chat ofensif ke penjual. Mohon baca kembali <a href="https://www.tokopedia.com/help/article/toko-saya-dimoderasi">Ketentuan Pengguna Tokopedia.</a>]]></string>
+    <string name="title_buy_occ">Beli Langsung</string>
 </resources>

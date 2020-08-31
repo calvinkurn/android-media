@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_hotel_menu_order_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/layout_lvl1"
+        android:paddingBottom="@dimen/layout_lvl3"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        android:textColor="@color/Neutral_N700_96"
+        android:text="@string/hotel_bottom_menu_transaction_list"/>
+
+    <View
+        android:id="@+id/v_first_separator"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/hotel_1dp"
+        android:background="@drawable/bg_hotel_line_seperator" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_hotel_menu_promo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/layout_lvl3"
+        android:paddingBottom="@dimen/layout_lvl3"
+        android:text="@string/hotel_bottom_menu_promo"
+        app:typographyType="body_2"
+        android:textColor="@color/Neutral_N700_96"
+        app:typographyWeight="bold"/>
+
+    <View
+        android:id="@+id/v_second_separator"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/hotel_1dp"
+        android:background="@drawable/bg_hotel_line_seperator" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_hotel_menu_help"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/layout_lvl3"
+        android:paddingBottom="@dimen/layout_lvl3"
+        android:text="@string/hotel_bottom_menu_help"
+        android:textColor="@color/Neutral_N700_96"
+        app:typographyWeight="bold"
+        app:typographyType="body_2"/>
+
+</LinearLayout>

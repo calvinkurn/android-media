@@ -1,12 +1,12 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.logisticaddaddress.R
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete.AutocompletePredictionUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete_geocode.AutocompleteGeocodeResultUiModel
+import com.tokopedia.logisticdata.data.autocomplete.SuggestedPlace
 import kotlinx.android.synthetic.main.bottomsheet_autocomplete_item.view.*
 
 /**
@@ -15,8 +15,8 @@ import kotlinx.android.synthetic.main.bottomsheet_autocomplete_item.view.*
 class AutocompleteBottomSheetAdapter(private var actionListener: ActionListener) : RecyclerView.Adapter<AutocompleteBottomSheetAdapter.ViewHolder>() {
 
     var dataAutocompleteGeocode = mutableListOf<AutocompleteGeocodeResultUiModel>()
-    var dataAutocomplete = mutableListOf<AutocompletePredictionUiModel>()
     var isAutocompleteGeocode = false
+    private var dataAutocomplete = mutableListOf<SuggestedPlace>()
 
     interface ActionListener {
         fun onPoiListClicked(placeId: String)
@@ -43,8 +43,8 @@ class AutocompleteBottomSheetAdapter(private var actionListener: ActionListener)
             placeAddress = dataAutocompleteGeocode[position].vicinity
             placeId = dataAutocompleteGeocode[position].placeId
         } else {
-            placeName = dataAutocomplete[position].prediction.mainText
-            placeAddress = dataAutocomplete[position].prediction.secondaryText
+            placeName = dataAutocomplete[position].mainText
+            placeAddress = dataAutocomplete[position].secondaryText
             placeId = dataAutocomplete[position].placeId
         }
 
@@ -54,6 +54,12 @@ class AutocompleteBottomSheetAdapter(private var actionListener: ActionListener)
             println("## MASUK ONCLICK - placeID : $placeId")
             actionListener.onPoiListClicked(placeId)
         }
+    }
+
+    fun addAutoComplete(list: List<SuggestedPlace>) {
+        dataAutocomplete.clear()
+        dataAutocomplete.addAll(list)
+        notifyDataSetChanged()
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)

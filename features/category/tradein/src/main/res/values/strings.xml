@@ -22,8 +22,7 @@
     <string name="money_in_alert_payment_successful">Pembayaran Berhasil</string>
     <string name="header_section_price">Anda dapat menjual HP Anda hingga harga</string>
     <string name="not_elligible_price_high">Mohon maaf, harga device Anda lebih tinggi dari device Anda pilih. Baca Selengkapnya</string>
-    <string name="money_in_need_permission">Untuk dapat melanjutkan proses Langsung Laku,
-        kami membutuhkan ijin ada untuk mengakses beberapa fungsi di telepon anda</string>
+    <string name="money_in_need_permission">Untuk dapat melanjutkan proses Langsung Laku, kami membutuhkan ijin untuk mengakses beberapa fungsi di telpon anda</string>
     <string name="money_in_request_permission">Mulai berikan ijin</string>
     <string name="not_elligible">Mohon maaf, model HP Anda belum dapat digunakan untuk tukar tambah.</string>
     <string name="not_elligible_money_in">Mohon maaf, model HP Anda belum dapat digunakan untuk langsung laku.</string>
@@ -38,61 +37,6 @@
     <string name="tradein_text_permission_description">Dengan klik <b>setuju</b>, kamu memberikan izin untuk :\n• Model perangkat dan IMEI.
         \n• Menyalakan WiFi
         \n• Akses accelero meter</string>
-
-    <string name="tradein_tnc" tools:ignore="TypographyOther">1. Tukar Tambah adalah fitur yang memungkinkan pembeli melakukan pembelian handphone baru dengan cara menukar handphone lama miliknya. Fitur ini bisa diakses dari situs resmi atau aplikasi Tokopedia.
-\n\n2. Tukar Tambah tersedia untuk pembeli yang tinggal di wilayah Jabodetabek
-\n\n3. Pembeli setuju dengan syarat dan ketentuan yang berlaku, termasuk bersedia mencatumkan nomor IMEI handphone lama, menjalankan tes diagnosa untuk mengetahui kondisi handphone lama, juga meng-upload foto diri bersama KTP.
-\n\n4. Pembeli akan mendapat diskon sebesar harga perkiraan dari handphone lama yang ditampilkan di  situs resmi atau aplikasi Tokopedia.
-\n\n5. Pembeli wajib melunasi atau membayar sisa pembayaran sesuai nominal yang dicantumkan dengan metode yang disediakan.
-\n\n6. Pembeli setuju untuk dikenakan biaya pembatalan jika: (a) pembeli menolak menerima handphone baru yang diantarkan oleh kurir; (b) terdapat perbedaan nomor IMEI handphone lama antara yang dicantumkan sebelumnya dengan yang diserahkan ke kurir; (c) pembeli tidak berada di tempat dan waktu yang telah disepakati bersama kurir.
-\n\n7. Berikut biaya pembatalan yang ditanggung oleh pembeli jika terjadi tiga hal di atas: (a) handphone baru di bawah Rp1.000.000 dikenakan biaya pembatalan Rp110.000; (b) handphone baru antara Rp1.000.000 – Rp3.000.000 dikenakan biaya pembatalan Rp160.000; (c) handphone baru antara Rp3.000.001 – Rp7.000.000 dikenakan biaya pembatalan Rp210.000; (d) handphone baru di atas Rp7.000.000 dikenakan biaya pembatalan Rp260.000.
-\n\n8. Biaya pembatalan akan dipotong langsung dari total nominal refund yang diterima pembeli setelah terjadi pembatalan.
-\n\n9. Biaya pembatalan TIDAK DIKENAKAN ke pembeli jika terbukti handphone baru tidak sesuai dengan pesanan atau mengalami cacat produksi atau kerusakan lain yang tidak disebabkan oleh pembeli.
-\n\n10. Pembeli bertanggung jawab penuh atas handphone lama yang digunakan sebagai bagian dari Tukar Tambah. Tokopedia tidak bertanggung jawab pada seluruh informasi dan data pribadi yang melekat pada handphone lama.
-\n\n11. Pembeli memahami dan menyetujui bahwa layanan transaksi Tukar Tambah dan pengiriman handphone baru dilakukan oleh PT Laku6 Online Indonesia selaku mitra resmi Tokopedia.
-\n\n12. Saat ini fitur tukar tambah hanya bisa dilakukan untuk pembelian handphone baru yang harganya lebih tinggi dibandingkan harga handphone lama. Tidak semua model handphone dapat melakukan tukar tambah.
-\n\n13. Pembeli memahami dan menyetujui bahwa Tokopedia berhak meneruskan data yang diberikan oleh pembeli ke mitra resmi sebagai bagian dari proses verifikasi.
-\n\n14. Syarat &amp; Ketentuan ini adalah bagian terpisah dari Syarat dan Ketentuan Tokopedia, dan dapat diubah atau diperbaruhi tanpa pemberitahuan sebelumnya. Tokopedia menyarankan agar pembeli membaca dengan teliti dan memeriksanya kembali sebelum melakukan transaksi..</string>
-
-
-    <string name="money_in_tnc">        "Syarat dan Ketentuan Langsung Laku merupakan bagian dari Syarat dan Ketentuan Situs/Aplikasi Tokopedia. Penggunaan fitur Langsung Laku tunduk pada Syarat dan Ketentuan Situs/Aplikasi, Kebijakan Privasi, dan Syarat dan Ketentuan yang tertulis di bawah ini. Pengguna disarankan membaca dengan seksama karena dapat berdampak kepada hak dan kewajiban pengguna secara hukum.
-        \n\nDengan mendaftar dan/atau menggunakan situs www.tokopedia.com, maka Pengguna dianggap telah membaca, mengerti, memahami dan menyetujui semua isi dalam Syarat dan Ketentuan. Syarat dan Ketentuan ini merupakan bentuk kesepakatan yang dituangkan dalam sebuah perjanjian yang sah antara Pengguna dengan PT Tokopedia. Jika Pengguna tidak menyetujui salah satu, sebagian, atau seluruh isi Syarat dan Ketentuan, maka Pengguna tidak diperkenankan menggunakan layanan di www.tokopedia.com."
-        "\n\nA.  Definisi"
-        "\n\n1. Tokopedia adalah PT Tokopedia dan seluruh afiliasi atau anak perusahaannya, suatu perseroan terbatas yang menjalankan kegiatan usaha jasa web portal www.tokopedia.com, yakni situs pencarian toko dan produk yang dijual oleh Penjual."
-        "\n\n2. Situs/Aplikasi adalah situs www.tokopedia.com milik Tokopedia yang dapat diakses melalui desktop site dan/atau aplikasi yang berbasis Android atau iOS."
-        "\n\n3. Mitra adalah PT Laku6 Online Indonesia, suatu perseroan terbatas yang bekerjasama dengan Tokopedia untuk menyediakan layanan Langsung Laku pada Situs/Aplikasi."
-        "\n\n4. Pengguna adalah pihak yang menggunakan layanan Tokopedia, termasuk namun tidak terbatas pada Pembeli, Penjual maupun pihak lain yang sekedar berkunjung ke Situs/Aplikasi."
-        "\n\n5. Ponsel Bekas adalah barang berupa telepon genggam dengan kondisi sudah digunakan yang dimiliki oleh Pembeli yang akan dijual melalui fitur Langsung Laku."
-        "\n\n6. Kurir adalah jasa pengiriman Barang yang disediakan bagi Pengguna pada Situs/Aplikasi."
-        "\n\n7. Langsung Laku adalah fitur yang disediakan pada Situs/Aplikasi untuk memungkinkan Pengguna melakukan transaksi penjualan Ponsel Bekas."
-        "\n\n8. Transaksi Selesai adalah pada saat Pengguna sudah melakukan penyerahan Ponsel Bekas dan status transaksi dinyatakan selesai oleh Situs/Aplikasi."
-        "\n\n9. Ketentuan Situs adalah Syarat dan Ketentuan Situs/Aplikasi, Kebijakan Privasi, Syarat dan Ketentuan ini dan setiap syarat dan ketentuan lain yang dapat berlaku untuk atau sehubungan dengan penggunaan Situs/Aplikasi dan seluruh fitur yang terdapat di dalamnya.",
-        "\n\n10. Syarat dan Ketentuan adalah Syarat dan Ketentuan untuk penggunaan fitur Langsung Laku."
-        "\n\n<i>B.  Umum"</i>
-        "\n\n1. Langsung Laku hanya bisa digunakan oleh Pengguna yang terdaftar pada Situs/Aplikasi."
-        "\n\n2. Pengguna memahami dan menyetujui bahwa fitur Langsung Laku disediakan oleh Mitra."
-        "\n\n3. Pengguna yang dapat menggunakan fitur Langsung Laku adalah Pengguna yang berdomisili di wilayah sebagaimana yang disebutkan pada FAQ Langsung Laku."
-        "\n\n4. Tokopedia berwenang untuk melakukan (i) pembatalan transaksi; (ii) pembatalan manfaat promo; (iii) pengembalian dana; (iv) pengenaan penalti/denda; serta (v) penutupan akun Pengguna tanpa pemberitahuan sebelumnya, untuk sementara atau untuk selamanya, dalam hal diduga dan/atau terdapat kegiatan Pengguna yang melanggar ketentuan hukum dan/atau Ketentuan Situs."
-        "\n\n5. Syarat dan Ketentuan ini dapat diubah dan/atau diperbaharui dari waktu ke waktu, Tokopedia menyarankan agar Pengguna membaca secara seksama dan memeriksa Syarat dan Ketentuan ini dari waktu ke waktu untuk mengetahui perubahan apapun, dengan mengakses Situs/Aplikasi, maka dianggap telah membaca dan menyetujui Syarat dan Ketentuan ini."
-        "\n\nC. Verifikasi"
-        "\n\n1. Pembeli memahami dan menyetujui bahwa dengan menggunakan fitur Langsung Laku, Pengguna wajib mengikuti semua prosedur yang terdapat dalam fitur Langsung Laku tersebut, termasuk namun tidak terbatas pada mencantumkan nomor IMEI pada Ponsel Bekas dan menjalankan tes diagnosa pada Ponsel Bekas."
-        "\n\n2. Pengguna memahami dan menyetujui untuk memberikan informasi atau data yang valid. Apabila ditemukan bahwa data-data yang disampaikan oleh Pembeli tidak valid, maka segala kerugian yang timbul bukanlah tanggung jawab Tokopedia. "
-        "\n\n3. Pembeli memahami dan menyetujui bahwa Tokopedia berhak meneruskan data-data yang diberikan oleh Pengguna pada tahapan verifikasi kepada Mitra."
-        "\n\nD. Pembayaran"
-        "\n\n1. Pembeli yang telah melakukan verifikasi pada Ponsel Bekas akan diberikan harga taksiran akhir oleh Mitra untuk disetujui oleh Pembeli."
-        "\n\n2. Pembeli akan menanggung biaya penjemputan Ponsel Bekas oleh Kurir yang akan ditampilkan pada halaman pembayaran di Situs/Aplikasi.."
-        "\n\n3. Pembeli akan mendapatkan pembayaran sebesar harga taksiran akhir yang ditampilkan pada halaman pembayaran di Situs/Aplikasi melalui Saldo Penghasilan setelah Transaksi Selesai."
-        "\n\nE. Pengiriman &amp; Penukaran"
-        "\n\n1. Pembeli wajib mengikuti alur metode pengiriman sebagaimana yang disebutkan pada FAQ Langsung Laku."
-        "\n\n2. Pembeli dengan ini menyetujui bahwa Pembeli akan tetap dikenakan biaya pengiriman apabila terjadi pembatalan transaksi setelah dilakukannya pengiriman dengan alasan:"
-        "\n\n3. Pembeli menolak menyerahkan Ponsel Lama kepada Kurir;",
-        "\n\n4. Terdapat perbedaan antara IMEI Ponsel Lama yang didaftarkan Pembeli pada Situs/Aplikasi dengan IMEI Ponsel Lama yang diserahkan kepada Kurir; atau"
-        "\n\n5. Pembeli tidak ada di tempat dan waktu yang sudah ditentukan oleh Pembeli dan disepakati oleh Kurir."
-        "\n\n6. Pembeli bertanggung jawab atas Ponsel Bekas miliknya, termasuk namun tidak terbatas pada kesesuaian unit dengan data verifikasi, keutuhan unit ponsel serta data pribadi Pembeli yang melekat pada Ponsel Bekas tersebut. Tokopedia tidak bertanggung jawab atas Ponsel Bekas milik Pembeli, termasuk seluruh informasi dan data milik Pembeli pada Ponsel Bekas."
-        "\n\nF. Penggunaan Data"
-        "\n\n1. Dengan menggunakan fitur Langsung Laku, Pengguna memberi wewenang kepada Tokopedia untuk menyimpan informasi miliknya dan/atau data terkait penggunaan fitur Langsung Laku dalam sistem Tokopedia."
-        "\n\n2. Tokopedia memiliki kewenangan untuk menolak atau menghapus secara sebagian maupun keseluruhan dari profil Pengguna dan data yang relevan yang dianggap melanggar Syarat dan Ketentuan ini, Ketentuan Situs Tokopedia, dan ketentuan hukum yang berlaku di wilayah negara republik Indonesia."
-        "\n\n3. Penggunaan data Pengguna sehubungan dengan fitur Langsung Laku akan tunduk pada Kebijakan Privasi Tokopedia."</string>
     <string name="tradein_text_request_access">Meminta Izin Akses</string>
     <string name="depends_on_test">Harga final sesuai dengan hasil test.</string>
     <string name="moneyin_price_elligible">Selamat! HP kamu memenuhi persyaratan %1$s.</string>
@@ -113,4 +57,21 @@
     <string name="moneyin_text_not_upto_15min">Kurang dari 15 menit!
 \nCek fungsi plus kondisi fisik</string>
     <string name="tradein_requires_permission_for_diagnostic">Perkenankan izin yang hilang untuk memulai memeriksa fungsi</string>
+    <string name="trade_in_event_label_phone_type_min_price_max_price">phone type : %1$s - min price : %2$s - max price : %3$s</string>
+    <string name="no_imei">No. IMEI</string>
+    <string name="enter_the_imei_number_text">Masukan nomor IMEI sebelum mulai cek fungsi dan fisik HP lalu foto KTP kamu.</string>
+    <string name="how_to_check_imei">Cara cek IMEI?</string>
+    <string name="wrong_imei_string">Nomor IMEI yang kamu masukan salah.</string>
+    <string name="tradein_you_can_find_imei">Kamu bisa menemukan nomor IMEI di berbagai tempat, termasuk di Pengaturan, perangkat fisik, iTunes, dan kemasan asli.</string>
+    <string name="tradein_find_imei_settings">Menemukan nomor IMEI di pengaturan</string>
+    <string name="tradein_imei_label_1">1.</string>
+    <string name="tradein_imei_txt_1"><![CDATA[Buka <b>Pengaturan</b> pada HP kamu lalu klik <b>About Phone</b> atau <b>Tentang Ponsel</b>]]></string>
+    <string name="tradein_imei_label_2">2.</string>
+    <string name="tradein_imei_txt_2"><![CDATA[Pilih <b>Status</b> untuk cek IMEI HP kamu.]]></string>
+    <string name="tradein_imei_label_3">3.</string>
+    <string name="tradein_imei_txt_3"><![CDATA[Tekan dan tahan pada <b>IMEI (slot 1)</b> untuk salin]]></string>
+    <string name="tradein_imei_label_4">4.</string>
+    <string name="tradein_imei_txt_4"><![CDATA[Tempel ke halaman Cek IMEI. Lalu klik <b>Cek Fungsi IMEI</b>]]></string>
+    <string name="tradein_terms_and_conditions">Syarat dan Ketentuan</string>
+    <string name="tradein_check_imei">Cara Cek IMEI HP-mu</string>
 </resources>

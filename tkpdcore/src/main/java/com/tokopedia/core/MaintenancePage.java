@@ -13,7 +13,6 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.network.apiservices.search.HotListService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core2.R;
 
@@ -124,7 +123,7 @@ public class MaintenancePage extends Activity {
     }
 
     private void goToIndexHome() {
-        startActivity(HomeRouter.getHomeActivityInterfaceRouter(this));
+        startActivity(((TkpdCoreRouter) getApplication()).getHomeIntent(this));
         finish();
     }
 

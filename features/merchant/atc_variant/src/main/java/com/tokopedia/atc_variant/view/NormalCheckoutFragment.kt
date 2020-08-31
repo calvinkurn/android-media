@@ -19,8 +19,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory
@@ -42,9 +42,10 @@ import com.tokopedia.atc_variant.view.presenter.NormalCheckoutViewModel
 import com.tokopedia.atc_variant.view.viewmodel.*
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common_tradein.model.TradeInParams
-import com.tokopedia.design.component.ToasterError
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.imagepreview.ImagePreviewActivity
+import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
@@ -58,13 +59,13 @@ import com.tokopedia.product.detail.common.data.model.variant.Child
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
 import com.tokopedia.purchase_platform.common.constant.*
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.EXTRA_IS_ONE_CLICK_SHIPMENT
+import com.tokopedia.purchase_platform.common.constant.NormalCheckoutConstant.Companion.RESULT_CODE_ERROR_TICKET
 import com.tokopedia.purchase_platform.common.constant.NormalCheckoutConstant.Companion.RESULT_PRODUCT_DATA
 import com.tokopedia.purchase_platform.common.constant.NormalCheckoutConstant.Companion.RESULT_PRODUCT_DATA_CACHE_ID
 import com.tokopedia.purchase_platform.common.constant.NormalCheckoutConstant.Companion.RESULT_SELECTED_WAREHOUSE
-import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceRecommendationGqlResponse
-import com.tokopedia.purchase_platform.common.sharedata.RESULT_CODE_ERROR_TICKET
-import com.tokopedia.purchase_platform.common.sharedata.RESULT_TICKET_DATA
-import com.tokopedia.purchase_platform.common.sharedata.ShipmentFormRequest
+import com.tokopedia.purchase_platform.common.constant.NormalCheckoutConstant.Companion.RESULT_TICKET_DATA
+import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceRecommendationGqlResponse
+import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_INSURANCE_RECOMMENDATION
 import com.tokopedia.track.TrackApp
@@ -86,6 +87,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var viewModel: NormalCheckoutViewModel
+    var irisSession = ""
 
     var loadingProgressDialog: AlertDialog? = null
     val fragmentViewModel: FragmentViewModel by lazy {
@@ -110,8 +112,10 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
     var isLeasing = true
     var selectedVariantId: String? = null
     var placeholderProductImage: String? = null
+    var layoutName: String = ""
     @ProductAction
     var action: Int = ATC_AND_BUY
+    var atcFromExternalSource: String = ""
 
     var selectedProductInfo: ProductInfo? = null
     var originalProduct: ProductInfoAndVariant? = null
@@ -154,7 +158,11 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
                            reference: String?,
                            customEventLabel: String?,
                            customEventAction: String?,
-                           tradeInParams: TradeInParams?): NormalCheckoutFragment {
+                           tradeInParams: TradeInParams?,
+                           layoutName: String? = "",
+                           atcFromExternalSource: String? = null,
+                           customDimension40: String? = ""
+        ): NormalCheckoutFragment {
             val fragment = NormalCheckoutFragment().apply {
                 arguments = Bundle().apply {
                     putString(ApplinkConst.Transaction.EXTRA_SHOP_ID, shopId)
@@ -182,6 +190,11 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
                     putString(ApplinkConst.Transaction.EXTRA_REFERENCE, reference)
                     putString(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_LABEL, customEventLabel)
                     putString(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION, customEventAction)
+                    putString(ApplinkConst.Transaction.EXTRA_CUSTOM_DIMENSION40, customDimension40)
+                    putString(ApplinkConst.Transaction.EXTRA_LAYOUT_NAME, layoutName)
+                    if (atcFromExternalSource != null) {
+                        putString(ApplinkConst.Transaction.EXTRA_ATC_EXTERNAL_SOURCE, atcFromExternalSource)
+                    }
                 }
             }
             return fragment
@@ -195,6 +208,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
                     .inject(this@NormalCheckoutFragment)
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             viewModel = viewModelProvider.get(NormalCheckoutViewModel::class.java)
+            irisSession = context?.let {
+                IrisSession(it).getSessionId()
+            } ?: ""
         }
     }
 
@@ -315,9 +331,13 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 ApplinkConstInternalCategory.FINAL_PRICE_REQUEST_CODE -> if (data != null)
-                    onGotoTradeinShipment(data.getStringExtra(TradeInParams.PARAM_DEVICE_ID))
+                    onGotoTradeinShipment(data.getStringExtra(TradeInParams.PARAM_DEVICE_ID),
+                            data.getStringExtra(TradeInParams.PARAM_PHONE_TYPE) ?: "none/other",
+                            data.getStringExtra(TradeInParams.PARAM_PHONE_PRICE))
                 ApplinkConstInternalCategory.TRADEIN_HOME_REQUEST -> if (data != null)
-                    onGotoTradeinShipment(data.getStringExtra(TradeInParams.PARAM_DEVICE_ID))
+                    onGotoTradeinShipment(data.getStringExtra(TradeInParams.PARAM_DEVICE_ID),
+                            data.getStringExtra(TradeInParams.PARAM_PHONE_TYPE) ?: "none/other",
+                            data.getStringExtra(TradeInParams.PARAM_PHONE_PRICE))
                 REQUEST_CODE_LOGIN_THEN_BUY -> doCheckoutAction(ATC_AND_BUY)
                 REQUEST_CODE_LOGIN_THEN_ATC -> doCheckoutAction(ATC_ONLY)
                 REQUEST_CODE_LOGIN_THEN_TRADE_IN -> {
@@ -407,7 +427,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
     }
 
     private fun renderActionButton(productInfo: ProductInfo) {
-        if (GlobalConfig.isCustomerApp() && !viewModel.isShopOwner(productInfo.basic.shopID) &&
+        if (!GlobalConfig.isSellerApp() && !viewModel.isShopOwner(productInfo.basic.shopID) &&
                 productInfo.basic.isActive()) {
             button_buy_full.gone()
             rl_bottom_action_container.visible()
@@ -419,16 +439,16 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
             button_buy_partial.text = if (action == ATC_ONLY) {
                 getString(R.string.atc_variant_label_add_to_cart)
             } else if (action == TRADEIN_BUY) {
-                getString(R.string.tukar_tambah)
+                getString(com.tokopedia.common_tradein.R.string.tukar_tambah)
             } else if (productInfo.isPreorderActive) {
                 getString(R.string.atc_variant_label_button_preorder)
             } else {
                 getString(R.string.atc_variant_label_button_buy)
             }
             if (hasError()) {
-                button_buy_partial.background = ContextCompat.getDrawable(activity as Context, R.drawable.bg_button_disabled)
+                button_buy_partial.background = ContextCompat.getDrawable(activity as Context, com.tokopedia.design.R.drawable.bg_button_disabled)
             } else {
-                button_buy_partial.background = ContextCompat.getDrawable(activity as Context, R.drawable.bg_button_orange_enabled)
+                button_buy_partial.background = ContextCompat.getDrawable(activity as Context, com.tokopedia.design.R.drawable.bg_button_orange_enabled)
             }
             if (isLeasing) {
                 button_cart.gone()
@@ -500,17 +520,15 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
     }
 
     private fun showToastError(throwable: Throwable?, onRetry: ((v: View) -> Unit)?) {
-        val message = if (throwable is MessageErrorException && throwable.message?.isNotEmpty() == true) {
+        val message = if ((throwable is MessageErrorException || throwable is AkamaiErrorException) && throwable.message?.isNotEmpty() == true) {
             throwable.message
         } else {
             ErrorHandler.getErrorMessage(context, throwable)
         }
         activity?.run {
-            val snackbar = ToasterError.make(findViewById(android.R.id.content), message)
-            if (onRetry != null) {
-                snackbar.setAction(R.string.retry_label) { onRetry.invoke(it) }
-            }
-            snackbar.show()
+            Toaster.make(view!!, message!!, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(com.tokopedia.abstraction.R.string.retry_label), View.OnClickListener {
+                onRetry?.invoke(it)
+            })
         }
     }
 
@@ -538,6 +556,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
             tradeInParams = argument.getParcelable(ApplinkConst.Transaction.EXTRA_TRADE_IN_PARAMS)
             isOcs = argument.getBoolean(ApplinkConst.Transaction.EXTRA_OCS)
             isLeasing = argument.getBoolean(EXTRA_IS_LEASING)
+            layoutName = argument.getString(ApplinkConst.Transaction.EXTRA_LAYOUT_NAME, "")
+            atcFromExternalSource = argument.getString(ApplinkConst.Transaction.EXTRA_ATC_EXTERNAL_SOURCE, AddToCartRequestParams.ATC_FROM_OTHERS)
         }
         if (savedInstanceState == null) {
             if (argument != null) {
@@ -574,10 +594,12 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
                     //do tracking
                     val intent = generateIntentLogin()
                     if (action == ATC_ONLY) {
-                        normalCheckoutTracking.eventClickAtcInVariantNotLogin(productId)
+                        normalCheckoutTracking.eventClickAtcInVariantNotLogin(selectedProductInfo, layoutName
+                                ?: "")
                         startActivityForResult(intent, REQUEST_CODE_LOGIN_THEN_ATC)
                     } else if (action == ATC_AND_BUY) {
-                        normalCheckoutTracking.eventClickBuyInVariantNotLogin(productId)
+                        normalCheckoutTracking.eventClickBuyInVariantNotLogin(selectedProductInfo, layoutName
+                                ?: "")
                         startActivityForResult(intent, REQUEST_CODE_LOGIN_THEN_BUY)
                     } else {
                         startActivityForResult(intent, REQUEST_CODE_LOGIN_THEN_TRADE_IN)
@@ -606,7 +628,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
             }
             if (!viewModel.isUserSessionActive()) {
                 //do tracking
-                normalCheckoutTracking.eventClickAtcInVariantNotLogin(productId)
+                normalCheckoutTracking.eventClickAtcInVariantNotLogin(selectedProductInfo, layoutName)
                 //do login
                 startActivityForResult(generateIntentLogin(), REQUEST_CODE_LOGIN_THEN_ATC)
             } else {
@@ -614,6 +636,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
             }
         }
     }
+
+    override fun getRecyclerViewResourceId() = R.id.recycler_view
 
     private fun goToApplyLeasing() {
         val selectedProductId = if (selectedVariantId.toIntOrZero() > 0) {
@@ -799,6 +823,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
             onFinishAddToCart()
             selectedProductInfo?.run {
                 normalCheckoutTracking.eventClickBuyInVariant(
+                        irisSession,
                         originalProduct,
                         selectedVariantId ?: "",
                         this, quantity,
@@ -808,7 +833,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
                         freeOngkir.isFreeOngkirActive,
                         getPageReference(),
                         getCustomEventLabel(),
-                        getCustomEventAction())
+                        getCustomEventAction(),
+                        getCustomDimension40(),
+                        layoutName)
             }
             activity?.run {
                 if (isOcs) {
@@ -831,18 +858,21 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
         })
     }
 
-    private fun onGotoTradeinShipment(deviceid: String) {
+    private fun onGotoTradeinShipment(deviceid: String, phoneType: String, phonePrice: String) {
         tempQuantity = 1
         isTradeIn = 1
         addToCart(true, onFinish = { message: String?, cartId: String? ->
             onFinishAddToCart()
             selectedProductInfo?.run {
                 normalCheckoutTracking.eventClickBuyTradeIn(
+                        irisSession,
                         originalProduct,
                         selectedVariantId ?: "",
                         this, quantity,
                         shopId, shopType, shopName, cartId,
-                        trackerAttribution, trackerListName)
+                        trackerAttribution, trackerListName,
+                        getString(R.string.trade_in_event_label_phone_type_phone_price_diagnostic_id, phoneType, phonePrice, deviceid),
+                        layoutName)
             }
             activity?.run {
                 val shipmentFormRequest = ShipmentFormRequest.BundleBuilder()
@@ -856,7 +886,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
                 startActivity(intent)
             }
         }, onRetryWhenError = {
-            onGotoTradeinShipment(deviceid)
+            onGotoTradeinShipment(deviceid, phoneType, phonePrice)
         })
     }
 
@@ -883,6 +913,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
 
             selectedProductInfo?.run {
                 normalCheckoutTracking.eventClickAddToCartInVariant(
+                        irisSession,
                         originalProduct,
                         selectedVariantId ?: "",
                         this, quantity,
@@ -892,14 +923,16 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
                         getPageReference(),
                         freeOngkir.isFreeOngkirActive,
                         getCustomEventLabel(),
-                        getCustomEventAction()
+                        getCustomEventAction(),
+                        getCustomDimension40(),
+                        layoutName
                 )
             }
             onFinishAddToCart(message)
         }, onRetryWhenError = { message: String ->
             hideLoadingDialog()
             var toastMessage = if (message.isNullOrBlank()) {
-                getString(R.string.default_request_error_unknown_short)
+                getString(com.tokopedia.network.R.string.default_request_error_unknown_short)
             } else {
                 message
             }
@@ -916,7 +949,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
     }
 
     private fun getInsuranceTitle(): String {
-        return insuranceViewModel.cartShopsList.firstOrNull()?.shopItemsList?.firstOrNull()?.digitalProductList?.firstOrNull()?.productInfo?.title ?: ""
+        return insuranceViewModel.cartShopsList.firstOrNull()?.shopItemsList?.firstOrNull()?.digitalProductList?.firstOrNull()?.productInfo?.title
+                ?: ""
     }
 
     private fun isErrorInInsurance(): Boolean {
@@ -1028,9 +1062,12 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
         return arguments?.getString(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_LABEL, "") ?: ""
     }
 
-
     private fun getCustomEventAction(): String {
         return arguments?.getString(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION, "") ?: ""
+    }
+
+    private fun getCustomDimension40(): String {
+        return arguments?.getString(ApplinkConst.Transaction.EXTRA_CUSTOM_DIMENSION40, "") ?: ""
     }
 
     private fun addToCart(oneClickShipment: Boolean, onFinish: ((message: String?, cartId: String?) -> Unit),
@@ -1059,6 +1096,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
             addToCartOcsRequestParams.trackerAttribution = trackerAttribution ?: ""
             addToCartOcsRequestParams.trackerListName = trackerListName ?: ""
             addToCartOcsRequestParams.isTradeIn = isTradeIn == 1
+            addToCartOcsRequestParams.productName = selectedProductInfo?.basic?.name ?: ""
+            addToCartOcsRequestParams.category = selectedProductInfo?.category?.name ?: ""
+            addToCartOcsRequestParams.price = selectedProductInfo?.basic?.price?.toString() ?: ""
 
             viewModel.addToCartProduct(addToCartOcsRequestParams, ::onSuccessAtc, ::onErrorAtc, onFinish, onRetryWhenError)
         } else {
@@ -1074,6 +1114,10 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
             addToCartRequestParams.attribution = trackerAttribution ?: ""
             addToCartRequestParams.listTracker = trackerListName ?: ""
             addToCartRequestParams.warehouseId = selectedWarehouseId
+            addToCartRequestParams.atcFromExternalSource = atcFromExternalSource
+            addToCartRequestParams.productName = selectedProductInfo?.basic?.name ?: ""
+            addToCartRequestParams.category = selectedProductInfo?.category?.name ?: ""
+            addToCartRequestParams.price = selectedProductInfo?.basic?.price?.toString() ?: ""
 
             viewModel.addToCartProduct(addToCartRequestParams, ::onSuccessAtc, ::onErrorAtc, onFinish, onRetryWhenError)
         }
@@ -1084,11 +1128,6 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
         addToCartDataModel?.run {
             if (addToCartDataModel.status == "OK" && addToCartDataModel.data.success == 1) {
                 //success checkout
-                normalCheckoutTracking.eventAppsFlyerAddToCart(productId,
-                        selectedProductInfo?.basic?.price.toString(),
-                        quantity,
-                        selectedProductInfo?.basic?.name ?: "",
-                        selectedProductInfo?.category?.name ?: "")
                 onFinish(addToCartDataModel.data.message[0], addToCartDataModel.data.cartId.toString())
             } else if (addToCartDataModel.errorReporter.eligible) {
                 onFinishError(addToCartDataModel)
@@ -1158,9 +1197,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
                 }
                 if (viewModel.getSelectedOption() == selectedOptionViewModel.optionId) {
                     if (viewModel.isColorIdentifier) {
-                        normalCheckoutTracking.eventSelectColorVariant(selectedOptionViewModel.variantName, productId)
+                        normalCheckoutTracking.eventSelectColorVariant(selectedOptionViewModel.variantName, productId, selectedProductInfo, layoutName)
                     } else if (viewModel.isSizeIdentifier) {
-                        normalCheckoutTracking.eventSelectSizeVariant(selectedOptionViewModel.variantName, productId)
+                        normalCheckoutTracking.eventSelectSizeVariant(selectedOptionViewModel.variantName, productId, selectedProductInfo, layoutName)
                     }
                 }
                 variantSize++
@@ -1205,6 +1244,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
         }
         selectedVariantId = inputSelectedVariantId
         selectedProductInfo = getSelectedProductInfo(originalProduct, selectedVariantId)
+        selectedVariantId = (selectedProductInfo?.basic?.id ?: inputSelectedVariantId).toString()
         selectedProductInfo?.let {
             val viewModels = ModelMapper.convertVariantToModels(it, viewModel.selectedwarehouse,
                     originalProduct.productVariant, notes, quantity)
@@ -1268,8 +1308,10 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
     override fun getScreenName(): String? = null
 
     override fun showToasterError(message: String?) {
-        ToasterError.make(view, message
-                ?: activity?.getString(R.string.default_request_error_unknown), Snackbar.LENGTH_LONG).show()
+        view?.let {
+            Toaster.make(it, message ?: getString(R.string.default_request_error_unknown),
+                    Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+        }
     }
 
     override fun navigateCheckoutToThankYouPage(appLink: String) {

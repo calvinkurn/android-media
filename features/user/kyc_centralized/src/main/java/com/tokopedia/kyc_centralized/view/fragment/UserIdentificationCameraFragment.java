@@ -3,11 +3,9 @@ package com.tokopedia.kyc_centralized.view.fragment;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,25 +14,34 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import com.otaliastudios.cameraview.CameraListener;
+import com.otaliastudios.cameraview.CameraOptions;
+import com.otaliastudios.cameraview.CameraUtils;
+import com.otaliastudios.cameraview.CameraView;
+import com.otaliastudios.cameraview.PictureResult;
+import com.otaliastudios.cameraview.size.Size;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
-import com.tokopedia.cameraview.CameraListener;
-import com.tokopedia.cameraview.CameraOptions;
-import com.tokopedia.cameraview.CameraUtils;
-import com.tokopedia.cameraview.CameraView;
-import com.tokopedia.cameraview.PictureResult;
-import com.tokopedia.cameraview.Size;
+import com.tokopedia.imagepicker.common.util.FileUtils;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
-import com.tokopedia.permissionchecker.PermissionCheckerHelper;
-import com.tokopedia.user_identification_common.KYCConstant;
 import com.tokopedia.kyc_centralized.R;
+import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+import com.tokopedia.unifycomponents.UnifyButton;
+import com.tokopedia.user_identification_common.KYCConstant;
 import com.tokopedia.user_identification_common.analytics.UserIdentificationCommonAnalytics;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.util.Objects;
 
+import static com.tokopedia.imagepicker.common.util.ImageUtils.JPG_EXT;
 import static com.tokopedia.user_identification_common.KYCConstant.EXTRA_STRING_IMAGE_RESULT;
 
 /**
@@ -61,7 +68,7 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
     private ImageView imagePreview;
     private View buttonLayout;
     private View reCaptureButton;
-    private View nextButton;
+    private UnifyButton nextButton;
     private String imagePath;
     private Size mCaptureNativeSize;
     private UserIdentificationCommonAnalytics analytics;
@@ -140,46 +147,37 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
     }
 
     private void populateView() {
-        shutterButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendAnalyticClickShutter();
-                Fragment fragment = UserIdentificationCameraFragment.this;
-                permissionCheckerHelper.checkPermission(fragment,
-                        PermissionCheckerHelper.Companion.PERMISSION_CAMERA, new PermissionCheckerHelper.PermissionCheckListener() {
-                            @Override
-                            public void onPermissionDenied(@NotNull String permissionText) {
+        shutterButton.setOnClickListener(v -> {
+            sendAnalyticClickShutter();
+            Fragment fragment = UserIdentificationCameraFragment.this;
+            permissionCheckerHelper.checkPermission(fragment,
+                    PermissionCheckerHelper.Companion.PERMISSION_CAMERA, new PermissionCheckerHelper.PermissionCheckListener() {
+                        @Override
+                        public void onPermissionDenied(@NotNull String permissionText) {
 
-                            }
+                        }
 
-                            @Override
-                            public void onNeverAskAgain(@NotNull String permissionText) {
+                        @Override
+                        public void onNeverAskAgain(@NotNull String permissionText) {
 
-                            }
+                        }
 
-                            @Override
-                            public void onPermissionGranted() {
-                                hideCameraButtonAndShowLoading();
-                                cameraView.takePicture();
-                            }
-                        }, "");
-            }
+                        @Override
+                        public void onPermissionGranted() {
+                            hideCameraButtonAndShowLoading();
+                            cameraView.takePicture();
+                        }
+                    }, "");
         });
 
-        switchCamera.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendAnalyticClickFlipCamera();
-                toggleCamera();
-            }
+        switchCamera.setOnClickListener(v -> {
+            sendAnalyticClickFlipCamera();
+            toggleCamera();
         });
 
-        reCaptureButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendAnalyticClickRecapture();
-                showCameraView();
-            }
+        reCaptureButton.setOnClickListener(v -> {
+            sendAnalyticClickRecapture();
+            showCameraView();
         });
 
         cameraListener = new CameraListener() {
@@ -219,19 +217,16 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
 
         cameraView.addCameraListener(cameraListener);
 
-        closeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (getActivity() != null) {
-                    getActivity().setResult(Activity.RESULT_CANCELED);
-                }
-                if (isCameraVisible()) {
-                    sendAnalyticClickBackCamera();
-                } else {
-                    sendAnalyticClickCloseImagePreview();
-                }
-                getActivity().finish();
+        closeButton.setOnClickListener(v -> {
+            if (getActivity() != null) {
+                getActivity().setResult(Activity.RESULT_CANCELED);
             }
+            if (isCameraVisible()) {
+                sendAnalyticClickBackCamera();
+            } else {
+                sendAnalyticClickCloseImagePreview();
+            }
+            getActivity().finish();
         });
 
         nextButton.setOnClickListener(new View.OnClickListener() {
@@ -404,8 +399,7 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
         try {
             //rotate the bitmap using the library
             CameraUtils.decodeBitmap(imageByte, mCaptureNativeSize.getWidth(), mCaptureNativeSize.getHeight(), bitmap -> {
-                File cameraResultFile = ImageUtils.writeImageToTkpdPath(ImageUtils
-                        .DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA, bitmap, false);
+                File cameraResultFile = writeImageToTkpdPath(bitmap);
                 onSuccessImageTakenFromCamera(cameraResultFile);
             });
         } catch (Throwable error) {
@@ -421,9 +415,29 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
             imagePath = cameraResultFile.getAbsolutePath();
             showImagePreview();
         } else {
-            Toast.makeText(getContext(), "Terjadi kesalahan, silahkan coba lagi", Toast
+            Toast.makeText(getContext(), getString(R.string.error_upload_image_kyc), Toast
                     .LENGTH_LONG).show();
         }
+    }
+
+    private File writeImageToTkpdPath(Bitmap bitmap) {
+        File cacheDir = new File(Objects.requireNonNull(getContext()).getExternalCacheDir(), FileUtils.generateUniqueFileName() + JPG_EXT);
+        String cachePath = cacheDir.getAbsolutePath();
+
+        File file = new File(cachePath);
+
+        if (file.exists()) {
+            file.delete();
+        }
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            out.flush();
+            out.close();
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+        return file;
     }
 
     private void populateViewByViewMode() {

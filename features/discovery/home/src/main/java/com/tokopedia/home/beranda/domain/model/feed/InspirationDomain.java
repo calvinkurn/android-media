@@ -1,8 +1,9 @@
 package com.tokopedia.home.beranda.domain.model.feed;
 
+import androidx.annotation.Nullable;
+
 import java.util.List;
 
-import javax.annotation.Nullable;
 
 /**
  * @author by nisie on 10/26/17.

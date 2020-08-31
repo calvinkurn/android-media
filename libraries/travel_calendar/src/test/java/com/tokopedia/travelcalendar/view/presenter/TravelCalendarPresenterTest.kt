@@ -44,7 +44,7 @@ class TravelCalendarPresenterTest {
         presenter.getDataHolidayCalendar(true)
         //then
         verify { view.renderErrorMessage(any()) }
-        confirmVerified(mocks = view)
+        confirmVerified(view)
     }
 
     @Test

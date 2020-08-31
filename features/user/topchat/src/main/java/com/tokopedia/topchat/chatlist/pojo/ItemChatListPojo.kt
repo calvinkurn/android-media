@@ -25,6 +25,13 @@ data class ItemChatListPojo(
         @Expose
         var messageKey: String = ""
 ) : Visitable<ChatListTypeFactory>{
+    val tag: String get() = attributes?.contact?.tag ?: ""
+    val lastReplyTimeStr: String get() = attributes?.lastReplyTimeStr ?: ""
+    val lastReplyMessage: String get() = attributes?.lastReplyMessage ?: ""
+    val thumbnail: String get() = attributes?.contact?.thumbnail ?: ""
+    val name: String get() = attributes?.contact?.contactName ?: ""
+    val isPinned: Boolean get() = attributes?.pinStatus == 1
+    val totalUnread: String get() = attributes?.unreadReply?.toString() ?: ""
 
     override fun type(typeFactory: ChatListTypeFactory): Int {
         return typeFactory.type(this)
@@ -40,7 +47,11 @@ data class ItemChatListPojo(
     fun ids() = listOf(msgId)
 
     fun isUnread(): Boolean {
-        return attributes?.readStatus == ChatItemListViewHolder.STATE_CHAT_UNREAD
+        return attributes?.readStatus == STATE_CHAT_UNREAD
+    }
+
+    fun isRead(): Boolean {
+        return attributes?.readStatus == STATE_CHAT_READ
     }
 
     fun markAsRead() {
@@ -66,6 +77,10 @@ data class ItemChatListPojo(
             OFFICIAL_TAG -> "OA"
             else -> ""
         }
+    }
+
+    fun isReplyTopBot(): Boolean {
+        return attributes?.isReplyByTopbot == true
     }
 
 }

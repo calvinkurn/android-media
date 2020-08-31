@@ -18,4 +18,8 @@ data class FollowCta(
         const val AUTHOR_USER = "user"
         const val AUTHOR_SHOP = "shop"
     }
+
+    fun copy(): FollowCta {
+        return FollowCta(authorID, authorType, isFollow, textFalse, textTrue)
+    }
 }

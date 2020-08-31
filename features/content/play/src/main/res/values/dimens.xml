@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="play_chat_max_height">90dp</dimen>
+    <dimen name="play_player_control_spacing_right">12dp</dimen>
+    <dimen name="dp_1">1dp</dimen>
+    <dimen name="dp_6">6dp</dimen>
+    <dimen name="dp_12">12dp</dimen>
+    <dimen name="dp_18">18dp</dimen>
+    <dimen name="dp_20">20dp</dimen>
+    <dimen name="dp_30">30dp</dimen>
+    <dimen name="dp_56">56dp</dimen>
+    <dimen name="dp_64">64dp</dimen>
+
+    <dimen name="sp_12">12sp</dimen>
+    <dimen name="sp_20">20sp</dimen>
+
+    <dimen name="play_product_sheet_radius">10dp</dimen>
+    <dimen name="play_product_sheet_title_margin_start">12dp</dimen>
+    <dimen name="play_product_voucher_margin">12dp</dimen>
+
+    <dimen name="play_product_line_image_size">61dp</dimen>
+    <dimen name="play_product_line_image_radius">6dp</dimen>
+    <dimen name="play_product_line_title_image_margin">14dp</dimen>
+    <dimen name="play_product_line_discount_radius">3dp</dimen>
+    <dimen name="play_product_line_buy_padding_start_end">20dp</dimen>
+    <dimen name="play_product_line_divider_height">1dp</dimen>
+    <dimen name="play_product_line_divider_start_offset">96dp</dimen>
+    <dimen name="play_product_line_image_border_width">2px</dimen>
+    <dimen name="play_product_line_image_border_padding">1dp</dimen>
+
+    <dimen name="play_voucher_title_image_margin">10dp</dimen>
+    <dimen name="play_voucher_sheet_title_margin">20dp</dimen>
+    <dimen name="play_voucher_divider_width">18dp</dimen>
+
+    <dimen name="play_cart_badge_size">12dp</dimen>
+    <dimen name="play_cart_margin">2dp</dimen>
+
+    <dimen name="play_product_variant_image_size">88dp</dimen>
+
+    <dimen name="play_product_action_container_shadow_height">1dp</dimen>
+
+    <dimen name="play_product_variant_elevation">4dp</dimen>
+    <dimen name="play_navigation_overlay_elevation">6dp</dimen>
+
+    <dimen name="play_variant_sheet_header_separator_height">1dp</dimen>
+    <dimen name="play_variant_sheet_header_separator_height_minus">-1dp</dimen>
+
+    <dimen name="play_toolbar_back_button_margin">@dimen/play_offset_12</dimen>
+    <dimen name="play_product_pinned_lottie_bottom_margin">10dp</dimen>
+
+    <dimen name="play_send_chat_height">40dp</dimen>
+
+    <dimen name="play_viewer_loading_size">40dp</dimen>
+
+    <!--General Dimension-->
+    <dimen name="play_offset_12">12dp</dimen>
+    <dimen name="play_no_offset">0dp</dimen>
+</resources>

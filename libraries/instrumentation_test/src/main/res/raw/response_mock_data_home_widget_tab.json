@@ -1,0 +1,22 @@
+[{
+	"data": {
+		"home_widget": {
+			"widget_tab": [{
+				"id": 2,
+				"name": "Travel"
+			}, {
+				"id": 3,
+				"name": "Entertainment"
+			}, {
+				"id": 1,
+				"name": "Top-up \u0026 Tagihan"
+			}, {
+				"id": 4,
+				"name": "Keuangan"
+			}],
+			"widget_header": {
+				"back_color": "red"
+			}
+		}
+	}
+}]

@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.data.model.datamodel
 
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 
 data class ProductValuePropositionDataModel(
@@ -7,6 +8,9 @@ data class ProductValuePropositionDataModel(
         val name: String = "",
         var isOfficialStore: Boolean = false
 ) : DynamicPdpDataModel {
+
+    override val impressHolder: ImpressHolder =  ImpressHolder()
+
     override fun type(): String = type
     override fun name(): String = name
 

@@ -1,13 +1,13 @@
 package com.tokopedia.topads.dashboard.view.adapter.viewholder;
 
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.image.ImageHandler;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.view.listener.AdapterSelectionListener;
 import com.tokopedia.topads.dashboard.view.listener.BindViewHolder;
@@ -29,10 +29,9 @@ public class TopAdsAddProductListViewHolder extends RecyclerView.ViewHolder
     private final int transparantColor;
     int adapterPosition;
     private AdapterSelectionListener<TopAdsProductViewModel> adapterSelectionListener;
-    private ImageHandler imageHandler;
     private TopAdsAddProductModel model;
 
-    public TopAdsAddProductListViewHolder(View itemView, ImageHandler imageHandler
+    public TopAdsAddProductListViewHolder(View itemView
             , AdapterSelectionListener adapterSelectionListener) {
         super(itemView);
 
@@ -48,7 +47,6 @@ public class TopAdsAddProductListViewHolder extends RecyclerView.ViewHolder
         topAdsSelectionColor = ContextCompat.getColor(itemView.getContext(), R.color.selection_color_top_ads);
         transparantColor = ContextCompat.getColor(itemView.getContext(), android.R.color.transparent);
 
-        this.imageHandler = imageHandler;
         this.adapterSelectionListener = adapterSelectionListener;
 
         itemView.setOnClickListener(onClickListener());
@@ -61,10 +59,10 @@ public class TopAdsAddProductListViewHolder extends RecyclerView.ViewHolder
 
         boolean b = !adapterSelectionListener.isSelected(model.productDomain);// not selected
         if (b) {
-            imageHandler.loadImage(topAdsAddProductListImageView, model.imageUrl, true);
+            ImageHandler.LoadImage(topAdsAddProductListImageView, model.imageUrl);
             itemView.setBackgroundColor(transparantColor);
         } else {
-            imageHandler.loadImage(topAdsAddProductListImageView, R.drawable.ic_top_ads_selected);
+            ImageHandler.loadImageWithId(topAdsAddProductListImageView, R.drawable.ic_top_ads_selected);
             itemView.setBackgroundColor(topAdsSelectionColor);
         }
 

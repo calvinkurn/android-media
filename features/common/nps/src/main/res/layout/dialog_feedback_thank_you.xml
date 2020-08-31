@@ -7,11 +7,11 @@
     android:layout_height="wrap_content"
     android:padding="@dimen/spacing_lvl4">
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
-        android:src="@drawable/image_message_thank_you" />
+        app:remoteFileName="image_message_thank_you.png"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="match_parent"

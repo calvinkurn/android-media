@@ -1,0 +1,9 @@
+mutation GameRemindMe($about:String!){
+    gameRemindMe(input:{about: $about}) {
+      resultStatus {
+         code
+         message
+         reason
+      }
+   }
+}

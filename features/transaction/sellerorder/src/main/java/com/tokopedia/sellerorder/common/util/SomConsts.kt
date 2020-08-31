@@ -10,12 +10,15 @@ object SomConsts {
     const val PARAM_LIST_ORDER = "param_list_order"
     const val PARAM_LANG_ID = "id"
     const val PARAM_ORDER_ID = "order_id"
+    const val PARAM_TAB_ACTIVE = "tab_active"
     const val PARAM_CURR_IS_CHANGE_SHIPPING = "is_change_shipping"
     const val PARAM_SHOP_ID = "shop_id"
     const val PARAM_IS_FROM_FINTECH = "is_from_fintech"
     const val PARAM_BOOKING_CODE = "bookingCode"
     const val PARAM_BARCODE_TYPE = "barcodeType"
     const val PARAM_BOOKING_MESSAGE_LIST = "message"
+    const val PARAM_ORDER_CODE = "order_code"
+    const val PARAM_USER_ROLES = "user_roles"
 
     const val VAR_PARAM_ORDERID = "orderID"
     const val VAR_PARAM_LANG = "lang"
@@ -31,6 +34,7 @@ object SomConsts {
     const val FILTER_TYPE_RADIO = "radio"
     const val FILTER_TYPE_LABEL = "label"
     const val FILTER_TYPE_SEPARATOR = "separator"
+    const val FROM_WIDGET_TAG = "from widget"
 
     const val STATUS_ALL_ORDER = "all_order"
     const val STATUS_NEW_ORDER = "new_order"
@@ -57,6 +61,7 @@ object SomConsts {
     const val RESULT_PROCESS_REQ_PICKUP = "result_process_req_pickup"
     const val RESULT_CONFIRM_SHIPPING = "result_confirm_shipping"
     const val RESULT_CHANGE_COURIER = "result_change_courier"
+    const val RESULT_SET_DELIVERED = "result_set_delivered"
 
     const val KEY_ACCEPT_ORDER = "accept_order"
     const val KEY_REJECT_ORDER = "reject_order"
@@ -64,6 +69,8 @@ object SomConsts {
     const val KEY_REQUEST_PICKUP = "request_pickup"
     const val KEY_CONFIRM_SHIPPING = "confirm_shipping"
     const val KEY_VIEW_COMPLAINT_SELLER = "view_complaint"
+    const val KEY_SET_DELIVERED = "set_delivered"
+    const val KEY_RESPOND_TO_CANCELLATION = "respond_to_cancellations"
 
     const val KEY_REASON_EMPTY_STOCK = "empty_stock"
     const val KEY_REASON_SHOP_CLOSED = "shop_closed"
@@ -74,6 +81,7 @@ object SomConsts {
     const val KEY_UBAH_NO_RESI = "change_awb"
     const val KEY_UPLOAD_AWB = "upload_awb"
     const val KEY_CHANGE_COURIER = "change_courier"
+    const val KEY_ASK_BUYER = "ask_buyer"
 
     const val VALUE_REASON_EMPTY_STOCK = "Stok Produk Kosong"
     const val VALUE_REASON_SHOP_CLOSED = "Toko Sedang Tutup"
@@ -131,12 +139,29 @@ object SomConsts {
     const val PARAM_SOURCE_ASK_BUYER = "tx_ask_buyer"
     const val ATTRIBUTE_ID = "id"
 
-    const val STATUS_ORDER_DELIVERED = 600
-    const val STATUS_ORDER_DELIVERED_DUE_LIMIT = 699
+    const val STATUS_CODE_ORDER_CANCELLED = 0
+    const val STATUS_CODE_ORDER_AUTO_CANCELLED = 3
+    const val STATUS_CODE_ORDER_REJECTED = 10
+    const val STATUS_CODE_ORDER_CREATED = 220
+    const val STATUS_CODE_ORDER_ORDER_CONFIRMED = 400
+    const val STATUS_CODE_ORDER_DELIVERED = 600
+    const val STATUS_CODE_ORDER_DELIVERED_DUE_LIMIT = 699
 
     const val REPLACE_CUST_NAME = "#custName"
     const val REPLACE_INVOICE_NO = "#invoiceNo"
+    const val REPLACE_SOM_NOTES = "#notes"
 
     const val SORT_ASCENDING = 0
     const val SORT_DESCENDING = 2
+
+    const val ERROR_GET_USER_ROLES = "Error when get user roles in %s."
+    const val ERROR_REJECT_CANCEL_ORDER = "Error when rejecting cancel order."
+
+    const val UNIFY_TICKER_TYPE_ANNOUNCEMENT = "announcement"
+    const val UNIFY_TICKER_TYPE_INFO = "info"
+    const val UNIFY_TICKER_TYPE_WARNING = "warning"
+    const val UNIFY_TICKER_TYPE_ERROR = "error"
+
+    const val KEY_PRIMARY_DIALOG_BUTTON = "primary"
+    const val KEY_SECONDARY_DIALOG_BUTTON = "secondary"
 }

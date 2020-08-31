@@ -1,15 +1,13 @@
 package com.tokopedia.topchat.chatlist.di
 
 import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant
-import com.tokopedia.topchat.chatlist.pojo.ChatListPojo
-import com.tokopedia.topchat.chatlist.pojo.ChatNotificationsPojo
 import com.tokopedia.topchat.chatlist.pojo.NotificationsPojo
+import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
@@ -22,13 +20,12 @@ import dagger.multibindings.StringKey
 @ChatListScope
 @Module
 class ChatNotificationsQueryModule {
-
     @ChatListScope
     @Provides
     @IntoMap
     @StringKey(ChatListQueriesConstant.QUERY_CHAT_NOTIFICATION)
-    fun provideRawQueryGetChatNotif(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.query_get_chat_notification)
+    fun provideRawQueryGetChatNotif(@TopchatContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.query_chat_notification)
 
 
     @Provides

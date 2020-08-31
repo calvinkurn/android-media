@@ -5,14 +5,15 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.tkpd.library.ui.utilities.TkpdProgressDialog
-import com.tkpd.library.utils.CommonUtils
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.common.utils.view.CommonUtils
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.core.util.SessionHandler
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.product.manage.item.R
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent
@@ -21,6 +22,8 @@ import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddE
 import com.tokopedia.product.manage.item.main.base.view.listener.ProductAddImageView
 import com.tokopedia.product.manage.item.main.base.view.presenter.ProductAddImagePresenter
 import com.tokopedia.product.manage.item.utils.ProductEditItemComponentInstance
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 
 open class ProductAddNameCategoryActivity : BaseSimpleActivity(), HasComponent<ProductComponent>, ProductAddImageView {
     var tkpdProgressDialog: TkpdProgressDialog? = null
@@ -71,7 +74,7 @@ open class ProductAddNameCategoryActivity : BaseSimpleActivity(), HasComponent<P
 
     fun handleImageUrlImplicitMultiple() {
         val imageUris = intent.getParcelableArrayListExtra<Uri>(Intent.EXTRA_STREAM)
-        if (CommonUtils.checkCollectionNotNull<ArrayList<Uri>>(imageUris)) {
+        if (checkCollectionNotNull<ArrayList<Uri>>(imageUris)) {
             processMultipleImage(imageUris)
         } else {
             handleImageUrlImplicitSingle()
@@ -146,16 +149,17 @@ open class ProductAddNameCategoryActivity : BaseSimpleActivity(), HasComponent<P
         if (Intent.ACTION_SEND == action) {
             return intent.getParcelableExtra<Parcelable>(Intent.EXTRA_STREAM) != null
         } else if (Intent.ACTION_SEND_MULTIPLE == action) {
-            return intent.getParcelableExtra<Parcelable>(Intent.EXTRA_STREAM) != null || CommonUtils.checkCollectionNotNull<ArrayList<Parcelable>>(intent.getParcelableArrayListExtra<Parcelable>(Intent.EXTRA_STREAM))
+            return intent.getParcelableExtra<Parcelable>(Intent.EXTRA_STREAM) != null || checkCollectionNotNull<ArrayList<Parcelable>>(intent.getParcelableArrayListExtra<Parcelable>(Intent.EXTRA_STREAM))
         }
         return false
     }
 
     private fun validateHasLoginAndShop(): Boolean {
-        if (SessionHandler.isV4Login(this)) {
-            if (!SessionHandler.isUserHasShop(this)) {
+        val userSession: UserSessionInterface = UserSession(context)
+        if (userSession.isLoggedIn) {
+            if (!userSession.hasShop()) {
                 finish()
-                CommonUtils.UniversalToast(baseContext, getString(R.string.title_no_shop))
+                Toast.makeText(baseContext, MethodChecker.fromHtml(getString(R.string.title_no_shop)), Toast.LENGTH_LONG).show()
                 return false
             }
         } else {
@@ -215,6 +219,15 @@ open class ProductAddNameCategoryActivity : BaseSimpleActivity(), HasComponent<P
         if (tkpdProgressDialog != null) {
             tkpdProgressDialog!!.dismiss()
         }
+    }
+
+    /**
+     * @param reference
+     * @param <T>
+     * @return false if empty otherwise true if not empty
+    </T> */
+    private fun <T : Collection<*>?> checkCollectionNotNull(reference: T): Boolean {
+        return !(!CommonUtils.checkNotNull(reference) || reference!!.isEmpty())
     }
 
     companion object {

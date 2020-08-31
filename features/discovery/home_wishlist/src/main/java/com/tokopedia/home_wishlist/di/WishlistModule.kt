@@ -3,19 +3,20 @@ package com.tokopedia.home_wishlist.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.home_wishlist.R
 import com.tokopedia.home_wishlist.common.WishlistDispatcherProvider
 import com.tokopedia.home_wishlist.common.WishlistProductionDispatcherProvider
 import com.tokopedia.home_wishlist.data.repository.WishlistRepository
 import com.tokopedia.home_wishlist.domain.GetWishlistDataUseCase
+import com.tokopedia.home_wishlist.domain.SendTopAdsUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetSingleRecommendationUseCase
 import com.tokopedia.smart_recycler_helper.SmartExecutors
 import com.tokopedia.topads.sdk.di.TopAdsWishlistModule
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.repository.TopAdsRepository
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
@@ -30,7 +31,7 @@ import javax.inject.Named
  */
 @WishlistScope
 @Module(includes = [TopAdsWishlistModule::class])
-class WishlistModule {
+open class WishlistModule {
     @WishlistScope
     @Provides
     fun provideExecutors(): SmartExecutors = SmartExecutors()
@@ -53,7 +54,7 @@ class WishlistModule {
 
     @Provides
     @WishlistScope
-    fun provideGetWishlistDataUseCase(repository: WishlistRepository): GetWishlistDataUseCase = GetWishlistDataUseCase(repository)
+    open fun provideGetWishlistDataUseCase(repository: WishlistRepository): GetWishlistDataUseCase = GetWishlistDataUseCase(repository)
 
     @Provides
     @WishlistScope
@@ -65,7 +66,7 @@ class WishlistModule {
 
     @Provides
     @WishlistScope
-    fun provideGetSingleRecommendationUseCase(graphqlRepository: GraphqlRepository): GetSingleRecommendationUseCase = GetSingleRecommendationUseCase(graphqlRepository)
+    open fun provideGetSingleRecommendationUseCase(graphqlRepository: GraphqlRepository): GetSingleRecommendationUseCase = GetSingleRecommendationUseCase(graphqlRepository)
 
     @Provides
     @WishlistScope
@@ -81,23 +82,29 @@ class WishlistModule {
 
     @Provides
     @WishlistScope
+    fun provideTopAdsImageViewUseCase(userSession: UserSessionInterface): TopAdsImageViewUseCase = TopAdsImageViewUseCase(userSession.userId, TopAdsRepository())
+
+    @Provides
+    @WishlistScope
     @Named("recommendationQuery")
     fun provideRecommendationRawQuery(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources,
-                    R.raw.query_recommendation_widget)
+                    com.tokopedia.recommendation_widget_common.R.raw.query_recommendation_widget)
 
     @Provides
     @WishlistScope
     @Named("singleProductRecommendation")
     fun provideSingleProductRecommendationRawQuery(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources,
-                    R.raw.query_single_recommendation_widget)
+                    com.tokopedia.recommendation_widget_common.R.raw.query_single_recommendation_widget)
 
 
     @Provides
     @Named("atcMutation")
     fun provideAddToCartMutation(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources,
-                    R.raw.mutation_add_to_cart)
+                    com.tokopedia.atc_common.R.raw.mutation_add_to_cart)
 
+    @Provides
+    fun provideSendTopAdsUseCase() = SendTopAdsUseCase()
 }

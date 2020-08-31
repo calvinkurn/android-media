@@ -5,20 +5,20 @@ import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.feedcomponent.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.FAVORITE_LIST_SOURCE
 import com.tokopedia.shop.favourite.data.pojo.shopfollowerlist.GetShopFollowerListData
 import com.tokopedia.shop.favourite.data.pojo.shopfollowerlist.ShopFollowerData
 import com.tokopedia.shop.favourite.domain.interactor.GetShopFollowerListUseCase
 import com.tokopedia.shop.favourite.view.listener.ShopFavouriteListView
 import com.tokopedia.shop.favourite.view.model.ShopFollowerListResultUiModel
 import com.tokopedia.shop.favourite.view.model.ShopFollowerUiModel
-import com.tokopedia.shop.page.domain.interactor.ToggleFavouriteShopAndDeleteCacheUseCase
+import com.tokopedia.shop.pageheader.domain.interactor.ToggleFavouriteShopAndDeleteCacheUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import rx.Subscriber
-import timber.log.Timber
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 import kotlin.math.max
@@ -87,7 +87,7 @@ constructor(private val getShopFollowerListUseCase: GetShopFollowerListUseCase,
     }
 
     fun getShopInfo(shopId: String) {
-        gqlGetShopInfoUseCase.params = GQLGetShopInfoUseCase.createParams(listOf(shopId.toIntOrZero()))
+        gqlGetShopInfoUseCase.params = GQLGetShopInfoUseCase.createParams(listOf(shopId.toIntOrZero()), source = FAVORITE_LIST_SOURCE)
         gqlGetShopInfoUseCase.execute(
                 {
                     if(isViewAttached) {

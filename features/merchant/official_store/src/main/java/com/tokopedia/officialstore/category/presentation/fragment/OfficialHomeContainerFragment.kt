@@ -1,5 +1,6 @@
 package com.tokopedia.officialstore.category.presentation.fragment
 
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,7 +17,11 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.navigation_common.listener.AllNotificationListener
-import com.tokopedia.officialstore.*
+import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitoringListener
+import com.tokopedia.officialstore.ApplinkConstant
+import com.tokopedia.officialstore.FirebasePerformanceMonitoringConstant
+import com.tokopedia.officialstore.OfficialStoreInstance
+import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.category.data.model.OfficialStoreCategories
@@ -30,6 +35,7 @@ import com.tokopedia.officialstore.common.listener.RecyclerViewScrollListener
 import com.tokopedia.searchbar.MainToolbar
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.fragment_official_home.*
 import java.util.*
 import javax.inject.Inject
 
@@ -50,7 +56,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     private var statusBar: View? = null
     private var mainToolbar: MainToolbar? = null
     private var tabLayout: OfficialCategoriesTab? = null
-    private var loadingLayout: View? = null
+    private var loadingCategoryLayout: View? = null
     private var viewPager: ViewPager? = null
     private var appbarCategory: AppBarLayout? = null
     private var badgeNumberNotification: Int = 0
@@ -59,12 +65,15 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
 
     private lateinit var tracking: OfficialStoreTracking
     private lateinit var categoryPerformanceMonitoring: PerformanceMonitoring
+    private var officialStorePerformanceMonitoringListener: OfficialStorePerformanceMonitoringListener? = null
 
     private val tabAdapter: OfficialHomeContainerAdapter by lazy {
         OfficialHomeContainerAdapter(context, childFragmentManager)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        officialStorePerformanceMonitoringListener = context?.let { castContextToOfficialStorePerformanceMonitoring(it) }
+        startOfficialStorePerformanceMonitoring()
         super.onCreate(savedInstanceState)
         categoryPerformanceMonitoring = PerformanceMonitoring.start(FirebasePerformanceMonitoringConstant.CATEGORY)
         arguments?.let {
@@ -132,11 +141,8 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
                     populateCategoriesData(it.data)
                 }
                 is Fail -> {
-                    if (BuildConfig.DEBUG) {
-                        it.throwable.printStackTrace()
-                    }
-
-                    NetworkErrorHelper.showEmptyState(context, view) {
+                    removeLoading()
+                    NetworkErrorHelper.showEmptyState(context, coordinator_layout_fragment_os) {
                         viewModel.getOfficialStoreCategories()
                     }
                 }
@@ -163,13 +169,14 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         val categorySelected = getSelectedCategory(officialStoreCategories)
         tabLayout?.getTabAt(categorySelected)?.select()
 
-        val category = tabAdapter.categoryList[0]
-        tracking.eventImpressionCategory(
-                category.title,
-                category.categoryId,
-                0,
-                category.icon
-        )
+        tabAdapter.categoryList.forEachIndexed { index, category ->
+            tracking.eventImpressionCategory(
+                    category.title,
+                    category.categoryId,
+                    index,
+                    category.icon
+            )
+        }
 
         tabLayout?.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener{
             override fun onTabReselected(tab: TabLayout.Tab?) {
@@ -203,7 +210,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         configStatusBar(view)
         configMainToolbar(view)
         tabLayout = view.findViewById(R.id.tablayout)
-        loadingLayout = view.findViewById(R.id.view_category_tab_loading)
+        loadingCategoryLayout = view.findViewById(R.id.view_category_tab_loading)
         viewPager = view.findViewById(R.id.viewpager)
         appbarCategory = view.findViewById(R.id.appbarLayout)
         viewPager?.adapter = tabAdapter
@@ -224,7 +231,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     }
 
     private fun removeLoading() {
-        loadingLayout?.visibility = View.GONE
+        loadingCategoryLayout?.visibility = View.GONE
         tabLayout?.visibility = View.VISIBLE
     }
 
@@ -233,5 +240,16 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         mainToolbar?.searchApplink = ApplinkConstant.OFFICIAL_SEARCHBAR
         mainToolbar?.setQuerySearch(getString(R.string.os_query_search))
         onNotificationChanged(badgeNumberNotification, badgeNumberInbox) // notify badge after toolbar created
+    }
+
+    private fun castContextToOfficialStorePerformanceMonitoring(context: Context): OfficialStorePerformanceMonitoringListener? {
+        return if (context is OfficialStorePerformanceMonitoringListener) {
+            context
+        } else null
+    }
+
+    private fun startOfficialStorePerformanceMonitoring(){
+        officialStorePerformanceMonitoringListener?.startOfficialStorePerformanceMonitoring()
+        officialStorePerformanceMonitoringListener = null
     }
 }

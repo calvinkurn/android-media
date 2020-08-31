@@ -1,7 +1,5 @@
 package com.tokopedia.notifcenter.presentation.fragment
 
-import android.animation.LayoutTransition
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
@@ -9,90 +7,80 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
-import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.notifcenter.R
+import com.tokopedia.notifcenter.analytics.NotificationTracker
 import com.tokopedia.notifcenter.analytics.NotificationTransactionAnalytics
 import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics
 import com.tokopedia.notifcenter.data.consts.EmptyDataStateProvider
 import com.tokopedia.notifcenter.data.consts.buyerMenu
 import com.tokopedia.notifcenter.data.consts.sellerMenu
-import com.tokopedia.notifcenter.data.entity.DataNotification
-import com.tokopedia.notifcenter.data.entity.ProductData
-import com.tokopedia.notifcenter.data.mapper.NotificationMapper
 import com.tokopedia.notifcenter.data.model.NotificationViewData
 import com.tokopedia.notifcenter.data.state.EmptySource
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
-import com.tokopedia.notifcenter.di.DaggerNotificationTransactionComponent
-import com.tokopedia.notifcenter.listener.NotificationItemListener
 import com.tokopedia.notifcenter.listener.TransactionMenuListener
+import com.tokopedia.notifcenter.presentation.BaseNotificationFragment
+import com.tokopedia.notifcenter.presentation.activity.NotificationActivity
 import com.tokopedia.notifcenter.presentation.adapter.NotificationTransactionAdapter
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.transaction.NotificationTransactionFactory
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.transaction.NotificationTransactionFactoryImpl
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.base.BaseNotificationItemViewHolder
-import com.tokopedia.notifcenter.presentation.adapter.viewholder.transaction.NotificationFilterViewHolder
 import com.tokopedia.notifcenter.presentation.viewmodel.NotificationTransactionViewModel
-import com.tokopedia.notifcenter.util.endLess
 import com.tokopedia.notifcenter.util.viewModelProvider
-import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonItem
+import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import kotlinx.android.synthetic.main.fragment_notification_transaction.*
 import javax.inject.Inject
 
-class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(),
-        NotificationItemListener,
-        NotificationFilterViewHolder.NotifFilterListener,
-        TransactionMenuListener {
+class NotificationTransactionFragment : BaseNotificationFragment(), TransactionMenuListener {
 
-    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
-    @Inject lateinit var analytics: NotificationTransactionAnalytics
-    @Inject lateinit var userSession: UserSessionInterface
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private lateinit var viewModel: NotificationTransactionViewModel
 
-    private val _adapter by lazy { adapter as NotificationTransactionAdapter }
-    private lateinit var longerTextDialog: BottomSheetDialogFragment
+    private val _adapter by lazy {
+        adapter as NotificationTransactionAdapter
+    }
 
-    //last notification id
-    private var cursor = ""
-
-    /*
-    * last item of recyclerView;
-    * for tracking purpose
-    * */
-    private var lastListItem = 0
-
-    /*
-     * track mark all as read counter
-     * counting notification item to as read
-     * */
-    private var markAllReadCounter = 0L
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         viewModel = viewModelProvider(viewModelFactory)
-        return inflater.inflate(R.layout.fragment_notification_transaction, container, false)
+    }
+
+    override fun onCreateView(
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(
+                R.layout.fragment_notification_transaction,
+                container,
+                false
+        )
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initObservable()
         onListLastScroll(view)
+        initObservable()
 
-        //enable transition of filter type on kitkat above
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            btnFilter?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
-        }
-
-        btnFilter?.setButton1OnClickListener {
-            viewModel.markAllReadNotification()
-            analytics.trackMarkAllAsRead(markAllReadCounter.toString())
+        //setup floatingButtonUnify
+        val markReadStr = context?.getString(R.string.mark_all_as_read) ?: "Tandai semua dibaca"
+        bottomFilterView()?.let {
+            val markReadItem = arrayListOf(
+                    FloatingButtonItem(markReadStr, false) {
+                        viewModel.markAllReadNotification()
+                        analytics().trackMarkAllAsRead(markAllReadCounter.toString())
+                    }
+            )
+            it.addItem(markReadItem)
         }
 
         swipeRefresh?.setOnRefreshListener {
@@ -108,77 +96,54 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.getInfoStatusNotification()
+    }
+
+    override fun updateFilter(filter: HashMap<String, Int>) {
+        fetchUpdateFilter(filter)
+    }
+
+    override fun onSuccessMarkAllRead() {
+        super.onSuccessMarkAllRead()
+        _adapter.markAllAsRead()
+    }
+
     private fun initObservable() {
-        viewModel.errorMessage.observe(this, onViewError())
-        viewModel.infoNotification.observe(this, Observer {
-            if (NotificationMapper.isHasShop(it)) {
-                _adapter.addElement(sellerMenu())
-            }
+        viewModel.errorMessage.observe(viewLifecycleOwner, onViewError())
+
+        viewModel.infoNotification.observe(viewLifecycleOwner, Observer {
             _adapter.updateValue(it.notifications)
         })
-        viewModel.filterNotification.observe(this, Observer {
+
+        viewModel.filterNotification.observe(viewLifecycleOwner, Observer {
             _adapter.addElement(it)
         })
-        viewModel.notification.observe(this, Observer {
+
+        viewModel.notification.observe(viewLifecycleOwner, Observer {
             _adapter.removeEmptyState()
             if (it.list.isEmpty()) {
                 updateScrollListenerState(false)
                 _adapter.addElement(EmptyDataStateProvider.emptyData(
                         EmptySource.Transaction
                 ))
-            }  else {
-                onSuccessNotificationData(it)
+            } else {
+                onSuccessInitiateData(it)
             }
         })
-        viewModel.lastNotificationId.observe(this, Observer {
+
+        viewModel.lastNotificationId.observe(viewLifecycleOwner, Observer {
             viewModel.getNotification(it)
         })
-        viewModel.markAllNotification.observe(this, Observer {
+
+        viewModel.markAllNotification.observe(viewLifecycleOwner, Observer {
             onSuccessMarkAllRead()
         })
-        viewModel.totalUnreadNotification.observe(this, Observer {
+
+        viewModel.totalUnreadNotification.observe(viewLifecycleOwner, Observer {
             markAllReadCounter = it
-            notifyStateFilterActionView()
-        })
-    }
-
-    override fun onPause() {
-        trackScrollListToBottom()
-        super.onPause()
-    }
-
-    override fun onDestroyView() {
-        trackScrollListToBottom()
-        super.onDestroyView()
-    }
-
-    private fun onSuccessMarkAllRead() {
-        _adapter.markAllAsRead()
-        markAllReadCounter = 0L
-        notifyStateFilterActionView()
-    }
-
-    private fun notifyStateFilterActionView() {
-        btnFilter?.let {
-            if (markAllReadCounter != 0L) {
-                it.show()
-            } else {
-                it.hide()
-            }
-        }
-    }
-
-    private fun onListLastScroll(view: View) {
-        super.getRecyclerView(view).endLess({
-            if (it < 0) { // going up
-                notifyStateFilterActionView()
-            } else if (it > 0) { // going down
-                btnFilter?.hide()
-            }
-        }, {
-            if (it > lastListItem) {
-                lastListItem = it
-            }
+            notifyBottomActionView()
         })
     }
 
@@ -200,8 +165,17 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
 
     override fun loadData(page: Int) {
         swipeRefresh?.isRefreshing = false
+
+        // adding a static buyer notification
         renderList(buyerMenu(), false)
+
+        // adding a static seller notification if user has shop
+        if (userSession.hasShop()) {
+            _adapter.addElement(sellerMenu())
+        }
+
         viewModel.getInfoStatusNotification()
+        viewModel.getNotificationFilter()
     }
 
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
@@ -213,7 +187,7 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
         }
     }
 
-    private fun onSuccessNotificationData(notification: NotificationViewData) {
+    private fun onSuccessInitiateData(notification: NotificationViewData) {
         hideLoading()
 
         val pagination = notification.paging.hasNext
@@ -230,23 +204,16 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
     }
 
     override fun itemClicked(notification: NotificationItemViewBean, adapterPosition: Int) {
+        super.itemClicked(notification, adapterPosition)
         val payloadBackground = BaseNotificationItemViewHolder.PAYLOAD_CHANGE_BACKGROUND
-        adapter.notifyItemChanged(adapterPosition, payloadBackground)
-
-        //tracking
-        analytics.trackNotificationClick(notification)
-
-        //reader
+        _adapter.notifyItemChanged(adapterPosition, payloadBackground)
         viewModel.markReadNotification(notification.notificationId)
-        val needToResetCounter = !notification.isRead
-        if (needToResetCounter) {
-            updateMarkAllReadCounter()
-            notifyStateFilterActionView()
-        }
-    }
 
-    private fun updateMarkAllReadCounter() {
-        markAllReadCounter -= 1
+        //if need to reset the counter
+        if (!notification.isRead) {
+            updateMarkAllReadCounter()
+            notifyBottomActionView()
+        }
     }
 
     private fun fetchUpdateFilter(filter: HashMap<String, Int>) {
@@ -259,10 +226,6 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
         getNotification(cursor)
     }
 
-    override fun updateFilter(filter: HashMap<String, Int>) {
-        fetchUpdateFilter(filter)
-    }
-
     override fun getAnalytic(): NotificationUpdateAnalytics {
         /* Trackers from Update Notification:
          * for tracking atc to pdp,
@@ -270,25 +233,28 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
         return NotificationUpdateAnalytics()
     }
 
-    override fun showTextLonger(element: NotificationItemViewBean) {
-        val bundle = Bundle()
-        bundle.putString(PARAM_CONTENT_IMAGE, element.contentUrl)
-        bundle.putString(PARAM_CONTENT_IMAGE_TYPE, element.typeLink.toString())
-        bundle.putString(PARAM_CTA_APPLINK, element.appLink)
-        bundle.putString(PARAM_CONTENT_TEXT, element.body)
-        bundle.putString(PARAM_CONTENT_TITLE, element.title)
-        bundle.putString(PARAM_BUTTON_TEXT, element.btnText)
-        bundle.putString(PARAM_TEMPLATE_KEY, element.templateKey)
+    override fun initInjector() {
+        (activity as NotificationActivity)
+                .notificationComponent
+                .inject(this)
+    }
 
-        if (!::longerTextDialog.isInitialized) {
-            longerTextDialog = NotificationUpdateLongerTextFragment.createInstance(bundle)
-        } else {
-            longerTextDialog.arguments = bundle
-        }
+    override fun isHasNotification(): Boolean {
+        return viewModel.hasNotification.value ?: false
+    }
 
-        if (!longerTextDialog.isAdded) {
-            longerTextDialog.show(childFragmentManager, "Longer Text Bottom Sheet")
-        }
+    override fun sendTrackingData(parent: String, child: String) {
+        analytics().sendTrackTransactionTab(parent, child)
+    }
+
+    override fun bottomFilterView(): FloatingButtonUnify? = view?.findViewById(R.id.btnFilter)
+    override fun onItemStockHandlerClick(notification: NotificationItemViewBean) {}
+    override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipeRefresh
+    override fun getRecyclerViewResourceId() = R.id.lstNotification
+    override fun onItemClicked(t: Visitable<*>?) = Unit
+
+    override fun analytics(): NotificationTracker {
+        return NotificationTransactionAnalytics()
     }
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
@@ -296,62 +262,23 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
                 notificationUpdateListener = this,
                 notificationFilterListener = this,
                 transactionMenuListener = this,
-                userSession = userSession)
+                userSession = userSession
+        )
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory> {
         check(adapterTypeFactory is NotificationTransactionFactory)
-        val typeFactory = adapterTypeFactory as NotificationTransactionFactoryImpl
-        return NotificationTransactionAdapter(typeFactory)
+        return NotificationTransactionAdapter(
+                adapterTypeFactory as NotificationTransactionFactoryImpl
+        )
     }
 
-    override fun initInjector() {
-        DaggerNotificationTransactionComponent.builder()
-                .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
+    override fun onDestroyView() {
+        super.onDestroyView()
+        viewModel.cleared()
     }
-
-    private fun trackScrollListToBottom() {
-        if (lastListItem > 0) {
-            analytics.trackScrollBottom(lastListItem.toString())
-        }
-    }
-
-    override fun isHasNotification(): Boolean {
-        return viewModel.hasNotification.value?: false
-    }
-
-    override fun sentFilterAnalytic(analyticData: String) {
-        analytics.trackClickFilterRequest(analyticData)
-    }
-
-    override fun sendTrackingData(parent: String, child: String) {
-        analytics.sendTrackTransactionTab(parent, child)
-    }
-
-    override fun trackNotificationImpression(element: NotificationItemViewBean) {
-        analytics.saveNotificationImpression(element)
-    }
-
-    override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipeRefresh
-    override fun addProductToCart(product: ProductData, onSuccessAddToCart: () -> Unit) {}
-    override fun addProductToCheckout(notification: NotificationItemViewBean) {}
-    override fun getRecyclerViewResourceId() = R.id.lstNotification
-    override fun onItemClicked(t: Visitable<*>?) = Unit
-    override fun getScreenName() = SCREEN_NAME
 
     companion object {
-        private const val SCREEN_NAME = "Notification Transaction"
-
-        private const val PARAM_CONTENT_TITLE = "content title"
-        private const val PARAM_CONTENT_TEXT = "content text"
-        private const val PARAM_CONTENT_IMAGE = "content image"
-        private const val PARAM_CONTENT_IMAGE_TYPE = "content image type"
-        private const val PARAM_CTA_APPLINK = "cta applink"
-        private const val PARAM_BUTTON_TEXT = "button text"
-        private const val PARAM_TEMPLATE_KEY = "template key"
-
         private const val REFRESH_DELAY = 1000L
     }
 

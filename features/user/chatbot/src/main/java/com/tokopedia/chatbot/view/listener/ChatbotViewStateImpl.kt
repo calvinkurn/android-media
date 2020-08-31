@@ -8,14 +8,17 @@ import androidx.appcompat.widget.Toolbar
 import android.text.TextUtils
 import android.view.View
 import android.widget.ImageView
+import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
 import com.tokopedia.chat_common.view.BaseChatViewStateImpl
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chatbot.R
+import com.tokopedia.chatbot.analytics.ChatbotAnalytics.Companion.chatbotAnalytics
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleViewModel
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSelectionViewModel
@@ -27,11 +30,16 @@ import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.chatbot.view.adapter.QuickReplyAdapter
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.QuickReplyListener
 import com.tokopedia.chatbot.view.customview.ReasonBottomSheet
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.user.session.UserSessionInterface
 
 /**
  * @author by nisie on 07/12/18.
  */
+private const val ACTION_IMRESSION_ACTION_BUTTON = "impression action button"
+private const val ACTION_IMRESSION_THUMBS_UP_THUMBS_DOWN = "impression thumbs up and thumbs down"
+
 class ChatbotViewStateImpl(@NonNull override val view: View,
                            @NonNull private val userSession: UserSessionInterface,
                            private val quickReplyListener: QuickReplyListener,
@@ -87,6 +95,12 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         checkShowQuickReply(chatroomViewModel)
     }
 
+    override fun loadAvatar(avatarUrl: String) {
+        val avatar = toolbar.findViewById<ImageView>(com.tokopedia.chat_common.R.id.user_avatar)
+        ImageHandler.loadImageCircle2(avatar.context, avatar, avatarUrl,
+                R.drawable.chatbot_avatar)
+    }
+
     private fun checkShowQuickReply(chatroomViewModel: ChatroomViewModel) {
         if (chatroomViewModel.listChat.isNotEmpty()
                 && chatroomViewModel.listChat[0] is QuickReplyListViewModel) {
@@ -115,11 +129,13 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
 
     override fun onReceiveQuickReplyEventWithActionButton(visitable: ChatActionSelectionBubbleViewModel) {
         super.onReceiveMessageEvent(visitable)
+        chatbotAnalytics.eventShowView(ACTION_IMRESSION_ACTION_BUTTON)
         showQuickReply(visitable.quickReplies)
     }
 
     override fun onReceiveQuickReplyEventWithChatRating(visitable: ChatRatingViewModel) {
         super.onReceiveMessageEvent(visitable)
+        chatbotAnalytics.eventShowView(ACTION_IMRESSION_THUMBS_UP_THUMBS_DOWN)
         showQuickReply(visitable.quickReplies)
     }
 
@@ -168,11 +184,10 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
     }
 
     private fun showQuickReply(list: List<QuickReplyViewModel>) {
-        if (::quickReplyAdapter.isInitialized) {
-            quickReplyAdapter.setList(list)
-            quickReplyAdapter.notifyDataSetChanged()
-        }
-        rvQuickReply.visibility = View.VISIBLE
+            if (::quickReplyAdapter.isInitialized) {
+                quickReplyAdapter.setList(list)
+            }
+            rvQuickReply.visibility = View.VISIBLE
     }
 
     private fun hasQuickReply(): Boolean {
@@ -215,6 +230,29 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
 
     override fun showLiveChatQuickReply(quickReplyList: List<QuickReplyViewModel>) {
         showQuickReply(quickReplyList)
+    }
+
+    override fun hideActionBubble(model: ChatActionSelectionBubbleViewModel) {
+        val adapter = getAdapter()
+        if (adapter.list.isNotEmpty() && adapter.list[0] is ChatActionSelectionBubbleViewModel ){
+            adapter.removeElement(model)
+        }
+    }
+
+    override fun getInterlocutorName(headerName: String): String  = headerName
+
+    override fun showErrorWebSocket(isWebSocketError: Boolean) {
+        val title = notifier.findViewById<TextView>(R.id.title)
+        val action = notifier.findViewById<View>(R.id.action)
+        if (isWebSocketError) {
+            notifier.show()
+            title.setText(com.tokopedia.chat_common.R.string.error_no_connection_retrying);
+            action.show()
+
+        } else {
+            action.hide()
+            notifier.hide()
+        }
     }
 
     override fun getRecyclerViewId(): Int {
