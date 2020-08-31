@@ -28,7 +28,6 @@
     <string name="path_af_dashboard" translatable="false">/dashboard</string>
     <string name="path_af_education" translatable="false">/education</string>
     <string name="path_af_explore" translatable="false">/explore</string>
-    <string name="path_af_byme_tracking" translatable="false">/tracking/.*\</string>
 
     <string name="applink_title_play" translatable="false">Play</string>
     <string name="applink_title_play_broadcaster" translatable="false">Play Broadcaster</string>
