@@ -33,18 +33,23 @@ import com.tokopedia.hotel.search.presentation.adapter.HotelOptionMenuAdapter
 import com.tokopedia.hotel.search.presentation.adapter.HotelOptionMenuAdapter.Companion.MODE_CHECKED
 import com.tokopedia.hotel.search.presentation.adapter.HotelSearchResultAdapter
 import com.tokopedia.hotel.search.presentation.adapter.PropertyAdapterTypeFactory
+import com.tokopedia.hotel.search.presentation.adapter.viewholder.FilterSelectionViewHolder
 import com.tokopedia.hotel.search.presentation.adapter.viewholder.SpaceItemDecoration
 import com.tokopedia.hotel.search.presentation.viewmodel.HotelSearchResultViewModel
 import com.tokopedia.hotel.search.presentation.widget.HotelClosedSortBottomSheets
 import com.tokopedia.hotel.search.presentation.widget.HotelFilterBottomSheets
 import com.tokopedia.hotel.search.presentation.widget.SubmitFilterListener
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_search_result.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterTypeFactory>(),
@@ -87,7 +92,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        searchResultviewModel.liveSearchResult.observe(this, Observer {
+        searchResultviewModel.liveSearchResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessGetResult(it.data)
                 is Fail -> showGetListError(it.throwable)
@@ -171,6 +176,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         bottom_action_view.visibility = View.VISIBLE
         bottom_action_view.filterItem.active = searchResultviewModel.isFilter
 
+        showQuickFilterShimmering(false)
         super.renderList(searchProperties, searchProperties.isNotEmpty())
 
         generateSortMenu(data.displayInfo.sort)
@@ -323,6 +329,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         searchResultviewModel.addFilter(selectedFilter)
         trackingHotelUtil.clickSubmitFilterOnBottomSheet(context, SEARCH_SCREEN_NAME, selectedFilter)
         setUpQuickFilterBaseOnSelectedFilter(selectedFilter)
+        showQuickFilterShimmering(false)
         loadInitialData()
     }
 
@@ -333,7 +340,8 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
 
     //for assign clicked quick filter value to selected filter
     private fun refreshSelectedFilter(quickFilters: List<QuickFilter>) {
-        val selectedFilters = searchResultviewModel.selectedFilterV2.associateBy ({it.name}, {it}).toMutableMap()
+        showQuickFilterShimmering(true)
+        val selectedFilters = searchResultviewModel.selectedFilterV2.associateBy({ it.name }, { it }).toMutableMap()
 
         quickFilters.forEachIndexed { index, quickFilter ->
             val isQuickFilterSelected = quick_filter_sort_filter.chipItems[index].type == ChipsUnify.TYPE_SELECTED
@@ -343,7 +351,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
                     val filterValue = selectedFilter.values.toHashSet()
                     if (quickFilter.type == FilterV2.FILTER_TYPE_OPEN_RANGE
                             || quickFilter.type == FilterV2.FILTER_TYPE_SELECTION_RANGE ||
-                            quickFilter.name == "star") filterValue.clear()
+                            quickFilter.name == FilterSelectionViewHolder.SELECTION_STAR_TYPE) filterValue.clear()
                     filterValue.addAll(quickFilter.values)
                     selectedFilters[quickFilter.name] = ParamFilterV2(quickFilter.name, filterValue.toMutableList())
                 } else {
@@ -409,16 +417,24 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         getComponent(HotelSearchPropertyComponent::class.java).inject(this)
     }
 
-    override fun loadData(page: Int) {
-        GlobalScope.launch {
-            bottom_action_view.visibility = View.GONE
-            delay(500)
-            val searchQuery = GraphqlHelper.loadRawString(resources, R.raw.gql_get_property_search)
-            searchResultviewModel.searchProperty(page, searchQuery)
+    private fun showQuickFilterShimmering(isShimmering: Boolean) {
+        if (isShimmering) {
+            shimmer_quick_filter_sort_filter.show()
+            quick_filter_sort_filter.hide()
+        } else {
+            shimmer_quick_filter_sort_filter.hide()
+            quick_filter_sort_filter.show()
         }
     }
 
+    override fun loadData(page: Int) {
+        bottom_action_view.visibility = View.GONE
+        val searchQuery = GraphqlHelper.loadRawString(resources, R.raw.gql_get_property_search)
+        searchResultviewModel.searchProperty(page, searchQuery)
+    }
+
     override fun isAutoLoadEnabled(): Boolean = true
+    override fun getMinimumScrollableNumOfItems(): Int = 5
 
     companion object {
         private const val REQUEST_FILTER = 0x10
