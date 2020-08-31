@@ -30,11 +30,10 @@ class InboxReviewFeedbackViewHolder(view: View,
         const val FEEDBACK_MAX_CHAR = 150
     }
 
-    private val reviewInboxFeedbackImageAdapter by lazy {
-        InboxReviewFeedbackImageAdapter(feedbackInboxReviewListener)
-    }
+    private var reviewInboxFeedbackImageAdapter: InboxReviewFeedbackImageAdapter? = null
 
     override fun bind(element: FeedbackInboxUiModel) {
+        reviewInboxFeedbackImageAdapter = InboxReviewFeedbackImageAdapter(feedbackInboxReviewListener)
         with(itemView) {
             if(adapterPosition == 0) {
                 feedbackInboxReviewListener.onBackgroundMarginIsReplied(element.replyText.isBlank())
@@ -132,11 +131,11 @@ class InboxReviewFeedbackViewHolder(view: View,
             if (element.attachments.isEmpty()) {
                 rvItemAttachmentFeedback?.hide()
             } else {
-                reviewInboxFeedbackImageAdapter.setAttachmentUiData(element.attachments)
-                reviewInboxFeedbackImageAdapter.setFeedbackId(element.feedbackId.toString())
-                reviewInboxFeedbackImageAdapter.setTitleProduct(element.productName)
-                reviewInboxFeedbackImageAdapter.setProductId(element.productID.toString())
-                reviewInboxFeedbackImageAdapter.submitList(element.attachments)
+                reviewInboxFeedbackImageAdapter?.setAttachmentUiData(element.attachments)
+                reviewInboxFeedbackImageAdapter?.setFeedbackId(element.feedbackId.toString())
+                reviewInboxFeedbackImageAdapter?.setTitleProduct(element.productName)
+                reviewInboxFeedbackImageAdapter?.setProductId(element.productID.toString())
+                reviewInboxFeedbackImageAdapter?.submitList(element.attachments)
                 rvItemAttachmentFeedback?.show()
             }
         }

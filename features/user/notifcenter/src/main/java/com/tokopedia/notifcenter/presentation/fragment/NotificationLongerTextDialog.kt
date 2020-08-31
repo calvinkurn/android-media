@@ -134,7 +134,7 @@ class NotificationLongerTextDialog : BottomSheetDialogFragment() {
             //To Anchor View Bottom
             val bottomSheetDialog = it as BottomSheetDialog
             val bottomSheet = bottomSheetDialog.findViewById<View>(designBottomSheet)
-            val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet as View)
+            val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
             val containerLayout: FrameLayout? = bottomSheetDialog.findViewById(R.id.container)
 
             bottomSheet?.let {

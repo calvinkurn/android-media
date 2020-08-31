@@ -2,7 +2,9 @@ package com.tokopedia.shop.info.view.fragment
 
 import android.os.Bundle
 import android.text.TextUtils
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -10,7 +12,6 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -18,11 +19,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.linker.model.LinkerData
-import com.tokopedia.linker.share.DefaultShare
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageTrackingShopPageInfo
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
@@ -41,7 +39,6 @@ import com.tokopedia.shop.note.view.adapter.ShopNoteAdapterTypeFactory
 import com.tokopedia.shop.note.view.adapter.viewholder.ShopNoteViewHolder
 import com.tokopedia.shop.note.view.model.ShopNoteViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity.Companion.SHOP_ID
-import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageFragment
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -51,8 +48,7 @@ import kotlinx.android.synthetic.main.partial_shop_info_note.*
 import kotlinx.android.synthetic.main.partial_shop_info_statistics.*
 import javax.inject.Inject
 
-class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
-        ShopNoteViewHolder.OnNoteClicked {
+class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback, ShopNoteViewHolder.OnNoteClicked {
 
     companion object {
         fun createInstance(
@@ -77,8 +73,8 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
     private var shopPageTracking: ShopPageTrackingShopPageInfo? = null
     private var noteAdapter: BaseListAdapter<ShopNoteViewModel, ShopNoteAdapterTypeFactory>? = null
     private var shopInfo: ShopInfoData? = null
-
     private val isOfficial: Boolean
+
         get() = shopInfo?.isOfficial == 1
     private val isGold: Boolean
         get() = shopInfo?.isGold == 1
@@ -96,7 +92,6 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
         shopPageTracking = ShopPageTrackingShopPageInfo(TrackingQueue(context!!))
         remoteConfig = FirebaseRemoteConfigImpl(context)
         shopPageConfig = ShopPageConfig(context)
-        setHasOptionsMenu(true)
         initViewModel()
         initObservers()
         initView()
@@ -115,20 +110,6 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
             it.flush()
         }
         super.onDestroy()
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_shop_info, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.action_share -> {
-                onClickShareShop()
-            }
-        }
-        return super.onOptionsItemSelected(item)
     }
 
     override fun onEmptyButtonClicked() {
@@ -327,48 +308,6 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
                 title = getString(R.string.shop_note_empty_note_title_buyer)
             }
         })
-    }
-
-    private fun onClickShareShop() {
-        shopInfo?.let {
-            trackClickShareButton(it)
-            goToShareShop(it)
-        }
-    }
-
-    private fun goToShareShop(shopInfo: ShopInfoData) {
-        activity?.let {
-            val shopShareMsg = getShopShareMessage(shopInfo)
-            val shareData = LinkerData.Builder.getLinkerBuilder()
-                    .setType(LinkerData.SHOP_TYPE)
-                    .setName(getString(R.string.message_share_shop))
-                    .setTextContent(shopShareMsg)
-                    .setCustMsg(shopShareMsg)
-                    .setUri(shopInfo.url)
-                    .setId(shopInfo.shopId)
-                    .build()
-            DefaultShare(activity, shareData).show()
-        }
-    }
-
-    private fun trackClickShareButton(it: ShopInfoData) {
-        val dimension = CustomDimensionShopPage.create(it.shopId, it.isOfficial == 1, it.isGold == 1)
-        shopPageTracking?.clickShareButton(dimension)
-    }
-
-    private fun getShopShareMessage(shopInfo: ShopInfoData): String {
-        var shopShareMsg = remoteConfig?.getString(RemoteConfigKey.SHOP_SHARE_MSG) ?: ""
-        val shopName = MethodChecker.fromHtml(shopInfo.name).toString()
-
-        shopShareMsg = if (!TextUtils.isEmpty(shopShareMsg)) {
-            FindAndReplaceHelper.findAndReplacePlaceHolders(shopShareMsg,
-                    ShopPageFragment.SHOP_NAME_PLACEHOLDER, shopName,
-                    ShopPageFragment.SHOP_LOCATION_PLACEHOLDER, shopInfo.location)
-        } else {
-            getString(R.string.shop_label_share_formatted, shopName, shopInfo.location)
-        }
-
-        return shopShareMsg
     }
 
     private fun setToolbarTitle(title: String) {

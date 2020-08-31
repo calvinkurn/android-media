@@ -132,7 +132,7 @@ class CoverCropEditBottomSheet @Inject constructor(
                 height = ViewGroup.LayoutParams.MATCH_PARENT
             }
             bottomSheet?.setBackgroundColor(Color.TRANSPARENT)
-            bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet as View)
+            bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
             bottomSheetBehavior.isHideable = false
             bottomSheetBehavior.peekHeight = maxHeight()
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
