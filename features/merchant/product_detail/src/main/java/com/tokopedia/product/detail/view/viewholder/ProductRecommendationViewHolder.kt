@@ -66,6 +66,7 @@ class ProductRecommendationViewHolder(
                         )
                         view.loadingRecom.show()
                         view.rvProductRecom.hide()
+                        view.rvProductRecom.recycle()
                     }
                 })
             }
