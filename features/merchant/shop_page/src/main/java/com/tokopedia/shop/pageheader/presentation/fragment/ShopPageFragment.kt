@@ -176,6 +176,7 @@ class ShopPageFragment :
         )
     }
     private var shopPageHeaderDataModel: ShopPageHeaderDataModel? = null
+    private var initialProductListSortId: String = ""
     private var shopShareBottomSheet: ShopShareBottomSheet? = null
     private var shopImageFilePath: String = ""
 
@@ -314,7 +315,7 @@ class ShopPageFragment :
 
     private fun onSuccessGetShopIdFromDomain(shopId: String) {
         this.shopId = shopId
-        shopViewModel.getShopPageTabData(shopId, shopDomain, isRefresh)
+        shopViewModel.getShopPageTabData(shopId, shopDomain, isRefresh, initialProductListSortId)
     }
 
     private fun onErrorGetShopPageHeaderContentData(error: Throwable) {
@@ -439,7 +440,7 @@ class ShopPageFragment :
         if(shopId.isEmpty()){
             shopViewModel.getShopIdFromDomain(shopDomain.orEmpty())
         }else{
-            shopViewModel.getShopPageTabData(shopId, shopDomain, isRefresh)
+            shopViewModel.getShopPageTabData(shopId, shopDomain, isRefresh, initialProductListSortId)
         }
     }
 
@@ -1198,5 +1199,9 @@ class ShopPageFragment :
             Toaster.make(view, message, actionText = getString(R.string.shop_page_product_action_no_upload_product), type = Toaster.TYPE_NORMAL)
             this.isFirstCreateShop = false
         }
+    }
+
+    fun updateSortId(sortId: String) {
+        this.initialProductListSortId = sortId
     }
 }
