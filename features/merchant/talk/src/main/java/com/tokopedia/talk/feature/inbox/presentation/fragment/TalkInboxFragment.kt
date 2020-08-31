@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
@@ -30,6 +31,7 @@ import com.tokopedia.talk.feature.inbox.presentation.viewmodel.TalkInboxViewMode
 import com.tokopedia.talk_old.R
 import com.tokopedia.talk_old.talkdetails.view.activity.TalkDetailsActivity
 import kotlinx.android.synthetic.main.fragment_talk_inbox.*
+import kotlinx.android.synthetic.main.partial_talk_inbox_empty.*
 import javax.inject.Inject
 
 class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTypeFactory>(),
@@ -166,12 +168,22 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
         })
     }
 
-    private fun showEmptyUnread() {
+    private fun initEmptyState() {
+        talkInboxEmptyImage.loadImage(EMPTY_DISCUSSION_IMAGE)
+    }
 
+    private fun showEmptyInbox() {
+        talkInboxEmptyTitle.text = getString(R.string.inbox_all_empty)
+    }
+
+    private fun showEmptyUnread() {
+        talkInboxEmptyTitle.text = getString(R.string.inbox_empty_title)
+        talkInboxEmptySubtitle.text = getString(R.string.inbox_empty_unread_discussion)
     }
 
     private fun showEmptyRead() {
-
+        talkInboxEmptyTitle.text = getString(R.string.inbox_empty_title)
+        talkInboxEmptySubtitle.text = getString(R.string.inbox_empty_read_discussion)
     }
 
     private fun getDataFromArgument() {

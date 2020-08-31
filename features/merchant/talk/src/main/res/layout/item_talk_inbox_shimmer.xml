@@ -17,7 +17,7 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/talk_inbox_shimmer_title"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/dp_168"
         android:layout_height="@dimen/dp_12"
         android:layout_marginStart="@dimen/layout_lvl2"
         app:corners="8"
@@ -39,7 +39,7 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/talk_inbox_body"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/dp_204"
         android:layout_height="@dimen/dp_12"
         android:layout_marginTop="@dimen/layout_lvl1"
         app:corners="8"
@@ -56,7 +56,11 @@
         app:custom_color="@color/Neutral_N50"
         app:layout_constraintTop_toBottomOf="@id/talk_inbox_body"
         app:layout_constraintStart_toStartOf="@id/talk_inbox_shimmer_title"/>
-    
 
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        app:layout_constraintTop_toBottomOf="@id/talk_inbox_body_2"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
