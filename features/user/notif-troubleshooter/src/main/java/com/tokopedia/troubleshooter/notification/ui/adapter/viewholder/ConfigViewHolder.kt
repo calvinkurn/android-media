@@ -58,6 +58,8 @@ open class ConfigViewHolder(
     }
 
     private fun troubleshootStatus(element: ConfigUIView) {
+        val message = ConfigUIView.itemMessage(element)
+
         when (element.status) {
             is StatusState.Success -> {
                 visibility(R.drawable.ic_ts_notif_checked)
@@ -67,7 +69,6 @@ open class ConfigViewHolder(
             }
         }
 
-        val message = ConfigUIView.itemMessage(element)
         txtTitle?.text = context.getString(message)
     }
 
