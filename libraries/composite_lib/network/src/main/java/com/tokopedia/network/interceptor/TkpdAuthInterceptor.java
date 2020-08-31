@@ -353,7 +353,8 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     protected Response refreshTokenAndGcmUpdate(Chain chain, Response response, Request finalRequest) throws IOException {
         AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
         try {
-            String newAccessToken = accessTokenRefresh.refreshToken(context, userSession, networkRouter);
+            String path = getRefreshQueryPath(finalRequest);
+            String newAccessToken = accessTokenRefresh.refreshToken(context, userSession, networkRouter, path);
             networkRouter.doRelogin(newAccessToken);
 
             Request newestRequest;
@@ -363,7 +364,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
                 newestRequest = recreateRequestWithNewAccessTokenAccountsAuth(chain);
             }
             if (isUnauthorized(newestRequest, response) || isNeedGcmUpdate(response)){
-                networkRouter.sendForceLogoutAnalytics(response, isUnauthorized(newestRequest,
+                networkRouter.sendForceLogoutAnalytics(path, isUnauthorized(newestRequest,
                         response), isNeedGcmUpdate(response));
             }
 
@@ -374,10 +375,10 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         }
     }
 
-    protected Response refreshToken(Chain chain, Response response)  {
+    protected Response refreshToken(Chain chain, Response response, Request finalRequest)  {
         AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
         try {
-            accessTokenRefresh.refreshToken(context, userSession, networkRouter);
+            accessTokenRefresh.refreshToken(context, userSession, networkRouter, getRefreshQueryPath(finalRequest));
             Request newest = recreateRequestWithNewAccessToken(chain);
             return chain.proceed(newest);
         } catch (IOException e) {
@@ -392,7 +393,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             if (isNeedGcmUpdate(response)) {
                 return refreshTokenAndGcmUpdate(chain, response, finalRequest);
             } else if (isUnauthorized(finalRequest, response)) {
-                return refreshToken(chain, response);
+                return refreshToken(chain, response, finalRequest);
             } else if (isInvalidGrantWhenRefreshToken(finalRequest, response)) {
                 networkRouter.logInvalidGrant(response);
                 return response;
@@ -432,5 +433,24 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         return newRequest
                 .header(HEADER_ACCOUNTS_AUTHORIZATION, HEADER_PARAM_BEARER + " " + freshAccessToken)
                 .build();
+    }
+
+    private String getRefreshQueryPath(Request finalRequest) {
+        String path = "";
+        try {
+            final Request copy = finalRequest.newBuilder().build();
+            final Buffer buffer = new Buffer();
+            if (copy.body() != null) {
+                copy.body().writeTo(buffer);
+            }
+            path = buffer.readUtf8();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            if(ex.getMessage() != null) {
+                path = ex.getMessage();
+            }
+        }
+
+        return path.substring(0, Math.min(path.length(), 150));
     }
 }

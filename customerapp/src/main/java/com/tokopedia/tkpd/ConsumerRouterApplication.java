@@ -476,9 +476,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void sendForceLogoutAnalytics(Response response, boolean isInvalidToken,
+    public void sendForceLogoutAnalytics(String url, boolean isInvalidToken,
                                          boolean isRequestDenied) {
-        ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString(),
+        ServerErrorHandler.sendForceLogoutAnalytics(url,
                 isInvalidToken, isRequestDenied);
     }
 
