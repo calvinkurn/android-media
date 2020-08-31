@@ -16,11 +16,14 @@ import com.tokopedia.affiliate.feature.tracking.di.DaggerAffTrackingComponent;
 import com.tokopedia.affiliate.feature.tracking.view.contract.AffContract;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalContent;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import kotlin.text.StringsKt;
 
 public class AffiliateTrackingActivity extends BaseActivity implements AffContract.View {
 
@@ -46,6 +49,12 @@ public class AffiliateTrackingActivity extends BaseActivity implements AffContra
     private void handleIntent() {
         try {
             Uri data = getIntent().getData();
+            if (data == null) return;
+            String httpString = StringsKt.removePrefix(
+                    data.toString(),
+                    String.format("%s/", ApplinkConstInternalContent.AFFILIATE_BYME_TRACKING)
+            );
+            data = Uri.parse(httpString);
             if (data != null && data.isHierarchical()) {
                 List<String> path = new ArrayList<>();
                 String affName = data.getPathSegments().get(0);
