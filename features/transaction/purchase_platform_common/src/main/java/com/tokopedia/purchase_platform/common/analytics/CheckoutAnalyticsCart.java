@@ -16,6 +16,7 @@ import static com.tokopedia.purchase_platform.common.analytics.ConstantTransacti
 import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventLabel;
 import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventName;
 import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.Key;
+import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.ExtraKey;
 
 import com.tokopedia.iris.util.ConstantKt;
 
@@ -1019,5 +1020,138 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
                 EventCategory.CART,
                 EventAction.CLICK_TRASH_ICON_BUTTON_ON_PRODUCT_CONTAIN_TOBACCO
         );
+    }
+
+    // Cart Revamp
+    public void eventViewRemainingStickInfo(String userId, String productId) {
+        Map<String, Object> gtmData = getGtmData(
+                EventName.VIEW_ATC_IRIS,
+                EventCategory.CART,
+                EventAction.VIEW_REMAINING_STOCK_INFO,
+                productId
+        );
+        gtmData.put(ExtraKey.USER_ID, userId);
+
+        sendGeneralEvent(gtmData);
+    }
+
+    public void eventViewInformationLabelInProductCard(String userId, String productId, String informationLabel) {
+        Map<String, Object> gtmData = getGtmData(
+                EventName.VIEW_ATC_IRIS,
+                EventCategory.CART,
+                EventAction.VIEW_INFORMATION_LABEL_IN_PRODUCT_CARD,
+                productId + " - " + informationLabel
+        );
+        gtmData.put(ExtraKey.USER_ID, userId);
+
+        sendGeneralEvent(gtmData);
+    }
+
+    public void eventClickDetailTagihan(String userId) {
+        Map<String, Object> gtmData = getGtmData(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_DETAIL_TAGIHAN,
+                ""
+        );
+        gtmData.put(ExtraKey.USER_ID, userId);
+
+        sendGeneralEvent(gtmData);
+    }
+
+    public void eventClickMoveToWishlistOnUnavailableSectionGetError(String userId, String productId, String errorType) {
+        Map<String, Object> gtmData = getGtmData(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.ADD_WISHLIST_CART_LOGIN,
+                productId + " - " + errorType + " - unavailable section"
+        );
+        gtmData.put(ExtraKey.USER_ID, userId);
+
+        sendGeneralEvent(gtmData);
+    }
+
+    public void eventClickDeleteProductOnUnavailableSectionGetError(String userId, String productId, String errorType) {
+        Map<String, Object> gtmData = getGtmData(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_DELETE_PRODUCT_ON_UNAVAILABLE_SECTION,
+                productId + " - " + errorType
+        );
+        gtmData.put(ExtraKey.USER_ID, userId);
+
+        sendGeneralEvent(gtmData);
+    }
+
+    public void eventClickSeeOtherProductOnUnavailableSection(String userId, String productId, String errorType) {
+        Map<String, Object> gtmData = getGtmData(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_LIHAT_PRODUK_SERUPA_ON_UNAVAILABLE_SECTION,
+                productId + " - " + errorType
+        );
+        gtmData.put(ExtraKey.USER_ID, userId);
+
+        sendGeneralEvent(gtmData);
+    }
+
+    public void eventClickCheckoutMelaluiBrowserOnUnavailableSection(String userId, String productId, String errorType) {
+        Map<String, Object> gtmData = getGtmData(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_CHECKOUT_MELALUI_BROWSER_ON_UNAVAILABLE_SECTION,
+                productId + " - " + errorType
+        );
+        gtmData.put(ExtraKey.USER_ID, userId);
+
+        sendGeneralEvent(gtmData);
+    }
+
+    public void eventClickDeleteAllUnavailableProduct(String userId) {
+        Map<String, Object> gtmData = getGtmData(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_DELETE_ALL_UNAVAILABLE_PRODUCT,
+                ""
+        );
+        gtmData.put(ExtraKey.USER_ID, userId);
+
+        sendGeneralEvent(gtmData);
+    }
+
+    public void eventClickAccordionButtonOnUnavailableProduct(String userId, String buttonWording) {
+        Map<String, Object> gtmData = getGtmData(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_ACCORDION_ON_UNAVAILABLE_PRODUCT.replace("%s", buttonWording.toLowerCase()),
+                ""
+        );
+        gtmData.put(ExtraKey.USER_ID, userId);
+
+        sendGeneralEvent(gtmData);
+    }
+
+    public void eventClickUndoAfterDeleteProduct(String userId) {
+        Map<String, Object> gtmData = getGtmData(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_UNDO_AFTER_DELETE_PRODUCT,
+                ""
+        );
+        gtmData.put(ExtraKey.USER_ID, userId);
+
+        sendGeneralEvent(gtmData);
+    }
+
+    public void eventViewErrorPageWhenLoadCart(String userId, String errorType) {
+        Map<String, Object> gtmData = getGtmData(
+                EventName.VIEW_ATC_IRIS,
+                EventCategory.CART,
+                EventAction.VIEW_ERROR_PAGE_WHEN_LOAD_CART,
+                ""
+        );
+        gtmData.put(ExtraKey.USER_ID, userId);
+
+        sendGeneralEvent(gtmData);
     }
 }
