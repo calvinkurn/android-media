@@ -1690,16 +1690,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             PromoRevampAnalytics.eventCartViewPromoAlreadyApplied()
         }
 
-        lastApplyData.benefitSummaryInfo.summaries.forEach {
-            when {
-                it.type.equals("cashback", true) -> {
-                    cartListData?.shoppingSummaryData?.promoValue = it.amount
-                }
-                it.type.equals("discount", true) -> {
-                    cartListData?.shoppingSummaryData?.discountValue = it.amount
-                }
-            }
-        }
+        cartListData?.shoppingSummaryData?.promoValue = lastApplyData.benefitSummaryInfo.finalBenefitAmount
     }
 
     private fun setLastApplyDataToShopGroup(lastApplyData: LastApplyUiModel) {
