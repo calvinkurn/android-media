@@ -35,11 +35,11 @@ import com.tokopedia.oneclickcheckout.preference.edit.di.PreferenceEditComponent
 import com.tokopedia.oneclickcheckout.preference.edit.view.PreferenceEditParent
 import com.tokopedia.oneclickcheckout.preference.edit.view.shipping.ShippingDurationFragment
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.KERO_TOKEN
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.empty_list_address.*
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -66,6 +66,7 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.onSelec
     private var bottomLayout: FrameLayout? = null
 
     private var emptyStateLayout: LinearLayout? = null
+    private var ivEmptyState: ImageUnify? = null
 
     private var textSearchError: Typography? = null
     private var globalErrorLayout: GlobalError? = null
@@ -114,6 +115,7 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.onSelec
                     globalErrorLayout?.gone()
                     setEmptyState(it.data.listAddress.isEmpty(), viewModel.savedQuery.isEmpty())
                     adapter.setData(it.data.listAddress)
+                    validateButton()
                 }
 
                 is OccState.Failed -> {
@@ -173,6 +175,10 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.onSelec
         }
     }
 
+    private fun validateButton() {
+        buttonSaveAddress?.isEnabled = viewModel.selectedId.toIntOrZero() > 0
+    }
+
     private fun initSearch() {
         val searchKey = viewModel.savedQuery
         searchAddress?.searchBarTextField?.setText(searchKey)
@@ -188,10 +194,11 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.onSelec
         buttonSaveAddress = view?.findViewById(R.id.btn_save_address)
         bottomLayout = view?.findViewById(R.id.bottom_layout_address)
         emptyStateLayout = view?.findViewById(R.id.empty_state_order_list)
+        ivEmptyState = view?.findViewById(R.id.iv_empty_state)
         textSearchError = view?.findViewById(R.id.text_search_error)
         globalErrorLayout = view?.findViewById(R.id.global_error)
 
-        ImageHandler.LoadImage(iv_empty_state, EMPTY_STATE_PICT_URL)
+        ImageHandler.LoadImage(ivEmptyState, EMPTY_STATE_PICT_URL)
     }
 
     private fun goBack() {

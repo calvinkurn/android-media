@@ -27,7 +27,6 @@ import com.tokopedia.oneclickcheckout.preference.edit.view.payment.PaymentMethod
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
-import kotlinx.android.synthetic.main.fragment_shipping_duration.*
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -97,16 +96,8 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
                     swipeRefreshLayout?.isRefreshing = false
                     globalError?.gone()
                     contentLayout?.visible()
-
-                    btn_save_duration.setOnClickListener {
-                        val selectedId = viewModel.selectedId
-                        if (selectedId > 0) {
-                            preferenceListAnalytics.eventClickPilihMetodePembayaranInDuration(selectedId.toString())
-                            goToNextStep()
-                        }
-                    }
-
                     adapter.renderData(it.data.services)
+                    validateButton()
                 }
 
                 is OccState.Failed -> {
@@ -119,6 +110,10 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
                 is OccState.Loading -> swipeRefreshLayout?.isRefreshing = true
             }
         })
+    }
+
+    private fun validateButton() {
+        buttonSaveDuration?.isEnabled = viewModel.selectedId > 0
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -138,10 +133,18 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
         swipeRefreshLayout = view?.findViewById(R.id.swipe_refresh_layout)
         tickerInfo = view?.findViewById(R.id.ticker_info)
         shippingDurationList = view?.findViewById(R.id.shipping_duration_rv)
-        buttonSaveDuration = view?.findViewById(R.id.btn_save_address)
+        buttonSaveDuration = view?.findViewById(R.id.btn_save_duration)
         bottomLayout = view?.findViewById(R.id.bottom_layout_shipping)
         contentLayout = view?.findViewById(R.id.content_layout)
         globalError = view?.findViewById(R.id.global_error)
+
+        buttonSaveDuration?.setOnClickListener {
+            val selectedId = viewModel.selectedId
+            if (selectedId > 0) {
+                preferenceListAnalytics.eventClickPilihMetodePembayaranInDuration(selectedId.toString())
+                goToNextStep()
+            }
+        }
     }
 
     private fun checkEntryPoint() {

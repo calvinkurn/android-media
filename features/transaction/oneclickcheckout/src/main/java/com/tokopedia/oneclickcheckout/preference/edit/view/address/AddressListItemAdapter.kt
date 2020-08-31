@@ -2,7 +2,6 @@ package com.tokopedia.oneclickcheckout.preference.edit.view.address
 
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
@@ -10,8 +9,11 @@ import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel
 import com.tokopedia.oneclickcheckout.R
+import com.tokopedia.unifycomponents.CardUnify
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.card_address_list.view.*
 
 class AddressListItemAdapter(var listener: onSelectedListener) : RecyclerView.Adapter<AddressListItemAdapter.AddressListViewHolder>() {
 
@@ -42,32 +44,37 @@ class AddressListItemAdapter(var listener: onSelectedListener) : RecyclerView.Ad
     /*Inner View Holder*/
     inner class AddressListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        val pinpointText = itemView.findViewById<Typography>(R.id.tv_pinpoint_state)
-        val imageLocation = itemView.findViewById<ImageView>(R.id.img_location_state)
+        private val addressType = itemView.findViewById<Typography>(R.id.address_type)
+        private val addressName = itemView.findViewById<Typography>(R.id.address_name)
+        private val addressNumber = itemView.findViewById<Typography>(R.id.address_number)
+        private val addressDetail = itemView.findViewById<Typography>(R.id.address_detail)
+        private val itemAddressRadio = itemView.findViewById<RadioButtonUnify>(R.id.item_address_radio)
+        private val lblMainAddress = itemView.findViewById<Label>(R.id.lbl_main_address)
+        private val cardAddressList = itemView.findViewById<CardUnify>(R.id.card_address_list)
+        private val pinpointText = itemView.findViewById<Typography>(R.id.tv_pinpoint_state)
+        private val imageLocation = itemView.findViewById<ImageUnify>(R.id.img_location_state)
 
         fun bind(data: RecipientAddressModel) {
-            with(itemView) {
-                setVisibility(data)
-                setPrimary(data)
-                address_type.text = data.addressName
-                address_name.text = data.recipientName
-                address_number.text = data.recipientPhoneNumber
-                address_detail.text = "${data.street}, ${data.destinationDistrictName}, ${data.cityName} ${data.postalCode}"
+            setVisibility(data)
+            setPrimary(data)
+            addressType.text = data.addressName
+            addressName.text = data.recipientName
+            addressNumber.text = data.recipientPhoneNumber
+            addressDetail.text = "${data.street}, ${data.destinationDistrictName}, ${data.cityName} ${data.postalCode}"
 
-                item_address_radio.isChecked = data.isSelected
-                item_address_radio.skipAnimation()
+            itemAddressRadio.isChecked = data.isSelected
+            itemAddressRadio.skipAnimation()
 
-                card_address_list.setOnClickListener {
-                    listener.onSelect(data.id)
-                }
+            cardAddressList.setOnClickListener {
+                listener.onSelect(data.id)
             }
         }
 
         private fun setPrimary(data: RecipientAddressModel) {
             if (data.addressStatus == 2) {
-                itemView.lbl_main_address.visible()
+                lblMainAddress.visible()
             } else {
-                itemView.lbl_main_address.gone()
+                lblMainAddress.gone()
             }
         }
 

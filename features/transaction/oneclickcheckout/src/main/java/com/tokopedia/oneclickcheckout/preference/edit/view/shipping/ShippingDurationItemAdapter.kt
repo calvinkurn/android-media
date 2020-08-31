@@ -101,6 +101,7 @@ class ShippingDurationItemAdapter(var listener: OnShippingMenuSelected) : Recycl
                 }
             }
             itemShippingRadio.isChecked = data.isSelected
+            itemShippingRadio.skipAnimation()
 
             itemList.setOnClickListener {
                 listener.onSelect(data.servicesId)
