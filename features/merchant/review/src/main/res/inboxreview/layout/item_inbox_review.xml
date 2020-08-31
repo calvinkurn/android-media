@@ -14,7 +14,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:textColor="@color/clr_f531353b"
+        android:textColor="@color/light_N700_96"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginStart="@dimen/spacing_lvl4"
@@ -33,7 +33,6 @@
         app:layout_constraintTop_toBottomOf="@id/tvProductTitle"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="@dimen/spacing_lvl3"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginStart="@dimen/spacing_lvl4"
         tools:src="@drawable/ic_rating_star_four"/>
 
@@ -44,7 +43,7 @@
         app:layout_constraintTop_toBottomOf="@+id/ivRatingFeedback"
         app:layout_constraintStart_toStartOf="@+id/ivRatingFeedback"
         app:layout_constraintEnd_toStartOf="@+id/tvFeedbackDate"
-        android:textColor="@color/clr_f531353b"
+        android:textColor="@color/light_N700_96"
         android:layout_marginTop="@dimen/spacing_lvl4"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
@@ -56,9 +55,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="@+id/tvFeedbackUser"
         app:layout_constraintStart_toEndOf="@id/tvFeedbackUser"
-        android:layout_marginLeft="@dimen/spacing_lvl2"
         android:layout_marginStart="@dimen/spacing_lvl2"
-        android:layout_marginRight="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         app:typographyWeight="reguler"
         app:typographyType="body_3"
@@ -74,12 +71,12 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvFeedbackReview"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/partialFeedbackVariantInboxReview"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:textColor="@color/clr_f531353b"
+        android:textColor="@color/light_N700_96"
         android:maxLines="@integer/int_3"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginStart="@dimen/spacing_lvl4"
@@ -92,7 +89,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvItemAttachmentFeedback"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:clipChildren="false"
@@ -109,12 +106,10 @@
     <View
         android:id="@+id/replyFeedbackState"
         android:layout_width="@dimen/spacing_lvl2"
-        android:layout_height="0dp"
-        android:background="@drawable/rectangle_8"
+        android:layout_height="@dimen/layout_lvl0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="@+id/tvReplyComment"
         app:layout_constraintTop_toBottomOf="@id/rvItemAttachmentFeedback"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl4"/>
 
@@ -123,34 +118,31 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl4"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginStart="@dimen/spacing_lvl4"
         app:typographyType="body_3"
         app:typographyWeight="bold"
-        android:textColor="@color/clr_f531353b"
+        android:textColor="@color/light_N700_96"
         app:layout_constraintTop_toBottomOf="@id/rvItemAttachmentFeedback"
         app:layout_constraintStart_toEndOf="@id/replyFeedbackState"
         tools:text="Balasan otomatis •"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvReplyDate"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/rvItemAttachmentFeedback"
         app:layout_constraintStart_toEndOf="@id/tvReplyUser"
-        android:layout_marginLeft="@dimen/spacing_lvl2"
         android:layout_marginStart="@dimen/spacing_lvl2"
         android:layout_marginTop="@dimen/spacing_lvl4"
-        android:layout_marginRight="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:textColor="@color/clr_ad31353b"
+        android:textColor="@color/light_N700_68"
         app:typographyWeight="reguler"
         app:typographyType="body_3"
         tools:text="Hari ini"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvReplyComment"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/tvReplyUser"
         app:layout_constraintStart_toEndOf="@id/replyFeedbackState"
@@ -174,17 +166,16 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvActionReplyReview"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:background="?selectableItemBackground"
         app:layout_constraintTop_toBottomOf="@id/tvDividerReplyReview"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginRight="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl3"
         app:typographyWeight="bold"
         app:typographyType="body_3"
-        android:textColor="@color/clr_ad31353b"
+        android:textColor="@color/light_N700_68"
         tools:text="Ubah balasan"/>
 
     <com.tokopedia.unifycomponents.DividerUnify
