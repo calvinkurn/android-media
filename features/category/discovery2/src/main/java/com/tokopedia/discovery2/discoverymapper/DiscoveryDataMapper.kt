@@ -7,6 +7,10 @@ import com.tokopedia.discovery2.data.Properties
 import com.tokopedia.discovery2.data.categorynavigationresponse.ChildItem
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.filter.common.data.DataValue
+import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.filter.common.data.Filter
+import com.tokopedia.filter.common.data.Sort
 
 private const val CHIPS = "Chips"
 private const val TABS_ITEM = "tabs_item"
@@ -131,5 +135,14 @@ class DiscoveryDataMapper {
             list.add(componentsItem)
         }
         return list
+    }
+
+    fun mapFiltersToDynamicFilterModel(dataItem: DataItem?): DynamicFilterModel? {
+        val filter = dataItem?.filter
+        filter?.forEach {
+            if(it.options.isNullOrEmpty())
+                filter.remove(it)
+        }
+        return DynamicFilterModel(data = DataValue(filter = filter as List<Filter>, sort = dataItem.sort as List<Sort>))
     }
 }

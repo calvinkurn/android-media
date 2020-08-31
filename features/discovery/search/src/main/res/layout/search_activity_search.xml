@@ -141,7 +141,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
 
-    <LinearLayout
+    <androidx.constraintlayout.motion.widget.MotionLayout
         android:id="@+id/container"
         android:layout_width="@dimen/dp_0"
         android:layout_height="@dimen/dp_0"
@@ -150,7 +150,8 @@
         app:layout_constraintTop_toBottomOf="@id/toolbar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layoutDescription="@xml/tab_layout_scene">
 
         <com.tokopedia.design.component.Tabs
             android:id="@+id/tabs"
@@ -163,19 +164,37 @@
             app:tabTextAppearance="@style/SearchTabLayoutTextStyle"
             app:tabIndicatorColor="@color/tkpd_main_green"
             app:tabPaddingBottom="@dimen/dp_12"
-            android:theme="@style/ThemeOverlay.AppCompat.Light"/>
+            android:theme="@style/ThemeOverlay.AppCompat.Light"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
         <View
             android:id="@+id/search_top_bar_shadow"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
-            android:background="@drawable/top_bar_shadow" />
+            android:background="@drawable/top_bar_shadow"
+            app:layout_constraintTop_toBottomOf="@id/tabs"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <View
+            android:id="@+id/search_quick_filter_top_padding"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_8"
+            app:layout_constraintTop_toBottomOf="@id/search_top_bar_shadow"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
         <com.tokopedia.search.result.presentation.widget.NonSwipeableViewPager
             android:id="@+id/pager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="@dimen/dp_0"
+            app:layout_constraintTop_toBottomOf="@id/search_quick_filter_top_padding"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
-    </LinearLayout>
+    </androidx.constraintlayout.motion.widget.MotionLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

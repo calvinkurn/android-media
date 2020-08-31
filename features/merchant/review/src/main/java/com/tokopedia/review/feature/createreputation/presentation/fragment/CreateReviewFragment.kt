@@ -526,7 +526,6 @@ class CreateReviewFragment : BaseDaggerFragment(),
                     setDescriptionClickEvent(object : TickerCallback {
                         override fun onDescriptionViewClick(linkUrl: CharSequence) {
                             val bottomSheet: BottomSheetUnify = IncentiveOvoBottomSheet(data, "")
-                            bottomSheet.isFullpage = true
                             fragmentManager?.let { bottomSheet.show(it, bottomSheet.tag)}
                             bottomSheet.setCloseClickListener {
                                 ReviewTracking.onClickDismissIncentiveOvoBottomSheetTracker("")

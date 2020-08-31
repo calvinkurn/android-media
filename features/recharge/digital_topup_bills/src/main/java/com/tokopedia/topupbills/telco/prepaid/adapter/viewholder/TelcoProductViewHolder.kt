@@ -101,11 +101,14 @@ class TelcoProductViewHolder(itemView: View, private val productType: Int,
 
     private fun setItemSelected(element: TelcoProduct) {
         with(itemView) {
+            isEnabled = !isProductOutOfStock(element.attributes.status)
+            telco_see_more_btn.isEnabled = isEnabled
+
             if (::adapter.isInitialized) {
-                isSelected = adapterPosition == adapter.selectedPosition && !isProductOutOfStock(element.attributes.status)
+                isSelected = adapterPosition == adapter.selectedPosition && isEnabled
 
                 telco_layout_product.setOnClickListener {
-                    listener.onClickItemProduct(element, adapterPosition)
+                    if (isEnabled) listener.onClickItemProduct(element, adapterPosition)
                 }
             }
         }
@@ -117,8 +120,6 @@ class TelcoProductViewHolder(itemView: View, private val productType: Int,
                 telco_label_product.text = itemView.context.getString(R.string.telco_label_out_of_stock)
                 telco_label_product.visibility = View.VISIBLE
                 telco_label_product.setLabelType(Label.GENERAL_DARK_GREY)
-                telco_layout_product.setBackgroundResource(0)
-                telco_layout_product.setBackgroundResource(R.drawable.digital_bg_grey_rounded)
             }
         }
     }

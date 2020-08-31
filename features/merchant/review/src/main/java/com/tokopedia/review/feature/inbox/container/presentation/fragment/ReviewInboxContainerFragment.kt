@@ -141,7 +141,7 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
         }
         reviewInboxViewPager.registerOnPageChangeCallback(object: ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
-                reviewInboxTabs.getUnifyTabLayout().selectTab(reviewInboxTabs.getUnifyTabLayout().getTabAt(position))
+                reviewInboxTabs.getUnifyTabLayout().getTabAt(position)?.select()
             }
         })
     }

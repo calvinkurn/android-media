@@ -5,8 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.collection.ArrayMap
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
-import com.tokopedia.chat_common.data.BlockedStatus
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel
@@ -203,5 +204,11 @@ interface TopChatContract {
         fun blockChat(messageId: String, onSuccess: (ChatSettingsResponse) -> Unit, onError: (Throwable) -> Unit)
 
         fun unBlockChat(messageId: String, onSuccess: (ChatSettingsResponse) -> Unit, onError: (Throwable) -> Unit)
+
+        fun addToCart(
+                addToCartOccRequestParams: AddToCartOccRequestParams,
+                onSuccess: (AddToCartDataModel) -> Unit,
+                onError: (Throwable) -> Unit
+        )
     }
 }
