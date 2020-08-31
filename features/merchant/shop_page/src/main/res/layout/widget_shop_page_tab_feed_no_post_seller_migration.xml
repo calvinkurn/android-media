@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="@dimen/layout_lvl2"
+    android:paddingEnd="@dimen/layout_lvl2"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/ivSellerMigration"
+        android:id="@+id/ivTabFeedNoPost"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
@@ -14,7 +17,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvTitleSellerMigration"
+        android:id="@+id/tvTitleTabFeedNoPost"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -22,13 +25,13 @@
         app:typographyType="body_2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ivSellerMigration"
+        app:layout_constraintTop_toBottomOf="@id/ivTabFeedNoPost"
         android:layout_marginTop="@dimen/spacing_lvl4"
         tools:text="@string/seller_migration_tab_feed_no_post_title"
         />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvDescSellerMigration"
+        android:id="@+id/tvDescTabFeedNoPost"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -36,21 +39,21 @@
         app:typographyType="body_3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvTitleSellerMigration"
+        app:layout_constraintTop_toBottomOf="@id/tvTitleTabFeedNoPost"
         android:layout_marginTop="@dimen/spacing_lvl4"
         tools:text="@string/seller_migration_tab_feed_no_post_description"
         />
 
     <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/sellerMigrationPlayStoreButton"
-        android:layout_width="@dimen/layout_lvl0"
+        android:id="@+id/btnPlayStoreTabFeedNoPost"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:text="@string/seller_migration_bottom_sheet_button"
         app:unifyButtonSize="medium"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvDescSellerMigration"/>
+        app:layout_constraintTop_toBottomOf="@id/tvDescTabFeedNoPost"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/sellerMigrationLearnMoreLink"
@@ -60,7 +63,7 @@
         android:gravity="center"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
-        app:layout_constraintTop_toBottomOf="@id/sellerMigrationPlayStoreButton"
+        app:layout_constraintTop_toBottomOf="@id/btnPlayStoreTabFeedNoPost"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         tools:text="Pelajari keuntungan lainnya di sini"/>
