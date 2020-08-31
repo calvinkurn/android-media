@@ -58,11 +58,11 @@ import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_SET_DELIVERED
 import com.tokopedia.sellerorder.common.util.SomConsts.SORT_ASCENDING
 import com.tokopedia.sellerorder.common.util.SomConsts.SORT_DESCENDING
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ALL_ORDER
+import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_CODE_ORDER_DELIVERED
+import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_CODE_ORDER_DELIVERED_DUE_LIMIT
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_DELIVERED
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_DONE
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ORDER_CANCELLED
-import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ORDER_DELIVERED
-import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ORDER_DELIVERED_DUE_LIMIT
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_ACTIVE
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_STATUS
 import com.tokopedia.sellerorder.common.util.Utils
@@ -517,7 +517,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private fun loadOrderList(nextOrderId: Int) {
         paramOrder.nextOrderId = nextOrderId
         activity?.resources?.let {
-            somListViewModel.loadOrderList(GraphqlHelper.loadRawString(it, R.raw.gql_som_order), paramOrder)
+            somListViewModel.loadOrderList(paramOrder)
         }
     }
 
@@ -610,8 +610,8 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 if (paramOrder.statusList.isEmpty()) {
                     if (tabStatus.equals(STATUS_DELIVERED, true)) {
                         val listPesananTiba = ArrayList<Int>()
-                        if (it.orderStatusIdList.contains(STATUS_ORDER_DELIVERED)) listPesananTiba.add(STATUS_ORDER_DELIVERED)
-                        if (it.orderStatusIdList.contains(STATUS_ORDER_DELIVERED_DUE_LIMIT)) listPesananTiba.add(STATUS_ORDER_DELIVERED_DUE_LIMIT)
+                        if (it.orderStatusIdList.contains(STATUS_CODE_ORDER_DELIVERED)) listPesananTiba.add(STATUS_CODE_ORDER_DELIVERED)
+                        if (it.orderStatusIdList.contains(STATUS_CODE_ORDER_DELIVERED_DUE_LIMIT)) listPesananTiba.add(STATUS_CODE_ORDER_DELIVERED_DUE_LIMIT)
                         paramOrder.statusList = listPesananTiba
                     } else {
                         paramOrder.statusList = it.orderStatusIdList

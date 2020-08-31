@@ -70,15 +70,17 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
     private int statusCode;
 
     private int projectId = -1;
+    private String callback = null;
 
     @Inject
     UserIdentificationInfo.Presenter presenter;
 
-    public static UserIdentificationInfoFragment createInstance(boolean isSourceSeller, int projectid) {
+    public static UserIdentificationInfoFragment createInstance(boolean isSourceSeller, int projectid, String callback) {
         UserIdentificationInfoFragment fragment = new UserIdentificationInfoFragment();
         Bundle args = new Bundle();
         args.putBoolean(KYCConstant.EXTRA_IS_SOURCE_SELLER, isSourceSeller);
         args.putInt(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectid);
+        args.putString(ApplinkConstInternalGlobal.PARAM_CALL_BACK,callback);
         fragment.setArguments(args);
         return fragment;
     }
@@ -97,6 +99,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
         if (getArguments() != null) {
             isSourceSeller = getArguments().getBoolean(KYCConstant.EXTRA_IS_SOURCE_SELLER);
             projectId = getArguments().getInt(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, KYCConstant.KYC_PROJECT_ID);
+            callback = getArguments().getString(ApplinkConstInternalGlobal.PARAM_CALL_BACK);
         }
 
         if (isSourceSeller) {
@@ -171,6 +174,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
             case KYCConstant.STATUS_REJECTED:
                 showStatusRejected(reasons);
                 break;
+            case KYCConstant.STATUS_APPROVED:
             case KYCConstant.STATUS_PENDING:
                 showStatusPending();
                 break;
@@ -245,11 +249,16 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
         ImageHandler.LoadImage(image, KycUrl.ICON_SUCCESS_VERIFY);
         title.setText(R.string.kyc_verified_title);
         text.setText(R.string.kyc_verified_text);
-        button.setText(R.string.kyc_verified_button);
+        if (callback == null) {
+            button.setText(R.string.kyc_verified_button);
+            button.setOnClickListener(onGoToTermsButton());
+        } else {
+            button.setText(R.string.camera_next_button);
+            button.setOnClickListener(goToCallBackUrl(callback));
+        }
         button.setButtonVariant(UnifyButton.Variant.FILLED);
         button.setButtonType(UnifyButton.Type.MAIN);
         button.setVisibility(View.VISIBLE);
-        button.setOnClickListener(onGoToTermsButton());
         analytics.eventViewSuccessPage();
     }
 
@@ -257,10 +266,16 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
         ImageHandler.LoadImage(image, KycUrl.ICON_WAITING);
         title.setText(R.string.kyc_pending_title);
         text.setText(R.string.kyc_pending_text);
-        button.setText(R.string.kyc_pending_button);
+        if (callback == null) {
+            button.setText(R.string.kyc_pending_button);
+            button.setOnClickListener(onGoToAccountSettingButton(KYCConstant.STATUS_PENDING));
+        } else {
+            button.setText(R.string.camera_next_button);
+            button.setOnClickListener(goToCallBackUrl(callback));
+        }
+
         button.setButtonVariant(UnifyButton.Variant.GHOST);
         button.setVisibility(View.VISIBLE);
-        button.setOnClickListener(onGoToAccountSettingButton(KYCConstant.STATUS_PENDING));
         analytics.eventViewPendingPage();
     }
 
@@ -400,6 +415,15 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
         return v -> {
             analytics.eventClickTermsSuccessPage();
             RouteManager.route(getActivity(), KycCommonUrl.APPLINK_TERMS_AND_CONDITION);
+        };
+    }
+
+    private View.OnClickListener goToCallBackUrl(String callback){
+        return v -> {
+            if (callback != null){
+              RouteManager.route(getActivity(),callback);
+              getActivity().finish();
+            }
         };
     }
 

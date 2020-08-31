@@ -316,4 +316,6 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val ARGS_REVIEW_ID = "ARGS_REVIEW_ID"
 
+    @JvmField
+    val ARGS_LAYOUT_ID = "layoutID"
 }
