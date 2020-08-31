@@ -284,7 +284,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     @Override
     public void failedCancelVoucherCart(Throwable throwable) {
         String message = ErrorNetMessage.MESSAGE_ERROR_DEFAULT;
-        if (throwable != null && throwable.getMessage().equals("")) {
+        if (throwable != null && !throwable.getMessage().equals("")) {
             message = ErrorHandler.getErrorMessage(getActivity(), throwable);
         }
         showToastMessage(message);
