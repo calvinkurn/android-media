@@ -48,10 +48,7 @@ class CouponListResultVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         if (crackBenefitEntity.isAutoApply) {
             button.visible()
-            val sb = StringBuilder(crackButtonEntity?.title ?: "")
-            sb.append(" ")
-            sb.append(data.minimumUsage)
-            button.text = sb.toString()
+            button.text = crackButtonEntity?.title ?: ""
             button.setOnClickListener {
                 if (!crackBenefitEntity.dummyCode.isNullOrEmpty()) {
                     if (!crackButtonEntity?.applink.isNullOrEmpty()) {

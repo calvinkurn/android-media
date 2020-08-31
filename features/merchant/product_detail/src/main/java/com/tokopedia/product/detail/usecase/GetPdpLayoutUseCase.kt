@@ -22,8 +22,8 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
 
     companion object {
         val QUERY = """
-            query pdpGetLayout(${'$'}productID : String, ${'$'}shopDomain :String, ${'$'}productKey :String, ${'$'}whID : String) {
-              pdpGetLayout(productID:${'$'}productID, shopDomain:${'$'}shopDomain,productKey:${'$'}productKey, apiVersion: 1, whID:${'$'}whID) {
+            query pdpGetLayout(${'$'}productID : String, ${'$'}shopDomain :String, ${'$'}productKey :String, ${'$'}whID : String, ${'$'}layoutID : String) {
+              pdpGetLayout(productID:${'$'}productID, shopDomain:${'$'}shopDomain,productKey:${'$'}productKey, apiVersion: 1, whID:${'$'}whID, layoutID:${'$'}layoutID) {
                 name
                 pdpSession
                 basicInfo {
@@ -284,12 +284,13 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
             }
         """.trimIndent()
 
-        fun createParams(productId: String, shopDomain: String, productKey: String, whId: String): RequestParams =
+        fun createParams(productId: String, shopDomain: String, productKey: String, whId: String, layoutId: String): RequestParams =
                 RequestParams.create().apply {
                     putString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, productId)
                     putString(ProductDetailCommonConstant.PARAM_SHOP_DOMAIN, shopDomain)
                     putString(ProductDetailCommonConstant.PARAM_PRODUCT_KEY, productKey)
                     putString(ProductDetailCommonConstant.PARAM_WAREHOUSE_ID, whId)
+                    putString(ProductDetailCommonConstant.PARAM_LAYOUT_ID, layoutId)
                 }
     }
 

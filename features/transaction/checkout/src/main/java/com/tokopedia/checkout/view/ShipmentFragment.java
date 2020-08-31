@@ -2651,6 +2651,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void resetPromoBenefit() {
         shipmentAdapter.resetPromoBenefit();
         onNeedUpdateViewItem(shipmentAdapter.getShipmentCostPosition());
+        shipmentAdapter.updateShipmentCostModel();
     }
 
     @Override

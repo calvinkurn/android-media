@@ -1,7 +1,6 @@
 package com.tokopedia.tkpd
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -10,16 +9,10 @@ import androidx.appcompat.app.AppCompatActivity
 import com.chuckerteam.chucker.api.Chucker
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.application.MyApplication
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConsInternalHome
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.authentication.AuthHelper
-import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.tkpd.helper.logout
 import com.tokopedia.tkpd.network.DataSource
-import com.tokopedia.tkpd.network.LogoutPojo
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.main_testapp.*
 import rx.Observable
@@ -166,7 +159,8 @@ class OldMainActivity : AppCompatActivity() {
         /* @example: open groupchat module;
          * startActivity(PlayActivity.getCallingIntent(this, "668", true))
          * or, you can use route like this:
-         * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS) */
-        RouteManager.route(this, ApplinkConsInternalHome.HOME_INBOX)
+         * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS)
+         * LEAVE THIS EMPTY AS DEFAULT!!
+         * */
     }
 }
