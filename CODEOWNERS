@@ -71,7 +71,6 @@
 /features/merchant/seller_migration_common/             @tokopedia/android-minionstuart-dev
 /features/merchant/seller_active_common/                @tokopedia/android-minionstuart-dev
 /features/merchant/shop_common/                         @tokopedia/android-minionstuart-dev
-/features/merchant/shop_etalase_picker/                 @tokopedia/android-minionstuart-dev
 /features/merchant/shop_open/                           @tokopedia/android-minionstuart-dev
 /features/merchant/shop_showcase/                       @tokopedia/android-minionstuart-dev
 /features/merchant/shop_page/                           @tokopedia/android-minionstuart-dev
