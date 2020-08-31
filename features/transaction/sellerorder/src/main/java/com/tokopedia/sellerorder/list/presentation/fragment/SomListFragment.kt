@@ -759,7 +759,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             desc_empty?.text = getString(R.string.empty_peluang_desc_non_topads_with_filter)
             btn_cek_peluang?.gone()
             SomAnalytics.eventViewEmptyState(tabActive)
-        } else if (!isFilterApplied) {
+        } else if (!isFilterApplied && GlobalConfig.isSellerApp()) {
             desc_empty?.text = getString(R.string.empty_peluang_desc_non_topads_no_filter)
             btn_cek_peluang?.apply {
                 text = getString(R.string.btn_cek_peluang_non_topads)
