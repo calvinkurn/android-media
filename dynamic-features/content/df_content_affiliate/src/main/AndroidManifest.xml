@@ -3,7 +3,7 @@
     package="com.tokopedia.df.content.affiliate">
 
     <dist:module
-        dist:title="@string/title_affiliate">
+        dist:title="@string/title_affiliate_df">
         <dist:delivery>
             <dist:on-demand/>
         </dist:delivery>
