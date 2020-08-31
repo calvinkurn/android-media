@@ -21,8 +21,7 @@
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:layout_width="match_parent"
-        android:layout_height="@dimen/setting_divider_thin"
-        android:background="@android:color/transparent"/>
+        android:layout_height="@dimen/setting_divider_thin"/>
 
     <include
         android:id="@+id/saldoBalance"

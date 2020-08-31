@@ -6,7 +6,6 @@
     android:paddingTop="@dimen/setting_status_padding_top"
     android:paddingBottom="@dimen/setting_status_padding_bottom"
     android:layout_width="match_parent"
-    android:background="@android:color/transparent"
     android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
