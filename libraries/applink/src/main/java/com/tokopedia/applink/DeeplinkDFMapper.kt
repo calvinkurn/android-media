@@ -16,7 +16,6 @@ import com.tokopedia.applink.internal.ApplinkConsInternalDigital.INTERNAL_SMARTC
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.INTERNAL_SMARTCARD_EMONEY
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.TELCO_POSTPAID_DIGITAL
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.TELCO_PREPAID_DIGITAL
-import com.tokopedia.applink.internal.ApplinkConsInternalDigital.SUBHOMEPAGE
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.VOUCHER_GAME
 import com.tokopedia.applink.internal.ApplinkConsInternalHome.DEFAULT_HOME_RECOMMENDATION
 import com.tokopedia.applink.internal.ApplinkConsInternalHome.HOME_RECENT_VIEW

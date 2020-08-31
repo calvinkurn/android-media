@@ -8,9 +8,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.listener.ReminderWidgetListener
+import com.tokopedia.home_component.util.loadImage
 import com.tokopedia.home_component.model.ReminderState
 import com.tokopedia.home_component.util.setGradientBackground
-import com.tokopedia.home_component.util.loadImage
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import kotlinx.android.synthetic.main.home_component_reminder_widget.view.*
 import com.tokopedia.kotlin.extensions.view.*
@@ -50,7 +50,7 @@ class ReminderWidgetViewHolder(
             if(element.data.reminders.isEmpty()){
                 home_reminder_recommendation_loading.show()
                 if (!disableNetwork){
-                    reminderWidgetListener?.getReminderWidget(element)
+                    reminderWidgetListener?.getReminderWidget(element.source)
                     performanceMonitoring?.stopTrace()
                 }
                 performanceMonitoring = null
