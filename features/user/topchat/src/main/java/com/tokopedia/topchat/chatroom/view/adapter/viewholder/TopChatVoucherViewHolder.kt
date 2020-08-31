@@ -47,7 +47,6 @@ class TopChatVoucherViewHolder(
     private fun setupChatBubbleAlignment(isSender: Boolean, element: TopChatVoucherUiModel) {
         if (isSender) {
             setChatRight(element)
-            bindChatReadStatus(element)
         } else {
             setChatLeft()
         }
