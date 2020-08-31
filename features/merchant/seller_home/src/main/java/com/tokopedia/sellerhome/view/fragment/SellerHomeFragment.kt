@@ -715,13 +715,12 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private inline fun <reified D : BaseDataUiModel, reified W : BaseWidgetUiModel<D>> Throwable.setOnErrorWidgetState(widgetType: String) {
         val message = this.message.orEmpty()
         adapter.data.forEach { widget ->
-            if (widget.widgetType == widgetType) {
-                if (widget is W && widget.data == null && widget.isLoaded) {
-                    widget.data = D::class.java.newInstance().apply {
-                        error = message
-                    }
-                    notifyWidgetChanged(widget)
+            val isCorrectWidgetType = widget.widgetType == widgetType
+            if (widget is W && widget.data == null && widget.isLoaded && isCorrectWidgetType) {
+                widget.data = D::class.java.newInstance().apply {
+                    error = message
                 }
+                notifyWidgetChanged(widget)
             }
         }
         showErrorToaster()
