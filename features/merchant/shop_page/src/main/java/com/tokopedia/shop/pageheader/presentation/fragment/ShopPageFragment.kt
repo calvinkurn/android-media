@@ -294,7 +294,7 @@ class ShopPageFragment :
                 shopDomain.orEmpty(),
                 START_PAGE,
                 ShopPageConstant.DEFAULT_PER_PAGE,
-                initialProductListSortId,
+                initialProductListSortId.toIntOrZero(),
                 "",
                 "",
                 isRefresh
@@ -428,7 +428,7 @@ class ShopPageFragment :
                     shopDomain.orEmpty(),
                     START_PAGE,
                     ShopPageConstant.DEFAULT_PER_PAGE,
-                    initialProductListSortId,
+                    initialProductListSortId.toIntOrZero(),
                     "",
                     "",
                     isRefresh
