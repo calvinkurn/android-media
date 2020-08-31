@@ -44,23 +44,11 @@ class InactivePhoneOnboardingIdCardFragment : BaseDaggerFragment() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == REQUEST_CAPTURE_ID_CARD && resultCode == Activity.RESULT_OK) {
-            checkHasDana()
-        }
-    }
-
-    private fun checkHasDana() {
-        val dana = 500
-        if (dana > 500) {
-            gotoOnboardingSavingBook()
-        } else {
             gotoOnboardingSelfie()
         }
     }
 
     private fun gotoOnboardingSelfie() {
         fragmentTransactionInterface.replace(InactivePhoneOnboardingSelfieFragment())
-    }
-    private fun gotoOnboardingSavingBook() {
-        fragmentTransactionInterface.replace(InactivePhoneOnboardingSavingBookFragment())
     }
 }
