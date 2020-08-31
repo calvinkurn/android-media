@@ -167,7 +167,7 @@
     <string name="text_button_sort" translatable="false">Sort</string>
 
     <string name="saldo_webview_title">Tokopedia</string>
-  
+
     <string name="title_logout" translatable="false">logout</string>
 
     <!--Talk-->
@@ -178,5 +178,6 @@
     <string name="action_pick_photo">Pilih Foto</string>
     <string name="action_edit_photo">Ubah Foto</string>
     <string name="label_title_add_product">Tambah Produk</string>
+    <string name="title_df_user_groupchat">Groupchat</string>
 
 </resources>

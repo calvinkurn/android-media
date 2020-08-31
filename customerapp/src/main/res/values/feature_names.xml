@@ -49,7 +49,7 @@
     <string name="title_liveness_detection">Liveness Detection</string>
 
     <!-- Dynamic feature for Groupchat-->
-    <string name="groupchat_app_name">Play</string>
+    <string name="title_groupchat_df">Groupchat</string>
 
     <!--    Change Phone Number-->
     <string name="change_phone_number_app_module_name">changephonenumber</string>
