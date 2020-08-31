@@ -9,7 +9,7 @@
 
     <application
         android:name="com.tokopedia.application.MyApplication"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:label="@string/testapp_name"
         android:supportsRtl="true"
         tools:replace="label,android:allowBackup"
