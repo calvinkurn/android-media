@@ -17,7 +17,7 @@ class TelcoPrepaidMockResponseConfig : MockModelConfig() {
     override fun createMockModel(context: Context): MockModelConfig {
         addMockResponse(
                 KEY_QUERY_MENU_DETAIL,
-                InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_telco_menu_detail),
+                InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_prepaid_menu_detail),
                 FIND_BY_CONTAINS)
         addMockResponse(
                 KEY_QUERY_FAV_NUMBER,
@@ -25,11 +25,11 @@ class TelcoPrepaidMockResponseConfig : MockModelConfig() {
                 FIND_BY_CONTAINS)
         addMockResponse(
                 KEY_QUERY_PREFIX_SELECT,
-                InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_telco_prefix_select),
+                InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_prepaid_prefix_select),
                 FIND_BY_CONTAINS)
         addMockResponse(
                 KEY_QUERY_PRODUCT_MULTI_TAB,
-                InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_telco_product_multitab),
+                InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_prepaid_product_multitab),
                 FIND_BY_CONTAINS)
         return this
     }
