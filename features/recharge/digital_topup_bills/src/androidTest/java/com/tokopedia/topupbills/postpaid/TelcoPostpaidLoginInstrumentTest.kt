@@ -106,7 +106,7 @@ class TelcoPostpaidLoginInstrumentTest {
     fun validate_postpaid_login() {
         stubSearchNumber()
         stubContactNumber()
-        InstrumentationAuthHelper.loginToAnUser(mActivityRule.activity.application)
+        InstrumentationAuthHelper.loginInstrumentationTestUser1(mActivityRule.activity.application)
 
         Thread.sleep(3000)
 
