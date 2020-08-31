@@ -30,6 +30,7 @@ import com.tokopedia.design.text.watcher.AfterTextWatcher
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.ShopShowcaseInstance
 import com.tokopedia.shop_showcase.common.*
@@ -310,11 +311,18 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         val showcaseId = if (dataShowcase.type == ShowcaseType.GENERATED) dataShowcase.alias else dataShowcase.id
         activity?.run{
             val intent = Intent()
-            intent.putExtra(ShopShowcaseListParam.EXTRA_ETALASE_ID, showcaseId)
-            intent.putExtra(ShopShowcaseListParam.EXTRA_ETALASE_NAME, dataShowcase.name)
-            intent.putExtra(ShopShowcaseListParam.EXTRA_ETALASE_BADGE, dataShowcase.badge)
-            intent.putExtra(ShopShowcaseListParam.EXTRA_IS_NEED_TO_RELOAD_DATA, true)
-            intent.putExtra(ShopShowcaseListParam.EXTRA_ETALASE_TYPE, dataShowcase.type)
+//            intent.putExtra(ShopShowcaseListParam.EXTRA_ETALASE_ID, showcaseId)
+//            intent.putExtra(ShopShowcaseListParam.EXTRA_ETALASE_NAME, dataShowcase.name)
+//            intent.putExtra(ShopShowcaseListParam.EXTRA_ETALASE_BADGE, dataShowcase.badge)
+//            intent.putExtra(ShopShowcaseListParam.EXTRA_IS_NEED_TO_RELOAD_DATA, true)
+//            intent.putExtra(ShopShowcaseListParam.EXTRA_ETALASE_TYPE, dataShowcase.type)
+
+            intent.putExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_ID, showcaseId)
+            intent.putExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_NAME, dataShowcase.name)
+            intent.putExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_BADGE, dataShowcase.badge)
+            intent.putExtra(ShopShowcaseParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, true)
+            intent.putExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_TYPE, dataShowcase.type)
+
             setResult(Activity.RESULT_OK, intent)
             finish()
         }
