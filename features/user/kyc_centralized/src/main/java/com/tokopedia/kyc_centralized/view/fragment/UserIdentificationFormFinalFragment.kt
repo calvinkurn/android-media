@@ -297,13 +297,13 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
 
     private val isKycSelfie: Boolean
         get() {
-//            try {
-//                if (UserIdentificationFormActivity.isSupportedLiveness) {
-//                    return RemoteConfigInstance.getInstance().abTestPlatform.getString(KYCConstant.KYC_AB_KEYWORD) != KYCConstant.KYC_AB_KEYWORD
-//                }
-//            } catch (e: Exception) {
-//                e.printStackTrace()
-//            }
+            try {
+                if (UserIdentificationFormActivity.isSupportedLiveness) {
+                    return RemoteConfigInstance.getInstance().abTestPlatform.getString(KYCConstant.KYC_AB_KEYWORD) != KYCConstant.KYC_AB_KEYWORD
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
             return true
         }
 
