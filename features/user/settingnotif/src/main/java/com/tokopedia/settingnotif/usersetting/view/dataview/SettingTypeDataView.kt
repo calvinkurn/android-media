@@ -22,7 +22,11 @@ data class SettingTypeDataView(
         fun createSettingTypes(): List<SettingTypeDataView> {
             return if (GlobalConfig.isSellerApp()) {
                 arrayListOf(
-                        createSellerType(),
+                        SettingTypeDataView(
+                                icon = R.drawable.ic_notifsetting_notification,
+                                name = R.string.settingnotif_dialog_info_title,
+                                fragment = SellerFieldFragment::class.java
+                        ),
                         SettingTypeDataView(
                                 icon = R.drawable.ic_notifsetting_email,
                                 name = R.string.settingnotif_email,
@@ -53,7 +57,7 @@ data class SettingTypeDataView(
         fun createSellerType(): SettingTypeDataView {
             return SettingTypeDataView(
                     icon = R.drawable.ic_notifsetting_notification,
-                    name = R.string.settingnotif_dialog_info_title,
+                    name = R.string.settingnotif_seller,
                     fragment = SellerFieldFragment::class.java
             )
         }

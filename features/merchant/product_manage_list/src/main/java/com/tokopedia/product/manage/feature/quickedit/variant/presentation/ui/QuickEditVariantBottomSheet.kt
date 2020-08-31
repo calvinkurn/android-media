@@ -74,6 +74,11 @@ abstract class QuickEditVariantBottomSheet: BottomSheetUnify(), HasComponent<Qui
         super.onDestroy()
     }
 
+    override fun onPause() {
+        super.onPause()
+        dismiss()
+    }
+
     override fun getComponent(): QuickEditVariantComponent? {
         return activity?.run {
             DaggerQuickEditVariantComponent.builder()

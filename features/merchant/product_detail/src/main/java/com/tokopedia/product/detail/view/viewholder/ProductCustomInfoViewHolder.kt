@@ -27,7 +27,7 @@ class ProductCustomInfoViewHolder(val view: View, private val listener: DynamicP
         if (element.title.isEmpty() && element.icon.isEmpty()) {
             view.custom_desc.setMargin(0, 0, 8.toPx(), 0)
         } else {
-            view.custom_desc.setMargin(0, 8.toPx(), 8.toPx(), 0)
+            view.custom_desc.setMargin(0, 4.toPx(), 8.toPx(), 0)
         }
 
         renderSeparator(element.separator)

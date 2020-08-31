@@ -9,8 +9,12 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.FitCenter
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.kotlin.extensions.view.hide
@@ -114,13 +118,10 @@ class TopAdsImageView : AppCompatImageView {
      * If imageUrl is null or empty view will hide itself
      * @param imageData The object of TopAdsViewModel
      * */
-    fun loadImage(imageData: TopAdsImageViewModel, onLoadFailed:() -> Unit = {}) {
+    fun loadImage(imageData: TopAdsImageViewModel, cornerRadius: Int = 0, onLoadFailed: () -> Unit = {}) {
         if (!imageData.imageUrl.isNullOrEmpty()) {
-            Glide.with(context)
-                    .load(imageData.imageUrl)
-                    .override(context.resources.displayMetrics.widthPixels,
-                            getHeight(imageData.imageWidth, imageData.imageHeight))
-                    .fitCenter()
+            getRequestBuilder(imageData.imageUrl, cornerRadius).override(context.resources.displayMetrics.widthPixels,
+                    getHeight(imageData.imageWidth, imageData.imageHeight))
                     .addListener(object : RequestListener<Drawable> {
 
                         override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
@@ -130,7 +131,8 @@ class TopAdsImageView : AppCompatImageView {
                         }
 
                         override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                            topAdsImageViewImpressionListener?.onTopAdsImageViewImpression(imageData.adViewUrl ?: "")
+                            topAdsImageViewImpressionListener?.onTopAdsImageViewImpression(imageData.adViewUrl
+                                    ?: "")
                             Timber.d("TopAdsImageView is loaded successfully")
 
                             this@TopAdsImageView.setOnClickListener {
@@ -147,6 +149,19 @@ class TopAdsImageView : AppCompatImageView {
             this.hide()
         }
 
+    }
+
+    private fun getRequestBuilder(imageUrl: String?, radius: Int): RequestBuilder<Drawable> {
+        return if (radius > 0) {
+            Glide.with(context)
+                    .load(imageUrl)
+                    .transform(FitCenter(), RoundedCorners(radius))
+        } else {
+            Glide.with(context)
+                    .load(imageUrl)
+                    .fitCenter()
+
+        }
     }
 
     private fun getHeight(width: Int, height: Int): Int {

@@ -759,7 +759,7 @@ open class WishlistViewModel @Inject constructor(
         if(!isBulkMode) {
             val sortFirst = listRecommendationCarouselOnMarked.toSortedMap()
             sortFirst.forEach{
-                if (it.key <= newVisitable.size) {
+                if (it.key <= newVisitable.size && it.key >= 0) {
                     newVisitable.add(it.key, it.value)
                 }
             }
@@ -796,7 +796,7 @@ open class WishlistViewModel @Inject constructor(
      */
     fun setWishlistOnMarkDelete(productPosition: Int, isChecked: Boolean){
         val wishlistDataTemp: MutableList<WishlistDataModel> = wishlistData.value.toMutableList()
-        if(productPosition < wishlistDataTemp.size && wishlistDataTemp[productPosition] is WishlistItemDataModel){
+        if(productPosition >= 0 && productPosition < wishlistDataTemp.size && wishlistDataTemp[productPosition] is WishlistItemDataModel){
             wishlistDataTemp[productPosition] = (wishlistDataTemp[productPosition] as WishlistItemDataModel).copy(
                     isOnChecked = isChecked
             )

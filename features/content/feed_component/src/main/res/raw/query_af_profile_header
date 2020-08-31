@@ -24,5 +24,8 @@ query ProfileHeader ($userIDTarget: Int!) {
         type
         code
       }
+      config {
+        showPostButton
+      }
     }
 }

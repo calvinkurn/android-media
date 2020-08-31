@@ -76,7 +76,7 @@
     <string name="label_chat_seller">Chat Penjual</string>
     <string name="label_favorite">Favoritkan</string>
     <string name="label_follow">Follow</string>
-    <string name="label_favorited">Followed</string>
+    <string name="label_favorited">Following</string>
     <string name="template_shop_last_login">\u2022 %s</string>
     <string name="campaign_expired_title">Waktu sudah berakhir</string>
     <string name="campaign_expired_descr">Periode promo telah selesai. Harga produk kembali menjadi harga normal</string>
@@ -161,7 +161,7 @@
     <string name="counter_pattern_string">%1$s / %2$d</string>
     <string name="shipping_pattern_string">%1$d Kurir • </string>
     <string name="ongkir_pattern_string">%1s dari <b>%2s</b></string>
-    <string name="ongkir_pattern_string_dynamic_pdp" formatted="false"><![CDATA[%1s <br>ke <b>%2s</b>]]></string>
+    <string name="ongkir_pattern_string_dynamic_pdp"><![CDATA[%1s <br>ke <b>%2s</b>]]></string>
     <string name="review_counter">• %1$d ulasan</string>
     <string name="label_see_all_with_counter">Lainnya \n %2$d</string>
 
