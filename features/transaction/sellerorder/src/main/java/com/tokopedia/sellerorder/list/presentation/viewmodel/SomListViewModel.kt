@@ -10,12 +10,10 @@ import com.tokopedia.sellerorder.common.presenter.model.SomGetUserRoleUiModel
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CLIENT
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SELLER
 import com.tokopedia.sellerorder.list.data.model.*
-import com.tokopedia.sellerorder.list.domain.list.SomGetFilterListUseCase
-import com.tokopedia.sellerorder.list.domain.list.SomGetOrderListUseCase
-import com.tokopedia.sellerorder.list.domain.list.SomGetOrderStatusListUseCase
-import com.tokopedia.sellerorder.list.domain.list.SomGetTickerListUseCase
+import com.tokopedia.sellerorder.list.domain.list.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.Job
 import javax.inject.Inject
 
@@ -27,7 +25,8 @@ class SomListViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
                                            private val getOrderStatusListUseCase: SomGetOrderStatusListUseCase,
                                            private val getFilterListUseCase: SomGetFilterListUseCase,
                                            private val getOrderListUseCase: SomGetOrderListUseCase,
-                                           private val getUserRoleUseCase: SomGetUserRoleUseCase) : BaseViewModel(dispatcher.ui()) {
+                                           private val getUserRoleUseCase: SomGetUserRoleUseCase,
+                                           private val topAdsGetShopInfoUseCase: SomTopAdsGetShopInfoUseCase) : BaseViewModel(dispatcher.ui()) {
 
     private val _tickerListResult = MutableLiveData<Result<MutableList<SomListTicker.Data.OrderTickers.Tickers>>>()
     val tickerListResult: LiveData<Result<MutableList<SomListTicker.Data.OrderTickers.Tickers>>>
@@ -49,6 +48,8 @@ class SomListViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
     val userRoleResult: LiveData<Result<SomGetUserRoleUiModel>>
         get() = _userRoleResult
 
+    private val _topAdsGetShopInfo = MutableLiveData<Result<SomTopAdsGetShopInfoResponse.Data.TopAdsGetShopInfo>>()
+
     private var getUserRolesJob: Job? = null
 
     fun loadTickerList(tickerQuery: String) {
@@ -69,7 +70,7 @@ class SomListViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
     }
 
     fun loadFilterList(filterQuery: String) {
-        launchCatchError(block =  {
+        launchCatchError(block = {
             _filterListResult.postValue(getFilterListUseCase.execute(filterQuery))
         }, onError = {
             _filterListResult.postValue(Fail(it))
@@ -77,7 +78,7 @@ class SomListViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
     }
 
     fun loadOrderList(paramOrder: SomListOrderParam) {
-        launchCatchError(block =  {
+        launchCatchError(block = {
             _orderListResult.postValue(getOrderListUseCase.execute(paramOrder))
         }, onError = {
             _orderListResult.postValue(Fail(it))
@@ -93,6 +94,20 @@ class SomListViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
                 _userRoleResult.postValue(Fail(it))
             })
         }
+    }
+
+    fun loadTopAdsShopInfo(shopId: Int) {
+        launchCatchError(block = {
+            _topAdsGetShopInfo.postValue(topAdsGetShopInfoUseCase.execute(shopId))
+        }, onError = {
+            _topAdsGetShopInfo.postValue(Fail(it))
+        })
+    }
+
+    fun isTopAdsActive(): Boolean {
+        val topAdsGetShopInfoResult = _topAdsGetShopInfo.value
+        return topAdsGetShopInfoResult is Success &&
+                topAdsGetShopInfoResult.data.somTopAdsShopInfo.category != 1
     }
 
     fun clearUserRoles() {
