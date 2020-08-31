@@ -5,9 +5,6 @@
     <color name="clr_ad31353b">#AD31353B</color>
 
     <color name="typography_black">#F531353B</color>
-    <color name="clr_review_not_found">#7031353B</color>
-    <color name="clr_read_more">#00ad0e</color>
     <color name="white_fifty_percent">#F8F8F8</color>
-    <color name="clr_unanswered">#EBFFEF</color>
     <color name="shimmer_custom_color">#F3F4F5</color>
 </resources>
