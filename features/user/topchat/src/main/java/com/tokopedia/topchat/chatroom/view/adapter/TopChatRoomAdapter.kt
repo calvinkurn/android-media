@@ -280,7 +280,7 @@ class TopChatRoomAdapter(
             return TopchatProductAttachmentViewHolder.OccState(position)
         }
         for ((parentItemIndex, parentItem) in visitables.withIndex()) {
-            if (parentItem == product) return TopchatProductAttachmentViewHolder.OccState(position)
+            if (parentItem == product) return TopchatProductAttachmentViewHolder.OccState(parentItemIndex)
             if (parentItem is ProductCarouselUiModel) {
                 val carouselPosition = parentItem.products.indexOf(product)
                 if (carouselPosition != RecyclerView.NO_POSITION) {
