@@ -108,7 +108,7 @@ class SellerAccountMapper @Inject constructor(
 
         items.add(getShopInfoMenu(accountDataModel, dataDeposit))
 
-        if (accountDataModel.saldo.depositLong != 0L) {
+        if (accountDataModel.saldo.deposit != 0L) {
             items.add(getSaldoInfo(accountDataModel.saldo))
         }
 
@@ -328,8 +328,8 @@ class SellerAccountMapper @Inject constructor(
 
     private fun getSaldoInfo(depositDataModel: DepositDataModel): SellerSaldoViewModel {
         val sellerSaldoCard = SellerSaldoViewModel()
-        if (depositDataModel.depositLong != 0L) {
-            sellerSaldoCard.setBalance(CurrencyFormatUtil.convertPriceValueToIdrFormat(depositDataModel.depositLong, false))
+        if (depositDataModel.deposit != 0L) {
+            sellerSaldoCard.setBalance(CurrencyFormatUtil.convertPriceValueToIdrFormat(depositDataModel.deposit, false))
         }
         return sellerSaldoCard
     }
