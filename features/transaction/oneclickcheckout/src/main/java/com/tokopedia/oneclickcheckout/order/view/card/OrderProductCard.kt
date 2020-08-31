@@ -4,7 +4,6 @@ import android.graphics.Paint
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
@@ -41,7 +40,7 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
     private val tvShopName by lazy { view.findViewById<Typography>(R.id.tv_shop_name) }
     private val tvProductPrice by lazy { view.findViewById<Typography>(R.id.tv_product_price) }
     private val tvProductSlashPrice by lazy { view.findViewById<Typography>(R.id.tv_product_slash_price) }
-    private val ivFreeShipping by lazy { view.findViewById<ImageView>(R.id.iv_free_shipping) }
+    private val ivFreeShipping by lazy { view.findViewById<ImageUnify>(R.id.iv_free_shipping) }
     private val labelError by lazy { view.findViewById<Label>(R.id.label_error) }
 
     private var quantityTextWatcher: TextWatcher? = null
