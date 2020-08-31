@@ -1,14 +1,21 @@
 package com.tokopedia.shop.pageheader.presentation
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import androidx.lifecycle.MutableLiveData
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.feedcomponent.data.pojo.whitelist.Whitelist
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.network.exception.UserNotLoginException
+import com.tokopedia.feedcomponent.data.pojo.whitelist.Whitelist
 import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
 import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -25,6 +32,7 @@ import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Compani
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.FIELD_IS_OWNER
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.FIELD_LAST_ACTIVE
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.FIELD_LOCATION
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.FIELD_SHOP_SNIPPET
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.FIELD_STATUS
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.SHOP_PAGE_SOURCE
 import com.tokopedia.shop.common.graphql.data.isshopofficial.GetIsShopOfficialStore
@@ -87,7 +95,6 @@ class ShopPageViewModel @Inject constructor(
     companion object {
         private const val DATA_NOT_FOUND = "Data not found"
         private const val START_PAGE = 1
-        private const val DEFAULT_SORT_ID = 0
     }
 
     fun isMyShop(shopId: String) = userSessionInterface.shopId == shopId
@@ -99,8 +106,14 @@ class ShopPageViewModel @Inject constructor(
     val shopIdFromDomainData = MutableLiveData<Result<String>>()
     val shopPageHeaderContentData = MutableLiveData<Result<ShopPageHeaderContentData>>()
     var productListData: Pair<Boolean, List<ShopProductViewModel>> = Pair(false, listOf())
+    val shopImagePath = MutableLiveData<String>()
 
-    fun getShopPageTabData(shopId: String? = null, shopDomain: String? = null, isRefresh: Boolean = false) {
+    fun getShopPageTabData(
+            shopId: String? = null,
+            shopDomain: String? = null,
+            isRefresh: Boolean = false,
+            initialProductListSortId: String
+    ) {
         val id = shopId?.toIntOrNull() ?: 0
         if (id == 0 && shopDomain == null) return
         launchCatchError(block = {
@@ -175,7 +188,7 @@ class ShopPageViewModel @Inject constructor(
                                 ShopPageConstant.DEFAULT_PER_PAGE,
                                 "",
                                 "",
-                                DEFAULT_SORT_ID,
+                                initialProductListSortId.toIntOrZero(),
                                 isRefresh
                         )
                     },
@@ -208,6 +221,28 @@ class ShopPageViewModel @Inject constructor(
         }) {
             shopPageP1Data.postValue(Fail(it))
         }
+    }
+
+    fun saveShopImageToPhoneStorage(context: Context?, shopSnippetUrl: String) {
+        launchCatchError(Dispatchers.IO, {
+            ImageHandler.loadImageWithTarget(context, shopSnippetUrl, object : CustomTarget<Bitmap>(){
+                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                    val savedFile = ImageUtils.writeImageToTkpdPath(
+                            ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE,
+                            resource,
+                            true
+                    )
+                    if(savedFile != null) {
+                        shopImagePath.value = savedFile.absolutePath
+                    }
+                }
+                override fun onLoadCleared(placeholder: Drawable?) {
+                    // no op
+                }
+            })
+        }, onError = {
+            it.printStackTrace()
+        })
     }
 
     private suspend fun getIsShopOfficial(shopId: Int, isRefresh: Boolean): GetIsShopOfficialStore {
@@ -464,7 +499,8 @@ class ShopPageViewModel @Inject constructor(
                         FIELD_STATUS,
                         FIELD_IS_OPEN,
                         FIELD_CLOSED_INFO,
-                        FIELD_CREATE_INFO
+                        FIELD_CREATE_INFO,
+                        FIELD_SHOP_SNIPPET
                 )
         )
         return gqlGetShopInfoForHeaderUseCase.get().executeOnBackground()

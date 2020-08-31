@@ -5,6 +5,7 @@ import androidx.lifecycle.Observer
 import com.tokopedia.mediauploader.data.state.UploadResult
 import com.tokopedia.review.common.data.ProductrevGetReviewDetail
 import com.tokopedia.review.common.data.ProductrevGetReviewDetailResponseWrapper
+import com.tokopedia.review.common.data.ProductrevReviewAttachment
 import com.tokopedia.review.feature.createreputation.domain.usecase.GetProductReputationForm
 import com.tokopedia.review.feature.createreputation.model.*
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
@@ -26,18 +27,31 @@ class  CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
     @Test
     fun `when getSelectedImagesUrl should return expected list of Url`() {
-        val selectedImages = arrayListOf("ImageUrl1", "ImageUrl2", "ImageUrl3", "ImageUrl4", "ImageUrl5")
+        val selectedImages = listOf(
+                ProductrevReviewAttachment("ImageUrl1", "ImageUrl1"),
+                ProductrevReviewAttachment("ImageUrl2", "ImageUrl2"),
+                ProductrevReviewAttachment("ImageUrl3", "ImageUrl3"),
+                ProductrevReviewAttachment("ImageUrl4", "ImageUrl4"),
+                ProductrevReviewAttachment("ImageUrl5", "ImageUrl5")
+        )
 
         viewModel.clearImageData()
         viewModel.getImageList(selectedImages)
         val actualData = viewModel.getSelectedImagesUrl()
+        val expectedData = arrayListOf("ImageUrl1", "ImageUrl2", "ImageUrl3", "ImageUrl4", "ImageUrl5")
 
-        Assert.assertEquals(actualData, selectedImages)
+        Assert.assertEquals(actualData, expectedData)
     }
 
     @Test
     fun `when removeImage should return expected list ofUrl`() {
-        val selectedImages = arrayListOf("ImageUrl1", "ImageUrl2", "ImageUrl3", "ImageUrl4", "ImageUrl5")
+        val selectedImages = listOf(
+                ProductrevReviewAttachment("ImageUrl1", "ImageUrl1"),
+                ProductrevReviewAttachment("ImageUrl2", "ImageUrl2"),
+                ProductrevReviewAttachment("ImageUrl3", "ImageUrl3"),
+                ProductrevReviewAttachment("ImageUrl4", "ImageUrl4"),
+                ProductrevReviewAttachment("ImageUrl5", "ImageUrl5")
+        )
         val images = viewModel.getImageList(selectedImages)
 
         viewModel.removeImage(images.first())
@@ -141,8 +155,14 @@ class  CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
     @Test
     fun `when getImageList of 5 images should return expected ImageReviewModels`() {
-        val selectedImages = arrayListOf("ImageUrl1", "ImageUrl2", "ImageUrl3", "ImageUrl4", "ImageUrl5")
-        val expectedData = mutableListOf(ImageReviewUiModel("ImageUrl1"), ImageReviewUiModel("ImageUrl2"), ImageReviewUiModel("ImageUrl3"), ImageReviewUiModel("ImageUrl4"), ImageReviewUiModel("ImageUrl5"))
+        val selectedImages = listOf(
+                ProductrevReviewAttachment("ImageUrl1", "ImageUrl1"),
+                ProductrevReviewAttachment("ImageUrl2", "ImageUrl2"),
+                ProductrevReviewAttachment("ImageUrl3", "ImageUrl3"),
+                ProductrevReviewAttachment("ImageUrl4", "ImageUrl4"),
+                ProductrevReviewAttachment("ImageUrl5", "ImageUrl5")
+        )
+        val expectedData = mutableListOf(ImageReviewUiModel("ImageUrl1", "ImageUrl1"), ImageReviewUiModel("ImageUrl2", "ImageUrl2"), ImageReviewUiModel("ImageUrl3", "ImageUrl3"), ImageReviewUiModel("ImageUrl4", "ImageUrl4"), ImageReviewUiModel("ImageUrl5", "ImageUrl5"))
 
         val actualData = viewModel.getImageList(selectedImages)
 
@@ -151,9 +171,14 @@ class  CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
     @Test
     fun `when getImageList of less than 5 images should return expected ImageReviewModels and DefaultImageReviewModel`() {
-        val selectedImages = arrayListOf("ImageUrl1", "ImageUrl2", "ImageUrl3", "ImageUrl4")
+        val selectedImages = listOf(
+                ProductrevReviewAttachment("ImageUrl1", "ImageUrl1"),
+                ProductrevReviewAttachment("ImageUrl2", "ImageUrl2"),
+                ProductrevReviewAttachment("ImageUrl3", "ImageUrl3"),
+                ProductrevReviewAttachment("ImageUrl4", "ImageUrl4")
+        )
 
-        val expectedData = mutableListOf(ImageReviewUiModel("ImageUrl1"), ImageReviewUiModel("ImageUrl2"), ImageReviewUiModel("ImageUrl3"), ImageReviewUiModel("ImageUrl4"), DefaultImageReviewUiModel())
+        val expectedData = mutableListOf(ImageReviewUiModel("ImageUrl1", "ImageUrl1"), ImageReviewUiModel("ImageUrl2", "ImageUrl2"), ImageReviewUiModel("ImageUrl3", "ImageUrl3"), ImageReviewUiModel("ImageUrl4", "ImageUrl4"), DefaultImageReviewUiModel())
 
         val actualData = viewModel.getImageList(selectedImages)
 
