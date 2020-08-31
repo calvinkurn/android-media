@@ -2,7 +2,6 @@ package com.tokopedia.topchat.chatroom.view.adapter.viewholder
 
 import android.view.Gravity
 import android.view.View
-import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
@@ -15,10 +14,11 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
 /**
  * Created by Steven on 18/03/19.
  */
-class TopChatVoucherViewHolder(itemView: View, private var voucherListener: TopChatVoucherListener)
-    : BaseChatViewHolder<TopChatVoucherUiModel>(itemView), MerchantVoucherView.OnMerchantVoucherViewListener {
+class TopChatVoucherViewHolder(
+        itemView: View,
+        private var voucherListener: TopChatVoucherListener
+) : BaseChatViewHolder<TopChatVoucherUiModel>(itemView), MerchantVoucherView.OnMerchantVoucherViewListener {
 
-    private var chatStatus: ImageView = itemView.findViewById(com.tokopedia.chat_common.R.id.chat_status)
     private var isOwner: Boolean = false
     private lateinit var model: TopChatVoucherUiModel
     private var merchantVoucherView: MerchantVoucherView? = itemView.findViewById(R.id.merchantVoucherView)
@@ -44,14 +44,6 @@ class TopChatVoucherViewHolder(itemView: View, private var voucherListener: TopC
         merchantVoucherView?.setData(data, false)
     }
 
-    override fun alwaysShowTime(): Boolean {
-        return true
-    }
-
-    override fun getDateId(): Int {
-        return R.id.tvDate
-    }
-
     private fun setupChatBubbleAlignment(isSender: Boolean, element: TopChatVoucherUiModel) {
         if (isSender) {
             setChatRight(element)
@@ -63,13 +55,10 @@ class TopChatVoucherViewHolder(itemView: View, private var voucherListener: TopC
 
     private fun setChatLeft() {
         itemView.findViewById<LinearLayout>(R.id.topchat_voucher_container).gravity = Gravity.START
-        chatStatus.visibility = View.GONE
     }
 
     private fun setChatRight(element: TopChatVoucherUiModel) {
         itemView.findViewById<LinearLayout>(R.id.topchat_voucher_container).gravity = Gravity.END
-        chatStatus.visibility = View.VISIBLE
-        bindChatReadStatus(element)
     }
 
     override fun isOwner(): Boolean {
