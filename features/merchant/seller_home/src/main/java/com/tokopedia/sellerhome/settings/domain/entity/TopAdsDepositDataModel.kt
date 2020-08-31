@@ -4,22 +4,35 @@ import com.google.gson.annotations.SerializedName
 
 data class TopAdsDepositDataModel(
         @SerializedName("topadsDashboardDeposits")
-        var topAdsDashboardDeposits: TopAdsDashboardDeposits? = TopAdsDashboardDeposits()
+        val topAdsDashboardDeposits: TopAdsDashboardDeposits? = TopAdsDashboardDeposits()
 )
 
 data class TopAdsDashboardDeposits(
         @SerializedName("data")
-        var depositData: DepositData? = DepositData(),
+        val depositData: DepositData? = DepositData(),
         @SerializedName("errors")
-        var errors: List<TopAdsDepositError>? = listOf()
+        val errors: List<TopAdsDepositError>? = listOf()
 )
 
 data class DepositData(
         @SerializedName("amount")
-        var amount: Float? = 0f
+        val amount: Float? = 0f
 )
 
 data class TopAdsDepositError(
         @SerializedName("code")
-        var errorCode: String? = ""
+        val code: String? = "",
+        @SerializedName("title")
+        val title: String? = "",
+        @SerializedName("detail")
+        val detail: String? = "",
+        @SerializedName("object")
+        val errorObject: TopAdsDashboardErrorObject? = TopAdsDashboardErrorObject()
+)
+
+data class TopAdsDashboardErrorObject(
+        @SerializedName("type")
+        val objectType: Int = 0,
+        @SerializedName("text")
+        val errorTextList: List<String> = listOf()
 )

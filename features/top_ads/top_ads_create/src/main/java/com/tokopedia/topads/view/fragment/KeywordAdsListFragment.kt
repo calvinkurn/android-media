@@ -238,9 +238,10 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         stepperModel?.selectedSuggestBid = getSelectedBid()
         stepperModel?.STAGE = 1
         stepperModel?.selectedKeywordStage = keywordSelectedAdapter.items
-        stepperListener?.goToNextPage(stepperModel)
         val eventLabel = "$GROUPID - $EVENT_CLICK_LAJUKTAN"
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_PILIH_KEYWORD, eventLabel, userID)
+        stepperListener?.goToNextPage(stepperModel)
+
     }
 
     private fun getSelectedKeyword(): MutableList<String> {

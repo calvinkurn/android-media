@@ -62,11 +62,10 @@ class ProductFeedbackDetailViewHolder(private val view: View,
         tvReplyComment = view.findViewById(R.id.tvReplyComment)
     }
 
-    private val reviewDetailFeedbackImageAdapter by lazy {
-        ReviewDetailFeedbackImageAdapter(productFeedbackDetailListener)
-    }
+    private var reviewDetailFeedbackImageAdapter: ReviewDetailFeedbackImageAdapter? = null
 
     override fun bind(element: FeedbackUiModel) {
+        reviewDetailFeedbackImageAdapter = ReviewDetailFeedbackImageAdapter(productFeedbackDetailListener)
         ivRatingFeedback?.setImageResource(getReviewStar(element.rating.orZero()))
         ivOptionReviewFeedback?.setOnClickListener {
             setBottomSheetFeedbackOption(element)
@@ -145,9 +144,9 @@ class ProductFeedbackDetailViewHolder(private val view: View,
         if (element.attachments.isEmpty()) {
             rvItemAttachmentFeedback?.hide()
         } else {
-            reviewDetailFeedbackImageAdapter.setAttachmentUiData(element.attachments)
-            reviewDetailFeedbackImageAdapter.setFeedbackId(element.feedbackID.toString())
-            reviewDetailFeedbackImageAdapter.submitList(element.attachments)
+            reviewDetailFeedbackImageAdapter?.setAttachmentUiData(element.attachments)
+            reviewDetailFeedbackImageAdapter?.setFeedbackId(element.feedbackID.toString())
+            reviewDetailFeedbackImageAdapter?.submitList(element.attachments)
             rvItemAttachmentFeedback?.show()
         }
     }

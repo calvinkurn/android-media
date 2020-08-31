@@ -81,8 +81,8 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
 
     override fun gotoNextPage() {
         stepperModel?.STAGE = 0
-        stepperListener?.goToNextPage(stepperModel)
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_PRODUCT_IKLAN, getSelectedProduct().joinToString(","))
+        stepperListener?.goToNextPage(stepperModel)
     }
 
     private fun getSelectedProduct(): MutableList<Int> {
