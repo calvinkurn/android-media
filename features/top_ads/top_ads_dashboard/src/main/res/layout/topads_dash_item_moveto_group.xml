@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/groupCard"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/dp_12">
+
+    <ImageView
+        android:id="@+id/img"
+        android:layout_width="@dimen/dp_16"
+        android:layout_height="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_14"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/topads_dashboard_folder" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/group_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_4"
+        android:layout_marginRight="@dimen/dp_4"
+        app:layout_constraintEnd_toStartOf="@id/radio_button"
+        app:layout_constraintStart_toEndOf="@id/img"
+        app:layout_constraintTop_toTopOf="@id/img"
+        app:typographyType="heading_6"
+        tools:text="sepatu"
+        android:layout_marginStart="@dimen/dp_8" />
+
+    <RadioButton
+        android:id="@+id/radio_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_12"
+        android:layout_marginTop="@dimen/dp_14"
+        android:layout_marginEnd="@dimen/dp_12"
+        android:layout_marginRight="@dimen/dp_12"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        android:text="@string/topads_common_ads_active"
+        android:textColor="@color/tkpd_main_green"
+        app:layout_constraintStart_toStartOf="@id/img"
+        app:layout_constraintTop_toBottomOf="@id/group_title"
+        app:typographyType="small" />
+
+    <ImageView
+        android:id="@+id/img_total"
+        android:layout_width="@dimen/dp_10"
+        android:layout_height="@dimen/dp_10"
+        android:layout_marginLeft="@dimen/dp_11"
+        android:layout_marginTop="@dimen/dp_8"
+        app:layout_constraintStart_toEndOf="@id/label"
+        app:layout_constraintTop_toBottomOf="@id/group_title"
+        app:srcCompat="@drawable/topads_dashboard_total"
+        tools:layout_height="@dimen/dp_16"
+        tools:layout_width="@dimen/dp_16" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/productCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_4"
+        android:includeFontPadding="false"
+        app:layout_constraintStart_toEndOf="@id/img_total"
+        app:layout_constraintTop_toTopOf="@id/label"
+        app:typographyType="small"
+        tools:text="400" />
+
+    <ImageView
+        android:id="@+id/img_key"
+        android:layout_width="@dimen/dp_10"
+        android:layout_height="@dimen/dp_10"
+        android:layout_marginStart="@dimen/dp_11"
+        android:layout_marginLeft="@dimen/dp_11"
+        android:layout_marginTop="@dimen/dp_8"
+        app:layout_constraintStart_toEndOf="@id/productCount"
+        app:layout_constraintTop_toBottomOf="@id/group_title"
+        app:srcCompat="@drawable/topads_dashboard_key"
+        tools:layout_height="@dimen/dp_16"
+        tools:layout_width="@dimen/dp_16" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/key_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_4"
+        android:layout_marginLeft="@dimen/dp_4"
+        android:includeFontPadding="false"
+        app:layout_constraintStart_toEndOf="@id/img_key"
+        app:layout_constraintTop_toTopOf="@id/img_key"
+        app:typographyType="small"
+        tools:text="4" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

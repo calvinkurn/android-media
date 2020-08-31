@@ -118,14 +118,14 @@
 
     <string name="product_manage_menu_edit_price">Ubah Harga</string>
     <string name="product_manage_menu_edit_stock">Ubah Stok</string>
-    <string name="product_manage_menu_edit_variant">Ubah Detail Varian</string>
     <string name="product_manage_stock_format">Stok:</string>
-    <string name="product_manage_contact_cs">Hubungi CS</string>
+    <string name="product_manage_contact_cs">Bantuan</string>
     <string name="product_manage_active">Aktif</string>
     <string name="product_manage_variant">Varian</string>
     <string name="product_manage_banned">Pelanggaran</string>
     <string name="product_manage_draft">Draf</string>
     <string name="product_manage_inactive">Nonaktif</string>
+    <string name="product_manage_campaign">Campaign</string>
     <string name="product_manage_count_format">%d Produk</string>
     <string name="product_manage_multiple_select">Pilih Sekaligus</string>
     <string name="product_manage_filter">Filter</string>
@@ -136,7 +136,7 @@
     <string name="product_manage_filter_draft">Draf (%d)</string>
     <string name="product_manage_filter_inactive">Nonaktif (%d)</string>
     <string name="product_manage_bottom_sheet_title">Atur</string>
-    <string name="product_manage_preview_menu">Lihat Tampilan Produk</string>
+    <string name="product_manage_preview_menu">Lihat Preview Produk</string>
     <string name="product_manage_duplicate_product_menu">Duplikat Produk</string>
     <string name="product_manage_stock_reminder_menu">Pengingat Stok</string>
     <string name="product_manage_set_featured_menu">Jadikan Produk Unggulan</string>
@@ -224,8 +224,8 @@
     <string name="product_manage_etalase_picker_empty_description">Masukkan produk sesuai kategori ke dalam etalase agar mudah dicari calon pembeli</string>
     <string name="product_manage_add_etalase">Tambah Etalase</string>
     <string name="product_manage_etalase_search_hint">Cari nama etalase</string>
-    <string name="product_manage_stock_info_description">Produkmu tidak bisa dilihat calon pembeli karena stok 0.</string>
-    <string name="product_manage_stock_information">Stok Habis</string>
+    <string name="product_manage_stock_info_description">Produk ini tidak bisa dilihat calon pembeli karena stok 0.</string>
+    <string name="product_manage_stock_information">Informasi Stok</string>
 
     <string name="add_product_text_description">Tambah Produk</string>
     <string name="import_from_instagram_to_draft">Impor Instagram ke Draft</string>
@@ -237,4 +237,52 @@
     <string name="product_manage_label_supervision">Pengawasan</string>
     <string name="product_manage_list_empty_search">Oops, produk yang kamu cari tidak ditemukan.</string>
     <string name="product_manage_list_empty_product">Kata orang, jutaan mimpi berawal dari satu langkah kecil. Tambah produk pertamamu.</string>
+
+    <string name="product_manage_close">>Tutup</string>
+    <string name="product_manage_error_description">Oops, ada gangguan yang perlu kami bereskan.</string>
+    <string name="product_manage_more_menu">Lainnya</string>
+    <string name="product_manage_shop_showcase_more_menu_text">Etalase Toko</string>
+    <string name="power_merchant_variant_stock_description">Varian ini tidak bisa dilihat calon pembeli karena stok 0.</string>
+    <string name="power_merchant_stock_warning_ticker_description">Produk ini tidak bisa dilihat calon pembeli karena stok 0.</string>
+
+    <string name="product_manage_campaign_stock_total_stock">Total Stok: &#160;</string>
+    <string name="product_manage_campaign_stock_allocation">Alokasi Stok</string>
+    <string name="product_manage_campaign_stock_save">Simpan</string>
+    <string name="product_manage_campaign_stock_active_product">Produk Aktif</string>
+    <string name="product_manage_campaign_stock_stock_amount">Jumlah Stok</string>
+    <string name="product_manage_campaign_stock_main_stock">Stok Utama (%s)</string>
+    <string name="product_manage_campaign_stock_campaign_stock">Stok Campaign (%s)</string>
+    <string name="product_manage_campaign_stock_event_action">Lihat varian produk</string>
+    <string name="product_manage_campaign_stock_variant_zero_desc">Varian produk yang memiliki jumlah stok 0 tidak akan ditampilkan di tokomu.</string>
+    <string name="product_manage_campaign_stock_open_campaign">Buka halaman Campaign lewat laptop atau komputer untuk ubah detail stok campaign.</string>
+    <string name="product_manage_campaign_stock_success_toast">Jumlah stok \"%1$s\" berhasil diubah.</string>
+    <string name="product_manage_campaign_stock_error_toast">Oops, permintaan kamu tidak dapat diproses,\nSilakan coba lagi, ya!</string>
+    <string name="product_manage_campaign_stock_redirection_title">Pantau pergerakan stok campaign \ndi manapun, kapanpun</string>
+    <string name="product_manage_campaign_stock_redirection_desc">Gunakan aplikasi Tokopedia Seller untuk lihat alokasi stok produk untuk campaign di tokomu.</string>
+
+    <string name="product_manage_max_count">%s+</string>
+
+    <string name="popup_tips_trick_clickable">baru di sini.</string>
+    <string name="popup_label_static">Produk pertamamu siap</string>
+    <string name="popup_label_tips_trick">Masih bingung? Cek tip &amp; trik penjual</string>
+
+    <string name="title_activity_manage_product">Daftar Produk</string>
+    <string name="title_currency_rp">Rp</string>
+    <string name="title_save">Simpan</string>
+    <string name="title_cancel">Batal</string>
+    <string name="title_etalase">Etalase</string>
+    <string name="title_category">Kategori</string>
+    <string name="title_condition">Kondisi</string>
+    <string name="title_catalog">Katalog</string>
+    <string name="title_edit">Ubah</string>
+    <string name="title_share">Bagikan</string>
+    <string name="title_add_product">TAMBAH PRODUK</string>
+
+    <string name="product_option">Lihat Produk</string>
+    <string name="product_label_product_price">Harga Produk</string>
+
+    <string name="action_reset">Reset</string>
+    <string name="label_delete">Delete</string>
+
+    <string name="courier_option">Atur Layanan Kurir</string>
 </resources>

@@ -9,7 +9,7 @@
         android:id="@+id/rv_product_preview"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/layout_lvl0"
-        android:background="@drawable/bg_play_etalase_list"
+        android:background="@drawable/bg_play_grid_border"
         android:overScrollMode="never"
         android:padding="@dimen/spacing_lvl2"
         app:layout_constraintDimensionRatio="H, 1:1"

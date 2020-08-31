@@ -18,7 +18,7 @@ class SearchSuggestionViewHolder(
 
     fun bind(item: SearchSuggestionUiModel) {
         tvSuggestion.text = item.spannedSuggestion
-        itemView.setOnClickListener { listener.onSuggestionClicked(item.spannedSuggestion.toString()) }
+        itemView.setOnClickListener { listener.onSuggestionClicked(item.spannedSuggestion.toString(), item.suggestedId) }
     }
 
     companion object {
@@ -27,7 +27,6 @@ class SearchSuggestionViewHolder(
     }
 
     interface Listener {
-
-        fun onSuggestionClicked(suggestionText: String)
+        fun onSuggestionClicked(suggestionText: String, suggestionId: String)
     }
 }

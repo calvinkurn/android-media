@@ -1,10 +1,12 @@
 package com.tokopedia.topads.dashboard.view.presenter;
 
+import android.content.res.Resources;
+
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.topads.dashboard.data.model.request.DataSuggestions;
-import com.tokopedia.topads.dashboard.data.model.request.GetSuggestionBody;
 import com.tokopedia.topads.dashboard.data.model.request.MinimumBidRequest;
-import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
+import com.tokopedia.topads.dashboard.data.model.response.TopAdsDepositResponse;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsBalanceCheckUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGetDetailProductUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGetSuggestionUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsMinimumBidUseCase;
@@ -21,7 +23,6 @@ import com.tokopedia.topads.sourcetagging.data.TopAdsSourceTaggingModel;
 import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsGetSourceTaggingUseCase;
 import com.tokopedia.user.session.UserSessionInterface;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import rx.Subscriber;
@@ -34,6 +35,7 @@ public class TopAdsDetailEditProductPresenterImpl<T extends TopAdsDetailEditView
     private TopAdsGetDetailProductUseCase topAdsGetDetailProductUseCase;
     private TopAdsSaveDetailProductUseCase topAdsSaveDetailProductUseCase;
     private TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase;
+    private TopAdsBalanceCheckUseCase topAdsBalanceCheckUseCase;
     protected TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase;
     private TopAdsEditPromoFragmentListener listener;
     private UserSessionInterface sessionInterface;
@@ -43,6 +45,7 @@ public class TopAdsDetailEditProductPresenterImpl<T extends TopAdsDetailEditView
                                                 TopAdsSaveDetailProductUseCase topAdsSaveDetailProductUseCase,
                                                 TopAdsProductListUseCase topAdsProductListUseCase,
                                                 TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase,
+                                                TopAdsBalanceCheckUseCase topAdsBalanceCheckUseCase,
                                                 TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase,
                                                 TopAdsMinimumBidUseCase minimumBidUseCase, UserSessionInterface sessionInterface) {
         super(topAdsProductListUseCase);
@@ -50,14 +53,33 @@ public class TopAdsDetailEditProductPresenterImpl<T extends TopAdsDetailEditView
         this.minimumBidUseCase = minimumBidUseCase;
         this.topAdsGetSuggestionUseCase = topAdsGetSuggestionUseCase;
         this.topAdsGetDetailProductUseCase = topAdsGetDetailProductUseCase;
+        this.topAdsBalanceCheckUseCase = topAdsBalanceCheckUseCase;
         this.topAdsSaveDetailProductUseCase = topAdsSaveDetailProductUseCase;
         this.topAdsGetSourceTaggingUseCase = topAdsGetSourceTaggingUseCase;
     }
 
 
+    public void getBalance(Resources resources){
+        topAdsBalanceCheckUseCase.setQuery(resources);
+        topAdsBalanceCheckUseCase.execute(TopAdsBalanceCheckUseCase.createRequestParams(Integer.parseInt(sessionInterface.getShopId())), new Subscriber<TopAdsDepositResponse.Data>() {
+            @Override
+            public void onCompleted() { }
+
+            @Override
+            public void onError(Throwable e) { }
+
+            @Override
+            public void onNext(TopAdsDepositResponse.Data topAdsDepositResponse) {
+                getView().onBalanceCheck(topAdsDepositResponse);
+            }
+        });
+
+    }
+
+
 
     @Override
-    public void saveAd(final TopAdsDetailProductViewModel adViewModel) {
+    public void saveAd(final TopAdsDetailProductViewModel adViewModel, TopAdsDepositResponse.Data topAdsDepositResponse) {
         topAdsGetSourceTaggingUseCase.execute(new Subscriber<TopAdsSourceTaggingModel>() {
             @Override
             public void onCompleted() {
@@ -92,9 +114,14 @@ public class TopAdsDetailEditProductPresenterImpl<T extends TopAdsDetailEditView
 
                     @Override
                     public void onNext(TopAdsDetailProductDomainModel domainModel) {
+                        if (topAdsDepositResponse.getTopadsDashboardDeposits().getData().getAmount() > 0) {
+                            domainModel.setEnoughDeposit(true);
+                        } else {
+                            domainModel.setEnoughDeposit(false);
+                        }
                         getView().onSaveAdSuccess(TopAdDetailProductMapper.convertDomainToView(domainModel));
                     }
-                });
+                        });
             }
         });
     }

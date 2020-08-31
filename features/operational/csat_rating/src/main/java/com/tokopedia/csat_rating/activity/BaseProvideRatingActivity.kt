@@ -20,7 +20,7 @@ open class BaseProvideRatingActivity : BaseSimpleActivity() {
     }
 
     override fun getNewFragment(): Fragment {
-        return BaseFragmentProvideRating.newInstance(intent.extras)
+        return BaseFragmentProvideRating.newInstance(intent.extras?: Bundle())
     }
 
 }

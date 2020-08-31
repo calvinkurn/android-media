@@ -3,7 +3,6 @@ package com.tokopedia.logisticaddaddress.features.district_recommendation
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
@@ -14,19 +13,18 @@ import androidx.test.espresso.contrib.ActivityResultMatchers.hasResultData
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.analyticsdebugger.validator.core.Status
-import com.tokopedia.analyticsdebugger.validator.core.Validator
-import com.tokopedia.analyticsdebugger.validator.core.assertAnalyticWithValidator
+import com.tokopedia.analyticsdebugger.validator.core.getAnalyticsWithQuery
+import com.tokopedia.analyticsdebugger.validator.core.hasAllSuccess
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomContract.Constant.Companion.INTENT_DISTRICT_RECOMMENDATION_ADDRESS
 import com.tokopedia.logisticaddaddress.utils.SimpleIdlingResource
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -67,10 +65,8 @@ class DiscomActivityTest {
         assertThat(activityRule.activityResult,
                 hasResultData(hasExtraWithKey(INTENT_DISTRICT_RECOMMENDATION_ADDRESS)))
 
-        val discomQueryPositive = "tracker/logistic/discom_positive.json"
-        assertAnalyticWithValidator(gtmLogDBSource, context, discomQueryPositive) {
-            it.assertStatus()
-        }
+        val discomQuery = "tracker/logistic/discom_positive.json"
+        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, discomQuery), hasAllSuccess())
     }
 
     @After
@@ -78,17 +74,9 @@ class DiscomActivityTest {
         IdlingRegistry.getInstance().unregister(SimpleIdlingResource.countingIdlingResource)
     }
 
-    private fun Validator.assertStatus() {
-        val eventAction = data["eventAction"]
-
-        if (status != Status.SUCCESS)
-            throw AssertionError("\"$eventAction\" event status = $status.")
-        else
-            Log.d(this::javaClass.name, "\"$eventAction\" event success. Total hits: ${matches.size}.")
-    }
-
     private fun createIntent(): Intent {
-        return Intent(InstrumentationRegistry.getInstrumentation().targetContext, DiscomActivity::class.java).also {
+        return Intent(InstrumentationRegistry.getInstrumentation().targetContext,
+                DiscomActivity::class.java).also {
             it.data = Uri.parse(ApplinkConstInternalMarketplace.DISTRICT_RECOMMENDATION_SHOP_SETTINGS)
         }
     }

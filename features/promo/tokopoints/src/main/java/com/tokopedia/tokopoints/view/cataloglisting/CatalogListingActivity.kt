@@ -83,7 +83,7 @@ class CatalogListingActivity : BaseSimpleActivity(), HasComponent<TokopointBundl
         private const val REQUEST_CODE_LOGIN = 1
         fun getCallingIntent(context: Context?, extras: Bundle?): Intent {
             val intent = Intent(context, CatalogListingActivity::class.java)
-            intent.putExtras(extras)
+            intent.putExtras(extras ?: Bundle())
             return intent
         }
     }

@@ -7,13 +7,15 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoTracking
 import com.tokopedia.centralizedpromo.view.model.PromoCreationUiModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.R.layout.centralized_promo_item_promo_creation
 import kotlinx.android.synthetic.main.centralized_promo_item_promo_creation.view.*
 
 class PromoCreationViewHolder(view: View?) : AbstractViewHolder<PromoCreationUiModel>(view) {
+
+    var onFreeShippingImpression: (() -> Unit)? = null
+    var onFreeShippingClicked: (() -> Unit)? = null
 
     companion object {
         val RES_LAYOUT = centralized_promo_item_promo_creation
@@ -35,7 +37,6 @@ class PromoCreationViewHolder(view: View?) : AbstractViewHolder<PromoCreationUiM
                         context.resources.getDimension(R.dimen.layout_lvl4).toInt())
             } else {
                 tvRecommendedPromoExtra.text = ""
-                icRecommendedPromoExtra.gone()
                 tvRecommendedPromoDescription.setPadding(
                         context.resources.getDimension(R.dimen.layout_lvl0).toInt(),
                         context.resources.getDimension(R.dimen.layout_lvl0).toInt(),
@@ -44,18 +45,36 @@ class PromoCreationViewHolder(view: View?) : AbstractViewHolder<PromoCreationUiM
             }
 
             addOnImpressionListener(element.impressHolder) {
-                CentralizedPromoTracking.sendImpressionPromoCreation(element.title)
+                if(isFreeShippingPromo(element.title)) {
+                    onFreeShippingImpression?.invoke()
+                } else {
+                    CentralizedPromoTracking.sendImpressionPromoCreation(element.title)
+                }
             }
 
-            setOnClickListener { openApplink(element.applink, element.title) }
+            setOnClickListener {
+                openApplink(element.applink, element.title)
+            }
         }
     }
 
     private fun openApplink(url: String, title: String) {
         with(itemView) {
             if (RouteManager.route(context, url)) {
-                CentralizedPromoTracking.sendClickPromoCreation(title)
+                trackClickPromo(title)
             }
         }
+    }
+
+    private fun trackClickPromo(title: String) {
+        if (isFreeShippingPromo(title)) {
+            onFreeShippingClicked?.invoke()
+        } else {
+            CentralizedPromoTracking.sendClickPromoCreation(title)
+        }
+    }
+
+    private fun isFreeShippingPromo(title: String): Boolean {
+        return title == getString(R.string.centralized_promo_promo_creation_free_shipping_title)
     }
 }

@@ -4,14 +4,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.FrameLayout
-import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.ui.model.ChannelInfoUiModel
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricUiModel
 import com.tokopedia.play.broadcaster.view.adapter.TrafficMetricReportAdapter
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -23,19 +23,21 @@ import com.tokopedia.unifyprinciples.Typography
  */
 class SummaryInfoPartialView(
         container: ViewGroup
-) : PartialView(container, R.id.layout_summary_info) {
+) : PartialView(container, R.id.layout_summary_content) {
 
     val animationOffset = container.resources.getInteger(R.integer.play_summary_layout_animation_offset).toFloat()
     val animationDuration = container.resources.getInteger(R.integer.play_summary_layout_animation_duration_ms).toLong()
 
     private val flInfo = findViewById<FrameLayout>(R.id.fl_info)
-    private val llMeta = findViewById<LinearLayout>(R.id.ll_meta)
+    private val llMeta = findViewById<ConstraintLayout>(R.id.ll_meta)
     private val overflow = findViewById<View>(R.id.overflow)
     private val tvTitle = findViewById<Typography>(R.id.tv_title)
     private val ivCover = findViewById<AppCompatImageView>(R.id.iv_cover)
     private val tvDuration = findViewById<Typography>(R.id.tv_duration)
     private val ticker = findViewById<Ticker>(R.id.ticker_info)
     private val recyclerView = findViewById<RecyclerView>(R.id.rv_info)
+    private val layoutError = findViewById<ConstraintLayout>(R.id.layout_summary_error)
+    private val tvErrorTryAgain = findViewById<Typography>(R.id.tv_error_try_again)
 
     private val trafficMetricReportAdapter = TrafficMetricReportAdapter()
 
@@ -66,7 +68,7 @@ class SummaryInfoPartialView(
     }
 
     fun setChannelCover(coverUrl: String) {
-        ivCover.loadImage(coverUrl)
+        ivCover.loadImageRounded(coverUrl)
     }
 
     fun setLiveDuration(duration: String) {
@@ -84,4 +86,12 @@ class SummaryInfoPartialView(
         ticker.setHtmlDescription(description)
     }
 
+    fun showError(onRetry: () -> Unit) {
+        layoutError.show()
+        tvErrorTryAgain.setOnClickListener { onRetry() }
+    }
+
+    fun hideError() {
+        layoutError.hide()
+    }
 }

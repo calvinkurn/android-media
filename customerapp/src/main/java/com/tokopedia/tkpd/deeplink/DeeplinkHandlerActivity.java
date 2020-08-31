@@ -29,14 +29,10 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.createpost.view.applink.CreatePostModule;
-import com.tokopedia.createpost.view.applink.CreatePostModuleLoader;
 import com.tokopedia.explore.applink.ExploreApplinkModule;
 import com.tokopedia.explore.applink.ExploreApplinkModuleLoader;
 import com.tokopedia.feedplus.view.deeplink.FeedDeeplinkModule;
 import com.tokopedia.feedplus.view.deeplink.FeedDeeplinkModuleLoader;
-import com.tokopedia.home.applink.HomeApplinkModule;
-import com.tokopedia.home.applink.HomeApplinkModuleLoader;
 import com.tokopedia.homecredit.applink.HomeCreditAppLinkModule;
 import com.tokopedia.homecredit.applink.HomeCreditAppLinkModuleLoader;
 import com.tokopedia.kyc.deeplink.OvoUpgradeDeeplinkModule;
@@ -58,10 +54,8 @@ import com.tokopedia.pms.howtopay.HowtopayApplinkModuleLoader;
 import com.tokopedia.product.detail.applink.ProductDetailApplinkModule;
 import com.tokopedia.product.detail.applink.ProductDetailApplinkModuleLoader;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
-import com.tokopedia.pushnotif.Constant;
-import com.tokopedia.pushnotif.HistoryNotification;
-import com.tokopedia.recentview.view.applink.RecentViewApplinkModule;
-import com.tokopedia.recentview.view.applink.RecentViewApplinkModuleLoader;
+import com.tokopedia.pushnotif.data.constant.Constant;
+import com.tokopedia.pushnotif.data.repository.HistoryRepository;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -96,15 +90,12 @@ import timber.log.Timber;
         SellerApplinkModule.class,
         TransactionApplinkModule.class,
         ProductDetailApplinkModule.class,
-        HomeApplinkModule.class,
         FeedDeeplinkModule.class,
         DigitalBrowseApplinkModule.class,
         OvoUpgradeDeeplinkModule.class,
         LoyaltyAppLinkModule.class,
-        CreatePostModule.class,
         ExploreApplinkModule.class,
         HowtopayApplinkModule.class,
-        RecentViewApplinkModule.class,
         LoginRegisterApplinkModule.class,
         ChangeInactivePhoneApplinkModule.class,
         PhoneVerificationApplinkModule.class,
@@ -128,14 +119,11 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new SellerApplinkModuleLoader(),
                     new TransactionApplinkModuleLoader(),
                     new ProductDetailApplinkModuleLoader(),
-                    new HomeApplinkModuleLoader(),
                     new FeedDeeplinkModuleLoader(),
                     new DigitalBrowseApplinkModuleLoader(),
                     new LoyaltyAppLinkModuleLoader(),
-                    new CreatePostModuleLoader(),
                     new ExploreApplinkModuleLoader(),
                     new HowtopayApplinkModuleLoader(),
-                    new RecentViewApplinkModuleLoader(),
                     new LoginRegisterApplinkModuleLoader(),
                     new ChangeInactivePhoneApplinkModuleLoader(),
                     new PhoneVerificationApplinkModuleLoader(),
@@ -222,12 +210,12 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                 .subscribeOn(Schedulers.io())
                 .map(aBoolean -> {
                     if (notificationId == 0) {
-                        HistoryNotification.clearAllHistoryNotification(DeeplinkHandlerActivity.this, notificationType);
+                        HistoryRepository.clearAllHistoryNotification(DeeplinkHandlerActivity.this, notificationType);
                     } else {
-                        HistoryNotification.clearHistoryNotification(DeeplinkHandlerActivity.this, notificationType, notificationId);
+                        HistoryRepository.clearHistoryNotification(DeeplinkHandlerActivity.this, notificationType, notificationId);
                     }
 
-                    return HistoryNotification.isSingleNotification(DeeplinkHandlerActivity.this, notificationType);
+                    return HistoryRepository.isSingleNotification(DeeplinkHandlerActivity.this, notificationType);
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Boolean>() {
@@ -316,7 +304,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
             Constants.Applinks.SellerApp.TOPADS_CREDIT,
             Constants.Applinks.SellerApp.TOPADS_PRODUCT_CREATE,
             Constants.Applinks.SellerApp.GOLD_MERCHANT,
-            Constants.Applinks.SellerApp.TOPADS_DASHBOARD,
             Constants.Applinks.SellerApp.TOPADS_PRODUCT_DETAIL,
             Constants.Applinks.SellerApp.TOPADS_PRODUCT_DETAIL_CONSTS,
             Constants.Applinks.SellerApp.BROWSER})
@@ -332,21 +319,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
             launchIntent.putExtra(Constants.EXTRA_APPLINK, extras.getString(DeepLink.URI));
             return launchIntent;
         }
-    }
-
-    @DeepLink(ApplinkConst.BROWSER)
-    public static Intent getCallingIntentOpenBrowser(Context context, Bundle extras) {
-        String webUrl = extras.getString("url", TokopediaUrl.Companion.getInstance().getWEB()
-        );
-        Intent destination = new Intent(Intent.ACTION_VIEW);
-        String decodedUrl;
-        try {
-            decodedUrl = URLDecoder.decode(webUrl, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            decodedUrl = webUrl;
-        }
-        destination.setData(Uri.parse(decodedUrl));
-        return destination;
     }
 
     @Override

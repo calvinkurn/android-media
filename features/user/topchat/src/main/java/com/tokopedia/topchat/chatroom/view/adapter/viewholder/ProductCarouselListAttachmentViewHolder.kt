@@ -10,15 +10,19 @@ import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachm
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.ProductListAdapter
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.SearchListener
 import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
 import kotlinx.android.synthetic.main.item_topchat_product_list_attachment.view.*
 
-class ProductCarouselListAttachmentViewHolder(
+class ProductCarouselListAttachmentViewHolder constructor(
         itemView: View?,
         productListener: ProductAttachmentListener,
         private val listener: Listener,
-        private val deferredAttachment: DeferredViewHolderAttachment
+        private val deferredAttachment: DeferredViewHolderAttachment,
+        private val searchListener: SearchListener,
+        private val commonListener: CommonViewHolderListener
 ) : BaseChatViewHolder<ProductCarouselUiModel>(itemView) {
 
     interface Listener {
@@ -26,7 +30,7 @@ class ProductCarouselListAttachmentViewHolder(
         fun getSavedCarouselState(position: Int): Parcelable?
     }
 
-    private val adapter = ProductListAdapter(productListener, deferredAttachment)
+    private val adapter = ProductListAdapter(searchListener, productListener, deferredAttachment, commonListener)
 
     init {
         initRecyclerView()
@@ -49,15 +53,23 @@ class ProductCarouselListAttachmentViewHolder(
     override fun bind(carousel: ProductCarouselUiModel, payloads: MutableList<Any>) {
         if (payloads.isEmpty()) return
         when (payloads[0]) {
-            DeferredAttachment.PAYLOAD_DEFERRED -> bindDeferredAttachment(carousel)
+            DeferredAttachment.PAYLOAD_DEFERRED -> bind(carousel)
         }
     }
 
+    override fun bind(carousel: ProductCarouselUiModel) {
+        super.bind(carousel)
+        bindDeferredAttachment(carousel)
+        bindProductCarousel(carousel)
+        bindScrollState()
+    }
+
     private fun bindDeferredAttachment(carousel: ProductCarouselUiModel) {
+        if (!carousel.isLoading()) return
         val attachments = deferredAttachment.getLoadedChatAttachments()
         for (product in carousel.products) {
             if (product is ProductAttachmentViewModel) {
-                val attachment = attachments[product.id] ?: continue
+                val attachment = attachments[product.id] ?: return
                 if (attachment is ErrorAttachment) {
                     product.syncError()
                 } else {
@@ -65,13 +77,11 @@ class ProductCarouselListAttachmentViewHolder(
                 }
             }
         }
-        bind(carousel)
-    }
-
-    override fun bind(carousel: ProductCarouselUiModel) {
-        super.bind(carousel)
-        bindProductCarousel(carousel)
-        bindScrollState()
+        if (carousel.isBroadCast()) {
+            carousel.products = carousel.products.sortedBy {
+                return@sortedBy (it as ProductAttachmentViewModel).hasEmptyStock()
+            }
+        }
     }
 
     private fun bindProductCarousel(carousel: ProductCarouselUiModel) {

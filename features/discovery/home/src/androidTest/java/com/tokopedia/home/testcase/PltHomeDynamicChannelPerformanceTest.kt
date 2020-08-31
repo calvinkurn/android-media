@@ -3,7 +3,11 @@ package com.tokopedia.home.testcase
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils.writePLTPerformanceFile
 import com.tokopedia.home.environment.InstrumentationHomeTestActivity
+import com.tokopedia.home.mock.HomeMockResponseConfig
 import com.tokopedia.test.application.TestRepeatRule
+import com.tokopedia.test.application.environment.interceptor.size.GqlNetworkAnalyzerInterceptor
+import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheck
+import com.tokopedia.test.application.util.setupTotalSizeInterceptor
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -18,7 +22,13 @@ class PltHomeDynamicChannelPerformanceTest {
     val TEST_CASE_PAGE_LOAD_TIME_PERFORMANCE = "test_case_page_load_time"
 
     @get:Rule
-    var activityRule: ActivityTestRule<InstrumentationHomeTestActivity> = ActivityTestRule(InstrumentationHomeTestActivity::class.java)
+    var activityRule = object: ActivityTestRule<InstrumentationHomeTestActivity>(InstrumentationHomeTestActivity::class.java) {
+        override fun beforeActivityLaunched() {
+            super.beforeActivityLaunched()
+            setupGraphqlMockResponseWithCheck(HomeMockResponseConfig())
+            setupTotalSizeInterceptor(listOf("homeData"))
+        }
+    }
 
     @get:Rule
     var testRepeatRule: TestRepeatRule = TestRepeatRule()
@@ -54,7 +64,9 @@ class PltHomeDynamicChannelPerformanceTest {
                     activityRule.activity,
                     tag,
                     performanceData,
-                    datasource)
+                    datasource,
+                    GqlNetworkAnalyzerInterceptor.getNetworkData()
+            )
         }
     }
 }

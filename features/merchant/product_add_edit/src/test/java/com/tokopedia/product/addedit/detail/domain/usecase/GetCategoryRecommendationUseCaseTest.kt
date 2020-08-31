@@ -36,17 +36,20 @@ class GetCategoryRecommendationUseCaseTest {
     @RelaxedMockK
     lateinit var mapper: CategoryRecommendationMapper
 
-    private lateinit var usecase: GetCategoryRecommendationUseCase
+    private val usecase by lazy {
+        GetCategoryRecommendationUseCase(gqlRepository, mapper)
+    }
+
+    private val params = GetCategoryRecommendationUseCase.createRequestParams("baju")
 
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        usecase = GetCategoryRecommendationUseCase(gqlRepository, mapper)
     }
 
     @Test
     fun `should success on get category recommendation`() = runBlocking {
-        usecase.params = GetCategoryRecommendationUseCase.createRequestParams("baju")
+        usecase.params = params
         val successResponse = createSuccessResponse<GetCategoryRecommendationResponse>(SUCCESS_RESPONSE)
         val mappedResponse = mapRemoteModelToUiModel(successResponse.getData<GetCategoryRecommendationResponse>(GetCategoryRecommendationResponse::class.java)
                 .categoryRecommendationDataModel)

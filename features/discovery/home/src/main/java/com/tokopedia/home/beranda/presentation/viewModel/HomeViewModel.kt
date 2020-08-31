@@ -21,7 +21,6 @@ import com.tokopedia.home.beranda.data.model.TokopointsDrawer
 import com.tokopedia.home.beranda.data.model.UpdateLiveDataModel
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
-import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.InjectCouponTimeBased
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeRecommendation
@@ -61,9 +60,9 @@ import dagger.Lazy
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ClosedSendChannelException
-import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.flowOn
 import retrofit2.Response
 import rx.Subscriber
@@ -102,7 +101,7 @@ open class HomeViewModel @Inject constructor(
         private val getRechargeRecommendationUseCase: Lazy<GetRechargeRecommendationUseCase>,
         private val declineRechargeRecommendationUseCase: Lazy<DeclineRechargeRecommendationUseCase>,
         private val getSalamWidgetUseCase: Lazy<GetSalamWidgetUseCase>,
-        private val declineSalamWIdgetUseCase: Lazy<DeclineSalamWIdgetUseCase>,
+        private val declineSalamWidgetUseCase: Lazy<DeclineSalamWIdgetUseCase>,
         private val topAdsImageViewUseCase: Lazy<TopAdsImageViewUseCase>,
         private val homeDispatcher: Lazy<HomeDispatcherProvider>
 ) : BaseCoRoutineScope(homeDispatcher.get().io()){
@@ -182,9 +181,9 @@ open class HomeViewModel @Inject constructor(
         get() = _errorEventLiveData
     private val _errorEventLiveData = MutableLiveData<Event<String>>()
 
-    val isViewModelInitalized: LiveData<Event<Boolean>>
-        get() = _isViewModelInitalized
-    private val _isViewModelInitalized = MutableLiveData<Event<Boolean>>(null)
+    val isViewModelInitialized: LiveData<Event<Boolean>>
+        get() = _isViewModelInitialized
+    private val _isViewModelInitialized = MutableLiveData<Event<Boolean>>(null)
 
     val isRequestNetworkLiveData: LiveData<Event<Boolean>>
         get() = _isRequestNetworkLiveData
@@ -195,6 +194,9 @@ open class HomeViewModel @Inject constructor(
 
     private val _rechargeRecommendationLiveData = MutableLiveData<Event<RechargeRecommendation>>()
     val rechargeRecommendationLiveData: LiveData<Event<RechargeRecommendation>> get() = _rechargeRecommendationLiveData
+
+    private val _isNeedRefresh = MutableLiveData<Event<Boolean>>()
+    val isNeedRefresh: LiveData<Event<Boolean>> get() = _isNeedRefresh
 
 // ============================================================================================
 // ==================================== Helper Local Job ======================================
@@ -235,7 +237,7 @@ open class HomeViewModel @Inject constructor(
     private val homeRateLimit = RateLimiter<String>(timeout = 3, timeUnit = TimeUnit.MINUTES)
 
     init {
-        _isViewModelInitalized.value = Event(true)
+        _isViewModelInitialized.value = Event(true)
         initChannel()
         initFlow()
     }
@@ -244,6 +246,7 @@ open class HomeViewModel @Inject constructor(
         val needSendGeolocationRequest = lastRequestTimeHomeData + REQUEST_DELAY_SEND_GEOLOCATION < System.currentTimeMillis()
         if (!fetchFirstData && homeRateLimit.shouldFetch(HOME_LIMITER_KEY)) {
             refreshHomeData()
+            _isNeedRefresh.value = Event(true)
         }
         if (needSendGeolocationRequest && hasGeoLocationPermission) {
             _sendLocationLiveData.postValue(Event(needSendGeolocationRequest))
@@ -271,9 +274,12 @@ open class HomeViewModel @Inject constructor(
         if (!compositeSubscription.isUnsubscribed) {
             compositeSubscription.unsubscribe()
         }
-        channel.close()
-        jobChannel?.cancelChildren()
         super.onCleared()
+    }
+
+    fun onCloseChannel(){
+        jobChannel?.cancelChildren()
+        channel.close()
     }
 
     fun getHeaderData() {
@@ -284,23 +290,26 @@ open class HomeViewModel @Inject constructor(
 
     fun updateBannerTotalView(channelId: String, totalView: String) {
         val homeList = _homeLiveData.value?.list ?: listOf()
-        val playCard = _homeLiveData.value?.list?.firstOrNull { visitable -> visitable is PlayCardDataModel || visitable is PlayCarouselCardDataModel }
-        val playIndex = homeList.indexOf(playCard)
-        if(playCard is PlayCardDataModel && playCard.playCardHome != null) {
-            val newPlayCard = playCard.copy(playCardHome = playCard.playCardHome.copy(totalView = totalView))
+        val playCard = homeList.withIndex().find {
+            (_, visitable) -> (visitable is PlayCardDataModel && visitable.playCardHome?.channelId == channelId) ||
+                (visitable is PlayCarouselCardDataModel)
+        } ?: return
+        if(playCard.value is PlayCardDataModel && (playCard.value as PlayCardDataModel).playCardHome != null) {
+            val newPlayCard = (playCard.value as PlayCardDataModel).copy(playCardHome = (playCard.value as PlayCardDataModel).playCardHome?.copy(totalView = totalView))
             launch(coroutineContext){
-                updateWidget(UpdateLiveDataModel(ACTION_UPDATE, newPlayCard, playIndex))
+                updateWidget(UpdateLiveDataModel(ACTION_UPDATE, newPlayCard, playCard.index))
             }
-        } else if(playCard is PlayCarouselCardDataModel && playCard.playBannerCarouselDataModel.channelList.isNotEmpty()){
-            playCard.playBannerCarouselDataModel.channelList.withIndex().find { (_, value) -> value is PlayBannerCarouselItemDataModel && value.channelId == channelId }?.let {
-                val newList = playCard.playBannerCarouselDataModel.channelList.toMutableList()
-                newList[it.index] = (it.value as PlayBannerCarouselItemDataModel).copy(countView = totalView)
-                val newPlayCard = playCard.copy(playBannerCarouselDataModel = playCard.playBannerCarouselDataModel.copy(channelList = newList))
-                launch(coroutineContext) {
-                    updateWidget(UpdateLiveDataModel(ACTION_UPDATE, newPlayCard, playIndex))
-                }
+        } else if(playCard.value is PlayCarouselCardDataModel && (playCard.value as PlayCarouselCardDataModel).playBannerCarouselDataModel.channelList.isNotEmpty()) {
+            (playCard.value as PlayCarouselCardDataModel).playBannerCarouselDataModel.channelList.withIndex().find { (_, value) -> value is PlayBannerCarouselItemDataModel && value.channelId == channelId }?.let {
+                    val newList = (playCard.value as PlayCarouselCardDataModel).playBannerCarouselDataModel.channelList.toMutableList()
+                    newList[it.index] = (it.value as PlayBannerCarouselItemDataModel).copy(countView = totalView)
+                    val newPlayCard = (playCard.value as PlayCarouselCardDataModel).copy(playBannerCarouselDataModel = (playCard.value as PlayCarouselCardDataModel).playBannerCarouselDataModel.copy(channelList = newList))
+                    launch(coroutineContext) {
+                        updateWidget(UpdateLiveDataModel(ACTION_UPDATE, newPlayCard, playCard.index))
+                    }
             }
         }
+
     }
 
     private fun getPlayBannerV2(playCarouselCardDataModel: PlayCarouselCardDataModel){
@@ -315,7 +324,7 @@ open class HomeViewModel @Inject constructor(
             if(newPlayCarouselDataModel.channelList.isEmpty()){
                 _homeLiveData.value?.list?.indexOfFirst { visitable -> visitable is PlayCarouselCardDataModel }?.let{ playIndex ->
                     logChannelUpdate("delete play banner data: ${newPlayCarouselDataModel.title}")
-                    updateWidget(UpdateLiveDataModel(ACTION_DELETE, playCarouselCardDataModel, playIndex))
+                    updateWidget(UpdateLiveDataModel(ACTION_DELETE, playCarouselCardDataModel))
                 }
             } else {
                 val newList = mutableListOf<Visitable<*>>()
@@ -333,8 +342,7 @@ open class HomeViewModel @Inject constructor(
             if(playCarouselCardDataModel.playBannerCarouselDataModel.channelList.isEmpty()) {
                 val newList = mutableListOf<Visitable<*>>()
                 newList.addAll(_homeLiveData.value?.list ?: listOf())
-                val playIndex = newList.indexOfFirst { visitable -> visitable is PlayCarouselCardDataModel }
-                updateWidget(UpdateLiveDataModel(ACTION_DELETE, playCarouselCardDataModel, playIndex))
+                updateWidget(UpdateLiveDataModel(ACTION_DELETE, playCarouselCardDataModel))
             }
         }
     }
@@ -351,7 +359,6 @@ open class HomeViewModel @Inject constructor(
             }
         }){
             rollbackRemindPlayBanner()
-            it.printStackTrace()
             _reminderPlayLiveData.postValue(Result.error(Throwable()))
         }
     }
@@ -386,7 +393,7 @@ open class HomeViewModel @Inject constructor(
 
         val currentPosition = _homeLiveData.value?.list?.withIndex()?.find { (_, model) ->  model is HeaderDataModel }?.index ?: -1
 
-        headerDataModel?.let { headerViewModel ->
+        headerDataModel?.let {
             tokopointsDrawer?.let {
                 headerDataModel = headerDataModel?.copy(tokopointsDrawerHomeData = it)
             }
@@ -395,9 +402,6 @@ open class HomeViewModel @Inject constructor(
             }
             cashBackData?.let {
                 headerDataModel = headerDataModel?.copy(cashBackData = it)
-            }
-            tokopointHomeDrawerData?.let {
-                headerDataModel = headerDataModel?.copy(tokoPointDrawerData = it)
             }
             isPendingTokocashChecked?.let {
                 headerDataModel = headerDataModel?.copy(isPendingTokocashChecked = it)
@@ -409,7 +413,7 @@ open class HomeViewModel @Inject constructor(
                 headerDataModel = headerDataModel?.copy(isTokoPointDataError = it)
             }
             headerDataModel = headerDataModel?.copy(isUserLogin = userSession.get().isLoggedIn)
-            launch(coroutineContext) { updateWidget(UpdateLiveDataModel(ACTION_UPDATE, headerViewModel.copy(), currentPosition)) }
+            launch(coroutineContext) { updateWidget(UpdateLiveDataModel(ACTION_UPDATE, headerDataModel, currentPosition)) }
         }
 
     }
@@ -518,18 +522,14 @@ open class HomeViewModel @Inject constructor(
     fun setPlayBanner(playCardDataModel: PlayCardDataModel){
         val newList = mutableListOf<Visitable<*>>()
         newList.addAll(_homeLiveData.value?.list ?: listOf())
-        val playIndex = newList.indexOfFirst { visitable -> visitable is PlayCardDataModel }
-        if(playIndex != -1 && newList[playIndex] is PlayCardDataModel){
-            launch(coroutineContext) { updateWidget(UpdateLiveDataModel(ACTION_UPDATE, playCardDataModel, playIndex)) }
-        }
+        launch(coroutineContext) { updateWidget(UpdateLiveDataModel(ACTION_UPDATE, playCardDataModel)) }
     }
 
     // play widget it will be removed when load image is failed (deal from PO)
     // because don't let the banner blank
     fun clearPlayBanner(){
-        val playIndex = _homeLiveData.value?.list.copy().indexOfFirst { visitable -> visitable is PlayCardDataModel }
-        if(playIndex != -1) {
-            launch(coroutineContext) { updateWidget(UpdateLiveDataModel(ACTION_DELETE, null, playIndex )) }
+        _homeLiveData.value?.list?.withIndex()?.find { (_, visitable) -> visitable is PlayCardDataModel }?.let{
+            launch(coroutineContext) { updateWidget(UpdateLiveDataModel(ACTION_DELETE, it.value, it.index )) }
         }
     }
 
@@ -674,7 +674,7 @@ open class HomeViewModel @Inject constructor(
 
    fun insertRechargeRecommendation(data: RechargeRecommendation) {
         if (data.recommendations.isNotEmpty()) {
-            _homeLiveData.value?.list?.run {
+            _homeLiveData.value?.list?.apply {
                 val findRechargeRecommendationViewModel = find { visitable -> visitable is ReminderWidgetModel
                         && (visitable.source == ReminderEnum.RECHARGE)}
                 val indexOfRechargeRecommendationViewModel = indexOf(findRechargeRecommendationViewModel)
@@ -693,10 +693,10 @@ open class HomeViewModel @Inject constructor(
 
     fun insertSalamWidget(data: SalamWidget) {
         if (isSalamWidgetAvailable(data.salamWidget)) {
-            _homeLiveData.value?.list?.run {
-                val findSalamWidgetModel = find { visitable -> visitable is ReminderWidgetModel
+            _homeLiveData.value?.list?.let {
+                val findSalamWidgetModel = it.find { visitable -> visitable is ReminderWidgetModel
                         && (visitable.source == ReminderEnum.SALAM)}
-                val indexOfSalamWidgetModel = indexOf(findSalamWidgetModel)
+                val indexOfSalamWidgetModel = it.indexOf(findSalamWidgetModel)
                 if (indexOfSalamWidgetModel > -1 && findSalamWidgetModel is ReminderWidgetModel) {
                     val newFindSalamWidgetModel = findSalamWidgetModel.copy(
                             data = mapperSalamtoReminder(data),
@@ -825,7 +825,7 @@ open class HomeViewModel @Inject constructor(
                     visitableMutableList.add(HomeLoadingMoreModel())
                     getFeedTabData()
                 }
-                homeDataModel.copy(
+                return homeDataModel.copy(
                         list = visitableMutableList)
             }
         }
@@ -838,14 +838,10 @@ open class HomeViewModel @Inject constructor(
             if(popularWidget != null) {
                 val list = homeViewModel.list.toMutableList()
                 // find the old data from current list
-                list.forEachIndexed { pos, data ->
-                    run {
-                        if (data is PopularKeywordListDataModel) {
-                            list[pos] = data
-                        }
-                    }
+                list.withIndex().find { (_, value) -> value is PopularKeywordListDataModel }?.let {
+                    list[it.index] = popularWidget
                 }
-                homeViewModel.copy(list = list)
+                return homeViewModel.copy(list = list)
             }
         }
         return homeDataModel
@@ -869,7 +865,7 @@ open class HomeViewModel @Inject constructor(
                             }
                         }
                     }
-                    homeViewModel.copy(list = list)
+                    return homeViewModel.copy(list = list)
                 }
             }
         }
@@ -890,12 +886,12 @@ open class HomeViewModel @Inject constructor(
                 if (homeDataModel?.isCache == false) {
                     _isRequestNetworkLiveData.postValue(Event(false))
                     val homeDataWithoutExternalComponentPair = evaluateInitialTopAdsBannerComponent(homeDataModel)
+                    var homeData: HomeDataModel? = homeDataWithoutExternalComponentPair.first
                     withContext(homeDispatcher.get().ui()){
-                        var homeData = evaluateGeolocationComponent(homeDataModel)
-                        homeData = evaluateAvailableComponent(homeDataModel)
+                        homeData = evaluateGeolocationComponent(homeData)
+                        homeData = evaluateAvailableComponent(homeData)
                         _homeLiveData.value = homeData
                     }
-                    delay(100)
                     getPlayBannerCarousel()
                     getHeaderData()
                     getReviewData()
@@ -934,8 +930,18 @@ open class HomeViewModel @Inject constructor(
     private fun initChannel(){
         logChannelUpdate("init channel")
         jobChannel?.cancelChildren()
-        jobChannel = launch(homeDispatcher.get().ui()) {
-            updateChannel(channel)
+        jobChannel = launch (homeDispatcher.get().ui()){
+            updateChannel()
+        }
+    }
+
+    private fun reInitChannel(widget: UpdateLiveDataModel){
+        logChannelUpdate("reinit channel")
+        jobChannel?.cancelChildren()
+        jobChannel = launch (homeDispatcher.get().ui()){
+            channel = Channel(10)
+            if(!channel.isClosedForSend) channel.send(widget)
+            updateChannel()
         }
     }
 
@@ -976,10 +982,10 @@ open class HomeViewModel @Inject constructor(
         }
     }
 
-    fun getBusinessUnitData(tabId: Int, position: Int){
+    fun getBusinessUnitData(tabId: Int, position: Int, tabName: String){
         if(buWidgetJob?.isActive == true) return
         buWidgetJob = launchCatchError(coroutineContext, block = {
-            getBusinessUnitDataUseCase.get().setParams(tabId)
+            getBusinessUnitDataUseCase.get().setParams(tabId, position, tabName)
             val data = getBusinessUnitDataUseCase.get().executeOnBackground()
             _homeLiveData.value?.list?.withIndex()?.find { it.value is NewBusinessUnitWidgetDataModel }?.let { buModel ->
                 val oldBuData = buModel.value as NewBusinessUnitWidgetDataModel
@@ -1016,7 +1022,7 @@ open class HomeViewModel @Inject constructor(
                 data.reversed().forEach {
                     updateWidget(UpdateLiveDataModel(ACTION_ADD, it, lastIndex))
                 }
-                _trackingLiveData.postValue(Event(data))
+                _trackingLiveData.postValue(Event(data.filterIsInstance(HomeVisitable::class.java)))
             }
         }){
             updateWidget(UpdateLiveDataModel(ACTION_DELETE, dynamicChannelDataModel, position))
@@ -1039,7 +1045,7 @@ open class HomeViewModel @Inject constructor(
                 data.reversed().forEach {
                     updateWidget(UpdateLiveDataModel(ACTION_ADD, it, lastIndex))
                 }
-                _trackingLiveData.postValue(Event(data))
+                _trackingLiveData.postValue(Event(data.filterIsInstance(HomeVisitable::class.java)))
             }
         }){
             updateWidget(UpdateLiveDataModel(ACTION_DELETE, visitable, position))
@@ -1091,8 +1097,8 @@ open class HomeViewModel @Inject constructor(
         removeSalamWidget()
         if (declineSalamWidgetJob?.isActive==true) return
         declineSalamWidgetJob = launchCatchError(coroutineContext, block = {
-            declineSalamWIdgetUseCase.get().setParams(requestParams)
-            declineSalamWIdgetUseCase.get().executeOnBackground()
+            declineSalamWidgetUseCase.get().setParams(requestParams)
+            declineSalamWidgetUseCase.get().executeOnBackground()
         }){}
     }
 
@@ -1115,15 +1121,20 @@ open class HomeViewModel @Inject constructor(
             homeRecommendationFeedViewModel.recommendationTabDataModel = homeRecommendationTabs
             homeRecommendationFeedViewModel.isNewData = true
 
-            updateWidget(UpdateLiveDataModel(ACTION_DELETE, findLoadingModel as HomeVisitable?))
-            updateWidget(UpdateLiveDataModel(ACTION_DELETE, findRetryModel as HomeVisitable?))
+            updateWidget(UpdateLiveDataModel(ACTION_DELETE, findLoadingModel))
+            updateWidget(UpdateLiveDataModel(ACTION_DELETE, findRetryModel))
             updateWidget(UpdateLiveDataModel(ACTION_ADD, homeRecommendationFeedViewModel))
 
         }){
             val findRetryModel = _homeLiveData.value?.list?.find {
                 visitable -> visitable is HomeRetryModel
             }
+            val findLoadingModel = _homeLiveData.value?.list?.find {
+                visitable -> visitable is HomeLoadingMoreModel
+            }
+
             updateWidget(UpdateLiveDataModel(ACTION_DELETE, findRetryModel as HomeVisitable?))
+            updateWidget(UpdateLiveDataModel(ACTION_DELETE, findLoadingModel))
             updateWidget(UpdateLiveDataModel(ACTION_ADD, HomeRetryModel()))
         }
     }
@@ -1136,8 +1147,9 @@ open class HomeViewModel @Inject constructor(
             val data = getPlayCardHomeUseCase.get().executeOnBackground()
             if (data.playChannels.isEmpty() || data.playChannels.first().coverUrl.isEmpty()) {
                 clearPlayBanner()
+            } else{
+                _requestImageTestLiveData.postValue(Event(playBanner.copy(playCardHome = data.playChannels.first())))
             }
-            _requestImageTestLiveData.postValue(Event(playBanner.copy(playCardHome = data.playChannels.first())))
         }){
             clearPlayBanner()
         }
@@ -1176,7 +1188,7 @@ open class HomeViewModel @Inject constructor(
                     }
                 }
             }){
-                    it.printStackTrace()
+                it.printStackTrace()
             }
         }
     }
@@ -1233,44 +1245,6 @@ open class HomeViewModel @Inject constructor(
         }){
             _stickyLogin.postValue(Result.error(it))
         }
-    }
-
-    fun getOneClickCheckout(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int){
-        val requestParams = RequestParams()
-        val quantity = if(grid.minOrder < 1) "1" else grid.minOrder.toString()
-        requestParams.putObject(AddToCartOccUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, AddToCartOccRequestParams(
-                productId = grid.id,
-                quantity = quantity,
-                shopId = grid.shop.shopId,
-                warehouseId = grid.warehouseId,
-                productName = grid.name,
-                price = grid.price
-        ))
-        getAtcUseCase.get().createObservable(requestParams)
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .subscribe (
-                        {
-                            if(it.status == STATUS_OK) {
-                                _oneClickCheckout.postValue(Event(
-                                        mapOf(
-                                                ATC to it,
-                                                CHANNEL to channel,
-                                                GRID to grid,
-                                                QUANTITY to quantity,
-                                                POSITION to position
-
-                                        )
-                                ))
-                            }
-                            else {
-                                _oneClickCheckout.postValue(Event(Throwable()))
-                            }
-                        },
-                        {
-                            _oneClickCheckout.postValue(Event(it))
-                        }
-                )
     }
 
     fun getOneClickCheckoutHomeComponent(channel: ChannelModel, grid: ChannelGrid, position: Int){
@@ -1370,19 +1344,19 @@ open class HomeViewModel @Inject constructor(
         injectCouponTimeBasedJob = launchCatchError(coroutineContext, {
             _injectCouponTimeBasedResult.value = Result.success(injectCouponTimeBasedUseCase.get().executeOnBackground().data)
         }){
-            it.printStackTrace()
             _injectCouponTimeBasedResult.postValue(Result.error(it))
         }
     }
 
     fun getUserId() = userSession.get().userId ?: ""
 
+    fun getUserName() = userSession.get().name ?: ""
+
 // ============================================================================================
 // ================================ Live Data Controller ======================================
 // ============================================================================================
-    // make coffee channel
-    private suspend fun updateChannel(channel: ReceiveChannel<UpdateLiveDataModel>){
-        for(data in channel){
+    private suspend fun updateChannel(){
+        channel.consumeAsFlow().collect {data ->
             if(data.action == ACTION_UPDATE_HOME_DATA){
                 logChannelUpdate("Update channel: (Update all home data) data: ${data.homeData?.list?.map { it.javaClass.simpleName }}")
                 data.homeData?.let { homeData ->
@@ -1393,7 +1367,7 @@ open class HomeViewModel @Inject constructor(
             } else {
                 val newList = _homeLiveData.value?.list?.toMutableList()
                 data.visitable?.let { homeVisitable ->
-                    if(newList != null && newList.size >  data.position) {
+                    if(newList != null && newList.size >= data.position) {
                         when (data.action) {
                             ACTION_ADD -> {
                                 logChannelUpdate("Update channel: (Add widget ${homeVisitable.javaClass.simpleName})")
@@ -1439,13 +1413,14 @@ open class HomeViewModel @Inject constructor(
             if(updateWidget.visitable != null) logChannelUpdate("Send Update Widget... (send = ${channel.isClosedForSend} | widget = ${updateWidget.visitable.javaClass.simpleName})")
             else logChannelUpdate("Send Widget Processing... (send = ${channel.isClosedForSend} | homeData = ${updateWidget.homeData?.list?.map{ it.javaClass.simpleName }}")
             if(channel.isClosedForSend){
-                initChannel()
+                reInitChannel(updateWidget)
+            } else {
+                channel.send(updateWidget)
             }
-            channel.send(updateWidget)
         }catch (e: ClosedSendChannelException){
             logChannelUpdate("Update Widget Error... (send = ${channel.isClosedForSend} | widget = $updateWidget)")
-            initChannel()
-            channel.send(updateWidget)
+            logChannelUpdate("init channel")
+            reInitChannel(updateWidget)
         }
     }
 

@@ -1,19 +1,21 @@
 package com.tokopedia.topads.keyword.view.adapter;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.core.base.utils.StringUtils;
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tokopedia.topads.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by hendry on 5/19/2017.
@@ -108,14 +110,26 @@ public class KeywordAdapter extends RecyclerView.Adapter<KeywordAdapter.KeywordV
 
         public void bindTo(String keyword) {
             textViewKeyword.setText(keyword);
-            if (errorKeywordList.size() > 0 && StringUtils.containInList(errorKeywordList, keyword)) {
+            if (errorKeywordList.size() > 0 && containInList(errorKeywordList, keyword)) {
                 itemView.setActivated(true);
-                imageViewDelete.setColorFilter(colorRed );
+                imageViewDelete.setColorFilter(colorRed);
             } else {
                 itemView.setActivated(false);
                 imageViewDelete.clearColorFilter();
             }
 
+        }
+
+        private boolean containInList(List<String> stringList, String stringToCheck) {
+            if (stringList == null || TextUtils.isEmpty(stringToCheck)) {
+                return false;
+            }
+            for (int i = 0, sizei = stringList.size(); i < sizei; i++) {
+                if (stringToCheck.equals(stringList.get(i))) {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 

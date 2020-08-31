@@ -49,4 +49,7 @@ android {
 dependencies {
     implementation project(rootProject.ext.app.customerapp)
     implementation project(rootProject.ext.features.event)
+    implementation project(rootProject.ext.features.deals)
+    implementation project(rootProject.ext.features.digitalDeals)
+
 }

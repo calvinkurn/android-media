@@ -9,6 +9,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title_info"
+        android:contentDescription="@string/content_desc_title_info"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/label_pre_order"
@@ -30,6 +31,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/desc_info"
+        android:contentDescription="@string/content_desc_desc_info"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="end"

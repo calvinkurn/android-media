@@ -23,7 +23,7 @@ class PlayBannerCarouselItemViewHolder (private val parent: View): BasePlayBanne
         parent.channel_title?.text = dataModel.channelTitle
         parent.channel_name?.text = dataModel.channelCreator
         parent.viewer?.text = dataModel.countView
-        parent.promo_badge?.showOrHideView(dataModel.isPromo)
+        parent.promo_badge?.showOrHideView(dataModel.isPromo && dataModel.widgetType != PlayBannerWidgetType.UPCOMING)
         parent.live_badge?.showOrHideView(dataModel.isLive && dataModel.widgetType != PlayBannerWidgetType.UPCOMING)
         parent.viewer_badge?.showOrHideView(dataModel.isShowTotalView && dataModel.widgetType != PlayBannerWidgetType.UPCOMING)
         parent.reminder?.showOrHideView(dataModel.widgetType == PlayBannerWidgetType.UPCOMING)

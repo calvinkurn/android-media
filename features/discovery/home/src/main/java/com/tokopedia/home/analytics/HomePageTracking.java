@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 
 import com.tokopedia.analyticconstant.DataLayer;
-import com.tkpd.library.utils.CurrencyFormatHelper;
+import com.tokopedia.utils.text.currency.CurrencyFormatHelper;
 import com.tokopedia.home.analytics.v2.BaseTracking;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon;
@@ -216,6 +216,8 @@ public class HomePageTracking {
                 HashMap<String, String> customDimensions = new HashMap<>();
                 customDimensions.put(SCREEN_DIMENSION_IS_LOGGED_IN_STATUS, String.valueOf(isUserLoggedIn));
                 customDimensions.put(ConstantKt.KEY_SESSION_IRIS, new IrisSession(activity).getSessionId());
+                customDimensions.put("currentSite", "tokopediamarketplace");
+                customDimensions.put("businessUnit", "home & browse");
                 tracker.sendScreenAuthenticated(
                         screenName, customDimensions);
             }
@@ -1065,7 +1067,7 @@ public class HomePageTracking {
                         DataLayer.mapOf(
                                 FIELD_NAME, grid.getName(),
                                 FIELD_ID, grid.getId(),
-                                FIELD_PRICE, Integer.toString(CurrencyFormatHelper.convertRupiahToInt(
+                                FIELD_PRICE, Integer.toString(CurrencyFormatHelper.INSTANCE.convertRupiahToInt(
                                         grid.getPrice()
                                 )),
                                 FIELD_BRAND, "none / other",
@@ -1110,7 +1112,7 @@ public class HomePageTracking {
                         DataLayer.mapOf(
                                 FIELD_ID, grid.getId(),
                                 FIELD_NAME, grid.getName(),
-                                FIELD_PRICE, Integer.toString(CurrencyFormatHelper.convertRupiahToInt(
+                                FIELD_PRICE, Integer.toString(CurrencyFormatHelper.INSTANCE.convertRupiahToInt(
                                         grid.getPrice()
                                 )),
                                 FIELD_BRAND, NONE_OTHER,
@@ -1164,7 +1166,7 @@ public class HomePageTracking {
                         DataLayer.mapOf(
                                 FIELD_NAME, grid.getName(),
                                 FIELD_ID, grid.getId(),
-                                FIELD_PRICE, Integer.toString(CurrencyFormatHelper.convertRupiahToInt(
+                                FIELD_PRICE, Integer.toString(CurrencyFormatHelper.INSTANCE.convertRupiahToInt(
                                         grid.getPrice()
                                 )),
                                 FIELD_BRAND, NONE_OTHER,

@@ -2,9 +2,9 @@ package com.tokopedia.home.beranda.domain.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tkpd.library.utils.CurrencyFormatHelper
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -506,6 +506,7 @@ data class DynamicHomeChannel(
             const val LAYOUT_BANNER_GIF: String = "banner_image"
             const val LAYOUT_LEGO_3_IMAGE: String = "lego_3_image"
             const val LAYOUT_LEGO_4_IMAGE: String = "lego_4_image"
+            const val LAYOUT_LEGO_4_AUTO: String = "4_banners_auto"
             const val LAYOUT_SPRINT_CAROUSEL: String = "sprint_carousel"
             const val LAYOUT_BU_WIDGET: String = "bu_widget"
             const val LAYOUT_TOPADS: String = "topads"
@@ -630,9 +631,23 @@ data class DynamicHomeChannel(
             @SerializedName("rating")
             var rating: Int = 0,
             @SerializedName("count_review")
-            val countReview: Int = 0
+            val countReview: Int = 0,
+            @Expose
+            @SerializedName("benefit")
+            val benefit: Benefit = Benefit(),
+            @Expose
+            @SerializedName("textColor")
+            val textColor: String = ""
     )
 
+    data class Benefit(
+            @Expose
+            @SerializedName("type")
+            val type: String = "",
+            @Expose
+            @SerializedName("value")
+            val value: String = ""
+    )
     data class Header(
             @Expose
             @SerializedName("id")

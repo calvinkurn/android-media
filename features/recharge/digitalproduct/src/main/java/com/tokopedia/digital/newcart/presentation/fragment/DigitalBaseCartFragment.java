@@ -287,7 +287,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
         String promoCode = promoData.getPromoCode();
         if (!promoCode.isEmpty()) {
             int requestCode;
-            if (promoData.getTypePromo() == PromoData.CREATOR.getTYPE_VOUCHER()) {
+            if (promoData.getTypePromo() == PromoData.TYPE_VOUCHER) {
                 intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_LIST_DIGITAL);
                 intent.putExtra("EXTRA_PROMO_CODE", promoCode);
                 intent.putExtra("EXTRA_COUPON_ACTIVE",
@@ -318,6 +318,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public void disableVoucherCheckoutDiscount() {
+        detailHolderView.removeAdditionalInfo();
         checkoutHolderView.disableVoucherDiscount();
     }
 
@@ -337,11 +338,11 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
                     }
                     case FAILED: {
                         promoData.setPromoCode("");
-                        presenter.onReceivePromoCode(promoData.getTitle(), promoData.getDescription(), promoData.getPromoCode(), promoData.getTypePromo());
+                        presenter.onReceivePromoCode(promoData);
                         break;
                     }
                     case ACTIVE: {
-                        presenter.onReceivePromoCode(promoData.getTitle(), promoData.getDescription(), promoData.getPromoCode(), promoData.getTypePromo());
+                        presenter.onReceivePromoCode(promoData);
                         break;
                     }
                     default: {

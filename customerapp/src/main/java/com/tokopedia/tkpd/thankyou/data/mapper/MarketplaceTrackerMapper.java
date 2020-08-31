@@ -9,7 +9,6 @@ import com.tokopedia.core.analytics.PurchaseTracking;
 import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.utils.CurrencyFormatHelper;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.linker.LinkerConstants;
@@ -30,6 +29,7 @@ import com.tokopedia.tkpd.thankyou.data.source.MonthlyNewBuyerSource;
 import com.tokopedia.tkpd.thankyou.domain.model.ThanksTrackerConst;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,7 +50,7 @@ public class MarketplaceTrackerMapper implements Func1<PaymentGraphql, Boolean> 
 
     private static final String DEFAULT_SHOP_TYPE = "default";
     private static final String PAYMENT_TYPE_COD = "COD";
-    private SessionHandler sessionHandler;
+    private UserSessionInterface userSessionInterface;
     private List<String> shopTypes;
     private PaymentData paymentData;
     private boolean monthlyNewBuyerFlag;
@@ -64,8 +64,8 @@ public class MarketplaceTrackerMapper implements Func1<PaymentGraphql, Boolean> 
     private static final String EVENT_LABEL_REGULAR_CHECKOUT = "regular checkout";
     private static final String EVENT_LABEL_OCC = "occ";
 
-    public MarketplaceTrackerMapper(SessionHandler sessionHandler, List<String> shopTypes, RequestParams requestParams) {
-        this.sessionHandler = sessionHandler;
+    public MarketplaceTrackerMapper(UserSessionInterface userSessionInterface, List<String> shopTypes, RequestParams requestParams) {
+        this.userSessionInterface = userSessionInterface;
         this.shopTypes = shopTypes;
     }
 
@@ -174,7 +174,7 @@ public class MarketplaceTrackerMapper implements Func1<PaymentGraphql, Boolean> 
         purchase.setEventLabel(PurchaseTracking.EVENT_LABEL);
         purchase.setPaymentId(String.valueOf(paymentData.getPaymentId()));
         purchase.setTransactionID(orderIds);
-        purchase.setUserId(sessionHandler.getLoginID());
+        purchase.setUserId(userSessionInterface.getUserId());
         purchase.setShipping(String.valueOf(shipping));
 
         purchase.setRevenue(String.valueOf(paymentData.getPaymentAmount()));
@@ -199,7 +199,7 @@ public class MarketplaceTrackerMapper implements Func1<PaymentGraphql, Boolean> 
         purchase.setPaymentType(getPaymentType(paymentData.getPaymentMethod()));
         purchase.setTransactionID(String.valueOf(orderData.getOrderId()));
         purchase.setLogisticType(getLogisticType(orderData));
-        purchase.setUserId(sessionHandler.getLoginID());
+        purchase.setUserId(userSessionInterface.getUserId());
         purchase.setShipping(String.valueOf(orderData.getOrderInfo().getShipping().getShippingPrice()));
         purchase.setRevenue(String.valueOf(paymentData.getPaymentAmount()));
         purchase.setAffiliation(getShopName(orderData));

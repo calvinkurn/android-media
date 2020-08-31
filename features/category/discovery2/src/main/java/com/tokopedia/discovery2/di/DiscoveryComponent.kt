@@ -8,21 +8,23 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.chip
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.claimcoupon.ClaimCouponItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.claimcoupon.ClaimCouponViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.cpmtopads.CpmTopAdsViewModel
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.cpmtopads.CpmTopadsProductItemViewModel
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.cpmtopads.CpmTopadsShopItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.loadmore.LoadMoreViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.ProductCardCarouselViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem.ProductCardItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardrevamp.ProductCardRevampViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardsprintsalecarousel.ProductCardSprintSaleCarouselViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickcoupon.QuickCouponViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickfilter.QuickFilterViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tokopoints.TokopointsViewModel
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.topads.sdk.di.TopAdsUrlHitterModule
 import dagger.Component
 
 
 @DiscoveryScope
-@Component(modules = [DiscoveryModule::class, DiscoveryViewModelModule::class], dependencies = [BaseAppComponent::class])
+@Component(modules = [DiscoveryModule::class,
+    DiscoveryViewModelModule::class,
+    TopAdsUrlHitterModule::class], dependencies = [BaseAppComponent::class])
 interface DiscoveryComponent {
     fun inject(discoveryActivity: DiscoveryActivity)
     fun inject(discoveryFragment: DiscoveryFragment)
@@ -38,7 +40,6 @@ interface DiscoveryComponent {
     fun inject(productCardItemViewModel: ProductCardItemViewModel)
     fun inject(chipsFilterViewModel: ChipsFilterViewModel)
     fun inject(loadMoreViewModel: LoadMoreViewModel)
-    fun inject(cpmTopadsShopItemViewModel: CpmTopadsShopItemViewModel)
-    fun inject(cpmTopadsProductItemViewModel: CpmTopadsProductItemViewModel)
     fun inject(quickCouponViewModel: QuickCouponViewModel)
+    fun inject(quickFilterViewModel: QuickFilterViewModel)
 }

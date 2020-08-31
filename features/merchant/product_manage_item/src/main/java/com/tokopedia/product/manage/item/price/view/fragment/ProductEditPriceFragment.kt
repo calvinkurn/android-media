@@ -64,7 +64,7 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
         }
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey(SAVED_PRODUCT_PRICE)) {
-                productPrice = savedInstanceState.getParcelable(SAVED_PRODUCT_PRICE)
+                productPrice = savedInstanceState.getParcelable(SAVED_PRODUCT_PRICE) ?: ProductPrice()
             }
         }
     }
@@ -119,7 +119,7 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
         if (resultCode == Activity.RESULT_OK && data != null) {
             when (requestCode) {
                 REQUEST_CODE_GET_WHOLESALE -> {
-                    wholesalePrice = data.getParcelableArrayListExtra(EXTRA_PRODUCT_WHOLESALE)
+                    wholesalePrice = data.getParcelableArrayListExtra(EXTRA_PRODUCT_WHOLESALE) ?: arrayListOf()
                     setEditTextPriceState(wholesalePrice)
                     setLabelViewWholesale(wholesalePrice)
                 }

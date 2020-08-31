@@ -3,10 +3,9 @@ package com.tokopedia.play.broadcaster.domain.usecase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.broadcaster.domain.model.GetLiveStatisticsResponse
-import com.tokopedia.usecase.coroutines.UseCase
+import com.tokopedia.play.broadcaster.domain.model.LiveStats
+import com.tokopedia.play.broadcaster.util.error.DefaultErrorThrowable
 import javax.inject.Inject
 
 /**
@@ -15,7 +14,7 @@ import javax.inject.Inject
 
 class GetLiveStatisticsUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository
-) : UseCase<GetLiveStatisticsResponse>() {
+) : BaseUseCase<LiveStats>() {
 
     private val query = """
         query liveReport(${'$'}channelId: String!){
@@ -43,16 +42,12 @@ class GetLiveStatisticsUseCase @Inject constructor(
 
     var params: Map<String, Any> = mapOf()
 
-    override suspend fun executeOnBackground(): GetLiveStatisticsResponse {
-        val gqlRequest = GraphqlRequest(query, GetLiveStatisticsResponse::class.java, params)
-        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
+    override suspend fun executeOnBackground(): LiveStats {
+        val gqlResponse = configureGqlResponse(graphqlRepository, query, GetLiveStatisticsResponse::class.java, params, GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
-        val errors = gqlResponse.getError(GetLiveStatisticsResponse::class.java)
-        if (!errors.isNullOrEmpty()) {
-            throw MessageErrorException(errors[0].message)
-        } else {
-            return gqlResponse.getData(GetLiveStatisticsResponse::class.java)
-        }
+        val response = gqlResponse.getData<GetLiveStatisticsResponse>(GetLiveStatisticsResponse::class.java)
+        return try { response.response.channel.metrics
+        } catch (e: Exception) { throw DefaultErrorThrowable() }
     }
 
     companion object {

@@ -3,10 +3,8 @@ package com.tokopedia.play.broadcaster.domain.usecase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.broadcaster.domain.model.CreateLiveStreamChannelResponse
-import com.tokopedia.usecase.coroutines.UseCase
+import com.tokopedia.play.broadcaster.util.error.DefaultErrorThrowable
 import javax.inject.Inject
 
 
@@ -15,7 +13,7 @@ import javax.inject.Inject
  */
 class CreateLiveStreamChannelUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository
-) : UseCase<CreateLiveStreamChannelResponse.GetMedia>() {
+) : BaseUseCase<CreateLiveStreamChannelResponse.GetMedia>() {
 
     private val query = """
             mutation createLivestream(${'$'}channelId: String!, ${'$'}title: String!, ${'$'}thumbnail: String!) {
@@ -35,14 +33,13 @@ class CreateLiveStreamChannelUseCase @Inject constructor(
     var params: Map<String, Any> = emptyMap()
 
     override suspend fun executeOnBackground(): CreateLiveStreamChannelResponse.GetMedia {
-        val gqlRequest = GraphqlRequest(query, CreateLiveStreamChannelResponse.CreateLiveStreamChannelData::class.java, params)
-        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
+        val gqlResponse = configureGqlResponse(graphqlRepository, query, CreateLiveStreamChannelResponse::class.java, params, GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
-        val response = gqlResponse.getData<CreateLiveStreamChannelResponse.CreateLiveStreamChannelData>(CreateLiveStreamChannelResponse.CreateLiveStreamChannelData::class.java)
-        response?.data?.media?.let {
+        val response = gqlResponse.getData<CreateLiveStreamChannelResponse>(CreateLiveStreamChannelResponse::class.java)
+        response?.media?.let {
             return it
         }
-        throw MessageErrorException("Terjadi kesalahan pada server") // TODO("replace with default error message")
+        throw DefaultErrorThrowable()
     }
 
     companion object {
@@ -53,8 +50,8 @@ class CreateLiveStreamChannelUseCase @Inject constructor(
 
         fun createParams(
                 channelId: String,
-                title: String = "", // TODO("ask BE")
-                thumbnail: String = "" // TODO("ask BE")
+                title: String, // TODO("After MVP, confirm to BE that this should not be required")
+                thumbnail: String // TODO("After MVP, confirm to BE that this should not be required")
         ): Map<String, Any> = mapOf(
                 PARAMS_CHANNEL_ID to channelId,
                 PARAMS_TITLE to title,

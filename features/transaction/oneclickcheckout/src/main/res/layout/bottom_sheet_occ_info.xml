@@ -18,38 +18,30 @@
         android:id="@+id/tv_body"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_24"
         android:layout_marginLeft="@dimen/dp_24"
         android:layout_marginTop="@dimen/dp_24"
-        android:layout_marginEnd="@dimen/dp_24"
         android:layout_marginRight="@dimen/dp_24"
         android:textColor="@color/Neutral_N700_96"
         app:typographyType="body_3"
-        app:typographyWeight="reguler"
-        tools:text="alsdfjlkasjdf llasdjflasjdfljsaf\nasldfjasjdklfjsajf\nasldkfjlkasjdfjaklsdjf" />
+        app:typographyWeight="reguler" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_action"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_24"
         android:layout_marginLeft="@dimen/dp_24"
         android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_24"
         android:layout_marginRight="@dimen/dp_24"
         android:textColor="@color/Green_G500"
         app:typographyType="body_3"
-        app:typographyWeight="bold"
-        tools:text="Info Selengkapnya" />
+        app:typographyWeight="bold" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_action"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_20"
-        android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_22"
         android:text="@string/default_action_occ_info_bottom_sheet" />

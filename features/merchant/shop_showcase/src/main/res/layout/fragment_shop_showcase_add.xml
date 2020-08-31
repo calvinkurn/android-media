@@ -39,7 +39,8 @@
                 android:textColor="@color/primary_text_color"
                 android:text="@string/add_showcase_title_header"
                 tools:text="@string/add_showcase_title_header"
-                android:padding="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
                 />
 
             <com.tokopedia.unifycomponents.TextFieldUnify
@@ -69,7 +70,8 @@
                 android:textColor="@color/primary_text_color"
                 android:text="@string/selected_product_text"
                 tools:text="@string/selected_product_text"
-                android:padding="@dimen/dp_16"
+                android:paddingLeft="@dimen/dp_16"
+                android:paddingRight="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_32"
                 tools:visibility="visible"
                 />
@@ -79,15 +81,18 @@
                 android:visibility="gone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/textfield_showcase_name"
+                app:layout_constraintTop_toTopOf="@id/tv_showcase_product"
+                app:layout_constraintBottom_toBottomOf="@id/tv_showcase_product"
                 app:layout_constraintRight_toRightOf="parent"
-                app:typographyWeight="reguler"
-                app:typographyType="body_1"
+                app:typographyWeight="bold"
+                app:typographyType="body_3"
                 android:textColor="@color/text_color_green"
                 android:text="@string/add_product_text"
                 tools:text="@string/add_product_text"
-                android:padding="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_36"
+                tools:visibility="visible"
+                android:paddingLeft="@dimen/dp_16"
+                android:paddingRight="@dimen/dp_16"
+                android:layout_marginTop="@dimen/spacing_lvl1"
                 />
 
             <androidx.recyclerview.widget.RecyclerView
@@ -97,9 +102,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_10"
                 android:layout_marginRight="@dimen/dp_10"
+                android:layout_marginBottom="@dimen/dp_8"
                 app:layout_constraintTop_toBottomOf="@id/tv_showcase_product"
                 android:layout_marginTop="@dimen/dp_8"
-                tools:visibility="visible"
+                tools:visibility="gone"
                 />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -136,16 +142,6 @@
         android:visibility="invisible"
         tools:visibility="visible"
         />
-
-<!--    <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify-->
-<!--        android:id="@+id/btn_back_to_top"-->
-<!--        app:fbType="back_to_top"-->
-<!--        app:layout_constraintBottom_toTopOf="@id/product_choosen_counter"-->
-<!--        app:layout_constraintRight_toRightOf="parent"-->
-<!--        android:layout_marginRight="@dimen/dp_16"-->
-<!--        android:layout_marginBottom="@dimen/dp_16"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content" />-->
 
     <androidx.cardview.widget.CardView
         android:id="@+id/product_choosen_counter"
@@ -186,21 +182,6 @@
                 android:layout_marginTop="@dimen/dp_12"
                 android:textColor="@color/primary_text_color"
                 />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/delete_counter_cancel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/text_cancel_button"
-                android:textColor="@color/text_color_green"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginEnd="@dimen/dp_8"
-                android:layout_marginRight="@dimen/dp_8"
-                android:layout_marginTop="@dimen/dp_14"
-                app:typographyType="body_2"
-                app:typographyWeight="bold"
-                tools:ignore="RelativeOverlap" />
 
         </RelativeLayout>
 

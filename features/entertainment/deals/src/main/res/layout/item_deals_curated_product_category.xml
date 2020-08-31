@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/content_curated_product_category_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="@dimen/spacing_lvl3"
+        android:paddingTop="@dimen/spacing_lvl5"
+        android:paddingBottom="@dimen/spacing_lvl3"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/txt_curated_product_category_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/spacing_lvl3"
+            android:textColor="@color/Neutral_N700_96"
+            app:typographyType="heading_4"
+            tools:text="Pilihan voucher paling worth it" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/txt_curated_product_category_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/spacing_lvl3"
+            android:textColor="@color/Neutral_N700_68"
+            app:typographyType="body_3"
+            tools:text="Ngapain aja lebih hemat pakai voucher ini!" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/lst_curated_product_category_card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/spacing_lvl2"
+            android:layout_marginTop="@dimen/deals_dp_12"
+            tools:itemCount="4"
+            tools:layoutManager="GridLayoutManager"
+            tools:listitem="@layout/item_deals_product_card"
+            tools:spanCount="2" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_curated_product_category_see_all"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/deals_dp_6"
+            android:layout_marginTop="@dimen/deals_dp_12"
+            android:gravity="center_horizontal"
+            android:text="@string/deals_product_category_see_all"
+            android:textAllCaps="false"
+            android:textColor="@color/Neutral_N700_68"
+            android:textStyle="bold"
+            app:unifyButtonSize="medium"
+            app:unifyButtonType="alternate"
+            app:unifyButtonVariant="ghost" />
+
+    </LinearLayout>
+
+    <include
+        android:id="@+id/contentCuratedProductShimmering"
+        layout="@layout/item_deals_curated_product_category_shimmering" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

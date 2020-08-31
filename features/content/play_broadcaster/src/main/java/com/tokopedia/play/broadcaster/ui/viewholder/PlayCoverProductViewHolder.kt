@@ -3,9 +3,9 @@ package com.tokopedia.play.broadcaster.ui.viewholder
 import android.view.View
 import android.widget.ImageView
 import com.tokopedia.adapterdelegate.BaseViewHolder
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
-import com.tokopedia.play_common.widget.playBannerCarousel.extension.loadImage
 
 /**
  * @author by furqan on 07/06/2020

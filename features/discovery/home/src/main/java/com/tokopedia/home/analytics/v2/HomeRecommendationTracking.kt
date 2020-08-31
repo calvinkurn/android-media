@@ -1,9 +1,10 @@
 package com.tokopedia.home.analytics.v2
 
 import com.tokopedia.analyticconstant.DataLayer
-import com.tokopedia.home.analytics.HomePageTracking
+import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.CustomAction.BANNER_ADS_INSIDE_RECOMMENDATION
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.CustomAction.BANNER_INSIDE_RECOMMENDATION
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.BannerRecommendationDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
 
 object HomeRecommendationTracking : BaseTracking(){
@@ -27,7 +28,9 @@ object HomeRecommendationTracking : BaseTracking(){
         const val RECOMMENDATION_REMOVE_WISHLIST_LOGIN = "remove wishlist - product recommendation - login"
         const val RECOMMENDATION_ADD_WISHLIST_NON_LOGIN = "add wishlist - product recommendation - non login"
         const val BANNER_INSIDE_RECOMMENDATION = "banner inside recommendation tab"
+        const val BANNER_ADS_INSIDE_RECOMMENDATION = "banner inside recommendation tab ads"
         const val BANNER_FIELD = "/ - banner inside recom tab - %s - "
+        const val BANNER_ADS_FIELD = "/ - p%s - banner inside recomm tab ads"
     }
 
     private object ActionField{
@@ -137,6 +140,38 @@ object HomeRecommendationTracking : BaseTracking(){
             Action.IMPRESSION_ON.format(BANNER_INSIDE_RECOMMENDATION),
             bannerRecommendationDataModel.tabName,
             listOf(mapToPromoTracking(bannerRecommendationDataModel))
+    )
+
+    fun getImpressionBannerTopAds(homeRecommendationBannerTopAdsDataModel: HomeRecommendationBannerTopAdsDataModel, tabPosition: Int, position: Int) = getBasicPromotionView(
+            Event.PROMO_VIEW,
+            Category.HOMEPAGE_TOPADS,
+            Action.IMPRESSION_ON.format(BANNER_ADS_INSIDE_RECOMMENDATION),
+            Label.NONE,
+            listOf(
+                    Promotion(
+                            id = homeRecommendationBannerTopAdsDataModel.topAdsImageViewModel?.bannerId.toString(),
+                            name = CustomAction.BANNER_ADS_FIELD.format(tabPosition.toString()),
+                            position = position.toString(),
+                            creative = homeRecommendationBannerTopAdsDataModel.topAdsImageViewModel?.imageUrl ?: "",
+                            creativeUrl = homeRecommendationBannerTopAdsDataModel.topAdsImageViewModel?.imageUrl ?: ""
+                    )
+            )
+    )
+
+    fun getClickBannerTopAds(homeRecommendationBannerTopAdsDataModel: HomeRecommendationBannerTopAdsDataModel, tabPosition: Int, position: Int) = getBasicPromotionClick(
+            event = Event.PROMO_CLICK,
+            eventCategory = Category.HOMEPAGE_TOPADS,
+            eventAction = Action.CLICK_ON.format(BANNER_ADS_INSIDE_RECOMMENDATION),
+            eventLabel = Label.NONE,
+            promotions = listOf(
+                    Promotion(
+                            id = homeRecommendationBannerTopAdsDataModel.topAdsImageViewModel?.bannerId.toString(),
+                            name = CustomAction.BANNER_ADS_FIELD.format(tabPosition.toString()),
+                            position = position.toString(),
+                            creative = homeRecommendationBannerTopAdsDataModel.topAdsImageViewModel?.imageUrl ?: "",
+                            creativeUrl = homeRecommendationBannerTopAdsDataModel.topAdsImageViewModel?.imageUrl ?: ""
+                    )
+            )
     )
 
     private fun mapToProductTracking(homeRecommendationItemDataModel: HomeRecommendationItemDataModel) = Product(

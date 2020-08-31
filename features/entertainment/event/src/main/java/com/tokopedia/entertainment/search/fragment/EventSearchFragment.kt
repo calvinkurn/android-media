@@ -11,11 +11,14 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.entertainment.search.Link
 import com.tokopedia.entertainment.R
+import com.tokopedia.entertainment.common.util.EventQuery.getEventHistory
+import com.tokopedia.entertainment.common.util.EventQuery.getEventSearchLocation
 import com.tokopedia.entertainment.search.adapter.SearchEventAdapter
 import com.tokopedia.entertainment.search.adapter.factory.SearchTypeFactoryImp
 import com.tokopedia.entertainment.search.di.EventSearchComponent
@@ -112,9 +115,9 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope {
     private fun getData(cacheType: CacheType = CacheType.CACHE_FIRST){
         if(activity?.txt_search?.searchBarTextField?.text?.toString()!!.isNotEmpty()
                 || activity?.txt_search?.searchBarTextField?.text?.toString()!!.isNotBlank()){
-            viewModel.getSearchData(activity?.txt_search?.searchBarTextField?.text?.toString()!!, cacheType)
+            viewModel.getSearchData(activity?.txt_search?.searchBarTextField?.text?.toString()!!, cacheType, getEventSearchLocation())
         } else{
-            viewModel.getHistorySearch(cacheType)
+            viewModel.getHistorySearch(cacheType, getEventHistory())
         }
     }
 
@@ -132,13 +135,13 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope {
                 if(p0.toString().isEmpty()){
                     if(job.isActive) job.cancel()
                     viewModel.cancelRequest()
-                    viewModel.getHistorySearch(CacheType.CACHE_FIRST)
+                    viewModel.getHistorySearch(CacheType.CACHE_FIRST,getEventHistory())
                 }
                 else{
                     if(job.isActive) job.cancel()
                     job = launch {
                         delay(200)
-                        viewModel.getSearchData(p0.toString(), CacheType.CACHE_FIRST)
+                        viewModel.getSearchData(p0.toString(), CacheType.CACHE_FIRST,getEventSearchLocation())
                     }
                 }
             }

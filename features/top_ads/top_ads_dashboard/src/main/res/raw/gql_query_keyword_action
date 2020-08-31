@@ -1,0 +1,13 @@
+mutation topAdsUpdateKeywords($action: String!, $keywords: [topAdsUpdateKeywordsReqData]!, $shopID: String!) {
+  topAdsUpdateKeywords(action: $action, keywords: $keywords, shopID: $shopID) {
+    data {
+      action
+      shopID
+    }
+    errors {
+      code
+      detail
+      title
+    }
+  }
+}

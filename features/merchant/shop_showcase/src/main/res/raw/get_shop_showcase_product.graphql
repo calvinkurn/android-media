@@ -1,7 +1,0 @@
-query getShopProduct($shopId: String!, $filter: ProductListFilter!){
-    GetShopProduct(shopID: $shopId, filter: $filter){
-        status
-        errors
-        totalData
-    }
-}

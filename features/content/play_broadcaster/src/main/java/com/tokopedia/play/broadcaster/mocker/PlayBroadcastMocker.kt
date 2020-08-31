@@ -5,6 +5,7 @@ import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.StyleSpan
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.view.state.Selectable
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
@@ -15,7 +16,7 @@ import kotlin.random.Random
  */
 object PlayBroadcastMocker {
 
-    private const val LOCAL_RTMP_URL: String = "rtmp://192.168.0.110:1935/stream/"
+    const val LOCAL_RTMP_URL: String = "rtmp://192.168.0.110:1935/stream/"
 
     /**
      * Follower
@@ -60,7 +61,7 @@ object PlayBroadcastMocker {
                     else -> "https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:f5f5f5,q_80/udglgfg9ozu3erd3fubg/joyride-run-flyknit-running-shoe-sqfqGQ.jpg"
                 },
                 isSelectedHandler = { false },
-                stock = (it % 2) * 10,
+                stock = StockAvailable((it % 2) * 10),
                 isSelectable = { Selectable }
         )
     }
@@ -72,6 +73,7 @@ object PlayBroadcastMocker {
         val fullText = "$keyword$suggestionText"
         SearchSuggestionUiModel(
                 queriedText = keyword,
+                suggestedId = "1",
                 suggestedText = fullText,
                 spannedSuggestion = SpannableStringBuilder(fullText).apply {
                     setSpan(StyleSpan(Typeface.BOLD), fullText.indexOf(suggestionText), fullText.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
@@ -79,25 +81,29 @@ object PlayBroadcastMocker {
         )
     }
 
-    fun getMockConfiguration() = ConfigurationUiModel(
+    fun getMockConfigurationDraftChannel() = ConfigurationUiModel(
             streamAllowed = true,
-            haveOnGoingLive = false, // activeChannelId != 0
-            channelId = 1234, // if (haveOnGoingLive) activeChannelId else draftChannelId
+            channelType = ChannelType.Draft,
+            channelId = "10008", // 10008 prod, 10012 stag (status: draft)
+            remainingTime = (30 * 60 * 1000),
+            timeElapsed = "01:00",
             durationConfig = DurationConfigUiModel(
                     duration = (30 * 60 * 1000),
+                    maxDurationDesc = "Siaran 30 menit",
                     pauseDuration = (1 * 60 * 1000),
                     errorMessage = "Maks. siaran 30 menit"
             ),
             productTagConfig = ProductTagConfigUiModel(
                     maxProduct = 15,
                     minProduct = 1,
+                    maxProductDesc = "Maks. Produk 15",
                     errorMessage = "Oops, kamu sudah memilih 15 produk"
-            )
+            ),
+            coverConfig = CoverConfigUiModel(
+                    maxChars = 38
+            ),
+            countDown = 5
     )
-
-    fun getMockUnStartedChannel() = getMockChannel(PlayChannelStatus.UnStarted)
-
-    fun getMockPausedChannel() = getMockChannel(PlayChannelStatus.Pause)
 
     private fun getMockChannel(status: PlayChannelStatus) = ChannelInfoUiModel(
             channelId = "1234",
@@ -141,16 +147,18 @@ object PlayBroadcastMocker {
                 firstSentence = firstSentence,
                 secondSentence = secondSentence,
                 fullSentence = fullSentence,
-                interval = 1000
+                interval = 5000
         )
     }
 
     fun getMockShare() = ShareUiModel(
             id = "1234",
-            title = "Klarififikasi Bisa Tebak Siapa?",
-            description = "Yuk gabung sekarang di Play Klarifikasi Bisa Tebak siapa?",
+            title = "Tokopedia PLAY seru!",
+            description = "Nonton siaran seru di Tokopedia PLAY!",
             imageUrl = "https://ecs7.tokopedia.net/defaultpage/banner/bannerbelanja1000.jpg",
-            redirectUrl = "https://www.tokopedia.com/play/channels/1234"
+            redirectUrl = "https://beta.tokopedia.com/play/channel/10140",
+            textContent =  "\"testing\"\nYuk, nonton siaran dari MRG Audio di Tokopedia PLAY! Bakal seru banget lho!\n${'$'}{url}",
+            shortenUrl = true
     )
 
     fun getMetricSummary(): List<TrafficMetricUiModel> = listOf(
@@ -159,7 +167,6 @@ object PlayBroadcastMocker {
             TrafficMetricUiModel(TrafficMetricsEnum.ShopVisit, "1200"),
             TrafficMetricUiModel(TrafficMetricsEnum.ProductVisit, "1042"),
             TrafficMetricUiModel(TrafficMetricsEnum.NumberOfAtc, "320"),
-            TrafficMetricUiModel(TrafficMetricsEnum.NumberOfPaidOrders, "200"),
-            TrafficMetricUiModel(TrafficMetricsEnum.NewFollowers, "50")
+            TrafficMetricUiModel(TrafficMetricsEnum.NumberOfPaidOrders, "200")
     )
 }

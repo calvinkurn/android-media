@@ -4,29 +4,22 @@ import android.content.Context;
 import android.content.Intent;
 import androidx.fragment.app.Fragment;
 
-import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.topads.common.view.activity.TopAdsBaseActivity;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.data.model.data.ProductAd;
-import com.tokopedia.topads.dashboard.view.fragment.TopAdsEditGroupMainPageFragment;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsEditProductMainPageFragment;
 
 /**
  * Created by zulfikarrahman on 8/9/17.
  */
 
-public class TopAdsEditProductMainPageActivity extends BaseSimpleActivity {
+public class TopAdsEditProductMainPageActivity extends TopAdsBaseActivity {
 
     public static Intent createIntent(Context context, ProductAd productAd, String adId){
         Intent intent = new Intent(context, TopAdsEditProductMainPageActivity.class);
         intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, adId);
         intent.putExtra(TopAdsExtraConstant.EXTRA_AD, productAd);
         return intent;
-    }
-
-    @Override
-    protected boolean isToolbarWhite() {
-        return true;
     }
 
     @Override

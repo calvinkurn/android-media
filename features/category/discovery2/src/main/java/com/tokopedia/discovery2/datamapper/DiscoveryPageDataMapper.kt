@@ -5,15 +5,19 @@ import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DiscoveryResponse
 import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PINNED_ACTIVE_TAB
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PINNED_COMP_ID
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PINNED_PRODUCT
 
 
 val discoveryPageData: MutableMap<String, DiscoveryResponse> = HashMap()
 
-fun mapDiscoveryResponseToPageData(discoveryResponse: DiscoveryResponse): DiscoveryPageData {
+fun mapDiscoveryResponseToPageData(discoveryResponse: DiscoveryResponse, queryParameterMap: Map<String, String?>): DiscoveryPageData {
     val pageInfo = discoveryResponse.pageInfo
     val discoveryPageData = DiscoveryPageData(pageInfo, discoveryResponse.additionalInfo)
-    val discoveryDataMapper = DiscoveryPageDataMapper(pageInfo)
-    discoveryPageData.components = discoveryDataMapper.getDiscoveryComponentList(discoveryResponse.components.filter {
+    val discoveryDataMapper = DiscoveryPageDataMapper(pageInfo, queryParameterMap)
+    discoveryPageData.components = discoveryDataMapper.getDiscoveryComponentListWithQueryParam(discoveryResponse.components.filter {
         pageInfo.identifier?.let { identifier ->
             it.pageEndPoint = identifier
         }
@@ -26,8 +30,22 @@ fun mapDiscoveryResponseToPageData(discoveryResponse: DiscoveryResponse): Discov
     return discoveryPageData
 }
 
-class DiscoveryPageDataMapper(private val pageInfo: PageInfo) {
-    fun getDiscoveryComponentList(components: List<ComponentsItem>): List<ComponentsItem> {
+class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryParameterMap: Map<String, String?>) {
+
+    fun getDiscoveryComponentListWithQueryParam(components: List<ComponentsItem>): List<ComponentsItem> {
+        val pinnedCompId = queryParameterMap[PINNED_COMP_ID]
+        val componentList = getDiscoveryComponentList(components)
+        if(componentList.isNotEmpty() && !pinnedCompId.isNullOrEmpty()){
+            componentList.forEach { item ->
+                if(item.id == pinnedCompId){
+                    item.rpc_PinnedProduct= queryParameterMap[PINNED_PRODUCT]
+                }
+            }
+        }
+        return componentList
+    }
+
+    private fun getDiscoveryComponentList(components: List<ComponentsItem>): List<ComponentsItem> {
         val listComponents: ArrayList<ComponentsItem> = ArrayList()
         for ((position, component) in components.withIndex()) {
             listComponents.addAll(parseComponent(component, position))
@@ -43,7 +61,7 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo) {
             ComponentNames.ProductCardRevamp.componentName,
             ComponentNames.ProductCardSprintSale.componentName -> listComponents.addAll(parseProductVerticalList(component))
             ComponentNames.QuickCoupon.componentName -> {
-                if(component.isApplicable){
+                if (component.isApplicable) {
                     listComponents.add(component)
                 }
             }
@@ -56,16 +74,14 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo) {
 
 
     private fun parseTab(component: ComponentsItem, position: Int): List<ComponentsItem> {
-
         val listComponents: ArrayList<ComponentsItem> = ArrayList()
         listComponents.add(component)
         component.data?.let { it ->
             if (component.getComponentsItem().isNullOrEmpty()) {
-                component.setComponentsItem(DiscoveryDataMapper.mapTabsListToComponentList(component, ComponentNames.TabsItem.componentName, position))
+                component.setComponentsItem(DiscoveryDataMapper.mapTabsListToComponentList(component, ComponentNames.TabsItem.componentName, position, queryParameterMap[PINNED_ACTIVE_TAB]))
             }
         }
         component.getComponentsItem()?.forEach {
-
             it.apply {
                 val tabData = data?.get(0)
                 if (tabData?.isSelected!!) {
@@ -101,17 +117,24 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo) {
             component.getComponentsItem()?.let {
                 listComponents.addAll(getDiscoveryComponentList(it))
             }
-            if (component.getComponentsItem()?.size?.rem(component.componentsPerPage) == 0) {
-                listComponents.add(ComponentsItem(name = ComponentNames.LoadMore.componentName).apply {
-                    pageEndPoint = component.pageEndPoint
-                    parentComponentId = component.id
-                    id = "load_more_data"
-                    discoveryPageData[this.pageEndPoint]?.componentMap?.set(this.id, this)
-
-                })
+            if (component.getComponentsItem()?.size.isMoreThanZero() && component.getComponentsItem()?.size?.rem(component.componentsPerPage) == 0) {
+                listComponents.addAll(handleProductState(component, ComponentNames.LoadMore.componentName))
+            } else if (component.getComponentsItem()?.size == 0) {
+                listComponents.addAll(handleProductState(component, ComponentNames.ProductListEmptyState.componentName))
             }
         }
         return listComponents
+    }
+
+    private fun handleProductState(component: ComponentsItem, componentName: String): ArrayList<ComponentsItem> {
+        val productState: ArrayList<ComponentsItem> = ArrayList()
+        productState.add(ComponentsItem(name = componentName).apply {
+            pageEndPoint = component.pageEndPoint
+            parentComponentId = component.id
+            id = componentName
+            discoveryPageData[this.pageEndPoint]?.componentMap?.set(this.id, this)
+        })
+        return productState
     }
 }
 

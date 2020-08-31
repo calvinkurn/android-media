@@ -3,13 +3,18 @@ package com.tokopedia.tokopoints.view.tokopointhome
 import android.app.Activity
 import android.content.Context
 import android.graphics.Color
+import android.graphics.PorterDuff
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.text.Html
 import android.view.*
 import android.widget.*
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -55,6 +60,7 @@ import com.tokopedia.tokopoints.view.model.rewardtopsection.DynamicActionListIte
 import com.tokopedia.tokopoints.view.model.rewardtopsection.TokopediaRewardTopSection
 import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.util.*
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -101,7 +107,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     lateinit var tvSectionSubtitleCateory: TextView
     lateinit var appBarHeader: AppBarLayout
     lateinit var categorySeeAll: TextView
-    lateinit var cardTierInfo: CardUnify
+    lateinit var cardTierInfo: ConstraintLayout
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
     private val dynamicItem = "dynamicItem"
     private val toolbarItemList = mutableListOf<NotificationUnify>()
@@ -234,6 +240,8 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                     setOnRecyclerViewLayoutReady()
                     onSuccessResponse(it.data.tokoPointEntity, it.data.sectionList)
                 }
+                else -> {
+                }
             }
         }
     })
@@ -274,7 +282,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         rewardsPointLayout = view.findViewById(R.id.card_point)
         ivPointStack = view.findViewById(R.id.img_points_stack)
         dynamicAction = view.findViewById(R.id.dynamic_widget)
-        cardTierInfo = view.findViewById(R.id.card_hightier_info)
+        cardTierInfo = view.findViewById(R.id.container_target)
 
         setStatusBarViewHeight()
     }
@@ -368,7 +376,6 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         }
         if (content.sectionTitle.isNotEmpty()) {
             tvSectionTitleCategory.show()
-            categorySeeAll.show()
             tvSectionTitleCategory.text = content.sectionTitle
         }
         if (content.sectionSubTitle.isNotEmpty()) {
@@ -376,8 +383,21 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
             tvSectionSubtitleCateory.text = content.sectionSubTitle
         }
         dynamicLinksContainer.visibility = View.VISIBLE
-        categorySeeAll.setOnClickListener {
-            RouteManager.route(context, "tokopedia://tokopoints/tukar-point")
+
+        content.cta?.let {
+            if (it.text.isNotEmpty()) {
+                categorySeeAll.text = it.text
+                categorySeeAll.show()
+            }
+            if (it.appLink.isNotEmpty()) {
+                categorySeeAll.setOnClickListener { _ ->
+                    RouteManager.route(context, it.appLink)
+                }
+            } else if (it.appLink.isEmpty() && it.url.isNotEmpty()) {
+                categorySeeAll.setOnClickListener { _ ->
+                    openWebView(it.url)
+                }
+            }
         }
         val manager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         mRvDynamicLinks?.layoutManager = manager
@@ -400,8 +420,8 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
             } else {
                 mTargetText?.text = Html.fromHtml(it.text)
             }
-            container_target.setBackgroundColor(Color.parseColor("#" + it.backgroundColor))
-            container_target.setOnClickListener {
+            cardTierInfo.background.setColorFilter(Color.parseColor("#" + it.backgroundColor), PorterDuff.Mode.SRC_OVER)
+            cardTierInfo.setOnClickListener {
                 RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW_TITLE, getString(R.string.tp_label_membership), CommonConstant.WebLink.MEMBERSHIP)
             }
         }
@@ -457,7 +477,8 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
             dynamicAction?.findViewById<LinearLayout>(R.id.holder_tokopoint)?.setOnClickListener {
                 dataList[0]?.cta?.let {
                     hideNotification(0)
-                    dynamicAction?.setLayoutClickListener(it.appLink, it.text) }
+                    dynamicAction?.setLayoutClickListener(it.appLink, it.text)
+                }
             }
             if (dataList.size > 1) {
                 dynamicAction?.setCenterLayoutVisibility(View.VISIBLE)
@@ -469,7 +490,8 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                 dynamicAction?.findViewById<LinearLayout>(R.id.holder_coupon)?.setOnClickListener {
                     dataList[1]?.cta?.let {
                         hideNotification(1)
-                        dynamicAction?.setCenterLayoutClickListener(it.appLink, it.text) }
+                        dynamicAction?.setCenterLayoutClickListener(it.appLink, it.text)
+                    }
                 }
                 dynamicAction?.setVisibilityDividerOne(View.VISIBLE)
             }
@@ -483,7 +505,8 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                 dynamicAction?.findViewById<LinearLayout>(R.id.holder_tokomember)?.setOnClickListener {
                     dataList[2]?.cta?.let {
                         hideNotification(2)
-                        dynamicAction?.setRightLayoutClickListener(it.appLink, it.text) }
+                        dynamicAction?.setRightLayoutClickListener(it.appLink, it.text)
+                    }
                 }
                 dynamicAction?.setVisibilityDividerTwo(View.VISIBLE)
             }
@@ -499,7 +522,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
             when (sectionContent.layoutType) {
                 CommonConstant.SectionLayoutType.TICKER -> renderTicker(sectionContent)
                 CommonConstant.SectionLayoutType.CATEGORY -> renderCategory(sectionContent)
-                CommonConstant.SectionLayoutType.COUPON, CommonConstant.SectionLayoutType.CATALOG, CommonConstant.SectionLayoutType.BANNER -> exploreSectionItem.add(sectionContent)
+                CommonConstant.SectionLayoutType.COUPON, CommonConstant.SectionLayoutType.CATALOG, CommonConstant.SectionLayoutType.BANNER, CommonConstant.SectionLayoutType.TOPADS -> exploreSectionItem.add(sectionContent)
                 else -> {
                 }
             }
@@ -514,30 +537,6 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         mExploreSectionPagerAdapter = ExploreSectionPagerAdapter(activityContext, mPresenter, sections)
         mExploreSectionPagerAdapter?.setRefreshing(false)
         mPagerPromos?.adapter = mExploreSectionPagerAdapter
-        mPagerPromos?.addOnPageChangeListener(TabLayoutOnPageChangeListener(mTabLayoutPromo))
-        mTabLayoutPromo?.addOnTabSelectedListener(ViewPagerOnTabSelectedListener(mPagerPromos))
-        mPagerPromos?.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
-            override fun onPageSelected(position: Int) {
-                if (position == 0) {
-                    mPresenter.pagerSelectedItem = position
-                    AnalyticsTrackerUtil.sendEvent(context,
-                            AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
-                            AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_EXPLORE,
-                            "")
-                } else {
-                    mPresenter.pagerSelectedItem = position
-                    AnalyticsTrackerUtil.sendEvent(context,
-                            AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
-                            AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_KUPON_SAYA,
-                            "")
-                }
-            }
-
-            override fun onPageScrollStateChanged(state: Int) {}
-        })
     }
 
     override fun onResume() {

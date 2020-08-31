@@ -7,7 +7,7 @@ import com.tokopedia.home_recom.model.datamodel.SimilarProductRecommendationItem
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.topads.sdk.utils.ImpresionTask
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 
 /**
  * Created by Lukas on 30/08/19
@@ -16,12 +16,18 @@ class SimilarProductRecommendationItemViewHolder (
         private val view: View
 ) : AbstractViewHolder<SimilarProductRecommendationItemDataModel>(view){
 
-    companion object {
-        private const val className: String = "com.tokopedia.home_recom.view.viewholder.SimilarProductRecommendationItemViewHolder"
-    }
-
     private val productCardView: ProductCardGridView by lazy { view.findViewById<ProductCardGridView>(R.id.product_item) }
     override fun bind(element: SimilarProductRecommendationItemDataModel) {
+        setupCard(element)
+    }
+
+    override fun bind(element: SimilarProductRecommendationItemDataModel, payloads: MutableList<Any>) {
+        if(payloads.isNotEmpty() && payloads.first() is Boolean){
+            setupCard(element.copy(productItem = element.productItem.copy(isWishlist = payloads.first() as Boolean)))
+        }
+    }
+
+    private fun setupCard(element: SimilarProductRecommendationItemDataModel){
         productCardView.run {
             setProductModel(
                     ProductCardModel(
@@ -30,7 +36,10 @@ class SimilarProductRecommendationItemViewHolder (
                             formattedPrice = element.productItem.price,
                             productImageUrl = element.productItem.imageUrl,
                             isTopAds = element.productItem.isTopAds,
-                            discountPercentage = element.productItem.discountPercentage.toString(),
+                            isWishlistVisible = true,
+                            hasThreeDots = true,
+                            isWishlisted = element.productItem.isWishlist,
+                            discountPercentage = element.productItem.discountPercentage,
                             reviewCount = element.productItem.countReview,
                             ratingCount = element.productItem.rating,
                             shopLocation = element.productItem.location,
@@ -50,7 +59,13 @@ class SimilarProductRecommendationItemViewHolder (
             setImageProductViewHintListener(element.productItem, object: ViewHintListener {
                 override fun onViewHint() {
                     if(element.productItem.isTopAds){
-                        ImpresionTask(className).execute(element.productItem.trackerImageUrl)
+                        TopAdsUrlHitter(itemView.context).hitImpressionUrl(
+                                this.javaClass.simpleName,
+                                element.productItem.trackerImageUrl,
+                                element.productItem.productId.toString(),
+                                element.productItem.name,
+                                element.productItem.imageUrl
+                        )
                     }
                     element.listener.onProductImpression(element.productItem)
                 }
@@ -58,7 +73,17 @@ class SimilarProductRecommendationItemViewHolder (
 
             setOnClickListener {
                 element.listener.onProductClick(element.productItem, element.productItem.type, adapterPosition)
-                if (element.productItem.isTopAds) ImpresionTask(className).execute(element.productItem.clickUrl)
+                if (element.productItem.isTopAds) TopAdsUrlHitter(itemView.context).hitImpressionUrl(
+                        this.javaClass.simpleName,
+                        element.productItem.clickUrl,
+                        element.productItem.productId.toString(),
+                        element.productItem.name,
+                        element.productItem.imageUrl
+                )
+            }
+
+            setThreeDotsOnClickListener {
+                element.listener.onThreeDotsClick(element.productItem, adapterPosition)
             }
         }
     }

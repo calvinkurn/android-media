@@ -9,11 +9,12 @@ import android.preference.PreferenceManager;
 
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
+import com.tokopedia.pushnotif.data.constant.Constant;
+import com.tokopedia.pushnotif.data.model.ApplinkNotificationModel;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
-import static com.tokopedia.pushnotif.Constant.Host.CHATBOT;
+import static com.tokopedia.pushnotif.data.constant.Constant.Host.CHATBOT;
 
 /**
  * @author ricoharisin .

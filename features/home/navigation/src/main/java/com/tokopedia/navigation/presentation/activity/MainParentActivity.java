@@ -1,6 +1,7 @@
 package com.tokopedia.navigation.presentation.activity;
 
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -19,20 +20,15 @@ import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.SparseArray;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
-import androidx.asynclayoutinflater.view.AsyncLayoutInflater;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -84,6 +80,7 @@ import com.tokopedia.navigation_common.listener.MainParentStatusBarListener;
 import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitoringListener;
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener;
 import com.tokopedia.navigation_common.listener.ShowCaseListener;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseDialog;
@@ -160,14 +157,12 @@ public class MainParentActivity extends BaseActivity implements
 
     ArrayList<BottomMenu> menu = new ArrayList<>();
 
-    @Inject
-    Lazy<UserSessionInterface> userSession;
-    @Inject
-    Lazy<MainParentPresenter> presenter;
-    @Inject
-    Lazy<GlobalNavAnalytics> globalNavAnalytics;
-    @Inject
-    Lazy<ApplicationUpdate> appUpdate;
+    @Inject Lazy<UserSessionInterface> userSession;
+    @Inject Lazy<MainParentPresenter> presenter;
+    @Inject Lazy<GlobalNavAnalytics> globalNavAnalytics;
+    @Inject Lazy<ApplicationUpdate> appUpdate;
+    @Inject Lazy<RemoteConfig> remoteConfig;
+
     private LottieBottomNavbar bottomNavigation;
     private ShowCaseDialog showCaseDialog;
     List<Fragment> fragmentList;
@@ -244,6 +239,7 @@ public class MainParentActivity extends BaseActivity implements
             moduleNameList.add(DeeplinkDFMapper.DF_USER_SETTINGS);
             moduleNameList.add(DeeplinkDFMapper.DF_OPERATIONAL_CONTACT_US);
             moduleNameList.add(DeeplinkDFMapper.DF_PROMO_GAMIFICATION);
+            moduleNameList.add(DeeplinkDFMapper.DF_MERCHANT_LOGIN);
         }
         if (userSession.get().hasShop()) {
             moduleNameList.add(DeeplinkDFMapper.DF_MERCHANT_SELLER);
@@ -368,7 +364,7 @@ public class MainParentActivity extends BaseActivity implements
     private int getTabPositionFromIntent() {
         int position = getIntent().getExtras().getInt(ARGS_TAB_POSITION, -1);
         if (position != -1) return position;
-        
+
         try {
             String posString = getIntent().getExtras().getString(ARGS_TAB_POSITION);
             return Integer.parseInt(posString);
@@ -586,6 +582,8 @@ public class MainParentActivity extends BaseActivity implements
         // check if the download is finished or is in progress
         checkForInAppUpdateInProgressOrCompleted();
         presenter.get().onResume();
+        clearNotification();
+
         if (userSession.get().isLoggedIn() && isUserFirstTimeLogin) {
             reloadPage();
         }
@@ -610,6 +608,13 @@ public class MainParentActivity extends BaseActivity implements
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(checkAppSignatureWeave, RemoteConfigKey.ENABLE_ASYNC_CHECKAPPSIGNATURE, getContext());
 
         if (currentFragment != null) configureStatusBarBasedOnFragment(currentFragment);
+    }
+
+    private void clearNotification() {
+        if (remoteConfig.get().getBoolean(RemoteConfigKey.NOTIFICATION_TRAY_CLEAR)) {
+            ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).cancelAll();
+            NotificationManagerCompat.from(this).cancelAll();
+        }
     }
 
     @NotNull
@@ -684,7 +689,7 @@ public class MainParentActivity extends BaseActivity implements
                 intent.putExtra(PARAM_BROADCAST_NEW_FEED, notification.getHaveNewFeed());
                 LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
             } else {
-                bottomNavigation.setBadge(0, FEED_MENU, View.VISIBLE);
+                bottomNavigation.setBadge(0, FEED_MENU, View.GONE);
             }
         }
         if (currentFragment != null)
@@ -905,6 +910,8 @@ public class MainParentActivity extends BaseActivity implements
                     boolean isHaveNewFeed = intent.getBooleanExtra(PARAM_BROADCAST_NEW_FEED_CLICKED, false);
                     if (isHaveNewFeed) {
                         bottomNavigation.setBadge(0, FEED_MENU, View.VISIBLE);
+                    } else {
+                        bottomNavigation.setBadge(0, FEED_MENU, View.GONE);
                     }
                 }
             }
@@ -1095,16 +1102,16 @@ public class MainParentActivity extends BaseActivity implements
 
     @Override
     public void stopOfficialStorePerformanceMonitoring() {
-        if(getOfficialStorePageLoadTimePerformanceInterface() != null){
-            getOfficialStorePageLoadTimePerformanceInterface().stopRenderPerformanceMonitoring();
-            getOfficialStorePageLoadTimePerformanceInterface().stopMonitoring();
+        if (officialStorePageLoadTimePerformanceCallback != null) {
+            officialStorePageLoadTimePerformanceCallback.stopRenderPerformanceMonitoring();
+            officialStorePageLoadTimePerformanceCallback.stopMonitoring();
             officialStorePageLoadTimePerformanceCallback = null;
         }
     }
 
     @Override
     public void startOfficialStorePerformanceMonitoring() {
-        if(officialStorePageLoadTimePerformanceCallback == null) {
+        if (officialStorePageLoadTimePerformanceCallback == null) {
             officialStorePageLoadTimePerformanceCallback = new PageLoadTimePerformanceCallback(
                     OFFICIAL_STORE_PERFORMANCE_MONITORING_PREPARE_METRICS,
                     OFFICIAL_STORE_PERFORMANCE_MONITORING_NETWORK_METRICS,
@@ -1115,8 +1122,8 @@ public class MainParentActivity extends BaseActivity implements
                     0,
                     null
             );
-            getOfficialStorePageLoadTimePerformanceInterface().startMonitoring(OFFICIAL_STORE_PERFORMANCE_MONITORING_KEY);
-            getOfficialStorePageLoadTimePerformanceInterface().startPreparePagePerformanceMonitoring();
+            officialStorePageLoadTimePerformanceCallback.startMonitoring(OFFICIAL_STORE_PERFORMANCE_MONITORING_KEY);
+            officialStorePageLoadTimePerformanceCallback.startPreparePagePerformanceMonitoring();
         }
     }
 

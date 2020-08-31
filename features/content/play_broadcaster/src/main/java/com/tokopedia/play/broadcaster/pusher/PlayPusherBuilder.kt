@@ -4,7 +4,7 @@ import android.content.Context
 import com.alivc.live.pusher.*
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.play.broadcaster.pusher.type.PlayPusherQualityMode
-import com.tokopedia.play.broadcaster.util.DeviceInfoUtil
+import com.tokopedia.play.broadcaster.util.deviceinfo.DeviceInfoUtil
 
 
 /**
@@ -26,15 +26,17 @@ class PlayPusherBuilder(@ApplicationContext var context: Context) {
         private set
     var qualityMode: PlayPusherQualityMode = PlayPusherQualityMode.FluencyFirst
         private set
-    var audioChannel = AlivcAudioChannelEnum.AUDIO_CHANNEL_ONE
+    var audioChannel = AlivcAudioChannelEnum.AUDIO_CHANNEL_TWO
         private set
     var audioProfile = AlivcAudioAACProfileEnum.AAC_LC
         private set
-    var audioEncode = AlivcEncodeModeEnum.Encode_MODE_HARD
+    var audioEncode = AlivcEncodeModeEnum.Encode_MODE_SOFT
         private set
-    var audioSampleRate = AlivcAudioSampleRateEnum.AUDIO_SAMPLE_RATE_44100
+    var audioSampleRate = AlivcAudioSampleRateEnum.AUDIO_SAMPLE_RATE_32000
         private set
     var audioBitrate = PlayPusherImpl.AUDIO_BITRATE_128Kbps
+    var pushMirror = true
+        private set
 
     fun cameraType(cameraType: AlivcLivePushCameraTypeEnum) = apply {
         this.cameraType = cameraType
@@ -82,6 +84,10 @@ class PlayPusherBuilder(@ApplicationContext var context: Context) {
 
     fun audioBitrate(bitrate: Int) = apply {
         this.audioBitrate = bitrate
+    }
+
+    fun pushMirror(pushMirror: Boolean) = apply {
+        this.pushMirror = pushMirror
     }
 
     fun build() = if (DeviceInfoUtil.isDeviceSupported()) {

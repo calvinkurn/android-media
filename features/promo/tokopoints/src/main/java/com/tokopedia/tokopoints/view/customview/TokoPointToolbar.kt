@@ -153,10 +153,10 @@ class TokoPointToolbar : Toolbar {
         val bitmap = drawable?.intrinsicWidth?.let {
             Bitmap.createBitmap(it,
                     drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
-        }
+        } ?: return null
         val canvas = Canvas(bitmap)
-        drawable?.setBounds(0, 0, canvas.width, canvas.height)
-        drawable?.draw(canvas)
+        drawable.setBounds(0, 0, canvas.width, canvas.height)
+        drawable.draw(canvas)
         return bitmap
     }
 

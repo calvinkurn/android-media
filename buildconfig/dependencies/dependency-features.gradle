@@ -22,8 +22,7 @@ ext {
             basemvvm                        : ":features:category:basemvvm",
             exploreCategory                 : ":features:category:explore_category",
 
-            broadcastMessage                : ":features:communication:broadcast_message",
-            broadcastMessageCommon          : ":features:communication:broadcast_message_common",
+//            broadcastMessage                : ":features:communication:broadcast_message_no_op", // toggle for no op
 
             feed                            : ":features:content:feed",
             feedComponent                   : ":features:content:feed_component",
@@ -62,6 +61,7 @@ ext {
             travelCountryCode               : ":features:travel:travel_country_code",
             travelPassenger                 : ":features:travel:travel_passenger",
 
+            deals                           : ":features:entertainment:deals",
             digitalDeals                    : ":features:entertainment:digital_deals",
             event                           : ":features:entertainment:event",
             digitalBrowse                   : ":features:digital:digital_browse",
@@ -90,7 +90,6 @@ ext {
             globalNavWidgetSamples          : ":features:discovery:global_nav_widget_samples",
 
             homecredit                      : ":features:fintech:home_credit",
-            instantLoan                     : ":features:fintech:instant_loan",
             merchantLendingWidget           : ":features:fintech:merchant_lending_widget",
             saldodetails                    : ":features:fintech:saldo_details",
             commonWallet                    : ":features:fintech:common_wallet",
@@ -133,18 +132,26 @@ ext {
             referral                        : ":features:im:referral",
             install_referral                : ":features:im:install_referral",
 
+            inboxReputation                 : ":features:merchant:inbox_reputation",
             reputation                      : ":features:merchant:reputation",
             reputationCommon                : ":features:merchant:reputation_common",
+            review                          : ":features:merchant:review",
+            sellerActiveCommon              : ":features:merchant:seller_active_common",
             sellerHome                      : ":features:merchant:seller_home",
+            sellerHomeCommon                : ":features:merchant:seller_home_common",
             sellerOnboarding                : ":features:merchant:seller_onboarding",
+            sellerSearch                    : ":features:merchant:seller_search",
             sellerMigrationCommon           : ":features:merchant:seller_migration_common",
             shopCommon                      : ":features:merchant:shop_common",
             shopEtalasePicker               : ":features:merchant:shop_etalase_picker",
             shopOpen                        : ":features:merchant:shop_open",
+            shopScore                       : ":features:merchant:shop_score",
             shopShowcase                    : ":features:merchant:shop_showcase",
             shopPage                        : ":features:merchant:shop_page",
             shopSettings                    : ":features:merchant:shop_settings",
+            statistic                       : ":features:merchant:statistic",
             officialStore                  : ":features:merchant:official_store",
+            voucherCreation                 : ":features:merchant:voucher_creation",
             brandlist                       : ":features:merchant:brandlist",
             favorite                        : ":features:merchant:favorite",
             youtubeCommon                   : ":features:merchant:youtube_common",
@@ -164,6 +171,7 @@ ext {
 
             gamification                    : ":features:promo:gamification",
             merchantVoucher                 : ":features:promo:merchant_voucher",
+            additional_check                : ":features:user:additional_check",
             tokopoints                      : ":features:promo:tokopoints",
             tokopointsNotification          : ":features:promo:tokopoints_notification",
             promoCheckout                   : ":features:promo:promo_checkout",
@@ -178,6 +186,7 @@ ext {
             topAdsDetailSheet               : ":features:top_ads:top_ads_detail_sheet",
             topAdsWidget                    : ":features:top_ads:top_ads_widget",
             topAdsManagement                : ":features:top_ads:top_ads_management",
+            topAdsEdit                      : ":features:top_ads:top_ads_edit",
             topAdsManagementCommon          : ":features:top_ads:top_ads_management_common",
             topAdsManagementSourceTagging   : ":features:top_ads:top_ads_management_sourcetagging",
 

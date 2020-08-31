@@ -103,7 +103,7 @@ class DynamicFeedShopAdapter(private val itemClickListener: LocalAdsClickListene
                 }
                 ivProfile.addOnImpressionListener(shop.imageShop, object : ViewHintListener {
                     override fun onViewHint() {
-                        itemImpressionListener?.onImpressionShopAds(shop.imageShop.getsUrl())
+                        itemImpressionListener?.onImpressionShopAds(shop.imageShop.getsUrl(), shop.id, shop.name, shop.imageShop.xsEcs)
                     }
                 })
                 imageLoader.loadCircle(shop, ivProfile)
@@ -120,7 +120,7 @@ class DynamicFeedShopAdapter(private val itemClickListener: LocalAdsClickListene
                 if (!data.isFavorit) {
                     btnFollow.buttonVariant = UnifyButton.Variant.GHOST
                     btnFollow.buttonType = UnifyButton.Type.ALTERNATE
-                    btnFollow.text = btnFollow.context.getString(R.string.topads_visit_shop)
+                    btnFollow.text = btnFollow.context.getString(R.string.topads_followed)
                 }
                 itemClickListener.onAddFavorite(adapterPosition, data)
             }
@@ -145,7 +145,7 @@ class DynamicFeedShopAdapter(private val itemClickListener: LocalAdsClickListene
             if (data.isFavorit) {
                 btnFollow.buttonVariant = UnifyButton.Variant.GHOST
                 btnFollow.buttonType = UnifyButton.Type.ALTERNATE
-                btnFollow.text = btnFollow.context.getString(R.string.topads_visit_shop)
+                btnFollow.text = btnFollow.context.getString(R.string.topads_followed)
             } else {
                 btnFollow.buttonVariant = UnifyButton.Variant.FILLED
                 btnFollow.buttonType = UnifyButton.Type.MAIN
@@ -183,7 +183,7 @@ class DynamicFeedShopAdapter(private val itemClickListener: LocalAdsClickListene
     }
 
     interface TopAdsShopImpressionListener {
-        fun onImpressionShopAds(url: String?)
+        fun onImpressionShopAds(url: String, shopId: String, shopName: String, imageUrl: String)
     }
 
 }

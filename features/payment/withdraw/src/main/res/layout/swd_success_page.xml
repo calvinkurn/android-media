@@ -24,8 +24,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:tickerShapeType="full"
-            app:tickerType="warning"
-            app:titleText="title" />
+            app:tickerType="warning" />
 
         <com.tokopedia.unifycomponents.CardUnify
             android:id="@+id/cardUnifyJoinRekeningProgram"

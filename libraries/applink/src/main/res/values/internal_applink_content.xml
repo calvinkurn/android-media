@@ -5,6 +5,8 @@
     <string name="path_edit_post_shop" translatable="false">/content-shop/.*\\/edit</string>
     <string name="path_hashtag_page_landing" translatable="false">/explore-hashtag/.*\\/</string>
     <string name="path_post_shop_picker" translatable="false">/content-shop/picker</string>
+    <string name="applink_cp_path_create_post" translatable="false">/create_post/.*\</string>
+    <string name="applink_cp_path_draft_post" translatable="false">/draft/.*\</string>
 
     <string name="kol_applink_post_detail_path_pattern">/post-detail/.*\</string>
     <string name="path_content_report" translatable="false">/content-report/.*\</string>
@@ -24,6 +26,7 @@
     <string name="path_af_explore" translatable="false">/explore</string>
 
     <string name="applink_title_play" translatable="false">Play</string>
+    <string name="applink_title_play_broadcaster" translatable="false">Play Broadcaster</string>
 
     <string name="host_play" translatable="false">play</string>
     <string name="host_kol_youtube" translatable="false">kolyoutube</string>
@@ -40,5 +43,7 @@
 
     <string name="applink_ip_host" translatable="false">interestpick</string>
     <string name="applink_ip_title" translatable="false">Pilih Inspirasi Kamu</string>
+
+    <string name="applink_af_title_create_post">Create Post</string>
 
 </resources>

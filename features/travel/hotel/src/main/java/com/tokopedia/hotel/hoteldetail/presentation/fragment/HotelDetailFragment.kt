@@ -109,7 +109,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
             hotelHomepageModel.locId = it.getLong(HotelDetailActivity.EXTRA_PROPERTY_ID)
             source = it.getString(HotelDetailActivity.EXTRA_SOURCE) ?: HotelSourceEnum.SEARCHRESULT.value
 
-            if (it.getString(HotelDetailActivity.EXTRA_CHECK_IN_DATE).isNotEmpty()) {
+            if (it.getString(HotelDetailActivity.EXTRA_CHECK_IN_DATE)?.isNotEmpty() == true) {
                 hotelHomepageModel.checkInDate = it.getString(HotelDetailActivity.EXTRA_CHECK_IN_DATE,
                         TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, TravelDateUtil.addTimeToSpesificDate(
                                 TravelDateUtil.getCurrentCalendar().time, Calendar.DATE, 1)))

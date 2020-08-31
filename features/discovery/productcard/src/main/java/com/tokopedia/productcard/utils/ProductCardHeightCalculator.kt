@@ -38,9 +38,10 @@ suspend fun List<ProductCardModel>?.getMaxHeightForListView(context: Context?, c
             val cardPaddingBottom = context.resources.getDimensionPixelSize(R.dimen.product_card_padding_bottom)
             val imageSize = context.resources.getDimensionPixelSize(R.dimen.product_card_list_image_size)
             val contentHeight = productCardModel.getContentHeight(context)
+            val buttonDeleteProductSectionHeight = productCardModel.getButtonDeleteProductSectionHeight(context)
             val buttonAddToCartSectionHeight = productCardModel.getButtonAddToCartSectionHeight(context)
 
-            val totalHeight = cardPaddingTop + cardPaddingBottom + max(imageSize, contentHeight) + buttonAddToCartSectionHeight
+            val totalHeight = cardPaddingTop + cardPaddingBottom + max(imageSize, contentHeight) + buttonDeleteProductSectionHeight + buttonAddToCartSectionHeight
 
             productCardHeightList.add(totalHeight)
         }
@@ -229,6 +230,16 @@ private fun ProductCardModel.getLabelShippingHeight(context: Context): Int {
         val labelShippingHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_text_view_shipping_height)
 
         labelShippingMarginTop + labelShippingHeight
+    }
+    else 0
+}
+
+private fun ProductCardModel.getButtonDeleteProductSectionHeight(context: Context): Int {
+    return if(hasDeleteProductButton) {
+        val buttonDeleteProductMarginTop = context.resources.getDimensionPixelSize(R.dimen.product_card_button_delete_product_margin_top)
+        val buttonDeleteProductHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_button_delete_product_height)
+
+        buttonDeleteProductMarginTop + buttonDeleteProductHeight
     }
     else 0
 }

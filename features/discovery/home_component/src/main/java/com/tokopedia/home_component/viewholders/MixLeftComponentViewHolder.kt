@@ -46,9 +46,9 @@ import kotlin.math.abs
 
 @SuppressLint("SyntheticAccessor")
 class MixLeftComponentViewHolder (itemView: View,
-                                  val mixLeftComponentListener: MixLeftComponentListener,
-                                  val homeComponentListener: HomeComponentListener,
-                                  private val parentRecycledViewPool: RecyclerView.RecycledViewPool)
+                                  val mixLeftComponentListener: MixLeftComponentListener?,
+                                  val homeComponentListener: HomeComponentListener?,
+                                  private val parentRecycledViewPool: RecyclerView.RecycledViewPool?)
     : AbstractViewHolder<MixLeftDataModel>(itemView), CoroutineScope, CommonProductCardCarouselListener {
 
     private lateinit var adapter: MixLeftAdapter
@@ -80,7 +80,7 @@ class MixLeftComponentViewHolder (itemView: View,
         setHeaderComponent(element)
 
         itemView.addOnImpressionListener(element.channelModel)  {
-            mixLeftComponentListener.onMixLeftImpressed(element.channelModel, adapterPosition)
+            mixLeftComponentListener?.onMixLeftImpressed(element.channelModel, adapterPosition)
         }
     }
 
@@ -90,20 +90,20 @@ class MixLeftComponentViewHolder (itemView: View,
 
     override fun onProductCardImpressed(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
         //because we have empty value at beginning of list, we need to reduce pos by 1
-        mixLeftComponentListener.onProductCardImpressed(channelModel, channelGrid, position - 1)
+        mixLeftComponentListener?.onProductCardImpressed(channelModel, channelGrid, position - 1)
     }
 
     override fun onProductCardClicked(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, applink: String) {
         //because we have empty value at beginning of list, we need to reduce pos by 1
-        mixLeftComponentListener.onProductCardClicked(channelModel, channelGrid, position, applink)
+        mixLeftComponentListener?.onProductCardClicked(channelModel, channelGrid, position, applink)
     }
 
     override fun onSeeMoreCardClicked(channel: ChannelModel, applink: String) {
-        mixLeftComponentListener.onSeeMoreCardClicked(channel, applink)
+        mixLeftComponentListener?.onSeeMoreCardClicked(channel, applink)
     }
 
     override fun onEmptyCardClicked(channel: ChannelModel, applink: String, parentPos: Int) {
-        mixLeftComponentListener.onEmptyCardClicked(channel, applink, parentPos)
+        mixLeftComponentListener?.onEmptyCardClicked(channel, applink, parentPos)
     }
 
     private fun initVar() {
@@ -118,7 +118,7 @@ class MixLeftComponentViewHolder (itemView: View,
         if (channel.channelBanner.imageUrl.isNotEmpty()) {
             loadingBackground.show()
             image.addOnImpressionListener(channel){
-                mixLeftComponentListener.onImageBannerImpressed(channel, adapterPosition)
+                mixLeftComponentListener?.onImageBannerImpressed(channel, adapterPosition)
             }
             image.loadImage(channel.channelBanner.imageUrl, FPM_MIX_LEFT, object : ImageHandler.ImageLoaderStateListener{
                 override fun successLoad() {
@@ -150,7 +150,7 @@ class MixLeftComponentViewHolder (itemView: View,
         launch {
             try {
                 recyclerView.setHeightBasedOnProductCardMaxHeight(productDataList.map {it.productModel})
-                parentRecycledViewPool.let {recyclerView.setRecycledViewPool(it) }
+                parentRecycledViewPool?.let {recyclerView.setRecycledViewPool(it) }
             }
             catch (throwable: Throwable) {
                 throwable.printStackTrace()
@@ -252,11 +252,11 @@ class MixLeftComponentViewHolder (itemView: View,
     private fun setHeaderComponent(element: MixLeftDataModel) {
         itemView.home_component_header_view.setChannel(element.channelModel, object : HeaderListener {
             override fun onSeeAllClick(link: String) {
-                mixLeftComponentListener.onSeeAllBannerClicked(element.channelModel, element.channelModel.channelHeader.applink)
+                mixLeftComponentListener?.onSeeAllBannerClicked(element.channelModel, element.channelModel.channelHeader.applink)
             }
 
             override fun onChannelExpired(channelModel: ChannelModel) {
-                homeComponentListener.onChannelExpired(channelModel, adapterPosition, element)
+                homeComponentListener?.onChannelExpired(channelModel, adapterPosition, element)
             }
         })
     }

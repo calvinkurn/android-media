@@ -9,6 +9,7 @@ object ProductManageDataLayer {
     private const val CLICK_ON_SORTING_FILTER = "click on sorting filter"
     private const val CLICK_ON_OTHERS_FILTER = "click on others filter"
     private const val CLICK_ON_MORE_OTHERS_FILTER = "click on more others filter"
+    private const val VARIANTS = "variants"
 
     const val EVENT_NAME = "clickManageProduct"
     const val EVENT_CATEGORY = "product list page"
@@ -17,7 +18,6 @@ object ProductManageDataLayer {
 
     const val EVENT_ACTION_CLICK_ADD = "click add product"
     const val EVENT_ACTION_CLICK_MULTIPLE = "click multiple select"
-    const val EVENT_ACTION_CLICK_EDIT_VARIANTS = "click edit variants detail"
     const val EVENT_ACTION_CLICK_EDIT_PRICE = "click edit price"
     const val EVENT_ACTION_CLICK_EDIT_STOCK = "click edit stock"
     const val EVENT_ACTION_CLICK_COMPLETE = "click complete product draft"
@@ -69,4 +69,40 @@ object ProductManageDataLayer {
     const val EVENT_ACTION_CLICK_CASHBACK_VALUE = "click cashback "
     const val EVENT_ACTION_CLICK_NO_CASHBACK_VALUE = "click no cashback"
     const val EVENT_ACTION_CLICK_SAVE_PROMOTION = "click save promotion"
+
+    const val EVENT_ACTION_CLICK_ON_EDIT_PRICE_VARIANT = "$EVENT_ACTION_CLICK_EDIT_PRICE - $VARIANTS"
+    const val EVENT_ACTION_CLICK_ON_EDIT_PRICE_VARIANT_SAVE = "$EVENT_ACTION_CLICK_ON_EDIT_PRICE_VARIANT - save"
+    const val EVENT_ACTION_CLICK_ON_EDIT_STOCK_VARIANT = "$EVENT_ACTION_CLICK_EDIT_STOCK - $VARIANTS"
+    const val EVENT_ACTION_CLICK_ON_STATUS_TOGGLE_VARIANT = "click status toogle - $VARIANTS"
+    const val EVENT_ACTION_CLICK_ON_CHANGE_AMOUNT_VARIANT = "click change amount - $VARIANTS"
+    const val EVENT_ACTION_CLICK_ON_EDIT_STOCK_VARIANT_SAVE = "$EVENT_ACTION_CLICK_ON_EDIT_STOCK_VARIANT - save"
+    const val EVENT_ACTION_CLICK_MENU_MORE_ELLIPSES = "click elipses"
+    const val EVENT_ACTION_CLICK_MENU_MORE_SHOP_SHOWCASE = "click etalase toko"
+    const val STATUS_TOGGLE_ON = "{on}"
+    const val STATUS_TOGGLE_OFF = "{off}"
+
+    const val EVENT_ACTION_CLICK_ALLOCATION_CLOSE = "click close stock allocation - "
+    const val EVENT_ACTION_CLICK_ALLOCATION_ON_MAIN_STOCK = "click on stock utama - "
+    const val EVENT_ACTION_CLICK_ALLOCATION_PRODUCT_STATUS = "click product status - "
+    const val EVENT_ACTION_CLICK_ALLOCATION_DECREASE_STOCK = "click decrease stock - "
+    const val EVENT_ACTION_CLICK_ALLOCATION_INPUT_STOCK = "click input stock - "
+    const val EVENT_ACTION_CLICK_ALLOCATION_INCREASE_STOCK = "click increase stock - "
+    const val EVENT_ACTION_CLICK_ALLOCATION_ON_STOCK_CAMPAIGN = "click on stock campaign - "
+    const val EVENT_ACTION_CLICK_ALLOCATION_SAVE_STOCK = "click save stock - "
+    const val EVENT_ACTION_CLICK_ALLOCATION_PREVIEW_VARIANT_PRODUCT = "click preview variant product"
+
+    const val ALLOCATION_SINGLE_PRODUCT = "single product"
+    const val ALLOCATION_VARIANT_PRODUCT = "variant product"
+
+    const val EVENT_LABEL_ALLOCATION_ON = "on"
+    const val EVENT_LABEL_ALLOCATION_OFF = "off"
+    const val EVENT_LABEL_ALLOCATION_MAIN = "main"
+    const val EVENT_LABEL_ALLOCATION_CAMPAIGN = "campaign"
+
+    const val CUSTOM_DIMENSION_PAGE_SOURCE = "pageSource"
+    const val CUSTOM_DIMENSION_PAGE_SOURCE_ADD_PRODUCT = "/add-product"
+    const val CUSTOM_DIMENSION_PAGE_SOURCE_EDIT_PRODUCT = "/edit-product"
+
+    const val SCREEN_NAME_STOCK_ALLOCATION_SINGLE = "/stock allocation - single product"
+    const val SCREEN_NAME_STOCK_ALLOCATION_VARIANT = "/stock allocation - variant product"
 }

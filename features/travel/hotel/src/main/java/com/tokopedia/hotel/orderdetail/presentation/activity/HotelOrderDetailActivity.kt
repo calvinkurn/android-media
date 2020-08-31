@@ -37,9 +37,9 @@ class HotelOrderDetailActivity : HotelBaseActivity(), HasComponent<HotelOrderDet
     override fun onCreate(savedInstanceState: Bundle?) {
         val uri = intent.data
         if (uri != null) {
-            orderId = uri.lastPathSegment
-        } else if (intent.extras.containsKey(KEY_ORDER_ID)) {
-            orderId = intent.getStringExtra(KEY_ORDER_ID)
+            orderId = uri.lastPathSegment ?: ""
+        } else if (intent.extras?.containsKey(KEY_ORDER_ID) == true) {
+            orderId = intent.getStringExtra(KEY_ORDER_ID) ?: ""
         }
 
         super.onCreate(savedInstanceState)

@@ -11,15 +11,22 @@ import org.junit.Test
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils
 import com.tokopedia.analytics.performance.util.PltPerformanceData
+import com.tokopedia.shop.mock.ShopPageWithHomeTabMockResponseConfig
+import com.tokopedia.shop.mock.ShopPageWithHomeTabMockResponseConfig.Companion.KEY_QUERY_GET_IS_SHOP_OFFICIAL
+import com.tokopedia.shop.mock.ShopPageWithHomeTabMockResponseConfig.Companion.KEY_QUERY_GET_SHOP_PAGE_HOME_TYPE
+import com.tokopedia.shop.mock.ShopPageWithHomeTabMockResponseConfig.Companion.KEY_QUERY_GET_SHOP_PRODUCT
+import com.tokopedia.shop.mock.ShopPageWithHomeTabMockResponseConfig.Companion.KEY_QUERY_IS_SHOP_POWER_MERCHANT
+import com.tokopedia.shop.mock.ShopPageWithHomeTabMockResponseConfig.Companion.KEY_QUERY_SHOP_INFO_CORE_AND_ASSETS
+import com.tokopedia.shop.mock.ShopPageWithHomeTabMockResponseConfig.Companion.KEY_QUERY_SHOP_INFO_TOP_CONTENT
+import com.tokopedia.shop.mock.ShopPageWithHomeTabMockResponseConfig.Companion.KEY_QUERY_WHITELIST
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity.Companion.SHOP_ID
-import com.tokopedia.shop.test.R
-import com.tokopedia.shop.util.Util
-import com.tokopedia.test.application.environment.MockResponseInterface
-import java.util.HashMap
+import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheck
+import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
+import com.tokopedia.test.application.util.setupTotalSizeInterceptor
 
 class PltShopPageOfficialStorePerformanceTest {
 
-    companion object{
+    companion object {
         private const val SAMPLE_SHOP_ID = "3418893"
     }
 
@@ -39,23 +46,20 @@ class PltShopPageOfficialStorePerformanceTest {
     fun init() {
         context = InstrumentationRegistry.getInstrumentation().targetContext
         context?.let {
-            (it.applicationContext as? MockResponseInterface)?.reInitMockResponse(createShopPageOfficialStoreMockResponse(it))
+            setupGraphqlMockResponseWithCheck(ShopPageWithHomeTabMockResponseConfig())
+            setupTotalSizeInterceptor(listOf(
+                    KEY_QUERY_GET_SHOP_PRODUCT,
+                    KEY_QUERY_GET_IS_SHOP_OFFICIAL,
+                    KEY_QUERY_SHOP_INFO_CORE_AND_ASSETS,
+                    KEY_QUERY_GET_SHOP_PAGE_HOME_TYPE,
+                    KEY_QUERY_IS_SHOP_POWER_MERCHANT,
+                    KEY_QUERY_SHOP_INFO_TOP_CONTENT,
+                    KEY_QUERY_WHITELIST
+            ))
             val intent = Intent()
             intent.putExtra(SHOP_ID, SAMPLE_SHOP_ID)
             activityRule.launchActivity(intent)
-            activityRule.activity.deleteDatabase("tokopedia_graphql")
         }
-    }
-
-    private fun createShopPageOfficialStoreMockResponse(context: Context): HashMap<String, String> {
-        val responseList = HashMap<String, String>()
-        responseList["shopInfoByID"] = Util.getRawString(context, R.raw.response_mock_data_shop_os_info_native_home_type)
-        responseList["getShopOperationalHourStatus"] = Util.getRawString(context, R.raw.response_mock_data_shop_operational_hour)
-        responseList["shopShowcasesByShopID"] = Util.getRawString(context, R.raw.response_mock_data_shop_showcase_by_shop_id)
-        responseList["shopPageGetLayout"] = Util.getRawString(context, R.raw.response_mock_data_shop_page_get_layout)
-        responseList["membershipStampProgress"] = Util.getRawString(context, R.raw.response_mock_data_shop_membership_stamp)
-        responseList["GetShopProduct"] = Util.getRawString(context, R.raw.response_mock_data_get_shop_product)
-        return responseList
     }
 
     @Test
@@ -79,7 +83,7 @@ class PltShopPageOfficialStorePerformanceTest {
                     TEST_CASE_SHOP_PAGE_OFFICIAL_STORE_PRODUCT_TAB_LOAD_TIME_PERFORMANCE
             )
         }
-        activityRule.activity.deleteDatabase("tokopedia_graphql")
+        TokopediaGraphqlInstrumentationTestHelper.deleteAllDataInDb()
         activityRule.activity.finishAndRemoveTask()
     }
 

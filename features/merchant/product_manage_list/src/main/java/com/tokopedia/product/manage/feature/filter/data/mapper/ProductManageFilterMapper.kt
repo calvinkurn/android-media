@@ -4,7 +4,10 @@ import com.tokopedia.core.common.category.domain.model.CategoriesResponse
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionsResponse
 import com.tokopedia.product.manage.feature.filter.data.model.ProductListMetaData
-import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.*
+import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.ChecklistUiModel
+import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterDataUiModel
+import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterUiModel
+import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.SelectUiModel
 import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.SortOption
@@ -90,6 +93,22 @@ class ProductManageFilterMapper {
             return FilterOptionWrapper(sortOption, filterOptions, isShown, selectedFilterCount)
         }
 
+        fun countSelectedFilter(filterOptions: List<FilterOption>): Int {
+            var selectedFilterCount = 0
+            filterOptions.forEach {
+                when(it) {
+                    is FilterOption.FilterByMenu -> {
+                        selectedFilterCount =+ it.menuIds.count()
+                    }
+                    is FilterOption.FilterByCategory -> {
+                        selectedFilterCount =+ it.categoryIds.count()
+                    }
+                    else -> selectedFilterCount++
+                }
+            }
+            return selectedFilterCount
+        }
+
         fun mapFilterOptionWrapperToSelectedSort(filterOptionWrapper: FilterOptionWrapper): FilterDataUiModel? {
             filterOptionWrapper.sortOption?.let {
                 return FilterDataUiModel(id = it.id.name,
@@ -145,6 +164,7 @@ class ProductManageFilterMapper {
                 SortOption.SortId.SOLD.name -> SortOption.SortBySold(sortOrderOption)
                 SortOption.SortId.PRICE.name -> SortOption.SortByPrice(sortOrderOption)
                 SortOption.SortId.DEFAULT.name -> SortOption.SortByDefault(sortOrderOption)
+                SortOption.SortId.STOCK.name -> SortOption.SortByStock(sortOrderOption)
                 else -> null
             }
         }

@@ -8,7 +8,14 @@ import com.tokopedia.play.broadcaster.ui.model.CoverSource
  */
 sealed class CoverSetupState {
 
-    data class Cropped(val coverImage: Uri, val coverSource: CoverSource) : CoverSetupState()
+    sealed class Cropped : CoverSetupState() {
+
+        abstract val coverImage: Uri
+        abstract val coverSource: CoverSource
+
+        data class Draft(override val coverImage: Uri, override val coverSource: CoverSource) : Cropped()
+        data class Uploaded(val localImage: Uri?, override val coverImage: Uri, override val coverSource: CoverSource) : Cropped()
+    }
     sealed class Cropping : CoverSetupState() {
 
         abstract val coverSource: CoverSource

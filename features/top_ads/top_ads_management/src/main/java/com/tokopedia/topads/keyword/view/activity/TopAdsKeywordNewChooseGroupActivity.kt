@@ -4,9 +4,9 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.appcompat.app.AlertDialog
 import android.view.MenuItem
+import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity
 import com.tokopedia.abstraction.base.view.model.StepperModel
 import com.tokopedia.abstraction.common.di.component.HasComponent

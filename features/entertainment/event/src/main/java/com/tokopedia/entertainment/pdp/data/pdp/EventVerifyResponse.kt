@@ -1,9 +1,9 @@
 package com.tokopedia.entertainment.pdp.data.pdp
 
-import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
 data class EventVerifyResponseV2(
         @SerializedName("event_verify")
@@ -26,6 +26,7 @@ data class EventVerifyResponse(
         val status: String = ""
 )
 
+@Parcelize
 data class MetaDataResponse(
         @SerializedName("category_name")
         @Expose
@@ -61,49 +62,9 @@ data class MetaDataResponse(
         @Expose
         val totalPrice: Int = 0
 
-) : Parcelable {
-    constructor(parcel: Parcel) : this(
-            parcel.readString(),
-            parcel.readString(),
-            parcel.createStringArrayList(),
-            parcel.createTypedArrayList(ItemMapResponse),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.createStringArrayList(),
-            parcel.createStringArrayList(),
-            parcel.createStringArrayList(),
-            parcel.readInt(),
-            parcel.readInt())
+) : Parcelable
 
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(categoryName)
-        parcel.writeString(error)
-        parcel.writeStringList(itemIds)
-        parcel.writeTypedList(itemMap)
-        parcel.writeString(orderSubTitle)
-        parcel.writeString(orderTitle)
-        parcel.writeStringList(productIds)
-        parcel.writeStringList(productNames)
-        parcel.writeStringList(providerIds)
-        parcel.writeInt(quantity)
-        parcel.writeInt(totalPrice)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<MetaDataResponse> {
-        override fun createFromParcel(parcel: Parcel): MetaDataResponse {
-            return MetaDataResponse(parcel)
-        }
-
-        override fun newArray(size: Int): Array<MetaDataResponse?> {
-            return arrayOfNulls(size)
-        }
-    }
-}
-
+@Parcelize
 data class ItemMapResponse(
         @SerializedName("base_price")
         @Expose
@@ -228,136 +189,16 @@ data class ItemMapResponse(
         @SerializedName("passenger_forms")
         @Expose
         var passengerForms : MutableList<PassengerForm> = arrayListOf()
-) : Parcelable {
-    constructor(parcel: Parcel) : this(
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readInt(),
-            parcel.readString(),
-            parcel.readInt(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readInt(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readInt(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readInt(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.createTypedArrayList(PassengerForm))
+) : Parcelable
 
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(basePrice)
-        parcel.writeString(categoryId)
-        parcel.writeString(childCategoryIds)
-        parcel.writeInt(commission)
-        parcel.writeString(commissionType)
-        parcel.writeInt(currencyPrice)
-        parcel.writeString(description)
-        parcel.writeString(email)
-        parcel.writeString(endTime)
-        parcel.writeString(error)
-        parcel.writeString(flagId)
-        parcel.writeString(id)
-        parcel.writeString(invoiceId)
-        parcel.writeString(invoiceItemId)
-        parcel.writeString(invoiceStatus)
-        parcel.writeString(locationDesc)
-        parcel.writeString(locationName)
-        parcel.writeString(mobile)
-        parcel.writeString(name)
-        parcel.writeString(orderTraceId)
-        parcel.writeString(packageId)
-        parcel.writeString(packageName)
-        parcel.writeString(paymentType)
-        parcel.writeInt(price)
-        parcel.writeString(productAppUrl)
-        parcel.writeString(productId)
-        parcel.writeString(productImage)
-        parcel.writeString(productName)
-        parcel.writeString(providerId)
-        parcel.writeString(providerInvoiceCode)
-        parcel.writeString(providerOrderId)
-        parcel.writeString(providerPackageId)
-        parcel.writeString(providerScheduleId)
-        parcel.writeString(providerTicketId)
-        parcel.writeInt(quantity)
-        parcel.writeString(scheduleTimestamp)
-        parcel.writeString(startTime)
-        parcel.writeInt(totalPrice)
-        parcel.writeString(webAppUrl)
-        parcel.writeString(productWebUrl)
-        parcel.writeTypedList(passengerForms)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<ItemMapResponse> {
-        override fun createFromParcel(parcel: Parcel): ItemMapResponse {
-            return ItemMapResponse(parcel)
-        }
-
-        override fun newArray(size: Int): Array<ItemMapResponse?> {
-            return arrayOfNulls(size)
-        }
-    }
-}
-
-
+@Parcelize
 data class PassengerForm(
         @SerializedName("passenger_informations")
         @Expose
         var passengerInformation : List<PassengerInformation> = arrayListOf()
-) : Parcelable {
-    constructor(parcel: Parcel) : this(parcel.createTypedArrayList(PassengerInformation))
+) : Parcelable
 
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeTypedList(passengerInformation)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<PassengerForm> {
-        override fun createFromParcel(parcel: Parcel): PassengerForm {
-            return PassengerForm(parcel)
-        }
-
-        override fun newArray(size: Int): Array<PassengerForm?> {
-            return arrayOfNulls(size)
-        }
-    }
-}
-
+@Parcelize
 data class PassengerInformation(
         @SerializedName("name")
         @Expose
@@ -369,29 +210,4 @@ data class PassengerInformation(
         @Expose
         var title : String = ""
 
-) : Parcelable {
-    constructor(parcel: Parcel) : this(
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString())
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(name)
-        parcel.writeString(value)
-        parcel.writeString(title)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<PassengerInformation> {
-        override fun createFromParcel(parcel: Parcel): PassengerInformation {
-            return PassengerInformation(parcel)
-        }
-
-        override fun newArray(size: Int): Array<PassengerInformation?> {
-            return arrayOfNulls(size)
-        }
-    }
-}
+) : Parcelable

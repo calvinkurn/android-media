@@ -355,4 +355,9 @@
     <string name="title_ticker_from_atc">Yuk, lanjutin belanjanya sekarang!</string>
     <string name="desc_ticker_from_atc">Khusus pengguna baru, dapetin cashback 80% hingga Rp30.000.</string>
 
+    <string name="seller_direct_login">Masuk ke toko ini?</string>
+    <string name="button_direct_login">Masuk</string>
+    <string name="button_use_another_acc">Gunakan Akun Lain</string>
+    <string name="seamless_footer_text">Akun toko ini adalah akun yang terhubung di aplikasi Tokopedia mu</string>
+
 </resources>

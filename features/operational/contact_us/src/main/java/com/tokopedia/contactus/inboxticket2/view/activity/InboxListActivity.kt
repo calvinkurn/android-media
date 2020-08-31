@@ -3,17 +3,17 @@ package com.tokopedia.contactus.inboxticket2.view.activity
 import android.content.Context
 import android.content.Intent
 import android.view.View
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tkpd.remoteresourcerequest.view.DeferredImageView
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.contactus.R
 import com.tokopedia.contactus.common.analytics.ContactUsTracking
 import com.tokopedia.contactus.common.analytics.InboxTicketTracking
 import com.tokopedia.contactus.home.view.ContactUsHomeActivity
-import com.tokopedia.contactus.inboxticket2.domain.TicketsItem
+import com.tokopedia.contactus.inboxticket2.data.model.InboxTicketListResponse
 import com.tokopedia.contactus.inboxticket2.view.adapter.TicketListAdapter
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract.InboxBasePresenter
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxListContract.InboxListPresenter
@@ -21,11 +21,15 @@ import com.tokopedia.contactus.inboxticket2.view.contract.InboxListContract.Inbo
 import com.tokopedia.contactus.inboxticket2.view.customview.CustomEditText
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.webview.KEY_TITLE
 
+private const val RAISE_TICKET_TAG = "raiseTicket"
 class InboxListActivity : InboxBaseActivity(), InboxListView, View.OnClickListener {
-    private var ivNoTicket: ImageView? = null
-    private var tvNoTicket: TextView? = null
-    private var tvRaiseTicket: TextView? = null
+    private var ivNoTicket: DeferredImageView? = null
+    private var tvNoTicket: Typography? = null
+    private var tvRaiseTicket: Typography? = null
+    private var tvGreetNoTicket: Typography? = null
     private var rvEmailList: VerticalRecyclerView? = null
     private var btnFilter: View? = null
     private var searchView: View? = null
@@ -34,17 +38,15 @@ class InboxListActivity : InboxBaseActivity(), InboxListView, View.OnClickListen
     private var mAdapter: TicketListAdapter? = null
     private var btnFilterTv: TextView? = null
 
-    override fun renderTicketList(ticketList: MutableList<TicketsItem>) {
+    override fun renderTicketList(ticketItemList: MutableList<InboxTicketListResponse.Ticket.Data.TicketItem>) {
         if (mAdapter == null) {
-            mAdapter = TicketListAdapter(ticketList, mPresenter as InboxListPresenter)
+            mAdapter = TicketListAdapter(ticketItemList, mPresenter as InboxListPresenter)
         } else {
             mAdapter?.notifyDataSetChanged()
         }
         rvEmailList?.adapter = mAdapter
         rvEmailList?.show()
     }
-
-
 
     override fun hideFilter() {
         btnFilter?.hide()
@@ -62,6 +64,19 @@ class InboxListActivity : InboxBaseActivity(), InboxListView, View.OnClickListen
         ivNoTicket?.visibility = visibility
         tvNoTicket?.visibility = visibility
         tvRaiseTicket?.visibility = visibility
+        rvEmailList?.hide()
+    }
+
+    override fun toggleNoTicketLayout(visibility: Int, name: String) {
+        ivNoTicket?.loadRemoteImageDrawable("no_messages.png")
+        ivNoTicket?.visibility = visibility
+        tvNoTicket?.text = getString(R.string.contact_us_no_ticket_message)
+        tvNoTicket?.visibility = visibility
+        tvRaiseTicket?.text = getString(R.string.contact_us_tokopedia_care)
+        tvRaiseTicket?.tag = RAISE_TICKET_TAG
+        tvRaiseTicket?.visibility = visibility
+        tvGreetNoTicket?.text = String.format(getString(R.string.contact_us_greet_user), name)
+        tvGreetNoTicket?.visibility = visibility
         rvEmailList?.hide()
     }
 
@@ -96,7 +111,7 @@ class InboxListActivity : InboxBaseActivity(), InboxListView, View.OnClickListen
 
     override fun initView() {
         this.findingViewsId()
-        (mPresenter as InboxListPresenter).ticketList
+        (mPresenter as InboxListPresenter).getTicketList(null)
         settingOnClickListener()
         btnFilterTv?.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(this, R.drawable.contactus_ic_filter_list), null, null, null)
         rvEmailList?.addOnScrollListener(rvOnScrollListener)
@@ -107,6 +122,7 @@ class InboxListActivity : InboxBaseActivity(), InboxListView, View.OnClickListen
         ivNoTicket = findViewById(R.id.iv_no_ticket)
         tvNoTicket = findViewById(R.id.tv_no_ticket)
         tvRaiseTicket = findViewById(R.id.tv_raise_ticket)
+        tvGreetNoTicket = findViewById(R.id.tv_greeting)
         rvEmailList = findViewById(R.id.rv_email_list)
         btnFilter = findViewById(R.id.btn_filter)
         searchView = findViewById(R.id.inbox_search_view)
@@ -142,14 +158,19 @@ class InboxListActivity : InboxBaseActivity(), InboxListView, View.OnClickListen
     }
 
     private fun raiseTicket() {
-        val contactUsHome = Intent(this, ContactUsHomeActivity::class.java)
-        contactUsHome.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        startActivity(contactUsHome)
-        ContactUsTracking.sendGTMInboxTicket("",
-                InboxTicketTracking.Category.EventInboxTicket,
-                InboxTicketTracking.Action.EventClickHubungi,
-                InboxTicketTracking.Label.InboxEmpty)
-        finish()
+        if (tvRaiseTicket?.tag == RAISE_TICKET_TAG) {
+            val contactUsHome = Intent(this, ContactUsHomeActivity::class.java)
+            contactUsHome.putExtra(KEY_TITLE, getString(R.string.contact_us_title_home))
+            contactUsHome.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            startActivity(contactUsHome)
+            ContactUsTracking.sendGTMInboxTicket(this, "",
+                    InboxTicketTracking.Category.EventInboxTicket,
+                    InboxTicketTracking.Action.EventClickHubungi,
+                    InboxTicketTracking.Label.InboxEmpty)
+            finish()
+        } else {
+            (mPresenter as InboxListPresenter).getTicketList(null)
+        }
     }
 
     override fun isSearchMode(): Boolean {
