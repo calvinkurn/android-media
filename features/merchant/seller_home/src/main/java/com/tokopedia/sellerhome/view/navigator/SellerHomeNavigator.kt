@@ -166,7 +166,7 @@ class SellerHomeNavigator(
         val currentState = fragment.lifecycle.currentState
         val isFragmentNotResumed = !currentState.isAtLeast(Lifecycle.State.RESUMED)
 
-        if(isFragmentNotResumed) {
+        if(isFragmentNotResumed && fragment.fragmentManager == fm) {
             transaction.setMaxLifecycle(fragment, Lifecycle.State.RESUMED)
         }
 

@@ -119,7 +119,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         setupToolbar()
         setupStatusBar()
         setupNavigator()
-        setupDefaultPage()
+        setupDefaultPage(savedInstanceState != null)
         setupBottomNav()
         UpdateCheckerHelper.checkAppUpdate(this, isRedirectedFromSellerMigration)
         observeNotificationsLiveData()
@@ -218,20 +218,22 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         }
     }
 
-    private fun setupDefaultPage() {
+    private fun setupDefaultPage(isSavedInstanceStateExist: Boolean) {
         if(intent?.data == null) {
             showToolbar()
-            showSellerHome()
+            showSellerHome(isSavedInstanceStateExist)
         } else {
             handleAppLink(intent)
         }
     }
 
-    private fun showSellerHome() {
+    private fun showSellerHome(isSavedInstanceStateExist: Boolean) {
         val home = FragmentType.HOME
         setCurrentFragmentType(home)
         sahBottomNav.currentItem = home
-        navigator?.start(home)
+        if (!isSavedInstanceStateExist) {
+            navigator?.start(home)
+        }
     }
 
     private fun handleAppLink(intent: Intent?) {
