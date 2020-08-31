@@ -49,7 +49,7 @@ class PDPEventActivityTest {
     fun validatePDPEvent() {
         Thread.sleep(5000)
         click_lanjutkan_ticket()
- //       click_check_ticket()
+        click_check_ticket()
         assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ENTERTAINMENT_EVENT_PDP_VALIDATOR_QUERY), hasAllSuccess())
 
     }
