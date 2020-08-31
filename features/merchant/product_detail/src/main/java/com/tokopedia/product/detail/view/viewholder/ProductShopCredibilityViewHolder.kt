@@ -105,7 +105,7 @@ class ProductShopCredibilityViewHolder(private val view: View, private val liste
     private fun setupBadgeAndImage(shopData: ShopInfo, isOs: Boolean, isPm: Boolean) = with(view) {
         val drawable = if (isOs) {
             MethodChecker.getDrawable(context, R.drawable.ic_official_store_product)
-        } else if (isOs && isPm) {
+        } else if (isPm) {
             MethodChecker.getDrawable(context, R.drawable.ic_power_merchant)
         } else {
             shop_ava.hide()

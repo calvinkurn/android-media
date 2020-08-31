@@ -364,7 +364,7 @@ public class MainParentActivity extends BaseActivity implements
     private int getTabPositionFromIntent() {
         int position = getIntent().getExtras().getInt(ARGS_TAB_POSITION, -1);
         if (position != -1) return position;
-        
+
         try {
             String posString = getIntent().getExtras().getString(ARGS_TAB_POSITION);
             return Integer.parseInt(posString);
@@ -1102,16 +1102,16 @@ public class MainParentActivity extends BaseActivity implements
 
     @Override
     public void stopOfficialStorePerformanceMonitoring() {
-        if(getOfficialStorePageLoadTimePerformanceInterface() != null){
-            getOfficialStorePageLoadTimePerformanceInterface().stopRenderPerformanceMonitoring();
-            getOfficialStorePageLoadTimePerformanceInterface().stopMonitoring();
+        if (officialStorePageLoadTimePerformanceCallback != null) {
+            officialStorePageLoadTimePerformanceCallback.stopRenderPerformanceMonitoring();
+            officialStorePageLoadTimePerformanceCallback.stopMonitoring();
             officialStorePageLoadTimePerformanceCallback = null;
         }
     }
 
     @Override
     public void startOfficialStorePerformanceMonitoring() {
-        if(officialStorePageLoadTimePerformanceCallback == null) {
+        if (officialStorePageLoadTimePerformanceCallback == null) {
             officialStorePageLoadTimePerformanceCallback = new PageLoadTimePerformanceCallback(
                     OFFICIAL_STORE_PERFORMANCE_MONITORING_PREPARE_METRICS,
                     OFFICIAL_STORE_PERFORMANCE_MONITORING_NETWORK_METRICS,
@@ -1122,8 +1122,8 @@ public class MainParentActivity extends BaseActivity implements
                     0,
                     null
             );
-            getOfficialStorePageLoadTimePerformanceInterface().startMonitoring(OFFICIAL_STORE_PERFORMANCE_MONITORING_KEY);
-            getOfficialStorePageLoadTimePerformanceInterface().startPreparePagePerformanceMonitoring();
+            officialStorePageLoadTimePerformanceCallback.startMonitoring(OFFICIAL_STORE_PERFORMANCE_MONITORING_KEY);
+            officialStorePageLoadTimePerformanceCallback.startPreparePagePerformanceMonitoring();
         }
     }
 

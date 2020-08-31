@@ -929,9 +929,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
             bottomSheetCoordinatorLayout = parent
         }
         if (bottomSheetCoordinatorLayout != null && bottomSheetFmContainer is FrameLayout) {
-            bottomSheetFmContainer?.let {
-                BottomSheetBehavior.from(it).state = BottomSheetBehavior.STATE_EXPANDED
-            }
+            BottomSheetBehavior.from(bottomSheetFmContainer).state = BottomSheetBehavior.STATE_EXPANDED
         }
     }
 
