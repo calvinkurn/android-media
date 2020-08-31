@@ -11,7 +11,9 @@
       "screenName": "/",
       "event": "{{.*}}",
       "userId": "{{.*}}",
-      "sessionIris": "{{.*}}"
+      "sessionIris": "{{.*}}",
+      "currentSite": "tokopediamarketplace",
+      "businessUnit": "home & browse"
     }
   ]
 }

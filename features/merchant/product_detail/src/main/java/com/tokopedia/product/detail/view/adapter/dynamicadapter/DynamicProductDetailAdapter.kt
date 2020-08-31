@@ -55,6 +55,13 @@ class DynamicProductDetailAdapter(
         }
     }
 
+    fun notifyTopAdsBanner(topAdsImageData: TopAdsImageDataModel?) {
+        topAdsImageData?.let {
+            val indexOfTopAdsImage = list.indexOf(topAdsImageData)
+            notifyItemChanged(indexOfTopAdsImage)
+        }
+    }
+
     fun notifyGeneralInfo(generalInfo: ProductGeneralInfoDataModel?, payload: Int? = null) {
         generalInfo?.let {
             val indexOfGeneralInfo = list.indexOf(generalInfo)
@@ -108,6 +115,14 @@ class DynamicProductDetailAdapter(
             list.indexOf(data)
         } else {
             RecyclerView.NO_POSITION
+        }
+    }
+
+    fun getTopAdsBannerPosition(data: TopAdsImageDataModel): Int {
+        return if (data != null) {
+            list.indexOf(data)
+        } else {
+            -1
         }
     }
 
