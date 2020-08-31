@@ -59,7 +59,7 @@ class PreferenceSummaryViewModel @Inject constructor(private val getPreferenceBy
         return false
     }
 
-    fun getPreferenceDetail(profileId: Int, addressId: Int, serviceId: Int, gatewayCode: String, metadata: String) {
+    fun getPreferenceDetail(profileId: Int, addressId: Int, serviceId: Int, gatewayCode: String, metadata: String, paymentProfile: String) {
         _preference.value = OccState.Loading
         getPreferenceByIdUseCase.execute(
                 { profilesItemModel: ProfilesItemModel ->
@@ -68,7 +68,7 @@ class PreferenceSummaryViewModel @Inject constructor(private val getPreferenceBy
                 { throwable: Throwable ->
                     _preference.value = OccState.Failed(Failure(throwable))
                 },
-                getPreferenceByIdUseCase.generateRequestParams(profileId, addressId, serviceId, gatewayCode, metadata))
+                getPreferenceByIdUseCase.generateRequestParams(profileId, addressId, serviceId, gatewayCode, metadata, paymentProfile))
     }
 
     fun deletePreference(id: Int) {

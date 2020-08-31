@@ -22,6 +22,7 @@ object PreferenceModelMapper {
         return ProfilesItemModel().apply {
             profileId = profilesItem.profileId
             status = profilesItem.status
+            enable = profilesItem.enable
             addressModel = getAddressModel(profilesItem.address)
             paymentModel = getPaymentModel(profilesItem.payment)
             shipmentModel = getShipmentModel(profilesItem.shipment)

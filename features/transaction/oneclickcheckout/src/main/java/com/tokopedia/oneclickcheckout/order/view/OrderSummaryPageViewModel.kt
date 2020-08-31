@@ -127,6 +127,10 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         return _orderShipment.getRealShipperId()
     }
 
+    fun getPaymentProfile(): String {
+        return orderCart.paymentProfile
+    }
+
     fun atcOcc(productId: String) {
         globalEvent.value = OccGlobalEvent.Loading
         compositeSubscription.add(

@@ -161,8 +161,9 @@ class PaymentMethodFragment : BaseDaggerFragment() {
     }
 
     private fun generatePaymentListingRequest(): PaymentListingParamRequest {
+        val profileCode = (activity as? PreferenceEditParent)?.getPaymentProfile() ?: PROFILE_CODE
         return PaymentListingParamRequest(MERCHANT_CODE,
-                PROFILE_CODE,
+                profileCode,
                 URL,
                 getAddressId(),
                 "android-${GlobalConfig.VERSION_NAME}")

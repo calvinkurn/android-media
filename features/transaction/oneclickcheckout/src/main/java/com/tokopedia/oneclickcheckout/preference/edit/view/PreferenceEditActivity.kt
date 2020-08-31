@@ -37,6 +37,7 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
     private var _shippingId = 0
     private var _gatewayCode = ""
     private var _paymentQuery = ""
+    private var _paymentProfile = ""
     private var _shippingParam: ShippingParam? = null
     private var _listShopShipment: ArrayList<ShopShipment>? = null
     private var _isExtraProfile: Boolean = true
@@ -73,6 +74,7 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
 
         _preferenceIndex = intent.getStringExtra(EXTRA_PREFERENCE_INDEX) ?: ""
         _profileId = intent.getIntExtra(EXTRA_PROFILE_ID, 0)
+        _paymentProfile = intent.getStringExtra(EXTRA_PAYMENT_PROFILE) ?: ""
         _shippingParam = intent.getParcelableExtra(EXTRA_SHIPPING_PARAM)
         _listShopShipment = intent.getParcelableArrayListExtra(EXTRA_LIST_SHOP_SHIPMENT)
         _isExtraProfile = intent.getBooleanExtra(EXTRA_IS_EXTRA_PROFILE, true)
@@ -268,6 +270,10 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
         return _fromFlow
     }
 
+    override fun getPaymentProfile(): String {
+        return _paymentProfile
+    }
+
     companion object {
 
         const val EXTRA_PREFERENCE_INDEX = "preference_index"
@@ -275,6 +281,7 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
         const val EXTRA_ADDRESS_ID = "address_id"
         const val EXTRA_SHIPPING_ID = "shipping_id"
         const val EXTRA_GATEWAY_CODE = "gateway_code"
+        const val EXTRA_PAYMENT_PROFILE = "payment_profile"
         const val EXTRA_IS_EXTRA_PROFILE = "is_extra_profile"
 
         const val EXTRA_SHIPPING_PARAM = "shipping_param"

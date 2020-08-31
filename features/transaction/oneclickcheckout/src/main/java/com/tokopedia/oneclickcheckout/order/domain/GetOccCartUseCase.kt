@@ -45,6 +45,7 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
                 val orderCart = OrderCart().apply {
                     cartId = cart.cartId
                     cartString = cart.cartString
+                    paymentProfile = cart.paymentProfile
                     product = generateOrderProduct(cart.product).apply {
                         quantity = mapQuantity(response.response.data)
                         tickerMessage = mapProductTickerMessage(response.response.data.tickerMessage)

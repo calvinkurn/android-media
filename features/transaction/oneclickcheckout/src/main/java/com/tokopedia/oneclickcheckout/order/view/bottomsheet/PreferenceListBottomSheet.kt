@@ -24,6 +24,7 @@ import java.net.UnknownHostException
 
 class PreferenceListBottomSheet(
         private val getPreferenceListUseCase: GetPreferenceListUseCase,
+        private val paymentProfile: String,
         private val listener: PreferenceListBottomSheetListener) {
 
     private var bottomSheet: BottomSheetUnify? = null
@@ -45,7 +46,7 @@ class PreferenceListBottomSheet(
         }, { throwable: Throwable ->
             Timber.d(throwable)
             handleError(throwable)
-        })
+        }, getPreferenceListUseCase.generateRequestParams(paymentProfile))
     }
 
     private fun handleError(throwable: Throwable) {

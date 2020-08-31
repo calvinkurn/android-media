@@ -73,8 +73,16 @@ class PreferenceListViewHolder(itemView: View, private val listener: PreferenceL
                 tvChoosePreference.text = itemView.context.getString(R.string.label_choose_this_preference)
                 tvChoosePreference.visible()
             }
-            tvChoosePreference.setOnClickListener {
-                listener.onPreferenceSelected(preference)
+            if (preference.enable) {
+                tvChoosePreference.setOnClickListener {
+                    listener.onPreferenceSelected(preference)
+                }
+                itemView.alpha = 1f
+            } else {
+                tvChoosePreference.setOnClickListener {
+                    //no op
+                }
+                itemView.alpha = 0.5f
             }
         }
 
