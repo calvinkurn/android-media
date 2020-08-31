@@ -87,7 +87,6 @@ class ShopPageViewModel @Inject constructor(
     companion object {
         private const val DATA_NOT_FOUND = "Data not found"
         private const val START_PAGE = 1
-        private const val DEFAULT_SORT_ID = 0
     }
 
     fun isMyShop(shopId: String) = userSessionInterface.shopId == shopId
@@ -100,7 +99,12 @@ class ShopPageViewModel @Inject constructor(
     val shopPageHeaderContentData = MutableLiveData<Result<ShopPageHeaderContentData>>()
     var productListData: Pair<Boolean, List<ShopProductViewModel>> = Pair(false, listOf())
 
-    fun getShopPageTabData(shopId: String? = null, shopDomain: String? = null, isRefresh: Boolean = false) {
+    fun getShopPageTabData(
+            shopId: String? = null,
+            shopDomain: String? = null,
+            isRefresh: Boolean = false,
+            initialProductListSortId: String
+    ) {
         val id = shopId?.toIntOrNull() ?: 0
         if (id == 0 && shopDomain == null) return
         launchCatchError(block = {
@@ -175,7 +179,7 @@ class ShopPageViewModel @Inject constructor(
                                 ShopPageConstant.DEFAULT_PER_PAGE,
                                 "",
                                 "",
-                                DEFAULT_SORT_ID,
+                                initialProductListSortId.toIntOrZero(),
                                 isRefresh
                         )
                     },

@@ -899,6 +899,31 @@ object DynamicProductDetailTracking {
 
             TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, "")
         }
+
+        fun eventTopAdsImageViewClicked(trackingQueue: TrackingQueue, userId: String, bannerId: String, position: Int, bannerName:String) {
+            val mapEvent = hashMapOf<String, Any>(
+                    ProductTrackingConstant.Tracking.KEY_EVENT to ProductTrackingConstant.Tracking.PROMO_CLICK,
+                    ProductTrackingConstant.Tracking.KEY_CATEGORY to ProductTrackingConstant.Category.PDP,
+                    ProductTrackingConstant.Tracking.KEY_ACTION to ProductTrackingConstant.Action.CLICK_TDN_BANNER_ADS_WIDGET,
+                    ProductTrackingConstant.Tracking.KEY_LABEL to "",
+                    ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT to ProductTrackingConstant.Tracking.BUSINESS_UNIT,
+                    ProductTrackingConstant.Tracking.KEY_CURRENT_SITE to ProductTrackingConstant.Tracking.CURRENT_SITE,
+                    ProductTrackingConstant.Tracking.KEY_DISCUSSION_USER_ID to userId,
+                    ProductTrackingConstant.Tracking.KEY_SCREEN_NAME to ProductTrackingConstant.Tracking.PRODUCT_DETAIL_SCREEN_NAME,
+                    ProductTrackingConstant.Tracking.KEY_ECOMMERCE to hashMapOf(
+                            ProductTrackingConstant.Tracking.PROMO_CLICK to hashMapOf(
+                                    ProductTrackingConstant.Tracking.KEY_PROMOTIONS to listOf(
+                                            hashMapOf(
+                                                    ProductTrackingConstant.Tracking.ID to bannerId,
+                                                    ProductTrackingConstant.Tracking.NAME to ProductTrackingConstant.TopAds.PDP_BANNER_TOPADS,
+                                                    ProductTrackingConstant.Tracking.CREATIVE to
+                                                            if (bannerName.isEmpty()) ProductTrackingConstant.TopAds.DFAULT_CREATIVE_NAME_BANNER_TOP_ADS else bannerName,
+                                                    ProductTrackingConstant.Tracking.POSITION to position
+                                            ))
+                            )))
+
+            trackingQueue.putEETracking(mapEvent)
+        }
     }
 
     object Iris {
@@ -1342,6 +1367,31 @@ object DynamicProductDetailTracking {
             )
             TrackingUtil.addComponentTracker(mapEvent, productInfo, null, ProductTrackingConstant.Action.IMPRESSION_USE_MERCHANT_VOUCHER)
 
+        }
+
+        fun eventTopAdsImageViewImpression(trackingQueue: TrackingQueue, userId: String, bannerId: String, position: Int, bannerName: String) {
+            val mapEvent = hashMapOf<String, Any>(
+                    ProductTrackingConstant.Tracking.KEY_EVENT to ProductTrackingConstant.Tracking.PROMO_VIEW,
+                    ProductTrackingConstant.Tracking.KEY_CATEGORY to ProductTrackingConstant.Category.PDP,
+                    ProductTrackingConstant.Tracking.KEY_ACTION to ProductTrackingConstant.Action.VIEW_TDN_BANNER_ADS_WIDGET,
+                    ProductTrackingConstant.Tracking.KEY_LABEL to "",
+                    ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT to ProductTrackingConstant.Tracking.BUSINESS_UNIT,
+                    ProductTrackingConstant.Tracking.KEY_CURRENT_SITE to ProductTrackingConstant.Tracking.CURRENT_SITE,
+                    ProductTrackingConstant.Tracking.KEY_DISCUSSION_USER_ID to userId,
+                    ProductTrackingConstant.Tracking.KEY_SCREEN_NAME to ProductTrackingConstant.Tracking.PRODUCT_DETAIL_SCREEN_NAME,
+                    ProductTrackingConstant.Tracking.KEY_ECOMMERCE to hashMapOf(
+                            ProductTrackingConstant.Tracking.PROMO_VIEW to hashMapOf(
+                                    ProductTrackingConstant.Tracking.KEY_PROMOTIONS to listOf(
+                                            hashMapOf(
+                                                    ProductTrackingConstant.Tracking.ID to bannerId,
+                                                    ProductTrackingConstant.Tracking.NAME to ProductTrackingConstant.TopAds.PDP_BANNER_TOPADS,
+                                                    ProductTrackingConstant.Tracking.CREATIVE to
+                                                            if (bannerName.isEmpty()) ProductTrackingConstant.TopAds.DFAULT_CREATIVE_NAME_BANNER_TOP_ADS else bannerName,
+                                                    ProductTrackingConstant.Tracking.POSITION to position
+                                            ))
+                            )))
+
+            trackingQueue.putEETracking(mapEvent)
         }
     }
 }

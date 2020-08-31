@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.utils.network.TextApiUtils
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -87,7 +88,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
     }
 
     private fun setupSgcPlayWidget(shopPageHeaderDataModel: ShopPageHeaderDataModel){
-        view.play_seller_widget_container.visibility = if(shopPageHeaderDataModel.broadcaster.streamAllowed) View.VISIBLE else View.GONE
+        view.play_seller_widget_container.visibility = if(shopPageHeaderDataModel.broadcaster.streamAllowed && GlobalConfig.isSellerApp()) View.VISIBLE else View.GONE
         setupTextContentSgcWidget()
         setLottieAnimationFromUrl(context.getString(R.string.shop_page_lottie_sgc_url))
         if(shopPageHeaderDataModel.broadcaster.streamAllowed) shopPageTrackingSGCPlayWidget?.onImpressionSGCContent(shopId = shopPageHeaderDataModel.shopId)
