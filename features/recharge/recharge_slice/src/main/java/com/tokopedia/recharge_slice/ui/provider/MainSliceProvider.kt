@@ -205,7 +205,7 @@ class MainSliceProvider : SliceProvider() {
 
     private fun getData(sliceUri: Uri) {
         val gqlQuery = GraphqlHelper.loadRawString(contextNonNull.resources, R.raw.recharge_slice_gql)
-        val deviceId = 5
+        val deviceId = 0
         val params = mapOf(RECHARGE_SLICE_DEVICE_ID to deviceId)
         val graphqlRequest = GraphqlRequest(gqlQuery, Data::class.java, params)
         GraphqlClient.init(contextNonNull)
