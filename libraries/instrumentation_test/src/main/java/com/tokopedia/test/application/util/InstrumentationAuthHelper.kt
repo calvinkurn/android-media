@@ -2,12 +2,11 @@ package com.tokopedia.test.application.util
 
 import android.app.Application
 import android.content.Context
-import android.widget.Toast
+import androidx.test.espresso.idling.CountingIdlingResource
 import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.test.application.environment.InstrumentationTestApp
 import com.tokopedia.test.application.environment.network.DataSource
-import com.tokopedia.test.application.environment.network.LogoutPojo
 import com.tokopedia.user.session.UserSession
 import rx.Observable
 import rx.Observer
@@ -16,7 +15,31 @@ import rx.schedulers.Schedulers
 import java.util.*
 
 object InstrumentationAuthHelper {
-    fun loginToAnUser(application: Application) {
+
+    fun loginInstrumentationTestUser1(context: Context) {
+        val accessToken = "ghSZU8GxoVSK3qkEqgFUrlHt3pFSS+Xtmb5peuCDaca/R0LwyqhTqwTJVcupIX78E5xicw3oliW9AdyRWr4Apg=="
+        loginWithAccessToken(context, accessToken)
+    }
+
+    private fun loginWithAccessToken(context: Context, accessToken: String) {
+        try {
+            val userSession = UserSession(context)
+            userSession.userId = "108956738"
+            userSession.email = "erick.samuel+testingtokenandroid1@tokopedia.com"
+            userSession.setToken(accessToken, "Bearer")
+            userSession.setIsLogin(true)
+        } catch (throwable: Throwable) {
+            throwable.printStackTrace()
+        }
+    }
+
+    fun loginInstrumentationTestUser2(context: Context) {
+        val accessToken = "kdxPYUwtF5yYMOuwZFxnFqFZea7GUpoX6m1eL1IGJ1pwB3crhQCTvKdMoYV6wIpiHgE5Xlghd0WAKPXW+yMp5w=="
+        loginWithAccessToken(context, accessToken)
+    }
+
+    fun loginToAnUser(application: Application, idlingResource: CountingIdlingResource? = null) {
+        idlingResource?.increment()
         val userSession = UserSession(application)
 
         val userName = "fauzanofami.luthfi+01@tokopedia.com"
@@ -104,81 +127,18 @@ object InstrumentationAuthHelper {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object : Observer<Boolean> {
                     override fun onError(e: Throwable?) {
-                        Toast.makeText(application, e?.message, Toast.LENGTH_LONG).show()
                     }
 
                     override fun onNext(t: Boolean?) {
-                        Toast.makeText(application, "success login", Toast.LENGTH_LONG).show()
                     }
 
                     override fun onCompleted() {
-
+                        if (idlingResource?.isIdleNow == false) {
+                            idlingResource.decrement()
+                        }
                     }
                 })
     }
-
-    fun loginInstrumentationTestUser1(context: Context) {
-        val accessToken = "ghSZU8GxoVSK3qkEqgFUrlHt3pFSS+Xtmb5peuCDaca/R0LwyqhTqwTJVcupIX78E5xicw3oliW9AdyRWr4Apg=="
-        loginWithAccessToken(context, accessToken)
-    }
-
-    private fun loginWithAccessToken(context: Context, accessToken: String) {
-        try {
-            val userSession = UserSession(context)
-            userSession.userId = "108956738"
-            userSession.email = "erick.samuel+testingtokenandroid1@tokopedia.com"
-            userSession.setToken(accessToken, "Bearer")
-            userSession.setIsLogin(true)
-        } catch (throwable: Throwable) {
-            throwable.printStackTrace()
-        }
-    }
-
-    fun logoutTestUser(context: Context) {
-        try {
-            val userSession = UserSession(context)
-            userSession.logoutSession()
-        } catch (throwable: Throwable) {
-            throwable.printStackTrace()
-        }
-    }
-
-    fun logoutFromAnUser(application: Application) {
-        val userSession = UserSession(application)
-        DataSource.getWsLogoutService(application as InstrumentationTestApp).logout(
-                mapOf(
-                        "user_id" to userSession.userId.toString(),
-                        "device_id" to DataSource.MOCK_DEVICE_ID,
-                        "hash" to AuthHelper.getMD5Hash(userSession.userId.toString() + "~" + DataSource.MOCK_DEVICE_ID),
-                        "os_type" to "1",
-                        "device_time" to (Date().time / 1000).toString()
-                )
-        ).map { logoutPojo ->
-            if (logoutPojo?.data == null) {
-                throw (RuntimeException("Error logout"))
-            } else {
-                logoutPojo
-            }
-        }.doOnNext {
-            userSession.logoutSession()
-        }.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Observer<LogoutPojo> {
-                    override fun onError(e: Throwable?) {
-                        Toast.makeText(application, e?.message, Toast.LENGTH_LONG).show()
-                    }
-
-                    override fun onNext(t: LogoutPojo?) {
-                        Toast.makeText(application, "success logout", Toast.LENGTH_LONG).show()
-                    }
-
-                    override fun onCompleted() {
-
-                    }
-                })
-    }
-
-
 
     fun getHash(userId: String): String {
         return AuthHelper.getMD5Hash(userId + "~" + DataSource.MOCK_DEVICE_ID)

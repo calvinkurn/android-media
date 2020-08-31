@@ -2,9 +2,7 @@ package com.tokopedia.discovery2
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.net.Uri
-import android.provider.MediaStore
 import kotlin.math.floor
 
 

@@ -1,5 +1,7 @@
 package com.tokopedia.shop.common.constant
 
+import com.tokopedia.shop.common.constant.GQLQueryNamedConstant.DEFAULT_SHOP_INFO_QUERY_NAME
+
 object GqlQueryConstant {
 
     const val SHOP_INFO_REQUEST_QUERY_STRING = "result {\n" +
@@ -81,25 +83,34 @@ object GqlQueryConstant {
             "            shopHomeType\n" +
             "        }"
 
-    const val SHOP_INFO_FOR_TAB_REQUEST_QUERY_STRING = "result {\n" +
-            "              os {\n" +
+    const val SHOP_INFO_FOR_OS_REQUEST_QUERY_STRING = "result {\n" +
+            "            os{\n" +
             "                isOfficial\n" +
             "                title\n" +
             "                badge\n" +
             "                badgeSVG\n" +
-            "              }\n" +
-            "              gold {\n" +
-            "              \tisGold\n" +
-            "                badge\n" +
-            "        \t\tbadgeSVG\n" +
-            "              }\n" +
-            "              shopCore{\n" +
-            "        \t\tname\n" +
-            "              }\n" +
-            "              topContent {\n" +
+            "            }\n" +
+            "        }"
+
+    const val SHOP_INFO_FOR_TOP_CONTENT_REQUEST_QUERY_STRING = "result {\n" +
+            "            topContent{\n" +
             "                topURL\n" +
-            "              }\n" +
-            "              shopHomeType\n" +
+            "            }\n" +
+            "        }"
+
+    const val SHOP_INFO_FOR_CORE_AND_ASSETS_REQUEST_QUERY_STRING = "result {\n" +
+            "            shopCore{\n" +
+            "                shopID\n" +
+            "                description\n" +
+            "                domain\n" +
+            "                name\n" +
+            "                tagLine\n" +
+            "                url\n" +
+            "            }\n" +
+            "            shopAssets{\n" +
+            "                avatar\n" +
+            "                cover\n" +
+            "            }\n" +
             "        }"
 
     const val SHOP_INFO_FOR_HEADER_REQUEST_QUERY_STRING = "result {\n" +
@@ -130,6 +141,7 @@ object GqlQueryConstant {
             "                    shopLastActive\n" +
             "                    location\n" +
             "                    isAllowManage\n" +
+            "                    shopSnippetURL\n" +
             "                    statusInfo {\n" +
             "                        shopStatus\n" +
             "                        statusMessage\n" +
@@ -184,19 +196,58 @@ object GqlQueryConstant {
             "             }\n" +
             "         }"
 
-    private const val SHOP_INFO_BASE_QUERY_STRING = "query getShopInfo(\$shopIds: [Int!]!, \$fields: [String!]!, \$shopDomain: String, \$source: String){\n" +
+    private const val SHOP_INFO_BASE_QUERY_STRING = "query %1s(\$shopIds: [Int!]!, \$fields: [String!]!, \$shopDomain: String, \$source: String){\n" +
             "    shopInfoByID(input: {\n" +
             "        shopIDs: \$shopIds,\n" +
             "        fields: \$fields,\n" +
             "        domain: \$shopDomain,\n" +
             "        source: \$source\n" +
             "    }){\n" +
-            "%1s" +
+            "%2s" +
             "        \n" +
             "    }\n" +
             "}"
 
-    fun getShopInfoQuery(requestQuery: String): String {
-        return String.format(SHOP_INFO_BASE_QUERY_STRING, requestQuery)
+    const val QUERY_GET_IS_OFFICIAL = """
+      query getIsOfficial(${'$'}shop_id: Int!){
+        getIsOfficial(shop_id: ${'$'}shop_id){
+          data{
+            is_official
+            expired_date
+          }
+          message_error
+        }
+      }
+    """
+
+    const val QUERY_GET_IS_POWER_MERCHANT = """
+          query goldGetPMOSStatus(${'$'}shopID: Int!, ${'$'}includeOS: Boolean!){
+              goldGetPMOSStatus(
+                shopID: ${'$'}shopID,
+                includeOS: ${'$'}includeOS){
+                header{
+                  process_time
+                  messages
+                  reason
+                  error_code
+                }
+                data{
+                  shopID
+                  power_merchant {
+                    status
+                    auto_extend{
+                      status
+                      tkpd_product_id
+                    }
+                    expired_time
+                    shop_popup
+                  }
+                }
+              }
+            }
+    """
+
+    fun getShopInfoQuery(requestQuery: String, queryName: String = DEFAULT_SHOP_INFO_QUERY_NAME): String {
+        return String.format(SHOP_INFO_BASE_QUERY_STRING, queryName, requestQuery)
     }
 }

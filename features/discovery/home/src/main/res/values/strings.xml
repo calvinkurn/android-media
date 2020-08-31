@@ -93,4 +93,13 @@
     <string name="home_page_play_card_success_remove_reminder">Berhasil menghapus pengingat</string>
 
     <string name="go_to_wishlist" tools:ignore="ExtraTranslation">Lihat Wishlist</string>
+
+    <string name="review_create_success_toaster">Terima kasih %s sudah bantu pembeli lain lewat ulasanmu</string>
+    <string name="review_oke">Oke</string>
+
+    <string name="content_desc_title">text title kategori</string>
+    <string name="content_desc_channel_title">text dynamic channel title</string>
+    <string name="content_desc_see_all_button">text dynamic channel lihat semua</string>
+    <string name="content_desc_count_down">text dynamic channel count down</string>
+    <string name="content_desc_channel_subtitle">text dynamic channel subtitle</string>
 </resources>

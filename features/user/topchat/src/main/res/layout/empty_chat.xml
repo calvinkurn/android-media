@@ -59,13 +59,14 @@
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnCta"
-        android:layout_width="180dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:minWidth="@dimen/dp_topchat_180"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/subtitle"
-        android:layout_marginTop="@dimen/spacing_lvl4"
-        tools:text="@string/title_topchat_manage_product"/>
+        tools:text="@string/title_topchat_manage_product" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

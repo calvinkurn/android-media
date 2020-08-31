@@ -61,6 +61,7 @@ class ThankYouPageAnalytics @Inject constructor(
                     data[ParentTrackingKey.KEY_SHOP_TYPE] = shopOrder.storeType
                     data[ParentTrackingKey.KEY_LOGISTIC_TYPE] = shopOrder.logisticType
                     data[ParentTrackingKey.KEY_ECOMMERCE] = getEnhancedECommerceNode(shopOrder)
+                    data[ParentTrackingKey.IS_NEW_USER] = thanksPageData.isNewUser.toString()
                     analyticTracker.sendEnhanceEcommerceEvent(data)
                 }
             }
@@ -73,8 +74,10 @@ class ThankYouPageAnalytics @Inject constructor(
         this.thanksPageData = thanksPageData
         CoroutineScope(mainDispatcher).launchCatchError(block = {
             withContext(bgDispatcher) {
-                thanksPageData.shopOrder.forEach { shopOrder ->
-                    processDataForGTM(thanksPageData.thanksCustomization.trackingData)
+                thanksPageData.thanksCustomization?.apply {
+                    trackingData?.let {
+                        processDataForGTM(it)
+                    }
                 }
             }
         }, onError = {
@@ -352,6 +355,7 @@ object ParentTrackingKey {
     val KEY_ECOMMERCE = "ecommerce"
     val KEY_CURRENT_SITE = "currentSite"
     val KEY_BUSINESS_UNIT = "businessUnit"
+    const val IS_NEW_USER = "isNewUser"
     const val KEY_ID = "id"
     const val KEY_QTY = "quantity"
     const val AF_SHIPPING_PRICE = "af_shipping_price"
