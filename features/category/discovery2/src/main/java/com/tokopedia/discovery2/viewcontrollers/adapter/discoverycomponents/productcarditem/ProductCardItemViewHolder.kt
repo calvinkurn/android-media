@@ -58,7 +58,7 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     private var notifyMeView: TextView = itemView.findViewById(R.id.textViewNotifyMe)
     private var linearLayoutImageRating: LinearLayout = itemView.findViewById(R.id.linearLayoutImageRating)
     private var textViewReviewCount: TextView = itemView.findViewById(R.id.textViewReviewCount)
-    private var stockHabisLabel: TextView = itemView.findViewById(R.id.labelStock)
+    private var stockHabisLabel: Label = itemView.findViewById(R.id.labelStock)
     private var outOfStockOverlay: View = itemView.findViewById(R.id.outOfStockOverlay)
     private var componentPosition: Int? = null
 
