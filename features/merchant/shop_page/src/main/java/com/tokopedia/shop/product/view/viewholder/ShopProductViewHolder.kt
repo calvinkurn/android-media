@@ -31,24 +31,8 @@ class ShopProductViewHolder(
         @param:ShopTrackProductTypeDef @field:ShopTrackProductTypeDef private val shopTrackType: Int,
         private val layoutType: Int
 ) : AbstractViewHolder<ShopProductViewModel>(itemView) {
-    private val wishlistImageView: ImageView? = null
-    private val wishlistContainer: FrameLayout? = null
-    private var productImageView: ImageView? = null
-    private var titleTextView: TextView? = null
-    private val displayedPriceTextView: TextView? = null
-    private val originalPriceTextView: TextView? = null
-    private val discountPercentageTextView: TextView? = null
-    private val cashBackTextView: TextView? = null
-    private val wholesaleTextView: TextView? = null
-    private val preOrderTextView: TextView? = null
-    private val freeReturnImageView: ImageView? = null
-    private val freeOngkirBanner: ImageView? = null
-    private val qualityRatingBar: AppCompatRatingBar? = null
     private val totalReview: TextView? = null
-    private val soldOutView: View? = null
     lateinit var productCard: ProductCardGridView
-    private val vgRating: View? = null
-    private val badgeContainer: View? = null
 
     init {
         findViews(itemView)
@@ -82,13 +66,6 @@ class ShopProductViewHolder(
         productCard.setOnClickListener {
             shopProductClickedListener?.onProductClicked(shopProductViewModel, shopTrackType, adapterPosition)
         }
-
-        productCard.setImageProductViewHintListener(shopProductViewModel, object: ViewHintListener{
-            override fun onViewHint() {
-
-            }
-
-        })
 
         productCard.setThreeDotsOnClickListener {
             shopProductClickedListener?.onThreeDotsClicked(shopProductViewModel, shopTrackType)

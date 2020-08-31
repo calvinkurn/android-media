@@ -11,6 +11,7 @@ import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidge
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef
 import com.tokopedia.shop.common.view.adapter.MembershipStampAdapter
+import com.tokopedia.shop.product.util.ShopProductViewGridType
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener
 import com.tokopedia.shop.product.view.viewholder.ErrorNetworkWrapViewHolder
 import com.tokopedia.shop.product.view.viewholder.ShopProductListEmptyViewHolder
@@ -34,6 +35,7 @@ class ShopProductAdapterTypeFactory(private val membershipStampAdapterListener: 
                                     @param:ShopTrackProductTypeDef @field:ShopTrackProductTypeDef
                                     private val shopTrackType: Int) : BaseAdapterTypeFactory() {
     private var shopProductAdapter: ShopProductAdapter? = null
+    var productCardType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID
 
     fun attachAdapter(shopProductAdapter: ShopProductAdapter) {
         this.shopProductAdapter = shopProductAdapter
@@ -72,7 +74,17 @@ class ShopProductAdapterTypeFactory(private val membershipStampAdapterListener: 
     }
 
     fun type(shopProductViewModel: ShopProductViewModel): Int {
-        return ShopProductViewHolder.GRID_LAYOUT
+        return when(productCardType) {
+            ShopProductViewGridType.SMALL_GRID -> {
+                ShopProductViewHolder.GRID_LAYOUT
+            }
+            ShopProductViewGridType.BIG_GRID -> {
+                ShopProductItemBigGridViewHolder.LAYOUT
+            }
+            ShopProductViewGridType.LIST -> {
+                ShopProductItemListViewHolder.LAYOUT
+            }
+        }
     }
 
     override fun type(errorNetworkModel: ErrorNetworkModel): Int {
@@ -114,6 +126,8 @@ class ShopProductAdapterTypeFactory(private val membershipStampAdapterListener: 
                     parent.context.getString(R.string.shop_page_label_featured_product), ShopTrackProductTypeDef.FEATURED, null)
             ShopProductEtalaseHighlightViewHolder.LAYOUT -> return ShopProductEtalaseHighlightViewHolder(parent, deviceWidth, shopProductClickedListener, shopProductImpressionListener, shopCarouselSeeAllClickedListener)
             ShopProductViewHolder.GRID_LAYOUT -> return ShopProductViewHolder(parent, shopProductClickedListener, shopProductImpressionListener, !isGridSquareLayout, deviceWidth, shopTrackType, type)
+            ShopProductItemListViewHolder.LAYOUT -> return ShopProductItemListViewHolder(parent, shopProductClickedListener, shopProductImpressionListener, ShopTrackProductTypeDef.PRODUCT)
+            ShopProductItemBigGridViewHolder.LAYOUT -> return ShopProductItemBigGridViewHolder(parent, shopProductClickedListener, shopProductImpressionListener, ShopTrackProductTypeDef.PRODUCT)
             MembershipStampProgressViewHolder.LAYOUT -> return MembershipStampProgressViewHolder(parent, membershipStampAdapterListener)
             else -> return if (type == HideViewHolder.LAYOUT) {
                 HideViewHolder(parent)

@@ -18,6 +18,7 @@ import com.tokopedia.shop.product.view.widget.OnStickySingleHeaderListener
 import com.tokopedia.shop.product.view.widget.StickySingleHeaderView
 
 import com.tokopedia.shop.common.constant.ShopPageConstant.*
+import com.tokopedia.shop.product.util.ShopProductViewGridType
 import com.tokopedia.shop.product.view.datamodel.*
 import com.tokopedia.shop.product.view.viewholder.ShopProductSellerAllEtalaseEmptyViewHolder
 import com.tokopedia.shop.product.view.viewholder.ShopProductAddViewHolder
@@ -102,6 +103,20 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
                     getItemViewType(position) == LoadingMoreViewHolder.LAYOUT)
         }
         super.onBindViewHolder(holder, position)
+    }
+
+    private fun setLayoutManagerSpanCount() {
+        (recyclerView?.layoutManager as? StaggeredGridLayoutManager)?.spanCount = when (shopProductAdapterTypeFactory.productCardType) {
+            ShopProductViewGridType.BIG_GRID -> {
+                2
+            }
+            ShopProductViewGridType.SMALL_GRID -> {
+                2
+            }
+            ShopProductViewGridType.LIST -> {
+                1
+            }
+        }
     }
 
     override fun createStickyViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
@@ -411,6 +426,12 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         visitables.add(emptyDataViewModel)
         notifyChangedDataSet()
         mapDataModel()
+    }
+
+    fun changeProductCardGridType(gridType: ShopProductViewGridType){
+        shopProductAdapterTypeFactory.productCardType =  gridType
+        setLayoutManagerSpanCount()
+        recyclerView?.requestLayout()
     }
 
     private fun mapDataModel() {
