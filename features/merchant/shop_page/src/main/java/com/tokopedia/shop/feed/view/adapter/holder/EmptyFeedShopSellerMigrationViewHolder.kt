@@ -1,6 +1,7 @@
 package com.tokopedia.shop.feed.view.adapter.holder
 
 import android.view.View
+import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.seller_migration_common.presentation.util.touchlistener.SellerMigrationTouchListener
 import com.tokopedia.shop.R
@@ -12,6 +13,7 @@ class EmptyFeedShopSellerMigrationViewHolder(view: View,
                                              private val mainView: FeedShopContract.View): AbstractViewHolder<EmptyFeedShopViewModel>(view) {
 
     companion object {
+        @LayoutRes
         val LAYOUT = R.layout.widget_shop_page_tab_feed_no_post_seller_migration
     }
 

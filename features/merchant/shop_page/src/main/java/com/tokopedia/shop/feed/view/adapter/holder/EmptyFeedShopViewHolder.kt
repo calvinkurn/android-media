@@ -1,9 +1,9 @@
 package com.tokopedia.shop.feed.view.adapter.holder
 
-import androidx.annotation.LayoutRes
 import android.view.View
+import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.shop.R
 import com.tokopedia.shop.feed.view.contract.FeedShopContract
 import com.tokopedia.shop.feed.view.model.EmptyFeedShopViewModel
@@ -22,6 +22,8 @@ class EmptyFeedShopViewHolder(v: View,
     }
 
     override fun bind(element: EmptyFeedShopViewModel?) {
-        itemView.btn_post.setOnClickListener{mainView.onEmptyFeedButtonClicked()}
+        if(GlobalConfig.isSellerApp()) {
+            itemView.btn_post?.setOnClickListener { mainView.onEmptyFeedButtonClicked() }
+        }
     }
 }
