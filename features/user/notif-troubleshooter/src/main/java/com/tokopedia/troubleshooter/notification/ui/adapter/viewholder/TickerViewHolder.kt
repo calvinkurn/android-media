@@ -20,6 +20,7 @@ class TickerViewHolder(
     override fun bind(element: TickerUIView?) {
         if (element == null) return
         txtDescription?.text = element.message
+        btnActivation?.text = element.buttonText
 
         btnActivation?.setOnClickListener {
             listener.goToNotificationSettings()

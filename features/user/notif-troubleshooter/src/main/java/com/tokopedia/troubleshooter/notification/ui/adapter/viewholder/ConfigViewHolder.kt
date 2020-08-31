@@ -24,20 +24,13 @@ open class ConfigViewHolder(
     private val pgLoader = view.findViewById<LoaderUnify>(R.id.pgLoader)
     private val imgStatus = view.findViewById<ImageView>(R.id.imgStatus)
     private val txtTitle = view.findViewById<TextView>(R.id.txtTitle)
-    private val txtMessage = view.findViewById<TextView>(R.id.txtMessage)
     private val context by lazy { itemView.context }
 
     override fun bind(element: ConfigUIView?) {
         if (element == null) return
         viewState(element)
-
         pgLoader?.show()
         txtTitle?.text = context?.getString(element.title)
-
-        if (element.message.isNotEmpty()) {
-            txtMessage?.text = element.message
-            txtMessage?.show()
-        }
     }
 
     private fun viewState(element: ConfigUIView) {

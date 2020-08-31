@@ -29,12 +29,12 @@
         android:id="@+id/btnActivation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="APA KABAR?"
-        android:maxLines="1"
+        tools:text="Perbaiki Sekarang"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:unifyButtonSize="small"
         app:unifyButtonType="alternate"
-        app:unifyButtonVariant="filled" />
+        app:unifyButtonVariant="ghost" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
