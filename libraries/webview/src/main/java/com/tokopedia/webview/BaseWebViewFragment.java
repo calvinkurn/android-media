@@ -3,6 +3,7 @@ package com.tokopedia.webview;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -13,8 +14,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.CookieManager;
-import android.webkit.CookieSyncManager;
 import android.webkit.GeolocationPermissions;
 import android.webkit.JavascriptInterface;
 import android.webkit.PermissionRequest;
@@ -500,31 +499,29 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                         activity.updateTitle(title);
                     }
                 }
-            } else if (view.getContext() instanceof BaseSimpleActivity) {
-                ActionBar actionBar = ((AppCompatActivity) view.getContext()).getSupportActionBar();
-                if (actionBar != null) {
-                    if (isHelpUrl(url) && !title.isEmpty()) {
-                        actionBar.setTitle(title);
+            }else if (view.getContext() instanceof BaseSimpleActivity) {
+            ActionBar actionBar = ((AppCompatActivity) view.getContext()).getSupportActionBar();
+            if (actionBar != null && view.getContext() != null) {
+                if (isHelpUrl(url) && !title.isEmpty()) {
+                    actionBar.setTitle(title);
+                } else {
+                    String activityExtraTitle = getExtraTitle(view.getContext());
+                    if (!TextUtils.isEmpty(activityExtraTitle)) {
+                        actionBar.setTitle(activityExtraTitle);
                     } else {
-                        String activityExtraTitle = getExtraTitle();
-                        if (!TextUtils.isEmpty(activityExtraTitle)) {
-                            actionBar.setTitle(activityExtraTitle);
-                        } else {
-                            actionBar.setTitle(getString(R.string.tokopedia));
-                        }
+                        actionBar.setTitle(view.getContext().getString(R.string.tokopedia));
                     }
                 }
             }
         }
+    }
 
-        private String getExtraTitle() {
-            Activity activity = getActivity();
-            if (activity != null) {
+        private String getExtraTitle(Context context) {
+            if (context != null && isAdded()) {
+                Activity activity = (Activity) context;
                 return activity.getIntent().getStringExtra(ConstantKt.KEY_TITLE);
-            } else
-                return "";
+            } else return "";
         }
-
 
         @Nullable
         @Override
