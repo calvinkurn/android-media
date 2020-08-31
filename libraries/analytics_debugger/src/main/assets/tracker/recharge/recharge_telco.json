@@ -1,5 +1,5 @@
 {
-  "readme": "Telco revamp product with filter and cluster",
+  "readme": "Telco revamp product with filter and cluster prepaid & postpaid",
   "mode": "exact",
   "query": [
     {

@@ -1,5 +1,5 @@
 {
-  "readme": "Telco revamp product with filter and cluster non login",
+  "readme": "Telco prepaid with filter and cluster non login",
   "mode": "exact",
   "query": [
     {

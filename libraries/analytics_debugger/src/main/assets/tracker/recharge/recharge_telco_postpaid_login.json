@@ -1,7 +1,22 @@
 {
-  "readme": "Telco prepaid with filter and cluster",
+  "readme": "Telco postpaid login",
   "mode": "exact",
   "query": [
+    {
+      "event": "openScreen",
+      "screenName": "{{/digital/pascabayar}}",
+      "isLoggedInStatus": "{{true|false}}",
+      "currentSite": "tokopediadigitalRecharge",
+      "userId": "{{.*}}",
+      "businessUnit": "top up and tagihan",
+      "category": "{{.*}}",
+      "digitalCategoryId": "{{.*}}",
+      "clientId": "{{.*}}",
+      "sessionIris": "{{.*}}",
+      "shopId": "{{.*}}",
+      "appsflyerId": "{{.*}}",
+      "networkSpeed": "{{.*}}"
+    },
     {
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
@@ -69,27 +84,14 @@
       "sessionIris": "{{.*}}"
     },
     {
-      "event": "add_to_cart",
+      "event": "clickHomepage",
       "eventCategory": "digital - homepage",
-      "eventAction": "click pilih detail cluster",
-      "clientId": "{{.*}}",
-      "screenName": "{{pulsa|paket data|roaming}}",
-      "eventLabel": "{{.* - .* - .*}}",
+      "eventAction": "click cek tagihan",
+      "eventLabel": "{{.* - .*}}",
       "currentSite": "tokopediadigitalRecharge",
       "userId": "{{.*}}",
-      "sessionIris": "{{.*}}",
       "businessUnit": "top up and tagihan",
-      "items": [
-        {
-          "item_id": "{{.*}}",
-          "item_name": "{{.*}}",
-          "item_brand": "{{.*}}",
-          "item_variant": "{{.*}}",
-          "item_category": "{{.*}}",
-          "quantity": "{{\\d*.\\d*}}",
-          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}"
-        }
-      ]
+      "sessionIris": "{{.*}}"
     }
   ]
 }
