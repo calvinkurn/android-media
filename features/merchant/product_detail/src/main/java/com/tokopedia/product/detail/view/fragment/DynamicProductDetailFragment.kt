@@ -124,8 +124,6 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
-import com.tokopedia.shopetalasepicker.constant.ShopParamConstant
-import com.tokopedia.shopetalasepicker.view.activity.ShopEtalasePickerActivity
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginView
