@@ -55,7 +55,7 @@ interface ICartListView : CustomerView {
 
     fun renderErrorToShipmentForm(throwable: Throwable)
 
-    fun renderDetailInfoSubTotal(qty: String, subtotalPrice: Double, selectAllItem: Boolean, unselectAllItem: Boolean, noAvailableItems: Boolean)
+    fun renderDetailInfoSubTotal(qty: String, subtotalBeforeSlashedPrice: Double, subtotalPrice: Double, selectAllItem: Boolean, unselectAllItem: Boolean, noAvailableItems: Boolean)
 
     fun updateCashback(cashback: Double)
 

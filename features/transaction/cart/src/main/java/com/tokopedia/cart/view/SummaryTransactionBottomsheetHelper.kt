@@ -88,7 +88,7 @@ private fun renderPaymentTotal(view: View, cartListData: CartListData) {
         }
     }
     view.text_total_pay_value?.apply {
-        val totalPay = cartListData.shoppingSummaryData.totalValue - cartListData.shoppingSummaryData.discountValue
+        val totalPay = cartListData.shoppingSummaryData.paymentTotal
         this.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(totalPay, false).removeDecimalSuffix()
     }
 }

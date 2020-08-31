@@ -2333,6 +2333,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun renderDetailInfoSubTotal(qty: String,
+                                          subtotalBeforeSlashedPrice: Double,
                                           subtotalPrice: Double,
                                           selectAllItem: Boolean,
                                           unselectAllItem: Boolean,
@@ -2363,7 +2364,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         btnToShipment.text = String.format(getString(R.string.cart_item_button_checkout_count_format), qty)
 
         cartListData?.shoppingSummaryData?.qty = qty
-        cartListData?.shoppingSummaryData?.totalValue = subtotalPrice.toInt()
+        cartListData?.shoppingSummaryData?.totalValue = subtotalBeforeSlashedPrice.toInt()
+        cartListData?.shoppingSummaryData?.discountValue = (subtotalBeforeSlashedPrice - subtotalPrice).toInt()
+        cartListData?.shoppingSummaryData?.paymentTotal = subtotalPrice.toInt()
     }
 
     override fun updateCashback(cashback: Double) {
