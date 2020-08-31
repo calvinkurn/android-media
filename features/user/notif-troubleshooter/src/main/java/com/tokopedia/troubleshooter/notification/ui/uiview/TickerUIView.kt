@@ -5,7 +5,6 @@ import com.tokopedia.troubleshooter.notification.R
 import com.tokopedia.troubleshooter.notification.ui.adapter.factory.TroubleshooterTypeFactory
 
 data class TickerUIView(
-        val title: Int = 0,
         val message: CharSequence = "",
         val buttonText: String = ""
 ): Visitable<TroubleshooterTypeFactory> {
@@ -15,11 +14,13 @@ data class TickerUIView(
     }
 
     companion object {
-        fun showTicker(message: CharSequence): TickerUIView {
+        fun ticker(
+                message: CharSequence,
+                buttonText: String
+        ): TickerUIView {
             return TickerUIView(
-                    title = R.string.notif_ticker_title,
                     message = message,
-                    buttonText = "Perbaiki!"
+                    buttonText = buttonText
             )
         }
     }

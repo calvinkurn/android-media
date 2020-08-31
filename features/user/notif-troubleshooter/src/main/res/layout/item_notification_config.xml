@@ -22,7 +22,7 @@
         android:layout_height="@dimen/dp_24"
         android:layout_gravity="center_vertical"
         app:srcCompat="@drawable/ic_ts_notif_checked"
-        android:visibility="gone"
+        android:visibility="invisible"
         android:background="@android:color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -31,15 +31,15 @@
     <TextView
         android:id="@+id/txtTitle"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:layout_marginStart="@dimen/dp_12"
-        tools:text="Test Push Notification"
         android:textColor="@color/charcoal_grey_96"
+        android:layout_marginStart="@dimen/dp_8"
         android:textSize="@dimen/sp_16"
-        app:layout_constraintBottom_toBottomOf="@+id/pgLoader"
+        app:layout_constraintBottom_toBottomOf="@+id/imgStatus"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/pgLoader"
-        app:layout_constraintTop_toTopOf="@+id/pgLoader" />
+        app:layout_constraintStart_toEndOf="@+id/imgStatus"
+        app:layout_constraintTop_toTopOf="@+id/imgStatus"
+        tools:text="Test Push Notification" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

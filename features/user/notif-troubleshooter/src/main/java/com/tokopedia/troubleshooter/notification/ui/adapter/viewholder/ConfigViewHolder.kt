@@ -1,6 +1,5 @@
 package com.tokopedia.troubleshooter.notification.ui.adapter.viewholder
 
-import android.net.Uri
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -28,66 +27,52 @@ open class ConfigViewHolder(
 
     override fun bind(element: ConfigUIView?) {
         if (element == null) return
-        viewState(element)
-        pgLoader?.show()
         txtTitle?.text = context?.getString(element.title)
+        pgLoader?.show()
+        viewState(element)
     }
 
     private fun viewState(element: ConfigUIView) {
         with(element) {
+            troubleshootStatus(this)
+
             when (state) {
-                is ConfigState.PushNotification -> pushNotification(element)
-                is ConfigState.Notification -> notificationSetting(status)
-                is ConfigState.Channel -> notificationChannel(element)
-                is ConfigState.Ringtone -> notificationRingtone(status, ringtone)
+                is ConfigState.Notification -> {
+                    itemView.setOnClickListener {
+                        listener.goToNotificationSettings()
+                    }
+                }
+                is ConfigState.Device -> {
+                    itemView.setOnClickListener {
+                        listener.goToNotificationSettings()
+                    }
+                }
+                is ConfigState.Ringtone -> {
+                    itemView.setOnClickListener {
+                        ringtone?.let { listener.onRingtoneTest(it) }
+                    }
+                }
+                is ConfigState.PushNotification -> {}
             }
         }
     }
 
-    private fun pushNotification(element: ConfigUIView) {
-        troubleshootStatus(element.status)
-    }
-
-    private fun notificationSetting(status: StatusState) {
-        troubleshootStatus(status)
-        itemView.setOnClickListener {
-            listener.goToNotificationSettings()
-        }
-    }
-
-    private fun notificationChannel(element: ConfigUIView) {
-        troubleshootStatus(element.status)
-        itemView.setOnClickListener {
-            listener.goToNotificationSettings()
-        }
-    }
-
-    private fun notificationRingtone(status: StatusState, ringtone: Uri?) {
-        troubleshootStatus(status)
-
-        if (status == StatusState.Success) {
-            txtTitle.text = context?.getString(R.string.notif_ringtone_success)
-        } else if (status == StatusState.Error) {
-            txtTitle.text = context?.getString(R.string.notif_ringtone_error)
-        }
-
-        itemView.setOnClickListener {
-            ringtone?.let {
-                listener.onRingtoneTest(ringtone)
+    private fun troubleshootStatus(element: ConfigUIView) {
+        when (element.status) {
+            is StatusState.Success -> {
+                visibility(R.drawable.ic_ts_notif_checked)
+            }
+            is StatusState.Error -> {
+                visibility(R.drawable.ic_ts_notif_failed)
             }
         }
-    }
 
-    private fun troubleshootStatus(status: StatusState) {
-        when (status) {
-            is StatusState.Success -> visibility(R.drawable.ic_ts_notif_checked)
-            is StatusState.Error -> visibility(R.drawable.ic_ts_notif_failed)
-        }
+        val message = ConfigUIView.itemMessage(element)
+        txtTitle?.text = context.getString(message)
     }
 
     private fun visibility(resource: Int) {
-        val status = drawable(context, resource)
-        imgStatus?.setImageDrawable(status)
+        imgStatus?.setImageDrawable(drawable(context, resource))
         imgStatus?.show()
         pgLoader?.hide()
     }

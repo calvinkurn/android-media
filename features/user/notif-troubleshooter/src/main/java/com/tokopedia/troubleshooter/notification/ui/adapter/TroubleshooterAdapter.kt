@@ -11,7 +11,7 @@ import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigUIView
 import com.tokopedia.troubleshooter.notification.ui.uiview.StatusState.Error
 import com.tokopedia.troubleshooter.notification.ui.uiview.StatusState.Success
 import com.tokopedia.troubleshooter.notification.ui.uiview.TickerUIView
-import com.tokopedia.troubleshooter.notification.ui.uiview.TickerUIView.Companion.showTicker
+import com.tokopedia.troubleshooter.notification.ui.uiview.TickerUIView.Companion.ticker
 import com.tokopedia.troubleshooter.notification.ui.uiview.WarningTitleUIVIew
 import com.tokopedia.troubleshooter.notification.util.dropFirst
 import com.tokopedia.troubleshooter.notification.util.getWithIndex
@@ -57,15 +57,15 @@ internal open class TroubleshooterAdapter(
         updateStatus(PushNotification, false)
     }
 
-    fun hideNotificationChannel() {
-        val index = configUIViewByState(Channel)?.first?: return
-        visitables.removeAt(index)
-        notifyItemRemoved(index)
-    }
+//    fun hideNotificationChannel() {
+//        val index = configUIViewByState(Channel)?.first?: return
+//        visitables.removeAt(index)
+//        notifyItemRemoved(index)
+//    }
 
     fun addTicker(message: CharSequence) {
         addElement(WarningTitleUIVIew("Rekomendasi lebih optimal"))
-        addElement(showTicker(message))
+        addElement(ticker(message, "Perbaiki!"))
     }
 
     fun removeTicker() {

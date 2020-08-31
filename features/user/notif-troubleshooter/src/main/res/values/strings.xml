@@ -2,10 +2,22 @@
 <resources>
     <string name="notif_title">Troubleshooter</string>
 
-    <string name="notif_menu_push">Push Notification</string>
-    <string name="notif_menu_setting">Pengaturan Notifikasi</string>
-    <string name="notif_menu_channel">Pengaturan Kategori Notifikasi</string>
-    <string name="notif_menu_ringtone">Suara Notifikasi</string>
+    <string name="mock">loading.</string>
+
+    <string name="notif_menu_notification">Notifikasi Tokopedia aktif.</string>
+    <string name="notif_menu_device">Notifikasi HP aktif.</string>
+    <string name="notif_menu_ringtone">Bunya notifikasi aktif.</string>
+    <string name="notif_menu_push">Push notification berhasil dites.</string>
+
+    <string name="notif_failed_menu_notification">Notifikasi Tokopedia belum aktif.</string>
+    <string name="notif_failed_menu_device">Notifikasi HP belum aktif.</string>
+    <string name="notif_failed_menu_ringtone">Bunya notifikasi mati.</string>
+    <string name="notif_failed_menu_push">Push notification gagal dites.</string>
+
+    <string name="notif_loading_menu_notification">Memeriksa aplikasi Tokopedia kamu…</string>
+    <string name="notif_loading_menu_device">Memeriksa pengaturan HP kamu…</string>
+    <string name="notif_loading_menu_ringtone">Memeriksa bunyi notifikasi…</string>
+    <string name="notif_loading_menu_push">Mengirim push notification…</string>
 
     <string name="notif_success_update_token">Berhasil perbaharui token</string>
     <string name="notif_ticker_title">Error!</string>

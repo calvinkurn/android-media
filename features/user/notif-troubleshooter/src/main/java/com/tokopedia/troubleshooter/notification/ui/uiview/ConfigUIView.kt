@@ -6,7 +6,7 @@ import android.os.Build
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.troubleshooter.notification.R
 import com.tokopedia.troubleshooter.notification.ui.adapter.factory.TroubleshooterTypeFactory
-import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigState.Channel as Channel
+import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigState.Device as Device
 import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigState.PushNotification as PushNotification
 import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigState.Notification as Notification
 import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigState.Ringtone as Ringtone
@@ -27,11 +27,45 @@ data class ConfigUIView(
     companion object {
         fun items(): List<ConfigUIView> {
             return arrayListOf(
-                    ConfigUIView(PushNotification, R.string.notif_menu_push),
-                    ConfigUIView(Notification, R.string.notif_menu_setting),
-                    ConfigUIView(Channel, R.string.notif_menu_channel),
-                    ConfigUIView(Ringtone, R.string.notif_menu_ringtone)
+                    ConfigUIView(Notification, R.string.notif_loading_menu_notification),
+                    ConfigUIView(Device, R.string.notif_loading_menu_device),
+                    ConfigUIView(Ringtone, R.string.notif_loading_menu_ringtone),
+                    ConfigUIView(PushNotification, R.string.notif_loading_menu_push)
             )
+        }
+
+        fun itemMessage(view: ConfigUIView): Int {
+            return when(view.state) {
+                is Notification -> {
+                    if (view.status == StatusState.Success) {
+                        R.string.notif_menu_notification
+                    } else {
+                        R.string.notif_failed_menu_notification
+                    }
+                }
+                is Device -> {
+                    if (view.status == StatusState.Success) {
+                        R.string.notif_menu_device
+                    } else {
+                        R.string.notif_failed_menu_device
+                    }
+                }
+                is Ringtone -> {
+                    if (view.status == StatusState.Success) {
+                        R.string.notif_menu_ringtone
+                    } else {
+                        R.string.notif_failed_menu_ringtone
+                    }
+                }
+                is PushNotification -> {
+                    if (view.status == StatusState.Success) {
+                        R.string.notif_menu_push
+                    } else {
+                        R.string.notif_failed_menu_push
+                    }
+                }
+                else -> R.string.mock
+            }
         }
 
         fun importantNotification(importance: Int): Boolean {

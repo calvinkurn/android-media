@@ -28,6 +28,7 @@ import com.tokopedia.troubleshooter.notification.ui.listener.ConfigItemListener
 import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigState.*
 import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigUIView
 import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigUIView.Companion.importantNotification
+import com.tokopedia.troubleshooter.notification.ui.uiview.TickerUIView
 import com.tokopedia.troubleshooter.notification.ui.viewmodel.TroubleshootViewModel
 import com.tokopedia.troubleshooter.notification.util.gotoNotificationSetting
 import com.tokopedia.troubleshooter.notification.util.isNotNull
@@ -42,6 +43,8 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
     @Inject lateinit var fcmManager: FirebaseMessagingManager
 
     private lateinit var viewModel: TroubleshootViewModel
+
+    private val errors = mutableListOf<TickerUIView>()
 
     private val adapter by lazy(LazyThreadSafetyMode.NONE) {
         TroubleshooterAdapter(TroubleshooterItemFactory(this))
@@ -182,7 +185,7 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
         val hasNotCategory = importance == Int.MAX_VALUE
 
         if (hasNotCategory) {
-            adapter.hideNotificationChannel()
+            //adapter.hideNotificationChannel()
             return
         }
 
