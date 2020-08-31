@@ -84,8 +84,8 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
     override fun onCreate(savedInstanceState: Bundle?) {
         getDataFromApplinkOrIntent()
         getAbTestPlatform()?.fetch(null)
-        super.onCreate(savedInstanceState)
         startPerformanceMonitoring()
+        super.onCreate(savedInstanceState)
         intent.extras?.run {
             (applicationContext
                     .getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
