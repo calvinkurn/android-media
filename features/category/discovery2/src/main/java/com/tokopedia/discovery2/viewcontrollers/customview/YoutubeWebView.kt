@@ -28,11 +28,11 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
         webChromeClient = object : WebChromeClient() {}
     }
 
-    fun addJsInterface(youtubeEventVideoEnded: YoutubeWebViewEventListener.EventVideoEnded? = null,
-                       youtubeEventVideoPlaying: YoutubeWebViewEventListener.EventVideoPlaying? = null,
-                       youtubeEventVideoPaused: YoutubeWebViewEventListener.EventVideoPaused? = null,
-                       youtubeEventVideoBuffering: YoutubeWebViewEventListener.EventVideoBuffering? = null,
-                       youtubeEventVideoCued: YoutubeWebViewEventListener.EventVideoCued? = null) {
+    fun setUpEventListeners(youtubeEventVideoEnded: YoutubeWebViewEventListener.EventVideoEnded? = null,
+                            youtubeEventVideoPlaying: YoutubeWebViewEventListener.EventVideoPlaying? = null,
+                            youtubeEventVideoPaused: YoutubeWebViewEventListener.EventVideoPaused? = null,
+                            youtubeEventVideoBuffering: YoutubeWebViewEventListener.EventVideoBuffering? = null,
+                            youtubeEventVideoCued: YoutubeWebViewEventListener.EventVideoCued? = null) {
         addJavascriptInterface(YoutubeWebViewInterface(youtubeEventVideoEnded, youtubeEventVideoPlaying,
                 youtubeEventVideoPaused, youtubeEventVideoBuffering, youtubeEventVideoCued), jsInterface)
     }

@@ -37,7 +37,7 @@ class YoutubeViewViewHolder(itemView: View, private val fragment: Fragment) : Ab
     }
 
     private fun showVideoInWebView() {
-        youtubeWebView.addJsInterface(youtubeEventVideoPlaying = this, youtubeEventVideoPaused = this)
+        youtubeWebView.setUpEventListeners(youtubeEventVideoPlaying = this, youtubeEventVideoPaused = this)
         youtubeWebView.loadVideo(videoId)
         shimmerView.hide()
     }
