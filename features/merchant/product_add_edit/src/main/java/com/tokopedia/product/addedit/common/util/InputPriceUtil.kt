@@ -26,8 +26,7 @@ object InputPriceUtil {
 
     fun formatProductPriceInput(productPriceInput: String): String {
         return try {
-            val priceWithoutScientificNotation = productPriceInput.format("%f")
-            if (priceWithoutScientificNotation.isNotBlank()) {
+            if (!productPriceInput.matches(Regex("-?\\d+([.,]\\d+)(E\\+\\d+)?"))) {
                 NumberFormat.getNumberInstance(Locale.US)
                         .format(productPriceInput.toBigDecimal())
                         .replace(",", ".")
