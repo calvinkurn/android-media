@@ -58,45 +58,48 @@ class LineChartView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
         setChartTooltip()
     }
 
-    fun setData(chartData: LineChartData) {
-        val entries: List<Entry> = getLineChartEntry(chartData.chartEntry)
+    fun setData(vararg chartData: LineChartData) {
+        val dateSets: List<LineDataSet> = chartData.mapIndexed { i, data ->
+            val entries: List<Entry> = getLineChartEntry(data.chartEntry)
 
-        setXAxisLabelFormatter(chartData.chartEntry)
-        setYAxisLabelFormatter()
+            setXAxisLabelFormatter(data.chartEntry)
+            setYAxisLabelFormatter()
 
-        val dataSet = LineDataSet(entries, "Data Set")
+            val dataSet = LineDataSet(entries, "Data Set $i")
 
-        with(dataSet) {
-            mode = when (config.chartLineMode) {
-                LINE_MODE_CURVE -> LineDataSet.Mode.CUBIC_BEZIER
-                else -> LineDataSet.Mode.LINEAR
+            with(dataSet) {
+                mode = when (config.chartLineMode) {
+                    LINE_MODE_CURVE -> LineDataSet.Mode.CUBIC_BEZIER
+                    else -> LineDataSet.Mode.LINEAR
+                }
+
+                setDrawHorizontalHighlightIndicator(false)
+                setDrawVerticalHighlightIndicator(false)
+
+                //setup chart line
+                lineWidth = data.config.lineWidth
+                color = data.config.lineColor
+
+                //setup chart fill color
+                setDrawFilled(data.config.drawFillEnabled)
+                if (data.config.fillDrawable != null && Utils.getSDKInt() >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                    fillDrawable = data.config.fillDrawable
+                } else {
+                    fillColor = data.config.fillColor
+                }
+
+                setDrawValues(config.isShowValueEnabled)
+
+                //chart dot
+                setDrawCircles(config.isChartDotEnabled)
+                setCircleColor(config.chartDotColor)
+                setDrawCircleHole(config.isChartDotHoleEnabled)
             }
-            setDrawCircles(false)
 
-            setDrawHorizontalHighlightIndicator(false)
-            setDrawVerticalHighlightIndicator(false)
-
-            //setup chart line
-            lineWidth = config.chartLineWidth
-            color = config.chartLineColor
-
-            //setup chart fill color
-            setDrawFilled(config.isChartFillEnabled)
-            if (config.fillDrawable != null && Utils.getSDKInt() >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                fillDrawable = config.fillDrawable
-            } else {
-                fillColor = config.chartFillColor
-            }
-
-            setDrawValues(config.isShowValueEnabled)
-
-            //chart dot
-            setDrawCircles(config.isChartDotEnabled)
-            setCircleColor(config.chartDotColor)
-            setDrawCircleHole(config.isChartDotHoleEnabled)
+            return@mapIndexed dataSet
         }
 
-        lineChart.data = LineData(dataSet)
+        lineChart.data = LineData(dateSets)
     }
 
     fun invalidateChart() {
