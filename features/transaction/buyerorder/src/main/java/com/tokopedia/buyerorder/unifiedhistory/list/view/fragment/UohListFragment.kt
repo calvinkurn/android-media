@@ -134,6 +134,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private var userSession: UserSessionInterface? = null
     private var chosenOrder: UohListOrder.Data.UohOrders.Order? = null
     private var isTyping = false
+    private var isFilterClicked = false
 
     private val uohListViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[UohListViewModel::class.java]
@@ -240,21 +241,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                         isTyping = true
 
                         // resetting
-                        isReset = true
-                        /*currFilterType = -1
-                        currFilterLabel = ""
-                        currFilterKey = ""
-                        uoh_sort_filter?.resetAllFilters()
-                        filter1?.title = UohConsts.ALL_DATE
-                        filter2?.title = UohConsts.ALL_STATUS
-                        filter3?.title = UohConsts.ALL_CATEGORIES
-                        paramUohOrder = UohListParam()*/
-
-                        uoh_sort_filter?.resetAllFilters()
-                        filter1?.title = UohConsts.ALL_DATE
-                        filter2?.title = UohConsts.ALL_STATUS
-                        filter3?.title = UohConsts.ALL_CATEGORIES
-                        paramUohOrder = UohListParam()
+                        resetFilter()
                     }
 
                     paramUohOrder.searchableText = s.toString()
@@ -312,11 +299,16 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             when (it) {
                 is Success -> {
                     orderList = it.data
-                    if (currFilterKey.isEmpty() && currFilterType == -1) {
+
+                    /*if (currFilterKey.isEmpty() && currFilterType == -1) {
                         if (orderList.filters.isNotEmpty() && orderList.categories.isNotEmpty()) {
                             renderChipsFilter()
                         }
-                    }
+                    } else {
+                        renderChipsFilter()
+                    }*/
+
+                    if (!isFilterClicked) renderChipsFilter()
 
                     if (orderList.orders.isNotEmpty()) {
                         if (orderIdNeedUpdated.isEmpty()) {
@@ -581,25 +573,29 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
         uoh_sort_filter?.addItem(chips)
         uoh_sort_filter?.sortFilterPrefix?.setOnClickListener {
-            isReset = true
             val inputFormat = SimpleDateFormat("yyyy-MM-dd")
             val outputFormat = SimpleDateFormat("d MMM yyyy")
             val limitDate = inputFormat.parse(orderList.dateLimit)
             val limitDateStr = outputFormat.format(limitDate)
             val resetMsg = resources.getString(R.string.uoh_reset_filter_msg).replace(UohConsts.DATE_LIMIT, limitDateStr)
             showToaster(resetMsg, Toaster.TYPE_NORMAL)
-
-            uoh_sort_filter?.resetAllFilters()
-            filter1?.title = UohConsts.ALL_DATE
-            filter2?.title = UohConsts.ALL_STATUS
-            filter3?.title = UohConsts.ALL_CATEGORIES
-            paramUohOrder = UohListParam()
+            resetFilter()
             refreshHandler?.startRefresh()
         }
 
         filter1?.refChipUnify?.setChevronClickListener {  }
         filter2?.refChipUnify?.setChevronClickListener {  }
         filter3?.refChipUnify?.setChevronClickListener {  }
+    }
+
+    private fun resetFilter() {
+        isFilterClicked = false
+        isReset = true
+        uoh_sort_filter?.resetAllFilters()
+        filter1?.title = UohConsts.ALL_DATE
+        filter2?.title = UohConsts.ALL_STATUS
+        filter3?.title = UohConsts.ALL_CATEGORIES
+        paramUohOrder = UohListParam()
     }
 
     private fun renderTicker() {
@@ -911,7 +907,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     override fun onOptionItemClick(option: String, label: String, filterType: Int) {
-        isReset = false
+        isFilterClicked = true
         currFilterKey = option
         currFilterLabel = label
         currFilterType = filterType

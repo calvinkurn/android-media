@@ -44,7 +44,7 @@ class UohBottomSheetOptionAdapter(private var listener: ActionListener): Recycle
 
         if ((filterType == UohConsts.TYPE_FILTER_DATE && position == 2 && selectedRadio == -1 && selectedKey.isEmpty() && !isReset)) {
             holder.itemView.rb_option.isChecked = true
-        } else if (arrayKeys[position].equals(selectedKey, true) && selectedRadio == -1) {
+        } else if (arrayKeys[position].equals(selectedKey, true) && selectedRadio == -1 && !isReset) {
             holder.itemView.rb_option.isChecked = true
         } else if (isReset) {
             if (filterType == UohConsts.TYPE_FILTER_DATE) {
