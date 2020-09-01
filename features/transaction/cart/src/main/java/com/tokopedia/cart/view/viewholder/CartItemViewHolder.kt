@@ -102,6 +102,7 @@ class CartItemViewHolder constructor(itemView: View,
     private var noteDebounceSubscription: Subscription? = null
     private var cbChangeJob: Job? = null
     private var prevShopIsChecked: Boolean? = null
+    private var informationLabel: MutableList<String> = mutableListOf()
 
     init {
         context = itemView.context
@@ -326,6 +327,12 @@ class CartItemViewHolder constructor(itemView: View,
         renderProductPropertiesPriceDrop(data)
         renderProductPropertiesWholesalePrice(data)
         renderProductPropertiesIncidentLabel(data)
+        sendAnalyticsShowInformation(informationLabel, data.cartItemData?.originData?.productId ?: "")
+    }
+
+    private fun sendAnalyticsShowInformation(informationList: List<String>, productId: String) {
+        val informations = informationList.joinToString(", ")
+        actionListener?.onCartItemShowInformationLabel(productId, informations)
     }
 
     private fun renderProductPropertiesIncidentLabel(data: CartItemHolderData) {
@@ -349,7 +356,7 @@ class CartItemViewHolder constructor(itemView: View,
                 textWholesalePrice.text = "Harga Grosir"
             }
             textWholesalePrice.show()
-            actionListener?.onCartItemShowInformationLabel(data.cartItemData?.originData?.productId ?: "", "Harga Grosir")
+            informationLabel.add("harga grosir")
         } else {
             textWholesalePrice.gone()
         }
@@ -363,7 +370,7 @@ class CartItemViewHolder constructor(itemView: View,
                 textPriceDrop.text = "Harga Turun"
             }
             textPriceDrop.show()
-            actionListener?.onCartItemShowInformationLabel(data.cartItemData?.originData?.productId ?: "", "Harga Turun")
+            informationLabel.add("harga turun")
         } else {
             textPriceDrop.gone()
         }
@@ -373,7 +380,7 @@ class CartItemViewHolder constructor(itemView: View,
         if (data.cartItemData?.originData?.productCashBack?.isNotBlank() == true) {
             textCashback.text = data.cartItemData?.originData?.cashBackInfo
             textCashback.show()
-            actionListener?.onCartItemShowInformationLabel(data.cartItemData?.originData?.productId ?: "", "Cashback From Seller")
+            informationLabel.add("cashback")
         } else {
             textCashback.gone()
         }
@@ -418,7 +425,7 @@ class CartItemViewHolder constructor(itemView: View,
                 textSlashPrice.paintFlags = textSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                 textSlashPrice.show()
                 labelSlashPricePercentage.show()
-                actionListener?.onCartItemShowInformationLabel(data.cartItemData?.originData?.productId ?: "", "Discount label")
+                informationLabel.add("label diskon")
             } else {
                 textSlashPrice.gone()
                 labelSlashPricePercentage.gone()
@@ -462,7 +469,8 @@ class CartItemViewHolder constructor(itemView: View,
         if (data.cartItemData?.originData?.maxOrder ?: 0 in 0..5) {
             textQtyLeft.text = data.cartItemData?.originData?.warningMessage ?: ""
             textQtyLeft.show()
-            actionListener?.onCartItemShowRemainingQty(data.cartItemData?.originData?.productId ?: "")
+            actionListener?.onCartItemShowRemainingQty(data.cartItemData?.originData?.productId
+                    ?: "")
         } else {
             textQtyLeft.gone()
         }
