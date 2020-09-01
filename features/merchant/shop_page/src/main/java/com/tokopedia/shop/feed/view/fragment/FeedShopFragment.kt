@@ -769,10 +769,12 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     fun showFAB() {
-        fab_feed.show()
-        fab_feed.setOnClickListener {
-            goToCreatePost(getSellerApplink())
-            shopAnalytics.eventClickCreatePost()
+        if(!isSellerMigrationEnabled(context)) {
+            fab_feed.show()
+            fab_feed.setOnClickListener {
+                goToCreatePost(getSellerApplink())
+                shopAnalytics.eventClickCreatePost()
+            }
         }
     }
 
@@ -926,7 +928,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
             BottomSheetUnify.bottomSheetBehaviorHeader(viewTarget, false)
 
             bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_EXPANDED
-            fab_feed?.hide()
+            hideFAB()
 
             val sellerMigrationLayout = View.inflate(context, R.layout.widget_seller_migration_bottom_sheet_has_post, null)
             viewTarget.addView(sellerMigrationLayout)

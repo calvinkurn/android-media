@@ -185,7 +185,7 @@ fun Typography.setOnClickLinkSpannable(htmlString: String,
                                        trackGoToSellerApp: () -> Unit = {}) {
     val htmlLinkString = HtmlLinkHelper(context, htmlString)
     text = htmlLinkString.spannedString
-    htmlLinkString.urlList[0].setOnClickListener {
+    htmlLinkString.urlList.firstOrNull()?.setOnClickListener {
         trackGoToSellerApp()
         redirectPage()
     }
