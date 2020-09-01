@@ -55,11 +55,12 @@ dependencies {
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     
     //TEST
-    testImplementation rootProject.ext.testDependencies.junit
-    testImplementation rootProject.ext.testDependencies.kotlinMockito
-    testImplementation rootProject.ext.testDependencies.spekApi
-    testImplementation rootProject.ext.testDependencies.platformEngine
-    testImplementation rootProject.ext.testDependencies.junitPlatformRunner
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.kotlinTest
+    testImplementation rootProject.ext.testDependencies.assertJCore
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
 
 }
 

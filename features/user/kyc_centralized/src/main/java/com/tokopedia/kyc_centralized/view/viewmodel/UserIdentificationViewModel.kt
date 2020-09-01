@@ -1,5 +1,6 @@
 package com.tokopedia.kyc_centralized.view.viewmodel
 
+import androidx.annotation.RestrictTo
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -84,7 +85,7 @@ class UserIdentificationViewModel @Inject constructor (
         })
     }
 
-    private fun registerKyc(projectId: Int) {
+    fun registerKyc(projectId: Int) {
         launchCatchError(block = {
             registerKycUseCase.params = RegisterKycUseCase.createParam(projectId)
             val registerKtp = registerKycUseCase.executeOnBackground()
@@ -95,7 +96,8 @@ class UserIdentificationViewModel @Inject constructor (
         })
     }
 
-    override fun onCleared() {
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    public override fun onCleared() {
         super.onCleared()
         getUserProjectInfoUseCase.cancelJobs()
         getStatusKtpUseCase.cancelJobs()
