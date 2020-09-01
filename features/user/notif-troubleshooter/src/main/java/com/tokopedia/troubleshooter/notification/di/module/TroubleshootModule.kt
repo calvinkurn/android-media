@@ -4,6 +4,9 @@ import android.content.Context
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.settingnotif.usersetting.base.BaseSettingRepository
+import com.tokopedia.settingnotif.usersetting.base.SettingRepository
+import com.tokopedia.settingnotif.usersetting.domain.GetUserSettingUseCase
 import com.tokopedia.troubleshooter.notification.R
 import com.tokopedia.troubleshooter.notification.data.domain.TroubleshootStatusUseCase
 import com.tokopedia.troubleshooter.notification.data.service.channel.NotificationChannelManager
@@ -55,6 +58,25 @@ import dagger.Provides
     @TroubleshootScope
     fun provideGraphqlRepository(): GraphqlRepository {
         return GraphqlInteractor.getInstance().graphqlRepository
+    }
+
+    @Provides
+    @TroubleshootScope
+    fun provideSettingRepository(): SettingRepository {
+        return BaseSettingRepository(GraphqlInteractor.getInstance().graphqlRepository)
+    }
+
+    @Provides
+    @TroubleshootScope
+    fun provideGetUserSettingUseCase(
+            repository: SettingRepository,
+            @TroubleshootContext context: Context
+    ): GetUserSettingUseCase {
+        val query = GraphqlHelper.loadRawString(
+                context.resources,
+                R.raw.query_push_notif_setting
+        )
+        return GetUserSettingUseCase(repository, query)
     }
 
     @Provides

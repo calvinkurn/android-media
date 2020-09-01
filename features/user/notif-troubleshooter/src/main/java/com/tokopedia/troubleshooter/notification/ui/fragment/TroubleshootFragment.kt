@@ -6,6 +6,7 @@ import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +19,7 @@ import com.tokopedia.fcmcommon.FirebaseMessagingManager
 import com.tokopedia.fcmcommon.di.DaggerFcmComponent
 import com.tokopedia.fcmcommon.di.FcmModule
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.settingnotif.usersetting.util.CacheManager.saveLastCheckedDate
 import com.tokopedia.troubleshooter.notification.R
 import com.tokopedia.troubleshooter.notification.di.DaggerTroubleshootComponent
 import com.tokopedia.troubleshooter.notification.di.module.TroubleshootModule
@@ -25,14 +27,15 @@ import com.tokopedia.troubleshooter.notification.ui.activity.TroubleshootActivit
 import com.tokopedia.troubleshooter.notification.ui.adapter.TroubleshooterAdapter
 import com.tokopedia.troubleshooter.notification.ui.adapter.factory.TroubleshooterItemFactory
 import com.tokopedia.troubleshooter.notification.ui.listener.ConfigItemListener
+import com.tokopedia.troubleshooter.notification.ui.uiview.*
 import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigState.*
-import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigUIView
 import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigUIView.Companion.importantNotification
-import com.tokopedia.troubleshooter.notification.ui.uiview.TickerUIView
 import com.tokopedia.troubleshooter.notification.ui.viewmodel.TroubleshootViewModel
+import com.tokopedia.troubleshooter.notification.util.combineWith
 import com.tokopedia.troubleshooter.notification.util.gotoNotificationSetting
-import com.tokopedia.troubleshooter.notification.util.isNotNull
 import com.tokopedia.troubleshooter.notification.util.prefixToken
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_notif_troubleshooter.*
 import timber.log.Timber
 import javax.inject.Inject
@@ -43,8 +46,6 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
     @Inject lateinit var fcmManager: FirebaseMessagingManager
 
     private lateinit var viewModel: TroubleshootViewModel
-
-    private val errors = mutableListOf<TickerUIView>()
 
     private val adapter by lazy(LazyThreadSafetyMode.NONE) {
         TroubleshooterAdapter(TroubleshooterItemFactory(this))
@@ -97,48 +98,72 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
     }
 
     private fun initObservable() {
-        viewModel.troubleshoot.observe(viewLifecycleOwner, Observer {
-            adapter.updateStatus(PushNotification, it.isTroubleshootSuccess())
-        })
-
-        viewModel.error.observe(viewLifecycleOwner, Observer {
-            adapter.addMessage(PushNotification, getString(R.string.notif_token_error))
-            adapter.isTroubleshootError()
-        })
-
         viewModel.token.observe(viewLifecycleOwner, Observer { newToken ->
             setUpdateTokenStatus(newToken)
             Timber.d("Troubleshoot Token $newToken")
         })
 
-        viewModel.notificationSetting.observe(viewLifecycleOwner, Observer { status ->
-            setNotificationSettingStatus(status)
-            Timber.d("Troubleshoot Setting $status")
+        viewModel.notificationSetting.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    setNotificationSettingStatus(it.data)
+                    Timber.d("Notifikasi yang aktif ${it.data.totalOn} dari ${it.data.notifications}")
+                }
+                is Fail -> {
+                    adapter.updateStatus(Notification, StatusState.Error)
+                }
+            }
         })
 
-        viewModel.notificationImportance.observe(viewLifecycleOwner, Observer { status ->
-            setNotificationImportanceStatus(status)
-            Timber.d("Troubleshoot Importance $status")
+        viewModel.deviceSetting.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    when (it.data) {
+                        is DeviceSettingState.Normal -> {
+                            adapter.updateStatus(Device, StatusState.Success)
+                        }
+                        is DeviceSettingState.High -> {
+                            adapter.updateStatus(Device, StatusState.Success)
+                        }
+                        is DeviceSettingState.Low -> {
+                            adapter.updateStatus(Device, StatusState.Warning)
+                        }
+                    }
+                }
+                is Fail -> {
+                    adapter.updateStatus(Device, StatusState.Error)
+                }
+            }
         })
 
         viewModel.notificationRingtoneUri.observe(viewLifecycleOwner, Observer { ringtone ->
-            adapter.setRingtoneStatus(ringtone, ringtone != null)
+            adapter.setRingtoneStatus(ringtone, isState(ringtone != null))
         })
 
-        viewModel.combineTuple(viewModel.token, viewModel.notificationSetting, viewModel.notificationImportance)
-                .observe(viewLifecycleOwner, Observer {triple ->
-                    Timber.d("Troubleshoot Triple $triple")
-                    sendLog(triple)
+        viewModel.troubleshoot.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    adapter.updateStatus(PushNotification, isState(
+                            it.data.isTroubleshootSuccess()
+                    ))
+                    saveLastCheckedDate(requireContext())
+                }
+                is Fail -> {
+                    adapter.updateStatus(PushNotification, StatusState.Error)
+                }
+            }
         })
-    }
 
-    private fun sendLog(triple: Triple<String?, Boolean?, Int?>) {
-        if(triple.first.isNullOrEmpty() || !triple.second.isNotNull() || !triple.third.isNotNull()) return
-
-        Timber.w("P2#LOG_PUSH_NOTIF#'Troubleshooter';token='%s';setting='%s';importance='%s';",
-                triple.first,
-                triple.second,
-                triple.third)
+        viewModel.token.combineWith(
+                viewModel.notificationSetting,
+                viewModel.deviceSetting
+        ) { token, setting, device ->
+            Timber.w("P2#LOG_PUSH_NOTIF#'Troubleshooter';token='%s';setting='%s';device='%s';",
+                    token,
+                    setting,
+                    device
+            )
+        }
     }
 
     private fun setUpdateTokenStatus(newToken: String) {
@@ -152,7 +177,7 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
             tokenCurrentMessage(currentToken, newTrimToken)
         }
 
-        adapter.addMessage(PushNotification, message)
+        //adapter.addMessage(PushNotification, message)
     }
 
     private fun tokenCurrentMessage(currentToken: String, newToken: String): String {
@@ -171,34 +196,34 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
         }
     }
 
-    private fun setNotificationSettingStatus(notificationEnable: Boolean) {
-        adapter.updateStatus(Notification, notificationEnable)
+    private fun setNotificationSettingStatus(userSetting: UserSettingUIView) {
+        adapter.updateStatus(Notification, StatusState.Success)
 
-        if (!notificationEnable){
+        if (userSetting.totalOn < userSetting.notifications){
             val message = getString(R.string.notif_ticker_notif_disabled)
             adapter.addTicker(message)
         }
     }
-
-    private fun setNotificationImportanceStatus(importance: Int) {
-        val isImportance = importantNotification(importance)
-        val hasNotCategory = importance == Int.MAX_VALUE
-
-        if (hasNotCategory) {
-            //adapter.hideNotificationChannel()
-            return
-        }
-
-        when {
-            isImportance -> {
-                adapter.updateStatus(Channel, isImportance)
-            }
-            importance != IMPORTANCE_HIGH -> {
-                adapter.updateStatus(Channel, false)
-                onShowTicker(importance)
-            }
-        }
-    }
+//
+//    private fun setNotificationImportanceStatus(importance: Int) {
+//        val isImportance = importantNotification(importance)
+//        val hasNotCategory = importance == Int.MAX_VALUE
+//
+//        if (hasNotCategory) {
+//            //adapter.hideNotificationChannel()
+//            return
+//        }
+//
+//        when {
+//            isImportance -> {
+//                adapter.updateStatus(Channel, isImportance)
+//            }
+//            importance != IMPORTANCE_HIGH -> {
+//                adapter.updateStatus(Channel, false)
+//                onShowTicker(importance)
+//            }
+//        }
+//    }
 
     private fun onShowTicker(importance: Int) {
         adapter.addTicker(when (importance) {

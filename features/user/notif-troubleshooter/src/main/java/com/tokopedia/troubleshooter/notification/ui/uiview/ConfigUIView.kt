@@ -11,11 +11,12 @@ import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigState.PushNotif
 import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigState.Notification as Notification
 import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigState.Ringtone as Ringtone
 import com.tokopedia.troubleshooter.notification.ui.uiview.StatusState.Loading as Loading
+import com.tokopedia.troubleshooter.notification.ui.uiview.StatusState.Success as Success
+import com.tokopedia.troubleshooter.notification.ui.uiview.StatusState.Warning as Warning
 
 data class ConfigUIView(
         val state: ConfigState = PushNotification,
         var title: Int,
-        var message: String = "",
         var status: StatusState = Loading,
         var ringtone: Uri? = null
 ): Visitable<TroubleshooterTypeFactory> {
@@ -37,28 +38,28 @@ data class ConfigUIView(
         fun itemMessage(view: ConfigUIView): Int {
             return when(view.state) {
                 is Notification -> {
-                    if (view.status == StatusState.Success) {
+                    if (view.status == Success || view.status == Warning) {
                         R.string.notif_menu_notification
                     } else {
                         R.string.notif_failed_menu_notification
                     }
                 }
                 is Device -> {
-                    if (view.status == StatusState.Success) {
+                    if (view.status == Success || view.status == Warning) {
                         R.string.notif_menu_device
                     } else {
                         R.string.notif_failed_menu_device
                     }
                 }
                 is Ringtone -> {
-                    if (view.status == StatusState.Success) {
+                    if (view.status == Success || view.status == Warning) {
                         R.string.notif_menu_ringtone
                     } else {
                         R.string.notif_failed_menu_ringtone
                     }
                 }
                 is PushNotification -> {
-                    if (view.status == StatusState.Success) {
+                    if (view.status == Success || view.status == Warning) {
                         R.string.notif_menu_push
                     } else {
                         R.string.notif_failed_menu_push
@@ -68,7 +69,7 @@ data class ConfigUIView(
             }
         }
 
-        fun importantNotification(importance: Int): Boolean {
+        fun importantNotification(importance: Int?): Boolean {
             return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 importance == NotificationManager.IMPORTANCE_HIGH
                     || importance == NotificationManager.IMPORTANCE_DEFAULT

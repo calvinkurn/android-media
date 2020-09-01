@@ -61,7 +61,7 @@ class TroubleshootViewModelTest {
         viewModel.notificationImportance.observeForever(channelObservable)
         viewModel.troubleshoot.observeForever(troubleshootObservable)
         viewModel.token.observeForever(tokenObservable)
-        viewModel.error.observeForever(errorObservable)
+        viewModel.troubleshootError.observeForever(errorObservable)
     }
 
     @Test fun `it should troubleshoot push notification properly`() = runBlockingTest {
@@ -154,7 +154,7 @@ class TroubleshootViewModelTest {
     }
 
     @Test fun `it should return notification ringtone uri`() {
-        viewModel.getSoundNotification()
+        viewModel.soundNotification()
         verify { ringtoneObservable.onChanged(any()) }
     }
 
