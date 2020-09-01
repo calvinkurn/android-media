@@ -4,12 +4,11 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.util.Linkify
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.youtube.player.YouTubeApiServiceUtil
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -19,6 +18,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.product.Video
@@ -67,11 +68,21 @@ class ProductFullDescriptionFragment : BaseDaggerFragment(), ProductFullDescript
             product_name.text = MethodChecker.fromHtml(descriptionData.basicName)
             product_price.text = descriptionData.basicPrice.getCurrencyFormatted()
             product_shop.text = descriptionData.shopName
-            if (descriptionData.isOfficial) {
-                product_shop.setDrawableLeft(R.drawable.ic_official_store_product)
-            } else {
-                product_shop.setDrawableLeft(-1)
+
+            when {
+                descriptionData.isOfficial -> {
+                    ic_badge.show()
+                    ic_badge.setImageDrawable(MethodChecker.getDrawable(context,R.drawable.ic_official_store_product))
+                }
+                descriptionData.isGoldMerchant -> {
+                    ic_badge.show()
+                    ic_badge.setImageDrawable(MethodChecker.getDrawable(context,R.drawable.ic_power_merchant))
+                }
+                else -> {
+                    ic_badge.hide()
+                }
             }
+
             val vids = descriptionData.videoUrlList.map { Video(url = it) }
             if (vids.size > 0) {
                 youtube_scroll.adapter = YoutubeThumbnailAdapter(vids.toMutableList()) { _, index ->

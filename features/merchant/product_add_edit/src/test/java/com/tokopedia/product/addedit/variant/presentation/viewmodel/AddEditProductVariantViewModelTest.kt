@@ -24,7 +24,8 @@ class AddEditProductVariantViewModelTest: AddEditProductVariantViewModelTestFixt
 
         viewModel.updateSelectedVariantUnitValuesMap(0, selectedUnitValuesLevel1)
         viewModel.updateSelectedVariantUnitValuesMap(1, selectedUnitValuesLevel2)
-        viewModel.updateVariantInputModel(variantDetailsTest, listOf())
+        viewModel.setSelectedVariantDetails(variantDetailsTest)
+        viewModel.updateVariantInputModel(listOf())
 
         val selection = viewModel.productInputModel.value?.variantInputModel?.selections
         assert(selection != null && selection.isNotEmpty())
@@ -83,10 +84,32 @@ class AddEditProductVariantViewModelTest: AddEditProductVariantViewModelTestFixt
     }
 
     @Test
-    fun `When updateSizechartVisibility Expect change visibility`() {
-        viewModel.updateSizechartFieldVisibility(variantDetailTest2, true)
+    fun `When updateSizechartVisibility Expect change visibility enable visibility`() {
+        val selectedUnitValues = mutableListOf(
+                variantDetailTest1.units[0].unitValues[2],
+                variantDetailTest1.units[0].unitValues[3]
+        )
+
+        viewModel.setSelectedVariantDetails(variantDetailsTest)
+        viewModel.updateSelectedVariantUnitValuesMap(0, selectedUnitValues)
+        viewModel.updateSizechartFieldVisibility()
 
         val isVariantSizechartVisible = viewModel.isVariantSizechartVisible.value
         assert(isVariantSizechartVisible == true)
+    }
+
+    @Test
+    fun `When updateSizechartVisibility Expect change visibility disable visibility`() {
+        val selectedUnitValues = mutableListOf(
+                variantDetailTest1.units[0].unitValues[2],
+                variantDetailTest1.units[0].unitValues[3]
+        )
+
+        viewModel.setSelectedVariantDetails(mutableListOf(variantDetailTest1))
+        viewModel.updateSelectedVariantUnitValuesMap(0, selectedUnitValues)
+        viewModel.updateSizechartFieldVisibility()
+
+        val isVariantSizechartVisible = viewModel.isVariantSizechartVisible.value
+        assert(isVariantSizechartVisible == false)
     }
 }

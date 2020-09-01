@@ -73,8 +73,8 @@ subprojects {
             substitute module('androidx.legacy:legacy-support-v4') with module("androidx.legacy:legacy-support-v4:${supportLegacyLibraryVersion}")
             substitute module('androidx.cardview:cardview') with module("androidx.cardview:cardview:${supportLegacyLibraryVersion}")
             substitute module('androidx.core:core') with module("androidx.core:core:${supportLibraryVersion}")
-            substitute module('androidx.arch.core:core-runtime') with module("androidx.arch.core:core-runtime:${lifeCycleVersion}")
-            substitute module('androidx.arch.core:core-common') with module("androidx.arch.core:core-common:${lifeCycleVersion}")
+            substitute module('androidx.arch.core:core-runtime') with module("androidx.arch.core:core-runtime:${archCoreVersion}")
+            substitute module('androidx.arch.core:core-common') with module("androidx.arch.core:core-common:${archCoreVersion}")
             substitute module('androidx.lifecycle:lifecycle-runtime') with module("androidx.lifecycle:lifecycle-runtime:${lifeCycleVersion}")
             substitute module('androidx.lifecycle:lifecycle-viewmodel') with module("androidx.lifecycle:lifecycle-viewmodel:${lifeCycleVersion}")
             substitute module('androidx.lifecycle:lifecycle-livedata-core') with module("androidx.lifecycle:lifecycle-livedata-core:${lifeCycleVersion}")
@@ -88,6 +88,7 @@ subprojects {
             substitute module('com.google.android.gms:play-services-base') with module("com.google.android.gms:play-services-base:${playServiceBase}")
             substitute module('com.facebook.soloader:soloader') with module("com.facebook.soloader:soloader:0.8.0")
             substitute module('org.jetbrains.kotlin:kotlin-reflect') with module("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
+            substitute module('androidx.sqlite:sqlite-framework') with module("androidx.sqlite:sqlite-framework:${sqliteFrameworkVersion}")
             substitute module('com.google.guava:listenablefuture') with module("com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava")
             if (!rootProject.ext.debugToolsEnabled) {
                 substitute module(rootProject.ext.debugToolsDependencies.chuck) with module(rootProject.ext.tkpdInternalLibDependencies.chuckNoOp)

@@ -29,7 +29,6 @@
     <string name="path_gold_merchant_statistic_dashboard" translatable="false">/gold-merchant-statistic-dashboard</string>
     <string name="path_gold_merchant_subscribe_dashboard" translatable="false">/gold-merchant-subscribe-dashboard</string>
     <string name="path_gold_merchant_membership" translatable="false">/gold-merchant-membership</string>
-    <string name="path_gold_merchant_featured_product" translatable="false">/gold-merchant-featured-product</string>
     <string name="path_gold_merchant_redirect" translatable="false">/gold-merchant-redirect</string>
     <string name="path_power_merchant_subscribe" translatable="false">/power-merchant-subscribe</string>
 
@@ -81,6 +80,8 @@
     <string name="path_shop_score_detail" translatable="false">/shop-score-detail</string>
     <string name="path_shop_edit_schedule" translatable="false">/shop-settings-edit-schedule</string>
     <string name="path_shop_page_setting" translatable="false">/shop-page-setting</string>
+
+    <string name="path_seller_review_detail" translatable="false">/seller-review-detail</string>
 
     <string name="path_district_recommendation_shop_settings" translatable="false">/district-recommendation-shop-settings</string>
     <string name="path_geolocation" translatable="false">/geolocation</string>

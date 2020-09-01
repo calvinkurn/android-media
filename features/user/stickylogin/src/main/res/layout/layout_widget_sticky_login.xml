@@ -29,20 +29,21 @@
           app:layout_constraintBottom_toBottomOf="parent"
           app:srcCompat="@drawable/ic_toped_widget_login"/>
         
-        <com.tokopedia.unifyprinciples.Typography
+        <com.tokopedia.stickylogin.view.EllipsizedTextView
           android:id="@+id/layout_sticky_content"
           android:layout_width="@dimen/layout_lvl0"
           android:layout_height="wrap_content"
-          android:layout_weight="1"
           android:layout_marginStart="@dimen/layout_lvl2"
           android:layout_marginLeft="@dimen/layout_lvl2"
-          android:layout_marginEnd="@dimen/layout_lvl1"
-          android:layout_marginRight="@dimen/layout_lvl1"
-          android:textSize="@dimen/sp_14"
+          android:textSize="@dimen/fontSize_lvl3"
+          android:textStyle="bold"
+          android:ellipsize="end"
+          android:maxLines="1"
+          app:highlight_color="@color/Green_G500"
           app:layout_constraintLeft_toRightOf="@id/layout_sticky_image_left"
+          app:layout_constraintRight_toLeftOf="@id/layout_sticky_image_right"
           app:layout_constraintTop_toTopOf="parent"
-          app:layout_constraintBottom_toBottomOf="parent"
-          tools:ignore="MissingPrefix,RtlHardcoded,RtlSymmetry"/>
+          app:layout_constraintBottom_toBottomOf="parent"/>
         
         <ImageView
           android:id="@+id/layout_sticky_image_right"

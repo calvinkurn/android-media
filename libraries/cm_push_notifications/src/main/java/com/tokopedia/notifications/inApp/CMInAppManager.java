@@ -41,6 +41,13 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
     private WeakReference<Activity> currentActivity;
     private CmInAppListener cmInAppListener;
     private final Object lock = new Object();
+    private List<String> excludeScreenList;
+
+    /*
+    * This flag is used for validation of the dialog to be displayed.
+    * This is useful for avoiding InApp dialog appearing more than once.
+    * */
+    private Boolean isDialogShowing = false;
 
     static {
         inAppManager = new CMInAppManager();
@@ -63,10 +70,8 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
     }
 
     public static CmInAppListener getCmInAppListener() {
-        if (inAppManager == null)
-            return null;
-        if (inAppManager.cmInAppListener == null)
-            return null;
+        if (inAppManager == null) return null;
+        if (inAppManager.cmInAppListener == null) return null;
         return inAppManager.cmInAppListener;
     }
 
@@ -79,6 +84,8 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
     }
 
     private void showInAppNotification() {
+        if (excludeScreenList != null && excludeScreenList.contains(currentActivity.get().getClass().getName()))
+            return;
         RulesManager.getInstance().checkValidity(
                 currentActivity.get().getClass().getName(),
                 0L,
@@ -127,6 +134,9 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
                 .findViewById(android.R.id.content)
                 .getRootView();
         root.addView(view);
+
+        // set flag if has dialog showing
+        isDialogShowing = true;
     }
 
     /**
@@ -137,7 +147,11 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
         if (getCurrentActivity() == null) return;
         Activity activity = getCurrentActivity();
         try {
+            // show interstitial banner
             BannerView.create(activity, data);
+
+            // set flag if has dialog showing
+            isDialogShowing = true;
         } catch (Exception e) {
             onCMInAppInflateException(data);
         }
@@ -172,16 +186,19 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
     }
 
     public void onActivityStartedInternal(Activity activity) {
-        if (application == null)
-            application = activity.getApplication();
+        if (application == null) application = activity.getApplication();
         updateCurrentActivity(activity);
-        showInAppNotification();
+
+        if (!isDialogShowing) {
+            showInAppNotification();
+        }
     }
 
     public void onActivityStopInternal(Activity activity) {
         if (currentActivity != null && currentActivity.get().getClass().
-                getSimpleName().equalsIgnoreCase(activity.getClass().getSimpleName()))
+                getSimpleName().equalsIgnoreCase(activity.getClass().getSimpleName())) {
             currentActivity.clear();
+        }
     }
 
     private void dataConsumed(CMInApp inAppData) {
@@ -213,6 +230,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
     @Override
     public void onCMinAppDismiss(CMInApp inApp) {
         RulesManager.getInstance().viewDismissed(inApp.id);
+        isDialogShowing = false;
     }
 
     @Override
@@ -255,5 +273,9 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
     @Override
     public void onCMInAppInflateException(CMInApp inApp) {
         RulesManager.getInstance().dataInflateError(inApp.id);
+    }
+
+    public void setExcludeScreenList(List<String> excludeScreenList) {
+        this.excludeScreenList = excludeScreenList;
     }
 }

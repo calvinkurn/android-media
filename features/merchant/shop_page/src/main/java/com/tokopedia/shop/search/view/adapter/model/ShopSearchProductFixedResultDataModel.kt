@@ -1,6 +1,5 @@
 package com.tokopedia.shop.search.view.adapter.model
 
-import com.tokopedia.shop.R
 import com.tokopedia.shop.search.view.adapter.ShopSearchProductAdapterTypeFactory
 
 class ShopSearchProductFixedResultDataModel(

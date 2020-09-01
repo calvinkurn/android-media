@@ -68,8 +68,6 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_CATEGO
 import static com.tokopedia.home.account.AccountConstants.Analytics.PEMBELI;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PENJUAL;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PROFILE;
-import static com.tokopedia.home.account.AccountConstants.Analytics.SECTION_OTHER_FEATURE;
-import static com.tokopedia.home.account.AccountConstants.TOP_SELLER_APPLICATION_PACKAGE;
 import static com.tokopedia.home.account.data.util.StaticBuyerModelGeneratorKt.RESCENTER_BUYER;
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT;
 
@@ -93,6 +91,8 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
     private TrackingQueue trackingQueue;
     private RemoteConfig remoteConfig;
 
+    private static final String URL_ACCOUNT_PAGE = "https://m.tokopedia.com/user/settings/account";
+
     abstract void notifyItemChanged(int position);
 
     @Override
@@ -107,6 +107,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
 
     @Override
     public void onPause() {
+        dismissProductBottomSheet();
         super.onPause();
         trackingQueue.sendAll();
     }
@@ -144,9 +145,8 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
 
     @Override
     public void onProfileClicked(BuyerCardViewModel element) {
-        sendTracking(PEMBELI, AKUN_SAYA,
-                String.format("%s %s", CLICK, PROFILE));
-        openApplink(ApplinkConst.PROFILE.replace(PARAM_USER_ID, element.getUserId()));
+        sendTracking(PEMBELI, AKUN_SAYA, String.format("%s %s", CLICK, PROFILE));
+        openWebview(URL_ACCOUNT_PAGE);
     }
 
     @Override
@@ -584,6 +584,18 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
             appLinks.add(ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW);
             Intent intent = SellerMigrationActivity.Companion.createIntent(getContext(), SellerMigrationFeatureName.FEATURE_SET_VARIANT, getScreenName(), appLinks);
             startActivity(intent);
+            dismissProductBottomSheet();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        dismissProductBottomSheet();
+        super.onDestroy();
+    }
+
+    private void dismissProductBottomSheet(){
+        if(addProductBottomSheet != null){
             addProductBottomSheet.dismiss();
         }
     }

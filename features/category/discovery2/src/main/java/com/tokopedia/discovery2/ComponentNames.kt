@@ -20,8 +20,6 @@ enum class ComponentNames(val componentName: String) {
     TokopointsItem("tokopoints_item"),
     LihatSemua("lihat_semua"),
     CpmTopAds("topads"),
-    CpmTopAdsShopItem("cpm_topads_shop_item"),
-    CpmTopAdsProductItem("cpm_topads_product_item"),
     Video("video"),
     Notifier("notifier"),
     TitleImage("title_image"),
@@ -60,6 +58,9 @@ enum class ComponentNames(val componentName: String) {
     // Product Card Horizontal Sprint Sale
     ProductCardSprintSaleCarousel("product_card_sprint_sale_carousel"),
     ProductCardSprintSaleCarouselItem("product_card_sprint_sale_carousel_item"),
+    ProductListEmptyState("product_list_empty_state"),
 
+    //Quick Filter
+    QuickFilter("chips_filter_v2"),
 
 }
