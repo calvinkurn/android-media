@@ -23,12 +23,10 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
         const val CLICK_ON_MULAI_ONBOARDING = "click on button mulai"
         const val VIEW_PENDING_PAGE = "view on menunggu verifikasi"
 
-        //private static final String CLICK_BACK_PENDING_PAGE = "click on back menunggu verifikasi";
         const val CLICK_ON_MENGERTI_PENDING_PAGE = "click on button mengerti"
         const val VIEW_SUCCESS_SNACKBAR_PENDING_PAGE = "view on success message verifikasi"
         const val VIEW_REJECTED_PAGE = "view on gagal verifikasi"
 
-        //private static final String CLICK_BACK_REJECTED_PAGE = "click on back gagal verifikasi";
         const val CLICK_NEXT_REJECTED_PAGE = "click on button upload ulang"
         const val CLICK_ON_KEMBALI_BLACKLIST_PAGE = "click on button kembali"
         const val VIEW_SUCCES_PAGE = "view on success terverifikasi"
