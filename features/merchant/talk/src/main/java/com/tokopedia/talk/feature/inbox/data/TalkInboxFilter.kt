@@ -7,4 +7,5 @@ sealed class TalkInboxFilter(open val filterParam: String) {
     }
     data class TalkInboxReadFilter(override val filterParam: String = READ_FILTER): TalkInboxFilter(filterParam)
     data class TalkInboxUnreadFilter(override val filterParam: String = UNREAD_FILTER): TalkInboxFilter(filterParam)
+    data class TalkInboxNoFilter(override val filterParam: String = ""): TalkInboxFilter(filterParam)
 }

@@ -47,8 +47,25 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
+            <include
+                android:id="@+id/talkInboxEmpty"
+                layout="@layout/partial_talk_inbox_empty"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
         </LinearLayout>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <include
+        android:id="@+id/inboxPageError"
+        layout="@layout/partial_talk_connection_error"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/inboxPageLoading"
+        layout="@layout/partial_talk_inbox_loading"
+        android:visibility="gone" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,21 +1,26 @@
 package com.tokopedia.talk.feature.inbox.presentation.fragment
 
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.TalkInstance
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
@@ -30,7 +35,9 @@ import com.tokopedia.talk.feature.inbox.data.TalkInboxViewState
 import com.tokopedia.talk.feature.inbox.presentation.viewmodel.TalkInboxViewModel
 import com.tokopedia.talk_old.R
 import com.tokopedia.talk_old.talkdetails.view.activity.TalkDetailsActivity
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_talk_inbox.*
+import kotlinx.android.synthetic.main.partial_talk_connection_error.view.*
 import kotlinx.android.synthetic.main.partial_talk_inbox_empty.*
 import javax.inject.Inject
 
@@ -40,6 +47,7 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
     companion object {
         const val TAB_PARAM = "tab_param"
         const val EMPTY_DISCUSSION_IMAGE = "https://ecs7.tokopedia.net/android/talk_inbox_empty.png"
+        const val REPLY_REQUEST_CODE = 420
 
         fun createNewInstance(tab: TalkInboxTab): TalkInboxFragment {
             return TalkInboxFragment().apply {
@@ -54,6 +62,14 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
     lateinit var viewModel: TalkInboxViewModel
 
     private var talkPerformanceMonitoringListener: TalkPerformanceMonitoringListener? = null
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if(requestCode == REPLY_REQUEST_CODE) {
+            loadInitialData()
+        } else {
+            super.onActivityResult(requestCode, resultCode, data)
+        }
+    }
 
     override fun getAdapterTypeFactory(): TalkInboxAdapterTypeFactory {
         return TalkInboxAdapterTypeFactory()
@@ -100,7 +116,13 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
 
     override fun startRenderPerformanceMonitoring() {
         talkPerformanceMonitoringListener?.startRenderPerformanceMonitoring()
-        // Add viewtree observer stuff
+        talkInboxRecyclerView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                talkPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
+                talkPerformanceMonitoringListener?.stopPerformanceMonitoring()
+                talkInboxRecyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+            }
+        })
     }
 
     override fun castContextToTalkPerformanceMonitoringListener(context: Context): TalkPerformanceMonitoringListener? {
@@ -136,6 +158,8 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initSortFilter()
+        initEmptyState()
+        initErrorPage()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -144,28 +168,70 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
     }
 
     private fun goToReply(questionId: String, shopId: String) {
-        RouteManager.route(context, Uri.parse(UriUtil.buildUri(ApplinkConstInternalGlobal.TALK_REPLY, questionId))
+        val intent = RouteManager.getIntent(context, Uri.parse(UriUtil.buildUri(ApplinkConstInternalGlobal.TALK_REPLY, questionId))
                 .buildUpon()
                 .appendQueryParameter(TalkConstants.PARAM_SHOP_ID, shopId)
                 .appendQueryParameter(TalkConstants.PARAM_SOURCE, TalkDetailsActivity.SOURCE_INBOX)
                 .build().toString()
         )
+        startActivityForResult(intent, REPLY_REQUEST_CODE)
     }
 
     private fun observeInboxList() {
         viewModel.inboxList.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is TalkInboxViewState.Success -> {
-                    if(it.page == 1 && it.data.isEmpty()) {
-
+                    hideFullPageError()
+                    if(it.page == TalkConstants.DEFAULT_INITIAL_PAGE && it.data.isEmpty()) {
+                        when(it.filter) {
+                            is TalkInboxFilter.TalkInboxNoFilter -> {
+                                showEmptyInbox()
+                            }
+                            is TalkInboxFilter.TalkInboxUnreadFilter -> {
+                                showEmptyUnread()
+                            }
+                            is TalkInboxFilter.TalkInboxReadFilter -> {
+                                showEmptyRead()
+                            }
+                        }
+                    } else {
+                        renderData(it.data, it.hasNext)
                     }
-                    renderList(it.data, it.hasNext)
                 }
                 is TalkInboxViewState.Fail -> {
-
+                    if(it.page == TalkConstants.DEFAULT_INITIAL_PAGE) {
+                        showFullPageError()
+                    } else {
+                        showErrorToaster()
+                    }
                 }
             }
         })
+    }
+
+    private fun renderData(data: List<TalkInboxUiModel>, hasNext: Boolean) {
+        hideEmpty()
+        talkInboxRecyclerView.show()
+        renderList(data, hasNext)
+    }
+
+    private fun initErrorPage() {
+        inboxPageError.readingConnectionErrorRetryButton.setOnClickListener {
+            loadInitialData()
+        }
+    }
+
+    private fun showFullPageError() {
+        inboxPageError.show()
+    }
+
+    private fun hideFullPageError() {
+        inboxPageError.hide()
+    }
+
+    private fun showErrorToaster() {
+        view?.let {
+            Toaster.build(talkInboxContainer, getString(R.string.inbox_toaster_connection_error), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.talk_retry), View.OnClickListener { loadData(currentPage) }). show() }
     }
 
     private fun initEmptyState() {
@@ -174,16 +240,25 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
 
     private fun showEmptyInbox() {
         talkInboxEmptyTitle.text = getString(R.string.inbox_all_empty)
+        talkInboxEmpty.show()
     }
 
     private fun showEmptyUnread() {
         talkInboxEmptyTitle.text = getString(R.string.inbox_empty_title)
         talkInboxEmptySubtitle.text = getString(R.string.inbox_empty_unread_discussion)
+        talkInboxEmpty.show()
+        talkInboxRecyclerView.hide()
     }
 
     private fun showEmptyRead() {
         talkInboxEmptyTitle.text = getString(R.string.inbox_empty_title)
         talkInboxEmptySubtitle.text = getString(R.string.inbox_empty_read_discussion)
+        talkInboxEmpty.show()
+        talkInboxRecyclerView.hide()
+    }
+
+    private fun hideEmpty() {
+        talkInboxEmpty.hide()
     }
 
     private fun getDataFromArgument() {
@@ -205,7 +280,7 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
     }
 
     private fun selectFilter(filter: TalkInboxFilter) {
-        viewModel.setFilter(filter.filterParam)
+        viewModel.setFilter(filter)
         showLoading()
         clearAllData()
     }
