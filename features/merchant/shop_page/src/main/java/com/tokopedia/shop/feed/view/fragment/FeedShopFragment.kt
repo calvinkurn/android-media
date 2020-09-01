@@ -25,7 +25,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
@@ -214,11 +213,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                     if (hasFeed()
                             && newState == RecyclerView.SCROLL_STATE_IDLE) {
                         if (isSellerMigrationEnabled(context)) {
-                            if (!GlobalConfig.isSellerApp()) {
-                                bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_EXPANDED
-                            } else {
-                                bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_HIDDEN
-                            }
+                            bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_EXPANDED
                         } else {
                             bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_HIDDEN
                             FeedScrollListener.onFeedScrolled(recyclerView, adapter.list)
@@ -924,11 +919,14 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     private fun setupBottomSheetSellerMigration(view: View) {
-        if (!GlobalConfig.isSellerApp()) {
+        if (isSellerMigrationEnabled(context)) {
             val viewTarget: LinearLayout = view.findViewById(bottom_sheet_wrapper)
             bottomSheetSellerMigration = BottomSheetBehavior.from(viewTarget)
             BottomSheetUnify.bottomSheetBehaviorKnob(viewTarget, false)
             BottomSheetUnify.bottomSheetBehaviorHeader(viewTarget, false)
+
+            bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_EXPANDED
+            fab_feed?.hide()
 
             val sellerMigrationLayout = View.inflate(context, R.layout.widget_seller_migration_bottom_sheet_has_post, null)
             viewTarget.addView(sellerMigrationLayout)

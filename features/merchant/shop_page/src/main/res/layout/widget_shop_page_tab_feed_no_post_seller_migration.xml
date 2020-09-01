@@ -62,6 +62,7 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl4"
+        android:paddingBottom="@dimen/spacing_lvl4"
         android:gravity="center"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
