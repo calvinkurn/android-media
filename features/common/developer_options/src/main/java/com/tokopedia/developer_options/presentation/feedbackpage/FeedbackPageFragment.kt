@@ -17,6 +17,7 @@ import com.tokopedia.developer_options.api.*
 import com.tokopedia.developer_options.presentation.feedbackpage.dialog.LoadingDialog
 import com.tokopedia.developer_options.presentation.preference.Preferences
 import com.tokopedia.screenshot_observer.Screenshot
+import com.tokopedia.screenshot_observer.ScreenshotData
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
@@ -76,7 +77,7 @@ class FeedbackPageFragment: Fragment() {
 
         screenshot = context?.contentResolver?.let {
             Screenshot(it, object : Screenshot.Listener {
-                override fun onScreenShotTaken(screenshotData: com.tokopedia.screenshot_observer.ScreenshotData?) {
+                override fun onScreenShotTaken(screenshotData: ScreenshotData?) {
                     val uri = Uri.parse(screenshotData?.path)
                     imageView.setImageURI(uri)
                 }
@@ -107,7 +108,7 @@ class FeedbackPageFragment: Fragment() {
             codeName.startsWith("M") -> { codeName = "MARSHMALLOW" }
             codeName.startsWith("N") -> { codeName = "NOUGAT" }
             codeName.startsWith("O") -> { codeName = "OREO" }
-            codeName.startsWith("N") -> { codeName = "PIE" }
+            codeName.startsWith("P") -> { codeName = "PIE" }
             codeName.startsWith("Q") -> { codeName = "ANDROID 10" }
         }
 
@@ -160,11 +161,11 @@ class FeedbackPageFragment: Fragment() {
                 }
                 TextUtils.isEmpty(actualResultText) -> {
                     Toast.makeText(context,
-                    "Actual Result should not be empty", Toast.LENGTH_SHORT).show()
+                            "Actual Result should not be empty", Toast.LENGTH_SHORT).show()
                 }
                 TextUtils.isEmpty(expectedResultText) -> {
                     Toast.makeText(context,
-                    "Expected Result should not be empty", Toast.LENGTH_SHORT).show()
+                            "Expected Result should not be empty", Toast.LENGTH_SHORT).show()
                 }
                 else -> {
                     val issueType = bugType.selectedItem.toString()
@@ -194,7 +195,7 @@ class FeedbackPageFragment: Fragment() {
                         .subscribe(object : Subscriber<FeedbackResponse>() {
                             override fun onNext(t: FeedbackResponse) {
                                 loadingDialog?.dismiss()
-                                Toast.makeText(activity, t.key.toString(), Toast.LENGTH_SHORT).show()
+                                Toast.makeText(activity, t.key, Toast.LENGTH_SHORT).show()
                                 myPreferences.setSubmitFlag(email, userSession?.userId.toString())
                                 activity?.finish()
                             }
