@@ -356,7 +356,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 }
                 LiveDataResult.STATUS.ERROR -> {
                     hideLoader()
-                    renderGiftBoxError(defaultErrorMessage, getString(R.string.gami_oke))
+                    renderGiftBoxError(defaultErrorMessage, getString(R.string.gami_oke), it.error?.message)
                 }
             }
         })
@@ -400,13 +400,14 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                                     return@Observer
                                 }
                                 else -> {
+                                    val cause = "Unsupported result status code $resultCode"
                                     getTapTapView().isGiftTapAble = true
                                     val status = responseCrackResultEntity?.crackResultEntity?.resultStatus
                                     val messageList = status?.message
                                     if (!messageList.isNullOrEmpty()) {
-                                        renderGiftBoxOpenError(messageList[0], getString(R.string.gami_oke))
+                                        renderGiftBoxOpenError(messageList[0], getString(R.string.gami_oke), cause)
                                     } else {
-                                        renderGiftBoxOpenError(defaultErrorMessage, getString(R.string.gami_oke))
+                                        renderGiftBoxOpenError(defaultErrorMessage, getString(R.string.gami_oke), cause)
                                     }
                                 }
                             }
@@ -427,7 +428,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                         showRewardSummary()
                     } else {
                         getTapTapView().isGiftTapAble = true
-                        renderGiftBoxOpenError(defaultErrorMessage, getString(R.string.gami_oke))
+                        renderGiftBoxOpenError(defaultErrorMessage, getString(R.string.gami_oke), it.error?.message)
                     }
                 }
             }
@@ -714,28 +715,32 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
             viewModel.crackGiftBox()
     }
 
-    private fun renderGiftBoxOpenError(message: String, actionText: String) {
+    private fun renderGiftBoxOpenError(message: String, actionText: String, cause:String?) {
         forceOpenGiftBox = true
         if (context != null) {
             val internetAvailable = isConnectedToInternet()
             if (!internetAvailable) {
                 showNoInterNetDialog(::handleGiftBoxTap, context!!)
+                GtmGiftTapTap.viewNoInternetError(userSession?.userId)
             } else {
                 showRedError(fmParent, message, actionText, ::handleGiftBoxTap)
+                val formattedCause = if (cause.isNullOrEmpty()) cause!! else "Unknown Error"
+                GtmGiftTapTap.viewToastError(userSession?.userId, formattedCause)
             }
-            GtmGiftTapTap.viewError(userSession?.userId)
         }
     }
 
-    private fun renderGiftBoxError(message: String, actionText: String) {
+    private fun renderGiftBoxError(message: String, actionText: String, cause:String?) {
         if (context != null) {
             val internetAvailable = isConnectedToInternet()
             if (!internetAvailable) {
                 showNoInterNetDialog(viewModel::getGiftBoxHome, context!!)
+                GtmGiftTapTap.viewNoInternetError(userSession?.userId)
             } else {
                 showRedError(fmParent, message, actionText, viewModel::getGiftBoxHome)
+                val formattedCause = if (cause.isNullOrEmpty()) cause!! else "Unknown Error"
+                GtmGiftTapTap.viewToastError(userSession?.userId, formattedCause)
             }
-            GtmGiftTapTap.viewError(userSession?.userId)
         }
     }
 
