@@ -66,8 +66,8 @@ class TopchatReportWebViewFragment : BaseSessionWebViewFragment() {
     }
 
     companion object {
-        const val ACTION_BLOCK_PROMO = "tokopedia://topchat_block_promo"
-        const val queryParamToasterMessage = "show_toaster_mesage"
+        const val ACTION_BLOCK_PROMO = "tkpd-internal://topchat_block_promo"
+        const val queryParamToasterMessage = "show_toast_message"
         const val queryParamUrl = "url"
 
         fun newInstance(url: String,
