@@ -157,7 +157,7 @@ class LineGraphViewHolder(
         return LineChartData(
                 chartEntry = chartEntry,
                 yAxisLabel = yAxisLabel,
-                config = LineChartEntryConfig(
+                config = LineChartEntryConfigModel(
                         lineWidth = 1.8f
                 )
         )

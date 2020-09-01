@@ -8,7 +8,7 @@ import com.tokopedia.charts.common.ChartColor
  * Created By @ilhamsuaib on 01/09/20
  */
 
-data class LineChartEntryConfig(
+data class LineChartEntryConfigModel(
         val lineWidth: Float = 1f,
         val lineColor: Int = Color.parseColor(ChartColor.DEFAULT_LINE_COLOR),
         val fillDrawable: Drawable? = null,
