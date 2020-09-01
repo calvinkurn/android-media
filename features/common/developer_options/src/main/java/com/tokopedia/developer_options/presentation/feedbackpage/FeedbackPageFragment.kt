@@ -16,6 +16,7 @@ import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.api.*
 import com.tokopedia.developer_options.presentation.feedbackpage.dialog.LoadingDialog
 import com.tokopedia.developer_options.presentation.preference.Preferences
+import com.tokopedia.screenshot_observer.Screenshot
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
@@ -36,7 +37,7 @@ class FeedbackPageFragment: Fragment() {
     private lateinit var feedbackApi: FeedbackApi
     private lateinit var compositeSubscription: CompositeSubscription
     private lateinit var myPreferences: Preferences
-    private lateinit var screenshot: com.tokopedia.screenshot_observer.Screenshot
+    private lateinit var screenshot: Screenshot
 
     private var deviceInfo: String = ""
     private var androidVersion: String = ""
@@ -74,7 +75,7 @@ class FeedbackPageFragment: Fragment() {
 
 
         screenshot = context?.contentResolver?.let {
-            com.tokopedia.screenshot_observer.Screenshot(it, object : com.tokopedia.screenshot_observer.Screenshot.Listener {
+            Screenshot(it, object : Screenshot.Listener {
                 override fun onScreenShotTaken(screenshotData: com.tokopedia.screenshot_observer.ScreenshotData?) {
                     val uri = Uri.parse(screenshotData?.path)
                     imageView.setImageURI(uri)
