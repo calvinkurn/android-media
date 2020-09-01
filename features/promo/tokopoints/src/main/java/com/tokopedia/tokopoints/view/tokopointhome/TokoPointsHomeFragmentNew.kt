@@ -60,6 +60,7 @@ import com.tokopedia.tokopoints.view.model.rewardtopsection.DynamicActionListIte
 import com.tokopedia.tokopoints.view.model.rewardtopsection.TokopediaRewardTopSection
 import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.util.*
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -238,6 +239,8 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                     startRenderPerformanceMonitoring()
                     setOnRecyclerViewLayoutReady()
                     onSuccessResponse(it.data.tokoPointEntity, it.data.sectionList)
+                }
+                else -> {
                 }
             }
         }
@@ -519,7 +522,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
             when (sectionContent.layoutType) {
                 CommonConstant.SectionLayoutType.TICKER -> renderTicker(sectionContent)
                 CommonConstant.SectionLayoutType.CATEGORY -> renderCategory(sectionContent)
-                CommonConstant.SectionLayoutType.COUPON, CommonConstant.SectionLayoutType.CATALOG, CommonConstant.SectionLayoutType.BANNER -> exploreSectionItem.add(sectionContent)
+                CommonConstant.SectionLayoutType.COUPON, CommonConstant.SectionLayoutType.CATALOG, CommonConstant.SectionLayoutType.BANNER, CommonConstant.SectionLayoutType.TOPADS -> exploreSectionItem.add(sectionContent)
                 else -> {
                 }
             }
@@ -534,30 +537,6 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         mExploreSectionPagerAdapter = ExploreSectionPagerAdapter(activityContext, mPresenter, sections)
         mExploreSectionPagerAdapter?.setRefreshing(false)
         mPagerPromos?.adapter = mExploreSectionPagerAdapter
-        mPagerPromos?.addOnPageChangeListener(TabLayoutOnPageChangeListener(mTabLayoutPromo))
-        mTabLayoutPromo?.addOnTabSelectedListener(ViewPagerOnTabSelectedListener(mPagerPromos))
-        mPagerPromos?.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
-            override fun onPageSelected(position: Int) {
-                if (position == 0) {
-                    mPresenter.pagerSelectedItem = position
-                    AnalyticsTrackerUtil.sendEvent(context,
-                            AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
-                            AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_EXPLORE,
-                            "")
-                } else {
-                    mPresenter.pagerSelectedItem = position
-                    AnalyticsTrackerUtil.sendEvent(context,
-                            AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
-                            AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_KUPON_SAYA,
-                            "")
-                }
-            }
-
-            override fun onPageScrollStateChanged(state: Int) {}
-        })
     }
 
     override fun onResume() {

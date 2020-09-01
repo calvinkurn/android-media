@@ -220,11 +220,11 @@ class SomListViewModelTest {
     fun getOrderListData_shouldReturnSuccess() {
         //given
         coEvery {
-            somGetOrderListUseCase.execute(any(), any())
+            somGetOrderListUseCase.execute(any())
         } returns Success(SomListOrder.Data.OrderList(-1, listOrder))
 
         //when
-        somListViewModel.loadOrderList("", SomListOrderParam())
+        somListViewModel.loadOrderList(SomListOrderParam())
 
         //then
         assert(somListViewModel.orderListResult.value is Success)
@@ -235,11 +235,11 @@ class SomListViewModelTest {
     fun getOrderListData_shouldReturnFail() {
         //given
         coEvery {
-            somGetOrderListUseCase.execute(any(), any())
+            somGetOrderListUseCase.execute(any())
         } returns Fail(Throwable())
 
         //when
-        somListViewModel.loadOrderList("", SomListOrderParam())
+        somListViewModel.loadOrderList(SomListOrderParam())
 
         //then
         assert(somListViewModel.orderListResult.value is Fail)
@@ -249,11 +249,11 @@ class SomListViewModelTest {
     fun getOrderListData_shouldNotReturnEmpty() {
         //given
         coEvery {
-            somGetOrderListUseCase.execute(any(), any())
+            somGetOrderListUseCase.execute(any())
         } returns Success(SomListOrder.Data.OrderList(-1, listOrder))
 
         //when
-        somListViewModel.loadOrderList("", SomListOrderParam())
+        somListViewModel.loadOrderList(SomListOrderParam())
 
         //then
         assert(somListViewModel.orderListResult.value is Success)

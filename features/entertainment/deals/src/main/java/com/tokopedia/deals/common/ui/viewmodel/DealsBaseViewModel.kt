@@ -7,6 +7,7 @@ import com.tokopedia.deals.common.domain.GetNearestLocationUseCase
 import com.tokopedia.deals.common.utils.DealsDispatcherProvider
 import com.tokopedia.deals.common.utils.DealsLocationUtils
 import com.tokopedia.deals.location_picker.model.response.Location
+import com.tokopedia.deals.location_picker.model.response.LocationType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -39,7 +40,8 @@ class DealsBaseViewModel @Inject constructor(dispatcher: DealsDispatcherProvider
                         cityId = DealsLocationUtils.DEFAULT_LOCATION_ID,
                         name = DealsLocationUtils.DEFAULT_LOCATION_NAME,
                         cityName = DealsLocationUtils.DEFAULT_LOCATION_NAME,
-                        coordinates = DealsLocationUtils.DEFAULT_LOCATION_COORDINATES))
+                        coordinates = DealsLocationUtils.DEFAULT_LOCATION_COORDINATES,
+                        locType = LocationType(name = DealsLocationUtils.DEFAULT_LOCATION_CITY)))
             }
         }
     }
