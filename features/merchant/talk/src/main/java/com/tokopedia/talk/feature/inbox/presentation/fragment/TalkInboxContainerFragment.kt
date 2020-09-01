@@ -10,6 +10,7 @@ import com.tokopedia.TalkInstance
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.talk.feature.inbox.data.TalkInboxTab
+import com.tokopedia.talk.feature.inbox.di.DaggerTalkInboxContainerComponent
 import com.tokopedia.talk.feature.inbox.di.TalkInboxContainerComponent
 import com.tokopedia.talk.feature.inbox.presentation.adapter.TalkInboxContainerAdapter
 import com.tokopedia.talk_old.R
@@ -62,7 +63,7 @@ class TalkInboxContainerFragment : BaseDaggerFragment(), HasComponent<TalkInboxC
         }
         talkInboxViewPager.registerOnPageChangeCallback(object: ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
-                talkInboxTabs.getUnifyTabLayout().selectTab(talkInboxTabs.getUnifyTabLayout().getTabAt(position))
+                talkInboxTabs.getUnifyTabLayout().getTabAt(position)
             }
         })
     }

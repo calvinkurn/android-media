@@ -216,7 +216,7 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
     }
 
     private fun initErrorPage() {
-        inboxPageError.readingConnectionErrorRetryButton.setOnClickListener {
+        inboxPageError.talkConnectionErrorRetryButton.setOnClickListener {
             loadInitialData()
         }
     }
