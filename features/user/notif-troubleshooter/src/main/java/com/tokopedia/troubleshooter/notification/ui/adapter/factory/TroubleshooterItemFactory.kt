@@ -4,10 +4,12 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.troubleshooter.notification.ui.adapter.viewholder.ConfigViewHolder
+import com.tokopedia.troubleshooter.notification.ui.adapter.viewholder.FooterViewHolder
 import com.tokopedia.troubleshooter.notification.ui.adapter.viewholder.TickerViewHolder
 import com.tokopedia.troubleshooter.notification.ui.adapter.viewholder.WarningTitleViewHolder
 import com.tokopedia.troubleshooter.notification.ui.listener.ConfigItemListener
 import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigUIView
+import com.tokopedia.troubleshooter.notification.ui.uiview.FooterUIView
 import com.tokopedia.troubleshooter.notification.ui.uiview.TickerUIView
 import com.tokopedia.troubleshooter.notification.ui.uiview.WarningTitleUIVIew
 
@@ -27,11 +29,16 @@ class TroubleshooterItemFactory(
         return WarningTitleViewHolder.LAYOUT
     }
 
+    override fun type(footer: FooterUIView): Int {
+        return FooterViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when(type) {
             ConfigViewHolder.LAYOUT -> ConfigViewHolder(listener, parent)
             TickerViewHolder.LAYOUT -> TickerViewHolder(listener, parent)
             WarningTitleViewHolder.LAYOUT -> WarningTitleViewHolder(parent)
+            FooterViewHolder.LAYOUT -> FooterViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
