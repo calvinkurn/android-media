@@ -930,6 +930,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
             bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_EXPANDED
             hideFAB()
+            recyclerView.isNestedScrollingEnabled = false
 
             val sellerMigrationLayout = View.inflate(context, R.layout.widget_seller_migration_bottom_sheet_has_post, null)
             viewTarget.addView(sellerMigrationLayout)
