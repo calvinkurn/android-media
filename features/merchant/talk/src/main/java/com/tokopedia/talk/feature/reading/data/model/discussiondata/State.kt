@@ -12,5 +12,8 @@ data class State(
         val isLiked: Boolean = false,
         @SerializedName("allowLike")
         @Expose
-        val allowLike: Boolean = false
+        val allowLike: Boolean = false,
+        @SerializedName("isYours")
+        @Expose
+        val isYours: Boolean = false
 )

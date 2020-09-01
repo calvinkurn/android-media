@@ -11,6 +11,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_PAYMENT_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_PRODUCTS_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_SHIPPING_TYPE
 import com.tokopedia.sellerorder.detail.data.model.SomDetailData
+import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
 import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailHeaderViewHolder
 import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailPaymentsViewHolder
 import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailProductsViewHolder
@@ -30,7 +31,7 @@ class SomDetailAdapter : RecyclerView.Adapter<SomDetailAdapter.BaseViewHolder<*>
         fun onInvalidResiUpload(awbUploadUrl: String)
         fun onDialPhone(strPhoneNo: String)
         fun onShowBookingCode(bookingCode: String, bookingType: String)
-        fun onShowBuyerRequestCancelReasonBottomSheet()
+        fun onShowBuyerRequestCancelReasonBottomSheet(it: SomDetailOrder.Data.GetSomDetail.Button)
         fun onSeeInvoice(invoiceUrl: String)
         fun onCopiedInvoice(invoice: String, str: String)
         fun onClickProduct(productId: Int)
