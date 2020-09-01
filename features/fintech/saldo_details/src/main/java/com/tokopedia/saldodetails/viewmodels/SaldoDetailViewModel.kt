@@ -26,11 +26,6 @@ class SaldoDetailViewModel @Inject constructor(
         @Named(DispatcherModule.IO) val workerDispatcher: CoroutineDispatcher
 ) : BaseViewModel(uiDispatcher) {
 
-    companion object {
-        private const val MERCHANT_CREDIT_ELIGIBLE_STATUS = 101
-        private const val SALDO_PRIORITY_ELIGIBLE_STATUS = 1
-    }
-
     var isSeller: Boolean = false
 
     val gqlMerchantSaldoDetailLiveData: MutableLiveData<Resources<GqlMerchantSaldoDetailsResponse>> = MutableLiveData()
