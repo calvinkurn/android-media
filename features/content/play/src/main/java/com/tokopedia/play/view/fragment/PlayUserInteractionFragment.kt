@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
@@ -41,6 +40,8 @@ import com.tokopedia.play.view.bottomsheet.PlayMoreActionBottomSheet
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayNavigation
 import com.tokopedia.play.view.contract.PlayOrientationListener
+import com.tokopedia.play.view.measurement.bounds.manager.PinnedBoundsManager
+import com.tokopedia.play.view.measurement.bounds.manager.PlayPinnedBoundsManager
 import com.tokopedia.play.view.measurement.scaling.PlayVideoScalingManager
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
@@ -49,7 +50,6 @@ import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
-import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.play_common.util.extension.awaitMeasured
@@ -61,7 +61,6 @@ import com.tokopedia.play_common.view.updatePadding
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.play_common.viewcomponent.viewComponentOrNull
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.usecase.coroutines.Fail
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
@@ -139,6 +138,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private var videoBoundsProvider: VideoBoundsProvider? = null
     private var dynamicLayoutManager: DynamicLayoutManager? = null
+    private var pinnedBoundsManager: PinnedBoundsManager? = null
 
     /**
      * Animation
@@ -445,6 +445,13 @@ class PlayUserInteractionFragment @Inject constructor(
         }
     }
 
+    private fun getPinnedBoundsManager(): PinnedBoundsManager = synchronized(this) {
+        if (pinnedBoundsManager == null) {
+            pinnedBoundsManager = PlayPinnedBoundsManager(requireView() as ViewGroup)
+        }
+        return pinnedBoundsManager!!
+    }
+
     //region observe
     /**
      * Observe
@@ -457,6 +464,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
                 scope.launch(dispatchers.immediate) {
                     playFragment.setCurrentVideoTopBounds(it.orientation, getVideoTopBounds(it.orientation))
+                    if (it.channelType.isLive) invalidatePinnedBounds(videoOrientation = it.orientation, videoPlayer = meta.videoPlayer)
                 }
 
                 statsInfoViewOnStateChanged(channelType = it.channelType)
@@ -555,6 +563,10 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun observeBottomInsetsState() {
         playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, DistinctObserver { map ->
             if (!playViewModel.isFreezeOrBanned) view?.hide()
+
+            scope.launch {
+                if (playViewModel.channelType.isLive) invalidatePinnedBounds(bottomInsets = map)
+            }
 
             if (playViewModel.videoOrientation.isVertical) triggerImmersive(false)
 
@@ -847,6 +859,14 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private suspend fun getVideoBottomBoundsOnKeyboardShown(estimatedKeyboardHeight: Int, hasQuickReply: Boolean): Int {
         return getVideoBoundsProvider().getVideoBottomBoundsOnKeyboardShown(estimatedKeyboardHeight, hasQuickReply)
+    }
+
+    private suspend fun invalidatePinnedBounds(
+            videoOrientation: VideoOrientation = playViewModel.videoOrientation,
+            videoPlayer: VideoPlayerUiModel = playViewModel.videoPlayer,
+            bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
+    ) {
+        getPinnedBoundsManager().invalidatePinnedBounds(videoOrientation, videoPlayer, isChatMode = bottomInsets.isKeyboardShown)
     }
 
     private fun changeLayoutBasedOnVideoOrientation(videoOrientation: VideoOrientation) {

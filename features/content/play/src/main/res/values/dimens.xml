@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="play_chat_max_height">90dp</dimen>
+    <dimen name="play_chat_vertical_max_height">90dp</dimen>
     <dimen name="play_player_control_spacing_right">12dp</dimen>
     <dimen name="dp_1">1dp</dimen>
     <dimen name="dp_6">6dp</dimen>
