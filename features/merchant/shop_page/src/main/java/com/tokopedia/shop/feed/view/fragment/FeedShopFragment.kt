@@ -345,7 +345,11 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
             dataList.addAll(element)
             renderList(dataList, lastCursor.isNotEmpty())
         } else {
-            dataList.add(getEmptyResultViewModel())
+            if (isSellerMigrationEnabled(context)) {
+                dataList.add(EmptyFeedShopSellerMigrationUiModel())
+            } else {
+                dataList.add(getEmptyResultViewModel())
+            }
             renderList(dataList)
         }
     }
