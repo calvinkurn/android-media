@@ -262,7 +262,6 @@ class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
                 konfirmasiState()
             } else inputNewPinState()
         } else {
-            changePinInput?.pinTextField?.setText("")
             displayErrorPin(checkPinData.errorMessage)
         }
     }
@@ -292,13 +291,11 @@ class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
         if (data.valid) {
             inputNewPinState()
         } else {
-            resetInputPin()
             displayErrorPin(data.errorMessage)
         }
     }
 
     private fun onErrorValidatePin(error: Throwable) {
-        resetInputPin()
         oldPin = ""
         isValidated = false
         onError(error)
