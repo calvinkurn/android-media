@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -935,6 +936,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
             val ivTabFeedHasPost: ImageUnify = sellerMigrationLayout.findViewById(R.id.ivTabFeedHasPost)
             val tvTitleTabFeedHasPost: Typography = sellerMigrationLayout.findViewById(R.id.tvTitleTabFeedHasPost)
+            tvTitleTabFeedHasPost.movementMethod = LinkMovementMethod.getInstance()
             ivTabFeedHasPost.setImageDrawable(context?.let { ContextCompat.getDrawable(it, ic_tab_feed_has_post_seller_migration) })
             tvTitleTabFeedHasPost.setOnClickLinkSpannable(getString(seller_migration_tab_feed_bottom_sheet_content), ::trackContentFeedBottomSheet) {
                 goToSellerApp()
