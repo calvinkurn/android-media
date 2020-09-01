@@ -586,7 +586,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 val recomData = getRecommendationUseCase.createObservable(getRecommendationUseCase.getRecomParams(
                         pageNumber = ProductDetailConstant.DEFAULT_PAGE_NUMBER,
                         pageName = recommendationDataModel.recomWidgetData?.pageName ?: "",
-                        queryParam = annotationChip.recommendationFilterChip.value,
+                        queryParam = if(annotationChip.recommendationFilterChip.isActivated) annotationChip.recommendationFilterChip.value else "",
                         productIds = arrayListOf(getDynamicProductInfoP1?.basic?.productID ?: "")
                 )).toBlocking().first()
                 if(recomData.isNotEmpty()){
@@ -597,9 +597,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                     ))
                     _statusFilterTopAdsProduct.postValue(true.asSuccess())
                 } else {
-                    val newRecommendation = recomData.first()
-                    _filterTopAdsProduct.postValue(_filterTopAdsProduct.value?.copy(
-//                            filterData = selectOrDeselectAnnotationChip(recommendationDataModel.filterData,annotationChip.recommendationFilterChip.name, annotationChip.recommendationFilterChip.isActivated)
+                    _filterTopAdsProduct.postValue(recommendationDataModel.copy(
+                            filterData = selectOrDeselectAnnotationChip(recommendationDataModel.filterData, annotationChip.recommendationFilterChip.name, annotationChip.recommendationFilterChip.isActivated)
                     ))
                     _statusFilterTopAdsProduct.postValue(false.asSuccess())
                 }
