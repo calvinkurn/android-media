@@ -6,14 +6,18 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
+import com.tokopedia.TalkInstance
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.talk.feature.inbox.data.TalkInboxTab
+import com.tokopedia.talk.feature.inbox.di.TalkInboxContainerComponent
 import com.tokopedia.talk.feature.inbox.presentation.adapter.TalkInboxContainerAdapter
 import com.tokopedia.talk_old.R
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_talk_inbox_container.*
 import javax.inject.Inject
 
-class TalkInboxContainerFragment : Fragment() {
+class TalkInboxContainerFragment : BaseDaggerFragment(), HasComponent<TalkInboxContainerComponent> {
 
     companion object {
         fun createNewInstance(): TalkInboxContainerFragment {
@@ -26,6 +30,23 @@ class TalkInboxContainerFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         return inflater.inflate(R.layout.fragment_talk_inbox_container, container, false)
+    }
+
+    override fun getScreenName(): String {
+        TODO("Not yet implemented")
+    }
+
+    override fun initInjector() {
+        component?.inject(this)
+    }
+
+    override fun getComponent(): TalkInboxContainerComponent? {
+        return activity?.run {
+            DaggerTalkInboxContainerComponent
+                    .builder()
+                    .talkComponent(TalkInstance.getComponent(application))
+                    .build()
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
