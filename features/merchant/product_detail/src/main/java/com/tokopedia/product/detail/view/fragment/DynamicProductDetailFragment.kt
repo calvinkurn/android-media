@@ -1025,7 +1025,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     override fun onDiscussionSendQuestionClicked(componentTrackDataModel: ComponentTrackDataModel) {
         doActionOrLogin({
-            val totalAvailableVariants = (viewModel.variantData?.children?.filter{ it.isBuyable }?.count() ?: 0).toString()
+            val totalAvailableVariants = (viewModel.variantData?.getBuyableVariantCount() ?: 0).toString()
             viewModel.getDynamicProductInfoP1?.let {
                 DynamicProductDetailTracking.Click.eventEmptyDiscussionSendQuestion(it, componentTrackDataModel, viewModel.userId, pdpUiUpdater?.productNewVariantDataModel?.isPartialySelected()?.not() ?: false, totalAvailableVariants)
             }
@@ -2965,7 +2965,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                             .buildUpon()
                             .appendQueryParameter(PARAM_APPLINK_SHOP_ID, it.basic.shopID)
                             .appendQueryParameter(PARAM_APPLINK_IS_VARIANT_SELECTED, (pdpUiUpdater?.productNewVariantDataModel?.isPartialySelected()?.not() ?: false).toString())
-                            .appendQueryParameter(PARAM_APPLINK_AVAILABLE_VARIANT, (viewModel.variantData?.children?.filter{ it.isBuyable }?.count() ?: 0).toString())
+                            .appendQueryParameter(PARAM_APPLINK_AVAILABLE_VARIANT, (viewModel.variantData?.getBuyableVariantCount() ?: 0).toString())
                             .build().toString()
             )
             startActivity(intent)

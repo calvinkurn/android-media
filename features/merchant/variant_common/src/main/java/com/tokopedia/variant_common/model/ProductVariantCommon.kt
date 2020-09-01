@@ -63,6 +63,10 @@ data class ProductVariantCommon(
         return isFlashSale
     }
 
+    fun getBuyableVariantCount(): Int {
+        return children.filter{ it.isBuyable }.count()
+    }
+
     val hasChildren: Boolean
         get() = with(children) { this.isNotEmpty() }
 
