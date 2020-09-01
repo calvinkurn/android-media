@@ -65,7 +65,6 @@ data class ConfigUIView(
                         R.string.notif_failed_menu_push
                     }
                 }
-                else -> R.string.mock
             }
         }
 
