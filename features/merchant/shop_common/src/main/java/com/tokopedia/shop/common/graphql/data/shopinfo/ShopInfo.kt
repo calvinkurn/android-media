@@ -84,7 +84,11 @@ data class ShopInfo(
 
         @SerializedName("shopStats")
         @Expose
-        val shopStats: ShopStats = ShopStats()
+        val shopStats: ShopStats = ShopStats(),
+
+        @SerializedName("shopSnippetURL")
+        @Expose
+        val shopSnippetUrl: String = ""
 
 ) {
     fun isShopInfoNotEmpty():Boolean {
@@ -107,7 +111,8 @@ data class ShopInfo(
                 goldOS.isOfficial,
                 goldOS.isGold,
                 createdInfo.openSince,
-                shipmentsData
+                shipmentsData,
+                shopSnippetUrl
         )
     }
 

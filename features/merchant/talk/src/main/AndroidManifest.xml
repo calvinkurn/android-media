@@ -77,6 +77,15 @@
         </activity>
 
         <activity
+            android:name="com.tokopedia.talk.feature.write.presentation.activity.TalkWriteActivity"
+            android:label="@string/title_write_page"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="adjustResize"
+            android:configChanges="keyboardHidden|orientation|screenSize">
+        </activity>
+
+        <activity
             android:name="com.tokopedia.talk_old.reporttalk.view.activity.ReportTalkActivity"
             android:label="@string/title_report_talk"
             android:screenOrientation="portrait"
@@ -106,7 +115,6 @@
             android:label="@string/write_new_talk"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
-
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -116,7 +124,6 @@
                     android:host="@string/host_global"
                     android:pathPattern="@string/path_add_talk"/>
             </intent-filter>
-
         </activity>
 
         <activity

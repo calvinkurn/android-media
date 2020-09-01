@@ -92,7 +92,6 @@ public class InstrumentationTestApp extends BaseMainApplication
         GlobalConfig.VERSION_NAME = "3.66";
         GraphqlClient.init(this);
         com.tokopedia.config.GlobalConfig.DEBUG = true;
-        enableTopAdsDetector();
         RemoteConfigInstance.initAbTestPlatform(this);
         super.onCreate();
 

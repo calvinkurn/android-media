@@ -88,23 +88,30 @@ class DeferredWorker(val context: Context, params: WorkerParameters) :
         ) {
             try {
                 launch {
-                    if (!isDeferredWorkCompleted(context, resourceId)) {
-                        val pushWorker = OneTimeWorkRequest
-                                .Builder(DeferredWorker::class.java)
-                                .setConstraints(getWorkerConstraints())
-                                .setBackoffCriteria(
-                                        BackoffPolicy.LINEAR,
-                                        30 * 60 * 1000,
-                                        TimeUnit.MILLISECONDS
-                                )
-                                .setInputData(createInputData(resourceId))
-                                .build()
-                        WorkManager.getInstance()
-                                .enqueueUniqueWork(WORKER_TAG, ExistingWorkPolicy.KEEP, pushWorker)
-                        resourceDownloadManager.logCurrentState(
-                                context.getString(R.string.rem_res_req_worker_scheduled_message).format(WORKER_TAG)
-                        )
-                    } else {
+                    try {
+                        if (!isDeferredWorkCompleted(context, resourceId)) {
+                            val pushWorker = OneTimeWorkRequest
+                                    .Builder(DeferredWorker::class.java)
+                                    .setConstraints(getWorkerConstraints())
+                                    .setBackoffCriteria(
+                                            BackoffPolicy.LINEAR,
+                                            30 * 60 * 1000,
+                                            TimeUnit.MILLISECONDS
+                                    )
+                                    .setInputData(createInputData(resourceId))
+                                    .build()
+                            WorkManager.getInstance()
+                                    .enqueueUniqueWork(WORKER_TAG, ExistingWorkPolicy.KEEP, pushWorker)
+                            resourceDownloadManager.logCurrentState(
+                                    context.getString(R.string.rem_res_req_worker_scheduled_message).format(WORKER_TAG)
+                            )
+                        } else {
+                            resourceDownloadManager.logCurrentState(
+                                    context.getString(R.string.rem_res_req_worker_schedule_not_required_message)
+                                            .format(WORKER_TAG)
+                            )
+                        }
+                    } catch (ex: Exception) {
                         resourceDownloadManager.logCurrentState(
                                 context.getString(R.string.rem_res_req_worker_schedule_not_required_message)
                                         .format(WORKER_TAG)
