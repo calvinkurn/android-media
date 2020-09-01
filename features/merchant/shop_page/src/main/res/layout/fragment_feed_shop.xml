@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white"
-        android:fitsSystemWindows="true">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
             android:id="@+id/swipeToRefresh"
@@ -26,7 +26,7 @@
                 android:paddingTop="@dimen/dp_8"
                 android:paddingBottom="@dimen/spacing_lvl3"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:reverseLayout="false" />
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
         </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
