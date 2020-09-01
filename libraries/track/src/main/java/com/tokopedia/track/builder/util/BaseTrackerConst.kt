@@ -113,7 +113,6 @@ abstract class BaseTrackerConst {
             val clusterId: Int = -1,
             val quantity: String = "")
 
-
     object Ecommerce {
         const val KEY = "ecommerce"
         const val PROMOTION_NAME = "/ - p%s - %s - %s"

@@ -21,3 +21,5 @@ project.ext {
 }
 
 apply from: '../../publish_local.gradle'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
