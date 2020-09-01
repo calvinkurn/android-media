@@ -1,4 +1,4 @@
-package com.tokopedia.tradein.view.viewcontrollers;
+package com.tokopedia.tradein.view.viewcontrollers.activity;
 
 import android.Manifest;
 import android.app.Activity;
@@ -37,8 +37,9 @@ import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.tradein.R;
 import com.tokopedia.tradein.TradeInGTMConstants;
 import com.tokopedia.common_tradein.model.TradeInParams;
+import com.tokopedia.tradein.view.viewcontrollers.bottomsheet.TradeInImeiHelpBottomSheet;
 import com.tokopedia.tradein.viewmodel.HomeResult;
-import com.tokopedia.tradein.viewmodel.TradeInHomeViewModel;
+import com.tokopedia.tradein.viewmodel.MoneyInHomeViewModel;
 import com.tokopedia.tradein.Constants;
 import com.tokopedia.design.dialog.IAccessRequestListener;
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel;
@@ -52,9 +53,9 @@ import java.util.HashMap;
 
 import timber.log.Timber;
 
-import static com.tokopedia.tradein.view.viewcontrollers.FinalPriceActivity.PARAM_TRADEIN_PHONE_TYPE;
+import static com.tokopedia.tradein.view.viewcontrollers.activity.FinalPriceActivity.PARAM_TRADEIN_PHONE_TYPE;
 
-public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewModel> implements IAccessRequestListener, Laku6TradeIn.TradeInListener {
+public class MoneyInHomeActivity extends BaseTradeInActivity<MoneyInHomeViewModel> implements IAccessRequestListener, Laku6TradeIn.TradeInListener {
 
 
     private TextView mTvPriceElligible;
@@ -65,7 +66,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
     private TextView mTvGoToProductDetails;
     private TextView mTvNotUpto;
     private TextView tvIndicateive;
-    private TradeInHomeViewModel tradeInHomeViewModel;
+    private MoneyInHomeViewModel moneyInHomeViewModel;
     private int closeButtonText;
     private int notElligibleText;
     private boolean isShowingPermissionPopup;
@@ -81,7 +82,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            tradeInHomeViewModel.processMessage(intent);
+            moneyInHomeViewModel.processMessage(intent);
         }
     };
 
@@ -126,7 +127,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
     private Laku6TradeIn laku6TradeIn;
 
     public static Intent getIntent(Context context) {
-        return new Intent(context, TradeInHomeActivity.class);
+        return new Intent(context, MoneyInHomeActivity.class);
     }
 
     @Override
@@ -136,6 +137,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
 
     @Override
     public void initView() {
+        startActivity(new Intent(this, TradeInInfoActivity.class));
         setTradeInParams();
         mTvPriceElligible = findViewById(R.id.tv_price_elligible);
         mButtonRemove = findViewById(R.id.button_remove);
@@ -172,25 +174,25 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
 
     private void setTradeInParams() {
         if (getIntent().hasExtra(TradeInParams.class.getSimpleName())) {
-            tradeInHomeViewModel.setTradeInParams(getIntent().getParcelableExtra(TradeInParams.class.getSimpleName()));
+            moneyInHomeViewModel.setTradeInParams(getIntent().getParcelableExtra(TradeInParams.class.getSimpleName()));
         }
     }
 
     @Override
-    public Class<TradeInHomeViewModel> getViewModelType() {
-        return TradeInHomeViewModel.class;
+    public Class<MoneyInHomeViewModel> getViewModelType() {
+        return MoneyInHomeViewModel.class;
     }
 
     @Override
     public void setViewModel(BaseViewModel viewModel) {
-        tradeInHomeViewModel = (TradeInHomeViewModel) viewModel;
-        getLifecycle().addObserver(tradeInHomeViewModel);
+        moneyInHomeViewModel = (MoneyInHomeViewModel) viewModel;
+        getLifecycle().addObserver(moneyInHomeViewModel);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        tradeInHomeViewModel.getHomeResultData().observe(this, (homeResult -> {
+        moneyInHomeViewModel.getHomeResultData().observe(this, (homeResult -> {
             if (!homeResult.isSuccess()) {
                 mTvInitialPrice.setText(homeResult.getDisplayMessage());
                 mTvPriceElligible.setText(getString(notElligibleText));
@@ -203,8 +205,8 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
                 });
             } else {
                 HomeResult.PriceState state = homeResult.getPriceStatus();
-                productName = tradeInHomeViewModel.getTradeInParams().getProductName() != null
-                        ? tradeInHomeViewModel.getTradeInParams().getProductName().toLowerCase()
+                productName = moneyInHomeViewModel.getTradeInParams().getProductName() != null
+                        ? moneyInHomeViewModel.getTradeInParams().getProductName().toLowerCase()
                         : "";
                 switch (state) {
                     case DIAGNOSED_INVALID:
@@ -282,14 +284,14 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
                 }
             }
         }));
-        tradeInHomeViewModel.getAskUserLogin().observe(this, (userLoginStatus -> {
+        moneyInHomeViewModel.getAskUserLogin().observe(this, (userLoginStatus -> {
             if (userLoginStatus != null && userLoginStatus == Constants.LOGIN_REQUIRED) {
                 navigateToActivityRequest(RouteManager.getIntent(this, ApplinkConst.LOGIN), LOGIN_REQUEST);
             } else {
                 showPermissionDialog();
             }
         }));
-        tradeInHomeViewModel.getImeiStateLiveData().observe(this, showImei -> {
+        moneyInHomeViewModel.getImeiStateLiveData().observe(this, showImei -> {
             if(showImei){
                 imeiView.setVisibility(View.VISIBLE);
             } else {
@@ -324,7 +326,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
 
     private void goToHargaFinal(String deviceDisplayName) {
         Intent finalPriceIntent = new Intent(this, FinalPriceActivity.class);
-        TradeInParams params = tradeInHomeViewModel.getTradeInParams();
+        TradeInParams params = moneyInHomeViewModel.getTradeInParams();
         finalPriceIntent.putExtra(TradeInParams.class.getSimpleName(), params);
         if(deviceDisplayName!=null)
             finalPriceIntent.putExtra(PARAM_TRADEIN_PHONE_TYPE, deviceDisplayName.toLowerCase());
@@ -350,7 +352,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
                             Manifest.permission.CAMERA},
                     MY_PERMISSIONS_REQUEST_READ_PHONE_STATE);
         } else {
-            tradeInHomeViewModel.getMaxPrice(laku6TradeIn, TRADEIN_TYPE);
+            moneyInHomeViewModel.getMaxPrice(laku6TradeIn, TRADEIN_TYPE);
         }
     }
 
@@ -418,7 +420,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
                     }
                 }
                 showProgressBar();
-                tradeInHomeViewModel.getMaxPrice(laku6TradeIn, TRADEIN_TYPE);
+                moneyInHomeViewModel.getMaxPrice(laku6TradeIn, TRADEIN_TYPE);
             } else {
                 requestPermission();
             }
@@ -476,7 +478,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
             requestPermission();
         } else if (requestCode == LOGIN_REQUEST) {
             if (resultCode == Activity.RESULT_OK)
-                tradeInHomeViewModel.checkLogin();
+                moneyInHomeViewModel.checkLogin();
             else
                 finish();
         }
@@ -527,7 +529,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
         values.put(TradeInGTMConstants.EVENT_ACTION, TradeInGTMConstants.VIEW_PRICE_RANGE_PAGE);
         values.put(TradeInGTMConstants.EVENT_LABEL,  getString(R.string.trade_in_event_label_phone_type_min_price_max_price,
                 productName, minPrice.toString(), maxPrice.toString()));
-        values.put(TradeInGTMConstants.PRODUCT_ID,  tradeInHomeViewModel.getTradeInParams().getProductId());
+        values.put(TradeInGTMConstants.PRODUCT_ID,  moneyInHomeViewModel.getTradeInParams().getProductId());
 
         IrisAnalytics.getInstance(this).sendEvent(values);
     }
@@ -535,7 +537,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
     @Override
     public void onFinished(JSONObject jsonObject) {
         hideProgressBar();
-        tradeInHomeViewModel.setDeviceId(editTextImei.getText().toString());
+        moneyInHomeViewModel.setDeviceId(editTextImei.getText().toString());
         inputImei = true;
         TradeInUtils.setImeiNumber(this, editTextImei.getText().toString());
         getPriceFromSDK(this);

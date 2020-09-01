@@ -9,7 +9,7 @@ import com.tokopedia.tradein.model.DeviceDiagInput
 import com.tokopedia.tradein.model.DeviceDiagInputResponse
 import com.tokopedia.tradein.model.DeviceDiagnostics
 import com.tokopedia.tradein.repository.TradeInRepository
-import com.tokopedia.tradein.view.viewcontrollers.BaseTradeInActivity.TRADEIN_OFFLINE
+import com.tokopedia.tradein.view.viewcontrollers.activity.BaseTradeInActivity.TRADEIN_OFFLINE
 import java.util.*
 import javax.inject.Inject
 

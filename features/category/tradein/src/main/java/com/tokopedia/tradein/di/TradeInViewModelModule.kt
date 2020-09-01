@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.basemvvm.viewmodel.ViewModelProviderFactory
 import com.tokopedia.tradein.viewmodel.FinalPriceViewModel
 import com.tokopedia.tradein.viewmodel.MoneyInCheckoutViewModel
-import com.tokopedia.tradein.viewmodel.TradeInHomeViewModel
+import com.tokopedia.tradein.viewmodel.MoneyInHomeViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -22,8 +22,8 @@ abstract class TradeInViewModelModule {
     @Binds
     @IntoMap
     @TradeInScope
-    @ViewModelKey(TradeInHomeViewModel::class)
-    internal abstract fun tradeInHomeViewModel(viewModel: TradeInHomeViewModel): ViewModel
+    @ViewModelKey(MoneyInHomeViewModel::class)
+    internal abstract fun tradeInHomeViewModel(viewModel: MoneyInHomeViewModel): ViewModel
 
     @Binds
     @IntoMap

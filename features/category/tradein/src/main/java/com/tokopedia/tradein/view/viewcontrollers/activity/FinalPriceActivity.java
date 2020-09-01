@@ -1,4 +1,4 @@
-package com.tokopedia.tradein.view.viewcontrollers;
+package com.tokopedia.tradein.view.viewcontrollers.activity;
 
 import android.app.Activity;
 import android.content.Context;

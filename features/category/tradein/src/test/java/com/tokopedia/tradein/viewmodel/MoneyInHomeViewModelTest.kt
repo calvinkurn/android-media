@@ -29,7 +29,7 @@ import org.junit.Test
 
 
 @ExperimentalCoroutinesApi
-class TradeInHomeViewModelTest {
+class MoneyInHomeViewModelTest {
 
     @get:Rule
     var rule = InstantTaskExecutorRule()
@@ -38,7 +38,7 @@ class TradeInHomeViewModelTest {
     val processMessageUseCase: ProcessMessageUseCase = mockk()
     val userSession: UserSessionInterface = mockk()
 
-    var tradeInHomeViewModel = spyk(TradeInHomeViewModel(processMessageUseCase, checkMoneyInUseCase, userSession))
+    var tradeInHomeViewModel = spyk(MoneyInHomeViewModel(processMessageUseCase, checkMoneyInUseCase, userSession))
 
     @RelaxedMockK
     lateinit var deviceDiagnostics: DeviceDiagnostics
