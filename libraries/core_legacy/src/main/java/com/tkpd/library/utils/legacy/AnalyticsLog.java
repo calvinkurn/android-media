@@ -25,7 +25,7 @@ public class AnalyticsLog {
     private static final String EVENT_CLICK_LOGOUT = "clickLogout";
     private static final String CATEGORY_FORCE_LOGOUT = "force logout";
 
-    public static void logForceLogout(Context context, GCMHandler gcmHandler, SessionHandler sessionHandler, String url, boolean isInvalidToken, boolean isRequestDenied) {
+    public static void logForceLogout(Context context, GCMHandler gcmHandler, SessionHandler sessionHandler, String url, boolean isInvalidToken, boolean isRequestDenied, String type) {
         String baseUrl = getBaseUrl(url);
 
         AnalyticsLog.log(context, "ErrorType=Force Logout!"
@@ -40,6 +40,7 @@ public class AnalyticsLog {
                 + " DeviceModel=" + Build.MODEL
                 + " DeviceId=" + "'" + gcmHandler.getRegistrationId() + "'"
                 + " Environment=" + isStaging(baseUrl)
+                + " RefreshType= " + "'" + type + "'"
 
         );
 

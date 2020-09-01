@@ -384,7 +384,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             }
             if (isUnauthorized(newestRequest, response) || isNeedGcmUpdate(response)){
                 ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString(),
-                        isUnauthorized(newestRequest, response),  isNeedGcmUpdate(response));
+                        isUnauthorized(newestRequest, response),  isNeedGcmUpdate(response), "Deprecated - Refresh Token and GCM Update");
             }
 
             return chain.proceed(newestRequest);

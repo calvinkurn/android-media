@@ -438,9 +438,9 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void sendForceLogoutAnalytics(Response response, boolean isInvalidToken,
-                                         boolean isRequestDenied) {
-        ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString(), isInvalidToken, isRequestDenied);
+    public void sendForceLogoutAnalytics(String url, boolean isInvalidToken,
+                                         boolean isRequestDenied, String type) {
+        ServerErrorHandler.sendForceLogoutAnalytics(url, isInvalidToken, isRequestDenied, type);
     }
 
     @Override

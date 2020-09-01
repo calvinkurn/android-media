@@ -19,6 +19,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.inject.Named;
 
@@ -62,6 +64,8 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     private static final String RESPONSE_PARAM_TOKEN = "token";
     private static final String REQUEST_PARAM_REFRESH_TOKEN = "refresh_token";
     public static final int BYTE_COUNT = 512;
+
+    public static final String PATH_REGEX = "(query)\\s*(\\w+)";
 
     private Context context;
     protected UserSessionInterface userSession;
@@ -353,8 +357,13 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     protected Response refreshTokenAndGcmUpdate(Chain chain, Response response, Request finalRequest) throws IOException {
         AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
         try {
-            String path = getRefreshQueryPath(finalRequest);
+            String path = getRefreshQueryPath(finalRequest, response);
             String newAccessToken = accessTokenRefresh.refreshToken(context, userSession, networkRouter, path);
+
+            if(newAccessToken.isEmpty()) {
+                return response;
+            }
+
             networkRouter.doRelogin(newAccessToken);
 
             Request newestRequest;
@@ -365,7 +374,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             }
             if (isUnauthorized(newestRequest, response) || isNeedGcmUpdate(response)){
                 networkRouter.sendForceLogoutAnalytics(path, isUnauthorized(newestRequest,
-                        response), isNeedGcmUpdate(response));
+                        response), isNeedGcmUpdate(response), "Refresh Token and GCM Update");
             }
 
             return chain.proceed(newestRequest);
@@ -378,8 +387,20 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     protected Response refreshToken(Chain chain, Response response, Request finalRequest)  {
         AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
         try {
-            accessTokenRefresh.refreshToken(context, userSession, networkRouter, getRefreshQueryPath(finalRequest));
+            String path = getRefreshQueryPath(finalRequest, response);
+            String newAccessToken = accessTokenRefresh.refreshToken(context, userSession, networkRouter, path);
+
+            if(newAccessToken.isEmpty()) {
+                return response;
+            }
+
             Request newest = recreateRequestWithNewAccessToken(chain);
+
+            if (isUnauthorized(newest, response) || isNeedGcmUpdate(response)){
+                networkRouter.sendForceLogoutAnalytics(path, isUnauthorized(newest,
+                        response), isNeedGcmUpdate(response), "Refresh Token Only");
+            }
+
             return chain.proceed(newest);
         } catch (IOException e) {
             e.printStackTrace();
@@ -435,7 +456,8 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
                 .build();
     }
 
-    private String getRefreshQueryPath(Request finalRequest) {
+    private String getRefreshQueryPath(Request finalRequest, Response response) {
+        String result = response.request().url().toString() + " ";
         String path = "";
         try {
             final Request copy = finalRequest.newBuilder().build();
@@ -446,11 +468,15 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             path = buffer.readUtf8();
         } catch (Exception ex) {
             ex.printStackTrace();
-            if(ex.getMessage() != null) {
-                path = ex.getMessage();
-            }
         }
 
-        return path.substring(0, Math.min(path.length(), 150));
+        Pattern pattern = Pattern.compile(PATH_REGEX);
+        Matcher matcher = pattern.matcher(path);
+
+        if(matcher.find()) {
+            result += matcher.group();
+        }
+
+        return result;
     }
 }

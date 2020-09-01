@@ -33,14 +33,15 @@ public class ServerErrorHandler {
         LocalBroadcastManager.getInstance(CoreNetworkApplication.getAppContext()).sendBroadcast(intent);
     }
 
-    public static void sendForceLogoutAnalytics(String url, boolean isInvalidToken, boolean isRequestDenied) {
+    public static void sendForceLogoutAnalytics(String url, boolean isInvalidToken, boolean isRequestDenied, String type) {
         AnalyticsLog.logForceLogout(
                 CoreNetworkApplication.getAppContext(),
                 CoreNetworkApplication.getCoreNetworkRouter().legacyGCMHandler(),
                 CoreNetworkApplication.getCoreNetworkRouter().legacySessionHandler(),
                 url,
                 isInvalidToken,
-                isRequestDenied);
+                isRequestDenied,
+                type);
     }
 
     public static void sendErrorNetworkAnalytics(String url, int errorCode) {
