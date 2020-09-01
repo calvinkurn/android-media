@@ -596,6 +596,12 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                             filterData = selectOrDeselectAnnotationChip(recommendationDataModel.filterData,annotationChip.recommendationFilterChip.name, annotationChip.recommendationFilterChip.isActivated)
                     ))
                     _statusFilterTopAdsProduct.postValue(true.asSuccess())
+                } else {
+                    val newRecommendation = recomData.first()
+                    _filterTopAdsProduct.postValue(_filterTopAdsProduct.value?.copy(
+//                            filterData = selectOrDeselectAnnotationChip(recommendationDataModel.filterData,annotationChip.recommendationFilterChip.name, annotationChip.recommendationFilterChip.isActivated)
+                    ))
+                    _statusFilterTopAdsProduct.postValue(false.asSuccess())
                 }
             }
         }) { throwable ->
