@@ -48,6 +48,13 @@ class EventCategoryPageTracking {
         val POSITION = "position"
     }
 
+    private object Misc{
+        val SCREENNAME = "screenName"
+        val CURRENTSITE = "currentSite"
+        val BUSINESSUNIT = "businessUnit"
+        val CATEGORY = "category"
+    }
+
     fun onClickGridViewProduct(event: EventGridAdapter.EventGrid,
                                listsEvent: List<EventGridAdapter.EventGrid>,
                                position: Int){
@@ -56,6 +63,10 @@ class EventCategoryPageTracking {
                 Event.CATEGORY, "digital - event",
                 Event.ACTION, "click page product",
                 Event.LABEL, String.format("%s - %s", event.nama_event, position.toString()),
+                Misc.CURRENTSITE, "tokopediadigitalevents",
+                Misc.BUSINESSUNIT, "travel & entertainment",
+                Misc.CATEGORY, "events",
+                Misc.SCREENNAME, "",
                 Ecommerce.KEY, DataLayer.mapOf(
                 Click.KEY, DataLayer.mapOf(Click.ACTION_FIELD, DataLayer.mapOf("list", event.nama_event),
                 Product.KEY, DataLayer.listOf(
@@ -78,7 +89,11 @@ class EventCategoryPageTracking {
                 Event.KEY, "clickEvent",
                 Event.CATEGORY, "digital - event",
                 Event.ACTION, "click filter",
-                Event.LABEL, String.format("%s", category.category)
+                Event.LABEL, String.format("%s", category.category),
+                Misc.CURRENTSITE, "tokopediadigitalevents",
+                Misc.BUSINESSUNIT, "travel & entertainment",
+                Misc.CATEGORY, "events",
+                Misc.SCREENNAME, ""
         ))
     }
 
@@ -90,6 +105,10 @@ class EventCategoryPageTracking {
                 Event.CATEGORY, "digital - event",
                 Event.ACTION, "impression page product",
                 Event.LABEL, String.format("%s - %s", event.nama_event, position.toString()),
+                Misc.CURRENTSITE, "tokopediadigitalevents",
+                Misc.BUSINESSUNIT, "travel & entertainment",
+                Misc.CATEGORY, "events",
+                Misc.SCREENNAME, "",
                 Ecommerce.KEY, DataLayer.mapOf(
                 Ecommerce.CURRENCY_CODE, "IDR",
                 Impression.KEY, listOf(DataLayer.mapOf(

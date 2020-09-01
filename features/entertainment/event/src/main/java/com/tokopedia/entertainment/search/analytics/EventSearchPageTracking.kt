@@ -63,12 +63,23 @@ class EventSearchPageTracking {
         val PROMO_CODE = "promo_code"
     }
 
+    private object Misc{
+        val SCREENNAME = "screenName"
+        val CURRENTSITE = "currentSite"
+        val BUSINESSUNIT = "businessUnit"
+        val CATEGORY = "category"
+    }
+
     fun impressionCitySearchSuggestion(listsCity: List<SearchLocationListViewHolder.LocationSuggestion>){
         getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 Event.KEY, "promoView",
                 Event.CATEGORY, "digital - event",
                 Event.ACTION, "impression city result",
                 Event.LABEL, "",
+                Misc.CURRENTSITE, "tokopediadigitalevents",
+                Misc.BUSINESSUNIT, "travel & entertainment",
+                Misc.CATEGORY, "events",
+                Misc.SCREENNAME, "",
                 Ecommerce.KEY, DataLayer.mapOf(
                 Promo.KEY_IMPRESSION, DataLayer.mapOf(
                 Promo.PROMOTION, getPromoLocationSuggestion(listsCity)))))
@@ -98,8 +109,12 @@ class EventSearchPageTracking {
         getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 Event.KEY, "promoClick",
                 Event.CATEGORY, "digital - event",
-                Event.ACTION, "click city suggestion",
+                Event.ACTION, "click city result",
                 Event.LABEL, String.format("%s - %s", location.city, position.toString()),
+                Misc.CURRENTSITE, "tokopediadigitalevents",
+                Misc.BUSINESSUNIT, "travel & entertainment",
+                Misc.CATEGORY, "events",
+                Misc.SCREENNAME, "",
                 Ecommerce.KEY, DataLayer.mapOf(
                 Promo.KEY_CLICK, DataLayer.mapOf(
                 Promo.PROMOTION, getPromoLocationSuggestion(listsLocation)))))
@@ -111,6 +126,10 @@ class EventSearchPageTracking {
                 Event.CATEGORY, "digital - event",
                 Event.ACTION, "impression event suggestion",
                 Event.LABEL, "",
+                Misc.CURRENTSITE, "tokopediadigitalevents",
+                Misc.BUSINESSUNIT, "travel & entertainment",
+                Misc.CATEGORY, "events",
+                Misc.SCREENNAME, "",
                 Ecommerce.KEY, DataLayer.mapOf(
                 Ecommerce.CURRENCY_CODE, "IDR",
                 Impression.KEY, getImpressionEventSearchList(listsEvent))))
@@ -142,6 +161,10 @@ class EventSearchPageTracking {
                 Event.CATEGORY, "digital - event",
                 Event.ACTION, "click event suggestion",
                 Event.LABEL, String.format("%s - %s", event.nama_kegiatan, position.toString()),
+                Misc.CURRENTSITE, "tokopediadigitalevents",
+                Misc.BUSINESSUNIT, "travel & entertainment",
+                Misc.CATEGORY, "events",
+                Misc.SCREENNAME, "",
                 Ecommerce.KEY, DataLayer.mapOf(
                 Click.KEY, DataLayer.mapOf(
                 Click.ACTION_FIELD, DataLayer.mapOf("list", event.nama_kegiatan),
@@ -159,12 +182,32 @@ class EventSearchPageTracking {
         )))))
     }
 
+    //4
     fun clickSearchBarOnSearchActivity() : Boolean{
         getTracker().sendGeneralEvent(DataLayer.mapOf(
                 Event.KEY,"clickEvent",
                 Event.CATEGORY, "digital - event",
                 Event.ACTION, "click search box",
-                Event.LABEL, ""
+                Event.LABEL, "",
+                Misc.SCREENNAME, "digital/event/search",
+                Misc.CURRENTSITE, "tokopediadigitalevents",
+                Misc.BUSINESSUNIT, "travel & entertainment",
+                Misc.CATEGORY, "events"
+        ))
+        return true
+    }
+
+    //5
+    fun clickSearchBarOnKeyWordSearchActivity(keyword: String) : Boolean{
+        getTracker().sendGeneralEvent(DataLayer.mapOf(
+                Event.KEY,"clickEvent",
+                Event.CATEGORY, "digital - event",
+                Event.ACTION, "click search",
+                Event.LABEL, keyword,
+                Misc.SCREENNAME, "",
+                Misc.CURRENTSITE, "tokopediadigitalevents",
+                Misc.BUSINESSUNIT, "travel & entertainment",
+                Misc.CATEGORY, "events"
         ))
         return true
     }
