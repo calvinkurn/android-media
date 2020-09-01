@@ -68,6 +68,10 @@ class EventSearchPageTracking {
         val CURRENTSITE = "currentSite"
         val BUSINESSUNIT = "businessUnit"
         val CATEGORY = "category"
+
+        val CURRENTSITEDATA =  "tokopediadigitalevents"
+        val BUSINESSUNITDATA = "travel & entertainment"
+        val CATEGORYDATA = "events"
     }
 
     fun impressionCitySearchSuggestion(listsCity: SearchLocationListViewHolder.LocationSuggestion, position: Int){
@@ -76,9 +80,9 @@ class EventSearchPageTracking {
                 Event.CATEGORY, "digital - event",
                 Event.ACTION, "impression city result",
                 Event.LABEL, "",
-                Misc.CURRENTSITE, "tokopediadigitalevents",
-                Misc.BUSINESSUNIT, "travel & entertainment",
-                Misc.CATEGORY, "events",
+                Misc.CURRENTSITE, Misc.CURRENTSITEDATA,
+                Misc.BUSINESSUNIT, Misc.BUSINESSUNITDATA,
+                Misc.CATEGORY, Misc.CATEGORYDATA,
                 Misc.SCREENNAME, "",
                 Ecommerce.KEY, DataLayer.mapOf(
                 Promo.KEY_IMPRESSION, DataLayer.mapOf(
@@ -107,9 +111,9 @@ class EventSearchPageTracking {
                 Event.CATEGORY, "digital - event",
                 Event.ACTION, "click city result",
                 Event.LABEL, String.format("%s - %s", location.city, position.toString()),
-                Misc.CURRENTSITE, "tokopediadigitalevents",
-                Misc.BUSINESSUNIT, "travel & entertainment",
-                Misc.CATEGORY, "events",
+                Misc.CURRENTSITE, Misc.CURRENTSITEDATA,
+                Misc.BUSINESSUNIT, Misc.BUSINESSUNITDATA,
+                Misc.CATEGORY, Misc.CATEGORYDATA,
                 Misc.SCREENNAME, "",
                 Ecommerce.KEY, DataLayer.mapOf(
                 Promo.KEY_CLICK, DataLayer.mapOf(
@@ -122,9 +126,9 @@ class EventSearchPageTracking {
                 Event.CATEGORY, "digital - event",
                 Event.ACTION, "impression product result",
                 Event.LABEL, "",
-                Misc.CURRENTSITE, "tokopediadigitalevents",
-                Misc.BUSINESSUNIT, "travel & entertainment",
-                Misc.CATEGORY, "events",
+                Misc.CURRENTSITE, Misc.CURRENTSITEDATA,
+                Misc.BUSINESSUNIT, Misc.BUSINESSUNITDATA,
+                Misc.CATEGORY, Misc.CATEGORYDATA,
                 Misc.SCREENNAME, "",
                 Ecommerce.KEY, DataLayer.mapOf(
                 Ecommerce.CURRENCY_CODE, "IDR",
@@ -154,9 +158,9 @@ class EventSearchPageTracking {
                 Event.CATEGORY, "digital - event",
                 Event.ACTION, "click product result",
                 Event.LABEL, String.format("%s - %s", event.nama_kegiatan, position.toString()),
-                Misc.CURRENTSITE, "tokopediadigitalevents",
-                Misc.BUSINESSUNIT, "travel & entertainment",
-                Misc.CATEGORY, "events",
+                Misc.CURRENTSITE, Misc.CURRENTSITEDATA,
+                Misc.BUSINESSUNIT, Misc.BUSINESSUNITDATA,
+                Misc.CATEGORY, Misc.CATEGORYDATA,
                 Misc.SCREENNAME, "",
                 Ecommerce.KEY, DataLayer.mapOf(
                 Click.KEY, DataLayer.mapOf(
@@ -183,9 +187,9 @@ class EventSearchPageTracking {
                 Event.ACTION, "click search box",
                 Event.LABEL, "",
                 Misc.SCREENNAME, "digital/event/search",
-                Misc.CURRENTSITE, "tokopediadigitalevents",
-                Misc.BUSINESSUNIT, "travel & entertainment",
-                Misc.CATEGORY, "events"
+                Misc.CURRENTSITE, Misc.CURRENTSITEDATA,
+                Misc.BUSINESSUNIT, Misc.BUSINESSUNITDATA,
+                Misc.CATEGORY, Misc.CATEGORYDATA
         ))
         return true
     }
@@ -198,9 +202,9 @@ class EventSearchPageTracking {
                 Event.ACTION, "click search",
                 Event.LABEL, keyword,
                 Misc.SCREENNAME, "",
-                Misc.CURRENTSITE, "tokopediadigitalevents",
-                Misc.BUSINESSUNIT, "travel & entertainment",
-                Misc.CATEGORY, "events"
+                Misc.CURRENTSITE, Misc.CURRENTSITEDATA,
+                Misc.BUSINESSUNIT, Misc.BUSINESSUNITDATA,
+                Misc.CATEGORY, Misc.CATEGORYDATA
         ))
         return true
     }
