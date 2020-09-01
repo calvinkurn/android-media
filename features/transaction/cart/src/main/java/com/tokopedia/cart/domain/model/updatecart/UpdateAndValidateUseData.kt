@@ -1,4 +1,4 @@
-package com.tokopedia.cart.domain.model.cartlist
+package com.tokopedia.cart.domain.model.updatecart
 
 import android.os.Parcel
 import android.os.Parcelable

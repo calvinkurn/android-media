@@ -12,7 +12,7 @@ import com.tokopedia.purchase_platform.common.feature.insurance.usecase.RemoveIn
 import com.tokopedia.purchase_platform.common.feature.insurance.usecase.UpdateInsuranceProductDataUsecase
 import com.tokopedia.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.cart.domain.model.cartlist.CartListData
-import com.tokopedia.cart.domain.model.cartlist.UpdateAndReloadCartListData
+import com.tokopedia.cart.domain.model.updatecart.UpdateAndReloadCartListData
 import com.tokopedia.cart.view.CartListPresenter
 import com.tokopedia.cart.view.ICartListView
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase

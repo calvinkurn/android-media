@@ -1,11 +1,12 @@
 package com.tokopedia.cart.domain.usecase
 
+import com.tokopedia.cart.data.model.request.UpdateCartRequest
+import com.tokopedia.cart.data.model.response.updatecart.UpdateCartGqlResponse
+import com.tokopedia.cart.domain.mapper.mapUpdateCartData
+import com.tokopedia.cart.domain.model.updatecart.UpdateCartData
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
-import com.tokopedia.cart.data.model.request.UpdateCartRequest
-import com.tokopedia.cart.data.model.response.updatecart.UpdateCartGqlResponse
-import com.tokopedia.cart.domain.model.cartlist.UpdateCartData
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
@@ -32,6 +33,17 @@ class UpdateCartUseCase @Inject constructor(private val graphqlUseCase: GraphqlU
                 data {
                     error
                     status 
+                    prompt_page {
+                        type
+                        title
+                        description
+                        buttons {
+                            text
+                            link
+                            action
+                            color
+                        }
+                    }
                 }
             }
         }
@@ -53,21 +65,12 @@ class UpdateCartUseCase @Inject constructor(private val graphqlUseCase: GraphqlU
         return graphqlUseCase.createObservable(RequestParams.EMPTY)
                 .map {
                     val updateCartGqlResponse = it.getData<UpdateCartGqlResponse>(UpdateCartGqlResponse::class.java)
-
-                    val updateCartData = UpdateCartData()
-
+                    var updateCartData = UpdateCartData()
                     if (updateCartGqlResponse != null) {
-                        updateCartData.isSuccess = !(updateCartGqlResponse.updateCartDataResponse.status != "OK" ||
-                                updateCartGqlResponse.updateCartDataResponse.error.isNotEmpty() ||
-                                updateCartGqlResponse.updateCartDataResponse.data == null || !updateCartGqlResponse.updateCartDataResponse.data?.status)
-
-                        updateCartData.message = if (updateCartGqlResponse.updateCartDataResponse.error.isNotEmpty()) {
-                            updateCartGqlResponse.updateCartDataResponse.error[0]
-                        } else {
-                            ""
+                        updateCartGqlResponse.updateCartDataResponse.data?.let {
+                            updateCartData = mapUpdateCartData(updateCartGqlResponse, it)
                         }
                     }
-
                     updateCartData
                 }
                 .subscribeOn(schedulers.io)

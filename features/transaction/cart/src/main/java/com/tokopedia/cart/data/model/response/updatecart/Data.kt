@@ -10,5 +10,7 @@ data class Data(
         @SerializedName("error")
         val error: String = "",
         @SerializedName("status")
-        val status: Boolean
+        val status: Boolean,
+        @SerializedName("prompt_page")
+        val promptPage: PromptPage = PromptPage()
 )
