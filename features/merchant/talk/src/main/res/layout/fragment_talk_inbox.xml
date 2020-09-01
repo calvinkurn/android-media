@@ -8,7 +8,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/talk_inbox_app_bar_layout"
+        android:id="@+id/talkInboxAppBarLayout"
         android:background="@android:color/transparent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

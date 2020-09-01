@@ -67,6 +67,7 @@ class TalkInboxViewModel @Inject constructor(
 
     private fun getInboxList(page: Int = 0) {
         launchCatchError(block = {
+            _inboxList.postValue(TalkInboxViewState.Loading(page))
             talkInboxListUseCase.setRequestParam(type, filter.filterParam, page)
             val response = talkInboxListUseCase.executeOnBackground()
             with(response.discussionInbox) {
@@ -74,7 +75,7 @@ class TalkInboxViewModel @Inject constructor(
                 _inboxList.postValue(TalkInboxViewState.Success(inbox.map { TalkInboxUiModel(it) }, page, filter, hasNext))
             }
         }) {
-            _inboxList.postValue(TalkInboxViewState.Fail(it))
+            _inboxList.postValue(TalkInboxViewState.Fail(it, page))
         }
     }
 }

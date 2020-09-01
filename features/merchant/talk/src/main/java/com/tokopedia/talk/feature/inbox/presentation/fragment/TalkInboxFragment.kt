@@ -182,6 +182,7 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
             when(it) {
                 is TalkInboxViewState.Success -> {
                     hideFullPageError()
+                    hideFullPageLoading()
                     if(it.page == TalkConstants.DEFAULT_INITIAL_PAGE && it.data.isEmpty()) {
                         when(it.filter) {
                             is TalkInboxFilter.TalkInboxNoFilter -> {
@@ -203,6 +204,11 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
                         showFullPageError()
                     } else {
                         showErrorToaster()
+                    }
+                }
+                is TalkInboxViewState.Loading -> {
+                    if(it.page == TalkConstants.DEFAULT_INITIAL_PAGE) {
+                        showFullPageLoading()
                     }
                 }
             }
@@ -240,6 +246,7 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
 
     private fun showEmptyInbox() {
         talkInboxEmptyTitle.text = getString(R.string.inbox_all_empty)
+        talkInboxAppBarLayout.hide()
         talkInboxEmpty.show()
     }
 
@@ -259,6 +266,14 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
 
     private fun hideEmpty() {
         talkInboxEmpty.hide()
+    }
+
+    private fun showFullPageLoading() {
+        inboxPageLoading.show()
+    }
+
+    private fun hideFullPageLoading() {
+        inboxPageLoading.hide()
     }
 
     private fun getDataFromArgument() {
