@@ -1,36 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_height="match_parent"
     android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/mainView"
-        android:layout_height="match_parent"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:background="@color/white"
         android:fitsSystemWindows="true">
 
-        <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
-            android:id="@+id/swipeToRefresh"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clipToPadding="false">
+            android:orientation="vertical"
+            android:paddingTop="@dimen/dp_8"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:reverseLayout="false" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="@dimen/dp_8"
-                android:orientation="vertical"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:reverseLayout="false" />
-
-        </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
-
-        <include layout="@layout/bottom_sheet_layout"/>
+        <include layout="@layout/bottom_sheet_layout" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
@@ -53,8 +44,8 @@
         android:layout_height="@dimen/dp_60"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
         app:backgroundTint="@color/tkpd_main_green"
-        app:srcCompat="@drawable/ic_feed_post_plus"/>
+        app:srcCompat="@drawable/ic_feed_post_plus" />
 </RelativeLayout>

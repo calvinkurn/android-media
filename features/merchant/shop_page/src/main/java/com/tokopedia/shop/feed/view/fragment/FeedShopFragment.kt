@@ -12,7 +12,6 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -174,10 +173,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         return view!!.findViewById(R.id.recyclerView)
     }
 
-    override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? {
-        return view!!.findViewById(R.id.swipeToRefresh)
-    }
-
     override fun callInitialLoadAutomatically(): Boolean {
         return false
     }
@@ -289,7 +284,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                     loadInitialData()
                 }
                 CREATE_POST -> {
-                    onSwipeRefresh()
+                    loadInitialData()
                 }
             }
         }
@@ -318,12 +313,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                 presenter.getFeed(shopId)
             }
         }
-    }
-
-    override fun onSwipeRefresh() {
-        hideSnackBarRetry()
-        swipeToRefresh.isRefreshing = true
-        presenter.getFeedFirstPage(shopId, true)
     }
 
     override fun onSuccessGetFeedFirstPage(element: List<Visitable<*>>, lastCursor: String, whitelistDomain: WhitelistDomain) {
@@ -930,7 +919,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
             bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_EXPANDED
             hideFAB()
-            recyclerView.isNestedScrollingEnabled = false
 
             val sellerMigrationLayout = View.inflate(context, R.layout.widget_seller_migration_bottom_sheet_has_post, null)
             viewTarget.addView(sellerMigrationLayout)
