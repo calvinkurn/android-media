@@ -119,7 +119,7 @@ class DealsHomeFragment : DealsBaseFragment(),
     }
 
     private fun checkCoachMark(homeLayout: List<DealsBaseItemDataView>) {
-        val shouldShowCoachMark = localCacheHandler.getBoolean(SHOW_COACH_MARK_KEY, true) && (activity != null && isAdded)
+        val shouldShowCoachMark = localCacheHandler.getBoolean(SHOW_COACH_MARK_KEY, true)
         if (shouldShowCoachMark && homeLayout.isNotEmpty() && homeLayout.first().isLoaded) {
             recyclerView.smoothScrollToPosition(adapter.lastIndex)
             Handler().postDelayed(
@@ -142,20 +142,24 @@ class DealsHomeFragment : DealsBaseFragment(),
     }
 
     private fun showCoachMark(coachMarkPosition: CoachMarkPositionDataView) {
-        val coachMark = CoachMarkBuilder().build().apply {
-            enableSkip = true
-            onFinishListener = {
-                recyclerView.smoothScrollToPosition(0)
+        activity?.let {
+            if (isAdded) {
+                val coachMark = CoachMarkBuilder().build().apply {
+                    enableSkip = true
+                    onFinishListener = {
+                        recyclerView.smoothScrollToPosition(0)
+                    }
+                }
+                coachMark.show(
+                        it,
+                        DealsHomeFragment::class.java.simpleName,
+                        getCoachMarkItems(coachMarkPosition)
+                )
+                localCacheHandler.apply {
+                    putBoolean(SHOW_COACH_MARK_KEY, false)
+                    applyEditor()
+                }
             }
-        }
-        coachMark.show(
-                activity,
-                DealsHomeFragment::class.java.simpleName,
-                getCoachMarkItems(coachMarkPosition)
-        )
-        localCacheHandler.apply {
-            putBoolean(SHOW_COACH_MARK_KEY, false)
-            applyEditor()
         }
     }
 
