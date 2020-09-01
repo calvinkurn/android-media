@@ -34,7 +34,7 @@ class TalkInboxContainerFragment : BaseDaggerFragment(), HasComponent<TalkInboxC
     }
 
     override fun getScreenName(): String {
-        TODO("Not yet implemented")
+        return ""
     }
 
     override fun initInjector() {
@@ -74,8 +74,8 @@ class TalkInboxContainerFragment : BaseDaggerFragment(), HasComponent<TalkInboxC
 
     private fun getFragmentList(): List<Fragment> {
         return listOf(
-                TalkInboxFragment.createNewInstance(TalkInboxTab.TalkBuyerInboxTab()),
-                TalkInboxFragment.createNewInstance(TalkInboxTab.TalkShopInboxTab())
+                TalkInboxFragment.createNewInstance(TalkInboxTab.TalkShopInboxTab()),
+                TalkInboxFragment.createNewInstance(TalkInboxTab.TalkBuyerInboxTab())
         )
     }
 

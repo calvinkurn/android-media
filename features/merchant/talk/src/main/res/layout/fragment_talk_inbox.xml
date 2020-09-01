@@ -24,7 +24,7 @@
                 android:layout_marginStart="@dimen/layout_lvl2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:sort_filter_relationship="OR"
+                app:sort_filter_relationship="AND"
                 app:sort_filter_type="quick"/>
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>

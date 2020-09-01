@@ -34,7 +34,7 @@ class TalkInboxViewHolder(view: View) : AbstractViewHolder<TalkInboxUiModel>(vie
                 return
             }
             talkInboxProductThumbnail.setImageUrl(productThumbnail)
-            talkInboxProductName.setTextColor(ContextCompat.getColor(context, R.color.Neutral_N700_96))
+            talkInboxProductName.setTextColor(ContextCompat.getColor(context, R.color.Neutral_N700_68))
         }
     }
 

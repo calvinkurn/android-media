@@ -35,6 +35,7 @@ import com.tokopedia.talk.feature.inbox.data.TalkInboxViewState
 import com.tokopedia.talk.feature.inbox.presentation.viewmodel.TalkInboxViewModel
 import com.tokopedia.talk_old.R
 import com.tokopedia.talk_old.talkdetails.view.activity.TalkDetailsActivity
+import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_talk_inbox.*
 import kotlinx.android.synthetic.main.partial_talk_connection_error.view.*
@@ -200,6 +201,7 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
                     }
                 }
                 is TalkInboxViewState.Fail -> {
+                    hideFullPageLoading()
                     if(it.page == TalkConstants.DEFAULT_INITIAL_PAGE) {
                         showFullPageError()
                     } else {
@@ -288,16 +290,37 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
     }
 
     private fun getFilterList(): ArrayList<SortFilterItem> {
-        return arrayListOf(
-                SortFilterItem(getString(R.string.inbox_read)) { selectFilter(TalkInboxFilter.TalkInboxReadFilter()) },
-                SortFilterItem(getString(R.string.inbox_unread)) { selectFilter(TalkInboxFilter.TalkInboxUnreadFilter()) }
-        )
+        val readFilter = SortFilterItem(getString(R.string.inbox_read))
+        val unreadFilter = SortFilterItem(getString(R.string.inbox_unread))
+        readFilter.listener = {
+            readFilter.toggle()
+            selectFilter(TalkInboxFilter.TalkInboxReadFilter())
+            if(readFilter.type == ChipsUnify.TYPE_SELECTED) {
+                unreadFilter.type = ChipsUnify.TYPE_NORMAL
+            }
+        }
+        unreadFilter.listener = {
+            unreadFilter.toggle()
+            selectFilter(TalkInboxFilter.TalkInboxUnreadFilter())
+            if(unreadFilter.type == ChipsUnify.TYPE_SELECTED) {
+                readFilter.type = ChipsUnify.TYPE_NORMAL
+            }
+        }
+        return arrayListOf(readFilter, unreadFilter)
     }
 
     private fun selectFilter(filter: TalkInboxFilter) {
         viewModel.setFilter(filter)
         showLoading()
         clearAllData()
+    }
+
+    private fun SortFilterItem.toggle() {
+        type = if(type == ChipsUnify.TYPE_NORMAL) {
+            ChipsUnify.TYPE_SELECTED
+        } else {
+            ChipsUnify.TYPE_NORMAL
+        }
     }
 
 }
