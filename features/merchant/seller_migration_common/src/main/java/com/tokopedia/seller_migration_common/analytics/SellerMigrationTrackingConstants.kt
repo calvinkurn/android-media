@@ -35,6 +35,11 @@ object SellerMigrationTrackingConstants {
     const val KEY_CUSTOM_DIMENSION_BUSINESS_UNIT = "businessUnit"
     const val VALUE_CUSTOM_DIMENSION_BUSINESS_UNIT_PG = "physical goods"
 
+    const val EVENT_CLICK_SHOP_ACCOUNT = "clickShopAccount"
+    const val EVENT_CONTENT_FEED_SHOP_PAGE = "content feed - shop page"
+    const val EVENT_CLICK_TOKOPEDIA_SELLER = "click tokopedia seller"
+    const val EVENT_TOKOPEDIA_MARKET_PLACE = "tokopediamartketplace"
+
     val USER_REDIRECTION_EVENT_NAME = mapOf(
             SellerMigrationFeatureName.FEATURE_TEMPLATE_CHAT to "clickInboxChat",
             SellerMigrationFeatureName.FEATURE_MULTI_EDIT to "clickManageProduct",

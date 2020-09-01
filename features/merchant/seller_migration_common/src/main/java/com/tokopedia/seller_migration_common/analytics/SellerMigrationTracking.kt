@@ -2,6 +2,10 @@ package com.tokopedia.seller_migration_common.analytics
 
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTrackingConstants.EVENT_CATEGORY_MIGRATION_PAGE
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTrackingConstants.EVENT_CLICK_SELLER_MIGRATION
+import com.tokopedia.seller_migration_common.analytics.SellerMigrationTrackingConstants.EVENT_CLICK_SHOP_ACCOUNT
+import com.tokopedia.seller_migration_common.analytics.SellerMigrationTrackingConstants.EVENT_CLICK_TOKOPEDIA_SELLER
+import com.tokopedia.seller_migration_common.analytics.SellerMigrationTrackingConstants.EVENT_CONTENT_FEED_SHOP_PAGE
+import com.tokopedia.seller_migration_common.analytics.SellerMigrationTrackingConstants.EVENT_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTrackingConstants.KEY_CUSTOM_DIMENSION_BUSINESS_UNIT
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTrackingConstants.KEY_CUSTOM_DIMENSION_CURRENT_SITE
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTrackingConstants.TRACKING_USER_ID
@@ -117,5 +121,18 @@ object SellerMigrationTracking {
 
     private fun trackSellerMigrationEvent(sellerMigrationTrackingMap: SellerMigrationTrackingMap) {
         TrackApp.getInstance().gtm.sendGeneralEvent(sellerMigrationTrackingMap.dataTracking)
+    }
+
+    fun trackClickShopAccount(userId: String) {
+        val data = mapOf(
+                TrackAppUtils.EVENT to EVENT_CLICK_SHOP_ACCOUNT,
+                TrackAppUtils.EVENT_CATEGORY to EVENT_CONTENT_FEED_SHOP_PAGE,
+                TrackAppUtils.EVENT_ACTION to EVENT_CLICK_TOKOPEDIA_SELLER,
+                TrackAppUtils.EVENT_LABEL to "",
+                KEY_CUSTOM_DIMENSION_CURRENT_SITE to EVENT_TOKOPEDIA_MARKET_PLACE,
+                TRACKING_USER_ID to userId,
+                KEY_CUSTOM_DIMENSION_BUSINESS_UNIT to VALUE_CUSTOM_DIMENSION_BUSINESS_UNIT_PG
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 }

@@ -170,6 +170,7 @@ fun Fragment.initializeSellerMigrationAccountSettingTicker(ticker: Ticker?) {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
                     RouteManager.route(context, ApplinkConstInternalSellerapp.MENU_SETTING)
                 }
+
                 override fun onDismiss() {}
             })
             show()
@@ -180,10 +181,12 @@ fun Fragment.initializeSellerMigrationAccountSettingTicker(ticker: Ticker?) {
 }
 
 fun Typography.setOnClickLinkSpannable(htmlString: String,
-                                       redirectPage: () -> Unit = {}) {
+                                       redirectPage: () -> Unit = {},
+                                       trackGoToSellerApp: () -> Unit = {}) {
     val htmlLinkString = HtmlLinkHelper(context, htmlString)
     text = htmlLinkString.spannedString
     htmlLinkString.urlList[0].setOnClickListener {
+        trackGoToSellerApp()
         redirectPage()
     }
 }
@@ -221,7 +224,7 @@ fun Fragment.setupListUnifyFeedSellerMigration(feedListUnify: ListUnify,
             it.setOnItemClickListener { _, _, position, _ ->
                 when (position) {
                     positionPostFavoriteItem -> {
-                        if(isAuthorAffiliate) {
+                        if (isAuthorAffiliate) {
                             goToCreateAffiliate()
                             bottomSheet.dismiss()
                         }
@@ -244,7 +247,7 @@ fun Fragment.setupBottomSheetFeedSellerMigration(goToCreateAffiliate: () -> Unit
     val feedListUnify = viewBottomSheet.findViewById<ListUnify>(R.id.feedListUnify)
     bottomSheet.setChild(viewBottomSheet)
 
-    setupListUnifyFeedSellerMigration(feedListUnify, bottomSheet,  goToCreateAffiliate, isAuthorAffiliate, onGoToLink)
+    setupListUnifyFeedSellerMigration(feedListUnify, bottomSheet, goToCreateAffiliate, isAuthorAffiliate, onGoToLink)
 
     bottomSheet.apply {
         showCloseIcon = true
