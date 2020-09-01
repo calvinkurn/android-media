@@ -55,11 +55,12 @@ class TalkWriteFragment : BaseDaggerFragment(),
         const val KEY_SELECTED_CATEGORY = "selected_category"
 
         @JvmStatic
-        fun createNewInstance(productId: Int, isVariantSelected: Boolean): TalkWriteFragment {
+        fun createNewInstance(productId: Int, isVariantSelected: Boolean, availableVariants: String): TalkWriteFragment {
             return TalkWriteFragment().apply {
                 arguments = Bundle()
                 arguments?.putInt(TalkConstants.PARAM_PRODUCT_ID, productId)
                 arguments?.putBoolean(TalkConstants.PARAM_APPLINK_IS_VARIANT_SELECTED, isVariantSelected)
+                arguments?.putString(TalkConstants.PARAM_APPLINK_IS_VARIANT_SELECTED, availableVariants)
             }
         }
 
@@ -114,7 +115,7 @@ class TalkWriteFragment : BaseDaggerFragment(),
     }
 
     override fun onChipClicked(category: TalkWriteCategory) {
-        TalkWriteTracking.eventClickChips(viewModel.getUserId(), viewModel.getProductId().toString(), category.categoryName, category.content, viewModel.isVariantSelected)
+        TalkWriteTracking.eventClickChips(viewModel.getUserId(), viewModel.getProductId().toString(), category.categoryName, category.content, viewModel.isVariantSelected, viewModel.availableVariants)
         viewModel.toggleCategory(category)
     }
 
@@ -226,6 +227,7 @@ class TalkWriteFragment : BaseDaggerFragment(),
         arguments?.let {
             viewModel.setProductId(it.getInt(TalkConstants.PARAM_PRODUCT_ID))
             viewModel.isVariantSelected = it.getBoolean(TalkConstants.PARAM_APPLINK_IS_VARIANT_SELECTED)
+            viewModel.availableVariants = it.getString(TalkConstants.PARAM_APPLINK_IS_VARIANT_SELECTED, "0")
         }
     }
 
@@ -282,11 +284,11 @@ class TalkWriteFragment : BaseDaggerFragment(),
         viewModel.submitFormResult.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Success -> {
-                    TalkWriteTracking.eventClickSendButton(userId = viewModel.getUserId(), productId = viewModel.getProductId().toString(), category = viewModel.getSelectedCategory()?.categoryName.toString(), isSuccess = true, isVariantSelected = viewModel.isVariantSelected)
+                    TalkWriteTracking.eventClickSendButton(userId = viewModel.getUserId(), productId = viewModel.getProductId().toString(), category = viewModel.getSelectedCategory()?.categoryName.toString(), isSuccess = true, isVariantSelected = viewModel.isVariantSelected, availableVariants = viewModel.availableVariants)
                     goToReplyPage(it.data.discussionId.toIntOrZero())
                 }
                 is Fail -> {
-                    TalkWriteTracking.eventClickSendButton(viewModel.getUserId(), viewModel.getProductId().toString(), viewModel.getSelectedCategory()?.categoryName.toString(), false,  it.throwable.message, viewModel.isVariantSelected)
+                    TalkWriteTracking.eventClickSendButton(viewModel.getUserId(), viewModel.getProductId().toString(), viewModel.getSelectedCategory()?.categoryName.toString(), false,  it.throwable.message, viewModel.isVariantSelected, viewModel.availableVariants)
                     showErrorToaster(it.throwable.message ?: getString(R.string.write_submit_error))
                 }
             }
