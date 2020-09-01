@@ -132,15 +132,15 @@
     <string name="content_desc_icon_chevron_choose_duration">image pilih durasi</string>
     <string name="content_desc_label_selected_shipping_courier">text kurir pengiriman terpilih</string>
     <string name="content_desc_icon_chevron_choose_courier">image pilih kurir</string>
-    <string name="iv_detail_option_chevron">image detail subtotal</string>
-    <string name="tv_total_item_price_subtotal">text total harga subtotal</string>
-    <string name="tv_shipping_fee_price_subtotal">text ongkos kirim subtotal</string>
-    <string name="tv_insurance_fee_price_subtotal">text biaya asuransi subtotal</string>
-    <string name="tv_total_item_price_summary">text total harga ringkasan</string>
-    <string name="tv_insurance_fee_summary">text biaya asuransi ringkasan</string>
-    <string name="tv_shipping_fee_summary">text ongkos kirim ringkasan</string>
-    <string name="tv_select_payment_method">button pilih pembayaran</string>
-    <string name="img_insurance_info">image info asuransi</string>
-    <string name="cb_insurance">checkbox asuransi</string>
-    <string name="cb_insurance_disabled">checkbox asuransi disabled</string>
+    <string name="content_desc_iv_detail_option_chevron">image detail subtotal</string>
+    <string name="content_desc_tv_total_item_price_subtotal">text total harga subtotal</string>
+    <string name="content_desc_tv_shipping_fee_price_subtotal">text ongkos kirim subtotal</string>
+    <string name="content_desc_tv_insurance_fee_price_subtotal">text biaya asuransi subtotal</string>
+    <string name="content_desc_tv_total_item_price_summary">text total harga ringkasan</string>
+    <string name="content_desc_tv_insurance_fee_summary">text biaya asuransi ringkasan</string>
+    <string name="content_desc_tv_shipping_fee_summary">text ongkos kirim ringkasan</string>
+    <string name="content_desc_tv_select_payment_method">button pilih pembayaran</string>
+    <string name="content_desc_img_insurance_info">image info asuransi</string>
+    <string name="content_desc_cb_insurance">checkbox asuransi</string>
+    <string name="content_desc_cb_insurance_disabled">checkbox asuransi disabled</string>
 </resources>

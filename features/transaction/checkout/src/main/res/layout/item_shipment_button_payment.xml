@@ -70,7 +70,7 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_select_payment_method"
-                android:contentDescription="@string/tv_select_payment_method"
+                android:contentDescription="@string/content_desc_tv_select_payment_method"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_40"
                 android:layout_gravity="center_vertical"
