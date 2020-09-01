@@ -3,8 +3,9 @@ package com.tokopedia.shop.setting.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.text.TextUtils
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -14,9 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
-import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -24,11 +23,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.linker.model.LinkerData
-import com.tokopedia.linker.share.DefaultShare
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageTrackingShopPageSetting
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
@@ -94,7 +90,6 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
 
     private var shopId: String? = null
     private var shopDomain: String? = null
-    private var isShareFunctionReady = false
     private var shopInfo: ShopInfo? = null
     private var shopRef: String = ""
 
@@ -137,7 +132,6 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        setHasOptionsMenu(true)
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_shop_page_setting, container, false)
     }
@@ -174,25 +168,6 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
 
         // get shop info
         getShopInfo()
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.menu_shop_page_setting, menu)
-    }
-
-    override fun onPrepareOptionsMenu(menu: Menu) {
-        menu.findItem(R.id.action_share)?.isVisible = isShareFunctionReady
-        super.onPrepareOptionsMenu(menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.action_share -> {
-                clickShareButton()
-            }
-        }
-        return super.onOptionsItemSelected(item)
     }
 
     fun onBackPressed() {
@@ -237,41 +212,9 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
                 shopPageSettingView.hide()
             }
             else -> {
-                displayShareButton()
                 errorView.hide()
                 dashboardView.visible()
                 shopPageSettingView.visible()
-            }
-        }
-    }
-
-    private fun displayShareButton() {
-        isShareFunctionReady = true
-        activity?.invalidateOptionsMenu()
-    }
-
-    private fun clickShareButton() {
-        (shopPageSettingViewModel.shopInfoResp.value as? Success)?.data?.let {shopInfo ->
-            shopPageSettingTracking?.clickShareButton(customDimensionShopPage)
-            var shopShareMsg: String = remoteConfig?.getString(RemoteConfigKey.SHOP_SHARE_MSG) ?: ""
-            shopShareMsg = if (!TextUtils.isEmpty(shopShareMsg)) {
-                FindAndReplaceHelper.findAndReplacePlaceHolders(shopShareMsg,
-                        SHOP_NAME_PLACEHOLDER, MethodChecker.fromHtml(shopInfo.shopCore.name).toString(),
-                        SHOP_LOCATION_PLACEHOLDER, shopInfo.location)
-            } else {
-                getString(R.string.shop_label_share_formatted,
-                        MethodChecker.fromHtml(shopInfo.shopCore.name).toString(), shopInfo.location)
-            }
-            activity?.let {
-                val shareData = LinkerData.Builder.getLinkerBuilder()
-                        .setType(LinkerData.SHOP_TYPE)
-                        .setName(getString(R.string.message_share_shop))
-                        .setTextContent(shopShareMsg)
-                        .setCustMsg(shopShareMsg)
-                        .setUri(shopInfo.shopCore.url)
-                        .setId(shopId)
-                        .build()
-                DefaultShare(it, shareData).show()
             }
         }
     }
