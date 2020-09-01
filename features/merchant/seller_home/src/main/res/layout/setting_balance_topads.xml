@@ -41,7 +41,8 @@
             app:layout_constraintWidth_percent="0.5"
             app:typographyType="body_2"
             app:typographyWeight="bold"
-            app:layout_constraintEnd_toEndOf="@id/guidelineVerticalRight"/>
+            app:layout_constraintEnd_toEndOf="@id/guidelineVerticalRight"
+            tools:text="Rp0"/>
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guidelineVerticalLeft"

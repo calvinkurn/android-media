@@ -53,7 +53,7 @@ class ProductCardCarouselViewModel(val application: Application, val components:
 
     private fun fetchProductCarouselData() {
         launchCatchError(block = {
-            if (productCardsUseCase.loadFirstPageComponents(components.id, components.pageEndPoint)) {
+            if (productCardsUseCase.loadFirstPageComponents(components.id, components.pageEndPoint, components.rpc_PinnedProduct)) {
                 getProductList()?.let {
                     productCarouselList.value = it
                     syncData.value = true

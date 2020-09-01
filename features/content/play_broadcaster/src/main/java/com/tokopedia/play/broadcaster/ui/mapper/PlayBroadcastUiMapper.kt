@@ -91,6 +91,7 @@ object PlayBroadcastUiMapper {
     fun mapToLiveTrafficUiMetrics(metrics: LiveStats): List<TrafficMetricUiModel> = mutableListOf(
                 TrafficMetricUiModel(TrafficMetricsEnum.TotalViews, metrics.visitChannel),
                 TrafficMetricUiModel(TrafficMetricsEnum.VideoLikes, metrics.likeChannel),
+                TrafficMetricUiModel(TrafficMetricsEnum.NewFollowers, metrics.followShop),
                 TrafficMetricUiModel(TrafficMetricsEnum.ShopVisit, metrics.visitShop),
                 TrafficMetricUiModel(TrafficMetricsEnum.ProductVisit, metrics.visitPdp),
                 TrafficMetricUiModel(TrafficMetricsEnum.NumberOfAtc, metrics.addToCart),

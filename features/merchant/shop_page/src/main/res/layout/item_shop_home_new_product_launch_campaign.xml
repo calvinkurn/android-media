@@ -5,14 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginLeft="@dimen/dp_minus12"
-    android:layout_marginRight="@dimen/dp_minus12">
+    android:layout_marginRight="@dimen/dp_minus12"
+    android:layout_marginBottom="@dimen/dp_8">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_20"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_8"
         android:layout_marginRight="@dimen/dp_20"
         android:ellipsize="end"
         android:maxLength="20"
