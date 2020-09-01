@@ -1,7 +1,10 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
 import com.tokopedia.charts.common.ChartColor
-import com.tokopedia.sellerhomecommon.domain.model.*
+import com.tokopedia.sellerhomecommon.domain.model.BarChartMetricModel
+import com.tokopedia.sellerhomecommon.domain.model.BarChartValueModel
+import com.tokopedia.sellerhomecommon.domain.model.BarChartWidgetDataModel
+import com.tokopedia.sellerhomecommon.domain.model.ChartSummaryModel
 import com.tokopedia.sellerhomecommon.presentation.model.*
 import javax.inject.Inject
 
@@ -40,14 +43,43 @@ class BarChartMapper @Inject constructor() {
             BarChartMetricsUiModel(
                     value = getAxis(metric.value),
                     title = metric.name,
-                    barHexColor = ChartColor.getHexColorByIndex(i)
+                    barHexColor = getBarColor(metric)
             )
         }
     }
 
     private fun getAxis(data: List<BarChartValueModel>): List<BarChartAxisUiModel> {
         return data.map {
-            BarChartAxisUiModel(it.value, it.valueFmt)
+            BarChartAxisUiModel(it.value.plus(1), it.valueFmt)
+        }
+    }
+
+    /**
+     * Here is the sample response from BE.
+     * So, to get bar chart color, we just take the color of the first item (index 0)
+        "value": [
+            {
+                "value": 0,
+                "valueFmt": "0",
+                "color": "#4FBA68"
+            },
+            {
+                "value": 0,
+                "valueFmt": "0",
+                "color": "#4FBA68"
+            },
+            {
+                "value": 0,
+                "valueFmt": "0",
+                "color": "#4FBA68"
+            }
+        ]
+     */
+    private fun getBarColor(metric: BarChartMetricModel): String {
+        return try {
+            metric.value[0].hexColor
+        } catch (e: IndexOutOfBoundsException) {
+            ChartColor.DEFAULT_BAR_COLOR
         }
     }
 }
