@@ -70,7 +70,7 @@ class EventSearchPageTracking {
         val CATEGORY = "category"
     }
 
-    fun impressionCitySearchSuggestion(listsCity: List<SearchLocationListViewHolder.LocationSuggestion>){
+    fun impressionCitySearchSuggestion(listsCity: SearchLocationListViewHolder.LocationSuggestion, position: Int){
         getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 Event.KEY, "promoView",
                 Event.CATEGORY, "digital - event",
@@ -82,29 +82,25 @@ class EventSearchPageTracking {
                 Misc.SCREENNAME, "",
                 Ecommerce.KEY, DataLayer.mapOf(
                 Promo.KEY_IMPRESSION, DataLayer.mapOf(
-                Promo.PROMOTION, getPromoLocationSuggestion(listsCity)))))
+                Promo.PROMOTION, getPromoLocationSuggestion(listsCity, position)))))
     }
 
-    private fun getPromoLocationSuggestion(listsCity: List<SearchLocationListViewHolder.LocationSuggestion>) : Any{
+    private fun getPromoLocationSuggestion(listsCity: SearchLocationListViewHolder.LocationSuggestion, position: Int) : Any{
         val list = mutableListOf<Any>()
-
-        listsCity.forEachIndexed { index, locationSuggestion ->
             list.add(DataLayer.mapOf(
-                    Promo.ID, locationSuggestion.id_city,
-                    Promo.NAME, locationSuggestion.city,
-                    Promo.CREATIVE, locationSuggestion.city,
-                    Promo.CREATIVE_URL, locationSuggestion.imageUrl,
-                    Promo.POSITION, index + 1,
+                    Promo.ID, listsCity.id_city,
+                    Promo.NAME, listsCity.city,
+                    Promo.CREATIVE, listsCity.city,
+                    Promo.CREATIVE_URL, listsCity.imageUrl,
+                    Promo.POSITION, position + 1,
                     Promo.PROMO_ID, "",
                     Promo.PROMO_CODE, ""
             ))
-        }
-
         return list
     }
 
     fun onClickLocationSuggestion(location: SearchLocationListViewHolder.LocationSuggestion,
-                                  listsLocation: List<SearchLocationListViewHolder.LocationSuggestion>,
+                                  listsLocation: SearchLocationListViewHolder.LocationSuggestion,
                                   position: Int){
         getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 Event.KEY, "promoClick",
@@ -117,10 +113,10 @@ class EventSearchPageTracking {
                 Misc.SCREENNAME, "",
                 Ecommerce.KEY, DataLayer.mapOf(
                 Promo.KEY_CLICK, DataLayer.mapOf(
-                Promo.PROMOTION, getPromoLocationSuggestion(listsLocation)))))
+                Promo.PROMOTION, getPromoLocationSuggestion(listsLocation, position)))))
     }
 
-    fun impressionEventSearchSuggestion(listsEvent: List<SearchEventListViewHolder.KegiatanSuggestion>){
+    fun impressionEventSearchSuggestion(listsEvent: SearchEventListViewHolder.KegiatanSuggestion, position: Int){
         getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 Event.KEY, "productView",
                 Event.CATEGORY, "digital - event",
@@ -132,24 +128,21 @@ class EventSearchPageTracking {
                 Misc.SCREENNAME, "",
                 Ecommerce.KEY, DataLayer.mapOf(
                 Ecommerce.CURRENCY_CODE, "IDR",
-                Impression.KEY, getImpressionEventSearchList(listsEvent))))
+                Impression.KEY, getImpressionEventSearchList(listsEvent, position))))
     }
 
-    private fun getImpressionEventSearchList(listsEvent: List<SearchEventListViewHolder.KegiatanSuggestion>) : Any?{
+    private fun getImpressionEventSearchList(listsEvent: SearchEventListViewHolder.KegiatanSuggestion, position: Int) : Any?{
         val list = mutableListOf<Any>()
-        listsEvent.forEachIndexed{index, item ->
             list.add(DataLayer.mapOf(
-                    Impression.NAME, item.nama_kegiatan,
-                    Impression.ID, item.id,
-                    Impression.PRICE, item.sales_price,
+                    Impression.NAME, listsEvent.nama_kegiatan,
+                    Impression.ID, listsEvent.id,
+                    Impression.PRICE, listsEvent.sales_price,
                     Impression.BRAND, "",
                     Impression.CATEGORY, "",
                     Impression.VARIANT, "",
-                    Impression.LIST, item.nama_kegiatan,
-                    Impression.POSITION, index + 1
+                    Impression.LIST, listsEvent.nama_kegiatan,
+                    Impression.POSITION, position + 1
             ))
-        }
-
         return list
     }
 
