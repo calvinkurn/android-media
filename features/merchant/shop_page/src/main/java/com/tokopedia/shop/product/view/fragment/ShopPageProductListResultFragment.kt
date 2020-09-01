@@ -588,11 +588,6 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     return
                 }
                 data?.let {
-//                    selectedEtalaseId = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_PICKER_ETALASE_ID)
-//                    selectedEtalaseName = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_PICKER_ETALASE_NAME)
-//                    selectedEtalaseType = data.getIntExtra(ShopParamConstant.EXTRA_ETALASE_PICKER_ETALASE_TYPE, SELECTED_ETALASE_TYPE_DEFAULT_VALUE)
-//                    needReloadData = data.getBooleanExtra(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, false)
-
                     selectedEtalaseId = data.getStringExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_ID)
                     selectedEtalaseName = data.getStringExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_NAME)
                     selectedEtalaseType = data.getIntExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_TYPE, SELECTED_ETALASE_TYPE_DEFAULT_VALUE)
@@ -752,12 +747,6 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     private fun redirectToEtalasePicker() {
         context?.let {
             val bundle = Bundle()
-
-//            bundle.putString(BUNDLE_SELECTED_ETALASE_ID, selectedEtalaseId)
-//            bundle.putBoolean(BUNDLE_IS_SHOW_DEFAULT, true)
-//            bundle.putBoolean(BUNDLE_IS_SHOW_ZERO_PRODUCT, false)
-//            bundle.putString(BUNDLE_SHOP_ID, shopInfo!!.shopCore.shopID)
-
             bundle.putString(ShopShowcaseParamConstant.EXTRA_SELECTED_ETALASE_ID, selectedEtalaseId)
             bundle.putBoolean(ShopShowcaseParamConstant.EXTRA_IS_SHOW_DEFAULT, true)
             bundle.putBoolean(ShopShowcaseParamConstant.EXTRA_IS_SHOW_ZERO_PRODUCT, false)

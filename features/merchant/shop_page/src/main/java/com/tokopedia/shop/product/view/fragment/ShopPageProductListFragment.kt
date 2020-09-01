@@ -122,11 +122,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         const val ALL_ETALASE_ID = "etalase"
         const val SOLD_ETALASE_ID = "sold"
         private const val REQUEST_CODE_SORT = 300
-
-        const val BUNDLE_SELECTED_ETALASE_ID = "selectedEtalaseId"
-        const val BUNDLE_IS_SHOW_DEFAULT = "isShowDefault"
-        const val BUNDLE_IS_SHOW_ZERO_PRODUCT = "isShowZeroProduct"
-        const val BUNDLE_SHOP_ID = "shopId"
+        
         const val BUNDLE = "bundle"
         private const val KEY_SHOP_ID = "SHOP_ID"
         private const val KEY_SHOP_NAME = "SHOP_NAME"
@@ -459,9 +455,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 if (shopProductAdapter.isLoading) {
                     return
                 }
-//                val etalaseId = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_PICKER_ETALASE_ID)
-//                val etalaseName = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_PICKER_ETALASE_NAME)
-//                val isNeedToReloadData = data.getBooleanExtra(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, false)
 
                 val etalaseId = data.getStringExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_ID)
                 val etalaseName = data.getStringExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_NAME)
@@ -761,12 +754,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     private fun redirectToEtalasePicker() {
         context?.let {
             val bundle = Bundle()
-
-//            bundle.putString(BUNDLE_SELECTED_ETALASE_ID, selectedEtalaseId)
-//            bundle.putBoolean(BUNDLE_IS_SHOW_DEFAULT, true)
-//            bundle.putBoolean(BUNDLE_IS_SHOW_ZERO_PRODUCT, false)
-//            bundle.putString(BUNDLE_SHOP_ID, shopId)
-
             bundle.putString(ShopShowcaseParamConstant.EXTRA_SELECTED_ETALASE_ID, selectedEtalaseId)
             bundle.putBoolean(ShopShowcaseParamConstant.EXTRA_IS_SHOW_DEFAULT, true)
             bundle.putBoolean(ShopShowcaseParamConstant.EXTRA_IS_SHOW_ZERO_PRODUCT, false)

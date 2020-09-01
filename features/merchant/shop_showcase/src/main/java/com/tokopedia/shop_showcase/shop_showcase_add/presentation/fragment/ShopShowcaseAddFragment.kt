@@ -535,7 +535,6 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
                                         // everything is fine, navigate back to showcase list
                                         val intent = RouteManager.getIntent(context, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST)
                                         intent.putExtra(ShopShowcaseParamConstant.EXTRA_EDIT_SHOWCASE_RESULT, SUCCESS_EDIT_SHOWCASE)
-//                                        intent.putExtra(ShopShowcaseListParam.EXTRA_EDIT_SHOWCASE_RESULT, SUCCESS_EDIT_SHOWCASE)
                                         activity?.setResult(Activity.RESULT_OK, intent)
                                         activity?.finish()
 

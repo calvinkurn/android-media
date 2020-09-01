@@ -27,11 +27,7 @@ import com.tokopedia.user.session.UserSessionInterface
 class ShopShowcaseListActivity : BaseActivity(), ShopShowcaseFragmentNavigation {
 
     companion object {
-        const val SHOP_ID = "shopId"
-        const val IS_SHOW_ZERO_PRODUCT = "isShowZeroProduct"
-        const val IS_SHOW_DEFAULT = "isShowDefault"
         const val IS_NEED_TOGO_TO_ADD_PAGE = "isNeedToGoToAddShowcase"
-        const val SELECTED_ETALASE_ID = "selectedEtalaseId"
         const val REQUEST_CODE_ADD_ETALASE = 289
     }
 
@@ -52,16 +48,10 @@ class ShopShowcaseListActivity : BaseActivity(), ShopShowcaseFragmentNavigation 
 
         val bundle = intent.getBundleExtra("bundle")
         if (bundle != null) {
-//            shopId = bundle.getString(SHOP_ID, "0").toString()
-//            selectedEtalaseId = bundle.getString(SELECTED_ETALASE_ID, "0").toString()
-//            isShowDefault = bundle.getBoolean(IS_SHOW_DEFAULT, true)
-//            isShowZeroProduct = bundle.getBoolean(IS_SHOW_ZERO_PRODUCT, true)
-
             shopId = bundle.getString(ShopShowcaseParamConstant.EXTRA_SHOP_ID, "0").toString()
             selectedEtalaseId = bundle.getString(ShopShowcaseParamConstant.EXTRA_SELECTED_ETALASE_ID, "0").toString()
             isShowDefault = bundle.getBoolean(ShopShowcaseParamConstant.EXTRA_IS_SHOW_DEFAULT, true)
             isShowZeroProduct = bundle.getBoolean(ShopShowcaseParamConstant.EXTRA_IS_SHOW_ZERO_PRODUCT, true)
-
             isNeedToGoToAddShowcase = bundle.getBoolean(IS_NEED_TOGO_TO_ADD_PAGE, false)
         }
 

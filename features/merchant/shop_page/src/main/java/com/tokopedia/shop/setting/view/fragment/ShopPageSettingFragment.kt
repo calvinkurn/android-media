@@ -56,12 +56,7 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
         const val SHOP_DOMAIN = "domain"
         const val SHOP_NAME_PLACEHOLDER = "{{shop_name}}"
         const val SHOP_LOCATION_PLACEHOLDER = "{{shop_location}}"
-
         const val BUNDLE = "bundle"
-        const val BUNDLE_SELECTED_ETALASE_ID = "selectedEtalaseId"
-        const val BUNDLE_IS_SHOW_DEFAULT = "isShowDefault"
-        const val BUNDLE_IS_SHOW_ZERO_PRODUCT = "isShowZeroProduct"
-        const val BUNDLE_SHOP_ID = "shopId"
 
         private const val VIEW_CONTENT = 1
         private const val VIEW_LOADING = 2
@@ -316,12 +311,6 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
         shopPageSettingTracking?.clickAddAndEditEtalase(customDimensionShopPage)
         context?.let {
             val bundle = Bundle()
-
-//            bundle.putString(BUNDLE_SELECTED_ETALASE_ID, "")
-//            bundle.putBoolean(BUNDLE_IS_SHOW_DEFAULT, true)
-//            bundle.putBoolean(BUNDLE_IS_SHOW_ZERO_PRODUCT, false)
-//            bundle.putString(BUNDLE_SHOP_ID, shopInfo!!.shopCore.shopID)
-
             bundle.putString(ShopShowcaseParamConstant.EXTRA_SELECTED_ETALASE_ID, "")
             bundle.putBoolean(ShopShowcaseParamConstant.EXTRA_IS_SHOW_DEFAULT, true)
             bundle.putBoolean(ShopShowcaseParamConstant.EXTRA_IS_SHOW_ZERO_PRODUCT, false)
@@ -336,20 +325,6 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             REQUEST_CODE_ETALASE -> if (resultCode == Activity.RESULT_OK && data != null) {
-//                val etalaseId = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_PICKER_ETALASE_ID)
-//                val etalaseName = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_PICKER_ETALASE_NAME)
-//                val isNeedToReloadData = data.getBooleanExtra(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, false)
-//                val intent = ShopProductListResultActivity.createIntent(
-//                        activity,
-//                        shopId,
-//                        "",
-//                        etalaseId,
-//                        "",
-//                        "",
-//                        shopRef
-//                )
-//                intent.putExtra(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, isNeedToReloadData)
-
                 val etalaseId = data.getStringExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_ID)
                 val etalaseName = data.getStringExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_NAME)
                 val isNeedToReloadData = data.getBooleanExtra(ShopShowcaseParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, false)

@@ -104,10 +104,6 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         private const val REQUEST_CODE_SORT = 301
         private const val REQUEST_CODE_PLAY_ROOM = 256
         private const val REQUEST_CODE_USER_LOGIN = 101
-        const val BUNDLE_SELECTED_ETALASE_ID = "selectedEtalaseId"
-        const val BUNDLE_IS_SHOW_DEFAULT = "isShowDefault"
-        const val BUNDLE_IS_SHOW_ZERO_PRODUCT = "isShowZeroProduct"
-        const val BUNDLE_SHOP_ID = "shopId"
         const val BUNDLE = "bundle"
         const val REGISTER_VALUE = "REGISTER"
         const val UNREGISTER_VALUE = "UNREGISTER"
@@ -668,24 +664,6 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                         "",
                         shopRef
                 )
-
-//                val etalaseId = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_PICKER_ETALASE_ID)
-//                val etalaseName = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_PICKER_ETALASE_NAME)
-//                val isNeedToReloadData = data.getBooleanExtra(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, false)
-//                shopPageHomeTracking.clickMoreMenuChip(
-//                        isOwner,
-//                        etalaseName,
-//                        customDimensionShopPage
-//                )
-//                val intent = ShopProductListResultActivity.createIntent(
-//                        activity,
-//                        shopId,
-//                        "",
-//                        etalaseId,
-//                        "",
-//                        "",
-//                        shopRef
-//                )
 
                 intent.putExtra(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, isNeedToReloadData)
                 startActivity(intent)
@@ -1248,12 +1226,6 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private fun redirectToEtalasePicker() {
         context?.let {
             val bundle = Bundle()
-
-//            bundle.putString(BUNDLE_SELECTED_ETALASE_ID, "")
-//            bundle.putBoolean(BUNDLE_IS_SHOW_DEFAULT, true)
-//            bundle.putBoolean(BUNDLE_IS_SHOW_ZERO_PRODUCT, false)
-//            bundle.putString(BUNDLE_SHOP_ID, shopId)
-
             bundle.putString(ShopShowcaseParamConstant.EXTRA_SELECTED_ETALASE_ID, "")
             bundle.putBoolean(ShopShowcaseParamConstant.EXTRA_IS_SHOW_DEFAULT, true)
             bundle.putBoolean(ShopShowcaseParamConstant.EXTRA_IS_SHOW_ZERO_PRODUCT, false)
