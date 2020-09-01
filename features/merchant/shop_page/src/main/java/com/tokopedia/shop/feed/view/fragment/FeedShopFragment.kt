@@ -927,7 +927,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
             bottomSheetSellerMigration = BottomSheetBehavior.from(viewTarget)
             BottomSheetUnify.bottomSheetBehaviorKnob(viewTarget, false)
             BottomSheetUnify.bottomSheetBehaviorHeader(viewTarget, false)
-            bottomSheetSellerMigration?.isHideable = false
 
             bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_EXPANDED
             hideFAB()
