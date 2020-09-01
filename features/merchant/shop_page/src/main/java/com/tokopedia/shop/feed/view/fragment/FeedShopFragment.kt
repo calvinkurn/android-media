@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -82,6 +83,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_feed_shop.*
+import kotlinx.android.synthetic.main.fragment_shop_page_home.*
 import javax.inject.Inject
 
 /**
@@ -110,6 +112,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     private lateinit var shopId: String
     private var isLoading = false
     private var isForceRefresh = false
+    private var recyclerViewTopPadding = 0
 
     private var bottomSheetSellerMigration: BottomSheetBehavior<LinearLayout>? = null
 
@@ -923,6 +926,10 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     private fun setupBottomSheetSellerMigration(view: View) {
         if (isSellerMigrationEnabled(context)) {
+            recyclerViewTopPadding = recyclerView?.paddingTop ?: 0
+            recycler_view?.startNestedScroll(ViewCompat.SCROLL_AXIS_VERTICAL, ViewCompat.TYPE_NON_TOUCH)
+            recycler_view?.smoothScrollBy(0, recyclerViewTopPadding * 2)
+
             val viewTarget: LinearLayout = view.findViewById(bottom_sheet_wrapper)
             bottomSheetSellerMigration = BottomSheetBehavior.from(viewTarget)
             BottomSheetUnify.bottomSheetBehaviorKnob(viewTarget, false)
