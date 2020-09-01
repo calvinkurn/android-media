@@ -23,8 +23,9 @@ class RecommendationAnalytics @Inject constructor(
 
 
     fun sendRecommendationItemDisplayed(recommendationItem: RecommendationItem,
-                                        position: Int, trackingQueue: TrackingQueue,
-                                        paymentId: String) {
+                                        position: Int, paymentId: String,
+                                        topAdsTrackingQueue: TrackingQueue?,
+                                        nonTopsAdsTrackingQueue: TrackingQueue?) {
         val data: MutableMap<String, Any> = mutableMapOf(
                 KEY_EVENT to EVENT_PRODUCT_VIEW,
                 KEY_EVENT_CATEGORY to EVENT_CATEGORY_ORDER_COMPLETE,
@@ -34,8 +35,8 @@ class RecommendationAnalytics @Inject constructor(
                 KEY_PAYMENT_ID to paymentId,
                 KEY_BUSINESS_UNIT to KEY_BUSINESS_UNIT_VALUE_PHYSICAL,
                 KEY_E_COMMERCE to getProductViewECommerceData(recommendationItem, position))
-
-        trackingQueue.putEETracking(data as HashMap<String, Any>)
+        val trackingQueue = if (recommendationItem.isTopAds) topAdsTrackingQueue else nonTopsAdsTrackingQueue
+        trackingQueue?.putEETracking(data as HashMap<String, Any>)
     }
 
 
@@ -97,10 +98,10 @@ class RecommendationAnalytics @Inject constructor(
         )
     }
 
-    private fun getRecommendationTopAdsLabel(isTopADS : Boolean) : String{
-        return if(isTopADS){
+    private fun getRecommendationTopAdsLabel(isTopADS: Boolean): String {
+        return if (isTopADS) {
             TOP_ADS
-        }else{
+        } else {
             NON_TOP_ADS
         }
     }

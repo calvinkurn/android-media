@@ -35,6 +35,7 @@ import com.tokopedia.sellerhome.common.StatusbarHelper
 import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
+import com.tokopedia.sellerhome.settings.analytics.SettingFreeShippingTracker
 import com.tokopedia.sellerhome.settings.analytics.SettingTrackingConstant
 import com.tokopedia.sellerhome.settings.analytics.SettingTrackingListener
 import com.tokopedia.sellerhome.settings.analytics.sendShopInfoImpressionData
@@ -76,7 +77,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         private const val GO_TO_REPUTATION_HISTORY = "GO_TO_REPUTATION_HISTORY"
         private const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
 
-        private const val ERROR_GET_SETTING_SHOP_INFO = "Error when get shop info in other setting."
+        const val ERROR_GET_SETTING_SHOP_INFO = "Error when get shop info in other setting."
 
         @JvmStatic
         fun createInstance(): OtherMenuFragment = OtherMenuFragment()
@@ -90,6 +91,8 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     lateinit var remoteConfig: FirebaseRemoteConfigImpl
     @Inject
     lateinit var sellerHomeConfig: SellerHomeRemoteConfig
+    @Inject
+    lateinit var freeShippingTracker: SettingFreeShippingTracker
 
     private var otherMenuViewHolder: OtherMenuViewHolder? = null
 
@@ -210,13 +213,11 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun setStatusBar() {
-        if(isVisible) {
-            (activity as? Activity)?.run {
-                if (isInitialStatusBar && !isDefaultDarkStatusBar) {
-                    requestStatusBarLight()
-                } else {
-                    requestStatusBarDark()
-                }
+        (activity as? Activity)?.run {
+            if (isInitialStatusBar && !isDefaultDarkStatusBar) {
+                requestStatusBarLight()
+            } else {
+                requestStatusBarDark()
             }
         }
     }
@@ -305,10 +306,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     private fun observeFreeShippingStatus() {
         observe(otherMenuViewModel.isFreeShippingActive) { freeShippingActive ->
             if(freeShippingActive) {
-                otherMenuViewHolder?.setupFreeShippingLayout(
-                    fragmentManager,
-                    userSession
-                )
+                otherMenuViewHolder?.setupFreeShippingLayout(childFragmentManager)
             } else {
                 otherMenuViewHolder?.hideFreeShippingLayout()
             }
@@ -433,14 +431,12 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         }
         populateAdapterData()
         recycler_view.layoutManager = LinearLayoutManager(context)
-        context?.let { otherMenuViewHolder = OtherMenuViewHolder(view, it, this, this)}
+        context?.let { otherMenuViewHolder = OtherMenuViewHolder(view, it, this, this, freeShippingTracker, userSession)}
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if(isVisible) {
-                if (isDefaultDarkStatusBar) {
-                    activity?.requestStatusBarDark()
-                } else {
-                    activity?.requestStatusBarLight()
-                }
+            if (isDefaultDarkStatusBar) {
+                activity?.requestStatusBarDark()
+            } else {
+                activity?.requestStatusBarLight()
             }
             observeRecyclerViewScrollListener()
         }
@@ -485,7 +481,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     private fun setLightStatusBar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && isVisible) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!isDefaultDarkStatusBar){
                 activity?.requestStatusBarLight()
             }

@@ -35,6 +35,22 @@ inline fun View.changeConstraint(transform: ConstraintSet.() -> Unit) {
     constraintSet.applyTo(this)
 }
 
+suspend inline fun View.awaitMeasured() = suspendCancellableCoroutine<Unit> { cont ->
+    if (measuredWidth > 0 && measuredHeight > 0) cont.resume(Unit)
+    else {
+        val listener = object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                if (measuredWidth > 0 && measuredHeight > 0) {
+                    viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    cont.resume(Unit)
+                }
+            }
+        }
+        cont.invokeOnCancellation { viewTreeObserver.removeOnGlobalLayoutListener(listener) }
+        viewTreeObserver.addOnGlobalLayoutListener(listener)
+    }
+}
+
 inline fun View.doOnPreDraw(crossinline action: (view: View) -> Unit) {
     val vto = viewTreeObserver
     vto.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {

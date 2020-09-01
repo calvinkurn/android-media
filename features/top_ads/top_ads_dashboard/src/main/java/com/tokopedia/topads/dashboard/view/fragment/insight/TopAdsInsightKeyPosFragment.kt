@@ -75,7 +75,7 @@ class TopAdsInsightKeyPosFragment : BaseDaggerFragment() {
 
     private fun butttonClicked(position: Int) {
         itemCountCallBack?.onButtonClicked(listOf(adapter.items[position].mutationData), key
-                ?: "", 1)
+                ?: "", 1, false)
     }
 
     private fun setView() {
@@ -91,7 +91,7 @@ class TopAdsInsightKeyPosFragment : BaseDaggerFragment() {
         setHeader(totalPotential)
         btnTambah.setOnClickListener {
             itemCountCallBack?.onButtonClicked(mutationList, key
-                    ?: "", dataInsight?.get(key)?.keyword?.size ?: 0)
+                    ?: "", dataInsight?.get(key)?.keyword?.size ?: 0, true)
         }
         adapter.notifyDataSetChanged()
     }
@@ -131,6 +131,6 @@ class TopAdsInsightKeyPosFragment : BaseDaggerFragment() {
 
     interface SetCount {
         fun setCount(sizePos: Int, sizeNeg: Int, sizeBid: Int)
-        fun onButtonClicked(mutationData: List<MutationData>, groupId: String, countToAdd: Int)
+        fun onButtonClicked(mutationData: List<MutationData>, groupId: String, countToAdd: Int, forAllButton: Boolean)
     }
 }

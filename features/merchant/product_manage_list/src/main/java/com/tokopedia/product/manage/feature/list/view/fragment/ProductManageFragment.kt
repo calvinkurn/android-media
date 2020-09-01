@@ -275,6 +275,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         } else {
             R.menu.menu_product_manage_dark
         }
+        menu.clear()
         inflater.inflate(menuViewId, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }

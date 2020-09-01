@@ -65,4 +65,6 @@
     <dimen name="new_margin_small">8dp</dimen>
     <dimen name="padding_vvvs">2dp</dimen>
     <dimen name="new_margin_med">16dp</dimen>
+
+    <dimen name="sp_11">11sp</dimen>
 </resources>

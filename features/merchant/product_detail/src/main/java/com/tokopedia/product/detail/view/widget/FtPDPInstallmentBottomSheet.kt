@@ -16,7 +16,7 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.bottomsheet.BottomSheetViewPager
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
+import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
 import com.tokopedia.product.detail.view.adapter.InstallmentDataPagerAdapter
 import com.tokopedia.product.detail.view.fragment.FtPdpInstallmentCalculationFragment
 import com.tokopedia.product.detail.view.util.FtInstallmentListItem
@@ -36,7 +36,7 @@ class FtPDPInstallmentBottomSheet : BottomSheetDialogFragment() {
     internal var ftInstallmentItemList: MutableList<FtInstallmentListItem> = ArrayList()
 
     private var installmentDataId: String = ""
-    private var installmentData: FinancingDataResponse = FinancingDataResponse()
+    private var installmentData: FtInstallmentCalculationDataResponse = FtInstallmentCalculationDataResponse()
     private var productPrice: Float = 0f
     private var isOfficialStore: Boolean = false
 
@@ -131,14 +131,14 @@ class FtPDPInstallmentBottomSheet : BottomSheetDialogFragment() {
 
     private fun getNonCreditInstallmentFragment(): Fragment? {
         return FtPdpInstallmentCalculationFragment.createInstance(context, productPrice,
-                installmentData.ftInstallmentCalculation.data.tncDataList, isOfficialStore,
-                installmentData.ftInstallmentCalculation.data.nonCreditCardInstallmentData)
+                installmentData.data.tncDataList, isOfficialStore,
+                installmentData.data.nonCreditCardInstallmentData)
     }
 
     private fun getCreditInstallmentFragment(): Fragment? {
         return FtPdpInstallmentCalculationFragment.createInstance(context, productPrice,
-                installmentData.ftInstallmentCalculation.data.tncDataList, isOfficialStore,
-                installmentData.ftInstallmentCalculation.data.creditCardInstallmentData)
+                installmentData.data.tncDataList, isOfficialStore,
+                installmentData.data.creditCardInstallmentData)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -160,9 +160,9 @@ class FtPDPInstallmentBottomSheet : BottomSheetDialogFragment() {
 
             val cacheManager = SaveInstanceCacheManager(context!!, installmentDataId)
             installmentData = cacheManager.get(
-                    FinancingDataResponse::class.java.simpleName,
-                    FinancingDataResponse::class.java
-            ) ?: FinancingDataResponse()
+                    FtInstallmentCalculationDataResponse::class.java.simpleName,
+                    FtInstallmentCalculationDataResponse::class.java
+            ) ?: FtInstallmentCalculationDataResponse()
             productPrice = it.getFloat(KEY_PDP_PRODUCT_PRICE)
             isOfficialStore = it.getBoolean(KEY_PDP_IS_OFFICIAL)
         }
