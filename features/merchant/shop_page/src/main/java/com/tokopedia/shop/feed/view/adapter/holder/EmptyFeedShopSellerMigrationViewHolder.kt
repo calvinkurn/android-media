@@ -20,7 +20,9 @@ class EmptyFeedShopSellerMigrationViewHolder(view: View,
     override fun bind(element: EmptyFeedShopViewModel?) {
         with(itemView) {
             ivTabFeedNoPost?.setImageUrl(SellerMigrationConstants.SELLER_MIGRATION_POST_FEED_BANNER_LINK)
-            tvSellerMigrationLearnMoreLink?.text = context?.let { HtmlLinkHelper(it, getString(com.tokopedia.seller_migration_common.R.string.seller_migration_bottom_sheet_footer)).spannedString }
+            tvSellerMigrationLearnMoreLink?.text = context?.let {
+                HtmlLinkHelper(it, getString(com.tokopedia.seller_migration_common.R.string.seller_migration_bottom_sheet_footer)).spannedString
+            }
             btnPlayStoreTabFeedNoPost?.setOnClickListener {
                 mainView.onGotoPlayStoreClicked()
             }
