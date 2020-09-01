@@ -32,12 +32,7 @@ data class DynamicProductInfoP1(
         }
 
     val parentProductId: String
-        get() =
-            if (data.variant.isVariant && data.variant.parentID.isNotEmpty() && data.variant.parentID.toInt() > 0) {
-                data.variant.parentID
-            } else {
-                basic.productID
-            }
+        get() = basic.productID
 
     val shouldShowCod: Boolean
         get() = (!data.campaign.activeAndHasId) && data.isCOD
