@@ -140,7 +140,7 @@
     <ImageView
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:src="@drawable/ic_shutter_background" />
+      android:src="@drawable/ic_shutter_background_inactive_phone" />
     
     <ImageView
       android:layout_width="@dimen/layout_lvl5"
@@ -168,7 +168,7 @@
       android:layout_height="match_parent"
       android:layout_marginEnd="@dimen/spacing_lvl2"
       android:layout_weight="1"
-      android:background="@drawable/white_button_ghost"
+      android:background="@drawable/white_button_ghost_inactive_phone"
       android:gravity="center"
       android:text="@string/camera_recapture_text"
       android:textColor="@color/Neutral_N0"
@@ -181,7 +181,7 @@
       android:layout_height="match_parent"
       android:layout_marginEnd="@dimen/spacing_lvl2"
       android:layout_weight="1"
-      android:background="@drawable/white_button_fill"
+      android:background="@drawable/white_button_fill_inactive_phone"
       android:gravity="center"
       android:text="@string/camera_next_button"
       android:textColor="@color/Green_G500"
