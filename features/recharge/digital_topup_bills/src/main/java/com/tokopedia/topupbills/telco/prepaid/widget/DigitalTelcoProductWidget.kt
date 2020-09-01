@@ -3,11 +3,11 @@ package com.tokopedia.topupbills.telco.prepaid.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import android.widget.FrameLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.telco.data.TelcoCatalogDataCollection
 import com.tokopedia.topupbills.telco.data.TelcoProduct
@@ -24,7 +24,7 @@ import com.tokopedia.topupbills.telco.prepaid.model.DigitalTrackProductTelco
  */
 class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null,
                                                           defStyleAttr: Int = 0)
-    : BaseCustomView(context, attrs, defStyleAttr) {
+    : FrameLayout(context, attrs, defStyleAttr) {
 
     private val recyclerView: RecyclerView
 

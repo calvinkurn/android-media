@@ -50,6 +50,7 @@ import javax.inject.Inject;
 
 import static com.tokopedia.logisticdata.data.constant.LogisticConstant.INSTANCE_TYPE_EDIT_ADDRESS_FROM_MULTIPLE_CHECKOUT;
 import static com.tokopedia.logisticdata.data.constant.LogisticConstant.INSTANCE_TYPE_EDIT_ADDRESS_FROM_SINGLE_CHECKOUT;
+import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_REF;
 
 public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         AddressListContract.View, SearchInputView.Listener,
@@ -458,22 +459,14 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         if (getActivity() != null) {
             if (originDirectionType == ORIGIN_DIRECTION_TYPE_FROM_MULTIPLE_ADDRESS_FORM) {
                 checkoutAnalyticsMultipleAddress.eventClickAddressCartMultipleAddressClickPlusFromMultiple();
-                checkoutAnalyticsChangeAddress.sendScreenName(getActivity(), CartConstant.SCREEN_NAME_CART_EXISTING_USER);
-                Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.ADD_ADDRESS_V2);
-                intent.putExtra(PARAM_TOKEN, token);
-                startActivityForResult(intent, LogisticConstant.ADD_NEW_ADDRESS_CREATED);
-
             } else {
                 checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickTambahAlamatBaruFromGantiAlamat();
                 checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickTambahFromAlamatPengiriman();
-                checkoutAnalyticsChangeAddress.sendScreenName(getActivity(), CartConstant.SCREEN_NAME_CART_EXISTING_USER);
-                Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.ADD_ADDRESS_V2);
-                intent.putExtra(PARAM_TOKEN, token);
-                startActivityForResult(intent, LogisticConstant.ADD_NEW_ADDRESS_CREATED);
-
             }
-
-
+            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.ADD_ADDRESS_V2);
+            intent.putExtra(PARAM_TOKEN, token);
+            intent.putExtra(EXTRA_REF, CartConstant.SCREEN_NAME_CART_EXISTING_USER);
+            startActivityForResult(intent, LogisticConstant.ADD_NEW_ADDRESS_CREATED);
         }
     }
 

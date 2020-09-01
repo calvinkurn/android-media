@@ -7,6 +7,8 @@ import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -90,6 +92,7 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
     private lateinit var recyclerviewScrollListener: EndlessRecyclerViewScrollListener
     private lateinit var layoutManager: LinearLayoutManager
     private lateinit var recyclerView: RecyclerView
+    private lateinit var imgBg: ConstraintLayout
     private var totalCount = 0
     private var totalPage = 0
 
@@ -163,6 +166,7 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.topads_dash_fragment_product_iklan, container, false)
         recyclerView = view.findViewById(R.id.auto_ads_list)
+        imgBg = view.findViewById(R.id.progressImg)
         setAutoAdsAdapter()
         return view
     }
@@ -341,15 +345,21 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
         } else {
             setEmptyView()
         }
-
     }
 
     private fun manualAds() {
         empty_view.visibility = View.GONE
         view_pager_frag.visibility = View.VISIBLE
         autoads_layout.visibility = View.GONE
-        autoads_status.visibility = View.VISIBLE
         autoAdsWidget?.visibility = View.GONE
+        if (adCurrentState == STATUS_IN_PROGRESS_INACTIVE) {
+            imgBg.background = AppCompatResources.getDrawable(context!!, com.tokopedia.topads.auto.R.drawable.topads_blue_bg)
+            autoadsDeactivationProgress?.visibility = View.VISIBLE
+            autoadsOnboarding.visibility = View.GONE
+        } else {
+            autoadsDeactivationProgress?.visibility = View.GONE
+            autoadsOnboarding.visibility = View.VISIBLE
+        }
         renderViewPager()
     }
 
@@ -370,7 +380,7 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
         autoads_layout.visibility = View.VISIBLE
         tab_layout.visibility = View.GONE
         empty_view.visibility = View.GONE
-        autoads_status.visibility = View.GONE
+        autoadsOnboarding.visibility = View.GONE
         fetchData()
     }
 

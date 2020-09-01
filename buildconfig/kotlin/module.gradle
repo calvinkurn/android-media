@@ -50,6 +50,12 @@ android {
         exclude 'META-INF/LICENSE.md'
         exclude 'META-INF/LICENSE-notice.md'
         exclude('META-INF/androidx.*.version')
+        exclude 'META-INF/**'
+    }
+    lintOptions {
+        abortOnError false
+        xmlReport true
+        htmlReport false
     }
 }
 

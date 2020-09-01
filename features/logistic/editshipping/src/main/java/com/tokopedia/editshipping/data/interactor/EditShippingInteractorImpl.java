@@ -13,8 +13,8 @@ import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.MapNulRemover;
-import com.tokopedia.editshipping.model.editshipping.EditShippingCouriers;
-import com.tokopedia.editshipping.model.openshopshipping.OpenShopData;
+import com.tokopedia.editshipping.domain.model.editshipping.EditShippingCouriers;
+import com.tokopedia.editshipping.domain.model.openshopshipping.OpenShopData;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URI;

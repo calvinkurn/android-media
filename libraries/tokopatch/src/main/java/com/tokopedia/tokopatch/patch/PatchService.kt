@@ -3,8 +3,6 @@ package com.tokopedia.tokopatch.patch
 import android.app.Application
 import android.content.Intent
 import androidx.core.app.JobIntentService
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import com.tokopedia.tokopatch.domain.data.DataResponse
 import com.tokopedia.tokopatch.domain.data.RobustDatabase
 import com.tokopedia.tokopatch.domain.repository.PatchRepository
@@ -25,7 +23,6 @@ import java.io.IOException
  */
 class PatchService : JobIntentService() {
 
-    private lateinit var allResult: LiveData<List<DataResponse.Result>>
     private lateinit var repository: PatchRepository
     private lateinit var logger: PatchLogger
 
@@ -44,31 +41,15 @@ class PatchService : JobIntentService() {
 
     override fun onCreate() {
         super.onCreate()
-        logger = PatchLogger()
-        logger.logMessage(applicationContext,"P1#ROBUST#PatchService created")
+        logger = PatchLogger.instance
         val dataDao = RobustDatabase.getDatabase(applicationContext).dataDao()
-        repository = PatchRepository(
-                dataDao,
-                Utils.versionCode(applicationContext)
-        )
-        allResult = repository.allData
-
-        allResult.observe(PatchLifecycle(), Observer {
-            val patchList: MutableList<Patch> = mutableListOf()
-            it.forEachIndexed { index, result ->
-                decodeData(result, patchList)
-            }
-            PatchExecutors(applicationContext, patchList, logger).start()
-        })
+        repository = PatchRepository.getInstance(dataDao, Utils.versionCode(applicationContext))
     }
 
     override fun onHandleWork(intent: Intent) {
-        val packageName =
-                Utils.packageName(applicationContext)
-        val versionName =
-                Utils.versionName(applicationContext)
-        val buildNumber =
-                Utils.versionCode(applicationContext)
+        val packageName = Utils.packageName(applicationContext)
+        val versionName = Utils.versionName(applicationContext)
+        val buildNumber = Utils.versionCode(applicationContext)
         repository.getPatch(
                 packageName,
                 versionName,
@@ -79,29 +60,36 @@ class PatchService : JobIntentService() {
     }
 
     private fun onErrorGetPatch(t: Throwable) {
-        t.printStackTrace()
+        repository.allData?.let {
+            val patchList: MutableList<Patch> = mutableListOf()
+            it.forEachIndexed { index, result ->
+                decodeData(result, patchList)
+            }
+            PatchExecutors.getInstance(applicationContext, patchList, logger).start()
+        }
+        logger.exceptionNotify(this, t, "Applied patch from local")
     }
 
     private fun onSuccessGetPatch(data: DataResponse) {
         GlobalScope.launch {
             repository.flush()
             data.result?.let {
+                val patchList: MutableList<Patch> = mutableListOf()
                 it.forEachIndexed { index, result ->
                     result.uid = index
                     repository.insert(result)
+                    decodeData(result, patchList)
                 }
-                logger.onPatchFetched(applicationContext, result = true, isNet = true)
+                PatchExecutors.getInstance(applicationContext, patchList, logger).start()
             }
         }
-
     }
 
     private fun decodeData(result: DataResponse.Result, patchList: MutableList<Patch>) {
-        val decodedBytes = Decoder.decrypt(result.signature, result.data)
-
         val file = File.createTempFile(result.versionName, ".zip", applicationContext.cacheDir)
         val bufferedOutputStream = BufferedOutputStream(FileOutputStream(file))
         try {
+            val decodedBytes = Decoder.decrypt(result.signature, result.data)
             bufferedOutputStream.write(decodedBytes)
         } catch (e: IOException) {
             e.printStackTrace()
@@ -121,7 +109,4 @@ class PatchService : JobIntentService() {
         }
     }
 
-    override fun onDestroy() {
-        logger.logMessage(applicationContext, "P1#ROBUST#PatchService destroyed")
-    }
 }

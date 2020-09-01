@@ -34,13 +34,11 @@ import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking.eventOnClickAccountTicker
-import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
 import com.tokopedia.seller_migration_common.getSellerMigrationDate
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
-import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationAccountBottomSheet
+import com.tokopedia.seller_migration_common.presentation.fragment.bottomsheet.SellerMigrationAccountCommBottomSheet
 import com.tokopedia.track.TrackApp
-import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.make
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -58,6 +56,10 @@ class SellerAccountFragment : BaseAccountFragment(), AccountItemListener, Fragme
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val viewModel by lazy { viewModelFragmentProvider.get(SellerAccountViewModel::class.java) }
+
+    private val sellerMigrationBottomSheet by lazy {
+        SellerMigrationAccountCommBottomSheet.createInstance(userSession.userId)
+    }
 
     @Inject
     lateinit var sellerAccountMapper: SellerAccountMapper
@@ -244,17 +246,17 @@ class SellerAccountFragment : BaseAccountFragment(), AccountItemListener, Fragme
     override fun onProductRecommendationThreeDotsClicked(product: RecommendationItem, adapterPosition: Int) {}
     private fun setupSellerMigrationTicker() {
         if (isSellerMigrationEnabled(this.context)) {
-            migrationTicker.tickerTitle = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_account_home_ticker_title)
+            migrationTicker.tickerTitle = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_ticker_title)
             val remoteConfigDate = getSellerMigrationDate(this.context)
             if (remoteConfigDate.isEmpty()) {
-                migrationTicker.setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_generic_ticker_content))
+                migrationTicker.setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_account_ticker_desc))
             } else {
-                migrationTicker.setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_account_home_ticker_content, remoteConfigDate))
+                migrationTicker.setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_account_ticker_desc_dynamic, remoteConfigDate))
             }
             migrationTicker.setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(charSequence: CharSequence) {
                     eventOnClickAccountTicker(userSession.userId)
-                    openSellerMigrationBottomSheet()
+                    sellerMigrationBottomSheet.show(childFragmentManager, SellerMigrationAccountCommBottomSheet::class.java.name)
                 }
 
                 override fun onDismiss() {
@@ -263,13 +265,6 @@ class SellerAccountFragment : BaseAccountFragment(), AccountItemListener, Fragme
             })
         } else {
             migrationTicker.visibility = View.GONE
-        }
-    }
-
-    private fun openSellerMigrationBottomSheet() {
-        context?.let {
-            val sellerMigrationBottomSheet: BottomSheetUnify = SellerMigrationAccountBottomSheet.createNewInstance(it)
-            sellerMigrationBottomSheet.show(childFragmentManager, SellerMigrationConstants.TAG_SELLER_MIGRATION_BOTTOM_SHEET)
         }
     }
 
@@ -297,6 +292,16 @@ class SellerAccountFragment : BaseAccountFragment(), AccountItemListener, Fragme
     override fun onDestroyView() {
         super.onDestroyView()
         viewModel.sellerData.removeObservers(viewLifecycleOwner)
+    }
+
+    override fun onPause() {
+        sellerMigrationBottomSheet?.dismiss()
+        super.onPause()
+    }
+
+    override fun onDestroy() {
+        sellerMigrationBottomSheet?.dismiss()
+        super.onDestroy()
     }
 
     companion object {
