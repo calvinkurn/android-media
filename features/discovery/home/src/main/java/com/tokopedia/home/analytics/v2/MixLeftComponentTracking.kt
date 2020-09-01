@@ -87,7 +87,7 @@ object MixLeftComponentTracking: BaseTrackerConst()  {
     }
 
     fun getMixLeftIrisProductView(channel: ChannelModel, grid: ChannelGrid, position:Int): Map<String, Any> {
-        val trackingBuilder = BaseTrackingBuilder()
+        val trackingBuilder = BaseTrackerBuilder()
         return trackingBuilder.constructBasicProductView(
                 event = Event.PRODUCT_VIEW_IRIS,
                 eventCategory = Category.HOMEPAGE,
