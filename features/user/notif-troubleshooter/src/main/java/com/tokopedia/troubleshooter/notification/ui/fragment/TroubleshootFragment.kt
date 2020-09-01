@@ -14,10 +14,14 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.fcmcommon.FirebaseMessagingManager
 import com.tokopedia.fcmcommon.di.DaggerFcmComponent
 import com.tokopedia.fcmcommon.di.FcmModule
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.settingnotif.usersetting.util.CacheManager.saveLastCheckedDate
 import com.tokopedia.troubleshooter.notification.R
@@ -46,6 +50,8 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
     @Inject lateinit var fcmManager: FirebaseMessagingManager
 
     private lateinit var viewModel: TroubleshootViewModel
+
+    private val additionalItems = mutableListOf<Visitable<*>>()
 
     private val adapter by lazy(LazyThreadSafetyMode.NONE) {
         TroubleshooterAdapter(TroubleshooterItemFactory(this))
@@ -110,6 +116,7 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
                     Timber.d("Notifikasi yang aktif ${it.data.totalOn} dari ${it.data.notifications}")
                 }
                 is Fail -> {
+                    troubleshooterStatusWarning()
                     adapter.updateStatus(Notification, StatusState.Error)
                 }
             }
@@ -127,11 +134,15 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
                         }
                         is DeviceSettingState.Low -> {
                             adapter.updateStatus(Device, StatusState.Warning)
-                            adapter.addTicker("Ada kategori push notification Tokopedia yang belum aktif di HP.")
+                            additionalItems.add(TickerUIView.ticker(
+                                    "Ada kategori push notification Tokopedia yang belum aktif di HP.",
+                                    "Perbaiki!")
+                            )
                         }
                     }
                 }
                 is Fail -> {
+                    troubleshooterStatusWarning()
                     adapter.updateStatus(Device, StatusState.Error)
                 }
             }
@@ -147,9 +158,14 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
                     adapter.updateStatus(PushNotification, isState(
                             it.data.isTroubleshootSuccess()
                     ))
+                    adapter.addElement(WarningTitleUIVIew("Rekomendasi lebih optimal"))
+                    additionalItems.forEach { item -> adapter.addElement(item) }
+                    adapter.addElement(FooterUIView())
                     saveLastCheckedDate(requireContext())
+                    troubleshooterStatusPassed()
                 }
                 is Fail -> {
+                    troubleshooterStatusWarning()
                     adapter.updateStatus(PushNotification, StatusState.Error)
                 }
             }
@@ -165,6 +181,18 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
                     device
             )
         }
+    }
+
+    private fun troubleshooterStatusPassed() {
+        imgStatus.loadImageDrawable(R.drawable.ic_ts_notif_status_checked)
+        txtStatus?.text = getString(R.string.notif_status_checked)
+        pgLoader?.hide()
+    }
+
+    private fun troubleshooterStatusWarning() {
+        imgStatus.loadImageDrawable(R.drawable.ic_ts_notif_status_warning)
+        txtStatus?.text = getString(R.string.notif_status_warning)
+        pgLoader?.hide()
     }
 
     private fun setUpdateTokenStatus(newToken: String) {
@@ -199,10 +227,16 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
 
     private fun setNotificationSettingStatus(userSetting: UserSettingUIView) {
         when {
+            userSetting.totalOn == userSetting.notifications -> {
+                adapter.updateStatus(Notification, StatusState.Success)
+            }
             userSetting.totalOn != userSetting.notifications -> {
                 val inactive = userSetting.notifications - userSetting.totalOn
                 adapter.updateStatus(Notification, StatusState.Warning)
-                adapter.addTicker("Kamu belum mengaktifkan push notification untuk $inactive jenis info")
+                additionalItems.add(TickerUIView.ticker(
+                        "Kamu belum mengaktifkan push notification untuk $inactive jenis info",
+                        "Aktifkan!")
+                )
             }
             else -> {
                 adapter.updateStatus(Notification, StatusState.Error)
@@ -229,19 +263,19 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
 //            }
 //        }
 //    }
-
-    private fun onShowTicker(importance: Int) {
-        adapter.addTicker(when (importance) {
-            IMPORTANCE_LOW -> getString(
-                    R.string.notif_ticker_importance_low,
-                    importance
-            ).parseAsHtml().trim()
-            else -> getString(
-                    R.string.notif_ticker_importance_none,
-                    importance
-            ).parseAsHtml().trim()
-        })
-    }
+//
+//    private fun onShowTicker(importance: Int) {
+//        adapter.addTicker(when (importance) {
+//            IMPORTANCE_LOW -> getString(
+//                    R.string.notif_ticker_importance_low,
+//                    importance
+//            ).parseAsHtml().trim()
+//            else -> getString(
+//                    R.string.notif_ticker_importance_none,
+//                    importance
+//            ).parseAsHtml().trim()
+//        })
+//    }
 
     override fun onRingtoneTest(uri: Uri) {
         RingtoneManager.getRingtone(context, uri).play()

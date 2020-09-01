@@ -2,7 +2,9 @@
 <resources>
     <string name="notif_title">Troubleshooter</string>
 
-    <string name="mock">loading.</string>
+    <string name="notif_status_waiting">Tunggu sebentar, ya</string>
+    <string name="notif_status_checked">Push notification aktif</string>
+    <string name="notif_status_warning">Kami menemukan kendala di HP-mu</string>
 
     <string name="notif_menu_notification">Notifikasi Tokopedia aktif.</string>
     <string name="notif_menu_device">Notifikasi HP aktif.</string>

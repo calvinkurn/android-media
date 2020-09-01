@@ -55,11 +55,6 @@ internal open class TroubleshooterAdapter(
 //        notifyItemRemoved(index)
 //    }
 
-    fun addTicker(message: CharSequence) {
-        addElement(WarningTitleUIVIew("Rekomendasi lebih optimal"))
-        addElement(ticker(message, "Perbaiki!"))
-    }
-
     fun removeTicker() {
 //        if (visitables.size > 0 && visitables.first() is TickerUIView) {
 //            visitables.dropFirst()
