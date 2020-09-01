@@ -106,7 +106,7 @@ class TopAdsDetailSheet {
         }
     }
 
-    fun show(adId: String) {
+    fun show(adId: String, categoryType: Int) {
         viewModel.getAdsProduct(adId, this::onSuccessGetAds, this::onErrorGetAds)
         dialog!!.show()
     }

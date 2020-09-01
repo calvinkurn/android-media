@@ -40,9 +40,9 @@
     <string name="apply_credit">Ajukan Kredit</string>
     <string name="buy">Beli</string>
     <string name="promo_hourly">Promo Perjam</string>
-    <string name="promote_topads">Iklankan</string>
+    <string name="promote_topads">Tingkatkan Penjualan</string>
     <string name="edit_product_text">Ubah Produk</string>
-    <string name="rincian_topads">Rincian Iklan</string>
+    <string name="rincian_topads">Lihat Performa Iklan</string>
     <string name="no_stock">Stok Kosong</string>
     <string name="stock_habis">Stok Habis</string>
     <string name="action_preorder">PreOrder</string>

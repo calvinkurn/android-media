@@ -80,6 +80,7 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APP
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APPLINK_SHOP_ID
 import com.tokopedia.product.detail.common.data.model.constant.ProductShopStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
+import com.tokopedia.product.detail.common.data.model.constant.TopAdsShopCategoryTypeDef
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.product.TopAdsGetProductManage
@@ -90,11 +91,8 @@ import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCart
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
+import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
-import com.tokopedia.product.detail.data.model.datamodel.*
-import com.tokopedia.product.detail.data.model.description.DescriptionData
-import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
-import com.tokopedia.product.detail.data.model.spesification.Specification
 import com.tokopedia.product.detail.data.util.*
 import com.tokopedia.product.detail.data.util.VariantMapper.generateVariantString
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
@@ -2272,7 +2270,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         actionButtonView.rincianTopAdsClick = {
             if (GlobalConfig.isSellerApp()) {
                 context?.let {
-                    topAdsDetailSheet?.show(topAdsGetProductManage.data.adId)
+                    topAdsDetailSheet?.show(
+                            topAdsGetProductManage.data.adId,
+                            viewModel.p2Login.value?.topAdsGetShopInfo?.category ?: 0)
                 }
             } else {
                 val appLink = UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
@@ -2300,10 +2300,17 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             }
         }
 
-        actionButtonView.promoTopAdsClick = {
+        actionButtonView.tingkatkanPenjualanClicked = {
             val firstAppLink = UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
-            val secondAppLink = ApplinkConst.SellerApp.TOPADS_CREATE_ADS
+            var secondAppLink = ApplinkConst.SellerApp.TOPADS_CREATE_ADS
+
             if (GlobalConfig.isSellerApp()) {
+                secondAppLink = if (viewModel.p2Login.value?.topAdsGetShopInfo?.category == TopAdsShopCategoryTypeDef.AUTOADS_USER) {
+                    ApplinkConst.SellerApp.TOPADS_DASHBOARD
+                } else {
+                    ApplinkConst.SellerApp.TOPADS_CREATE_ADS
+                }
+
                 context?.let { RouteManager.route(it, secondAppLink) }
             } else {
                 goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_ADS, arrayListOf(
