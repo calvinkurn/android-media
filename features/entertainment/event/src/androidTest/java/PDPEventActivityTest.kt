@@ -14,7 +14,9 @@ import com.tokopedia.analyticsdebugger.validator.core.hasAllSuccess
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.pdp.activity.EventPDPActivity
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
+import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import kotlinx.android.synthetic.main.partial_event_pdp_price.*
+import mock.PDPEventMockResponse
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.core.AllOf
 import org.junit.Before
@@ -42,6 +44,7 @@ class PDPEventActivityTest {
     @Before
     fun setup() {
         gtmLogDBSource.deleteAll().subscribe()
+        setupGraphqlMockResponse(PDPEventMockResponse())
     }
 
 
@@ -49,7 +52,7 @@ class PDPEventActivityTest {
     fun validatePDPEvent() {
         Thread.sleep(5000)
         click_lanjutkan_ticket()
-        click_check_ticket()
+        //click_check_ticket()
         assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ENTERTAINMENT_EVENT_PDP_VALIDATOR_QUERY), hasAllSuccess())
 
     }

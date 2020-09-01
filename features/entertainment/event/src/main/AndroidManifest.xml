@@ -1,7 +1,9 @@
-    <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.tokopedia.entertainment">
 
     <application
+        tools:replace="android:allowBackup"
         android:allowBackup="true"
         android:supportsRtl="true">
         <activity android:name=".home.activity.HomeEventActivity"

@@ -2,4 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:versionCode="1"
     android:versionName="1.0.0"
-    package="com.tokopedia.entertainment" /> 
+    package="com.tokopedia.entertainment" >
+    <application
+        android:allowBackup="true"
+        tools:replace="android:allowBackup"/>
+</manifest>
