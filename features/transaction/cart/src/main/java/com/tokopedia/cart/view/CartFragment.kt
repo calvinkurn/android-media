@@ -2468,7 +2468,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             setToolbarShadowVisibility(cartAdapter.allAvailableCartItemData.isEmpty())
             notifyBottomCartParent()
 
-            // Todo : refresh wishlist
+            dPresenter.processGetWishlistData()
         }
     }
 
