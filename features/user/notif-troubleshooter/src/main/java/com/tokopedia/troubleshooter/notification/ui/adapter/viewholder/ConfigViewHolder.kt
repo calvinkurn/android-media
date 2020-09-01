@@ -5,6 +5,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.troubleshooter.notification.R
@@ -39,7 +41,7 @@ open class ConfigViewHolder(
             when (state) {
                 is ConfigState.Notification -> {
                     itemView.setOnClickListener {
-                        listener.goToNotificationSettings()
+                        context.startActivity(RouteManager.getIntent(context, USER_NOTIFICATION_SETTING))
                     }
                 }
                 is ConfigState.Device -> {
