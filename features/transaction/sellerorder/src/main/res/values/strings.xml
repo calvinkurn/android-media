@@ -23,7 +23,7 @@
     <string name="empty_filter_desc">Ubah filter untuk menemukan pesanan yang sesuai</string>
     <string name="empty_search_title">Hasil pencarian tidak ditemukan untuk tanggal</string>
     <string name="empty_search_desc">Gunakan kata kunci yang relevan (Nama Pembeli, No. Invoice, Tanggal belanja)</string>
-    <string name="empty_peluang_title">Belum ada pesanana, nih</string>
+    <string name="empty_peluang_title">Belum ada pesanan, nih</string>
     <string name="empty_peluang_desc">Cek Peluang dan ambil pesanan yang tidak diproses penjual lain.</string>
     <string name="error_list_title">Sedang Ada Perbaikan Sistem</string>
     <string name="error_list_desc">Mohon maaf, kami sedang ada perbaikan sistem, anda dapat mencobanya beberapa saat lagi</string>
