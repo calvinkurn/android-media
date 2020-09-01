@@ -9,9 +9,9 @@ interface DigitalTopupEventTracking {
     interface Additional {
         companion object {
             const val CURRENT_SITE = "currentSite"
-            const val CURRENT_SITE_RECHARGE = "tokopediadigitalRecharge"
+            const val CURRENT_SITE_RECHARGE = "tokopediadigital"
             const val BUSINESS_UNIT = "businessUnit"
-            const val BUSINESS_UNIT_RECHARGE = "top up and tagihan"
+            const val BUSINESS_UNIT_RECHARGE = "recharge"
             const val USER_ID = "userId"
             const val DIGITAL_SCREEN_NAME = "/digital/"
             const val SCREEN_NAME = "screenName"

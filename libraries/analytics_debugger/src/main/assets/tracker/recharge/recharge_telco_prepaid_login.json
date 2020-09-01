@@ -53,9 +53,9 @@
       "eventCategory": "digital - homepage",
       "eventAction": "click tab promo",
       "eventLabel": "{{.*}}",
-      "currentSite": "tokopediadigitalRecharge",
+      "currentSite": "tokopediadigital",
       "userId": "{{.*}}",
-      "businessUnit": "top up and tagihan",
+      "businessUnit": "recharge",
       "sessionIris": "{{.*}}"
     },
     {
@@ -63,9 +63,9 @@
       "eventCategory": "digital - homepage",
       "eventAction": "click tab recent",
       "eventLabel": "{{.*}}",
-      "currentSite": "tokopediadigitalRecharge",
+      "currentSite": "tokopediadigital",
       "userId": "{{.*}}",
-      "businessUnit": "top up and tagihan",
+      "businessUnit": "recharge",
       "sessionIris": "{{.*}}"
     },
     {
@@ -75,10 +75,10 @@
       "clientId": "{{.*}}",
       "screenName": "{{pulsa|paket data|roaming}}",
       "eventLabel": "{{.* - .* - .*}}",
-      "currentSite": "tokopediadigitalRecharge",
+      "currentSite": "tokopediadigital",
       "userId": "{{.*}}",
       "sessionIris": "{{.*}}",
-      "businessUnit": "top up and tagihan",
+      "businessUnit": "recharge",
       "items": [
         {
           "item_id": "{{.*}}",

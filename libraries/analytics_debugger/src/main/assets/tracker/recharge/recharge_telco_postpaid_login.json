@@ -6,9 +6,9 @@
       "event": "openScreen",
       "screenName": "{{/digital/pascabayar}}",
       "isLoggedInStatus": "{{true|false}}",
-      "currentSite": "tokopediadigitalRecharge",
+      "currentSite": "tokopediadigital",
       "userId": "{{.*}}",
-      "businessUnit": "top up and tagihan",
+      "businessUnit": "recharge",
       "category": "{{.*}}",
       "digitalCategoryId": "{{.*}}",
       "clientId": "{{.*}}",
@@ -68,9 +68,9 @@
       "eventCategory": "digital - homepage",
       "eventAction": "click tab promo",
       "eventLabel": "{{.*}}",
-      "currentSite": "tokopediadigitalRecharge",
+      "currentSite": "tokopediadigital",
       "userId": "{{.*}}",
-      "businessUnit": "top up and tagihan",
+      "businessUnit": "recharge",
       "sessionIris": "{{.*}}"
     },
     {
@@ -78,9 +78,9 @@
       "eventCategory": "digital - homepage",
       "eventAction": "click tab recent",
       "eventLabel": "{{.*}}",
-      "currentSite": "tokopediadigitalRecharge",
+      "currentSite": "tokopediadigital",
       "userId": "{{.*}}",
-      "businessUnit": "top up and tagihan",
+      "businessUnit": "recharge",
       "sessionIris": "{{.*}}"
     },
     {
@@ -88,9 +88,9 @@
       "eventCategory": "digital - homepage",
       "eventAction": "click cek tagihan",
       "eventLabel": "{{.* - .*}}",
-      "currentSite": "tokopediadigitalRecharge",
+      "currentSite": "tokopediadigital",
       "userId": "{{.*}}",
-      "businessUnit": "top up and tagihan",
+      "businessUnit": "recharge",
       "sessionIris": "{{.*}}"
     }
   ]
