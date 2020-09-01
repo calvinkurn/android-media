@@ -72,17 +72,7 @@ class HotelFilterBottomSheets : BottomSheetUnify() {
 
         val submitButton = view.findViewById<UnifyButton>(R.id.hotel_filter_submit_button)
         submitButton.setOnClickListener {
-            selectedFilters = mutableListOf()
-            for (i in 0 until recyclerView.childCount) {
-                val viewHolder = recyclerView.findViewHolderForAdapterPosition(i)
-                viewHolder?.let {
-                    it as HotelSearchResultFilterV2Adapter.FilterBaseViewHolder
-                    if (it.selectedOption.values.isNotEmpty()) {
-                        selectedFilters.add(it.selectedOption)
-                    }
-                }
-
-            }
+            selectedFilters = adapter.paramFilterV2.toMutableList()
             listener.onSubmitFilter(selectedFilters)
             this.dismiss()
         }

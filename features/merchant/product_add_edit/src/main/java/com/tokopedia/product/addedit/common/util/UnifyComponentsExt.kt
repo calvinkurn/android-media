@@ -4,6 +4,8 @@ import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
 import android.view.View
+import android.view.inputmethod.EditorInfo
+import android.widget.TextView
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.unifycomponents.TextAreaUnify
@@ -65,4 +67,21 @@ fun TextAreaUnify?.replaceTextAndRestoreCursorPosition(text: String) = this?.tex
 fun Typography?.setTextOrGone(text: String) {
     this?.text = text
     this?.visibility = if (text.isNotEmpty()) View.VISIBLE else View.GONE
+}
+
+// Action listener for edittext inside the recyclerView
+// https://stackoverflow.com/questions/13614101/fatal-crash-focus-search-returned-a-view-that-wasnt-able-to-take-focus/49433332#49433332
+fun TextFieldUnify?.setRecyclerViewEditorActionListener() {
+    this?.textFieldInput?.setOnEditorActionListener(TextView.OnEditorActionListener { textView, actionId, event ->
+        if (actionId == EditorInfo.IME_ACTION_NEXT) {
+            val view = textView.focusSearch(View.FOCUS_RIGHT)
+            if (view != null) {
+                if (!view.requestFocus(View.FOCUS_RIGHT)) {
+                    return@OnEditorActionListener true
+                }
+            }
+            return@OnEditorActionListener false
+        }
+        false
+    })
 }

@@ -60,7 +60,7 @@ class IrisLogger private constructor(private val context: Context) : IrisLoggerI
             val irisSendLogDB = IrisSendLogDB()
             irisSendLogDB.data = rowCount.toString() + " - " + prettify(data)
             irisSendLogDB.timestamp = System.currentTimeMillis()
-            irisSendLogDBSource.insertAll(irisSendLogDB)
+            irisSendLogDBSource.insertAll(irisSendLogDB, rowCount)
                     .subscribeOn(Schedulers.io()).unsubscribeOn(Schedulers.io()).subscribe(defaultSubscriber())
         } catch (ignored: Exception) {
         }

@@ -2,8 +2,12 @@ package com.tokopedia.sellerhome.di.module
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.sellerhome.di.scope.SellerHomeScope
-import com.tokopedia.sellerhome.domain.mapper.*
-import com.tokopedia.sellerhome.domain.usecase.*
+import com.tokopedia.sellerhome.domain.mapper.NotificationMapper
+import com.tokopedia.sellerhome.domain.mapper.ShopInfoMapper
+import com.tokopedia.sellerhome.domain.usecase.GetNotificationUseCase
+import com.tokopedia.sellerhome.domain.usecase.GetShopInfoUseCase
+import com.tokopedia.sellerhomecommon.domain.mapper.*
+import com.tokopedia.sellerhomecommon.domain.usecase.*
 import dagger.Module
 import dagger.Provides
 
@@ -83,5 +87,32 @@ class SellerHomeUseCaseModule {
             mapper: ShopInfoMapper
     ): GetShopInfoUseCase {
         return GetShopInfoUseCase(gqlRepository, mapper)
+    }
+
+    @SellerHomeScope
+    @Provides
+    fun provideGetTableDataUseCase(
+            gqlRepository: GraphqlRepository,
+            mapper: TableMapper
+    ): GetTableDataUseCase {
+        return GetTableDataUseCase(gqlRepository, mapper)
+    }
+
+    @SellerHomeScope
+    @Provides
+    fun provideGetPieChartDataUseCase(
+            gqlRepository: GraphqlRepository,
+            mapper: PieChartMapper
+    ): GetPieChartDataUseCase {
+        return GetPieChartDataUseCase(gqlRepository, mapper)
+    }
+
+    @SellerHomeScope
+    @Provides
+    fun provideGetBarChartDataUseCase(
+            gqlRepository: GraphqlRepository,
+            mapper: BarChartMapper
+    ): GetBarChartDataUseCase {
+        return GetBarChartDataUseCase(gqlRepository, mapper)
     }
 }

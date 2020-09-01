@@ -15,21 +15,18 @@ import kotlinx.android.synthetic.main.layout_hotel_filter_selection.view.*
  * @author by jessica on 12/08/20
  */
 
-class FilterSelectionViewHolder(view: View): HotelSearchResultFilterV2Adapter.FilterBaseViewHolder(view) {
+class FilterSelectionViewHolder(view: View, val listener: OnSelectedFilterChangedListener): HotelSearchResultFilterV2Adapter.FilterBaseViewHolder(view),
+        HotelSearchResultFilterAdapter.ActionListener {
 
-    override var selectedOption = ParamFilterV2()
-        get() {
-            field.values = adapter.selectedItems.toMutableList()
-            return field
-        }
+    override var filterName: String = ""
 
     private val adapter: HotelSearchResultFilterAdapter by lazy {
-        HotelSearchResultFilterAdapter(HotelSearchResultFilterAdapter.MODE_MULTIPLE)
+        HotelSearchResultFilterAdapter(HotelSearchResultFilterAdapter.MODE_MULTIPLE, this)
     }
 
     override fun bind(filter: FilterV2) {
-        selectedOption.name = filter.name
-        selectedOption.values = filter.optionSelected.toMutableList()
+        filterName = filter.name
+        listener.onSelectedFilterChanged(filterName, filter.optionSelected.toMutableList())
 
         with(itemView) {
             hotel_filter_selection_title.text = filter.displayName
@@ -60,12 +57,16 @@ class FilterSelectionViewHolder(view: View): HotelSearchResultFilterV2Adapter.Fi
     }
 
     override fun resetSelection() {
-        selectedOption = ParamFilterV2()
+        listener.onSelectedFilterChanged(filterName)
         adapter.clearSelection()
     }
 
     companion object {
         val LAYOUT = R.layout.layout_hotel_filter_selection
         const val SELECTION_STAR_TYPE = "star"
+    }
+
+    override fun onSelectedFilterChanged(selectedItems: List<String>) {
+        listener.onSelectedFilterChanged(filterName, selectedItems.toMutableList())
     }
 }

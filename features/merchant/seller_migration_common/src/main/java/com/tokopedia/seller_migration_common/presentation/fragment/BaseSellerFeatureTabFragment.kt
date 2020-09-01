@@ -12,9 +12,14 @@ import com.tokopedia.seller_migration_common.presentation.widget.SellerFeatureCa
 import kotlinx.android.synthetic.main.fragment_base_seller_feature.*
 
 abstract class BaseSellerFeatureTabFragment(
-        private val recyclerViewListener: SellerFeatureCarousel.RecyclerViewListener,
         private val staticDataProvider: StaticDataProvider
-): Fragment() {
+) : Fragment() {
+
+    var recyclerViewListener: SellerFeatureCarousel.RecyclerViewListener? = null
+        set(value) {
+            field = value
+            value?.let { sellerFeatureCarousel?.setRecyclerViewListener(it) }
+        }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_base_seller_feature, container, false)
@@ -22,10 +27,10 @@ abstract class BaseSellerFeatureTabFragment(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        with (sellerFeatureCarousel) {
+        with(sellerFeatureCarousel) {
             toggleDivider(false)
             toggleTitle(false)
-            setRecyclerViewListener(recyclerViewListener)
+            recyclerViewListener?.let { setRecyclerViewListener(it) }
             setRecyclerViewLayoutManager(GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false))
             setItems(staticDataProvider.getData())
         }

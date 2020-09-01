@@ -10,7 +10,7 @@ import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.kotlin.extensions.view.visible
 import kotlinx.android.synthetic.main.item_hotel_search_filter.view.*
 
-class HotelSearchResultFilterAdapter(private val mode: Int = MODE_SINGLE)
+class HotelSearchResultFilterAdapter(private val mode: Int = MODE_SINGLE, val listener: ActionListener? = null)
     : RecyclerView.Adapter<HotelSearchResultFilterAdapter.HotelSearchResultFilterViewHolder>() {
 
     var selectedItems: MutableSet<String> = mutableSetOf()
@@ -43,6 +43,7 @@ class HotelSearchResultFilterAdapter(private val mode: Int = MODE_SINGLE)
                 selectedItems.remove(item.itemId)
             else
                 selectedItems.add(item.itemId)
+            listener?.onSelectedFilterChanged(selectedItems.toList())
             notifyDataSetChanged()
         }
     }
@@ -68,6 +69,10 @@ class HotelSearchResultFilterAdapter(private val mode: Int = MODE_SINGLE)
             }
         }
 
+    }
+
+    interface ActionListener {
+        fun onSelectedFilterChanged(selectedItems: List<String>)
     }
 
     companion object {

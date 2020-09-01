@@ -1,0 +1,12 @@
+[{
+  "data": {
+    "shopInfoByID": {
+      "result": [{
+        "favoriteData": {
+          "totalFavorite": 45082,
+          "alreadyFavorited": 0
+        }
+      }]
+    }
+  }
+}]

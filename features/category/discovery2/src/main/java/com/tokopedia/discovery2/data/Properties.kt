@@ -31,6 +31,12 @@ data class Properties(
         val ctaApp: String?,
 
         @SerializedName("design")
-        val design: String
+        val design: String,
+
+        @SerializedName("type")
+        val type: String,
+
+        @SerializedName("target_id")
+        val targetId: String?
 
 )

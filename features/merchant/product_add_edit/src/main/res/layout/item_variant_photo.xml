@@ -2,12 +2,12 @@
 <com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
         <ImageView
@@ -15,33 +15,27 @@
             android:layout_width="@dimen/layout_lvl7"
             android:layout_height="@dimen/layout_lvl7"
             android:background="@color/grey_default_background"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:id="@+id/ivAddIndicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@+id/ivVariantPhoto"
-            app:layout_constraintEnd_toEndOf="@+id/ivVariantPhoto"
+            android:scaleType="centerInside"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_plus_gray" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/typographyVariantPhoto"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
+            android:layout_margin="@dimen/spacing_lvl3"
             android:ellipsize="end"
             android:gravity="center"
-            android:maxLines="2"
-            android:padding="@dimen/spacing_lvl3"
-            android:text="@string/lorem"
+            android:lines="2"
             android:textColor="@color/Neutral_N700_68"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ivVariantPhoto"
-            app:typographyType="body_3" />
+            app:typographyType="body_3"
+            tools:text="@string/lorem" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
