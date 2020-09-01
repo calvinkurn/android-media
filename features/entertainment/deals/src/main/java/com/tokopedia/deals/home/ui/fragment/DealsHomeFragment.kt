@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.text.TextUtils
 import android.view.View
-import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -53,7 +52,7 @@ class DealsHomeFragment : DealsBaseFragment(),
         OnBaseLocationActionListener, SearchBarActionListener,
         DealsVoucherPlaceCardListener, DealsCategoryListener,
         CuratedProductCategoryListener, DealsBannerActionListener,
-        DealsBrandActionListener, DealsFavouriteCategoriesListener{
+        DealsBrandActionListener, DealsFavouriteCategoriesListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -106,7 +105,7 @@ class DealsHomeFragment : DealsBaseFragment(),
     }
 
     private fun setUpRecyclerView() {
-        getRecyclerView(requireView()).setPadding(0,0,0, resources.getDimensionPixelSize(R.dimen.deals_dp_20))
+        getRecyclerView(requireView()).setPadding(0, 0, 0, resources.getDimensionPixelSize(R.dimen.deals_dp_20))
         getRecyclerView(requireView()).clipToPadding = false
     }
 
@@ -142,54 +141,55 @@ class DealsHomeFragment : DealsBaseFragment(),
     }
 
     private fun showCoachMark(coachMarkPosition: CoachMarkPositionDataView) {
-        activity?.let {
-            if (isAdded) {
-                val coachMark = CoachMarkBuilder().build().apply {
-                    enableSkip = true
-                    onFinishListener = {
-                        recyclerView.smoothScrollToPosition(0)
-                    }
-                }
-                coachMark.show(
-                        it,
-                        DealsHomeFragment::class.java.simpleName,
-                        getCoachMarkItems(coachMarkPosition)
-                )
-                localCacheHandler.apply {
-                    putBoolean(SHOW_COACH_MARK_KEY, false)
-                    applyEditor()
-                }
+        val coachMark = CoachMarkBuilder().build().apply {
+            enableSkip = true
+            onFinishListener = {
+                recyclerView.smoothScrollToPosition(0)
             }
+        }
+        coachMark.show(
+                activity,
+                DealsHomeFragment::class.java.simpleName,
+                getCoachMarkItems(coachMarkPosition)
+        )
+        localCacheHandler.apply {
+            putBoolean(SHOW_COACH_MARK_KEY, false)
+            applyEditor()
         }
     }
 
     private fun getCoachMarkItems(coachMarkPosition: CoachMarkPositionDataView): ArrayList<CoachMarkItem> {
-        val orderListCoachMark = CoachMarkItem(
-                activity?.findViewById<AppCompatImageView>(R.id.imgDealsOrderListMenu),
-                getString(R.string.deals_menu_coach_mark_title),
-                getString(R.string.deals_menu_coach_mark_description)
-        )
+        activity?.let { _activity ->
+            if (isAdded) {
+                val orderListCoachMark = CoachMarkItem(
+                        _activity.findViewById<AppCompatImageView>(R.id.imgDealsOrderListMenu),
+                        getString(R.string.deals_menu_coach_mark_title),
+                        getString(R.string.deals_menu_coach_mark_description)
+                )
 
-        val popularPlacesCoachMark = coachMarkPosition.popularPlacesPosition?.let {
-            CoachMarkItem(
-                    recyclerView.findViewHolderForAdapterPosition(it)?.itemView?.findViewById(R.id.lst_voucher_popular_place_card),
-                    getString(R.string.deals_popular_place_coach_mark_title),
-                    getString(R.string.deals_popular_places_coach_mark_description)
-            )
+                val popularPlacesCoachMark = coachMarkPosition.popularPlacesPosition?.let {
+                    CoachMarkItem(
+                            recyclerView.findViewHolderForAdapterPosition(it)?.itemView?.findViewById(R.id.lst_voucher_popular_place_card),
+                            getString(R.string.deals_popular_place_coach_mark_title),
+                            getString(R.string.deals_popular_places_coach_mark_description)
+                    )
+                }
+
+                val favoriteCategoriesCoachMark = coachMarkPosition.favouriteCategoriesPosition?.let {
+                    CoachMarkItem(
+                            recyclerView.findViewHolderForAdapterPosition(it)?.itemView?.findViewById(R.id.lst_voucher_popular_place_card),
+                            getString(R.string.deals_favorite_categories_coach_mark_title),
+                            getString(R.string.deals_favorite_categories_coach_mark_description)
+                    )
+                }
+
+                val coachMarks: ArrayList<CoachMarkItem> = arrayListOf(orderListCoachMark)
+                popularPlacesCoachMark?.let { coachMarks.add(it) }
+                favoriteCategoriesCoachMark?.let { coachMarks.add(it) }
+                return coachMarks
+            }
         }
-
-        val favoriteCategoriesCoachMark = coachMarkPosition.favouriteCategoriesPosition?.let {
-            CoachMarkItem(
-                    recyclerView.findViewHolderForAdapterPosition(it)?.itemView?.findViewById(R.id.lst_voucher_popular_place_card),
-                    getString(R.string.deals_favorite_categories_coach_mark_title),
-                    getString(R.string.deals_favorite_categories_coach_mark_description)
-            )
-        }
-
-        val coachMarks: ArrayList<CoachMarkItem> = arrayListOf(orderListCoachMark)
-        popularPlacesCoachMark?.let { coachMarks.add(it) }
-        favoriteCategoriesCoachMark?.let { coachMarks.add(it) }
-        return coachMarks
+        return arrayListOf()
     }
 
     override fun initInjector() {
@@ -230,7 +230,8 @@ class DealsHomeFragment : DealsBaseFragment(),
         startActivityForResult(Intent(activity, DealsSearchActivity::class.java), DEALS_SEARCH_REQUEST_CODE)
     }
 
-    override fun afterSearchBarTextChanged(text: String) {/* do nothing */ }
+    override fun afterSearchBarTextChanged(text: String) {/* do nothing */
+    }
 
     /* BANNER SECTION ACTION */
     override fun onBannerScroll(banner: BannersDataView.BannerDataView, position: Int) {
@@ -274,7 +275,7 @@ class DealsHomeFragment : DealsBaseFragment(),
 
     /* PRODUCT SECTION ACTION */
     override fun onProductClicked(productCardDataView: ProductCardDataView, productItemPosition: Int, sectionTitle: String) {
-        analytics.curatedProductClick(productCardDataView,productItemPosition, sectionTitle)
+        analytics.curatedProductClick(productCardDataView, productItemPosition, sectionTitle)
         RouteManager.route(context, productCardDataView.appUrl)
     }
 
@@ -288,7 +289,7 @@ class DealsHomeFragment : DealsBaseFragment(),
     override fun onVoucherPlaceCardBind(voucherPlaceCard: VoucherPlacePopularDataView, position: Int) {
         analytics.eventSeePopularLandmarkView(voucherPlaceCard, position)
     }
-    
+
     override fun onVoucherPlaceCardClicked(voucherPlaceCard: VoucherPlaceCardDataView, position: Int) {
         analytics.eventClickLandmarkPopular(voucherPlaceCard, position)
         (activity as DealsHomeActivity).setCurrentLocation(voucherPlaceCard.location)
@@ -321,18 +322,18 @@ class DealsHomeFragment : DealsBaseFragment(),
     override fun hasInitialSwipeRefresh() = true
 
     override fun onImpressionBrand(brand: DealsBrandsDataView.Brand, position: Int) {
-        analytics.eventScrollToBrandPopular(brand,position)
+        analytics.eventScrollToBrandPopular(brand, position)
     }
 
     override fun onImpressionCuratedProduct(curatedProductCategoryDataView: CuratedProductCategoryDataView, position: Int) {
-        analytics.impressionCuratedProduct(curatedProductCategoryDataView,position)
+        analytics.impressionCuratedProduct(curatedProductCategoryDataView, position)
     }
 
     override fun showTitle(brand: DealsBrandsDataView) {
         /* do nothing */
     }
 
-    private fun onClickBanner(bannerlink:String) {
+    private fun onClickBanner(bannerlink: String) {
         val deeplink = "tokopedia://"
         val fullPathWWW = "https://www.tokopedia.com/"
         val domainWithWWW = "www.tokopedia.com/"
