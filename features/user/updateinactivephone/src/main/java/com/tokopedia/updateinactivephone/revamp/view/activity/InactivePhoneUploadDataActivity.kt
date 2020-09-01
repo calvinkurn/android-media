@@ -5,12 +5,10 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.updateinactivephone.R
-import com.tokopedia.updateinactivephone.revamp.common.FragmentTransactionInterface
-import com.tokopedia.updateinactivephone.revamp.common.IOnBackPressed
-import com.tokopedia.updateinactivephone.revamp.common.replaceFragment
-import com.tokopedia.updateinactivephone.revamp.view.fragment.InactivePhoneOnboardingFragment
 import com.tokopedia.updateinactivephone.revamp.view.fragment.InactivePhoneUploadDataFragment
 
 class InactivePhoneUploadDataActivity : BaseSimpleActivity() {
@@ -34,7 +32,7 @@ class InactivePhoneUploadDataActivity : BaseSimpleActivity() {
             setSecondaryCTAText(getString(R.string.text_exit_cta_secondary))
             setPrimaryCTAClickListener {
                 this.dismiss()
-                super.onBackPressed()
+                gotoHome()
             }
             setSecondaryCTAClickListener {
                 this.dismiss()
@@ -42,6 +40,11 @@ class InactivePhoneUploadDataActivity : BaseSimpleActivity() {
             setCancelable(false)
             setOverlayClose(false)
         }.show()
+    }
+
+    private fun gotoHome() {
+        val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
+        startActivity(intent)
     }
 
     companion object {

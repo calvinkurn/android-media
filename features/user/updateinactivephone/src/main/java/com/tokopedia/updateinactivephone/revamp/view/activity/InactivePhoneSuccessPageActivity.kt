@@ -33,13 +33,17 @@ class InactivePhoneSuccessPageActivity : BaseSimpleActivity() {
         super.onCreate(savedInstanceState)
 
         imgBack?.setOnClickListener {
-            startActivity(InactivePhoneOnboardingActivity.getIntent(this))
+            gotoHome()
         }
 
         btnGotoHome?.setOnClickListener {
-            val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
-            startActivity(intent)
+            gotoHome()
         }
+    }
+
+    private fun gotoHome() {
+        val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
+        startActivity(intent)
     }
 
     companion object {

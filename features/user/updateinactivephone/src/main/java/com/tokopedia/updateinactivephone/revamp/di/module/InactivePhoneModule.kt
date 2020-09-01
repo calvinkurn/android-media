@@ -11,17 +11,17 @@ import dagger.Provides
 @Module
 class InactivePhoneModule constructor(val context: Context) {
 
-    @InactivePhoneScope
-    @InactivePhoneContext
-    @Provides
-    fun provideContext(): Context {
-        return context
-    }
-
-    @InactivePhoneScope
-    @Provides
-    fun provideUsserSession(@InactivePhoneContext context: Context): UserSessionInterface {
-        return UserSession(context)
-    }
+//    @InactivePhoneScope
+//    @InactivePhoneContext
+//    @Provides
+//    fun provideContext(): Context {
+//        return context
+//    }
+//
+//    @InactivePhoneScope
+//    @Provides
+//    fun provideUsserSession(@InactivePhoneContext context: Context): UserSessionInterface {
+//        return UserSession(context)
+//    }
 
 }

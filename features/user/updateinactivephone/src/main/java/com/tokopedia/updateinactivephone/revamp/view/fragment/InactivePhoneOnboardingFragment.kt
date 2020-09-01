@@ -11,14 +11,9 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.revamp.common.FragmentTransactionInterface
-import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_inactive_phone_onboarding.*
-import javax.inject.Inject
 
 class InactivePhoneOnboardingFragment : BaseDaggerFragment() {
-
-//    @Inject
-//    lateinit var userSession: UserSession
 
     private lateinit var fragmentTransactionInterface: FragmentTransactionInterface
 
