@@ -14,25 +14,21 @@ import kotlinx.android.synthetic.main.layout_hotel_filter_selection.view.*
  * @author by jessica on 12/08/20
  */
 
-class FilterSortViewHolder(view: View) : HotelSearchResultFilterV2Adapter.FilterBaseViewHolder(view) {
+class FilterSortViewHolder(view: View, val listener: OnSelectedFilterChangedListener) :
+        HotelSearchResultFilterV2Adapter.FilterBaseViewHolder(view), HotelSearchResultFilterAdapter.ActionListener {
 
-    override var selectedOption = ParamFilterV2()
-        get() {
-            field.values = adapter.selectedItems.toMutableList()
-            return field
-        }
+    override var filterName: String = "sort"
 
-    var defaultOption: String = ""
+    private var defaultOption: String = ""
 
     private val adapter: HotelSearchResultFilterAdapter by lazy {
-        HotelSearchResultFilterAdapter()
+        HotelSearchResultFilterAdapter(HotelSearchResultFilterAdapter.MODE_SINGLE, this)
     }
 
     override fun bind(filter: FilterV2) {
-        selectedOption.name = filter.name
-        selectedOption.values = filter.optionSelected.toMutableList()
+        if (filter.optionSelected.isNotEmpty()) listener.onSelectedFilterChanged(filterName, filter.optionSelected.toMutableList())
+        else listener.onSelectedFilterChanged(filterName, listOf(filter.defaultOption))
         defaultOption = filter.defaultOption
-        if (selectedOption.values.isEmpty()) selectedOption.values.add(defaultOption)
 
         with(itemView) {
             hotel_filter_selection_title.text = filter.displayName
@@ -52,9 +48,13 @@ class FilterSortViewHolder(view: View) : HotelSearchResultFilterV2Adapter.Filter
     }
 
     override fun resetSelection() {
-        selectedOption.values = mutableListOf(defaultOption)
+        listener.onSelectedFilterChanged(filterName, mutableListOf(defaultOption))
         adapter.selectedItems = mutableSetOf(defaultOption)
         adapter.notifyDataSetChanged()
+    }
+
+    override fun onSelectedFilterChanged(selectedItems: List<String>) {
+        listener.onSelectedFilterChanged(filterName, selectedItems.toMutableList())
     }
 
     companion object {

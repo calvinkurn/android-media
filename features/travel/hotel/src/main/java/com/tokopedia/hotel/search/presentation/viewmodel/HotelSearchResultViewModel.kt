@@ -23,6 +23,7 @@ class HotelSearchResultViewModel @Inject constructor(
         get() = searchParam.filter
     val selectedFilterV2: MutableList<ParamFilterV2>
         get() = searchParam.filters
+
     var defaultSort = ""
 
     var filter: Filter = Filter()
@@ -96,6 +97,14 @@ class HotelSearchResultViewModel @Inject constructor(
 
     fun addFilter(filterV2: List<ParamFilterV2>) {
         searchParam.filters = filterV2.filter { it.values.isNotEmpty() }.toMutableList()
+    }
+
+    fun getFilterCount(): Int {
+        var count = 0
+        selectedFilterV2.forEach {
+            count += it.values.size
+        }
+        return count
     }
 
     companion object {

@@ -364,17 +364,18 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
 
     override fun onSubmitFilter(selectedFilter: MutableList<ParamFilterV2>) {
         //track
-        if (selectedFilter.isNotEmpty()) {
-            if (selectedFilter.first().name == FILTER_TYPE_SORT) {
+        selectedFilter.forEachIndexed { index, it ->
+            if (it.name == FILTER_TYPE_SORT) {
                 val sort = findSortValue(selectedFilter.first())
                 sort?.let { searchResultviewModel.addSort(it) }
-                selectedFilter.removeAt(0)
+                selectedFilter.removeAt(index)
             }
         }
+
         searchResultviewModel.addFilter(selectedFilter)
         trackingHotelUtil.clickSubmitFilterOnBottomSheet(context, SEARCH_SCREEN_NAME, selectedFilter)
         setUpQuickFilterBaseOnSelectedFilter(selectedFilter)
-        showQuickFilterShimmering(false)
+        showQuickFilterShimmering(true)
         loadInitialData()
     }
 
@@ -480,6 +481,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
             shimmer_quick_filter_sort_filter.hide()
             quick_filter_sort_filter.show()
         }
+        quick_filter_sort_filter.indicatorCounter = searchResultviewModel.getFilterCount()
     }
 
     override fun loadData(page: Int) {

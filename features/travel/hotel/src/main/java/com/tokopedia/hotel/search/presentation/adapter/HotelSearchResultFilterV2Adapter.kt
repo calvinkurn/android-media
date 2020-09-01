@@ -6,10 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.search.data.model.FilterV2
 import com.tokopedia.hotel.search.data.model.params.ParamFilterV2
-import com.tokopedia.hotel.search.presentation.adapter.viewholder.FilterOpenRangeViewHolder
-import com.tokopedia.hotel.search.presentation.adapter.viewholder.FilterSelectionRangeViewHolder
-import com.tokopedia.hotel.search.presentation.adapter.viewholder.FilterSelectionViewHolder
-import com.tokopedia.hotel.search.presentation.adapter.viewholder.OnSelectedFilterChangedListener
+import com.tokopedia.hotel.search.presentation.adapter.viewholder.*
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 
 /**
@@ -44,7 +41,7 @@ class HotelSearchResultFilterV2Adapter: RecyclerView.Adapter<HotelSearchResultFi
                 FilterSelectionRangeViewHolder(parent.inflateLayout(FilterSelectionRangeViewHolder.LAYOUT), this)
             }
             FILTER_SORT_TYPE -> {
-                FilterSortViewHolder(parent.inflateLayout(FilterSortViewHolder.LAYOUT))
+                FilterSortViewHolder(parent.inflateLayout(FilterSortViewHolder.LAYOUT), this)
             }
             else -> {
                 FilterSelectionViewHolder(parent.inflateLayout(FilterSelectionViewHolder.LAYOUT), this)
