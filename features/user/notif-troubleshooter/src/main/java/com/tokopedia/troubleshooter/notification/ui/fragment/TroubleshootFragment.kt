@@ -127,6 +127,7 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
                         }
                         is DeviceSettingState.Low -> {
                             adapter.updateStatus(Device, StatusState.Warning)
+                            adapter.addTicker("Ada kategori push notification Tokopedia yang belum aktif di HP.")
                         }
                     }
                 }
@@ -197,11 +198,15 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
     }
 
     private fun setNotificationSettingStatus(userSetting: UserSettingUIView) {
-        adapter.updateStatus(Notification, StatusState.Success)
-
-        if (userSetting.totalOn < userSetting.notifications){
-            val message = getString(R.string.notif_ticker_notif_disabled)
-            adapter.addTicker(message)
+        when {
+            userSetting.totalOn != userSetting.notifications -> {
+                val inactive = userSetting.notifications - userSetting.totalOn
+                adapter.updateStatus(Notification, StatusState.Warning)
+                adapter.addTicker("Kamu belum mengaktifkan push notification untuk $inactive jenis info")
+            }
+            else -> {
+                adapter.updateStatus(Notification, StatusState.Error)
+            }
         }
     }
 //
