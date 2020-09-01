@@ -886,6 +886,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         val payload = data.getStringExtra(TopChatInternalRouter.Companion.RESULT_KEY_PAYLOAD_REPORT_USER)
         if (result == TopChatInternalRouter.Companion.RESULT_REPORT_BLOCK_PROMO) {
             onClickBlockPromo()
+        } else if (result == TopChatInternalRouter.Companion.RESULT_REPORT_BLOCK_USER) {
+            blockChat()
         } else if (result == TopChatInternalRouter.Companion.RESULT_REPORT_TOASTER && payload != null) {
             showToasterConfirmation(payload)
         }

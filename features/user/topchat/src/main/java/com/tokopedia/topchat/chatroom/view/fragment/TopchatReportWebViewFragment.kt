@@ -11,6 +11,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.RESULT_KEY_PAYLOAD_REPORT_USER
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.RESULT_KEY_REPORT_USER
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.RESULT_REPORT_BLOCK_PROMO
+import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.RESULT_REPORT_BLOCK_USER
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.RESULT_REPORT_TOASTER
 import com.tokopedia.webview.BaseSessionWebViewFragment
 import com.tokopedia.webview.KEY_ALLOW_OVERRIDE
@@ -27,6 +28,13 @@ class TopchatReportWebViewFragment : BaseSessionWebViewFragment() {
         if (url == ACTION_BLOCK_PROMO) {
             val intent = Intent().apply {
                 putExtra(RESULT_KEY_REPORT_USER, RESULT_REPORT_BLOCK_PROMO)
+            }
+            activity?.setResult(Activity.RESULT_OK, intent)
+            activity?.finish()
+            return true
+        } else if (url == ACTION_BLOCK_PERSONAL) {
+            val intent = Intent().apply {
+                putExtra(RESULT_KEY_REPORT_USER, RESULT_REPORT_BLOCK_USER)
             }
             activity?.setResult(Activity.RESULT_OK, intent)
             activity?.finish()
@@ -67,6 +75,7 @@ class TopchatReportWebViewFragment : BaseSessionWebViewFragment() {
 
     companion object {
         const val ACTION_BLOCK_PROMO = "tkpd-internal://topchat_block_promo"
+        const val ACTION_BLOCK_PERSONAL = "tkpd-internal://topchat_block_personal"
         const val queryParamToasterMessage = "show_toast_message"
         const val queryParamUrl = "url"
 

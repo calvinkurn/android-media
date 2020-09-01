@@ -26,6 +26,7 @@ open class TopChatInternalRouter {
         const val RESULT_KEY_REPORT_USER = "result_key_report_user"
         const val RESULT_KEY_PAYLOAD_REPORT_USER = "result_key_payload_report_user"
         const val RESULT_REPORT_BLOCK_PROMO = "result_report_block_promo"
+        const val RESULT_REPORT_BLOCK_USER = "result_report_block_user"
         const val RESULT_REPORT_TOASTER = "result_report_toaster"
 
 
