@@ -739,4 +739,13 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
         getTracker().sendEnhanceEcommerceEvent(map)
         productCardItemList = EMPTY_STRING
     }
+
+    fun trackHeaderSeeAllClick(isLogin: Boolean, componentsItems: ComponentsItem) {
+        val loginValue = if (isLogin) LOGIN else NON_LOGIN
+        val tabValue = getTabValue(componentsItems)
+        val map = createGeneralEvent(eventName = EVENT_CLICK_DISCOVERY,
+                eventAction = CLICK_VIEW_ALL_HEADER,
+                eventLabel = "$loginValue - ${componentsItems.name} - ${componentsItems.title} - $tabValue")
+        getTracker().sendGeneralEvent(map)
+    }
 }

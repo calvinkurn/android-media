@@ -6,16 +6,23 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
+import com.tokopedia.unifyprinciples.Typography
 
 class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
 
     private var mProductCarouselRecyclerView: RecyclerView = itemView.findViewById(R.id.products_rv)
+    private var mCardTitle:Typography = itemView.findViewById(R.id.title)
+    private var mCardSubHeader:Typography = itemView.findViewById(R.id.sub_header)
+    private var mLihatSemuaButton:Typography = itemView.findViewById(R.id.lihat_semua_button)
     private var linearLayoutManager: LinearLayoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
     private var mDiscoveryRecycleAdapter: DiscoveryRecycleAdapter
     private lateinit var mProductCarouselComponentViewModel: ProductCardCarouselViewModel
@@ -35,6 +42,24 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
         addDefaultItemDecorator()
     }
 
+    private fun addCardHeader(componentsItem: ComponentsItem) {
+        mCardTitle.setTextAndCheckShow(componentsItem.title)
+        mCardSubHeader.setTextAndCheckShow(componentsItem.subTitle)
+        mLihatSemuaButton.visibility = if (componentsItem.applink.isNullOrEmpty()) {
+            mLihatSemuaButton.setOnClickListener {
+                sendOnClickSeeAllGtm(componentsItem)
+                RouteManager.route(fragment.context, componentsItem.applink)
+            }
+            View.VISIBLE
+        } else {
+            View.GONE
+        }
+    }
+
+    private fun sendOnClickSeeAllGtm(componentsItem: ComponentsItem) {
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackHeaderSeeAllClick(mProductCarouselComponentViewModel.isUserLoggedIn(), componentsItem)
+    }
+
     private fun addDefaultItemDecorator() {
         if (mProductCarouselRecyclerView.itemDecorationCount > 0)
             mProductCarouselRecyclerView.removeItemDecorationAt(0)
@@ -45,6 +70,9 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
         lifecycleOwner?.let {
+            mProductCarouselComponentViewModel.getProductCardHeaderData().observe(it, Observer {
+                addCardHeader(it)
+            })
             mProductCarouselComponentViewModel.getProductCarouselItemsListData().observe(it, Observer { item ->
                 mDiscoveryRecycleAdapter.setDataList(item)
             })

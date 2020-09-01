@@ -4,15 +4,22 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
+import com.tokopedia.unifyprinciples.Typography
 
 
 class ProductCardRevampViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
 
     private lateinit var mProductRevampComponentViewModel: ProductCardRevampViewModel
-
+    private var mCardTitle: Typography = itemView.findViewById(R.id.title)
+    private var mCardSubHeader: Typography = itemView.findViewById(R.id.sub_header)
+    private var mLihatSemuaButton: Typography = itemView.findViewById(R.id.lihat_semua_button)
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         mProductRevampComponentViewModel = discoveryBaseViewModel as ProductCardRevampViewModel
@@ -26,7 +33,28 @@ class ProductCardRevampViewHolder(itemView: View, private val fragment: Fragment
                 }
 
             })
+            mProductRevampComponentViewModel.getProductCarouselComponentData().observe(it, Observer {
+                addCardHeader(it)
+            })
         }
+    }
+
+    private fun addCardHeader(componentsItem: ComponentsItem) {
+        mCardTitle.setTextAndCheckShow(componentsItem.title)
+        mCardSubHeader.setTextAndCheckShow(componentsItem.subTitle)
+        mLihatSemuaButton.visibility = if (componentsItem.applink.isNullOrEmpty()) {
+            mLihatSemuaButton.setOnClickListener {
+                sendOnClickSeeAllGtm(componentsItem)
+                RouteManager.route(fragment.context, componentsItem.applink)
+            }
+            View.VISIBLE
+        } else {
+            View.GONE
+        }
+    }
+
+    private fun sendOnClickSeeAllGtm(componentsItem: ComponentsItem) {
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackHeaderSeeAllClick(mProductRevampComponentViewModel.isUserLoggedIn(), componentsItem)
     }
 
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {

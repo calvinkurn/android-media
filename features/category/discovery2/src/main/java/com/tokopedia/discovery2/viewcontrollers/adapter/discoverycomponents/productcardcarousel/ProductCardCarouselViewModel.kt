@@ -76,4 +76,6 @@ class ProductCardCarouselViewModel(val application: Application, val components:
         return null
     }
 
+    fun getProductCardHeaderData(): LiveData<ComponentsItem> = productCarouselComponentData
+
 }

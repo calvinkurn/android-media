@@ -3,11 +3,14 @@ package com.tokopedia.discovery2.data
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.discovery2.datamapper.discoveryPageData
-import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.topads.sdk.domain.model.CpmModel
-import java.util.HashMap
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.List
+import kotlin.collections.forEach
+import kotlin.collections.set
 
 data class ComponentsItem(
 
@@ -28,6 +31,12 @@ data class ComponentsItem(
 
         @SerializedName("title")
         val title: String? = "",
+
+        @SerializedName("subtitle")
+        val subTitle: String? = "",
+
+        @SerializedName("applink")
+        val applink: String? = "",
 
         @SerializedName("properties")
         var properties: Properties? = null,
