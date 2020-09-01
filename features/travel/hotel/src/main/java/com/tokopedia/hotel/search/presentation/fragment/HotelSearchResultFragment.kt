@@ -43,6 +43,7 @@ import com.tokopedia.hotel.search.presentation.widget.HotelFilterBottomSheets
 import com.tokopedia.hotel.search.presentation.widget.SubmitFilterListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -68,6 +69,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     lateinit var trackingHotelUtil: TrackingHotelUtil
     private var performanceMonitoring: PerformanceMonitoring? = null
     private var isTraceStop = false
+    private var variant = RemoteConfigInstance.getInstance().abTestPlatform.getString("Advance Filter", "Old Filter")
 
     var searchDestinationName = ""
     var searchDestinationType = ""
@@ -176,7 +178,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
 
         val searchProperties = data.properties
 
-        if (true) {
+        if (variant == "Advance Filter") {
             bottom_action_view.visibility = View.GONE
         } else {
             bottom_action_view.visibility = View.VISIBLE
@@ -222,7 +224,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
             refreshSelectedFilter(quickFilters)
         }
 
-        if (true) {
+        if (variant == "Advance Filter") {
             val param: CoordinatorLayout.LayoutParams = bottom_action_view.layoutParams as CoordinatorLayout.LayoutParams
             param.behavior = null
             bottom_action_view.hide()
