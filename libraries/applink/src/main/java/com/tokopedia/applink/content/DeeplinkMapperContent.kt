@@ -12,7 +12,11 @@ import com.tokopedia.applink.startsWithPattern
 object DeeplinkMapperContent {
 
     fun getRegisteredNavigationContentFromHttp(deepLink: String): String {
-        return deepLink
+        return if (deepLink.startsWithPattern(ApplinkConstInternalContent.TOKOPEDIA_BYME_HTTP) ||
+                        deepLink.startsWithPattern(ApplinkConstInternalContent.TOKOPEDIA_BYME_HTTPS)) {
+            val path = Uri.parse(deepLink).path
+            "${ApplinkConstInternalContent.AFFILIATE_BYME_TRACKING}$path"
+        } else deepLink
     }
 
     fun getRegisteredNavigationContent(deeplink: String): String {
