@@ -46,6 +46,7 @@
 
     <TextView
         android:id="@+id/tvSeeAll"
+        android:contentDescription="@string/tvSeeAll"
         style="@style/TextView.Title.Green"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"

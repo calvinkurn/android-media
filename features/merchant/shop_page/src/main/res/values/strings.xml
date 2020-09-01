@@ -275,5 +275,11 @@
     <string name="shop_page_share_action_copy_success">Teks berhasil disalin</string>
     <string name="shop_page_share_text_with_link">Semakin mudah belanja produk %1$s di Tokopedia. Cek aja, pasti ada yang kamu suka\n%2$s</string>
 
+    <!-- content description shop page -->
+    <string name="content_desc_shop_page_main_profile_name">text shop name profile</string>
+    <string name="content_desc_shop_page_follow_unfollow_button">button follow unfollow</string>
+    <string name="content_desc_tvSeeAll">text lihat semua</string>
+    <string name="content_desc_shopInfoDescription">text deskripsi toko</string>
+    <string name="content_desc_button_chat">button chat</string>
 
 </resources>
