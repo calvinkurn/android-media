@@ -1119,8 +1119,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onAddDisabledItemToWishlist(productId: String, cartId: Int) {
         val isLastItem = cartAdapter.allCartItemData.size == 1
-        dPresenter.processAddCartToWishlist(productId, cartId, isLastItem, WISHLIST_SOURCE_UNAVAILABLE_ITEM)
-//        dPresenter.processAddToWishlist(productId, userSession.userId, getCartUnavailableWishlistActionListener())
+        dPresenter.processAddCartToWishlist(productId, cartId.toString(), isLastItem, WISHLIST_SOURCE_UNAVAILABLE_ITEM)
     }
 
     override fun onAddLastSeenToWishlist(productId: String) {
@@ -1427,8 +1426,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onWishlistCheckChanged(productId: String, cartId: Int) {
         val isLastItem = cartAdapter.allCartItemData.size == 1
-        dPresenter.processAddCartToWishlist(productId, cartId, isLastItem, WISHLIST_SOURCE_AVAILABLE_ITEM)
-//        dPresenter.processAddToWishlist(productId, userSession.userId, getCartAvailableWishlistActionListener())
+        dPresenter.processAddCartToWishlist(productId, cartId.toString(), isLastItem, WISHLIST_SOURCE_AVAILABLE_ITEM)
     }
 
     override fun onNeedToRefreshSingleShop(parentPosition: Int) {
@@ -2449,7 +2447,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         dPresenter.processInitialGetCartData(getCartId(), false, false)
     }
 
-    override fun onAddCartToWishlistSuccess(productId: String, cartId: String, isLastItem: Boolean, source: String) {
+    override fun onAddCartToWishlistSuccess(message: String, productId: String, cartId: String, isLastItem: Boolean, source: String) {
+        showToastMessageGreen(message)
+
         when (source) {
             WISHLIST_SOURCE_AVAILABLE_ITEM -> {
                 cartPageAnalytics.eventAddWishlistAvailableSection(FLAG_IS_CART_EMPTY, productId)

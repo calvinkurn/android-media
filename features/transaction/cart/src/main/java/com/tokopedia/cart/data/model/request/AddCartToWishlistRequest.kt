@@ -6,5 +6,5 @@ import com.google.gson.annotations.SerializedName
 data class AddCartToWishlistRequest(
     @SerializedName("cart_ids")
     @Expose
-    var cartIds: List<Int> = emptyList()
+    var cartIds: List<String> = emptyList()
 )

@@ -3,7 +3,7 @@ package com.tokopedia.cart.data.model.response.undodeletecart
 import com.google.gson.annotations.SerializedName
 
 data class UndoDeleteCartGqlResponse(
-        @SerializedName("undo_remove_from_cart")
+        @SerializedName("undo_remove_product_cart")
         val undoDeleteCartDataResponse: UndoDeleteCartDataResponse = UndoDeleteCartDataResponse()
 )
 

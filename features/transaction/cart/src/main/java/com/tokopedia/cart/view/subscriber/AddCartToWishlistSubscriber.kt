@@ -22,13 +22,13 @@ class AddCartToWishlistSubscriber(private val view: ICartListView?,
         }
     }
 
-    override fun onNext(addCartToWishlistData: AddCartToWishlistData) {
+    override fun onNext(data: AddCartToWishlistData) {
         view?.let { view ->
             view.hideProgressLoading()
-            if (addCartToWishlistData.isSuccess) {
-                view.onAddCartToWishlistSuccess(productId, cartId, isLastItem, source)
+            if (data.isSuccess) {
+                view.onAddCartToWishlistSuccess(data.message, productId, cartId, isLastItem, source)
             } else {
-                view.showToastMessageRed(addCartToWishlistData.message ?: "")
+                view.showToastMessageRed(data.message ?: "")
             }
         }
     }

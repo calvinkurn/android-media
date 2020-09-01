@@ -22,19 +22,6 @@ class UndoDeleteCartUseCase @Inject constructor(private val graphqlUseCase: Grap
         private const val PARAM_KEY_LANG = "lang"
         private const val PARAM_VALUE_ID = "id"
         private const val PARAM_KEY_CART_IDS = "cartIds"
-
-        private val QUERY = """
-        mutation remove_from_cart(${'$'}addWishlist: Int, ${'$'}cartIds: [String], ${'$'}lang: String){
-            remove_from_cart(addWishlist: ${'$'}addWishlist, cartIds:${'$'}cartIds, lang: ${'$'}lang){
-            error_message
-            status
-            data {
-                message
-                success
-            }
-          }
-        }
-        """.trimIndent()
     }
 
     override fun createObservable(requestParams: RequestParams?): Observable<UndoDeleteCartData> {
@@ -45,7 +32,8 @@ class UndoDeleteCartUseCase @Inject constructor(private val graphqlUseCase: Grap
                 PARAM_KEY_CART_IDS to paramDelete.cartIds
         )
 
-        val graphqlRequest = GraphqlRequest(QUERY, UndoDeleteCartGqlResponse::class.java, variables)
+        val mutation = getUndoDeleteCartMutation()
+        val graphqlRequest = GraphqlRequest(mutation, UndoDeleteCartGqlResponse::class.java, variables)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
 

@@ -3,7 +3,7 @@ package com.tokopedia.cart.data.model.response.addcarttowishlist
 import com.google.gson.annotations.SerializedName
 
 data class AddCartToWishlistGqlResponse(
-        @SerializedName("add_cart_to_wishlist")
+        @SerializedName("add_to_wishlist_v2")
         val addCartToWishlistDataResponse: AddCartToWishlistDataResponse = AddCartToWishlistDataResponse()
 )
 
@@ -19,6 +19,6 @@ data class AddCartToWishlistDataResponse(
 data class Data(
         @SerializedName("success")
         val success: Int = 0,
-        @SerializedName("message")
+        @SerializedName("messages")
         val message: List<String> = emptyList()
 )
