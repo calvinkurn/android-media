@@ -5,5 +5,4 @@ sealed class ConfigState {
     object Notification: ConfigState()
     object Device: ConfigState()
     object Ringtone: ConfigState()
-    object Channel: ConfigState()
 }
