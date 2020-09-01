@@ -81,7 +81,7 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
         banner.let {
             list.add(mapOf(
                     KEY_ID to it.id.toString(),
-                    KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${banner.positionForParentItem + 1} - - ${componentName}${if (banner.action == ACTION_NOTIFIER) "-$NOTIFIER" else ""}",
+                    KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${banner.positionForParentItem + 1} - - ${componentName}${if (banner.action == ACTION_NOTIFIER) "-$NOTIFIER" else if(banner.action == ACTION_APPLINK) "-${it.applinks}" else ""}",
                     KEY_CREATIVE to it.name.toString(),
                     KEY_POSITION to bannerPosition + 1
             ))
