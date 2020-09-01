@@ -4,7 +4,6 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.feedcomponent.view.adapter.post.DynamicFeedTypeFactory
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerViewHolder
@@ -31,6 +30,7 @@ import com.tokopedia.shop.feed.view.adapter.holder.EmptyFeedShopSellerMigrationV
 import com.tokopedia.shop.feed.view.adapter.holder.EmptyFeedShopViewHolder
 import com.tokopedia.shop.feed.view.adapter.holder.WhitelistViewHolder
 import com.tokopedia.shop.feed.view.contract.FeedShopContract
+import com.tokopedia.shop.feed.view.model.EmptyFeedShopSellerMigrationUiModel
 import com.tokopedia.shop.feed.view.model.EmptyFeedShopViewModel
 import com.tokopedia.shop.feed.view.model.WhitelistViewModel
 import com.tokopedia.user.session.UserSessionInterface
@@ -52,7 +52,7 @@ class FeedShopFactoryImpl(private val mainView: FeedShopContract.View,
                           private val feedMultipleImageViewListener: FeedMultipleImageView.FeedMultipleImageViewListener,
                           private val highlightListener: HighlightAdapter.HighlightListener,
                           private val topAdsBannerListener: TopAdsBannerViewHolder.TopAdsBannerListener,
-                          private val userSession : UserSessionInterface):
+                          private val userSession: UserSessionInterface) :
         BaseAdapterTypeFactory(), DynamicFeedTypeFactory, FeedShopTypeFactory {
 
     override fun type(dynamicPostViewModel: DynamicPostViewModel): Int {
@@ -76,11 +76,11 @@ class FeedShopFactoryImpl(private val mainView: FeedShopContract.View,
     }
 
     override fun type(emptyFeedShopViewModel: EmptyFeedShopViewModel): Int {
-        return if(GlobalConfig.isSellerApp()) {
-            EmptyFeedShopViewHolder.LAYOUT
-        } else {
-            EmptyFeedShopSellerMigrationViewHolder.LAYOUT
-        }
+        return EmptyFeedShopViewHolder.LAYOUT
+    }
+
+    override fun type(emptyFeedShopSellerMigrationUiModel: EmptyFeedShopSellerMigrationUiModel): Int {
+        return EmptyFeedShopSellerMigrationViewHolder.LAYOUT
     }
 
     override fun type(highlightViewModel: HighlightViewModel): Int {
@@ -104,7 +104,7 @@ class FeedShopFactoryImpl(private val mainView: FeedShopContract.View,
                         gridItemListener,
                         videoViewListener,
                         feedMultipleImageViewListener,
-                        userSession) as AbstractViewHolder< Visitable<*>>
+                        userSession) as AbstractViewHolder<Visitable<*>>
             FeedRecommendationViewHolder.LAYOUT ->
                 FeedRecommendationViewHolder(parent, recommendationCardListener, cardTitleListener) as AbstractViewHolder<Visitable<*>>
             BannerViewHolder.LAYOUT ->

@@ -6,18 +6,18 @@ import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
 import com.tokopedia.seller_migration_common.presentation.util.touchlistener.SellerMigrationTouchListener
 import com.tokopedia.shop.R
 import com.tokopedia.shop.feed.view.contract.FeedShopContract
-import com.tokopedia.shop.feed.view.model.EmptyFeedShopViewModel
+import com.tokopedia.shop.feed.view.model.EmptyFeedShopSellerMigrationUiModel
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import kotlinx.android.synthetic.main.widget_shop_page_tab_feed_no_post_seller_migration.view.*
 
 class EmptyFeedShopSellerMigrationViewHolder(view: View,
-                                             private val mainView: FeedShopContract.View): AbstractViewHolder<EmptyFeedShopViewModel>(view) {
+                                             private val mainView: FeedShopContract.View): AbstractViewHolder<EmptyFeedShopSellerMigrationUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.widget_shop_page_tab_feed_no_post_seller_migration
     }
 
-    override fun bind(element: EmptyFeedShopViewModel?) {
+    override fun bind(element: EmptyFeedShopSellerMigrationUiModel?) {
         with(itemView) {
             ivTabFeedNoPost?.setImageUrl(SellerMigrationConstants.SELLER_MIGRATION_POST_FEED_BANNER_LINK)
             tvSellerMigrationLearnMoreLink?.text = context?.let {

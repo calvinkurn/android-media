@@ -72,6 +72,7 @@ import com.tokopedia.shop.feed.domain.WhitelistDomain
 import com.tokopedia.shop.feed.view.adapter.factory.FeedShopFactoryImpl
 import com.tokopedia.shop.feed.view.analytics.ShopAnalytics
 import com.tokopedia.shop.feed.view.contract.FeedShopContract
+import com.tokopedia.shop.feed.view.model.EmptyFeedShopSellerMigrationUiModel
 import com.tokopedia.shop.feed.view.model.EmptyFeedShopViewModel
 import com.tokopedia.shop.feed.view.model.WhitelistViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -372,7 +373,15 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
             dataList.addAll(element)
             renderList(dataList, lastCursor.isNotEmpty())
         } else {
-            dataList.add(getEmptyResultViewModel())
+            if(!GlobalConfig.isSellerApp()) {
+                if(isSellerMigrationEnabled(context)) {
+                    dataList.add(EmptyFeedShopSellerMigrationUiModel())
+                } else {
+                    dataList.add(getEmptyResultViewModel())
+                }
+            } else {
+                dataList.add(getEmptyResultViewModel())
+            }
             renderList(dataList)
         }
     }
