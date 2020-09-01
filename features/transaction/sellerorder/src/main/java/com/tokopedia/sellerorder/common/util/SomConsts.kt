@@ -165,5 +165,6 @@ object SomConsts {
     const val KEY_PRIMARY_DIALOG_BUTTON = "primary"
     const val KEY_SECONDARY_DIALOG_BUTTON = "secondary"
 
-    const val NON_USER_TOPADS = 1
+    const val TOPADS_NO_PRODUCT = 1
+    const val TOPADS_NO_ADS = 2
 }

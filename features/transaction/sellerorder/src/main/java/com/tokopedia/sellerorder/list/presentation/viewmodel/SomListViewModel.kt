@@ -9,6 +9,8 @@ import com.tokopedia.sellerorder.common.domain.usecase.SomGetUserRoleUseCase
 import com.tokopedia.sellerorder.common.presenter.model.SomGetUserRoleUiModel
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CLIENT
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SELLER
+import com.tokopedia.sellerorder.common.util.SomConsts.TOPADS_NO_ADS
+import com.tokopedia.sellerorder.common.util.SomConsts.TOPADS_NO_PRODUCT
 import com.tokopedia.sellerorder.list.data.model.*
 import com.tokopedia.sellerorder.list.domain.list.*
 import com.tokopedia.usecase.coroutines.Fail
@@ -112,7 +114,8 @@ class SomListViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
     fun isTopAdsActive(): Boolean {
         val topAdsGetShopInfoResult = _topAdsGetShopInfo.value
         return topAdsGetShopInfoResult is Success &&
-                topAdsGetShopInfoResult.data.category != 1
+                topAdsGetShopInfoResult.data.category != TOPADS_NO_PRODUCT &&
+                topAdsGetShopInfoResult.data.category != TOPADS_NO_ADS
     }
 
     fun clearUserRoles() {
