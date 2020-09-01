@@ -142,7 +142,7 @@ class LineGraphViewHolder(
     private fun showLineGraph(element: LineGraphWidgetUiModel) {
         with(itemView.lineGraphView) {
             init(getLineChartConfig(element))
-            setData(getLineChartData(element))
+            setDataSets(getLineChartData(element))
             invalidateChart()
         }
     }

@@ -58,16 +58,16 @@ class LineChartView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
         setChartTooltip()
     }
 
-    fun setData(vararg chartData: LineChartData) {
-        val dateSets: List<LineDataSet> = chartData.mapIndexed { i, data ->
+    fun setDataSets(vararg dataSet: LineChartData) {
+        val dateSets: List<LineDataSet> = dataSet.mapIndexed { i, data ->
             val entries: List<Entry> = getLineChartEntry(data.chartEntry)
 
             setXAxisLabelFormatter(data.chartEntry)
             setYAxisLabelFormatter()
 
-            val dataSet = LineDataSet(entries, "Data Set $i")
+            val lineDataSet = LineDataSet(entries, "Data Set $i")
 
-            with(dataSet) {
+            with(lineDataSet) {
                 mode = when (config.chartLineMode) {
                     LINE_MODE_CURVE -> LineDataSet.Mode.CUBIC_BEZIER
                     else -> LineDataSet.Mode.LINEAR
@@ -96,7 +96,7 @@ class LineChartView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
                 setDrawCircleHole(config.isChartDotHoleEnabled)
             }
 
-            return@mapIndexed dataSet
+            return@mapIndexed lineDataSet
         }
 
         lineChart.data = LineData(dateSets)
