@@ -494,9 +494,11 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     private fun onUserAllowedToViewSOM() {
         toggleSomLayout(false)
+        if (isNewOrderChipSelected() && GlobalConfig.isSellerApp()) {
+            somListViewModel.loadTopAdsShopInfo(userSession.shopId.toIntOrZero())
+        }
         loadTicker()
         loadFilterList()
-        somListViewModel.loadTopAdsShopInfo(userSession.shopId.toIntOrZero())
         rl_search_filter.show()
         filterButton.show()
         activity?.let { SomAnalytics.sendScreenName(it, LIST_ORDER_SCREEN_NAME) }
@@ -759,7 +761,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             desc_empty?.text = getString(R.string.empty_peluang_desc_non_topads_with_filter)
             btn_cek_peluang?.gone()
             SomAnalytics.eventViewEmptyState(tabActive)
-        } else if (!isFilterApplied && GlobalConfig.isSellerApp()) {
+        } else if (!isFilterApplied && GlobalConfig.isSellerApp() && isNewOrderChipSelected()) {
             desc_empty?.text = getString(R.string.empty_peluang_desc_non_topads_no_filter)
             btn_cek_peluang?.apply {
                 text = getString(R.string.btn_cek_peluang_non_topads)
@@ -797,6 +799,9 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     override fun onRefresh(view: View?) {
         addEndlessScrollListener()
+        if (isNewOrderChipSelected() && GlobalConfig.isSellerApp()) {
+            somListViewModel.loadTopAdsShopInfo(userSession.shopId.toIntOrZero())
+        }
         onLoadMore = false
         nextOrderId = 0
         loadOrderList(nextOrderId)
@@ -897,5 +902,9 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     private fun goToTopAds() {
         RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_CREATE_ADS)
+    }
+
+    private fun isNewOrderChipSelected(): Boolean {
+        return tabActive == SomConsts.STATUS_NEW_ORDER
     }
 }
