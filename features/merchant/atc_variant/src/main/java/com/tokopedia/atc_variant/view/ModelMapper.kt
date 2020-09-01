@@ -99,7 +99,7 @@ object ModelMapper {
                 ),
                 variant = originalProductInfo.variant.copy(
                         isVariant = true,
-                        parentID = originalProductInfo.parentProductId
+                        parentID = originalProductInfo.variantParentId
                 )
         )
     }
