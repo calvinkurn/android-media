@@ -11,7 +11,7 @@
         android:id="@+id/ivTabFeedHasPost"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginStart="@dimen/spacing_lvl3"
         tools:src="@drawable/ic_tab_feed_has_post_seller_migration"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
