@@ -146,7 +146,7 @@
       android:layout_width="@dimen/layout_lvl5"
       android:layout_height="@dimen/layout_lvl5"
       android:layout_gravity="center"
-      android:src="@drawable/ic_shutter" />
+      android:src="@drawable/ic_shutter_inactive_phone" />
   
   </FrameLayout>
   
