@@ -11,11 +11,14 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.revamp.common.FragmentTransactionInterface
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_inactive_phone_onboarding.*
 
 class InactivePhoneOnboardingFragment : BaseDaggerFragment() {
 
     private lateinit var fragmentTransactionInterface: FragmentTransactionInterface
+    private lateinit var userSession: UserSessionInterface
 
     override fun getScreenName(): String = ""
     override fun initInjector() {
@@ -30,17 +33,17 @@ class InactivePhoneOnboardingFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         fragmentTransactionInterface = activity as FragmentTransactionInterface
+        userSession = UserSession(context)
 
         btnUploadData?.setOnClickListener {
             // check has multiple account ?
             // check login with phone number ?
             // need improvement on login / register page to set login method
-//            if (userSession.loginMethod != UserSessionInterface.LOGIN_METHOD_PHONE) {
-//
-//            }
-
-//            gotoChooseAccount()
-            gotoOnboardingPage()
+            if (userSession.loginMethod != UserSessionInterface.LOGIN_METHOD_PHONE) {
+                gotoChooseAccount()
+            } else {
+                gotoOnboardingPage()
+            }
         }
     }
 
