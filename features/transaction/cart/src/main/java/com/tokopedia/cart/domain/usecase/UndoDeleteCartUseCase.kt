@@ -41,11 +41,6 @@ class UndoDeleteCartUseCase @Inject constructor(private val graphqlUseCase: Grap
                 .flatMap {
                     graphqlUseCase.createObservable(RequestParams.EMPTY)
                             .map {
-                                val undoDeleteCartData = UndoDeleteCartData().apply {
-                                    isSuccess = true
-                                }
-                                // Todo : read real API
-/*
                                 val undoDeleteCartGqlResponse = it.getData<UndoDeleteCartGqlResponse>(UndoDeleteCartGqlResponse::class.java)
                                 val undoDeleteCartData = UndoDeleteCartData()
                                 if (undoDeleteCartGqlResponse != null) {
@@ -64,7 +59,6 @@ class UndoDeleteCartUseCase @Inject constructor(private val graphqlUseCase: Grap
                                         }
                                     }
                                 }
-*/
                                 undoDeleteCartData
                             }
                 }
