@@ -3,6 +3,7 @@ package com.tokopedia.purchase_platform.common.analytics;
 import android.content.Context;
 
 import com.tokopedia.analyticconstant.DataLayer;
+import com.tokopedia.iris.util.ConstantKt;
 import com.tokopedia.iris.util.IrisSession;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
@@ -15,10 +16,8 @@ import static com.tokopedia.purchase_platform.common.analytics.ConstantTransacti
 import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventCategory;
 import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventLabel;
 import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventName;
-import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.Key;
 import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.ExtraKey;
-
-import com.tokopedia.iris.util.ConstantKt;
+import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.Key;
 
 
 /**
@@ -1059,9 +1058,7 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         sendGeneralEvent(gtmData);
     }
 
-    // Todo : implement this
-    // Todo : clarify error type
-    public void eventClickMoveToWishlistOnUnavailableSectionGetError(String userId, String productId, String errorType) {
+    public void eventClickMoveToWishlistOnUnavailableSection(String userId, String productId, String errorType) {
         Map<String, Object> gtmData = getGtmData(
                 EventName.CLICK_ATC,
                 EventCategory.CART,
@@ -1073,9 +1070,7 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         sendGeneralEvent(gtmData);
     }
 
-    // Todo : implement this
-    // Todo : clarify error type
-    public void eventClickDeleteProductOnUnavailableSectionGetError(String userId, String productId, String errorType) {
+    public void eventClickDeleteProductOnUnavailableSection(String userId, String productId, String errorType) {
         Map<String, Object> gtmData = getGtmData(
                 EventName.CLICK_ATC,
                 EventCategory.CART,
@@ -1087,8 +1082,6 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         sendGeneralEvent(gtmData);
     }
 
-    // Todo : implement this
-    // Todo : clarify error type
     public void eventClickSeeOtherProductOnUnavailableSection(String userId, String productId, String errorType) {
         Map<String, Object> gtmData = getGtmData(
                 EventName.CLICK_ATC,
@@ -1101,7 +1094,6 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         sendGeneralEvent(gtmData);
     }
 
-    // Todo : clarify error type
     public void eventClickCheckoutMelaluiBrowserOnUnavailableSection(String userId, String productId, String errorType) {
         Map<String, Object> gtmData = getGtmData(
                 EventName.CLICK_ATC,

@@ -1117,9 +1117,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         return wishlistsWishlistActionListener as WishListActionListener
     }
 
-    override fun onAddDisabledItemToWishlist(productId: String, cartId: Int) {
+    override fun onAddDisabledItemToWishlist(data: DisabledCartItemHolderData) {
+        cartPageAnalytics.eventClickMoveToWishlistOnUnavailableSection(userSession.userId, data.productId, data.errorType)
         val isLastItem = cartAdapter.allCartItemData.size == 1
-        dPresenter.processAddCartToWishlist(productId, cartId.toString(), isLastItem, WISHLIST_SOURCE_UNAVAILABLE_ITEM)
+        dPresenter.processAddCartToWishlist(data.productId, data.cartId.toString(), isLastItem, WISHLIST_SOURCE_UNAVAILABLE_ITEM)
     }
 
     override fun onAddLastSeenToWishlist(productId: String) {
@@ -1307,8 +1308,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         dPresenter.processAddToCart(productModel)
     }
 
-    override fun onShowTickerOutOfStock(productId: String) {
-        cartPageAnalytics.eventViewTickerOutOfStock(productId)
+    override fun onShowActionSeeOtherProduct(productId: String, errorType: String) {
+        cartPageAnalytics.eventClickSeeOtherProductOnUnavailableSection(userSession.userId, productId, errorType)
     }
 
     override fun onSimilarProductUrlClicked(similarProductUrl: String) {
@@ -2965,23 +2966,26 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    override fun onDeleteDisabledItem(data: CartItemData) {
-        if (data.nicotineLiteMessageData != null) {
-            cartPageAnalytics.eventClickTrashIconButtonOnProductContainTobacco()
-        } else {
-            sendAnalyticsOnClickRemoveIconCartItem()
-        }
-        val cartItemDatas = listOf(data)
-        val allCartItemDataList = cartAdapter.allCartItemData
+    override fun onDeleteDisabledItem(data: DisabledCartItemHolderData) {
+        data.data?.let {
+            cartPageAnalytics.eventClickDeleteProductOnUnavailableSection(userSession.userId, data.productId, data.errorType)
+            if (data.nicotineLiteMessageData != null) {
+                cartPageAnalytics.eventClickTrashIconButtonOnProductContainTobacco()
+            } else {
+                sendAnalyticsOnClickRemoveIconCartItem()
+            }
+            val cartItemDatas = listOf(it)
+            val allCartItemDataList = cartAdapter.allCartItemData
 
-        dPresenter.processDeleteCartItem(allCartItemDataList, cartItemDatas, false, false)
-        sendAnalyticsOnClickConfirmationRemoveCartSelectedNoAddToWishList(
-                dPresenter.generateDeleteCartDataAnalytics(cartItemDatas)
-        )
+            dPresenter.processDeleteCartItem(allCartItemDataList, cartItemDatas, false, false)
+            sendAnalyticsOnClickConfirmationRemoveCartSelectedNoAddToWishList(
+                    dPresenter.generateDeleteCartDataAnalytics(cartItemDatas)
+            )
+        }
     }
 
     override fun onTobaccoLiteUrlClicked(url: String, data: DisabledCartItemHolderData, actionData: ActionData) {
-        cartPageAnalytics.eventClickCheckoutMelaluiBrowserOnUnavailableSection(userSession.userId, data.productId, actionData.code)
+        cartPageAnalytics.eventClickCheckoutMelaluiBrowserOnUnavailableSection(userSession.userId, data.productId, data.errorType)
         cartPageAnalytics.eventClickBrowseButtonOnTickerProductContainTobacco()
         dPresenter.redirectToLite(url)
     }

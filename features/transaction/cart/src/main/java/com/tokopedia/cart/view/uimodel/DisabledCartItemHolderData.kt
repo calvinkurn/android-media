@@ -18,5 +18,6 @@ data class DisabledCartItemHolderData(
         var showDivider: Boolean = true,
         var data: CartItemData? = CartItemData(),
         var actionsData: List<ActionData> = emptyList(),
-        var selectedUnavailableActionId: Int = 0
+        var selectedUnavailableActionId: Int = 0,
+        var errorType: String = ""
 )

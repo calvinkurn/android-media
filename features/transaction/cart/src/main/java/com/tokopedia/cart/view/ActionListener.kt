@@ -27,7 +27,7 @@ interface ActionListener {
 
     fun onShowAllItem(appLink: String)
 
-    fun onAddDisabledItemToWishlist(productId: String, cartId: Int)
+    fun onAddDisabledItemToWishlist(data: DisabledCartItemHolderData)
 
     fun onAddLastSeenToWishlist(productId: String)
 
@@ -59,7 +59,7 @@ interface ActionListener {
 
     fun onButtonAddToCartClicked(productModel: Any)
 
-    fun onShowTickerOutOfStock(productId: String)
+    fun onShowActionSeeOtherProduct(productId: String, errorType: String)
 
     fun onSimilarProductUrlClicked(similarProductUrl: String)
 
@@ -67,7 +67,7 @@ interface ActionListener {
 
     fun onDeleteAllDisabledProduct();
 
-    fun onDeleteDisabledItem(data: CartItemData)
+    fun onDeleteDisabledItem(data: DisabledCartItemHolderData)
 
     fun onSeeErrorProductsClicked()
 

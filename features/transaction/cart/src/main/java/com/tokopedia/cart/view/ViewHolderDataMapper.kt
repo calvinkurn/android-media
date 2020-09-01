@@ -47,7 +47,8 @@ class ViewHolderDataMapper @Inject constructor() {
                 showDivider = showDivider,
                 data = cartItemHolderData.cartItemData,
                 actionsData = cartItemHolderData.actionsData,
-                selectedUnavailableActionId = cartItemHolderData.selectedUnavailableActionId
+                selectedUnavailableActionId = cartItemHolderData.selectedUnavailableActionId,
+                errorType = cartItemHolderData.errorType
         )
     }
 

@@ -110,7 +110,7 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
     private fun renderActionDelete(data: DisabledCartItemHolderData) {
         itemView.btn_delete_cart.setOnClickListener {
             data.data?.let {
-                actionListener?.onDeleteDisabledItem(it)
+                actionListener?.onDeleteDisabledItem(data)
             }
         }
         itemView.btn_delete_cart.show()
@@ -121,7 +121,7 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
         itemView.tv_product_unavailable_action.setOnClickListener {
             actionListener?.onSimilarProductUrlClicked(data.similarProductUrl)
         }
-        actionListener?.onShowTickerOutOfStock(data.productId)
+        actionListener?.onShowActionSeeOtherProduct(data.productId, data.errorType)
         itemView.tv_product_unavailable_action.show()
     }
 
@@ -145,7 +145,7 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
             itemView.text_move_to_wishlist.text = it.message
             itemView.text_move_to_wishlist.setTextColor(ContextCompat.getColor(itemView.context, R.color.Neutral_N700_68))
             itemView.text_move_to_wishlist.setOnClickListener {
-                actionListener?.onAddDisabledItemToWishlist(data.productId, data.cartId)
+                actionListener?.onAddDisabledItemToWishlist(data)
             }
 
         }

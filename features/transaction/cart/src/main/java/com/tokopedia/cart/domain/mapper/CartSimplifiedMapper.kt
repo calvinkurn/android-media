@@ -165,7 +165,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             it.isHasPromoList = availableGroup.hasPromoList
             it.cartString = availableGroup.cartString
             it.promoCodes = availableGroup.promoCodes
-            it.cartItemHolderDataList = mapCartItemHolderDataList(availableGroup.cartDetails, availableGroup, it, cartDataListResponse, false, actionsData, 0)
+            it.cartItemHolderDataList = mapCartItemHolderDataList(availableGroup.cartDetails, availableGroup, it, cartDataListResponse, false, actionsData, 0, "")
 
             it.preOrderInfo = if (availableGroup.shipmentInformation.preorder.isPreorder) availableGroup.shipmentInformation.preorder.duration else ""
             it.freeShippingBadgeUrl = if (availableGroup.shipmentInformation.freeShipping.eligible) availableGroup.shipmentInformation.freeShipping.badgeUrl else ""
@@ -202,7 +202,8 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
                                           cartDataListResponse: CartDataListResponse,
                                           isDisabledAllProduct: Boolean,
                                           actionsData: List<ActionData>,
-                                          selectedUnavailableActionId: Int): MutableList<CartItemHolderData> {
+                                          selectedUnavailableActionId: Int,
+                                          errorType: String): MutableList<CartItemHolderData> {
         val cartItemHolderDataList = arrayListOf<CartItemHolderData>()
         cartDetails?.forEach {
             val cartItemData = mapCartItemData(it, shopGroup, shopGroupData, cartDataListResponse, isDisabledAllProduct)
@@ -218,7 +219,8 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
                         cartItemData.originData?.isCheckboxState ?: true
                     },
                     actionsData = actionsData,
-                    selectedUnavailableActionId = selectedUnavailableActionId
+                    selectedUnavailableActionId = selectedUnavailableActionId,
+                    errorType = errorType
             )
             validateQty(cartItemHolderData)
 
@@ -497,7 +499,9 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
                                         it.unavailableGroups,
                                         cartDataListResponse,
                                         action,
-                                        it.selectedUnavailableActionId)
+                                        it.selectedUnavailableActionId,
+                                        it.title
+                                )
                     }
             )
         }
@@ -521,10 +525,11 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
     private fun mapShopGroupWithErrorDataList(unavailableGroups: List<UnavailableGroup>,
                                               cartDataListResponse: CartDataListResponse,
                                               actionsData: List<ActionData>,
-                                              selectedUnavailableActionId: Int): List<ShopGroupWithErrorData> {
+                                              selectedUnavailableActionId: Int,
+                                              errorType: String): List<ShopGroupWithErrorData> {
         val shopGroupWithErrorDataList = arrayListOf<ShopGroupWithErrorData>()
         unavailableGroups.forEach {
-            val shopGroupWithErrorData = mapShopGroupWithErrorData(it, cartDataListResponse, actionsData, selectedUnavailableActionId)
+            val shopGroupWithErrorData = mapShopGroupWithErrorData(it, cartDataListResponse, actionsData, selectedUnavailableActionId, errorType)
             shopGroupWithErrorDataList.add(shopGroupWithErrorData)
         }
 
@@ -534,7 +539,8 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
     private fun mapShopGroupWithErrorData(unavailableGroup: UnavailableGroup,
                                           cartDataListResponse: CartDataListResponse,
                                           actionsData: List<ActionData>,
-                                          selectedUnavailableActionId: Int): ShopGroupWithErrorData {
+                                          selectedUnavailableActionId: Int,
+                                          errorType: String): ShopGroupWithErrorData {
         return ShopGroupWithErrorData().let {
             it.isError = !unavailableGroup.errors.isNullOrEmpty()
             it.errorLabel = unavailableGroup.errors.firstOrNull() ?: ""
@@ -562,7 +568,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             var isDisableAllProducts = true
             isDisableAllProducts = mapShopError(it, unavailableGroup, isDisableAllProducts)
             it.cartItemHolderDataList = mapCartItemHolderDataList(unavailableGroup.cartDetails,
-                    unavailableGroup, it, cartDataListResponse, isDisableAllProducts, actionsData, selectedUnavailableActionId)
+                    unavailableGroup, it, cartDataListResponse, isDisableAllProducts, actionsData, selectedUnavailableActionId, errorType)
 
             it
         }
