@@ -39,6 +39,7 @@ class FeedbackPageFragment: Fragment() {
     private lateinit var compositeSubscription: CompositeSubscription
     private lateinit var myPreferences: Preferences
     private lateinit var screenshot: Screenshot
+    private lateinit var uriImage: Uri
 
     private var deviceInfo: String = ""
     private var androidVersion: String = ""
@@ -195,8 +196,9 @@ class FeedbackPageFragment: Fragment() {
                         .subscribe(object : Subscriber<FeedbackResponse>() {
                             override fun onNext(t: FeedbackResponse) {
                                 loadingDialog?.dismiss()
-                                Toast.makeText(activity, t.key, Toast.LENGTH_SHORT).show()
+                                Toast.makeText(activity, t.key.toString(), Toast.LENGTH_SHORT).show()
                                 myPreferences.setSubmitFlag(email, userSession?.userId.toString())
+                                sendUriImage(issueType)
                                 activity?.finish()
                             }
 
@@ -211,6 +213,26 @@ class FeedbackPageFragment: Fragment() {
 
                         })
         )
+    }
+
+    private fun sendUriImage(issueKey: String) {
+        feedbackApi.getImageResponse(issueKey, uriImage)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : Subscriber<ImageResponse>(){
+                    override fun onNext(t: ImageResponse?) {
+                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                    }
+
+                    override fun onCompleted() {
+                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                    }
+
+                    override fun onError(e: Throwable?) {
+                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                    }
+
+                })
     }
 
     private fun requestMapper(email: String, page: String, desc: String, issueType: String, actualResult: String, expectedResult: String): FeedbackRequest {
