@@ -116,7 +116,7 @@ class FeedShopFactoryImpl(private val mainView: FeedShopContract.View,
             EmptyFeedShopViewHolder.LAYOUT ->
                 EmptyFeedShopViewHolder(parent, mainView) as AbstractViewHolder<Visitable<*>>
             EmptyFeedShopSellerMigrationViewHolder.LAYOUT ->
-                EmptyFeedShopViewHolder(parent, mainView) as AbstractViewHolder<Visitable<*>>
+                EmptyFeedShopSellerMigrationViewHolder(parent, mainView) as AbstractViewHolder<Visitable<*>>
             TopAdsBannerViewHolder.LAYOUT ->
                 TopAdsBannerViewHolder(parent, topAdsBannerListener, cardTitleListener) as AbstractViewHolder<Visitable<*>>
             else -> super.createViewHolder(parent, type)
