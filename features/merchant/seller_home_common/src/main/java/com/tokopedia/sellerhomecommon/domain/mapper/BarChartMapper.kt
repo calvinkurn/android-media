@@ -50,7 +50,7 @@ class BarChartMapper @Inject constructor() {
 
     private fun getAxis(data: List<BarChartValueModel>): List<BarChartAxisUiModel> {
         return data.map {
-            BarChartAxisUiModel(it.value.plus(1), it.valueFmt)
+            BarChartAxisUiModel(it.value, it.valueFmt)
         }
     }
 
