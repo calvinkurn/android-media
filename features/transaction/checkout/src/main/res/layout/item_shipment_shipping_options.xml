@@ -106,6 +106,7 @@
 
         <CheckBox
             android:id="@+id/cb_insurance"
+            android:contentDescription="@string/cb_insurance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_4"
@@ -116,6 +117,7 @@
 
         <CheckBox
             android:id="@+id/cb_insurance_disabled"
+            android:contentDescription="@string/cb_insurance_disabled"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_4"
@@ -135,6 +137,7 @@
 
         <ImageView
             android:id="@+id/img_insurance_info"
+            android:contentDescription="@string/img_insurance_info"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:foregroundGravity="center_vertical"

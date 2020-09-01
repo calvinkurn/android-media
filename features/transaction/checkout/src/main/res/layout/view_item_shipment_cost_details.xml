@@ -47,6 +47,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_total_item_price"
+        android:contentDescription="@string/tv_total_item_price_summary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_shop_summary"
@@ -112,6 +113,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_shipping_fee"
+        android:contentDescription="@string/tv_shipping_fee_summary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_booking_fee_price"
@@ -175,6 +177,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_insurance_fee"
+        android:contentDescription="@string/tv_insurance_fee_summary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_shipping_discount_label"
