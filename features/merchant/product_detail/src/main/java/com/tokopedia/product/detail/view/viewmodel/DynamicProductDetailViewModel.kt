@@ -589,7 +589,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                         queryParam = if(annotationChip.recommendationFilterChip.isActivated) annotationChip.recommendationFilterChip.value else "",
                         productIds = arrayListOf(getDynamicProductInfoP1?.basic?.productID ?: "")
                 )).toBlocking().first()
-                if(recomData.isNotEmpty()){
+                if(recomData.isNotEmpty() && recomData.first().recommendationItemList.isNotEmpty()){
                     val newRecommendation = recomData.first()
                     _filterTopAdsProduct.postValue(recommendationDataModel.copy(
                             recomWidgetData = newRecommendation,
