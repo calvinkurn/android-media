@@ -7,7 +7,7 @@ import com.tokopedia.favorite.view.adapter.FavoriteTypeFactory
  *
  * @author kulomady on 1/24/17.
  */
-class FavoriteShopViewModel : Visitable<FavoriteTypeFactory?> {
+class FavoriteShopViewModel : Visitable<FavoriteTypeFactory> {
     var shopId: String? = null
     var shopAvatarImageUrl: String? = null
     var shopName: String? = null
@@ -15,8 +15,8 @@ class FavoriteShopViewModel : Visitable<FavoriteTypeFactory?> {
     var isFavoriteShop = false
     var badgeUrl: String? = null
 
-    override fun type(typeFactory: FavoriteTypeFactory?): Int {
-        return typeFactory!!.type(this)
+    override fun type(typeFactory: FavoriteTypeFactory): Int {
+        return typeFactory.type(this)
     }
 
 }

@@ -14,7 +14,7 @@ class TopAdsShopViewModel : Visitable<FavoriteTypeFactory> {
         } else field
 
     override fun type(typeFactory: FavoriteTypeFactory): Int {
-        return typeFactory!!.type(this)
+        return typeFactory.type(this)
     }
 
 }

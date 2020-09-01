@@ -102,7 +102,8 @@ class FragmentFavorite() : BaseDaggerFragment(), FavoriteClickListener, OnRefres
         wishlistNotLoggedIn = parentView.findViewById(R.id.partial_empty_wishlist)
         btnLogin = parentView.findViewById(R.id.btn_login)
 
-        if (userSession!!.isLoggedIn) {
+        val isLoggedIn = (userSession?.isLoggedIn) ?: false
+        if (isLoggedIn) {
             prepareView()
             viewModel!!.loadInitialData()
         } else {

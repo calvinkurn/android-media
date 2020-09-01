@@ -54,7 +54,7 @@ class FavoriteShopViewHolder(itemView: View) : AbstractViewHolder<FavoriteShopVi
         if (favoriteShop == null) return
 
         if (favoriteShop.shopName != null) {
-            nameTextView!!.text = MethodChecker.fromHtml(favoriteShop.shopName)
+            nameTextView?.text = MethodChecker.fromHtml(favoriteShop.shopName)
         }
         if (favoriteShop.shopLocation != null) {
             locationTextview!!.text = favoriteShop.shopLocation

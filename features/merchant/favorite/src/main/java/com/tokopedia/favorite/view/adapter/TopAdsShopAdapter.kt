@@ -66,7 +66,7 @@ class TopAdsShopAdapter(
         val shopItem = data[position]
         holder.shopName.text = Html.fromHtml(shopItem.shopName)
         holder.shopLocation.text = Html.fromHtml(shopItem.shopLocation)
-        imageLoader!!.loadImage(shopItem.shopImageUrl, shopItem.shopImageEcs, holder.shopIcon)
+        imageLoader?.loadImage(shopItem.shopImageUrl, shopItem.shopImageEcs, holder.shopIcon)
         setShopCover(holder, shopItem)
         setFavorite(holder, shopItem)
         holder.mainContent.setOnClickListener(onShopClicked(shopItem))
