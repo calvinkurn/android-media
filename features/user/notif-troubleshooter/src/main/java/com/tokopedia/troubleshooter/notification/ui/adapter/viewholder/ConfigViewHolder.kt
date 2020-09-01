@@ -67,6 +67,9 @@ open class ConfigViewHolder(
             is StatusState.Error -> {
                 visibility(R.drawable.ic_ts_notif_failed)
             }
+            is StatusState.Warning -> {
+                visibility(R.drawable.ic_ts_notif_warning)
+            }
         }
 
         txtTitle?.text = context.getString(message)
