@@ -93,7 +93,7 @@ class PinOnboardingFragment : BaseDaggerFragment() {
     }
 
     private fun initObserver() {
-        addChangePinViewModel.getStatusPinResponse.observe(this, Observer {
+        addChangePinViewModel.getStatusPinResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessGetStatusPin(it.data)
                 is Fail -> onErrorGetStatusPin(it.throwable)

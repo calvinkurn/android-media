@@ -94,19 +94,16 @@ class AddPinFragment : BaseDaggerFragment() {
                     if (isConfirmPin) {
                         if (s.toString() == pin) {
                             if (isSkipOtp) {
-                                showLoading()
                                 addChangePinViewModel.checkSkipOtpPin()
                             } else {
                                 goToVerificationActivity()
                             }
                         } else {
-                            showLoading()
                             val errorMessage = getString(R.string.error_wrong_pin)
                             trackingPinUtil.trackFailedInputConfirmationPin(errorMessage)
                             displayErrorPin(errorMessage)
                         }
                     } else {
-                        showLoading()
                         addChangePinViewModel.checkPin(s.toString())
                     }
                 } else {
@@ -142,21 +139,21 @@ class AddPinFragment : BaseDaggerFragment() {
     }
 
     private fun initObserver() {
-        addChangePinViewModel.addPinResponse.observe(this, Observer {
+        addChangePinViewModel.addPinResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessAddPin(it.data)
                 is Fail -> onErrorAddPin(it.throwable)
             }
         })
 
-        addChangePinViewModel.checkPinResponse.observe(this, Observer {
+        addChangePinViewModel.checkPinResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessCheckPin(it.data)
                 is Fail -> onErrorCheckPin(it.throwable)
             }
         })
 
-        addChangePinViewModel.skipOtpPinResponse.observe(this, Observer {
+        addChangePinViewModel.skipOtpPinResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessSkipOtp(it.data)
                 is Fail -> onErrorSkipOtpPin(it.throwable)
@@ -201,7 +198,6 @@ class AddPinFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessCheckPin(checkPinData: CheckPinData) {
-        dismissLoading()
         when {
             checkPinData.valid -> {
                 trackingPinUtil.trackSuccessInputCreatePin()
@@ -216,7 +212,6 @@ class AddPinFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessSkipOtp(skipOtpPinData: SkipOtpPinData) {
-        dismissLoading()
         if (skipOtpPinData.skipOtp && skipOtpPinData.validateToken.isNotEmpty()) {
             showLoading()
             addChangePinViewModel.addPin(skipOtpPinData.validateToken)
@@ -234,21 +229,18 @@ class AddPinFragment : BaseDaggerFragment() {
     }
 
     private fun onErrorCheckPin(throwable: Throwable) {
-        dismissLoading()
         val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
         trackingPinUtil.trackFailedInputCreatePin(errorMessage)
         onError(throwable)
     }
 
     private fun onErrorSkipOtpPin(throwable: Throwable) {
-        dismissLoading()
         val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
         trackingPinUtil.trackFailedInputConfirmationPin(errorMessage)
         onError(throwable)
     }
 
     private fun onError(throwable: Throwable) {
-        dismissLoading()
         mainView?.run {
             val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
             Toaster.make(this, errorMessage, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
@@ -287,7 +279,6 @@ class AddPinFragment : BaseDaggerFragment() {
     }
 
     private fun displayConfirmPin() {
-        showLoading()
         hideErrorPin()
         inputPin?.pinTitle = getString(R.string.confirm_create_pin)
         inputPin?.pinDescription = getString(R.string.subtitle_confirm_create_pin)
@@ -295,11 +286,9 @@ class AddPinFragment : BaseDaggerFragment() {
         if (inputPin?.pinTextField?.text.toString().isNotEmpty()) pin = inputPin?.pinTextField?.text.toString()
         inputPin?.value = ""
         inputPin?.pinMessage = ""
-        dismissLoading()
     }
 
     private fun displayErrorPin(error: String) {
-        dismissLoading()
         inputPin?.isError = true
         mainView?.run {
             Toaster.make(this, error, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)

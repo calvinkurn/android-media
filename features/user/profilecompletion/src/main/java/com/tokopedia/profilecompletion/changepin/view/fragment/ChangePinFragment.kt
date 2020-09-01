@@ -136,7 +136,6 @@ class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
                 inputNewPin -> handleInputNewPinState(text)
                 isValidated || isForgotPin -> handleValidatedAndForgotState(text)
                 else -> {
-                    showLoading()
                     changePinViewModel.validatePin(text)
                 }
             }
@@ -155,6 +154,7 @@ class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
             if (isForgotPin) {
                 goToVerificationActivity()
             } else {
+                showLoading()
                 changePinViewModel.changePin(pin, input, oldPin)
             }
         } else {
@@ -163,7 +163,6 @@ class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun handleInputNewPinState(input: String) {
-        showLoading()
         changePinViewModel.checkPin(input)
     }
 
@@ -214,14 +213,12 @@ class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun konfirmasiState() {
-        showLoading()
         resetInputPin()
         isConfirm = true
         changePinInput?.pinTitle = getString(R.string.confirm_create_pin)
         changePinInput?.pinDescription = getString(R.string.subtitle_confirm_create_pin)
         changePinInput?.pinMessage = ""
         changePinInput?.pinSecondaryActionText = ""
-        dismissLoading()
     }
 
     private fun forgotPinState() {
@@ -258,7 +255,6 @@ class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun onSuccessCheckPin(checkPinData: CheckPinData) {
-        dismissLoading()
         if (checkPinData.valid) {
             if (inputNewPin) {
                 pin = changePinInput?.pinTextField?.text.toString()
@@ -291,7 +287,6 @@ class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun onSuccessValidatePin(data: ValidatePinData) {
-        dismissLoading()
         isValidated = data.valid
         oldPin = changePinInput?.pinTextField?.text.toString()
         if (data.valid) {
@@ -303,7 +298,6 @@ class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun onErrorValidatePin(error: Throwable) {
-        dismissLoading()
         resetInputPin()
         oldPin = ""
         isValidated = false
@@ -326,6 +320,7 @@ class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun onSuccessChangePin(data: AddChangePinData){
+        dismissLoading()
         if(data.success) goToSuccessPage()
         else onError(Throwable())
     }
