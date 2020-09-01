@@ -95,14 +95,17 @@ class HomeVisitableFactoryImpl(
 
     private fun mappingTickerFromServer(it: List<Tickers>): List<Tickers> {
         return it.map { ticker ->
-            when(ticker.tickerType) {
-                0 -> Ticker.TYPE_ANNOUNCEMENT
-                1 -> Ticker.TYPE_INFORMATION
-                2 -> Ticker.TYPE_WARNING
-                3 -> Ticker.TYPE_ERROR
-            }
+            ticker.tickerType = mapTickerType(ticker)
             ticker
         }
+    }
+
+    private fun mapTickerType(ticker: Tickers): Int = when(ticker.tickerType) {
+        0 -> Ticker.TYPE_ANNOUNCEMENT
+        1 -> Ticker.TYPE_INFORMATION
+        2 -> Ticker.TYPE_WARNING
+        3 -> Ticker.TYPE_ERROR
+        else -> Ticker.TYPE_ANNOUNCEMENT
     }
 
     override fun addUserWalletVisitable(): HomeVisitableFactory {
