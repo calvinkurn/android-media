@@ -124,7 +124,7 @@ class EventSearchPageTracking {
         getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 Event.KEY, "productView",
                 Event.CATEGORY, "digital - event",
-                Event.ACTION, "impression event suggestion",
+                Event.ACTION, "impression product result",
                 Event.LABEL, "",
                 Misc.CURRENTSITE, "tokopediadigitalevents",
                 Misc.BUSINESSUNIT, "travel & entertainment",
@@ -141,7 +141,7 @@ class EventSearchPageTracking {
             list.add(DataLayer.mapOf(
                     Impression.NAME, item.nama_kegiatan,
                     Impression.ID, item.id,
-                    Impression.PRICE, item.price,
+                    Impression.PRICE, item.sales_price,
                     Impression.BRAND, "",
                     Impression.CATEGORY, "",
                     Impression.VARIANT, "",
@@ -159,7 +159,7 @@ class EventSearchPageTracking {
         getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 Event.KEY, "productClick",
                 Event.CATEGORY, "digital - event",
-                Event.ACTION, "click event suggestion",
+                Event.ACTION, "click product result",
                 Event.LABEL, String.format("%s - %s", event.nama_kegiatan, position.toString()),
                 Misc.CURRENTSITE, "tokopediadigitalevents",
                 Misc.BUSINESSUNIT, "travel & entertainment",
