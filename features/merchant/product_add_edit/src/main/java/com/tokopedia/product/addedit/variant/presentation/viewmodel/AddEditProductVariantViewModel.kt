@@ -8,7 +8,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.removeFirst
-import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.HTTP_PREFIX
 import com.tokopedia.product.addedit.common.constant.ProductStatus.STATUS_ACTIVE_STRING
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.variant.data.model.GetCategoryVariantCombinationResponse
@@ -469,11 +468,7 @@ class AddEditProductVariantViewModel @Inject constructor(
             )
         } else {
             // condition if updating existing product variant
-            val filePath = variantPicture.firstOrNull()?.filePath.orEmpty()
-            if (!filePath.startsWith(HTTP_PREFIX)) {
-                // condition if updating picture (the url is changed to path)
-                productVariant.pictures = variantPicture
-            }
+            productVariant.pictures = variantPicture
             productVariant
         }
     }
