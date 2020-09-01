@@ -14,4 +14,26 @@
     <dimen name="setting_title_indented_margin_top">8dp</dimen>
     <dimen name="setting_title_indented_margin_bottom">8dp</dimen>
     <dimen name="setting_title_indented_height">34dp</dimen>
+    <dimen name="setting_balance_height">40dp</dimen>
+    <dimen name="setting_zero_dp">0dp</dimen>
+    <dimen name="setting_status_padding_top">15dp</dimen>
+    <dimen name="setting_status_padding_bottom">14dp</dimen>
+    <dimen name="setting_card_height">42dp</dimen>
+    <dimen name="setting_shop_badge_border_margin">2dp</dimen>
+    <dimen name="setting_shop_info_height">60dp</dimen>
+    <dimen name="setting_header_height">56dp</dimen>
+    <dimen name="setting_bottom_refer">5dp</dimen>
+    <dimen name="setting_shop_image_border_margin">3dp</dimen>
+    <dimen name="setting_shop_avatar_border">1dp</dimen>
+    <dimen name="setting_shop_badge_height">16dp</dimen>
+    <dimen name="setting_next_button_padding">10dp</dimen>
+    <dimen name="setting_shop_badge_border_os_margin">5dp</dimen>
+    <dimen name="setting_shop_badge_border_pm_margin">4dp</dimen>
+    <dimen name="setting_shop_error_background_height">150dp</dimen>
+    <dimen name="setting_local_load_margin">16dp</dimen>
+    <dimen name="setting_balance_padding">3dp</dimen>
+    <dimen name="setting_topads_icon_margin">5dp</dimen>
+    <dimen name="setting_shop_name_shimmer_height">20dp</dimen>
+    <dimen name="setting_status_loading_padding_top">20dp</dimen>
+    <dimen name="setting_status_loading_padding_bottom">17dp</dimen>
 </resources>

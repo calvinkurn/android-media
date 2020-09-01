@@ -1,9 +1,9 @@
 package com.tokopedia.sellerhome.settings.domain.entity
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.sellerhome.settings.view.uimodel.base.PowerMerchantStatus
-import com.tokopedia.sellerhome.settings.view.uimodel.base.RegularMerchant
-import com.tokopedia.sellerhome.settings.view.uimodel.base.ShopType
+import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantStatus
+import com.tokopedia.seller.menu.common.view.uimodel.base.RegularMerchant
+import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 
 data class ShopStatusResponse (
         @SerializedName("goldGetPMOSStatus")

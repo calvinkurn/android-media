@@ -6,4 +6,5 @@ sealed class SettingUiType {
     object SETTING_TITLE : SettingUiType()
     object INDENTED_SETTING_TITLE : SettingUiType()
     object SETTING_TITLE_MENU : SettingUiType()
+    object SHOP_INFO : SettingUiType()
 }

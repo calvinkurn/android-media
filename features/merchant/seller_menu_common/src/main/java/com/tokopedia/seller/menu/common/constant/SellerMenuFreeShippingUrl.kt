@@ -1,6 +1,6 @@
-package com.tokopedia.centralizedpromo.constant
+package com.tokopedia.seller.menu.common.constant
 
-object CentralizedPromoUrl {
+object SellerMenuFreeShippingUrl {
 
     const val URL_FREE_SHIPPING_INTERIM_PAGE = "https://m.tokopedia.com/bebas-ongkir"
 }

@@ -1,6 +1,6 @@
-package com.tokopedia.sellerhome.settings.view.uimodel.base
+package com.tokopedia.seller.menu.common.view.uimodel.base
 
-import com.tokopedia.sellerhome.R
+import com.tokopedia.seller.menu.common.R
 
 
 sealed class ShopType(val shopTypeLayoutRes: Int,

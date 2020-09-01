@@ -1,9 +1,9 @@
-package com.tokopedia.sellerhome.settings.view.uimodel.shopinfo
+package com.tokopedia.seller.menu.common.view.uimodel.shopinfo
 
-import com.tokopedia.sellerhome.settings.view.uimodel.base.BalanceType
-import com.tokopedia.sellerhome.settings.view.uimodel.base.RegularMerchant
-import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingSuccess
-import com.tokopedia.sellerhome.settings.view.uimodel.base.ShopType
+import com.tokopedia.seller.menu.common.view.uimodel.base.BalanceType
+import com.tokopedia.seller.menu.common.view.uimodel.base.RegularMerchant
+import com.tokopedia.seller.menu.common.view.uimodel.base.SettingSuccess
+import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 import com.tokopedia.user.session.UserSessionInterface
 
 class SettingShopInfoUiModel(val shopName: String = "",

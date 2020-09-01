@@ -1,4 +1,4 @@
-package com.tokopedia.sellerhome.settings.analytics
+package com.tokopedia.seller.menu.common.analytics
 
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.interfaces.Analytics
