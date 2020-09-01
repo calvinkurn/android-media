@@ -180,6 +180,21 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
         }
     }
 
+    protected fun permissionValidationNotification(
+            notificationEnabled: Boolean,
+            pinnedItem: NotificationActivation,
+            lastStateItems: List<ParentSetting>
+    ) {
+        with(settingFieldAdapter) {
+            addPinnedActivation(pinnedItem)
+            if (notificationEnabled) {
+                enableSwitchComponent(lastStateItems)
+            } else {
+                disableSwitchComponent()
+            }
+        }
+    }
+
     protected fun isNotificationEnabled(): Boolean {
         return context?.let {
             NotificationManagerCompat
