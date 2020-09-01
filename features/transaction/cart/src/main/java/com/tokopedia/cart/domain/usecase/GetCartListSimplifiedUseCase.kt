@@ -20,8 +20,7 @@ import javax.inject.Named
  * Created by Irfan Khoirul on 2019-10-18.
  */
 
-class GetCartListSimplifiedUseCase @Inject constructor(@Named("shopGroupSimplifiedQuery") private val queryString: String,
-                                                       private val graphqlUseCase: GraphqlUseCase,
+class GetCartListSimplifiedUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase,
                                                        private val cartSimplifiedMapper: CartSimplifiedMapper,
                                                        private val schedulers: ExecutorSchedulers) : UseCase<CartListData>() {
 
@@ -40,13 +39,14 @@ class GetCartListSimplifiedUseCase @Inject constructor(@Named("shopGroupSimplifi
                 PARAM_KEY_SELECTED_CART_ID to cartId
         )
 
+        val queryString = getQueryCartRevamp()
         val graphqlRequest = GraphqlRequest(queryString, ShopGroupSimplifiedGqlResponse::class.java, variables)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(RequestParams.EMPTY)
                 .map {
-                    val shopGroupSimplifiedGqlResponse = Gson().fromJson(FileUtils().getJsonFromAsset("assets/cart_list_response.json"), ShopGroupSimplifiedGqlResponse::class.java)
-//                    val shopGroupSimplifiedGqlResponse = it.getData<ShopGroupSimplifiedGqlResponse>(ShopGroupSimplifiedGqlResponse::class.java)
+//                    val shopGroupSimplifiedGqlResponse = Gson().fromJson(FileUtils().getJsonFromAsset("assets/cart_list_response.json"), ShopGroupSimplifiedGqlResponse::class.java)
+                    val shopGroupSimplifiedGqlResponse = it.getData<ShopGroupSimplifiedGqlResponse>(ShopGroupSimplifiedGqlResponse::class.java)
                     if (shopGroupSimplifiedGqlResponse != null) {
                         if (shopGroupSimplifiedGqlResponse.shopGroupSimplifiedResponse.status == "OK") {
                             cartSimplifiedMapper.convertToCartItemDataList(shopGroupSimplifiedGqlResponse.shopGroupSimplifiedResponse.data)
