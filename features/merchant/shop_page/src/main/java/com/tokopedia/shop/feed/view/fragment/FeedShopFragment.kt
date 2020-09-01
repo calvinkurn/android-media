@@ -373,12 +373,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
             dataList.addAll(element)
             renderList(dataList, lastCursor.isNotEmpty())
         } else {
-            if(!GlobalConfig.isSellerApp()) {
-                if(isSellerMigrationEnabled(context)) {
-                    dataList.add(EmptyFeedShopSellerMigrationUiModel())
-                } else {
-                    dataList.add(getEmptyResultViewModel())
-                }
+            if (isSellerMigrationEnabled(context)) {
+                dataList.add(EmptyFeedShopSellerMigrationUiModel())
             } else {
                 dataList.add(getEmptyResultViewModel())
             }
@@ -924,7 +920,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     private fun setupBottomSheetSellerMigration(view: View) {
-        if(!GlobalConfig.isSellerApp()) {
+        if (!GlobalConfig.isSellerApp()) {
             val viewTarget: LinearLayout = view.findViewById(bottom_sheet_wrapper)
             bottomSheetSellerMigration = BottomSheetBehavior.from(viewTarget)
             BottomSheetUnify.bottomSheetBehaviorKnob(viewTarget, false)
