@@ -36,17 +36,17 @@ class AddEditProductVariantViewModelTest: AddEditProductVariantViewModelTestFixt
         viewModel.updateSizechart("/url/to/file.jpg")
 
         val variantSizechart = viewModel.variantSizechart.value
-        assert(variantSizechart != null && variantSizechart.filePath.isNotEmpty())
+        assert(variantSizechart != null && variantSizechart.urlOriginal.isNotEmpty())
     }
 
     @Test
     fun `When updateSizechart with object is success Expect update variantSizechart`() {
         val obj = PictureVariantInputModel()
-        obj.filePath = "/url/to/file.jpg"
+        obj.urlOriginal = "/url/to/file.jpg"
         viewModel.updateSizechart(obj)
 
         val variantSizechart = viewModel.variantSizechart.value
-        assert(variantSizechart != null && variantSizechart.filePath.isNotEmpty())
+        assert(variantSizechart != null && variantSizechart.urlOriginal.isNotEmpty())
     }
 
     @Test
