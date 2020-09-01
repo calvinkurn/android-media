@@ -1,7 +1,7 @@
 package com.tokopedia.sellerhome.settings.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.network.exception.ResponseErrorException
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerhome.settings.domain.entity.ShopStatusResponse
 import com.tokopedia.sellerhome.settings.view.uimodel.base.ShopType
 import com.tokopedia.sellerhome.utils.TestHelper
@@ -69,7 +69,7 @@ class ShopStatusTypeUseCaseTest {
             gqlRepository.getReseponse(any(), any())
         } returns errorResponse
 
-        expectedException.expect(ResponseErrorException::class.java)
+        expectedException.expect(MessageErrorException::class.java)
         useCase.params = ShopStatusTypeUseCase.createRequestParams(anyInt())
         val shopType = useCase.executeOnBackground()
 

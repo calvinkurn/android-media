@@ -1,11 +1,16 @@
 package com.tokopedia.otp.verification.view.adapter
 
+import android.graphics.Typeface
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.TextPaint
+import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.otp.R
 import com.tokopedia.otp.verification.domain.data.ModeListData
@@ -46,10 +51,27 @@ class VerificationMethodAdapter(
         fun bind(modeList: ModeListData, listener: ClickListener?, position: Int) {
             itemView.method_icon.setImageUrl(modeList.otpListImgUrl)
             itemView.method_icon.scaleType = ImageView.ScaleType.FIT_CENTER
-            itemView.method_text.text = MethodChecker.fromHtml(modeList.otpListText)
             itemView.setOnClickListener {
                 listener?.onModeListClick(modeList, position)
             }
+
+            val otpListTextHtml = MethodChecker.fromHtml(modeList.otpListText)
+            val indexNewline = otpListTextHtml.indexOf("\n")
+            val clickableSpan = object : ClickableSpan() {
+                override fun onClick(widget: View) {}
+
+                override fun updateDrawState(ds: TextPaint) {
+                    ds.color = MethodChecker.getColor(itemView.context, R.color.Neutral_N700)
+                    ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+                }
+            }
+
+            val spannable: Spannable
+            spannable = SpannableString(otpListTextHtml)
+            if(indexNewline > -1) {
+                spannable.setSpan(clickableSpan, 0, indexNewline, 0)
+            }
+            itemView.method_text.setText(spannable, TextView.BufferType.SPANNABLE)
         }
     }
 
@@ -58,6 +80,7 @@ class VerificationMethodAdapter(
     }
 
     companion object {
+        
         fun createInstance(listener: ClickListener): VerificationMethodAdapter {
             return VerificationMethodAdapter(mutableListOf(), listener)
         }

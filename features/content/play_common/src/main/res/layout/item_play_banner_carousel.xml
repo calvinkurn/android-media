@@ -48,6 +48,7 @@
             android:layout_height="20dp"
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginLeft="@dimen/spacing_lvl3"
+            tools:visibility="gone"
             android:layout_marginTop="@dimen/spacing_lvl3"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -60,6 +61,7 @@
             android:layout_marginStart="@dimen/spacing_lvl1"
             android:layout_marginLeft="@dimen/spacing_lvl1"
             android:layout_marginTop="@dimen/spacing_lvl3"
+            app:layout_goneMarginStart="@dimen/spacing_lvl3"
             app:layout_constraintStart_toEndOf="@+id/live_badge"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -70,7 +72,7 @@
             android:layout_height="20dp"
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginLeft="@dimen/spacing_lvl3"
-            android:layout_marginBottom="@dimen/spacing_lvl2"
+            android:layout_marginBottom="@dimen/spacing_lvl3"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/container_content" />
 
@@ -89,39 +91,39 @@
                 android:layout_marginStart="@dimen/spacing_lvl3"
                 android:layout_marginEnd="@dimen/spacing_lvl3"
                 android:ellipsize="end"
-                android:maxLines="2"
-                android:textColor="@color/Yellow_Y300"
+                android:maxLines="1"
+                android:textColor="@color/Yellow_Y500"
                 android:textStyle="bold"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:typographyType="small"
-                tools:layout_editor_absoluteX="@dimen/spacing_lvl3"
                 tools:text="10 January 2020 - 17.00" />
-            <com.tokopedia.unifyprinciples.Typography
+            <TextView
                 android:id="@+id/channel_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl3"
                 android:layout_marginEnd="@dimen/spacing_lvl3"
                 android:ellipsize="end"
-                android:maxLines="2"
-                android:textColor="@android:color/black"
-                app:typographyType="heading_6"
-                tools:layout_editor_absoluteX="@dimen/spacing_lvl3"
-                tools:text="Google Assistant review with me" />
+                android:lines="2"
+                android:textColor="@color/Neutral_N700_96"
+                android:textIsSelectable="false"
+                tools:text="Google Assistant" />
 
-            <com.tokopedia.unifyprinciples.Typography
+            <TextView
                 android:id="@+id/channel_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl3"
                 android:layout_marginEnd="@dimen/spacing_lvl3"
-                android:layout_marginBottom="@dimen/spacing_lvl3"
-                android:textColor="@android:color/black"
+                android:layout_marginBottom="@dimen/spacing_lvl2"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/Neutral_N700_68"
+                android:textIsSelectable="false"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:typographyType="small"
-                tools:text="Google" />
+                tools:text="Google abcd asda sda sdaa" />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

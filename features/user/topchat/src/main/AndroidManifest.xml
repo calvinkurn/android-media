@@ -81,19 +81,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".chatroom.view.activity.ChatRoomSettingsActivity"
-            android:label="@string/chat_incoming_settings"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
-        <activity
             android:name=".attachproduct.view.activity.BroadcastMessageAttachProductActivity"
             android:screenOrientation="portrait" />
 
 
         <service
             android:name=".chatroom.service.NotificationChatService"
-            android:permission="android.permission.BIND_JOB_SERVICE"
-            android:exported="false">
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE">
 
             <intent-filter>
                 <action android:name="NotificationChatService.REPLY_CHAT" />

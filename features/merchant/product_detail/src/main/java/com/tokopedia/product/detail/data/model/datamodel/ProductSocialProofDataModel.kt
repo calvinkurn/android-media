@@ -11,6 +11,7 @@ data class ProductSocialProofDataModel(
         var stats: Stats? = null,
         var txStats: TxStatsDynamicPdp? = null,
         var isSocialProofPv: Boolean = false,
+        var viewCount: Int = 0,
         var wishlistCount: Int = 0
 ) : DynamicPdpDataModel {
 

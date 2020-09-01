@@ -17,7 +17,6 @@ import com.tokopedia.sellerorder.list.domain.list.SomGetTickerListUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -77,9 +76,9 @@ class SomListViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
         })
     }
 
-    fun loadOrderList(orderQuery: String, paramOrder: SomListOrderParam) {
+    fun loadOrderList(paramOrder: SomListOrderParam) {
         launchCatchError(block =  {
-            _orderListResult.postValue(getOrderListUseCase.execute(paramOrder, orderQuery))
+            _orderListResult.postValue(getOrderListUseCase.execute(paramOrder))
         }, onError = {
             _orderListResult.postValue(Fail(it))
         })

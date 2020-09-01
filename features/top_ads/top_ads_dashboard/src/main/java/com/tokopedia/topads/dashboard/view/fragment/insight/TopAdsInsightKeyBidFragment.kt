@@ -68,7 +68,7 @@ class TopAdsInsightKeyBidFragment : BaseDaggerFragment() {
     }
 
     private fun butttonClicked(data: MutationData) {
-        itemCountCallBack?.onButtonClickedBid(listOf(data), key ?: "", 1)
+        itemCountCallBack?.onButtonClickedBid(listOf(data), key ?: "", 1, false)
     }
 
     private fun setView() {
@@ -83,7 +83,7 @@ class TopAdsInsightKeyBidFragment : BaseDaggerFragment() {
         setHeader(totalPotential)
         btnTambah.setOnClickListener {
             itemCountCallBack?.onButtonClickedBid(mutationList, key
-                    ?: "", dataInsight?.get(key)?.bid?.size ?: 0)
+                    ?: "", dataInsight?.get(key)?.bid?.size ?: 0, true)
         }
         adapter.notifyDataSetChanged()
     }
@@ -91,9 +91,9 @@ class TopAdsInsightKeyBidFragment : BaseDaggerFragment() {
     private fun setHeader(totalPotential: Double) {
         insight_title.text = data?.bid?.box?.title
         val text = data?.keyword?.box?.desc
-        val withValue = text?.replace(COUNT, dataInsight?.get(key)?.bid?.size.toString())?.replace("$" + "value", "+" + Utils.convertToCurrencyString(totalPotential.toLong()))
+        val withValue = text?.replace(COUNT, dataInsight?.get(key)?.bid?.size.toString())?.replace(VALUE, "+" + Utils.convertToCurrencyString(totalPotential.toLong()))
         insight_desc.text = Html.fromHtml(withValue)
-        btnTambah.text = data?.bid?.box?.button?.title?.replace("$" + "count", dataInsight?.get(key)?.bid?.size.toString())
+        btnTambah.text = data?.bid?.box?.button?.title?.replace(COUNT, dataInsight?.get(key)?.bid?.size.toString())
     }
 
     private fun getfromArguments() {
@@ -115,7 +115,7 @@ class TopAdsInsightKeyBidFragment : BaseDaggerFragment() {
     }
 
     interface OnKeywordBidAdded {
-        fun onButtonClickedBid(data: List<MutationData>, groupId: String, countToAdd: Int)
+        fun onButtonClickedBid(data: List<MutationData>, groupId: String, countToAdd: Int, forAllButton: Boolean)
     }
 
 }
