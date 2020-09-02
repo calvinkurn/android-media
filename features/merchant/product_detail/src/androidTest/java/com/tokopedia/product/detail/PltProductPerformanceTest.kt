@@ -9,6 +9,7 @@ import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.test.application.TestRepeatRule
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawString
+import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheck
 import org.junit.Before
 import org.junit.Rule
@@ -50,6 +51,7 @@ class PltProductPerformanceTest {
     fun testPageLoadTimePerformance() {
         waitForData()
         savePLTPerformanceResultData(TEST_CASE_PAGE_LOAD_TIME_PERFORMANCE)
+        TokopediaGraphqlInstrumentationTestHelper.deleteAllDataInDb()
         activityRule.activity.finishAndRemoveTask()
     }
 
