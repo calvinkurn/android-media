@@ -2,6 +2,7 @@ package com.tokopedia.topchat.chatlist.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.topchat.chatlist.domain.mapper.GetChatListMessageMapper
 import com.tokopedia.topchat.chatlist.pojo.ChatListPojo
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
 import kotlinx.coroutines.CoroutineScope
@@ -12,6 +13,7 @@ import kotlin.coroutines.CoroutineContext
 
 class GetChatListMessageUseCase @Inject constructor(
         private val gqlUseCase: GraphqlUseCase<ChatListPojo>,
+        private val mapper: GetChatListMessageMapper,
         private var dispatchers: TopchatCoroutineContextProvider
 ) : CoroutineScope {
 
@@ -21,7 +23,7 @@ class GetChatListMessageUseCase @Inject constructor(
             page: Int,
             filter: String,
             tab: String,
-            onSuccess: (ChatListPojo) -> Unit,
+            onSuccess: (ChatListPojo, List<String>, List<String>) -> Unit,
             onError: (Throwable) -> Unit
     ) {
         launchCatchError(dispatchers.IO,
@@ -32,8 +34,10 @@ class GetChatListMessageUseCase @Inject constructor(
                         setRequestParams(params)
                         setGraphqlQuery(query)
                     }.executeOnBackground()
+                    val pinnedChatMsgId = mapper.mapPinChat(response, page)
+                    val unPinnedChatMsgId = mapper.mapUnpinChat(response)
                     withContext(dispatchers.Main) {
-                        onSuccess(response)
+                        onSuccess(response, pinnedChatMsgId, unPinnedChatMsgId)
                     }
                 },
                 {

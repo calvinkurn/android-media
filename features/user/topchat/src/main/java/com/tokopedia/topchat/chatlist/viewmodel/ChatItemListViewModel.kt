@@ -85,14 +85,21 @@ class ChatItemListViewModel @Inject constructor(
     val chatBannedSellerStatus: LiveData<Result<Boolean>>
         get() = _chatBannedSellerStatus
 
+    val pinnedMsgId: LinkedHashSet<String> = LinkedHashSet()
+    val unpinnedMsgId: LinkedHashSet<String> = LinkedHashSet()
+
     override fun getChatListMessage(page: Int, filterIndex: Int, tab: String) {
         queryGetChatListMessage(page, arrayFilterParam[filterIndex], tab)
     }
 
     private fun queryGetChatListMessage(page: Int, filter: String, tab: String) {
         getChatListUseCase.getChatList(page, filter, tab,
-                {
-                    _mutateChatList.value = Success(it)
+                { chats, pinChats, unpinChats ->
+                    if (page == 1) {
+                        pinnedMsgId.addAll(pinChats)
+                    }
+                    unpinnedMsgId.addAll(unpinChats)
+                    _mutateChatList.value = Success(chats)
                 },
                 {
                     _mutateChatList.value = Fail(it)
