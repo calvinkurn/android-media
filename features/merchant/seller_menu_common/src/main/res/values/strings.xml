@@ -46,4 +46,11 @@
     <string name="seller_menu_business_section">Pengembangan Bisnis</string>
     <string name="seller_menu_seller_app_only">Di Tokopedia Seller</string>
     <string name="seller_menu_product_list">Daftar Produkmu</string>
+
+    <string name="setting_topads_next">Atur</string>
+    <string name="setting_topads_status">Tambah Kredit Otomatis kamu %1$s aktif</string>
+    <string name="setting_topads_status_active">sedang</string>
+    <string name="setting_topads_status_inactive">belum</string>
+    <string name="setting_topads_description_active">Nggak perlu khawatir kehabisan, kredit TopAds akan otomatis ditambahkan dari Saldo Penghasilan setiap kreditmu menipis.</string>
+    <string name="setting_topads_description_inactive">Dengan mengaktifkan, kredit TopAds akan otomatis ditambahkan dari Saldo Penghasilan setiap kreditmu menipis.</string>
 </resources>

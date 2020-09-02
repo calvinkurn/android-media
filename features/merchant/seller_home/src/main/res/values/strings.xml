@@ -49,12 +49,6 @@
     <string name="setting_menu_share_app">Bagikan Aplikasi</string>
     <string name="setting_menu_review_app">Review Aplikasi</string>
     <string name="setting_menu_developer_options">Developer Options</string>
-    <string name="setting_topads_status">Tambah Kredit Otomatis kamu %1$s aktif</string>
-    <string name="setting_topads_status_active">sedang</string>
-    <string name="setting_topads_status_inactive">belum</string>
-    <string name="setting_topads_description_active">Nggak perlu khawatir kehabisan, kredit TopAds akan otomatis ditambahkan dari Saldo Penghasilan setiap kreditmu menipis.</string>
-    <string name="setting_topads_description_inactive">Dengan mengaktifkan, kredit TopAds akan otomatis ditambahkan dari Saldo Penghasilan setiap kreditmu menipis.</string>
-    <string name="setting_topads_next">Atur</string>
 
     <!--  Centralized Promo  -->
     <string name="centralized_promo_toolbar_title">Iklan dan Promosi</string>
