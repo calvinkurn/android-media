@@ -33,6 +33,10 @@ class UpdateCartUseCase @Inject constructor(private val graphqlUseCase: GraphqlU
                 data {
                     error
                     status 
+                    toaster_action {
+                        text
+                        show_cta
+                    }
                     prompt_page {
                         type
                         title

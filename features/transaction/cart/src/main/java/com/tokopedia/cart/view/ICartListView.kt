@@ -52,7 +52,7 @@ interface ICartListView : CustomerView {
                                     checkoutProductEligibleForCashOnDelivery: Boolean,
                                     condition: Int)
 
-    fun renderErrorToShipmentForm(message: String)
+    fun renderErrorToShipmentForm(message: String, ctaText: String = "")
 
     fun renderErrorToShipmentForm(throwable: Throwable)
 
@@ -62,7 +62,7 @@ interface ICartListView : CustomerView {
 
     fun updateCashback(cashback: Double)
 
-    fun showToastMessageRed(message: String)
+    fun showToastMessageRed(message: String, ctaText: String = "", ctaClickListener: View.OnClickListener? = null)
 
     fun showToastMessageRed(throwable: Throwable)
 

@@ -4,35 +4,33 @@ import com.tokopedia.cart.data.model.response.updatecart.Data
 import com.tokopedia.cart.data.model.response.updatecart.UpdateCartGqlResponse
 import com.tokopedia.cart.domain.model.updatecart.ButtonData
 import com.tokopedia.cart.domain.model.updatecart.PromptPageData
+import com.tokopedia.cart.domain.model.updatecart.ToasterActionData
 import com.tokopedia.cart.domain.model.updatecart.UpdateCartData
 
 fun mapUpdateCartData(updateCartGqlResponse: UpdateCartGqlResponse, data: Data): UpdateCartData {
     val updateCartData = UpdateCartData()
-    updateCartData.isSuccess = !(updateCartGqlResponse.updateCartDataResponse.status != "OK" ||
-            updateCartGqlResponse.updateCartDataResponse.error.isNotEmpty() ||
-            updateCartGqlResponse.updateCartDataResponse.data == null || !data.status)
-
-    updateCartData.message = if (updateCartGqlResponse.updateCartDataResponse.error.isNotEmpty()) {
-        updateCartGqlResponse.updateCartDataResponse.error[0]
-    } else {
-        ""
-    }
-    updateCartData.promptPageData = PromptPageData().apply {
-        image = updateCartGqlResponse.updateCartDataResponse.data?.promptPage?.image ?: ""
-        title = updateCartGqlResponse.updateCartDataResponse.data?.promptPage?.title ?: ""
-        descriptions = updateCartGqlResponse.updateCartDataResponse.data?.promptPage?.descriptions
-                ?: ""
-        val tmpButtons = mutableListOf<ButtonData>()
-        updateCartGqlResponse.updateCartDataResponse.data?.promptPage?.buttons?.forEach {
-            tmpButtons.add(ButtonData().apply {
-                text = it.text
-                link = it.link
-                action = it.action
-                color = it.color
-            })
+    updateCartGqlResponse.updateCartDataResponse.data?.let {
+        updateCartData.isSuccess = updateCartGqlResponse.updateCartDataResponse.status.equals("OK", true) && it.status
+        updateCartData.message = it.error
+        updateCartData.promptPageData = PromptPageData().apply {
+            image = it.promptPage.image
+            title = it.promptPage.title
+            descriptions = it.promptPage.descriptions
+            val tmpButtons = mutableListOf<ButtonData>()
+            it.promptPage.buttons.forEach {
+                tmpButtons.add(ButtonData().apply {
+                    text = it.text
+                    link = it.link
+                    action = it.action
+                    color = it.color
+                })
+            }
+            buttons = tmpButtons
         }
-        buttons = tmpButtons
+        updateCartData.toasterActionData = ToasterActionData().apply {
+            text = it.toasterAction.text
+            showCta = it.toasterAction.showCta
+        }
     }
-
     return updateCartData
 }

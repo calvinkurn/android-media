@@ -11,5 +11,6 @@ import kotlinx.android.parcel.Parcelize
 data class UpdateCartData(
         var isSuccess: Boolean = false,
         var message: String = "",
-        var promptPageData: PromptPageData = PromptPageData()
+        var promptPageData: PromptPageData = PromptPageData(),
+        var toasterActionData: ToasterActionData = ToasterActionData()
 ) : Parcelable

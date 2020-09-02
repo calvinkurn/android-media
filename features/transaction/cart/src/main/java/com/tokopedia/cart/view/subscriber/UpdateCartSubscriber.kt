@@ -38,7 +38,7 @@ class UpdateCartSubscriber(private val view: ICartListView?,
                     if (data.promptPageData.title.isNotBlank()) {
                         it.renderErrorToShipmentForm(data.promptPageData)
                     } else {
-                        it.renderErrorToShipmentForm(data.message ?: "")
+                        it.renderErrorToShipmentForm(data.message, if (data.toasterActionData.showCta) data.toasterActionData.text else "")
                     }
                 } else {
                     val checklistCondition = getChecklistCondition()

@@ -2259,7 +2259,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartRecyclerView.recycledViewPool.clear()
     }
 
-    override fun renderErrorToShipmentForm(message: String) {
+    override fun renderErrorToShipmentForm(message: String, ctaText: String) {
         sendAnalyticsOnButtonCheckoutClickedFailed()
         sendAnalyticsOnGoToShipmentFailed(message)
         showToastMessageRed(message)
@@ -2387,15 +2387,26 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartAdapter.updateShipmentSellerCashback(cashback)
     }
 
-    override fun showToastMessageRed(message: String) {
-        var tmpMessage = message
-        if (TextUtils.isEmpty(tmpMessage)) {
-            tmpMessage = CART_ERROR_GLOBAL
-        }
-
+    override fun showToastMessageRed(message: String, ctaText: String, ctaClickListener: View.OnClickListener?) {
         view?.let {
-            Toaster.make(it, tmpMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, activity?.getString(R.string.label_action_snackbar_close)
-                    ?: "", View.OnClickListener { })
+
+            var tmpMessage = message
+            if (TextUtils.isEmpty(tmpMessage)) {
+                tmpMessage = CART_ERROR_GLOBAL
+            }
+
+            var tmpCtaClickListener = View.OnClickListener { }
+
+            if (ctaClickListener != null) {
+                tmpCtaClickListener = ctaClickListener
+            }
+
+            if (ctaText.isNotBlank()) {
+                Toaster.make(it, tmpMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, ctaText, tmpCtaClickListener)
+            } else {
+                Toaster.make(it, tmpMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+            }
+
         }
     }
 

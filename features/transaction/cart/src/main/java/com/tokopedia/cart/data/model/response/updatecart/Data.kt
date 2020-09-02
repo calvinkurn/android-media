@@ -12,5 +12,7 @@ data class Data(
         @SerializedName("status")
         val status: Boolean,
         @SerializedName("prompt_page")
-        val promptPage: PromptPage = PromptPage()
+        val promptPage: PromptPage = PromptPage(),
+        @SerializedName("toaster_action")
+        val toasterAction: ToasterAction = ToasterAction()
 )
