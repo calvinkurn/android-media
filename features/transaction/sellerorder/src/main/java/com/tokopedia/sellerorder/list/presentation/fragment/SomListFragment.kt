@@ -901,7 +901,9 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     private fun goToTopAds() {
-        RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_CREATE_ADS)
+        if (RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_CREATE_ADS)) {
+            SomAnalytics.eventClickStartAds(tabActive)
+        }
     }
 
     private fun isNewOrderChipSelected(): Boolean {
