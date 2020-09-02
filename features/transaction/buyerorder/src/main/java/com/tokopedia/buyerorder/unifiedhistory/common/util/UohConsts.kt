@@ -57,6 +57,7 @@ object UohConsts {
     const val GQL_LS_LACAK = "gql-ls-lacak"
     const val GQL_FLIGHT_EMAIL = "gql-flight-email"
     const val GQL_TRAIN_EMAIL = "gql-train-email"
+    const val GQL_MP_REJECT = "gql-mp-reject"
     const val GQL_RECHARGE_BATALKAN = "gql-recharge-batalkan"
 
     const val FINISH_ORDER_BOTTOMSHEET_TITLE = "Selesaikan pesanan ini?"

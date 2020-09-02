@@ -34,6 +34,7 @@ import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_FINISH_
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_FLIGHT_EMAIL
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_LS_FINISH
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_LS_LACAK
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_MP_REJECT
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_RECHARGE_BATALKAN
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_TRACK
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_TRAIN_EMAIL
@@ -524,7 +525,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             uohBottomSheetOptionAdapter.isReset = isReset
             uohBottomSheetOptionAdapter.notifyDataSetChanged()
         }
-        if (filterStatus.isEmpty()) {
+        if (filterStatus.isEmpty() && !isReset) {
             filter1?.title = arrayFilterDate[2]
         }
         filter1?.let {
@@ -550,7 +551,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             uohBottomSheetOptionAdapter.isReset = isReset
             uohBottomSheetOptionAdapter.notifyDataSetChanged()
         }
-        if (filterStatus.isNotEmpty()) {
+        if (filterStatus.isNotEmpty() && !isReset) {
             filter2?.title = currFilterLabel
         }
         filter2?.let { chips.add(it) }
@@ -1054,8 +1055,15 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 dotMenu.actionType.equals(GQL_TRAIN_EMAIL, true) -> {
                     showBottomSheetSendEmail(GQL_TRAIN_EMAIL, index)
                 }
+                dotMenu.actionType.equals(GQL_MP_REJECT, true) -> {
+                    goToBuyerCancellation()
+                }
             }
         }
+    }
+
+    private fun goToBuyerCancellation() {
+
     }
 
     override fun onListItemClicked(detailUrl: UohListOrder.Data.UohOrders.Order.Metadata.DetailUrl) {
