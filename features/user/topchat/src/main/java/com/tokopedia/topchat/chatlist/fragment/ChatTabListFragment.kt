@@ -455,7 +455,8 @@ class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListContract
 
     override fun showSearchOnBoardingTooltip() {
         if (
-                (chatNotifCounterViewModel.isSearchOnBoardingTooltipHasShown() || !isFinishShowingCoachMarkOnBoarding) &&
+                chatNotifCounterViewModel.isSearchOnBoardingTooltipHasShown() ||
+                !isFinishShowingCoachMarkOnBoarding ||
                 activity?.lifecycle?.currentState?.isAtLeast(Lifecycle.State.STARTED) == false
         ) return
         val toolbar = chatTabListListener?.getActivityToolbar()
