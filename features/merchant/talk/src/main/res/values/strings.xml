@@ -134,6 +134,7 @@
     <string name="reply_empty_subtitle_default">Karena jawabanmu begitu berarti buat orang lain</string>
     <string name="reply_dot_backend_url">•</string>
     <string name="reply_dot_url">.</string>
+    <string name="reply_product_deleted">Barang ini sudah dihapus</string>
 
     <string name="toaster_report_success">Laporanmu berhasil dikirim dan akan segera ditindaklanjuti.</string>
     <string name="toaster_report_fail">Laporanmu gagal dikirim. Cek koneksi internetmu dan coba lagi, ya.</string>

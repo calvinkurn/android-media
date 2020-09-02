@@ -31,7 +31,7 @@ class TalkInboxViewHolder(view: View) : AbstractViewHolder<TalkInboxUiModel>(vie
     private fun setProductThumbnail(productThumbnail: String) {
         with(itemView) {
             if(productThumbnail.isEmpty()) {
-            itemView.talkInboxProductThumbnail.loadImageDrawable(R.drawable.ic_deleted_talk_inbox)
+            itemView.talkInboxProductThumbnail.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_deleted_talk_inbox))
                 talkInboxProductName.setTextColor(ContextCompat.getColor(context, R.color.Neutral_N700_32))
                 return
             }
