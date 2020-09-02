@@ -36,6 +36,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.header
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation rootProject.ext.unifyDependencies.dialog
     kapt rootProject.ext.miscDependencies.daggerCompiler

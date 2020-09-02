@@ -321,7 +321,9 @@ const val RATES_DEFAULT_RESPONSE = """
                     "is_cod_available": 0,
                     "cod_price": 0,
                     "cod_text": "",
-                    "formatted_price": ""
+                    "formatted_price": "",
+                    "tnc_text": "",
+                    "tnc_link": ""
                   },
                   "features": {
                     "ontime_delivery_guarantee": {
@@ -375,7 +377,9 @@ const val RATES_DEFAULT_RESPONSE = """
                     "is_cod_available": 0,
                     "cod_price": 0,
                     "cod_text": "",
-                    "formatted_price": ""
+                    "formatted_price": "",
+                    "tnc_text": "",
+                    "tnc_link": ""
                   },
                   "features": {
                     "ontime_delivery_guarantee": {
@@ -429,7 +433,9 @@ const val RATES_DEFAULT_RESPONSE = """
                     "is_cod_available": 0,
                     "cod_price": 0,
                     "cod_text": "",
-                    "formatted_price": ""
+                    "formatted_price": "",
+                    "tnc_text": "",
+                    "tnc_link": ""
                   },
                   "features": {
                     "ontime_delivery_guarantee": {
@@ -483,7 +489,9 @@ const val RATES_DEFAULT_RESPONSE = """
                     "is_cod_available": 0,
                     "cod_price": 0,
                     "cod_text": "",
-                    "formatted_price": ""
+                    "formatted_price": "",
+                    "tnc_text": "",
+                    "tnc_link": ""
                   },
                   "features": {
                     "ontime_delivery_guarantee": {
@@ -537,7 +545,9 @@ const val RATES_DEFAULT_RESPONSE = """
                     "is_cod_available": 0,
                     "cod_price": 0,
                     "cod_text": "",
-                    "formatted_price": ""
+                    "formatted_price": "",
+                    "tnc_text": "",
+                    "tnc_link": ""
                   },
                   "features": {
                     "ontime_delivery_guarantee": {
@@ -591,7 +601,9 @@ const val RATES_DEFAULT_RESPONSE = """
                     "is_cod_available": 0,
                     "cod_price": 0,
                     "cod_text": "",
-                    "formatted_price": ""
+                    "formatted_price": "",
+                    "tnc_text": "",
+                    "tnc_link": ""
                   },
                   "features": {
                     "ontime_delivery_guarantee": {
@@ -841,7 +853,9 @@ const val RATES_DEFAULT_RESPONSE = """
                     "is_cod_available": 0,
                     "cod_price": 0,
                     "cod_text": "",
-                    "formatted_price": ""
+                    "formatted_price": "",
+                    "tnc_text": "",
+                    "tnc_link": ""
                   },
                   "features": {
                     "ontime_delivery_guarantee": {
@@ -878,7 +892,15 @@ const val RATES_DEFAULT_RESPONSE = """
             "shipping_rate": 16000,
             "benefit_amount": 20000,
             "disabled": false,
-            "hide_shipper_name": true
+            "hide_shipper_name": false,
+            "cod": {
+              "is_cod_available": 0,
+              "cod_text": "",
+              "cod_price": 0,
+              "formatted_price": "",
+              "tnc_text": "",
+              "tnc_link": ""
+            }
           },
           "info": {
             "blackbox_info": {
