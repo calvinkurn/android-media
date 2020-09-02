@@ -135,6 +135,9 @@
     <string name="reply_dot_backend_url">•</string>
     <string name="reply_dot_url">.</string>
     <string name="reply_product_deleted">Barang ini sudah dihapus</string>
+    <string name="reply_unmask">Tokopedia tidak menampilkan konten ini karena melanggar S&amp;K. Tetap tampilkan?</string>
+    <string name="reply_unmask_yes">Ya</string>
+    <string name="reply_unmask_no">Tidak</string>
 
     <string name="toaster_report_success">Laporanmu berhasil dikirim dan akan segera ditindaklanjuti.</string>
     <string name="toaster_report_fail">Laporanmu gagal dikirim. Cek koneksi internetmu dan coba lagi, ya.</string>

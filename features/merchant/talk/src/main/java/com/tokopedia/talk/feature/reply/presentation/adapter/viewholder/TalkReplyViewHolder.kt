@@ -16,6 +16,7 @@ import com.tokopedia.talk.feature.reply.presentation.adapter.TalkReplyAttachedPr
 import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.TalkReplyUiModel
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.AttachedProductCardListener
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.OnKebabClickedListener
+import com.tokopedia.talk.feature.reply.presentation.widget.listeners.TalkReplyUnmaskCardListener
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.ThreadListener
 import com.tokopedia.talk_old.R
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -27,11 +28,19 @@ class TalkReplyViewHolder(view: View,
                           private val attachedProductCardListener: AttachedProductCardListener,
                           private val onKebabClickedListener: OnKebabClickedListener,
                           private val threadListener: ThreadListener
-) : AbstractViewHolder<TalkReplyUiModel>(view) {
+) : AbstractViewHolder<TalkReplyUiModel>(view), TalkReplyUnmaskCardListener {
 
     companion object {
         val LAYOUT = R.layout.item_talk_reply
         const val IN_VIEWHOLDER = true
+    }
+
+    override fun onUnmaskQuestionOptionSelected(isMarkNotFraud: Boolean, commentId: String) {
+        if(isMarkNotFraud) {
+            threadListener.onUnmaskCommentOptionSelected(commentId)
+        } else {
+
+        }
     }
 
     override fun bind(element: TalkReplyUiModel) {
@@ -44,6 +53,7 @@ class TalkReplyViewHolder(view: View,
             showAnswer(content, state.isMasked, maskedContent)
             showAttachedProducts(attachedProducts.toMutableList())
             showKebabWithConditions(answerID, state.allowReport, state.allowDelete, onKebabClickedListener)
+            showUnmaskCardWithCondition(state.allowUnmask)
         }
     }
 
@@ -179,5 +189,9 @@ class TalkReplyViewHolder(view: View,
         }
     }
 
+    private fun showUnmaskCardWithCondition(allowUnmask: Boolean) {
+        if(allowUnmask) {
 
+        }
+    }
 }

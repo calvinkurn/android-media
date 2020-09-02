@@ -10,6 +10,7 @@ class TalkReplyHeaderModel(
         val allowFollow: Boolean,
         val allowReport: Boolean,
         val allowDelete: Boolean,
+        val allowUnmask: Boolean,
         val isMasked: Boolean,
         val maskedContent: String,
         val userThumbnail: String,

@@ -266,6 +266,14 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         return RouteManager.route(context, link)
     }
 
+    override fun onUnmaskCommentOptionSelected(commentId: String) {
+        if(commentId.isNotBlank()) {
+            viewModel.markCommentNotFraud(questionId, commentId)
+            return
+        }
+        viewModel.markQuestionNotFraud(questionId)
+    }
+
     override fun onProductClicked() {
         goToPdp(productId)
     }

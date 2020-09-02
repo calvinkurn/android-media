@@ -18,6 +18,7 @@ object TalkReplyMapper {
                     questionState.allowReport,
                     questionState.allowDelete,
                     questionState.isMasked,
+                    questionState.allowUnmask,
                     maskedContent,
                     userThumbnail,
                     userName,

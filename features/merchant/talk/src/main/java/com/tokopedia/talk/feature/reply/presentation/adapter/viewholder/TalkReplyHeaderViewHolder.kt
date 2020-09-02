@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.TalkReplyHeaderModel
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.OnKebabClickedListener
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.TalkReplyHeaderListener
+import com.tokopedia.talk.feature.reply.presentation.widget.listeners.TalkReplyUnmaskCardListener
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.ThreadListener
 import com.tokopedia.talk_old.R
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -25,7 +26,7 @@ class TalkReplyHeaderViewHolder(view: View,
                                 private val onKebabClickedListener: OnKebabClickedListener,
                                 private val talkReplyHeaderListener: TalkReplyHeaderListener,
                                 private val threadListener: ThreadListener) :
-        AbstractViewHolder<TalkReplyHeaderModel>(view) {
+        AbstractViewHolder<TalkReplyHeaderModel>(view), TalkReplyUnmaskCardListener {
 
     companion object {
         val LAYOUT = R.layout.item_talk_reply_header
@@ -39,11 +40,31 @@ class TalkReplyHeaderViewHolder(view: View,
             showProfilePictureAndNameWithCondition(element.userThumbnail, element.userId.toString())
             showHeaderDateWithCondition(date)
             showUserNameWithCondition(element.userName, element.isMyQuestion)
+            showUnmaskCardWithCondition(element.allowUnmask)
             itemView.apply {
                 replyHeaderDate.text = context.getString(R.string.reply_dot_builder, date)
                 replyHeaderTNC.text = HtmlLinkHelper(context, getString(R.string.reply_header_tnc)).spannedString
                 replyHeaderTNC.setCustomMovementMethod { talkReplyHeaderListener.onTermsAndConditionsClicked() }
             }
+        }
+    }
+
+    override fun onUnmaskQuestionOptionSelected(isMarkNotFraud: Boolean, commentId: String) {
+        if(isMarkNotFraud) {
+            threadListener.onUnmaskCommentOptionSelected(commentId)
+        } else {
+            itemView.replyUnmaskCard.hide()
+        }
+    }
+
+    private fun showUnmaskCardWithCondition(allowUnmask: Boolean) {
+        if(allowUnmask) {
+            itemView.replyUnmaskCard.apply {
+                show()
+                setListener(this@TalkReplyHeaderViewHolder, "")
+            }
+        } else {
+            itemView.replyUnmaskCard.hide()
         }
     }
 

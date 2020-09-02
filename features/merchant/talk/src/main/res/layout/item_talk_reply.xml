@@ -73,6 +73,10 @@
         app:barrierDirection="bottom"
         app:constraint_referenced_ids="replyDisplayName, replySellerLabel, replyDate"
         android:layout_height="wrap_content"/>
+    
+    <com.tokopedia.talk.feature.reply.presentation.widget.TalkReplyUnmaskCard
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/replyMessage"

@@ -12,6 +12,8 @@ import com.tokopedia.talk.feature.reply.data.model.delete.talk.TalkDeleteTalkRes
 import com.tokopedia.talk.feature.reply.data.model.discussion.AttachedProduct
 import com.tokopedia.talk.feature.reply.data.model.discussion.DiscussionDataByQuestionIDResponseWrapper
 import com.tokopedia.talk.feature.reply.data.model.follow.TalkFollowUnfollowTalkResponseWrapper
+import com.tokopedia.talk.feature.reply.data.model.unmask.TalkMarkCommentNotFraudResponseWrapper
+import com.tokopedia.talk.feature.reply.data.model.unmask.TalkMarkNotFraudResponseWrapper
 import com.tokopedia.talk.feature.reply.domain.usecase.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -26,6 +28,8 @@ class TalkReplyViewModel @Inject constructor(
         private val talkDeleteTalkUseCase: TalkDeleteTalkUseCase,
         private val talkDeleteCommentUseCase: TalkDeleteCommentUseCase,
         private val talkCreateNewCommentUseCase: TalkCreateNewCommentUseCase,
+        private val talkMarkNotFraudUseCase: TalkMarkNotFraudUseCase,
+        private val talkMarkCommentNotFraudUseCase: TalkMarkCommentNotFraudUseCase,
         private val userSession: UserSessionInterface,
         private val dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.main) {
@@ -62,6 +66,14 @@ class TalkReplyViewModel @Inject constructor(
     private val _attachedProducts = MutableLiveData<MutableList<AttachedProduct>>()
     val attachedProducts: LiveData<MutableList<AttachedProduct>>
         get() = _attachedProducts
+
+    private val _markCommentNotFraudResult = MutableLiveData<Result<TalkMarkCommentNotFraudResponseWrapper>>()
+    val markCommentNotFraudResult: LiveData<Result<TalkMarkCommentNotFraudResponseWrapper>>
+        get() = _markCommentNotFraudResult
+
+    private val _markNotFraudResult = MutableLiveData<Result<TalkMarkNotFraudResponseWrapper>>()
+    val markNotFraudResult: LiveData<Result<TalkMarkNotFraudResponseWrapper>>
+        get() = _markNotFraudResult
 
     private var isFollowing: Boolean = false
 
@@ -142,6 +154,38 @@ class TalkReplyViewModel @Inject constructor(
             }
         }) {
             _createNewCommentResult.postValue(Fail(it))
+        }
+    }
+
+    fun markCommentNotFraud(questionId: String, commentId: String){
+        launchCatchError(block = {
+            val response = withContext(dispatchers.io) {
+                talkMarkCommentNotFraudUseCase.setParams(questionId.toIntOrZero(), commentId.toIntOrZero())
+                talkMarkCommentNotFraudUseCase.executeOnBackground()
+            }
+            if(response.talkMarkCommentNotFraud.data.isSuccess == MUTATION_SUCCESS) {
+                _markCommentNotFraudResult.postValue(Success(response))
+            } else {
+                _markCommentNotFraudResult.postValue(Fail(Throwable(response.talkMarkCommentNotFraud.messageError.first())))
+            }
+        }) {
+            _markCommentNotFraudResult.postValue(Fail(it))
+        }
+    }
+
+    fun markQuestionNotFraud(questionId: String) {
+        launchCatchError(block = {
+            val response = withContext(dispatchers.io) {
+                talkMarkNotFraudUseCase.setParams(questionId.toIntOrZero())
+                talkMarkNotFraudUseCase.executeOnBackground()
+            }
+            if(response.talkMarkNotFraud.data.isSuccess == MUTATION_SUCCESS) {
+                _markNotFraudResult.postValue(Success(response))
+            } else {
+                _markNotFraudResult.postValue(Fail(Throwable(response.talkMarkNotFraud.messageError.first())))
+            }
+        }) {
+            _markNotFraudResult.postValue(Fail(it))
         }
     }
 

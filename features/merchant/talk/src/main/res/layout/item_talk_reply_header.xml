@@ -98,6 +98,13 @@
         app:typographyWeight="bold"
         tools:text="Ini barangnya anti air gak yah gan?" />
 
+    <com.tokopedia.talk.feature.reply.presentation.widget.TalkReplyUnmaskCard
+        android:id="@+id/replyUnmaskCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/replyHeaderMessage"/>
+
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/replyHeaderFollowButton"
         android:layout_width="wrap_content"
