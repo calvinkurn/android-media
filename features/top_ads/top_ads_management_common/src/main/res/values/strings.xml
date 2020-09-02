@@ -28,6 +28,8 @@
     <string name="format_selected_produk">%d produk dipilih</string>
     <string name="no_promoted_product">Produkmu belum\ndiiklankan</string>
     <string name="recommendated_bid_message">Biaya rata-rata kompetitor Rp %d</string>
+    <string name="recommendated_bid_message_new">Rekomendasi &lt;b>Rp%d&lt;/b></string>
+
     <string name="min_bid_error">Biaya minimum %d rupiah</string>
     <string name="max_bid_error">Biaya maximum %d rupiah</string>
     <string name="topads_common_50_multiply_error">Biaya harus kelipatan Rp %d</string>
@@ -59,6 +61,51 @@
     <string name="topads_common_kata_kunci_neg">Kata Kunci Negatif (%d)</string>
     <string name="topads_dash_group_item_progress_status"> dari Rp %d</string>
 
+
+    <!--keyword -->
+    <string name="topads_common_keyword_info_sheet_title">Info tips kata kunci</string>
+    <string name="topads_common_keyword_info_sheet_desc_1">Pilih kata kunci yang sesuai dengan produkmu. Kata kunci memungkinkan iklanmu tampil sesuai dengan kata yang dicari oleh calon pembeli.</string>
+    <string name="topads_common_keyword_info_sheet_desc_2">Jumlah pencarian yang dilakukan di tokopedia dengan kata kunci tersebut selama 30 hari terakhir</string>
+    <string name="topads_common_keyword_info_sheet_desc_3">Jumlah pengguna kata kunci, kompetisi kata kunci terdiri dari :</string>
+    <string name="topads_common_keyword_info_sheet_tinggi">kata kunci paling banyak digunakan, kompetisi ketat dengan penjual lainnya,  peluang iklanmu berada di halaman depan sangat kecil</string>
+    <string name="topads_common_keyword_info_sheet_Sedang">kata kunci dengan pengguna sedang, kompetisi berjalan rata dan cukup ketat.</string>
+    <string name="topads_common_keyword_info_sheet_Rendah">kata kunci dengan sedikit pengguna, kompetisi rendah iklanmu berpeluang besar berada di halaman awal</string>
+    <string name="topads_common_keyword_competition_high">Tinggi</string>
+    <string name="topads_common_keyword_competition_moderation">Sedang</string>
+    <string name="topads_common_keyword_competition_low">Rendah</string>
+    <string name="topads_common_keyword_pencarian">Pencarian</string>
+    <string name="topads_common_keyword_competition">Kompetisi</string>
+    <string name="topads_common_kata_kunci_dipilih">%d kata kunci dipilih</string>
+    <string name="topads_common_tip_memilih_kata_kunci">Tip memilih kata kunci</string>
+    <string name="topads_common_keyword_empty_title">Belum ada kata kunci dicari</string>
+    <string name="topads_common_keyword_empty_desc">Cari kata kunci yang sesuai dengan produkmu</string>
+    <string name="topads_common_keyword_edit_bid_sheet_title">Celana Panjang</string>
+    <string name="topads_common_keyword_edit_info_sheet_title_1">Pencarian luas</string>
+    <string name="topads_common_keyword_edit_info_sheet_sub_title">Tipe Pencarian</string>
+    <string name="topads_common_keyword_edit_info_sheet_desc_1_foredit">Pencarian dengan kata kunci luas dapat meningkatkan frekuensi produkmu tampil.</string>
+    <string name="topads_common_keyword_edit_info_sheet_desc_2_foredit">Gunakan pencarian dengan kata kunci spesifik untuk beriklan lebih efektif dan produkmu lebih mudah ditemukan pembeli.</string>
+    <string name="topads_common_keyword_edit_info_sheet_desc_1">Kata Kunci tetap muncul meski pembeli menambahkan kata di depan atau di belakang kata kunci yang kamu pasang.</string>
+    <string name="topads_common_keyword_edit_info_sheet_desc_2">Kata Kunci hanya muncul saat pembeli mencari kata kunci yang kamu pasang. digunakan untuk mengapai calon pelanggan tertentu.</string>
+    <string name="topads_common_keyword_edit_info_sheet_title_2">Pencarian Spesifik</string>
+    <string name="topads_common_keyword_edit_bid_sheet_biaya_sheet_title">Biaya kata kunci </string>
+    <string name="topads_common_label_top_ads_keyword">Kata Kunci</string>
+    <string name="topads_common_selanjutnya">Selanjutnya</string>
+    <string name="topads_common_keyword_jenis">Jenis</string>
+    <string name="topads_common_keyword_budget">Biaya</string>
+    <string name="topads_common_non_key_budget">Biaya non kata kunci</string>
+    <string name="topads_common_error_multiple_50">Biaya harus kelipatan %d</string>
+    <string name="topads_common_simpan">Simpan</string>
+    <string name="sesuaikan_kata_kunci_dengan_nama_produk">Sesuaikan kata kunci dengan nama produk</string>
+    <string name="lebih_efektif_dengan_kata_kunci_spesifik">Lebih efektif dengan kata kunci spesifik</string>
+    <string name="gunakan_kata_kunci_umum_dengan_maksimum_2_kata">Gunakan kata kunci umum dengan maksimum 2 kata</string>
+    <string name="pencarian_bulan">Pencarian / bulan</string>
+    <string name="topads_common_keyword_list_step">Pilih Kata Kunci</string>
+    <string name="topads_common_selected_list">Kata Kunci Pilihan</string>
+    <string name="topads_common_recommended_list">Rekomendasi</string>
+    <string name="topads_common_text_ok">Oke</string>
+    <string name="topads_common_create_tool_tip">Info tips kata kunci</string>
+    <string name="topads_common_search_hint">Cari Kata Kunci</string>
+    <string name="topads_common_search_hint_activity">Cari kata kunci di sini</string>
 
 
 </resources>
