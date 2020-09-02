@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -13,17 +12,13 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.MUTATION_MARK_CHAT_AS_READ
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.MUTATION_MARK_CHAT_AS_UNREAD
-import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_ALL
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_TOPBOT
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_UNREAD
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_UNREPLIED
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_MESSAGE_ID
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_MESSAGE_IDS
-import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_PAGE
-import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_TAB
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.QUERY_BLAST_SELLER_METADATA
-import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.QUERY_CHAT_LIST_MESSAGE
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.QUERY_DELETE_CHAT_MESSAGE
 import com.tokopedia.topchat.chatlist.pojo.ChatChangeStateResponse
 import com.tokopedia.topchat.chatlist.pojo.ChatDelete
@@ -32,10 +27,7 @@ import com.tokopedia.topchat.chatlist.pojo.ChatListPojo
 import com.tokopedia.topchat.chatlist.pojo.chatblastseller.BlastSellerMetaDataResponse
 import com.tokopedia.topchat.chatlist.pojo.chatblastseller.ChatBlastSellerMetadata
 import com.tokopedia.topchat.chatlist.pojo.whitelist.ChatWhitelistFeatureResponse
-import com.tokopedia.topchat.chatlist.usecase.ChatBanedSellerUseCase
-import com.tokopedia.topchat.chatlist.usecase.GetChatWhitelistFeature
-import com.tokopedia.topchat.chatlist.usecase.MutationPinChat
-import com.tokopedia.topchat.chatlist.usecase.MutationUnpinChat
+import com.tokopedia.topchat.chatlist.usecase.*
 import com.tokopedia.topchat.chatroom.view.viewmodel.ReplyParcelableModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -64,12 +56,12 @@ interface ChatItemListContract {
 
 class ChatItemListViewModel @Inject constructor(
         private val repository: GraphqlRepository,
-        private val chatListUseCase: GraphqlUseCase<ChatListPojo>,
         private val queries: Map<String, String>,
         private val chatWhitelistFeature: GetChatWhitelistFeature,
         private val chatBannedSellerUseCase: ChatBanedSellerUseCase,
         private val pinChatUseCase: MutationPinChat,
         private val unpinChatUseCase: MutationUnpinChat,
+        private val getChatListUseCase: GetChatListMessageUseCase,
         private val dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher), ChatItemListContract {
 
@@ -98,25 +90,14 @@ class ChatItemListViewModel @Inject constructor(
     }
 
     private fun queryGetChatListMessage(page: Int, filter: String, tab: String) {
-        queries[QUERY_CHAT_LIST_MESSAGE]?.let { query ->
-            val params = mapOf(
-                    PARAM_PAGE to page,
-                    PARAM_FILTER to filter,
-                    PARAM_TAB to tab
-            )
-
-            chatListUseCase.apply {
-                setTypeClass(ChatListPojo::class.java)
-                setRequestParams(params)
-                setGraphqlQuery(query)
-                execute({ result ->
-                    _mutateChatList.value = Success(result)
-                }, { error ->
-                    error.printStackTrace()
-                    _mutateChatList.value = Fail(error)
-                })
-            }
-        }
+        getChatListUseCase.getChatList(page, filter, tab,
+                {
+                    _mutateChatList.value = Success(it)
+                },
+                {
+                    _mutateChatList.value = Fail(it)
+                }
+        )
     }
 
     override fun chatMoveToTrash(messageId: Int) {
