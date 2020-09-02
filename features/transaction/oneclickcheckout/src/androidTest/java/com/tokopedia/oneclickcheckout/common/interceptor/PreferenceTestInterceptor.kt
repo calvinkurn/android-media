@@ -52,6 +52,7 @@ val GET_PREFERENCE_LIST_DEFAULT_RESPONSE = """
                                 {
                                   "profile_id": 1,
                                   "status": 1,
+                                  "enable": true,
                                   "address": {
                                     "address_id": 1,
                                     "receiver_name": "User 1",
@@ -88,6 +89,7 @@ val GET_PREFERENCE_LIST_DEFAULT_RESPONSE = """
                                 {
                                   "profile_id": 2,
                                   "status": 2,
+                                  "enable": true,
                                   "address": {
                                     "address_id": 2,
                                     "receiver_name": "User 1",
@@ -141,6 +143,7 @@ val GET_PREFERENCE_LIST_CHANGED_RESPONSE = """
                                 {
                                   "profile_id": 1,
                                   "status": 2,
+                                  "enable": true,
                                   "address": {
                                     "address_id": 1,
                                     "receiver_name": "User 1",
@@ -177,6 +180,7 @@ val GET_PREFERENCE_LIST_CHANGED_RESPONSE = """
                                 {
                                   "profile_id": 2,
                                   "status": 1,
+                                  "enable": true,
                                   "address": {
                                     "address_id": 2,
                                     "receiver_name": "User 1",

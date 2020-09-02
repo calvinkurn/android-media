@@ -100,7 +100,7 @@ class PreferenceListActivityTrackingTest {
     }
 
     @Test
-    fun testTracking() {
+    fun performPreferenceListTrackingActions() {
         // perform click add button
         onView(withId(R.id.btn_preference_list_action)).perform(click())
 

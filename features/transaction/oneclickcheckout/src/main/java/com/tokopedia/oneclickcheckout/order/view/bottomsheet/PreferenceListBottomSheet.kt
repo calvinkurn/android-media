@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.domain.GetPreferenceListUseCase
+import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.view.model.preference.PreferenceListResponseModel
 import com.tokopedia.oneclickcheckout.common.view.model.preference.ProfilesItemModel
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
@@ -41,11 +42,14 @@ class PreferenceListBottomSheet(
         rvPreferenceList?.gone()
         btnAddPreference?.gone()
         progressBar?.visible()
+        OccIdlingResource.increment()
         getPreferenceListUseCase.execute({ preferenceListResponseModel: PreferenceListResponseModel ->
             updateList(preferenceListResponseModel)
+            OccIdlingResource.decrement()
         }, { throwable: Throwable ->
             Timber.d(throwable)
             handleError(throwable)
+            OccIdlingResource.decrement()
         }, getPreferenceListUseCase.generateRequestParams(paymentProfile))
     }
 

@@ -106,6 +106,34 @@
       "eventAction": "courier - click pilih on tersedia bebas ongkir",
       "sessionIris": "{{.*}}",
       "eventLabel": ""
+    },
+    {
+      "eventCategory": "order summary",
+      "event": "clickCheckoutExpress",
+      "eventAction": "preference - click ganti pilihan on order summary",
+      "sessionIris": "{{.*}}",
+      "eventLabel": ""
+    },
+    {
+      "eventCategory": "order summary",
+      "event": "clickCheckoutExpress",
+      "eventAction": "preference - click gear logo from ganti pilihan",
+      "sessionIris": "{{.*}}",
+      "eventLabel": ""
+    },
+    {
+      "eventCategory": "order summary",
+      "event": "clickCheckoutExpress",
+      "eventAction": "preference - click tambah pilihan from ganti pilihan",
+      "sessionIris": "{{.*}}",
+      "eventLabel": ""
+    },
+    {
+      "eventCategory": "order summary",
+      "event": "clickCheckoutExpress",
+      "eventAction": "preference -  click gunakan pilihan ini from ganti pilihan",
+      "sessionIris": "{{.*}}",
+      "eventLabel": ""
     }
   ],
   "readme": "OCC Order Summary Page Tracking"
