@@ -12,7 +12,6 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -929,7 +928,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     private fun setupBottomSheetSellerMigration(view: View) {
         if (isSellerMigrationEnabled(context)) {
             recyclerViewTopPadding = recyclerView?.paddingTop ?: 0
-            recycler_view?.startNestedScroll(ViewCompat.SCROLL_AXIS_VERTICAL)
             recycler_view?.smoothScrollBy(0, recyclerViewTopPadding * 2)
 
             val viewTarget: LinearLayout = view.findViewById(bottom_sheet_wrapper)
