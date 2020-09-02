@@ -1,7 +1,7 @@
 package com.tokopedia.flight.searchV4.presentation.activity
 
 import android.content.Context
-import com.tokopedia.instrumentation.test.R
+import com.tokopedia.flight.test.R
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawString
 
