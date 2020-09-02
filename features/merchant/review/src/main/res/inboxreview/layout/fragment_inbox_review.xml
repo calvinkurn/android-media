@@ -23,7 +23,6 @@
             android:layout_marginEnd="@dimen/spacing_lvl4"
             android:layout_marginRight="@dimen/spacing_lvl4"
             android:layout_marginTop="@dimen/spacing_lvl4"
-            android:layout_alignParentTop="true"
             app:layout_scrollFlags="scroll|enterAlways"
             app:closeButtonVisibility="visible"
             app:tickerType="information"
@@ -34,6 +33,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl3"
             android:paddingTop="@dimen/spacing_lvl3"
             android:paddingBottom="@dimen/spacing_lvl3"
             app:layout_constraintEnd_toEndOf="parent"
@@ -53,7 +53,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/inboxReviewContent"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <androidx.recyclerview.widget.RecyclerView
