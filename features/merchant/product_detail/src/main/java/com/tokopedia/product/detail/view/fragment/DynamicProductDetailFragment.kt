@@ -422,7 +422,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         observeData()
-        viewModel.parentProductId = productId
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -1290,6 +1289,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             })
             (activity as? ProductDetailActivity)?.stopMonitoringP1()
             (activity as? ProductDetailActivity)?.stopMonitoringPltRenderPage()
+            viewModel.parentProductId = viewModel.getDynamicProductInfoP1?.data?.parentId
         }
     }
 
