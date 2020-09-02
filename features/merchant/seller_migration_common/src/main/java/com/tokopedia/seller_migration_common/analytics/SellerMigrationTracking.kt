@@ -2,6 +2,7 @@ package com.tokopedia.seller_migration_common.analytics
 
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTrackingConstants.EVENT_CATEGORY_MIGRATION_PAGE
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTrackingConstants.EVENT_CLICK_SELLER_MIGRATION
+import com.tokopedia.seller_migration_common.analytics.SellerMigrationTrackingConstants.EVENT_CLICK_SELLER_NOTIFICATION
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTrackingConstants.EVENT_CLICK_SHOP_ACCOUNT
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTrackingConstants.EVENT_CLICK_TOKOPEDIA_SELLER
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTrackingConstants.EVENT_CONTENT_FEED_SHOP_PAGE
@@ -11,6 +12,7 @@ import com.tokopedia.seller_migration_common.analytics.SellerMigrationTrackingCo
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTrackingConstants.TRACKING_USER_ID
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTrackingConstants.VALUE_CUSTOM_DIMENSION_BUSINESS_UNIT_PG
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTrackingConstants.VALUE_CUSTOM_DIMENSION_CURRENT_SITE
+import com.tokopedia.seller_migration_common.analytics.SellerMigrationTrackingConstants.VALUE_SETTINGS
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 
@@ -118,5 +120,17 @@ object SellerMigrationTracking {
                 KEY_CUSTOM_DIMENSION_BUSINESS_UNIT to VALUE_CUSTOM_DIMENSION_BUSINESS_UNIT_PG
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    fun trackClickNotificationSeller(userId: String) {
+        val data = mapOf(
+                TrackAppUtils.EVENT to EVENT_CLICK_SHOP_ACCOUNT,
+                TrackAppUtils.EVENT_CATEGORY to  VALUE_SETTINGS,
+                TrackAppUtils.EVENT_ACTION to EVENT_CLICK_SELLER_NOTIFICATION,
+                TrackAppUtils.EVENT_LABEL to "",
+                KEY_CUSTOM_DIMENSION_CURRENT_SITE to EVENT_TOKOPEDIA_MARKET_PLACE,
+                TRACKING_USER_ID to userId,
+                KEY_CUSTOM_DIMENSION_BUSINESS_UNIT to VALUE_CUSTOM_DIMENSION_BUSINESS_UNIT_PG
+        )
     }
 }

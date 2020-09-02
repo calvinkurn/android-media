@@ -37,9 +37,7 @@ import com.tokopedia.home.account.AccountConstants.Analytics.NOTIFICATION
 import com.tokopedia.home.account.AccountConstants.Analytics.PAYMENT_METHOD
 import com.tokopedia.home.account.AccountConstants.Analytics.PRIVACY_POLICY
 import com.tokopedia.home.account.AccountConstants.Analytics.SAFE_MODE
-import com.tokopedia.home.account.AccountConstants.Analytics.SETTING
 import com.tokopedia.home.account.AccountConstants.Analytics.SHAKE_SHAKE
-import com.tokopedia.home.account.AccountConstants.Analytics.SHOP
 import com.tokopedia.home.account.AccountConstants.Analytics.TERM_CONDITION
 import com.tokopedia.home.account.R
 import com.tokopedia.home.account.analytics.AccountAnalytics
@@ -48,7 +46,6 @@ import com.tokopedia.home.account.constant.SettingConstant.Url.PATH_CHECKOUT_TEM
 import com.tokopedia.home.account.data.util.NotifPreference
 import com.tokopedia.home.account.di.component.DaggerAccountLogoutComponent
 import com.tokopedia.home.account.di.module.SettingsModule
-import com.tokopedia.home.account.presentation.activity.StoreSettingActivity
 import com.tokopedia.home.account.presentation.activity.TkpdPaySettingActivity
 import com.tokopedia.home.account.presentation.adapter.setting.GeneralSettingAdapter
 import com.tokopedia.home.account.presentation.listener.RedDotGimmickView
@@ -152,10 +149,6 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
         val settingItems = ArrayList<SettingItemViewModel>()
         settingItems.add(SettingItemViewModel(SettingConstant.SETTING_ACCOUNT_ID,
                 getString(R.string.title_account_setting), getString(R.string.subtitle_account_setting)))
-        if (userSession.hasShop()) {
-            settingItems.add(SettingItemViewModel(SettingConstant.SETTING_SHOP_ID,
-                    getString(R.string.account_home_title_shop_setting), getString(R.string.account_home_subtitle_shop_setting)))
-        }
 
         val walletModel = try { walletPref.retrieveWallet() } catch (throwable: Throwable) { null }
         val walletName = if (walletModel != null) {
@@ -226,10 +219,6 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
             SettingConstant.SETTING_ACCOUNT_ID -> {
                 accountAnalytics.eventClickSetting(ACCOUNT)
                 RouteManager.route(activity, ApplinkConstInternalGlobal.ACCOUNT_SETTING)
-            }
-            SettingConstant.SETTING_SHOP_ID -> {
-                accountAnalytics.eventClickSetting(String.format("%s %s", SHOP, SETTING))
-                startActivity(StoreSettingActivity.createIntent(activity))
             }
             SettingConstant.SETTING_TKPD_PAY_ID -> {
                 accountAnalytics.eventClickSetting(PAYMENT_METHOD)

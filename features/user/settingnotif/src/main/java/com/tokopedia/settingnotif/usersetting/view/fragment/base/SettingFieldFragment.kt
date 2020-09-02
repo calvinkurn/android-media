@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.network.constant.ErrorNetMessage.MESSAGE_ERROR_SERVER
+import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
 import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.data.pojo.NotificationActivation
 import com.tokopedia.settingnotif.usersetting.data.pojo.ParentSetting
@@ -31,14 +32,14 @@ import com.tokopedia.settingnotif.usersetting.view.adapter.factory.SettingFieldT
 import com.tokopedia.settingnotif.usersetting.view.adapter.factory.SettingFieldTypeFactoryImpl
 import com.tokopedia.settingnotif.usersetting.view.dataview.UserSettingDataView
 import com.tokopedia.settingnotif.usersetting.view.listener.SectionItemListener
+import com.tokopedia.settingnotif.usersetting.view.state.UserSettingErrorState.GetSettingError
+import com.tokopedia.settingnotif.usersetting.view.state.UserSettingErrorState.SetSettingError
 import com.tokopedia.settingnotif.usersetting.view.viewmodel.UserSettingViewModel
 import com.tokopedia.settingnotif.usersetting.widget.NotifSettingBigDividerDecoration
 import com.tokopedia.settingnotif.usersetting.widget.NotifSettingDividerDecoration
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
-import com.tokopedia.settingnotif.usersetting.view.state.UserSettingErrorState.GetSettingError as GetSettingError
-import com.tokopedia.settingnotif.usersetting.view.state.UserSettingErrorState.SetSettingError as SetSettingError
 
 abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
         BaseAdapterTypeFactory>(),
@@ -154,6 +155,7 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
     }
 
     override fun onItemClicked() {
+        SellerMigrationTracking.trackClickNotificationSeller(userSession.userId.orEmpty())
         activity?.let {
             (it as ParentActivity).openSellerFiled()
         }

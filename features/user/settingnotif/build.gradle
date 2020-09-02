@@ -34,6 +34,8 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.url
 
+    implementation project(rootProject.ext.features.sellerMigrationCommon)
+
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.loaderviewlibrary

@@ -35,6 +35,8 @@ object SellerMigrationTrackingConstants {
     const val EVENT_CONTENT_FEED_SHOP_PAGE = "content feed - shop page"
     const val EVENT_CLICK_TOKOPEDIA_SELLER = "click tokopedia seller"
     const val EVENT_TOKOPEDIA_MARKET_PLACE = "tokopediamartketplace"
+    const val EVENT_CLICK_SELLER_NOTIFICATION = "click seller notifications"
+    const val VALUE_SETTINGS = "settings"
 
     val USER_REDIRECTION_EVENT_NAME = mapOf(
             SellerMigrationFeatureName.FEATURE_TEMPLATE_CHAT to "clickInboxChat",
