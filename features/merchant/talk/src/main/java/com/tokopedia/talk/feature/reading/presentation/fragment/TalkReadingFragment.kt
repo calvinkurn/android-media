@@ -521,6 +521,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
                 .buildUpon()
                 .appendQueryParameter(TalkConstants.PARAM_PRODUCT_ID, productId)
                 .appendQueryParameter(TalkConstants.PARAM_APPLINK_IS_VARIANT_SELECTED, isVariantSelected.toString())
+                .appendQueryParameter(TalkConstants.PARAM_APPLINK_AVAILABLE_VARIANT, availableVariants)
                 .build().toString())
         startActivity(intent)
     }
