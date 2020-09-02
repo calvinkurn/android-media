@@ -100,7 +100,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         hideTooltipIfExist()
         setupView()
 
-        mViewModel.setDateRange(defaultStartDate, defaultEndDate, DateFilterType.DATE_TYPE_WEEK)
+        mViewModel.setDateFilter(defaultStartDate, defaultEndDate, DateFilterType.DATE_TYPE_DAY)
 
         observeWidgetLayoutLiveData()
         observeUserRole()
@@ -396,7 +396,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         StatisticTracker.sendSetDateFilterEvent(item.label)
         val startDate = item.startDate ?: return
         val endDate = item.endDate ?: return
-        mViewModel.setDateRange(startDate, endDate, item.getDateFilterType())
+        mViewModel.setDateFilter(startDate, endDate, item.getDateFilterType())
         adapter.data.forEach {
             if (it !is TickerWidgetUiModel) {
                 it.isLoaded = false
@@ -629,9 +629,13 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         }
     }
 
-    private inline fun <D : BaseDataUiModel, reified W : BaseWidgetUiModel<D>> List<D>.setOnSuccessWidgetState() {
+    private inline fun <D : BaseDataUiModel, reified W : BaseWidgetUiModel<D>> List<D>.setOnSuccessWidgetState(widgetType: String) {
         forEach { widgetData ->
-            adapter.data.find { it.dataKey == widgetData.dataKey }?.let { widget ->
+            adapter.data.find {
+                val isSameDataKey = it.dataKey == widgetData.dataKey
+                val isSameWidgetType = it.widgetType == widgetType
+                return@find isSameDataKey && isSameWidgetType
+            }?.let { widget ->
                 if (widget is W) {
                     widget.data = widgetData
                     notifyWidgetChanged(widget)
@@ -676,7 +680,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private inline fun <reified D : BaseDataUiModel> observeWidgetData(liveData: LiveData<Result<List<D>>>, type: String) {
         liveData.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
-                is Success -> result.data.setOnSuccessWidgetState()
+                is Success -> result.data.setOnSuccessWidgetState(type)
                 is Fail -> result.throwable.setOnErrorWidgetState<D, BaseWidgetUiModel<D>>(type)
             }
         })

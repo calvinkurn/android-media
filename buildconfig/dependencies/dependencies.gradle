@@ -37,7 +37,7 @@ ext {
     multiDexVersion = '2.0.0'
     twitter4JVersion = '4.0.7'
     constraintLayoutVersion = '2.0.0-beta3'
-    materialVersion = '1.1.0'
+    materialVersion = '1.0.0'
 
     exoPlayerVersion = '2.10.8'
     stfalconVersion = '1.0.0'

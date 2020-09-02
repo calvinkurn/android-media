@@ -30,11 +30,10 @@ class InboxReviewFeedbackViewHolder(view: View,
         const val FEEDBACK_MAX_CHAR = 150
     }
 
-    private val reviewInboxFeedbackImageAdapter by lazy {
-        InboxReviewFeedbackImageAdapter(feedbackInboxReviewListener)
-    }
+    private var reviewInboxFeedbackImageAdapter: InboxReviewFeedbackImageAdapter? = null
 
     override fun bind(element: FeedbackInboxUiModel) {
+        reviewInboxFeedbackImageAdapter = InboxReviewFeedbackImageAdapter(feedbackInboxReviewListener)
         with(itemView) {
             if(adapterPosition == 0) {
                 feedbackInboxReviewListener.onBackgroundMarginIsReplied(element.replyText.isBlank())
@@ -73,12 +72,13 @@ class InboxReviewFeedbackViewHolder(view: View,
 
     private fun setupFeedbackReview(feedbackText: String, feedbackId: String, productID: String) {
         with(itemView) {
+            replyFeedbackState?.background = ContextCompat.getDrawable(context, R.drawable.rectangle_8)
             if (feedbackText.isEmpty()) {
                 tvFeedbackReview?.text = getString(R.string.review_not_found)
-                tvFeedbackReview?.setTextColor(ContextCompat.getColor(itemView.context, R.color.clr_review_not_found))
+                tvFeedbackReview?.setTextColor(ContextCompat.getColor(context, R.color.light_N700_44))
             } else {
                 tvFeedbackReview?.apply {
-                    setTextColor(ContextCompat.getColor(itemView.context, R.color.clr_f531353b))
+                    setTextColor(ContextCompat.getColor(context, R.color.light_N700_96))
                     text = feedbackText.toReviewDescriptionFormatted(ProductFeedbackDetailViewHolder.FEEDBACK_MAX_CHAR)
                     setOnClickListener {
                         feedbackInboxReviewListener.onInFullReviewClicked(
@@ -132,11 +132,11 @@ class InboxReviewFeedbackViewHolder(view: View,
             if (element.attachments.isEmpty()) {
                 rvItemAttachmentFeedback?.hide()
             } else {
-                reviewInboxFeedbackImageAdapter.setAttachmentUiData(element.attachments)
-                reviewInboxFeedbackImageAdapter.setFeedbackId(element.feedbackId.toString())
-                reviewInboxFeedbackImageAdapter.setTitleProduct(element.productName)
-                reviewInboxFeedbackImageAdapter.setProductId(element.productID.toString())
-                reviewInboxFeedbackImageAdapter.submitList(element.attachments)
+                reviewInboxFeedbackImageAdapter?.setAttachmentUiData(element.attachments)
+                reviewInboxFeedbackImageAdapter?.setFeedbackId(element.feedbackId.toString())
+                reviewInboxFeedbackImageAdapter?.setTitleProduct(element.productName)
+                reviewInboxFeedbackImageAdapter?.setProductId(element.productID.toString())
+                reviewInboxFeedbackImageAdapter?.submitList(element.attachments)
                 rvItemAttachmentFeedback?.show()
             }
         }

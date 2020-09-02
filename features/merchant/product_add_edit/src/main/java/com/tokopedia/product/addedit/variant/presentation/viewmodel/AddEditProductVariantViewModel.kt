@@ -8,7 +8,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.removeFirst
-import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.HTTP_PREFIX
 import com.tokopedia.product.addedit.common.constant.ProductStatus.STATUS_ACTIVE_STRING
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.variant.data.model.GetCategoryVariantCombinationResponse
@@ -213,7 +212,7 @@ class AddEditProductVariantViewModel @Inject constructor(
 
     fun updateSizechart(url: String) {
         val newSizechart = PictureVariantInputModel()
-        newSizechart.filePath = url
+        newSizechart.urlOriginal = url
         mVariantSizechart.value = newSizechart
     }
 
@@ -257,10 +256,15 @@ class AddEditProductVariantViewModel @Inject constructor(
         }
     }
 
-    fun updateSizechartFieldVisibility(variantDetail: VariantDetail, isVisible: Boolean) {
-        if (variantDetail.identifier == VARIANT_IDENTIFIER_HAS_SIZECHART) {
-            mIsVariantSizechartVisible.value = isVisible
+    fun updateSizechartFieldVisibility() {
+        val isSizeUnit = this.selectedVariantDetails.any {
+            it.identifier == VARIANT_IDENTIFIER_HAS_SIZECHART
         }
+        val isVariantValueNotEmpty = selectedVariantUnitValuesMap.any {
+            it.value.isNotEmpty()
+        }
+
+        mIsVariantSizechartVisible.value = isSizeUnit && isVariantValueNotEmpty
     }
 
     fun clearProductVariant() {
@@ -469,11 +473,7 @@ class AddEditProductVariantViewModel @Inject constructor(
             )
         } else {
             // condition if updating existing product variant
-            val filePath = variantPicture.firstOrNull()?.filePath.orEmpty()
-            if (!filePath.startsWith(HTTP_PREFIX)) {
-                // condition if updating picture (the url is changed to path)
-                productVariant.pictures = variantPicture
-            }
+            productVariant.pictures = variantPicture
             productVariant
         }
     }
@@ -481,7 +481,7 @@ class AddEditProductVariantViewModel @Inject constructor(
     private fun mapVariantPhoto(variantPhoto: VariantPhoto?): List<PictureVariantInputModel> {
         return if (variantPhoto != null && variantPhoto.imageUrlOrPath.isNotEmpty()) {
             val result = PictureVariantInputModel(
-                    filePath = variantPhoto.imageUrlOrPath,
+                    filePath = variantPhoto.filePath,
                     urlOriginal = variantPhoto.imageUrlOrPath,
                     picID = variantPhoto.picID,
                     description = variantPhoto.description,
@@ -564,6 +564,7 @@ class AddEditProductVariantViewModel @Inject constructor(
             val photoPicID = picture?.picID.orEmpty()
             val photoDescription = picture?.description.orEmpty()
             val photoFileName = picture?.fileName.orEmpty()
+            val photoFilePath = picture?.filePath.orEmpty()
             val photoWidth = picture?.width.orZero()
             val photoHeight = picture?.height.orZero()
             val photoIsFromIG = picture?.isFromIG.orEmpty()
@@ -575,6 +576,7 @@ class AddEditProductVariantViewModel @Inject constructor(
                     photoPicID,
                     photoDescription,
                     photoFileName,
+                    photoFilePath,
                     photoWidth,
                     photoHeight,
                     photoIsFromIG,
