@@ -5,16 +5,13 @@ import com.tokopedia.sellerorder.SomTestDispatcherProvider
 import com.tokopedia.sellerorder.common.domain.usecase.SomGetUserRoleUseCase
 import com.tokopedia.sellerorder.common.presenter.model.SomGetUserRoleUiModel
 import com.tokopedia.sellerorder.list.data.model.*
-import com.tokopedia.sellerorder.list.domain.list.SomGetFilterListUseCase
-import com.tokopedia.sellerorder.list.domain.list.SomGetOrderListUseCase
-import com.tokopedia.sellerorder.list.domain.list.SomGetOrderStatusListUseCase
-import com.tokopedia.sellerorder.list.domain.list.SomGetTickerListUseCase
+import com.tokopedia.sellerorder.list.domain.list.*
 import com.tokopedia.sellerorder.list.presentation.viewmodel.SomListViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.MockKAnnotations
-import io.mockk.coEvery
+import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
+import kotlinx.coroutines.Job
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -53,11 +50,15 @@ class SomListViewModelTest {
     @RelaxedMockK
     lateinit var somGetUserRoleUseCase: SomGetUserRoleUseCase
 
+    @RelaxedMockK
+    lateinit var topAdsGetShopInfoUseCase: SomTopAdsGetShopInfoUseCase
+
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
         somListViewModel = SomListViewModel(dispatcher, somGetTickerListUseCase,
-                somGetOrderStatusListUseCase, somGetFilterListUseCase, somGetOrderListUseCase, somGetUserRoleUseCase)
+                somGetOrderStatusListUseCase, somGetFilterListUseCase, somGetOrderListUseCase,
+                somGetUserRoleUseCase, topAdsGetShopInfoUseCase)
 
         val ticker1 = SomListTicker.Data.OrderTickers.Tickers(123)
         val ticker2 = SomListTicker.Data.OrderTickers.Tickers(456)
@@ -286,5 +287,51 @@ class SomListViewModelTest {
 
         //then
         assert(somListViewModel.userRoleResult.value is Fail)
+    }
+
+    @Test
+    fun loadTopAdsShopInfo_shouldReturnSuccess() {
+        coEvery {
+            topAdsGetShopInfoUseCase.execute(any())
+        } returns Success(SomTopAdsGetShopInfoResponse.Data.TopAdsGetShopInfo.SomTopAdsShopInfo())
+
+        coVerify {
+            topAdsGetShopInfoUseCase.execute(any())
+        }
+
+        assert(SomListViewModel::class.java.getDeclaredField("topAdsGetShopInfo").get(somListViewModel) != null)
+        assert(SomListViewModel::class.java.getDeclaredField("topAdsGetShopInfo").get(somListViewModel) is Success<*>)
+    }
+
+    @Test
+    fun loadTopAdsShopInfo_shouldNeverSendRequestWhenAnotherLoadTopAdsShopInfoRequestIsOnProgress() {
+        val getUserRolesJob = mockk<Job>()
+        SomListViewModel::class.java.getDeclaredField("getUserRolesJob").set(somListViewModel, getUserRolesJob)
+
+        coEvery {
+            topAdsGetShopInfoUseCase.execute(any())
+        } returns Success(SomTopAdsGetShopInfoResponse.Data.TopAdsGetShopInfo.SomTopAdsShopInfo())
+
+        every {
+            getUserRolesJob.isCompleted
+        } returns false
+
+        coVerify(inverse = true) {
+            topAdsGetShopInfoUseCase.execute(any())
+        }
+    }
+
+    @Test
+    fun loadTopAdsShopInfo_shouldReturnFail() {
+        coEvery {
+            topAdsGetShopInfoUseCase.execute(any())
+        } returns Fail(Throwable())
+
+        coVerify {
+            topAdsGetShopInfoUseCase.execute(any())
+        }
+
+        assert(SomListViewModel::class.java.getDeclaredField("topAdsGetShopInfo").get(somListViewModel) != null)
+        assert(SomListViewModel::class.java.getDeclaredField("topAdsGetShopInfo").get(somListViewModel) is Fail)
     }
 }
