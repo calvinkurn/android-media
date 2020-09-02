@@ -29,7 +29,7 @@ class TalkReplyAdapter(talkReplyAdapterTypeFactory: TalkReplyAdapterTypeFactory)
         visitables.forEachIndexed { index, visitable ->
             if (visitable is TalkReplyHeaderModel) {
                 with(visitable) {
-                    visitables[index] = TalkReplyHeaderModel(date, question, isFollowing, allowFollow, allowReport, allowDelete, isMasked, maskedContent, userThumbnail , userName, userId, isMyQuestion)
+                    visitables[index] = TalkReplyHeaderModel(date, question, isFollowing, allowFollow, allowReport, allowDelete, allowUnmask, isMasked, maskedContent, userThumbnail , userName, userId, isMyQuestion)
                     notifyItemChanged(index)
                     return
                 }
