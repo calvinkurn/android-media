@@ -356,7 +356,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 }
                 LiveDataResult.STATUS.ERROR -> {
                     hideLoader()
-                    renderGiftBoxError(defaultErrorMessage, getString(R.string.gami_oke), it.error?.message)
+                    renderGiftBoxError(defaultErrorMessage, getString(R.string.gami_oke), "GamiTapEggHome - ${it.error?.message}")
                 }
             }
         })
@@ -400,7 +400,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                                     return@Observer
                                 }
                                 else -> {
-                                    val cause = "Unsupported result status code $resultCode"
+                                    val cause = "${GiftBoxErrorCause.GAMI_TAP_CRACK_RESULT_RESULT_STATUS_CODE} = $resultCode"
                                     getTapTapView().isGiftTapAble = true
                                     val status = responseCrackResultEntity?.crackResultEntity?.resultStatus
                                     val messageList = status?.message
@@ -428,7 +428,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                         showRewardSummary()
                     } else {
                         getTapTapView().isGiftTapAble = true
-                        renderGiftBoxOpenError(defaultErrorMessage, getString(R.string.gami_oke), it.error?.message)
+                        renderGiftBoxOpenError(defaultErrorMessage, getString(R.string.gami_oke),"GIFT TAP - Crack Result - ${it.error?.message}" )
                     }
                 }
             }
@@ -721,11 +721,8 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
             val internetAvailable = isConnectedToInternet()
             if (!internetAvailable) {
                 showNoInterNetDialog(::handleGiftBoxTap, context!!)
-                GtmGiftTapTap.viewNoInternetError(userSession?.userId)
             } else {
-                showRedError(fmParent, message, actionText, ::handleGiftBoxTap)
-                val formattedCause = if (cause.isNullOrEmpty()) cause!! else "Unknown Error"
-                GtmGiftTapTap.viewToastError(userSession?.userId, formattedCause)
+                showRedError(fmParent, message, actionText,cause, ::handleGiftBoxTap)
             }
         }
     }
@@ -735,11 +732,8 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
             val internetAvailable = isConnectedToInternet()
             if (!internetAvailable) {
                 showNoInterNetDialog(viewModel::getGiftBoxHome, context!!)
-                GtmGiftTapTap.viewNoInternetError(userSession?.userId)
             } else {
-                showRedError(fmParent, message, actionText, viewModel::getGiftBoxHome)
-                val formattedCause = if (cause.isNullOrEmpty()) cause!! else "Unknown Error"
-                GtmGiftTapTap.viewToastError(userSession?.userId, formattedCause)
+                showRedError(fmParent, message, actionText, cause, viewModel::getGiftBoxHome)
             }
         }
     }
