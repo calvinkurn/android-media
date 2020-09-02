@@ -368,8 +368,6 @@ class ProductTabFragment : BaseDaggerFragment() {
                             totalProductCount -= getAdIds().size
                             viewModel.setProductAction(::onSuccessAction, actionActivate, getAdIds(), resources, selectedFilter)
                             if (totalProductCount == 0) {
-                                viewModel.setGroupAction(ACTION_DELETE, listOf(arguments?.getInt(TopAdsDashboardConstant.GROUP_ID).toString()),
-                                        resources)
                                 activity?.finish()
                             }
                         }
@@ -382,7 +380,6 @@ class ProductTabFragment : BaseDaggerFragment() {
                 totalProductCount -= getAdIds().size
                 viewModel.setProductAction(::onSuccessAction, actionActivate, getAdIds(), resources, selectedFilter)
                 if (totalProductCount == 0) {
-                    viewModel.setGroupAction(ACTION_DELETE, listOf(arguments?.getInt(TopAdsDashboardConstant.GROUP_ID).toString()), resources)
                     activity?.finish()
                 }
             }
