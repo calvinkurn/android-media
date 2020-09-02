@@ -1,4 +1,4 @@
-package com.tokopedia.sellerhome.settings.domain.usecase
+package com.tokopedia.seller.menu.common.domain.usecase
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.seller.menu.common.domain.entity.OthersBalance

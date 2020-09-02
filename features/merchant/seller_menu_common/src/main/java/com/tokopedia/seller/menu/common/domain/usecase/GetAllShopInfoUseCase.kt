@@ -1,8 +1,7 @@
-package com.tokopedia.sellerhome.settings.domain.usecase
+package com.tokopedia.seller.menu.common.domain.usecase
 
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
-import com.tokopedia.sellerhome.settings.view.fragment.OtherMenuFragment
+import com.tokopedia.seller.menu.common.errorhandler.SellerMenuErrorHandler
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingFail
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingResponse
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType
@@ -65,7 +64,7 @@ class GetAllShopInfoUseCase @Inject constructor(
     }
 
     private fun getPartialFailResponse(exception: Exception): PartialSettingFail {
-        SellerHomeErrorHandler.logExceptionToCrashlytics(exception, OtherMenuFragment.ERROR_GET_SETTING_SHOP_INFO)
+        SellerMenuErrorHandler.logExceptionToCrashlytics(exception, SellerMenuErrorHandler.ERROR_GET_SETTING_SHOP_INFO)
         return PartialSettingFail
     }
 

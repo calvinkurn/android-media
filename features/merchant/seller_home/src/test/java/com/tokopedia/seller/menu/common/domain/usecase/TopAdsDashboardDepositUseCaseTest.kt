@@ -1,9 +1,8 @@
-package com.tokopedia.sellerhome.settings.domain.usecase
+package com.tokopedia.seller.menu.common.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.sellerhome.settings.domain.entity.ShopStatusResponse
-import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
+import com.tokopedia.seller.menu.common.domain.entity.TopAdsDepositDataModel
 import com.tokopedia.sellerhome.utils.TestHelper
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -20,10 +19,10 @@ import org.junit.rules.ExpectedException
 import org.mockito.Matchers.anyInt
 
 @ExperimentalCoroutinesApi
-class ShopStatusTypeUseCaseTest {
+class TopAdsDashboardDepositUseCaseTest {
 
     companion object {
-        private const val SUCCESS_RESPONSE = "json/shop_status_type_success_response"
+        private const val SUCCESS_RESPONSE = "json/top_ads_dashboard_deposit_success_response"
     }
 
     @RelaxedMockK
@@ -38,45 +37,47 @@ class ShopStatusTypeUseCaseTest {
     }
 
     private val useCase by lazy {
-        ShopStatusTypeUseCase(gqlRepository)
+        TopAdsDashboardDepositUseCase(gqlRepository)
     }
 
     @Test
-    fun `Success get shop status type`() = runBlocking {
+    fun `Success get top ads dashboard deposit`() = runBlocking {
 
-        val successResponse = TestHelper.createSuccessResponse<ShopStatusResponse>(SUCCESS_RESPONSE)
-        val successShopType = ShopType.OfficialStore
+        val successResponse = TestHelper.createSuccessResponse<TopAdsDepositDataModel>(SUCCESS_RESPONSE)
+        val successTopAdsDashboardDeposit = 0f
 
         coEvery {
             gqlRepository.getReseponse(any(), any())
         } returns successResponse
 
-        useCase.params = ShopStatusTypeUseCase.createRequestParams(anyInt())
-        val shopType = useCase.executeOnBackground()
+        useCase.params = TopAdsDashboardDepositUseCase.createRequestParams(anyInt())
+        val topAdsDashboardDeposit = useCase.executeOnBackground()
 
         coVerify {
             gqlRepository.getReseponse(any(), any())
         }
 
-        assertEquals(shopType, successShopType)
+        assertEquals(topAdsDashboardDeposit, successTopAdsDashboardDeposit)
     }
 
     @Test
-    fun `Failed get shop status type`() = runBlocking {
+    fun `Failed get top ads dashboard deposit`() = runBlocking {
 
-        val errorResponse = TestHelper.createErrorResponse<ShopStatusResponse>()
+        val errorResponse = TestHelper.createErrorResponse<TopAdsDepositDataModel>()
+
         coEvery {
             gqlRepository.getReseponse(any(), any())
         } returns errorResponse
 
         expectedException.expect(MessageErrorException::class.java)
-        useCase.params = ShopStatusTypeUseCase.createRequestParams(anyInt())
-        val shopType = useCase.executeOnBackground()
+        useCase.params = TopAdsDashboardDepositUseCase.createRequestParams(anyInt())
+        val topAdsDashboardDeposit = useCase.executeOnBackground()
 
         coVerify {
             gqlRepository.getReseponse(any(), any())
         }
 
-        assertNull(shopType)
+        assertNull(topAdsDashboardDeposit)
     }
+
 }

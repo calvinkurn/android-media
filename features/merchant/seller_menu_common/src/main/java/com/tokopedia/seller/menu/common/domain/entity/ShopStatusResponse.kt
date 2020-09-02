@@ -1,4 +1,4 @@
-package com.tokopedia.sellerhome.settings.domain.entity
+package com.tokopedia.seller.menu.common.domain.entity
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantStatus

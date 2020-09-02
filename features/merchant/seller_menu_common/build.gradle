@@ -35,6 +35,10 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+
+    implementation (rootProject.ext.serviceDependencies.crashlytics) {
+        transitive = true
+    }
 }
 
 project.ext {

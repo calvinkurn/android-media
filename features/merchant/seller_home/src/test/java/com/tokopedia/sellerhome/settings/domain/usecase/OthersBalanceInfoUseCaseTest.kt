@@ -4,6 +4,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.seller.menu.common.domain.entity.OtherBalanceResponse
 import com.tokopedia.seller.menu.common.domain.entity.OthersBalance
+import com.tokopedia.seller.menu.common.domain.usecase.BalanceInfoUseCase
 import com.tokopedia.sellerhome.utils.TestHelper
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery

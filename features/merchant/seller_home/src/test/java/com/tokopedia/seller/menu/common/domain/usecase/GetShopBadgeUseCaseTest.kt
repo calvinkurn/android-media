@@ -1,8 +1,8 @@
-package com.tokopedia.sellerhome.settings.domain.usecase
+package com.tokopedia.seller.menu.common.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.sellerhome.settings.domain.entity.TopAdsAutoTopupDataModel
+import com.tokopedia.seller.menu.common.domain.entity.ReputationShopsResult
 import com.tokopedia.sellerhome.utils.TestHelper
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -16,13 +16,13 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.ExpectedException
-import org.mockito.Matchers.anyString
+import org.mockito.Matchers.anyInt
 
 @ExperimentalCoroutinesApi
-class TopAdsAutoTopupUseCaseTest {
+class GetShopBadgeUseCaseTest {
 
     companion object {
-        private const val SUCCESS_RESPONSE = "json/top_ads_auto_topup_success_response"
+        private const val SUCCESS_RESPONSE = "json/get_shop_badge_success_response"
     }
 
     @RelaxedMockK
@@ -37,46 +37,47 @@ class TopAdsAutoTopupUseCaseTest {
     }
 
     private val useCase by lazy {
-        TopAdsAutoTopupUseCase(gqlRepository)
+        GetShopBadgeUseCase(gqlRepository)
     }
 
     @Test
-    fun `Success get top ads auto topup`() = runBlocking {
+    fun `Success get shop badge`() = runBlocking {
 
-        val successResponse = TestHelper.createSuccessResponse<TopAdsAutoTopupDataModel>(SUCCESS_RESPONSE)
-        val successIsTopAdsAutoTopup = false
+        val successResponse = TestHelper.createSuccessResponse<ReputationShopsResult>(SUCCESS_RESPONSE)
+        val successShopBadge = "https://success.shop.name/avatar.png"
 
         coEvery {
             gqlRepository.getReseponse(any(), any())
         } returns successResponse
 
-        useCase.params = TopAdsAutoTopupUseCase.createRequestParams(anyString())
-        val isTopAdsAutoTopup = useCase.executeOnBackground()
+        useCase.params = GetShopBadgeUseCase.createRequestParams(anyInt())
+        val shopBadge = useCase.executeOnBackground()
 
         coVerify {
             gqlRepository.getReseponse(any(), any())
         }
 
-        assertEquals(isTopAdsAutoTopup, successIsTopAdsAutoTopup)
+        assertEquals(shopBadge, successShopBadge)
     }
 
     @Test
-    fun `Failed get top ads auto topup`() = runBlocking {
+    fun `Failed get shop badge`() = runBlocking {
 
-        val errorResponse = TestHelper.createErrorResponse<TopAdsAutoTopupDataModel>()
+        val errorResponse = TestHelper.createErrorResponse<ReputationShopsResult>()
 
         coEvery {
             gqlRepository.getReseponse(any(), any())
         } returns errorResponse
 
         expectedException.expect(MessageErrorException::class.java)
-        useCase.params = TopAdsAutoTopupUseCase.createRequestParams(anyString())
-        val isTopAdsAutoTopup = useCase.executeOnBackground()
+        useCase.params = GetShopBadgeUseCase.createRequestParams(anyInt())
+        val shopBadge = useCase.executeOnBackground()
 
         coVerify {
             gqlRepository.getReseponse(any(), any())
         }
 
-        assertNull(isTopAdsAutoTopup)
+        assertNull(shopBadge)
+
     }
 }

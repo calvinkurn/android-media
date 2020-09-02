@@ -1,8 +1,8 @@
-package com.tokopedia.sellerhome.settings.domain.usecase
+package com.tokopedia.seller.menu.common.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.sellerhome.settings.domain.entity.ShopTotalFollowers
+import com.tokopedia.seller.menu.common.domain.entity.ShopTotalFollowers
 import com.tokopedia.sellerhome.utils.TestHelper
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery

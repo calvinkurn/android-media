@@ -1,10 +1,10 @@
-package com.tokopedia.sellerhome.settings.domain.usecase
+package com.tokopedia.seller.menu.common.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
-import com.tokopedia.sellerhome.settings.domain.entity.TopAdsAutoTopupDataModel
+import com.tokopedia.seller.menu.common.domain.entity.TopAdsAutoTopupDataModel
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
