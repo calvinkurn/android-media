@@ -9,7 +9,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase;
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo;
-import com.tokopedia.tkpd.R;
+import com.tokopedia.intl.R;
 
 import dagger.Module;
 import dagger.Provides;

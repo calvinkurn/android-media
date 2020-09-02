@@ -18,14 +18,14 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
-import androidx.annotation.NonNull;
-import androidx.annotation.StringDef;
-import androidx.exifinterface.media.ExifInterface;
 import android.text.TextUtils;
 import android.webkit.MimeTypeMap;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.StringDef;
+import androidx.exifinterface.media.ExifInterface;
+
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -65,8 +65,6 @@ public class ImageUtils {
         String DIRECTORY_TOKOPEDIA_CACHE_CAMERA = FileUtils.TOKOPEDIA_DIRECTORY + TOKOPEDIA_FOLDER_PREFIX + " Camera/";
         String DIRECTORY_TOKOPEDIA_EDIT_RESULT = FileUtils.TOKOPEDIA_DIRECTORY + TOKOPEDIA_FOLDER_PREFIX + " Edit/";
     }
-
-
 
 
     public static File getTokopediaPhotoPath(@DirectoryDef String directoryDef, boolean isPng) {
@@ -281,6 +279,22 @@ public class ImageUtils {
 
     public static int[] getWidthAndHeight(String filePath) {
         return getWidthAndHeight(new File(filePath));
+    }
+
+    public static int[] getWidthAndHeight(Context context, Uri uri){
+        try {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            InputStream input = context.getContentResolver().openInputStream(uri);
+            BitmapFactory.decodeStream(input, null, options);
+            if (input != null) {
+                input.close();
+            }
+            return new int[]{options.outWidth, options.outHeight};
+        }
+        catch (Exception ignored){
+            return new int[]{0,0};
+        }
     }
 
     public static int[] getWidthAndHeight(File file) {

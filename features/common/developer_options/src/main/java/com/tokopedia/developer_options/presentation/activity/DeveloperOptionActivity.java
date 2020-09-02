@@ -32,6 +32,7 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.chuckerteam.chucker.api.Chucker;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.analyticsdebugger.debugger.ApplinkLogger;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
@@ -88,6 +89,9 @@ public class DeveloperOptionActivity extends BaseActivity {
 
     private View sendTimberButton;
     private EditText editTextTimberMessage;
+
+    private View sendFirebaseCrash;
+    private EditText editTextFirebaseCrash;
 
     private View routeManagerButton;
     private EditText editTextRouteManager;
@@ -229,6 +233,9 @@ public class DeveloperOptionActivity extends BaseActivity {
         editTextTimberMessage = findViewById(R.id.et_timber_send);
         sendTimberButton = findViewById(R.id.btn_send_timber);
 
+        editTextFirebaseCrash = findViewById(R.id.et_firebase_crash);
+        sendFirebaseCrash = findViewById(R.id.btn_send_firebase_crash);
+
         editTextRouteManager = findViewById(R.id.et_route_manager);
         routeManagerButton = findViewById(R.id.btn_route_manager);
 
@@ -304,6 +311,19 @@ public class DeveloperOptionActivity extends BaseActivity {
                     Timber.w(timberMessage);
                     Toast.makeText(DeveloperOptionActivity.this,
                             timberMessage + " has been sent" , Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        sendFirebaseCrash.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String crashMessage = editTextFirebaseCrash.getText().toString();
+                if (TextUtils.isEmpty(crashMessage)) {
+                    Toast.makeText(DeveloperOptionActivity.this,
+                            "Crash message should not be empty", Toast.LENGTH_SHORT).show();
+                } else {
+                    FirebaseCrashlytics.getInstance().recordException(new DeveloperOptionException(crashMessage));
                 }
             }
         });
@@ -558,5 +578,11 @@ public class DeveloperOptionActivity extends BaseActivity {
 
     private void initTranslator() {
         new com.tokopedia.translator.manager.TranslatorManager().init(this.getApplication(), API_KEY_TRANSLATOR);
+    }
+
+    private class DeveloperOptionException extends RuntimeException{
+        public DeveloperOptionException(String message) {
+            super(message);
+        }
     }
 }

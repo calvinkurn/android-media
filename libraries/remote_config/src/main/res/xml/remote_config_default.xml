@@ -490,4 +490,8 @@
         <key>android_gql_connection_warm_up</key>
         <value>false</value>
     </entry>
+    <entry>
+        <key>android_add_brotli_interceptor</key>
+        <value>false</value>
+    </entry>
 </defaultsMap>

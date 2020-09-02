@@ -101,10 +101,9 @@ dependencies {
     implementation rootProject.ext.miscDependencies.liveData
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
-    implementation (rootProject.ext.serviceDependencies.crashlytics) {
+    implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true
     }
-
     implementation rootProject.ext.dbDependencies.sqliteFramework
 }
 

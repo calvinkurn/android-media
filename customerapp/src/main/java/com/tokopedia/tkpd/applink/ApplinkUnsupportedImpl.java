@@ -16,7 +16,7 @@ import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.tkpd.R;
+import com.tokopedia.intl.R;
 
 /**
  * @author  by alvarisi on 11/13/17.

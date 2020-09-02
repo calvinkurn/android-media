@@ -11,7 +11,7 @@ import android.widget.ImageView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.tkpd.R;
+import com.tokopedia.intl.R;
 import com.tokopedia.tkpd.home.analytics.HomeGATracking;
 import com.tokopedia.tkpd.home.model.VideoPushBannerModel;
 

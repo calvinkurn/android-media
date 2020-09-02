@@ -10,7 +10,7 @@ import android.view.ViewGroup
 import android.widget.CompoundButton
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.core.analytics.AppEventTracking
 import com.tokopedia.core.analytics.UnifyTracking
@@ -281,7 +281,7 @@ class ProductEditWeightLogisticFragment : Fragment() {
                 ProductEditWeightType.KILOGRAM ->  R.string.product_label_kilogram
                 else -> {
                     if (!GlobalConfig.DEBUG) {
-                        Crashlytics.logException(IllegalStateException("product_weight_unit is not 1 or 2: $type"))
+                        FirebaseCrashlytics.getInstance().recordException(IllegalStateException("product_weight_unit is not 1 or 2: $type"))
                     }
                     R.string.product_label_gram
                 }

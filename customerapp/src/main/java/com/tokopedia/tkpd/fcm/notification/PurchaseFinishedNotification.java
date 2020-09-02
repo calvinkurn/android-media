@@ -10,7 +10,7 @@ import com.tokopedia.buyerorder.list.data.OrderMarketplaceFilterId;
 import com.tokopedia.buyerorder.list.view.activity.OrderListActivity;
 import com.tokopedia.core.gcm.base.BaseNotification;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
-import com.tokopedia.tkpd.R;
+import com.tokopedia.intl.R;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 

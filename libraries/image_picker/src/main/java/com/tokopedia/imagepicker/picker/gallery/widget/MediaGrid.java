@@ -13,12 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.picker.gallery.model.MediaItem;
-import com.tokopedia.utils.image.ImageUtil;
 
-import java.io.File;
 import java.util.ArrayList;
-
-import kotlin.Pair;
 
 /**
  * Created by hangnadi on 5/29/17.
@@ -73,8 +69,17 @@ public class MediaGrid extends SquareFrameLayout implements View.OnClickListener
     }
 
     private void setImage() {
-        File file = new File(mMedia.getRealPath());
-        boolean loadFitCenter = ImageUtil.shouldLoadFitCenter(file);
+        long width = mMedia.getWidth();
+        long height = mMedia.getHeight();
+        long min, max;
+        if (width > height) {
+            min = height;
+            max = width;
+        } else {
+            min = width;
+            max = height;
+        }
+        boolean loadFitCenter = min != 0 && (max / min) > 2;
         if (loadFitCenter) {
             Glide.with(getContext())
                     .load(file)
@@ -104,7 +109,7 @@ public class MediaGrid extends SquareFrameLayout implements View.OnClickListener
     }
 
     private void setSelection(ArrayList<String> selectionIdList) {
-        if (selectionIdList.contains(mMedia.getRealPath())) {
+        if (selectionIdList.contains(mMedia.getPath())) {
             ivCheck.setVisibility(View.VISIBLE);
         } else {
             ivCheck.setVisibility(View.GONE);

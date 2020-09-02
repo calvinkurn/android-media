@@ -8,9 +8,9 @@ import android.os.Bundle;
 import androidx.annotation.RequiresApi;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.crashlytics.android.Crashlytics;
 import com.facebook.react.modules.core.PermissionAwareActivity;
 import com.facebook.react.modules.core.PermissionListener;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
@@ -133,7 +133,7 @@ public class ReactNativeDiscoveryActivity extends ReactFragmentActivity<GeneralR
     // Setting custom logs for Discovery Activity with Page ID
     public void setCrashLog() {
         if (!GlobalConfig.DEBUG && getIntent() != null && getIntent().hasExtra(PAGE_ID)) {
-            Crashlytics.log(TAG + " " + getIntent().getExtras().getString(PAGE_ID));
+            FirebaseCrashlytics.getInstance().log(TAG + " " + getIntent().getExtras().getString(PAGE_ID));
         }
 
     }

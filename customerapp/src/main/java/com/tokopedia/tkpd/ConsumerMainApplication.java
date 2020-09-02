@@ -49,8 +49,13 @@ import com.tokopedia.dev_monitoring_tools.DevMonitoring;
 import com.tokopedia.dev_monitoring_tools.beta.BetaSignActivityLifecycleCallbacks;
 import com.tokopedia.dev_monitoring_tools.session.SessionActivityLifecycleCallbacks;
 import com.tokopedia.dev_monitoring_tools.ui.JankyFrameActivityLifecycleCallbacks;
+import com.tokopedia.dev_monitoring_tools.beta.BetaSignActivityLifecycleCallbacks;
+import com.tokopedia.dev_monitoring_tools.session.SessionActivityLifecycleCallbacks;
 import com.tokopedia.developer_options.stetho.StethoUtil;
 import com.tokopedia.device.info.DeviceInfo;
+import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.intl.BuildConfig;
+import com.tokopedia.intl.R;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.notifications.data.AmplificationDataSource;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
@@ -230,10 +235,13 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         }
         com.tokopedia.config.GlobalConfig.RAW_VERSION_NAME = BuildConfig.VERSION_NAME;// save raw version name
     }
-          
+
     private void initConfigValues() {
         setVersionCode();
         setVersionName();
+
+        GlobalConfig.APPLICATION_TYPE = 3;
+        GlobalConfig.PACKAGE_APPLICATION = "com.tokopedia.intl";
 
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
         GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;

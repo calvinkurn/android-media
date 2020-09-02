@@ -6,7 +6,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
@@ -151,7 +151,7 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
     override fun setLogCrash() {
         super.setLogCrash()
         this.javaClass.canonicalName?.let { className ->
-            if (!GlobalConfig.DEBUG) Crashlytics.log(className + " " + intent?.data?.lastPathSegment)
+            if (!GlobalConfig.DEBUG) FirebaseCrashlytics.getInstance().log(className + " " + intent?.data?.lastPathSegment)
         }
     }
 
