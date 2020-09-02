@@ -1,10 +1,10 @@
-package com.tokopedia.shop.pageheader.data.model
+package com.tokopedia.shop.pageheader.presentation.uimodel
 
 import com.tokopedia.feedcomponent.data.pojo.whitelist.Whitelist
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 
-data class ShopPageP1Data(
+data class ShopPageP1HeaderData(
         val isOfficial: Boolean = false,
         val isGoldMerchant: Boolean = false,
         val topContentUrl: String = "",
