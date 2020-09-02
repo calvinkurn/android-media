@@ -1,4 +1,4 @@
-package com.tokopedia.sellerhome.settings.view.uimodel.shopinfo
+package com.tokopedia.seller.menu.common.view.uimodel.shopinfo
 
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.sellerhome.settings.view.uimodel.base.BalanceType

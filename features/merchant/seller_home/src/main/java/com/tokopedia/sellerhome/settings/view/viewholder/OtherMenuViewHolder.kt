@@ -14,16 +14,14 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhome.R
-import com.tokopedia.sellerhome.settings.analytics.*
 import com.tokopedia.seller.menu.common.analytics.*
-import com.tokopedia.sellerhome.settings.view.bottomsheet.SettingsFreeShippingBottomSheet
-import com.tokopedia.sellerhome.settings.view.uimodel.base.PowerMerchantStatus
-import com.tokopedia.sellerhome.settings.view.uimodel.base.RegularMerchant
-import com.tokopedia.sellerhome.settings.view.uimodel.base.ShopType
-import com.tokopedia.sellerhome.settings.view.uimodel.shopinfo.*
+import com.tokopedia.seller.menu.common.view.bottomsheet.SettingsFreeShippingBottomSheet
+import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantStatus
+import com.tokopedia.seller.menu.common.view.uimodel.base.RegularMerchant
+import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
+import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.*
 import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_other_menu.view.*
@@ -65,7 +63,7 @@ class OtherMenuViewHolder(private val itemView: View,
                         topadsBalanceUiModel?.let { setKreditTopadsBalance(it) }
                         shopBadgeUiModel?.let { setShopBadge(it) }
                         shopFollowersUiModel?.let { setShopTotalFollowers(it) }
-                        
+
                         shopInfoLayout?.dot?.visible()
                         localLoadOthers?.gone()
                         shopStatus?.visible()

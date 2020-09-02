@@ -6,9 +6,9 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.sellerhome.common.viewmodel.NonNullLiveData
 import com.tokopedia.sellerhome.settings.domain.entity.OthersBalance
 import com.tokopedia.sellerhome.settings.domain.usecase.GetAllShopInfoUseCase
-import com.tokopedia.sellerhome.settings.view.uimodel.base.ShopType
+import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 import com.tokopedia.sellerhome.settings.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType
-import com.tokopedia.sellerhome.settings.view.uimodel.shopinfo.ShopBadgeUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopBadgeUiModel
 import com.tokopedia.sellerhome.utils.observeOnce
 import com.tokopedia.shop.common.domain.interactor.GetShopFreeShippingInfoUseCase
 import com.tokopedia.usecase.coroutines.Fail
