@@ -457,24 +457,30 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     }
 
     private String getRefreshQueryPath(Request finalRequest, Response response) {
-        String result = response.request().url().toString() + " ";
-        String path = "";
+        String result = "";
         try {
+            result = response.request().url().toString() + " ";
+            String path;
+
             final Request copy = finalRequest.newBuilder().build();
             final Buffer buffer = new Buffer();
             if (copy.body() != null) {
                 copy.body().writeTo(buffer);
             }
             path = buffer.readUtf8();
+
+            Pattern pattern = Pattern.compile(PATH_REGEX);
+            Matcher matcher = pattern.matcher(path);
+
+            if(matcher.find()) {
+                result += matcher.group();
+            } else {
+                result += path.substring(0, Math.min(path.length(), 150));
+            }
+
         } catch (Exception ex) {
             ex.printStackTrace();
-        }
-
-        Pattern pattern = Pattern.compile(PATH_REGEX);
-        Matcher matcher = pattern.matcher(path);
-
-        if(matcher.find()) {
-            result += matcher.group();
+            return result;
         }
 
         return result;

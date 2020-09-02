@@ -333,7 +333,7 @@ public class MyApplication extends BaseMainApplication
 
 
     @Override
-    public void showForceLogoutTokenDialog(String response) {
+    public void showForceLogoutTokenDialog(String path) {
 
     }
 

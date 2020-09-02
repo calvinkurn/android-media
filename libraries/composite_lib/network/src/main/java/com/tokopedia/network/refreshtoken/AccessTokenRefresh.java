@@ -57,7 +57,7 @@ public class AccessTokenRefresh {
 
             if (response.errorBody() != null) {
                 tokenResponseError = response.errorBody().string();
-                checkShowForceLogout(tokenResponseError, networkRouter);
+                checkShowForceLogout(tokenResponseError, networkRouter, path);
             } else if (response.body() != null) {
                 tokenResponse = response.body();
             } else {
@@ -107,9 +107,9 @@ public class AccessTokenRefresh {
         return responseString.toLowerCase().contains(FORCE_LOGOUT);
     }
 
-    protected void checkShowForceLogout(String response, NetworkRouter networkRouter) {
+    protected void checkShowForceLogout(String response, NetworkRouter networkRouter, String path) {
         if (isRequestDenied(response)) {
-            networkRouter.showForceLogoutTokenDialog(response);
+            networkRouter.showForceLogoutTokenDialog(path);
         }
     }
 }

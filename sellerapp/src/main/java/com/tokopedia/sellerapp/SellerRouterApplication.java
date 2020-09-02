@@ -284,9 +284,9 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void showForceLogoutTokenDialog(String response) {
+    public void showForceLogoutTokenDialog(String path) {
         ServerErrorHandler.showForceLogoutDialog();
-        ServerErrorHandler.sendForceLogoutTokenAnalytics(response);
+        ServerErrorHandler.sendForceLogoutTokenAnalytics(path);
     }
 
     @Override
