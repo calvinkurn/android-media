@@ -128,6 +128,7 @@ import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.HomeMainToolbar
+import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo.TickerDetail
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginView
@@ -153,6 +154,7 @@ import java.util.*
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 /**
  * @author by errysuprayogi on 11/27/17.
@@ -1423,7 +1425,7 @@ open class HomeFragment : BaseDaggerFragment(),
     private fun isFirstInstall(): Boolean {
         context?.let {
             if (!getUserSession().isLoggedIn &&
-                    isShowFirstInstallSearch) {
+                    isShowFirstInstallSearch ) {
                 sharedPrefs = it.getSharedPreferences(
                         ConstantKey.FirstInstallCache.KEY_FIRST_INSTALL_SEARCH, Context.MODE_PRIVATE)
                 var firstInstallCacheValue = sharedPrefs.getLong(
@@ -1453,12 +1455,26 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun setHint(searchPlaceholder: SearchPlaceholder) {
-        if (searchPlaceholder.data != null && searchPlaceholder.data.placeholder != null && searchPlaceholder.data.keyword != null) {
+        searchPlaceholder.data?.let { data ->
             homeMainToolbar?.setHint(
-                    arrayListOf("asd", "asdf", "asdfg"),
-                    searchPlaceholder.data.keyword,
-                    isFirstInstall())
+                    HintData(data.placeholder ?: "", data.keyword ?: ""),
+                    placeholderToHint(data),
+                    isFirstInstall(),
+                    shouldShowTransition())
         }
+    }
+
+    private fun placeholderToHint(data: SearchPlaceholder.Data): ArrayList<HintData> {
+        var hints = arrayListOf(HintData(data.placeholder ?: "", data.keyword ?: ""))
+        data.placeholders?.let { placeholders ->
+            if (placeholders.isNotEmpty()) {
+                hints = arrayListOf()
+                placeholders.forEach { placeholder ->
+                    hints.add(HintData(placeholder.placeholder ?: "", placeholder.keyword ?: ""))
+                }
+            }
+        }
+        return hints
     }
 
     private fun addImpressionToTrackingQueue(visitables: List<Visitable<*>>) {
@@ -2098,6 +2114,11 @@ open class HomeFragment : BaseDaggerFragment(),
     private fun shouldShowToaster(): Boolean {
         val abTestValue = getAbTestPlatform().getString(ConstantKey.RemoteConfigKey.AB_TEST_REVIEW_KEY, "")
         return abTestValue == ConstantKey.ABtestValue.VALUE_NEW_REVIEW_FLOW
+    }
+
+    private fun shouldShowTransition(): Boolean {
+        val abTestValue = getAbTestPlatform().getString(ConstantKey.RemoteConfigKey.AB_TEST_AUTO_TRANSITION_KEY, "")
+        return abTestValue == ConstantKey.ABtestValue.AUTO_TRANSITION_VARIANT
     }
 
 }

@@ -8,21 +8,19 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.TransitionDrawable
 import android.os.Build
-import android.os.Handler
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.View
-import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.asynclayoutinflater.view.AsyncLayoutInflater
 import androidx.asynclayoutinflater.view.AsyncLayoutInflater.OnInflateFinishedListener
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
+import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.Ease
 import com.tokopedia.searchbar.helper.EasingInterpolator
 import com.tokopedia.searchbar.helper.ViewHelper
@@ -35,8 +33,10 @@ import kotlin.text.Charsets.UTF_8
 
 
 class HomeMainToolbar : MainToolbar, CoroutineScope {
+
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main
+
     private var toolbarType: Int = 0
 
     private var shadowApplied: Boolean = false
@@ -72,8 +72,6 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
-
-
 
     fun setViewAttributesAfterInflation(){
         showShadow()
@@ -235,41 +233,28 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
         return shadowApplied
     }
 
-    fun setHint(placeholders: ArrayList<String>, keyword: String, isFirstInstall: Boolean) {
+    fun setHint(hint: HintData, hints: ArrayList<HintData>, isFirstInstall: Boolean, isShowTransition: Boolean) {
         if(viewHomeMainToolBar != null) {
-            val editTextSearch = viewHomeMainToolBar!!.findViewById<TextView>(R.id.et_search)
             if(::animationJob.isInitialized) {
                 animationJob.cancel()
             }
-            if(placeholders.size > 1) {
-                setHintAnimation(placeholders)
+            if(hints.size > 1 && isShowTransition) {
+                setHintAnimation(hints, isFirstInstall)
             } else {
-                editTextSearch.hint = if (placeholders.isEmpty()) context.getString(R.string.search_tokopedia) else placeholders.first()
+                setHintSingle(hint, isFirstInstall)
             }
-
             editTextSearch.setSingleLine()
             editTextSearch.ellipsize = TextUtils.TruncateAt.END
-            editTextSearch.setOnClickListener {
-                searchBarAnalytics.eventTrackingSearchBar(screenName, keyword)
-                if (placeholders.isEmpty()) {
-                    RouteManager.route(context, ApplinkConstInternalDiscovery.AUTOCOMPLETE)
-                } else {
-                    RouteManager.route(context,
-                            ApplinkConstInternalDiscovery.AUTOCOMPLETE + PARAM_APPLINK_AUTOCOMPLETE,
-                            HOME_SOURCE,
-                            safeEncodeUTF8(keyword),
-                            isFirstInstall.toString())
-                }
-            }
         }
     }
 
-    private fun setHintAnimation(placeholders: ArrayList<String>) {
-        var iterator = placeholders.iterator()
+    private fun setHintAnimation(hints: ArrayList<HintData>, isFirstInstall: Boolean) {
+        var iterator = hints.iterator()
 
         animationJob = launch {
             while(true) {
                 var hint = context.getString(R.string.search_tokopedia)
+                var keyword = ""
                 val slideUpIn = AnimationUtils.loadAnimation(context, R.anim.slide_up_in)
                 slideUpIn.interpolator = EasingInterpolator(Ease.QUART_OUT)
                 val slideOutUp = AnimationUtils.loadAnimation(context, R.anim.slide_out_up)
@@ -278,10 +263,12 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
                     override fun onAnimationRepeat(animation: Animation?) {}
                     override fun onAnimationEnd(animation: Animation?) {
                         if(iterator.hasNext()) {
-                            hint = iterator.next()
+                            hint = iterator.next().placeholder
+                            keyword = iterator.next().keyword
                         } else {
-                            iterator = placeholders.iterator()
-                            hint = iterator.next()
+                            iterator = hints.iterator()
+                            hint = iterator.next().placeholder
+                            keyword = iterator.next().keyword
                         }
                         editTextSearch.hint = hint
                         editTextSearch.startAnimation(slideUpIn)
@@ -289,8 +276,28 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
                     override fun onAnimationStart(animation: Animation?) {}
                 })
                 editTextSearch.startAnimation(slideOutUp)
-
+                onClickHint(keyword, isFirstInstall)
                 delay(INTERVAL_HINT.toLong())
+            }
+        }
+    }
+
+    private fun setHintSingle(hint: HintData, isFirstInstall: Boolean) {
+        editTextSearch.hint = if (hint.placeholder.isEmpty()) context.getString(R.string.search_tokopedia) else hint.placeholder
+        onClickHint(hint.keyword, isFirstInstall)
+    }
+
+    private fun onClickHint(keyword: String, isFirstInstall: Boolean) {
+        editTextSearch.setOnClickListener {
+            searchBarAnalytics.eventTrackingSearchBar(screenName, keyword)
+            if (keyword.isEmpty()) {
+                RouteManager.route(context, ApplinkConstInternalDiscovery.AUTOCOMPLETE)
+            } else {
+                RouteManager.route(context,
+                        ApplinkConstInternalDiscovery.AUTOCOMPLETE + PARAM_APPLINK_AUTOCOMPLETE,
+                        HOME_SOURCE,
+                        safeEncodeUTF8(keyword),
+                        isFirstInstall.toString())
             }
         }
     }
