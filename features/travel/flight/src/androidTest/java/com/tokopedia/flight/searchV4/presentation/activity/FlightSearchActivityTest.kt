@@ -39,6 +39,10 @@ class FlightSearchActivityTest {
 
     @get:Rule
     var activityRule: IntentsTestRule<FlightSearchActivity> = object : IntentsTestRule<FlightSearchActivity>(FlightSearchActivity::class.java) {
+        override fun beforeActivityLaunched() {
+            super.beforeActivityLaunched()
+            setupGraphqlMockResponse(FlightSearchMockResponse())
+        }
         override fun getActivityIntent(): Intent =
                 FlightSearchActivity.getCallingIntent(
                         context,
@@ -75,7 +79,6 @@ class FlightSearchActivityTest {
     @Before
     fun setup() {
         gtmLogDBSource.deleteAll().subscribe()
-        setupGraphqlMockResponse(FlightSearchMockResponse())
         intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
