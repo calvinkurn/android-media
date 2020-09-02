@@ -155,23 +155,22 @@ abstract class BaseTrackerConst {
         private const val KEY_DIMENSION_96 = "dimension96"
 
         fun getEcommercePromoView(promotions: List<Promotion>): Map<String, Any> {
-            return mapOf(PRODUCT_VIEW to getPromotionsMap(promotions)) as HashMap<String, Any>
+            return mapOf(PRODUCT_VIEW to getPromotionsMap(promotions))
         }
 
         fun getEcommerceObjectPromoView(promotions: List<Any>?): Map<String, Any>? {
             return mapOf(
                     PROMO_VIEW to mapOf(
                             PROMOTIONS to listOf(promotions)
-                )as HashMap<String, Any>
-            )as HashMap<String, Any>
+            ))
         }
 
         fun getEcommercePromoClick(promotions: List<Promotion>): Map<String, Any> {
-            return mapOf(PRODUCT_CLICK to getPromotionsMap(promotions)) as HashMap<String, Any>
+            return mapOf(PRODUCT_CLICK to getPromotionsMap(promotions))
         }
 
         private fun getPromotionsMap(promotions: List<Promotion>): Map<String, Any> {
-            return mapOf(PROMOTIONS to getPromotions(promotions)) as HashMap<String, Any>
+            return mapOf(PROMOTIONS to getPromotions(promotions))
         }
 
         fun getEcommerceProductClick(products: List<Product>, list: String): Map<String, Any> {
@@ -182,8 +181,8 @@ abstract class BaseTrackerConst {
                                     LIST to list +  if(products.first().isTopAds) " - topads" else ""
                             ),
                             PRODUCTS to getProductsClick(products, list)
-                    ) as HashMap<String, Any>
-            ) as HashMap<String, Any>
+                    )
+            )
 
         }
         fun getEcommerceProductAddToCart(products: List<Product>, list: String): Map<String, Any> {
@@ -202,7 +201,7 @@ abstract class BaseTrackerConst {
             return mapOf(
                     CURRENCY_CODE to IDR,
                     IMPRESSIONS to getProductsImpression(products, list)
-            ) as HashMap<String, Any>
+            )
         }
 
         private fun getPromotions(promotions: List<Promotion>): List<Any>{
