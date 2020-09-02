@@ -60,7 +60,7 @@ class TalkWriteFragment : BaseDaggerFragment(),
                 arguments = Bundle()
                 arguments?.putInt(TalkConstants.PARAM_PRODUCT_ID, productId)
                 arguments?.putBoolean(TalkConstants.PARAM_APPLINK_IS_VARIANT_SELECTED, isVariantSelected)
-                arguments?.putString(TalkConstants.PARAM_APPLINK_IS_VARIANT_SELECTED, availableVariants)
+                arguments?.putString(TalkConstants.PARAM_APPLINK_AVAILABLE_VARIANT, availableVariants)
             }
         }
 
@@ -227,7 +227,7 @@ class TalkWriteFragment : BaseDaggerFragment(),
         arguments?.let {
             viewModel.setProductId(it.getInt(TalkConstants.PARAM_PRODUCT_ID))
             viewModel.isVariantSelected = it.getBoolean(TalkConstants.PARAM_APPLINK_IS_VARIANT_SELECTED)
-            viewModel.availableVariants = it.getString(TalkConstants.PARAM_APPLINK_IS_VARIANT_SELECTED, "0")
+            viewModel.availableVariants = it.getString(TalkConstants.PARAM_APPLINK_AVAILABLE_VARIANT, "0")
         }
     }
 
