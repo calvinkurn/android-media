@@ -21,7 +21,7 @@ class EventSearchPageTracking {
     }
 
     private object Impression {
-        val KEY = "impression"
+        val KEY = "impressions"
         val NAME = "name"
         val ID = "id"
         val PRICE = "price"
@@ -63,74 +63,90 @@ class EventSearchPageTracking {
         val PROMO_CODE = "promo_code"
     }
 
-    fun impressionCitySearchSuggestion(listsCity: List<SearchLocationListViewHolder.LocationSuggestion>){
+    private object Misc{
+        val SCREENNAME = "screenName"
+        val CURRENTSITE = "currentSite"
+        val BUSINESSUNIT = "businessUnit"
+        val CATEGORY = "category"
+
+        val CURRENTSITEDATA =  "tokopediadigitalevents"
+        val BUSINESSUNITDATA = "travel & entertainment"
+        val CATEGORYDATA = "events"
+    }
+
+    fun impressionCitySearchSuggestion(listsCity: SearchLocationListViewHolder.LocationSuggestion, position: Int){
         getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 Event.KEY, "promoView",
                 Event.CATEGORY, "digital - event",
                 Event.ACTION, "impression city result",
                 Event.LABEL, "",
+                Misc.CURRENTSITE, Misc.CURRENTSITEDATA,
+                Misc.BUSINESSUNIT, Misc.BUSINESSUNITDATA,
+                Misc.CATEGORY, Misc.CATEGORYDATA,
+                Misc.SCREENNAME, "",
                 Ecommerce.KEY, DataLayer.mapOf(
                 Promo.KEY_IMPRESSION, DataLayer.mapOf(
-                Promo.PROMOTION, getPromoLocationSuggestion(listsCity)))))
+                Promo.PROMOTION, getPromoLocationSuggestion(listsCity, position)))))
     }
 
-    private fun getPromoLocationSuggestion(listsCity: List<SearchLocationListViewHolder.LocationSuggestion>) : Any{
+    private fun getPromoLocationSuggestion(listsCity: SearchLocationListViewHolder.LocationSuggestion, position: Int) : Any{
         val list = mutableListOf<Any>()
-
-        listsCity.forEachIndexed { index, locationSuggestion ->
             list.add(DataLayer.mapOf(
-                    Promo.ID, locationSuggestion.id_city,
-                    Promo.NAME, locationSuggestion.city,
-                    Promo.CREATIVE, locationSuggestion.city,
-                    Promo.CREATIVE_URL, locationSuggestion.imageUrl,
-                    Promo.POSITION, index + 1,
+                    Promo.ID, listsCity.id_city,
+                    Promo.NAME, listsCity.city,
+                    Promo.CREATIVE, listsCity.city,
+                    Promo.CREATIVE_URL, listsCity.imageUrl,
+                    Promo.POSITION, position + 1,
                     Promo.PROMO_ID, "",
                     Promo.PROMO_CODE, ""
             ))
-        }
-
         return list
     }
 
     fun onClickLocationSuggestion(location: SearchLocationListViewHolder.LocationSuggestion,
-                                    listsLocation: List<SearchLocationListViewHolder.LocationSuggestion>,
-                                    position: Int){
+                                  listsLocation: SearchLocationListViewHolder.LocationSuggestion,
+                                  position: Int){
         getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 Event.KEY, "promoClick",
                 Event.CATEGORY, "digital - event",
-                Event.ACTION, "click city suggestion",
+                Event.ACTION, "click city result",
                 Event.LABEL, String.format("%s - %s", location.city, position.toString()),
+                Misc.CURRENTSITE, Misc.CURRENTSITEDATA,
+                Misc.BUSINESSUNIT, Misc.BUSINESSUNITDATA,
+                Misc.CATEGORY, Misc.CATEGORYDATA,
+                Misc.SCREENNAME, "",
                 Ecommerce.KEY, DataLayer.mapOf(
                 Promo.KEY_CLICK, DataLayer.mapOf(
-                Promo.PROMOTION, getPromoLocationSuggestion(listsLocation)))))
+                Promo.PROMOTION, getPromoLocationSuggestion(listsLocation, position)))))
     }
 
-    fun impressionEventSearchSuggestion(listsEvent: List<SearchEventListViewHolder.KegiatanSuggestion>){
+    fun impressionEventSearchSuggestion(listsEvent: SearchEventListViewHolder.KegiatanSuggestion, position: Int){
         getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 Event.KEY, "productView",
                 Event.CATEGORY, "digital - event",
-                Event.ACTION, "impression event suggestion",
+                Event.ACTION, "impression product result",
                 Event.LABEL, "",
+                Misc.CURRENTSITE, Misc.CURRENTSITEDATA,
+                Misc.BUSINESSUNIT, Misc.BUSINESSUNITDATA,
+                Misc.CATEGORY, Misc.CATEGORYDATA,
+                Misc.SCREENNAME, "",
                 Ecommerce.KEY, DataLayer.mapOf(
                 Ecommerce.CURRENCY_CODE, "IDR",
-                Impression.KEY, getImpressionEventSearchList(listsEvent))))
+                Impression.KEY, getImpressionEventSearchList(listsEvent, position))))
     }
 
-    private fun getImpressionEventSearchList(listsEvent: List<SearchEventListViewHolder.KegiatanSuggestion>) : Any?{
+    private fun getImpressionEventSearchList(listsEvent: SearchEventListViewHolder.KegiatanSuggestion, position: Int) : Any?{
         val list = mutableListOf<Any>()
-        listsEvent.forEachIndexed{index, item ->
             list.add(DataLayer.mapOf(
-                    Impression.NAME, item.nama_kegiatan,
-                    Impression.ID, item.id,
-                    Impression.PRICE, item.price,
+                    Impression.NAME, listsEvent.nama_kegiatan,
+                    Impression.ID, listsEvent.id,
+                    Impression.PRICE, listsEvent.sales_price,
                     Impression.BRAND, "",
                     Impression.CATEGORY, "",
                     Impression.VARIANT, "",
-                    Impression.LIST, item.nama_kegiatan,
-                    Impression.POSITION, index + 1
+                    Impression.LIST, listsEvent.nama_kegiatan,
+                    Impression.POSITION, position + 1
             ))
-        }
-
         return list
     }
 
@@ -140,39 +156,55 @@ class EventSearchPageTracking {
         getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 Event.KEY, "productClick",
                 Event.CATEGORY, "digital - event",
-                Event.ACTION, "click event suggestion",
+                Event.ACTION, "click product result",
                 Event.LABEL, String.format("%s - %s", event.nama_kegiatan, position.toString()),
+                Misc.CURRENTSITE, Misc.CURRENTSITEDATA,
+                Misc.BUSINESSUNIT, Misc.BUSINESSUNITDATA,
+                Misc.CATEGORY, Misc.CATEGORYDATA,
+                Misc.SCREENNAME, "",
                 Ecommerce.KEY, DataLayer.mapOf(
                 Click.KEY, DataLayer.mapOf(
-                Click.ACTION_FIELD, DataLayer.mapOf("list", listsEvent),
-                Product.KEY, getProductEventSearchList(listsEvent)))))
+                Click.ACTION_FIELD, DataLayer.mapOf("list", event.nama_kegiatan),
+                Product.KEY, DataLayer.listOf(
+                DataLayer.mapOf(
+                        Product.NAME, event.nama_kegiatan,
+                        Product.ID, event.id,
+                        Product.PRICE, event.price,
+                        Product.BRAND, "",
+                        Product.CATEGORY, "",
+                        Product.VARIANT, "",
+                        Product.LIST, event.nama_kegiatan,
+                        Product.POSITION, position
+                )
+        )))))
     }
 
-    private fun getProductEventSearchList(listsEvent: List<SearchEventListViewHolder.KegiatanSuggestion>) : Any?{
-        val list = mutableListOf<Any>()
-        listsEvent.forEachIndexed { index, it ->
-            list.add(DataLayer.mapOf(
-                    Product.NAME, it.nama_kegiatan,
-                    Product.ID, it.id,
-                    Product.PRICE, it.price,
-                    Product.BRAND, "",
-                    Product.CATEGORY, "",
-                    Product.VARIANT, "",
-                    Product.LIST, it.nama_kegiatan,
-                    Product.POSITION, index + 1
-            ))
-        }
-
-        return list
-    }
-
-
+    //4
     fun clickSearchBarOnSearchActivity() : Boolean{
         getTracker().sendGeneralEvent(DataLayer.mapOf(
                 Event.KEY,"clickEvent",
                 Event.CATEGORY, "digital - event",
                 Event.ACTION, "click search box",
-                Event.LABEL, ""
+                Event.LABEL, "",
+                Misc.SCREENNAME, "digital/event/search",
+                Misc.CURRENTSITE, Misc.CURRENTSITEDATA,
+                Misc.BUSINESSUNIT, Misc.BUSINESSUNITDATA,
+                Misc.CATEGORY, Misc.CATEGORYDATA
+        ))
+        return true
+    }
+
+    //5
+    fun clickSearchBarOnKeyWordSearchActivity(keyword: String) : Boolean{
+        getTracker().sendGeneralEvent(DataLayer.mapOf(
+                Event.KEY,"clickEvent",
+                Event.CATEGORY, "digital - event",
+                Event.ACTION, "click search",
+                Event.LABEL, keyword,
+                Misc.SCREENNAME, "",
+                Misc.CURRENTSITE, Misc.CURRENTSITEDATA,
+                Misc.BUSINESSUNIT, Misc.BUSINESSUNITDATA,
+                Misc.CATEGORY, Misc.CATEGORYDATA
         ))
         return true
     }

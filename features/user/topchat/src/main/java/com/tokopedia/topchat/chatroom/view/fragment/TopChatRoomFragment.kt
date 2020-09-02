@@ -15,6 +15,7 @@ import androidx.annotation.StringRes
 import androidx.collection.ArrayMap
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder
@@ -28,6 +29,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
 import com.tokopedia.attachproduct.view.activity.AttachProductActivity
 import com.tokopedia.chat_common.BaseChatFragment
@@ -209,6 +211,35 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         setupBeforeReplyTime()
         loadInitialData()
         initLoadMoreListener()
+    }
+
+    override fun onClickOccFromProductAttachment(product: ProductAttachmentViewModel, position: Int) {
+        val addToCartOccRequestParams = AddToCartOccRequestParams(
+                productId = product.productId.toString(),
+                shopId = product.shopId.toString(),
+                quantity = product.minOrder.toString(),
+                productName = product.productName,
+                category = product.category,
+                price = product.priceInt.toString()
+        )
+        presenter.addToCart(addToCartOccRequestParams, {
+            analytics.trackClickOccProduct(
+                    product,
+                    getViewState().chatRoomViewModel.shopType,
+                    getViewState().chatRoomViewModel.shopName,
+                    it.data.cartId
+            )
+            finishOccLoading(product, position)
+            RouteManager.route(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
+        }, {
+            finishOccLoading(product, position)
+            showSnackbarError(it)
+        })
+    }
+
+    private fun finishOccLoading(product: ProductAttachmentViewModel, position: Int) {
+        product.isLoadingOcc = false
+        adapter.updateOccLoadingStatus(product, position)
     }
 
     private fun setupBeforeReplyTime() {
@@ -433,7 +464,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     }
 
     private fun showStickerOnBoardingTooltip() {
-        if (!presenter.isStickerTooltipAlreadyShow()) {
+        if (
+                !presenter.isStickerTooltipAlreadyShow() &&
+                activity?.lifecycle?.currentState?.isAtLeast(Lifecycle.State.STARTED) == true
+        ) {
             toolTip.showAtTop(getViewState().chatStickerMenuButton)
         }
     }
@@ -806,6 +840,13 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         }
     }
 
+    private fun showSnackbarError(throwable: Throwable) {
+        view?.let {
+            val errorMsg = ErrorHandler.getErrorMessage(it.context, throwable)
+            Toaster.make(it, errorMsg, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+        }
+    }
+
     override fun onStartTyping() {
         presenter.startTyping()
     }
@@ -985,12 +1026,12 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     override fun followUnfollowShop(actionFollow: Boolean) {
         analytics.eventFollowUnfollowShop(actionFollow, shopId.toString())
-        presenter.followUnfollowShop(shopId.toString(), onErrorFollowUnfollowShop(), onSuccessFollowUnfollowShop())
+        presenter.followUnfollowShop(shopId.toString(), ::onErrorFollowUnfollowShop, onSuccessFollowUnfollowShop())
     }
 
-    private fun onErrorFollowUnfollowShop(): (Throwable) -> Unit {
-        return {
-            showSnackbarError(ErrorHandler.getErrorMessage(view!!.context, it))
+    private fun onErrorFollowUnfollowShop(throwable: Throwable) {
+        context?.let {
+            showSnackbarError(ErrorHandler.getErrorMessage(it, throwable))
         }
     }
 
@@ -1344,14 +1385,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         analytics.eventClickProductThumbnail(product)
     }
 
-    companion object {
-        fun createInstance(bundle: Bundle): BaseChatFragment {
-            return TopChatRoomFragment().apply {
-                arguments = bundle
-            }
-        }
-    }
-
     override fun onStickerOpened() {
         getViewState().onStickerOpened()
         toolTip.dismissOnBoarding()
@@ -1468,6 +1501,14 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     private fun showToasterError(message: String) {
         view?.let {
             Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+        }
+    }
+
+    companion object {
+        fun createInstance(bundle: Bundle): BaseChatFragment {
+            return TopChatRoomFragment().apply {
+                arguments = bundle
+            }
         }
     }
 }

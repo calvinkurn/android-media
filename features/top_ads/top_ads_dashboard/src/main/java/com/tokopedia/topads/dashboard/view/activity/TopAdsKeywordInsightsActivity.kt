@@ -7,6 +7,7 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATA_INSIGHT
@@ -31,6 +32,7 @@ import com.tokopedia.topads.dashboard.view.presenter.TopAdsInsightPresenter
 import com.tokopedia.topads.dashboard.view.sheet.GroupSelectInsightSheet
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.setCustomText
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.topads_dash_insight_key_activity_base_layout.*
 import javax.inject.Inject
 
@@ -38,6 +40,19 @@ import javax.inject.Inject
  * Created by Pika on 21/7/20.
  */
 
+const val EVENT_CLICK_KATA_KUNCI_BARU = "click - kata kunci baru"
+const val EVENT_CLICK_KATA_KUNCI_NEGATIF = "click - kata kunci negatif"
+const val EVENT_CLICK_BIAYA_KATA_KUNCI = "click - biaya kata kunci"
+const val EVENT_CLICK_SEMUA_KATA_KUNCI_BARU = "click - tambahkan semua kata kunci baru"
+const val EVENT_CLICK_SEMUA_KATA_KUNCI_NEGATIF = "click - tambahkan semua kata kunci negatif"
+const val EVENT_CLICK_SEMUA_BIAYA_KATA_KUNCI = "click - terapkan semua rekomendasi biaya kata kunci"
+const val EVENT_LIST_KATA_KUNCI_BARU = "list semua rekomendasi kata kunci baru"
+const val EVENT_LIST_KATA_KUNCI_NEGATIF = "list semua rekomendasi kata kunci negatif"
+const val ACTION_CLICK_TAMBAHKAN_KATA_KUNCI = "click - tambahkan kata kunci baru"
+const val ACTION_CLICK_TAMBAHKAN_KATA_NEGATIF = "click - tambahkan kata kunci negatif"
+const val ACTION_CLICK_TAMBAHKAN_BIAYA_KATA_KUNCI = "click - terapkan biaya kata kunci"
+const val LABEL_KATA_KUNCI_BARU_TERPILIH = "kata kunci baru terpilih"
+const val LABEL_KATA_KUNCI_NEGATIF_TERPILIH = "kata kunci negatif terpilih"
 class TopAdsKeywordInsightsActivity : BaseActivity(), HasComponent<TopAdsDashboardComponent>, TopAdsInsightView, TopAdsInsightKeyPosFragment.SetCount, TopAdsInsightKeyNegFragment.OnKeywordAdded, TopAdsInsightKeyBidFragment.OnKeywordBidAdded {
 
     @Inject
@@ -50,6 +65,9 @@ class TopAdsKeywordInsightsActivity : BaseActivity(), HasComponent<TopAdsDashboa
     private var countToAdd: Int = 1
     private var currentTabPosition = 0
 
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()
@@ -58,7 +76,21 @@ class TopAdsKeywordInsightsActivity : BaseActivity(), HasComponent<TopAdsDashboa
         topAdsInsightPresenter.getInsight(resources)
         tabUnify.getUnifyTabLayout().addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                view_pager.setCurrentItem(tab!!.position, true)
+                view_pager.setCurrentItem(tab?.position?:0, true)
+                var eventAction: String = ""
+                val eventLabel = currentGroupId
+                when (tab?.position?:0) {
+                    0 -> {
+                        eventAction = EVENT_CLICK_KATA_KUNCI_BARU
+                    }
+                    1 -> {
+                        eventAction = EVENT_CLICK_KATA_KUNCI_NEGATIF
+                    }
+                    2 -> {
+                        eventAction = EVENT_CLICK_BIAYA_KATA_KUNCI
+                    }
+                }
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightGtmEvent(eventAction, eventLabel, userSession.userId)
             }
 
             override fun onTabReselected(tab: TabLayout.Tab?) {}
@@ -97,13 +129,13 @@ class TopAdsKeywordInsightsActivity : BaseActivity(), HasComponent<TopAdsDashboa
     private fun getViewPagerAdapter(data: InsightKeyData): TopAdsDashInsightKeyPagerAdapter? {
         val list: ArrayList<Fragment> = arrayListOf()
         val bundle = Bundle()
-        val keyToMap = if (currentGroupId.isEmpty()) {
+        currentGroupId = if (currentGroupId.isEmpty()) {
             intent.getStringExtra(KEY_INSIGHT)
         } else
             currentGroupId
         currentTabPosition = tabUnify.getUnifyTabLayout().selectedTabPosition
-        bundle.putString(KEY_INSIGHT, keyToMap)
-        selectGroup.text = data.data[keyToMap]?.name
+        bundle.putString(KEY_INSIGHT, currentGroupId)
+        selectGroup.text = data.data[currentGroupId]?.name
         bundle.putParcelable(INSIGHT_DATA_HEADER, data.header)
         bundle.putSerializable(DATA_INSIGHT, data.data)
         tabUnify?.getUnifyTabLayout()?.removeAllTabs()
@@ -157,20 +189,56 @@ class TopAdsKeywordInsightsActivity : BaseActivity(), HasComponent<TopAdsDashboa
         tabUnify?.getUnifyTabLayout()?.getTabAt(2)?.setCustomText(String.format(resources.getString(R.string.topads_insight_bid), sizeBid))
     }
 
-    override fun onButtonClicked(mutationData: List<MutationData>, groupId: String, countToAdd: Int) {
+    override fun onButtonClicked(mutationData: List<MutationData>, groupId: String, countToAdd: Int, forAllButton: Boolean) {
         currentGroupId = groupId
         val query = data.header.btnAction?.insight ?: ""
         this.countToAdd = countToAdd
         topAdsInsightPresenter.topAdsCreated(groupId, query, mutationData)
+        var eventAction = ""
+        var eventLabel = ""
+        if (forAllButton) {
+            when (requestFrom) {
+                REQUEST_FROM_POS -> {
+                    eventAction = EVENT_CLICK_SEMUA_KATA_KUNCI_BARU
+                    eventLabel = "$currentGroupId-$EVENT_LIST_KATA_KUNCI_BARU"
+
+                }
+                REQUEST_FROM_NEG -> {
+                    eventAction = EVENT_CLICK_SEMUA_KATA_KUNCI_NEGATIF
+                    eventLabel = "$currentGroupId-$EVENT_LIST_KATA_KUNCI_NEGATIF"
+                }
+                REQUEST_FROM_BID -> {
+                    eventAction = EVENT_CLICK_SEMUA_BIAYA_KATA_KUNCI
+                    eventLabel = currentGroupId
+                }
+            }
+        } else {
+            when (requestFrom) {
+                REQUEST_FROM_POS -> {
+                    eventAction = ACTION_CLICK_TAMBAHKAN_KATA_KUNCI
+                    eventLabel = "$currentGroupId-$LABEL_KATA_KUNCI_BARU_TERPILIH"
+
+                }
+                REQUEST_FROM_NEG -> {
+                    eventAction = ACTION_CLICK_TAMBAHKAN_KATA_NEGATIF
+                    eventLabel = "$currentGroupId-$LABEL_KATA_KUNCI_NEGATIF_TERPILIH"
+                }
+                REQUEST_FROM_BID -> {
+                    eventAction = ACTION_CLICK_TAMBAHKAN_BIAYA_KATA_KUNCI
+                    eventLabel = currentGroupId
+                }
+            }
+        }
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightGtmEvent(eventAction, eventLabel, userSession.userId)
     }
 
-    override fun onButtonClickedNeg(data: List<MutationData>, groupId: String, countToAdd: Int) {
+    override fun onButtonClickedNeg(data: List<MutationData>, groupId: String, countToAdd: Int, forAllButton: Boolean) {
         requestFrom = REQUEST_FROM_NEG
-        onButtonClicked(data, groupId, countToAdd)
+        onButtonClicked(data, groupId, countToAdd, forAllButton)
     }
 
-    override fun onButtonClickedBid(data: List<MutationData>, groupId: String, countToAdd: Int) {
+    override fun onButtonClickedBid(data: List<MutationData>, groupId: String, countToAdd: Int, forAllButton: Boolean) {
         requestFrom = REQUEST_FROM_BID
-        onButtonClicked(data, groupId, countToAdd)
+        onButtonClicked(data, groupId, countToAdd, forAllButton)
     }
 }

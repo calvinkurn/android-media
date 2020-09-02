@@ -383,7 +383,7 @@ class AddEditProductVariantFragment :
             }
         }
         viewModel.hideProductVariantPhotos(variantDetail)
-        viewModel.updateSizechartFieldVisibility(variantDetail, false)
+        viewModel.updateSizechartFieldVisibility()
     }
 
     private fun setupCancellationDialog(layoutPosition: Int, adapterPosition: Int, variantDetail: VariantDetail) {
@@ -716,7 +716,7 @@ class AddEditProductVariantFragment :
     }
 
     private fun onSizechartClicked() {
-        if (viewModel.variantSizechart.value?.filePath.isNullOrEmpty()) {
+        if (viewModel.variantSizechart.value?.urlOriginal.isNullOrEmpty()) {
             showSizechartPicker()
         } else {
             val fm = this@AddEditProductVariantFragment.childFragmentManager
@@ -776,7 +776,7 @@ class AddEditProductVariantFragment :
 
     private fun observeSizechartUrl() {
         viewModel.variantSizechart.observe(this, Observer {
-            if (it.filePath.isEmpty()) {
+            if (it.urlOriginal.isEmpty()) {
                 ivSizechartAddSign.visible()
                 ivSizechartEditSign.gone()
                 ivSizechart.gone()
@@ -789,11 +789,7 @@ class AddEditProductVariantFragment :
             }
 
             // display sizechart image (use server image if exist)
-            if (it.urlThumbnail.isNotEmpty()) {
-                ivSizechart.setImage(it.urlThumbnail, 0F)
-            } else {
-                ivSizechart.setImage(it.filePath, 0F)
-            }
+            ivSizechart.setImage(it.urlOriginal, 0F)
         })
     }
 
@@ -1004,7 +1000,7 @@ class AddEditProductVariantFragment :
     }
 
     private fun removeSizechart() {
-        val url = viewModel.variantSizechart.value?.filePath.orEmpty()
+        val url = viewModel.variantSizechart.value?.urlOriginal.orEmpty()
         viewModel.updateSizechart("")
         FileUtils.deleteFileInTokopediaFolder(url)
     }
@@ -1018,15 +1014,7 @@ class AddEditProductVariantFragment :
     }
 
     private fun showEditorSizechartPicker() {
-        val urlOrPath = viewModel.variantSizechart.value?.run {
-            if (urlOriginal.isNotEmpty()) {
-                // if sizechart image is from server, then use image url
-                urlOriginal
-            } else {
-                // if sizechart image is from device, then use file path
-                filePath
-            }
-        }.orEmpty()
+        val urlOrPath = viewModel.variantSizechart.value?.urlOriginal
 
         context?.apply {
             val isEditMode = viewModel.isEditMode.value ?: false
