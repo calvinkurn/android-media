@@ -346,7 +346,7 @@ class AddEditProductVariantViewModel @Inject constructor(
             // get selected variant detail selected each level
             if (it.value.isNotEmpty()) {
                 variantDetailsSelected.getOrNull(level)?.let { variantDetail ->
-                    val unit = variantUnitMap.getOrElse(level) { Unit() }
+                    val unit = variantUnitMap.getOrElse(it.key) { Unit() }
                     result.add(SelectionInputModel(
                             variantDetail.variantID.toString(),
                             variantDetail.name,
