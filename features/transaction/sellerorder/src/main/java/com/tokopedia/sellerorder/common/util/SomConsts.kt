@@ -167,4 +167,6 @@ object SomConsts {
 
     const val TOPADS_NO_PRODUCT = 1
     const val TOPADS_NO_ADS = 2
+    const val TOPADS_MANUAL_ADS = 3
+    const val TOPADS_AUTO_ADS = 4
 }

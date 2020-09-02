@@ -80,10 +80,12 @@ class SomListViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
         })
     }
 
-    fun loadOrderList(paramOrder: SomListOrderParam) {
+    fun loadOrderList(paramOrder: SomListOrderParam, shouldWaitForTopAdsGetInfo: Boolean) {
         launchCatchError(block = {
             val result = getOrderListUseCase.execute(paramOrder)
-            getTopAdsGetShopInfoJob?.join()
+            if (shouldWaitForTopAdsGetInfo) {
+                getTopAdsGetShopInfoJob?.join()
+            }
             _orderListResult.postValue(result)
         }, onError = {
             _orderListResult.postValue(Fail(it))

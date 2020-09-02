@@ -285,7 +285,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 override fun onLoadMore(page: Int, totalItemsCount: Int) {
                     onLoadMore = true
                     if (nextOrderId != 0) {
-                        loadOrderList(nextOrderId)
+                        loadOrderList(nextOrderId, false)
                     }
                 }
             }
@@ -433,7 +433,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                         loadStatusOrderList()
                     } else {
                         nextOrderId = 0
-                        loadOrderList(nextOrderId)
+                        loadOrderList(nextOrderId, true)
                     }
                 }
                 is Fail -> {
@@ -453,11 +453,11 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                         return@forEach
                     }
                 }
-                loadOrderList(nextOrderId)
+                loadOrderList(nextOrderId, true)
             }
             is Fail -> {
                 SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_STATUS_LIST)
-                loadOrderList(nextOrderId)
+                loadOrderList(nextOrderId, true)
             }
         }
     })
@@ -518,10 +518,10 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         }
     }
 
-    private fun loadOrderList(nextOrderId: Int) {
+    private fun loadOrderList(nextOrderId: Int, shouldWaitForTopAdsGetInfo: Boolean) {
         paramOrder.nextOrderId = nextOrderId
         activity?.resources?.let {
-            somListViewModel.loadOrderList(paramOrder)
+            somListViewModel.loadOrderList(paramOrder, shouldWaitForTopAdsGetInfo)
         }
     }
 
@@ -799,12 +799,13 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     override fun onRefresh(view: View?) {
         addEndlessScrollListener()
-        if (isNewOrderChipSelected() && GlobalConfig.isSellerApp()) {
+        val shouldWaitForTopAdsGetInfo = isNewOrderChipSelected() && GlobalConfig.isSellerApp()
+        if (shouldWaitForTopAdsGetInfo) {
             somListViewModel.loadTopAdsShopInfo(userSession.shopId.toIntOrZero())
         }
         onLoadMore = false
         nextOrderId = 0
-        loadOrderList(nextOrderId)
+        loadOrderList(nextOrderId, shouldWaitForTopAdsGetInfo)
         loadFilterList()
         if (isFilterApplied) {
             if (paramOrder.startDate.equals(defaultStartDate, true) && paramOrder.endDate.equals(defaultEndDate, true)) {
