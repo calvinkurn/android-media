@@ -169,7 +169,6 @@ class RechargeCCFragment : BaseDaggerFragment() {
             val passData = DigitalCheckoutPassData.Builder()
                     .action(DigitalCheckoutPassData.DEFAULT_ACTION)
                     .categoryId(categoryId)
-                    .clientNumber(it.clientNumber)
                     .instantCheckout("0")
                     .isPromo("0")
                     .operatorId(it.operatorId)

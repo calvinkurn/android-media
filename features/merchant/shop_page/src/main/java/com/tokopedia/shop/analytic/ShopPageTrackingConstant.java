@@ -11,6 +11,8 @@ public class ShopPageTrackingConstant {
 
     //event
     public static final String CLICK_SHOP_PAGE = "clickShopPage";
+    public static final String CLICK_SHOP_SETTING = "clickShopSetting";
+    public static final String CLICK_PROFILE = "clickProfile";
     public static final String VIEW_SHOP_PAGE = "viewShopPage";
     public static final String PROMO_VIEW = "promoView";
     public static final String PROMO_CLICK = "promoClick";
@@ -55,6 +57,7 @@ public class ShopPageTrackingConstant {
     public static final String SHOP_SEARCH_PRODUCT_CLICK_SHARE_BUTTON = "click share button - search result";
     public static final String CLICK_SEARCH = "click search";
     public static final String SHOP_SEARCH_PRODUCT_CLICK_ETALASE_AUTOCOMPLETE = "click %1s - etalase shop";
+    public static final String SHOP_SEARCH_PRODUCT_CLICK_ETALASE_AUTOCOMPLETE_EMPTY = "click %1s - etalase shop - no result";
     public static final String SHOP_SEARCH_PRODUCT_CLICK_GLOBAL_SEARCH = "click %1s - tokopedia";
     public static final String SHOP_SEARCH_PRODUCT_CLICK_PRODUCT_AUTOCOMPLETE = "click - global autocomplete";
     public static final String CLICK_BACK = "click back";
@@ -87,10 +90,12 @@ public class ShopPageTrackingConstant {
     public static final String IMPRESSION_TOASTER_NOTIFY_ME = "impression toaster notify me";
     public static final String CLICK_OK_TOASTER_NOTIFY_ME = "click ok on toaster notify me";
     public static final String CLICK_SEE_ALL_CAMPAIGN_NPL_WIDGET = "click see all - %1s";
+    public static final String CLICK_SHARE_DETAIL = "click share detail";
 
     //label
     public static final String CLICK_TAB = "click tab";
     public static final String CLICK_SHARE = "click share";
+    public static final String CLICK_BOTTOMSHEET_DISMISS_BUTTON = "x button";
     public static final String CLICK_CART_BUTTON = "click my cart";
     public static final String CLICK_REQUEST_OPEN_SHOP = "click request open shop";
     public static final String IMPRESSION_OF_REQUEST_OPEN_SHOP = "impression of request open shop";
@@ -254,5 +259,13 @@ public class ShopPageTrackingConstant {
     public static final String GENERAL = "general";
 
 
+    //empty state
+    public static final String CLICK_SEARCH_PAGE_NO_RESULT = "click search page no result";
+    public static final String TRY_ANOTHER_WORD = "coba kata lain";
+    public static final String SEARCH_ON_TOKOPEDIA = "search on tokopedia";
+    public static final String SEARCH_NO_RESULT_SUGGESTION = "search no result suggestion";
+    public static final String IMPRESSION_PRODUCT_SEARCH_SUGGESTION = "impression product search suggestion";
+    public static final String CLICK_PRODUCT_SEARCH_SUGGESTION = "click product search suggestion";
+    public static final String SEARCH_NO_RESULT = "search - no result";
 
 }

@@ -89,12 +89,10 @@ class MixLeftComponentViewHolder (itemView: View,
     }
 
     override fun onProductCardImpressed(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
-        //because we have empty value at beginning of list, we need to reduce pos by 1
-        mixLeftComponentListener?.onProductCardImpressed(channelModel, channelGrid, position - 1)
+        mixLeftComponentListener?.onProductCardImpressed(channelModel, channelGrid, position)
     }
 
     override fun onProductCardClicked(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, applink: String) {
-        //because we have empty value at beginning of list, we need to reduce pos by 1
         mixLeftComponentListener?.onProductCardClicked(channelModel, channelGrid, position, applink)
     }
 

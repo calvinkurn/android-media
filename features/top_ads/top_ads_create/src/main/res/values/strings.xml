@@ -27,7 +27,6 @@
     <string name="filter">Filter</string>
     <string name="pilih_produk_dengan_ulasan_terbanyak">Pilih produk dengan ulasan terbanyak</string>
     <string name="pilih_produk_terpopuler">Pilih produk terpopuler</string>
-    <string name="tip_memilih_kata_kunci">Tip memilih kata kunci</string>
     <string name="buat_group_iklan">Buat Grup Iklan</string>
     <string name="contoh_spatu_lari_bando_wanita_gaun_pesta">Contoh: Spatu Lari, Bando Wanita, Gaun Pesta</string>
     <string name="ketik_nama_group_iklan">Ketik nama grup iklan</string>
@@ -74,16 +73,10 @@
     <string name="keyword_empty">Empty Keyword</string>
     <string name="no_keyword_selected_for_bid">Optimalkan iklan produkmu dengan menggunakan kata kunci.</string>
     <string name="add_keywords">Tambah Kata Kunci</string>
-    <string name="_0_kata_kunci_dipilih">0 kata kunci dipilih</string>
     <string name="bid_range">Rp %s - Rp %s</string>
     <string name="kata_kunci_count">Kata Kunci (%d)</string>
-    <string name="error_multiple_50">Biaya harus kelipatan %d</string>
-    <string name="sesuaikan_kata_kunci_dengan_nama_produk">Sesuaikan kata kunci dengan nama produk</string>
-    <string name="lebih_efektif_dengan_kata_kunci_spesifik">Lebih efektif dengan kata kunci spesifik</string>
-    <string name="gunakan_kata_kunci_umum_dengan_maksimum_2_kata">Gunakan kata kunci umum dengan maksimum 2 kata</string>
-    <string name="error_max_selected_keyword">Batas maksimum 50 kata kunci</string>
+     <string name="error_max_selected_keyword">Batas maksimum 50 kata kunci</string>
     <string name="group_name_step">Buat Grup Iklan</string>
-    <string name="keyword_list_step">Pilih Kata Kunci</string>
     <string name="bid_info_step">Atur Biaya Iklan</string>
     <string name="summary_page_step">Ringkasan Iklan</string>
     <string name="product_list_step">Pilih Produk</string>

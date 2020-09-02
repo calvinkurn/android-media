@@ -44,11 +44,13 @@ object ProductDetailConstant {
     const val KEY_OCC_BUTTON = "occ"
     const val KEY_CHAT = "chat"
     const val KEY_BYME = "byme"
+    const val DELIMITER_DEVICE_ID = "|>deviceID:"
     const val KEY_BUTTON_PRIMARY = "primary"
     const val KEY_BUTTON_DISABLE = "disabled"
     const val KEY_BUTTON_SECONDARY = "secondary"
     const val DEFAULT_PAGE_NUMBER = 1
     const val DEFAULT_PAGE_NAME = "pdp_1,pdp_2,pdp_3,pdp_4"
+    const val KEY_TOP_ADS = "tdn_topads"
 
     const val PDP_P1_TRACE = "mp_pdp_p1"
     const val PDP_P2_OTHER_TRACE = "mp_pdp_p2_other"
@@ -124,6 +126,7 @@ object ProductDetailConstant {
     const val PRODUCT_CONTENT_TITLE_TOP = "product_content_title_top"
     const val MEDIA = "product_media"
     const val BY_ME = "byme"
+    const val TOP_ADS = "banner_ads"
 
 
     //Arguments
@@ -137,6 +140,7 @@ object ProductDetailConstant {
     const val ARG_FROM_AFFILIATE = "ARG_FROM_AFFILIATE"
     const val ARG_AFFILIATE_STRING = "ARG_AFFILIATE_STRING"
     const val ARG_DEEPLINK_URL = "ARG_DEEPLINK_URL"
+    const val ARG_LAYOUT_ID= "ARG_LAYOUT_ID"
     const val REVIEW_PRD_NM = "x_prd_nm"
 
 
@@ -171,4 +175,9 @@ object ProductDetailConstant {
 
     //SHOP
     const val ALREADY_FAVORITE_SHOP = 1
+
+    //TopAds Banner
+    const val ADS_COUNT = 1
+    const val DIMEN_ID = 3
+    const val PAGE_SOURCE = "3"
 }

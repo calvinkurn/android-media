@@ -13,7 +13,9 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.settings.analytics.*
 import com.tokopedia.seller.menu.common.analytics.*
@@ -22,11 +24,13 @@ import com.tokopedia.sellerhome.settings.view.uimodel.base.PowerMerchantStatus
 import com.tokopedia.sellerhome.settings.view.uimodel.base.RegularMerchant
 import com.tokopedia.sellerhome.settings.view.uimodel.base.ShopType
 import com.tokopedia.sellerhome.settings.view.uimodel.shopinfo.*
+import com.tokopedia.unifycomponents.LocalLoad
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_other_menu.view.*
-import kotlinx.android.synthetic.main.fragment_other_menu.view.shopInfoLayout
 import kotlinx.android.synthetic.main.setting_balance.view.*
 import kotlinx.android.synthetic.main.setting_balance_topads.view.*
 import kotlinx.android.synthetic.main.setting_partial_main_info_success.view.*
+import kotlinx.android.synthetic.main.setting_partial_others_local_load.view.*
 import kotlinx.android.synthetic.main.setting_partial_shop_info_error.view.*
 import kotlinx.android.synthetic.main.setting_partial_shop_info_success.view.*
 import kotlinx.android.synthetic.main.setting_shop_status_pm.view.*
@@ -36,7 +40,8 @@ class OtherMenuViewHolder(private val itemView: View,
                           private val context: Context,
                           private val listener: Listener,
                           private val trackingListener: SettingTrackingListener,
-                          private val freeShippingTracker: SettingFreeShippingTracker) {
+                          private val freeShippingTracker: SettingFreeShippingTracker,
+                          private val userSession: UserSessionInterface) {
 
     companion object {
         private val GREEN_TIP = R.drawable.setting_tip_bar_enabled
@@ -50,20 +55,57 @@ class OtherMenuViewHolder(private val itemView: View,
     }
 
     fun onSuccessGetSettingShopInfoData(uiModel: SettingShopInfoUiModel) {
-        val successLayout = LayoutInflater.from(context).inflate(R.layout.setting_partial_shop_info_success, null, false)
-        (itemView.shopInfoLayout as? LinearLayout)?.run {
-            removeAllViews()
-            addView(successLayout)
-            setOnClickAction()
-        }
-        uiModel.run {
-            setShopName(shopName)
-            setShopAvatar(shopAvatarUiModel)
-            setShopStatusType(shopStatusUiModel)
-            setSaldoBalance(saldoBalanceUiModel)
-            setKreditTopadsBalance(topadsBalanceUiModel)
-            setShopBadge(shopBadgeUiModel)
-            setShopTotalFollowers(shopFollowersUiModel)
+        with(uiModel) {
+            with(itemView) {
+                when {
+                    partialResponseStatus.first && partialResponseStatus.second -> {
+                        setupSuccessLayout()
+                        shopStatusUiModel?.let { setShopStatusType(it) }
+                        saldoBalanceUiModel?.let { setSaldoBalance(it) }
+                        topadsBalanceUiModel?.let { setKreditTopadsBalance(it) }
+                        shopBadgeUiModel?.let { setShopBadge(it) }
+                        shopFollowersUiModel?.let { setShopTotalFollowers(it) }
+                        
+                        shopInfoLayout?.dot?.visible()
+                        localLoadOthers?.gone()
+                        shopStatus?.visible()
+                        saldoBalance?.visible()
+                        topAdsBalance?.visible()
+                    }
+                    partialResponseStatus.first -> {
+                        setupSuccessLayout()
+                        shopStatusUiModel?.let { setShopStatusType(it) }
+                        shopBadgeUiModel?.let { setShopBadge(it) }
+                        shopFollowersUiModel?.let { setShopTotalFollowers(it) }
+
+                        shopInfoLayout?.dot?.visible()
+                        shopStatus?.visible()
+                        localLoadOthers?.run {
+                            setup()
+                            visible()
+                        }
+                        saldoBalance?.gone()
+                        topAdsBalance?.gone()
+                    }
+                    partialResponseStatus.second -> {
+                        setupSuccessLayout()
+                        saldoBalanceUiModel?.let { setSaldoBalance(it) }
+                        topadsBalanceUiModel?.let { setKreditTopadsBalance(it) }
+
+                        shopInfoLayout?.dot?.gone()
+                        shopStatus?.gone()
+                        localLoadOthers?.run {
+                            setup()
+                            visible()
+                        }
+                        saldoBalance?.visible()
+                        topAdsBalance?.visible()
+                    }
+                    else -> {
+                        onErrorGetSettingShopInfoData()
+                    }
+                }
+            }
         }
     }
 
@@ -77,17 +119,17 @@ class OtherMenuViewHolder(private val itemView: View,
 
     fun onErrorGetSettingShopInfoData() {
         val errorLayout = LayoutInflater.from(context).inflate(R.layout.setting_partial_shop_info_error, null, false)
-        errorLayout?.settingLocalLoad?.run {
-            title?.text = context.resources.getString(R.string.setting_error_message)
-            description?.text = context.resources.getString(R.string.setting_error_description)
-            refreshBtn?.setOnClickListener {
-                listener.onRefreshShopInfo()
-            }
+        errorLayout?.run {
+            settingLocalLoad?.setup()
+            errorShopInfoLayout?.dot?.gone()
         }
         (itemView.shopInfoLayout as? LinearLayout)?.run {
             removeAllViews()
             addView(errorLayout)
+            setOnClickAction()
         }
+        setShopName(userSession.shopName)
+        setShopAvatar(ShopAvatarUiModel(userSession.shopAvatar))
     }
 
     private fun setShopBadge(shopBadgeUiModel: ShopBadgeUiModel) {
@@ -127,6 +169,17 @@ class OtherMenuViewHolder(private val itemView: View,
 
     fun hideFreeShippingLayout() {
         itemView.shopInfoLayout.freeShippingLayout?.hide()
+    }
+
+    private fun setupSuccessLayout() {
+        val successLayout = LayoutInflater.from(context).inflate(R.layout.setting_partial_shop_info_success, null, false)
+        (itemView.shopInfoLayout as? LinearLayout)?.run {
+            removeAllViews()
+            addView(successLayout)
+            setOnClickAction()
+        }
+        setShopName(userSession.shopName)
+        setShopAvatar(ShopAvatarUiModel(userSession.shopAvatar))
     }
 
     private fun setShopName(shopName: String) {
@@ -284,11 +337,17 @@ class OtherMenuViewHolder(private val itemView: View,
     }
 
     private fun View.setOnClickAction() {
-        shopInfoLayout?.run {
-            settingShopNext.setOnClickListener {
-                listener.onShopInfoClicked()
-                sendShopInfoClickNextButtonTracking()
-            }
+        settingShopNext?.setOnClickListener {
+            listener.onShopInfoClicked()
+            sendShopInfoClickNextButtonTracking()
+        }
+    }
+
+    private fun LocalLoad.setup() {
+        title?.text = context.resources.getString(R.string.setting_error_message)
+        description?.text = context.resources.getString(R.string.setting_error_description)
+        refreshBtn?.setOnClickListener {
+            listener.onRefreshShopInfo()
         }
     }
 

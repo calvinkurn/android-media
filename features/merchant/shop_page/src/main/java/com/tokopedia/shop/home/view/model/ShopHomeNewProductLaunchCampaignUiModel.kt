@@ -32,7 +32,8 @@ data class ShopHomeNewProductLaunchCampaignUiModel(
             val productList: List<ShopHomeProductViewModel> = listOf(),
             var isRemindMe: Boolean? = null,
             var rvState: Parcelable? = null,
-            var showRemindMeLoading : Boolean = false
+            var showRemindMeLoading : Boolean = false,
+            var isHideRemindMeTextAfterXSeconds: Boolean = false
     ) {
 
         data class BannerItem(

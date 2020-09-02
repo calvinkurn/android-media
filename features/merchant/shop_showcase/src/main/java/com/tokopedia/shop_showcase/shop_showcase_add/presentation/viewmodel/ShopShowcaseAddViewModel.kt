@@ -3,6 +3,7 @@ package com.tokopedia.shop_showcase.shop_showcase_add.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.shop_showcase.shop_showcase_add.data.model.*
 import com.tokopedia.shop_showcase.shop_showcase_add.domain.usecase.AppendShopShowcaseProductUseCase
@@ -18,7 +19,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Named
@@ -82,42 +82,51 @@ class ShopShowcaseAddViewModel @Inject constructor (
         launchCatchError(block = {
 
             showLoader()
+            val listOfResponse: MutableList<Any> = mutableListOf()
 
             /**
              * Asynchronous gql mutation call to update showcase name
              */
-            val updateShowcaseNameCall = async {
-                executeUpdateShopShowcase(data)
-                updateShopShowcase
+            asyncCatchError(
+                    block = {
+                        executeUpdateShopShowcase(data)
+                    },
+                    onError = {
+                        _updateShopShowcase.postValue(Fail(it))
+                    }
+            ).await().let {
+                listOfResponse.add(updateShopShowcase.value as Result<UpdateShopShowcaseResponse>)
             }
 
             /**
              * Asynchronous gql mutation call to append new showcase product
              */
-            val appendNewShowcaseProductCall = async {
-                executeAppendNewShowcaseProduct(newAppendedProduct)
-                appendNewShowcaseProduct
+            asyncCatchError(
+                    block = {
+                        executeAppendNewShowcaseProduct(newAppendedProduct)
+                    },
+                    onError = {
+                        it.printStackTrace()
+                    }
+            ).await().let {
+                listOfResponse.add(appendNewShowcaseProduct.value as Result<AppendShowcaseProductResponse>)
             }
 
             /**
              * Asynchronous gql mutation call to remove showcase product
              */
-            val removeShowcaseProductCall = async {
-                executeRemoveShowcaseProduct(removedProduct)
-                removeShowcaseProduct
+            asyncCatchError(
+                    block = {
+                        executeRemoveShowcaseProduct(removedProduct)
+                    },
+                    onError = {
+                        it.printStackTrace()
+                    }
+            ).await().let {
+                listOfResponse.add(removeShowcaseProduct.value as Result<RemoveShowcaseProductResponse>)
             }
 
-            val updateShowcaseName = updateShowcaseNameCall.await()
-            val appendShowcaseProduct = appendNewShowcaseProductCall.await()
-            val removeShowcaseProduct = removeShowcaseProductCall.await()
-            val listOfResponse: MutableList<Any> = mutableListOf()
-
-            listOfResponse.add(updateShowcaseName.value as Result<UpdateShopShowcaseResponse>)
-            listOfResponse.add(appendShowcaseProduct.value as Result<AppendShowcaseProductResponse>)
-            listOfResponse.add(removeShowcaseProduct.value as Result<RemoveShowcaseProductResponse>)
-
             _listOfResponse.value = listOfResponse
-
             hideLoader()
 
         }, onError = {
