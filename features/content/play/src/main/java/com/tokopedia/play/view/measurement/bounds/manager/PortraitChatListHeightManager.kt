@@ -27,7 +27,7 @@ class PortraitChatListHeightManager(
     private val immersiveBoxView: View = container.findViewById(R.id.v_immersive_box)
     private val quickReplyView: View = container.findViewById(R.id.rv_quick_reply)
 
-    private val offset16 = container.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
+    private val videoChatMargin = container.resources.getDimensionPixelOffset(R.dimen.play_landscape_video_chat_margin)
     private val maxVerticalChatHeight = container.resources.getDimension(R.dimen.play_chat_vertical_max_height)
 
     private val chatListHeightMap = mutableMapOf<ChatHeightMapKey, Float>()
@@ -80,7 +80,7 @@ class PortraitChatListHeightManager(
         val pinnedViewHeight = pinnedView.height
         val pinnedMargin = pinnedView.layoutParams as ViewGroup.MarginLayoutParams
 
-        val maxHeight = abs(chatListView.globalVisibleRect.bottom - (immersiveBoxBottom + pinnedViewHeight + offset16 + pinnedMargin.bottomMargin))
+        val maxHeight = abs(chatListView.globalVisibleRect.bottom - (immersiveBoxBottom + pinnedViewHeight + videoChatMargin + pinnedMargin.bottomMargin))
 
         maxHeight.toFloat()
     }
@@ -101,7 +101,7 @@ class PortraitChatListHeightManager(
 
         awaitAll(rvChatLayout)
 
-        val maxHeight = abs(chatListView.globalVisibleRect.bottom - (maxTopPosition + offset16 + quickReplyViewTotalHeight))
+        val maxHeight = abs(chatListView.globalVisibleRect.bottom - (maxTopPosition + videoChatMargin + quickReplyViewTotalHeight))
 
         maxHeight.toFloat()
     }

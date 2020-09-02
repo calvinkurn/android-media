@@ -52,6 +52,8 @@
 
     <dimen name="play_viewer_loading_size">40dp</dimen>
 
+    <dimen name="play_landscape_video_chat_margin">58dp</dimen>
+
     <!--General Dimension-->
     <dimen name="play_offset_12">12dp</dimen>
     <dimen name="play_no_offset">0dp</dimen>
