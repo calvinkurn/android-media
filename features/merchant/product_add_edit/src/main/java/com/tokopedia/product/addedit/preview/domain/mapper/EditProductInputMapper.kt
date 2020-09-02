@@ -154,7 +154,7 @@ class EditProductInputMapper @Inject constructor() {
     }
 
     private fun mapSizeChart(sizecharts: PictureVariantInputModel): List<Picture>? {
-        return if (sizecharts.filePath.isEmpty()) {
+        return if (sizecharts.urlOriginal.isEmpty() && sizecharts.uploadId.isEmpty()) {
             emptyList()
         } else {
             val sizechart = Picture(
