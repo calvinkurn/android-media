@@ -205,6 +205,7 @@ public class SearchActivity extends BaseActivity
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) return;
 
         container.loadLayoutDescription(R.xml.tab_layout_scene);
+        container.setTransition(R.id.searchMotionTabStart, R.id.searchMotionTabEnd);
         container.setTransitionListener(getContainerTransitionListener());
     }
 
@@ -220,7 +221,9 @@ public class SearchActivity extends BaseActivity
             public void onTransitionTrigger(MotionLayout motionLayout, int i, boolean b, float v) { }
 
             @Override
-            public void onTransitionCompleted(MotionLayout motionLayout, int i) { onContainerTransitionCompleted(i); }
+            public void onTransitionCompleted(MotionLayout motionLayout, int i) {
+                onContainerTransitionCompleted(i);
+            }
         };
     }
 
