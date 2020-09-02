@@ -1026,12 +1026,12 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     override fun followUnfollowShop(actionFollow: Boolean) {
         analytics.eventFollowUnfollowShop(actionFollow, shopId.toString())
-        presenter.followUnfollowShop(shopId.toString(), onErrorFollowUnfollowShop(), onSuccessFollowUnfollowShop())
+        presenter.followUnfollowShop(shopId.toString(), ::onErrorFollowUnfollowShop, onSuccessFollowUnfollowShop())
     }
 
-    private fun onErrorFollowUnfollowShop(): (Throwable) -> Unit {
-        return {
-            showSnackbarError(ErrorHandler.getErrorMessage(view!!.context, it))
+    private fun onErrorFollowUnfollowShop(throwable: Throwable) {
+        context?.let {
+            showSnackbarError(ErrorHandler.getErrorMessage(it, throwable))
         }
     }
 
