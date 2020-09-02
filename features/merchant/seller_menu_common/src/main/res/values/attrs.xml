@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SellerMenuBusinessCard">
+        <attr name="menuTitle" format="string"/>
+        <attr name="menuDescription" format="string"/>
+        <attr name="menuIcon" format="integer"/>
+    </declare-styleable>
+</resources>
