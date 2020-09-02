@@ -2,6 +2,8 @@ package com.tokopedia.topads.dashboard.view.adapter.autoads.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.model.nongroupItem.WithoutGroupDataItem
 import com.tokopedia.topads.dashboard.view.adapter.autoads.viewmodel.AutoAdsItemsEmptyViewModel
@@ -21,5 +23,9 @@ class AutoAdsItemsEmptyViewHolder(val view: View) : AutoAdsItemsViewHolder<AutoA
         view.text_title.text = view.context.getString(R.string.topads_dash_empty_non_group_title)
         view.text_desc.text = view.context.getString(R.string.topads_dash_empty_non_group_desc)
         view.btn_submit.text = view.context.getString(R.string.topads_dash_empty_non_group_butt)
+
+        view.btn_submit.setOnClickListener {
+            RouteManager.route(it.context, ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE)
+        }
     }
 }
