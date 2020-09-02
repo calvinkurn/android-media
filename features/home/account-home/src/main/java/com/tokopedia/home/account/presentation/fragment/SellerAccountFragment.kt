@@ -33,16 +33,10 @@ import com.tokopedia.home.account.revamp.viewmodel.SellerAccountViewModel
 import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking.eventOnClickAccountTicker
-import com.tokopedia.seller_migration_common.getSellerMigrationDate
-import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
-import com.tokopedia.seller_migration_common.presentation.fragment.bottomsheet.SellerMigrationAccountCommBottomSheet
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.make
-import com.tokopedia.unifycomponents.ticker.Ticker
-import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import java.net.SocketTimeoutException
@@ -57,10 +51,6 @@ class SellerAccountFragment : BaseAccountFragment(), AccountItemListener, Fragme
     private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val viewModel by lazy { viewModelFragmentProvider.get(SellerAccountViewModel::class.java) }
 
-    private val sellerMigrationBottomSheet by lazy {
-        SellerMigrationAccountCommBottomSheet.createInstance(userSession.userId)
-    }
-
     @Inject
     lateinit var sellerAccountMapper: SellerAccountMapper
 
@@ -68,7 +58,6 @@ class SellerAccountFragment : BaseAccountFragment(), AccountItemListener, Fragme
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: SellerAccountAdapter
     private lateinit var fpmSeller: PerformanceMonitoring
-    private lateinit var migrationTicker: Ticker
 
     private var isLoaded = false
 
@@ -80,7 +69,6 @@ class SellerAccountFragment : BaseAccountFragment(), AccountItemListener, Fragme
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_seller_account, container, false)
-        migrationTicker = view.findViewById(R.id.account_seller_migration_ticker)
         recyclerView = view.findViewById(R.id.recycler_seller)
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
 
@@ -95,7 +83,6 @@ class SellerAccountFragment : BaseAccountFragment(), AccountItemListener, Fragme
 
         adapter = SellerAccountAdapter(AccountTypeFactory(this), ArrayList())
         recyclerView.adapter = adapter
-        setupSellerMigrationTicker()
         swipeRefreshLayout.setOnRefreshListener {
             isLoaded = false
             getData()
@@ -244,29 +231,6 @@ class SellerAccountFragment : BaseAccountFragment(), AccountItemListener, Fragme
     override fun onProductRecommendationImpression(product: RecommendationItem, adapterPosition: Int) {}
     override fun onProductRecommendationWishlistClicked(product: RecommendationItem, wishlistStatus: Boolean, callback: (Boolean, Throwable?) -> Unit) {}
     override fun onProductRecommendationThreeDotsClicked(product: RecommendationItem, adapterPosition: Int) {}
-    private fun setupSellerMigrationTicker() {
-        if (isSellerMigrationEnabled(this.context)) {
-            migrationTicker.tickerTitle = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_ticker_title)
-            val remoteConfigDate = getSellerMigrationDate(this.context)
-            if (remoteConfigDate.isEmpty()) {
-                migrationTicker.setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_account_ticker_desc))
-            } else {
-                migrationTicker.setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_account_ticker_desc_dynamic, remoteConfigDate))
-            }
-            migrationTicker.setDescriptionClickEvent(object : TickerCallback {
-                override fun onDescriptionViewClick(charSequence: CharSequence) {
-                    eventOnClickAccountTicker(userSession.userId)
-                    sellerMigrationBottomSheet.show(childFragmentManager, SellerMigrationAccountCommBottomSheet::class.java.name)
-                }
-
-                override fun onDismiss() {
-                    // No op
-                }
-            })
-        } else {
-            migrationTicker.visibility = View.GONE
-        }
-    }
 
     private fun goToSellerAppProductManage() {
         val appLinks = ArrayList<String>()

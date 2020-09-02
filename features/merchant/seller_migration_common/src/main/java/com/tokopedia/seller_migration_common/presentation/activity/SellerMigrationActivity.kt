@@ -1,5 +1,6 @@
 package com.tokopedia.seller_migration_common.presentation.activity
 
+import android.app.TaskStackBuilder
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
@@ -28,21 +29,25 @@ import com.tokopedia.user.session.UserSession
 class SellerMigrationActivity : BaseSimpleActivity() {
 
     companion object {
-        fun createIntent(context: Context, @SellerMigrationFeatureName featureName: String, screenName: String, appLinks: ArrayList<String>): Intent {
+        fun createIntent(context: Context, @SellerMigrationFeatureName featureName: String, screenName: String, appLinks: ArrayList<String>,
+                         isStackBuilder: Boolean = false): Intent {
             return RouteManager.getIntent(context, String.format("%s?${SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME}=%s", ApplinkConst.SELLER_MIGRATION, featureName)).apply {
                 putExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, appLinks)
                 putExtra(SellerMigrationApplinkConst.EXTRA_SCREEN_NAME, screenName)
                 putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, featureName)
+                putExtra(SellerMigrationApplinkConst.EXTRA_IS_STACK_BUILDER, isStackBuilder)
             }
         }
     }
 
     private var featureName: String = ""
+    private var isStackBuilder: Boolean = false
 
     override fun getScreenName(): String = "/migration-page"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         featureName = intent.extras?.getString(SellerMigrationFragment.KEY_PARAM_FEATURE_NAME).orEmpty()
+        isStackBuilder = intent.extras?.getBoolean(SellerMigrationApplinkConst.EXTRA_IS_STACK_BUILDER, false) ?: false
         super.onCreate(savedInstanceState)
         processAppLink()
     }
@@ -54,6 +59,7 @@ class SellerMigrationActivity : BaseSimpleActivity() {
                 val appLinks = ArrayList<String>(intent.extras?.getStringArrayList(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA).orEmpty())
                 if (appLinks.isNotEmpty()) {
                     val firstAppLink = appLinks.firstOrNull().orEmpty()
+
                     val parameterizedFirstAppLink = Uri.parse(firstAppLink)
                             .buildUpon()
                             .appendQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, featureName)
@@ -66,13 +72,26 @@ class SellerMigrationActivity : BaseSimpleActivity() {
                             .build()
                             .toString()
                     appLinks.removeAt(0)
-                    RouteManager.getIntent(this, sellerAppSeamlessLoginAppLink)?.apply {
+
+                    val seamLessLoginIntent = RouteManager.getIntent(this, sellerAppSeamlessLoginAppLink)?.apply {
                         putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, appLinks)
                         putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, featureName)
                         flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-                        startActivity(this)
-                        finish()
                     }
+
+                    if(isStackBuilder) {
+                        if(appLinks.size == 1) {
+                            val taskStackBuilder = TaskStackBuilder.create(this)
+                            val secondAppLink = appLinks.firstOrNull().orEmpty()
+                            val secondIntent = RouteManager.getIntent(this, secondAppLink)
+                            taskStackBuilder.addNextIntent(seamLessLoginIntent)
+                            taskStackBuilder.addNextIntent(secondIntent)
+                            taskStackBuilder.startActivities()
+                        }
+                    } else {
+                        startActivity(seamLessLoginIntent)
+                    }
+                    finish()
                 }
             }
             EVENT_LABEL_TO_SELLER_APP

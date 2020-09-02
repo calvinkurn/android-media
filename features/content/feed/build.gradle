@@ -107,6 +107,8 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.couroutinesTest
     testImplementation rootProject.ext.testDependencies.json
 
+    implementation project(rootProject.ext.features.sellerMigrationCommon)
+
     implementation rootProject.ext.networkDependencies.glide
     implementation(rootProject.ext.miscDependencies.ucrop) {
         exclude group: 'com.android.support'

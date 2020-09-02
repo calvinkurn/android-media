@@ -10,17 +10,24 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller_migration_common.R
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
 import com.tokopedia.seller_migration_common.getSellerMigrationDate
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.fragment.bottomsheet.SellerMigrationCommunicationBottomSheet
+import com.tokopedia.seller_migration_common.presentation.model.AccountSettingData
 import com.tokopedia.seller_migration_common.presentation.model.CommunicationInfo
 import com.tokopedia.seller_migration_common.presentation.util.touchlistener.SellerMigrationTouchListener
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.list.ListItemUnify
+import com.tokopedia.unifycomponents.list.ListUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
@@ -43,8 +50,8 @@ internal fun Fragment.setupMigrationFooter(view: View?,
     })
 }
 
-private fun Fragment.goToSellerApp(trackGoToSellerApp: () -> Unit,
-                                   trackGoToPlayStore: () -> Unit) {
+fun Fragment.goToSellerApp(trackGoToSellerApp: () -> Unit = {},
+                           trackGoToPlayStore: () -> Unit = {}) {
     with(SellerMigrationConstants) {
         try {
             val intent = context?.packageManager?.getLaunchIntentForPackage(PACKAGE_SELLER_APP)
@@ -63,14 +70,14 @@ private fun Fragment.goToSellerApp(trackGoToSellerApp: () -> Unit,
     }
 }
 
-private fun Fragment.goToInformationWebview(link: String,
-                                            trackLearnMore: () -> Unit): Boolean {
+fun Fragment.goToInformationWebview(link: String,
+                                    trackLearnMore: () -> Unit = {}): Boolean {
     trackLearnMore()
     return RouteManager.route(activity, "${ApplinkConst.WEBVIEW}?url=${link}")
 }
 
 @Parcelize
-data class BenefitPoints(val benefitPointsList: List<CharSequence>): Parcelable
+data class BenefitPoints(val benefitPointsList: List<CharSequence>) : Parcelable
 
 /**
  * Fragment extension function to initialize phase 3 redirection ticker, which will show bottomsheet if spanned string is clicked
@@ -95,7 +102,7 @@ fun Fragment.initializeSellerMigrationCommunicationTicker(bottomSheet: SellerMig
             }
             val featureString = context?.getString(communicationInfo.tickerMessagePrefixRes).orEmpty()
             setHtmlDescription(context?.getString(R.string.seller_migration_ticker_desc, featureString, remoteConfigDate).orEmpty())
-            setDescriptionClickEvent(object: TickerCallback {
+            setDescriptionClickEvent(object : TickerCallback {
                 override fun onDismiss() {}
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
                     openSellerMigrationBottomSheet(bottomSheet)
@@ -135,7 +142,7 @@ fun FragmentActivity.initializeSellerMigrationCommunicationTicker(bottomSheet: S
             }
             val featureString = context?.getString(communicationInfo.tickerMessagePrefixRes).orEmpty()
             setHtmlDescription(context?.getString(R.string.seller_migration_ticker_desc, featureString, remoteConfigDate).orEmpty())
-            setDescriptionClickEvent(object: TickerCallback {
+            setDescriptionClickEvent(object : TickerCallback {
                 override fun onDismiss() {}
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
                     openSellerMigrationBottomSheet(bottomSheet)
@@ -152,3 +159,104 @@ private fun FragmentActivity.openSellerMigrationBottomSheet(bottomSheet: SellerM
     bottomSheet?.show(supportFragmentManager, SellerMigrationCommunicationBottomSheet::class.java.name)
 }
 
+
+fun Fragment.initializeSellerMigrationAccountSettingTicker(ticker: Ticker?) {
+    ticker?.run {
+        if (isSellerMigrationEnabled(context)) {
+            tickerTitle = getString(AccountSettingData.titleRes)
+            //applink need improvement
+            setHtmlDescription(getString(AccountSettingData.descRes))
+            setDescriptionClickEvent(object : TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    RouteManager.route(context, ApplinkConstInternalSellerapp.MENU_SETTING)
+                }
+
+                override fun onDismiss() {}
+            })
+            show()
+        } else {
+            hide()
+        }
+    }
+}
+
+fun Typography.setOnClickLinkSpannable(htmlString: String,
+                                       redirectPage: () -> Unit = {},
+                                       trackGoToSellerApp: () -> Unit = {}) {
+    val htmlLinkString = HtmlLinkHelper(context, htmlString)
+    text = htmlLinkString.spannedString
+    htmlLinkString.urlList.firstOrNull()?.setOnClickListener {
+        trackGoToSellerApp()
+        redirectPage()
+    }
+}
+
+val Fragment.getUnifyFeedList: ArrayList<ListItemUnify>
+    get() {
+        val itemUnifyList: ArrayList<ListItemUnify> = arrayListOf()
+        val postSeller = ListItemUnify(R.layout.partial_seller_migration_feed_post_seller_bottom_sheet) { view, _ ->
+            val tvShopPost = view.findViewById<Typography>(R.id.tvShopPost)
+            val tvInSeller = view.findViewById<Label>(R.id.tvInSeller)
+            tvShopPost.text = getString(R.string.seller_migration_bottom_sheet_feed_post_shop)
+            tvInSeller.setLabel(getString(R.string.seller_migration_bottom_sheet_feed_in_tokopedia_seller))
+            return@ListItemUnify view
+        }
+
+        itemUnifyList.apply {
+            add(ListItemUnify(
+                    title = getString(R.string.seller_migration_bottom_sheet_feed_post_your_favorite_item),
+                    description = ""))
+            add(postSeller)
+        }
+        return itemUnifyList
+    }
+
+fun Fragment.setupListUnifyFeedSellerMigration(feedListUnify: ListUnify,
+                                               bottomSheet: BottomSheetUnify,
+                                               goToCreateAffiliate: () -> Unit = {},
+                                               isAuthorAffiliate: Boolean,
+                                               onGoToLink: Intent) {
+    val positionPostFavoriteItem = 0
+    val positionPostInSeller = 1
+    feedListUnify.setData(getUnifyFeedList)
+    feedListUnify.let {
+        it.onLoadFinish {
+            it.setOnItemClickListener { _, _, position, _ ->
+                when (position) {
+                    positionPostFavoriteItem -> {
+                        if (isAuthorAffiliate) {
+                            goToCreateAffiliate()
+                            bottomSheet.dismiss()
+                        }
+                    }
+                    positionPostInSeller -> {
+                        startActivity(onGoToLink)
+                        bottomSheet.dismiss()
+                    }
+                }
+            }
+        }
+    }
+}
+
+fun Fragment.setupBottomSheetFeedSellerMigration(goToCreateAffiliate: () -> Unit = {},
+                                                 isAuthorAffiliate: Boolean,
+                                                 onGoToLink: Intent) {
+    val viewBottomSheet = View.inflate(context, R.layout.bottom_sheet_feed_content_seller_migration, null)
+    val bottomSheet = BottomSheetUnify()
+    val feedListUnify = viewBottomSheet.findViewById<ListUnify>(R.id.feedListUnify)
+    bottomSheet.setChild(viewBottomSheet)
+
+    setupListUnifyFeedSellerMigration(feedListUnify, bottomSheet, goToCreateAffiliate, isAuthorAffiliate, onGoToLink)
+
+    bottomSheet.apply {
+        showCloseIcon = true
+        setCloseClickListener {
+            dismiss()
+        }
+    }
+
+    fragmentManager?.let {
+        bottomSheet.show(it, "")
+    }
+}

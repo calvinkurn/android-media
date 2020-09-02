@@ -582,7 +582,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
             ArrayList<String> appLinks = new ArrayList();
             appLinks.add(ApplinkConst.PRODUCT_MANAGE);
             appLinks.add(ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW);
-            Intent intent = SellerMigrationActivity.Companion.createIntent(getContext(), SellerMigrationFeatureName.FEATURE_SET_VARIANT, getScreenName(), appLinks);
+            Intent intent = SellerMigrationActivity.Companion.createIntent(getContext(), SellerMigrationFeatureName.FEATURE_SET_VARIANT, getScreenName(), appLinks, false);
             startActivity(intent);
             dismissProductBottomSheet();
         }

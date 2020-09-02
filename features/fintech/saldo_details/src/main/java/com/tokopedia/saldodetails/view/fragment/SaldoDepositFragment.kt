@@ -19,14 +19,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.Transformation
-import android.widget.*
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
@@ -53,13 +55,7 @@ import com.tokopedia.saldodetails.view.activity.SaldoDepositActivity
 import com.tokopedia.saldodetails.view.activity.SaldoHoldInfoActivity
 import com.tokopedia.saldodetails.viewmodels.SaldoDetailViewModel
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
-import com.tokopedia.seller_migration_common.presentation.fragment.bottomsheet.SellerMigrationCommunicationBottomSheet
-import com.tokopedia.seller_migration_common.presentation.model.CommunicationInfo
-import com.tokopedia.seller_migration_common.presentation.model.DynamicCommunication
-import com.tokopedia.seller_migration_common.presentation.model.SellerMigrationCommunication
-import com.tokopedia.seller_migration_common.presentation.util.initializeSellerMigrationCommunicationTicker
 import com.tokopedia.showcase.*
-import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
 
@@ -128,7 +124,6 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     private var buyerBalanceInfoIcon: View? = null
     private var sellerBalanceInfoIcon: View? = null
     private var saldoBalanceSeparator: View? = null
-    private var sellerMigrationTicker: Ticker? = null
     private var isSellerEnabled: Boolean = false
 
     private var saldoHistoryFragment: SaldoTransactionHistoryFragment? = null
@@ -286,7 +281,6 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         saldoTypeLL = view.findViewById(com.tokopedia.saldodetails.R.id.saldo_type_ll)
         merchantDetailLL = view.findViewById(com.tokopedia.saldodetails.R.id.merchant_details_ll)
         merchantStatusLL = view.findViewById(com.tokopedia.saldodetails.R.id.merchant_status_ll)
-        sellerMigrationTicker = view.findViewById(com.tokopedia.saldodetails.R.id.ticker_seller_migration_saldo_deposit)
         saldoDepositExpandIV!!.setImageDrawable(MethodChecker.getDrawable(activity, com.tokopedia.design.R.drawable.ic_arrow_up_grey))
         layoutTicker = view.findViewById(com.tokopedia.saldodetails.R.id.layout_holdwithdrawl_dialog)
         tvTickerMessage = view.findViewById(com.tokopedia.design.R.id.tv_desc_info)
@@ -409,10 +403,6 @@ class SaldoDepositFragment : BaseDaggerFragment() {
                     hideTickerMessage()
                 }
             }
-        })
-
-        saldoDetailViewModel.tickerMigrationEligibilityLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            showSellerMigrationTicker(it)
         })
     }
 
@@ -867,24 +857,6 @@ class SaldoDepositFragment : BaseDaggerFragment() {
 
     private fun hideWarning() {
         holdBalanceLayout!!.hide()
-    }
-
-    private fun showSellerMigrationTicker(eligibilityPair: Pair<Boolean, Boolean>) {
-        with(eligibilityPair) {
-            val communicationType: SellerMigrationCommunication = when {
-                first && second -> DynamicCommunication
-                first -> CommunicationInfo.ShopCapital
-                second -> CommunicationInfo.PriorityBalance
-                else -> return@with
-            }
-            context?.let {
-                initializeSellerMigrationCommunicationTicker(
-                        SellerMigrationCommunicationBottomSheet.createInstance(it, communicationType, screenName.orEmpty(), userSession.userId),
-                        sellerMigrationTicker,
-                        CommunicationInfo.ShopCapital
-                )
-            }
-        }
     }
 
     fun refresh() {
