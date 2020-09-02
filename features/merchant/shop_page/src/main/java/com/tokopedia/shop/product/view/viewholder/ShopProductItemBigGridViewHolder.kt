@@ -9,7 +9,7 @@ import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
 import com.tokopedia.shop.product.view.datamodel.ShopProductViewModel
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener
 import com.tokopedia.shop.product.view.listener.ShopProductImpressionListener
-import kotlinx.android.synthetic.main.item_shop_product_card_list.view.*
+import kotlinx.android.synthetic.main.item_shop_newproduct_big_grid.view.*
 
 class ShopProductItemBigGridViewHolder(
         itemView: View,
@@ -21,22 +21,22 @@ class ShopProductItemBigGridViewHolder(
     companion object {
         @LayoutRes
         @JvmField
-        val LAYOUT = R.layout.item_shop_newproduct_grid
+        val LAYOUT = R.layout.item_shop_newproduct_big_grid
     }
 
     override fun bind(shopProductViewModel: ShopProductViewModel) {
-        itemView.productCardView?.setProductModel(
+        itemView.product_card?.setProductModel(
                 ShopPageProductListMapper.mapToProductCardModel(shopProductViewModel)
         )
-        itemView.productCardView?.setThreeDotsOnClickListener {
+        itemView.product_card?.setThreeDotsOnClickListener {
             shopProductClickedListener?.onThreeDotsClicked(shopProductViewModel, adapterPosition)
         }
 
-        itemView.productCardView?.setOnClickListener {
+        itemView.product_card?.setOnClickListener {
             shopProductClickedListener?.onProductClicked(shopProductViewModel, shopTrackType, adapterPosition)
         }
 
-        itemView.productCardView?.setImageProductViewHintListener(shopProductViewModel, object : ViewHintListener {
+        itemView.product_card?.setImageProductViewHintListener(shopProductViewModel, object : ViewHintListener {
             override fun onViewHint() {
                 shopProductImpressionListener?.onProductImpression(shopProductViewModel, shopTrackType, adapterPosition)
             }

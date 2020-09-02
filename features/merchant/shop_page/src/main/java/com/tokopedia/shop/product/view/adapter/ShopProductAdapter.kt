@@ -12,13 +12,10 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder
 import com.tokopedia.shop.analytic.OldShopPageTrackingConstant.ALL_ETALASE
 import com.tokopedia.shop.common.constant.ShopPageConstant.*
-import com.tokopedia.shop.product.util.ShopProductViewGridType
+import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.datamodel.*
-import com.tokopedia.shop.product.view.viewholder.ShopProductAddViewHolder
-import com.tokopedia.shop.product.view.viewholder.ShopProductSellerAllEtalaseEmptyViewHolder
-import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
-import com.tokopedia.shop.product.view.viewholder.ShopProductViewHolder
+import com.tokopedia.shop.product.view.viewholder.*
 import com.tokopedia.shop.product.view.widget.OnStickySingleHeaderListener
 import com.tokopedia.shop.product.view.widget.StickySingleHeaderView
 
@@ -96,6 +93,8 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         if (holder.itemView.layoutParams is StaggeredGridLayoutManager.LayoutParams) {
             val staggeredLayoutParams = holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams
             staggeredLayoutParams.isFullSpan = !(getItemViewType(position) == ShopProductViewHolder.GRID_LAYOUT ||
+                    getItemViewType(position) == ShopProductItemBigGridViewHolder.LAYOUT ||
+                    getItemViewType(position) == ShopProductItemListViewHolder.LAYOUT ||
                     getItemViewType(position) == ShopProductAddViewHolder.LAYOUT ||
                     getItemViewType(position) == ShopProductSellerAllEtalaseEmptyViewHolder.LAYOUT ||
                     getItemViewType(position) == LoadingMoreViewHolder.LAYOUT)
@@ -106,7 +105,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
     private fun setLayoutManagerSpanCount() {
         (recyclerView?.layoutManager as? StaggeredGridLayoutManager)?.spanCount = when (shopProductAdapterTypeFactory.productCardType) {
             ShopProductViewGridType.BIG_GRID -> {
-                2
+                1
             }
             ShopProductViewGridType.SMALL_GRID -> {
                 2
@@ -568,6 +567,20 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
                     it::class.java != ShopSellerEmptyProductAllEtalaseViewModel::class.java &&
                     it::class.java != ShopEmptyProductViewModel::class.java &&
                     it::class.java != LoadingMoreModel::class.java
+        }
+    }
+
+    fun addShopPageProductChangeGridSection(data: ShopProductChangeGridSectionUiModel) {
+        if(shopProductEtalaseTitlePosition >= 0){
+            visitables.add(getListWithoutProductCardDataAndLoadingMoreModel().size, data)
+            notifyChangedDataSet()
+        }
+    }
+
+    fun updateShopPageProductChangeGridSection(gridType: ShopProductViewGridType) {
+        visitables.filterIsInstance<ShopProductChangeGridSectionUiModel>().firstOrNull()?.apply {
+            this.gridType = gridType
+            notifyChangedItem(visitables.indexOf(this))
         }
     }
 }

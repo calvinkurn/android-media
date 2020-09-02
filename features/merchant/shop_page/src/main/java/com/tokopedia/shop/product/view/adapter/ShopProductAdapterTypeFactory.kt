@@ -13,15 +13,13 @@ import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidge
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef
 import com.tokopedia.shop.common.view.adapter.MembershipStampAdapter
-import com.tokopedia.shop.product.util.ShopProductViewGridType
+import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListener
+import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.product.view.viewholder.ErrorNetworkWrapViewHolder
 import com.tokopedia.shop.product.view.viewholder.ShopProductListEmptyViewHolder
 
 import com.tokopedia.shop.product.view.datamodel.*
-import com.tokopedia.shop.product.view.listener.ShopCarouselSeeAllClickedListener
-import com.tokopedia.shop.product.view.listener.ShopProductClickedListener
-import com.tokopedia.shop.product.view.listener.ShopProductEmptySearchListener
-import com.tokopedia.shop.product.view.listener.ShopProductImpressionListener
+import com.tokopedia.shop.product.view.listener.*
 import com.tokopedia.shop.product.view.viewholder.*
 
 class ShopProductAdapterTypeFactory(private val membershipStampAdapterListener: MembershipStampAdapter.MembershipStampAdapterListener?,
@@ -29,11 +27,12 @@ class ShopProductAdapterTypeFactory(private val membershipStampAdapterListener: 
                                     private val shopProductImpressionListener: ShopProductImpressionListener?,
                                     private val shopCarouselSeeAllClickedListener: ShopCarouselSeeAllClickedListener?,
                                     private val emptyProductOnClickListener: BaseEmptyViewHolder.Callback?,
-                                    private val shopProductEtalaseListViewHolderListener: ShopProductSortFilterViewHolder.ShopProductEtalaseChipListViewHolderListener?,
+                                    private val shopProductEtalaseListViewHolderListener: ShopProductSortFilterViewHolder.ShopProductSortFilterViewHolderListener?,
                                     private val onMerchantVoucherListWidgetListener: MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener?,
                                     private val shopProductAddViewHolderListener: ShopProductAddViewHolder.ShopProductAddViewHolderListener?,
                                     private val shopProductsEmptyViewHolderListener: ShopProductsEmptyViewHolder.ShopProductsEmptyViewHolderListener?,
                                     private val shopProductEmptySearchListener: ShopProductEmptySearchListener?,
+                                    private val shopProductChangeGridSectionListener: ShopProductChangeGridSectionListener,
                                     private val isGridSquareLayout: Boolean,
                                     private val deviceWidth: Int,
                                     @param:ShopTrackProductTypeDef @field:ShopTrackProductTypeDef
@@ -107,6 +106,10 @@ class ShopProductAdapterTypeFactory(private val membershipStampAdapterListener: 
         return ShopProductEtalaseTitleViewHolder.LAYOUT
     }
 
+    fun type(shopProductChangeGridSectionUiModel: ShopProductChangeGridSectionUiModel): Int {
+        return ShopProductChangeGridSectionViewHolder.LAYOUT
+    }
+
     fun type(shopProductAddViewModel: ShopProductAddViewModel): Int {
         return ShopProductAddViewHolder.LAYOUT
     }
@@ -143,6 +146,7 @@ class ShopProductAdapterTypeFactory(private val membershipStampAdapterListener: 
             ShopProductItemListViewHolder.LAYOUT -> return ShopProductItemListViewHolder(parent, shopProductClickedListener, shopProductImpressionListener, ShopTrackProductTypeDef.PRODUCT)
             ShopProductItemBigGridViewHolder.LAYOUT -> return ShopProductItemBigGridViewHolder(parent, shopProductClickedListener, shopProductImpressionListener, ShopTrackProductTypeDef.PRODUCT)
             MembershipStampProgressViewHolder.LAYOUT -> return MembershipStampProgressViewHolder(parent, membershipStampAdapterListener)
+            ShopProductChangeGridSectionViewHolder.LAYOUT -> return ShopProductChangeGridSectionViewHolder(parent, shopProductChangeGridSectionListener)
             else -> return if (type == HideViewHolder.LAYOUT) {
                 HideViewHolder(parent)
             } else {

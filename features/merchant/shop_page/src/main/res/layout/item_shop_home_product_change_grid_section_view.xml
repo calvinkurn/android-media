@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/label_total_product"
+        style="@style/TextView.Title.Bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_4"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_4"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:textColor="@color/clr_5231353B"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_5"
+        android:text="2rb Produk"
+        tools:text="2rb Produk" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/label_tampilan"
+        style="@style/TextView.Title.Bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_8"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/iv_grid_icon"
+        android:textColor="@color/clr_f531353b"
+        app:layout_constraintHorizontal_bias="1"
+        app:typographyType="heading_5"
+        android:text="Tampilan"
+        tools:text="Tampilan" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_grid_icon"
+        android:layout_width="@dimen/dp_24"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginRight="@dimen/dp_4"
+        android:layout_marginLeft="@dimen/dp_4"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:srcCompat ="@drawable/ic_shop_page_product_grid_list"
+        app:layout_constraintHorizontal_bias="1"
+        android:layout_height="@dimen/dp_24" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -48,8 +48,10 @@ import com.tokopedia.shop.common.constant.ShopPageConstant.EMPTY_PRODUCT_SEARCH_
 import com.tokopedia.shop.common.constant.ShopParamConstant
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListener
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
 import com.tokopedia.shop.product.di.module.ShopProductModule
+import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapter
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
@@ -58,10 +60,7 @@ import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment.Comp
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment.Companion.BUNDLE_IS_SHOW_ZERO_PRODUCT
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment.Companion.BUNDLE_SELECTED_ETALASE_ID
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment.Companion.BUNDLE_SHOP_ID
-import com.tokopedia.shop.product.view.listener.OnShopProductListFragmentListener
-import com.tokopedia.shop.product.view.listener.ShopProductClickedListener
-import com.tokopedia.shop.product.view.listener.ShopProductEmptySearchListener
-import com.tokopedia.shop.product.view.listener.ShopProductImpressionListener
+import com.tokopedia.shop.product.view.listener.*
 import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
 import com.tokopedia.shop.product.view.viewmodel.ShopPageProductListResultViewModel
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity.Companion.createIntent
@@ -75,8 +74,8 @@ import javax.inject.Inject
 
 class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewModel, ShopProductAdapterTypeFactory>(),
         WishListActionListener, BaseEmptyViewHolder.Callback, ShopProductClickedListener,
-        ShopProductSortFilterViewHolder.ShopProductEtalaseChipListViewHolderListener,
-        ShopProductImpressionListener, ShopProductEmptySearchListener {
+        ShopProductSortFilterViewHolder.ShopProductSortFilterViewHolderListener,
+        ShopProductImpressionListener, ShopProductEmptySearchListener, ShopProductChangeGridSectionListener {
 
     interface ShopPageProductListResultFragmentListener {
         fun onSortValueUpdated(sortValue: String)
@@ -139,6 +138,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 null,
                 null,
                 null,
+                this,
                 this,
                 true,
                 0,
@@ -310,8 +310,10 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         viewModel.productData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    val productList = it.data.second
-                    renderProductList(productList, it.data.first)
+                    val productList = it.data.listShopProductUiModel
+                    val hasNextPage = it.data.hasNextPage
+                    val totalProductData =  it.data.totalProductData
+                    renderProductList(productList, hasNextPage, totalProductData)
                     isNeedToReloadData = false
                 }
                 is Fail -> showGetListError(it.throwable)
@@ -325,7 +327,11 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         })
     }
 
-    private fun renderProductList(productList: List<ShopProductViewModel>, hasNextPage: Boolean) {
+    private fun renderProductList(
+            productList: List<ShopProductViewModel>,
+            hasNextPage: Boolean,
+            totalProductData: Int
+    ) {
         hideLoading()
         shopProductAdapter.clearAllNonDataElement()
         if (isLoadingInitialData) {
@@ -334,6 +340,9 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
             if (productList.isNotEmpty()) {
                 shopProductSortFilterUiModel?.let { shopProductAdapter.setSortFilterData(it) }
+                shopProductAdapter.addShopPageProductChangeGridSection(ShopProductChangeGridSectionUiModel(
+                        totalProductData
+                ))
             }
         }
 
@@ -846,6 +855,8 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         loadInitialData()
     }
 
+    override fun setSortFilterMeasureHeight(measureHeight: Int) { }
+
     override fun getRecyclerViewResourceId(): Int {
         return R.id.recycler_view
     }
@@ -874,5 +885,11 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 context,
                 "${ApplinkConst.DISCOVERY_SEARCH}?q=$keyword"
         )
+    }
+
+
+    override fun onChangeProductGridClicked(gridType: ShopProductViewGridType) {
+        shopProductAdapter.updateShopPageProductChangeGridSection(gridType)
+        shopProductAdapter.changeProductCardGridType(gridType)
     }
 }

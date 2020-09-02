@@ -1,12 +1,9 @@
 package com.tokopedia.shop.product.view.viewholder
 
 import android.view.View
-import android.widget.FrameLayout
-import android.widget.ImageView
 import android.widget.TextView
 
 import androidx.annotation.LayoutRes
-import androidx.appcompat.widget.AppCompatRatingBar
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
@@ -40,7 +37,7 @@ class ShopProductViewHolder(
 
     companion object {
         @LayoutRes
-        val GRID_LAYOUT = R.layout.item_shop_newproduct_grid
+        val GRID_LAYOUT = R.layout.item_shop_newproduct_small_grid
         const val RATIO_WITH_RELATIVE_TO_SCREEN = 2.3
     }
 

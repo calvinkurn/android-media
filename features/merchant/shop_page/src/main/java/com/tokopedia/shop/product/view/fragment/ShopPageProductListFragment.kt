@@ -13,7 +13,6 @@ import android.view.ViewTreeObserver
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.snackbar.Snackbar
@@ -61,26 +60,28 @@ import com.tokopedia.shop.pageheader.presentation.listener.ShopPageProductTabPer
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
 import com.tokopedia.shop.product.di.module.ShopProductModule
 import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils
+import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapter
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.datamodel.*
 import com.tokopedia.shop.product.view.listener.ShopCarouselSeeAllClickedListener
+import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListener
+import com.tokopedia.shop.common.view.viewmodel.ShopChangeProductGridSharedViewModel
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener
 import com.tokopedia.shop.product.view.listener.ShopProductImpressionListener
 import com.tokopedia.shop.product.view.viewholder.ShopProductAddViewHolder
 import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
 import com.tokopedia.shop.product.view.viewholder.ShopProductsEmptyViewHolder
 import com.tokopedia.shop.product.view.viewmodel.ShopPageProductListViewModel
-import com.tokopedia.shop.product.view.viewmodel.ShopSortSharedViewModel
+import com.tokopedia.shop.common.view.viewmodel.ShopSortSharedViewModel
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlist.common.listener.WishListActionListener
-import kotlinx.android.synthetic.main.fragment_new_shop_page_product_list.*
 import javax.inject.Inject
 
 class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopProductAdapterTypeFactory>(),
@@ -88,12 +89,13 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         ShopProductClickedListener,
         ShopCarouselSeeAllClickedListener,
         BaseEmptyViewHolder.Callback,
-        ShopProductSortFilterViewHolder.ShopProductEtalaseChipListViewHolderListener,
+        ShopProductSortFilterViewHolder.ShopProductSortFilterViewHolderListener,
         MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener,
         ShopProductAddViewHolder.ShopProductAddViewHolderListener,
         ShopProductsEmptyViewHolder.ShopProductsEmptyViewHolderListener,
         WishListActionListener,
-        ShopProductImpressionListener {
+        ShopProductImpressionListener,
+        ShopProductChangeGridSectionListener {
 
     companion object {
         private const val ETALASE_TO_SHOW = 5
@@ -174,7 +176,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private var shopPageTracking: ShopPageTrackingBuyer? = null
     private var lastQuestId: Int = 0
-    private var recyclerView: RecyclerView? = null
     private var attribution: String = ""
     private var isLoadingNewProductData = false
     private var sortId = ""
@@ -190,8 +191,10 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     private var selectedEtalaseName = ""
     private var defaultEtalaseName = ""
     private var recyclerViewTopPadding = 0
+    private var shopSortFilterHeight = 0
     private var threeDotsClickShopProductViewModel: ShopProductViewModel? = null
     private var shopSortSharedViewModel: ShopSortSharedViewModel? = null
+    private var shopChangeProductGridSharedViewModel: ShopChangeProductGridSharedViewModel? = null
     private var threeDotsClickShopTrackingType = -1
     private var initialProductListData : Pair<Boolean, List<ShopProductViewModel>>? = null
     private var staggeredGridLayoutManager: StaggeredGridLayoutManager? = null
@@ -251,8 +254,8 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             if (animator is SimpleItemAnimator) {
                 animator.supportsChangeAnimations = false
             }
+            recyclerViewTopPadding = it.paddingTop
         }
-        recyclerViewTopPadding = recyclerView?.paddingTop ?: 0
     }
 
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
@@ -540,10 +543,10 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
 
     private fun scrollToProductEtalaseSegment() {
         //multiply with 2 to make first dy value on onScroll function greater than rv top padding
-        recyclerView?.smoothScrollBy(0, recyclerViewTopPadding * 2)
+        getRecyclerView(view).smoothScrollBy(0, recyclerViewTopPadding * 2)
         staggeredGridLayoutManager?.scrollToPositionWithOffset(
                 shopProductAdapter.shopProductEtalaseTitlePosition,
-                stickySingleHeaderView.containerHeight
+                shopSortFilterHeight + recyclerViewTopPadding
         )
     }
 
@@ -685,6 +688,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 this,
                 this,
                 null,
+                this,
                 true,
                 deviceWidth,
                 ShopTrackProductTypeDef.PRODUCT
@@ -850,6 +854,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         context?.let { shopPageTracking = ShopPageTrackingBuyer(TrackingQueue(it)) }
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopPageProductListViewModel::class.java)
         shopSortSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopSortSharedViewModel::class.java)
+        shopChangeProductGridSharedViewModel = ViewModelProvider(requireActivity()).get(ShopChangeProductGridSharedViewModel::class.java)
         attribution = arguments?.getString(SHOP_ATTRIBUTION, "") ?: ""
         staggeredGridLayoutManager = StaggeredGridLayoutManager(GRID_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
     }
@@ -920,6 +925,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         initRecyclerView(view)
         loadInitialData()
         observeShopSortSharedViewModel()
+        observeShopChangeProductGridSharedViewModel()
         observeViewModelLiveData()
     }
 
@@ -931,6 +937,15 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             isGoldMerchant = it.getBoolean(KEY_IS_GOLD_MERCHANT, false)
             shopHomeType = it.getString(KEY_SHOP_HOME_TYPE, "")
         }
+    }
+
+    private fun observeShopChangeProductGridSharedViewModel() {
+        shopChangeProductGridSharedViewModel?.sharedProductGridType?.observe(viewLifecycleOwner, Observer {
+            if (!shopProductAdapter.isLoading) {
+                shopProductAdapter.updateShopPageProductChangeGridSection(it)
+                shopProductAdapter.changeProductCardGridType(it)
+            }
+        })
     }
 
     private fun observeShopSortSharedViewModel() {
@@ -1102,8 +1117,15 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         }
     }
 
+    private fun addShopPageProductChangeGridSection() {
+        //todo Change this data into data from getShopProductUseCase
+        val data = ShopProductChangeGridSectionUiModel(2000)
+        shopProductAdapter.addShopPageProductChangeGridSection(data)
+    }
+
     private fun onSuccessGetShopProductEtalaseTitleData(data: ShopProductEtalaseTitleViewModel) {
         shopProductAdapter.setShopProductEtalaseTitleData(data)
+        addShopPageProductChangeGridSection()
     }
 
     private fun onSuccessGetShopProductEtalaseHighlightData(data: ShopProductEtalaseHighlightViewModel) {
@@ -1257,13 +1279,17 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         shopProductAdapter.changeSelectedSortFilter(sortId, sortName)
         shopProductAdapter.refreshSticky()
         //multiply with 2 to make first dy value on onScroll function greater than rv top padding
-        recyclerView?.smoothScrollBy(0, recyclerViewTopPadding * 2)
+        getRecyclerView(view).smoothScrollBy(0, recyclerViewTopPadding * 2)
         staggeredGridLayoutManager?.scrollToPositionWithOffset(
                 shopProductAdapter.shopProductEtalaseTitlePosition,
-                stickySingleHeaderView.containerHeight
+                shopSortFilterHeight + recyclerViewTopPadding
         )
         updateInitialProductListSortId(sortId)
         loadNewProductData()
+    }
+
+    override fun setSortFilterMeasureHeight(measureHeight: Int) {
+        shopSortFilterHeight = measureHeight
     }
 
     fun setInitialProductListData(initialProductListData: Pair<Boolean, List<ShopProductViewModel>>) {
@@ -1272,6 +1298,13 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
 
     private fun updateInitialProductListSortId(sortId: String){
         (parentFragment as? ShopPageFragment)?.updateSortId(sortId)
+    }
+
+    override fun onChangeProductGridClicked(gridType: ShopProductViewGridType) {
+        shopProductAdapter.updateShopPageProductChangeGridSection(gridType)
+        shopProductAdapter.changeProductCardGridType(gridType)
+        scrollToProductEtalaseSegment()
+        shopChangeProductGridSharedViewModel?.changeSharedProductGridType(gridType)
     }
 
 }
