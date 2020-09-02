@@ -3,6 +3,7 @@ package com.tokopedia.topchat.chatroom.view.presenter
 import android.content.SharedPreferences
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
@@ -11,12 +12,14 @@ import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.FileUtil
+import com.tokopedia.topchat.TopchatTestCoroutineContextDispatcher
 import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.exMessageId
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.readParam
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.wsResponseReply
+import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocket
 import com.tokopedia.websocket.RxWebSocketUtil
@@ -107,7 +110,12 @@ class TopChatRoomPresenterTest {
     private lateinit var chatToggleBlockChat: ChatToggleBlockChatUseCase
 
     @RelaxedMockK
+    private lateinit var addToCartOccUseCase: AddToCartOccUseCase
+
+    @RelaxedMockK
     private lateinit var sharedPref: SharedPreferences
+
+    private val dispatchers: TopchatCoroutineContextProvider = TopchatTestCoroutineContextDispatcher()
 
     @RelaxedMockK
     private lateinit var webSocket: WebSocket
@@ -161,7 +169,9 @@ class TopChatRoomPresenterTest {
                         groupStickerUseCase,
                         chatAttachmentUseCase,
                         chatToggleBlockChat,
-                        sharedPref
+                        addToCartOccUseCase,
+                        sharedPref,
+                        dispatchers
                 )
         )
         presenter.attachView(view)

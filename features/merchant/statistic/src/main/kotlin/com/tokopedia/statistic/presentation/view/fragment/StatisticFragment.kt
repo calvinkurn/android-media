@@ -660,9 +660,13 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         StatisticLogger.logToCrashlytics(this, "${StatisticLogger.ERROR_WIDGET} $widgetType")
     }
 
-    private inline fun <D : BaseDataUiModel, reified W : BaseWidgetUiModel<D>> List<D>.setOnSuccessWidgetState() {
+    private inline fun <D : BaseDataUiModel, reified W : BaseWidgetUiModel<D>> List<D>.setOnSuccessWidgetState(widgetType: String) {
         forEach { widgetData ->
-            adapter.data.find { it.dataKey == widgetData.dataKey }?.let { widget ->
+            adapter.data.find {
+                val isSameDataKey = it.dataKey == widgetData.dataKey
+                val isSameWidgetType = it.widgetType == widgetType
+                return@find isSameDataKey && isSameWidgetType
+            }?.let { widget ->
                 if (widget is W) {
                     widget.data = widgetData
                     notifyWidgetChanged(widget)
@@ -712,7 +716,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             startLayoutRenderingPerformanceMonitoring()
 
             when (result) {
-                is Success -> result.data.setOnSuccessWidgetState()
+                is Success -> result.data.setOnSuccessWidgetState(type)
                 is Fail -> result.throwable.setOnErrorWidgetState<D, BaseWidgetUiModel<D>>(type)
             }
 

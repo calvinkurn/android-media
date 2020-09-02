@@ -457,7 +457,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                     else -> {
                         val subReasonLainnya = tf_choose_sub_reason_editable.textFieldInput.text.trimStart()
                         if (subReasonLainnya.isNotEmpty() && !isCancelAlreadyClicked) {
-                            reasonCancel += " - $subReasonLainnya"
+                            reasonCancel = subReasonLainnya as String
                             isCancelAlreadyClicked = true
                         }
                         if (isEligibleInstantCancel) submitInstantCancel()
@@ -485,7 +485,6 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         tf_choose_reason?.textFieldInput?.isSingleLine = false
         tf_choose_reason?.textFieldInput?.imeOptions = EditorInfo.IME_FLAG_NO_ENTER_ACTION
         tf_choose_reason?.textFieldInput?.setText(reason)
-        reasonCancel = reason
         currentReasonStr = reason
 
         if (reason.equals(LAINNYA, true)) {
@@ -571,7 +570,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         tf_choose_sub_reason?.textFieldInput?.isSingleLine = false
         tf_choose_sub_reason?.textFieldInput?.imeOptions = EditorInfo.IME_FLAG_NO_ENTER_ACTION
         tf_choose_sub_reason?.textFieldInput?.setText(reason)
-        reasonCancel += " - $reason"
+        reasonCancel = reason
 
         tf_choose_reason?.textFieldInput?.text?.let { inputReason ->
             if (inputReason.isNotEmpty()) {

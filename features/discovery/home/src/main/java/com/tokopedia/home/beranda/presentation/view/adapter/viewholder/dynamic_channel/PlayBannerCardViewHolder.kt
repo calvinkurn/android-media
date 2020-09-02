@@ -98,7 +98,7 @@ class PlayBannerCardViewHolder(
 
     override fun onReminderClick(dataModel: PlayBannerCarouselItemDataModel, position: Int) {
         listener.sendEETracking(
-                if(dataModel.remindMe) {
+                if(!dataModel.remindMe) {
                     PlayWidgetCarouselTracking.getClickRemoveRemind(
                             channelId = dataModel.channelId,
                             userId = listener.userId,
@@ -137,6 +137,7 @@ class PlayBannerCardViewHolder(
                 promoCode = "",
                 positionFold = if((playCarouselCardDataModel?.position ?: -1) <= 2) "0" else "1"
         ))
+        RouteManager.route(itemView.context, dataModel.applink)
     }
 
     override fun onOverlayImageBannerImpress(dataModel: PlayBannerCarouselOverlayImageDataModel) {

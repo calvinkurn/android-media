@@ -40,6 +40,7 @@ import com.tokopedia.digital.newcart.presentation.model.DigitalSubscriptionParam
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.network.exception.ResponseDataNullException;
 import com.tokopedia.network.exception.ResponseErrorException;
+import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
@@ -460,14 +461,15 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
     }
 
     @Override
-    public void onReceivePromoCode(String couponTitle, String couponMessage, String couponCode, int isCoupon) {
+    public void onReceivePromoCode(PromoData promoData) {
         if (isViewAttached()) {
             VoucherDigital voucherDigital = new VoucherDigital();
             VoucherAttributeDigital voucherAttributeDigital = new VoucherAttributeDigital();
-            voucherAttributeDigital.setIsCoupon(isCoupon);
-            voucherAttributeDigital.setTitle(couponTitle);
-            voucherAttributeDigital.setVoucherCode(couponCode);
-            voucherAttributeDigital.setMessage(couponMessage);
+            voucherAttributeDigital.setIsCoupon(promoData.getTypePromo());
+            voucherAttributeDigital.setTitle(promoData.getTitle());
+            voucherAttributeDigital.setVoucherCode(promoData.getPromoCode());
+            voucherAttributeDigital.setMessage(promoData.getDescription());
+            voucherAttributeDigital.setDiscountAmountPlain(promoData.getAmount());
             voucherDigital.setAttributeVoucher(voucherAttributeDigital);
             renderCouponAndVoucher(voucherDigital);
         }
