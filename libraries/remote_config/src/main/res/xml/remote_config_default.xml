@@ -352,7 +352,7 @@
     </entry>
     <entry>
         <key>android_main_app_enabled_cache_pdp</key>
-        <value>true</value>
+        <value>false</value>
     </entry>
     <entry>
         <key>android_main_app_enabled_cache_p2_pdp</key>
