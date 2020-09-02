@@ -172,7 +172,7 @@ object GtmEvents {
         getTracker().sendGeneralEvent(map)
     }
 
-    //miscellaneous
+    //20
     fun viewNoInternetError(userId:String?) {
         val map = mutableMapOf<String, Any>()
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.VIEW_PRESENT_IRIS
@@ -185,7 +185,7 @@ object GtmEvents {
         getTracker().sendGeneralEvent(map)
     }
 
-    //miscellaneous
+    //21
     fun viewToastError(userId:String?, errorMessage:String) {
         val map = mutableMapOf<String, Any>()
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.VIEW_PRESENT_IRIS
