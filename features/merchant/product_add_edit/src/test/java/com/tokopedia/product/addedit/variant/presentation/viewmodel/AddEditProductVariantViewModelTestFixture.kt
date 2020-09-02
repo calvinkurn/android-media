@@ -30,6 +30,9 @@ abstract class AddEditProductVariantViewModelTestFixture {
     lateinit var isInputValidObserver: Observer<Boolean>
 
     @RelaxedMockK
+    lateinit var emptyVuvObserver: Observer<Boolean>
+
+    @RelaxedMockK
     lateinit var getCategoryVariantCombinationUseCase: GetCategoryVariantCombinationUseCase
 
     @Suppress("UNCHECKED_CAST")
@@ -150,6 +153,8 @@ abstract class AddEditProductVariantViewModelTestFixture {
     fun setup() {
         MockKAnnotations.init(this)
         mIsInputValid.observeForever(isInputValidObserver)
+        viewModel.isSelectedVariantUnitValuesEmpty.observeForever(emptyVuvObserver)
+        spiedViewModel.isSelectedVariantUnitValuesEmpty.observeForever(emptyVuvObserver)
     }
 
     @AfterEach
@@ -161,6 +166,8 @@ abstract class AddEditProductVariantViewModelTestFixture {
     @After
     fun cleanUp() {
         mIsInputValid.removeObserver(isInputValidObserver)
+        viewModel.isSelectedVariantUnitValuesEmpty.removeObserver(emptyVuvObserver)
+        spiedViewModel.isSelectedVariantUnitValuesEmpty.removeObserver(emptyVuvObserver)
     }
 
     private fun getPrivateField(owner: Any, name: String): Any? {

@@ -4,11 +4,10 @@ import com.tokopedia.product.addedit.preview.presentation.model.ProductInputMode
 import com.tokopedia.product.addedit.variant.data.model.Unit
 import com.tokopedia.product.addedit.variant.data.model.UnitValue
 import com.tokopedia.product.addedit.variant.data.model.VariantDetail
-import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.COLOUR_VARIANT_TYPE_ID
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
-import com.tokopedia.product.addedit.variant.presentation.model.PictureVariantInputModel
-import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
+import com.tokopedia.product.addedit.variant.presentation.model.*
 import io.mockk.coVerify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Test
@@ -179,14 +178,14 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
 
     @Test
     fun `product variant photos should be visible when the variant type is color`() {
-        val selectedVariantDetail = VariantDetail(variantID = AddEditProductVariantConstants.COLOUR_VARIANT_TYPE_ID)
+        val selectedVariantDetail = VariantDetail(variantID = COLOUR_VARIANT_TYPE_ID)
         viewModel.showProductVariantPhotos(selectedVariantDetail)
         assert(viewModel.isVariantPhotosVisible.value == true)
     }
 
     @Test
     fun `product variant photos should be invisible when the variant type is color`() {
-        val selectedVariantDetail = VariantDetail(variantID = AddEditProductVariantConstants.COLOUR_VARIANT_TYPE_ID)
+        val selectedVariantDetail = VariantDetail(variantID = COLOUR_VARIANT_TYPE_ID)
         viewModel.hideProductVariantPhotos(selectedVariantDetail)
         assert(viewModel.isVariantPhotosVisible.value == false)
     }
@@ -214,5 +213,153 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
         viewModel.updateSelectedVariantUnitValuesMap(VARIANT_VALUE_LEVEL_TWO_POSITION, expectedVariantUnitValues)
         val actualVariantUnitValues = viewModel.getSelectedVariantUnitValues(VARIANT_VALUE_LEVEL_TWO_POSITION)
         assert(actualVariantUnitValues == expectedVariantUnitValues)
+    }
+
+    @Test
+    fun `view model should be able to remove variant value layout map entry`() {
+        val adapterPosition = 2
+        val layoutPosition = VARIANT_VALUE_LEVEL_TWO_POSITION
+        viewModel.updateVariantValuesLayoutMap(adapterPosition, layoutPosition)
+        viewModel.removeVariantValueLayoutMapEntry(adapterPosition)
+        assert(viewModel.isVariantUnitValuesLayoutEmpty())
+    }
+
+    @Test
+    fun `view model remove vuv function should remove selected variant unit value from map and live data`() {
+        val variantUnitValue = UnitValue()
+        val variantUnitValues = mutableListOf(variantUnitValue)
+        viewModel.updateSelectedVariantUnitValuesMap(VARIANT_VALUE_LEVEL_ONE_POSITION, variantUnitValues)
+        viewModel.updateSelectedVariantUnitValuesMap(VARIANT_VALUE_LEVEL_TWO_POSITION, variantUnitValues)
+        viewModel.updateSelectedVariantUnitValuesLevel1(variantUnitValues)
+        viewModel.updateSelectedVariantUnitValuesLevel2(variantUnitValues)
+        viewModel.removeSelectedVariantUnitValue(VARIANT_VALUE_LEVEL_ONE_POSITION, variantUnitValue)
+        viewModel.removeSelectedVariantUnitValue(VARIANT_VALUE_LEVEL_TWO_POSITION, variantUnitValue)
+        assert(viewModel.isVariantUnitValuesEmpty(VARIANT_VALUE_LEVEL_ONE_POSITION))
+        assert(viewModel.isVariantUnitValuesEmpty(VARIANT_VALUE_LEVEL_TWO_POSITION))
+        assert(viewModel.isSelectedVariantUnitValuesEmpty.value ?: false)
+    }
+
+    @Test
+    fun `removing product variant should reset both variant page and input model but keep remote data flag`() {
+        val expectedCategoryId = "10"
+        spiedViewModel.productInputModel.value = ProductInputModel()
+        spiedViewModel.productInputModel.value?.detailInputModel?.categoryId = expectedCategoryId
+        val expectedState = true
+        spiedViewModel.productInputModel.value?.variantInputModel?.isRemoteDataHasVariant = expectedState
+        spiedViewModel.removeVariant()
+        val isRemoteDataHasVariant = spiedViewModel.productInputModel.value?.variantInputModel?.isRemoteDataHasVariant
+                ?: false
+        assert(isRemoteDataHasVariant)
+        assert(spiedViewModel.getSelectedVariantDetails().isEmpty())
+        assert(spiedViewModel.isSelectedVariantUnitValuesEmpty.value ?: false)
+        assert(spiedViewModel.getSelectedVariantUnitValues(VARIANT_VALUE_LEVEL_ONE_POSITION).isEmpty())
+        assert(spiedViewModel.getSelectedVariantUnitValues(VARIANT_VALUE_LEVEL_TWO_POSITION).isEmpty())
+        assert(spiedViewModel.getVariantValuesLayoutPosition(0) == VARIANT_VALUE_LEVEL_ONE_POSITION)
+        assert(spiedViewModel.isVariantPhotosVisible.value == false)
+        coVerify { spiedViewModel.getCategoryVariantCombination(expectedCategoryId) }
+    }
+
+    @Test
+    fun `view model should be able to map variant photo into variant picture input model`() {
+        val expectedFilePathUrlOriginal = "expected value"
+        val expectedPicID = "expected value"
+        val expectedDescription = "expected value"
+        val expectedFileName = "expected value"
+        val expectedWidth = 1L
+        val expectedHeight = 1L
+        val expectedIsFromIG = "expected value"
+        val expectedUploadId = "expected value"
+        val variantPhoto = VariantPhoto(
+                "",
+                expectedFilePathUrlOriginal,
+                expectedPicID,
+                expectedDescription,
+                expectedFileName,
+                expectedWidth,
+                expectedHeight,
+                expectedIsFromIG,
+                expectedUploadId)
+        viewModel.productInputModel.value = ProductInputModel()
+        viewModel.setSelectedVariantDetails(mutableListOf(VariantDetail(variantID = COLOUR_VARIANT_TYPE_ID)))
+        viewModel.updateSelectedVariantUnitValuesMap(VARIANT_VALUE_LEVEL_ONE_POSITION, mutableListOf(UnitValue()))
+        viewModel.updateVariantInputModel(listOf(variantPhoto))
+        val productVariantInputModel = viewModel.productInputModel.value?.variantInputModel?.products?.firstOrNull()
+                ?: ProductVariantInputModel()
+        val pictureVariantInputModel = productVariantInputModel.pictures.firstOrNull()
+                ?: PictureVariantInputModel()
+        assert(pictureVariantInputModel.filePath == expectedFilePathUrlOriginal)
+        assert(pictureVariantInputModel.picID == expectedPicID)
+        assert(pictureVariantInputModel.description == expectedDescription)
+        assert(pictureVariantInputModel.fileName == expectedFileName)
+        assert(pictureVariantInputModel.width == expectedWidth)
+        assert(pictureVariantInputModel.height == expectedHeight)
+        assert(pictureVariantInputModel.isFromIG == expectedIsFromIG)
+        assert(pictureVariantInputModel.uploadId == expectedUploadId)
+    }
+
+    @Test
+    fun `view model should be able to convert selection input model into variant detail`() {
+        val expectedVariantId = 10
+        val expectedIdentifier = "expected identifier"
+        val expectedName = "expected name"
+        val expectedUnit = Unit(variantUnitID = 10, unitName = "expected unit name")
+        val expectedUnitValueId = 10
+        val expectedUnitValue = "expected unit value 1"
+        expectedUnit.unitValues = mutableListOf(UnitValue(variantUnitValueID = expectedUnitValueId, value = expectedUnitValue))
+        val expectedUnits = listOf(expectedUnit)
+        val productInputModel = ProductInputModel()
+        val optionInputModel1 = OptionInputModel(unitValueID = expectedUnitValueId.toString(), value = expectedUnitValue)
+        val selectionInputModel1 = SelectionInputModel(
+                variantId = expectedVariantId.toString(),
+                variantName = expectedName,
+                unitID = expectedUnit.variantUnitID.toString(),
+                unitName = expectedUnit.unitName,
+                identifier = expectedIdentifier,
+                options = listOf(optionInputModel1))
+        productInputModel.variantInputModel.selections = listOf(selectionInputModel1)
+        val selectedVariantDetails = viewModel.extractSelectedVariantDetails(productInputModel)
+        val selectedVariantDetail = selectedVariantDetails.first()
+        assert(selectedVariantDetail.variantID == expectedVariantId)
+        assert(selectedVariantDetail.identifier == expectedIdentifier)
+        assert(selectedVariantDetail.name == expectedName)
+        assert(selectedVariantDetail.units == expectedUnits)
+    }
+
+    @Test
+    fun `view model should be able to remove selected variant detail from collection`() {
+        val selectedVariantDetail1 = VariantDetail(variantID = 10)
+        val selectedVariantDetail2 = VariantDetail(variantID = 20)
+        viewModel.setSelectedVariantDetails(mutableListOf(selectedVariantDetail1, selectedVariantDetail2))
+        viewModel.removeSelectedVariantDetails(selectedVariantDetail1)
+        assert(viewModel.getSelectedVariantDetails().size == 1)
+    }
+
+    @Test
+    fun `view model should be able to convert picture variant input model into variant photo`() {
+        val expectedPhotoUrl = "expectedPhotoUrl"
+        val expectedPhotoPicID = "expectedPhotoPicID"
+        val expectedPhotoDescription = "expectedPhotoDescription"
+        val expectedPhotoFileName = "expectedPhotoFileName"
+        val expectedPhotoWidth = 10L
+        val expectedPhotoHeight = 10L
+        val expectedPhotoIsFromIG = "true"
+        val expectedPhotoUploadId = "expectedPhotoUploadId"
+        val pictureVariantInputModel = PictureVariantInputModel(
+                urlOriginal = expectedPhotoUrl,
+                picID = expectedPhotoPicID,
+                description = expectedPhotoDescription,
+                fileName = expectedPhotoFileName,
+                width = expectedPhotoWidth,
+                height = expectedPhotoHeight,
+                isFromIG = expectedPhotoIsFromIG,
+                uploadId = expectedPhotoUploadId)
+        val productVariantInputModel = ProductVariantInputModel(combination = listOf(0), pictures = listOf(pictureVariantInputModel))
+        val selectionInputModel = SelectionInputModel(variantId = COLOUR_VARIANT_TYPE_ID.toString())
+        val optionInputModel = OptionInputModel(value = "Red")
+        selectionInputModel.options = listOf(optionInputModel)
+        val productInputModel = ProductInputModel(variantInputModel = VariantInputModel(products = listOf(productVariantInputModel), selections = listOf(selectionInputModel)))
+        val variantPhotos = viewModel.getProductVariantPhotos(productInputModel)
+        val actualVariantPhoto = variantPhotos.first()
+        assert(actualVariantPhoto.fileName == expectedPhotoFileName)
     }
 }
