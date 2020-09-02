@@ -6,6 +6,7 @@ dependencies {
 
     testImplementation rootProject.ext.testDependencies.junit
     implementation rootProject.ext.supportLibDependencies.appCompactV7
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
 

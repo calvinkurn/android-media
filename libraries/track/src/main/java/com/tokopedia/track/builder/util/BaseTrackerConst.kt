@@ -1,5 +1,6 @@
 package com.tokopedia.track.builder.util
 
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.util.BaseTrackerConst.Value.FORMAT_2_ITEMS_UNDERSCORE
 import com.tokopedia.track.interfaces.ContextAnalytics
@@ -155,77 +156,80 @@ abstract class BaseTrackerConst {
         private const val KEY_DIMENSION_96 = "dimension96"
 
         fun getEcommercePromoView(promotions: List<Promotion>): Map<String, Any> {
-            return mapOf(PRODUCT_VIEW to getPromotionsMap(promotions))
+            return DataLayer.mapOf(
+                    PROMO_VIEW, getPromotionsMap(promotions))
         }
 
         fun getEcommerceObjectPromoView(promotions: List<Any>?): Map<String, Any>? {
-            return mapOf(
-                    PROMO_VIEW to mapOf(
-                            PROMOTIONS to listOf(promotions)
-            ))
+            return DataLayer.mapOf(
+                    PROMO_VIEW,
+                    DataLayer.mapOf(PROMOTIONS, DataLayer.listOf(
+                            promotions
+                    ))
+            )
         }
 
         fun getEcommercePromoClick(promotions: List<Promotion>): Map<String, Any> {
-            return mapOf(PRODUCT_CLICK to getPromotionsMap(promotions))
+            return DataLayer.mapOf(
+                    PROMO_CLICK, getPromotionsMap(promotions))
         }
 
         private fun getPromotionsMap(promotions: List<Promotion>): Map<String, Any> {
-            return mapOf(PROMOTIONS to getPromotions(promotions))
+            return DataLayer.mapOf(PROMOTIONS, getPromotions(promotions))
         }
 
         fun getEcommerceProductClick(products: List<Product>, list: String): Map<String, Any> {
-            return mapOf(
-                    CURRENCY_CODE to IDR,
-                    CLICK to mapOf(
-                            ACTION_FIELD to mapOf(
-                                    LIST to list +  if(products.first().isTopAds) " - topads" else ""
-                            ),
-                            PRODUCTS to getProductsClick(products, list)
-                    )
+            return DataLayer.mapOf(
+                    CURRENCY_CODE, IDR,
+                    CLICK, DataLayer.mapOf(
+                    ACTION_FIELD, DataLayer.mapOf(
+                    LIST, list  + if(products.first().isTopAds) " - topads" else ""
+            ),
+                    PRODUCTS, getProductsClick(products, list)
             )
-
+            )
         }
         fun getEcommerceProductAddToCart(products: List<Product>, list: String): Map<String, Any> {
-            return mapOf(
-                    CURRENCY_CODE to IDR,
-                    ADD to mapOf(
-                            ACTION_FIELD to mapOf(
-                                    LIST to list +  if(products.first().isTopAds) " - topads" else ""
-                            ),
-                            PRODUCTS to getProductsClick(products, list)
-                    )
+            return DataLayer.mapOf(
+                    CURRENCY_CODE, IDR,
+                    ADD, DataLayer.mapOf(
+                    ACTION_FIELD, DataLayer.mapOf(
+                    LIST, list  + if(products.first().isTopAds) " - topads" else ""
+            ),
+                    PRODUCTS, getProductsClick(products, list)
+            )
             )
         }
 
         fun getEcommerceProductView(products: List<Product>, list: String): Map<String, Any> {
-            return mapOf(
-                    CURRENCY_CODE to IDR,
-                    IMPRESSIONS to getProductsImpression(products, list)
+            return DataLayer.mapOf(
+                    CURRENCY_CODE, IDR,
+                    IMPRESSIONS, getProductsImpression(products, list)
             )
         }
 
         private fun getPromotions(promotions: List<Promotion>): List<Any>{
             val list = ArrayList<Map<String,Any>>()
             promotions.forEach { list.add(createPromotionMap(it)) }
-            return listOf(*list.toTypedArray<Any>())
+            return DataLayer.listOf(*list.toTypedArray<Any>())
         }
 
         private fun getProducts(products: List<Product>): List<Any>{
             val list = ArrayList<Map<String,Any>>()
             products.forEach { list.add(createProductMap(it)) }
-            return listOf(*list.toTypedArray<Any>())
+            return DataLayer.listOf(*list.toTypedArray<Any>())
         }
 
         private fun getProductsClick(products: List<Product>, listClick: String): List<Any>{
             val list = ArrayList<Map<String,Any>>()
             products.forEach { list.add(createProductMap(it, listClick)) }
-            return listOf(*list.toTypedArray<Any>())
+            return DataLayer.listOf(*list.toTypedArray<Any>())
         }
 
         private fun getProductsImpression(products: List<Product>, listImpression: String): List<Any>{
             val list = ArrayList<Map<String,Any>>()
             products.forEach { list.add(createProductMap(it, listImpression)) }
-            return listOf(*list.toTypedArray<Any>())
+            return DataLayer.listOf(*list.toTypedArray<Any>())
         }
 
         private fun createPromotionMap(promotion: Promotion) : Map<String, String>{
