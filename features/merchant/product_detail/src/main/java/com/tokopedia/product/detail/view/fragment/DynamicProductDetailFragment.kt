@@ -1289,7 +1289,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             })
             (activity as? ProductDetailActivity)?.stopMonitoringP1()
             (activity as? ProductDetailActivity)?.stopMonitoringPltRenderPage()
-            viewModel.parentProductId = viewModel.getDynamicProductInfoP1?.data?.parentId
         }
     }
 

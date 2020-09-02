@@ -340,6 +340,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 }
 
                 variantData = if (getDynamicProductInfoP1?.isProductVariant() == false) null else it.variantData
+                parentProductId = variantData?.parentId.toString()
 
                 //Create tradein params
                 assignTradeinParams()
