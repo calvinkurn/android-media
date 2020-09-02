@@ -5,6 +5,7 @@ import android.graphics.Typeface.NORMAL
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.DrawableRes
 import androidx.annotation.LayoutRes
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -138,7 +139,19 @@ class ChatItemListViewHolder(
                 getString(R.string.menu_mark_as_read) -> markAsRead(element)
                 getString(R.string.menu_mark_as_unread) -> markAsUnRead(element)
             }
+            when (itemMenus.icon) {
+                R.drawable.ic_topchat_unpin_chat -> unpinChat(element)
+                R.drawable.ic_topchat_pin_chat -> pinChat(element)
+            }
         }
+    }
+
+    private fun unpinChat(element: ItemChatListPojo) {
+        listener.pinUnpinChat(element, adapterPosition, false)
+    }
+
+    private fun pinChat(element: ItemChatListPojo) {
+        listener.pinUnpinChat(element, adapterPosition, true)
     }
 
     private fun delete(element: ItemChatListPojo) {
@@ -214,6 +227,18 @@ class ChatItemListViewHolder(
             val delete = getString(R.string.menu_delete_chat)
             val markAsRead = getString(R.string.menu_mark_as_read)
             val markAsUnread = getString(R.string.menu_mark_as_unread)
+
+            var pinText: String = ""
+            @DrawableRes val pinDrawable: Int
+
+            if (element.isPinned) {
+                pinText = getString(R.string.menu_unpin_chat)
+                pinDrawable = R.drawable.ic_topchat_unpin_chat
+            } else {
+                pinText = getString(R.string.menu_pin_chat)
+                pinDrawable = R.drawable.ic_topchat_pin_chat
+            }
+            menus.add(Menus.ItemMenus(pinText, pinDrawable))
 
             if (element.hasUnreadItem()) {
                 menus.add(Menus.ItemMenus(markAsRead, R.drawable.ic_chat_read_filled_grey))

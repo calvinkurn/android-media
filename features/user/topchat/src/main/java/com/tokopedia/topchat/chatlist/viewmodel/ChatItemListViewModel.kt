@@ -34,6 +34,8 @@ import com.tokopedia.topchat.chatlist.pojo.chatblastseller.ChatBlastSellerMetada
 import com.tokopedia.topchat.chatlist.pojo.whitelist.ChatWhitelistFeatureResponse
 import com.tokopedia.topchat.chatlist.usecase.ChatBanedSellerUseCase
 import com.tokopedia.topchat.chatlist.usecase.GetChatWhitelistFeature
+import com.tokopedia.topchat.chatlist.usecase.MutationPinChat
+import com.tokopedia.topchat.chatlist.usecase.MutationUnpinChat
 import com.tokopedia.topchat.chatroom.view.viewmodel.ReplyParcelableModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -52,6 +54,12 @@ interface ChatItemListContract {
     fun markChatAsRead(msgIds: List<String>, result: (Result<ChatChangeStateResponse>) -> Unit)
     fun markChatAsUnread(msgIds: List<String>, result: (Result<ChatChangeStateResponse>) -> Unit)
     fun loadChatBannedSellerStatus()
+    fun pinUnpinChat(
+            msgId: String,
+            isPinChat: Boolean = true,
+            onSuccess: (Boolean) -> Unit,
+            onError: (Throwable) -> Unit
+    )
 }
 
 class ChatItemListViewModel @Inject constructor(
@@ -60,6 +68,8 @@ class ChatItemListViewModel @Inject constructor(
         private val queries: Map<String, String>,
         private val chatWhitelistFeature: GetChatWhitelistFeature,
         private val chatBannedSellerUseCase: ChatBanedSellerUseCase,
+        private val pinChatUseCase: MutationPinChat,
+        private val unpinChatUseCase: MutationUnpinChat,
         private val dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher), ChatItemListContract {
 
@@ -151,6 +161,19 @@ class ChatItemListViewModel @Inject constructor(
         }, {
             _chatBannedSellerStatus.value = Fail(it)
         })
+    }
+
+    override fun pinUnpinChat(
+            msgId: String,
+            isPinChat: Boolean,
+            onSuccess: (Boolean) -> Unit,
+            onError: (Throwable) -> Unit
+    ) {
+        if (isPinChat) {
+            pinChatUseCase.pinChat(msgId, onSuccess, onError)
+        } else {
+            unpinChatUseCase.unpinChat(msgId, onSuccess, onError)
+        }
     }
 
     private fun changeMessageState(

@@ -33,6 +33,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Menus
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.util.getParamString
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller_migration_common.presentation.fragment.bottomsheet.SellerMigrationCommunicationBottomSheet
@@ -711,6 +712,18 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
         return childFragmentManager
     }
 
+    override fun pinUnpinChat(element: ItemChatListPojo, position: Int, isPinChat: Boolean) {
+        val msgId = element.msgId
+        chatItemListViewModel.pinUnpinChat(msgId, isPinChat,
+                {
+                    element.updatePinStatus(isPinChat)
+                },
+                {
+                    showSnackbarError(it)
+                }
+        )
+    }
+
     private fun showToaster(message: String) {
         view?.let {
             Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
@@ -722,6 +735,13 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
         view?.let {
             Toaster.build(it, it.context.getString(message), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
                     .show()
+        }
+    }
+
+    private fun showSnackbarError(throwable: Throwable) {
+        view?.let {
+            val errorMsg = ErrorHandler.getErrorMessage(it.context, throwable)
+            Toaster.make(it, errorMsg, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
         }
     }
 

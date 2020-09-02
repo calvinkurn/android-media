@@ -134,6 +134,8 @@ yang ditemukan</string>
     <string name="menu_delete_chat">Hapus percakapan</string>
     <string name="menu_mark_as_read">Tandai sudah dibaca</string>
     <string name="menu_mark_as_unread">Tandai belum dibaca</string>
+    <string name="menu_unpin_chat">Lepas Chat</string>
+    <string name="menu_pin_chat">Tempelkan Chat</string>
 
     <string name="coach_tab_title_seller">Chat sebagai pemilik toko</string>
     <string name="coach_tab_description_seller">Semua chat seputar toko dan produkmu dari pembeli bisa dilihat di sini</string>

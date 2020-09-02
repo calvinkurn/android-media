@@ -24,7 +24,7 @@ data class ItemChatListPojo(
         @SerializedName("messageKey")
         @Expose
         var messageKey: String = ""
-) : Visitable<ChatListTypeFactory>{
+) : Visitable<ChatListTypeFactory> {
     val tag: String get() = attributes?.contact?.tag ?: ""
     val lastReplyTimeStr: String get() = attributes?.lastReplyTimeStr ?: ""
     val lastReplyMessage: String get() = attributes?.lastReplyMessage ?: ""
@@ -81,6 +81,11 @@ data class ItemChatListPojo(
 
     fun isReplyTopBot(): Boolean {
         return attributes?.isReplyByTopbot == true
+    }
+
+    fun updatePinStatus(isPinChat: Boolean) {
+        val pinStatus = if (isPinChat) 1 else 0
+        attributes?.pinStatus = pinStatus
     }
 
 }
