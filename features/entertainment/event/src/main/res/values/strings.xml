@@ -103,4 +103,8 @@
 
     <string name="ent_home_coachmark_title">Beli tiket kini lebih mudah!</string>
     <string name="ent_home_coachmark_subtitle">Cobain yuk, sekarang kamu dapat membeli paket lain bersamaan!</string>
+
+    <string name="ent_checkout_data_tambahan_package">Lengkapi data tambahan</string>
+    <string name="ent_checkout_data_tambahan_title">Data Tambahan</string>
+    <string name="ent_checkout_data_tambahan_fill_data">Isi Data</string>
 </resources>

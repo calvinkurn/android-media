@@ -803,7 +803,10 @@ data class PackageV3(
         val endDate: String = "",
         @SerializedName("package_items")
         @Expose
-        val packageItems: List<PackageItem> = emptyList()
+        val packageItems: List<PackageItem> = emptyList(),
+        @SerializedName("forms_package")
+        @Expose
+        val formsPackages: List<Form> = emptyList()
 ): EventPDPTicketModel(){
 
         override fun type(typeFactory: PackageTypeFactory): Int {
@@ -872,6 +875,9 @@ data class PackageItem(
         @SerializedName("provider_custom_text")
         @Expose
         val providerCustomText: String = "",
+        @SerializedName("forms_item")
+        @Expose
+        val formsItems: List<Form> = emptyList(),
         var isClicked: Boolean = false
 
 )

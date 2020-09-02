@@ -35,6 +35,7 @@ import com.tokopedia.entertainment.common.util.EventQuery.eventPDPV3
 import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity.Companion.EXTRA_META_DATA
 import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity.Companion.EXTRA_PACKAGE_ID
 import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity.Companion.EXTRA_URL_PDP
+import com.tokopedia.entertainment.pdp.adapter.EventCheckoutAdditionalAdapter
 import com.tokopedia.entertainment.pdp.adapter.EventCheckoutPriceAdapter
 import com.tokopedia.entertainment.pdp.analytic.EventPDPTracking
 import com.tokopedia.entertainment.pdp.common.util.CurrencyFormatter.getRupiahFormat
@@ -42,6 +43,8 @@ import com.tokopedia.entertainment.pdp.common.util.EventDateUtil.getDateString
 import com.tokopedia.entertainment.pdp.data.EventProductDetailEntity
 import com.tokopedia.entertainment.pdp.data.Form
 import com.tokopedia.entertainment.pdp.data.ProductDetailData
+import com.tokopedia.entertainment.pdp.data.checkout.AdditionalType
+import com.tokopedia.entertainment.pdp.data.checkout.EventCheckoutAdditionalData
 import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventMetaDataMapper.getCheckoutParam
 import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventMetaDataMapper.getPassengerMetaData
 import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventPackageMapper.getItemMap
@@ -59,6 +62,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.bottom_sheet_event_checkout.view.*
 import kotlinx.android.synthetic.main.fragment_event_checkout.*
+import kotlinx.android.synthetic.main.partial_event_checkout_additional.*
 import kotlinx.android.synthetic.main.partial_event_checkout_desc.*
 import kotlinx.android.synthetic.main.partial_event_checkout_footer.*
 import kotlinx.android.synthetic.main.partial_event_checkout_passenger.*
@@ -122,14 +126,14 @@ class EventCheckoutFragment : BaseDaggerFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        eventCheckoutViewModel.eventProductDetail.observe(this, Observer {
+        eventCheckoutViewModel.eventProductDetail.observe(viewLifecycleOwner, Observer {
             it.run {
                 renderLayout(it)
                 performanceMonitoring.stopTrace()
             }
         })
 
-        eventCheckoutViewModel.isError.observe(this, Observer {
+        eventCheckoutViewModel.isError.observe(viewLifecycleOwner, Observer {
             it?.let {
                 if (it.error) {
                     progressDialog.dismiss()
@@ -140,7 +144,7 @@ class EventCheckoutFragment : BaseDaggerFragment() {
             }
         })
 
-        eventCheckoutViewModel.errorValue.observe(this, Observer {
+        eventCheckoutViewModel.errorValue.observe(viewLifecycleOwner, Observer {
             it?.let {
                 val error = it
                 view?.let {
@@ -150,7 +154,7 @@ class EventCheckoutFragment : BaseDaggerFragment() {
             }
         })
 
-        eventCheckoutViewModel.errorGeneralValue.observe(this, Observer {
+        eventCheckoutViewModel.errorGeneralValue.observe(viewLifecycleOwner, Observer {
             it?.let {
                 val error = it
                 view?.let {
@@ -161,7 +165,7 @@ class EventCheckoutFragment : BaseDaggerFragment() {
             }
         })
 
-        eventCheckoutViewModel.eventCheckoutResponse.observe(this, Observer {
+        eventCheckoutViewModel.eventCheckoutResponse.observe(viewLifecycleOwner, Observer {
             it?.let {
                 val data = it
                 context?.let {
@@ -226,6 +230,7 @@ class EventCheckoutFragment : BaseDaggerFragment() {
         renderDesc(eventProductDetailEntity.eventProductDetail.productDetailData)
         renderPassenger()
         renderSummary(eventProductDetailEntity.eventProductDetail.productDetailData)
+        renderAdditional()
         renderFooter(eventProductDetailEntity.eventProductDetail.productDetailData)
 
     }
@@ -276,6 +281,16 @@ class EventCheckoutFragment : BaseDaggerFragment() {
         }
 
         eventPDPTracking.onViewCheckoutPage(getPackage(pdp, packageID), pdp, amount)
+    }
+
+    private fun renderAdditional(){
+        val listAdditional = listOf(EventCheckoutAdditionalData(AdditionalType.PACKAGE_UNFILL), EventCheckoutAdditionalData(AdditionalType.ITEM_UNFILL))
+        val adapterAdditional = EventCheckoutAdditionalAdapter()
+        adapterAdditional.setList(listAdditional)
+        rv_event_checkout_additional.apply {
+            layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+            adapter = adapterAdditional
+        }
     }
 
     private fun renderFooter(productDetailData: ProductDetailData) {

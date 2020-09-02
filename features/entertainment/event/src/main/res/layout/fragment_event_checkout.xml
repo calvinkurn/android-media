@@ -31,6 +31,15 @@
                 android:visibility="visible" />
 
             <include
+                layout="@layout/partial_event_checkout_additional"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginTop="@dimen/spacing_lvl2"
+                android:visibility="visible"
+                />
+
+            <include
                 layout="@layout/partial_event_checkout_summary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
