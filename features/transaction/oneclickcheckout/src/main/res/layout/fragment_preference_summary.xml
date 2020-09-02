@@ -55,7 +55,7 @@
                 app:layout_constraintStart_toEndOf="@+id/tv_address_name"
                 app:layout_constraintTop_toTopOf="@+id/tv_address_name"
                 app:typographyType="body_2"
-                app:typographyWeight="reguler"/>
+                app:typographyWeight="reguler" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_address_detail"
@@ -69,7 +69,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_address_name"
                 app:typographyType="body_2"
-                app:typographyWeight="reguler"/>
+                app:typographyWeight="reguler" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/btn_change_address"
@@ -176,7 +176,7 @@
                 app:layout_constraintStart_toEndOf="@+id/iv_payment"
                 app:layout_constraintTop_toBottomOf="@+id/divider2"
                 app:typographyType="body_2"
-                app:typographyWeight="bold"/>
+                app:typographyWeight="bold" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_payment_detail"
@@ -189,6 +189,20 @@
                 app:layout_constraintEnd_toEndOf="@+id/tv_payment_name"
                 app:layout_constraintStart_toStartOf="@+id/tv_payment_name"
                 app:layout_constraintTop_toBottomOf="@+id/tv_payment_name"
+                app:typographyType="body_2"
+                app:typographyWeight="reguler" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_payment_info"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_8"
+                android:textColor="@color/Neutral_N700_96"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_payment_detail"
                 app:typographyType="body_2"
                 app:typographyWeight="reguler" />
 
@@ -216,7 +230,7 @@
                 android:background="@color/Neutral_N75"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_payment_detail" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_payment_info" />
 
             <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
                 android:id="@+id/cb_main_preference"

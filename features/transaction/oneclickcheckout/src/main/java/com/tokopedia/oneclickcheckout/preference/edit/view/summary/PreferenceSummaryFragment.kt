@@ -74,6 +74,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
     private var ivPayment: ImageView? = null
     private var tvPaymentName: Typography? = null
     private var tvPaymentDetail: Typography? = null
+    private var tvPaymentInfo: Typography? = null
     private var buttonChangePayment: Typography? = null
 
     private var cbMainPreference: CheckboxUnify? = null
@@ -125,6 +126,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
         ivPayment = null
         tvPaymentName = null
         tvPaymentDetail = null
+        tvPaymentInfo = null
         buttonChangePayment = null
         cbMainPreference = null
         tvMainPreference = null
@@ -325,6 +327,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
         ivPayment = view?.findViewById(R.id.iv_payment)
         tvPaymentName = view?.findViewById(R.id.tv_payment_name)
         tvPaymentDetail = view?.findViewById(R.id.tv_payment_detail)
+        tvPaymentInfo = view?.findViewById(R.id.tv_payment_info)
         buttonChangePayment = view?.findViewById(R.id.btn_change_payment)
 
         cbMainPreference = view?.findViewById(R.id.cb_main_preference)
