@@ -18,22 +18,22 @@ object OneClickCheckoutInterceptor {
 
     fun resetAllCustomResponse() {
         cartInterceptor.customGetOccCartThrowable = null
-        cartInterceptor.customGetOccCartResponseString = null
+        cartInterceptor.customGetOccCartResponsePath = null
         cartInterceptor.customUpdateCartOccThrowable = null
-        cartInterceptor.customUpdateCartOccResponseString = null
+        cartInterceptor.customUpdateCartOccResponsePath = null
 
         preferenceInterceptor.customGetPreferenceListThrowable = null
-        preferenceInterceptor.customGetPreferenceListResponseString = null
+        preferenceInterceptor.customGetPreferenceListResponsePath = null
         preferenceInterceptor.customSetDefaultPreferenceThrowable = null
-        preferenceInterceptor.customSetDefaultPreferenceResponseString = null
+        preferenceInterceptor.customSetDefaultPreferenceResponsePath = null
 
         logisticInterceptor.customRatesThrowable = null
-        logisticInterceptor.customRatesResponseString = null
+        logisticInterceptor.customRatesResponsePath = null
 
         promoInterceptor.customValidateUseThrowable = null
-        promoInterceptor.customValidateUseResponseString = null
+        promoInterceptor.customValidateUseResponsePath = null
 
         checkoutInterceptor.customCheckoutThrowable = null
-        checkoutInterceptor.customCheckoutResponseString = null
+        checkoutInterceptor.customCheckoutResponsePath = null
     }
 }

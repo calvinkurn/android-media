@@ -2,29 +2,20 @@ package com.tokopedia.oneclickcheckout.order.view
 
 import android.app.Activity
 import android.app.Instrumentation.ActivityResult
-import android.view.View
-import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.common.payment.PaymentConstant
-import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.oneclickcheckout.R
-import com.tokopedia.oneclickcheckout.common.action.scrollTo
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.interceptor.OneClickCheckoutInterceptor
-import com.tokopedia.oneclickcheckout.common.interceptor.RATES_RESPONSE_WITH_INSURANCE
+import com.tokopedia.oneclickcheckout.common.interceptor.RATES_WITH_INSURANCE_RESPONSE_PATH
 import com.tokopedia.oneclickcheckout.common.interceptor.VALIDATE_USE_PROMO_REVAMP_BBO_APPLIED_RESPONSE
+import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
 import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
 import org.junit.After
-import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -66,39 +57,42 @@ class OrderSummaryPageActivityTest {
         activityRule.launchActivity(null)
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
-        onView(withId(R.id.tv_shop_name)).check(matches(withText("tokocgk")))
-        onView(withId(R.id.tv_shop_location)).check(matches(withText("Kota Yogyakarta")))
-        onView(withId(R.id.tv_product_name)).check(matches(withText("Product1")))
-        onView(withId(R.id.tv_product_price)).check(matches(withText("Rp100.000")))
-        onView(withId(R.id.tv_product_slash_price)).check { view, noViewFoundException ->
-            noViewFoundException?.printStackTrace()
-            assertEquals(View.GONE, view.visibility)
+        orderSummaryPage {
+            assertProductCard(
+                    shopName = "tokocgk",
+                    shopLocation = "Kota Yogyakarta",
+                    productName = "Product1",
+                    productPrice = "Rp100.000",
+                    productSlashPrice = null,
+                    isFreeShipping = true,
+                    productQty = 1
+            )
+
+            assertProfileAddress(
+                    headerMessage = "Pilihan 1",
+                    addressName = "Address 1",
+                    addressReceiver = " - User 1 (1)",
+                    addressDetail = "Address Street 1, District 1, City 1, Province 1 1",
+                    isMainPreference = true
+            )
+
+            assertShipment(
+                    shippingName = "Pengiriman Reguler",
+                    shippingDuration = "Durasi 2-4 hari - Kurir Rekomendasi",
+                    shippingPrice = "Rp15.000",
+                    hasPromo = true
+            )
+
+            assertProfilePayment("Payment 1")
+
+            assertPayment("Rp116.000", "Bayar")
+        } pay {
+            assertGoToPayment(
+                    redirectUrl = "https://www.tokopedia.com/payment",
+                    queryString = "transaction_id=123",
+                    method = "POST"
+            )
         }
-        onView(withId(R.id.iv_free_shipping)).check(matches(isDisplayed()))
-        onView(withId(com.tokopedia.unifycomponents.R.id.quantity_editor_qty)).check(matches(withText("1")))
-
-        onView(withId(R.id.tv_card_header)).check(matches(withText("Pilihan 1")))
-        onView(withId(R.id.tv_address_name)).check(matches(withText("Address 1")))
-        onView(withId(R.id.tv_address_receiver)).check(matches(withText(" - User 1 (1)")))
-        onView(withId(R.id.tv_address_detail)).check(matches(withText("Address Street 1, District 1, City 1, Province 1 1")))
-        onView(withId(R.id.lbl_main_preference)).check(matches(isDisplayed()))
-
-        onView(withId(R.id.ticker_shipping_promo)).check(matches(isDisplayed()))
-        onView(withId(R.id.tv_shipping_name)).check(matches(withText("Pengiriman Reguler")))
-        onView(withId(R.id.tv_shipping_duration)).check(matches(withText("Durasi 2-4 hari - Kurir Rekomendasi")))
-
-        onView(withId(R.id.tv_payment_name)).check(matches(withText("Payment 1")))
-
-        onView(withId(R.id.btn_pay)).perform(scrollTo())
-        onView(withId(R.id.tv_total_payment_value)).check(matches(withText("Rp116.000")))
-        onView(withId(R.id.btn_pay)).check(matches(withText("Bayar")))
-        onView(withId(R.id.btn_pay)).perform(click())
-
-        val intents = Intents.getIntents()
-        val paymentPassData = intents.first().getParcelableExtra<PaymentPassData>(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA)!!
-        assertEquals("https://www.tokopedia.com/payment", paymentPassData.redirectUrl)
-        assertEquals("transaction_id=123", paymentPassData.queryString)
-        assertEquals("POST", paymentPassData.method)
     }
 
     @Test
@@ -106,29 +100,33 @@ class OrderSummaryPageActivityTest {
         activityRule.launchActivity(null)
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
-        onView(withId(R.id.ticker_shipping_promo)).check(matches(isDisplayed()))
-        onView(withId(R.id.tv_shipping_name)).check(matches(withText("Pengiriman Reguler")))
-        onView(withId(R.id.tv_shipping_duration)).check(matches(withText("Durasi 2-4 hari - Kurir Rekomendasi")))
-        onView(withId(R.id.tv_shipping_price)).check(matches(withText("Rp15.000")))
+        orderSummaryPage {
+            assertShipment(
+                    shippingName = "Pengiriman Reguler",
+                    shippingDuration = "Durasi 2-4 hari - Kurir Rekomendasi",
+                    shippingPrice = "Rp15.000",
+                    hasPromo = true
+            )
 
-        onView(withId(R.id.tv_shipping_price)).perform(scrollTo())
-        onView(withId(R.id.tv_shipping_price)).perform(click())
-        onView(withText("AnterAja")).perform(click())
+            clickChangeCourier {
+                chooseCourierWithText("AnterAja")
+            }
 
-        onView(withId(R.id.ticker_shipping_promo)).check(matches(isDisplayed()))
-        onView(withId(R.id.tv_shipping_name)).check(matches(withText("Pengiriman Reguler")))
-        onView(withId(R.id.tv_shipping_duration)).check(matches(withText("Durasi 2-4 hari - AnterAja")))
-        onView(withId(R.id.tv_shipping_price)).check(matches(withText("Rp16.000")))
-        onView(withId(R.id.btn_pay)).perform(scrollTo())
-        onView(withId(R.id.tv_total_payment_value)).check(matches(withText("Rp117.000")))
-        onView(withId(R.id.btn_pay)).check(matches(withText("Bayar")))
-        onView(withId(R.id.btn_pay)).perform(click())
+            assertShipment(
+                    shippingName = "Pengiriman Reguler",
+                    shippingDuration = "Durasi 2-4 hari - AnterAja",
+                    shippingPrice = "Rp16.000",
+                    hasPromo = true
+            )
 
-        val intents = Intents.getIntents()
-        val paymentPassData = intents.first().getParcelableExtra<PaymentPassData>(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA)!!
-        assertEquals("https://www.tokopedia.com/payment", paymentPassData.redirectUrl)
-        assertEquals("transaction_id=123", paymentPassData.queryString)
-        assertEquals("POST", paymentPassData.method)
+            assertPayment("Rp117.000", "Bayar")
+        } pay {
+            assertGoToPayment(
+                    redirectUrl = "https://www.tokopedia.com/payment",
+                    queryString = "transaction_id=123",
+                    method = "POST"
+            )
+        }
     }
 
     @Test
@@ -136,43 +134,40 @@ class OrderSummaryPageActivityTest {
         activityRule.launchActivity(null)
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
-        onView(withId(com.tokopedia.unifycomponents.R.id.quantity_editor_add)).perform(click())
-        Thread.sleep(1500)
-        onView(withId(com.tokopedia.unifycomponents.R.id.quantity_editor_qty)).check(matches(withText("2")))
+        orderSummaryPage {
+            clickAddProductQuantity()
+            assertProductQuantity(2)
 
-        onView(withId(R.id.btn_pay)).perform(scrollTo())
-        onView(withId(R.id.tv_total_payment_value)).check(matches(withText("Rp216.000")))
-        onView(withId(R.id.btn_pay)).check(matches(withText("Bayar")))
-        onView(withId(R.id.btn_pay)).perform(click())
-
-        val intents = Intents.getIntents()
-        val paymentPassData = intents.first().getParcelableExtra<PaymentPassData>(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA)!!
-        assertEquals("https://www.tokopedia.com/payment", paymentPassData.redirectUrl)
-        assertEquals("transaction_id=123", paymentPassData.queryString)
-        assertEquals("POST", paymentPassData.method)
+            assertPayment("Rp216.000", "Bayar")
+        } pay {
+            assertGoToPayment(
+                    redirectUrl = "https://www.tokopedia.com/payment",
+                    queryString = "transaction_id=123",
+                    method = "POST"
+            )
+        }
     }
 
     @Test
     fun happyFlow_CheckInsurance() {
-        logisticInterceptor.customRatesResponseString = RATES_RESPONSE_WITH_INSURANCE
+        logisticInterceptor.customRatesResponsePath = RATES_WITH_INSURANCE_RESPONSE_PATH
 
         activityRule.launchActivity(null)
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
-        onView(withId(R.id.cb_insurance)).perform(scrollTo())
-        onView(withId(R.id.cb_insurance)).perform(click())
-        onView(withId(R.id.cb_insurance)).check(matches(isChecked()))
+        orderSummaryPage {
+            assertInsurance(false)
+            clickInsurance()
+            assertInsurance(true)
 
-        onView(withId(R.id.btn_pay)).perform(scrollTo())
-        onView(withId(R.id.tv_total_payment_value)).check(matches(withText("Rp117.000")))
-        onView(withId(R.id.btn_pay)).check(matches(withText("Bayar")))
-        onView(withId(R.id.btn_pay)).perform(click())
-
-        val intents = Intents.getIntents()
-        val paymentPassData = intents.first().getParcelableExtra<PaymentPassData>(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA)!!
-        assertEquals("https://www.tokopedia.com/payment", paymentPassData.redirectUrl)
-        assertEquals("transaction_id=123", paymentPassData.queryString)
-        assertEquals("POST", paymentPassData.method)
+            assertPayment("Rp117.000", "Bayar")
+        } pay {
+            assertGoToPayment(
+                    redirectUrl = "https://www.tokopedia.com/payment",
+                    queryString = "transaction_id=123",
+                    method = "POST"
+            )
+        }
     }
 
     @Test
@@ -180,31 +175,28 @@ class OrderSummaryPageActivityTest {
         activityRule.launchActivity(null)
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
-        onView(withId(R.id.ticker_shipping_promo)).check(matches(isDisplayed()))
-        onView(withId(R.id.ticker_shipping_promo_description)).check(matches(withText("Tersedia Bebas Ongkir (4-6 hari)")))
+        orderSummaryPage {
+            assertBboTicker("Tersedia Bebas Ongkir (4-6 hari)")
 
-        promoInterceptor.customValidateUseResponseString = VALIDATE_USE_PROMO_REVAMP_BBO_APPLIED_RESPONSE
+            promoInterceptor.customValidateUseResponsePath = VALIDATE_USE_PROMO_REVAMP_BBO_APPLIED_RESPONSE
 
-        onView(withId(R.id.ticker_action)).perform(click())
+            clickBboTicker()
 
-        onView(withId(R.id.ticker_shipping_promo)).check { view, noViewFoundException ->
-            noViewFoundException?.printStackTrace()
-            assertEquals(View.GONE, view.visibility)
+            assertShipment(
+                    shippingName = context.getString(R.string.lbl_osp_free_shipping),
+                    shippingDuration = "Durasi 4-6 hari",
+                    shippingPrice = context.getString(R.string.lbl_osp_free_shipping_only_price),
+                    hasPromo = false
+            )
+
+            assertPayment("Rp101.000", "Bayar")
+        } pay {
+            assertGoToPayment(
+                    redirectUrl = "https://www.tokopedia.com/payment",
+                    queryString = "transaction_id=123",
+                    method = "POST"
+            )
         }
-        onView(withId(R.id.tv_shipping_name)).check(matches(withText(R.string.lbl_osp_free_shipping)))
-        onView(withId(R.id.tv_shipping_duration)).check(matches(withText("Durasi 4-6 hari")))
-        onView(withId(R.id.tv_shipping_price)).check(matches(withText(R.string.lbl_osp_free_shipping_only_price)))
-
-        onView(withId(R.id.btn_pay)).perform(scrollTo())
-        onView(withId(R.id.tv_total_payment_value)).check(matches(withText("Rp101.000")))
-        onView(withId(R.id.btn_pay)).check(matches(withText("Bayar")))
-        onView(withId(R.id.btn_pay)).perform(click())
-
-        val intents = Intents.getIntents()
-        val paymentPassData = intents.first().getParcelableExtra<PaymentPassData>(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA)!!
-        assertEquals("https://www.tokopedia.com/payment", paymentPassData.redirectUrl)
-        assertEquals("transaction_id=123", paymentPassData.queryString)
-        assertEquals("POST", paymentPassData.method)
     }
 
     @Test
@@ -212,15 +204,12 @@ class OrderSummaryPageActivityTest {
         activityRule.launchActivity(null)
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
-        onView(withId(R.id.iv_edit_preference)).check(matches(isDisplayed()))
+        orderSummaryPage {
+            cartInterceptor.customGetOccCartThrowable = IOException()
 
-        cartInterceptor.customGetOccCartThrowable = IOException()
+            clickEditPreference()
 
-        onView(withId(R.id.iv_edit_preference)).perform(click())
-
-        onView(withId(R.id.global_error)).check { view, noViewFoundException ->
-            noViewFoundException?.printStackTrace()
-            assertEquals(View.VISIBLE, view.visibility)
+            assertGlobalErrorVisible()
         }
     }
 }

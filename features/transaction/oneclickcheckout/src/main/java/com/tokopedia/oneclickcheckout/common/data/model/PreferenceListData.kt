@@ -11,5 +11,4 @@ data class PreferenceListData(
         val messages: List<String> = emptyList(),
         @SerializedName("max_profile")
         val maxProfile: Int = 0
-
 )

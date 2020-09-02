@@ -260,7 +260,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                         orderProductCard.setShop(viewModel.orderShop)
                         orderProductCard.initView()
                         showMessage(it.data)
-                        showEmptyPreferenceCard()
                         if (it.data.preference.profileId > 0 &&
                                 it.data.preference.address.addressId > 0 &&
                                 it.data.preference.shipment.serviceId > 0 &&

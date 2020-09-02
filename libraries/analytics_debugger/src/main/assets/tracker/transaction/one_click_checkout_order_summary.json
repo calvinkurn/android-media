@@ -44,7 +44,7 @@
       "checkout_step": "2",
       "payment_id": "{{\\d+}}",
       "event": "checkout_progress",
-      "eventAction": "click bayar",
+      "eventAction": "{{click bayar|click pilih pembayaran}}",
       "sessionIris": "{{.*}}",
       "items": [
         {
@@ -134,6 +134,27 @@
       "eventAction": "preference -  click gunakan pilihan ini from ganti pilihan",
       "sessionIris": "{{.*}}",
       "eventLabel": ""
+    },
+    {
+      "eventCategory": "order summary",
+      "event": "clickCheckoutExpress",
+      "eventAction": "click button info on order summary page",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "new buyer"
+    },
+    {
+      "eventCategory": "order summary",
+      "event": "viewCheckoutExpressIris",
+      "eventAction": "view onboarding info",
+      "sessionIris": "{{.*}}",
+      "eventLabel": ""
+    },
+    {
+      "eventCategory": "order summary",
+      "event": "clickCheckoutExpress",
+      "eventAction": "preference - click atur preferensi for new buyer",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{.*}}"
     }
   ],
   "readme": "OCC Order Summary Page Tracking"
