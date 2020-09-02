@@ -53,7 +53,7 @@ object CartMapperV3Test : Spek({
             }
 
             Then("should contains 0 error shop") {
-                assertEquals(0, result.shopGroupWithErrorDataList.size)
+                assertEquals(0, result.unavailableGroupData.size)
             }
         }
 
@@ -81,7 +81,7 @@ object CartMapperV3Test : Spek({
             }
 
             Then("should contains 1 error shop") {
-                assertEquals(1, result.shopGroupWithErrorDataList.size)
+                assertEquals(1, result.unavailableGroupData.size)
             }
         }
 
@@ -109,7 +109,7 @@ object CartMapperV3Test : Spek({
             }
 
             Then("should contains 1 error shop") {
-                assertEquals(1, result.shopGroupWithErrorDataList.size)
+                assertEquals(1, result.unavailableGroupData.size)
             }
         }
 
