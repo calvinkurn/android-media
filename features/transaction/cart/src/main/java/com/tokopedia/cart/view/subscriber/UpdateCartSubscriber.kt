@@ -35,13 +35,18 @@ class UpdateCartSubscriber(private val view: ICartListView?,
             view?.let {
                 it.hideProgressLoading()
                 if (!data.isSuccess) {
-                    it.renderErrorToShipmentForm(data.message ?: "")
+                    if (data.promptPageData.title.isNotBlank()) {
+                        it.renderErrorToShipmentForm(data.promptPageData)
+                    } else {
+                        it.renderErrorToShipmentForm(data.message ?: "")
+                    }
                 } else {
                     val checklistCondition = getChecklistCondition()
                     val cartItemDataList = it.getAllSelectedCartDataList()
                     cartItemDataList?.let { data ->
                         it.renderToShipmentFormSuccess(
-                                presenter?.generateCheckoutDataAnalytics(data, EnhancedECommerceActionField.STEP_1) ?: hashMapOf(),
+                                presenter?.generateCheckoutDataAnalytics(data, EnhancedECommerceActionField.STEP_1)
+                                        ?: hashMapOf(),
                                 data, isCheckoutProductEligibleForCashOnDelivery(data), checklistCondition)
                     }
                 }
