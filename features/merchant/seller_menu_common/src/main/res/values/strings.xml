@@ -37,4 +37,13 @@
     <string name="dot_string">&#160;\u2022&#160;</string>
     <string name="official_store">Official Store</string>
     <string name="power_merchant_status">Power Merchant:&#160;</string>
+
+    <string name="setting_toaster_error_message">Oops, informasi gagal ditampilkan</string>
+    <string name="setting_toaster_error_retry">Muat Ulang</string>
+    <string name="seller_menu_new_order">Pesanan baru</string>
+    <string name="seller_menu_delivery">Siap dikirim</string>
+    <string name="seller_menu_product_count">%1d produk</string>
+    <string name="seller_menu_business_section">Pengembangan Bisnis</string>
+    <string name="seller_menu_seller_app_only">Di Tokopedia Seller</string>
+    <string name="seller_menu_product_list">Daftar Produkmu</string>
 </resources>

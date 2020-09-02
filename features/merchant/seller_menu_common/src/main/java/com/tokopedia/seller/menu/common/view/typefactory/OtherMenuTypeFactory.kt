@@ -17,5 +17,7 @@ interface OtherMenuTypeFactory {
     fun type(indentedSettingTitleUiModel: IndentedSettingTitleUiModel): Int
     fun type(menuItemUiModel: MenuItemUiModel): Int
     fun type(settingTitleMenuUiModel: SettingTitleMenuUiModel): Int
-
+    fun type(sectionTitleUiModel: SectionTitleUiModel): Int
+    fun type(shopProductUiModel: ShopProductUiModel): Int
+    fun type(shopBusinessUiModel: ShopBusinessUiModel): Int
 }

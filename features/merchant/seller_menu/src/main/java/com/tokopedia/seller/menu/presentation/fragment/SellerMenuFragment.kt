@@ -1,0 +1,175 @@
+package com.tokopedia.seller.menu.presentation.fragment
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.seller.menu.R
+import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
+import com.tokopedia.seller.menu.common.analytics.sendShopInfoImpressionData
+import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
+import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
+import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState.*
+import com.tokopedia.seller.menu.common.view.uimodel.base.SettingShopInfoImpressionTrackable
+import com.tokopedia.seller.menu.common.view.uimodel.base.SettingSuccess
+import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.SettingShopInfoUiModel
+import com.tokopedia.seller.menu.presentation.adapter.SellerMenuAdapter
+import com.tokopedia.seller.menu.presentation.util.SellerMenuList
+import com.tokopedia.seller.menu.di.component.DaggerSellerMenuComponent
+import com.tokopedia.seller.menu.presentation.viewmodel.SellerMenuViewModel
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.fragment_seller_menu.*
+import javax.inject.Inject
+
+class SellerMenuFragment: Fragment(), SettingTrackingListener {
+
+    @Inject
+    lateinit var viewModel: SellerMenuViewModel
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
+    private val adapter by lazy { SellerMenuAdapter(OtherMenuAdapterTypeFactory(this, userSession = userSession)) }
+
+    private var canShowErrorToaster = true
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        initInjector()
+        setHasOptionsMenu(true)
+        super.onCreate(savedInstanceState)
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_seller_menu, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupMenuList()
+        setupSwipeRefresh()
+        observeViewModel()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.seller_menu_options, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId) {
+            R.id.action_inbox -> RouteManager.route(context, ApplinkConst.INBOX)
+            R.id.action_notification -> RouteManager.route(context, ApplinkConst.NOTIFICATION)
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun sendImpressionDataIris(settingShopInfoImpressionTrackable: SettingShopInfoImpressionTrackable) {
+        settingShopInfoImpressionTrackable.sendShopInfoImpressionData()
+    }
+
+    private fun initInjector() {
+        DaggerSellerMenuComponent.builder()
+            .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
+            .build()
+            .inject(this)
+    }
+
+    private fun setupSwipeRefresh() {
+        swipeRefreshLayout.setOnRefreshListener {
+            showShopInfoLoading()
+            getAllShopInfo()
+        }
+    }
+
+    private fun observeViewModel() {
+        observeShopInfo()
+        observeErrorToaster()
+        getAllShopInfo()
+    }
+
+    private fun observeShopInfo() {
+        observe(viewModel.settingShopInfoLiveData) {
+            when(it) {
+                is Success -> showShopInfo(it.data)
+                is Fail -> showShopInfo(SettingError)
+            }
+            swipeRefreshLayout.isRefreshing = false
+        }
+    }
+
+    private fun observeErrorToaster() {
+        observe(viewModel.isToasterAlreadyShown) {
+            canShowErrorToaster = !it
+        }
+    }
+
+    private fun showShopInfo(settingResponseState: SettingResponseState) {
+        when(settingResponseState) {
+            is SettingSuccess -> {
+                if (settingResponseState is SettingShopInfoUiModel) {
+                    adapter.showShopInfo(settingResponseState)
+                }
+            }
+            is SettingLoading -> {
+                showShopInfoLoading()
+            }
+            is SettingError -> {
+                if (canShowErrorToaster) {
+                    view?.showToasterError(resources.getString(R.string.setting_toaster_error_message))
+                }
+                adapter.showShopInfoError()
+            }
+        }
+    }
+
+    private fun getAllShopInfo() {
+        viewModel.getAllSettingShopInfo()
+    }
+
+    private fun setupMenuList() {
+        context?.let { context ->
+            val menuList = SellerMenuList.create(context)
+
+            with(listMenu) {
+                adapter = this@SellerMenuFragment.adapter
+                layoutManager = LinearLayoutManager(context)
+            }
+
+            adapter.addElement(menuList)
+            adapter.notifyDataSetChanged()
+        }
+    }
+
+    private fun View.showToasterError(errorMessage: String) {
+        Toaster.make(this,
+            errorMessage,
+            Snackbar.LENGTH_LONG,
+            Toaster.TYPE_ERROR,
+            resources.getString(R.string.setting_toaster_error_retry),
+            View.OnClickListener {
+                retryFetchAfterError()
+            })
+    }
+
+    private fun retryFetchAfterError() {
+        showShopInfoLoading()
+        viewModel.getAllSettingShopInfo(isToasterRetry = true)
+    }
+
+    private fun showShopInfoLoading() {
+        adapter.showShopInfoLoading()
+    }
+}

@@ -32,8 +32,6 @@
     <string name="setting_tc_divider">|</string>
     <string name="setting_terms_and_condition">Syarat dan Ketentuan</string>
     <string name="setting_privacy_terms">Kebijakan Privasi</string>
-    <string name="setting_toaster_error_retry">Muat Ulang</string>
-    <string name="setting_toaster_error_message">Oops, informasi gagal ditampilkan</string>
     <string name="msg_share_apps">Sudah punya aplikasi Tokopedia belum? cek disini </string>
     <string name="title_share">Bagikan</string>
     <string name="setting_menu_improve_sales">TINGKATKAN PENJUALAN</string>

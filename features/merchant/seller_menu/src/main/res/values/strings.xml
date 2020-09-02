@@ -1,6 +1,12 @@
 <resources>
     <string name="app_name">Seller Menu</string>
     <string name="title_seller_menu">Toko Saya</string>
-    <string name="title_seller_settings">Pengaturan Saya</string>
+    <string name="title_seller_settings">Pengaturan Toko</string>
     <string name="seller_menu_notification_setting">Atur notifikasi penjual</string>
+    <string name="seller_menu_order_section">PENJUALAN</string>
+    <string name="seller_menu_order_cta">Lihat Riwayat</string>
+    <string name="seller_menu_product_section">PRODUK</string>
+    <string name="seller_menu_product_cta">Tambah Produk</string>
+    <string name="seller_menu_notifications">Notifications</string>
+    <string name="seller_menu_inbox">Inbox</string>
 </resources>
