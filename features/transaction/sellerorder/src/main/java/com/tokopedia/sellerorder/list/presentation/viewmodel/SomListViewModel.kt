@@ -50,7 +50,7 @@ class SomListViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
     val userRoleResult: LiveData<Result<SomGetUserRoleUiModel>>
         get() = _userRoleResult
 
-    private val _topAdsGetShopInfo = MutableLiveData<Result<SomTopAdsGetShopInfoResponse.Data.TopAdsGetShopInfo.SomTopAdsShopInfo>>()
+    private var topAdsGetShopInfo: Result<SomTopAdsGetShopInfoResponse.Data.TopAdsGetShopInfo.SomTopAdsShopInfo>? = null
 
     private var getUserRolesJob: Job? = null
     private var getTopAdsGetShopInfoJob: Job? = null
@@ -104,18 +104,18 @@ class SomListViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
     fun loadTopAdsShopInfo(shopId: Int) {
         if (getTopAdsGetShopInfoJob == null || getTopAdsGetShopInfoJob?.isCompleted != false) {
             getTopAdsGetShopInfoJob = launchCatchError(block = {
-                _topAdsGetShopInfo.postValue(topAdsGetShopInfoUseCase.execute(shopId))
+                topAdsGetShopInfo = topAdsGetShopInfoUseCase.execute(shopId)
             }, onError = {
-                _topAdsGetShopInfo.postValue(Fail(it))
+                topAdsGetShopInfo = Fail(it)
             })
         }
     }
 
     fun isTopAdsActive(): Boolean {
-        val topAdsGetShopInfoResult = _topAdsGetShopInfo.value
-        return topAdsGetShopInfoResult is Success &&
-                topAdsGetShopInfoResult.data.category != TOPADS_NO_PRODUCT &&
-                topAdsGetShopInfoResult.data.category != TOPADS_NO_ADS
+        val topAdsGetShopInfo = topAdsGetShopInfo
+        return topAdsGetShopInfo is Success &&
+                topAdsGetShopInfo.data.category != TOPADS_NO_PRODUCT &&
+                topAdsGetShopInfo.data.category != TOPADS_NO_ADS
     }
 
     fun clearUserRoles() {
