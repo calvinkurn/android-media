@@ -2378,7 +2378,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         btnToShipment.text = String.format(getString(R.string.cart_item_button_checkout_count_format), qty)
 
         cartListData?.shoppingSummaryData?.qty = qty
-        cartListData?.shoppingSummaryData?.totalValue = subtotalBeforeSlashedPrice.toInt()
+        if (subtotalBeforeSlashedPrice == 0.0) {
+            cartListData?.shoppingSummaryData?.totalValue = subtotalPrice.toInt()
+        } else {
+            cartListData?.shoppingSummaryData?.totalValue = subtotalBeforeSlashedPrice.toInt()
+        }
         cartListData?.shoppingSummaryData?.discountValue = (subtotalBeforeSlashedPrice - subtotalPrice).toInt()
         cartListData?.shoppingSummaryData?.paymentTotal = subtotalPrice.toInt()
     }
