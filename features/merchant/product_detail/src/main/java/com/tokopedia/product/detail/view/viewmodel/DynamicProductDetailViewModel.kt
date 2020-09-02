@@ -166,8 +166,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     var notifyMeAction: String = ProductDetailCommonConstant.VALUE_TEASER_ACTION_UNREGISTER
     var getDynamicProductInfoP1: DynamicProductInfoP1? = null
     var tradeInParams: TradeInParams = TradeInParams()
-    var enableCachingP2: Boolean = false
     var enableCaching: Boolean = true
+    var enableCachingP2: Boolean = false
     var variantData: ProductVariantCommon? = null
     var listOfParentMedia: MutableList<Media>? = null
     var buttonActionType: Int = 0
