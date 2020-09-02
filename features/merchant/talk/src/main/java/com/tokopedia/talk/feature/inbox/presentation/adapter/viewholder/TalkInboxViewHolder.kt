@@ -32,11 +32,11 @@ class TalkInboxViewHolder(view: View) : AbstractViewHolder<TalkInboxUiModel>(vie
         with(itemView) {
             if(productThumbnail.isEmpty()) {
             itemView.talkInboxProductThumbnail.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_deleted_talk_inbox))
-                talkInboxProductName.setTextColor(ContextCompat.getColor(context, R.color.Neutral_N700_32))
+                talkInboxProductName.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_32))
                 return
             }
             talkInboxProductThumbnail.setImageUrl(productThumbnail)
-            talkInboxProductName.setTextColor(ContextCompat.getColor(context, R.color.Neutral_N700_68))
+            talkInboxProductName.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
         }
     }
 
@@ -48,10 +48,10 @@ class TalkInboxViewHolder(view: View) : AbstractViewHolder<TalkInboxUiModel>(vie
         itemView.talkInboxMessage.apply {
             text = question
             if(isMasked) {
-                setTextColor(ContextCompat.getColor(context, R.color.Neutral_N700_32))
+                setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_32))
                 setWeight(Typography.REGULAR)
             } else {
-                setTextColor(ContextCompat.getColor(context, R.color.Neutral_N700_96))
+                setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_96))
                 setWeight(Typography.BOLD)
             }
         }
