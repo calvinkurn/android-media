@@ -1,7 +1,5 @@
 package com.tokopedia.hotel.search.presentation.fragment
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,23 +15,19 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHold
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
-import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
 import com.tokopedia.hotel.common.util.TRACKING_HOTEL_SEARCH
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.search.data.model.*
-import com.tokopedia.hotel.search.data.model.params.ParamFilter
 import com.tokopedia.hotel.search.data.model.params.ParamFilterV2
-import com.tokopedia.hotel.search.data.util.CommonParam
 import com.tokopedia.hotel.search.di.HotelSearchPropertyComponent
 import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivity.Companion.SEARCH_SCREEN_NAME
 import com.tokopedia.hotel.search.presentation.adapter.HotelOptionMenuAdapter
 import com.tokopedia.hotel.search.presentation.adapter.HotelOptionMenuAdapter.Companion.MODE_CHECKED
 import com.tokopedia.hotel.search.presentation.adapter.HotelSearchResultAdapter
 import com.tokopedia.hotel.search.presentation.adapter.PropertyAdapterTypeFactory
-import com.tokopedia.hotel.search.presentation.adapter.viewholder.FilterSelectionViewHolder
 import com.tokopedia.hotel.search.presentation.adapter.viewholder.SpaceItemDecoration
 import com.tokopedia.hotel.search.presentation.viewmodel.HotelSearchResultViewModel
 import com.tokopedia.hotel.search.presentation.widget.HotelClosedSortBottomSheets
@@ -46,10 +40,6 @@ import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_search_result.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterTypeFactory>(),
@@ -99,6 +89,12 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
             }
             stopTrace()
         })
+
+        searchResultviewModel.liveSelectedFilter.observe(viewLifecycleOwner, Observer {
+            showQuickFilterShimmering(true)
+            setUpQuickFilterBaseOnSelectedFilter(it)
+            loadInitialData()
+        })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -136,26 +132,8 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == REQUEST_FILTER && data != null && data.hasExtra(CommonParam.ARG_CACHE_FILTER_ID)) {
-                val cacheId = data.getStringExtra(CommonParam.ARG_CACHE_FILTER_ID)
-                val cacheManager = context?.let { SaveInstanceCacheManager(it, cacheId) } ?: return
-                val paramFilter = cacheManager.get(CommonParam.ARG_SELECTED_FILTER, ParamFilter::class.java)
-                        ?: ParamFilter()
-
-                trackingHotelUtil.hotelUserClickFilter(context, SEARCH_SCREEN_NAME)
-                searchResultviewModel.addFilter(paramFilter)
-                loadInitialData()
-            }
-        }
-    }
-
     fun changeSearchParam() {
-        onQuickFilterChanged(listOf())
-        setUpQuickFilterBaseOnSelectedFilter(listOf())
+        searchResultviewModel.addFilter(listOf())
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Property, PropertyAdapterTypeFactory> {
@@ -194,7 +172,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         bottom_action_view.filterItem.listener = {
             filterBottomSheet = HotelFilterBottomSheets()
                     .setSubmitFilterListener(this)
-                    .setSelected(searchResultviewModel.selectedFilterV2)
+                    .setSelected(searchResultviewModel.getSelectedFilter())
                     .setFilter(filterV2s)
             filterBottomSheet.show(childFragmentManager, javaClass.simpleName)
         }
@@ -212,7 +190,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         }
 
         quick_filter_sort_filter.dismissListener = {
-            refreshSelectedFilter(quickFilters)
+            searchResultviewModel.addFilter(quickFilters, quick_filter_sort_filter.chipItems)
         }
 
         val sortFilterItem = quickFilters.map {
@@ -229,12 +207,11 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
             item.refChipUnify.setOnClickListener {
                 item.toggleSelected()
                 trackingHotelUtil.clickOnQuickFilter(context, SEARCH_SCREEN_NAME, item.title.toString(), index)
-                refreshSelectedFilter(quickFilters)
+                searchResultviewModel.addFilter(quickFilters, quick_filter_sort_filter.chipItems)
             }
         }
 
         quick_filter_sort_filter.parentListener = { }
-
         quick_filter_sort_filter.show()
     }
 
@@ -319,73 +296,21 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         else {
             filterBottomSheet = HotelFilterBottomSheets()
                     .setSubmitFilterListener(this)
-                    .setSelected(searchResultviewModel.selectedFilterV2)
+                    .setSelected(searchResultviewModel.getSelectedFilter())
                     .setFilter((searchResultviewModel.liveSearchResult.value as Success<PropertySearch>).data.filters)
             filterBottomSheet.show(childFragmentManager, javaClass.simpleName)
         }
     }
 
     override fun onSubmitFilter(selectedFilter: List<ParamFilterV2>) {
-        searchResultviewModel.addFilter(selectedFilter)
         trackingHotelUtil.clickSubmitFilterOnBottomSheet(context, SEARCH_SCREEN_NAME, selectedFilter)
-        setUpQuickFilterBaseOnSelectedFilter(selectedFilter)
-        showQuickFilterShimmering(false)
-        loadInitialData()
+        searchResultviewModel.addFilter(selectedFilter)
     }
-
-    private fun onQuickFilterChanged(selectedFilters: List<ParamFilterV2>) {
-        searchResultviewModel.addFilter(selectedFilters)
-        showQuickFilterShimmering(true)
-        loadInitialData()
-    }
-
-    //for assign clicked quick filter value to selected filter
-    private fun refreshSelectedFilter(quickFilters: List<QuickFilter>) {
-        showQuickFilterShimmering(true)
-        val selectedFilters = searchResultviewModel.selectedFilterV2.associateBy({ it.name }, { it }).toMutableMap()
-
-        quickFilters.forEachIndexed { index, quickFilter ->
-            val isQuickFilterSelected = quick_filter_sort_filter.chipItems[index].type == ChipsUnify.TYPE_SELECTED
-            if (isQuickFilterSelected) {
-                if (selectedFilters.containsKey(quickFilter.name)) {
-                    val selectedFilter = selectedFilters[quickFilter.name] ?: ParamFilterV2()
-                    val filterValue = selectedFilter.values.toHashSet()
-                    if (quickFilter.type == FilterV2.FILTER_TYPE_OPEN_RANGE
-                            || quickFilter.type == FilterV2.FILTER_TYPE_SELECTION_RANGE ||
-                            quickFilter.name == FilterSelectionViewHolder.SELECTION_STAR_TYPE) filterValue.clear()
-                    filterValue.addAll(quickFilter.values)
-                    selectedFilters[quickFilter.name] = ParamFilterV2(quickFilter.name, filterValue.toMutableList())
-                } else {
-                    selectedFilters[quickFilter.name] = ParamFilterV2(quickFilter.name, quickFilter.values.toMutableList())
-                }
-            } else {
-                if (selectedFilters.containsKey(quickFilter.name)) {
-                    var isContainsAllValue = true
-                    val selectedFilter = selectedFilters[quickFilter.name] ?: ParamFilterV2()
-                    val filterValue = selectedFilter.values.toHashSet()
-                    for (value in quickFilter.values) {
-                        if (!filterValue.contains(value)) isContainsAllValue = false
-                    }
-                    if (isContainsAllValue) {
-                        for (value in quickFilter.values) {
-                            filterValue.remove(value)
-                        }
-                    }
-                    selectedFilters[quickFilter.name] = ParamFilterV2(quickFilter.name, filterValue.toMutableList())
-                }
-            }
-        }
-        onQuickFilterChanged(selectedFilters.values.toMutableList())
-    }
-
 
     //for setup quick filter after click submit in bottom sheet
     private fun setUpQuickFilterBaseOnSelectedFilter(selectedFilters: List<ParamFilterV2>) {
         quick_filter_sort_filter.chipItems.forEach { it.type = ChipsUnify.TYPE_NORMAL }
         val selectedFiltersMap = selectedFilters.associateBy({ it.name }, { it })
-
-        // example quickfilter {4, 5} , selected {4} -> not found, don't select chips
-        // example quickfilter {5}, selected {4, 5} -> found, select chip
         quickFilters.forEachIndexed { index, quickFilter ->
             if (selectedFiltersMap.containsKey(quickFilter.name)) {
                 val selectedFilter = selectedFiltersMap[quickFilter.name]
@@ -438,7 +363,6 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     override fun getMinimumScrollableNumOfItems(): Int = 5
 
     companion object {
-        private const val REQUEST_FILTER = 0x10
         private const val REQUEST_CODE_DETAIL_HOTEL = 101
 
         const val ARG_HOTEL_SEARCH_MODEL = "arg_hotel_search_model"

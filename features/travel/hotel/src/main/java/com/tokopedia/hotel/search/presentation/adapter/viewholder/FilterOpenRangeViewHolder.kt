@@ -21,7 +21,7 @@ class FilterOpenRangeViewHolder(view: View, val onSelectedFilterChangedListener:
 
     override fun bind(filter: FilterV2) {
         filterName = filter.name
-        onSelectedFilterChangedListener.onSelectedFilterChanged(filterName)
+        onSelectedFilterChangedListener.onSelectedFilterChanged(filterName, filter.optionSelected)
 
         if (filter.options.isEmpty()) filter.options = listOf(MIN_PRICE, MAX_PRICE)
         initialMaxPrice = filter.options.lastOrNull().toIntOrZero()
