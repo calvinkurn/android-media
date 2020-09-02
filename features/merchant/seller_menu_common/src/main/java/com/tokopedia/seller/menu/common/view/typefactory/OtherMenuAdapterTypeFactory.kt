@@ -36,7 +36,7 @@ class OtherMenuAdapterTypeFactory(
             ShopOrderViewHolder.LAYOUT -> ShopOrderViewHolder(parent)
             SellerMenuTitleViewHolder.LAYOUT -> SellerMenuTitleViewHolder(parent)
             ShopProductViewHolder.LAYOUT -> ShopProductViewHolder(parent)
-            ShopBusinessViewHolder.LAYOUT -> ShopBusinessViewHolder(parent)
+            SellerFeatureViewHolder.LAYOUT -> SellerFeatureViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
@@ -65,8 +65,8 @@ class OtherMenuAdapterTypeFactory(
         return ShopProductViewHolder.LAYOUT
     }
 
-    override fun type(shopBusinessUiModel: ShopBusinessUiModel): Int {
-        return ShopBusinessViewHolder.LAYOUT
+    override fun type(sellerFeatureUiModel: SellerFeatureUiModel): Int {
+        return SellerFeatureViewHolder.LAYOUT
     }
 
     override fun type(dividerUiModel: DividerUiModel): Int {

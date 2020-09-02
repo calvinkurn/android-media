@@ -26,7 +26,7 @@
         app:layout_constraintLeft_toRightOf="@id/textTitle"
         app:layout_constraintTop_toTopOf="@id/textTitle" />
 
-    <com.tokopedia.seller.menu.common.view.widget.SellerMenuBusinessCard
+    <com.tokopedia.seller.menu.common.view.widget.SellerMenuFeatureCard
         android:id="@+id/cardStatistics"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -40,7 +40,7 @@
         app:menuIcon="@drawable/ic_seller_menu_statistics"
         app:menuTitle="statistik toko" />
 
-    <com.tokopedia.seller.menu.common.view.widget.SellerMenuBusinessCard
+    <com.tokopedia.seller.menu.common.view.widget.SellerMenuFeatureCard
         android:id="@+id/cardPromo"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -54,7 +54,7 @@
         app:menuIcon="@drawable/ic_seller_menu_promo"
         app:menuTitle="iklan dan promosi" />
 
-    <com.tokopedia.seller.menu.common.view.widget.SellerMenuBusinessCard
+    <com.tokopedia.seller.menu.common.view.widget.SellerMenuFeatureCard
         android:id="@+id/cardFeedAndPlay"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -67,7 +67,7 @@
         app:menuIcon="@drawable/ic_seller_menu_tokopedia_play"
         app:menuTitle="Feed dan play" />
 
-    <com.tokopedia.seller.menu.common.view.widget.SellerMenuBusinessCard
+    <com.tokopedia.seller.menu.common.view.widget.SellerMenuFeatureCard
         android:id="@+id/cardFintech"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

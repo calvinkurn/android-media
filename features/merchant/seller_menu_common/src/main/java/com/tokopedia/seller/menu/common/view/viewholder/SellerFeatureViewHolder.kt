@@ -4,14 +4,14 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.seller.menu.common.R
-import com.tokopedia.seller.menu.common.view.uimodel.ShopBusinessUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.SellerFeatureUiModel
 
-class ShopBusinessViewHolder(itemView: View): AbstractViewHolder<ShopBusinessUiModel>(itemView) {
+class SellerFeatureViewHolder(itemView: View): AbstractViewHolder<SellerFeatureUiModel>(itemView) {
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_seller_menu_business_section
+        val LAYOUT = R.layout.item_seller_menu_feature_section
     }
 
-    override fun bind(product: ShopBusinessUiModel) {}
+    override fun bind(product: SellerFeatureUiModel) {}
 }

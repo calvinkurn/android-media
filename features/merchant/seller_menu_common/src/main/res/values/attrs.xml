@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="SellerMenuBusinessCard">
+    <declare-styleable name="SellerMenuFeatureCard">
         <attr name="menuTitle" format="string"/>
         <attr name="menuDescription" format="string"/>
         <attr name="menuIcon" format="integer"/>

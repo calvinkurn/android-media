@@ -10,7 +10,7 @@ import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
 import com.tokopedia.seller.menu.common.view.uimodel.DividerUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.MenuItemUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.SettingTitleUiModel
-import com.tokopedia.seller.menu.common.view.uimodel.ShopBusinessUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.SellerFeatureUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.ShopOrderUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.ShopProductUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.base.DividerType
@@ -39,7 +39,7 @@ object SellerMenuList {
         menuList.addAll(buyerInfoMenu)
         menuList.addAll(helpAndOtherMenu)
         menuList.add(DividerUiModel())
-        menuList.add(ShopBusinessUiModel())
+        menuList.add(SellerFeatureUiModel())
 
         return menuList.toList()
     }
