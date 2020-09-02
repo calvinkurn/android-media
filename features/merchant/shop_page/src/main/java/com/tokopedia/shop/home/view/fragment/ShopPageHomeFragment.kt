@@ -282,15 +282,15 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     override fun onDestroy() {
-        viewModel?.initialProductListData?.removeObservers(viewLifecycleOwner)
-        viewModel?.newProductListData?.removeObservers(viewLifecycleOwner)
-        viewModel?.shopHomeLayoutData?.removeObservers(viewLifecycleOwner)
-        viewModel?.checkWishlistData?.removeObservers(viewLifecycleOwner)
-        viewModel?.reminderPlayLiveData?.removeObservers(viewLifecycleOwner)
+        viewModel?.initialProductListData?.removeObservers(this)
+        viewModel?.newProductListData?.removeObservers(this)
+        viewModel?.shopHomeLayoutData?.removeObservers(this)
+        viewModel?.checkWishlistData?.removeObservers(this)
+        viewModel?.reminderPlayLiveData?.removeObservers(this)
         viewModel?.flush()
         shopHomeAdapter.onDestroy()
-        shopSortSharedViewModel?.sharedSortData?.removeObservers(viewLifecycleOwner)
-        shopChangeProductGridSharedViewModel?.sharedProductGridType?.removeObservers(viewLifecycleOwner)
+        shopSortSharedViewModel?.sharedSortData?.removeObservers(this)
+        shopChangeProductGridSharedViewModel?.sharedProductGridType?.removeObservers(this)
         super.onDestroy()
     }
 
