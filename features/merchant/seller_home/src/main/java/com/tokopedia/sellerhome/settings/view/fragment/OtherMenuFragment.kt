@@ -40,7 +40,6 @@ import com.tokopedia.seller.menu.common.analytics.SettingTrackingConstant
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
 import com.tokopedia.seller.menu.common.analytics.sendShopInfoImpressionData
 import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
-import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler.ERROR_GET_SETTING_SHOP_INFO
 import com.tokopedia.sellerhome.settings.view.activity.MenuSettingActivity
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
 import com.tokopedia.seller.menu.common.view.uimodel.DividerUiModel
@@ -80,6 +79,8 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
         private const val GO_TO_REPUTATION_HISTORY = "GO_TO_REPUTATION_HISTORY"
         private const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
+
+        private const val ERROR_GET_SETTING_SHOP_INFO = "Error when get shop info in other setting."
 
         @JvmStatic
         fun createInstance(): OtherMenuFragment = OtherMenuFragment()
