@@ -178,10 +178,10 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             validateUsePromoRevampUiModel = null
             lastValidateUsePromoRequest = null
             orderPromo.value = orderData.promo.copy(state = ButtonBayarState.NORMAL)
+            if (orderData.prompt.shouldShowPrompt()) {
+                globalEvent.value = OccGlobalEvent.Prompt(orderData.prompt)
+            }
             if (orderProduct.productId > 0 && orderData.preference.shipment.serviceId > 0) {
-                if (orderData.prompt.shouldShowPrompt()) {
-                    globalEvent.value = OccGlobalEvent.Prompt(orderData.prompt)
-                }
                 orderTotal.value = orderTotal.value.copy(buttonState = ButtonBayarState.LOADING)
                 getRates()
             } else {

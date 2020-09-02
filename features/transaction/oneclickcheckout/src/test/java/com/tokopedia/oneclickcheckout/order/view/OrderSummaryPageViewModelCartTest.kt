@@ -144,6 +144,26 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     }
 
     @Test
+    fun `Get Occ Cart Success With Prompt`() {
+        // Given
+        val shipment = OrderProfileShipment(serviceId = 1)
+        val profile = OrderProfile(shipment = shipment)
+        val prompt = OccPrompt(OccPrompt.FROM_CART, OccPrompt.TYPE_DIALOG)
+        val response = OrderData(cart = OrderCart(product = OrderProduct(productId = 1)), preference = profile, prompt = prompt)
+        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
+        every { getOccCartUseCase.execute(any(), any(), any()) } answers { (firstArg() as ((OrderData) -> Unit)).invoke(response) }
+
+        // When
+        orderSummaryPageViewModel.getOccCart(true, "")
+
+        // Then
+        assertEquals(OccState.FirstLoad(OrderPreference(profileIndex = "", profileRecommendation = "", preference = profile, isValid = true)),
+                orderSummaryPageViewModel.orderPreference.value)
+        assertEquals(OccGlobalEvent.Prompt(prompt), orderSummaryPageViewModel.globalEvent.value)
+        verify(exactly = 1) { ratesUseCase.execute(any()) }
+    }
+
+    @Test
     fun `Get Occ Cart Success With Preference And Rates`() {
         // Given
         val shipment = OrderProfileShipment(serviceId = 1)

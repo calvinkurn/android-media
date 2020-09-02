@@ -350,6 +350,30 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
     }
 
     @Test
+    fun `Checkout Error Prompt`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
+            (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
+        }
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
+        val prompt = OccPrompt(OccPrompt.FROM_CHECKOUT, OccPrompt.TYPE_DIALOG)
+        every { checkoutOccUseCase.execute(any(), any(), any()) } answers {
+            (secondArg() as ((CheckoutOccData) -> Unit)).invoke(CheckoutOccData(status = STATUS_OK, result = CheckoutOccResult(success = 0, prompt = prompt)))
+        }
+
+        // When
+        orderSummaryPageViewModel.finalUpdate({
+            //do nothing
+        }, false)
+
+        // Then
+        assertEquals(OccGlobalEvent.Prompt(prompt), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
     fun `Checkout Error`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)

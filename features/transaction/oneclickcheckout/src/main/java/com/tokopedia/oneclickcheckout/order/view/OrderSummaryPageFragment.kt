@@ -981,8 +981,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     dialogUnify.setSecondaryCTAClickListener { onDialogPromptButtonClicked(dialogUnify, prompt, secondaryButton) }
                 }
             }
-            dialogUnify.setOverlayClose(prompt.hasReloadActionButton())
-            dialogUnify.setCancelable(prompt.hasReloadActionButton())
+            dialogUnify.setOverlayClose(false)
+            dialogUnify.setCancelable(false)
             dialogUnify.show()
         }
     }
