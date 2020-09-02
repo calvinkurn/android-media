@@ -43,7 +43,7 @@ class BarChartMapper @Inject constructor() {
             BarChartMetricsUiModel(
                     value = getAxis(metric.value),
                     title = metric.name,
-                    barHexColor = getBarColor(metric)
+                    barHexColor = getBarHexColor(metric)
             )
         }
     }
@@ -75,11 +75,7 @@ class BarChartMapper @Inject constructor() {
             }
         ]
      */
-    private fun getBarColor(metric: BarChartMetricModel): String {
-        return try {
-            metric.value[0].hexColor
-        } catch (e: IndexOutOfBoundsException) {
-            ChartColor.DEFAULT_BAR_COLOR
-        }
+    private fun getBarHexColor(metric: BarChartMetricModel): String {
+        return metric.value.getOrNull(0)?.hexColor ?: ChartColor.DEFAULT_BAR_COLOR
     }
 }
