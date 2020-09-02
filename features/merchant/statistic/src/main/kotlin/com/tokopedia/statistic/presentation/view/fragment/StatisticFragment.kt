@@ -112,6 +112,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         observeWidgetData(mViewModel.tableWidgetData, WidgetType.TABLE)
         observeWidgetData(mViewModel.pieChartWidgetData, WidgetType.PIE_CHART)
         observeWidgetData(mViewModel.barChartWidgetData, WidgetType.BAR_CHART)
+        observeTickers()
     }
 
     override fun onResume() {
@@ -677,6 +678,16 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         mViewModel.getUserRole()
     }
 
+    private fun observeTickers() {
+        mViewModel.tickers.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> showTickers(it.data)
+                is Fail -> removeTicker()
+            }
+        })
+        mViewModel.getTickers()
+    }
+
     private inline fun <reified D : BaseDataUiModel> observeWidgetData(liveData: LiveData<Result<List<D>>>, type: String) {
         liveData.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
@@ -710,12 +721,18 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         toastCountDown.start()
     }
 
+    private fun showTickers(tickers: List<TickerItemUiModel>) {
+        tickerWidget.data?.tickers = tickers
+        notifyWidgetChanged(tickerWidget)
+    }
+
+    private fun removeTicker() {
+        tickerWidget.data?.tickers = emptyList()
+        notifyWidgetChanged(tickerWidget)
+    }
+
     private fun getTickerWidget(): Lazy<TickerWidgetUiModel> = lazy {
-        val tickerUrl = "https://docs.google.com/forms/d/1t-KeapZJwOeYOBnbXDEmzRJiUqMBicE9cQIauc40qMU"
-        val title = context?.getString(R.string.stc_ticker_title).orEmpty()
-        val message = context?.getString(R.string.stc_ticker_message, tickerUrl).orEmpty()
-        val tickerItems = listOf(TickerItemUiModel(title = title, message = message, redirectUrl = tickerUrl))
-        val tickerData = TickerDataUiModel(tickers = tickerItems, dataKey = TICKER_NAME)
+        val tickerData = TickerDataUiModel(tickers = emptyList(), dataKey = TICKER_NAME)
         return@lazy TickerWidgetUiModel(data = tickerData, title = TICKER_NAME, dataKey = TICKER_NAME)
     }
 }
