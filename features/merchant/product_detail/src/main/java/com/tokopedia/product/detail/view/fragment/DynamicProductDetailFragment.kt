@@ -2161,7 +2161,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun gotoEditProduct() {
         var id = viewModel.getDynamicProductInfoP1?.data?.variant?.parentID
         if (id.isNullOrBlank().or(id.toIntOrZero() <= 0)) {
-            id = viewModel.getDynamicProductInfoP1?.parentProductId
+            id = viewModel.getDynamicProductInfoP1?.parentProductId ?: return
         }
 
         val applink = Uri.parse(ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW)
