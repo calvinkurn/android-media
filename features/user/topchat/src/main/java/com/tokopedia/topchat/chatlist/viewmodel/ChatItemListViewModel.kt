@@ -93,13 +93,6 @@ class ChatItemListViewModel @Inject constructor(
     val chatBannedSellerStatus: LiveData<Result<Boolean>>
         get() = _chatBannedSellerStatus
 
-    companion object {
-        val arrayFilterParam = arrayListOf(
-                PARAM_FILTER_ALL,
-                PARAM_FILTER_UNREAD,
-                PARAM_FILTER_UNREPLIED)
-    }
-
     override fun getChatListMessage(page: Int, filterIndex: Int, tab: String) {
         queryGetChatListMessage(page, arrayFilterParam[filterIndex], tab)
     }
@@ -256,5 +249,13 @@ class ChatItemListViewModel @Inject constructor(
             filters.add(context.getString(R.string.filter_chat_smart_reply))
         }
         return filters
+    }
+
+    companion object {
+        val arrayFilterParam = arrayListOf(
+                PARAM_FILTER_ALL,
+                PARAM_FILTER_UNREAD,
+                PARAM_FILTER_UNREPLIED
+        )
     }
 }
