@@ -1,0 +1,38 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+android {
+    defaultConfig {
+        multiDexEnabled true
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
+    implementation rootProject.ext.miscDependencies.multiDex
+    implementation rootProject.ext.playServicesDependencies.ads
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation rootProject.ext.playServicesDependencies.location
+    implementation project(rootProject.ext.libraries.deviceInfo)
+    implementation project(rootProject.ext.libraries.encryption)
+}
+
+project.ext {
+    artifactId = 'device-fingerprint'
+    groupId = 'com.tokopedia.library'
+    versionName = "0.0.1"
+    artifactName = "device_fingerprint-release"
+}
+
+apply from: '../../publish_local.gradle'
