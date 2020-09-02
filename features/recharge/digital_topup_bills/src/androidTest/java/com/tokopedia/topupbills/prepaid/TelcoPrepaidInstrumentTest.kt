@@ -38,7 +38,6 @@ import com.tokopedia.topupbills.telco.prepaid.fragment.DigitalTelcoPrepaidFragme
 import org.hamcrest.core.AllOf
 import org.hamcrest.core.AnyOf
 import org.hamcrest.core.IsNot
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -71,7 +70,7 @@ class TelcoPrepaidInstrumentTest {
 
     @Before
     fun stubAllExternalIntents() {
-        gtmLogDBSource.deleteAll().subscribe()
+        gtmLogDBSource.deleteAll().toBlocking().first()
 
         Intents.intending(IsNot.not(IntentMatchers.isInternal())).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
@@ -102,16 +101,15 @@ class TelcoPrepaidInstrumentTest {
 
     @Test
     fun validate_prepaid_non_login() {
-        stubContactNumber()
         stubSearchNumber()
 
         validate_coachmark()
         validate_show_contents_pdp_telco_not_login()
         validate_interaction_menu()
-        validate_click_on_contact_picker_and_list_fav_number()
+//        validate_click_on_contact_picker_and_list_fav_number()
         validate_click_done_keyboard_fav_number()
         choose_fav_number_from_list_fav_number()
-        click_phonebook_and_clear()
+//        click_phonebook_and_clear()
         interaction_product_not_login()
         interaction_product_filter()
         validate_interaction_promo()
@@ -144,7 +142,12 @@ class TelcoPrepaidInstrumentTest {
         onView(withId(R.id.telco_ac_input_number)).check(matches(withText(VALID_PHONE_NUMBER)))
     }
 
+    /**
+     * activate this test for local instrumentation test only because it contains contact picker
+     */
     fun validate_click_on_contact_picker_and_list_fav_number() {
+        stubContactNumber()
+
         Thread.sleep(2000)
         onView(withId(R.id.telco_input_number)).perform(click())
         Thread.sleep(2000)
@@ -211,7 +214,12 @@ class TelcoPrepaidInstrumentTest {
         onView(withId(R.id.telco_ac_input_number)).check(matches(AnyOf.anyOf(withText(VALID_PHONE_BOOK), withText(VALID_PHONE_BOOK_RAW))))
     }
 
+    /**
+     * activate this test for local instrumentation test only because it contains contact picker
+     */
     fun click_phonebook_and_clear() {
+        stubContactNumber()
+
         Thread.sleep(2000)
         pick_phone_number_from_phonebook()
         onView(withId(R.id.telco_clear_input_number_btn)).perform(click())
@@ -220,7 +228,7 @@ class TelcoPrepaidInstrumentTest {
 
     fun interaction_product_not_login() {
         Thread.sleep(2000)
-        pick_phone_number_from_phonebook()
+        choose_fav_number_from_list_fav_number()
 
         Thread.sleep(3000)
         onView(withId(R.id.telco_view_pager)).check(matches(isDisplayed()))
@@ -294,11 +302,6 @@ class TelcoPrepaidInstrumentTest {
         Thread.sleep(2000)
         onView(AllOf.allOf(isDisplayed(), withId(R.id.telco_sort_filter))).check(matches(isDisplayed()))
         onView(withId(R.id.sort_filter_prefix)).perform(click())
-    }
-
-    @After
-    fun tearDown() {
-        gtmLogDBSource.deleteAll().subscribe()
     }
 
     companion object {

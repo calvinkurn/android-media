@@ -17,7 +17,6 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.analyticsdebugger.validator.core.getAnalyticsWithQuery
 import com.tokopedia.analyticsdebugger.validator.core.hasAllSuccess
@@ -33,13 +32,10 @@ import com.tokopedia.topupbills.telco.common.activity.BaseTelcoActivity
 import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.postpaid.activity.TelcoPostpaidActivity
-import com.tokopedia.topupbills.telco.prepaid.activity.TelcoPrepaidActivity
 import com.tokopedia.topupbills.telco.prepaid.adapter.viewholder.TelcoProductViewHolder
-import com.tokopedia.topupbills.telco.prepaid.fragment.DigitalTelcoPrepaidFragment
 import org.hamcrest.core.AllOf
 import org.hamcrest.core.AnyOf
 import org.hamcrest.core.IsNot
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -72,7 +68,7 @@ class TelcoPostpaidInstrumentTest {
 
     @Before
     fun stubAllExternalIntents() {
-        gtmLogDBSource.deleteAll().subscribe()
+        gtmLogDBSource.deleteAll().toBlocking().first()
 
         Intents.intending(IsNot.not(IntentMatchers.isInternal())).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
@@ -103,14 +99,13 @@ class TelcoPostpaidInstrumentTest {
 
     @Test
     fun validate_postpaid_non_login() {
-        stubContactNumber()
         stubSearchNumber()
 
         validate_show_contents_pdp_telco_not_login()
         validate_interaction_menu()
-        validate_click_on_contact_picker_and_list_fav_number()
         validate_click_done_keyboard_fav_number()
-        click_phonebook_and_clear()
+//        validate_click_on_contact_picker_and_list_fav_number()
+//        click_phonebook_and_clear()
         choose_fav_number_from_list_fav_number()
         enquiry_phone_number()
         validate_interaction_promo()
@@ -128,7 +123,12 @@ class TelcoPostpaidInstrumentTest {
         onView(withId(R.id.telco_ac_input_number)).check(matches(withText(VALID_PHONE_NUMBER)))
     }
 
+    /**
+     * activate this test for local instrumentation test only because it contains contact picker
+     */
     fun validate_click_on_contact_picker_and_list_fav_number() {
+        stubContactNumber()
+
         Thread.sleep(2000)
         onView(withId(R.id.telco_ac_input_number)).perform(click())
         Thread.sleep(2000)
@@ -195,7 +195,12 @@ class TelcoPostpaidInstrumentTest {
         onView(withId(R.id.telco_ac_input_number)).check(matches(AnyOf.anyOf(withText(VALID_PHONE_BOOK), withText(VALID_PHONE_BOOK_RAW))))
     }
 
+    /**
+     * activate this test for local instrumentation test only because it contains contact picker
+     */
     fun click_phonebook_and_clear() {
+        stubContactNumber()
+
         Thread.sleep(2000)
         pick_phone_number_from_phonebook()
         onView(withId(R.id.telco_clear_input_number_btn)).perform(click())
@@ -212,11 +217,6 @@ class TelcoPostpaidInstrumentTest {
         onView(withId(R.id.telco_title_enquiry_result)).check(matches(isDisplayed()))
         onView(withId(R.id.telco_buy_widget)).check(matches(isDisplayed()))
         onView(withId(R.id.telco_buy_widget)).perform(click())
-    }
-
-    @After
-    fun tearDown() {
-        gtmLogDBSource.deleteAll().subscribe()
     }
 
     companion object {

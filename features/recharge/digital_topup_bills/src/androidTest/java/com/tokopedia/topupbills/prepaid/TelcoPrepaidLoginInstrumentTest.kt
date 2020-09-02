@@ -4,8 +4,8 @@ import android.Manifest
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
-import android.provider.ContactsContract
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
@@ -22,14 +22,12 @@ import com.tokopedia.analyticsdebugger.validator.core.getAnalyticsWithQuery
 import com.tokopedia.analyticsdebugger.validator.core.hasAllSuccess
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
-import com.tokopedia.common.topupbills.view.adapter.TopupBillsPromoListAdapter
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsRecentNumbersAdapter
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheck
 import com.tokopedia.topupbills.R
-import com.tokopedia.topupbills.TelcoContactHelper
 import com.tokopedia.topupbills.telco.common.activity.BaseTelcoActivity
 import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
@@ -37,9 +35,7 @@ import com.tokopedia.topupbills.telco.prepaid.activity.TelcoPrepaidActivity
 import com.tokopedia.topupbills.telco.prepaid.adapter.viewholder.TelcoProductViewHolder
 import com.tokopedia.topupbills.telco.prepaid.fragment.DigitalTelcoPrepaidFragment
 import org.hamcrest.core.AllOf
-import org.hamcrest.core.AnyOf
 import org.hamcrest.core.IsNot
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -72,7 +68,7 @@ class TelcoPrepaidLoginInstrumentTest {
 
     @Before
     fun stubAllExternalIntents() {
-        gtmLogDBSource.deleteAll().subscribe()
+        gtmLogDBSource.deleteAll().toBlocking().first()
 
         Intents.intending(IsNot.not(IntentMatchers.isInternal())).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
@@ -92,19 +88,9 @@ class TelcoPrepaidLoginInstrumentTest {
                 .respondWith(createOrderNumberTypeManual())
     }
 
-    private fun stubContactNumber() {
-        val telcoContactHelper = TelcoContactHelper()
-        val contentResolver = mActivityRule.activity.contentResolver
-
-        Intents.intending(AllOf.allOf(IntentMatchers.hasData(ContactsContract.CommonDataKinds.Phone.CONTENT_URI),
-                IntentMatchers.hasAction(Intent.ACTION_PICK))
-        ).respondWith(telcoContactHelper.createUriContact(contentResolver))
-    }
-
     @Test
     fun validate_prepaid_login() {
         stubSearchNumber()
-        stubContactNumber()
         InstrumentationAuthHelper.loginInstrumentationTestUser1(mActivityRule.activity.application)
 
         Thread.sleep(3000)
@@ -136,13 +122,15 @@ class TelcoPrepaidLoginInstrumentTest {
 
     fun click_on_fav_number_login() {
         Thread.sleep(2000)
-        onView(withId(R.id.telco_input_number)).perform(click())
-        onView(withId(R.id.telco_search_number_contact_picker)).perform(click())
-        onView(withId(R.id.searchbar_textfield)).check(matches(isDisplayed()))
-        onView(withId(R.id.searchbar_textfield)).check(matches(AnyOf.anyOf(withText(VALID_PHONE_BOOK), withText(VALID_PHONE_BOOK_RAW))))
+        onView(withId(R.id.telco_ac_input_number)).perform(click())
+        onView(withId(R.id.searchbar_icon)).perform(click())
+        onView(withId(R.id.searchbar_textfield)).check(matches(withText("")))
+        onView(withId(R.id.searchbar_textfield)).perform(ViewActions.typeText(VALID_PHONE_NUMBER), ViewActions.pressImeActionButton())
+        onView(withId(R.id.telco_ac_input_number)).check(matches(withText(VALID_PHONE_NUMBER)))
+
         val viewInteraction = onView(withId(R.id.telco_search_number_rv)).check(matches(isDisplayed()))
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<TelcoProductViewHolder>(0, click()))
-        onView(withId(R.id.telco_ac_input_number)).check(matches(AnyOf.anyOf(withText(VALID_PHONE_BOOK), withText(VALID_PHONE_BOOK_RAW))))
+        onView(withId(R.id.telco_ac_input_number)).check(matches(withText(VALID_PHONE_NUMBER)))
 
         Thread.sleep(2000)
         onView(withId(R.id.telco_input_number)).perform(click())
@@ -162,7 +150,7 @@ class TelcoPrepaidLoginInstrumentTest {
 
     fun interaction_product_login() {
         Thread.sleep(2000)
-        pick_phone_number_from_phonebook()
+        choose_fav_number_from_list_fav_number()
 
         Thread.sleep(3000)
         onView(withId(R.id.telco_view_pager)).check(matches(isDisplayed()))
@@ -194,11 +182,16 @@ class TelcoPrepaidLoginInstrumentTest {
         onView(withId(R.id.telco_button_select_item)).perform(click())
     }
 
-    private fun pick_phone_number_from_phonebook() {
+    fun choose_fav_number_from_list_fav_number() {
         Thread.sleep(2000)
-        onView(withId(R.id.telco_contact_picker_btn)).perform(click())
-        onView(withId(R.id.telco_ac_input_number)).check(matches(isDisplayed()))
-        onView(withId(R.id.telco_ac_input_number)).check(matches(AnyOf.anyOf(withText(VALID_PHONE_BOOK), withText(VALID_PHONE_BOOK_RAW))))
+        onView(withId(R.id.telco_input_number)).perform(click())
+        onView(withId(R.id.searchbar_icon)).perform(click())
+        onView(withId(R.id.searchbar_textfield)).check(matches(withText("")))
+        onView(withId(R.id.searchbar_textfield)).perform(ViewActions.typeText(VALID_PHONE_NUMBER), ViewActions.closeSoftKeyboard())
+        onView(withId(R.id.searchbar_textfield)).check(matches(withText(VALID_PHONE_NUMBER)))
+        val viewInteraction = onView(withId(R.id.telco_search_number_rv)).check(matches(isDisplayed()))
+        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<TelcoProductViewHolder>(0, click()))
+        onView(withId(R.id.telco_ac_input_number)).check(matches(withText(VALID_PHONE_NUMBER)))
     }
 
     fun click_item_recent_widget_login() {
@@ -216,15 +209,8 @@ class TelcoPrepaidLoginInstrumentTest {
         Thread.sleep(3000)
     }
 
-    @After
-    fun tearDown() {
-        gtmLogDBSource.deleteAll().subscribe()
-    }
-
     companion object {
         private const val VALID_PHONE_NUMBER = "08123232323"
-        private const val VALID_PHONE_BOOK = "087821212121"
-        private const val VALID_PHONE_BOOK_RAW = "0878-2121-2121"
         private const val ANALYTIC_VALIDATOR_QUERY_LOGIN = "tracker/recharge/recharge_telco_prepaid_login.json"
     }
 }

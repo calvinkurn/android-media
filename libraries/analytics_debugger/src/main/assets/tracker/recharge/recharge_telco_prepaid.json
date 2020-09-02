@@ -27,20 +27,6 @@
     {
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
-      "eventAction": "input from contact",
-      "eventLabel": "{{.* - .*}}",
-      "sessionIris": "{{.*}}"
-    },
-    {
-      "event": "clickHomepage",
-      "eventCategory": "digital - homepage",
-      "eventAction": "click on contact number",
-      "eventLabel": "",
-      "sessionIris": "{{.*}}"
-    },
-    {
-      "event": "clickHomepage",
-      "eventCategory": "digital - homepage",
       "eventAction": "click x on input number",
       "eventLabel": "",
       "sessionIris": "{{.*}}"
