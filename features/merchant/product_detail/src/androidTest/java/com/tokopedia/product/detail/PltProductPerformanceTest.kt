@@ -4,13 +4,11 @@ import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils
-import com.tokopedia.analytics.performance.util.PltPerformanceData
 import com.tokopedia.instrumentation.test.R
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.test.application.TestRepeatRule
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawString
-import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheck
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -32,9 +30,9 @@ class PltProductPerformanceTest {
     fun doBeforeRun() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
 
-        setupGraphqlMockResponseWithCheck(createMockModelConfig())
+//        setupGraphqlMockResponseWithCheck(createMockModelConfig())
 
-        val intent = ProductDetailActivity.createIntent(context, "220891000")
+        val intent = ProductDetailActivity.createIntent(context, "1061061424")
         activityRule.launchActivity(intent)
         activityRule.activity.deleteDatabase("tokopedia_graphql")
     }
