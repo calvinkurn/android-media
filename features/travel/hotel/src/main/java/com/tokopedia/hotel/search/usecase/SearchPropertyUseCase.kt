@@ -14,7 +14,8 @@ import javax.inject.Inject
  * @author by jessica on 31/08/20
  */
 
-class SearchPropertyUseCase @Inject constructor(val graphqlRepository: GraphqlRepository) : GraphqlUseCase<PropertySearch.Response>(graphqlRepository) {
+class SearchPropertyUseCase @Inject constructor(val graphqlRepository: GraphqlRepository) :
+        GraphqlUseCase<PropertySearch.Response>(graphqlRepository) {
     suspend fun execute(rawQuery: String, searchParam: SearchParam): Result<PropertySearch> {
         return try {
             this.setTypeClass(PropertySearch.Response::class.java)

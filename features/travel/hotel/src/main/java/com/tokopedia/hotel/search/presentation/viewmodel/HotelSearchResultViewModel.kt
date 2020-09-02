@@ -6,7 +6,10 @@ import com.tokopedia.common.travel.utils.TravelDispatcherProvider
 import com.tokopedia.hotel.common.data.HotelTypeEnum
 import com.tokopedia.hotel.search.data.model.*
 import com.tokopedia.hotel.search.data.model.params.*
+import com.tokopedia.hotel.search.presentation.adapter.viewholder.FilterSelectionViewHolder
 import com.tokopedia.hotel.search.usecase.SearchPropertyUseCase
+import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.coroutines.Result
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -19,16 +22,13 @@ class HotelSearchResultViewModel @Inject constructor(
     val searchParam: SearchParam = SearchParam()
 
     var selectedSort: Sort = Sort()
-    val selectedFilter: ParamFilter
-        get() = searchParam.filter
-    val selectedFilterV2: MutableList<ParamFilterV2>
-        get() = searchParam.filters
 
     var defaultSort = ""
 
     var filter: Filter = Filter()
 
     val liveSearchResult = MutableLiveData<Result<PropertySearch>>()
+    val liveSelectedFilter = MutableLiveData<List<ParamFilterV2>>()
 
     var isFilter = false
 
@@ -69,9 +69,13 @@ class HotelSearchResultViewModel @Inject constructor(
         }
     }
 
+    fun getSelectedFilter(): List<ParamFilterV2> = liveSelectedFilter.value?.toMutableList() ?: mutableListOf()
+
     fun searchProperty(page: Int, searchQuery: String) {
         searchParam.page = page
+        searchParam.filters = getSelectedFilter().toMutableList()
         isFilter = searchParam.filters.isNotEmpty()
+
         launch {
             liveSearchResult.value = searchPropertyUseCase.execute(searchQuery, searchParam)
         }
@@ -90,13 +94,44 @@ class HotelSearchResultViewModel @Inject constructor(
         }
     }
 
-    fun addFilter(filter: ParamFilter) {
-        searchParam.filter = filter
-        isFilter = true
+    fun addFilter(filterV2: List<ParamFilterV2>) {
+        liveSelectedFilter.value = filterV2.filter { it.values.isNotEmpty() }.toMutableList()
     }
 
-    fun addFilter(filterV2: List<ParamFilterV2>) {
-        searchParam.filters = filterV2.filter { it.values.isNotEmpty() }.toMutableList()
+    fun addFilter(quickFilters: List<QuickFilter>, sortFilterItems: ArrayList<SortFilterItem>) {
+        val selectedFilters = getSelectedFilter().associateBy({ it.name }, { it }).toMutableMap()
+        quickFilters.forEachIndexed { index, quickFilter ->
+            val isQuickFilterSelected = sortFilterItems[index].type == ChipsUnify.TYPE_SELECTED
+            if (isQuickFilterSelected) {
+                if (selectedFilters.containsKey(quickFilter.name)) {
+                    val selectedFilter = selectedFilters[quickFilter.name] ?: ParamFilterV2()
+                    val filterValue = selectedFilter.values.toHashSet()
+                    if (quickFilter.type == FilterV2.FILTER_TYPE_OPEN_RANGE
+                            || quickFilter.type == FilterV2.FILTER_TYPE_SELECTION_RANGE ||
+                            quickFilter.name == FilterSelectionViewHolder.SELECTION_STAR_TYPE) filterValue.clear()
+                    filterValue.addAll(quickFilter.values)
+                    selectedFilters[quickFilter.name] = ParamFilterV2(quickFilter.name, filterValue.toMutableList())
+                } else {
+                    selectedFilters[quickFilter.name] = ParamFilterV2(quickFilter.name, quickFilter.values.toMutableList())
+                }
+            } else {
+                if (selectedFilters.containsKey(quickFilter.name)) {
+                    var isContainsAllValue = true
+                    val selectedFilter = selectedFilters[quickFilter.name] ?: ParamFilterV2()
+                    val filterValue = selectedFilter.values.toHashSet()
+                    for (value in quickFilter.values) {
+                        if (!filterValue.contains(value)) isContainsAllValue = false
+                    }
+                    if (isContainsAllValue) {
+                        for (value in quickFilter.values) {
+                            filterValue.remove(value)
+                        }
+                    }
+                    selectedFilters[quickFilter.name] = ParamFilterV2(quickFilter.name, filterValue.toMutableList())
+                }
+            }
+        }
+        addFilter(selectedFilters.values.toMutableList())
     }
 
     fun getFilterCount(): Int {
