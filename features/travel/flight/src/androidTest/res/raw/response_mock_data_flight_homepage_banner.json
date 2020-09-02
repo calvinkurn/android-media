@@ -39,26 +39,9 @@
         ],
         "meta": {
           "title": "Lihat semua",
-          "webURL": "https://www.tokopedia.com/promo/tiket/pesawat/?cta_src\u003d615",
-          "appURL": "tokopedia://promo?menuID\u003d4\u0026categoryID\u003d615"
+          "webURL": "https://www.tokopedia.com/promo/tiket/pesawat",
+          "appURL": "tokopedia://promo"
         }
-      }
-    }
-  },
-  {
-    "data": {
-      "travelTicker": {
-        "Title": "",
-        "Message": "",
-        "URL": "",
-        "Type": 0,
-        "Status": 0,
-        "EndTime": "0001-01-01T00:00:00Z",
-        "StartTime": "0001-01-01T00:00:00Z",
-        "Instances": 0,
-        "Device": 0,
-        "Page": "",
-        "IsPeriod": false
       }
     }
   }

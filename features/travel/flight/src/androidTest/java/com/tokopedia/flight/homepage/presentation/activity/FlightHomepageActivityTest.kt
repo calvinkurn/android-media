@@ -19,6 +19,7 @@ import com.tokopedia.analyticsdebugger.validator.core.getAnalyticsWithQuery
 import com.tokopedia.analyticsdebugger.validator.core.hasAllSuccess
 import com.tokopedia.banner.BannerViewPagerAdapter
 import com.tokopedia.flight.R
+import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.Matchers
 import org.junit.Before
 import org.junit.Rule
@@ -36,6 +37,11 @@ class FlightHomepageActivityTest {
 
     @get:Rule
     var activityRule: IntentsTestRule<FlightHomepageActivity> = object : IntentsTestRule<FlightHomepageActivity>(FlightHomepageActivity::class.java) {
+        override fun beforeActivityLaunched() {
+            super.beforeActivityLaunched()
+            setupGraphqlMockResponse(FlightHomepageMockResponse())
+        }
+
         override fun getActivityIntent(): Intent =
                 Intent(context, FlightHomepageActivity::class.java)
     }
