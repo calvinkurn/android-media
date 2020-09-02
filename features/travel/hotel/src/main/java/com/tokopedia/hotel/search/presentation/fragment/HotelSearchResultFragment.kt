@@ -23,12 +23,9 @@ import com.tokopedia.hotel.common.util.TRACKING_HOTEL_SEARCH
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.search.data.model.*
 import com.tokopedia.hotel.search.data.model.FilterV2.Companion.FILTER_TYPE_SORT
-import com.tokopedia.hotel.search.data.model.params.ParamFilter
 import com.tokopedia.hotel.search.data.model.params.ParamFilterV2
 import com.tokopedia.hotel.search.data.util.ADVANCE_FILTER_EXPERIMENT_NAME
 import com.tokopedia.hotel.search.data.util.ADVANCE_FILTER_VARIANT_NEW_FILTER
-import com.tokopedia.hotel.search.data.util.ADVANCE_FILTER_VARIANT_OLD_FILTER
-import com.tokopedia.hotel.search.data.util.CommonParam
 import com.tokopedia.hotel.search.di.HotelSearchPropertyComponent
 import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivity.Companion.SEARCH_SCREEN_NAME
 import com.tokopedia.hotel.search.presentation.adapter.HotelOptionMenuAdapter
@@ -65,7 +62,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     private var performanceMonitoring: PerformanceMonitoring? = null
     private var isTraceStop = false
     private var variant = RemoteConfigInstance.getInstance().abTestPlatform.getString(ADVANCE_FILTER_EXPERIMENT_NAME,
-            ADVANCE_FILTER_VARIANT_OLD_FILTER)
+            ADVANCE_FILTER_VARIANT_NEW_FILTER)
 
     var searchDestinationName = ""
     var searchDestinationType = ""
@@ -215,7 +212,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
 
             quick_filter_sort_filter.filterType = SortFilter.TYPE_ADVANCED
             quick_filter_sort_filter.parentListener = { initiateAdvancedFilter(filters.toMutableList(), sort) }
-        }
+        } else quick_filter_sort_filter.parentListener = { }
 
         val sortFilterItem = quickFilters.map {
             val item = SortFilterItem(title = it.displayName,
@@ -239,7 +236,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     }
 
     private fun initiateAdvancedFilter(filterV2s: MutableList<FilterV2>, sort: List<Sort>) {
-        val sortInFilterBottomSheet = FilterV2(type = FILTER_TYPE_SORT, name = FILTER_TYPE_SORT, displayName = "Urutkan Berdasarkan")
+        val sortInFilterBottomSheet = FilterV2(type = FILTER_TYPE_SORT, name = FILTER_TYPE_SORT, displayName = getString(R.string.hotel_bottomsheet_sort_title))
         if (searchResultviewModel.selectedSort.displayName.isEmpty()) {
             val sortDisplayName = sort.filter { it.name == searchResultviewModel.selectedSort.name }.firstOrNull()
                     ?: Sort()
@@ -247,16 +244,17 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
             searchResultviewModel.defaultSort = sortDisplayName.displayName
         }
         sortInFilterBottomSheet.options = sort.map { it.displayName }
+        sortInFilterBottomSheet.optionSelected = listOf(searchResultviewModel.selectedSort.displayName)
         sortInFilterBottomSheet.defaultOption = searchResultviewModel.defaultSort
         filterV2s.add(0, sortInFilterBottomSheet)
 
 
-        val selectedFilter = searchResultviewModel.selectedFilterV2
+        val selectedFilter = searchResultviewModel.getSelectedFilter().toMutableList()
         selectedFilter.add(ParamFilterV2(FILTER_TYPE_SORT, mutableListOf(searchResultviewModel.selectedSort.displayName)))
 
         filterBottomSheet = HotelFilterBottomSheets()
                 .setSubmitFilterListener(this)
-                .setSelected(searchResultviewModel.selectedFilterV2)
+                .setSelected(selectedFilter)
                 .setFilter(filterV2s)
         filterBottomSheet.show(childFragmentManager, javaClass.simpleName)
     }
@@ -348,9 +346,17 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         }
     }
 
-    override fun onSubmitFilter(selectedFilter: List<ParamFilterV2>) {
+    override fun onSubmitFilter(selectedFilter: MutableList<ParamFilterV2>) {
+        if (variant == ADVANCE_FILTER_VARIANT_NEW_FILTER) {
+            selectedFilter.forEachIndexed { index, it ->
+                if (it.name == FILTER_TYPE_SORT) {
+                    val sort = findSortValue(it)
+                    sort?.let { searchResultviewModel.addSort(it) }
+                    selectedFilter.removeAt(index)
+                }
+            }
+        }
         trackingHotelUtil.clickSubmitFilterOnBottomSheet(context, SEARCH_SCREEN_NAME, selectedFilter)
-        //remove sort
         searchResultviewModel.addFilter(selectedFilter)
     }
 

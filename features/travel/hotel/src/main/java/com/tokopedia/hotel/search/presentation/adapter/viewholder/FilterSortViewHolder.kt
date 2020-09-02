@@ -26,9 +26,14 @@ class FilterSortViewHolder(view: View, val listener: OnSelectedFilterChangedList
     }
 
     override fun bind(filter: FilterV2) {
-        if (filter.optionSelected.isNotEmpty()) listener.onSelectedFilterChanged(filterName, filter.optionSelected.toMutableList())
-        else listener.onSelectedFilterChanged(filterName, listOf(filter.defaultOption))
         defaultOption = filter.defaultOption
+        if (filter.optionSelected.isNotEmpty()) {
+            listener.onSelectedFilterChanged(filterName, filter.optionSelected.toMutableList())
+        }
+        else {
+            filter.optionSelected = listOf(defaultOption)
+            listener.onSelectedFilterChanged(filterName, listOf(filter.defaultOption))
+        }
 
         with(itemView) {
             hotel_filter_selection_title.text = filter.displayName

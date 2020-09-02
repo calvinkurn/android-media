@@ -136,7 +136,7 @@ class HotelSearchResultViewModel @Inject constructor(
 
     fun getFilterCount(): Int {
         var count = 0
-        selectedFilterV2.forEach {
+        getSelectedFilter().forEach {
             count += it.values.size
         }
         return count
