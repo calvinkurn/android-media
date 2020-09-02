@@ -3,6 +3,7 @@ package com.tokopedia.shop.feed.view.fragment
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
@@ -190,6 +191,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         initVar()
         userVisibleHint = false
         super.onViewCreated(view, savedInstanceState)
+        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
         isLoadingInitialData = true
         setupBottomSheetSellerMigration(view)
     }
