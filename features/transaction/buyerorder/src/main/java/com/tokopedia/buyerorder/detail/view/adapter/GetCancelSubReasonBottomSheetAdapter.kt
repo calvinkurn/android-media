@@ -6,6 +6,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.detail.data.getcancellationreason.BuyerGetCancellationReasonData
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import kotlinx.android.synthetic.main.bottomsheet_cancel_item.view.*
 
 /**
@@ -14,6 +16,7 @@ import kotlinx.android.synthetic.main.bottomsheet_cancel_item.view.*
 
 class GetCancelSubReasonBottomSheetAdapter(private var listener: ActionListener): RecyclerView.Adapter<GetCancelSubReasonBottomSheetAdapter.ViewHolder>() {
     var listSubReason = listOf<BuyerGetCancellationReasonData.Data.GetCancellationReason.ReasonsItem.SubReasonsItem>()
+    var currReasonCode = -1
 
     interface ActionListener {
         fun onSubReasonClicked(rCode: Int, reason: String)
@@ -28,10 +31,17 @@ class GetCancelSubReasonBottomSheetAdapter(private var listener: ActionListener)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.itemView.label_cancel.text = listSubReason[position].reason
+        if (listSubReason.isNotEmpty()) {
+            holder.itemView.label_cancel.text = listSubReason[position].reason
+            if (listSubReason[position].rCode == currReasonCode) {
+                holder.itemView.ic_green_check?.visible()
+            } else {
+                holder.itemView.ic_green_check?.gone()
+            }
 
-        holder.itemView.setOnClickListener {
-            listener.onSubReasonClicked(listSubReason[position].rCode, listSubReason[position].reason)
+            holder.itemView.setOnClickListener {
+                listener.onSubReasonClicked(listSubReason[position].rCode, listSubReason[position].reason)
+            }
         }
     }
 

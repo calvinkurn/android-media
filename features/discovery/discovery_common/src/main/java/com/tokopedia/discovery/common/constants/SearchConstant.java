@@ -46,10 +46,10 @@ public interface SearchConstant {
         String KEY_PARAMS = "params";
         String KEY_SOURCE = "source";
         String KEY_HEADLINE_PARAMS = "headline_params";
-    }
-
-    interface RemoteConfigKey {
-        String APP_CHANGE_PARAMETER_ROW = "mainapp_change_parameter_row";
+        String KEY_QUICK_FILTER_PARAMS = "quick_filter_params";
+        String KEY_PAGE_SOURCE = "page_source";
+        String PAGE_SOURCE_SEARCH_SHOP = "search_shop";
+        String SOURCE_QUICK_FILTER = "quick_filter";
     }
 
     interface BaseUrl {
@@ -77,7 +77,6 @@ public interface SearchConstant {
         String SEARCH_PRODUCT_FIRST_PAGE_USE_CASE = "search_product_first_page_use_case";
         String SEARCH_PRODUCT_LOAD_MORE_USE_CASE = "search_product_load_more_use_case";
         String GET_PRODUCT_COUNT_USE_CASE = "get_product_count_use_case";
-        String PARAMETER_ROWS = "8";
         String HEADLINE = "headline";
         String HEADLINE_TEMPLATE_VALUE = "3,4";
         String HEADLINE_ITEM_VALUE = "1";
@@ -86,6 +85,7 @@ public interface SearchConstant {
     interface SearchShop {
         String SEARCH_SHOP_FIRST_PAGE_USE_CASE = "search_shop_first_page_use_case";
         String SEARCH_SHOP_LOAD_MORE_USE_CASE = "search_shop_load_more_use_case";
+        String GET_SHOP_COUNT_USE_CASE = "get_shop_count_use_case";
         String HEADLINE = "headline";
         String HEADLINE_TEMPLATE_VALUE = "3";
         String HEADLINE_ITEM_VALUE = "1";
@@ -102,19 +102,9 @@ public interface SearchConstant {
         int KEY_SHOP_STATUS_INACTIVE = 4;
     }
 
-    interface SearchCatalog {
-        String SEARCH_CATALOG_USE_CASE = "search_catalog_use_case";
-    }
-
-    interface SearchProfile {
-        String SEARCH_PROFILE_USE_CASE = "search_profile_use_case";
-    }
-
     interface SearchTabPosition {
         int TAB_FIRST_POSITION = 0;
         int TAB_SECOND_POSITION = 1;
-        int TAB_THIRD_POSITION = 2;
-        int TAB_FORTH_POSITION = 3;
     }
 
     interface Cart {
@@ -126,8 +116,6 @@ public interface SearchConstant {
     interface ActiveTab {
         String PRODUCT = "product";
         String SHOP = "shop";
-        String CATALOG = "catalog";
-        String PROFILE = "profile";
     }
 
     interface FreeOngkir {
@@ -150,13 +138,20 @@ public interface SearchConstant {
         String AB_TEST_KEY_COMMA_VS_FULL_STAR = "Comma vs Full Star";
         String AB_TEST_VARIANT_FULL_STAR = "Full Star";
         String AB_TEST_VARIANT_COMMA_STAR = "Comma Star";
-        String AB_TEST_OLD_FILER_VS_NEW_FILTER = "SRP Filter Revamp";
-        String AB_TEST_VARIANT_NEW_FILTER = "New Filter";
-        String AB_TEST_VARIANT_OLD_FILTER = "Old Filter";
     }
 
     interface OnBoarding {
         String LOCAL_CACHE_NAME = "SEARCH_PRODUCT_ON_BOARDING";
         String FILTER_ONBOARDING_SHOWN = "FILTER_ONBOARDING_SHOWN";
+    }
+
+    interface InspirationCarousel {
+        String LAYOUT_INSPIRATION_CAROUSEL_LIST = "list";
+        String LAYOUT_INSPIRATION_CAROUSEL_INFO = "info";
+    }
+
+    interface TopAdsComponent {
+        String TOP_ADS = "search_product_top_ads";
+        String ORGANIC_ADS = "search_product_organic_ads";
     }
 }

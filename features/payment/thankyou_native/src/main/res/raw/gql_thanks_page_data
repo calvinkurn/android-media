@@ -84,6 +84,7 @@ query ThanksPageData($paymentID : Int!, $merchant: String!){
         }
         tax
         coupon
+        revenue
     }
     additional_info{
         account_number

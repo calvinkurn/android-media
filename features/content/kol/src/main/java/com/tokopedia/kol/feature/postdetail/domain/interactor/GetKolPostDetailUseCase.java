@@ -3,11 +3,9 @@ package com.tokopedia.kol.feature.postdetail.domain.interactor;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.kol.R;
 import com.tokopedia.kol.feature.comment.data.pojo.get.GetKolCommentData;
 import com.tokopedia.usecase.RequestParams;
 
@@ -18,6 +16,8 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscriber;
+
+import static com.tokopedia.kol.feature.comment.data.raw.GqlQueryGetKolCommentKt.GQL_QUERY_GET_KOL_COMMENT;
 
 /**
  * @author by milhamj on 27/07/18.
@@ -45,10 +45,7 @@ public class GetKolPostDetailUseCase {
     public void execute(Map<String, Object> variables, Subscriber<GraphqlResponse> subscriber) {
         graphqlUseCase.clearRequest();
 
-        String query = GraphqlHelper.loadRawString(context.getResources(),
-                R.raw.query_get_kol_comment);
-
-        GraphqlRequest request = new GraphqlRequest(query, GetKolCommentData.class, variables);
+        GraphqlRequest request = new GraphqlRequest(GQL_QUERY_GET_KOL_COMMENT, GetKolCommentData.class, variables);
 
         graphqlUseCase.addRequest(request);
         graphqlUseCase.execute(subscriber);
@@ -58,10 +55,7 @@ public class GetKolPostDetailUseCase {
                                                         ) {
         graphqlUseCase.clearRequest();
 
-        String query = GraphqlHelper.loadRawString(context.getResources(),
-                R.raw.query_get_kol_comment);
-
-        GraphqlRequest request = new GraphqlRequest(query, GetKolCommentData.class,
+        GraphqlRequest request = new GraphqlRequest(GQL_QUERY_GET_KOL_COMMENT, GetKolCommentData.class,
                 requestParams.getParameters());
 
         graphqlUseCase.addRequest(request);

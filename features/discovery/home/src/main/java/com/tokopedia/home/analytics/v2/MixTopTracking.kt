@@ -26,42 +26,57 @@ object MixTopTracking : BaseTracking() {
         }
     }
 
-    fun getMixTopView(products: List<Product>, headerName: String, positionOnWidgetHome: String) = getBasicProductView(
-            Event.PRODUCT_VIEW,
-            Category.HOMEPAGE,
-            CustomAction.IMPRESSION_ON_CAROUSEL_PRODUCT,
-            Label.NONE,
-            CustomActionField.LIST_CAROUSEL_PRODUCT.format(positionOnWidgetHome, headerName),
-            products
-    )
-
-    fun getMixTopViewIris(products: List<Product>, headerName: String, channelId: String, positionOnWidgetHome: String) = getBasicProductChannelView(
-            Event.PRODUCT_VIEW_IRIS,
-            Category.HOMEPAGE,
-            CustomAction.IMPRESSION_ON_CAROUSEL_PRODUCT,
-            Label.NONE,
-            CustomActionField.LIST_CAROUSEL_PRODUCT.format(positionOnWidgetHome, headerName),
-            products,
-            channelId
-    )
+    fun getMixTopView(products: List<Product>, headerName: String, positionOnWidgetHome: String): Map<String, Any> {
+        val trackingBuilder = BaseTrackingBuilder()
+        return trackingBuilder.constructBasicProductView(
+                event = Event.PRODUCT_VIEW,
+                eventCategory = Category.HOMEPAGE,
+                eventAction = CustomAction.IMPRESSION_ON_CAROUSEL_PRODUCT,
+                eventLabel = Label.NONE,
+                list = CustomActionField.LIST_CAROUSEL_PRODUCT.format(positionOnWidgetHome, headerName),
+                products = products)
+                .build()
+    }
 
 
-    fun getMixTopClick(products: List<Product>, headerName: String, channelId: String, positionOnWidgetHome: String, campaignCode: String) = getBasicProductChannelClick(
-            Event.PRODUCT_CLICK,
-            Category.HOMEPAGE,
-            CustomAction.CLICK_ON_CAROUSEL_PRODUCT,
-            channelId + " - " + headerName,
-            CustomActionField.LIST_CAROUSEL_PRODUCT.format(positionOnWidgetHome, headerName),
-            channelId,
-            campaignCode,
-            products
-    )
+    fun getMixTopViewIris(products: List<Product>, headerName: String, channelId: String, positionOnWidgetHome: String): Map<String, Any> {
+        val trackingBuilder = BaseTrackingBuilder()
+        return trackingBuilder.constructBasicProductView(
+                event = Event.PRODUCT_VIEW,
+                eventCategory = Category.HOMEPAGE,
+                eventAction = CustomAction.IMPRESSION_ON_CAROUSEL_PRODUCT,
+                eventLabel = Label.NONE,
+                list = CustomActionField.LIST_CAROUSEL_PRODUCT.format(positionOnWidgetHome, headerName),
+                products = products)
+                .appendChannelId(channelId)
+                .build()
+    }
 
-    fun getMixTopSeeAllClick(channelId: String, headerName: String) = DataLayer.mapOf(
+    fun getMixTopClick(products: List<Product>, headerName: String, channelId: String, positionOnWidgetHome: String, campaignCode: String): Map<String, Any> {
+        val trackingBuilder = BaseTrackingBuilder()
+        return trackingBuilder.constructBasicProductClick(
+                event = Event.PRODUCT_CLICK,
+                eventCategory = Category.HOMEPAGE,
+                eventAction = CustomAction.CLICK_ON_CAROUSEL_PRODUCT,
+                eventLabel = channelId + " - " + headerName,
+                list = CustomActionField.LIST_CAROUSEL_PRODUCT.format(positionOnWidgetHome, headerName),
+                products = products)
+                .appendChannelId(channelId)
+                .appendCampaignCode(campaignCode)
+                .build()
+    }
+
+    fun getMixTopSeeAllClick(channelId: String, headerName: String, userId: String) = DataLayer.mapOf(
             Event.KEY, Event.CLICK_HOMEPAGE,
             Category.KEY, Category.HOMEPAGE,
             Action.KEY, CustomAction.CLICK_VIEW_ALL_CAROUSEL,
-            Label.KEY, channelId + " - " + headerName
+            Label.KEY, channelId + " - " + headerName,
+            ChannelId.KEY, channelId,
+            CurrentSite.KEY, CurrentSite.DEFAULT,
+            Screen.KEY, Screen.DEFAULT,
+            UserId.KEY, userId,
+            BusinessUnit.KEY, BusinessUnit.DEFAULT
+
     )
 
     fun getMixTopSeeAllCardClick(channelId: String, headerName: String, userId: String) = DataLayer.mapOf(
@@ -73,14 +88,20 @@ object MixTopTracking : BaseTracking() {
             CurrentSite.KEY, CurrentSite.DEFAULT,
             Screen.KEY, Screen.DEFAULT,
             UserId.KEY, userId,
-            BusinessUnit.KEY, BusinessUnit.DEFAULT
+            BusinessUnit.KEY, BusinessUnit.DEFAULT,
+            ChannelId.KEY, channelId
     )
 
-    fun getMixTopButtonClick(channelId: String,headerName: String, buttonName: String) = DataLayer.mapOf(
+    fun getMixTopButtonClick(channelId: String,headerName: String, buttonName: String, userId: String) = DataLayer.mapOf(
             Event.KEY, Event.CLICK_HOMEPAGE,
             Category.KEY, Category.HOMEPAGE,
             Action.KEY, CustomAction.CLICK_BUTTON_CAROUSEL.format(buttonName),
-            Label.KEY, channelId + " - " + headerName
+            Label.KEY, channelId + " - " + headerName,
+            ChannelId.KEY, channelId,
+            CurrentSite.KEY, CurrentSite.DEFAULT,
+            Screen.KEY, Screen.DEFAULT,
+            UserId.KEY, userId,
+            BusinessUnit.KEY, BusinessUnit.DEFAULT
     )
 
     fun mapGridToProductTracker(grid: DynamicHomeChannel.Grid, channelId: String, position: Int, persoType: String, categoryId: String) = Product(
@@ -91,7 +112,7 @@ object MixTopTracking : BaseTracking() {
             channelId = channelId,
             isFreeOngkir = grid.freeOngkir.isActive,
             productPosition = position.toString(),
-            productPrice = CurrencyFormatHelper.convertRupiahToInt(grid.price).toString(),
+            productPrice = convertRupiahToInt(grid.price).toString(),
             variant = "",
             persoType = persoType,
             categoryId = categoryId,
@@ -101,18 +122,6 @@ object MixTopTracking : BaseTracking() {
     fun mapChannelToProductTracker(channels: DynamicHomeChannel.Channels) = channels.grids.withIndex().map {
         mapGridToProductTracker(it.value, channels.id, it.index, channels.persoType, channels.categoryID)
     }
-
-    fun getBackgroundClick(channels: DynamicHomeChannel.Channels, userId: String = "") = DataLayer.mapOf(
-            Event.KEY, Event.CLICK_HOMEPAGE,
-            Category.KEY, Category.HOMEPAGE,
-            Action.KEY, CustomAction.CLICK_BACKGROUND,
-            Label.KEY, channels.id + " - " + channels.header.name,
-            Screen.KEY, Screen.DEFAULT,
-            CurrentSite.KEY, CurrentSite.DEFAULT,
-            Screen.KEY, Screen.DEFAULT,
-            UserId.KEY, userId,
-            BusinessUnit.KEY, BusinessUnit.DEFAULT
-    )
 
     //home component section
 
@@ -128,7 +137,7 @@ object MixTopTracking : BaseTracking() {
             channelId = channelId,
             isFreeOngkir = grid.isFreeOngkirActive,
             productPosition = position.toString(),
-            productPrice = CurrencyFormatHelper.convertRupiahToInt(grid.price).toString(),
+            productPrice = convertRupiahToInt(grid.price).toString(),
             variant = "",
             persoType = persoType,
             categoryId = categoryId,

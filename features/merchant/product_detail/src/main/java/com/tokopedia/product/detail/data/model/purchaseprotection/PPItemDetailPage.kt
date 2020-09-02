@@ -17,6 +17,4 @@ data class PPItemDetailPage(
 
         @SerializedName("subTitlePDP")
         var subTitlePDP: String? = ""
-
-
 )

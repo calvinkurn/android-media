@@ -6,7 +6,6 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:gravity="center_horizontal|top"
-    android:layout_marginBottom="@dimen/dp_8"
     android:layout_marginTop="@dimen/dp_8"
     android:orientation="vertical">
     <FrameLayout
@@ -31,6 +30,7 @@
 
     <TextView
         android:id="@+id/title"
+        android:contentDescription="@string/content_desc_title"
         android:layout_width="@dimen/use_case_and_dynamic_icon_size"
         android:layout_height="wrap_content"
         android:maxLines="2"

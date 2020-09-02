@@ -1,8 +1,6 @@
 package com.tokopedia.common_category.usecase
 
-import android.content.Context
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.common_category.R
+import com.tokopedia.common_category.data.raw.GQL_NAV_TOP_ADS
 import com.tokopedia.common_category.model.topAds.TopAdsResponse
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -11,13 +9,12 @@ import com.tokopedia.usecase.UseCase
 import rx.Observable
 import javax.inject.Inject
 
-class TopAdsProductsUseCase @Inject constructor(private val context: Context) : UseCase<TopAdsResponse>() {
+class TopAdsProductsUseCase @Inject constructor() : UseCase<TopAdsResponse>() {
 
     override fun createObservable(requestParams: RequestParams?): Observable<TopAdsResponse> {
 
         val graphqlUseCase = GraphqlUseCase()
-        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources,
-                R.raw.gql_nav_top_ads), TopAdsResponse::class.java,requestParams?.parameters,false)
+        val graphqlRequest = GraphqlRequest(GQL_NAV_TOP_ADS, TopAdsResponse::class.java,requestParams?.parameters,false)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(requestParams).map {

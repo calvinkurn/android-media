@@ -3,12 +3,16 @@ package com.tokopedia.categorylevels.di
 import android.content.Context
 import android.content.res.Resources
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.categorylevels.domain.usecase.SubCategoryV3UseCase
+import com.tokopedia.categorylevels.view.activity.CategoryNavActivity
 import com.tokopedia.common_category.usecase.*
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
@@ -67,8 +71,8 @@ class CategoryNavUseCaseModule {
     @CategoryNavScope
     @Named("topAdsProductListing")
     @Provides
-    fun provideTopAdsUseCase(context: Context): TopAdsProductsUseCase {
-        return TopAdsProductsUseCase(context)
+    fun provideTopAdsUseCase(): TopAdsProductsUseCase {
+        return TopAdsProductsUseCase()
     }
 
 
@@ -129,6 +133,16 @@ class CategoryNavUseCaseModule {
 
     @CategoryNavScope
     @Provides
-    fun provideSendTopAdsUseCase() = SendTopAdsUseCase()
+    fun provideSendTopAdsUseCase(topAdsUrlHitter: TopAdsUrlHitter) = SendTopAdsUseCase(topAdsUrlHitter)
+
+    @CategoryNavScope
+    @Provides
+    fun providePageLoadTimePerformanceMonitoring() : PageLoadTimePerformanceInterface {
+        return PageLoadTimePerformanceCallback(
+                CategoryNavActivity.CATEGORY_LEVELS_PLT_PREPARE_METRICS,
+                CategoryNavActivity.CATEGORY_LEVELS_PLT_NETWORK_METRICS,
+                CategoryNavActivity.CATEGORY_LEVELS_PLT_RENDER_METRICS,0,0,0,0,null
+        )
+    }
 
 }

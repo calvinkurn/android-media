@@ -15,19 +15,19 @@ class TestBottomNavActivity: AppCompatActivity() {
         val bottomNav: LottieBottomNavbar = findViewById(R.id.bottom_navbar)
 
         val menu: ArrayList<BottomMenu> = ArrayList()
-        menu.add(BottomMenu(0L, resources.getString(R.string.home), R.raw.bottom_nav_home, R.raw.bottom_nav_home_to_enabled, R.drawable.ic_bottom_nav_home_active, R.drawable.ic_bottom_nav_home_enabled, com.tokopedia.navigation.R.color.color_active_bottom_nav, true))
-        menu.add(BottomMenu(1L, resources.getString(R.string.feed), R.raw.bottom_nav_feed, R.raw.bottom_nav_feed_to_enabled,  R.drawable.ic_bottom_nav_feed_active, R.drawable.ic_bottom_nav_feed_enabled,com.tokopedia.navigation.R.color.color_active_bottom_nav, true))
-        menu.add(BottomMenu(2L, resources.getString(R.string.official), R.raw.bottom_nav_official, R.raw.bottom_nav_os_to_enabled,  R.drawable.ic_bottom_nav_os_active, R.drawable.ic_bottom_nav_os_enabled,com.tokopedia.navigation.R.color.color_active_bottom_nav_os, true))
-        menu.add(BottomMenu(3L, resources.getString(R.string.keranjang), R.raw.bottom_nav_cart, R.raw.bottom_nav_cart_to_enabled,  R.drawable.ic_bottom_nav_cart_active, R.drawable.ic_bottom_nav_cart_enabled, com.tokopedia.navigation.R.color.color_active_bottom_nav, true))
-        menu.add(BottomMenu(4L, resources.getString(R.string.akun), R.raw.bottom_nav_account,   R.raw.bottom_nav_account_to_enabled, R.drawable.ic_bottom_nav_account_active, R.drawable.ic_bottom_nav_account_enabled,com.tokopedia.navigation.R.color.color_active_bottom_nav, true))
+        menu.add(BottomMenu(com.tokopedia.navigation.R.id.menu_home, resources.getString(com.tokopedia.navigation.R.string.home), com.tokopedia.navigation.R.raw.bottom_nav_home, com.tokopedia.navigation.R.raw.bottom_nav_home_to_enabled, com.tokopedia.navigation.R.drawable.ic_bottom_nav_home_active, com.tokopedia.navigation.R.drawable.ic_bottom_nav_home_enabled, com.tokopedia.navigation.R.color.color_active_bottom_nav, true, 1f, 3f))
+        menu.add(BottomMenu(com.tokopedia.navigation.R.id.menu_feed, resources.getString(com.tokopedia.navigation.R.string.feed), com.tokopedia.navigation.R.raw.bottom_nav_feed, com.tokopedia.navigation.R.raw.bottom_nav_feed_to_enabled, com.tokopedia.navigation.R.drawable.ic_bottom_nav_feed_active, com.tokopedia.navigation.R.drawable.ic_bottom_nav_feed_enabled, com.tokopedia.navigation.R.color.color_active_bottom_nav, true, 1f, 3f))
+        menu.add(BottomMenu(com.tokopedia.navigation.R.id.menu_os, resources.getString(com.tokopedia.navigation.R.string.official), com.tokopedia.navigation.R.raw.bottom_nav_official, com.tokopedia.navigation.R.raw.bottom_nav_os_to_enabled, com.tokopedia.navigation.R.drawable.ic_bottom_nav_os_active, com.tokopedia.navigation.R.drawable.ic_bottom_nav_os_enabled, com.tokopedia.navigation.R.color.color_active_bottom_nav_os, true, 1f, 3f))
+        menu.add(BottomMenu(com.tokopedia.navigation.R.id.menu_cart, resources.getString(com.tokopedia.navigation.R.string.keranjang), com.tokopedia.navigation.R.raw.bottom_nav_cart, com.tokopedia.navigation.R.raw.bottom_nav_cart_to_enabled, com.tokopedia.navigation.R.drawable.ic_bottom_nav_cart_active, com.tokopedia.navigation.R.drawable.ic_bottom_nav_cart_enabled, com.tokopedia.navigation.R.color.color_active_bottom_nav, true, 1f, 3f))
+        menu.add(BottomMenu(com.tokopedia.navigation.R.id.menu_account, resources.getString(com.tokopedia.navigation.R.string.akun), com.tokopedia.navigation.R.raw.bottom_nav_account, com.tokopedia.navigation.R.raw.bottom_nav_account_to_enabled, com.tokopedia.navigation.R.drawable.ic_bottom_nav_account_active, com.tokopedia.navigation.R.drawable.ic_bottom_nav_account_enabled, com.tokopedia.navigation.R.color.color_active_bottom_nav, true, 1f, 3f))
 
         bottomNav.setMenu(menu)
         bottomNav.setMenuClickListener(object: IBottomClickListener {
-            override fun menuClicked(position: Int, id: Long): Boolean {
+            override fun menuClicked(position: Int, id: Int): Boolean {
                 return true
             }
 
-            override fun menuReselected(position: Int, id: Long) {
+            override fun menuReselected(position: Int, id: Int) {
 
             }
         })

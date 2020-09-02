@@ -19,6 +19,7 @@ interface BuyerAccount {
     }
 
     interface Presenter : CustomerPresenter<View> {
+        fun getBuyerData(query: String, saldoQuery: String, rewardQuery: String)
         fun getBuyerData(query: String, saldoQuery: String, uohCounterQuery: String)
         fun getOldBuyerData(query: String, saldoQuery: String)
         fun getFirstRecomData()

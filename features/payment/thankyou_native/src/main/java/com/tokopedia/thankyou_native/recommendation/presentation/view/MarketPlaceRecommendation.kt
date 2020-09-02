@@ -41,7 +41,9 @@ class MarketPlaceRecommendation : FrameLayout, IRecommendationView {
 
 
     private lateinit var fragment: BaseDaggerFragment
-    private lateinit var trackingQueue: TrackingQueue
+    private var topAdsTrackingQueue: TrackingQueue? = null
+    private var nonTopAdsTrackingQueue: TrackingQueue? = null
+    private lateinit var paymentId: String
 
 
     @Inject
@@ -92,9 +94,12 @@ class MarketPlaceRecommendation : FrameLayout, IRecommendationView {
         LayoutInflater.from(context).inflate(getLayout(), this, true)
     }
 
-    override fun loadRecommendation(fragment: BaseDaggerFragment, trackingQueue: TrackingQueue) {
+    override fun loadRecommendation(paymentId: String, fragment: BaseDaggerFragment,
+                                    topAdsTrackingQueue: TrackingQueue?, nonTopsAdsTrackingQueue: TrackingQueue?) {
+        this.paymentId = paymentId
         this.fragment = fragment
-        this.trackingQueue = trackingQueue
+        this.topAdsTrackingQueue = topAdsTrackingQueue
+        this.nonTopAdsTrackingQueue = nonTopsAdsTrackingQueue
         startViewModelObserver()
         viewModel.loadRecommendationData()
     }
@@ -189,7 +194,9 @@ class MarketPlaceRecommendation : FrameLayout, IRecommendationView {
 
             override fun onRecommendationItemDisplayed(recommendationItem: RecommendationItem,
                                                        position: Int) {
-                analytics.get().sendRecommendationItemDisplayed(recommendationItem, position, trackingQueue)
+                analytics.get().sendRecommendationItemDisplayed(recommendationItem, position,
+                        paymentId, topAdsTrackingQueue = topAdsTrackingQueue,
+                        nonTopsAdsTrackingQueue = nonTopAdsTrackingQueue)
             }
 
             override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean,
@@ -242,7 +249,8 @@ class MarketPlaceRecommendation : FrameLayout, IRecommendationView {
     }
 
     private fun onRecomProductClick(item: RecommendationItem, position: Int) {
-        analytics.get().sendRecommendationItemClick(item, position = position + 1)
+        analytics.get().sendRecommendationItemClick(item, position = position + 1,
+                paymentId = paymentId)
         val intent = RouteManager.getIntent(context,
                 ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.productId.toString())
 

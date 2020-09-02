@@ -5,19 +5,20 @@ import com.tokopedia.product.manage.feature.list.view.adapter.factory.ProductMan
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 
 data class ProductViewModel(
-    val id: String,
-    val title: String?,
-    val imageUrl: String?,
-    val price: String?,
-    val priceFormatted: String?,
-    val status: ProductStatus?,
-    val url: String?,
-    val cashBack: Int,
-    val stock: Int?,
-    val isFeatured: Boolean?,
-    val isVariant: Boolean?,
-    val multiSelectActive: Boolean,
-    val isChecked: Boolean
+        val id: String,
+        val title: String?,
+        val imageUrl: String?,
+        val minPrice: PriceUiModel?,
+        val maxPrice: PriceUiModel?,
+        val status: ProductStatus?,
+        val url: String?,
+        val cashBack: Int,
+        val stock: Int?,
+        val isFeatured: Boolean?,
+        val isVariant: Boolean?,
+        val multiSelectActive: Boolean,
+        val isChecked: Boolean,
+        val hasStockReserved: Boolean
 ) : Visitable<ProductManageAdapterFactory> {
     override fun type(typeFactory: ProductManageAdapterFactory): Int {
         return typeFactory.type(this)

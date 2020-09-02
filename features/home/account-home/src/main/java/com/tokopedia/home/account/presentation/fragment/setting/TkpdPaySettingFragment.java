@@ -18,7 +18,6 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment;
 import com.tokopedia.home.account.AccountConstants;
-import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.analytics.AccountAnalytics;
@@ -115,64 +114,70 @@ public class TkpdPaySettingFragment extends BaseGeneralSettingFragment {
 
     @Override
     public void onItemClicked(int settingId) {
-        if (getActivity().getApplication() instanceof AccountHomeRouter) {
-            AccountHomeRouter router = (AccountHomeRouter) getActivity().getApplication();
-            switch (settingId) {
-                case SettingConstant.SETTING_CREDIT_CARD_ID:
-                    accountAnalytics.eventClickPaymentSetting(CREDIT_CARD);
-                    RouteManager.route(getActivity(), ApplinkConstInternalPayment.PAYMENT_SETTING);
-                    break;
-                case SettingConstant.SETTING_TOKOCASH_ID:
-                    accountAnalytics.eventClickPaymentSetting(TOKOCASH);
-                    WalletModel walletModel = walletPref.retrieveWallet();
-                    if (walletModel != null) {
-                        if (walletModel.isLinked()) {
-                            RouteManager.route(getActivity(), walletModel.getApplink());
-                        } else {
-                            RouteManager.route(getActivity(), walletModel.getAction().getApplink());
-                        }
-                    }
-                    break;
-                case SettingConstant.SETTING_SALDO_ID:
-                    accountAnalytics.eventClickPaymentSetting(BALANCE);
-                    RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getContext());
-                    if (remoteConfig.getBoolean(APP_ENABLE_SALDO_SPLIT, false)) {
-                        if (pvtUserSession.hasShownSaldoIntroScreen()) {
-                            router.goToSaldo(getActivity());
-                        } else {
-                            pvtUserSession.setSaldoIntroPageStatus(true);
-                            RouteManager.route(getContext(), ApplinkConstInternalGlobal.SALDO_INTRO);
-                        }
+        switch (settingId) {
+            case SettingConstant.SETTING_CREDIT_CARD_ID:
+                accountAnalytics.eventClickPaymentSetting(CREDIT_CARD);
+                RouteManager.route(getActivity(), ApplinkConstInternalPayment.PAYMENT_SETTING);
+                break;
+            case SettingConstant.SETTING_TOKOCASH_ID:
+                accountAnalytics.eventClickPaymentSetting(TOKOCASH);
+                WalletModel walletModel = walletPref.retrieveWallet();
+                if (walletModel != null) {
+                    if (walletModel.isLinked()) {
+                        RouteManager.route(getActivity(), walletModel.getApplink());
                     } else {
-                        RouteManager.route(getActivity(), String.format("%s?url=%s", ApplinkConst.WEBVIEW,
-                                ApplinkConst.WebViewUrl.SALDO_DETAIL));
+                        RouteManager.route(getActivity(), walletModel.getAction().getApplink());
                     }
-                    break;
-                case SettingConstant.SETTING_OVO_PAY_LATER_ID:
-                    accountAnalytics.eventClickOVOPayLater(AccountConstants.Analytics.OVO_PAY_LATER_CATEGORY,
-                            AccountConstants.Analytics.OVO_PAY_LATER_CLICK,
-                            String.format(AccountConstants.Analytics.OVO_PAY_LATER_LABEL, vccUserStatus.getStatus()));
-                    String url = vccUserStatus.getRedirectionUrl();
-                    if (URLUtil.isValidUrl(url)) {
-                        RouteManager.route(getActivity(), String.format("%s?url=%s",
-                                ApplinkConst.WEBVIEW, url));
-                    } else {
-                        RouteManager.route(getActivity(), String.format("%s?url=%s",
-                                ApplinkConst.WEBVIEW,
-                                AccountHomeUrl.WEB_DOMAIN + AccountHomeUrl.TOKOCARD_URL));
-                    }
+                }
+                break;
+            case SettingConstant.SETTING_SALDO_ID:
+                accountAnalytics.eventClickPaymentSetting(BALANCE);
+                RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getContext());
+                if (remoteConfig.getBoolean(APP_ENABLE_SALDO_SPLIT, false)) {
+                    if (pvtUserSession.hasShownSaldoIntroScreen()) {
+                        if (remoteConfig.getBoolean(APP_ENABLE_SALDO_SPLIT, false)) {
+                            RouteManager.route(getContext(), ApplinkConstInternalGlobal.SALDO_DEPOSIT);
+                        } else {
+                            RouteManager.route(getContext(), String.format("%s?url=%s", ApplinkConst.WEBVIEW,
+                                    ApplinkConst.WebViewUrl.SALDO_DETAIL));
+                        }
 
-                    break;
-                case SettingConstant.SETTING_DEBIT_INSTANT:
-                    String debitInstantUrl = walletPref.retrieveDebitInstantUrl();
-                    if (!TextUtils.isEmpty(debitInstantUrl)) {
-                        RouteManager.route(getActivity(), SettingConstant.Url.BASE_WEBVIEW_APPLINK + encodeUrl(debitInstantUrl));
+                        accountAnalytics.homepageSaldoClick(getContext(),
+                                "com.tokopedia.saldodetails.activity.SaldoDepositActivity");
+                    } else {
+                        pvtUserSession.setSaldoIntroPageStatus(true);
+                        RouteManager.route(getContext(), ApplinkConstInternalGlobal.SALDO_INTRO);
                     }
-                    break;
-                default:
-                    break;
-            }
+                } else {
+                    RouteManager.route(getActivity(), String.format("%s?url=%s", ApplinkConst.WEBVIEW,
+                            ApplinkConst.WebViewUrl.SALDO_DETAIL));
+                }
+                break;
+            case SettingConstant.SETTING_OVO_PAY_LATER_ID:
+                accountAnalytics.eventClickOVOPayLater(AccountConstants.Analytics.OVO_PAY_LATER_CATEGORY,
+                        AccountConstants.Analytics.OVO_PAY_LATER_CLICK,
+                        String.format(AccountConstants.Analytics.OVO_PAY_LATER_LABEL, vccUserStatus.getStatus()));
+                String url = vccUserStatus.getRedirectionUrl();
+                if (URLUtil.isValidUrl(url)) {
+                    RouteManager.route(getActivity(), String.format("%s?url=%s",
+                            ApplinkConst.WEBVIEW, url));
+                } else {
+                    RouteManager.route(getActivity(), String.format("%s?url=%s",
+                            ApplinkConst.WEBVIEW,
+                            AccountHomeUrl.WEB_DOMAIN + AccountHomeUrl.TOKOCARD_URL));
+                }
+
+                break;
+            case SettingConstant.SETTING_DEBIT_INSTANT:
+                String debitInstantUrl = walletPref.retrieveDebitInstantUrl();
+                if (!TextUtils.isEmpty(debitInstantUrl)) {
+                    RouteManager.route(getActivity(), SettingConstant.Url.BASE_WEBVIEW_APPLINK + encodeUrl(debitInstantUrl));
+                }
+                break;
+            default:
+                break;
         }
+
     }
 
     private String encodeUrl(String url) {

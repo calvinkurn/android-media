@@ -16,6 +16,17 @@
         app:typographyWeight="bold"
         tools:text="Budi Santoso" />
 
+    <ImageView
+        android:id="@+id/img_sr_blue_dot"
+        android:layout_width="@dimen/dp_topchat_6"
+        android:layout_height="@dimen/dp_topchat_6"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="@dimen/dp_topchat_4"
+        android:layout_marginLeft="@dimen/dp_topchat_4"
+        android:visibility="gone"
+        app:srcCompat="@drawable/circle_blue_notification"
+        tools:visibility="visible" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvDot"
         android:layout_width="wrap_content"

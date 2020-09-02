@@ -1,0 +1,106 @@
+<resources>
+    <string name="ent_home_page_event_hiburan"><![CDATA[Event & Hiburan]]></string>
+    <string name="ent_home_page_cari_kegiatan_atau_lokasi">Cari kegiatan atau lokasi</string>
+    <string name="ent_home_page_yang_seru_buat_kamu">Yang seru buat kamu</string>
+    <string name="ent_home_page_lihat_semua">Lihat Semua</string>
+    <string name="ent_home_page_lihat_semuanya">Lihat Semuanya</string>
+    <string name="ent_home_page_berencana_liburan_ke_luar_negeri">Berencana liburan ke luar negeri?</string>
+    <string name="ent_home_page_cek_wahana_yang_harus_kamu_kunjungi_yuk">Cek wahana yang harus kamu kunjungi, yuk!</string>
+    <string name="ent_home_page_bantuan">Bantuan</string>
+    <string name="ent_home_page_daftar_transaksi">Daftar Transaksi</string>
+    <string name="ent_home_page_promo">Promo</string>
+    <string name="ent_home_page_mulai_dari">Mulai dari</string>
+    <string name="ent_home_page_coach_mark_title_1">Temukan banyak hal seru</string>
+    <string name="ent_home_page_coach_mark_title_2">LIhat kegiatan yang kamu simpan</string>
+    <string name="ent_home_page_coach_mark_title_3">Simpan acara favorit</string>
+    <string name="ent_home_page_coach_mark_desc_1">Mulai dari konser, taman hiburan, sampai kegiatan menarik di berbagai lokasi.</string>
+    <string name="ent_home_page_coach_mark_desc_2">Buka Wishlist dan beli tiketnya sebelum kehabisan!</string>
+    <string name="ent_home_page_coach_mark_desc_3">Biar nggak repot cari ulang, masukkan kegiatannya ke Wishlist!</string>
+
+    <string name="ent_search_title"><![CDATA[Search Event]]></string>
+    <string name="ent_search_search_first_time_first_heading">Siap berburu kegiatan seru?</string>
+    <string name="ent_search_search_first_time_second_heading">Yuk, temukan beragam acara dan kegiatan untuk mengisi waktu luangmu</string>
+    <string name="ent_search_search_last_item">TERAKHIR DICARI</string>
+    <string name="ent_search_search_find_loc">LOKASI YANG KAMU CARI</string>
+    <string name="ent_search_lihat_semua">Lihat Semua</string>
+    <string name="ent_search_pil_kegiatan">PILIHAN KEGIATAN</string>
+    <string name="ent_search_oops">Oops, kayaknya kamu nyasar</string>
+    <string name="ent_search_intip_kategori">Yang kamu cari nggak ada disini. Jangan panik, coba intip kategori lainnya</string>
+    <string name="ent_search_reset_filter">Reset Filter</string>
+    <string name="ent_search_event_location"><![CDATA[Lokasi]]></string>
+    <string name="ent_search_black_circle">\u0020\u25CF %1$s</string>
+    <string name="ent_search_empty_state_body">Coba ubah kata kuncimu buat cari ulang, yuk!</string>
+    <string name="ent_search_empty_state_heading">Yaah, yang kamu cari nggak ketemu</string>
+    <string name="ent_search_placeholder">Cari kegiatan atau lokasi</string>
+    <string name="ent_search_error_message">Terjadi kesalahan. Coba lagi</string>
+
+    <string name="ent_pdp_title_form">Data Pemesan</string>
+    <string name="ent_pdp_ubah">Ubah</string>
+    <string name="ent_pdp_tanggal_kunjungan">Tanggal Kunjungan</string>
+    <string name="ent_pdp_ticket_total_harga">Total Harga</string>
+    <string name="ent_pdp_ticket_pesan_text">Pesan Tiket</string>
+    <string name="ent_pdp_ticket_pilih">Pilih</string>
+    <string name="ent_pdp_ticket_ubah">Ubah tanggal</string>
+    <string name="ent_pdp_ticket_habis">Habis</string>
+    <string name="ent_pdp_ticket_belum_tersedia">Belum Tersedia</string>
+    <string name="ent_pdp_ticket_telah_selesai">Penjualan Berakhir</string>
+    <string name="ent_pdp_date_txt">%s</string>
+    <string name="ent_default_totalPrice">Rp0</string>
+    <string name="ent_error_network_message">Terjadi kesalahan. Coba lagi</string>
+    <string name="ent_error_value_exceeded">Maks. pembelian barang ini %s item, Kurangi</string>
+    <string name="ent_error_value_under_min">Min. pembelian produk ini adalah %s barang.\nYuk, atur ulang pembelianmu</string>
+    <string name="ent_pdp_see_all">Lihat Semua</string>
+    <string name="ent_pdp_facilities">Fasilitas</string>
+    <string name="ent_pdp_see_map">Lihat Peta  ></string>
+    <string name="ent_pdp_detail_lokasi">Detail Lokasi</string>
+    <string name="ent_pdp_information">Informasi Penting</string>
+    <string name="ent_pdp_harga_tiket">Harga Tiket</string>
+    <string name="ent_pdp_cek_tiket">Cek Tiket</string>
+    <string name="ent_pdp_about_this">Tentang Kegiatan Ini</string>
+    <string name="ent_pdp_choose_date">Pilih Tanggal Kunjungan</string>
+    <string name="ent_pdp_share_title">Event %s</string>
+    <string name="ent_pdp_share_web_link">https://www.tokopedia.com/events/detail/%s</string>
+    <string name="ent_pdp_share_app_link">tokopedia://events/detail/%s</string>
+    <string name="ent_pdp_choose_date_bottom_sheet">Pilih tanggal</string>
+    <string name="ent_pdp_empty_package">Mohon maaf tiket saat ini sedang tidak tersedia</string>
+
+
+    <string name="ent_event_checkout_title_page">Ringkasan Pemesanan</string>
+    <string name="ent_event_checkout_passenger_title">Data pemesan</string>
+    <string name="ent_event_checkout_pessanger_desc">E-tiket dan informasi penting lainnya akan dikirimkan ke kontak pemesan.</string>
+    <string name="ent_event_checkout_pessanger_set_now">Isi Data Sekarang</string>
+    <string name="ent_event_checkout_pessanger_set_now_desc">Datamu akan kami simpankan untuk transaksimu yang berikutnya.</string>
+    <string name="ent_event_checkout_pessanger_ticker">E-tiket juga bisa dicek lewat halaman Daftar Transaksi.</string>
+    <string name="ent_event_checkout_summary_title">Ringkasan harga</string>
+    <string name="ent_event_checkout_summary_total">Total Pembayaran</string>
+    <string name="ent_event_checkout_summary_tnc">Saya menyetujui syarat dan ketentuan pembelian tiket ini</string>
+    <string name="ent_event_checkout_summary_tnc_click">syarat dan ketentuan</string>
+    <string name="ent_event_checkout_summary_tnc_bottom_sheet">Syarat dan Ketentuan</string>
+    <string name="ent_event_checkout_footer_button">Pilih Pembayaran</string>
+    <string name="ent_event_checkout_submit_name">Isi data pemesan dulu ya, biar kamu bisa lanjut pesan tiket ini.</string>
+    <string name="ent_event_checkout_submit_login">Anda Belum Login</string>
+    <string name="ent_event_checkout_passenger_new_title">Rincian Kontak</string>
+
+
+    <string name="ent_pdp_form_ticker_warn_text">Pastikan data pemesan sudah benar, karena e-tiket akan dikirim ke kontak tercantum.</string>
+    <string name="ent_pdp_form_ticket_submit_text">Simpan</string>
+    <string name="ent_pdp_form_txtTuan">Tuan</string>
+    <string name="ent_pdp_form_txtNyonya">Nyonya</string>
+    <string name="ent_pdp_form_txtNona">Nona</string>
+    <string name="ent_pdp_form_txtSapaan">Sapaan</string>
+    <string name="ent_pdp_form_error_empty_value_msg">%s belum diisi</string>
+    <string name="ent_pdp_form_error_regex_msg">%s belum sesuai format</string>
+    <string name="ent_pdp_form_toaster_click_msg">Oke</string>
+
+    <string name="ent_checkout_payment">Sedang diproses</string>
+    <string name="ent_checkout_error">Oke</string>
+
+    <string name="ent_checkout_location_span"><![CDATA["<font color='black'><b> %s </b></font> %s]]></string>
+    <string name="ent_checkout_summary_amount">(x%d)</string>
+    <string name="ent_checkout_to_order_detail">%s?from_payment=true</string>
+    <string name="ent_pdp_param_to_package">%s/%s?selectedDate=%s&amp;startDate=%s&amp;endDate=%s</string>
+    <string name="ent_checkout_price_expand">Mulai dari <![CDATA["<font color='black'><b> %s </b></font>]]> </string>
+
+    <string name="ent_home_coachmark_title">Beli tiket kini lebih mudah!</string>
+    <string name="ent_home_coachmark_subtitle">Cobain yuk, sekarang kamu dapat membeli paket lain bersamaan!</string>
+</resources>

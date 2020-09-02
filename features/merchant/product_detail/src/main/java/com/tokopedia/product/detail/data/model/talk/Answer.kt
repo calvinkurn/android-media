@@ -15,6 +15,9 @@ data class Answer(
         val userName: String = "",
         @SerializedName("userThumbnail")
         @Expose
+        val userThumbnailOld: String = "",
+        @SerializedName("userThumbnail2")
+        @Expose
         val userThumbnail: String = "",
         @SerializedName("userID")
         @Expose

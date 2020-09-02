@@ -56,6 +56,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsBannerViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.TrackingBannerModel
@@ -152,7 +153,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         EmptyFeedBeforeLoginViewHolder.EmptyFeedBeforeLoginListener,
         RetryViewHolder.RetryViewHolderListener,
         EmptyFeedViewHolder.EmptyFeedListener,
-        FeedPlusAdapter.OnLoadListener{
+        FeedPlusAdapter.OnLoadListener, TopAdsBannerViewHolder.TopAdsBannerListener {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipeToRefresh: SwipeToRefresh
@@ -484,6 +485,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     val isHaveNewFeed = intent.getBooleanExtra(PARAM_BROADCAST_NEW_FEED, false)
                     if (isHaveNewFeed) {
                         newFeed.show()
+                        triggerNewFeedNotification()
                     }
                 }
             }
@@ -726,10 +728,18 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun triggerClearNewFeedNotification() {
+    private fun triggerNewFeedNotification() {
         if (context?.applicationContext != null) {
             val intent = Intent(BROADCAST_FEED)
             intent.putExtra(PARAM_BROADCAST_NEW_FEED_CLICKED, true)
+            LocalBroadcastManager.getInstance(requireContext().applicationContext).sendBroadcast(intent)
+        }
+    }
+
+    private fun triggerClearNewFeedNotification() {
+        if (context?.applicationContext != null) {
+            val intent = Intent(BROADCAST_FEED)
+            intent.putExtra(PARAM_BROADCAST_NEW_FEED_CLICKED, false)
             LocalBroadcastManager.getInstance(requireContext().applicationContext).sendBroadcast(intent)
         }
     }
@@ -745,6 +755,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onPause() {
         super.onPause()
         unRegisterNewFeedReceiver()
+        analytics.sendPendingAnalytics()
         feedAnalytics.sendPendingAnalytics()
     }
 
@@ -1023,11 +1034,15 @@ class FeedPlusFragment : BaseDaggerFragment(),
         trackShopClickImpression(positionInFeed, adapterPosition, shop)
     }
 
+    override fun onTopAdsImpression(url: String, shopId: String, shopName: String, imageUrl: String) {
+        feedViewModel.doTopAdsTracker(url, shopId, shopName, imageUrl, false)
+    }
+
     private fun trackShopClickImpression(positionInFeed: Int, adapterPosition: Int, shop: Shop) {
         if (adapter.getlist()[positionInFeed] is TopadsShopViewModel) {
             val (_, dataList, _, _) = adapter.getlist()[positionInFeed] as TopadsShopViewModel
             if (adapterPosition != RecyclerView.NO_POSITION) {
-                trackUrlEvent(dataList[adapterPosition].shopClickUrl)
+                feedViewModel.doTopAdsTracker(dataList[adapterPosition].shopClickUrl, shop.id, shop.name, dataList[adapterPosition].shop.imageShop.xsEcs, true)
             }
         }
     }
@@ -1037,25 +1052,23 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onAddFavorite(positionInFeed: Int, adapterPosition: Int, data: Data) {
-        if (data.isFavorit) {
-            onShopItemClicked(positionInFeed, adapterPosition, data.shop)
-        } else {
-            feedViewModel.doToggleFavoriteShop(positionInFeed, adapterPosition, data.shop.id)
+        feedViewModel.doToggleFavoriteShop(positionInFeed, adapterPosition, data.shop.id)
 
-            if (adapter.getlist()[positionInFeed] is TopadsShopViewModel) {
-                val (_, _, _, trackingList) = adapter.getlist()[positionInFeed] as TopadsShopViewModel
+        if (adapter.getlist()[positionInFeed] is TopadsShopViewModel) {
+            val (_, _, _, trackingList) = adapter.getlist()[positionInFeed] as TopadsShopViewModel
 
-                for (tracking in trackingList) {
-                    if (TextUtils.equals(tracking.authorName, data.shop.name)) {
-                        trackRecommendationFollowClick(
-                                tracking,
-                                FeedAnalytics.Element.FOLLOW
-                        )
-                        break
+            for (tracking in trackingList) {
+                if (TextUtils.equals(tracking.authorName, data.shop.name)) {
+                    if(data.isFavorit) {
+                        trackRecommendationFollowClick(tracking, FeedAnalytics.Element.UNFOLLOW)
+                    } else {
+                        trackShopClickImpression(positionInFeed, adapterPosition, data.shop)
+                        trackRecommendationFollowClick(tracking, FeedAnalytics.Element.FOLLOW)
                     }
+
+                    break
                 }
             }
-            trackShopClickImpression(positionInFeed, adapterPosition, data.shop)
         }
     }
 
@@ -1350,13 +1363,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onVideoPlayerClicked(positionInFeed: Int,
                                       contentPosition: Int,
-                                      postId: String) {
+                                      postId: String,
+                                      redirectUrl: String) {
         if (activity != null) {
-            RouteManager.route(
-                    requireContext(),
-                    ApplinkConstInternalContent.VIDEO_DETAIL,
-                    postId
-            )
+            onGoToLink(redirectUrl)
         }
 
         if (adapter.getlist()[positionInFeed] is DynamicPostViewModel) {
@@ -1996,5 +2006,12 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (context != null) {
             Toast.makeText(context, R.string.feed_after_post, Toast.LENGTH_LONG).show()
         }
+    }
+
+    override fun onTopAdsViewImpression(bannerId: String, imageUrl: String) {
+        analytics.eventTopadsRecommendationImpression(
+                listOf(TrackingRecommendationModel(authorId = bannerId.toIntOrZero() )),
+                userIdInt
+        )
     }
 }

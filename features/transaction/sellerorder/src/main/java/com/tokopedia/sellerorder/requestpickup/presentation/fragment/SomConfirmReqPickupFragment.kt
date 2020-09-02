@@ -15,7 +15,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
-import com.tokopedia.sellerorder.common.util.SomConsts
+import com.tokopedia.sellerorder.common.errorhandler.SomErrorHandler
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_PROCESS_REQ_PICKUP
 import com.tokopedia.sellerorder.common.util.Utils
@@ -27,7 +27,6 @@ import com.tokopedia.sellerorder.requestpickup.di.SomConfirmReqPickupComponent
 import com.tokopedia.sellerorder.requestpickup.presentation.adapter.SomConfirmReqPickupCourierNotesAdapter
 import com.tokopedia.sellerorder.requestpickup.presentation.viewmodel.SomConfirmReqPickupViewModel
 import com.tokopedia.unifycomponents.HtmlLinkHelper
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_som_confirm_req_pickup.*
@@ -50,6 +49,9 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment() {
     }
 
     companion object {
+        private const val ERROR_GET_CONFIRM_REQUEST_PICKUP_DATA = "Error when get confirm request pickup layout data."
+        private const val ERROR_PROCESSING_REQUEST_PICKUP = "Error when processing request pickup."
+
         @JvmStatic
         fun newInstance(bundle: Bundle): SomConfirmReqPickupFragment {
             return SomConfirmReqPickupFragment().apply {
@@ -102,6 +104,7 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment() {
                     renderConfirmReqPickup()
                 }
                 is Fail -> {
+                    SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_CONFIRM_REQUEST_PICKUP_DATA)
                     Utils.showToasterError(it.throwable.localizedMessage, view)
                 }
             }
@@ -120,6 +123,7 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment() {
 
                 }
                 is Fail -> {
+                    SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_PROCESSING_REQUEST_PICKUP)
                     Utils.showToasterError(it.throwable.localizedMessage, view)
                 }
             }

@@ -18,4 +18,5 @@
     <string name="host_belanja_kategori" translatable="false">category_belanja</string>
     <string name="label_kategori">Belanja di Tokopedia</string>
     <string name="label_category">category</string>
+    <string name="hotlist_label">hotlist</string>
 </resources>

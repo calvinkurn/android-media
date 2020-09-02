@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_event_checkout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/spacing_lvl4"
+        android:text="@string/ent_event_checkout_footer_button"
+        app:unifyButtonInvers="true"
+        app:unifyButtonType="transaction"
+        android:enabled="false"
+        />
+
+</LinearLayout>

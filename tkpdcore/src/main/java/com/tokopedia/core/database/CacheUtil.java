@@ -11,24 +11,6 @@ import java.util.List;
  */
 public class CacheUtil {
 
-    public static String convertListModelToString(List<?> list, Type type) {
-        Gson gson = new Gson();
-
-        JsonElement element = gson.toJsonTree(list, type);
-
-        if (! element.isJsonArray()) {
-            throw new RuntimeException();
-        }
-
-        return element.getAsJsonArray().toString();
-    }
-
-    public static <T> List<T> convertStringToListModel(String jsonArray, Type type) {
-        Gson gson = new Gson();
-
-        return (gson.fromJson(jsonArray, type));
-    }
-
     public static String convertModelToString(Object obj, Type type) {
         Gson gson = new Gson();
 

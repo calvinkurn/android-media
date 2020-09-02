@@ -31,13 +31,13 @@ class ProductEditDescriptionFragment : Fragment() {
         setHasOptionsMenu(true)
         activity?.run {
             if(intent.hasExtra(EXTRA_DESCRIPTION)) {
-                productDescription = intent.getParcelableExtra(EXTRA_DESCRIPTION)
+                productDescription = intent.getParcelableExtra(EXTRA_DESCRIPTION) ?: ProductDescription()
             }
-            keyword = intent.getStringExtra(EXTRA_KEYWORD)
+            keyword = intent.getStringExtra(EXTRA_KEYWORD) ?: ""
         }
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey(SAVED_PRODUCT_DESCRIPTION)) {
-                productDescription = savedInstanceState.getParcelable(SAVED_PRODUCT_DESCRIPTION)
+                productDescription = savedInstanceState.getParcelable(SAVED_PRODUCT_DESCRIPTION) ?: ProductDescription()
             }
         }
     }
@@ -70,7 +70,7 @@ class ProductEditDescriptionFragment : Fragment() {
                     editTextDescription.setText(description)
                 }
                 REQUEST_CODE_GET_VIDEO -> {
-                    videoIDsTemp = data.getStringArrayListExtra(EXTRA_VIDEOS_LINKS)
+                    videoIDsTemp = data.getStringArrayListExtra(EXTRA_VIDEOS_LINKS) ?: arrayListOf()
                     setLabelViewVideo(videoIDsTemp)
                 }
             }

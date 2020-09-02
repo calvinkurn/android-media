@@ -12,7 +12,7 @@ import com.tokopedia.websocket.RxWebSocket
 import okhttp3.Interceptor
 
 class SendableVoucherPreview(
-        val voucherPreview: VoucherPreview
+        private val voucherPreview: VoucherPreview
 ) : SendablePreview {
 
     val voucherViewModel = MerchantVoucherModel(
@@ -53,7 +53,8 @@ class SendableVoucherPreview(
                 voucherPreview.amount,
                 voucherPreview.amountType,
                 voucherPreview.identifier,
-                voucherPreview.voucherType
+                voucherPreview.voucherType,
+                voucherPreview.isPublic
         )
         val data = WebsocketAttachmentData(
                 messageId.toInt(),
@@ -92,6 +93,7 @@ class SendableVoucherPreview(
             val amount: Int,
             val amount_type: Int,
             val identifier: String,
-            val voucher_type: Int
+            val voucher_type: Int,
+            val is_public: Int
     )
 }

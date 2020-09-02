@@ -4,9 +4,9 @@ import com.tokopedia.logisticdata.data.entity.trackingshipment.Detail;
 import com.tokopedia.logisticdata.data.entity.trackingshipment.Page;
 import com.tokopedia.logisticdata.data.entity.trackingshipment.TrackOrder;
 import com.tokopedia.logisticdata.data.entity.trackingshipment.TrackingResponse;
-import com.tokopedia.logisticorder.viewmodel.AdditionalInfoUiModel;
-import com.tokopedia.logisticorder.viewmodel.TrackingHistoryUiModel;
-import com.tokopedia.logisticorder.viewmodel.TrackingUiModel;
+import com.tokopedia.logisticorder.uimodel.AdditionalInfoUiModel;
+import com.tokopedia.logisticorder.uimodel.TrackingHistoryUiModel;
+import com.tokopedia.logisticorder.uimodel.TrackingUiModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,16 +57,16 @@ public class TrackingPageMapper implements ITrackingPageMapper {
         List<TrackingHistoryUiModel> trackingHistoryUiModels = new ArrayList<>();
         if (order.getTrackHistory() != null && !order.getTrackHistory().isEmpty()) {
             for (int i = 0; i < order.getTrackHistory().size(); i++) {
-                TrackingHistoryUiModel historyViewModel = new TrackingHistoryUiModel();
-                historyViewModel.setCity(order.getTrackHistory().get(i).getCity());
-                historyViewModel.setStatus(order.getTrackHistory().get(i).getStatus());
-                historyViewModel.setDate(order.getTrackHistory().get(i).getDate());
-                historyViewModel.setTime(order.getTrackHistory().get(i).getTime());
-                splitDate(historyViewModel, order, i);
-                historyViewModel.setTitle(order.getTrackHistory().get(i).getStatus());
-                trackingHistoryUiModels.add(historyViewModel);
-                if (i == 0) historyViewModel.setColor("#42b549");
-                else historyViewModel.setColor("#9B9B9B");
+                TrackingHistoryUiModel historyUiModel = new TrackingHistoryUiModel();
+                historyUiModel.setCity(order.getTrackHistory().get(i).getCity());
+                historyUiModel.setStatus(order.getTrackHistory().get(i).getStatus());
+                historyUiModel.setDate(order.getTrackHistory().get(i).getDate());
+                historyUiModel.setTime(order.getTrackHistory().get(i).getTime());
+                splitDate(historyUiModel, order, i);
+                historyUiModel.setTitle(order.getTrackHistory().get(i).getStatus());
+                trackingHistoryUiModels.add(historyUiModel);
+                if (i == 0) historyUiModel.setColor("#42b549");
+                else historyUiModel.setColor("#9B9B9B");
             }
         }
         model.setHistoryList(trackingHistoryUiModels);
@@ -92,11 +92,11 @@ public class TrackingPageMapper implements ITrackingPageMapper {
         return model;
     }
 
-    private void splitDate(TrackingHistoryUiModel historyViewModel, TrackOrder order, int i) {
+    private void splitDate(TrackingHistoryUiModel historyUiModel, TrackOrder order, int i) {
         String[] splitDate = order.getTrackHistory().get(i).getDate().split("-");
-        historyViewModel.setYear(splitDate[0] != null ? splitDate[0] : "");
-        historyViewModel.setMonth(splitDate[1] != null ? splitDate[1] : "");
-        historyViewModel.setYear(splitDate[2] != null ? splitDate[2] : "");
+        historyUiModel.setYear(splitDate[0] != null ? splitDate[0] : "");
+        historyUiModel.setMonth(splitDate[1] != null ? splitDate[1] : "");
+        historyUiModel.setYear(splitDate[2] != null ? splitDate[2] : "");
     }
 
     private boolean switchInteger(int value) {

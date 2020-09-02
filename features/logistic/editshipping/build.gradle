@@ -43,21 +43,13 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
-
     implementation rootProject.ext.playServicesDependencies.base
-    implementation rootProject.ext.playServicesDependencies.maps
-    implementation rootProject.ext.playServicesDependencies.places
-    implementation rootProject.ext.playServicesDependencies.location
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.miscDependencies.chips
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.debugToolsDependencies.chuck
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
-    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
-
 }
 
 project.ext {

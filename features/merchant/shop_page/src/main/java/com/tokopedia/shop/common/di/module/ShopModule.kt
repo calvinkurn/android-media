@@ -2,16 +2,15 @@ package com.tokopedia.shop.common.di.module
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor.Companion.getInstance
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant
 import com.tokopedia.shop.common.data.source.cloud.api.ShopApi
 import com.tokopedia.shop.common.di.ShopCommonModule
+import com.tokopedia.shop.common.di.ShopPageContext
 import com.tokopedia.shop.common.di.ShopQualifier
 import com.tokopedia.shop.common.di.scope.ShopScope
-import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopReputationUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -25,7 +24,12 @@ import javax.inject.Named
  */
 @ShopScope
 @Module(includes = [ShopCommonModule::class])
-class ShopModule {
+class ShopModule(val context: Context) {
+
+    @Provides
+    @ShopPageContext
+    fun provideActivityContext() = context
+
     @ShopScope
     @Provides
     fun provideShopApi(@ShopQualifier retrofit: Retrofit): ShopApi {

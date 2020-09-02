@@ -2,17 +2,14 @@ package com.tokopedia.home.account.presentation.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
+
 import androidx.fragment.app.Fragment;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.presentation.fragment.setting.AccountSettingFragment;
 
-@DeepLink(ApplinkConst.SETTING_ACCOUNT)
 public class AccountSettingActivity extends BaseSimpleActivity {
 
     private static final int REQUEST_CHANGE_PASSWORD = 123;

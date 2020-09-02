@@ -3,26 +3,32 @@ package com.tokopedia.topads.view.fragment
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.topads.Utils
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
+import com.tokopedia.topads.data.response.ResponseGroupValidateName.TopAdsGroupValidateName
 import com.tokopedia.topads.di.CreateAdsComponent
+import com.tokopedia.topads.view.activity.StepperActivity
 import com.tokopedia.topads.view.model.CreateGroupAdsViewModel
 import com.tokopedia.topads.view.sheet.InfoSheetGroupList
 import kotlinx.android.synthetic.main.topads_create_fragment_group_list.*
 import javax.inject.Inject
-import com.tokopedia.topads.data.response.ResponseGroupValidateName.TopAdsGroupValidateName
-import com.tokopedia.topads.view.activity.StepperActivity
 
 /**
  * Author errysuprayogi on 29,October,2019
  */
+
+private const val CLICK_TIPS_GRUP_IKLAN = "click-tips grup iklan"
+private const val CLICK_BUAT_GRUP_IKLAN = "click-buat grup iklan"
 class CreateGroupAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
 
 
@@ -60,7 +66,9 @@ class CreateGroupAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         stepperListener?.goToNextPage(stepperModel)
     }
 
-    override fun populateView(stepperModel: CreateManualAdsStepperModel) {
+    override fun populateView() {
+        if (activity is StepperActivity)
+            (activity as StepperActivity).updateToolbarTitle(getString(R.string.group_name_step))
     }
 
     override fun getScreenName(): String {
@@ -77,14 +85,15 @@ class CreateGroupAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        btn_submit.isEnabled = false
-        btn_submit.setOnClickListener {
+        btn_submit?.isEnabled = false
+        btn_submit?.setOnClickListener {
             validateGroup(group_name_input.text.toString())
         }
-        tip_btn.setOnClickListener {
+        tip_btn?.setOnClickListener {
             InfoSheetGroupList.newInstance(it.context).show()
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_TIPS_GRUP_IKLAN, "")
         }
-        group_name_input.addTextChangedListener(object : TextWatcher {
+        group_name_input?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
             }
 
@@ -92,19 +101,19 @@ class CreateGroupAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                error_text.visibility = View.GONE
-                typography19.visibility = View.VISIBLE
+                error_text?.visibility = View.GONE
+                descTxt?.visibility = View.VISIBLE
                 if (s.toString().trim().isEmpty()) {
-                    title.visibility = View.INVISIBLE
-                    btn_submit.isEnabled = false
+                    title?.visibility = View.INVISIBLE
+                    btn_submit?.isEnabled = false
                 } else {
-                    title.visibility = View.VISIBLE
-                    btn_submit.isEnabled = true
+                    title?.visibility = View.VISIBLE
+                    btn_submit?.isEnabled = true
                 }
             }
 
         })
-        group_name_input.setOnEditorActionListener { v, actionId, _ ->
+        group_name_input?.setOnEditorActionListener { v, actionId, _ ->
             when (actionId) {
                 EditorInfo.IME_ACTION_SEARCH -> validateGroup(v?.text.toString())
             }
@@ -116,38 +125,32 @@ class CreateGroupAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     private fun validateGroup(s: String?) {
         s?.let {
             viewModel.validateGroup(it, this::onSuccess, this::onError)
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_BUAT_GRUP_IKLAN, it)
         }
     }
 
     private fun onError(t: Throwable) {
         errorTextVisibility(true)
         if (t.localizedMessage == resources.getString(R.string.duplicate_group_name_error_wrong))
-            error_text.text = resources.getString(R.string.duplicate_group_name_error)
-        NetworkErrorHelper.createSnackbarRedWithAction(activity, t.localizedMessage) {
-            validateGroup(group_name_input.text.toString())
-        }
+            error_text?.text = resources.getString(R.string.duplicate_group_name_error)
+        else
+            error_text?.text = t.message
     }
 
     private fun onSuccess(data: TopAdsGroupValidateName.Data) {
         errorTextVisibility(false)
         gotoNextPage()
-
-    }
-
-    override fun updateToolBar() {
-        (activity as StepperActivity).updateToolbarTitle(getString(R.string.group_name_step))
     }
 
     private fun errorTextVisibility(visible: Boolean) {
         if (visible) {
-            error_text.visibility = View.VISIBLE
-            typography19.visibility = View.GONE
-            btn_submit.isEnabled = false
+            error_text?.visibility = View.VISIBLE
+            descTxt?.visibility = View.GONE
+            btn_submit?.isEnabled = false
         } else {
-            error_text.visibility = View.GONE
-            typography19.visibility = View.VISIBLE
-            btn_submit.isEnabled = true
+            error_text?.visibility = View.GONE
+            descTxt?.visibility = View.VISIBLE
+            btn_submit?.isEnabled = true
         }
     }
-
 }

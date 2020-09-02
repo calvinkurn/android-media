@@ -143,15 +143,8 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
     }
 
     override fun onItemClicked(applink: String, webUrl: String) {
-        dropKeyBoard()
         route(applink, presenter.getSearchParameter())
         finish()
-    }
-
-    override fun dropKeyBoard() {
-        if (activity != null && activity is AutoCompleteActivity) {
-            (activity as AutoCompleteActivity).dropKeyboard()
-        }
     }
 
     override fun onRecentSearchItemClicked(item: BaseItemInitialStateSearch, adapterPosition: Int) {
@@ -169,12 +162,12 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
         activity?.finish()
     }
 
-    override fun onDeleteRecentSearchItem(keyword: String) {
-        deleteRecentSearch(keyword)
+    override fun onDeleteRecentSearchItem(item: BaseItemInitialStateSearch) {
+        deleteRecentSearch(item)
     }
 
-    private fun deleteRecentSearch(keyword: String) {
-        presenter.deleteRecentSearchItem(keyword)
+    private fun deleteRecentSearch(item: BaseItemInitialStateSearch) {
+        presenter.deleteRecentSearchItem(item)
     }
 
     override fun onDeleteAllRecentSearch() {

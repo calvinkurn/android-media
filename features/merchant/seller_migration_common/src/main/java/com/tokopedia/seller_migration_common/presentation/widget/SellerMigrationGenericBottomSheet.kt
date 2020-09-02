@@ -16,12 +16,14 @@ import kotlinx.android.synthetic.main.widget_seller_migration_generic_bottom_she
 class SellerMigrationGenericBottomSheet : SellerMigrationBottomSheet() {
 
     companion object {
-        fun createNewInstance(context: Context) : SellerMigrationGenericBottomSheet {
-            return SellerMigrationGenericBottomSheet().apply{
-                val view = View.inflate(context, R.layout.widget_seller_migration_generic_bottom_sheet,null)
-                setChild(view)
-            }
+        fun createNewInstance(): SellerMigrationGenericBottomSheet {
+            return SellerMigrationGenericBottomSheet()
         }
+    }
+
+    override fun inflateChildView(context: Context) {
+        val view = View.inflate(context, R.layout.widget_seller_migration_generic_bottom_sheet,null)
+        setChild(view)
     }
 
     override fun trackGoToSellerApp() {

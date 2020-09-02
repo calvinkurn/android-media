@@ -1,118 +1,118 @@
 package com.tokopedia.common_category.data.raw
 
-const val GQL_NAV_SEARCH_PRODUCT: String = "query SearchProduct(\$params: String) {\n" +
-        "  searchProduct(params: \$params) {\n" +
-        "    source\n" +
-        "    totalData: count\n" +
-        "    count_text\n" +
-        "    additionalParams: additional_params\n" +
-        "    errorMessage\n" +
-        "    lite_url\n" +
-        "    redirection {\n" +
-        "      redirectionURL: redirect_url\n" +
-        "      departmentID: department_id\n" +
-        "    }\n" +
-        "    suggestion {\n" +
-        "      suggestion\n" +
-        "      suggestionCount\n" +
-        "      currentKeyword\n" +
-        "      instead\n" +
-        "      insteadCount\n" +
-        "      suggestionText: text\n" +
-        "      suggestionTextQuery: query\n" +
-        "    }\n" +
-        "    related {\n" +
-        "      relatedKeyword: related_keyword\n" +
-        "      otherRelated: other_related {\n" +
-        "        keyword\n" +
-        "        url\n" +
-        "        applink\n" +
-        "      }\n" +
-        "    }\n" +
-        "    isQuerySafe\n" +
-        "    catalogs {\n" +
-        "      id\n" +
-        "      name\n" +
-        "      price\n" +
-        "      priceMin: price_min\n" +
-        "      priceMax: price_max\n" +
-        "      countProduct: count_product\n" +
-        "      description\n" +
-        "      imageURL: image_url\n" +
-        "      url\n" +
-        "      category: department_id\n" +
-        "    }\n" +
-        "    products {\n" +
-        "      id\n" +
-        "      name\n" +
-        "      childs\n" +
-        "      url\n" +
-        "      imageURL: image_url\n" +
-        "      imageURL300: image_url_300\n" +
-        "      imageURL500: image_url_500\n" +
-        "      imageURL700: image_url_700\n" +
-        "      price\n" +
-        "      priceRange: price_range\n" +
-        "      category: department_id\n" +
-        "      categoryID: category_id\n" +
-        "      categoryName: category_name\n" +
-        "      categoryBreadcrumb: category_breadcrumb\n" +
-        "      discountPercentage: discount_percentage\n" +
-        "      originalPrice: original_price\n" +
-        "      shop {\n" +
-        "        id\n" +
-        "        name\n" +
-        "        url\n" +
-        "        isPowerBadge: is_power_badge\n" +
-        "        isOfficial: is_official\n" +
-        "        location\n" +
-        "        city\n" +
-        "        reputation\n" +
-        "        clover\n" +
-        "      }\n" +
-        "      wholesalePrice: whole_sale_price {\n" +
-        "        quantityMin: quantity_min\n" +
-        "        quantityMax: quantity_max\n" +
-        "        price\n" +
-        "      }\n" +
-        "      courierCount: courier_count\n" +
-        "      condition\n" +
-        "      labels {\n" +
-        "        title\n" +
-        "        color\n" +
-        "      }\n" +
-        "      labelGroups: label_groups {\n" +
-        "        position\n" +
-        "        type\n" +
-        "        title\n" +
-        "      }\n" +
-        "      badges {\n" +
-        "        title\n" +
-        "        imageURL: image_url\n" +
-        "        show\n" +
-        "      }\n" +
-        "      isFeatured: is_featured\n" +
-        "      rating\n" +
-        "      countReview: count_review\n" +
-        "      stock\n" +
-        "      GAKey: ga_key\n" +
-        "      preorder: is_preorder\n" +
-        "      wishlist\n" +
-        "      free_ongkir{\n" +
-        "        is_active\n" +
-        "        img_url\n" +
-        "      }\n" +
-        "      shop {\n" +
-        "        id\n" +
-        "        name\n" +
-        "        url\n" +
-        "        goldmerchant: is_power_badge\n" +
-        "        location\n" +
-        "        city\n" +
-        "        reputation\n" +
-        "        clover\n" +
-        "        official: is_official\n" +
-        "      }\n" +
-        "    }\n" +
-        "  }\n" +
-        "}\n"
+const val GQL_NAV_SEARCH_PRODUCT: String = """query SearchProduct(${'$'}params: String) {
+  searchProduct(params: ${'$'}params) {
+    source
+    totalData: count
+    count_text
+    additionalParams: additional_params
+    errorMessage
+    lite_url
+    redirection {
+      redirectionURL: redirect_url
+      departmentID: department_id
+    }
+    suggestion {
+      suggestion
+      suggestionCount
+      currentKeyword
+      instead
+      insteadCount
+      suggestionText: text
+      suggestionTextQuery: query
+    }
+    related {
+      relatedKeyword: related_keyword
+      otherRelated: other_related {
+        keyword
+        url
+        applink
+      }
+    }
+    isQuerySafe
+    catalogs {
+      id
+      name
+      price
+      priceMin: price_min
+      priceMax: price_max
+      countProduct: count_product
+      description
+      imageURL: image_url
+      url
+      category: department_id
+    }
+    products {
+      id
+      name
+      childs
+      url
+      imageURL: image_url
+      imageURL300: image_url_300
+      imageURL500: image_url_500
+      imageURL700: image_url_700
+      price
+      priceRange: price_range
+      category: department_id
+      categoryID: category_id
+      categoryName: category_name
+      categoryBreadcrumb: category_breadcrumb
+      discountPercentage: discount_percentage
+      originalPrice: original_price
+      shop {
+        id
+        name
+        url
+        isPowerBadge: is_power_badge
+        isOfficial: is_official
+        location
+        city
+        reputation
+        clover
+      }
+      wholesalePrice: whole_sale_price {
+        quantityMin: quantity_min
+        quantityMax: quantity_max
+        price
+      }
+      courierCount: courier_count
+      condition
+      labels {
+        title
+        color
+      }
+      labelGroups: label_groups {
+        position
+        type
+        title
+      }
+      badges {
+        title
+        imageURL: image_url
+        show
+      }
+      isFeatured: is_featured
+      rating
+      countReview: count_review
+      stock
+      GAKey: ga_key
+      preorder: is_preorder
+      wishlist
+      free_ongkir{
+        is_active
+        img_url
+      }
+      shop {
+        id
+        name
+        url
+        goldmerchant: is_power_badge
+        location
+        city
+        reputation
+        clover
+        official: is_official
+      }
+    }
+  }
+}"""

@@ -1,14 +1,14 @@
 package com.tokopedia.oneclickcheckout.order.view.card
 
+import android.graphics.Paint
 import android.text.Editable
-import android.text.Html
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.design.image.RoundedCornerImageView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
@@ -18,6 +18,7 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
 import com.tokopedia.oneclickcheckout.order.view.model.QuantityUiModel
 import com.tokopedia.purchase_platform.common.utils.QuantityTextWatcher
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -30,7 +31,7 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
 
     private val etQty by lazy { view.findViewById<EditText>(R.id.et_qty) }
     private val tvProductName by lazy { view.findViewById<Typography>(R.id.tv_product_name) }
-    private val ivProductImage by lazy { view.findViewById<RoundedCornerImageView>(R.id.iv_product_image) }
+    private val ivProductImage by lazy { view.findViewById<ImageUnify>(R.id.iv_product_image) }
     private val lblCashback by lazy { view.findViewById<Label>(R.id.lbl_cashback) }
     private val tfNote by lazy { view.findViewById<TextFieldUnify>(R.id.tf_note) }
     private val btnQtyPlus by lazy { view.findViewById<ImageView>(R.id.btn_qty_plus) }
@@ -40,6 +41,7 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
     private val tvShopLocation by lazy { view.findViewById<Typography>(R.id.tv_shop_location) }
     private val tvShopName by lazy { view.findViewById<Typography>(R.id.tv_shop_name) }
     private val tvProductPrice by lazy { view.findViewById<Typography>(R.id.tv_product_price) }
+    private val tvProductSlashPrice by lazy { view.findViewById<Typography>(R.id.tv_product_slash_price) }
     private val ivFreeShipping by lazy { view.findViewById<ImageView>(R.id.iv_free_shipping) }
     private val labelError by lazy { view.findViewById<Label>(R.id.label_error) }
 
@@ -55,10 +57,8 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
     }
 
     fun initView() {
-        if (::product.isInitialized) {
-            ivProductImage?.let {
-                ImageHandler.loadImageFitCenter(view.context, it, product.productImageUrl)
-            }
+        if (isProductInitialized()) {
+            ivProductImage?.setImageUrl(product.productImageUrl)
             tvProductName?.text = product.productName
             showPrice()
 
@@ -155,20 +155,17 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
             }
 
             validateQuantity()
-            renderProductPropertiesInvenage()
+            renderProductTickerMessage()
         }
     }
 
-    private fun renderProductPropertiesInvenage() {
-        if (product.productInvenageTotal.byUserText.complete.isNotEmpty()) {
-            val completeText = product.productInvenageTotal.byUserText.complete
-            val totalInOtherCart = product.productInvenageTotal.byUser.inCart
-            val totalRemainingStock = product.productInvenageTotal.byUser.lastStockLessThan
-            val invenageText = completeText.replace(view.context?.getString(com.tokopedia.purchase_platform.common.R.string.product_invenage_remaining_stock)
-                    ?: "", "" + totalRemainingStock)
-                    .replace(view.context?.getString(com.tokopedia.purchase_platform.common.R.string.product_invenage_in_other_cart)
-                            ?: "", "" + totalInOtherCart)
-            tvQuantityStockAvailable?.text = Html.fromHtml(invenageText)
+    private fun renderProductTickerMessage() {
+        if (product.tickerMessage.message.isNotEmpty()) {
+            var completeText = product.tickerMessage.message
+            for (replacement in product.tickerMessage.replacement) {
+                completeText = completeText.replace("{{${replacement.identifier}}}", replacement.value)
+            }
+            tvQuantityStockAvailable?.text = MethodChecker.fromHtml(completeText)
         } else {
             tvQuantityStockAvailable?.text = ""
         }
@@ -208,15 +205,15 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
     }
 
     private fun showPrice() {
-        var productPrice = product.productPrice
-        if (product.wholesalePrice.isNotEmpty()) {
-            for (wholesalePrice in product.wholesalePrice) {
-                if (product.quantity.orderQuantity >= wholesalePrice.qtyMin) {
-                    productPrice = wholesalePrice.prdPrc.toLong()
-                }
-            }
+        tvProductPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(product.getPrice(), false).removeDecimalSuffix()
+
+        if (product.originalPrice.isNotBlank()) {
+            tvProductSlashPrice.text = product.originalPrice
+            tvProductSlashPrice.paintFlags = tvProductSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+            tvProductSlashPrice.visible()
+        } else {
+            tvProductSlashPrice.gone()
         }
-        tvProductPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(productPrice, false).removeDecimalSuffix()
 
         if (product.isFreeOngkir && product.freeOngkirImg.isNotEmpty()) {
             ivFreeShipping?.let {

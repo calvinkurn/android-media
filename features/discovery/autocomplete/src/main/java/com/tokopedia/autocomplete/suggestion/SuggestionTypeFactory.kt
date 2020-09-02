@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.autocomplete.suggestion.doubleline.SuggestionDoubleLineViewModel
 import com.tokopedia.autocomplete.suggestion.singleline.SuggestionSingleLineViewModel
 import com.tokopedia.autocomplete.suggestion.title.SuggestionTitleViewModel
+import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopWidgetViewModel
 
 interface SuggestionTypeFactory {
 
@@ -13,6 +14,8 @@ interface SuggestionTypeFactory {
     fun type(viewModel: SuggestionSingleLineViewModel): Int
 
     fun type(viewModel: SuggestionDoubleLineViewModel): Int
+
+    fun type(viewModel: SuggestionTopShopWidgetViewModel): Int
 
     fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*>
 }

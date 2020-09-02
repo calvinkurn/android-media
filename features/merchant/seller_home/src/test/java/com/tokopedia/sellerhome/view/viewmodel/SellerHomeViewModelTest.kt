@@ -1,22 +1,28 @@
 package com.tokopedia.sellerhome.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.sellerhome.domain.model.GetShopStatusResponse
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
-import com.tokopedia.sellerhome.domain.usecase.*
-import com.tokopedia.sellerhome.view.model.*
+import com.tokopedia.sellerhome.domain.usecase.GetShopLocationUseCase
+import com.tokopedia.sellerhome.domain.usecase.GetStatusShopUseCase
+import com.tokopedia.sellerhome.domain.usecase.GetTickerUseCase
+import com.tokopedia.sellerhome.view.model.TickerUiModel
+import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
+import com.tokopedia.sellerhomecommon.domain.usecase.*
+import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -61,22 +67,58 @@ class SellerHomeViewModelTest {
     @RelaxedMockK
     lateinit var getCarouselDataUseCase: GetCarouselDataUseCase
 
+    @RelaxedMockK
+    lateinit var getTableDataUseCase: GetTableDataUseCase
+
+    @RelaxedMockK
+    lateinit var getPieChartDataUseCase: GetPieChartDataUseCase
+
+    @RelaxedMockK
+    lateinit var getBarChartDataUseCase: GetBarChartDataUseCase
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
+
+    private lateinit var viewModel: SellerHomeViewModel
+    private lateinit var dynamicParameter: DynamicParameterModel
+
+    private lateinit var testDispatcher: TestCoroutineDispatcher
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
+        testDispatcher = TestCoroutineDispatcher()
+
+        viewModel = SellerHomeViewModel(
+                dagger.Lazy { getShopStatusUseCase },
+                dagger.Lazy { userSession },
+                dagger.Lazy { getTickerUseCase },
+                dagger.Lazy { getLayoutUseCase },
+                dagger.Lazy { getShopLocationUseCase },
+                dagger.Lazy { getCardDataUseCase },
+                dagger.Lazy { getLineGraphDataUseCase },
+                dagger.Lazy { getProgressDataUseCase },
+                dagger.Lazy { getPostDataUseCase },
+                dagger.Lazy { getCarouselDataUseCase },
+                dagger.Lazy { getTableDataUseCase },
+                dagger.Lazy { getPieChartDataUseCase },
+                dagger.Lazy { getBarChartDataUseCase },
+                testDispatcher
+        )
+
+        dynamicParameter = getDynamicParameter()
     }
 
-    private val mViewModel: SellerHomeViewModel by lazy {
-        SellerHomeViewModel(getShopStatusUseCase, userSession, getTickerUseCase, getLayoutUseCase,
-                getShopLocationUseCase, getCardDataUseCase, getLineGraphDataUseCase, getProgressDataUseCase,
-                getPostDataUseCase, getCarouselDataUseCase, Dispatchers.Unconfined)
+    private fun getDynamicParameter(): DynamicParameterModel {
+        return DynamicParameterModel(
+                startDate = "15-07-20202",
+                endDate = "21-07-20202",
+                pageSource = "seller-home"
+        )
     }
 
     @Test
-    fun `get ticker should success`() {
+    fun `get ticker should success`() = runBlocking {
         val tickerList = listOf(
                 TickerUiModel("", "", "", "", "", "",
                         "", "", "", "", "", "", "")
@@ -86,17 +128,19 @@ class SellerHomeViewModelTest {
             getTickerUseCase.executeOnBackground()
         } returns tickerList
 
-        mViewModel.getTicker()
+        viewModel.getTicker()
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
             getTickerUseCase.executeOnBackground()
         }
 
-        assertEquals(Success(tickerList), mViewModel.homeTicker.value)
+        assertEquals(Success(tickerList), viewModel.homeTicker.value)
     }
 
     @Test
-    fun `get shop status should success`() {
+    fun `get shop status should success`() = runBlocking {
         val shopStatus = GetShopStatusResponse()
         val shopId = "123456"
 
@@ -110,21 +154,21 @@ class SellerHomeViewModelTest {
             getShopStatusUseCase.executeOnBackground()
         } returns shopStatus
 
-        mViewModel.getShopStatus()
+        viewModel.getShopStatus()
 
-        verify {
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+        coVerify {
             userSession.shopId
         }
-
         coVerify {
             getShopStatusUseCase.executeOnBackground()
         }
 
-        assertEquals(Success(shopStatus), mViewModel.shopStatus.value)
+        assertEquals(Success(shopStatus), viewModel.shopStatus.value)
     }
 
     @Test
-    fun `get shop status should failed`() {
+    fun `get shop status should failed`() = runBlocking {
         val throwable = MessageErrorException("error")
         val shopId = "123456"
 
@@ -138,9 +182,11 @@ class SellerHomeViewModelTest {
             getShopStatusUseCase.executeOnBackground()
         } throws throwable
 
-        mViewModel.getShopStatus()
+        viewModel.getShopStatus()
 
-        verify {
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        coVerify {
             userSession.shopId
         }
 
@@ -148,15 +194,16 @@ class SellerHomeViewModelTest {
             getShopStatusUseCase.executeOnBackground()
         }
 
-        assert(mViewModel.shopStatus.value is Fail)
+        assert(viewModel.shopStatus.value is Fail)
     }
 
     @Test
-    fun `get widget layout should success`() {
+    fun `get widget layout should success`() = runBlocking {
         val layoutList: List<BaseWidgetUiModel<*>> = emptyList()
         val shopId = "123456"
+        val page = "seller-home"
 
-        getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId)
+        getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId, page)
 
         every {
             userSession.shopId
@@ -166,25 +213,26 @@ class SellerHomeViewModelTest {
             getLayoutUseCase.executeOnBackground()
         } returns layoutList
 
-        mViewModel.getWidgetLayout()
+        viewModel.getWidgetLayout()
 
-        verify {
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+        coVerify {
             userSession.shopId
         }
-
-        coEvery {
+        coVerify {
             getLayoutUseCase.executeOnBackground()
         }
 
-        assertEquals(Success(layoutList), mViewModel.widgetLayout.value)
+        assertEquals(Success(layoutList), viewModel.widgetLayout.value)
     }
 
     @Test
-    fun `get widget layout should failed`() {
+    fun `get widget layout should failed`() = runBlocking {
         val throwable = MessageErrorException("error message")
         val shopId = "123456"
+        val page = "seller-home"
 
-        getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId)
+        getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId, page)
 
         every {
             userSession.shopId
@@ -194,21 +242,22 @@ class SellerHomeViewModelTest {
             getLayoutUseCase.executeOnBackground()
         } throws throwable
 
-        mViewModel.getWidgetLayout()
+        viewModel.getWidgetLayout()
 
-        verify {
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+        coVerify {
             userSession.shopId
         }
 
-        coEvery {
+        coVerify {
             getLayoutUseCase.executeOnBackground()
         }
 
-        assert(mViewModel.widgetLayout.value is Fail)
+        assert(viewModel.widgetLayout.value is Fail)
     }
 
     @Test
-    fun `get shop location then returns success result`() {
+    fun `get shop location then returns success result`() = runBlocking {
         val shopId = "123456"
         getShopLocationUseCase.params = GetShopLocationUseCase.getRequestParams(shopId)
 
@@ -222,27 +271,27 @@ class SellerHomeViewModelTest {
             getShopLocationUseCase.executeOnBackground()
         } returns shopLocation
 
-        mViewModel.getShopLocation()
+        viewModel.getShopLocation()
 
-        verify {
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+        coVerify {
             userSession.shopId
         }
-
         coVerify {
             getShopLocationUseCase.executeOnBackground()
         }
 
-        assertEquals(Success(shopLocation), mViewModel.shopLocation.value)
+        assertEquals(Success(shopLocation), viewModel.shopLocation.value)
     }
 
     @Test
-    fun `get shop location then returns failed result`() {
-        val throwable = MessageErrorException("error message")
+    fun `get shop location then returns failed result`() = runBlocking {
         val shopId = "123456"
+        val throwable = MessageErrorException("error message")
 
         getShopLocationUseCase.params = GetShopLocationUseCase.getRequestParams(shopId)
 
-        every {
+        coEvery {
             userSession.shopId
         } returns shopId
 
@@ -250,38 +299,34 @@ class SellerHomeViewModelTest {
             getShopLocationUseCase.executeOnBackground()
         } throws throwable
 
-        mViewModel.getShopLocation()
+        viewModel.getShopLocation()
 
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        coVerify {
+            userSession.shopId
+        }
         coVerify {
             getShopLocationUseCase.executeOnBackground()
         }
 
-        assert(mViewModel.shopLocation.value is Fail)
+        assert(viewModel.shopLocation.value is Fail)
     }
 
     @Test
-    fun `get card widget data then returns success result`() {
-        val shopId = 12345
+    fun `get card widget data then returns success result`() = runBlocking {
         val dataKeys = listOf("a", "b", "c")
-        val startDate = "02-03-20202"
-        val endDate = "09-03-20202"
 
         val cardDataResult = listOf(CardDataUiModel(), CardDataUiModel(), CardDataUiModel())
-        getCardDataUseCase.params = GetCardDataUseCase.getRequestParams(shopId, dataKeys, startDate, endDate)
-
-        every {
-            userSession.shopId
-        } returns shopId.toString()
+        getCardDataUseCase.params = GetCardDataUseCase.getRequestParams(dataKeys, dynamicParameter)
 
         coEvery {
             getCardDataUseCase.executeOnBackground()
         } returns cardDataResult
 
-        mViewModel.getCardWidgetData(dataKeys)
+        viewModel.getCardWidgetData(dataKeys)
 
-        verify {
-            userSession.shopId
-        }
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
             getCardDataUseCase.executeOnBackground()
@@ -289,59 +334,41 @@ class SellerHomeViewModelTest {
 
         val expectedResult = Success(cardDataResult)
         assertTrue(dataKeys.size == expectedResult.data.size)
-        assertEquals(expectedResult, mViewModel.cardWidgetData.value)
+        assertEquals(expectedResult, viewModel.cardWidgetData.value)
     }
 
     @Test
     fun `get card widget data then returns failed result`() = runBlocking {
-        val shopId = "12345"
         val dataKeys = listOf("a", "b", "c")
-        val startDate = "02-03-20202"
-        val endDate = "09-03-20202"
 
-        val throwable = ResponseErrorException()
-
-        getCardDataUseCase.params = GetCardDataUseCase.getRequestParams(shopId.toIntOrZero(), dataKeys, startDate, endDate)
-
-        every {
-            userSession.shopId
-        } returns shopId
+        getCardDataUseCase.params = GetCardDataUseCase.getRequestParams(dataKeys, dynamicParameter)
 
         coEvery {
             getCardDataUseCase.executeOnBackground()
-        } throws throwable
+        } throws Throwable()
 
-        mViewModel.getCardWidgetData(dataKeys)
+        viewModel.getCardWidgetData(dataKeys)
 
-        delay(100)
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
-        val result = mViewModel.cardWidgetData.value
+        val result = viewModel.cardWidgetData.value
         assert(result is Fail)
     }
 
     @Test
-    fun `get line graph widget data then returns success result`() {
-        val shopId = "12345"
+    fun `get line graph widget data then returns success result`() = runBlocking {
         val dataKeys = listOf("x", "y", "z")
-        val startDate = "02-03-20202"
-        val endDate = "09-03-20202"
 
         val lineGraphDataResult = listOf(LineGraphDataUiModel(), LineGraphDataUiModel(), LineGraphDataUiModel())
-        getLineGraphDataUseCase.params = GetLineGraphDataUseCase.getRequestParams(shopId, dataKeys, startDate, endDate)
-
-        every {
-            userSession.shopId
-        } returns shopId
+        getLineGraphDataUseCase.params = GetLineGraphDataUseCase.getRequestParams(dataKeys, dynamicParameter)
 
         coEvery {
             getLineGraphDataUseCase.executeOnBackground()
         } returns lineGraphDataResult
 
-        mViewModel.getLineGraphWidgetData(dataKeys)
+        viewModel.getLineGraphWidgetData(dataKeys)
 
-        verify {
-            userSession.shopId
-        }
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
             getLineGraphDataUseCase.executeOnBackground()
@@ -349,113 +376,92 @@ class SellerHomeViewModelTest {
 
         val expectedResult = Success(lineGraphDataResult)
         assertTrue(dataKeys.size == expectedResult.data.size)
-        assertEquals(expectedResult, mViewModel.lineGraphWidgetData.value)
+        assertEquals(expectedResult, viewModel.lineGraphWidgetData.value)
     }
 
     @Test
-    fun `get line graph widget data then returns failed result`() {
-        val shopId = "12345"
+    fun `get line graph widget data then returns failed result`() = runBlocking {
         val dataKeys = listOf("x", "y", "z")
-        val startDate = "02-03-20202"
-        val endDate = "09-03-20202"
 
-        val throwable= MessageErrorException("error message")
-        getLineGraphDataUseCase.params = GetLineGraphDataUseCase.getRequestParams(shopId, dataKeys, startDate, endDate)
-
-        every {
-            userSession.shopId
-        } returns shopId
+        val throwable = MessageErrorException("error message")
+        getLineGraphDataUseCase.params = GetLineGraphDataUseCase.getRequestParams(dataKeys, dynamicParameter)
 
         coEvery {
             getLineGraphDataUseCase.executeOnBackground()
         } throws throwable
 
-        mViewModel.getLineGraphWidgetData(dataKeys)
+        viewModel.getLineGraphWidgetData(dataKeys)
 
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
         coVerify {
             getLineGraphDataUseCase.executeOnBackground()
         }
 
-        assert(mViewModel.lineGraphWidgetData.value is Fail)
+        assert(viewModel.lineGraphWidgetData.value is Fail)
     }
 
     @Test
-    fun `get progress widget data then returns success result`() {
+    fun `get progress widget data then returns success result`() = runBlocking {
         val shopId = "124456"
         val dateStr = "02-02-2020"
         val dataKeys = listOf("x", "y", "z")
         val progressDataList = listOf(ProgressDataUiModel(), ProgressDataUiModel(), ProgressDataUiModel())
 
-        getProgressDataUseCase.params = GetProgressDataUseCase.getRequestParams(shopId, dateStr, dataKeys)
-
-        every {
-            userSession.shopId
-        } returns shopId
+        getProgressDataUseCase.params = GetProgressDataUseCase.getRequestParams(dateStr, dataKeys)
 
         coEvery {
             getProgressDataUseCase.executeOnBackground()
         } returns progressDataList
 
-        mViewModel.getProgressWidgetData(dataKeys)
+        viewModel.getProgressWidgetData(dataKeys)
 
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
         coVerify {
             getProgressDataUseCase.executeOnBackground()
         }
 
         val expectedResult = Success(progressDataList)
         assertTrue(expectedResult.data.size == dataKeys.size)
-        assertEquals(expectedResult, mViewModel.progressWidgetData.value)
+        assertEquals(expectedResult, viewModel.progressWidgetData.value)
     }
 
     @Test
-    fun `get progress widget data then returns failed result`() {
-        val shopId = "124456"
+    fun `get progress widget data then returns failed result`() = runBlocking {
         val dateStr = "02-02-2020"
         val dataKeys = listOf("x", "y", "z")
         val throwable = MessageErrorException("error")
 
-        getProgressDataUseCase.params = GetProgressDataUseCase.getRequestParams(shopId, dateStr, dataKeys)
-
-        every {
-            userSession.shopId
-        } returns shopId
+        getProgressDataUseCase.params = GetProgressDataUseCase.getRequestParams(dateStr, dataKeys)
 
         coEvery {
             getProgressDataUseCase.executeOnBackground()
         } throws throwable
 
-        mViewModel.getProgressWidgetData(dataKeys)
+        viewModel.getProgressWidgetData(dataKeys)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
             getProgressDataUseCase.executeOnBackground()
         }
 
-        assert(mViewModel.progressWidgetData.value is Fail)
+        assert(viewModel.progressWidgetData.value is Fail)
     }
 
     @Test
-    fun `get post widget data then returns success result`() {
-        val shopId = 12345
+    fun `get post widget data then returns success result`() = runBlocking {
         val dataKeys = listOf("x", "x")
-        val startDate = "02-02-2020"
-        val endDate = "07-02-2020"
         val postList = listOf(PostListDataUiModel(), PostListDataUiModel())
 
-        getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(shopId, dataKeys, startDate, endDate)
-
-        every {
-            userSession.shopId
-        } returns shopId.toString()
+        getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(dataKeys, dynamicParameter)
 
         coEvery {
             getPostDataUseCase.executeOnBackground()
         } returns postList
 
-        mViewModel.getPostWidgetData(dataKeys)
+        viewModel.getPostWidgetData(dataKeys)
 
-        verify {
-            userSession.shopId
-        }
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
             getPostDataUseCase.executeOnBackground()
@@ -463,42 +469,33 @@ class SellerHomeViewModelTest {
 
         val expectedResult = Success(postList)
         assertTrue(expectedResult.data.size == dataKeys.size)
-        assertEquals(expectedResult, mViewModel.postListWidgetData.value)
+        assertEquals(expectedResult, viewModel.postListWidgetData.value)
     }
 
     @Test
-    fun `get post widget data then returns failed result`() {
-        val shopId = 12345
+    fun `get post widget data then returns failed result`() = runBlocking {
         val dataKeys = listOf("x", "x")
-        val startDate = "02-02-2020"
-        val endDate = "07-02-2020"
         val exception = MessageErrorException("error msg")
 
-        getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(shopId, dataKeys, startDate, endDate)
-
-        every {
-            userSession.shopId
-        } returns shopId.toString()
+        getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(dataKeys, dynamicParameter)
 
         coEvery {
             getPostDataUseCase.executeOnBackground()
         } throws exception
 
-        mViewModel.getPostWidgetData(dataKeys)
+        viewModel.getPostWidgetData(dataKeys)
 
-        verify {
-            userSession.shopId
-        }
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
             getPostDataUseCase.executeOnBackground()
         }
 
-        assert(mViewModel.postListWidgetData.value is Fail)
+        assert(viewModel.postListWidgetData.value is Fail)
     }
 
     @Test
-    fun `get carousel widget data then returns success results`() {
+    fun `get carousel widget data then returns success results`() = runBlocking {
         val dataKeys = listOf(anyString(), anyString(), anyString(), anyString())
         val carouselList = listOf(CarouselDataUiModel(), CarouselDataUiModel(), CarouselDataUiModel(), CarouselDataUiModel())
 
@@ -508,7 +505,9 @@ class SellerHomeViewModelTest {
             getCarouselDataUseCase.executeOnBackground()
         } returns carouselList
 
-        mViewModel.getCarouselWidgetData(dataKeys)
+        viewModel.getCarouselWidgetData(dataKeys)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
             getCarouselDataUseCase.executeOnBackground()
@@ -516,11 +515,11 @@ class SellerHomeViewModelTest {
 
         val expectedResult = Success(carouselList)
         assertTrue(expectedResult.data.size == dataKeys.size)
-        assertEquals(expectedResult, mViewModel.carouselWidgetData.value)
+        assertEquals(expectedResult, viewModel.carouselWidgetData.value)
     }
 
     @Test
-    fun `get carousel widget data then returns failed results`() {
+    fun `get carousel widget data then returns failed results`() = runBlocking {
         val dataKeys = listOf(anyString(), anyString(), anyString(), anyString())
         val throwable = MessageErrorException("error")
 
@@ -530,12 +529,148 @@ class SellerHomeViewModelTest {
             getCarouselDataUseCase.executeOnBackground()
         } throws throwable
 
-        mViewModel.getCarouselWidgetData(dataKeys)
+        viewModel.getCarouselWidgetData(dataKeys)
 
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
         coVerify {
             getCarouselDataUseCase.executeOnBackground()
         }
 
-        assert(mViewModel.carouselWidgetData.value is Fail)
+        assert(viewModel.carouselWidgetData.value is Fail)
+    }
+
+    @Test
+    fun `should success when get table widget data`() = runBlocking {
+        val dataKeys = listOf(anyString(), anyString())
+        val result = listOf(TableDataUiModel(), TableDataUiModel())
+
+        getTableDataUseCase.params = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+
+        coEvery {
+            getTableDataUseCase.executeOnBackground()
+        } returns result
+
+        viewModel.getTableWidgetData(dataKeys)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        coVerify {
+            getTableDataUseCase.executeOnBackground()
+        }
+
+        val expectedResult = Success(result)
+        assertTrue(expectedResult.data.size == dataKeys.size)
+        assertEquals(expectedResult, viewModel.tableWidgetData.value)
+    }
+
+    @Test
+    fun `should failed when get table widget data`() = runBlocking {
+        val dataKeys = listOf(anyString(), anyString())
+
+        getTableDataUseCase.params = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+
+        coEvery {
+            getTableDataUseCase.executeOnBackground()
+        } throws MessageErrorException("error")
+
+        viewModel.getTableWidgetData(dataKeys)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        coVerify {
+            getTableDataUseCase.executeOnBackground()
+        }
+
+        assert(viewModel.tableWidgetData.value is Fail)
+    }
+
+    @Test
+    fun `should success when get pie chart widget data`() = runBlocking {
+        val dataKeys = listOf(anyString(), anyString())
+        val result = listOf(PieChartDataUiModel(), PieChartDataUiModel())
+
+        getPieChartDataUseCase.params = GetPieChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+
+        coEvery {
+            getPieChartDataUseCase.executeOnBackground()
+        } returns result
+
+        viewModel.getPieChartWidgetData(dataKeys)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        coVerify {
+            getPieChartDataUseCase.executeOnBackground()
+        }
+
+        val expectedResult = Success(result)
+        assertTrue(expectedResult.data.size == dataKeys.size)
+        assertEquals(expectedResult, viewModel.pieChartWidgetData.value)
+    }
+
+    @Test
+    fun `should failed when get pie chart widget data`() = runBlocking {
+        val dataKeys = listOf(anyString(), anyString())
+
+        getPieChartDataUseCase.params = GetPieChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+
+        coEvery {
+            getPieChartDataUseCase.executeOnBackground()
+        } throws MessageErrorException("error")
+
+        viewModel.getPieChartWidgetData(dataKeys)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        coVerify {
+            getPieChartDataUseCase.executeOnBackground()
+        }
+
+        assert(viewModel.pieChartWidgetData.value is Fail)
+    }
+
+    @Test
+    fun `should success when get bar chart widget data`() = runBlocking {
+        val dataKeys = listOf(anyString(), anyString())
+        val result = listOf(BarChartDataUiModel(), BarChartDataUiModel())
+
+        getBarChartDataUseCase.params = GetBarChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+
+        coEvery {
+            getBarChartDataUseCase.executeOnBackground()
+        } returns result
+
+        viewModel.getBarChartWidgetData(dataKeys)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        coVerify {
+            getBarChartDataUseCase.executeOnBackground()
+        }
+
+        val expectedResult = Success(result)
+        assertTrue(expectedResult.data.size == dataKeys.size)
+        assertEquals(expectedResult, viewModel.barChartWidgetData.value)
+    }
+
+    @Test
+    fun `should failed when get bar chart widget data`() = runBlocking {
+        val dataKeys = listOf(anyString(), anyString())
+
+        getBarChartDataUseCase.params = GetBarChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+
+        coEvery {
+            getBarChartDataUseCase.executeOnBackground()
+        } throws MessageErrorException("error")
+
+        viewModel.getBarChartWidgetData(dataKeys)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        coVerify {
+            getBarChartDataUseCase.executeOnBackground()
+        }
+
+        assert(viewModel.barChartWidgetData.value is Fail)
     }
 }

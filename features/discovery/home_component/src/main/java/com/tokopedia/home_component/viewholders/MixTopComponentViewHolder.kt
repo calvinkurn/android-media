@@ -42,12 +42,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import java.util.*
 
 class MixTopComponentViewHolder(
         itemView: View,
-        val homeComponentListener: HomeComponentListener,
-        val mixTopComponentListener: MixTopComponentListener
+        val homeComponentListener: HomeComponentListener?,
+        val mixTopComponentListener: MixTopComponentListener?
 ) : AbstractViewHolder<MixTopDataModel>(itemView), CoroutineScope, CommonProductCardCarouselListener {
     private val bannerTitle = itemView.findViewById<Typography>(R.id.banner_title)
     private val bannerDescription = itemView.findViewById<Typography>(R.id.banner_description)
@@ -68,6 +67,7 @@ class MixTopComponentViewHolder(
         private const val CTA_TYPE_FILLED = "filled"
         private const val CTA_TYPE_GHOST = "ghost"
         private const val CTA_TYPE_TEXT = "text_only"
+        private const val HOME_MIX_TOP = "home_mix_top"
     }
 
 
@@ -79,20 +79,24 @@ class MixTopComponentViewHolder(
         mappingView(element.channelModel)
         setHeaderComponent(element = element)
         itemView.addOnImpressionListener(element.channelModel) {
-            mixTopComponentListener.onMixTopImpressed(element.channelModel, adapterPosition)
+            mixTopComponentListener?.onMixTopImpressed(element.channelModel, adapterPosition)
         }
     }
 
+    override fun bind(element: MixTopDataModel, payloads: MutableList<Any>) {
+        bind(element)
+    }
+
     override fun onProductCardImpressed(channel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
-        mixTopComponentListener.onProductCardImpressed(channel, channelGrid, adapterPosition, position)
+        mixTopComponentListener?.onProductCardImpressed(channel, channelGrid, adapterPosition, position)
     }
 
     override fun onProductCardClicked(channel: ChannelModel, channelGrid: ChannelGrid, position: Int, applink: String) {
-        mixTopComponentListener.onProductCardClicked(channel, channelGrid, adapterPosition, position, applink)
+        mixTopComponentListener?.onProductCardClicked(channel, channelGrid, adapterPosition, position, applink)
     }
 
     override fun onSeeMoreCardClicked(channel: ChannelModel, applink: String) {
-        mixTopComponentListener.onSeeMoreCardClicked(channel,applink)
+        mixTopComponentListener?.onSeeMoreCardClicked(channel,applink)
     }
 
     override fun onEmptyCardClicked(channel: ChannelModel, applink: String, parentPos: Int) {
@@ -141,20 +145,20 @@ class MixTopComponentViewHolder(
         bannerDescription.setTextColor(textColor)
 
         bannerUnifyButton.setOnClickListener {
-            mixTopComponentListener.onMixtopButtonClicked(channel)
+            mixTopComponentListener?.onMixtopButtonClicked(channel)
             if (ctaData.couponCode.isEmpty()) {
-                mixTopComponentListener.onSectionItemClicked(bannerItem.applink)
+                mixTopComponentListener?.onSectionItemClicked(bannerItem.applink)
             } else {
                 copyCoupon(itemView, ctaData)
             }
         }
 
         itemView.setOnClickListener {
-            mixTopComponentListener.onSectionItemClicked(bannerItem.applink)
+            mixTopComponentListener?.onSectionItemClicked(bannerItem.applink)
         }
 
         background.setOnClickListener {
-            mixTopComponentListener.onBackgroundClicked(channel)
+            mixTopComponentListener?.onBackgroundClicked(channel)
         }
     }
 
@@ -202,7 +206,7 @@ class MixTopComponentViewHolder(
     private fun copyCoupon(view: View, cta: ChannelCtaData) {
         val clipboard = view.context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clipData = ClipData.newPlainText("Coupon Code", cta.couponCode)
-        clipboard.primaryClip = clipData
+        clipboard.setPrimaryClip(clipData)
 
         Toaster.make(view.parent as ViewGroup,
                 getString(R.string.discovery_home_toaster_coupon_copied),
@@ -264,7 +268,8 @@ class MixTopComponentViewHolder(
                     blankSpaceConfig = BlankSpaceConfig(),
                     grid = element,
                     applink = element.applink,
-                    listener = this
+                    listener = this,
+                    componentName = HOME_MIX_TOP
             ))
         }
         return list
@@ -287,11 +292,11 @@ class MixTopComponentViewHolder(
     private fun setHeaderComponent(element: MixTopDataModel) {
         itemView.home_component_header_view.setChannel(element.channelModel, object : HeaderListener {
             override fun onSeeAllClick(link: String) {
-                mixTopComponentListener.onSeeAllBannerClicked(element.channelModel, element.channelModel.channelHeader.applink)
+                mixTopComponentListener?.onSeeAllBannerClicked(element.channelModel, element.channelModel.channelHeader.applink)
             }
 
             override fun onChannelExpired(channelModel: ChannelModel) {
-                homeComponentListener.onChannelExpired(channelModel, adapterPosition, element)
+                homeComponentListener?.onChannelExpired(channelModel, adapterPosition, element)
             }
         })
     }

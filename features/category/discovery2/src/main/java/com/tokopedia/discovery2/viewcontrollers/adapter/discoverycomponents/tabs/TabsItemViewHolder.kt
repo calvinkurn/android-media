@@ -41,8 +41,10 @@ class TabsItemViewHolder(itemView: View, fragment: Fragment) : AbstractViewHolde
                         setFontColor(fontColor)
                     }
                     showSelectedView(item.isSelected)
-                    setClick(it.id, adapterPosition)
                 }
+            })
+            tabsItemViewModel.getSelectionChangeLiveData().observe(lifecycleOwner, Observer {
+                showSelectedView(it)
             })
         }
     }
@@ -62,12 +64,6 @@ class TabsItemViewHolder(itemView: View, fragment: Fragment) : AbstractViewHolde
         if (fontColor.length > 1) {
             tabTextView.setTextColor(Color.parseColor(fontColor))
             selectedView.setBackgroundColor(Color.parseColor(fontColor))
-        }
-    }
-
-    private fun setClick(id: String, position: Int) {
-        itemView.setOnClickListener {
-            (parentAbstractViewHolder as TabsViewHolder).onTabClick(id, position)
         }
     }
 

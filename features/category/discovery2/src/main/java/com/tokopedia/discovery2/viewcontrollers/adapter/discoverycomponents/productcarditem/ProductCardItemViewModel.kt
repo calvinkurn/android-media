@@ -2,6 +2,7 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.pro
 
 import android.app.Application
 import android.content.Context
+import android.content.res.Resources
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -13,6 +14,7 @@ import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.campaignnotifymeresponse.CampaignNotifyMeRequest
 import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.usecase.campaignusecase.CampaignNotifyUserCase
+import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardItemUseCase
 import com.tokopedia.discovery2.usecase.topAdsUseCase.DiscoveryTopAdsTrackingUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -32,19 +34,23 @@ private const val SOURCE = "discovery"
 private const val REGISTER = "REGISTER"
 private const val UNREGISTER = "UNREGISTER"
 private const val NOTIFY_ME_TEXT = "tertarik"
+private const val DEFAULT_COLOR = "#1e31353b"
 
-class ProductCardItemViewModel(val application: Application, private val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
+class ProductCardItemViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
 
     private val dataItem: MutableLiveData<DataItem> = MutableLiveData()
     private val stockWordData: StockWording = StockWording()
     private lateinit var context: Context
-    private var productData: DataItem? = null
     private val showLoginLiveData: MutableLiveData<Boolean> = MutableLiveData()
     private val notifyMeCurrentStatus: MutableLiveData<Boolean> = MutableLiveData()
     private val showNotifyToast: MutableLiveData<Triple<Boolean, String?, Int?>> = MutableLiveData()
+    private val componentPosition: MutableLiveData<Int?> = MutableLiveData()
 
     @Inject
     lateinit var campaignNotifyUserCase: CampaignNotifyUserCase
+
+    @Inject
+    lateinit var productCardItemUseCase: ProductCardItemUseCase
 
     @Inject
     lateinit var discoveryTopAdsTrackingUseCase: DiscoveryTopAdsTrackingUseCase
@@ -59,9 +65,10 @@ class ProductCardItemViewModel(val application: Application, private val compone
 
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
+        componentPosition.value = position
         components.data?.let {
             if (!it.isNullOrEmpty()) {
-                productData = it[0]
+                dataItem.value = it[0]
             }
         }
     }
@@ -69,6 +76,7 @@ class ProductCardItemViewModel(val application: Application, private val compone
     fun getShowLoginData(): LiveData<Boolean> = showLoginLiveData
     fun notifyMeCurrentStatus(): LiveData<Boolean> = notifyMeCurrentStatus
     fun showNotifyToastMessage(): LiveData<Triple<Boolean, String?, Int?>> = showNotifyToast
+    fun getComponentPosition() = componentPosition
 
     fun setContext(context: Context) {
         this.context = context
@@ -86,14 +94,11 @@ class ProductCardItemViewModel(val application: Application, private val compone
         return UserSession(application).isLoggedIn
     }
 
-    fun getDataItemValue(): LiveData<DataItem> {
-        dataItem.value = components.data?.get(0)
-        return dataItem
-    }
-
+    fun getDataItemValue() = dataItem
 
     fun chooseShopBadge(): Int {
-        return if (productData?.goldMerchant == true && productData?.officialStore == true) {
+        val productData = dataItem.value
+        return if (productData?.goldMerchant == true && productData.officialStore == true) {
             OFFICIAL_STORE
         } else if (productData?.goldMerchant == true) {
             GOLD_MERCHANT
@@ -135,48 +140,67 @@ class ProductCardItemViewModel(val application: Application, private val compone
         }
     }
 
-    fun getStockWord(dataItem: DataItem): StockWording {
-        var stockWordTitleColour = "#1e31353b"
-        var stockWordTitle = dataItem.stockWording?.title
+    fun getStockWord(): StockWording {
+        var stockWordTitleColour = getStockColor(R.color.clr_1e31353b)
+        var stockWordTitle = dataItem.value?.stockWording?.title
         var stockAvailableCount: String? = ""
 
-        if (!stockWordTitle.isNullOrEmpty()) {
-            stockWordData.title = stockWordTitle
-            stockWordData.color = dataItem.stockWording?.color
-                    ?: stockWordTitleColour
-        } else {
-            val campaignSoldCount = dataItem.campaignSoldCount
-            val threshold: Int? = dataItem.threshold.toIntOrZero()
-            val customStock: Int? = dataItem.customStock.toIntOrZero()
+        dataItem.value?.let { it ->
+            if (!stockWordTitle.isNullOrEmpty()) {
+                stockWordData.title = stockWordTitle
+                stockWordData.color = it.stockWording?.color
+                        ?: stockWordTitleColour
+            } else {
+                val campaignSoldCount = it.campaignSoldCount
+                val threshold: Int? = it.threshold.toIntOrZero()
+                val customStock: Int? = it.customStock.toIntOrZero()
 
-            if (campaignSoldCount != null && threshold != null && customStock != null) {
-                if (campaignSoldCount.toIntOrZero() > 0) {
-                    when {
-                        customStock == 0 -> {
-                            stockWordTitle = "Terjual habis"
+                if (campaignSoldCount != null && threshold != null && customStock != null) {
+                    if (campaignSoldCount.toIntOrZero() > 0) {
+                        when {
+                            customStock == 0 -> {
+                                stockWordTitle = getStockText(R.string.terjual_habis)
+                            }
+                            customStock == 1 -> {
+                                stockWordTitle = getStockText(R.string.stok_terakhir_beli_sekarang)
+                            }
+                            customStock <= threshold -> {
+                                stockWordTitle = getStockText(R.string.tersisa)
+                                stockAvailableCount = customStock.toString()
+                                stockWordTitleColour = getStockColor(R.color.clr_ef144a)
+                            }
+                            else -> {
+                                stockWordTitle = getStockText(R.string.terjual)
+                                stockAvailableCount = campaignSoldCount.toString()
+                            }
                         }
-                        customStock == 1 -> {
-                            stockWordTitle = "Stok terakhir, beli sekarang!"
-                        }
-                        customStock <= threshold -> {
-                            stockWordTitle = "Tersisa"
-                            stockAvailableCount = customStock.toString()
-                            stockWordTitleColour = "#ef144a"
-                        }
-                        else -> {
-                            stockWordTitle = "Terjual"
-                            stockAvailableCount = campaignSoldCount.toString()
-                        }
+                        stockWordTitle += stockAvailableCount
+                    } else {
+                        stockWordTitle = getStockText(R.string.masih_tersedia)
                     }
-                    stockWordTitle += stockAvailableCount
-                } else {
-                    stockWordTitle = "Masih Tersedia"
                 }
+                stockWordData.title = stockWordTitle
+                stockWordData.color = stockWordTitleColour
             }
-            stockWordData.title = stockWordTitle
-            stockWordData.color = stockWordTitleColour
         }
         return stockWordData
+    }
+
+    private fun getStockText(textID: Int): String {
+        var stockText = ""
+        try {
+            stockText = application.resources.getString(textID)
+        } catch (exception: Resources.NotFoundException) {
+        }
+        return stockText
+    }
+
+    private fun getStockColor(colorID: Int): String {
+        try {
+            application.resources.getString(colorID)
+        } catch (exception: Resources.NotFoundException) {
+        }
+        return DEFAULT_COLOR
     }
 
     fun handleNavigation() {
@@ -189,9 +213,9 @@ class ProductCardItemViewModel(val application: Application, private val compone
         return components.properties?.buttonNotification
     }
 
-    fun subscribeUser() {
+    fun subscribeUser(syncSelectedTab: Boolean = false) {
         if (isUserLoggedIn()) {
-            productData?.let { productItemData ->
+            dataItem.value?.let { productItemData ->
 
                 launchCatchError(block = {
                     val campaignNotifyResponse = campaignNotifyUserCase.subscribeToCampaignNotifyMe(getNotifyRequestBundle(productItemData))
@@ -200,7 +224,7 @@ class ProductCardItemViewModel(val application: Application, private val compone
                             productItemData.notifyMe = !productItemData.notifyMe
                             notifyMeCurrentStatus.value = productItemData.notifyMe
                             showNotifyToast.value = Triple(false, campaignResponse.message, productItemData.campaignId.toIntOrZero())
-
+                            this@ProductCardItemViewModel.syncData.value = productCardItemUseCase.notifyProductComponentUpdate(components.id, components.pageEndPoint, syncSelectedTab)
                         } else {
                             showNotifyToast.value = Triple(true, campaignResponse.errorMessage, 0)
                         }
@@ -215,20 +239,24 @@ class ProductCardItemViewModel(val application: Application, private val compone
         }
     }
 
+    override fun loggedInCallback() {
+        subscribeUser(true)
+    }
+
     fun sendTopAdsClick() {
-        productData?.let {
+        dataItem.value?.let {
             val topAdsClickUrl = it.topadsClickUrl
             if (it.isTopads == true && topAdsClickUrl != null) {
-                discoveryTopAdsTrackingUseCase.sendTopAdsTracking(this::class.qualifiedName, topAdsClickUrl)
+                discoveryTopAdsTrackingUseCase.hitClick(this::class.qualifiedName, topAdsClickUrl, it.productId ?: "", it.name ?: "", it.imageUrl ?: "")
             }
         }
     }
 
     fun sendTopAdsView() {
-        productData?.let {
+        dataItem.value?.let {
             val topAdsViewUrl = it.topadsViewUrl
             if (it.isTopads == true && topAdsViewUrl != null && !components.topAdsTrackingStatus) {
-                discoveryTopAdsTrackingUseCase.sendTopAdsTracking(this::class.qualifiedName, topAdsViewUrl)
+                discoveryTopAdsTrackingUseCase.hitImpressions(this::class.qualifiedName, topAdsViewUrl, it.productId ?: "", it.name ?: "", it.imageUrl ?: "")
                 components.topAdsTrackingStatus = true
             }
         }

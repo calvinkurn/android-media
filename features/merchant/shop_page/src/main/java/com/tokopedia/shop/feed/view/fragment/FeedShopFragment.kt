@@ -39,10 +39,12 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsBannerViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
@@ -82,7 +84,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         VideoViewHolder.VideoViewListener,
         FeedMultipleImageView.FeedMultipleImageViewListener,
         HighlightAdapter.HighlightListener,
-        FeedShopContract.View {
+        FeedShopContract.View, TopAdsBannerViewHolder.TopAdsBannerListener {
 
     override val androidContext: Context
         get() = requireContext()
@@ -209,6 +211,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
         return FeedShopFactoryImpl(this,
+                this,
                 this,
                 this,
                 this,
@@ -378,7 +381,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     override fun onErrorDeletePost(errorMessage: String, id: Int, rowNumber: Int) {
         view?.let {
-            Toaster.make(it, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.title_try_again), View.OnClickListener {
+            Toaster.make(it, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
                 presenter.deletePost(id, rowNumber)
             })
         }
@@ -567,6 +570,10 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
+    override fun onTopAdsImpression(url: String, shopId: String, shopName: String, imageUrl: String) {
+        presenter.doTopAdsTracker(url, shopId, shopName, imageUrl, false)
+    }
+
     override fun onHighlightItemClicked(positionInFeed: Int, item: HighlightCardViewModel) {
 
     }
@@ -640,6 +647,12 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     override fun onShopItemClicked(positionInFeed: Int, adapterPosition: Int, shop: com.tokopedia.topads.sdk.domain.model.Shop) {
+        if (adapter.list[positionInFeed] is TopadsShopViewModel) {
+            val (_, dataList, _, _) = adapter.list[positionInFeed] as TopadsShopViewModel
+            if (adapterPosition != RecyclerView.NO_POSITION) {
+                presenter.doTopAdsTracker(dataList[adapterPosition].shopClickUrl, shop.id, shop.name, dataList[adapterPosition].shop.imageShop.xsEcs, true)
+            }
+        }
     }
 
     override fun onAddFavorite(positionInFeed: Int, adapterPosition: Int, data: com.tokopedia.topads.sdk.domain.model.Data) {
@@ -677,12 +690,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         onGoToLink(redirectLink)
     }
 
-    override fun onVideoPlayerClicked(positionInFeed: Int, contentPosition: Int, postId: String) {
-        RouteManager.route(
-                requireContext(),
-                ApplinkConstInternalContent.VIDEO_DETAIL,
-                postId
-        )
+    override fun onVideoPlayerClicked(positionInFeed: Int, contentPosition: Int, postId: String, redirectUrl: String) {
+        onGoToLink(redirectUrl)
         if (adapter.data[positionInFeed] is DynamicPostViewModel) {
             val (_, _, _, _, _, _, _, _, trackingPostModel) = adapter.data[positionInFeed] as DynamicPostViewModel
             feedAnalytics.eventShopPageClickPost(
@@ -770,10 +779,10 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     private fun createDeleteDialog(rowNumber: Int, id: Int): Dialog {
         val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
-        dialog.setTitle(getString(R.string.kol_delete_post))
-        dialog.setDesc(getString(R.string.kol_delete_post_desc))
-        dialog.setBtnOk(getString(R.string.kol_title_delete))
-        dialog.setBtnCancel(getString(R.string.kol_title_cancel))
+        dialog.setTitle(getString(com.tokopedia.kolcommon.R.string.kol_delete_post))
+        dialog.setDesc(getString(com.tokopedia.kolcommon.R.string.kol_delete_post_desc))
+        dialog.setBtnOk(getString(com.tokopedia.kolcommon.R.string.kol_title_delete))
+        dialog.setBtnCancel(getString(com.tokopedia.kolcommon.R.string.kol_title_cancel))
         dialog.setOnOkClickListener {
             presenter.deletePost(id, rowNumber)
             dialog.dismiss()
@@ -809,9 +818,9 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     private fun onSuccessReportContent() {
         view?.let {
-            Toaster.make(it,getString(R.string.feed_content_reported),
+            Toaster.make(it,getString(com.tokopedia.feedcomponent.R.string.feed_content_reported),
                             Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL,
-                    getString(R.string.label_close), View.OnClickListener {  } )
+                    getString(com.tokopedia.design.R.string.label_close), View.OnClickListener {  } )
         }
     }
 
@@ -819,7 +828,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         view?.let {
             Toaster.make(it,errorMsg,
                     Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
-                    getString(R.string.label_close), View.OnClickListener {  } )
+                    getString(com.tokopedia.design.R.string.label_close), View.OnClickListener {  } )
         }
     }
 
@@ -844,7 +853,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     private fun showError(message: String, listener: View.OnClickListener?) {
         listener?.let {
             Toaster.make(view!!, message,Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
-                    getString(R.string.title_try_again), it )
+                    getString(com.tokopedia.abstraction.R.string.title_try_again), it )
         }
     }
 
@@ -854,6 +863,10 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     fun clearCache() {
         presenter.clearCache()
+    }
+
+    override fun onTopAdsViewImpression(bannerId: String, imageUrl: String) {
+
     }
 
 }

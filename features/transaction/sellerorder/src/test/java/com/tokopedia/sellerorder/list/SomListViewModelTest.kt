@@ -2,6 +2,8 @@ package com.tokopedia.sellerorder.list
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.sellerorder.SomTestDispatcherProvider
+import com.tokopedia.sellerorder.common.domain.usecase.SomGetUserRoleUseCase
+import com.tokopedia.sellerorder.common.presenter.model.SomGetUserRoleUiModel
 import com.tokopedia.sellerorder.list.data.model.*
 import com.tokopedia.sellerorder.list.domain.list.SomGetFilterListUseCase
 import com.tokopedia.sellerorder.list.domain.list.SomGetOrderListUseCase
@@ -48,11 +50,14 @@ class SomListViewModelTest {
     @RelaxedMockK
     lateinit var somGetOrderListUseCase: SomGetOrderListUseCase
 
+    @RelaxedMockK
+    lateinit var somGetUserRoleUseCase: SomGetUserRoleUseCase
+
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
         somListViewModel = SomListViewModel(dispatcher, somGetTickerListUseCase,
-                somGetOrderStatusListUseCase, somGetFilterListUseCase, somGetOrderListUseCase)
+                somGetOrderStatusListUseCase, somGetFilterListUseCase, somGetOrderListUseCase, somGetUserRoleUseCase)
 
         val ticker1 = SomListTicker.Data.OrderTickers.Tickers(123)
         val ticker2 = SomListTicker.Data.OrderTickers.Tickers(456)
@@ -215,11 +220,11 @@ class SomListViewModelTest {
     fun getOrderListData_shouldReturnSuccess() {
         //given
         coEvery {
-            somGetOrderListUseCase.execute(any(), any())
+            somGetOrderListUseCase.execute(any())
         } returns Success(SomListOrder.Data.OrderList(-1, listOrder))
 
         //when
-        somListViewModel.loadOrderList("", SomListOrderParam())
+        somListViewModel.loadOrderList(SomListOrderParam())
 
         //then
         assert(somListViewModel.orderListResult.value is Success)
@@ -230,11 +235,11 @@ class SomListViewModelTest {
     fun getOrderListData_shouldReturnFail() {
         //given
         coEvery {
-            somGetOrderListUseCase.execute(any(), any())
+            somGetOrderListUseCase.execute(any())
         } returns Fail(Throwable())
 
         //when
-        somListViewModel.loadOrderList("", SomListOrderParam())
+        somListViewModel.loadOrderList(SomListOrderParam())
 
         //then
         assert(somListViewModel.orderListResult.value is Fail)
@@ -244,14 +249,42 @@ class SomListViewModelTest {
     fun getOrderListData_shouldNotReturnEmpty() {
         //given
         coEvery {
-            somGetOrderListUseCase.execute(any(), any())
+            somGetOrderListUseCase.execute(any())
         } returns Success(SomListOrder.Data.OrderList(-1, listOrder))
 
         //when
-        somListViewModel.loadOrderList("", SomListOrderParam())
+        somListViewModel.loadOrderList(SomListOrderParam())
 
         //then
         assert(somListViewModel.orderListResult.value is Success)
         assert((somListViewModel.orderListResult.value as Success<SomListOrder.Data.OrderList>).data.orders.isNotEmpty())
+    }
+
+    @Test
+    fun loadUserRoles_shouldReturnSuccess() {
+        //given
+        coEvery {
+            somGetUserRoleUseCase.execute()
+        } returns Success(SomGetUserRoleUiModel())
+
+        //when
+        somListViewModel.loadUserRoles(123456)
+
+        //then
+        assert(somListViewModel.userRoleResult.value is Success)
+    }
+
+    @Test
+    fun loadUserRoles_shouldReturnFail() {
+        //given
+        coEvery {
+            somGetUserRoleUseCase.execute()
+        } returns Fail(Throwable())
+
+        //when
+        somListViewModel.loadUserRoles(123456)
+
+        //then
+        assert(somListViewModel.userRoleResult.value is Fail)
     }
 }

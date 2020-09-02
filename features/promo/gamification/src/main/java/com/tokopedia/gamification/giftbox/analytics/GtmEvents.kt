@@ -5,7 +5,7 @@ import com.tokopedia.track.interfaces.Analytics
 
 object GtmEvents {
 
-    private fun getTracker(): Analytics {
+    fun getTracker(): Analytics {
         return TrackApp.getInstance().gtm
     }
 

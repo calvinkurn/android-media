@@ -26,10 +26,18 @@
     <string name="active_reminder_text">Pengingat Aktif</string>
     <string name="remind_me_text">Ingatkan Saya</string>
     <string name="product_card_error_msg">Terjadi kesalahan, coba lagi nanti.</string>
+    <string name="terjual_habis">Terjual habis</string>
+    <string name="stok_terakhir_beli_sekarang">Stok terakhir, beli sekarang!</string>
+    <string name="tersisa">Tersisa</string>
+    <string name="terjual">Terjual</string>
+    <string name="masih_tersedia">Masih Tersedia</string>
     <string name="pakai">Pakai</string>
     <string name="verify_text">Verifikasi Nomor HP</string>
     <string name="verify_title">Sebelum menggunakan promo ini, verifikasi dulu nomor HP kamu, ya.</string>
     <string name="verify_header">Verifikasi Nomor HP</string>
     <string name="quick_coupon_title">Kupon Cashback 80%</string>
+    <string name="empty_state_title">Awas keduluan pembeli lain!</string>
+    <string name="empty_state_description">Aktifkan pengingat supaya kamu nggak ketinggalan penawaran seru dari seller-seller Tokopedia!</string>
+    <string name="discovery_bottom_sheet_filter_finish_button_text">Tampilkan produk</string>
 
 </resources>

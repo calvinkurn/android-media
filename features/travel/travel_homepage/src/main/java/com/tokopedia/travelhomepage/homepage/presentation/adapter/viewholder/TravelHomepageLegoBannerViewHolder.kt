@@ -51,7 +51,7 @@ class TravelHomepageLegoBannerViewHolder(itemView: View, private val onItemBindL
             itemView.legoBannerWidget.setShimmeringVisibility(true)
             itemView.legoBannerWidget.setLayoutVisibility(false)
             currentPosition = -1
-            onItemBindListener.onLegoBannerItemBind(element.layoutData, adapterPosition, element.isLoadFromCloud)
+            onItemBindListener.onLegoBannerItemBind(element.layoutData, element.isLoadFromCloud)
         }
 
     }

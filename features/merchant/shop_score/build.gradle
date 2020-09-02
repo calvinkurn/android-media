@@ -1,0 +1,57 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+
+repositories {
+    mavenCentral()
+    maven { url 'https://hansel.io/maven' }
+    jcenter()
+    google()
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+
+dependencies {
+    implementation project(rootProject.ext.libraries.tkpddesign)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.core_legacy)
+    implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.dynamicFeatures)
+    implementation project(rootProject.ext.libraries.coreNetwork)
+
+    implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.features.goldMerchantCommon)
+
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.global_error
+
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation rootProject.ext.miscDependencies.dagger
+    implementation rootProject.ext.miscDependencies.multiDex
+    kapt rootProject.ext.miscDependencies.daggerCompiler
+    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
+    implementation rootProject.ext.debugToolsDependencies.chuck
+
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
+}
+
+project.ext {
+    artifactId = 'shop-score'
+    groupId = 'com.tokopedia.merchant'
+    versionName = "0.0.1"
+    artifactName ="shop_score-release"
+}
+
+apply from: '../../../publish_local.gradle'

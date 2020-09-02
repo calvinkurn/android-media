@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/spacing_lvl1"
+    android:layout_marginBottom="@dimen/spacing_lvl1"
+    android:descendantFocusability="blocksDescendants"
+    app:cardCornerRadius="@dimen/layout_lvl1">
+
+    <include layout="@layout/shc_partial_post_list_widget" />
+
+    <include layout="@layout/shc_partial_shimmering_post_list_widget" />
+
+    <include layout="@layout/shc_partial_post_list_widget_error" />
+
+</com.tokopedia.unifycomponents.CardUnify>

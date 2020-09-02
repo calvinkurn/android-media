@@ -1,23 +1,48 @@
 package com.tokopedia.sellerhome.settings.view.uimodel.shopinfo
 
+import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.sellerhome.settings.view.uimodel.base.BalanceType
-import com.tokopedia.sellerhome.settings.view.uimodel.base.RegularMerchant
 import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingSuccess
-import com.tokopedia.sellerhome.settings.view.uimodel.base.ShopType
+import com.tokopedia.sellerhome.settings.view.uimodel.base.partialresponse.PartialSettingResponse
+import com.tokopedia.sellerhome.settings.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType
+import com.tokopedia.user.session.UserSessionInterface
 
-class SettingShopInfoUiModel(val shopName: String = "",
-                             private val shopAvatar: String = "",
-                             private val shopType: ShopType = RegularMerchant.NeedUpgrade,
-                             private val saldoBalance: String = "",
-                             private val kreditTopAdsBalance: String = "",
-                             private val isTopadsUser: Boolean = false,
-                             private val shopBadges: String = "",
-                             private val shopFollowers: Int = 0): SettingSuccess() {
+class SettingShopInfoUiModel(private val partialShopInfo: PartialSettingResponse,
+                             private val partialTopAdsInfo: PartialSettingResponse,
+                             private val userSession: UserSessionInterface): SettingSuccess() {
 
-    val shopAvatarUiModel by lazy { ShopAvatarUiModel(shopAvatar) }
-    val shopBadgeUiModel by lazy { ShopBadgeUiModel(shopBadges) }
-    val shopFollowersUiModel by lazy { ShopFollowersUiModel(shopFollowers) }
-    val shopStatusUiModel by lazy { ShopStatusUiModel(shopType) }
-    val saldoBalanceUiModel by lazy { BalanceUiModel(BalanceType.SALDO, saldoBalance) }
-    val topadsBalanceUiModel by lazy { TopadsBalanceUiModel(isTopadsUser, kreditTopAdsBalance) }
+    val partialResponseStatus by lazy {
+        Pair(
+                partialShopInfo is PartialSettingSuccessInfoType,
+                partialTopAdsInfo is PartialSettingSuccessInfoType
+        )
+    }
+
+    val shopBadgeUiModel by lazy {
+        (partialShopInfo as? PartialSettingSuccessInfoType.PartialShopSettingSuccessInfo)?.let {
+            ShopBadgeUiModel(it.shopBadgeUrl)
+        }
+    }
+    val shopFollowersUiModel by lazy {
+        (partialShopInfo as? PartialSettingSuccessInfoType.PartialShopSettingSuccessInfo)?.let {
+            ShopFollowersUiModel(it.totalFollowers)
+        }
+    }
+    val shopStatusUiModel by lazy {
+        (partialShopInfo as? PartialSettingSuccessInfoType.PartialShopSettingSuccessInfo)?.let {
+            ShopStatusUiModel(it.shopStatusType, userSession)
+        }
+    }
+
+    val saldoBalanceUiModel by lazy {
+        (partialTopAdsInfo as? PartialSettingSuccessInfoType.PartialTopAdsSettingSuccessInfo)?.let {
+            BalanceUiModel(BalanceType.SALDO, it.othersBalance.totalBalance.orEmpty())
+        }
+    }
+
+    val topadsBalanceUiModel by lazy {
+        (partialTopAdsInfo as? PartialSettingSuccessInfoType.PartialTopAdsSettingSuccessInfo)?.let {
+            TopadsBalanceUiModel(it.isTopAdsAutoTopup, it.topAdsBalance.getCurrencyFormatted())
+        }
+    }
 }

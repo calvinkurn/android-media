@@ -1,4 +1,4 @@
-package com.tokopedia.product.addedit.description.presentation.model.youtube
+package com.tokopedia.youtube_common.data.model
 
 
 import com.google.gson.annotations.Expose

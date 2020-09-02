@@ -258,7 +258,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             json = new JSONObject(response);
             JSONArray errorMessage = json.optJSONArray(RESPONSE_PARAM_MESSAGE_ERROR);
             return errorMessage.length() > 0;
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }

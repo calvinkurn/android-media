@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/spacing_lvl3"
+    android:paddingStart="@dimen/spacing_lvl4"
+    android:paddingLeft="@dimen/spacing_lvl4"
+    android:paddingRight="@dimen/spacing_lvl4"
+    android:paddingEnd="@dimen/spacing_lvl4"
+    android:paddingBottom="@dimen/spacing_lvl3"
+    android:background="?selectableItemBackground"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivHistoryTime"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/ic_time_history"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvTitleHistory"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:typographyType="body_1"
+        android:layout_marginLeft="@dimen/spacing_lvl3"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/ivHistoryTime"
+        app:layout_constraintEnd_toStartOf="@id/ivCloseHistory"
+        tools:text="Sop jamur"/>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivCloseHistory"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?selectableItemBackground"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:paddingLeft="@dimen/spacing_lvl2"
+        android:paddingStart="@dimen/spacing_lvl2"
+        android:paddingEnd="@dimen/spacing_lvl3"
+        android:paddingRight="@dimen/spacing_lvl3"
+        app:srcCompat="@drawable/ic_close_history" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

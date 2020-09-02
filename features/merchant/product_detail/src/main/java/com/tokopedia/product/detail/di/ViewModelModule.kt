@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.product.detail.view.viewmodel.AddToCartDoneViewModel
 import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
+import com.tokopedia.product.detail.view.viewmodel.ProductFullDescriptionViewModel
 import com.tokopedia.product.detail.view.viewmodel.ProductInstallmentViewModel
 import com.tokopedia.product.report.view.viewmodel.ProductReportViewModel
 import dagger.Binds
@@ -39,5 +40,10 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(AddToCartDoneViewModel::class)
     internal abstract fun addToCartDoneViewModel(viewModel: AddToCartDoneViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ProductFullDescriptionViewModel::class)
+    internal abstract fun productFullDescViewModel(viewModel: ProductFullDescriptionViewModel): ViewModel
 
 }

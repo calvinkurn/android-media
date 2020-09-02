@@ -17,11 +17,8 @@ public final class AppScreen {
     public static final String STATISTIC_PAGE = "Statistic Page";
     public static final String SCREEN_NATIVE_RECHARGE = "Native Recharge";
     public static final String SCREEN_LOGIN = "Login page";
-    public static final String SCREEN_FORGOT_PASSWORD = "Forgot password page";
     public static final String SCREEN_BROWSE_PRODUCT = "Browse Product";
     public static final String SCREEN_CATALOG = "Browse Catalog";
-    public static final String SCREEN_CONFIG_S_SHIPPING = "Shop Edit Shipping";
-    public static final String SCREEN_CONFIG_S_PAYMENT = "Shop Edit Payment";
     public static final String SCREEN_BROWSE_HOT_LIST = "Browse Hot List";
     public static final String SCREEN_PRODUCT_INFO = "Product Info";
     public static final String SCREEN_HOME_HOTLIST = "Home - hot list";
@@ -35,7 +32,6 @@ public final class AppScreen {
     public static final String DEALS_PAGE = "Deals page";
     public static final String SCREEN_SIMILAR_PRODUCT = "Similar Product";
     public static final String SCREEN_DOWNLOAD_INVOICE = "Download invoice page";
-    public static final String SCREEN_TERM_PRIVACY = "Term privacy page";
     public static final String SCREEN_DEEP_LINK = "Deeplink page";
     public static final String SCREEN_SELLER_REP_HISTORY = "Reputation History";
     public static final String SCREEN_SELLER_SHOP_SCORE = "Shop Score";

@@ -37,7 +37,7 @@ import com.tokopedia.logisticorder.view.shipping_confirmation.di.OrderCourierCom
 import com.tokopedia.logisticorder.view.shipping_confirmation.view.barcodescanner.ReceiptShipmentBarcodeScannerActivity;
 import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.CourierSelectionModel;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
-import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.ListCourierViewModel;
+import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.ListCourierUiModel;
 import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.OrderDetailData;
 import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.OrderDetailShipmentModel;
 import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.OrderShipmentTypeDef;
@@ -128,8 +128,8 @@ public class ConfirmShippingActivity extends BaseSimpleActivity
     }
 
     @Override
-    public void receiveShipmentData(ListCourierViewModel model) {
-        if (model.getCourierViewModelList().size() == 0) {
+    public void receiveShipmentData(ListCourierUiModel model) {
+        if (model.getCourierUiModelList().size() == 0) {
             NetworkErrorHelper.showSnackbar(
                     ConfirmShippingActivity.this,
                     getString(R.string.error_no_courier_available_logistic_module)

@@ -34,7 +34,7 @@ import com.tokopedia.kotlin.extensions.view.show
  */
 
 class DynamicIconSectionViewHolder(val view: View,
-                                   val listener: HomeCategoryListener) : AbstractViewHolder<DynamicIconSectionDataModel>(view) {
+                                   val listener: HomeCategoryListener?) : AbstractViewHolder<DynamicIconSectionDataModel>(view) {
 
     private var adapter: DynamicIconAdapter? = null
     private val startSnapHelper: GravitySnapHelper by lazy { GravitySnapHelper(Gravity.START, true) }
@@ -85,7 +85,7 @@ class DynamicIconSectionViewHolder(val view: View,
 
     private class DynamicIconAdapter(
             private val context: Context,
-            private val listener: HomeCategoryListener) : RecyclerView.Adapter<DynamicIconViewHolder>() {
+            private val listener: HomeCategoryListener?) : RecyclerView.Adapter<DynamicIconViewHolder>() {
 
         var sectionViewModel = DynamicIconSectionDataModel()
 
@@ -113,7 +113,10 @@ class DynamicIconSectionViewHolder(val view: View,
             })
             holder.container.setOnClickListener { view ->
                 eventClickDynamicIcon(view.context, sectionViewModel.itemList[position], position)
-                listener.onSectionItemClicked(DynamicLinkHelper.getActionLink(sectionViewModel.itemList[position]))
+                val link = DynamicLinkHelper.getActionLink(sectionViewModel.itemList[position])
+                link?.let {
+                    listener?.onSectionItemClicked(it)
+                }
             }
 
             if(!sectionViewModel.isCache) {
@@ -151,7 +154,7 @@ class DynamicIconSectionViewHolder(val view: View,
     }
 
     class OnIconImpressedListener(private val homeIcon: DynamicHomeIcon.DynamicIcon,
-                                  private val listener: HomeCategoryListener,
+                                  private val listener: HomeCategoryListener?,
                                   private val position: Int) : ViewHintListener {
 
         override fun onViewHint() {

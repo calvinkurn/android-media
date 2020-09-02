@@ -4,6 +4,7 @@ import com.akamai.botman.CYFMonitor
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.tokopedia.akamai_bot_lib.isAkamai
+import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.graphql.FingerprintManager
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.graphql.GraphqlConstant
@@ -20,6 +21,7 @@ import com.tokopedia.graphql.util.LoggingUtils
 import kotlinx.coroutines.*
 import okhttp3.internal.http2.ConnectionShutdownException
 import retrofit2.Response
+import timber.log.Timber
 import java.io.InterruptedIOException
 import java.net.SocketException
 import java.net.UnknownHostException
@@ -73,7 +75,7 @@ class GraphqlCloudDataStore @Inject constructor(
 
             yield()
 
-            val gJsonArray = if (result?.body() == null) JsonArray() else result.body()
+            val gJsonArray = CommonUtils.getOriginalResponse(result)
 
             //Checking response CLC headers.
             val cacheHeaders = if (result?.headers()?.get(GraphqlConstant.GqlApiKeys.CACHE) == null) ""
@@ -103,6 +105,7 @@ class GraphqlCloudDataStore @Inject constructor(
                                     val objectData = gResponse.originalResponse[index].asJsonObject[GraphqlConstant.GqlApiKeys.DATA]
                                     if (objectData != null && cache != null) {
                                         cacheManager.save(request.cacheKey(), objectData.toString(), cache.maxAge * 1000.toLong())
+                                        Timber.d("Android CLC - Request saved to cache " + CacheHelper.getQueryName(request.query) + " KEY: " + request.cacheKey())
                                     }
                                 }
                             }

@@ -13,16 +13,16 @@ import androidx.fragment.app.FragmentManager;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
+import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp;
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds;
-import com.tokopedia.broadcast.message.BroadcastMessageInternalRouter;
-import com.tokopedia.broadcast.message.common.BroadcastMessageRouter;
-import com.tokopedia.broadcast.message.common.constant.BroadcastMessageConstant;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.MaintenancePage;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -38,30 +38,23 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.developer_options.config.DevOptConfig;
-import com.tokopedia.flashsale.management.router.FlashSaleInternalRouter;
-import com.tokopedia.flashsale.management.router.FlashSaleRouter;
 import com.tokopedia.gm.GMModuleRouter;
 import com.tokopedia.gm.common.di.component.DaggerGMComponent;
 import com.tokopedia.gm.common.di.component.GMComponent;
 import com.tokopedia.gm.common.di.module.GMModule;
+import com.tokopedia.inboxreputation.presentation.activity.InboxReputationActivity;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.linker.interfaces.LinkerRouter;
 import com.tokopedia.loginregister.login.router.LoginRouter;
-import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity;
-import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomActivity;
-import com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationActivity;
-import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.phoneverification.PhoneVerificationRouter;
 import com.tokopedia.product.manage.feature.list.view.fragment.ProductManageSellerFragment;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.seller.LogisticRouter;
-import com.tokopedia.seller.common.logout.TkpdSellerLogout;
+import com.tokopedia.review.feature.reviewlist.view.fragment.RatingProductFragment;
 import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
-import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
@@ -71,28 +64,20 @@ import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.fcm.AppNotificationReceiver;
 import com.tokopedia.sellerapp.utils.DeferredResourceInitializer;
 import com.tokopedia.sellerapp.utils.FingerprintModelGenerator;
-import com.tokopedia.sellerapp.welcome.WelcomeActivity;
+import com.tokopedia.sellerapp.utils.SellerOnboardingPreference;
+import com.tokopedia.sellerapp.onboarding.SellerOnboardingBridgeActivity;
 import com.tokopedia.sellerhome.SellerHomeRouter;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
-import com.tokopedia.selleronboarding.utils.OnboardingPreference;
 import com.tokopedia.sellerorder.common.util.SomConsts;
 import com.tokopedia.sellerorder.list.presentation.fragment.SomListFragment;
-import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.talk_old.inboxtalk.view.activity.InboxTalkActivity;
-import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
-import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
-import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
-import com.tokopedia.tkpd.tkpdreputation.review.shop.view.ReviewShopFragment;
 import com.tokopedia.topads.TopAdsComponentInstance;
 import com.tokopedia.topads.TopAdsManagementRouter;
 import com.tokopedia.topads.TopAdsModuleRouter;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.domain.interactor.GetDepositTopAdsUseCase;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
-import com.tokopedia.topchat.attachproduct.view.activity.BroadcastMessageAttachProductActivity;
 import com.tokopedia.topchat.chatlist.fragment.ChatTabListFragment;
-import com.tokopedia.track.TrackApp;
-import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -100,8 +85,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 import okhttp3.Interceptor;
 import okhttp3.Response;
@@ -116,20 +99,15 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 
 public abstract class SellerRouterApplication extends MainApplication
         implements TkpdCoreRouter, GMModuleRouter, TopAdsModuleRouter,
-        ReputationRouter, LogisticRouter,
         AbstractionRouter,
-        ShopModuleRouter,
         ApplinkRouter,
         NetworkRouter,
         PhoneVerificationRouter,
         TopAdsManagementRouter,
-        BroadcastMessageRouter,
-        UnifiedOrderListRouter,
         CoreNetworkRouter,
-        FlashSaleRouter,
         LinkerRouter,
         SellerHomeRouter,
-        LoginRouter {
+        LoginRouter{
 
     protected RemoteConfig remoteConfig;
     private DaggerGMComponent.Builder daggerGMBuilder;
@@ -137,6 +115,7 @@ public abstract class SellerRouterApplication extends MainApplication
     private TopAdsComponent topAdsComponent;
     private DaggerShopComponent.Builder daggerShopBuilder;
     private ShopComponent shopComponent;
+    private TetraDebugger tetraDebugger;
 
     @Override
     public void onCreate() {
@@ -145,6 +124,7 @@ public abstract class SellerRouterApplication extends MainApplication
         initializeRemoteConfig();
         initResourceDownloadManager();
         initIris();
+        initTetraDebugger();
     }
 
     private void initResourceDownloadManager() {
@@ -163,6 +143,19 @@ public abstract class SellerRouterApplication extends MainApplication
     private void initializeDagger() {
         daggerGMBuilder = DaggerGMComponent.builder().gMModule(new GMModule());
         daggerShopBuilder = DaggerShopComponent.builder().shopModule(new ShopModule());
+    }
+
+    private void initTetraDebugger() {
+        if(GlobalConfig.isAllowDebuggingTools()) {
+            tetraDebugger = TetraDebugger.Companion.instance(this);
+            tetraDebugger.init();
+        }
+    }
+
+    private void setTetraUserId(String userId) {
+        if(tetraDebugger != null) {
+            tetraDebugger.setUserId(userId);
+        }
     }
 
     public GMComponent getGMComponent() {
@@ -206,18 +199,13 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     private Intent getInboxReputationIntent(Context context) {
-        return TkpdReputationInternalRouter.getInboxReputationActivityIntent(context);
-    }
-
-    @Override
-    public Fragment getReputationHistoryFragment() {
-        return SellerReputationFragment.createInstance();
+        return RouteManager.getIntent(context, ApplinkConst.REPUTATION);
     }
 
     @Override
     public Intent getHomeIntent(Context context) {
         UserSessionInterface userSession = new UserSession(context);
-        Intent intent = new Intent(context, WelcomeActivity.class);
+        Intent intent = RouteManager.getIntent(this, ApplinkConstInternalSellerapp.WELCOME);
         if (userSession.isLoggedIn()) {
             if (userSession.hasShop()) {
                 return SellerHomeActivity.createIntent(context);
@@ -235,7 +223,7 @@ public abstract class SellerRouterApplication extends MainApplication
         if (userSession.isLoggedIn()) {
             return SellerHomeActivity.class;
         } else {
-            return WelcomeActivity.class;
+            return SellerOnboardingBridgeActivity.class;
         }
     }
 
@@ -244,18 +232,7 @@ public abstract class SellerRouterApplication extends MainApplication
         SessionHandler sessionHandler = new SessionHandler(this);
         sessionHandler.forceLogout();
         new CacheApiClearAllUseCase(this).executeSync();
-        TkpdSellerLogout.onLogOut(appComponent, this);
-    }
-
-    @Override
-    public Intent getRegisterIntent(Context context) {
-        return RegisterInitialActivity.getCallingIntent(context);
-    }
-
-    private void goToDefaultRoute(Context context) {
-        Intent intent = SellerHomeActivity.createIntent(context);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        context.startActivity(intent);
+        setTetraUserId("");
     }
 
     @Override
@@ -285,11 +262,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public ApplinkUnsupported getApplinkUnsupported(Activity activity) {
         return null;
-    }
-
-    @Override
-    public Intent getDistrictRecommendationIntent(Activity activity, Token token) {
-        return DiscomActivity.newInstance(activity, token);
     }
 
     @Override
@@ -342,16 +314,6 @@ public abstract class SellerRouterApplication extends MainApplication
     public void refreshToken() throws IOException {
         AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
         accessTokenRefresh.refreshToken();
-    }
-
-    @Override
-    public Fragment getReviewFragment(Activity activity, String shopId, String shopDomain) {
-        return ReviewShopFragment.createInstance(shopId, shopDomain);
-    }
-
-    @Override
-    public Class getReviewFragmentClass() {
-        return ReviewShopFragment.class;
     }
 
     @Override
@@ -424,35 +386,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public @NonNull
-    Intent getFlashSaleDashboardIntent(@NonNull Context context) {
-        return FlashSaleInternalRouter.getFlashSaleDashboardActivity(context);
-    }
-
-    @NonNull
-    @Override
-    public Intent getBroadcastMessageListIntent(@NonNull Context context) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_INBOX,
-                BroadcastMessageConstant.VALUE_GTM_EVENT_CATEGORY,
-                BroadcastMessageConstant.VALUE_GTM_EVENT_ACTION_BM_CLICK, "");
-        return BroadcastMessageInternalRouter.INSTANCE.getBroadcastMessageListIntent(context);
-    }
-
-    @NonNull
-    @Override
-    public Intent getBroadcastMessageAttachProductIntent(@NonNull Context context, @NonNull String shopId,
-                                                         @NonNull String shopName, boolean isSeller,
-                                                         @NonNull List<Integer> selectedIds,
-                                                         @NonNull ArrayList<HashMap<String, String>> hashProducts) {
-        return BroadcastMessageAttachProductActivity.createInstance(context, shopId, shopName, isSeller, selectedIds, hashProducts);
-    }
-
-    @Override
-    public Fragment getFlightOrderListFragment() {
-        return null;
-    }
-
-    @Override
     public Intent getInboxTalkCallingIntent(@NonNull Context context) {
         return InboxTalkActivity.Companion.createIntent(context);
     }
@@ -463,18 +396,8 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void showSimpleAppRatingDialog(Activity activity) {
-
-    }
-
-    @Override
     public boolean isAllowLogOnChuckInterceptorNotification() {
         return DevOptConfig.isChuckNotifEnabled(this);
-    }
-
-    @Override
-    public Intent getGeoLocationActivityIntent(Context context, com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass locationPass) {
-        return GeolocationActivity.createInstance(context, locationPass, false);
     }
 
     @Override
@@ -515,24 +438,9 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void refreshFCMTokenFromForegroundToCM() {
-
-    }
-
-    @Override
     public void sendForceLogoutAnalytics(Response response, boolean isInvalidToken,
                                          boolean isRequestDenied) {
         ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString(), isInvalidToken, isRequestDenied);
-    }
-
-    @Override
-    public Intent getOrderHistoryIntent(Context context, String orderId) {
-        return RouteManager.getIntent(context, ApplinkConst.ORDER_TRACKING, orderId);
-    }
-
-    @Override
-    public void showAppFeedbackRatingDialog(FragmentManager fragmentManager, Context context, BottomSheets.BottomSheetDismissListener listener) {
-
     }
 
     @Override
@@ -551,8 +459,8 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @NotNull
     @Override
-    public Fragment getProductManageFragment(@NotNull ArrayList<String> filterOptions) {
-        return ProductManageSellerFragment.newInstance(filterOptions);
+    public Fragment getProductManageFragment(@NotNull ArrayList<String> filterOptions, @NotNull String searchKeyword) {
+        return ProductManageSellerFragment.newInstance(filterOptions, searchKeyword);
     }
 
     @NotNull
@@ -568,7 +476,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void setOnboardingStatus(boolean status) {
-        OnboardingPreference preference = new OnboardingPreference(this);
-        preference.putBoolean(OnboardingPreference.HAS_OPEN_ONBOARDING, status);
+        SellerOnboardingPreference preference = new SellerOnboardingPreference(this);
+        preference.putBoolean(SellerOnboardingPreference.HAS_OPEN_ONBOARDING, status);
     }
 }

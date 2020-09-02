@@ -2,7 +2,6 @@ package com.tokopedia.tokopoints.di
 
 import android.app.Activity
 import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.data.Interactor
 import com.tokopedia.tokopoints.R
@@ -27,13 +26,6 @@ class TokopointsQueryModule(val activity: Activity) {
     @Named(CommonConstant.GQLQuery.TP_GQL_CURRENT_POINTS)
     fun getGQLCurrentPoint(context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.tp_gql_current_points)
-    }
-
-    @Provides
-    @IntoMap
-    @StringKey(CommonConstant.GQLQuery.TP_GQL_HISTORY_POINTS)
-    fun getGQLHistoryPoint(context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.tp_gql_point_history)
     }
 
     @Provides
@@ -143,13 +135,6 @@ class TokopointsQueryModule(val activity: Activity) {
 
     @Provides
     @TokoPointScope
-    @Named(CommonConstant.GQLQuery.TP_GQL_CATALOG_BANNER)
-    fun getGQLCataloganner(context: Context) : String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.tp_gql_catalog_banners)
-    }
-
-    @Provides
-    @TokoPointScope
     @Named(CommonConstant.GQLQuery.TP_GQL_TOKOPOINT_DETAIL)
     fun getGQLTOkopointDetail(context: Context) : String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.tp_gql_tokopoint_detail)
@@ -171,9 +156,9 @@ class TokopointsQueryModule(val activity: Activity) {
 
     @Provides
     @TokoPointScope
-    @Named(CommonConstant.GQLQuery.TP_GQL_TOKOPOINT_DETAIL_NEW)
+    @Named(CommonConstant.GQLQuery.TP_GQL_TOKOPOINT_TOP_SECTION_NEW)
     fun getGQLTOkopointNewDetail(context: Context) : String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.tp_gql_tokopoint_detail_new)
+        return GraphqlHelper.loadRawString(context.resources, R.raw.tp_gql_topsection_new)
     }
 
     @Provides
@@ -185,15 +170,8 @@ class TokopointsQueryModule(val activity: Activity) {
 
     @Provides
     @TokoPointScope
-    @Named(CommonConstant.GQLQuery.TP_GQL_SUM_COUPON)
-    fun getGQLSumCoupon(context: Context) : String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.tp_gql_sum_coupon)
-    }
-
-    @Provides
-    @TokoPointScope
-    @Named(CommonConstant.GQLQuery.TP_GQL_ADD_POINT_REWARD)
-    fun getGQLaddPoint(context: Context) : String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.tp_gql_add_point_rewards)
+    @Named(CommonConstant.GQLQuery.TP_GQL_REWARD_INTRO)
+    fun getGQLRewardIntro(context: Context) : String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.tp_gql_reward_intro)
     }
 }

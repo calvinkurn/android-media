@@ -6,8 +6,10 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.shop.common.data.model.ShopShipmentData
 import com.tokopedia.shop.common.data.model.ShopShipmentData.*
+import kotlinx.android.parcel.Parcelize
 
 @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+@Parcelize
 data class ShopShipment(
         @SerializedName("isAvailable")
         @Expose
@@ -46,17 +48,7 @@ data class ShopShipment(
         val product: List<ShipmentProduct> = listOf()
         ): Parcelable{
 
-    constructor(parcel: Parcel) : this(
-            parcel.readInt(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readInt(),
-            parcel.readInt(),
-            parcel.readInt(),
-            parcel.createTypedArrayList(ShipmentProduct))
-
+    @Parcelize
     data class ShipmentProduct(
             @SerializedName("isAvailable")
             @Expose
@@ -74,52 +66,11 @@ data class ShopShipment(
             @Expose
             val uiHidden: Boolean = true
     ): Parcelable {
-        constructor(parcel: Parcel) : this(
-                parcel.readInt(),
-                parcel.readString(),
-                parcel.readString(),
-                parcel.readByte() != 0.toByte())
-
-        override fun writeToParcel(parcel: Parcel, flags: Int) {
-            parcel.writeInt(isAvailable)
-            parcel.writeString(shipProdID)
-            parcel.writeString(name)
-            parcel.writeByte(if (uiHidden) 1 else 0)
-        }
-
-        override fun describeContents(): Int {
-            return 0
-        }
 
         fun mapToShipmentProductData(): ShipmentProductData {
             return ShipmentProductData(isAvailable, shipProdID, name, uiHidden)
         }
 
-        companion object CREATOR : Parcelable.Creator<ShipmentProduct> {
-            override fun createFromParcel(parcel: Parcel): ShipmentProduct {
-                return ShipmentProduct(parcel)
-            }
-
-            override fun newArray(size: Int): Array<ShipmentProduct?> {
-                return arrayOfNulls(size)
-            }
-        }
-    }
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeInt(isAvailable)
-        parcel.writeString(code)
-        parcel.writeString(shipmentID)
-        parcel.writeString(image)
-        parcel.writeString(name)
-        parcel.writeInt(isPickup)
-        parcel.writeInt(maxAddFee)
-        parcel.writeInt(awbStatus)
-        parcel.writeTypedList(product)
-    }
-
-    override fun describeContents(): Int {
-        return 0
     }
 
     fun mapToShipmentData(): ShopShipmentData {
@@ -129,13 +80,4 @@ data class ShopShipment(
         return ShopShipmentData(image, name, shipmentProductData)
     }
 
-    companion object CREATOR : Parcelable.Creator<ShopShipment> {
-        override fun createFromParcel(parcel: Parcel): ShopShipment {
-            return ShopShipment(parcel)
-        }
-
-        override fun newArray(size: Int): Array<ShopShipment?> {
-            return arrayOfNulls(size)
-        }
-    }
 }

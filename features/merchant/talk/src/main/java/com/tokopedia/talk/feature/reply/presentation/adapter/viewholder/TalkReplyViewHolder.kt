@@ -19,6 +19,8 @@ import com.tokopedia.talk.feature.reply.presentation.widget.listeners.OnKebabCli
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.ThreadListener
 import com.tokopedia.talk_old.R
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.Label.Companion.GENERAL_LIGHT_GREEN
+import com.tokopedia.unifycomponents.Label.Companion.GENERAL_LIGHT_GREY
 import kotlinx.android.synthetic.main.item_talk_reply.view.*
 
 class TalkReplyViewHolder(view: View,
@@ -38,11 +40,9 @@ class TalkReplyViewHolder(view: View,
             showProfilePicture(userThumbnail, userId, isSeller, element.shopId)
             showDisplayName(userName, userId, isSeller, element.shopId)
             showDate(createTimeFormatted)
-            showSellerLabelWithCondition(isSeller)
+            showLabelWithCondition(isSeller, element.isMyQuestion)
             showAnswer(content, state.isMasked, maskedContent)
-            if(attachedProductCount > 0) {
-                showAttachedProducts(attachedProducts.toMutableList())
-            }
+            showAttachedProducts(attachedProducts.toMutableList())
             showKebabWithConditions(answerID, state.allowReport, state.allowDelete, onKebabClickedListener)
         }
     }
@@ -86,11 +86,22 @@ class TalkReplyViewHolder(view: View,
         }
     }
 
-    private fun showSellerLabelWithCondition(isSeller: Boolean) {
-        if(isSeller) {
-            itemView.replySellerLabel.show()
-        } else {
-            itemView.replySellerLabel.hide()
+    private fun showLabelWithCondition(isSeller: Boolean, isMyQuestion :Boolean) = with(itemView){
+        when {
+            isSeller -> {
+                replySellerLabel.text = context.getString(R.string.reading_seller_label)
+                replySellerLabel.setLabelType(GENERAL_LIGHT_GREEN)
+                replyDisplayName.hide()
+                replySellerLabel.show()
+            }
+            isMyQuestion -> {
+                replySellerLabel.text = context.getString(R.string.reading_your_question_label)
+                replySellerLabel.setLabelType(GENERAL_LIGHT_GREY)
+                replySellerLabel.show()
+            }
+            else -> {
+                replySellerLabel.hide()
+            }
         }
     }
 

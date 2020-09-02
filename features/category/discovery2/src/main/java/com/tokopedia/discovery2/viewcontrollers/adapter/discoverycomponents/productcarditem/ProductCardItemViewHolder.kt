@@ -1,11 +1,14 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Paint
+import android.util.DisplayMetrics
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
@@ -13,8 +16,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.DataItem
@@ -23,12 +24,16 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewH
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.Toaster
 
 
 private const val OFFICIAL_STORE = 1
 private const val GOLD_MERCHANT = 2
+private const val SOLD_PERCENTAGE_UPPER_LIMIT = 100
+private const val SOLD_PERCENTAGE_LOWER_LIMIT = 0
+
+private const val SALE_PRODUCT_STOCK = 100
+private const val PRODUCT_STOCK = 0
 
 class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
 
@@ -43,7 +48,7 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     private var shopBadge: ImageView = itemView.findViewById(R.id.imageViewShopBadge)
     private var imageFreeOngkirPromo: ImageView = itemView.findViewById(R.id.imageFreeOngkirPromo)
     private var productCardView: CardView = itemView.findViewById(R.id.cardViewProductCard)
-    private var stockPercentageProgress: ProgressBarUnify = itemView.findViewById(R.id.stockPercentageProgress)
+    private var stockPercentageProgress: ProgressBar = itemView.findViewById(R.id.stockPercentageProgress)
     private var pdpViewImage: ImageView = itemView.findViewById(R.id.imageViewProductViewCount)
     private var pdpViewCount: TextView = itemView.findViewById(R.id.textViewProductViewCount)
     private var stockTitle: TextView = itemView.findViewById(R.id.stockText)
@@ -51,7 +56,8 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     private var notifyMeView: TextView = itemView.findViewById(R.id.textViewNotifyMe)
     private var linearLayoutImageRating: LinearLayout = itemView.findViewById(R.id.linearLayoutImageRating)
     private var textViewReviewCount: TextView = itemView.findViewById(R.id.textViewReviewCount)
-    private var stokHabisLabel: TextView = itemView.findViewById(R.id.labelStock)
+    private var stockHabisLabel: TextView = itemView.findViewById(R.id.labelStock)
+    private var componentPosition: Int? = null
 
     private lateinit var productCardItemViewModel: ProductCardItemViewModel
     private var productCardName = ""
@@ -66,10 +72,10 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     private fun initView() {
         productCardItemViewModel.setContext(productCardView.context)
         productCardView.setOnClickListener {
-            handleUIClick(it, adapterPosition)
+            handleUIClick(it)
         }
         notifyMeView.setOnClickListener {
-            handleUIClick(it, adapterPosition)
+            handleUIClick(it)
         }
     }
 
@@ -83,13 +89,10 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
             })
 
             productCardItemViewModel.getShowLoginData().observe(lifecycleOwner, Observer { showLogin ->
-                context?.let {
-                    if (showLogin) {
-                        it.startActivity(RouteManager.getIntent(it, ApplinkConst.LOGIN))
-                    }
+                if (showLogin == true) {
+                    componentPosition?.let { position -> (fragment as DiscoveryFragment).openLoginScreen(position) }
                 }
             })
-
             productCardItemViewModel.notifyMeCurrentStatus().observe(lifecycleOwner, Observer { status ->
                 updateNotifyMeState(status)
             })
@@ -97,6 +100,16 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
             productCardItemViewModel.showNotifyToastMessage().observe(lifecycleOwner, Observer { message ->
                 showNotifyResultToast(message)
             })
+            productCardItemViewModel.getComponentPosition().observe(lifecycleOwner, Observer {
+                componentPosition = it
+            })
+            productCardItemViewModel.getSyncPageLiveData().observe(it, Observer { needResync ->
+                if (needResync) {
+                    (fragment as DiscoveryFragment).reSync()
+                }
+
+            })
+
         }
     }
 
@@ -116,15 +129,20 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
             productName.setTextAndCheckShow(dataItem.name)
             setSlashedPrice(dataItem.discountedPrice)
             textViewPrice.setTextAndCheckShow(dataItem.price)
+            showOutOfStockLabel(dataItem.stock, PRODUCT_STOCK)
+            if(productCardName == ComponentNames.ProductCardCarouselItem.componentName){
+                val displayMetrics = getDisplayMetric(context)
+                productCardView.layoutParams.width = (displayMetrics.widthPixels/2.3).toInt()
+            }
         } else {
             productName.setTextAndCheckShow(dataItem.title)
             setSlashedPrice(dataItem.price)
             textViewPrice.setTextAndCheckShow(dataItem.discountedPrice)
-            setStockProgress(dataItem)
+            setStockProgress(dataItem.stockSoldPercentage)
+            showOutOfStockLabel(dataItem.stockSoldPercentage, SALE_PRODUCT_STOCK)
         }
         setLabelDiscount(dataItem.discountPercentage.toString())
         dataItem.rating?.let { setRating(it, dataItem.countReview) }
-//        setCashbackLabel(dataItem.cashback)
         setProductImage(dataItem.imageUrlMobile)
         setTopads(dataItem.isTopads)
         showShopBadgeUI(dataItem)
@@ -132,14 +150,25 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
         setPDPView(dataItem)
         showInterestedView(dataItem)
         showNotifyMe(dataItem)
-        showStokHabis(dataItem.stock)
     }
 
-    private fun showStokHabis(productStok: String?) {
-        if (productStok.toIntOrZero() > 0) {
-            stokHabisLabel.hide()
-        } else {
-            stokHabisLabel.hide()
+    private fun getDisplayMetric(context: Context?): DisplayMetrics {
+        val displayMetrics = DisplayMetrics()
+        (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
+        return displayMetrics
+    }
+
+    private fun showOutOfStockLabel(productStock: String?, saleStockValidation : Int = 0) {
+        when {
+            productStock.isNullOrEmpty() -> {
+                stockHabisLabel.hide()
+            }
+            productStock.toIntOrNull() == saleStockValidation -> {
+                stockHabisLabel.show()
+            }
+            else -> {
+                stockHabisLabel.hide()
+            }
         }
     }
 
@@ -214,27 +243,35 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
         }
     }
 
-    private fun setStockProgress(dataItem: DataItem) {
-        val stockSold = dataItem.stockSoldPercentage
-        stockPercentageProgress.hide()
-        stockTitle.hide()
-        if (!stockSold.isNullOrEmpty()) {
-            if (stockSold.toIntOrZero() < 100) {
+
+    private fun setStockProgress(stockSoldPercentage: String?) {
+        if (stockSoldPercentage?.toIntOrNull() == null || stockSoldPercentage.isEmpty()) {
+            hideStockProgressUI()
+        } else {
+            if (stockSoldPercentage.toIntOrZero() in (SOLD_PERCENTAGE_LOWER_LIMIT) until SOLD_PERCENTAGE_UPPER_LIMIT) {
+                stockPercentageProgress.progress = stockSoldPercentage.toIntOrZero()
                 stockPercentageProgress.show()
-                stockPercentageProgress.setValue(stockSold.toIntOrZero())
-                showStockProgressTitle(dataItem)
+                showStockProgressTitle()
+            } else {
+                hideStockProgressUI()
             }
         }
     }
 
-
-    private fun showStockProgressTitle(dataItem: DataItem) {
-        val stockWording = productCardItemViewModel.getStockWord(dataItem)
+    private fun hideStockProgressUI() {
+        stockPercentageProgress.hide()
         stockTitle.hide()
-        if (!stockWording.title.isNullOrEmpty() && productCardName != ComponentNames.ProductCardRevampItem.componentName
-                && productCardName != ComponentNames.ProductCardCarouselItem.componentName) {
+    }
+
+    private fun showStockProgressTitle() {
+        val stockWording = productCardItemViewModel.getStockWord()
+        if (stockWording.title.isNullOrEmpty()) {
+            stockTitle.hide()
+        } else {
             stockTitle.setTextAndCheckShow(stockWording.title)
-            stockTitle.setTextColor(Color.parseColor(stockWording.color))
+            if (!stockWording.color.isNullOrEmpty()) {
+                stockTitle.setTextColor(Color.parseColor(stockWording.color))
+            }
         }
     }
 
@@ -275,8 +312,8 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
             textViewSlashedPrice.hide()
         }
     }
-    
-    private fun setRating(rating : String, countReview : String?) {
+
+    private fun setRating(rating: String, countReview: String?) {
         val rating = rating.toIntOrZero()
         if (rating in 1..5) {
             for (r in 0 until rating) {
@@ -299,16 +336,14 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
                 textViewReviewCount.hide()
             }
         }
-
-
     }
 
-    private fun handleUIClick(view: View, adapterPosition: Int) {
+    private fun handleUIClick(view: View) {
         when (view) {
             productCardView -> {
                 productCardItemViewModel.sendTopAdsClick()
                 productCardItemViewModel.handleNavigation()
-                sendClickEvent(adapterPosition)
+                sendClickEvent()
             }
             notifyMeView -> productCardItemViewModel.subscribeUser()
         }
@@ -322,17 +357,13 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
         }
     }
 
-    private fun sendClickEvent(adapterPosition: Int) {
-        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackProductCardClick(dataItem, productCardItemViewModel.isUserLoggedIn(), adapterPosition)
+    private fun sendClickEvent() {
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackProductCardClick(productCardItemViewModel.components, productCardItemViewModel.isUserLoggedIn())
     }
 
     override fun onViewAttachedToWindow() {
         super.onViewAttachedToWindow()
         productCardItemViewModel.sendTopAdsView()
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().viewProductsList(productCardItemViewModel.components, productCardItemViewModel.isUserLoggedIn())
     }
 }
-
-
-
-
-

@@ -1,11 +1,8 @@
 package com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble
 
 import android.graphics.Color
-import android.text.SpannableString
-import android.text.SpannableStringBuilder
-import android.text.Spanned
-import android.text.style.ForegroundColorSpan
 import android.view.View
+import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.chat_common.data.MessageViewModel
@@ -24,6 +21,7 @@ class RightChatMessageViewHolder(
 
     var header: LinearLayout? = itemView?.findViewById(R.id.llRoleUser)
     var headerRole: Typography? = itemView?.findViewById(R.id.tvRole)
+    var smartReplyBlueDot: ImageView? = itemView?.findViewById(R.id.img_sr_blue_dot)
 
     override fun bind(message: MessageViewModel) {
         super.bind(message)
@@ -42,17 +40,20 @@ class RightChatMessageViewHolder(
             } else {
                 itemView.context?.getString(R.string.tittle_header_auto_reply)
             } ?: ""
-            val spanHeaderRoleText = SpannableStringBuilder(headerRoleText)
-            val color = getDotColor()
-            val span = SpannableString(" • ").apply {
-                setSpan(ForegroundColorSpan(color), 0, 3, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-            }
-            spanHeaderRoleText.append(span)
+            bindBlueDot(message)
             header?.show()
             headerRole?.show()
-            headerRole?.text = spanHeaderRoleText
+            headerRole?.text = headerRoleText
         } else {
             header?.hide()
+        }
+    }
+
+    private fun bindBlueDot(message: MessageViewModel) {
+        if (message.isFromSmartReply()) {
+            smartReplyBlueDot?.show()
+        } else {
+            smartReplyBlueDot?.hide()
         }
     }
 

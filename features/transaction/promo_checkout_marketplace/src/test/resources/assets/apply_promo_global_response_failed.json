@@ -1,0 +1,38 @@
+{
+  "validate_use_promo_revamp": {
+    "status": "OK",
+    "message": [],
+    "error_code": "200",
+    "code": "200000",
+    "promo": {
+      "global_success": false,
+      "message": {
+        "state": "red",
+        "color": "#ade3af",
+        "text": "Gagal menggunakan promo"
+      },
+      "success": false,
+      "codes": [
+        "THIRX598GSA7MADK2X7"
+      ],
+      "promo_code_id": 0,
+      "title_description": "catalog testing loadtest",
+      "discount_amount": 0,
+      "cashback_wallet_amount": 10000,
+      "cashback_advocate_referral_amount": 0,
+      "cashback_voucher_description": "",
+      "invoice_description": "",
+      "gateway_id": "",
+      "is_coupon": 1,
+      "coupon_description": "",
+      "is_tokopedia_gerai": false,
+      "tracking_details": [
+        {
+          "product_id": 618078867,
+          "promo_codes_tracking": "THIRX",
+          "promo_details_tracking": "G:1:10000:red"
+        }
+      ]
+    }
+  }
+}

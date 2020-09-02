@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.common_category.usecase.*
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.hotlist.domain.usecases.HotlistDetailUseCase
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
@@ -35,22 +36,9 @@ class HotlistNavUseCaseModule {
 
     @HotlistNavScope
     @Provides
-    fun getHotListDetailUseCase(context: Context): HotlistDetailUseCase {
-        return HotlistDetailUseCase(context)
-    }
-
-    @HotlistNavScope
-    @Provides
-    fun provideCategoryProductUseCase(context: Context,
-                                      @Named("productGqlUseCaseObject") graphqlUseCase: GraphqlUseCase):
+    fun provideCategoryProductUseCase(@Named("productGqlUseCaseObject") graphqlUseCase: GraphqlUseCase):
             CategoryProductUseCase {
         return CategoryProductUseCase(graphqlUseCase)
-    }
-
-    @HotlistNavScope
-    @Provides
-    fun provideTopAdsUseCase(context: Context): TopAdsProductsUseCase {
-        return TopAdsProductsUseCase(context)
     }
 
     @HotlistNavScope
@@ -60,18 +48,6 @@ class HotlistNavUseCaseModule {
                               : TopAdsProductsUseCase)
             : GetProductListUseCase {
         return GetProductListUseCase(categoryProductUseCase, topAdsProductsUseCase)
-    }
-
-    @HotlistNavScope
-    @Provides
-    fun provideDynamicFilterUseCase(context: Context): DynamicFilterUseCase {
-        return DynamicFilterUseCase()
-    }
-
-    @HotlistNavScope
-    @Provides
-    fun provideQuickFilterUseCase(context: Context): QuickFilterUseCase {
-        return QuickFilterUseCase()
     }
 
     @HotlistNavScope
@@ -90,5 +66,6 @@ class HotlistNavUseCaseModule {
 
     @HotlistNavScope
     @Provides
-    fun provideSendTopAdsUseCase() = SendTopAdsUseCase()
+    fun provideSendTopAdsUseCase(topAdsUrlHitter: TopAdsUrlHitter) = SendTopAdsUseCase(topAdsUrlHitter)
+
 }

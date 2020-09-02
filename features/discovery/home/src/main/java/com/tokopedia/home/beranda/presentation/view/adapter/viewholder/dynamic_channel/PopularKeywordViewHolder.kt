@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.home.R
+import com.tokopedia.home.analytics.v2.PopularKeywordTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordListDataModel
@@ -54,6 +55,8 @@ class PopularKeywordViewHolder (val view: View,
 
     override fun bind(element: PopularKeywordListDataModel) {
         performanceMonitoring?.startTrace(performanceTraceName)
+        homeCategoryListener.sendIrisTrackerHashMap(PopularKeywordTracking.getPopularKeywordImpressionIris(element.channel, element.popularKeywordList, adapterPosition) as HashMap<String, Any>)
+
         initStub(element)
         initAdapter(element)
     }
@@ -64,7 +67,7 @@ class PopularKeywordViewHolder (val view: View,
 
     private fun initAdapter(element: PopularKeywordListDataModel) {
         if(adapter == null) {
-            adapter = PopularKeywordAdapter(popularKeywordListener, homeCategoryListener, element.channel)
+            adapter = PopularKeywordAdapter(popularKeywordListener, homeCategoryListener, element.channel, adapterPosition)
             recyclerView.layoutManager = GridLayoutManager(view.context, 2)
             recyclerView.adapter = adapter
         }
@@ -162,7 +165,7 @@ class PopularKeywordViewHolder (val view: View,
 
     interface PopularKeywordListener {
         fun onPopularKeywordSectionReloadClicked(position: Int, channel: DynamicHomeChannel.Channels)
-        fun onPopularKeywordItemClicked(applink: String, channel: DynamicHomeChannel.Channels, position: Int, keyword: String)
-        fun onPopularKeywordItemImpressed(channel: DynamicHomeChannel.Channels, position: Int, keyword: String)
+        fun onPopularKeywordItemClicked(applink: String, channel: DynamicHomeChannel.Channels, position: Int, keyword: String,  positionInWidget: Int)
+        fun onPopularKeywordItemImpressed(channel: DynamicHomeChannel.Channels, position: Int, keyword: String,  positionInWidget: Int)
     }
 }

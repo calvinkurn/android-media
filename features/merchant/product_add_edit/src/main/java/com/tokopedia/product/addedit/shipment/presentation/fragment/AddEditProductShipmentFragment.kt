@@ -1,26 +1,39 @@
 package com.tokopedia.product.addedit.shipment.presentation.fragment
 
-import android.app.Activity
-import android.content.Intent
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import androidx.activity.OnBackPressedCallback
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.navigation.fragment.findNavController
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.product.addedit.R
-import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_PRODUCT_INPUT_MODEL
-import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_SHIPMENT_INPUT
+import com.tokopedia.product.addedit.common.util.*
 import com.tokopedia.product.addedit.common.util.InputPriceUtil.formatProductPriceInput
-import com.tokopedia.product.addedit.common.util.getText
-import com.tokopedia.product.addedit.common.util.getTextIntOrZero
-import com.tokopedia.product.addedit.common.util.setModeToNumberInput
-import com.tokopedia.product.addedit.common.util.setText
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.BUNDLE_CACHE_MANAGER_ID
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_KEY_ADD_MODE
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_KEY_SHIPMENT
 import com.tokopedia.product.addedit.optionpicker.OptionPicker
-import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.BUNDLE_BACK_PRESSED
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DESCRIPTION_DATA
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DETAIL_DATA
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_ADDING_PRODUCT
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_DRAFTING_PRODUCT
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_EDITING_PRODUCT
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_FIRST_MOVED
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_PRODUCT_INPUT_MODEL
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.NO_DATA
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.SHIPMENT_DATA
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.UPLOAD_DATA
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
-import com.tokopedia.product.addedit.shipment.di.AddEditProductShipmentComponent
+import com.tokopedia.product.addedit.shipment.di.AddEditProductShipmentModule
+import com.tokopedia.product.addedit.shipment.di.DaggerAddEditProductShipmentComponent
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MAX_WEIGHT_GRAM
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MAX_WEIGHT_KILOGRAM
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MIN_WEIGHT
@@ -38,6 +51,17 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class AddEditProductShipmentFragment : BaseDaggerFragment() {
+  
+    companion object {
+        fun getWeightTypeTitle(type: Int) =
+                when (type) {
+                    UNIT_GRAM -> com.tokopedia.product.addedit.R.string.label_weight_gram
+                    UNIT_KILOGRAM -> com.tokopedia.product.addedit.R.string.label_weight_kilogram
+                    else -> com.tokopedia.product.addedit.R.string.label_weight_gram
+                }
+    }
+
+    private var mainLayout: ConstraintLayout? = null
     private var tfWeightAmount: TextFieldUnify? = null
     private var tfWeightUnit: TextFieldUnify? = null
     private var switchInsurance: SwitchUnify? = null
@@ -52,60 +76,38 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
     @Inject
     lateinit var shipmentViewModel: AddEditProductShipmentViewModel
 
-    companion object {
-        fun createInstance(productInputModel: ProductInputModel): Fragment {
-            return AddEditProductShipmentFragment().apply {
-                arguments = Bundle().apply {
-                    putParcelable(EXTRA_PRODUCT_INPUT_MODEL, productInputModel)
-                }
-            }
-        }
-        fun createInstanceEditMode(shipmentInputModel: ShipmentInputModel, isAddMode: Boolean): Fragment {
-            return AddEditProductShipmentFragment().apply {
-                arguments = Bundle().apply {
-                    putParcelable(EXTRA_SHIPMENT_INPUT_MODEL, shipmentInputModel)
-                    putBoolean(EXTRA_IS_EDITMODE, true)
-                    putBoolean(EXTRA_IS_ADD_MODE, isAddMode)
-                }
-            }
-        }
-
-        fun getWeightTypeTitle(type: Int) =
-                when (type) {
-                    UNIT_GRAM -> R.string.label_weight_gram
-                    UNIT_KILOGRAM -> R.string.label_weight_kilogram
-                    else -> -1
-                }
-
-        const val EXTRA_SHIPMENT_INPUT_MODEL = "shipment_input_model"
-        const val EXTRA_IS_EDITMODE = "shipment_is_editmode"
-        const val EXTRA_IS_ADD_MODE = "shipment_is_add_mode"
-        const val REQUEST_CODE_SHIPMENT = 0x04
-    }
-
     override fun getScreenName(): String {
         return ""
     }
 
     override fun initInjector() {
-        getComponent(AddEditProductShipmentComponent::class.java).inject(this)
+        DaggerAddEditProductShipmentComponent
+                .builder()
+                .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
+                .addEditProductShipmentModule(AddEditProductShipmentModule())
+                .build().inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         userSession = UserSession(requireContext())
         shopId = userSession.shopId
         super.onCreate(savedInstanceState)
-        arguments?.run {
-            val shipmentInputModel: ShipmentInputModel = getParcelable(EXTRA_SHIPMENT_INPUT_MODEL) ?: ShipmentInputModel()
-            val isEditMode = getBoolean(EXTRA_IS_EDITMODE, false)
-            val isAddMode = getBoolean(EXTRA_IS_ADD_MODE, false)
-            productInputModel = getParcelable(EXTRA_PRODUCT_INPUT_MODEL) ?: ProductInputModel()
-            shipmentViewModel.shipmentInputModel = shipmentInputModel
-            shipmentViewModel.isEditMode = isEditMode
-            shipmentViewModel.isAddMode = isAddMode
-        }
-        if (shipmentViewModel.isAddMode || !shipmentViewModel.isEditMode) {
-            ProductAddShippingTracking.trackScreen()
+
+        arguments?.let {
+            val cacheManagerId = AddEditProductShipmentFragmentArgs.fromBundle(it).cacheManagerId
+            val saveInstanceCacheManager = SaveInstanceCacheManager(requireContext(), cacheManagerId)
+
+            cacheManagerId.run {
+                productInputModel = saveInstanceCacheManager.get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java) ?: ProductInputModel()
+                shipmentViewModel.shipmentInputModel = productInputModel?.shipmentInputModel ?: ShipmentInputModel()
+                shipmentViewModel.isEditMode = saveInstanceCacheManager.get(EXTRA_IS_EDITING_PRODUCT, Boolean::class.java, false) ?: false
+                shipmentViewModel.isAddMode = saveInstanceCacheManager.get(EXTRA_IS_ADDING_PRODUCT, Boolean::class.java, false) ?: false
+                shipmentViewModel.isDraftMode = saveInstanceCacheManager.get(EXTRA_IS_DRAFTING_PRODUCT, Boolean::class.java) ?: false
+                shipmentViewModel.isFirstMoved = saveInstanceCacheManager.get(EXTRA_IS_FIRST_MOVED, Boolean::class.java) ?: false
+            }
+            if (shipmentViewModel.isAddMode) {
+                ProductAddShippingTracking.trackScreen()
+            }
         }
     }
 
@@ -121,6 +123,8 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
         switchInsurance = view.findViewById(R.id.switch_insurance)
         btnSave = view.findViewById(R.id.btn_save)
         btnEnd = view.findViewById(R.id.btn_end)
+        mainLayout = view.findViewById(R.id.main_layout)
+
         tfWeightAmount.setModeToNumberInput()
         tfWeightUnit?.apply {
             textFieldInput.setText(getWeightTypeTitle(0))
@@ -131,28 +135,32 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
             }
         }
         applyShipmentInputModel()
+        hideKeyboardWhenTouchOutside()
         tfWeightAmount?.textFieldInput?.afterTextChanged {
             validateInputWeight(it)
         }
         btnEnd?.setOnClickListener {
             btnEnd?.isLoading = true
-            submitInput()
+            submitInput(UPLOAD_DATA)
         }
         btnSave?.setOnClickListener {
             btnSave?.isLoading = true
-            if(shipmentViewModel.isAddMode) {
-                submitInput()
+            if (shipmentViewModel.isAddMode && !shipmentViewModel.isDraftMode) {
+                submitInput(SHIPMENT_DATA)
             } else {
                 submitInputEdit()
             }
         }
-        switchInsurance?.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (shipmentViewModel.isEditMode && !shipmentViewModel.isAddMode) {
-                ProductEditShippingTracking.clickInsurance(shopId)
-            } else {
-                ProductAddShippingTracking.clickInsurance(shopId)
+        switchInsurance?.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked)  {
+                if (shipmentViewModel.isEditMode) {
+                    ProductEditShippingTracking.clickInsurance(shopId)
+                } else {
+                    ProductAddShippingTracking.clickInsurance(shopId)
+                }
             }
         }
+        setupOnBackPressed()
     }
 
     override fun onResume() {
@@ -162,27 +170,34 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
     }
 
     fun sendDataBack() {
-        if(!shipmentViewModel.isEditMode) {
-            inputAllDataInInputDraftModel()
-            val intent = Intent()
-            intent.putExtra(AddEditProductPreviewConstants.EXTRA_PRODUCT_INPUT_MODEL, productInputModel)
-            intent.putExtra(AddEditProductPreviewConstants.EXTRA_BACK_PRESSED, 3)
-            activity?.setResult(Activity.RESULT_OK, intent)
-            activity?.finish()
+        if(shipmentViewModel.isAddMode && !shipmentViewModel.isDraftMode) {
+            var dataBackPressed = NO_DATA
+            if(shipmentViewModel.isFirstMoved) {
+                inputAllDataInProductInputModel()
+                dataBackPressed = SHIPMENT_DATA
+                productInputModel?.requestCode = arrayOf(DETAIL_DATA, DESCRIPTION_DATA, SHIPMENT_DATA)
+            }
+            setFragmentResultWithBundle(REQUEST_KEY_ADD_MODE, dataBackPressed)
         } else {
-            activity?.finish()
+            setFragmentResultWithBundle(REQUEST_KEY_SHIPMENT)
         }
     }
 
-    fun onBackPressed() {
-        if (shipmentViewModel.isEditMode && !shipmentViewModel.isAddMode) {
-            ProductEditShippingTracking.clickBack(shopId)
-        } else {
-            ProductAddShippingTracking.clickBack(shopId)
-        }
+    private fun setupOnBackPressed() {
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                sendDataBack()
+
+                if (shipmentViewModel.isEditMode) {
+                    ProductEditShippingTracking.clickBack(shopId)
+                } else {
+                    ProductAddShippingTracking.clickBack(shopId)
+                }
+            }
+        })
     }
 
-    private fun inputAllDataInInputDraftModel() {
+    private fun inputAllDataInProductInputModel() {
         productInputModel?.shipmentInputModel?.apply {
             isMustInsurance = switchInsurance?.isChecked == true
             weight = tfWeightAmount.getTextIntOrZero()
@@ -198,14 +213,14 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
         tfWeightUnit.setText(weightUnit)
         tfWeightAmount.setText(inputModel.weight.toString())
         switchInsurance?.isChecked = inputModel.isMustInsurance
-        if (shipmentViewModel.isEditMode || shipmentViewModel.isAddMode) {
+        if (!(shipmentViewModel.isAddMode && shipmentViewModel.isFirstMoved)) {
             btnEnd?.visibility = View.GONE
             btnSave?.visibility = View.VISIBLE
         }
     }
 
     private fun showUnitWeightOption() {
-        if (shipmentViewModel.isEditMode && !shipmentViewModel.isAddMode) {
+        if (shipmentViewModel.isEditMode) {
             ProductEditShippingTracking.clickWeightDropDown(shopId)
         } else {
             ProductAddShippingTracking.clickWeightDropDown(shopId)
@@ -213,7 +228,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
         fragmentManager?.let {
             val optionPicker = OptionPicker()
             optionPicker.setCloseClickListener {
-                if (shipmentViewModel.isEditMode && !shipmentViewModel.isAddMode) {
+                if (shipmentViewModel.isEditMode) {
                     ProductEditShippingTracking.clickCancelChangeWeight(shopId)
                 } else {
                     ProductAddShippingTracking.clickCancelChangeWeight(shopId)
@@ -234,7 +249,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
             }
 
             optionPicker.setOnItemClickListener { selectedText: String, selectedPosition: Int ->
-                if (shipmentViewModel.isEditMode && !shipmentViewModel.isAddMode) {
+                if (shipmentViewModel.isEditMode) {
                     ProductEditShippingTracking.clickChooseWeight(shopId, selectedPosition == 0)
                 } else {
                     ProductAddShippingTracking.clickChooseWeight(shopId, selectedPosition == 0)
@@ -271,31 +286,27 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun submitInput() {
+    @SuppressLint("ClickableViewAccessibility")
+    private fun hideKeyboardWhenTouchOutside() {
+        mainLayout?.setOnTouchListener{ _, _ ->
+            activity?.apply {
+                KeyboardHandler.hideSoftKeyboard(this)
+            }
+            true
+        }
+    }
+
+    private fun submitInput(dataBackPressed: Int) {
         if (validateInputWeight(tfWeightAmount.getText())) {
-            val shipmentInputModel = ShipmentInputModel(
-                tfWeightAmount.getTextIntOrZero(),
-                selectedWeightPosition,
-                switchInsurance?.isChecked == true
-            )
-            val intent = Intent()
-            intent.putExtra(EXTRA_SHIPMENT_INPUT, shipmentInputModel)
-            activity?.setResult(Activity.RESULT_OK, intent)
-            activity?.finish()
+            inputAllDataInProductInputModel()
+            setFragmentResultWithBundle(REQUEST_KEY_ADD_MODE, dataBackPressed)
         }
     }
 
     private fun submitInputEdit() {
         if (validateInputWeight(tfWeightAmount.getText())) {
-            val shipmentInputModel = ShipmentInputModel(
-                    tfWeightAmount.getTextIntOrZero(),
-                    selectedWeightPosition,
-                    switchInsurance?.isChecked == true
-            )
-            val intent = Intent()
-            intent.putExtra(EXTRA_SHIPMENT_INPUT, shipmentInputModel)
-            activity?.setResult(Activity.RESULT_OK, intent)
-            activity?.finish()
+            inputAllDataInProductInputModel()
+            setFragmentResultWithBundle(REQUEST_KEY_SHIPMENT)
             if (shipmentViewModel.isEditMode) {
                 ProductEditShippingTracking.clickFinish(shopId, true)
             }
@@ -303,6 +314,20 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
             if (shipmentViewModel.isEditMode) {
                 ProductEditShippingTracking.clickFinish(shopId, false)
             }
+        }
+    }
+
+    private fun setFragmentResultWithBundle(requestKey: String, dataBackPressed: Int = SHIPMENT_DATA) {
+        arguments?.let {
+            val cacheManagerId = AddEditProductShipmentFragmentArgs.fromBundle(it).cacheManagerId
+            SaveInstanceCacheManager(requireContext(), cacheManagerId).put(EXTRA_PRODUCT_INPUT_MODEL, productInputModel)
+
+            val bundle = Bundle().apply {
+                putString(BUNDLE_CACHE_MANAGER_ID, cacheManagerId)
+                putInt(BUNDLE_BACK_PRESSED, dataBackPressed)
+            }
+            setNavigationResult(bundle,requestKey)
+            findNavController().navigateUp()
         }
     }
 }

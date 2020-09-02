@@ -12,7 +12,7 @@ class GiftBoxTapTapCrackUseCase @Inject constructor(@Named(GAMI_TAP_CRACK_EGG) v
         return gqlWrapper.getResponse(ResponseCrackResultEntity::class.java, queryString, map)
     }
 
-    fun getQueryParams(tokenId: String, campaignId: String): HashMap<String, Any> {
+    fun getQueryParams(tokenId: String, campaignId: Long): HashMap<String, Any> {
         val variables = HashMap<String, Any>()
         variables[GamificationConstants.GraphQlVariableKeys.TOKEN_ID] = tokenId
         variables[GamificationConstants.GraphQlVariableKeys.CAMPAIGN_ID] = campaignId

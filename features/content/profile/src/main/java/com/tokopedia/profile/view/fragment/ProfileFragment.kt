@@ -60,12 +60,14 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsBannerViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
 import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticCommissionUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticDetailType
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.ByMeInstastoryView
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
@@ -124,7 +126,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         FeedMultipleImageView.FeedMultipleImageViewListener,
         EmptyAffiliateViewHolder.OnEmptyItemClickedListener,
         HighlightAdapter.HighlightListener,
-        ShareBottomSheets.OnShareItemClickListener {
+        ShareBottomSheets.OnShareItemClickListener, TopAdsBannerViewHolder.TopAdsBannerListener {
 
     companion object {
         private const val PARAM_TAB_NAME = "{tab_name}"
@@ -361,7 +363,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onSwipeRefresh() {
-        footerOwn.visibility = View.GONE
         app_bar_layout.visibility = View.GONE
         super.onSwipeRefresh()
     }
@@ -398,6 +399,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 this,
                 this::onOtherProfilePostItemClick,
                 this,
+                this,
                 userSession)
     }
 
@@ -413,7 +415,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun loadData(page: Int) {
         if (isLoadingInitialData) {
-            footerOwn.visibility = View.GONE
             app_bar_layout.visibility = View.GONE
             presenter.getProfileFirstPage(userId, false)
         } else {
@@ -440,6 +441,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                     element.profileHeaderViewModel,
                     element.affiliatePostQuota
             )
+            setCreatePostButton(element.profileHeaderViewModel)
         }
         setProfileToolbar(element.profileHeaderViewModel, isFromLogin)
 
@@ -481,7 +483,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                         checkShouldChangeUsername(element.profileHeaderViewModel.link) { showShareBottomSheets(this) }
                         profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
                     }
-                    onlyOnePost -> showShowCaseDialog(shareProfile)
                     else -> showAfterPostToaster(affiliatePostQuota?.number != 0)
                 }
                 successPost = false
@@ -915,6 +916,12 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onShopItemClicked(positionInFeed: Int, adapterPosition: Int, shop: com.tokopedia.topads.sdk.domain.model.Shop) {
+        if (adapter.list[positionInFeed] is TopadsShopViewModel) {
+            val (_, dataList, _, _) = adapter.list[positionInFeed] as TopadsShopViewModel
+            if (adapterPosition != RecyclerView.NO_POSITION) {
+                presenter.doTopAdsTracker(dataList[adapterPosition].shopClickUrl, shop.id, shop.name, dataList[adapterPosition].shop.imageShop.xsEcs, true)
+            }
+        }
         context?.let {
             startActivity(getShopIntent(it, shop.id))
         }
@@ -998,6 +1005,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
+    override fun onTopAdsImpression(url: String, shopId: String, shopName: String, imageUrl: String) {
+        presenter.doTopAdsTracker(url, shopId, shopName, imageUrl, false)
+    }
+
     override fun onHighlightItemClicked(positionInFeed: Int, item: HighlightCardViewModel) {
 
     }
@@ -1070,12 +1081,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     override fun onVideoPlayerClicked(
             positionInFeed: Int,
             contentPosition: Int,
-            postId: String) {
-        RouteManager.route(
-                requireContext(),
-                ApplinkConstInternalContent.VIDEO_DETAIL,
-                postId
-        )
+            postId: String,
+            redirectUrl: String) {
+        onGoToLink(redirectUrl)
     }
 
     override fun onEmptyComponentClicked() {
@@ -1248,6 +1256,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         lateinit var action: View.OnClickListener
         action = if (!selfProfile) {
             iv_action_parallax.setImageDrawable(MethodChecker.getDrawable(requireContext(), com.tokopedia.design.R.drawable.ic_share_white))
+            iv_action2_parallax.gone()
             iv_action.gone()
             View.OnClickListener {
                 showShareBottomSheet(
@@ -1261,14 +1270,18 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             }
         } else {
             iv_action_parallax.setImageDrawable(MethodChecker.getDrawable(requireContext(), R.drawable.ic_af_graph))
+            iv_action2_parallax.setImageDrawable(MethodChecker.getDrawable(requireContext(), com.tokopedia.design.R.drawable.ic_share_white))
             iv_action.setImageDrawable(MethodChecker.getDrawable(requireContext(), R.drawable.ic_af_graph))
+            iv_action2.setImageDrawable(MethodChecker.getDrawable(requireContext(), com.tokopedia.design.R.drawable.ic_share_white))
             View.OnClickListener {
                 goToDashboard()
             }
         }
         if (!element.isAffiliate) {
             iv_action_parallax.visibility = View.GONE
+            iv_action2_parallax.visibility = View.GONE
             iv_action.visibility = View.GONE
+            iv_action2.visibility = View.GONE
         }
         iv_action.setOnClickListener(action)
         iv_action_parallax.setOnClickListener(action)
@@ -1370,22 +1383,22 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 goToFollower()
             }
 
-            override fun updateDrawState(ds: TextPaint?) {
+            override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
-                ds?.setUnderlineText(false)
-                ds?.color = MethodChecker.getColor(requireContext(), com.tokopedia.design.R.color.white)
+                ds.setUnderlineText(false)
+                ds.color = MethodChecker.getColor(requireContext(), com.tokopedia.design.R.color.white)
             }
         }
 
         val goToFollowing = object : ClickableSpan() {
-            override fun onClick(p0: View?) {
+            override fun onClick(p0: View) {
                 goToFollowing()
             }
 
-            override fun updateDrawState(ds: TextPaint?) {
+            override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
-                ds?.setUnderlineText(false)
-                ds?.color = MethodChecker.getColor(requireContext(), com.tokopedia.design.R.color.white)
+                ds.setUnderlineText(false)
+                ds.color = MethodChecker.getColor(requireContext(), com.tokopedia.design.R.color.white)
             }
         }
         if (spannableString.indexOf(followers) != -1) {
@@ -1478,18 +1491,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                           affiliatePostQuota: AffiliatePostQuota) {
         footer.visibility = View.VISIBLE
         if (headerViewModel.isOwner) {
-            footerOwn.visibility = View.VISIBLE
             bindCurationQuota(affiliatePostQuota)
-            addCuration.setOnClickListener {
-                goToAffiliateExplore()
-                profileAnalytics.eventClickTambahRekomendasi()
-            }
-            addCuration.setOnLongClickListener {
-                showToast(getString(R.string.profile_add_recommendation))
-                true
-            }
 
-            shareProfile.setOnClickListener {
+            val onClickListener = View.OnClickListener {
                 checkShouldChangeUsername(headerViewModel.link) {
                     byMeInstastoryView.setAvatarDrawable(iv_profile.drawable)
                     linkerData = showShareBottomSheet(
@@ -1502,22 +1506,26 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                     isShareProfile = true
                 }
             }
-            shareProfile.setOnLongClickListener {
-                showToast(getString(com.tokopedia.feedcomponent.R.string.profile_share_this_profile))
-                true
-            }
-        } else {
-            footerOwn.visibility = View.GONE
+
+            iv_action2_parallax.setOnClickListener(onClickListener)
+            iv_action2.setOnClickListener(onClickListener)
         }
     }
 
-    private fun bindCurationQuota(affiliatePostQuota: AffiliatePostQuota) {
-        if (affiliatePostQuota.number == 0) {
-            addCuration.text = getString(R.string.profile_see_by_me_prouct)
+    private fun setCreatePostButton(model: ProfileHeaderViewModel) {
+        if (model.isOwner && model.isCreatePostToggleOn) {
+            fab_create_post.visibility = View.VISIBLE
+            fab_create_post.setOnClickListener {
+                goToAffiliateExplore()
+                profileAnalytics.eventClickTambahRekomendasi()
+            }
         } else {
-            val addCurationText = "${getString(R.string.profile_add_rec)} (${affiliatePostQuota.number})"
-            addCuration.text = addCurationText
+            fab_create_post.visibility = View.GONE
         }
+
+    }
+
+    private fun bindCurationQuota(affiliatePostQuota: AffiliatePostQuota) {
     }
 
     private fun showAfterPostToast() {
@@ -1654,7 +1662,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     private fun doFollowAfterLogin() {
         swipeToRefresh.isRefreshing = true
-        footerOwn.visibility = View.GONE
         app_bar_layout.visibility = View.GONE
         presenter.getProfileFirstPage(userId, true)
     }
@@ -1879,5 +1886,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                             }
                         }
                 )
+    }
+
+    override fun onTopAdsViewImpression(bannerId: String, imageUrl: String) {
+
     }
 }

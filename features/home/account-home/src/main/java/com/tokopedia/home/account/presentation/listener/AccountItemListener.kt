@@ -2,6 +2,7 @@ package com.tokopedia.home.account.presentation.listener
 
 import com.tokopedia.home.account.presentation.viewmodel.*
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
 /**
@@ -13,11 +14,13 @@ interface AccountItemListener {
 
     fun onProfileCompletionClicked(element: BuyerCardViewModel)
 
-    fun onBuyerTokopointClicked(element: BuyerCardViewModel)
+    fun onBuyerTokopointClicked(element: String , title: String)
 
-    fun onBuyerVoucherClicked(element: BuyerCardViewModel)
+    fun onBuyerVoucherClicked(element: String , title: String)
 
     fun onByMeClicked()
+
+    fun onClickMemberDetail()
 
     fun onTokopediaPayLinkClicked()
 
@@ -79,11 +82,13 @@ interface AccountItemListener {
 
     fun onPowerMerchantSettingClicked()
 
-    fun onTokomemberClicked()
+    fun onTokomemberClicked(url: String, title:String)
 
     fun onAccountItemImpression(data: HashMap<String, Any>)
 
     fun getTrackingQueue(): TrackingQueue
 
     fun openRekeningPremiumWebLink(rekeningPremiumViewModel: RekeningPremiumViewModel)
+
+    fun getRemoteConfig(): RemoteConfig
 }

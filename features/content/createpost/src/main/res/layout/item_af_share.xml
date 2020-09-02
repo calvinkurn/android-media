@@ -24,7 +24,7 @@
             android:textColor="@color/Neutral_N700_96"
             app:typographyType="body_2"
             app:typographyWeight="bold"
-            tools:text="@string/af_share_facebook_option" />
+            tools:text="@string/cp_share_facebook_option" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/shareSubtitle"

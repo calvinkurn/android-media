@@ -49,6 +49,7 @@ android {
         exclude 'META-INF/atomicfu.kotlin_module'
         exclude 'META-INF/kotlinx-coroutines-core.kotlin_module'
         exclude 'META-INF/LICENSE.md'
+        exclude 'META-INF/**'
     }
 }
 
@@ -72,6 +73,7 @@ dependencies {
     implementation rootProject.ext.networkDependencies.okHttp
     implementation rootProject.ext.networkDependencies.loggingInterceptor
     implementation rootProject.ext.miscDependencies.gson
+    implementation rootProject.ext.miscDependencies.robust
 
     testImplementation rootProject.ext.testDependencies.mockitorCore
     testImplementation rootProject.ext.testDependencies.junit

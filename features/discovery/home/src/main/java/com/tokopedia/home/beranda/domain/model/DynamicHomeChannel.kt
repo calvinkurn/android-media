@@ -2,9 +2,9 @@ package com.tokopedia.home.beranda.domain.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tkpd.library.utils.CurrencyFormatHelper
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -70,7 +70,9 @@ data class DynamicHomeChannel(
             @SerializedName("homeAttribution")
             val homeAttribution: String = "",
             @SerializedName("has_close_button")
-            val hasCloseButton: Boolean = false
+            val hasCloseButton: Boolean = false,
+            @SerializedName("isAutoRefreshAfterExpired")
+            val isAutoRefreshAfterExpired: Boolean = false
     ) : ImpressHolder() {
 
         private var position: Int = 0
@@ -506,6 +508,7 @@ data class DynamicHomeChannel(
             const val LAYOUT_BANNER_GIF: String = "banner_image"
             const val LAYOUT_LEGO_3_IMAGE: String = "lego_3_image"
             const val LAYOUT_LEGO_4_IMAGE: String = "lego_4_image"
+            const val LAYOUT_LEGO_4_AUTO: String = "4_banners_auto"
             const val LAYOUT_SPRINT_CAROUSEL: String = "sprint_carousel"
             const val LAYOUT_BU_WIDGET: String = "bu_widget"
             const val LAYOUT_TOPADS: String = "topads"
@@ -515,6 +518,7 @@ data class DynamicHomeChannel(
             const val LAYOUT_BANNER_CAROUSEL: String = "banner_carousel"
             const val LAYOUT_REVIEW: String = "product_review"
             const val LAYOUT_PLAY_BANNER: String = "play_widget"
+            const val LAYOUT_PLAY_CAROUSEL_BANNER: String = "play_carousel"
             const val LAYOUT_DEFAULT_ERROR: String = "default_error"
             const val LAYOUT_LIST_CAROUSEL: String = "list_carousel"
             const val LAYOUT_POPULAR_KEYWORD: String = "popular_keyword"
@@ -524,6 +528,7 @@ data class DynamicHomeChannel(
             const val LAYOUT_RECHARGE_RECOMMENDATION: String = "dg_bills"
             const val LAYOUT_SALAM_WIDGET: String = "salam_todo"
             const val LAYOUT_CATEGORY_WIDGET: String = "category_widget"
+            const val LAYOUT_BANNER_ADS: String = "banner_ads"
             const val channelId: String = "channelId"
             const val campaignCodeLabel: String = "campaignCode"
         }
@@ -628,9 +633,23 @@ data class DynamicHomeChannel(
             @SerializedName("rating")
             var rating: Int = 0,
             @SerializedName("count_review")
-            val countReview: Int = 0
+            val countReview: Int = 0,
+            @Expose
+            @SerializedName("benefit")
+            val benefit: Benefit = Benefit(),
+            @Expose
+            @SerializedName("textColor")
+            val textColor: String = ""
     )
 
+    data class Benefit(
+            @Expose
+            @SerializedName("type")
+            val type: String = "",
+            @Expose
+            @SerializedName("value")
+            val value: String = ""
+    )
     data class Header(
             @Expose
             @SerializedName("id")

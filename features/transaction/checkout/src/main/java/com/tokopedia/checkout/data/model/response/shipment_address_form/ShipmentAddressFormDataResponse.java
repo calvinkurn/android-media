@@ -59,9 +59,9 @@ public class ShipmentAddressFormDataResponse {
     @SerializedName("is_show_onboarding")
     @Expose
     private boolean isShowOnboarding;
-    @SerializedName("is_ineligbile_promo_dialog_enabled")
+    @SerializedName("is_ineligible_promo_dialog_enabled")
     @Expose
-    private boolean isIneligbilePromoDialogEnabled;
+    private boolean isIneligiblePromoDialogEnabled;
     @SerializedName("disabled_features")
     @Expose
     private List<String> disabledFeatures = new ArrayList<>();
@@ -150,8 +150,8 @@ public class ShipmentAddressFormDataResponse {
         return isShowOnboarding;
     }
 
-    public boolean isIneligbilePromoDialogEnabled() {
-        return isIneligbilePromoDialogEnabled;
+    public boolean isIneligiblePromoDialogEnabled() {
+        return isIneligiblePromoDialogEnabled;
     }
 
     public List<String> getDisabledFeatures() {

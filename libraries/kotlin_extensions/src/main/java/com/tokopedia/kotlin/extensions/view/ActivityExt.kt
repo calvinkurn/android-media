@@ -76,3 +76,9 @@ fun Activity.setStatusBarColor(color: Int) {
     window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
     window.statusBarColor = color;
 }
+
+fun Activity.getIntIntentExtra(key: String, defValue: Int): Lazy<Int> {
+    return lazy {
+        intent?.getIntExtra(key, defValue) ?: defValue
+    }
+}

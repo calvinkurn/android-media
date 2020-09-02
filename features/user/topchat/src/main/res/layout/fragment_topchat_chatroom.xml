@@ -9,15 +9,36 @@
     android:focusableInTouchMode="true"
     android:orientation="vertical">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/rv_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/footer"
         android:layout_alignParentTop="true"
         android:layout_gravity="center"
         android:descendantFocusability="beforeDescendants"
-        android:scrollbars="vertical" />
+        android:scrollbars="vertical">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/footer"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="center"
+            android:descendantFocusability="beforeDescendants"
+            android:scrollbars="vertical" />
+
+        <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
+            android:id="@+id/fb_new_unread_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:visibility="gone"
+            app:fbType="group"
+            tools:visibility="visible" />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <com.tokopedia.topchat.chatroom.view.custom.TransactionOrderProgressLayout
         android:id="@+id/ll_transaction_progress"
@@ -36,25 +57,31 @@
         android:layout_height="wrap_content"
         android:background="@color/topchat_header_chat"
         android:gravity="center_vertical"
-        android:minHeight="@dimen/dp_topchat_56"
         android:orientation="horizontal"
-        android:padding="@dimen/spacing_lvl4"
+        android:paddingStart="@dimen/spacing_lvl4"
+        android:paddingTop="@dimen/dp_topchat_10"
+        android:paddingEnd="@dimen/spacing_lvl4"
+        android:paddingBottom="@dimen/dp_topchat_10"
         android:visibility="gone"
-        tools:visibility="invisible">
+        tools:visibility="visible">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_topchat_85"
+            android:layout_marginRight="@dimen/dp_topchat_85"
             android:layout_weight="1"
             android:textColor="@color/white"
-            tools:text="Terjadi gangguan pada koneksi. mencoba menghubungkan..." />
+            app:typographyType="body_3"
+            tools:text="@string/error_no_connection_retrying" />
 
-        <ProgressBar
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/action"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white" />
+            android:layout_width="@dimen/layout_lvl2"
+            android:layout_height="@dimen/layout_lvl2"
+            android:textColor="@color/white"
+            app:loader_type="circular_white" />
 
     </LinearLayout>
 
@@ -72,30 +99,31 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/spacing_lvl4"
-            android:layout_marginTop="@dimen/dp_topchat_5"
+            android:layout_marginTop="@dimen/spacing_lvl4"
             android:layout_marginRight="@dimen/spacing_lvl4"
-            android:layout_marginBottom="@dimen/spacing_lvl4"
-            android:background="@drawable/border_green_white_box"
-            android:padding="@dimen/spacing_lvl3"
+            android:layout_marginBottom="@dimen/spacing_lvl5"
             android:visibility="gone"
             tools:visibility="visible">
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/blocked_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/chat_blocked_text"
-                android:textColor="@color/black_70"
-                android:textSize="@dimen/fontSize_lvl2" />
+                android:gravity="center_horizontal"
+                android:text="@string/desc_chat_blocked"
+                android:textColor="@color/Neutral_N700_68"
+                app:typographyType="body_3" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/enable_chat_textView"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/blocked_text"
+                android:gravity="center_horizontal"
                 android:text="@string/enable_chat_settings"
-                android:textColor="@color/tkpd_main_green"
-                android:textSize="@dimen/fontSize_lvl2" />
+                android:textColor="@color/light_G500"
+                app:typographyType="body_3"
+                app:typographyWeight="bold" />
 
         </RelativeLayout>
 
@@ -162,10 +190,10 @@
                     android:maxLines="5"
                     android:paddingStart="@dimen/spacing_lvl7"
                     android:paddingLeft="@dimen/spacing_lvl7"
-                    android:paddingTop="@dimen/dp_topchat_10"
+                    android:paddingTop="@dimen/dp_topchat_9"
                     android:paddingEnd="@dimen/spacing_lvl8"
                     android:paddingRight="@dimen/spacing_lvl8"
-                    android:paddingBottom="@dimen/dp_topchat_10"
+                    android:paddingBottom="@dimen/dp_topchat_11"
                     android:textSize="@dimen/fontSize_lvl4"
                     tools:text="@tools:sample/lorem/random" />
 
@@ -176,6 +204,7 @@
                     android:layout_alignStart="@+id/new_comment"
                     android:layout_alignLeft="@+id/new_comment"
                     android:layout_alignBottom="@+id/new_comment"
+                    android:layout_marginBottom="@dimen/dp_topchat_1"
                     android:padding="@dimen/spacing_lvl3"
                     app:srcCompat="@drawable/ic_topchat_sticker" />
 
@@ -188,6 +217,7 @@
                     android:layout_alignBottom="@+id/new_comment"
                     android:layout_marginEnd="@dimen/spacing_lvl1"
                     android:layout_marginRight="@dimen/spacing_lvl1"
+                    android:layout_marginBottom="@dimen/dp_topchat_1"
                     android:padding="@dimen/spacing_lvl3"
                     app:srcCompat="@drawable/ic_add_grey_chat_common" />
 
@@ -203,15 +233,5 @@
         </LinearLayout>
 
     </LinearLayout>
-
-    <ProgressBar
-        android:id="@+id/progress"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/footer"
-        android:layout_alignParentTop="true"
-        android:layout_centerInParent="true"
-        android:visibility="gone"
-        tools:visibility="visible" />
 
 </RelativeLayout>

@@ -1,7 +1,6 @@
 package com.tokopedia.product.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
 import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
@@ -14,36 +13,32 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
-import com.tokopedia.product.detail.common.data.model.carttype.CartRedirection
-import com.tokopedia.product.detail.common.data.model.carttype.CartRedirectionResponse
-import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.pdplayout.BasicInfo
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
-import com.tokopedia.product.detail.data.model.*
+import com.tokopedia.product.detail.data.model.ProductInfoP2Login
+import com.tokopedia.product.detail.data.model.ProductInfoP2Other
+import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
+import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductSnapshotDataModel
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
-import com.tokopedia.product.detail.estimasiongkir.data.model.v3.AddressModel
-import com.tokopedia.product.detail.estimasiongkir.data.model.v3.RatesModel
-import com.tokopedia.product.detail.estimasiongkir.data.model.v3.SummaryText
+import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkGoToWriteDiscussion
+import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.usecase.*
 import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
-import com.tokopedia.product.util.JsonFormatter
+import com.tokopedia.product.util.ProductDetailTestUtil
 import com.tokopedia.product.util.TestDispatcherProvider
 import com.tokopedia.product.warehouse.model.ProductActionSubmit
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
-import com.tokopedia.recommendation_widget_common.data.RecomendationEntity
-import com.tokopedia.recommendation_widget_common.data.mapper.RecommendationEntityMapper
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCore
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -64,11 +59,6 @@ import rx.Observable
 @ExperimentalCoroutinesApi
 class DynamicProductDetailViewModelTest {
 
-    companion object {
-        const val RECOM_WIDGET_WITH_ONE_TOPADS_JSON = "json/recom_widget_with_one_topads.json"
-        const val RECOM_WIDGET_WITH_ZERO_TOPADS_JSON = "json/recom_widget_with_zero_topads.json"
-    }
-
     @RelaxedMockK
     lateinit var userSessionInterface: UserSessionInterface
 
@@ -79,16 +69,13 @@ class DynamicProductDetailViewModelTest {
     lateinit var getPdpLayoutUseCase: GetPdpLayoutUseCase
 
     @RelaxedMockK
-    lateinit var getProductInfoP2ShopUseCase: GetProductInfoP2ShopUseCase
-
-    @RelaxedMockK
     lateinit var getProductInfoP2LoginUseCase: GetProductInfoP2LoginUseCase
 
     @RelaxedMockK
-    lateinit var getProductInfoP2GeneralUseCase: GetProductInfoP2GeneralUseCase
+    lateinit var getProductInfoP2OtherUseCase: GetProductInfoP2OtherUseCase
 
     @RelaxedMockK
-    lateinit var getProductInfoP3RateEstimateUseCase: GetProductInfoP3RateEstimateUseCase
+    lateinit var getProductInfoP3UseCase: GetProductInfoP3UseCase
 
     @RelaxedMockK
     lateinit var toggleFavoriteUseCase: ToggleFavoriteUseCase
@@ -127,16 +114,18 @@ class DynamicProductDetailViewModelTest {
     lateinit var addToCartOccUseCase: AddToCartOccUseCase
 
     @RelaxedMockK
-    lateinit var getProductInfoP3VariantUseCase: GetProductInfoP3VariantUseCase
-
-    @RelaxedMockK
     lateinit var toggleNotifyMeUseCase: ToggleNotifyMeUseCase
 
     @RelaxedMockK
-    lateinit var sendTopAdsUseCase: SendTopAdsUseCase
+    lateinit var discussionMostHelpfulUseCase: DiscussionMostHelpfulUseCase
 
     @RelaxedMockK
-    lateinit var discussionMostHelpfulUseCase: DiscussionMostHelpfulUseCase
+    lateinit var getProductInfoP2DataUseCase: GetProductInfoP2DataUseCase
+
+    @RelaxedMockK
+    lateinit var topAdsImageViewUseCase: TopAdsImageViewUseCase
+
+    private lateinit var spykViewModel : DynamicProductDetailViewModel
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -144,50 +133,91 @@ class DynamicProductDetailViewModelTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
+        spykViewModel = spyk(DynamicProductDetailViewModel(TestDispatcherProvider(), stickyLoginUseCase, getPdpLayoutUseCase, getProductInfoP2LoginUseCase, getProductInfoP2OtherUseCase, getProductInfoP2DataUseCase, getProductInfoP3UseCase, toggleFavoriteUseCase, removeWishlistUseCase, addWishListUseCase, getRecommendationUseCase,
+                moveProductToWarehouseUseCase, moveProductToEtalaseUseCase, trackAffiliateUseCase, submitHelpTicketUseCase, updateCartCounterUseCase, addToCartUseCase, addToCartOcsUseCase, addToCartOccUseCase, toggleNotifyMeUseCase, discussionMostHelpfulUseCase, topAdsImageViewUseCase, userSessionInterface)
+        )
     }
 
     @After
     fun setupAfter() {
-        viewModel.p3VariantResponse.removeObserver { }
-        viewModel.productInfoP3RateEstimate.removeObserver { }
+        viewModel.productInfoP3.removeObserver { }
     }
 
     private val viewModel by lazy {
-        DynamicProductDetailViewModel(TestDispatcherProvider(), stickyLoginUseCase, getPdpLayoutUseCase, getProductInfoP2ShopUseCase, getProductInfoP2LoginUseCase, getProductInfoP2GeneralUseCase, getProductInfoP3RateEstimateUseCase, toggleFavoriteUseCase, removeWishlistUseCase, addWishListUseCase, getRecommendationUseCase,
-                moveProductToWarehouseUseCase, moveProductToEtalaseUseCase, trackAffiliateUseCase, submitHelpTicketUseCase, updateCartCounterUseCase, addToCartUseCase, addToCartOcsUseCase, addToCartOccUseCase, getProductInfoP3VariantUseCase, toggleNotifyMeUseCase, sendTopAdsUseCase, discussionMostHelpfulUseCase, userSessionInterface)
+        DynamicProductDetailViewModel(TestDispatcherProvider(), stickyLoginUseCase, getPdpLayoutUseCase, getProductInfoP2LoginUseCase, getProductInfoP2OtherUseCase, getProductInfoP2DataUseCase, getProductInfoP3UseCase, toggleFavoriteUseCase, removeWishlistUseCase, addWishListUseCase, getRecommendationUseCase,
+                moveProductToWarehouseUseCase, moveProductToEtalaseUseCase, trackAffiliateUseCase, submitHelpTicketUseCase, updateCartCounterUseCase, addToCartUseCase, addToCartOcsUseCase, addToCartOccUseCase, toggleNotifyMeUseCase, discussionMostHelpfulUseCase,topAdsImageViewUseCase, userSessionInterface)
     }
 
     //=========================================VARIABLE SECTION======================================//
     //==============================================================================================//
 
     @Test
-    fun `has shop authority`() {
-        val shopInfo = ShopInfo(isAllowManage = 1)
-        every {
-            viewModel.isShopOwner()
-        } returns true
+    fun `on success update variable p1`() {
+        viewModel.updateDynamicProductInfoData(DynamicProductInfoP1())
 
-        viewModel.shopInfo = shopInfo
-
-        val hasShopAuthority = viewModel.hasShopAuthority()
-
-        Assert.assertTrue(hasShopAuthority)
-        viewModel.shopInfo = null
+        Assert.assertNotNull(viewModel.getDynamicProductInfoP1)
     }
 
     @Test
-    fun `has not shop authority`() {
-        val shopInfo = ShopInfo(isAllowManage = 0)
+    fun `on success update notify me data`() {
+        viewModel.updateNotifyMeData()
+    }
+
+    @Test
+    fun `on success update talk action`() {
+        viewModel.updateLastAction(DynamicProductDetailTalkGoToWriteDiscussion)
+        Assert.assertTrue(viewModel.talkLastAction is DynamicProductDetailTalkGoToWriteDiscussion)
+    }
+
+    @Test
+    fun `has shop authority`() {
+        val mockAllowManage = ShopInfo(isAllowManage = 1)
+
         every {
-            viewModel.isShopOwner()
+            spykViewModel.getShopInfo()
+        } returns mockAllowManage
+
+        every {
+            spykViewModel.isShopOwner()
+        } returns true
+
+        val hasShopAuthority = spykViewModel.hasShopAuthority()
+
+        Assert.assertTrue(hasShopAuthority)
+    }
+
+    @Test
+    fun `has not shop authority shopowner`() {
+        val mockAllowManage = ShopInfo(isAllowManage = 1)
+
+        every {
+            spykViewModel.getShopInfo()
+        } returns mockAllowManage
+
+        every {
+            spykViewModel.isShopOwner()
         } returns false
 
-        viewModel.shopInfo = shopInfo
+        val hasShopAuthority = spykViewModel.hasShopAuthority()
 
-        val hasShopAuthority = viewModel.hasShopAuthority()
+        Assert.assertTrue(hasShopAuthority)
+    }
 
-        Assert.assertFalse(hasShopAuthority)
-        viewModel.shopInfo = null
+    @Test
+    fun `has not shop authority allow manage`() {
+        val mockAllowManage = ShopInfo(isAllowManage = 0)
+
+        every {
+            spykViewModel.getShopInfo()
+        } returns mockAllowManage
+
+        every {
+            spykViewModel.isShopOwner()
+        } returns true
+
+        val hasShopAuthority = spykViewModel.hasShopAuthority()
+
+        Assert.assertTrue(hasShopAuthority)
     }
 
     @Test
@@ -394,176 +424,6 @@ class DynamicProductDetailViewModelTest {
 
     //==================================TOP ADS SECTION=============================================//
     //==============================================================================================//
-    @Test
-    fun `click recom product with zero top ads`() {
-        var topAdsClickUrl = ""
-        val slotUrl = slot<String>()
-        val asdData = JsonFormatter.createMockGraphqlSuccessResponse(RECOM_WIDGET_WITH_ZERO_TOPADS_JSON, RecomendationEntity::class.java)
-        val mockRecomData = asdData.productRecommendationWidget?.data!!
-        val recomWidget = RecommendationEntityMapper.mappingToRecommendationModel(mockRecomData)
-
-        //Top Ads Counter
-        var numberOfTopAdsClicked = 0
-
-        var listOfProductIdIsTopads = recomWidget.first().recommendationItemList.filter {
-            it.isTopAds
-        }.map {
-            it.productId
-        }
-
-        //Mock Click TopAds
-        recomWidget.first().recommendationItemList.forEach {
-            every {
-                sendTopAdsUseCase.executeOnBackground(capture(slotUrl))
-            } answers {
-                topAdsClickUrl = slotUrl.captured
-            }
-
-            if (it.isTopAds) {
-                numberOfTopAdsClicked++
-                viewModel.sendTopAds(it.clickUrl)
-                print(it.clickUrl)
-                verify {
-                    viewModel.sendTopAds(it.clickUrl)
-                }
-                Assert.assertTrue(it.productId in listOfProductIdIsTopads)
-                Assert.assertTrue(topAdsClickUrl == it.clickUrl)
-            }
-
-            verify(inverse = true) {
-                viewModel.sendTopAds(it.clickUrl)
-            }
-        }
-        Assert.assertTrue(0 == numberOfTopAdsClicked)
-    }
-
-    @Test
-    fun `click recom product with one top ads`() {
-        var topAdsClickUrl = ""
-        val slotUrl = slot<String>()
-        val asdData = JsonFormatter.createMockGraphqlSuccessResponse(RECOM_WIDGET_WITH_ONE_TOPADS_JSON, RecomendationEntity::class.java)
-        val mockRecomData = asdData.productRecommendationWidget?.data!!
-        val recomWidget = RecommendationEntityMapper.mappingToRecommendationModel(mockRecomData)
-
-        //Top Ads Counter
-        var numberOfTopAdsClicked = 0
-        val numberOfTopAdsClickedMock = recomWidget.first().recommendationItemList.count {
-            it.isTopAds
-        }
-
-        var listOfProductIdIsTopads = recomWidget.first().recommendationItemList.filter {
-            it.isTopAds
-        }.map {
-            it.productId
-        }
-
-        //Mock Click TopAds
-        recomWidget.first().recommendationItemList.forEach {
-            every {
-                sendTopAdsUseCase.executeOnBackground(capture(slotUrl))
-            } answers {
-                topAdsClickUrl = slotUrl.captured
-            }
-
-            if (it.isTopAds) {
-                numberOfTopAdsClicked++
-                viewModel.sendTopAds(it.clickUrl)
-                print(it.clickUrl)
-                verify {
-                    viewModel.sendTopAds(it.clickUrl)
-                }
-                Assert.assertTrue(it.productId in listOfProductIdIsTopads)
-                Assert.assertTrue(topAdsClickUrl == it.clickUrl)
-            }
-        }
-        Assert.assertTrue(numberOfTopAdsClickedMock == numberOfTopAdsClicked)
-    }
-
-    @Test
-    fun `impress recom product with zero top ads`() {
-        var topAdsClickUrl = ""
-        val slotUrl = slot<String>()
-        val asdData = JsonFormatter.createMockGraphqlSuccessResponse(RECOM_WIDGET_WITH_ZERO_TOPADS_JSON, RecomendationEntity::class.java)
-        val mockRecomData = asdData.productRecommendationWidget?.data!!
-        val recomWidget = RecommendationEntityMapper.mappingToRecommendationModel(mockRecomData)
-
-        //Top Ads Counter
-        var numberOfTopAdsClicked = 0
-
-        var listOfProductIdIsTopads = recomWidget.first().recommendationItemList.filter {
-            it.isTopAds
-        }.map {
-            it.productId
-        }
-
-        //Mock Click TopAds
-        recomWidget.first().recommendationItemList.forEach {
-            every {
-                sendTopAdsUseCase.executeOnBackground(capture(slotUrl))
-            } answers {
-                topAdsClickUrl = slotUrl.captured
-            }
-
-            if (it.isTopAds) {
-                numberOfTopAdsClicked++
-                viewModel.sendTopAds(it.trackerImageUrl)
-                verify {
-                    viewModel.sendTopAds(it.trackerImageUrl)
-                }
-                Assert.assertTrue(it.productId in listOfProductIdIsTopads)
-                Assert.assertTrue(topAdsClickUrl == it.trackerImageUrl)
-            }
-
-            verify(inverse = true) {
-                viewModel.sendTopAds(it.trackerImageUrl)
-            }
-        }
-        Assert.assertTrue(0 == numberOfTopAdsClicked)
-    }
-
-    @Test
-    fun `impress recom with one top ads`() {
-        var topAdsClickUrl = ""
-        val slotUrl = slot<String>()
-        val asdData = JsonFormatter.createMockGraphqlSuccessResponse(RECOM_WIDGET_WITH_ONE_TOPADS_JSON, RecomendationEntity::class.java)
-        val mockRecomData = asdData.productRecommendationWidget?.data!!
-        val recomWidget = RecommendationEntityMapper.mappingToRecommendationModel(mockRecomData)
-
-        //Top Ads Counter
-        var numberOfTopAds = 0
-        val numberOfTopAdsMock = recomWidget.first().recommendationItemList.count {
-            it.isTopAds
-        }
-
-        var listOfProductIdIsTopads = recomWidget.first().recommendationItemList.filter {
-            it.isTopAds
-        }.map {
-            it.productId
-        }
-
-        //Mock Click TopAds
-        recomWidget.first().recommendationItemList.forEach {
-            every {
-                sendTopAdsUseCase.executeOnBackground(capture(slotUrl))
-            } answers {
-                topAdsClickUrl = slotUrl.captured
-            }
-
-            if (it.isTopAds) {
-                numberOfTopAds++
-                viewModel.sendTopAds(it.trackerImageUrl)
-
-                verify {
-                    viewModel.sendTopAds(it.trackerImageUrl)
-                }
-
-                Assert.assertTrue(it.productId in listOfProductIdIsTopads)
-                Assert.assertTrue(topAdsClickUrl == it.trackerImageUrl)
-            }
-        }
-        Assert.assertTrue(numberOfTopAdsMock == numberOfTopAds)
-    }
-
     /**
      * RecommendationWidget
      */
@@ -607,26 +467,58 @@ class DynamicProductDetailViewModelTest {
      * GetProductInfoP1
      */
     @Test
-    fun onSuccessGetProductInfo() {
-        val data = ProductDetailDataModel(listOfLayout = mutableListOf(ProductSnapshotDataModel()))
+    fun `test correct product id parameter pdplayout`(){
+        val dataP1 = ProductDetailTestUtil.getMockPdpLayout()
+        val productId = "123"
+        val productParams = ProductParams(productId, "", "", "", "", "")
+
+        `co every p1 success`(dataP1)
+
+        coEvery {
+            getPdpLayoutUseCase.requestParams
+        } returns GetPdpLayoutUseCase.createParams(productParams.productId
+                ?: "", productParams.shopDomain ?: "", productParams.productName ?: "", productParams.warehouseId ?: "", "")
+
+        viewModel.getProductP1(productParams, true, false, "")
+
+        Assert.assertTrue(getPdpLayoutUseCase.requestParams.getString(PARAM_PRODUCT_ID, "") == productId)
+        Assert.assertTrue(getPdpLayoutUseCase.requestParams.getString(PARAM_PRODUCT_KEY, "").isEmpty())
+        Assert.assertTrue(getPdpLayoutUseCase.requestParams.getString(PARAM_SHOP_DOMAIN, "").isEmpty())
+    }
+
+    @Test
+    fun `test correct shop domain and shop key parameter pdplayout`(){
+        val dataP1 = ProductDetailTestUtil.getMockPdpLayout()
+        val shopDomain = "shopYehez"
+        val productKey = "productYehez"
+        val productParams = ProductParams("", shopDomain, productKey, "", "", "")
+
+        `co every p1 success`(dataP1)
+
+        coEvery {
+            getPdpLayoutUseCase.requestParams
+        } returns GetPdpLayoutUseCase.createParams(productParams.productId
+                ?: "", productParams.shopDomain ?: "", productParams.productName ?: "", productParams.warehouseId ?: "", "")
+
+        viewModel.getProductP1(productParams, true, false, " ")
+
+        Assert.assertTrue(getPdpLayoutUseCase.requestParams.getString(PARAM_PRODUCT_ID, "").isEmpty())
+        Assert.assertTrue(getPdpLayoutUseCase.requestParams.getString(PARAM_PRODUCT_KEY, "") == productKey)
+        Assert.assertTrue(getPdpLayoutUseCase.requestParams.getString(PARAM_SHOP_DOMAIN, "") == shopDomain)
+    }
+
+    @Test
+    fun `on success get product info login`() {
+        val dataP1 = ProductDetailTestUtil.getMockPdpLayout()
         val productParams = ProductParams("", "", "", "", "", "")
 
-        val cartRedirectionData = CartRedirectionResponse(CartRedirection(data = listOf(CartTypeData(), CartTypeData())))
-        val shopCore = ShopCore(domain = anyString())
-        val dataP2Shop = ProductInfoP2ShopData(shopInfo = ShopInfo(shopCore = shopCore), tradeinResponse = TradeinResponse(), cartRedirectionResponse = cartRedirectionData)
-
-        val dataP2Login = ProductInfoP2Login(pdpAffiliate = TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate())
-        val dataP2General = ProductInfoP2General()
-
-        val dataP3RateEstimate = ProductInfoP3(SummaryText(), RatesModel(), false, AddressModel())
-        val dataP3Variant = ProductInfoP3Variant(CartRedirectionResponse())
-
-        viewModel.p3VariantResponse.observeForever { }
-        viewModel.productInfoP3RateEstimate.observeForever { }
+        viewModel.productInfoP3.observeForever { }
 
         every {
             viewModel.userId
         } returns "123"
+
+        viewModel.enableCaching = false
 
         every {
             userSessionInterface.isLoggedIn
@@ -636,81 +528,78 @@ class DynamicProductDetailViewModelTest {
             viewModel.isUserSessionActive
         } returns true
 
-        coEvery {
-            getPdpLayoutUseCase.executeOnBackground()
-        } returns data
+       `co every p1 success`(dataP1)
 
-        coEvery {
-            getProductInfoP2ShopUseCase.executeOnBackground()
-        } returns dataP2Shop
+        viewModel.getProductP1(productParams, true, false, "")
 
-        coEvery {
-            getProductInfoP2LoginUseCase.executeOnBackground()
-        } returns dataP2Login
+        `co verify p1 success`()
 
-        coEvery {
-            getProductInfoP2GeneralUseCase.executeOnBackground()
-        } returns dataP2General
+        Assert.assertTrue(viewModel.productLayout.value is Success)
+        Assert.assertNotNull(viewModel.p2Data.value)
+        Assert.assertNotNull(viewModel.p2Other.value)
+        Assert.assertNotNull(viewModel.p2Login.value)
+        Assert.assertNotNull(viewModel.productInfoP3.value)
 
-        coEvery {
-            getProductInfoP3RateEstimateUseCase.executeOnBackground()
-        } returns dataP3RateEstimate
+        Assert.assertFalse(viewModel.enableCaching)
 
-        coEvery {
-            getProductInfoP3VariantUseCase.executeOnBackground()
-        } returns dataP3Variant
+        val p1Result = (viewModel.productLayout.value as Success).data
+        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.PRODUCT_VARIANT_INFO } == 0)
+        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO } == 1)
+        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.VALUE_PROP } == 1)
+        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO } == 1)
+        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.TRADE_IN } == 1)
+        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.BY_ME } == 1)
+    }
 
-        viewModel.getProductP1(productParams)
-
+    private fun `co verify p1 success`(){
         //P1
         coVerify {
             getPdpLayoutUseCase.executeOnBackground()
         }
 
-        Assert.assertTrue(viewModel.productLayout.value is Success)
-
-        //P2
         coVerify {
-            getProductInfoP2ShopUseCase.executeOnBackground()
+            getProductInfoP2OtherUseCase.executeOnBackground(any(), any())
         }
 
-        Assert.assertNotNull(viewModel.shopInfo)
-        Assert.assertNotNull(viewModel.p2ShopDataResp.value)
-        Assert.assertNotNull(viewModel.p2ShopDataResp.value?.shopInfo)
-        Assert.assertNotNull(viewModel.p2ShopDataResp.value?.nearestWarehouse)
-        Assert.assertNotNull(viewModel.p2ShopDataResp.value?.tradeinResponse)
-        Assert.assertEquals(viewModel.p2ShopDataResp.value?.shopCod, anyBoolean())
-        Assert.assertTrue(viewModel.p2ShopDataResp.value?.cartRedirectionResponse?.cartRedirection?.data?.size != 0)
+        coVerify {
+            getProductInfoP2DataUseCase.executeOnBackground(any(), any())
+        }
+
+        coVerify {
+            getProductInfoP3UseCase.executeOnBackground(any(), any(), any())
+        }
 
         coVerify {
             getProductInfoP2LoginUseCase.executeOnBackground()
         }
-        Assert.assertNotNull(viewModel.p2Login.value)
-        Assert.assertNotNull(viewModel.p2Login.value?.pdpAffiliate)
+    }
 
-        coVerify {
-            getProductInfoP2GeneralUseCase.executeOnBackground()
-        }
-        Assert.assertNotNull(viewModel.p2General.value)
+    private fun `co every p1 success`(dataP1 : ProductDetailDataModel){
+        coEvery {
+            getPdpLayoutUseCase.executeOnBackground()
+        } returns dataP1
 
-        //P3
-        coVerify {
-            getProductInfoP3VariantUseCase.executeOnBackground()
-        }
-        coVerify {
-            getProductInfoP3RateEstimateUseCase.executeOnBackground()
-        }
+        coEvery {
+            getProductInfoP2LoginUseCase.executeOnBackground()
+        } returns ProductInfoP2Login()
 
-        Assert.assertNotNull(viewModel.p3VariantResponse.value)
-        Assert.assertNotNull(viewModel.productInfoP3RateEstimate.value)
-        Assert.assertNotNull(viewModel.productInfoP3RateEstimate.value?.rateEstSummarizeText)
-        Assert.assertNotNull(viewModel.productInfoP3RateEstimate.value?.ratesModel)
-        Assert.assertEquals(viewModel.productInfoP3RateEstimate.value?.userCod, anyBoolean())
+        coEvery {
+            getProductInfoP3UseCase.executeOnBackground(any(), any(), any())
+        } returns ProductInfoP3()
+
+        coEvery {
+            getProductInfoP2DataUseCase.executeOnBackground(any(), any())
+        } returns ProductInfoP2UiData()
+
+        coEvery {
+            getProductInfoP2OtherUseCase.executeOnBackground(any(), any())
+        } returns ProductInfoP2Other()
     }
 
     @Test
-    fun onErrorGetProductInfo() {
+    fun `on error get product info login`() {
         val productParams = ProductParams("", "", "", "", "", "")
+        viewModel.enableCaching = true
 
         coEvery {
             getPdpLayoutUseCase.executeOnBackground()
@@ -722,71 +611,45 @@ class DynamicProductDetailViewModelTest {
             getPdpLayoutUseCase.executeOnBackground()
         }
         Assert.assertTrue(viewModel.productLayout.value is Fail)
+        Assert.assertNull(viewModel.productInfoP3.value)
+        Assert.assertNull(viewModel.p2Data.value)
+        Assert.assertNull(viewModel.p2Login.value)
+        Assert.assertNull(viewModel.p2Other.value)
 
-        //P2
-        coVerify(inverse = true) {
-            getProductInfoP2ShopUseCase.executeOnBackground()
-        }
+        Assert.assertTrue(viewModel.enableCaching)
 
         coVerify(inverse = true) {
             getProductInfoP2LoginUseCase.executeOnBackground()
         }
 
         coVerify(inverse = true) {
-            getProductInfoP2GeneralUseCase.executeOnBackground()
+            getProductInfoP2DataUseCase.executeOnBackground()
         }
 
-        coVerify(inverse = true) { getProductInfoP3VariantUseCase.executeOnBackground() }
-
-        //P3
         coVerify(inverse = true) {
-            getProductInfoP3RateEstimateUseCase.executeOnBackground()
+            getProductInfoP2OtherUseCase.executeOnBackground()
+        }
+        coVerify(inverse = true) {
+            getProductInfoP3UseCase.executeOnBackground()
         }
     }
 
     @Test
-    fun onSuccessGetProductInfoNonLogin() {
-        val data = ProductDetailDataModel(listOfLayout = mutableListOf(ProductSnapshotDataModel()))
+    fun `on success get product info non login`() {
+        val dataP1 = ProductDetailTestUtil.getMockPdpLayout()
         val productParams = ProductParams("", "", "", "", "", "")
 
-        val shopCore = ShopCore(domain = anyString())
-        val dataP2Shop = ProductInfoP2ShopData(shopInfo = ShopInfo(shopCore = shopCore), tradeinResponse = TradeinResponse())
-
-        val dataP2Login = ProductInfoP2Login(pdpAffiliate = TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate())
-        val dataP2General = ProductInfoP2General()
-
-        val dataP3Variant = ProductInfoP3Variant(CartRedirectionResponse())
-        val dataP3 = ProductInfoP3(SummaryText(), RatesModel())
-
-        viewModel.p3VariantResponse.observeForever { }
+        viewModel.productInfoP3.observeForever { }
 
         every {
             userSessionInterface.isLoggedIn
         } returns false
 
-        coEvery {
-            getPdpLayoutUseCase.executeOnBackground()
-        } returns data
+        every {
+            viewModel.isUserSessionActive
+        } returns false
 
-        coEvery {
-            getProductInfoP2ShopUseCase.executeOnBackground()
-        } returns dataP2Shop
-
-        coEvery {
-            getProductInfoP2LoginUseCase.executeOnBackground()
-        } returns dataP2Login
-
-        coEvery {
-            getProductInfoP2GeneralUseCase.executeOnBackground()
-        } returns dataP2General
-
-        coEvery {
-            getProductInfoP3VariantUseCase.executeOnBackground()
-        } returns dataP3Variant
-
-        coEvery {
-            getProductInfoP3RateEstimateUseCase.executeOnBackground()
-        } returns dataP3
+        `co every p1 success`(dataP1)
 
         viewModel.getProductP1(productParams)
 
@@ -795,37 +658,63 @@ class DynamicProductDetailViewModelTest {
             getPdpLayoutUseCase.executeOnBackground()
         }
 
-        Assert.assertTrue(viewModel.productLayout.value is Success)
-
-        //P2
         coVerify {
-            getProductInfoP2ShopUseCase.executeOnBackground()
+            getProductInfoP2OtherUseCase.executeOnBackground(any(), any())
         }
-        Assert.assertNotNull(viewModel.p2ShopDataResp.value)
-        Assert.assertNotNull(viewModel.p2ShopDataResp.value?.shopInfo)
-        Assert.assertNotNull(viewModel.p2ShopDataResp.value?.nearestWarehouse)
-        Assert.assertNotNull(viewModel.p2ShopDataResp.value?.tradeinResponse)
-        Assert.assertEquals(viewModel.p2ShopDataResp.value?.shopCod, anyBoolean())
-        //Make sure not called
+
+        coVerify {
+            getProductInfoP2DataUseCase.executeOnBackground(any(), any())
+        }
+
+        coVerify {
+            getProductInfoP3UseCase.executeOnBackground(any(), any(), any())
+        }
+
         coVerify(inverse = true) {
             getProductInfoP2LoginUseCase.executeOnBackground()
         }
 
-        coVerify {
-            getProductInfoP2GeneralUseCase.executeOnBackground()
-        }
-        Assert.assertNotNull(viewModel.p2General.value)
+        Assert.assertTrue(viewModel.productLayout.value is Success)
+        Assert.assertNotNull(viewModel.p2Data.value)
+        Assert.assertNotNull(viewModel.p2Other.value)
+        Assert.assertNull(viewModel.p2Login.value)
+        Assert.assertNotNull(viewModel.productInfoP3.value)
+    }
 
-        //P3
-        //Variant
-        coVerify { getProductInfoP3VariantUseCase.executeOnBackground() }
-        Assert.assertNotNull(viewModel.p3VariantResponse.value)
+    @Test
+    fun `on success remove unused component`() {
+        val dataP1 = ProductDetailTestUtil.getMockPdpThatShouldRemoveUnusedComponent()
+        val productParams = ProductParams("", "", "", "", "", "")
 
-        //RateEstimate
-        //Make sure not called
-        coVerify(inverse = true) {
-            getProductInfoP3RateEstimateUseCase.executeOnBackground()
-        }
+        every {
+            viewModel.userId
+        } returns "123"
+
+        every {
+            viewModel.isShopOwner()
+        } returns true
+
+        viewModel.enableCaching = false
+
+        every {
+            userSessionInterface.isLoggedIn
+        } returns true
+
+        every {
+            viewModel.isUserSessionActive
+        } returns false
+
+        `co every p1 success`(dataP1)
+
+        viewModel.getProductP1(productParams, refreshPage = true, isAffiliate = true)
+
+        val p1Result = (viewModel.productLayout.value as Success).data
+        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.TRADE_IN} == 0 )
+        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO } == 0)
+        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.VALUE_PROP } == 0)
+        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO } == 0)
+        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.VARIANT_OPTIONS } == 0)
+        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.BY_ME } == 0)
     }
 
     /**
@@ -859,7 +748,7 @@ class DynamicProductDetailViewModelTest {
     }
 
     @Test
-    fun `variant clicked partialy with blank image`(){
+    fun `variant clicked partialy with blank image`() {
         val partialySelect = true
         val imageVariant = "gambar gan"
         viewModel.listOfParentMedia = null
@@ -1216,6 +1105,19 @@ class DynamicProductDetailViewModelTest {
     //======================================STICKY LOGIN SECTION=====================================//
     //==============================================================================================//
     @Test
+    fun `on call sticky login login user`() {
+        every {
+            viewModel.isUserSessionActive
+        } returns true
+
+        stickyLoginUseCase.execute({}, {})
+
+        verify(inverse = true) {
+            stickyLoginUseCase.execute({}, {})
+        }
+    }
+
+    @Test
     fun onSuccessStickyLogin() {
         val stickyList = StickyLoginTickerPojo(listOf(StickyLoginTickerPojo.TickerDetail(message = "", layout = StickyLoginConstant.LAYOUT_FLOATING)))
         val data = StickyLoginTickerPojo.TickerResponse(stickyList)
@@ -1272,19 +1174,15 @@ class DynamicProductDetailViewModelTest {
         }
 
         verify {
-            getProductInfoP2ShopUseCase.cancelJobs()
-        }
-
-        verify {
             getProductInfoP2LoginUseCase.cancelJobs()
         }
 
         verify {
-            getProductInfoP2GeneralUseCase.cancelJobs()
+            getProductInfoP2OtherUseCase.cancelJobs()
         }
 
         verify {
-            getProductInfoP3RateEstimateUseCase.cancelJobs()
+            getProductInfoP3UseCase.cancelJobs()
         }
 
         verify {
@@ -1310,5 +1208,11 @@ class DynamicProductDetailViewModelTest {
         verify {
             removeWishlistUseCase.unsubscribe()
         }
+    }
+
+    companion object{
+        const val PARAM_PRODUCT_ID = "productID"
+        const val PARAM_SHOP_DOMAIN = "shopDomain"
+        const val PARAM_PRODUCT_KEY = "productKey"
     }
 }

@@ -1,0 +1,29 @@
+mutation add_to_cart_external($productID: Int) {
+      add_to_cart_external(productID: $productID) {
+        error_message
+        status
+        data {
+            message
+            success
+            data {
+                product_id
+                product_name
+                quantity
+                price
+                category
+                shop_id
+                shop_type
+                shop_name
+                picture
+                url
+                cart_id
+                brand
+                category_id
+                variant
+                tracker_attribution
+                is_multi_origin
+                is_free_ongkir
+            }
+        }
+    }
+}

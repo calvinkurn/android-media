@@ -1,4 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="success_update_token">Berhasil perbaharui token.</string>
+    <string name="notif_title">Troubleshooter</string>
+
+    <string name="notif_menu_push">Push Notification</string>
+    <string name="notif_menu_setting">Pengaturan Notifikasi</string>
+    <string name="notif_menu_channel">Pengaturan Kategori Notifikasi</string>
+    <string name="notif_menu_ringtone">Suara Notifikasi</string>
+
+    <string name="notif_success_update_token">Berhasil perbaharui token</string>
+    <string name="notif_ticker_title">Error!</string>
+    <string name="notif_ticker_resolve">Aktifkan Notifikasi</string>
+
+    <string name="notif_ringtone_success">Ringtone berjalan dengan baik</string>
+    <string name="notif_ringtone_error">Ringtone tidak di temukan</string>
+
+    <string name="notif_token_current">Token sudah terbaru, token saat ini %1$s.</string>
+    <string name="notif_token_current_different">Token sudah terbaru, dari %1$s menjadi %2$s.</string>
+    <string name="notif_token_update_no_prev">Token baru saja diperbarui menjadi %1$s.</string>
+    <string name="notif_token_update">Token baru saja diperbarui, dari %1$s menjadi %2$s.</string>
+
+    <string name="notif_token_error">Terjadi kesalahan, silahkan clear-data aplikasi Tokopedia anda, dan login kembali</string>
+
+    <string name="notif_ticker_notif_disabled">Mohon hidupkan pengaturan notifikasi anda</string>
+
+    <string name="notif_ticker_importance_low">
+        <![CDATA[Nilai prioritas "Notifikasi": <b>Low(%1$d)</b>. Notifikasi muncul, tapi tidak ada suara, atur ke nilai prioritas lebih tinggi.]]>
+    </string>
+
+    <string name="notif_ticker_importance_none">
+        <![CDATA[Nilai prioritas "Notifikasi": <b>None(%1$d)</b>. Notifikasi muncul, atur ke nilai prioritas lebih tinggi.]]>
+    </string>
+
 </resources>

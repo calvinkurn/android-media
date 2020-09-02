@@ -1,16 +1,12 @@
 package com.tokopedia.thankyou_native.analytics
 
-import android.os.Bundle
 import com.appsflyer.AFInAppEventParameterName
 import com.appsflyer.AFInAppEventType
 import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.linker.LinkerConstants
-import com.tokopedia.linker.LinkerManager
-import com.tokopedia.linker.LinkerUtils
-import com.tokopedia.linker.model.LinkerCommerceData
+import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_BUSINESS_UNIT_NON_E_COMMERCE_VALUE
 import com.tokopedia.thankyou_native.data.mapper.*
 import com.tokopedia.thankyou_native.di.qualifier.CoroutineBackgroundDispatcher
 import com.tokopedia.thankyou_native.di.qualifier.CoroutineMainDispatcher
@@ -20,7 +16,7 @@ import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.interfaces.ContextAnalytics
-import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.withContext
@@ -29,6 +25,7 @@ import javax.inject.Inject
 
 
 class ThankYouPageAnalytics @Inject constructor(
+        val userSession: dagger.Lazy<UserSessionInterface>,
         @CoroutineMainDispatcher val mainDispatcher: CoroutineDispatcher,
         @CoroutineBackgroundDispatcher val bgDispatcher: CoroutineDispatcher
 ) {
@@ -40,6 +37,20 @@ class ThankYouPageAnalytics @Inject constructor(
     private val analyticTracker: ContextAnalytics
         get() = TrackApp.getInstance().gtm
 
+
+    fun postThankYouPageLoadedEvent(thanksPageData: ThanksPageData) {
+        if (thanksPageData.pushGtm) {
+            when (ThankPageTypeMapper.getThankPageType(thanksPageData)) {
+                MarketPlaceThankPage -> sendThankYouPageDataLoadEvent(thanksPageData)
+                else -> sendigitalThankYouPageDataLoadEvent(thanksPageData)
+            }
+            appsFlyerPurchaseEvent(thanksPageData)
+            sendBranchIOEvent(thanksPageData)
+        } else {
+            sendPushGtmFalseEvent(thanksPageData.paymentID.toString())
+        }
+    }
+
     fun sendThankYouPageDataLoadEvent(thanksPageData: ThanksPageData) {
         this.thanksPageData = thanksPageData
         CoroutineScope(mainDispatcher).launchCatchError(block = {
@@ -50,6 +61,7 @@ class ThankYouPageAnalytics @Inject constructor(
                     data[ParentTrackingKey.KEY_SHOP_TYPE] = shopOrder.storeType
                     data[ParentTrackingKey.KEY_LOGISTIC_TYPE] = shopOrder.logisticType
                     data[ParentTrackingKey.KEY_ECOMMERCE] = getEnhancedECommerceNode(shopOrder)
+                    data[ParentTrackingKey.IS_NEW_USER] = thanksPageData.isNewUser.toString()
                     analyticTracker.sendEnhanceEcommerceEvent(data)
                 }
             }
@@ -62,8 +74,10 @@ class ThankYouPageAnalytics @Inject constructor(
         this.thanksPageData = thanksPageData
         CoroutineScope(mainDispatcher).launchCatchError(block = {
             withContext(bgDispatcher) {
-                thanksPageData.shopOrder.forEach { shopOrder ->
-                    processDataForGTM(thanksPageData.thanksCustomization.trackingData)
+                thanksPageData.thanksCustomization?.apply {
+                    trackingData?.let {
+                        processDataForGTM(it)
+                    }
                 }
             }
         }, onError = {
@@ -79,15 +93,6 @@ class ThankYouPageAnalytics @Inject constructor(
             val eventMap: MutableMap<String, Any> = gson.fromJson(data, object : TypeToken<Map<String, Any>>(){}.type)
             analyticTracker.sendEnhanceEcommerceEvent(eventMap)
         }
-    }
-
-    private fun getBundleFromMap(dataMap: Map<String, Any> ): Bundle {
-        var bundle = Bundle()
-        for (entry in dataMap.entries) {
-            bundle.putString(entry.key, entry.value?.toString())
-        }
-
-        return bundle
     }
 
     private fun getParentTrackingNode(thanksPageData: ThanksPageData, shopOrder: ShopOrder): MutableMap<String, Any> {
@@ -118,7 +123,7 @@ class ThankYouPageAnalytics @Inject constructor(
         return mapOf(
                 ParentTrackingKey.KEY_ID to orderedItem.orderId,
                 ActionFieldNodeTrackingKey.KEY_AFFILIATION to orderedItem.storeName,
-                ActionFieldNodeTrackingKey.KEY_REVENUE to thanksPageData.additionalInfo.revenue.toString(),
+                ActionFieldNodeTrackingKey.KEY_REVENUE to orderedItem.revenue.toString(),
                 ActionFieldNodeTrackingKey.KEY_TAX to if (orderedItem.tax > 0) orderedItem.tax else null,
                 ActionFieldNodeTrackingKey.KEY_SHIPPING to orderedItem.shippingAmount.toString(),
                 ActionFieldNodeTrackingKey.KEY_COUPON to orderedItem.coupon
@@ -142,65 +147,95 @@ class ThankYouPageAnalytics @Inject constructor(
         return productNodeList
     }
 
-    fun sendBackPressedEvent() {
-        analyticTracker.sendGeneralEvent(
-                TrackAppUtils.gtmData(EVENT_NAME_CLICK_ORDER,
-                        EVENT_CATEGORY_ORDER_COMPLETE,
-                        EVENT_ACTION_CLICK_BACK,
-                        ""
-                ))
+    fun sendBackPressedEvent(paymentId: String) {
+        val map = TrackAppUtils.gtmData(EVENT_NAME_CLICK_ORDER,
+                EVENT_CATEGORY_ORDER_COMPLETE,
+                EVENT_ACTION_CLICK_BACK,
+                ""
+        )
+        addCommonTrackingData(map, paymentId)
+        analyticTracker.sendGeneralEvent(map)
     }
 
-    fun sendLihatDetailClickEvent(pageType: PageType?) {
+    fun sendLihatDetailClickEvent(pageType: PageType?, paymentId: String) {
         val eventLabel = when (pageType) {
             is InstantPaymentPage -> EVENT_LABEL_INSTANT
             is ProcessingPaymentPage -> EVENT_LABEL_PROCESSING
             is WaitingPaymentPage -> EVENT_LABEL_DEFERRED
             else -> ""
         }
-        analyticTracker.sendGeneralEvent(
-                TrackAppUtils.gtmData(EVENT_NAME_CLICK_ORDER,
-                        EVENT_CATEGORY_ORDER_COMPLETE,
-                        EVENT_ACTION_LIHAT_DETAIL,
-                        eventLabel
-                ))
+        val map = TrackAppUtils.gtmData(EVENT_NAME_CLICK_ORDER,
+                EVENT_CATEGORY_ORDER_COMPLETE,
+                EVENT_ACTION_LIHAT_DETAIL,
+                eventLabel
+        )
+        addCommonTrackingData(map, paymentId)
+        analyticTracker.sendGeneralEvent(map)
     }
 
-    fun sendCheckTransactionListEvent() {
-        analyticTracker.sendGeneralEvent(
-                TrackAppUtils.gtmData(EVENT_NAME_CLICK_ORDER,
-                        EVENT_CATEGORY_ORDER_COMPLETE,
-                        EVENT_ACTION_CHECK_TRANSACTION_LIST,
-                        ""
-                ))
+    fun sendCheckTransactionListEvent(paymentId: String) {
+        val map = TrackAppUtils.gtmData(EVENT_NAME_CLICK_ORDER,
+                EVENT_CATEGORY_ORDER_COMPLETE,
+                EVENT_ACTION_CHECK_TRANSACTION_LIST,
+                ""
+        )
+        addCommonTrackingData(map, paymentId)
+        analyticTracker.sendGeneralEvent(map)
     }
 
-    fun sendBelanjaLagiClickEvent() {
-        analyticTracker.sendGeneralEvent(
-                TrackAppUtils.gtmData(EVENT_NAME_CLICK_ORDER,
-                        EVENT_CATEGORY_ORDER_COMPLETE,
-                        EVENT_ACTION_BELANJA_LAGI,
-                        ""
-                ))
+    fun onCheckPaymentStatusClick(paymentId: String) {
+        val map = TrackAppUtils.gtmData(EVENT_NAME_CLICK_ORDER,
+                EVENT_CATEGORY_ORDER_COMPLETE,
+                EVENT_ACTION_CLICK_CHECK_PAYMENT_STATUS,
+                ""
+        )
+        addCommonTrackingData(map, paymentId)
+        analyticTracker.sendGeneralEvent(map)
     }
 
-    fun sendSalinButtonClickEvent(paymentMethod: String) {
-        analyticTracker.sendGeneralEvent(
-                TrackAppUtils.gtmData(EVENT_NAME_CLICK_ORDER,
-                        EVENT_CATEGORY_ORDER_COMPLETE,
-                        EVENT_ACTION_SALIN_CLICK,
-                        paymentMethod
-                ))
+    fun sendBelanjaLagiClickEvent(pageType: PageType?, paymentId: String) {
+        val eventLabel = when (pageType) {
+            is InstantPaymentPage -> EVENT_LABEL_INSTANT
+            is ProcessingPaymentPage -> EVENT_LABEL_PROCESSING
+            is WaitingPaymentPage -> EVENT_LABEL_DEFERRED
+            else -> ""
+        }
+        val map =   TrackAppUtils.gtmData(EVENT_NAME_CLICK_ORDER,
+                EVENT_CATEGORY_ORDER_COMPLETE,
+                EVENT_ACTION_BELANJA_LAGI,
+                eventLabel
+        )
+        addCommonTrackingData(map, paymentId)
+        analyticTracker.sendGeneralEvent(map)
     }
 
-    fun sendOnHowtoPayClickEvent() {
-        analyticTracker.sendGeneralEvent(
-                TrackAppUtils.gtmData(EVENT_NAME_CLICK_ORDER,
-                        EVENT_CATEGORY_ORDER_COMPLETE,
-                        EVENT_ACTION_LIHAT_CARA_PEMBARYAN_CLICK,
-                        ""
-                ))
+    fun sendSalinButtonClickEvent(paymentMethod: String, paymentId: String) {
+        val map = TrackAppUtils.gtmData(EVENT_NAME_CLICK_ORDER,
+                EVENT_CATEGORY_ORDER_COMPLETE,
+                EVENT_ACTION_SALIN_CLICK,
+                paymentMethod
+        )
+        addCommonTrackingData(map, paymentId)
+        analyticTracker.sendGeneralEvent(map)
     }
+
+
+    fun sendOnHowtoPayClickEvent(paymentId: String) {
+        val map = TrackAppUtils.gtmData(EVENT_NAME_CLICK_ORDER,
+                EVENT_CATEGORY_ORDER_COMPLETE,
+                EVENT_ACTION_LIHAT_CARA_PEMBARYAN_CLICK,
+                ""
+        )
+        addCommonTrackingData(map, paymentId)
+        analyticTracker.sendGeneralEvent(map)
+    }
+
+    private fun addCommonTrackingData(map: MutableMap<String, Any>, paymentId: String) {
+        map[ParentTrackingKey.KEY_USER_ID] = userSession.get().userId
+        map[ParentTrackingKey.KEY_PAYMENT_ID_NON_E_COMMERCE] = paymentId
+        map[ParentTrackingKey.KEY_BUSINESS_UNIT]= KEY_BUSINESS_UNIT_NON_E_COMMERCE_VALUE
+    }
+
 
     fun sendPushGtmFalseEvent(paymentId:String) {
         analyticTracker.sendGeneralEvent(
@@ -253,7 +288,7 @@ class ThankYouPageAnalytics @Inject constructor(
                 afValue[AFInAppEventParameterName.CURRENCY] = ParentTrackingKey.VALUE_IDR
                 afValue[ParentTrackingKey.AF_VALUE_PRODUCTTYPE] = productList
                 afValue[ParentTrackingKey.AF_KEY_CATEGORY_NAME] = productCategory
-                afValue[AFInAppEventParameterName.CONTENT_TYPE] = ParentTrackingKey.AF_VALUE_PRODUCT_TYPE
+                afValue[AFInAppEventParameterName.CONTENT_TYPE] = ParentTrackingKey.AF_VALUE_PRODUCTTYPE
 
                 val criteoAfValue: Map<String, Any> = java.util.HashMap(afValue)
                 if (productArray.length() > 0) {
@@ -269,55 +304,9 @@ class ThankYouPageAnalytics @Inject constructor(
     fun sendBranchIOEvent(thanksPageData: ThanksPageData) {
         CoroutineScope(mainDispatcher).launchCatchError(block = {
             withContext(bgDispatcher) {
-                thanksPageData.shopOrder.forEach { shopOrder ->
-                    val linkerCommerceData = LinkerCommerceData()
-                    val userSession = UserSession(LinkerManager.getInstance().context)
-                    val userData: com.tokopedia.linker.model.UserData = com.tokopedia.linker.model.UserData()
-                    userData.userId = userSession.userId
-                    userData.phoneNumber = userSession.phoneNumber
-                    userData.name = userSession.name
-                    userData.email = userSession.email
-                    linkerCommerceData.userData = userData
-                    val branchIOPayment: com.tokopedia.linker.model.PaymentData = com.tokopedia.linker.model.PaymentData()
-                    branchIOPayment.setPaymentId(thanksPageData.paymentID.toString())
-                    branchIOPayment.setOrderId(shopOrder.orderId)
-                    branchIOPayment.setShipping(shopOrder.shippingAmount.toString())
-                    branchIOPayment.setRevenue(thanksPageData.amount.toString())
-                    branchIOPayment.setProductType(when (ThankPageTypeMapper.getThankPageType(thanksPageData)) {
-                        DigitalThankPage -> LinkerConstants.PRODUCTTYPE_DIGITAL
-                        else -> LinkerConstants.PRODUCTTYPE_MARKETPLACE
-                    })
-                    branchIOPayment.isNewBuyer = thanksPageData.isNewUser
-                    branchIOPayment.isMonthlyNewBuyer = thanksPageData.isMonthlyNewUser
-                    var price = 0F
-                    shopOrder.purchaseItemList.forEach { productItem ->
-                        val product = HashMap<String, String>()
-                        product[LinkerConstants.ID] = productItem.productId
-                        product[LinkerConstants.NAME] = productItem.productName
-                        price += productItem.price
-                        product[LinkerConstants.PRICE] = productItem.price.toString()
-                        product[LinkerConstants.PRICE_IDR_TO_DOUBLE] = productItem.price.toString()
-                        product[LinkerConstants.QTY] = productItem.quantity.toString()
-                        product[LinkerConstants.CATEGORY] = getCategoryLevel1(productItem.category)
-                        branchIOPayment.setProduct(product)
-                    }
-                    branchIOPayment.setItemPrice(price.toString())
-                    linkerCommerceData.paymentData = branchIOPayment
-                    LinkerManager.getInstance()
-                            .sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_COMMERCE_VAL,
-                                    linkerCommerceData))
-
-                }
+                BranchPurchaseEvent(userSession.get(), thanksPageData).sendBranchPurchaseEvent()
             }
         }, onError = { it.printStackTrace() })
-    }
-
-    private fun getCategoryLevel1(category: String?): String {
-        return if (category.isNullOrBlank()) {
-            ""
-        } else {
-            category.split("_")[0]
-        }
     }
 
     private fun addSlashInCategory(category: String?): String {
@@ -328,6 +317,7 @@ class ThankYouPageAnalytics @Inject constructor(
         }
     }
 
+
     companion object {
         const val EVENT_NAME_CLICK_ORDER = "clickOrder"
         const val EVENT_CATEGORY_ORDER_COMPLETE = "order complete"
@@ -335,9 +325,10 @@ class ThankYouPageAnalytics @Inject constructor(
 
         const val EVENT_ACTION_LIHAT_DETAIL = "click lihat detail tagihan"
         const val EVENT_ACTION_CHECK_TRANSACTION_LIST = "click check transactions list"
-        const val EVENT_ACTION_BELANJA_LAGI = "click check transactions list"
-        const val EVENT_ACTION_SALIN_CLICK = "click check transactions list"
+        const val EVENT_ACTION_BELANJA_LAGI = "click belanja lagi"
+        const val EVENT_ACTION_SALIN_CLICK = "click salin kode pembayaran"
         const val EVENT_ACTION_LIHAT_CARA_PEMBARYAN_CLICK = "click lihat cara pembayaran"
+        const val EVENT_ACTION_CLICK_CHECK_PAYMENT_STATUS = "click cek status pembayaran"
 
 
         const val EVENT_LABEL_INSTANT = "instant"
@@ -364,16 +355,20 @@ object ParentTrackingKey {
     val KEY_ECOMMERCE = "ecommerce"
     val KEY_CURRENT_SITE = "currentSite"
     val KEY_BUSINESS_UNIT = "businessUnit"
+    const val IS_NEW_USER = "isNewUser"
     const val KEY_ID = "id"
     const val KEY_QTY = "quantity"
     const val AF_SHIPPING_PRICE = "af_shipping_price"
     const val AF_PURCHASE_SITE = "af_purchase_site"
     const val AF_VALUE_PRODUCTTYPE = "product"
-    const val AF_VALUE_PRODUCT_TYPE = "productType"
     const val VALUE_IDR = "IDR"
     const val AF_KEY_CATEGORY_NAME = "category"
     const val AF_KEY_CRITEO = "criteo_track_transaction"
 
+
+    const val KEY_USER_ID = "userId"
+    const val KEY_PAYMENT_ID_NON_E_COMMERCE = "paymentId"
+    const val KEY_BUSINESS_UNIT_NON_E_COMMERCE_VALUE = "payment"
 
 }
 

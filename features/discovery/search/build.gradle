@@ -1,6 +1,8 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "../../../compile-instrument-test.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+
 repositories {
     maven { url 'https://hansel.io/maven' }
 }
@@ -28,7 +30,6 @@ android {
 
     defaultConfig {
         multiDexEnabled true
-        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
     }
 
     testOptions {
@@ -45,7 +46,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.baseList)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.wishlistCommon)
-    implementation project(rootProject.ext.features.goldMerchantResource)
+    implementation project(rootProject.ext.features.goldMerchantCommon)
     implementation project(rootProject.ext.features.discoveryCommon)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.applink)
@@ -108,15 +109,20 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
 
+    implementation rootProject.ext.dbDependencies.sqliteFramework
+
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.json
 
-    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
     androidTestImplementation project(rootProject.ext.libraries.analyticsDebugger)
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
+    androidTestImplementation rootProject.ext.playServicesDependencies.analytics
+    androidTestImplementation rootProject.ext.firebase.messaging
+    androidTestImplementation rootProject.ext.testDependencies.benchmark
+    androidTestImplementation rootProject.ext.testDependencies.testCore
 }
 
 project.ext {

@@ -2,8 +2,8 @@
 // For instrumentation test
 android {
     defaultConfig {
-        if (project.hasProperty("mockTest")) {
-            testInstrumentationRunner "com.tokopedia.test.application.environment.MockInstrumentationTestRunner"
+        if (project.hasProperty("benchmark")) {
+            testInstrumentationRunner 'com.tokopedia.test.application.environment.TkpdAndroidBenchmarkTestRunner'
         } else {
             testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
         }

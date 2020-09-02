@@ -61,7 +61,7 @@ class TravelHomepageBannerViewHolder(itemView: View, private val onBindListener:
             }
         } else {
             currentPosition = -1
-            onBindListener.onBannerItemBind(element.layoutData, adapterPosition, element.isLoadFromCloud)
+            onBindListener.onBannerItemBind(element.layoutData, element.isLoadFromCloud)
         }
 
         itemView.banner_shimmering.visibility = if (element.isLoaded) View.GONE else View.VISIBLE

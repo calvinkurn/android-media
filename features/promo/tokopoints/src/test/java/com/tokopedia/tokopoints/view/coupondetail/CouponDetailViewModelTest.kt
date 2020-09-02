@@ -1,21 +1,25 @@
 package com.tokopedia.tokopoints.view.coupondetail
 
 import android.os.Bundle
-import android.util.Log
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.tokopoints.view.model.*
+import com.tokopedia.tokopoints.view.model.ApplyCouponBaseEntity
+import com.tokopedia.tokopoints.view.model.CouponDetailOuter
+import com.tokopedia.tokopoints.view.model.CouponSwipeDetail
+import com.tokopedia.tokopoints.view.model.CouponValueEntity
 import com.tokopedia.tokopoints.view.util.*
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.test.*
+import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.setMain
 import org.junit.After
-import org.junit.Test
-
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
+import org.junit.Test
 
 class CouponDetailViewModelTest {
 

@@ -8,15 +8,11 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.STATUS_OK
+import com.tokopedia.oneclickcheckout.common.data.model.*
 import com.tokopedia.oneclickcheckout.order.data.get.*
 import com.tokopedia.oneclickcheckout.order.domain.mapper.LastApplyMapper
 import com.tokopedia.oneclickcheckout.order.view.card.OrderProductCard
 import com.tokopedia.oneclickcheckout.order.view.model.*
-import com.tokopedia.oneclickcheckout.order.view.model.ByProduct
-import com.tokopedia.oneclickcheckout.order.view.model.ByProductText
-import com.tokopedia.oneclickcheckout.order.view.model.ByUser
-import com.tokopedia.oneclickcheckout.order.view.model.ByUserText
-import com.tokopedia.oneclickcheckout.order.view.model.ProductInvenageTotal
 import com.tokopedia.oneclickcheckout.order.view.model.ProductTrackerData
 import com.tokopedia.oneclickcheckout.order.view.model.WholesalePrice
 import com.tokopedia.usecase.RequestParams
@@ -49,14 +45,20 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
                     cartString = cart.cartString
                     product = generateOrderProduct(cart.product).apply {
                         quantity = mapQuantity(response.response.data)
+                        tickerMessage = mapProductTickerMessage(response.response.data.tickerMessage)
                     }
                     shop = generateOrderShop(cart.shop).apply {
                         errors = cart.errors
                     }
                     kero = OrderKero(response.response.data.keroToken, response.response.data.keroDiscomToken, response.response.data.keroUnixTime)
                 }
-                return OrderData(response.response.data.occMainOnboarding, orderCart, response.response.data.profileIndex, response.response.data.profileRecommendation,
-                        response.response.data.profileResponse, LastApplyMapper.mapPromo(response.response.data.promo))
+                return OrderData(response.response.data.occMainOnboarding,
+                        orderCart,
+                        response.response.data.profileIndex,
+                        response.response.data.profileRecommendation,
+                        mapProfile(response.response.data.profileResponse),
+                        LastApplyMapper.mapPromo(response.response.data.promo),
+                        mapOrderPayment(response.response.data))
             } else {
                 throw MessageErrorException(DEFAULT_ERROR_MESSAGE)
             }
@@ -135,21 +137,24 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
             productImageUrl = product.productImage.imageSrc
             maxOrderQuantity = product.productMaxOrder
             minOrderQuantity = product.productMinOrder
-            originalPrice = product.productOriginalPrice
+            originalPrice = product.productPriceOriginalFmt
             weight = product.productWeight
             isFreeOngkir = product.freeShipping.eligible
             freeOngkirImg = product.freeShipping.badgeUrl
             wholesalePrice = mapWholesalePrice(product.wholesalePrice)
-            notes = if (product.productNotes.length > OrderProductCard.MAX_NOTES_LENGTH) product.productNotes.substring(0, OrderProductCard.MAX_NOTES_LENGTH) else product.productNotes
+            notes = if (product.productNotes.length > OrderProductCard.MAX_NOTES_LENGTH) {
+                product.productNotes.substring(0, OrderProductCard.MAX_NOTES_LENGTH)
+            } else {
+                product.productNotes
+            }
             cashback = if (product.productCashback.isNotBlank()) "Cashback ${product.productCashback}" else ""
             warehouseId = product.wareHouseId
             isPreorder = product.isPreorder
             categoryId = product.categoryId
             category = product.category
             productFinsurance = product.productFinsurance
-            isSlashPrice = product.isSlashPrice
+            isSlashPrice = product.productOriginalPrice > product.productPrice
             productTrackerData = ProductTrackerData(product.productTrackerData.attribution, product.productTrackerData.trackerListName)
-            productInvenageTotal = mapProductInvenageTotal(product.productInvenageTotal)
         }
         return orderProduct
     }
@@ -176,12 +181,80 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
         return quantityViewModel
     }
 
-    private fun mapProductInvenageTotal(productInvenageTotal: com.tokopedia.oneclickcheckout.order.data.get.ProductInvenageTotal): ProductInvenageTotal {
-        val byProduct = ByProduct(productInvenageTotal.byProduct.inCart, productInvenageTotal.byProduct.lastStockLessThan)
-        val byProductText = ByProductText(productInvenageTotal.byProductText.inCart, productInvenageTotal.byProductText.lastStockLessThan, productInvenageTotal.byProductText.complete)
-        val byUser = ByUser(productInvenageTotal.byUser.inCart, productInvenageTotal.byUser.lastStockLessThan)
-        val byUserText = ByUserText(productInvenageTotal.byUserText.inCart, productInvenageTotal.byUserText.lastStockLessThan, productInvenageTotal.byUserText.complete)
-        return ProductInvenageTotal(productInvenageTotal.isCountedByProduct, productInvenageTotal.isCountedByUser, byProduct, byProductText, byUser, byUserText)
+    private fun mapProductTickerMessage(tickerMessage: OccTickerMessage): ProductTickerMessage {
+        return ProductTickerMessage(tickerMessage.message, tickerMessage.replacement.map { ProductTickerMessageReplacement(it.identifier, it.value) })
+    }
+
+    private fun mapProfile(profileResponse: ProfileResponse): OrderProfile {
+        return OrderProfile(profileResponse.onboardingHeaderMessage, profileResponse.onboardingComponent, profileResponse.hasPreference,
+                profileResponse.profileId, profileResponse.status, profileResponse.enable,
+                profileResponse.message, mapAddress(profileResponse.address), mapPayment(profileResponse.payment),
+                mapShipment(profileResponse.shipment))
+    }
+
+    private fun mapShipment(shipment: Shipment): OrderProfileShipment {
+        return OrderProfileShipment(shipment.serviceName, shipment.serviceId, shipment.serviceDuration)
+    }
+
+    private fun mapPayment(payment: Payment): OrderProfilePayment {
+        return OrderProfilePayment(payment.enable, payment.active, payment.gatewayCode, payment.gatewayName, payment.image,
+                payment.description, payment.url, payment.minimumAmount, payment.maximumAmount, payment.fee,
+                payment.walletAmount, payment.metadata, payment.mdr, mapPaymentCreditCard(payment.creditCard, null),
+                mapPaymentErrorMessage(payment.errorMessage)
+        )
+    }
+
+    private fun mapOrderPayment(data: GetOccCartData): OrderPayment {
+        val payment = data.profileResponse.payment
+        return OrderPayment(payment.enable != 0, false, payment.gatewayCode, payment.gatewayName,
+                payment.image, payment.description, payment.minimumAmount, payment.maximumAmount, payment.fee, payment.walletAmount,
+                payment.metadata, mapPaymentCreditCard(payment.creditCard, data), mapPaymentErrorMessage(payment.errorMessage), data.errorTicker)
+    }
+
+    private fun mapPaymentErrorMessage(errorMessage: PaymentErrorMessage): OrderPaymentErrorMessage {
+        return OrderPaymentErrorMessage(errorMessage.message,
+                OrderPaymentErrorMessageButton(errorMessage.button.text, errorMessage.button.link)
+        )
+    }
+
+    private fun mapPaymentCreditCard(creditCard: PaymentCreditCard, data: GetOccCartData?): OrderPaymentCreditCard {
+        val availableTerms = mapPaymentInstallmentTerm(creditCard.availableTerms)
+        return OrderPaymentCreditCard(mapPaymentCreditCardNumber(creditCard.numberOfCards), availableTerms, creditCard.bankCode, creditCard.cardType,
+                creditCard.isExpired, creditCard.tncInfo, availableTerms.firstOrNull { it.isSelected }, mapPaymentCreditCardAdditionalData(data))
+    }
+
+    private fun mapPaymentCreditCardNumber(numberOfCards: PaymentCreditCardsNumber): OrderPaymentCreditCardsNumber {
+        return OrderPaymentCreditCardsNumber(numberOfCards.availableCards, numberOfCards.unavailableCards,
+                numberOfCards.totalCards)
+    }
+
+    private fun mapPaymentCreditCardAdditionalData(data: GetOccCartData?): OrderPaymentCreditCardAdditionalData {
+        if (data == null) {
+            return OrderPaymentCreditCardAdditionalData()
+        }
+        return OrderPaymentCreditCardAdditionalData(data.customerData.id, data.customerData.name, data.customerData.email, data.customerData.msisdn,
+                data.paymentAdditionalData.merchantCode, data.paymentAdditionalData.profileCode, data.paymentAdditionalData.signature, data.paymentAdditionalData.changeCcLink,
+                data.paymentAdditionalData.callbackUrl)
+    }
+
+    private fun mapPaymentInstallmentTerm(availableTerms: List<InstallmentTerm>): List<OrderPaymentInstallmentTerm> {
+        var hasSelection = false
+        val installmentTerms = availableTerms.map {
+            if (!hasSelection) {
+                hasSelection = it.isSelected
+            }
+            OrderPaymentInstallmentTerm(it.term, it.mdr, it.mdrSubsidize, it.minAmount, it.isSelected)
+        }.toMutableList()
+        if (!hasSelection && installmentTerms.isNotEmpty()) {
+            installmentTerms[0] = installmentTerms[0].copy(isSelected = true)
+        }
+        return installmentTerms
+    }
+
+    private fun mapAddress(address: Address): OrderProfileAddress {
+        return OrderProfileAddress(address.addressId, address.receiverName, address.addressName, address.addressStreet, address.districtId,
+                address.districtName, address.cityId, address.cityName, address.provinceId, address.provinceName, address.phone, address.longitude,
+                address.latitude, address.postalCode)
     }
 
     companion object {

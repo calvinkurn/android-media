@@ -19,6 +19,7 @@ import com.tokopedia.user.session.UserSessionInterface;
 import javax.inject.Inject;
 
 import static com.tokopedia.flight.common.constant.FlightUrl.CONTACT_US_FLIGHT;
+import static com.tokopedia.flight.common.constant.FlightUrl.FLIGHT_PROMO_APPLINK;
 
 /**
  * Created by alvarisi on 12/5/17.
@@ -66,6 +67,14 @@ public abstract class BaseFlightActivity extends BaseSimpleActivity {
         return component;
     }
 
+    protected void navigateToAllPromoPage() {
+        RouteManager.route(this, FLIGHT_PROMO_APPLINK);
+    }
+
+    protected void navigateToHelpPage() {
+        RouteManager.route(this, CONTACT_US_FLIGHT);
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == com.tokopedia.flight.R.id.menu_promo) {
@@ -80,14 +89,10 @@ public abstract class BaseFlightActivity extends BaseSimpleActivity {
             }
             return true;
         } else if (item.getItemId() == com.tokopedia.flight.R.id.menu_help) {
-            RouteManager.route(this, CONTACT_US_FLIGHT);
+            navigateToHelpPage();
             return true;
         } else {
             return super.onOptionsItemSelected(item);
         }
-    }
-
-    private void navigateToAllPromoPage() {
-        RouteManager.route(this, ApplinkConst.PROMO_LIST);
     }
 }

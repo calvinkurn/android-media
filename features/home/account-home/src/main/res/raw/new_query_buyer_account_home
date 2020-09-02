@@ -1,0 +1,106 @@
+query {
+  status
+  isAuthenticated
+  profile {
+    name
+    full_name
+    completion
+    user_id
+    profilePicture
+    phone_verified
+  }
+  userProfileCompletion {
+    isActive,
+    fullName,
+    birthDate,
+    birthDay,
+    birthMonth,
+    birthYear,
+    gender,
+    email,
+    msisdn,
+    isMsisdnVerified,
+    isCreatedPassword,
+    isBiodataDone,
+    isEmailDone,
+    isPasswordDone,
+    isMsisdnDone,
+    completionDone,
+    completionScore
+  }
+  tokopoints {
+    status {
+      tier {
+        id
+        name
+        nameDesc
+        imageURL
+        eggImageURL
+        eggImageHomepageURL
+        backgroundImgURL
+        backgroundImgURLMobile
+      }
+      points {
+        reward
+        rewardStr
+        loyalty
+        loyaltyStr
+      }
+    }
+  }
+  notifications{
+    resolutionAs {
+      buyer
+    }
+    userSatisfactionSurvey
+    buyerOrderStatus {
+      paymentStatus
+      confirmed
+      processed
+      shipped
+      arriveAtDestination
+    }
+  }
+  tokopointsSumCoupon {
+      sumCoupon
+      sumCouponStr
+    }
+  membershipSumUserCard {
+      sumUserCard
+      sumUserCardStr
+    }
+  vcc_user_status {
+      status
+      redirection_url
+      message_header
+      message_body
+      message_button_name
+      message_url
+      icon
+      title
+      body
+  }
+  vcc_user_balance {
+    data{
+      vcc_id
+      vcc_number
+      available_balance
+      credit_limit
+      outstanding_balance
+      available_balance_text
+      credit_limit_text
+      currency
+      lender_name
+      vcc_expire_at
+    }
+  }
+  openDebitSettings {
+      data {
+        redirectURL
+      }
+   }
+   balance {
+           buyer_usable
+           seller_usable
+   }
+}

@@ -21,4 +21,9 @@
     <string name="dummy_recent_search">pulsa xl 10rb</string>
     <string name="dummy_recent_search_two_lines">Iced Matcha Latte Starbak Makin Enak Pakai Biskuit dan Mochi Kenyal Sekali</string>
     <string name="dummy_recent_search_subtitle">Jakarta</string>
+    <string name="suggestion_top_shop_title">temukan “tas” di toko ini:</string>
+    <string name="suggestion_top_shop_card_title">Toko 1</string>
+    <string name="suggestion_top_shop_card_subtitle">Bandung</string>
+    <string name="suggestion_top_shop_card_all">Lihat Toko Lainnya</string>
+    <string name="search_title_popular_search">Pencarian populer</string>
 </resources>

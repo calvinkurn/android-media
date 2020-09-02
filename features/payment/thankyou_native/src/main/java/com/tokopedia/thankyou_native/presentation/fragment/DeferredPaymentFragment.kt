@@ -116,8 +116,9 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
     private fun initCheckPaymentWidgetData() {
         btnCheckPaymentStatus.setOnClickListener {
             refreshThanksPageData()
+            thankYouPageAnalytics.get().onCheckPaymentStatusClick(thanksPageData.paymentID.toString())
         }
-        btnShopAgain.setOnClickListener { gotoHomePage() }
+        setUpHomeButton(btnShopAgain)
     }
 
     private fun showDigitAnnouncementTicker() {
@@ -134,7 +135,9 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
                 showToastCopySuccessFully(context)
             }
         }
-        thankYouPageAnalytics.get().sendSalinButtonClickEvent(thanksPageData.gatewayName)
+        thankYouPageAnalytics.get()
+                .sendSalinButtonClickEvent(thanksPageData.gatewayName,
+                        thanksPageData.paymentID.toString())
     }
 
     private fun showToastCopySuccessFully(context: Context) {

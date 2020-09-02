@@ -17,13 +17,14 @@ import com.tokopedia.home_component.util.FPM_DEALS_WIDGET_PRODUCT_IMAGE
 import com.tokopedia.home_component.util.loadImage
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.visitable.ProductHighlightDataModel
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.displayTextOrHide
 import kotlinx.android.synthetic.main.layout_product_highlight.view.*
 
 class ProductHighlightComponentViewHolder(
         val view: View,
-        val listener: HomeComponentListener,
-        private val productHighlightListener: ProductHighlightListener
+        val listener: HomeComponentListener?,
+        private val productHighlightListener: ProductHighlightListener?
 ): AbstractViewHolder<ProductHighlightDataModel>(view) {
 
     companion object {
@@ -62,7 +63,7 @@ class ProductHighlightComponentViewHolder(
                         dataModel.channelModel.channelConfig.serverTimeOffset,
                         expiredTime
                 ){
-                    listener.onChannelExpired(dataModel.channelModel, adapterPosition, dataModel)
+                    listener?.onChannelExpired(dataModel.channelModel, adapterPosition, dataModel)
                 }
                 itemView.deals_count_down.visibility = View.VISIBLE
             }
@@ -107,8 +108,11 @@ class ProductHighlightComponentViewHolder(
     }
 
     private fun setDealsProductCard(channel: ChannelModel, grid: ChannelGrid) {
+        itemView.deals_product_card.addOnImpressionListener(channel) {
+            productHighlightListener?.onProductCardImpressed(channel, grid, adapterPosition)
+        }
         itemView.deals_product_card.setOnClickListener {
-            productHighlightListener.onProductCardClicked(channel, grid, adapterPosition, grid.applink)
+            productHighlightListener?.onProductCardClicked(channel, grid, adapterPosition, grid.applink)
         }
     }
 

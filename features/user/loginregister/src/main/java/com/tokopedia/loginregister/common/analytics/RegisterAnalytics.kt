@@ -111,6 +111,16 @@ class RegisterAnalytics @Inject constructor() {
     }
 
     //#R5
+    fun trackFailedClickEmailSignUpButtonAlreadyRegistered() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_ON_BUTTON_DAFTAR_EMAIL,
+                LABEL_FAILED_POPUP_EMAIL
+        ))
+    }
+
+    //#R5
     fun trackClickPhoneSignUpButton() {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_REGISTER,
@@ -127,6 +137,16 @@ class RegisterAnalytics @Inject constructor() {
                 CATEGORY_REGISTER_PAGE,
                 ACTION_CLICK_ON_BUTTON_DAFTAR_PHONE_NUMBER,
                 LABEL_FAILED + failedMessage
+        ))
+    }
+
+    //#R5
+    fun trackFailedClickPhoneSignUpButtonAlreadyRegistered() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_ON_BUTTON_DAFTAR_PHONE_NUMBER,
+                LABEL_FAILED_POPUP_PHONE
         ))
     }
 
@@ -665,6 +685,8 @@ class RegisterAnalytics @Inject constructor() {
         private val LABEL_CLICK = "click"
         private val LABEL_SUCCESS = "success"
         private val LABEL_FAILED = "failed - "
+        private val LABEL_FAILED_POPUP_PHONE = "failed - pop up phone number sudah terdaftar"
+        private val LABEL_FAILED_POPUP_EMAIL = "failed - pop up email sudah terdaftar"
         private val LABEL_LOGIN_SUCCESS = "login success"
         private val LABEL_LOGIN_FAILED = "login failed - "
         private val LABEL_REGISTER_SUCCESS = "register success"

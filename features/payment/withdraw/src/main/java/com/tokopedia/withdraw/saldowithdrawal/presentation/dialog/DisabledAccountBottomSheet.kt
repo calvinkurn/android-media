@@ -27,7 +27,7 @@ class DisabledAccountBottomSheet : BottomSheetUnify() {
         super.onCreate(savedInstanceState)
         arguments?.let {
             if (it.containsKey(ARG_BANK_ACCOUNT)) {
-                bankAccount = it.getParcelable(ARG_BANK_ACCOUNT)
+                bankAccount = it.getParcelable(ARG_BANK_ACCOUNT) ?: BankAccount()
             } else
                 dismiss()
         }
