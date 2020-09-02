@@ -36,13 +36,13 @@ class HashMapJsonUtil {
             return retMap
         }
 
-        fun findList(map: Map<*, *>?): ArrayList<Any>? {
+        fun findList(map: Map<*, *>?): MutableList<Any>? {
             if (map == null) {
                 return null
             }
             for (value in map.values) {
-                if (value is ArrayList<*>) {
-                    return value as ArrayList<Any>
+                if (value is List<*>) {
+                    return value as MutableList<Any>
                 } else if (value is Map<*, *>) {
                     val list = findList(value)
                     if (list != null) {

@@ -119,7 +119,7 @@ class TrackingRepository(val context: Context, val remoteConfig: RemoteConfig = 
         }
 
         // it has list? if No, put into Full EE. It cannot be appended.
-        val inputList: ArrayList<Any>? = HashMapJsonUtil.findList(inputEnhanceECommerceMap)
+        val inputList: MutableList<Any>? = HashMapJsonUtil.findList(inputEnhanceECommerceMap)
         if (inputList == null || inputList.size == 0) {
             trackingEEFullDataSource.put(inputEvent, inputCustomDimensionMap, inputEnhanceECommerceMap)
             return
@@ -148,7 +148,7 @@ class TrackingRepository(val context: Context, val remoteConfig: RemoteConfig = 
         }
 
         val dbEnhanceECommerceMap = HashMapJsonUtil.jsonToMap(trackingEEDbModel.enhanceEcommerce)
-        val dbList: ArrayList<Any>? = HashMapJsonUtil.findList(dbEnhanceECommerceMap)
+        val dbList: MutableList<Any>? = HashMapJsonUtil.findList(dbEnhanceECommerceMap)
         // no list found in db, put directly to DB (will replace)
         if (dbList == null || dbList.size == 0) {
             moveEETrackingToFull(trackingEEDbModel, inputEvent, inputCustomDimensionMap, inputEnhanceECommerceMap)
