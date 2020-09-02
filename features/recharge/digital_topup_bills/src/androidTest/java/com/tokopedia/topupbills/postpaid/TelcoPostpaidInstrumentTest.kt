@@ -62,7 +62,7 @@ class TelcoPostpaidInstrumentTest {
 
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
-            gtmLogDBSource.deleteAll().toBlocking().first()
+            gtmLogDBSource.deleteAll().subscribe()
 
             setupGraphqlMockResponseWithCheck(TelcoPostpaidMockResponseConfig())
         }

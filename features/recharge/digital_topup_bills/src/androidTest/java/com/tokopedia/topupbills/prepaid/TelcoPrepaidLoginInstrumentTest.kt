@@ -62,7 +62,7 @@ class TelcoPrepaidLoginInstrumentTest {
 
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
-            gtmLogDBSource.deleteAll().toBlocking().first()
+            gtmLogDBSource.deleteAll().subscribe()
 
             setupGraphqlMockResponseWithCheck(TelcoPrepaidLoginMockResponseConfig())
             Thread.sleep(4000)
