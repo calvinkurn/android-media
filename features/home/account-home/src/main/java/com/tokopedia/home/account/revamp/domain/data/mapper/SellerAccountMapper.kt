@@ -5,6 +5,7 @@ import android.text.TextUtils
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.design.utils.CurrencyFormatUtil
+import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.home.account.AccountConstants
 import com.tokopedia.home.account.AccountConstants.Analytics.LOAN
@@ -19,6 +20,7 @@ import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewMode
 import com.tokopedia.home.account.presentation.viewmodel.base.SellerViewModel
 import com.tokopedia.home.account.revamp.domain.data.model.AccountDataModel
 import com.tokopedia.home.account.revamp.domain.data.model.DepositDataModel
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.navigation_common.model.FieldDataModel
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -62,14 +64,17 @@ class SellerAccountMapper @Inject constructor(
     }
 
     private fun isShopHaveProvinceId(graphqlResponse: GraphqlResponse): Boolean {
-        val error = graphqlResponse.getError(ShopInfoLocation::class.java)
+        val error: List<GraphqlError>? = graphqlResponse.getError(ShopInfoLocation::class.java)
         if (error.isNullOrEmpty()) {
             var data : ShopInfoLocation? = graphqlResponse.getData(ShopInfoLocation::class.java)
             if (data == null) {
                 data = ShopInfoLocation()
                 AccountHomeErrorHandler.logDataNull("SellerAccountMapper", Throwable("ShopInfoLocation"))
             }
-            return data.shopInfoByID.result[0].shippingLoc.provinceID != 0
+
+            if(data.shopInfoByID.result.isNotEmpty()) {
+                return data.shopInfoByID.result[0].shippingLoc.provinceID != 0
+            }
         }
         return false
     }
@@ -95,7 +100,7 @@ class SellerAccountMapper @Inject constructor(
         val mitraTopperUrl = getPreApproveData(accountDataModel).url
 
         val tickerViewModel = parseTickerSeller(context, accountDataModel)
-        if (tickerViewModel.listMessage.isNotEmpty()) {
+        if (!tickerViewModel.listMessage.isNullOrEmpty()) {
             items.add(tickerViewModel)
         }
 
@@ -105,12 +110,12 @@ class SellerAccountMapper @Inject constructor(
             items.add(getSaldoInfo(accountDataModel.saldo))
         }
 
-        if (mitraTopperMaxLoan.isNotEmpty() && mitraTopperMaxLoan.toLong() > 0) {
+        if (mitraTopperMaxLoan.isNotEmpty() && mitraTopperMaxLoan.toLongOrZero() > 0) {
             mitraTopperMaxLoan = CurrencyFormatUtil.convertPriceValueToIdrFormat(mitraTopperMaxLoan.toLong(), true)
         }
 
         if (showPinjamanModalOnTop) {
-            if (mitraTopperMaxLoan.isNotEmpty() && mitraTopperMaxLoan.toLong() > 0 && mitraTopperUrl.isNotEmpty()) {
+            if (mitraTopperMaxLoan.isNotEmpty() && mitraTopperMaxLoan != "0" && mitraTopperUrl.isNotEmpty()) {
                 items.add(getInfoCardMenu(mitraTopperMaxLoan, mitraTopperUrl))
             }
         }
@@ -172,7 +177,7 @@ class SellerAccountMapper @Inject constructor(
                         .status == KYCConstant.STATUS_NOT_VERIFIED) {
             sellerTickerModel.listMessage.add(context.getString(R.string.ticker_unverified))
         } else if (!(accountDataModel.shopInfo.owner?.goldMerchant as Boolean)) {
-            val tickerMessage = remoteConfig.getString(RemoteConfigKey.SELLER_ACCOUNT_TICKER_MSG)
+            val tickerMessage: String? = remoteConfig.getString(RemoteConfigKey.SELLER_ACCOUNT_TICKER_MSG, "")
             if (!TextUtils.isEmpty(tickerMessage)) {
                 sellerTickerModel.listMessage.add(tickerMessage)
             }

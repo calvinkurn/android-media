@@ -57,6 +57,7 @@ class GQLGetShopInfoUseCase(private var gqlQuery: String,
         const val FIELD_IS_OPEN = "is_open"
         const val FIELD_CLOSED_INFO = "closed_info"
         const val FIELD_CREATE_INFO = "create_info"
+        const val FIELD_SHOP_SNIPPET = "shop-snippet"
         const val FIELD_OS = "os"
         const val FIELD_GOLD = "gold"
         const val FIELD_TOP_CONTENT = "topContent"
@@ -66,7 +67,7 @@ class GQLGetShopInfoUseCase(private var gqlQuery: String,
 
         private val DEFAULT_SHOP_FIELDS = listOf("core", "favorite", "assets", "shipment",
                 "last_active", "location", "terms", "allow_manage",
-                "is_owner", "other-goldos", "status", "is_open", "closed_info", "create_info")
+                "is_owner", "other-goldos", "status", "is_open", "closed_info", "create_info", "shop-snippet")
 
         @JvmStatic
         fun createParams(

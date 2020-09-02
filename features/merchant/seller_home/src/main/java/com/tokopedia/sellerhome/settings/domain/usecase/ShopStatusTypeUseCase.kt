@@ -2,9 +2,9 @@ package com.tokopedia.sellerhome.settings.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.network.exception.ResponseErrorException
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerhome.settings.domain.entity.ShopStatusResponse
-import com.tokopedia.sellerhome.settings.view.uimodel.base.ShopType
+import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
@@ -46,6 +46,6 @@ class ShopStatusTypeUseCase @Inject constructor(private val graphqlRepository: G
                 return it
             }
         }
-        throw ResponseErrorException()
+        throw MessageErrorException(gqlError.joinToString { it.message })
     }
 }

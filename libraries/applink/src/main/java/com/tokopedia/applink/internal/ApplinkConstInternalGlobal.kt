@@ -172,6 +172,9 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val PARAM_PROJECT_ID = "projectId"
 
+    @JvmField
+    val PARAM_CALL_BACK = "callBack"
+
     // InboxTalkActivity
     // tokopedia-android-internal://global/inbox-talk
     @JvmField

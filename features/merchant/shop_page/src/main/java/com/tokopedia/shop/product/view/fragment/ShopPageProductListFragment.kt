@@ -193,7 +193,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     private var threeDotsClickShopProductViewModel: ShopProductViewModel? = null
     private var shopSortSharedViewModel: ShopSortSharedViewModel? = null
     private var threeDotsClickShopTrackingType = -1
-    private var initialProductListData : Pair<Boolean, List<ShopProductViewModel>> = Pair(false, listOf())
+    private var initialProductListData : Pair<Boolean, List<ShopProductViewModel>>? = null
     private var staggeredGridLayoutManager: StaggeredGridLayoutManager? = null
     private val shopProductAdapter: ShopProductAdapter
         get() = adapter as ShopProductAdapter
@@ -511,6 +511,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                     shopSortSharedViewModel?.changeSharedSortData(sortId, sortName)
                     shopProductAdapter.changeSelectedSortFilter(sortId, sortName)
                     shopProductAdapter.refreshSticky()
+                    updateInitialProductListSortId(sortId)
                     scrollToProductEtalaseSegment()
                     loadNewProductData()
                 }
@@ -726,7 +727,9 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         shopProductAdapter.clearAllElements()
         startMonitoringPltNetworkRequest()
         showLoading()
-        viewModel.setInitialProductList(initialProductListData)
+        initialProductListData?.let{
+            viewModel.setInitialProductList(it)
+        }
         viewModel.getEtalaseData(shopId)
     }
 
@@ -931,7 +934,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     private fun observeShopSortSharedViewModel() {
-        shopSortSharedViewModel?.sharedSortData?.observe(this, Observer {
+        shopSortSharedViewModel?.sharedSortData?.observe(viewLifecycleOwner, Observer {
             if (!shopProductAdapter.isLoading) {
                 sortId = it.first
                 sortName = it.second
@@ -963,7 +966,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     private fun observeViewModelLiveData() {
-        viewModel.etalaseListData.observe(this, Observer {
+        viewModel.etalaseListData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     onSuccessGetEtalaseListData(it.data)
@@ -974,7 +977,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             }
         })
 
-        viewModel.membershipData.observe(this, Observer {
+        viewModel.membershipData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     onSuccessGetMembershipData(it.data)
@@ -982,7 +985,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             }
         })
 
-        viewModel.merchantVoucherData.observe(this, Observer {
+        viewModel.merchantVoucherData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     onSuccessGetMerchantVoucherData(it.data)
@@ -990,7 +993,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             }
         })
 
-        viewModel.shopProductFeaturedData.observe(this, Observer {
+        viewModel.shopProductFeaturedData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     onSuccessGetShopProductFeaturedData(it.data)
@@ -998,7 +1001,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             }
         })
 
-        viewModel.shopProductEtalaseHighlightData.observe(this, Observer {
+        viewModel.shopProductEtalaseHighlightData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     onSuccessGetShopProductEtalaseHighlightData(it.data)
@@ -1006,7 +1009,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             }
         })
 
-        viewModel.shopProductEtalaseTitleData.observe(this, Observer {
+        viewModel.shopProductEtalaseTitleData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     onSuccessGetShopProductEtalaseTitleData(it.data)
@@ -1014,7 +1017,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             }
         })
 
-        viewModel.productListData.observe(this, Observer {
+        viewModel.productListData.observe(viewLifecycleOwner, Observer {
             startMonitoringPltRenderPage()
             when (it) {
                 is Success -> {
@@ -1032,14 +1035,14 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             })
         })
 
-        viewModel.claimMembershipResp.observe(this, Observer {
+        viewModel.claimMembershipResp.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessClaimBenefit(it.data)
                 is Fail -> onErrorGetMembershipInfo(it.throwable)
             }
         })
 
-        viewModel.newMembershipData.observe(this, Observer {
+        viewModel.newMembershipData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     onSuccessGetMembershipData(it.data)
@@ -1049,7 +1052,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             }
         })
 
-        viewModel.newMerchantVoucherData.observe(this, Observer {
+        viewModel.newMerchantVoucherData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     onSuccessGetMerchantVoucherData(it.data)
@@ -1155,8 +1158,9 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                     shopId,
                     data,
                     etalaseItemDataModel,
+                    sortId,
                     isShowNewShopHomeTab(),
-                    initialProductListData.second.isEmpty()
+                    initialProductListData
             )
         }
     }
@@ -1258,11 +1262,16 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 shopProductAdapter.shopProductEtalaseTitlePosition,
                 stickySingleHeaderView.containerHeight
         )
+        updateInitialProductListSortId(sortId)
         loadNewProductData()
     }
 
     fun setInitialProductListData(initialProductListData: Pair<Boolean, List<ShopProductViewModel>>) {
         this.initialProductListData = initialProductListData
+    }
+
+    private fun updateInitialProductListSortId(sortId: String){
+        (parentFragment as? ShopPageFragment)?.updateSortId(sortId)
     }
 
 }

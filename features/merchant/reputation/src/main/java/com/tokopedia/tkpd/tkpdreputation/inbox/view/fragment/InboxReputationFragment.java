@@ -38,6 +38,7 @@ import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTrackingConstant;
 import com.tokopedia.tkpd.tkpdreputation.constant.Constant;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.ProductRevIncentiveOvoDomain;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.ProductRevIncentiveOvoResponse;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationDetailActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationFilterActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.InboxReputationAdapter;
@@ -286,15 +287,19 @@ public class InboxReputationFragment extends BaseDaggerFragment
             return;
         }
 
-        String title = productRevIncentiveOvoDomain.getProductrevIncentiveOvo().getTicker().getTitle();
-        ovoDataModel = new InboxReputationOvoIncentiveViewModel(productRevIncentiveOvoDomain);
-        adapter.insertOvoIncentiveDataModel(ovoDataModel);
-        // hit tracking while first time success get gql incentive ovo
-        if (getTab() == FIRST_TAB_INBOX_REPUTATION) {
-            reputationTracking.onSuccessGetIncentiveOvoTracker(title, ReputationTrackingConstant.WAITING_REVIEWED);
-        }
-        if (getActivity() != null) {
-            ((InboxReputationListener) getActivity()).updateTickerTitle(title);
+        if (productRevIncentiveOvoDomain != null) {
+            if (productRevIncentiveOvoDomain.getProductrevIncentiveOvo() != null) {
+                String title = productRevIncentiveOvoDomain.getProductrevIncentiveOvo().getTicker().getTitle();
+                ovoDataModel = new InboxReputationOvoIncentiveViewModel(productRevIncentiveOvoDomain);
+                adapter.insertOvoIncentiveDataModel(ovoDataModel);
+                // hit tracking while first time success get gql incentive ovo
+                if (getTab() == FIRST_TAB_INBOX_REPUTATION) {
+                    reputationTracking.onSuccessGetIncentiveOvoTracker(title, ReputationTrackingConstant.WAITING_REVIEWED);
+                }
+                if (getActivity() != null) {
+                    ((InboxReputationListener) getActivity()).updateTickerTitle(title);
+                }
+            }
         }
     }
 
@@ -393,7 +398,10 @@ public class InboxReputationFragment extends BaseDaggerFragment
         if (getFragmentManager() != null) {
             bottomSheet.show(getFragmentManager(), IncentiveOvoBottomSheet.Companion.getTAG());
         }
-        reputationTracking.onClickReadSkIncentiveOvoTracker(productRevIncentiveOvoDomain.getProductrevIncentiveOvo().getTitle(), ReputationTrackingConstant.WAITING_REVIEWED);
+        ProductRevIncentiveOvoResponse productRevIncentiveOvo = productRevIncentiveOvoDomain.getProductrevIncentiveOvo();
+        if (productRevIncentiveOvo != null) {
+            reputationTracking.onClickReadSkIncentiveOvoTracker(productRevIncentiveOvo.getTitle(), ReputationTrackingConstant.WAITING_REVIEWED);
+        }
     }
 
     @Override
