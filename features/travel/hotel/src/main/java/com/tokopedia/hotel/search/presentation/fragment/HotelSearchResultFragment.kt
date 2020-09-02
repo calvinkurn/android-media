@@ -28,6 +28,9 @@ import com.tokopedia.hotel.search.data.model.*
 import com.tokopedia.hotel.search.data.model.FilterV2.Companion.FILTER_TYPE_SORT
 import com.tokopedia.hotel.search.data.model.params.ParamFilter
 import com.tokopedia.hotel.search.data.model.params.ParamFilterV2
+import com.tokopedia.hotel.search.data.util.ADVANCE_FILTER_EXPERIMENT_NAME
+import com.tokopedia.hotel.search.data.util.ADVANCE_FILTER_VARIANT_NEW_FILTER
+import com.tokopedia.hotel.search.data.util.ADVANCE_FILTER_VARIANT_OLD_FILTER
 import com.tokopedia.hotel.search.data.util.CommonParam
 import com.tokopedia.hotel.search.di.HotelSearchPropertyComponent
 import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivity.Companion.SEARCH_SCREEN_NAME
@@ -69,7 +72,8 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     lateinit var trackingHotelUtil: TrackingHotelUtil
     private var performanceMonitoring: PerformanceMonitoring? = null
     private var isTraceStop = false
-    private var variant = RemoteConfigInstance.getInstance().abTestPlatform.getString("Advance Filter", "Old Filter")
+    private var variant = RemoteConfigInstance.getInstance().abTestPlatform.getString(ADVANCE_FILTER_EXPERIMENT_NAME,
+            ADVANCE_FILTER_VARIANT_OLD_FILTER)
 
     var searchDestinationName = ""
     var searchDestinationType = ""
@@ -178,7 +182,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
 
         val searchProperties = data.properties
 
-        if (variant == "Advance Filter") {
+        if (variant == ADVANCE_FILTER_VARIANT_NEW_FILTER) {
             bottom_action_view.visibility = View.GONE
         } else {
             bottom_action_view.visibility = View.VISIBLE
@@ -224,7 +228,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
             refreshSelectedFilter(quickFilters)
         }
 
-        if (variant == "Advance Filter") {
+        if (variant == ADVANCE_FILTER_VARIANT_NEW_FILTER) {
             val param: CoordinatorLayout.LayoutParams = bottom_action_view.layoutParams as CoordinatorLayout.LayoutParams
             param.behavior = null
             bottom_action_view.hide()
@@ -368,7 +372,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         //track
         selectedFilter.forEachIndexed { index, it ->
             if (it.name == FILTER_TYPE_SORT) {
-                val sort = findSortValue(selectedFilter.first())
+                val sort = findSortValue(it)
                 sort?.let { searchResultviewModel.addSort(it) }
                 selectedFilter.removeAt(index)
             }
