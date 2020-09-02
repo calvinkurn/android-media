@@ -137,7 +137,8 @@ class ChatSettingFragment : BaseListFragment<Visitable<*>, ChatSettingTypeFactor
                     context = this,
                     featureName = SellerMigrationFeatureName.FEATURE_TEMPLATE_CHAT,
                     screenName = SCREEN_NAME,
-                    appLinks = arrayListOf(ApplinkConstInternalSellerapp.SELLER_HOME_CHAT, ApplinkConstInternalMarketplace.CHAT_SETTING_TEMPLATE))
+                    appLinks = arrayListOf(ApplinkConstInternalSellerapp.SELLER_HOME_CHAT, ApplinkConstInternalMarketplace.CHAT_SETTING_TEMPLATE),
+                    isStackBuilder = false)
             startActivity(intent)
         }
     }

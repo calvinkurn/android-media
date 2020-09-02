@@ -62,6 +62,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.youtubeutil)
     implementation project(rootProject.ext.libraries.videoplayer)
 
+    implementation project(rootProject.ext.features.sellerMigrationCommon)
+
     implementation rootProject.ext.networkDependencies.glide
 
     implementation rootProject.ext.unifyDependencies.principles

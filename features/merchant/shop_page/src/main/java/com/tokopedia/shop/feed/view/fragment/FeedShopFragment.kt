@@ -3,13 +3,18 @@ package com.tokopedia.shop.feed.view.fragment
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
+import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -53,6 +58,14 @@ import com.tokopedia.kolcommon.util.PostMenuListener
 import com.tokopedia.kolcommon.util.createBottomMenu
 import com.tokopedia.kolcommon.view.listener.KolPostLikeListener
 import com.tokopedia.kolcommon.view.listener.KolPostViewHolderListener
+import com.tokopedia.seller_migration_common.R.drawable.ic_tab_feed_has_post_seller_migration
+import com.tokopedia.seller_migration_common.R.string.seller_migration_tab_feed_bottom_sheet_content
+import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
+import com.tokopedia.seller_migration_common.analytics.SellerMigrationTrackingConstants
+import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
+import com.tokopedia.seller_migration_common.presentation.util.goToInformationWebview
+import com.tokopedia.seller_migration_common.presentation.util.goToSellerApp
+import com.tokopedia.seller_migration_common.presentation.util.setOnClickLinkSpannable
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.feed.di.DaggerFeedShopComponent
@@ -60,11 +73,17 @@ import com.tokopedia.shop.feed.domain.WhitelistDomain
 import com.tokopedia.shop.feed.view.adapter.factory.FeedShopFactoryImpl
 import com.tokopedia.shop.feed.view.analytics.ShopAnalytics
 import com.tokopedia.shop.feed.view.contract.FeedShopContract
+import com.tokopedia.shop.feed.view.model.EmptyFeedShopSellerMigrationUiModel
 import com.tokopedia.shop.feed.view.model.EmptyFeedShopViewModel
 import com.tokopedia.shop.feed.view.model.WhitelistViewModel
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.R.id.bottom_sheet_wrapper
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_feed_shop.*
+import kotlinx.android.synthetic.main.fragment_shop_page_home.*
 import javax.inject.Inject
 
 /**
@@ -93,6 +112,9 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     private lateinit var shopId: String
     private var isLoading = false
     private var isForceRefresh = false
+    private var recyclerViewTopPadding = 0
+
+    private var bottomSheetSellerMigration: BottomSheetBehavior<LinearLayout>? = null
 
     private var whitelistDomain: WhitelistDomain = WhitelistDomain()
 
@@ -168,7 +190,9 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         initVar()
         userVisibleHint = false
         super.onViewCreated(view, savedInstanceState)
+        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
         isLoadingInitialData = true
+        setupBottomSheetSellerMigration(view)
     }
 
     override fun onPause() {
@@ -193,12 +217,18 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                 try {
                     if (hasFeed()
                             && newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        FeedScrollListener.onFeedScrolled(recyclerView, adapter.list)
+                        if (isSellerMigrationEnabled(context)) {
+                            bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_EXPANDED
+                        } else {
+                            bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_HIDDEN
+                            FeedScrollListener.onFeedScrolled(recyclerView, adapter.list)
+                        }
+                    } else {
+                        bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_HIDDEN
                     }
                 } catch (e: IndexOutOfBoundsException) {
                 }
             }
-
         })
     }
 
@@ -315,7 +345,11 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
             dataList.addAll(element)
             renderList(dataList, lastCursor.isNotEmpty())
         } else {
-            dataList.add(getEmptyResultViewModel())
+            if (isSellerMigrationEnabled(context)) {
+                dataList.add(EmptyFeedShopSellerMigrationUiModel())
+            } else {
+                dataList.add(getEmptyResultViewModel())
+            }
             renderList(dataList)
         }
     }
@@ -343,7 +377,11 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
             dataList.addAll(element)
             renderList(dataList, lastCursor.isNotEmpty())
         } else {
-            dataList.add(getEmptyResultViewModel())
+            if (isSellerMigrationEnabled(context)) {
+                dataList.add(EmptyFeedShopSellerMigrationUiModel())
+            } else {
+                dataList.add(getEmptyResultViewModel())
+            }
             renderList(dataList)
         }
     }
@@ -355,6 +393,14 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun onEmptyFeedButtonClicked() {
         goToCreatePost()
         shopAnalytics.eventClickCreatePost()
+    }
+
+    override fun onGotoPlayStoreClicked() {
+        goToSellerApp(::trackGotoSellerApp, ::trackGotoPlayStore)
+    }
+
+    override fun onGotoLearnMoreClicked(url: String): Boolean {
+        return goToInformationWebview(url)
     }
 
     override fun onSuccessGetFeed(visitables: List<Visitable<*>>, lastCursor: String) {
@@ -728,10 +774,12 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     fun showFAB() {
-        fab_feed.show()
-        fab_feed.setOnClickListener {
-            goToCreatePost(getSellerApplink())
-            shopAnalytics.eventClickCreatePost()
+        if(!isSellerMigrationEnabled(context)) {
+            fab_feed.show()
+            fab_feed.setOnClickListener {
+                goToCreatePost(getSellerApplink())
+                shopAnalytics.eventClickCreatePost()
+            }
         }
     }
 
@@ -753,10 +801,10 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     private fun goToCreatePost() {
-          goToCreatePost(getSellerApplink())
+        goToCreatePost(getSellerApplink())
     }
 
-    private fun goToCreatePost(link : String) {
+    private fun goToCreatePost(link: String) {
         startActivityForResult(
                 RouteManager.getIntent(
                         requireContext(),
@@ -818,17 +866,17 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     private fun onSuccessReportContent() {
         view?.let {
-            Toaster.make(it,getString(com.tokopedia.feedcomponent.R.string.feed_content_reported),
-                            Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL,
-                    getString(com.tokopedia.design.R.string.label_close), View.OnClickListener {  } )
+            Toaster.make(it, getString(com.tokopedia.feedcomponent.R.string.feed_content_reported),
+                    Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL,
+                    getString(com.tokopedia.design.R.string.label_close), View.OnClickListener { })
         }
     }
 
     private fun onErrorReportContent(errorMsg: String) {
         view?.let {
-            Toaster.make(it,errorMsg,
+            Toaster.make(it, errorMsg,
                     Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
-                    getString(com.tokopedia.design.R.string.label_close), View.OnClickListener {  } )
+                    getString(com.tokopedia.design.R.string.label_close), View.OnClickListener { })
         }
     }
 
@@ -852,8 +900,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     private fun showError(message: String, listener: View.OnClickListener?) {
         listener?.let {
-            Toaster.make(view!!, message,Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
-                    getString(com.tokopedia.abstraction.R.string.title_try_again), it )
+            Toaster.make(view!!, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                    getString(com.tokopedia.abstraction.R.string.title_try_again), it)
         }
     }
 
@@ -865,8 +913,46 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         presenter.clearCache()
     }
 
+    private fun trackGotoSellerApp() {
+        SellerMigrationTracking.eventGoToSellerApp(userSession.userId.orEmpty(), SellerMigrationTrackingConstants.EVENT_CLICK_GO_TO_SELLER_APP_ACCOUNT)
+    }
+
+    private fun trackGotoPlayStore() {
+        SellerMigrationTracking.eventGoToPlayStore(userSession.userId.orEmpty(), SellerMigrationTrackingConstants.EVENT_CLICK_GO_TO_SELLER_APP_ACCOUNT)
+    }
+
     override fun onTopAdsViewImpression(bannerId: String, imageUrl: String) {
 
+    }
+
+    private fun setupBottomSheetSellerMigration(view: View) {
+        if (isSellerMigrationEnabled(context)) {
+            recyclerViewTopPadding = recyclerView?.paddingTop ?: 0
+            recycler_view?.smoothScrollBy(0, recyclerViewTopPadding * 2)
+
+            val viewTarget: LinearLayout = view.findViewById(bottom_sheet_wrapper)
+            bottomSheetSellerMigration = BottomSheetBehavior.from(viewTarget)
+            BottomSheetUnify.bottomSheetBehaviorKnob(viewTarget, false)
+            BottomSheetUnify.bottomSheetBehaviorHeader(viewTarget, false)
+
+            bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_EXPANDED
+            hideFAB()
+
+            val sellerMigrationLayout = View.inflate(context, R.layout.widget_seller_migration_bottom_sheet_has_post, null)
+            viewTarget.addView(sellerMigrationLayout)
+
+            val ivTabFeedHasPost: ImageUnify = sellerMigrationLayout.findViewById(R.id.ivTabFeedHasPost)
+            val tvTitleTabFeedHasPost: Typography = sellerMigrationLayout.findViewById(R.id.tvTitleTabFeedHasPost)
+            tvTitleTabFeedHasPost.movementMethod = LinkMovementMethod.getInstance()
+            ivTabFeedHasPost.setImageDrawable(context?.let { ContextCompat.getDrawable(it, ic_tab_feed_has_post_seller_migration) })
+            tvTitleTabFeedHasPost.setOnClickLinkSpannable(getString(seller_migration_tab_feed_bottom_sheet_content), ::trackContentFeedBottomSheet) {
+                goToSellerApp()
+            }
+        }
+    }
+
+    private fun trackContentFeedBottomSheet() {
+        SellerMigrationTracking.trackClickShopAccount(userSession.userId.orEmpty())
     }
 
 }

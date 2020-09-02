@@ -30,6 +30,14 @@ class SellerMigrationFragment : Fragment(), SellerFeatureCarousel.RecyclerViewLi
         const val SCREEN_NAME = "/migration-page"
         const val KEY_STATE_LAST_TAB_POSITION = "last_tab_position"
 
+        const val PRODUCT_TAB = 0
+        const val CHAT_TAB = 1
+        const val REVIEW_TAB = 2
+        const val ADS_TAB = 3
+        const val STATISTIC_TAB = 4
+        const val FEED_PLAY_TAB = 5
+        const val FINANCIAL_SERVICES_TAB = 6
+
         fun createInstance(@SellerMigrationFeatureName featureName: String): SellerMigrationFragment {
             return SellerMigrationFragment().apply {
                 arguments = Bundle().also {
@@ -133,20 +141,27 @@ class SellerMigrationFragment : Fragment(), SellerFeatureCarousel.RecyclerViewLi
             SellerMigrationFeatureName.FEATURE_SET_VARIANT, SellerMigrationFeatureName.FEATURE_MULTI_EDIT,
             SellerMigrationFeatureName.FEATURE_INSTAGRAM_IMPORT, SellerMigrationFeatureName.FEATURE_FEATURED_PRODUCT,
             SellerMigrationFeatureName.FEATURE_SET_CASHBACK -> {
-                0
+                PRODUCT_TAB
             }
-            SellerMigrationFeatureName.FEATURE_TEMPLATE_CHAT, SellerMigrationFeatureName.FEATURE_SELLER_CHAT -> {
-                1
+            SellerMigrationFeatureName.FEATURE_TEMPLATE_CHAT, SellerMigrationFeatureName.FEATURE_SELLER_CHAT-> {
+                CHAT_TAB
             }
             SellerMigrationFeatureName.FEATURE_REVIEW_TEMPLATE_AND_STATISTICS -> {
-                2
+                REVIEW_TAB
             }
             SellerMigrationFeatureName.FEATURE_SHOP_CASHBACK_VOUCHER, SellerMigrationFeatureName.FEATURE_TOPADS,
-            SellerMigrationFeatureName.FEATURE_ADS, SellerMigrationFeatureName.FEATURE_ADS_DETAIL -> {
-                3
+            SellerMigrationFeatureName.FEATURE_ADS, SellerMigrationFeatureName.FEATURE_ADS_DETAIL,
+            SellerMigrationFeatureName.FEATURE_BROADCAST_CHAT -> {
+                ADS_TAB
             }
             SellerMigrationFeatureName.FEATURE_SHOP_INSIGHT, SellerMigrationFeatureName.FEATURE_MARKET_INSIGHT -> {
-                4
+                STATISTIC_TAB
+            }
+            SellerMigrationFeatureName.FEATURE_PLAY_FEED -> {
+                FEED_PLAY_TAB
+            }
+            SellerMigrationFeatureName.FEATURE_FINANCIAL_SERVICES -> {
+                FINANCIAL_SERVICES_TAB
             }
             else -> {
                 0
@@ -165,6 +180,8 @@ class SellerMigrationFragment : Fragment(), SellerFeatureCarousel.RecyclerViewLi
         tabList.add(SellerFeatureFragmentAdapter.SellerFeatureFragmentItem(getSellerFeatureTabFragment<SellerFeatureReviewTabFragment>(), getString(R.string.seller_migration_fragment_tab_review)))
         tabList.add(SellerFeatureFragmentAdapter.SellerFeatureFragmentItem(getSellerFeatureTabFragment<SellerFeatureAdsPromoTabFragment>(), getString(R.string.seller_migration_fragment_tab_promo_and_ads)))
         tabList.add(SellerFeatureFragmentAdapter.SellerFeatureFragmentItem(getSellerFeatureTabFragment<SellerFeatureStatisticTabFragment>(), getString(R.string.seller_migration_fragment_tab_statistic)))
+        tabList.add(SellerFeatureFragmentAdapter.SellerFeatureFragmentItem(getSellerFeatureTabFragment<SellerFeatureFeedPlayTabFragment>(), getString(R.string.seller_migration_fragment_tab_feed_play)))
+        tabList.add(SellerFeatureFragmentAdapter.SellerFeatureFragmentItem(getSellerFeatureTabFragment<SellerFeatureFinancialServicesTabFragment>(), getString(R.string.seller_migration_fragment_tab_financial_services)))
     }
 
     private inline fun <reified T : BaseSellerFeatureTabFragment> getSellerFeatureTabFragment(): Fragment {

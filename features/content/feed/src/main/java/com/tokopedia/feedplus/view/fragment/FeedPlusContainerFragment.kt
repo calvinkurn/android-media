@@ -25,6 +25,7 @@ import com.tokopedia.affiliatecommon.DISCOVERY_BY_ME
 import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
@@ -40,6 +41,9 @@ import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener
+import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
+import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
+import com.tokopedia.seller_migration_common.presentation.util.setupBottomSheetFeedSellerMigration
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -57,6 +61,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     companion object {
         const val TOOLBAR_GRADIENT = 1
         const val TOOLBAR_WHITE = 2
+
         @JvmStatic
         fun newInstance(bundle: Bundle?) = FeedPlusContainerFragment().apply { arguments = bundle }
     }
@@ -95,7 +100,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     private var searchBarTransitionRange = 0
     private var isLightThemeStatusBar = false
 
-
     private lateinit var coachMarkItem: CoachMarkItem
     private lateinit var feedBackgroundCrossfader: TransitionDrawable
 
@@ -107,13 +111,13 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.tabResp.observe(this, Observer {
+        viewModel.tabResp.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessGetTab(it.data)
                 is Fail -> onErrorGetTab(it.throwable)
             }
         })
-        viewModel.whitelistResp.observe(this, Observer {
+        viewModel.whitelistResp.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> renderFab(it.data)
                 is Fail -> onErrorGetWhitelist(it.throwable)
@@ -377,26 +381,44 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     private fun fabClickListener(whitelistDomain: WhitelistDomain): View.OnClickListener {
         return View.OnClickListener {
-            if (isFabExpanded) {
-                hideAllFab(false)
-            } else {
-                fab_feed.animation = AnimationUtils.loadAnimation(activity, R.anim.rotate_forward)
-                layout_grey_popup.visibility = View.VISIBLE
+            //seller migration enabled
+            if (isSellerMigrationEnabled(context)) {
                 for (author in whitelistDomain.authors) {
-                    if (author.type.equals(Author.TYPE_AFFILIATE, ignoreCase = true)) {
-                        fab_feed_byme.show()
-                        text_fab_byme.visibility = View.VISIBLE
-                        text_fab_byme.text = author.title
-                        fab_feed_byme.setOnClickListener { goToCreateAffiliate() }
-                    } else {
-                        fab_feed_shop.show()
-                        text_fab_shop.visibility = View.VISIBLE
-                        text_fab_shop.text = author.title
-                        fab_feed_shop.setOnClickListener { onGoToLink(author.link) }
+                    val intent = context?.let { context ->
+                        SellerMigrationActivity.createIntent(
+                                context = context,
+                                featureName = SellerMigrationFeatureName.FEATURE_POST_FEED,
+                                screenName = FeedPlusContainerFragment::class.simpleName.orEmpty(),
+                                appLinks = arrayListOf(author.link),
+                                isStackBuilder = false)
+                    }
+                    if (intent != null) {
+                        val isAuthorAffiliate = author.type.equals(Author.TYPE_AFFILIATE, ignoreCase = true)
+                        setupBottomSheetFeedSellerMigration(::goToCreateAffiliate, isAuthorAffiliate, intent)
                     }
                 }
-                layout_grey_popup.setOnClickListener { hideAllFab(false) }
-                isFabExpanded = true
+            } else {
+                if (isFabExpanded) {
+                    hideAllFab(false)
+                } else {
+                    fab_feed.animation = AnimationUtils.loadAnimation(activity, R.anim.rotate_forward)
+                    layout_grey_popup.visibility = View.VISIBLE
+                    for (author in whitelistDomain.authors) {
+                        if (author.type.equals(Author.TYPE_AFFILIATE, ignoreCase = true)) {
+                            fab_feed_byme.show()
+                            text_fab_byme.visibility = View.VISIBLE
+                            text_fab_byme.text = author.title
+                            fab_feed_byme.setOnClickListener { goToCreateAffiliate() }
+                        } else {
+                            fab_feed_shop.show()
+                            text_fab_shop.visibility = View.VISIBLE
+                            text_fab_shop.text = author.title
+                            fab_feed_shop.setOnClickListener { onGoToLink(author.link) }
+                        }
+                    }
+                    layout_grey_popup.setOnClickListener { hideAllFab(false) }
+                    isFabExpanded = true
+                }
             }
         }
     }
