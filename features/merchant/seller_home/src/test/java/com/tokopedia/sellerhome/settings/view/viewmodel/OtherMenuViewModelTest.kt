@@ -50,10 +50,12 @@ class OtherMenuViewModelTest {
     val rule = InstantTaskExecutorRule()
 
     private lateinit var mViewModel: OtherMenuViewModel
+    private lateinit var testCoroutineDispatcher: TestCoroutineDispatcher
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
+        testCoroutineDispatcher = TestCoroutineDispatcher()
         mViewModel =
                 OtherMenuViewModel(
                         testCoroutineDispatcher,
@@ -67,10 +69,6 @@ class OtherMenuViewModelTest {
     @After
     fun cleanup() {
         testCoroutineDispatcher.cleanupTestCoroutines()
-    }
-
-    private val testCoroutineDispatcher by lazy {
-        TestCoroutineDispatcher()
     }
 
     @Test
