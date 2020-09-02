@@ -66,7 +66,8 @@ class PlayFragment @Inject constructor(
         PlayOrientationListener,
         PlayFragmentContract,
         FragmentVideoViewComponent.Listener,
-        FragmentYouTubeViewComponent.Listener {
+        FragmentYouTubeViewComponent.Listener,
+        PlayVideoScalingManager.Listener {
 
     private lateinit var ivClose: ImageView
     private lateinit var loaderPage: LoaderUnify
@@ -207,6 +208,13 @@ class PlayFragment @Inject constructor(
         else hideAllInsets()
     }
 
+    /**
+     * Video Scaling Manager Listener
+     */
+    override fun onFinalBottomMostBoundsScalingCalculated(bottomMostBounds: Int) {
+        fragmentUserInteractionView.setScaledVideoBottomBounds(bottomMostBounds)
+    }
+
     fun onFirstTopBoundsCalculated() {
         isFirstTopBoundsCalculated = true
         if (playViewModel.videoPlayer.isYouTube) {
@@ -269,7 +277,7 @@ class PlayFragment @Inject constructor(
 
     private fun getVideoScalingManager(): VideoScalingManager = synchronized(this) {
         if (videoScalingManager == null) {
-            videoScalingManager = PlayVideoScalingManager(requireView() as ViewGroup)
+            videoScalingManager = PlayVideoScalingManager(requireView() as ViewGroup, this)
         }
         return videoScalingManager!!
     }

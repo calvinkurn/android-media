@@ -40,8 +40,8 @@ import com.tokopedia.play.view.bottomsheet.PlayMoreActionBottomSheet
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayNavigation
 import com.tokopedia.play.view.contract.PlayOrientationListener
-import com.tokopedia.play.view.measurement.bounds.manager.PinnedBoundsManager
-import com.tokopedia.play.view.measurement.bounds.manager.PlayPinnedBoundsManager
+import com.tokopedia.play.view.measurement.bounds.manager.ChatListHeightManager
+import com.tokopedia.play.view.measurement.bounds.manager.PlayChatListHeightManager
 import com.tokopedia.play.view.measurement.scaling.PlayVideoScalingManager
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
@@ -136,9 +136,17 @@ class PlayUserInteractionFragment @Inject constructor(
     private val orientation: ScreenOrientation
         get() = ScreenOrientation.getByInt(resources.configuration.orientation)
 
+    private val screenOrientationDataSource = object : ScreenOrientationDataSource {
+        override fun getScreenOrientation(): ScreenOrientation {
+            return orientation
+        }
+    }
+
     private var videoBoundsProvider: VideoBoundsProvider? = null
     private var dynamicLayoutManager: DynamicLayoutManager? = null
-    private var pinnedBoundsManager: PinnedBoundsManager? = null
+    private var chatListHeightManager: ChatListHeightManager? = null
+
+    private var mMaxTopChatMode: Int? = null
 
     /**
      * Animation
@@ -215,6 +223,8 @@ class PlayUserInteractionFragment @Inject constructor(
     override fun onDestroyView() {
         videoBoundsProvider = null
         dynamicLayoutManager = null
+        chatListHeightManager = null
+
         super.onDestroyView()
         job.cancelChildren()
     }
@@ -340,6 +350,13 @@ class PlayUserInteractionFragment @Inject constructor(
     }
     //endregion
 
+    fun maxTopOnChatMode(maxTopPosition: Int) {
+        mMaxTopChatMode = maxTopPosition
+        scope.launch(dispatchers.immediate) {
+            invalidateChatListBounds(maxTopPosition = maxTopPosition)
+        }
+    }
+
     private fun setupView(view: View) {
 
         fun setupLandscapeView() {
@@ -445,13 +462,6 @@ class PlayUserInteractionFragment @Inject constructor(
         }
     }
 
-    private fun getPinnedBoundsManager(): PinnedBoundsManager = synchronized(this) {
-        if (pinnedBoundsManager == null) {
-            pinnedBoundsManager = PlayPinnedBoundsManager(requireView() as ViewGroup)
-        }
-        return pinnedBoundsManager!!
-    }
-
     //region observe
     /**
      * Observe
@@ -464,7 +474,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
                 scope.launch(dispatchers.immediate) {
                     playFragment.setCurrentVideoTopBounds(it.orientation, getVideoTopBounds(it.orientation))
-                    if (it.channelType.isLive) invalidatePinnedBounds(videoOrientation = it.orientation, videoPlayer = meta.videoPlayer)
+                    if (it.channelType.isLive) invalidateChatListBounds(videoOrientation = it.orientation, videoPlayer = meta.videoPlayer)
                 }
 
                 statsInfoViewOnStateChanged(channelType = it.channelType)
@@ -564,11 +574,11 @@ class PlayUserInteractionFragment @Inject constructor(
         playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, DistinctObserver { map ->
             if (!playViewModel.isFreezeOrBanned) view?.hide()
 
-            scope.launch {
-                if (playViewModel.channelType.isLive) invalidatePinnedBounds(bottomInsets = map)
-            }
-
             if (playViewModel.videoOrientation.isVertical) triggerImmersive(false)
+
+            scope.launch(dispatchers.immediate) {
+                if (playViewModel.channelType.isLive && !map.isKeyboardShown) invalidateChatListBounds(bottomInsets = map)
+            }
 
             val keyboardState = map[BottomInsetsType.Keyboard]
                 if (keyboardState != null && !keyboardState.isPreviousStateSame) {
@@ -861,12 +871,16 @@ class PlayUserInteractionFragment @Inject constructor(
         return getVideoBoundsProvider().getVideoBottomBoundsOnKeyboardShown(estimatedKeyboardHeight, hasQuickReply)
     }
 
-    private suspend fun invalidatePinnedBounds(
+    private suspend fun invalidateChatListBounds(
             videoOrientation: VideoOrientation = playViewModel.videoOrientation,
             videoPlayer: VideoPlayerUiModel = playViewModel.videoPlayer,
-            bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
+            bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets,
+            maxTopPosition: Int = mMaxTopChatMode ?: 0
     ) {
-        getPinnedBoundsManager().invalidatePinnedBounds(videoOrientation, videoPlayer, isChatMode = bottomInsets.isKeyboardShown)
+        val hasQuickReply = !playViewModel.observableQuickReply.value?.quickReplyList.isNullOrEmpty()
+
+        if (bottomInsets.isKeyboardShown) getChatListHeightManager().invalidateHeightChatMode(videoOrientation, videoPlayer, maxTopPosition, hasQuickReply)
+        else getChatListHeightManager().invalidateHeightNonChatMode(videoOrientation, videoPlayer)
     }
 
     private fun changeLayoutBasedOnVideoOrientation(videoOrientation: VideoOrientation) {
@@ -879,24 +893,23 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun getDynamicLayoutManager(): DynamicLayoutManager = synchronized(this) {
         if (dynamicLayoutManager == null) {
-            dynamicLayoutManager = PlayDynamicLayoutManager(container as ViewGroup, object : ScreenOrientationDataSource {
-                override fun getScreenOrientation(): ScreenOrientation {
-                    return orientation
-                }
-            })
+            dynamicLayoutManager = PlayDynamicLayoutManager(container as ViewGroup, screenOrientationDataSource)
         }
         return dynamicLayoutManager!!
     }
 
     private fun getVideoBoundsProvider(): VideoBoundsProvider = synchronized(this) {
         if (videoBoundsProvider == null) {
-            videoBoundsProvider = PlayVideoBoundsProvider(container as ViewGroup, object : ScreenOrientationDataSource {
-                override fun getScreenOrientation(): ScreenOrientation {
-                    return orientation
-                }
-            })
+            videoBoundsProvider = PlayVideoBoundsProvider(container as ViewGroup, screenOrientationDataSource)
         }
         return videoBoundsProvider!!
+    }
+
+    private fun getChatListHeightManager(): ChatListHeightManager = synchronized(this) {
+        if (chatListHeightManager == null) {
+            chatListHeightManager = PlayChatListHeightManager(requireView() as ViewGroup, screenOrientationDataSource)
+        }
+        return chatListHeightManager!!
     }
 
     //region OnStateChanged
