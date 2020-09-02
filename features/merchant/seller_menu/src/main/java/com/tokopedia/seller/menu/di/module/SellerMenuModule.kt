@@ -4,6 +4,8 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.seller.menu.coroutine.CoroutineDispatchers
 import com.tokopedia.seller.menu.coroutine.CoroutineDispatchersProvider
 import com.tokopedia.seller.menu.di.scope.SellerMenuScope
@@ -31,5 +33,11 @@ class SellerMenuModule {
     @Provides
     fun provideUserGrqphqlRepository(): GraphqlRepository {
         return GraphqlInteractor.getInstance().graphqlRepository
+    }
+
+    @SellerMenuScope
+    @Provides
+    fun provideFirebaseRemoteConfig(@ApplicationContext context: Context): RemoteConfig {
+        return FirebaseRemoteConfigImpl(context)
     }
 }

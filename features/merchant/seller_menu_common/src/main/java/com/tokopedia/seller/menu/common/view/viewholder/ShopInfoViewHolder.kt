@@ -205,7 +205,6 @@ class ShopInfoViewHolder(
         val itemView: View = LayoutInflater.from(context).inflate(shopType.shopTypeLayoutRes, null, false)
         val shopStatusLayout: View? = when(shopType) {
             is RegularMerchant -> {
-                listener?.onStatusBarNeedDarkColor(true)
                 itemView.apply {
                     setRegularMerchantShopStatus(shopType)
                     sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
@@ -216,7 +215,6 @@ class ShopInfoViewHolder(
                 }
             }
             is PowerMerchantStatus -> {
-                listener?.onStatusBarNeedDarkColor(false)
                 itemView.apply {
                     setPowerMerchantShopStatus(shopType)
                     sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
@@ -227,7 +225,6 @@ class ShopInfoViewHolder(
                 }
             }
             is ShopType.OfficialStore -> {
-                listener?.onStatusBarNeedDarkColor(false)
                 itemView.apply {
                     sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
                 }
@@ -310,7 +307,6 @@ class ShopInfoViewHolder(
         fun onSaldoClicked()
         fun onRefreshShopInfo()
         fun onKreditTopadsClicked()
-        fun onStatusBarNeedDarkColor(isDefaultDark: Boolean)
         fun onTopAdsTooltipClicked(isTopAdsActive: Boolean)
     }
 }

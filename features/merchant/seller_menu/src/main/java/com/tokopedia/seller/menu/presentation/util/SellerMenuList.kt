@@ -19,12 +19,13 @@ import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopInfoLoadingUiM
 import com.tokopedia.seller.menu.presentation.activity.SellerSettingsActivity
 import com.tokopedia.seller.menu.presentation.uimodel.OrderSectionTitleUiModel
 import com.tokopedia.seller.menu.presentation.uimodel.ProductSectionTitleUiModel
+import com.tokopedia.user.session.UserSessionInterface
 
 object SellerMenuList {
 
     private const val APPLINK_FORMAT = "%s?url=%s%s"
 
-    fun create(context: Context): List<SettingUiModel> {
+    fun create(context: Context, userSession: UserSessionInterface): List<SettingUiModel> {
         val menuList = mutableListOf<SettingUiModel>()
         val buyerInfoMenu = createBuyerInfoMenu(context)
         val helpAndOtherMenu = createOtherInfoMenu(context)
@@ -39,7 +40,7 @@ object SellerMenuList {
         menuList.addAll(buyerInfoMenu)
         menuList.addAll(helpAndOtherMenu)
         menuList.add(DividerUiModel())
-        menuList.add(SellerFeatureUiModel())
+        menuList.add(SellerFeatureUiModel(userSession))
 
         return menuList.toList()
     }
