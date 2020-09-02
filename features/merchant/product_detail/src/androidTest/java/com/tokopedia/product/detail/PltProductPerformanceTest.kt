@@ -8,10 +8,8 @@ import com.tokopedia.instrumentation.test.R
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.test.application.TestRepeatRule
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
-import com.tokopedia.test.application.environment.interceptor.size.GqlNetworkAnalyzerInterceptor
 import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawString
 import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheck
-import com.tokopedia.test.application.util.setupTotalSizeInterceptor
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -32,9 +30,6 @@ class PltProductPerformanceTest {
     @Before
     fun doBeforeRun() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
-        context?.let {
-            setupTotalSizeInterceptor(null)
-        }
         setupGraphqlMockResponseWithCheck(createMockModelConfig())
 
         val intent = ProductDetailActivity.createIntent(context, "1061061424")
@@ -68,8 +63,7 @@ class PltProductPerformanceTest {
             PerformanceDataFileUtils.writePLTPerformanceFile(
                     activityRule.activity,
                     tag,
-                    performanceData,
-                    networkData = GqlNetworkAnalyzerInterceptor.getNetworkData())
+                    performanceData)
         }
     }
 }
