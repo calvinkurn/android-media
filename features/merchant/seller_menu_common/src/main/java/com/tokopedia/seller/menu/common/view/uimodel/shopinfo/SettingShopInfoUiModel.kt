@@ -1,10 +1,10 @@
 package com.tokopedia.seller.menu.common.view.uimodel.shopinfo
 
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
-import com.tokopedia.sellerhome.settings.view.uimodel.base.BalanceType
-import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingSuccess
-import com.tokopedia.sellerhome.settings.view.uimodel.base.partialresponse.PartialSettingResponse
-import com.tokopedia.sellerhome.settings.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType
+import com.tokopedia.seller.menu.common.view.uimodel.base.BalanceType
+import com.tokopedia.seller.menu.common.view.uimodel.base.SettingSuccess
+import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingResponse
+import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType
 import com.tokopedia.user.session.UserSessionInterface
 
 class SettingShopInfoUiModel(private val partialShopInfo: PartialSettingResponse,

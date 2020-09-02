@@ -1,7 +1,7 @@
-package com.tokopedia.sellerhome.settings.view.uimodel.base.partialresponse
+package com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse
 
-import com.tokopedia.sellerhome.settings.domain.entity.OthersBalance
-import com.tokopedia.sellerhome.settings.view.uimodel.base.ShopType
+import com.tokopedia.seller.menu.common.domain.entity.OthersBalance
+import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 
 sealed class PartialSettingSuccessInfoType: PartialSettingResponse {
 

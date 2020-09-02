@@ -3,9 +3,9 @@ package com.tokopedia.sellerhome.settings.domain.usecase
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
 import com.tokopedia.sellerhome.settings.view.fragment.OtherMenuFragment
-import com.tokopedia.sellerhome.settings.view.uimodel.base.partialresponse.PartialSettingFail
-import com.tokopedia.sellerhome.settings.view.uimodel.base.partialresponse.PartialSettingResponse
-import com.tokopedia.sellerhome.settings.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType
+import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingFail
+import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingResponse
+import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers

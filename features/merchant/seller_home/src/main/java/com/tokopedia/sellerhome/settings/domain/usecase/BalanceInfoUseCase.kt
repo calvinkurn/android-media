@@ -3,8 +3,8 @@ package com.tokopedia.sellerhome.settings.domain.usecase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.sellerhome.settings.domain.entity.OtherBalanceResponse
-import com.tokopedia.sellerhome.settings.domain.entity.OthersBalance
+import com.tokopedia.seller.menu.common.domain.entity.OtherBalanceResponse
+import com.tokopedia.seller.menu.common.domain.entity.OthersBalance
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
