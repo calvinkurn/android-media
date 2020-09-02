@@ -152,7 +152,12 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
     private suspend fun uploadProductSizechart(
             sizecharts: PictureVariantInputModel
     ): PictureVariantInputModel {
-        sizecharts.uploadId = uploadImageAndGetId(sizecharts.filePath)
+        val uploadId = uploadImageAndGetId(sizecharts.urlOriginal)
+        if (uploadId.isNotEmpty()) {
+            sizecharts.uploadId = uploadId
+            sizecharts.urlOriginal = ""
+        }
+
         return sizecharts
     }
 
@@ -161,7 +166,23 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
     ): List<ProductVariantInputModel> {
         productVariants.forEach {
             it.pictures.firstOrNull()?.let { picture ->
-                picture.uploadId = uploadImageAndGetId(picture.filePath)
+                val uploadId = uploadImageAndGetId(picture.urlOriginal)
+                if (uploadId.isNotEmpty()) {
+                    picture.uploadId = uploadId
+
+                    // clear existing data
+                    picture.picID = ""
+                    picture.description = ""
+                    picture.filePath = ""
+                    picture.fileName = ""
+                    picture.width = 0
+                    picture.height = 0
+                    picture.isFromIG = ""
+                    picture.urlOriginal = ""
+                    picture.urlThumbnail = ""
+                    picture.url300 = ""
+                    picture.status = false
+                }
             }
         }
         return productVariants
