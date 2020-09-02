@@ -1,10 +1,9 @@
 package com.tokopedia.encryption.security
 
+import android.util.Base64
 import com.tokopedia.encryption.utils.Constants
-import java.security.KeyPair
-import java.security.KeyPairGenerator
-import java.security.PrivateKey
-import java.security.PublicKey
+import java.security.*
+import java.security.spec.X509EncodedKeySpec
 import javax.crypto.Cipher
 
 class RSA {
@@ -27,6 +26,18 @@ class RSA {
         cipher.init(Cipher.ENCRYPT_MODE, key)
         val encryptedBytes = cipher.doFinal(message.toByteArray(Charsets.UTF_8))
         return encoder(encryptedBytes)
+    }
+
+    fun encrypt(message: String, key: String,
+                encoder: ((ByteArray) -> (String))): String? {
+        return encrypt(message, stringToPublicKey(key), encoder)
+    }
+
+    private fun stringToPublicKey(keyInString: String): PublicKey {
+        val publicBytes: ByteArray = Base64.decode(keyInString, Base64.DEFAULT)
+        val keySpec = X509EncodedKeySpec(publicBytes)
+        val keyFactory: KeyFactory = KeyFactory.getInstance("RSA")
+        return keyFactory.generatePublic(keySpec)
     }
 
     fun decrypt(message: String, key: PrivateKey,
