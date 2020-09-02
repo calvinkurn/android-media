@@ -221,9 +221,7 @@ public class SearchActivity extends BaseActivity
             public void onTransitionTrigger(MotionLayout motionLayout, int i, boolean b, float v) { }
 
             @Override
-            public void onTransitionCompleted(MotionLayout motionLayout, int i) {
-                onContainerTransitionCompleted(i);
-            }
+            public void onTransitionCompleted(MotionLayout motionLayout, int i) { onContainerTransitionCompleted(i); }
         };
     }
 
