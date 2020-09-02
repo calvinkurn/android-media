@@ -15,6 +15,7 @@ import androidx.annotation.StringRes
 import androidx.collection.ArrayMap
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder
@@ -463,7 +464,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     }
 
     private fun showStickerOnBoardingTooltip() {
-        if (!presenter.isStickerTooltipAlreadyShow()) {
+        if (
+                !presenter.isStickerTooltipAlreadyShow() &&
+                activity?.lifecycle?.currentState?.isAtLeast(Lifecycle.State.STARTED) == true
+        ) {
             toolTip.showAtTop(getViewState().chatStickerMenuButton)
         }
     }
