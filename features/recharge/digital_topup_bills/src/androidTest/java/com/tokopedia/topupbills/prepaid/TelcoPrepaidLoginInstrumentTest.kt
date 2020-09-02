@@ -62,14 +62,15 @@ class TelcoPrepaidLoginInstrumentTest {
 
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
+            gtmLogDBSource.deleteAll().toBlocking().first()
+
             setupGraphqlMockResponseWithCheck(TelcoPrepaidLoginMockResponseConfig())
+            Thread.sleep(4000)
         }
     }
 
     @Before
     fun stubAllExternalIntents() {
-        gtmLogDBSource.deleteAll().toBlocking().first()
-
         Intents.intending(IsNot.not(IntentMatchers.isInternal())).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
@@ -128,9 +129,10 @@ class TelcoPrepaidLoginInstrumentTest {
         onView(withId(R.id.searchbar_textfield)).perform(ViewActions.typeText(VALID_PHONE_NUMBER), ViewActions.pressImeActionButton())
         onView(withId(R.id.telco_ac_input_number)).check(matches(withText(VALID_PHONE_NUMBER)))
 
+        onView(withId(R.id.telco_ac_input_number)).perform(click())
         val viewInteraction = onView(withId(R.id.telco_search_number_rv)).check(matches(isDisplayed()))
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<TelcoProductViewHolder>(0, click()))
-        onView(withId(R.id.telco_ac_input_number)).check(matches(withText(VALID_PHONE_NUMBER)))
+        onView(withId(R.id.telco_ac_input_number)).check(matches(withText(VALID_FAV_PHONE_NUMBER)))
 
         Thread.sleep(2000)
         onView(withId(R.id.telco_input_number)).perform(click())
@@ -211,6 +213,7 @@ class TelcoPrepaidLoginInstrumentTest {
 
     companion object {
         private const val VALID_PHONE_NUMBER = "08123232323"
+        private const val VALID_FAV_PHONE_NUMBER = "087855813789"
         private const val ANALYTIC_VALIDATOR_QUERY_LOGIN = "tracker/recharge/recharge_telco_prepaid_login.json"
     }
 }

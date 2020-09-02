@@ -4,7 +4,7 @@
   "query": [
     {
       "event": "openScreen",
-      "screenName": "{{/digital/pascabayar}}",
+      "screenName": "/digital/pascabayar",
       "isLoggedInStatus": "{{true|false}}",
       "currentSite": "tokopediadigital",
       "userId": "{{.*}}",

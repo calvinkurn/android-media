@@ -64,14 +64,14 @@ class TelcoPrepaidInstrumentTest {
 
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
+            gtmLogDBSource.deleteAll().toBlocking().first()
+
             setupGraphqlMockResponseWithCheck(TelcoPrepaidMockResponseConfig())
         }
     }
 
     @Before
     fun stubAllExternalIntents() {
-        gtmLogDBSource.deleteAll().toBlocking().first()
-
         Intents.intending(IsNot.not(IntentMatchers.isInternal())).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
@@ -140,6 +140,9 @@ class TelcoPrepaidInstrumentTest {
         onView(withId(R.id.searchbar_textfield)).check(matches(withText("")))
         onView(withId(R.id.searchbar_textfield)).perform(typeText(VALID_PHONE_NUMBER), pressImeActionButton())
         onView(withId(R.id.telco_ac_input_number)).check(matches(withText(VALID_PHONE_NUMBER)))
+        Thread.sleep(1000)
+        onView(withId(R.id.telco_clear_input_number_btn)).perform(click())
+        onView(withId(R.id.telco_ac_input_number)).check(matches(withText("")))
     }
 
     /**

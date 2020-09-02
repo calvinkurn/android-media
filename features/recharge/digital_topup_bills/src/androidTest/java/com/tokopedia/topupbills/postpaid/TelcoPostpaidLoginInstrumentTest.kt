@@ -59,14 +59,15 @@ class TelcoPostpaidLoginInstrumentTest {
 
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
+            gtmLogDBSource.deleteAll().toBlocking().first()
+
             setupGraphqlMockResponseWithCheck(TelcoPostpaidLoginMockResponseConfig())
+            Thread.sleep(4000)
         }
     }
 
     @Before
     fun stubAllExternalIntents() {
-        gtmLogDBSource.deleteAll().toBlocking().first()
-
         Intents.intending(IsNot.not(IntentMatchers.isInternal())).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
@@ -109,6 +110,7 @@ class TelcoPostpaidLoginInstrumentTest {
         onView(withId(R.id.searchbar_textfield)).perform(ViewActions.typeText(VALID_PHONE_NUMBER), ViewActions.pressImeActionButton())
         onView(withId(R.id.telco_ac_input_number)).check(matches(withText(VALID_PHONE_NUMBER)))
 
+        onView(withId(R.id.telco_ac_input_number)).perform(click())
         val viewInteraction = onView(withId(R.id.telco_search_number_rv)).check(matches(isDisplayed()))
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<TelcoProductViewHolder>(0, click()))
         onView(withId(R.id.telco_ac_input_number)).check(matches(withText(VALID_PHONE_NUMBER)))

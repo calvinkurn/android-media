@@ -62,14 +62,14 @@ class TelcoPostpaidInstrumentTest {
 
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
+            gtmLogDBSource.deleteAll().toBlocking().first()
+
             setupGraphqlMockResponseWithCheck(TelcoPostpaidMockResponseConfig())
         }
     }
 
     @Before
     fun stubAllExternalIntents() {
-        gtmLogDBSource.deleteAll().toBlocking().first()
-
         Intents.intending(IsNot.not(IntentMatchers.isInternal())).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
