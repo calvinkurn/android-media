@@ -26,7 +26,7 @@ object InputPriceUtil {
 
     fun formatProductPriceInput(productPriceInput: String): String {
         return try {
-            if (!productPriceInput.matches(Regex("-?\\d+([.,]\\d+)(E\\+\\d+)?"))) {
+            if (!productPriceInput.matches(Regex("-?(\\d+([.,]\\d+)+)+(E\\+\\d+)?"))) {
                 NumberFormat.getNumberInstance(Locale.US)
                         .format(productPriceInput.toBigDecimal())
                         .replace(",", ".")
