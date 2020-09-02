@@ -27,14 +27,13 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.inbox_reputation.R;
-import com.tokopedia.review.feature.reputationhistory.view.fragment.SellerReputationFragment;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.review.common.util.ReviewConstants;
 import com.tokopedia.review.feature.inbox.common.presentation.activity.ReviewInboxActivity;
 import com.tokopedia.review.feature.inboxreview.presentation.fragment.InboxReviewFragment;
+import com.tokopedia.review.feature.reputationhistory.view.fragment.SellerReputationFragment;
 import com.tokopedia.review.feature.reviewlist.view.fragment.RatingProductFragment;
-import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTrackingConstant;
 import com.tokopedia.tkpd.tkpdreputation.constant.Constant;
@@ -114,13 +113,13 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
         toolbar = findViewById(R.id.toolbar);
 
         setupToolbar();
-        sellerReputationFragment = SellerReputationFragment.createInstance();
         if(GlobalConfig.isSellerApp()) {
             reviewSellerFragment = RatingProductFragment.Companion.createInstance();
             Bundle reviewSellerBundle = new Bundle();
             reviewSellerBundle.putBoolean(IS_DIRECTLY_GO_TO_RATING, !goToReputationHistory);
             reviewSellerFragment.setArguments(reviewSellerBundle);
             inboxReviewFragment = InboxReviewFragment.Companion.createInstance();
+            sellerReputationFragment = SellerReputationFragment.createInstance();
         }
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(indicator.getUnifyTabLayout()));
         indicator.getUnifyTabLayout().addOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager, this) {
@@ -241,7 +240,9 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
         if (GlobalConfig.isSellerApp()) {
             fragmentList.add(reviewSellerFragment);
             fragmentList.add(inboxReviewFragment);
-            fragmentList.add(InboxReputationFragment.createInstance(TAB_BUYER_REVIEW));
+            if (userSession.hasShop()) {
+                fragmentList.add(InboxReputationFragment.createInstance(TAB_BUYER_REVIEW));
+            }
             fragmentList.add(sellerReputationFragment);
         } else {
             fragmentList.add(InboxReputationFragment.createInstance(TAB_WAITING_REVIEW));
