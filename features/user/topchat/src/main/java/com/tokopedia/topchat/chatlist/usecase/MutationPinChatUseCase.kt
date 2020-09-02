@@ -10,7 +10,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class MutationPinChat @Inject constructor(
+class MutationPinChatUseCase @Inject constructor(
         private val gqlUseCase: GraphqlUseCase<PinChatResponse>,
         private var dispatchers: TopchatCoroutineContextProvider
 ) : CoroutineScope {

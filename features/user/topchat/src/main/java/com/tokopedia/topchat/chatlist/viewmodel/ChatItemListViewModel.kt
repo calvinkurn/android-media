@@ -59,8 +59,8 @@ class ChatItemListViewModel @Inject constructor(
         private val queries: Map<String, String>,
         private val chatWhitelistFeature: GetChatWhitelistFeature,
         private val chatBannedSellerUseCase: ChatBanedSellerUseCase,
-        private val pinChatUseCase: MutationPinChat,
-        private val unpinChatUseCase: MutationUnpinChat,
+        private val pinChatUseCase: MutationPinChatUseCase,
+        private val unpinChatUseCase: MutationUnpinChatUseCase,
         private val getChatListUseCase: GetChatListMessageUseCase,
         private val dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher), ChatItemListContract {
