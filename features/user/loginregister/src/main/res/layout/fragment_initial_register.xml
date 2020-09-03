@@ -92,7 +92,7 @@
                 android:layout_marginLeft="@dimen/dp_24"
                 android:layout_marginRight="@dimen/dp_24"
                 app:backgroundColor="@color/black"
-                app:loginTvCornerSize="5"
+                app:cornerSize="5"
                 app:customText="@string/register_with_email"
                 app:iconButton="@drawable/bg_transparent"
                 app:textColor="@color/black_70"/>

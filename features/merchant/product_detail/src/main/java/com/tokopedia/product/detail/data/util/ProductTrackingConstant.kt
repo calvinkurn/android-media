@@ -45,6 +45,10 @@ object ProductTrackingConstant {
         const val PROMO_POSITION = "position"
         const val PROMO_ID = "promo_id"
         const val PROMO_CODE = "promo_id"
+        const val CREATIVE = "creative"
+        const val POSITION = "position"
+        const val PROMO_CLICK = "promoClick"
+        const val PROMO_VIEW = "promoView"
 
         const val ACTION_FIELD = "actionField"
         const val LIST = "list"
@@ -162,6 +166,9 @@ object ProductTrackingConstant {
         const val CLICK_SEND_QUESTION = "click - kirim pertanyaan on diskusi"
 
         const val CLICK_SEE_ALL_ULASAN = "click - lihat semua ulasan"
+
+        const val CLICK_TDN_BANNER_ADS_WIDGET= "click - tdn banner ads widget"
+        const val VIEW_TDN_BANNER_ADS_WIDGET= "view - tdn banner ads widget"
     }
 
 
@@ -169,7 +176,7 @@ object ProductTrackingConstant {
         const val EMPTY_LABEL = ""
         const val CLICK = "click"
         const val PDP = "pdp"
-        const val DISCUSSION_EMPTY_QUESTION = "count thread:0;"
+        const val DISCUSSION_EMPTY_QUESTION = "count thread:0;variant selected:%s;variant available:%s;"
         const val DISCUSSION_SEE_ALL ="count thread:%s;"
         const val DISCUSSION_DETAIL = "talk id:%s;count thread:%s;"
     }
@@ -220,6 +227,11 @@ object ProductTrackingConstant {
         const val USE_VOUCHER = "use voucher"
         const val DETAIL = "mvc detail"
         const val SEE_ALL = "see all"
+    }
+
+    object TopAds {
+        const val PDP_BANNER_TOPADS = "/product - tdn banner ads"
+        const val DFAULT_CREATIVE_NAME_BANNER_TOP_ADS = "none / other"
     }
 
     object Message {
