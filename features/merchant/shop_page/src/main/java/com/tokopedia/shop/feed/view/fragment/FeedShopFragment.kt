@@ -83,7 +83,6 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_feed_shop.*
-import kotlinx.android.synthetic.main.fragment_shop_page_home.*
 import javax.inject.Inject
 
 /**
@@ -112,7 +111,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     private lateinit var shopId: String
     private var isLoading = false
     private var isForceRefresh = false
-    private var recyclerViewTopPadding = 0
 
     private var bottomSheetSellerMigration: BottomSheetBehavior<LinearLayout>? = null
 
@@ -346,6 +344,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
             renderList(dataList, lastCursor.isNotEmpty())
         } else {
             if (isSellerMigrationEnabled(context)) {
+                bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_HIDDEN
                 dataList.add(EmptyFeedShopSellerMigrationUiModel())
             } else {
                 dataList.add(getEmptyResultViewModel())
@@ -927,8 +926,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     private fun setupBottomSheetSellerMigration(view: View) {
         if (isSellerMigrationEnabled(context)) {
-            recyclerViewTopPadding = recyclerView?.paddingTop ?: 0
-            recycler_view?.smoothScrollBy(0, recyclerViewTopPadding * 2)
 
             val viewTarget: LinearLayout = view.findViewById(bottom_sheet_wrapper)
             bottomSheetSellerMigration = BottomSheetBehavior.from(viewTarget)

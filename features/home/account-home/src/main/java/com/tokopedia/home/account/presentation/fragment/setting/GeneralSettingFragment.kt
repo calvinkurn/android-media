@@ -143,6 +143,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
         recyclerView.addItemDecoration(DividerItemDecoration(activity))
         val appVersion = view.findViewById<TextView>(R.id.text_view_app_version)
         appVersion.text = getString(R.string.application_version_fmt, GlobalConfig.RAW_VERSION_NAME)
+        setupTickerSellerMigration()
     }
 
     override fun getSettingItems(): List<SettingItemViewModel> {
@@ -431,7 +432,6 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
 
     override fun refreshSettingOptionsList() {
         if (adapter != null) {
-            setupTickerSellerMigration()
             adapter.setSettingItems(settingItems)
             adapter.notifyDataSetChanged()
         }

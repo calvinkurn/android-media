@@ -12,14 +12,14 @@
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipeToRefresh"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clipToPadding="false">
+            android:layout_height="wrap_content">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:orientation="vertical"
+                android:clipToPadding="false"
                 android:paddingTop="@dimen/dp_8"
                 android:paddingBottom="@dimen/spacing_lvl3"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -30,7 +30,7 @@
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:id="@+id/mainView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="bottom">
 
             <include layout="@layout/bottom_sheet_layout" />
