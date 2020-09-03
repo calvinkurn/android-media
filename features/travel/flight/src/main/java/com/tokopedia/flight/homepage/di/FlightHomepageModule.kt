@@ -2,8 +2,8 @@ package com.tokopedia.flight.homepage.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.flight.homepage.data.cache.FlightDashboardCache
+import com.tokopedia.travelcalendar.data.TravelCalendarGQLQuery
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -21,9 +21,8 @@ class FlightHomepageModule {
 
     @Provides
     @Named("travel_calendar_holiday_query")
-    fun provideTravelCalendarHolidayQuery(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.travelcalendar.R.raw.query_get_travel_calendar_holiday)
-    }
+    fun provideTravelCalendarHolidayQuery(): String =
+            TravelCalendarGQLQuery.GET_TRAVEL_CALENDAR_HOLIDAY
 
 
 }
