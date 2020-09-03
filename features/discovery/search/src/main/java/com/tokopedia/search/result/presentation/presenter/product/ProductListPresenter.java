@@ -131,7 +131,7 @@ final class ProductListPresenter
     private boolean useRatingString = false;
     private String responseCode = "";
     private int topAdsCount = 1;
-    private String shopRatingABVariant = "";
+    private ShopRatingABTest shopRatingABTest = null;
 
     private List<Visitable> productList;
     private List<InspirationCarouselViewModel> inspirationCarouselViewModel;
@@ -178,7 +178,7 @@ final class ProductListPresenter
         super.attachView(view);
 
         useRatingString = getIsUseRatingString();
-        shopRatingABVariant = getShopRatingABVariant();
+        shopRatingABTest = getShopRatingABTest();
     }
 
     private boolean getIsUseRatingString() {
@@ -190,6 +190,17 @@ final class ProductListPresenter
         catch (Exception e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    private ShopRatingABTest getShopRatingABTest() {
+        String shopRatingABVariant = getShopRatingABVariant();
+
+        switch(shopRatingABVariant) {
+            case AB_TEST_SHOP_RATING_VARIANT_A: return new ShopRatingABTestVariantA();
+            case AB_TEST_SHOP_RATING_VARIANT_B: return new ShopRatingABTestVariantB();
+            case AB_TEST_SHOP_RATING_VARIANT_C: return new ShopRatingABTestVariantC();
+            default: return null;
         }
     }
 
@@ -430,7 +441,7 @@ final class ProductListPresenter
         if (isViewAttached()) {
             int lastProductItemPositionFromCache = getView().getLastProductItemPositionFromCache();
 
-            ProductViewModelMapper mapper = createProductViewModelMapper();
+            ProductViewModelMapper mapper = new ProductViewModelMapper(shopRatingABTest);;
             ProductViewModel productViewModel = mapper
                     .convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, useRatingString);
 
@@ -466,7 +477,7 @@ final class ProductListPresenter
     }
 
     private void getViewToShowMoreData(Map<String, Object> searchParameter, SearchProductModel searchProductModel, ProductViewModel productViewModel) {
-        List<Visitable> list = new ArrayList<>(convertToListOfVisitable(productViewModel));
+        List<Visitable> list = new ArrayList<>(createProductItemVisitableList(productViewModel));
         productList.addAll(list);
 
         processInspirationCardPosition(searchParameter, list);
@@ -479,7 +490,7 @@ final class ProductListPresenter
         getView().updateScrollListener();
     }
 
-    private List<Visitable> convertToListOfVisitable(ProductViewModel productViewModel) {
+    private List<Visitable> createProductItemVisitableList(ProductViewModel productViewModel) {
         List<Visitable> list = new ArrayList<>(productViewModel.getProductList());
         int j = 0;
         for (int i = 0; i < productViewModel.getTotalItem(); i++) {
@@ -513,6 +524,11 @@ final class ProductListPresenter
                     item.setFreeOngkirViewModel(mapFreeOngkir(topAds.getProduct().getFreeOngkir()));
                     item.setPosition(topAdsCount);
                     item.setCategoryBreadcrumb(topAds.getProduct().getCategoryBreadcrumb());
+
+                    if (shopRatingABTest != null) {
+                        shopRatingABTest.processShopRatingVariant(topAds, item);
+                    }
+
                     list.add(i, item);
                     j++;
                     topAdsCount++;
@@ -743,28 +759,13 @@ final class ProductListPresenter
 
         int lastProductItemPositionFromCache = getView().getLastProductItemPositionFromCache();
 
-        ProductViewModelMapper mapper = createProductViewModelMapper();
+        ProductViewModelMapper mapper = new ProductViewModelMapper(shopRatingABTest);
         ProductViewModel productViewModel = mapper
                 .convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, useRatingString);
 
         saveLastProductItemPositionToCache(lastProductItemPositionFromCache, productViewModel.getProductList());
 
         return productViewModel;
-    }
-
-    private ProductViewModelMapper createProductViewModelMapper() {
-        ShopRatingABTest shopRatingABTest = createShopRatingABTest();
-
-        return new ProductViewModelMapper(shopRatingABTest);
-    }
-
-    private ShopRatingABTest createShopRatingABTest() {
-        switch(shopRatingABVariant) {
-            case AB_TEST_SHOP_RATING_VARIANT_A: return new ShopRatingABTestVariantA();
-            case AB_TEST_SHOP_RATING_VARIANT_B: return new ShopRatingABTestVariantB();
-            case AB_TEST_SHOP_RATING_VARIANT_C: return new ShopRatingABTestVariantC();
-            default: return null;
-        }
     }
 
     private void setResponseCode(String responseCode) {
@@ -931,7 +932,7 @@ final class ProductListPresenter
         }
 
         topAdsCount = 1;
-        productList = convertToListOfVisitable(productViewModel);
+        productList = createProductItemVisitableList(productViewModel);
         list.addAll(productList);
 
         if (!textIsEmpty(productViewModel.getAdditionalParams())) {

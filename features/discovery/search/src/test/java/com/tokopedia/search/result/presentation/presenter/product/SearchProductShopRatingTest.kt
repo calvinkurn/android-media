@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.*
 import com.tokopedia.discovery.common.constants.SearchConstant.ProductCardLabel.LABEL_INTEGRITY
 import com.tokopedia.discovery.common.constants.SearchConstant.ProductCardLabel.LABEL_INTEGRITY_TYPE
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
@@ -12,6 +13,7 @@ import com.tokopedia.search.result.domain.model.SearchProductModel.ProductLabelG
 import com.tokopedia.search.result.presentation.model.LabelGroupViewModel
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel
 import com.tokopedia.search.shouldBe
+import com.tokopedia.topads.sdk.domain.model.Data
 import io.mockk.every
 import io.mockk.slot
 import io.mockk.verify
@@ -54,16 +56,28 @@ internal class SearchProductShopRatingTest: ProductListPresenterTestFixtures() {
     private fun `Then assert product list for variant A`() {
         val visitableList = visitableListSlot.captured
         val productItemViewModelList = visitableList.filterIsInstance<ProductItemViewModel>()
-        val productList = searchProductModel.searchProduct.data.productList
+        val organicProductList = searchProductModel.searchProduct.data.productList
+        val topAdsDataList = searchProductModel.topAdsModel.data
 
-        productItemViewModelList[0].verifyVariantA_ShowRatingReviewOnly(productList[0])
-        productItemViewModelList[1].verifyVariantA_ShowIntegrityOnly(productList[1])
-        productItemViewModelList[2].verifyVariantA_ShowShopRatingOnly(productList[2])
-        productItemViewModelList[3].verifyVariantA_ShowShopRatingOnly(productList[3])
-        productItemViewModelList[4].verifyVariantA_ShowRatingReviewOnly(productList[4])
-        productItemViewModelList[5].verifyVariantA_ShowRatingReviewOnly(productList[5])
+        // Organic
+        productItemViewModelList[0].verifyVariantA_ShowRatingReviewOnly(organicProductList[0])
+        productItemViewModelList[1].verifyVariantA_ShowIntegrityOnly(organicProductList[1])
+        productItemViewModelList[2].verifyVariantA_ShowShopRatingOnly(organicProductList[2])
+        productItemViewModelList[3].verifyVariantA_ShowShopRatingOnly(organicProductList[3])
+        productItemViewModelList[4].verifyVariantA_ShowRatingReviewOnly(organicProductList[4])
+        productItemViewModelList[5].verifyVariantA_ShowRatingReviewOnly(organicProductList[5])
         productItemViewModelList[6].verifyShowNone()
-        productItemViewModelList[7].verifyVariantA_ShowRatingReviewOnly(productList[7])
+        productItemViewModelList[7].verifyVariantA_ShowRatingReviewOnly(organicProductList[7])
+
+        // Top Ads
+        productItemViewModelList[8].verifyVariantA_ShowRatingReviewOnly(topAdsDataList[0])
+        productItemViewModelList[9].verifyVariantA_ShowIntegrityOnly(topAdsDataList[1])
+        productItemViewModelList[10].verifyVariantA_ShowShopRatingOnly(topAdsDataList[2])
+        productItemViewModelList[11].verifyVariantA_ShowShopRatingOnly(topAdsDataList[3])
+        productItemViewModelList[12].verifyVariantA_ShowRatingReviewOnly(topAdsDataList[4])
+        productItemViewModelList[13].verifyVariantA_ShowRatingReviewOnly(topAdsDataList[5])
+        productItemViewModelList[14].verifyShowNone()
+        productItemViewModelList[15].verifyVariantA_ShowRatingReviewOnly(topAdsDataList[7])
     }
 
     @Test
@@ -77,7 +91,9 @@ internal class SearchProductShopRatingTest: ProductListPresenterTestFixtures() {
         val visitableList = visitableListSlot.captured
         val productItemViewModelList = visitableList.filterIsInstance<ProductItemViewModel>()
         val productList = searchProductModel.searchProduct.data.productList
+        val topAdsDataList = searchProductModel.topAdsModel.data
 
+        // Organic
         productItemViewModelList[0].verifyVariantB_ShowIntegrityAndShopRating(productList[0])
         productItemViewModelList[1].verifyVariantB_ShowIntegrityAndShopRating(productList[1])
         productItemViewModelList[2].verifyVariantB_ShowShopRatingOnly(productList[2])
@@ -86,6 +102,16 @@ internal class SearchProductShopRatingTest: ProductListPresenterTestFixtures() {
         productItemViewModelList[5].verifyVariantB_ShowIntegrityOnly(productList[5])
         productItemViewModelList[6].verifyShowNone()
         productItemViewModelList[7].verifyShowNone()
+
+        // Top Ads
+        productItemViewModelList[8].verifyVariantB_ShowIntegrityAndShopRating(topAdsDataList[0])
+        productItemViewModelList[9].verifyVariantB_ShowIntegrityAndShopRating(topAdsDataList[1])
+        productItemViewModelList[10].verifyVariantB_ShowShopRatingOnly(topAdsDataList[2])
+        productItemViewModelList[11].verifyVariantB_ShowIntegrityAndShopRating(topAdsDataList[3])
+        productItemViewModelList[12].verifyVariantB_ShowIntegrityAndShopRating(topAdsDataList[4])
+        productItemViewModelList[13].verifyVariantB_ShowIntegrityOnly(topAdsDataList[5])
+        productItemViewModelList[14].verifyShowNone()
+        productItemViewModelList[15].verifyShowNone()
     }
 
     @Test
@@ -99,7 +125,9 @@ internal class SearchProductShopRatingTest: ProductListPresenterTestFixtures() {
         val visitableList = visitableListSlot.captured
         val productItemViewModelList = visitableList.filterIsInstance<ProductItemViewModel>()
         val productList = searchProductModel.searchProduct.data.productList
+        val topAdsDataList = searchProductModel.topAdsModel.data
 
+        // Organic
         productItemViewModelList[0].verifyVariantC_ShowShopRatingOnly(productList[0])
         productItemViewModelList[1].verifyVariantC_ShowShopRatingOnly(productList[1])
         productItemViewModelList[2].verifyVariantC_ShowShopRatingOnly(productList[2])
@@ -108,6 +136,16 @@ internal class SearchProductShopRatingTest: ProductListPresenterTestFixtures() {
         productItemViewModelList[5].verifyShowNone()
         productItemViewModelList[6].verifyShowNone()
         productItemViewModelList[7].verifyShowNone()
+
+        // Top Ads
+        productItemViewModelList[8].verifyVariantC_ShowShopRatingOnly(topAdsDataList[0])
+        productItemViewModelList[9].verifyVariantC_ShowShopRatingOnly(topAdsDataList[1])
+        productItemViewModelList[10].verifyVariantC_ShowShopRatingOnly(topAdsDataList[2])
+        productItemViewModelList[11].verifyVariantC_ShowShopRatingOnly(topAdsDataList[3])
+        productItemViewModelList[12].verifyVariantC_ShowShopRatingOnly(topAdsDataList[4])
+        productItemViewModelList[13].verifyShowNone()
+        productItemViewModelList[14].verifyShowNone()
+        productItemViewModelList[15].verifyShowNone()
     }
 
     @Test
@@ -121,9 +159,15 @@ internal class SearchProductShopRatingTest: ProductListPresenterTestFixtures() {
         val visitableList = visitableListSlot.captured
         val productItemViewModelList = visitableList.filterIsInstance<ProductItemViewModel>()
         val productList = searchProductModel.searchProduct.data.productList
+        val topAdsDataList = searchProductModel.topAdsModel.data
 
         productList.forEachIndexed { index, productItem ->
             productItemViewModelList[index].verifyNoVariant_NoChangesOnShopRating(productItem)
+        }
+
+        topAdsDataList.forEachIndexed { index, topAdsData ->
+            val topAdsIndex = index + productList.size
+            productItemViewModelList[topAdsIndex].verifyNoVariant_NoChangesOnShopRating(topAdsData)
         }
     }
 
@@ -199,6 +243,14 @@ internal class SearchProductShopRatingTest: ProductListPresenterTestFixtures() {
         verifyShopRatingDataForProductCard(expectedData)
     }
 
+    private fun ProductItemViewModel.verifyVariantA_ShowRatingReviewOnly(topAdsData: Data) {
+        val expectedData = ExpectedData()
+        expectedData.rating = topAdsData.product.productRating
+        expectedData.countReview = topAdsData.product.countReviewFormat.toIntOrZero()
+
+        verifyShopRatingDataForProductCard(expectedData)
+    }
+
     private fun ProductItemViewModel.verifyVariantA_ShowIntegrityOnly(productItem: Product) {
         val labelIntegrity = productItem.labelGroupList.find { it.position == LABEL_INTEGRITY }!!
         val expectedData = ExpectedData()
@@ -207,9 +259,26 @@ internal class SearchProductShopRatingTest: ProductListPresenterTestFixtures() {
         verifyShopRatingDataForProductCard(expectedData)
     }
 
+    private fun ProductItemViewModel.verifyVariantA_ShowIntegrityOnly(topAdsData: Data) {
+        val labelIntegrity = topAdsData.product.labelGroupList.find { it.position == LABEL_INTEGRITY }!!
+        val expectedData = ExpectedData()
+        expectedData.labelIntegrity = ProductLabelGroup(
+                title = labelIntegrity.title, position = labelIntegrity.position, type = labelIntegrity.type
+        )
+
+        verifyShopRatingDataForProductCard(expectedData)
+    }
+
     private fun ProductItemViewModel.verifyVariantA_ShowShopRatingOnly(productItem: Product) {
         val expectedData = ExpectedData()
         expectedData.shopRating = productItem.shop.ratingAverage
+
+        verifyShopRatingDataForProductCard(expectedData)
+    }
+
+    private fun ProductItemViewModel.verifyVariantA_ShowShopRatingOnly(topAdsData: Data) {
+        val expectedData = ExpectedData()
+        expectedData.shopRating = topAdsData.shop.shopRatingAvg
 
         verifyShopRatingDataForProductCard(expectedData)
     }
@@ -235,6 +304,23 @@ internal class SearchProductShopRatingTest: ProductListPresenterTestFixtures() {
         )
     }
 
+    private fun ProductItemViewModel.verifyVariantB_ShowIntegrityAndShopRating(topAdsData: Data) {
+        val productLabelGroup = createLabelIntegrityFromCountSold(topAdsData.product)
+        val expectedData = ExpectedData()
+        expectedData.labelIntegrity = productLabelGroup
+        expectedData.shopRating = topAdsData.shop.shopRatingAvg
+
+        verifyShopRatingDataForProductCard(expectedData)
+    }
+
+    private fun createLabelIntegrityFromCountSold(productItem: com.tokopedia.topads.sdk.domain.model.Product): ProductLabelGroup {
+        return ProductLabelGroup(
+                position = LABEL_INTEGRITY,
+                title = productItem.countSold,
+                type = LABEL_INTEGRITY_TYPE
+        )
+    }
+
     private fun ProductItemViewModel.verifyVariantB_ShowShopRatingOnly(productItem: Product) {
         val expectedData = ExpectedData()
         expectedData.shopRating = productItem.shop.ratingAverage
@@ -242,8 +328,23 @@ internal class SearchProductShopRatingTest: ProductListPresenterTestFixtures() {
         verifyShopRatingDataForProductCard(expectedData)
     }
 
+    private fun ProductItemViewModel.verifyVariantB_ShowShopRatingOnly(topAdsData: Data) {
+        val expectedData = ExpectedData()
+        expectedData.shopRating = topAdsData.shop.shopRatingAvg
+
+        verifyShopRatingDataForProductCard(expectedData)
+    }
+
     private fun ProductItemViewModel.verifyVariantB_ShowIntegrityOnly(productItem: Product) {
         val productLabelGroup = createLabelIntegrityFromCountSold(productItem)
+        val expectedData = ExpectedData()
+        expectedData.labelIntegrity = productLabelGroup
+
+        verifyShopRatingDataForProductCard(expectedData)
+    }
+
+    private fun ProductItemViewModel.verifyVariantB_ShowIntegrityOnly(topAdsData: Data) {
+        val productLabelGroup = createLabelIntegrityFromCountSold(topAdsData.product)
         val expectedData = ExpectedData()
         expectedData.labelIntegrity = productLabelGroup
 
@@ -258,11 +359,32 @@ internal class SearchProductShopRatingTest: ProductListPresenterTestFixtures() {
         verifyShopRatingDataForProductCard(expectedData)
     }
 
+    private fun ProductItemViewModel.verifyVariantC_ShowShopRatingOnly(topAdsData: Data) {
+        val expectedData = ExpectedData()
+        expectedData.shopRating = topAdsData.shop.shopRatingAvg
+        expectedData.isShopRatingYellow = true
+
+        verifyShopRatingDataForProductCard(expectedData)
+    }
+
     private fun ProductItemViewModel.verifyNoVariant_NoChangesOnShopRating(productItem: Product) {
         val expectedData = ExpectedData()
         expectedData.rating = productItem.rating
         expectedData.countReview = productItem.countReview
         expectedData.labelIntegrity = productItem.labelGroupList.find { it.position == LABEL_INTEGRITY }
+        expectedData.shopRating = ""
+
+        verifyShopRatingDataForProductCard(expectedData)
+    }
+
+    private fun ProductItemViewModel.verifyNoVariant_NoChangesOnShopRating(topAdsData: Data) {
+        val labelIntegrity = topAdsData.product.labelGroupList.find { it.position == LABEL_INTEGRITY }
+        val expectedData = ExpectedData()
+        expectedData.rating = topAdsData.product.productRating
+        expectedData.countReview = topAdsData.product.countReviewFormat.toIntOrZero()
+        expectedData.labelIntegrity = labelIntegrity?.run { ProductLabelGroup(
+                title = title, position = position, type = type
+        )}
         expectedData.shopRating = ""
 
         verifyShopRatingDataForProductCard(expectedData)

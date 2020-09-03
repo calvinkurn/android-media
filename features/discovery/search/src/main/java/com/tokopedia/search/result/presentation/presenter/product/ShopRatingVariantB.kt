@@ -5,28 +5,36 @@ import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.ShopRatingABTest
 import com.tokopedia.search.result.presentation.model.LabelGroupViewModel
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel
+import com.tokopedia.topads.sdk.domain.model.Data
 
 class ShopRatingABTestVariantB: ShopRatingABTest {
 
     override fun processShopRatingVariant(productModel: SearchProductModel.Product, productItemViewModel: ProductItemViewModel) {
         try {
-            tryProcessShopRatingVariant(productItemViewModel, productModel)
+            tryProcessShopRatingVariant(productItemViewModel, productModel.shop.ratingAverage, productModel.countSold)
         }
         catch (ignored: Exception) { }
     }
 
-    private fun tryProcessShopRatingVariant(productItemViewModel: ProductItemViewModel, productModel: SearchProductModel.Product) {
+    private fun tryProcessShopRatingVariant(productItemViewModel: ProductItemViewModel, shopRatingAverage: String, countSold: String) {
         productItemViewModel.rating = 0
         productItemViewModel.ratingString = ""
         productItemViewModel.countReview = 0
-        productItemViewModel.shopRating = productModel.shop.ratingAverage
+        productItemViewModel.shopRating = shopRatingAverage
 
-        if (productModel.countSold.isNotEmpty()) {
+        if (countSold.isNotEmpty()) {
             productItemViewModel.labelGroupList.removeAll { it.isLabelIntegrity() }
-            productItemViewModel.labelGroupList.add(createLabelIntegrityFromCountSold(productModel))
+            productItemViewModel.labelGroupList.add(createLabelIntegrityFromCountSold(countSold))
         }
     }
 
-    private fun createLabelIntegrityFromCountSold(productModel: SearchProductModel.Product) =
-            LabelGroupViewModel(ProductCardLabel.LABEL_INTEGRITY, ProductCardLabel.LABEL_INTEGRITY_TYPE, productModel.countSold)
+    private fun createLabelIntegrityFromCountSold(countSold: String) =
+            LabelGroupViewModel(ProductCardLabel.LABEL_INTEGRITY, ProductCardLabel.LABEL_INTEGRITY_TYPE, countSold)
+
+    override fun processShopRatingVariant(topAdsData: Data, productItemViewModel: ProductItemViewModel) {
+        try {
+            tryProcessShopRatingVariant(productItemViewModel, topAdsData.shop.shopRatingAvg, topAdsData.product.countSold)
+        }
+        catch (ignored: Exception) { }
+    }
 }

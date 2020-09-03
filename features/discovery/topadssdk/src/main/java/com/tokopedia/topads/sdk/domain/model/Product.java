@@ -47,6 +47,7 @@ public class Product implements Parcelable {
     private static final String KEY_LABEL_GROUP = "label_group";
     private static final String KEY_FREE_ONGKIR = "free_ongkir";
     private static final String KEY_CATEGORY_BREADCRUMB = "category_breadcrumb";
+    private static final String KEY_PRODUCT_ITEM_SOLD_PAYMENT_VERIFIED = "product_item_sold_payment_verified";
 
     @SerializedName(KEY_ID)
     @Expose
@@ -160,6 +161,10 @@ public class Product implements Parcelable {
     @Expose
     private String categoryBreadcrumb = "";
 
+    @SerializedName(KEY_PRODUCT_ITEM_SOLD_PAYMENT_VERIFIED)
+    @Expose
+    private String countSold = "";
+
     private boolean topAds = false;
 
     private String recommendationType = "";
@@ -269,6 +274,9 @@ public class Product implements Parcelable {
         if(!object.isNull(KEY_CATEGORY_BREADCRUMB)){
             setCategoryBreadcrumb(object.getString(KEY_CATEGORY_BREADCRUMB));
         }
+        if(!object.isNull(KEY_PRODUCT_ITEM_SOLD_PAYMENT_VERIFIED)){
+            setCountSold(object.getString(KEY_PRODUCT_ITEM_SOLD_PAYMENT_VERIFIED));
+        }
     }
 
     protected Product(Parcel in) {
@@ -302,6 +310,7 @@ public class Product implements Parcelable {
         labelGroupList = in.createTypedArrayList(LabelGroup.CREATOR);
         freeOngkir = in.readParcelable(FreeOngkir.class.getClassLoader());
         categoryBreadcrumb = in.readString();
+        countSold = in.readString();
     }
 
     @Override
@@ -336,6 +345,7 @@ public class Product implements Parcelable {
         dest.writeTypedList(labelGroupList);
         dest.writeParcelable(freeOngkir, flags);
         dest.writeString(categoryBreadcrumb);
+        dest.writeString(countSold);
     }
 
     @Override
@@ -617,5 +627,13 @@ public class Product implements Parcelable {
 
     public FreeOngkir getFreeOngkir() {
         return this.freeOngkir;
+    }
+
+    public String getCountSold() {
+        return this.countSold;
+    }
+
+    public void setCountSold(String countSold) {
+        this.countSold = countSold;
     }
 }

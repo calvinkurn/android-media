@@ -3,22 +3,30 @@ package com.tokopedia.search.result.presentation.presenter.product
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.ShopRatingABTest
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel
+import com.tokopedia.topads.sdk.domain.model.Data
 
 class ShopRatingABTestVariantC: ShopRatingABTest {
 
     override fun processShopRatingVariant(productModel: SearchProductModel.Product, productItemViewModel: ProductItemViewModel) {
         try {
-            tryProcessShopRatingVariant(productItemViewModel, productModel)
+            tryProcessShopRatingVariant(productItemViewModel, productModel.shop.ratingAverage)
         }
         catch (ignored: Exception) { }
     }
 
-    private fun tryProcessShopRatingVariant(productItemViewModel: ProductItemViewModel, productModel: SearchProductModel.Product) {
+    private fun tryProcessShopRatingVariant(productItemViewModel: ProductItemViewModel, shopRatingAverage: String) {
         productItemViewModel.rating = 0
         productItemViewModel.ratingString = ""
         productItemViewModel.countReview = 0
         productItemViewModel.labelGroupList.removeAll { it.isLabelIntegrity() }
-        productItemViewModel.shopRating = productModel.shop.ratingAverage
+        productItemViewModel.shopRating = shopRatingAverage
         productItemViewModel.isShopRatingYellow = true
+    }
+
+    override fun processShopRatingVariant(topAdsData: Data, productItemViewModel: ProductItemViewModel) {
+        try {
+            tryProcessShopRatingVariant(productItemViewModel, topAdsData.shop.shopRatingAvg)
+        }
+        catch (ignored: Exception) { }
     }
 }
