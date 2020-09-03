@@ -28,6 +28,6 @@ public interface ICartDigitalInteractor {
             Subscriber<CartDigitalInfoData> subscriber
     );
 
-    void cancelVoucher(RequestBodyCancelVoucher requestBodyCancelVoucher, Subscriber<String> subscriber);
+    void cancelVoucher(RequestBodyCancelVoucher requestBodyCancelVoucher, Subscriber<Boolean> subscriber);
 
 }

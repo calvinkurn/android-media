@@ -37,7 +37,6 @@ class VideoViewComponent(
     private var mExoPlayer: ExoPlayer? = null
 
     fun setPlayer(exoPlayer: ExoPlayer?) {
-        mExoPlayer = exoPlayer
         pvVideo.player = exoPlayer
     }
 
@@ -122,6 +121,7 @@ class VideoViewComponent(
      */
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     fun onPause() {
+        mExoPlayer = pvVideo.player as? ExoPlayer
         setPlayer(null)
     }
 

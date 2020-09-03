@@ -44,6 +44,7 @@ object ProductDetailConstant {
     const val KEY_OCC_BUTTON = "occ"
     const val KEY_CHAT = "chat"
     const val KEY_BYME = "byme"
+    const val DELIMITER_DEVICE_ID = "|>deviceID:"
     const val KEY_BUTTON_PRIMARY = "primary"
     const val KEY_BUTTON_DISABLE = "disabled"
     const val KEY_BUTTON_SECONDARY = "secondary"
@@ -139,6 +140,7 @@ object ProductDetailConstant {
     const val ARG_FROM_AFFILIATE = "ARG_FROM_AFFILIATE"
     const val ARG_AFFILIATE_STRING = "ARG_AFFILIATE_STRING"
     const val ARG_DEEPLINK_URL = "ARG_DEEPLINK_URL"
+    const val ARG_LAYOUT_ID= "ARG_LAYOUT_ID"
     const val REVIEW_PRD_NM = "x_prd_nm"
 
 

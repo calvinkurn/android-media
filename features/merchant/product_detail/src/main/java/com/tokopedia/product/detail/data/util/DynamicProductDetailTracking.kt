@@ -873,13 +873,13 @@ object DynamicProductDetailTracking {
             TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_THREAD_DETAIL_DISCUSSION)
         }
 
-        fun eventEmptyDiscussionSendQuestion(productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel?, userId: String) {
+        fun eventEmptyDiscussionSendQuestion(productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel?, userId: String, isVariantSelected: Boolean, totalAvailableVariants: String) {
             val mapEvent = TrackingUtil.addDiscussionParams(
                     TrackAppUtils.gtmData(
                             ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                             ProductTrackingConstant.Category.PDP,
                             ProductTrackingConstant.Action.CLICK_SEND_QUESTION,
-                            ProductTrackingConstant.Label.DISCUSSION_EMPTY_QUESTION),
+                            String.format(ProductTrackingConstant.Label.DISCUSSION_EMPTY_QUESTION, isVariantSelected, totalAvailableVariants)),
                     userId
             )
 
