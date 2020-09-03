@@ -43,5 +43,7 @@ data class CartDataListResponse(
         @SerializedName("unavailable_section")
         val unavailableSections: List<UnavailableSection> = emptyList(),
         @SerializedName("unavailable_section_action")
-        val unavailableSectionAction: List<Action> = emptyList()
+        val unavailableSectionAction: List<Action> = emptyList(),
+        @SerializedName("total_product_error")
+        val totalProductError: Int = 0
 )

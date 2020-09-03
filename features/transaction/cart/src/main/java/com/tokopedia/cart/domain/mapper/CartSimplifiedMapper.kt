@@ -46,18 +46,13 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
         cartListData.unavailableGroupData = mapUnavailableGroupData(cartDataListResponse)
         cartListData.showLessUnavailableDataWording = cartDataListResponse.unavailableSectionAction.find {
             return@find it.id == ACTION_SHOWLESS
-        }?.message ?: "Tampilkan Lebih Sedikit34"
+        }?.message ?: "Tampilkan Lebih Sedikit"
         cartListData.showMoreUnavailableDataWording = cartDataListResponse.unavailableSectionAction.find {
             return@find it.id == ACTION_SHOWMORE
-        }?.message ?: "Tampilkan Semua12"
+        }?.message ?: "Tampilkan Semua"
         cartListData.isPromoCouponActive = cartDataListResponse.isCouponActive == 1
 
-        var errorCount = 0
-        cartDataListResponse.unavailableSections.forEach {
-            for (shopGroupWithError in it.unavailableGroups) {
-                errorCount += shopGroupWithError.totalCartDetailsError
-            }
-        }
+        val errorCount = cartDataListResponse.totalProductError
         cartListData.isError = errorCount > 0
         if (cartListData.isError) {
             cartListData.cartTickerErrorData = mapCartTickerErrorData(errorCount)
