@@ -21,6 +21,8 @@ import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
+import com.tokopedia.product.manage.common.coroutine.CoroutineDispatchers
+import com.tokopedia.product.manage.common.coroutine.CoroutineDispatchersProvider
 import com.tokopedia.topchat.chatlist.data.factory.MessageFactory
 import com.tokopedia.topchat.chatlist.data.mapper.DeleteMessageMapper
 import com.tokopedia.topchat.chatlist.data.repository.MessageRepository
@@ -265,4 +267,9 @@ class ChatModule {
     fun provideAtcOccMutation(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_one_click_checkout)
     }
+
+    @ChatScope
+    @Provides
+    fun provideCoroutineDispatchers(): CoroutineDispatchers = CoroutineDispatchersProvider
+
 }

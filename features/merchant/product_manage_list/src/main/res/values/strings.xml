@@ -144,7 +144,6 @@
 
     <string name="product_stock_reminder_toaster_success_desc">Pengingat stok \"%1$s\" berhasil dipasang.</string>
     <string name="product_stock_reminder_toaster_success_remove_desc">Pengingat stok \"%1$s\" berhasil dinonaktifkan.</string>
-    <string name="product_stock_reminder_toaster_failed_desc">Oops, permintaan kamu tidak dapat diproses.</string>
     <string name="product_stock_reminder_toaster_action_text">Coba Lagi</string>
     <string name="product_stock_reminder_loading_content_desc">Loading Stock Reminder</string>
     <string name="product_stock_reminder_header_title">Pasang Pengingat Stok</string>
@@ -176,8 +175,6 @@
     <string name="product_manage_quick_edit_max_price_error">Maks. Rp100.000.000</string>
     <string name="product_manage_quick_edit_price_success">Harga produk \"%1$s\" berhasil diubah.</string>
 
-    <string name="product_manage_quick_edit_stock_success">Ketersediaan produk \"%1$s\" berhasil diubah.</string>
-
     <string name="product_manage_delete_product_title">Hapus Produk?</string>
     <string name="product_manage_delete_product_description">Penghapusan produk tidak dapat dibatalkan.</string>
     <string name="product_manage_delete_product_delete_button">Ya, Hapus</string>
@@ -185,8 +182,6 @@
     <string name="product_manage_delete_product_success">\"%1$s\" berhasil dihapus</string>
     <string name="product_manage_delete_product_fail">Produk gagal dihapus.\nSilakan coba lagi, ya!</string>
 
-    <string name="product_manage_snack_bar_retry">Coba lagi</string>
-    <string name="product_manage_snack_bar_fail">Oops, permintaan kamu tidak dapat diproses.</string>
     <string name="product_manage_button_multi_edit">Atur Sekaligus</string>
     <string name="product_manage_dialog_delete_products_title">Hapus %d Produk?</string>
     <string name="product_manage_dialog_edit_products_inactive_title">Nonaktifkan %d Produk?</string>

@@ -6,5 +6,9 @@
     <string name="product_manage_stock_info_description">Produk ini tidak bisa dilihat calon pembeli karena stok 0.</string>
     <string name="filter_expand_save_button">Simpan</string>
     <string name="product_manage_quick_edit_stock_active_product">Produk Aktif</string>
+    <string name="product_stock_reminder_toaster_failed_desc">Oops, permintaan kamu tidak dapat diproses.</string>
+    <string name="product_manage_quick_edit_stock_success">Ketersediaan produk \"%1$s\" berhasil diubah.</string>
+    <string name="product_manage_snack_bar_retry">Coba lagi</string>
+    <string name="product_manage_snack_bar_fail">Oops, permintaan kamu tidak dapat diproses.</string>
 
 </resources>
