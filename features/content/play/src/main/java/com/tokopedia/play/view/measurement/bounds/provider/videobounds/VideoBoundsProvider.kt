@@ -1,4 +1,4 @@
-package com.tokopedia.play.view.measurement.bounds.provider
+package com.tokopedia.play.view.measurement.bounds.provider.videobounds
 
 import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.VideoPlayerUiModel

@@ -39,8 +39,8 @@ import com.tokopedia.play.view.contract.PlayNewChannelInteractor
 import com.tokopedia.play.view.contract.PlayOrientationListener
 import com.tokopedia.play.view.measurement.ScreenOrientationDataSource
 import com.tokopedia.play.view.measurement.bounds.BoundsKey
-import com.tokopedia.play.view.measurement.bounds.manager.PlayVideoBoundsManager
-import com.tokopedia.play.view.measurement.bounds.manager.VideoBoundsManager
+import com.tokopedia.play.view.measurement.bounds.manager.videobounds.PlayVideoBoundsManager
+import com.tokopedia.play.view.measurement.bounds.manager.videobounds.VideoBoundsManager
 import com.tokopedia.play.view.measurement.scaling.PlayVideoScalingManager
 import com.tokopedia.play.view.measurement.scaling.VideoScalingManager
 import com.tokopedia.play.view.type.*
@@ -284,7 +284,7 @@ class PlayFragment @Inject constructor(
 
     private fun getVideoBoundsManager(): VideoBoundsManager = synchronized(this) {
         if (videoBoundsManager == null) {
-            videoBoundsManager = PlayVideoBoundsManager(requireView() as ViewGroup, object: ScreenOrientationDataSource {
+            videoBoundsManager = PlayVideoBoundsManager(requireView() as ViewGroup, object : ScreenOrientationDataSource {
                 override fun getScreenOrientation(): ScreenOrientation {
                     return orientation
                 }

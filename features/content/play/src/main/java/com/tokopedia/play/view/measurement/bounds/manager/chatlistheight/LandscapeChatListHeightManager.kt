@@ -1,5 +1,6 @@
-package com.tokopedia.play.view.measurement.bounds.manager
+package com.tokopedia.play.view.measurement.bounds.manager.chatlistheight
 
+import com.tokopedia.play.view.measurement.bounds.manager.chatlistheight.ChatListHeightManager
 import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
 
