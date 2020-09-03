@@ -1,7 +1,5 @@
 package com.tokopedia.user.session.util;
 
-import java.security.GeneralSecurityException;
-
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
@@ -74,11 +72,9 @@ public class EncoderDecoder {
 			byte[] decryptedData = cipher.doFinal(data);
 			decode_result = new String(decryptedData);
 		}
-		catch (GeneralSecurityException e){
-			return text;
-		}
 		catch (Exception e) {
 			e.printStackTrace();
+			return text;
 		}
 		return decode_result;
 	}
