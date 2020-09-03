@@ -32,12 +32,16 @@ import com.tokopedia.travelhomepage.homepage.presentation.listener.OnItemBindLis
 import com.tokopedia.travelhomepage.homepage.presentation.listener.TravelHomepageActionListener
 import com.tokopedia.travelhomepage.homepage.presentation.viewmodel.TravelHomepageViewModel
 import kotlinx.android.synthetic.main.travel_homepage_fragment.*
+import kotlinx.coroutines.*
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 /**
  * @author by furqan on 06/08/2019
  */
-class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelHomepageTypeFactory>(), OnItemBindListener, TravelHomepageActionListener {
+class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel,
+        TravelHomepageTypeFactory>(), OnItemBindListener, TravelHomepageActionListener,
+        CoroutineScope {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -139,16 +143,22 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
         }
     }
 
+    var job: Job = Job()
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + Job()
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        travelHomepageViewModel.renderList.observe(this, Observer {
-            clearAllData()
-            hideLoading()
-            renderList(travelHomepageViewModel.travelItemList)
+        travelHomepageViewModel.renderList.observe(viewLifecycleOwner, Observer {
+            if(job.isActive) job.cancel()
+            job = launch {
+                isLoadingInitialData = true
+                renderList(travelHomepageViewModel.travelItemList, false)
+            }
         })
 
-        travelHomepageViewModel.isAllError.observe(this, Observer {
+        travelHomepageViewModel.isAllError.observe(viewLifecycleOwner, Observer {
             it?.let { isAllError ->
                 if (isAllError) {
                     clearAllData()
