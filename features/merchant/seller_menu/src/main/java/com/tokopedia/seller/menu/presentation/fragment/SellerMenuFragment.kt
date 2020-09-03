@@ -7,6 +7,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
@@ -36,11 +37,12 @@ import com.tokopedia.seller.menu.presentation.util.SellerMenuList
 import com.tokopedia.seller.menu.presentation.viewmodel.SellerMenuViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_seller_menu.*
-import kotlinx.android.synthetic.main.setting_topads_bottomsheet_layout.*
 import javax.inject.Inject
 
 class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHolder.ShopInfoListener,
@@ -269,9 +271,9 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
         }
         val bottomSheetTitle = resources.getString(R.string.setting_topads_status, bottomSheetInfix)
         return topAdsBottomSheetView?.apply {
-            topAdsBottomSheetTitle.text = bottomSheetTitle
-            topAdsBottomSheetDescription.text = bottomSheetDescription
-            topAdsNextButton.setOnClickListener{
+            findViewById<Typography>(R.id.topAdsBottomSheetTitle).text = bottomSheetTitle
+            findViewById<TextView>(R.id.topAdsBottomSheetDescription).text = bottomSheetDescription
+            findViewById<UnifyButton>(R.id.topAdsNextButton).setOnClickListener{
                 onKreditTopadsClicked()
             }
         }
