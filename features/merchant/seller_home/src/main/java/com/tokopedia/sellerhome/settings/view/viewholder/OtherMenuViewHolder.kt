@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.gone
@@ -184,7 +185,7 @@ class OtherMenuViewHolder(private val itemView: View,
     private fun setShopName(shopName: String) {
         itemView.run {
             shopInfoLayout.shopName?.run {
-                text = shopName
+                text = MethodChecker.fromHtml(shopName)
                 setOnClickListener {
                     listener.onShopInfoClicked()
                     sendClickShopNameTracking()
