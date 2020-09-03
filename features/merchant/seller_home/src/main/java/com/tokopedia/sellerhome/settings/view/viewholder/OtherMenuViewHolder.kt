@@ -5,8 +5,10 @@ import android.content.Context
 import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.FragmentManager
@@ -23,17 +25,11 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantStatus
 import com.tokopedia.seller.menu.common.view.uimodel.base.RegularMerchant
 import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.*
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LocalLoad
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_other_menu.view.*
-import kotlinx.android.synthetic.main.setting_balance.view.*
-import kotlinx.android.synthetic.main.setting_balance_topads.view.*
-import kotlinx.android.synthetic.main.setting_partial_main_info_success.view.*
-import kotlinx.android.synthetic.main.setting_partial_others_local_load.view.*
-import kotlinx.android.synthetic.main.setting_partial_shop_info_error.view.*
-import kotlinx.android.synthetic.main.setting_partial_shop_info_success.view.*
-import kotlinx.android.synthetic.main.setting_shop_status_pm.view.*
-import kotlinx.android.synthetic.main.setting_shop_status_regular.view.*
 
 class OtherMenuViewHolder(private val itemView: View,
                           private val context: Context,
@@ -65,11 +61,11 @@ class OtherMenuViewHolder(private val itemView: View,
                         shopBadgeUiModel?.let { setShopBadge(it) }
                         shopFollowersUiModel?.let { setShopTotalFollowers(it) }
 
-                        shopInfoLayout?.dot?.visible()
-                        localLoadOthers?.gone()
-                        shopStatus?.visible()
-                        saldoBalance?.visible()
-                        topAdsBalance?.visible()
+                        findViewById<Typography>(R.id.dot)?.visible()
+                        findViewById<LocalLoad>(R.id.localLoadOthers)?.gone()
+                        findViewById<LinearLayout>(R.id.shopStatus)?.visible()
+                        findViewById<LinearLayout>(R.id.saldoBalance)?.visible()
+                        findViewById<LinearLayout>(R.id.topAdsBalance)?.visible()
                     }
                     partialResponseStatus.first -> {
                         setupSuccessLayout()
@@ -77,28 +73,28 @@ class OtherMenuViewHolder(private val itemView: View,
                         shopBadgeUiModel?.let { setShopBadge(it) }
                         shopFollowersUiModel?.let { setShopTotalFollowers(it) }
 
-                        shopInfoLayout?.dot?.visible()
-                        shopStatus?.visible()
-                        localLoadOthers?.run {
+                        findViewById<Typography>(R.id.dot)?.visible()
+                        findViewById<LinearLayout>(R.id.shopStatus)?.visible()
+                        findViewById<LocalLoad>(R.id.localLoadOthers)?.run {
                             setup()
                             visible()
                         }
-                        saldoBalance?.gone()
-                        topAdsBalance?.gone()
+                        findViewById<LinearLayout>(R.id.saldoBalance)?.gone()
+                        findViewById<LinearLayout>(R.id.topAdsBalance)?.gone()
                     }
                     partialResponseStatus.second -> {
                         setupSuccessLayout()
                         saldoBalanceUiModel?.let { setSaldoBalance(it) }
                         topadsBalanceUiModel?.let { setKreditTopadsBalance(it) }
 
-                        shopInfoLayout?.dot?.gone()
-                        shopStatus?.gone()
-                        localLoadOthers?.run {
+                        findViewById<Typography>(R.id.dot)?.gone()
+                        findViewById<LinearLayout>(R.id.shopStatus)?.gone()
+                        findViewById<LocalLoad>(R.id.localLoadOthers)?.run {
                             setup()
                             visible()
                         }
-                        saldoBalance?.visible()
-                        topAdsBalance?.visible()
+                        findViewById<LinearLayout>(R.id.saldoBalance)?.visible()
+                        findViewById<LinearLayout>(R.id.topAdsBalance)?.visible()
                     }
                     else -> {
                         onErrorGetSettingShopInfoData()
@@ -119,8 +115,8 @@ class OtherMenuViewHolder(private val itemView: View,
     fun onErrorGetSettingShopInfoData() {
         val errorLayout = LayoutInflater.from(context).inflate(R.layout.setting_partial_shop_info_error, null, false)
         errorLayout?.run {
-            settingLocalLoad?.setup()
-            errorShopInfoLayout?.dot?.gone()
+            findViewById<LocalLoad>(R.id.settingLocalLoad)?.setup()
+            findViewById<Typography>(R.id.dot)?.gone()
         }
         (itemView.shopInfoLayout as? LinearLayout)?.run {
             removeAllViews()
@@ -132,7 +128,7 @@ class OtherMenuViewHolder(private val itemView: View,
     }
 
     private fun setShopBadge(shopBadgeUiModel: ShopBadgeUiModel) {
-        itemView.shopInfoLayout.shopBadges?.run {
+        itemView.shopInfoLayout.findViewById<AppCompatImageView>(R.id.shopBadges)?.run {
             ImageHandler.LoadImage(this, shopBadgeUiModel.shopBadgeUrl)
             setOnClickListener {
                 listener.onShopBadgeClicked()
@@ -143,7 +139,7 @@ class OtherMenuViewHolder(private val itemView: View,
 
     @SuppressLint("SetTextI18n")
     fun setShopTotalFollowers(shopTotalFollowersUiModel: ShopFollowersUiModel) {
-        itemView.shopInfoLayout.shopFollowers?.run {
+        itemView.shopInfoLayout.findViewById<Typography>(R.id.shopFollowers)?.run {
             text = "${shopTotalFollowersUiModel.shopFollowers} ${context.resources.getString(R.string.setting_followers)}"
             setOnClickListener {
                 shopTotalFollowersUiModel.sendSettingShopInfoClickTracking()
@@ -153,7 +149,7 @@ class OtherMenuViewHolder(private val itemView: View,
     }
 
     fun setupFreeShippingLayout(fm: FragmentManager?) {
-        itemView.shopInfoLayout.freeShippingLayout?.apply {
+        itemView.shopInfoLayout.findViewById<FrameLayout>(R.id.freeShippingLayout)?.apply {
             val freeShippingBottomSheet = SettingsFreeShippingBottomSheet.createInstance()
 
             setOnClickListener {
@@ -167,7 +163,7 @@ class OtherMenuViewHolder(private val itemView: View,
     }
 
     fun hideFreeShippingLayout() {
-        itemView.shopInfoLayout.freeShippingLayout?.hide()
+        itemView.shopInfoLayout.findViewById<FrameLayout>(R.id.freeShippingLayout)?.hide()
     }
 
     private fun setupSuccessLayout() {
@@ -183,7 +179,7 @@ class OtherMenuViewHolder(private val itemView: View,
 
     private fun setShopName(shopName: String) {
         itemView.run {
-            shopInfoLayout.shopName?.run {
+            shopInfoLayout.findViewById<Typography>(R.id.shopName)?.run {
                 text = shopName
                 setOnClickListener {
                     listener.onShopInfoClicked()
@@ -194,7 +190,7 @@ class OtherMenuViewHolder(private val itemView: View,
     }
 
     private fun setShopAvatar(shopAvatarUiModel: ShopAvatarUiModel) {
-        itemView.shopInfoLayout.shopImage?.run {
+        itemView.shopInfoLayout.findViewById<ImageUnify>(R.id.shopImage)?.run {
             urlSrc = shopAvatarUiModel.shopAvatarUrl
             sendSettingShopInfoImpressionTracking(shopAvatarUiModel, trackingListener::sendImpressionDataIris)
             setOnClickListener {
@@ -205,11 +201,11 @@ class OtherMenuViewHolder(private val itemView: View,
     }
 
     private fun setSaldoBalance(saldoBalanceUiModel: BalanceUiModel) {
-        itemView.saldoBalance.run {
-            balanceTitle?.text = context.resources.getString(R.string.setting_balance)
-            balanceValue?.text = saldoBalanceUiModel.balanceValue
+        itemView.findViewById<LinearLayout>(R.id.saldoBalance).run {
+            findViewById<Typography>(R.id.balanceTitle)?.text = context.resources.getString(R.string.setting_balance)
+            findViewById<Typography>(R.id.balanceValue)?.text = saldoBalanceUiModel.balanceValue
             sendSettingShopInfoImpressionTracking(saldoBalanceUiModel, trackingListener::sendImpressionDataIris)
-            balanceValue.setOnClickListener {
+            findViewById<Typography>(R.id.balanceValue)?.setOnClickListener {
                 listener.onSaldoClicked()
                 saldoBalanceUiModel.sendSettingShopInfoClickTracking()
             }
@@ -217,11 +213,11 @@ class OtherMenuViewHolder(private val itemView: View,
     }
 
     private fun setKreditTopadsBalance(topadsBalanceUiModel: TopadsBalanceUiModel) {
-        itemView.topAdsBalance.run {
-            topadsBalanceTitle?.text = context.resources.getString(R.string.setting_topads_credits)
-            topadsBalanceValue?.text = topadsBalanceUiModel.balanceValue
+        itemView.findViewById<LinearLayout>(R.id.topAdsBalance).run {
+            findViewById<Typography>(R.id.topadsBalanceTitle)?.text = context.resources.getString(R.string.setting_topads_credits)
+            findViewById<Typography>(R.id.topadsBalanceValue)?.text = topadsBalanceUiModel.balanceValue
             sendSettingShopInfoImpressionTracking(topadsBalanceUiModel, trackingListener::sendImpressionDataIris)
-            topadsBalanceValue.setOnClickListener {
+            findViewById<Typography>(R.id.topadsBalanceValue)?.setOnClickListener {
                 listener.onKreditTopadsClicked()
                 topadsBalanceUiModel.sendSettingShopInfoClickTracking()
             }
@@ -232,7 +228,7 @@ class OtherMenuViewHolder(private val itemView: View,
                     } else {
                         ContextCompat.getDrawable(context, R.drawable.ic_topads_inactive)
                     }
-            topAdsStatusTooltip.run {
+            findViewById<AppCompatImageView>(R.id.topAdsStatusTooltip)?.run {
                 setImageDrawable(topAdsTooltipDrawable)
                 setOnClickListener {
                     listener.onTopAdsTooltipClicked(isTopAdsUser)
@@ -251,7 +247,7 @@ class OtherMenuViewHolder(private val itemView: View,
                 layoutInflater.apply {
                     setRegularMerchantShopStatus(shopType)
                     sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
-                    rightRectangle.setOnClickListener {
+                    findViewById<AppCompatImageView>(R.id.rightRectangle).setOnClickListener {
                         RouteManager.route(context, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE)
                         shopStatusUiModel.sendSettingShopInfoClickTracking()
                     }
@@ -275,7 +271,7 @@ class OtherMenuViewHolder(private val itemView: View,
                 }
             }
         }
-        (itemView.shopStatus as LinearLayout).run {
+        (itemView.findViewById(R.id.shopStatus) as LinearLayout).run {
             removeAllViews()
             addView(shopStatusLayout)
         }
@@ -294,7 +290,7 @@ class OtherMenuViewHolder(private val itemView: View,
     }
 
     private fun View.setRegularMerchantShopStatus(regularMerchant: RegularMerchant) : View {
-        regularMerchantStatus.run {
+        findViewById<Typography>(R.id.regularMerchantStatus).run {
             text = when(regularMerchant) {
                 is RegularMerchant.NeedUpgrade -> context.resources.getString(R.string.setting_upgrade)
                 is RegularMerchant.NeedVerification -> context.resources.getString(R.string.setting_verifikasi)
@@ -319,24 +315,24 @@ class OtherMenuViewHolder(private val itemView: View,
                 statusText = context.resources.getString(R.string.setting_not_active)
                 textColor = RED_TEXT_COLOR }
             is PowerMerchantStatus.OnVerification -> {
-                powerMerchantText?.text = context.resources.getString(R.string.regular_merchant)
+                findViewById<Typography>(R.id.powerMerchantText)?.text = context.resources.getString(R.string.regular_merchant)
             }
         }
-        powerMerchantStatusText?.text = statusText
-        powerMerchantStatusText?.setTextColor(ResourcesCompat.getColor(resources, textColor, null))
+        findViewById<Typography>(R.id.powerMerchantStatusText)?.text = statusText
+        findViewById<Typography>(R.id.powerMerchantStatusText)?.setTextColor(ResourcesCompat.getColor(resources, textColor, null))
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            powerMerchantLeftStatus?.background = ResourcesCompat.getDrawable(resources, statusDrawable, null)
+            findViewById<AppCompatImageView>(R.id.powerMerchantLeftStatus)?.background = ResourcesCompat.getDrawable(resources, statusDrawable, null)
         } else {
-            powerMerchantLeftStatus?.let {
+            findViewById<AppCompatImageView>(R.id.powerMerchantLeftStatus)?.let {
                 (it as? ImageView)?.setImageDrawable(ResourcesCompat.getDrawable(resources, statusDrawable, null))
             }
         }
-        powerMerchantIcon?.setImageDrawable(ResourcesCompat.getDrawable(resources, powerMerchantDrawableIcon, null))
+        findViewById<AppCompatImageView>(R.id.powerMerchantIcon)?.setImageDrawable(ResourcesCompat.getDrawable(resources, powerMerchantDrawableIcon, null))
         return this
     }
 
     private fun View.setOnClickAction() {
-        settingShopNext?.setOnClickListener {
+        findViewById<AppCompatImageView>(R.id.settingShopNext)?.setOnClickListener {
             listener.onShopInfoClicked()
             sendShopInfoClickNextButtonTracking()
         }

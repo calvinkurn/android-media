@@ -80,4 +80,8 @@ object ApplinkConstInternalSellerapp {
 
     @JvmStatic
     val VOUCHER_DETAIL = "$INTERNAL_SELLERAPP/voucher-detail"
+
+    //SellerMenuActivity
+    @JvmStatic
+    val SELLER_MENU = "$INTERNAL_SELLERAPP/seller-menu"
 }
