@@ -1,6 +1,7 @@
 package com.tokopedia.cart.domain.model.updatecart
 
 import android.os.Parcelable
+import com.tokopedia.cart.domain.model.cartlist.ButtonData
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize

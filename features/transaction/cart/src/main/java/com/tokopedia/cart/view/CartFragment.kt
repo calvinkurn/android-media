@@ -2307,7 +2307,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         layoutGlobalError.errorDescription.text = promptPageData.descriptions
         layoutGlobalError.errorIllustration.setImage(promptPageData.image, 0f)
         promptPageData.buttons.forEach {
-            layoutGlobalError.errorAction.text = it.text
+            layoutGlobalError.errorAction.text = it.message
             return@forEach
         }
         showErrorContainer()

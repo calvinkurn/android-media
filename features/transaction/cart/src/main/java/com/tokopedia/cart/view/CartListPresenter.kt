@@ -94,8 +94,6 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
     companion object {
         private val PERCENTAGE = 100.0f
 
-        private val PARAM_GLOBAL = "global"
-
         val ITEM_CHECKED_ALL_WITHOUT_CHANGES = 0
         val ITEM_CHECKED_ALL_WITH_CHANGES = 1
         val ITEM_CHECKED_PARTIAL_SHOP = 3
