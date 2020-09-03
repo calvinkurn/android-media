@@ -162,21 +162,18 @@ class SellerAccountMapper @Inject constructor(
     }
 
     private fun getPreApproveData(accountDataModel: AccountDataModel): FieldDataModel {
-        accountDataModel.lePreapprove.let {
-            it.fieldData?.let { data ->
-                return data
-            }
+        accountDataModel?.lePreapprove?.fieldData?.let { data ->
+            return data
         }
         return FieldDataModel()
     }
 
     private fun parseTickerSeller(context: Context, accountDataModel: AccountDataModel): TickerViewModel {
         val sellerTickerModel = TickerViewModel(ArrayList())
-        if (accountDataModel.kycStatusPojo.kycStatusDetailPojo != null && accountDataModel.kycStatusPojo.kycStatusDetailPojo
-                        .isSuccess == KYCConstant.IS_SUCCESS_GET_STATUS && accountDataModel.kycStatusPojo.kycStatusDetailPojo
-                        .status == KYCConstant.STATUS_NOT_VERIFIED) {
+        if (accountDataModel.kycStatusPojo.kycStatusDetailPojo.isSuccess == KYCConstant.IS_SUCCESS_GET_STATUS
+                && accountDataModel.kycStatusPojo.kycStatusDetailPojo.status == KYCConstant.STATUS_NOT_VERIFIED) {
             sellerTickerModel.listMessage.add(context.getString(R.string.ticker_unverified))
-        } else if (!(accountDataModel.shopInfo.owner?.goldMerchant as Boolean)) {
+        } else if (!(accountDataModel.shopInfo.owner.goldMerchant)) {
             val tickerMessage: String? = remoteConfig.getString(RemoteConfigKey.SELLER_ACCOUNT_TICKER_MSG, "")
             if (!TextUtils.isEmpty(tickerMessage)) {
                 sellerTickerModel.listMessage.add(tickerMessage)
@@ -186,8 +183,7 @@ class SellerAccountMapper @Inject constructor(
     }
 
     private fun setKycToModel(shopCard: ShopCardViewModel, accountDataModel: AccountDataModel) {
-        if (accountDataModel.kycStatusPojo.kycStatusDetailPojo != null
-                && accountDataModel.kycStatusPojo.kycStatusDetailPojo.isSuccess == KYCConstant.IS_SUCCESS_GET_STATUS) {
+        if (accountDataModel.kycStatusPojo.kycStatusDetailPojo.isSuccess == KYCConstant.IS_SUCCESS_GET_STATUS) {
             shopCard.verificationStatus = accountDataModel.kycStatusPojo.kycStatusDetailPojo.status
             shopCard.verificationStatusName = accountDataModel.kycStatusPojo.kycStatusDetailPojo.statusName
         } else {
