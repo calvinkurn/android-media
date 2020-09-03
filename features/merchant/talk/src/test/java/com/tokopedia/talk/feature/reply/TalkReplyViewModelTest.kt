@@ -346,6 +346,14 @@ class TalkReplyViewModelTest : TalkReplyViewModelTestFixture() {
         coVerify { talkCreateNewCommentUseCase.executeOnBackground() }
     }
 
+    private fun verifyTalkMarkNotFraudUseCaseExecuted() {
+        coVerify { talkMarkNotFraudUseCase.executeOnBackground() }
+    }
+
+    private fun verifyTalkMarkCommentNotFraudUseCaseExecuted() {
+        coVerify { talkMarkCommentNotFraudUseCase.executeOnBackground() }
+    }
+
     private fun verifyDiscussionDataEquals(expectedResponse: Success<DiscussionDataByQuestionIDResponseWrapper>) {
         viewModel.discussionData.verifySuccessEquals(expectedResponse)
     }

@@ -248,7 +248,7 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
 
     private fun showEmptyInbox() {
         talkInboxEmptyTitle.text = getString(R.string.inbox_all_empty)
-        talkInboxAppBarLayout.hide()
+        talkInboxSortFilter.hide()
         talkInboxEmpty.show()
     }
 

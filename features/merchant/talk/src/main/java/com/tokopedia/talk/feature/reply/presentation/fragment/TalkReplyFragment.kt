@@ -471,7 +471,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     private fun onFailUnmaskCommentOrQuestion() {
-        showErrorToaster("", resources.getBoolean(R.bool.reply_adjust_toaster_height))
+        showErrorToaster(getString(R.string.reply_unmask_toaster_error), resources.getBoolean(R.bool.reply_adjust_toaster_height))
     }
 
     private fun adjustToasterHeight() {
@@ -510,7 +510,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
                         if(isFromInbox() || isFromNotif()) {
                             adapter?.showProductHeader(TalkReplyProductHeaderModel(discussionDataByQuestionID.productName, discussionDataByQuestionID.thumbnail))
                         }
-                        adapter?.showHeader(TalkReplyMapper.mapDiscussionDataResponseToTalkReplyHeaderModel(it.data, viewModel.isMyShop))
+                        adapter?.showHeader(TalkReplyMapper.mapDiscussionDataResponseToTalkReplyHeaderModel(it.data))
                         if(discussionDataByQuestionID.question.totalAnswer > 0) {
                             showAnswers(this, viewModel.userId)
                         } else {

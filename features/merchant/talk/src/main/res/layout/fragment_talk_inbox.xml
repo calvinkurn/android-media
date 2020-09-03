@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/talkInboxContainer"
     android:layout_width="match_parent"
@@ -7,65 +7,54 @@
     android:background="@android:color/white"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/talkInboxAppBarLayout"
-        android:background="@android:color/transparent"
+    <com.tokopedia.sortfilter.SortFilter
+        android:id="@+id/talkInboxSortFilter"
+        android:paddingTop="@dimen/layout_lvl1"
+        android:paddingStart="@dimen/layout_lvl2"
+        android:paddingEnd="@dimen/layout_lvl2"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <com.google.android.material.appbar.CollapsingToolbarLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_scrollFlags="scroll|enterAlways|exitUntilCollapsed">
-
-            <com.tokopedia.sortfilter.SortFilter
-                android:id="@+id/talkInboxSortFilter"
-                android:layout_marginTop="@dimen/layout_lvl1"
-                android:layout_marginStart="@dimen/layout_lvl2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:sort_filter_relationship="AND"
-                app:sort_filter_type="quick"/>
-
-        </com.google.android.material.appbar.CollapsingToolbarLayout>
-
-    </com.google.android.material.appbar.AppBarLayout>
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:sort_filter_relationship="AND"
+        app:sort_filter_type="quick"/>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/talkInboxSwipeToRefresh"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        app:layout_constraintTop_toBottomOf="@id/talkInboxSortFilter"
+        app:layout_constraintBottom_toBottomOf="parent">
 
-        <LinearLayout
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/talkInboxRecyclerView"
+            android:paddingTop="@dimen/layout_lvl3"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/talkInboxRecyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-            <include
-                android:id="@+id/talkInboxEmpty"
-                layout="@layout/partial_talk_inbox_empty"
-                android:visibility="gone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-        </LinearLayout>
+            android:layout_height="wrap_content" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <include
+        android:id="@+id/talkInboxEmpty"
+        layout="@layout/partial_talk_inbox_empty"
+        app:layout_constraintTop_toBottomOf="@id/talkInboxSortFilter"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <include
         android:id="@+id/inboxPageError"
         layout="@layout/partial_talk_connection_error"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
         android:visibility="gone" />
 
     <include
         android:id="@+id/inboxPageLoading"
         layout="@layout/partial_talk_inbox_loading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
         android:visibility="gone" />
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
