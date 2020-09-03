@@ -255,6 +255,14 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         renderPromoAndRecommendation()
     }
 
+    fun sendImpressionPromo() {
+        viewModel.setPromoImpression()
+    }
+
+    fun sendImpressionRecents() {
+        viewModel.setRecentsImpression()
+    }
+
     override fun onMenuDetailError(error: Throwable) {
         super.onMenuDetailError(error)
         NetworkErrorHelper.showEmptyState(activity, pageContainer, ErrorHandler.getErrorMessage(context, error)) {
