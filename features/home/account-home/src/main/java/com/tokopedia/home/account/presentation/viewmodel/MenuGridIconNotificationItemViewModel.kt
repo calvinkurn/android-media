@@ -19,11 +19,11 @@ class MenuGridIconNotificationItemViewModel() : Parcelable {
 
     constructor(parcel: Parcel) : this() {
         resourceId = parcel.readInt()
-        description = parcel.readString()
-        applink = parcel.readString()
+        description = parcel.readString().toString()
+        applink = parcel.readString().toString()
         count = parcel.readInt()
-        titleTrack = parcel.readString()
-        sectionTrack = parcel.readString()
+        titleTrack = parcel.readString().toString()
+        sectionTrack = parcel.readString().toString()
     }
 
     constructor(resourceId: Int, description: String, applink: String, count: Int,
