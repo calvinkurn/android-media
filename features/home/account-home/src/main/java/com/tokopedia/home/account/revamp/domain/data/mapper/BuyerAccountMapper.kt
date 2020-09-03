@@ -133,7 +133,7 @@ class BuyerAccountMapper @Inject constructor(
         tokopediaPayViewModel.labelRight = context.getString(R.string.label_tokopedia_pay_deposit)
         tokopediaPayViewModel.isRightSaldo = true
 
-        tokopediaPayViewModel.amountRight = CurrencyFormatUtil.convertPriceValueToIdrFormat(accountDataModel.saldo.deposit, false)
+        tokopediaPayViewModel.amountRight = CurrencyFormatUtil.convertPriceValueToIdrFormat(accountDataModel.saldo.depositLong, false)
         tokopediaPayViewModel.applinkRight = ApplinkConstInternalGlobal.SALDO_DEPOSIT
 
         setVCCBuyer(tokopediaPayViewModel, accountDataModel)

@@ -11,6 +11,5 @@ data class DepositDataModel(
         @SerializedName("seller_usable")
         val sellerUsable: Long = 0
 ) {
-    val deposit: Long
-    get() = buyerUsable + sellerUsable
+    val depositLong = buyerUsable + sellerUsable
 }
