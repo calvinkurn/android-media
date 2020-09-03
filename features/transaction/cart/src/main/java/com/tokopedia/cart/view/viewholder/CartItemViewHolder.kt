@@ -361,7 +361,8 @@ class CartItemViewHolder constructor(itemView: View,
     }
 
     private fun renderProductPropertiesPriceDrop(data: CartItemHolderData) {
-        if (data.cartItemData?.originData?.initialPriceBeforeDrop != 0) {
+        if (data.cartItemData?.originData?.initialPriceBeforeDrop ?: 0 > 0 &&
+                data.cartItemData?.originData?.initialPriceBeforeDrop ?: 0 < data.cartItemData?.originData?.pricePlan?.toInt() ?: 0) {
             if (textIncidentLabel.visibility == View.VISIBLE || textWholesalePrice.visibility == View.VISIBLE) {
                 textPriceDrop.text = "Harga Turun, "
             } else {

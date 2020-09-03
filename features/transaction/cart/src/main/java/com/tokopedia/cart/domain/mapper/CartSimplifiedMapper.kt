@@ -366,7 +366,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             }
             it.variant = cartDetail.product.variantDescriptionDetail.variantNames.joinToString(", ")
             it.warningMessage = cartDetail.product.productWarningMessage
-            it.slashPriceLabel = if (cartDetail.product.isSlashPrice) cartDetail.product.slashPriceLabel else ""
+            it.slashPriceLabel = cartDetail.product.slashPriceLabel
             it.initialPriceBeforeDrop = cartDetail.product.initialPrice
             it.productAlertMessage = cartDetail.product.productAlertMessage
 
