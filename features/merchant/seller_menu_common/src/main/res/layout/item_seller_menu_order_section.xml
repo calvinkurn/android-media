@@ -53,7 +53,7 @@
         app:layout_constraintTop_toTopOf="@id/cardNewOrder" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/cardDelivery"
+        android:id="@+id/cardReadyToShip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -68,14 +68,14 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <com.tokopedia.unifycomponents.ImageUnify
-                android:id="@+id/imageDelivery"
+                android:id="@+id/imageReadyToShip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 tools:src="@drawable/ic_seller_menu_delivery" />
         </com.tokopedia.unifycomponents.CardUnify>
 
         <com.tokopedia.unifycomponents.NotificationUnify
-            android:id="@+id/deliveryCount"
+            android:id="@+id/readyToShipCount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
@@ -94,7 +94,7 @@
         android:layout_marginStart="@dimen/spacing_lvl3"
         android:text="@string/seller_menu_delivery"
         android:textColor="@color/light_N700_96"
-        app:layout_constraintBottom_toBottomOf="@id/cardDelivery"
-        app:layout_constraintLeft_toRightOf="@id/cardDelivery"
-        app:layout_constraintTop_toTopOf="@id/cardDelivery" />
+        app:layout_constraintBottom_toBottomOf="@id/cardReadyToShip"
+        app:layout_constraintLeft_toRightOf="@id/cardReadyToShip"
+        app:layout_constraintTop_toTopOf="@id/cardReadyToShip" />
 </androidx.constraintlayout.widget.ConstraintLayout>
