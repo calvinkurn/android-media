@@ -258,16 +258,6 @@ class SellerAccountFragment : BaseAccountFragment(), AccountItemListener, Fragme
         viewModel.sellerData.removeObservers(viewLifecycleOwner)
     }
 
-    override fun onPause() {
-        sellerMigrationBottomSheet?.dismiss()
-        super.onPause()
-    }
-
-    override fun onDestroy() {
-        sellerMigrationBottomSheet?.dismiss()
-        super.onDestroy()
-    }
-
     companion object {
         private val TAG = SellerAccountFragment::class.java.simpleName
         private const val FPM_SELLER = "mp_account_seller"
