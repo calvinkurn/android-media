@@ -84,12 +84,12 @@ public class RecentViewDetailProductViewHolder extends AbstractViewHolder<Recent
         productName.setText(MethodChecker.fromHtml(element.getName()));
         productPrice.setText(element.getPrice());
 
-        if (element.getRating() > 0) {
-            productRating.setRating(element.getRating());
-            productRating.setVisibility(View.VISIBLE);
-        } else {
+//        if (element.getRating() > 0) {
+//            productRating.setRating(element.getRating());
+//            productRating.setVisibility(View.VISIBLE);
+//        } else {
             productRating.setVisibility(View.GONE);
-        }
+//        }
 
         if (!element.getLabels().isEmpty()) {
             labels.setVisibility(View.VISIBLE);
