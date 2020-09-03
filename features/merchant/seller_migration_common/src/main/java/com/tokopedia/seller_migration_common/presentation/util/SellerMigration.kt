@@ -168,7 +168,7 @@ fun Fragment.initializeSellerMigrationAccountSettingTicker(ticker: Ticker?) {
             setHtmlDescription(getString(AccountSettingData.descRes))
             setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    RouteManager.route(context, ApplinkConstInternalSellerapp.MENU_SETTING)
+                    RouteManager.route(context, ApplinkConstInternalSellerapp.SELLER_MENU)
                 }
 
                 override fun onDismiss() {}
