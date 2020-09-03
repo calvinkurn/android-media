@@ -33,23 +33,25 @@ class ProductCardRevampViewHolder(itemView: View, private val fragment: Fragment
                 }
 
             })
-            mProductRevampComponentViewModel.getProductCarouselComponentData().observe(it, Observer {
-                addCardHeader(it)
+            mProductRevampComponentViewModel.getProductCarouselComponentData().observe(it, Observer { component ->
+                addCardHeader(component)
             })
         }
     }
 
     private fun addCardHeader(componentsItem: ComponentsItem) {
-        mCardTitle.setTextAndCheckShow(componentsItem.title)
-        mCardSubHeader.setTextAndCheckShow(componentsItem.subTitle)
-        mLihatSemuaButton.visibility = if (componentsItem.applink.isNullOrEmpty()) {
-            mLihatSemuaButton.setOnClickListener {
-                sendOnClickSeeAllGtm(componentsItem)
-                RouteManager.route(fragment.context, componentsItem.applink)
+        componentsItem.lihatSemua?.run {
+            mCardTitle.setTextAndCheckShow(header)
+            mCardSubHeader.setTextAndCheckShow(subheader)
+            mLihatSemuaButton.visibility = if (applink.isNotEmpty()) {
+                mLihatSemuaButton.setOnClickListener {
+                    sendOnClickSeeAllGtm(componentsItem)
+                    RouteManager.route(fragment.context, applink)
+                }
+                View.VISIBLE
+            } else {
+                View.GONE
             }
-            View.VISIBLE
-        } else {
-            View.GONE
         }
     }
 

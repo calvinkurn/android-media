@@ -8,9 +8,6 @@ import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.collections.List
-import kotlin.collections.forEach
-import kotlin.collections.set
 
 data class ComponentsItem(
 
@@ -32,11 +29,8 @@ data class ComponentsItem(
         @SerializedName("title")
         val title: String? = "",
 
-        @SerializedName("subtitle")
-        val subTitle: String? = "",
-
-        @SerializedName("applink")
-        val applink: String? = "",
+        @SerializedName("lihat_semua")
+        val lihatSemua: LihatSemua? = null,
 
         @SerializedName("properties")
         var properties: Properties? = null,
@@ -59,8 +53,8 @@ data class ComponentsItem(
         var parentComponentId: String = "",
         var cpmData: CpmModel? = null,
         var chipSelectionData: DataItem? = null,
-        var selectedFilters : HashMap<String, String>? = null,
-        var selectedSort : HashMap<String, String>? = null,
+        var selectedFilters: HashMap<String, String>? = null,
+        var selectedSort: HashMap<String, String>? = null,
         var chipSelectionChange: Boolean = false,
         var couponDetailClicked: Boolean = false,
         var couponAppliedClicked: Boolean = false,

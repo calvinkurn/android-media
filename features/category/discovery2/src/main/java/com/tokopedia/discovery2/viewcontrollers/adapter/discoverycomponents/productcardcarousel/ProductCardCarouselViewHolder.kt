@@ -20,9 +20,9 @@ import com.tokopedia.unifyprinciples.Typography
 class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
 
     private var mProductCarouselRecyclerView: RecyclerView = itemView.findViewById(R.id.products_rv)
-    private var mCardTitle:Typography = itemView.findViewById(R.id.title)
-    private var mCardSubHeader:Typography = itemView.findViewById(R.id.sub_header)
-    private var mLihatSemuaButton:Typography = itemView.findViewById(R.id.lihat_semua_button)
+    private var mCardTitle: Typography = itemView.findViewById(R.id.title)
+    private var mCardSubHeader: Typography = itemView.findViewById(R.id.sub_header)
+    private var mLihatSemuaButton: Typography = itemView.findViewById(R.id.lihat_semua_button)
     private var linearLayoutManager: LinearLayoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
     private var mDiscoveryRecycleAdapter: DiscoveryRecycleAdapter
     private lateinit var mProductCarouselComponentViewModel: ProductCardCarouselViewModel
@@ -43,16 +43,18 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
     }
 
     private fun addCardHeader(componentsItem: ComponentsItem) {
-        mCardTitle.setTextAndCheckShow(componentsItem.title)
-        mCardSubHeader.setTextAndCheckShow(componentsItem.subTitle)
-        mLihatSemuaButton.visibility = if (componentsItem.applink.isNullOrEmpty()) {
-            mLihatSemuaButton.setOnClickListener {
-                sendOnClickSeeAllGtm(componentsItem)
-                RouteManager.route(fragment.context, componentsItem.applink)
+        componentsItem.lihatSemua?.run {
+            mCardTitle.setTextAndCheckShow(header)
+            mCardSubHeader.setTextAndCheckShow(subheader)
+            mLihatSemuaButton.visibility = if (applink.isNotEmpty()) {
+                mLihatSemuaButton.setOnClickListener {
+                    sendOnClickSeeAllGtm(componentsItem)
+                    RouteManager.route(fragment.context, applink)
+                }
+                View.VISIBLE
+            } else {
+                View.GONE
             }
-            View.VISIBLE
-        } else {
-            View.GONE
         }
     }
 
@@ -70,8 +72,8 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
         lifecycleOwner?.let {
-            mProductCarouselComponentViewModel.getProductCardHeaderData().observe(it, Observer {
-                addCardHeader(it)
+            mProductCarouselComponentViewModel.getProductCardHeaderData().observe(it, Observer { component ->
+                addCardHeader(component)
             })
             mProductCarouselComponentViewModel.getProductCarouselItemsListData().observe(it, Observer { item ->
                 mDiscoveryRecycleAdapter.setDataList(item)
