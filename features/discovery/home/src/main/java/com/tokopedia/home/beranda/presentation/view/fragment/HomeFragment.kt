@@ -110,6 +110,7 @@ import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.DateHelper
 import com.tokopedia.home_component.util.ServerTimeOffsetUtil
+import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.iris.util.IrisSession
@@ -681,18 +682,6 @@ open class HomeFragment : BaseDaggerFragment(),
         observeRechargeRecommendation()
         observePlayReminder()
         observeIsNeedRefresh()
-        observeIsStartToRenderDynamicChannel()
-    }
-
-    private fun observeIsStartToRenderDynamicChannel() {
-        getHomeViewModel().isStartToRenderDynamicChannel.observe(viewLifecycleOwner, Observer { data: Event<Boolean> ->
-            val isStartToRenderDynamicChannel = data.peekContent()
-            if (isStartToRenderDynamicChannel) {
-                if (needToPerformanceMonitoring() && getPageLoadTimeCallback() != null) {
-                    setOnRecyclerViewLayoutReady(false);
-                }
-            }
-        })
     }
           
     private fun observeIsNeedRefresh() {
@@ -737,7 +726,7 @@ open class HomeFragment : BaseDaggerFragment(),
             if (data != null) {
                 if (data.list.size > VISITABLE_SIZE_WITH_DEFAULT_BANNER) {
                     configureHomeFlag(data.homeFlag)
-                    setData(data.list as List<HomeVisitable>, data.isCache)
+                    setData(data.list as List<Visitable<*>>, data.isCache)
                 } else if (!data.isCache) {
                     showToaster(getString(R.string.home_error_connection), TYPE_ERROR)
                 }
@@ -896,15 +885,12 @@ open class HomeFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun setData(data: List<HomeVisitable?>, isCache: Boolean) {
+    private fun setData(data: List<Visitable<*>>, isCache: Boolean) {
         if(!data.isEmpty()) {
-            adapter?.submitList(data);
-
-            if (isDataValid(data)) {
-                removeNetworkError();
-            } else {
-                showToaster(getString(R.string.home_error_connection), TYPE_ERROR);
+            if (needToPerformanceMonitoring(data) && getPageLoadTimeCallback() != null) {
+                setOnRecyclerViewLayoutReady(false);
             }
+            adapter?.submitList(data)
         }
     }
 
@@ -1994,8 +1980,12 @@ open class HomeFragment : BaseDaggerFragment(),
         startActivityForResult(intent, REQUEST_CODE_PLAY_ROOM, options.toBundle())
     }
 
-    private fun needToPerformanceMonitoring(): Boolean {
-        return homePerformanceMonitoringListener != null && !isOnRecylerViewLayoutAdded
+    private fun needToPerformanceMonitoring(data: List<Visitable<*>>): Boolean {
+        val dynamicChannelComponent = data.firstOrNull { it is HomeComponentVisitable }
+        val dynamicChannel = data.firstOrNull { it is DynamicChannelDataModel }
+        val dynamicChannelIsExist = dynamicChannelComponent != null || dynamicChannel != null
+
+        return homePerformanceMonitoringListener != null && !isOnRecylerViewLayoutAdded && dynamicChannelIsExist
     }
 
     private fun showToaster(message: String, typeToaster: Int) {
