@@ -172,10 +172,10 @@ class SellerAccountMapper @Inject constructor(
 
     private fun parseTickerSeller(context: Context, accountDataModel: AccountDataModel): TickerViewModel? {
         val sellerTickerModel = TickerViewModel(ArrayList())
-        if (accountDataModel.kycStatusPojo.kycStatusDetailPojo.isSuccess == KYCConstant.IS_SUCCESS_GET_STATUS
-                && accountDataModel.kycStatusPojo.kycStatusDetailPojo.status == KYCConstant.STATUS_NOT_VERIFIED) {
+        if (accountDataModel?.kycStatusPojo?.kycStatusDetailPojo?.isSuccess == KYCConstant.IS_SUCCESS_GET_STATUS
+                && accountDataModel?.kycStatusPojo?.kycStatusDetailPojo?.status == KYCConstant.STATUS_NOT_VERIFIED) {
             sellerTickerModel.listMessage.add(context.getString(R.string.ticker_unverified))
-        } else if (!(accountDataModel.shopInfo.owner.goldMerchant)) {
+        } else if (!(accountDataModel?.shopInfo?.owner?.goldMerchant)) {
             val tickerMessage: String? = remoteConfig.getString(RemoteConfigKey.SELLER_ACCOUNT_TICKER_MSG, "")
             if (!tickerMessage.isNullOrEmpty()) {
                 sellerTickerModel.listMessage.add(tickerMessage)
@@ -185,9 +185,9 @@ class SellerAccountMapper @Inject constructor(
     }
 
     private fun setKycToModel(shopCard: ShopCardViewModel, accountDataModel: AccountDataModel) {
-        if (accountDataModel.kycStatusPojo.kycStatusDetailPojo.isSuccess == KYCConstant.IS_SUCCESS_GET_STATUS) {
-            shopCard.verificationStatus = accountDataModel.kycStatusPojo.kycStatusDetailPojo.status
-            shopCard.verificationStatusName = accountDataModel.kycStatusPojo.kycStatusDetailPojo.statusName
+        if (accountDataModel?.kycStatusPojo?.kycStatusDetailPojo?.isSuccess == KYCConstant.IS_SUCCESS_GET_STATUS) {
+            shopCard.verificationStatus = accountDataModel?.kycStatusPojo?.kycStatusDetailPojo.status
+            shopCard.verificationStatusName = accountDataModel?.kycStatusPojo?.kycStatusDetailPojo?.statusName
         } else {
             shopCard.verificationStatus = KYCConstant.STATUS_ERROR
             shopCard.verificationStatusName = ""
