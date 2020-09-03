@@ -25,32 +25,37 @@ class TopchatReportWebViewFragment : BaseSessionWebViewFragment() {
         val uri: Uri? = Uri.parse(url)
         val queryParam = mapQueryParam(uri)
 
-        if (url == ACTION_BLOCK_PROMO) {
-            val intent = Intent().apply {
-                putExtra(RESULT_KEY_REPORT_USER, RESULT_REPORT_BLOCK_PROMO)
+        when {
+            url == ACTION_BLOCK_PROMO -> {
+                val intent = Intent().apply {
+                    putExtra(RESULT_KEY_REPORT_USER, RESULT_REPORT_BLOCK_PROMO)
+                }
+                activity?.setResult(Activity.RESULT_OK, intent)
+                activity?.finish()
+                return true
             }
-            activity?.setResult(Activity.RESULT_OK, intent)
-            activity?.finish()
-            return true
-        } else if (url == ACTION_BLOCK_PERSONAL) {
-            val intent = Intent().apply {
-                putExtra(RESULT_KEY_REPORT_USER, RESULT_REPORT_BLOCK_USER)
+            url == ACTION_BLOCK_PERSONAL -> {
+                val intent = Intent().apply {
+                    putExtra(RESULT_KEY_REPORT_USER, RESULT_REPORT_BLOCK_USER)
+                }
+                activity?.setResult(Activity.RESULT_OK, intent)
+                activity?.finish()
+                return true
             }
-            activity?.setResult(Activity.RESULT_OK, intent)
-            activity?.finish()
-            return true
-        } else if (uri?.host == "back" && queryParam[queryParamToasterMessage] != null) {
-            val intent = Intent().apply {
-                putExtra(RESULT_KEY_REPORT_USER, RESULT_REPORT_TOASTER)
-                putExtra(RESULT_KEY_PAYLOAD_REPORT_USER, queryParam[queryParamToasterMessage])
+            uri?.host == "back" && queryParam[queryParamToasterMessage] != null -> {
+                val intent = Intent().apply {
+                    putExtra(RESULT_KEY_REPORT_USER, RESULT_REPORT_TOASTER)
+                    putExtra(RESULT_KEY_PAYLOAD_REPORT_USER, queryParam[queryParamToasterMessage])
+                }
+                activity?.setResult(Activity.RESULT_OK, intent)
+                activity?.finish()
+                return true
             }
-            activity?.setResult(Activity.RESULT_OK, intent)
-            activity?.finish()
-            return true
-        } else if (uri?.host == "webview" && queryParam[queryParamUrl] != null) {
-            RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, queryParam[queryParamUrl])
-            activity?.finish()
-            return true
+            uri?.host == "webview" && queryParam[queryParamUrl] != null -> {
+                RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, queryParam[queryParamUrl])
+                activity?.finish()
+                return true
+            }
         }
         return super.shouldOverrideUrlLoading(webview, url)
     }
