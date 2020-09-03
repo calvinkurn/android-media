@@ -181,13 +181,13 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
     }
 
     private fun initObserver() {
-        viewModel.sendOtpResult.observe(this, Observer {
+        viewModel.sendOtpResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessSendOtp().invoke(it.data)
                 is Fail -> onFailedSendOtp().invoke(it.throwable)
             }
         })
-        viewModel.otpValidateResult.observe(this, Observer {
+        viewModel.otpValidateResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessOtpValidate().invoke(it.data)
                 is Fail -> onFailedOtpValidate().invoke(it.throwable)

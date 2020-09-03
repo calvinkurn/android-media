@@ -1,143 +1,133 @@
 {
-  "readme": "Telco revamp product with filter and cluster",
+  "readme": "Telco revamp product with filter and cluster prepaid & postpaid",
   "mode": "exact",
   "query": [
     {
       "event": "openScreen",
-      "screenName": "/digital/pulsa",
-      "isLoggedInStatus": "{{.* - .* - true|false}}",
-      "currentSite": "tokopediadigitalRecharge",
+      "screenName": "{{/digital/.*}}",
+      "isLoggedInStatus": "{{true|false}}",
+      "currentSite": "tokopediadigital",
       "userId": "{{.*}}",
-      "businessUnit": "top up and tagihan",
+      "businessUnit": "recharge",
       "category": "{{.*}}",
-      "digitalCategoryId": "{{.*}}"
-    },
-    {
-      "event": "openScreen",
-      "screenName": "/digital/paket data",
-      "isLoggedInStatus": "{{.* - .* - true|false}}",
-      "currentSite": "tokopediadigitalRecharge",
-      "userId": "{{.*}}",
-      "businessUnit": "top up and tagihan",
-      "category": "{{.*}}",
-      "digitalCategoryId": "{{.*}}"
-    },
-    {
-      "event": "openScreen",
-      "screenName": "/digital/roaming",
-      "isLoggedInStatus": "{{.* - .* - true|false}}",
-      "currentSite": "tokopediadigitalRecharge",
-      "userId": "{{.*}}",
-      "businessUnit": "top up and tagihan",
-      "category": "{{.*}}",
-      "digitalCategoryId": "{{.*}}"
-    },
-    {
-      "event": "openScreen",
-      "screenName": "/digital/pascabayar",
-      "isLoggedInStatus": "{{.* - .* - true|false}}",
-      "currentSite": "tokopediadigitalRecharge",
-      "userId": "{{.*}}",
-      "businessUnit": "top up and tagihan",
-      "category": "{{.*}}",
-      "digitalCategoryId": "{{.*}}"
+      "digitalCategoryId": "{{.*}}",
+      "clientId": "{{.*}}",
+      "sessionIris": "{{.*}}",
+      "shopId": "{{.*}}",
+      "appsflyerId": "{{.*}}",
+      "networkSpeed": "{{.*}}"
     },
     {
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "input manual number",
-      "eventLabel": "{{.* - .*}}"
+      "eventLabel": "{{.* - .*}}",
+      "sessionIris": "{{.*}}"
     },
     {
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "input from contact",
-      "eventLabel": "{{.* - .*}}"
+      "eventLabel": "{{.* - .*}}",
+      "sessionIris": "{{.*}}"
     },
     {
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "input from favorite number",
-      "eventLabel": "{{.* - .*}}"
+      "eventLabel": "{{.* - .*}}",
+      "sessionIris": "{{.*}}"
     },
     {
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "click on contact number",
-      "eventLabel": ""
+      "eventLabel": "",
+      "sessionIris": "{{.*}}"
     },
     {
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "click x on input number",
-      "eventLabel": ""
+      "eventLabel": "",
+      "sessionIris": "{{.*}}"
     },
     {
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "click on telco category",
-      "eventLabel": "{{.* - .*}}"
+      "eventLabel": "{{.* - .*}}",
+      "sessionIris": "{{.*}}"
     },
     {
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "user click back button",
-      "eventLabel": "{{.*}}"
+      "eventLabel": "{{.*}}",
+      "sessionIris": "{{.*}}"
     },
     {
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "user click see more",
-      "eventLabel": "{{.*}}"
+      "eventLabel": "{{.*}}",
+      "sessionIris": "{{.*}}"
     },
     {
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "click x on detail product",
-      "eventLabel": "{{.*}}"
+      "eventLabel": "{{.*}}",
+      "sessionIris": "{{.*}}"
     },
     {
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "click salin promo digital",
-      "eventLabel": "{{.* - .*}}"
+      "eventLabel": "{{.* - .*}}",
+      "sessionIris": "{{.*}}"
     },
     {
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "click cek tagihan",
       "eventLabel": "{{.* - .*}}",
-      "currentSite": "tokopediadigitalRecharge",
+      "currentSite": "tokopediadigital",
       "userId": "{{.*}}",
-      "businessUnit": "top up and tagihan"
+      "businessUnit": "recharge",
+      "sessionIris": "{{.*}}"
     },
     {
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "click tab promo",
       "eventLabel": "{{.*}}",
-      "currentSite": "tokopediadigitalRecharge",
+      "currentSite": "tokopediadigital",
       "userId": "{{.*}}",
-      "businessUnit": "top up and tagihan"
+      "businessUnit": "recharge",
+      "sessionIris": "{{.*}}"
     },
     {
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "click tab recent",
       "eventLabel": "{{.*}}",
-      "currentSite": "tokopediadigitalRecharge",
+      "currentSite": "tokopediadigital",
       "userId": "{{.*}}",
-      "businessUnit": "top up and tagihan"
+      "businessUnit": "recharge",
+      "sessionIris": "{{.*}}"
     },
     {
       "event": "view_item_list",
       "eventCategory": "digital - homepage",
       "eventAction": "impression product cluster",
       "eventLabel": "{{.* - .*}}",
-      "currentSite": "tokopediadigitalRecharge",
+      "currentSite": "tokopediadigital",
       "userId": "{{.*}}",
-      "businessUnit": "top up and tagihan",
+      "businessUnit": "recharge",
       "item_list": "{{.*}}",
+      "sessionIris": "{{.*}}",
+      "clientId": "{{.*}}",
       "items": [
         {
           "item_id": "{{.*}}",
@@ -155,10 +145,12 @@
       "eventCategory": "digital - homepage",
       "eventAction": "click product cluster",
       "eventLabel": "{{.* - .* - .*}}",
-      "currentSite": "tokopediadigitalRecharge",
+      "currentSite": "tokopediadigital",
       "userId": "{{.*}}",
-      "businessUnit": "top up and tagihan",
+      "businessUnit": "recharge",
       "item_list": "{{.*}}",
+      "sessionIris": "{{.*}}",
+      "clientId": "{{.*}}",
       "items": [
         {
           "item_id": "{{.*}}",
@@ -167,7 +159,8 @@
           "item_variant": "{{.*}}",
           "item_category": "{{.*}}",
           "index": "{{\\d*.\\d*}}",
-          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}"
+          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
+          "dimension40": "{{.*}}"
         }
       ]
     },
@@ -175,11 +168,13 @@
       "event": "add_to_cart",
       "eventCategory": "digital - homepage",
       "eventAction": "click pilih detail cluster",
-      "screenName": "{{.*}}",
+      "clientId": "{{.*}}",
+      "screenName": "{{pulsa|paket data|roaming}}",
       "eventLabel": "{{.* - .* - .*}}",
-      "currentSite": "tokopediadigitalRecharge",
+      "currentSite": "tokopediadigital",
       "userId": "{{.*}}",
-      "businessUnit": "top up and tagihan",
+      "sessionIris": "{{.*}}",
+      "businessUnit": "recharge",
       "items": [
         {
           "item_id": "{{.*}}",
@@ -187,7 +182,7 @@
           "item_brand": "{{.*}}",
           "item_variant": "{{.*}}",
           "item_category": "{{.*}}",
-          "quantity": "{{.*}}",
+          "quantity": "{{\\d*.\\d*}}",
           "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}"
         }
       ]
@@ -197,6 +192,7 @@
       "eventCategory": "digital - homepage",
       "eventAction": "impression promo digital",
       "eventLabel": "{{.*}}",
+      "sessionIris": "{{.*}}",
       "promotions": [
         {
           "creative_name": "{{.*}}",
@@ -214,6 +210,7 @@
       "eventCategory": "digital - homepage",
       "eventAction": "click promo digital",
       "eventLabel": "{{.* - .*}}",
+      "sessionIris": "{{.*}}",
       "promotions": [
         {
           "creative_name": "{{.*}}",
@@ -228,10 +225,12 @@
       ]
     },
     {
-      "event": "view_item",
+      "event": "view_item_list",
       "eventCategory": "digital - homepage",
       "eventAction": "impression recent icon",
       "eventLabel": "{{.*}}",
+      "sessionIris": "{{.*}}",
+      "item_list": "{{.*}}",
       "items": [
         {
           "item_id": "{{.*}}",
@@ -240,7 +239,8 @@
           "item_variant": "{{.*}}",
           "item_category": "{{.*}}",
           "index": "{{\\d*.\\d*}}",
-          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}"
+          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
+          "dimension40": "{{.*}}"
         }
       ]
     },
@@ -249,6 +249,7 @@
       "eventCategory": "digital - homepage",
       "eventAction": "click recent icon",
       "eventLabel": "{{.* - .*}}",
+      "sessionIris": "{{.*}}",
       "item_list": "{{.* - .* - .* - .*}}",
       "items": [
         {
@@ -267,45 +268,50 @@
       "eventCategory": "digital - homepage",
       "eventAction": "click 3 dots",
       "eventLabel": "{{.*}}",
-      "currentSite": "tokopediadigitalRecharge",
+      "currentSite": "tokopediadigital",
       "userId": "{{.*}}",
-      "businessUnit": "top up and tagihan"
+      "businessUnit": "recharge",
+      "sessionIris": "{{.*}}"
     },
     {
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "click quick filter",
       "eventLabel": "{{.* - .*}}",
-      "currentSite": "tokopediadigitalRecharge",
+      "currentSite": "tokopediadigital",
       "userId": "{{.*}}",
-      "businessUnit": "top up and tagihan"
+      "businessUnit": "recharge",
+      "sessionIris": "{{.*}}"
     },
     {
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "click Simpan",
       "eventLabel": "{{.*}}",
-      "currentSite": "tokopediadigitalRecharge",
+      "currentSite": "tokopediadigital",
       "userId": "{{.*}}",
-      "businessUnit": "top up and tagihan"
+      "businessUnit": "recharge",
+      "sessionIris": "{{.*}}"
     },
     {
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "click Reset filter bottom sheet",
       "eventLabel": "{{.* - .*}}",
-      "currentSite": "tokopediadigitalRecharge",
+      "currentSite": "tokopediadigital",
       "userId": "{{.*}}",
-      "businessUnit": "top up and tagihan"
+      "businessUnit": "recharge",
+      "sessionIris": "{{.*}}"
     },
     {
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "click reset cluster",
       "eventLabel": "{{.*}}",
-      "currentSite": "tokopediadigitalRecharge",
+      "currentSite": "tokopediadigital",
       "userId": "{{.*}}",
-      "businessUnit": "top up and tagihan"
+      "businessUnit": "recharge",
+      "sessionIris": "{{.*}}"
     }
   ]
 }
