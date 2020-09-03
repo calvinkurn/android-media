@@ -15,6 +15,8 @@ import com.tokopedia.troubleshooter.notification.data.service.fcm.FirebaseInstan
 import com.tokopedia.troubleshooter.notification.data.service.fcm.FirebaseInstanceManagerImpl
 import com.tokopedia.troubleshooter.notification.data.service.notification.NotificationCompatManager
 import com.tokopedia.troubleshooter.notification.data.service.notification.NotificationCompatManagerImpl
+import com.tokopedia.troubleshooter.notification.data.service.ringtone.RingtoneModeService
+import com.tokopedia.troubleshooter.notification.data.service.ringtone.RingtoneModeServiceImpl
 import com.tokopedia.troubleshooter.notification.di.TroubleshootContext
 import com.tokopedia.troubleshooter.notification.di.TroubleshootScope
 import com.tokopedia.troubleshooter.notification.util.dispatchers.AppDispatcherProvider
@@ -52,6 +54,12 @@ import dagger.Provides
     @TroubleshootScope
     fun provideNotificationCompatManager(): NotificationCompatManager {
         return NotificationCompatManagerImpl(context)
+    }
+
+    @Provides
+    @TroubleshootScope
+    fun provideRingtoneModeService(): RingtoneModeService {
+        return RingtoneModeServiceImpl(context)
     }
 
     @Provides
