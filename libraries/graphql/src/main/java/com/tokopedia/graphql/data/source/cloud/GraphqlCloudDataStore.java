@@ -136,13 +136,12 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
                     if (httpResponse.body() != null) {
                         LoggingUtils.logGqlSize("java", requests.toString(), httpResponse.body().toString());
                     }
-                    return new GraphqlResponseInternal(httpResponse.body(), false,
-                            httpResponse.headers().get(GraphqlConstant.GqlApiKeys.CACHE),
-                            httpResponse.headers().get(GraphqlConstant.GqlApiKeys.QUERYHASH));
 
                     JsonArray gJsonArray = CommonUtils.getOriginalResponse(httpResponse);
 
-                    return new GraphqlResponseInternal(gJsonArray, false, httpResponse.headers().get(GraphqlConstant.GqlApiKeys.CACHE));
+                    return new GraphqlResponseInternal(gJsonArray, false,
+                            httpResponse.headers().get(GraphqlConstant.GqlApiKeys.CACHE),
+                            httpResponse.headers().get(GraphqlConstant.GqlApiKeys.QUERYHASH));
                 }).doOnNext(graphqlResponseInternal -> {
                     //Handling backend cache
                     Map<String, BackendCache> caches = CacheHelper.parseCacheHeaders(graphqlResponseInternal.getBeCache());
