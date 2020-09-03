@@ -137,14 +137,13 @@ class HotelSearchResultViewModel @Inject constructor(
     fun getFilterCount(): Int {
         var count = 0
         getSelectedFilter().forEach {
-            count += it.values.size
+            count += if (it.name == "price") 1 else it.values.size
         }
         return count
     }
 
     companion object {
         const val PARAM_SEARCH_PROPERTY = "data"
-
         private const val DEFAULT_SORT = "popularity"
     }
 }
