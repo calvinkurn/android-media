@@ -62,9 +62,11 @@ public class GetApprovalStatusSubscriber extends Subscriber<GraphqlResponse> {
     }
 
     private void routingOnNext(GetApprovalStatusPojo pojo) {
-        if (pojo.getKycStatus().getKycStatusDetailPojo().isSuccess() == 1) {
+        if (pojo.getKycStatus() != null && pojo.getKycStatus().getKycStatusDetailPojo() != null
+                && pojo.getKycStatus().getKycStatusDetailPojo().isSuccess() == 1) {
             listener.onSuccessGetShopVerificationStatus(pojo.getKycStatus().getKycStatusDetailPojo().getStatus());
-        } else if (!pojo.getKycStatus().getMessage().isEmpty()) {
+        } else if (pojo.getKycStatus() != null && pojo.getKycStatus().getMessage() != null
+                && !pojo.getKycStatus().getMessage().isEmpty()) {
             listener.onErrorGetShopVerificationStatus(new MessageErrorException(pojo.getKycStatus().getMessage().get(0)));
         } else {
             listener.onErrorGetShopVerificationStatusWithErrorCode(KYCConstant.ERROR_MESSAGE_EMPTY);
