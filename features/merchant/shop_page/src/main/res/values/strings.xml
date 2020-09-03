@@ -287,7 +287,5 @@
     <string name="content_desc_tvSeeAll">text lihat semua</string>
     <string name="content_desc_shopInfoDescription">text deskripsi toko</string>
     <string name="content_desc_button_chat">button chat</string>
-    <string name="content_desc_product_image_review">image gambar produk review</string>
-    <string name="content_desc_product_name_review">text nama produk review</string>
 
 </resources>

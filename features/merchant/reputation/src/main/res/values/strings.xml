@@ -166,4 +166,6 @@
     </string-array>
 
     <string name="title_review_inbox">Inbox Ulasan</string>
+    <string name="content_desc_product_image_review">image gambar produk review</string>
+    <string name="content_desc_product_name_review">text nama produk review</string>
 </resources>
