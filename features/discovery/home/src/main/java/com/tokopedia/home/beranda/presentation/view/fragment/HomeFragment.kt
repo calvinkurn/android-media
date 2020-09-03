@@ -206,6 +206,7 @@ open class HomeFragment : BaseDaggerFragment(),
         private const val SCROLL_RECOMMEND_LIST = "recommend_list"
         private const val KEY_IS_LIGHT_THEME_STATUS_BAR = "is_light_theme_status_bar"
         private const val CLICK_TIME_INTERVAL: Long = 500
+        private const val DEFAULT_INTERVAL_HINT: Long = 1000 * 10
 
         @JvmStatic
         fun newInstance(scrollToRecommendList: Boolean): HomeFragment {
@@ -267,6 +268,7 @@ open class HomeFragment : BaseDaggerFragment(),
     private var mShowTokopointNative = false
     private var showSeeAllCard = true
     private var isShowFirstInstallSearch = false
+    private var durationAutoTransition: Long = DEFAULT_INTERVAL_HINT
     private var scrollToRecommendList = false
     private var isFeedLoaded = false
     private var startToTransitionOffset = 0
@@ -421,6 +423,7 @@ open class HomeFragment : BaseDaggerFragment(),
             showRecomendation = it.getBoolean(ConstantKey.RemoteConfigKey.APP_SHOW_RECOMENDATION_BUTTON, false)
             mShowTokopointNative = it.getBoolean(ConstantKey.RemoteConfigKey.APP_SHOW_TOKOPOINT_NATIVE, false)
             isShowFirstInstallSearch = it.getBoolean(ConstantKey.RemoteConfigKey.REMOTE_CONFIG_KEY_FIRST_INSTALL_SEARCH, false)
+            durationAutoTransition = it.getLong(ConstantKey.RemoteConfigKey.REMOTE_CONFIG_KEY_FIRST_DURATION_TRANSITION_SEARCH, DEFAULT_INTERVAL_HINT)
             showSeeAllCard = it.getBoolean(SEE_ALL_CARD, true)
         }
     }
@@ -1460,7 +1463,8 @@ open class HomeFragment : BaseDaggerFragment(),
                     HintData(data.placeholder ?: "", data.keyword ?: ""),
                     placeholderToHint(data),
                     isFirstInstall(),
-                    shouldShowTransition())
+                    shouldShowTransition(),
+                    durationAutoTransition)
         }
     }
 

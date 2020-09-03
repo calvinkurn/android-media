@@ -233,13 +233,19 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
         return shadowApplied
     }
 
-    fun setHint(hint: HintData, hints: ArrayList<HintData>, isFirstInstall: Boolean, isShowTransition: Boolean) {
-        if(viewHomeMainToolBar != null) {
-            if(::animationJob.isInitialized) {
+    fun setHint(
+            hint: HintData,
+            hints: ArrayList<HintData>,
+            isFirstInstall: Boolean,
+            isShowTransition: Boolean,
+            durationAutoTransition: Long
+    ) {
+        if (viewHomeMainToolBar != null) {
+            if (::animationJob.isInitialized) {
                 animationJob.cancel()
             }
-            if(hints.size > 1 && isShowTransition) {
-                setHintAnimation(hints, isFirstInstall)
+            if (hints.size > 1 && isShowTransition) {
+                setHintAnimation(hints, isFirstInstall, durationAutoTransition)
             } else {
                 setHintSingle(hint, isFirstInstall)
             }
@@ -248,11 +254,15 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
         }
     }
 
-    private fun setHintAnimation(hints: ArrayList<HintData>, isFirstInstall: Boolean) {
+    private fun setHintAnimation(
+            hints: ArrayList<HintData>,
+            isFirstInstall: Boolean,
+            durationAutoTransition: Long
+    ) {
         var iterator = hints.iterator()
 
         animationJob = launch {
-            while(true) {
+            while (true) {
                 var hint = context.getString(R.string.search_tokopedia)
                 var keyword = ""
                 val slideUpIn = AnimationUtils.loadAnimation(context, R.anim.slide_up_in)
@@ -262,7 +272,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
                 slideOutUp.setAnimationListener(object : Animation.AnimationListener {
                     override fun onAnimationRepeat(animation: Animation?) {}
                     override fun onAnimationEnd(animation: Animation?) {
-                        if(iterator.hasNext()) {
+                        if (iterator.hasNext()) {
                             val placeholder = iterator.next()
                             hint = placeholder.placeholder
                             keyword = placeholder.keyword
@@ -275,13 +285,14 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
                         editTextSearch.hint = hint
                         editTextSearch.startAnimation(slideUpIn)
                     }
+
                     override fun onAnimationStart(animation: Animation?) {}
                 })
                 editTextSearch.startAnimation(slideOutUp)
                 editTextSearch.setOnClickListener {
                     onClickHint(keyword, isFirstInstall)
                 }
-                delay(INTERVAL_HINT.toLong())
+                delay(durationAutoTransition)
             }
         }
     }
@@ -319,7 +330,6 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
         const val TOOLBAR_LIGHT_TYPE = 0
         const val TOOLBAR_DARK_TYPE = 1
         private const val HOME_SOURCE = "home"
-        private const val INTERVAL_HINT = 1000 * 10  //1000 * 60 * 2   2 minutes
 
         private const val PARAM_APPLINK_AUTOCOMPLETE = "?navsource={source}&hint={hint}&first_install={first_install}"
     }
