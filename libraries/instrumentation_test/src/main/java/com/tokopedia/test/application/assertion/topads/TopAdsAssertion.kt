@@ -62,7 +62,12 @@ class TopAdsAssertion(val context: Context,
 
         listTopAdsDb.forEach {
             logTestMessage(it.sourceName+" - "+it.eventType+" - "+it.eventStatus)
-            Assert.assertEquals(STATUS_MATCH, it.eventStatus)
+
+            val component = if (it.componentName.isEmpty()) it.sourceName else it.componentName
+
+            Assert.assertEquals(
+                    "Component $component",
+                    STATUS_MATCH, it.eventStatus)
         }
     }
 

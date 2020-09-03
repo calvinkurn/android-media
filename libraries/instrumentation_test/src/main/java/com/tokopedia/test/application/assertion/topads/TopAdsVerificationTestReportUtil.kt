@@ -10,6 +10,7 @@ object TopAdsVerificationTestReportUtil {
     private val FILE_TOPADS_LOG = "report-topads-verificator-log.log"
     private val FILE_TOPADS_VERIFICATOR_DATA = "report-topads-verificator.csv"
     val REPORT_HEADER = "Component Name,Impression Match,Click Match"
+    val FAILED_URL_HEADER = "Component Name,Failed Url,Status"
     val EVENT_IMPRESSION = "impression"
     val EVENT_CLICK = "click"
 
@@ -70,9 +71,7 @@ object TopAdsVerificationTestReportUtil {
     fun generateTopAdsVerificatorReportCoverage(topAdsLogDBList: List<TopAdsLogDB>): List<String> {
         if (topAdsLogDBList.isEmpty()) return listOf()
 
-        val topAdsVerificatorDataList = topAdsLogDBList.groupBy {
-            if (it.componentName.isEmpty()) it.sourceName else it.componentName
-        }
+        val topAdsVerificatorDataList = topAdsLogDBList.groupBy { it.componentOrSource }
 
         var totalImpressionSuccess = 0
         var totalImpressionCount = 0
@@ -95,9 +94,38 @@ object TopAdsVerificationTestReportUtil {
         val totalImpressionCoverage = getSuccessPercentage(totalImpressionSuccess, totalImpressionCount)
         val totalClickCoverage = getSuccessPercentage(totalClickSuccess, totalClickCount)
 
-        return listOf(REPORT_HEADER) +
-                topAdsCoverageReportList.map { it.generateReport() } +
-                listOf(",$totalImpressionCoverage,$totalClickCoverage")
+        return constructSuccessRateReport(topAdsCoverageReportList, totalImpressionCoverage, totalClickCoverage) +
+                constructFailedUrlReport(topAdsLogDBList)
+    }
+
+    private val TopAdsLogDB.componentOrSource: String
+        get() = if (componentName.isEmpty()) sourceName else componentName
+
+    private fun constructSuccessRateReport(
+            topAdsCoverageReportList: MutableList<TopAdsCoverageReport>,
+            totalImpressionCoverage: String,
+            totalClickCoverage: String
+    ): List<String> {
+        return mutableListOf<String>().apply {
+            add(REPORT_HEADER)
+            addAll(topAdsCoverageReportList.map { it.generateReport() })
+            add(",$totalImpressionCoverage,$totalClickCoverage")
+        }
+    }
+
+    private fun constructFailedUrlReport(topAdsLogDBList: List<TopAdsLogDB>): List<String> {
+        val failedTopAdsLogDBList = topAdsLogDBList
+                .filter { it.eventStatus != STATUS_MATCH }
+                .map { "${it.componentOrSource},${it.url},${it.eventStatus}" }
+
+        return if (failedTopAdsLogDBList.isNotEmpty()) {
+            mutableListOf<String>().apply {
+                add("")
+                add(FAILED_URL_HEADER)
+                addAll(failedTopAdsLogDBList)
+            }
+        }
+        else listOf()
     }
 
     private fun getSuccessPercentage(success: Int, total: Int): String {

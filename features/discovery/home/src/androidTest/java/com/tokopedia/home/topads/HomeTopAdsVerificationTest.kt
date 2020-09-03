@@ -30,6 +30,7 @@ class HomeTopAdsVerificationTest {
     var activityRule = object: ActivityTestRule<InstrumentationHomeTestActivity>(InstrumentationHomeTestActivity::class.java) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
+            InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser()
             setupTopAdsDetector()
         }
     }
