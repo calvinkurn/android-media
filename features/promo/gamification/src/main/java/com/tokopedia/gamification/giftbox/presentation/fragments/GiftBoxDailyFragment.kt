@@ -295,7 +295,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                                     hideLoader()
                                     val messageList = giftBoxEntity.gamiLuckyHome.resultStatus.message
                                     if (!messageList.isNullOrEmpty()) {
-                                        renderGiftBoxError(messageList[0], "Oke", "${GiftBoxErrorCause.TOKEN_USER_STATE} = $tokenUserState")
+                                        renderGiftBoxError(messageList[0], "Oke")
                                     }
 
                                     tvReminderMessage.text = reminder?.text
@@ -312,13 +312,13 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
                                 val messageList = remindMeCheckEntity?.gameRemindMeCheck?.resultStatus?.message
                                 if (!messageList.isNullOrEmpty()) {
-                                    renderGiftBoxError(messageList[0], "Oke","${GiftBoxErrorCause.GAMI_REMIND_ME_CHECK_RESULT_STATUS_CODE} = $remindMeCheckStatusCode" )
+                                    renderGiftBoxError(messageList[0], "Oke")
                                 }
 
                             } else if (giftBoxStatusCode != HTTP_STATUS_OK) {
                                 val messageList = giftBoxEntity?.gamiLuckyHome?.resultStatus?.message
                                 if (!messageList.isNullOrEmpty()) {
-                                    renderGiftBoxError(messageList[0], "Oke", "${GiftBoxErrorCause.GAMI_LUCKYHOME_RESULT_STATUS_CODE} = $giftBoxStatusCode")
+                                    renderGiftBoxError(messageList[0], "Oke")
                                 }
                             }
                         }
@@ -333,7 +333,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                     pltPerf.startRenderPerformanceMonitoring()
                     hideLoader()
                     reminderLayout.visibility = View.GONE
-                    renderGiftBoxError(defaultErrorMessage, "Oke", "GamiLuckHome - ${it.error?.message}")
+                    renderGiftBoxError(defaultErrorMessage, "Oke")
                     pltPerf.stopRenderPerformanceMonitoring()
                 }
             }
@@ -344,7 +344,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                 LiveDataResult.STATUS.SUCCESS -> {
 
                     if (it.data == null) {
-                        renderOpenBoxError(defaultErrorMessage, "Oke", GiftBoxErrorCause.DATA_NULL)
+                        renderOpenBoxError(defaultErrorMessage, "Oke")
                     } else {
                         val code = it.data?.gamiCrack.resultStatus.code
                         if (code == HTTP_STATUS_OK) {
@@ -386,16 +386,16 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                             disableGiftBoxTap = false
                             val messageList = it.data?.gamiCrack?.resultStatus?.message
                             if (!messageList.isNullOrEmpty()) {
-                                renderOpenBoxError(messageList[0], "Oke", "${GiftBoxErrorCause.GAMI_CRACK_RESULT_STATUS_CODE} = $code")
-                            }else{
-                                renderOpenBoxError(defaultErrorMessage, "Oke", "${GiftBoxErrorCause.GAMI_CRACK_RESULT_STATUS_CODE} = $code")
+                                renderOpenBoxError(messageList[0], "Oke")
+                            } else{
+                                renderOpenBoxError(defaultErrorMessage, "Oke")
                             }
                         }
                     }
                 }
                 LiveDataResult.STATUS.ERROR -> {
                     disableGiftBoxTap = false
-                    renderOpenBoxError(defaultErrorMessage, "Oke", "Reward Error - ${it.error?.message}")
+                    renderOpenBoxError(defaultErrorMessage, "Oke")
                 }
             }
         })
@@ -419,14 +419,14 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                     } else {
                         val messageList = it.data?.gameRemindMe?.resultStatus?.message
                         if (!messageList.isNullOrEmpty()) {
-                            showRemindMeError(messageList[0], "Oke", "${GiftBoxErrorCause.GAMI_REMIND_ME_RESULT_STATUS_CODE} = $code")
+                            showRemindMeError(messageList[0], "Oke")
                         }
                     }
                 }
                 LiveDataResult.STATUS.ERROR -> {
                     loaderReminder.visibility = View.GONE
                     tvReminderBtn.visibility = View.VISIBLE
-                    showRemindMeError(defaultErrorMessage, "Oke", "Remind Me - ${it.error?.message}" )
+                    showRemindMeError(defaultErrorMessage, "Oke")
                 }
             }
         })
@@ -518,24 +518,24 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         }
     }
 
-    fun renderOpenBoxError(message: String, actionText: String, cause:String?) {
+    fun renderOpenBoxError(message: String, actionText: String) {
         if (context != null) {
             val internetAvailable = isConnectedToInternet()
             if (!internetAvailable) {
                 showNoInterNetDialog(viewModel::getRewards, context!!)
             } else {
-                showRedError(fmParent, message, actionText, cause, viewModel::getRewards)
+                showRedError(fmParent, message, actionText, viewModel::getRewards)
             }
         }
     }
 
-    fun showRemindMeError(message: String, actionText: String, cause:String?) {
+    fun showRemindMeError(message: String, actionText: String) {
         if (context != null) {
             val internetAvailable = isConnectedToInternet()
             if (!internetAvailable) {
                 showNoInterNetDialog(viewModel::setReminder, context!!)
             } else {
-                showRedError(fmParent, message, actionText, cause, viewModel::setReminder)
+                showRedError(fmParent, message, actionText, viewModel::setReminder)
             }
         }
     }
@@ -771,7 +771,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
             } else {
                 //Do nothing
                 hideLoader()
-                renderGiftBoxError(defaultErrorMessage, "Oke", GiftBoxErrorCause.IMAGE_LOADING_ERROR)
+                renderGiftBoxError(defaultErrorMessage, "Oke")
             }
         })
     }
@@ -787,13 +787,13 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         }
     }
 
-    fun renderGiftBoxError(message: String, actionText: String, cause:String?) {
+    fun renderGiftBoxError(message: String, actionText: String) {
         if (context != null) {
             val internetAvailable = isConnectedToInternet()
             if (!internetAvailable) {
                 showNoInterNetDialog(viewModel::getGiftBox, context!!)
             } else {
-                showRedError(fmParent, message, actionText, cause, viewModel::getGiftBox)
+                showRedError(fmParent, message, actionText, viewModel::getGiftBox)
             }
         }
     }

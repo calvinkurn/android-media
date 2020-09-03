@@ -356,7 +356,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 }
                 LiveDataResult.STATUS.ERROR -> {
                     hideLoader()
-                    renderGiftBoxError(defaultErrorMessage, getString(R.string.gami_oke), "GamiTapEggHome - ${it.error?.message}")
+                    renderGiftBoxError(defaultErrorMessage, getString(R.string.gami_oke))
                 }
             }
         })
@@ -400,14 +400,13 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                                     return@Observer
                                 }
                                 else -> {
-                                    val cause = "${GiftBoxErrorCause.GAMI_TAP_CRACK_RESULT_RESULT_STATUS_CODE} = $resultCode"
                                     getTapTapView().isGiftTapAble = true
                                     val status = responseCrackResultEntity?.crackResultEntity?.resultStatus
                                     val messageList = status?.message
                                     if (!messageList.isNullOrEmpty()) {
-                                        renderGiftBoxOpenError(messageList[0], getString(R.string.gami_oke), cause)
+                                        renderGiftBoxOpenError(messageList[0], getString(R.string.gami_oke))
                                     } else {
-                                        renderGiftBoxOpenError(defaultErrorMessage, getString(R.string.gami_oke), cause)
+                                        renderGiftBoxOpenError(defaultErrorMessage, getString(R.string.gami_oke))
                                     }
                                 }
                             }
@@ -428,7 +427,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                         showRewardSummary()
                     } else {
                         getTapTapView().isGiftTapAble = true
-                        renderGiftBoxOpenError(defaultErrorMessage, getString(R.string.gami_oke),"GIFT TAP - Crack Result - ${it.error?.message}" )
+                        renderGiftBoxOpenError(defaultErrorMessage, getString(R.string.gami_oke))
                     }
                 }
             }
@@ -715,25 +714,25 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
             viewModel.crackGiftBox()
     }
 
-    private fun renderGiftBoxOpenError(message: String, actionText: String, cause:String?) {
+    private fun renderGiftBoxOpenError(message: String, actionText: String) {
         forceOpenGiftBox = true
         if (context != null) {
             val internetAvailable = isConnectedToInternet()
             if (!internetAvailable) {
                 showNoInterNetDialog(::handleGiftBoxTap, context!!)
             } else {
-                showRedError(fmParent, message, actionText,cause, ::handleGiftBoxTap)
+                showRedError(fmParent, message, actionText, ::handleGiftBoxTap)
             }
         }
     }
 
-    private fun renderGiftBoxError(message: String, actionText: String, cause:String?) {
+    private fun renderGiftBoxError(message: String, actionText: String) {
         if (context != null) {
             val internetAvailable = isConnectedToInternet()
             if (!internetAvailable) {
                 showNoInterNetDialog(viewModel::getGiftBoxHome, context!!)
             } else {
-                showRedError(fmParent, message, actionText, cause, viewModel::getGiftBoxHome)
+                showRedError(fmParent, message, actionText, viewModel::getGiftBoxHome)
             }
         }
     }

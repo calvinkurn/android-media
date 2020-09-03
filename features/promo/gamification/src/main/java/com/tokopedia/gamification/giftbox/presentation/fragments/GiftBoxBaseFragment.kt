@@ -25,14 +25,6 @@ import com.tokopedia.gamification.audio.AudioManager
 import com.tokopedia.gamification.giftbox.analytics.GtmEvents
 import com.tokopedia.gamification.giftbox.analytics.GtmGiftTapTap
 import com.tokopedia.gamification.giftbox.presentation.dialogs.NoInternetDialog
-import com.tokopedia.gamification.giftbox.presentation.fragments.GiftBoxErrorCause.Companion.DATA_NULL
-import com.tokopedia.gamification.giftbox.presentation.fragments.GiftBoxErrorCause.Companion.GAMI_CRACK_RESULT_STATUS_CODE
-import com.tokopedia.gamification.giftbox.presentation.fragments.GiftBoxErrorCause.Companion.GAMI_LUCKYHOME_RESULT_STATUS_CODE
-import com.tokopedia.gamification.giftbox.presentation.fragments.GiftBoxErrorCause.Companion.GAMI_REMIND_ME_CHECK_RESULT_STATUS_CODE
-import com.tokopedia.gamification.giftbox.presentation.fragments.GiftBoxErrorCause.Companion.GAMI_REMIND_ME_RESULT_STATUS_CODE
-import com.tokopedia.gamification.giftbox.presentation.fragments.GiftBoxErrorCause.Companion.IMAGE_LOADING_ERROR
-import com.tokopedia.gamification.giftbox.presentation.fragments.GiftBoxErrorCause.Companion.TOKEN_USER_STATE
-import com.tokopedia.gamification.giftbox.presentation.fragments.GiftBoxErrorCause.Companion.UNKNOWN_ERROR
 import com.tokopedia.gamification.giftbox.presentation.helpers.GiftBoxTapTapAudio
 import com.tokopedia.gamification.giftbox.presentation.views.GiftBoxDailyView
 import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer
@@ -221,7 +213,7 @@ open class GiftBoxBaseFragment : Fragment() {
         }
     }
 
-    fun showRedError(view: View, message: String, actionText: String, cause: String?, method: (() -> Unit)?) {
+    fun showRedError(view: View, message: String, actionText: String, method: (() -> Unit)?) {
         Toaster.toasterCustomBottomHeight = 30.toPx()
         val snackbar = Toaster.build(
                 view,
@@ -240,10 +232,9 @@ open class GiftBoxBaseFragment : Fragment() {
         params.width = FrameLayout.LayoutParams.MATCH_PARENT
         snackbar.view.layoutParams = params
 
-        val formattedCause = if (!cause.isNullOrEmpty()) cause else GiftBoxErrorCause.UNKNOWN_ERROR
         when (this) {
-            is GiftBoxTapTapFragment -> GtmGiftTapTap.viewToastError(userSession?.userId, formattedCause)
-            is GiftBoxDailyFragment -> GtmEvents.viewToastError(userSession?.userId, formattedCause)
+            is GiftBoxTapTapFragment -> GtmGiftTapTap.viewToastError(userSession?.userId, message)
+            is GiftBoxDailyFragment -> GtmEvents.viewToastError(userSession?.userId, message)
         }
     }
 
@@ -399,29 +390,5 @@ open class GiftBoxBaseFragment : Fragment() {
             return DeviceConnectionInfo.isConnectCellular(it) || DeviceConnectionInfo.isConnectWifi(it)
         }
         return false
-    }
-}
-
-@Retention(AnnotationRetention.SOURCE)
-@StringDef(IMAGE_LOADING_ERROR,
-        GAMI_LUCKYHOME_RESULT_STATUS_CODE,
-        GAMI_CRACK_RESULT_STATUS_CODE,
-        GAMI_REMIND_ME_CHECK_RESULT_STATUS_CODE,
-        GAMI_REMIND_ME_RESULT_STATUS_CODE,
-        TOKEN_USER_STATE,
-        DATA_NULL,
-        UNKNOWN_ERROR
-)
-annotation class GiftBoxErrorCause {
-    companion object {
-        const val IMAGE_LOADING_ERROR = "image loading error"
-        const val GAMI_LUCKYHOME_RESULT_STATUS_CODE = "gamiLuckyHome.resultStatus.code"
-        const val GAMI_CRACK_RESULT_STATUS_CODE = "gamiCrack.resultStatus.code"
-        const val GAMI_REMIND_ME_CHECK_RESULT_STATUS_CODE = "gameRemindMeCheck.resultStatus.code"
-        const val GAMI_REMIND_ME_RESULT_STATUS_CODE = "gameRemindMe.resultStatus.code"
-        const val GAMI_TAP_CRACK_RESULT_RESULT_STATUS_CODE = "crackResult.resultStatus.code"
-        const val TOKEN_USER_STATE = "token user state"
-        const val DATA_NULL = "data is null"
-        const val UNKNOWN_ERROR = "unknown"
     }
 }
