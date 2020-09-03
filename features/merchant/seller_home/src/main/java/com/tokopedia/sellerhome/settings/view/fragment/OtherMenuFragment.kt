@@ -8,6 +8,7 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.NestedScrollView
@@ -56,11 +57,12 @@ import com.tokopedia.sellerhome.view.StatusBarCallback
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_other_menu.*
-import kotlinx.android.synthetic.main.setting_topads_bottomsheet_layout.view.*
 import javax.inject.Inject
 
 class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(), OtherMenuViewHolder.Listener, StatusBarCallback, SettingTrackingListener {
@@ -263,8 +265,8 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     private fun setupBottomSheetLayout(isTopAdsActive: Boolean) : View? {
-        var bottomSheetInfix = ""
-        var bottomSheetDescription = ""
+        val bottomSheetInfix: String
+        val bottomSheetDescription: String
         if (isTopAdsActive) {
             bottomSheetInfix = resources.getString(R.string.setting_topads_status_active)
             bottomSheetDescription = resources.getString(R.string.setting_topads_description_active)
@@ -274,9 +276,9 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         }
         val bottomSheetTitle = resources.getString(R.string.setting_topads_status, bottomSheetInfix)
         return topAdsBottomSheetView?.apply {
-            topAdsBottomSheetTitle.text = bottomSheetTitle
-            topAdsBottomSheetDescription.text = bottomSheetDescription
-            topAdsNextButton.setOnClickListener{
+            findViewById<Typography>(R.id.topAdsBottomSheetTitle).text = bottomSheetTitle
+            findViewById<TextView>(R.id.topAdsBottomSheetDescription).text = bottomSheetDescription
+            findViewById<UnifyButton>(R.id.topAdsNextButton).setOnClickListener{
                 onKreditTopadsClicked()
             }
         }
