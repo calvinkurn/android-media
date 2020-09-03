@@ -412,7 +412,7 @@ public class FlightAnalytics {
 
         Object product = DataLayer.mapOf(
                 EnhanceEccomerce.NAME, journeyViewModel.getDepartureAirportCity() + "-" + journeyViewModel.getArrivalAirportCity(),
-                EnhanceEccomerce.PRICE, String.valueOf(totalAdultPrice + totalChildPrice + totalInfantPrice),
+                EnhanceEccomerce.PRICE, totalAdultPrice + totalChildPrice + totalInfantPrice,
                 EnhanceEccomerce.DIMENSION66, FlightDateUtil.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, FlightDateUtil.YYYYMMDD, journeyViewModel.getRouteList().get(0).getDepartureTimestamp()),
                 EnhanceEccomerce.DIMENSION67, searchPassDataViewModel.isOneWay() ? "oneway" : "roundtrip",
                 EnhanceEccomerce.DIMENSION68, searchPassDataViewModel.getFlightClass().getTitle().toLowerCase(),
@@ -428,7 +428,7 @@ public class FlightAnalytics {
                 EnhanceEccomerce.CATEGORY, Label.FLIGHT,
                 EnhanceEccomerce.DIMENSION75, journeyViewModel.getDepartureTime(),
                 EnhanceEccomerce.DIMENSION76, journeyViewModel.getArrivalTime() + ((journeyViewModel.getAddDayArrival() > 0) ? String.format(" +%s", journeyViewModel.getAddDayArrival()) : ""),
-                EnhanceEccomerce.POSITIONS, String.valueOf(position),
+                EnhanceEccomerce.POSITIONS, position,
                 EnhanceEccomerce.VARIANT, totalAdultPrice + " - " + totalChildPrice + " - " + totalInfantPrice,
                 EnhanceEccomerce.LIST, "/flight"
         );
