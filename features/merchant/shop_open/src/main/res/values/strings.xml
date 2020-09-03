@@ -41,4 +41,6 @@
     <string name="shop_splash_screen_sub_info">Tokomu sebentar lagi jadi. Ada yang segera ganti status jadi pengusaha nih…</string>
     <string name="text_default_choice_item">Pernah berjualan di e-commerce lain</string>
     <string name="text_default_title_quisionaire">Oh, apakah lalalalala?</string>
+
+    <string name="content_desc_chip_text">button </string>
 </resources>
