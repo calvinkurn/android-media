@@ -21,8 +21,11 @@
     <string name="notif_loading_menu_ringtone">Memeriksa bunyi notifikasi…</string>
     <string name="notif_loading_menu_push">Mengirim push notification…</string>
 
+    <string name="notif_ticker_common_title">Rekomendasi lebih optimal</string>
+    <string name="notif_ticker_notification_title">Terima info yang lebih lengkap</string>
+    <string name="notif_ticker_ringtone_title">Jangan lewatkan info terbaru</string>
+
     <string name="notif_success_update_token">Berhasil perbaharui token</string>
-    <string name="notif_ticker_title">Error!</string>
     <string name="notif_ticker_resolve">Aktifkan Notifikasi</string>
 
     <string name="notif_ringtone_success">Ringtone berjalan dengan baik</string>
