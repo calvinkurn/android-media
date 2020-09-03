@@ -9,29 +9,29 @@
       "isLoggedInStatus": "{{true|false}}",
       "appsflyerId": "{{.*}}",
       "shopId": "{{.*}}",
-      "screenName": "{{/group-chat-room/\\d+/vod|live}}",
-      "userId": "{{.+}}",
+      "screenName": "{{/group-chat-room/\\d+/(vod|live)}}",
+      "userId": "{{.*}}",
       "sessionIris": "{{.*}}"
     },
     {
       "eventAction": "leave room",
       "event": "clickBack",
       "eventCategory": "groupchat room",
-      "eventLabel": "{{\\d+ - \\d+ - vod|live}}",
+      "eventLabel": "{{\\d+ - \\d+ - (vod|live)}}",
       "sessionIris": "{{.*}}"
     },
     {
       "eventAction": "click - shop",
       "event": "clickGroupChat",
       "eventCategory": "groupchat room",
-      "eventLabel": "{{\\d+ - \\d+ - vod|live}}",
+      "eventLabel": "{{\\d+ - \\d+ - (vod|live)}}",
       "sessionIris": "{{.*}}"
     },
     {
       "eventAction": "{{click (follow|unfollow) shop}}",
       "event": "clickGroupChat",
       "eventCategory": "groupchat room",
-      "eventLabel": "{{\\d+ - \\d+ - vod|live}}",
+      "eventLabel": "{{\\d+ - \\d+ - (vod|live)}}",
       "sessionIris": "{{.*}}"
     },
     {

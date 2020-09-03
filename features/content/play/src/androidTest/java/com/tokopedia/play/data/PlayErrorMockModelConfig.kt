@@ -13,7 +13,7 @@ class PlayErrorMockModelConfig : MockModelConfig() {
         addMockResponse(
                 KEY_QUERY,
                 RESPONSE_MOCK_CHANNEL_DETAIL,
-                FIND_BY_QUERY_NAME)
+                FIND_BY_CONTAINS)
         return this
     }
 

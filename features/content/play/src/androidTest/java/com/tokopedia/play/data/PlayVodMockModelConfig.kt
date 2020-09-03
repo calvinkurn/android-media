@@ -20,15 +20,15 @@ class PlayVodMockModelConfig : MockModelConfig() {
         addMockResponse(
                 KEY_QUERY,
                 RESPONSE_MOCK_CHANNEL_DETAIL,
-                FIND_BY_QUERY_NAME)
+                FIND_BY_CONTAINS)
         addMockResponse(
                 KEY_QUERY_PINNED_PRODUCT,
                 RESPONSE_MOCK_PINNED_PRODUCT,
-                FIND_BY_QUERY_NAME)
+                FIND_BY_CONTAINS)
         addMockResponse(
                 KEY_QUERY_PRODUCT_VARIANT,
                 RESPONSE_MOCK_PRODUCT_VARIANT,
-                FIND_BY_QUERY_NAME)
+                FIND_BY_CONTAINS)
         return this
     }
 

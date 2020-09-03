@@ -5,7 +5,8 @@ import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.analyticsdebugger.validator.core.getAnalyticsWithQuery
 import com.tokopedia.analyticsdebugger.validator.core.hasAllSuccess
-import com.tokopedia.play.data.PlayMockModelConfig
+import com.tokopedia.play.data.PlayLiveMockModelConfig
+import com.tokopedia.play.data.PlayVodMockModelConfig
 import com.tokopedia.play.view.activity.PlayActivity
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.MatcherAssert.assertThat
@@ -47,22 +48,52 @@ class CavPlayTrackingTest {
     fun setUp() {
         // delete all data in the database
         gtmLogDbSource.deleteAll().subscribe()
-
-        // setup mock response
-//        setupGraphqlMockResponse(PlayMockModelConfig())
     }
 
     @Test
-    fun runTrackingTest() {
-        performJourney()
+    fun validateAllTracking() {
+
+        performJourneyLiveVertical()
+
+//        performJourneyVodHorizontal()
+//        performJourneyError()
+
+        assertAllJourney()
     }
 
-    // TODO create the journey for vod vertical
-    private fun performJourney() {
+    private fun performJourneyLiveVertical() {
+        setupGraphqlMockResponse(PlayLiveMockModelConfig())
 
+        activityRule.launchActivity(PlayActivity.createIntent(targetContext, "10708"))
+
+        Thread.sleep(10000)
+
+        activityRule.finishActivity()
+
+        Thread.sleep(3000)
     }
 
-    private fun checkAllTracking() {
+//    private fun performJourneyVodHorizontal() {
+//        setupGraphqlMockResponse(PlayVodMockModelConfig())
+//
+//        activityRule.launchActivity(PlayActivity.createIntent(targetContext, "10708"))
+//
+//        Thread.sleep(3000)
+//
+//        activityRule.finishActivity()
+//    }
+
+//    private fun performJourneyError() {
+//        setupGraphqlMockResponse(PlayVodMockModelConfig())
+//
+//        activityRule.launchActivity(PlayActivity.createIntent(targetContext, "10708"))
+//
+//        Thread.sleep(3000)
+//
+//        activityRule.finishActivity()
+//    }
+
+    private fun assertAllJourney() {
         assertThat(getAnalyticsWithQuery(gtmLogDbSource, targetContext, fileName),
                 hasAllSuccess())
     }
