@@ -2058,13 +2058,20 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     private fun renderCartNotAvailable(cartListData: CartListData) {
         if (cartListData.unavailableGroupData.isNotEmpty()) {
+            var showAccordion = false
             cartAdapter.addNotAvailableHeader(
                     viewHolderDataMapper.mapDisabledItemHeaderHolderData(cartListData.cartTickerErrorData?.errorCount
                             ?: 0)
             )
+            if (!showAccordion && cartListData.unavailableGroupData.size > 1) {
+                showAccordion = true
+            }
             cartListData.unavailableGroupData.forEach {
                 val disabledReasonHolderData = viewHolderDataMapper.mapDisabledReasonHolderData(it)
                 cartAdapter.addNotAvailableReason(disabledReasonHolderData)
+                if (!showAccordion && it.shopGroupWithErrorDataList.size > 1) {
+                    showAccordion = true
+                }
                 it.shopGroupWithErrorDataList.forEach {
                     val cartItemHolderDataList = it.cartItemHolderDataList
                     if (cartItemHolderDataList.isNotEmpty()) {
@@ -2076,8 +2083,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 }
             }
 
-            val accordionHolderData = viewHolderDataMapper.mapDisabledAccordionHolderData(cartListData, accordionCollapseState)
-            cartAdapter.addNotAvailableAccordion(accordionHolderData)
+            if (showAccordion) {
+                val accordionHolderData = viewHolderDataMapper.mapDisabledAccordionHolderData(cartListData, accordionCollapseState)
+                cartAdapter.addNotAvailableAccordion(accordionHolderData)
+            }
         }
     }
 
