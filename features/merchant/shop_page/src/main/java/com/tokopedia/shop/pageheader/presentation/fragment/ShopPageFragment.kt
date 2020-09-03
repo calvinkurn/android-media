@@ -32,6 +32,7 @@ import com.tokopedia.design.drawable.CountDrawable
 import com.tokopedia.feedcomponent.util.util.ClipboardHandler
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -52,6 +53,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.TrackShopTypeDef
 import com.tokopedia.shop.common.constant.ShopHomeType
+import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.view.bottomsheet.ShopShareBottomSheet
 import com.tokopedia.shop.common.view.bottomsheet.listener.ShopShareBottomsheetListener
 import com.tokopedia.shop.common.view.model.ShopShareModel
@@ -60,7 +62,7 @@ import com.tokopedia.shop.feed.view.fragment.FeedShopFragment
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderContentData
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
-import com.tokopedia.shop.pageheader.data.model.ShopPageP1Data
+import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageP1HeaderData
 import com.tokopedia.shop.pageheader.data.model.ShopPageTabModel
 import com.tokopedia.shop.pageheader.di.component.DaggerShopPageComponent
 import com.tokopedia.shop.pageheader.di.component.ShopPageComponent
@@ -129,6 +131,8 @@ class ShopPageFragment :
         private const val PATH_REVIEW = "review"
         private const val QUERY_SHOP_REF = "shop_ref"
         private const val QUERY_SHOP_ATTRIBUTION = "tracker_attribution"
+        private const val START_PAGE = 1
+        private const val DEFAULT_SORT_ID = 0
 
         @JvmStatic
         fun createInstance() = ShopPageFragment()
@@ -315,7 +319,16 @@ class ShopPageFragment :
 
     private fun onSuccessGetShopIdFromDomain(shopId: String) {
         this.shopId = shopId
-        shopViewModel.getShopPageTabData(shopId, shopDomain, isRefresh, initialProductListSortId)
+        shopViewModel.getShopPageTabData(
+                shopId.toIntOrZero(),
+                shopDomain.orEmpty(),
+                START_PAGE,
+                ShopPageConstant.DEFAULT_PER_PAGE,
+                initialProductListSortId.toIntOrZero(),
+                "",
+                "",
+                isRefresh
+        )
     }
 
     private fun onErrorGetShopPageHeaderContentData(error: Throwable) {
@@ -440,7 +453,16 @@ class ShopPageFragment :
         if(shopId.isEmpty()){
             shopViewModel.getShopIdFromDomain(shopDomain.orEmpty())
         }else{
-            shopViewModel.getShopPageTabData(shopId, shopDomain, isRefresh, initialProductListSortId)
+            shopViewModel.getShopPageTabData(
+                    shopId.toIntOrZero(),
+                    shopDomain.orEmpty(),
+                    START_PAGE,
+                    ShopPageConstant.DEFAULT_PER_PAGE,
+                    initialProductListSortId.toIntOrZero(),
+                    "",
+                    "",
+                    isRefresh
+            )
         }
     }
 
@@ -666,7 +688,7 @@ class ShopPageFragment :
         })
     }
 
-    private fun onSuccessGetShopPageTabData(shopPageP1Data: ShopPageP1Data) {
+    private fun onSuccessGetShopPageTabData(shopPageP1Data: ShopPageP1HeaderData) {
         isShowFeed = shopPageP1Data.isWhitelist
         createPostUrl = shopPageP1Data.url
         shopPageHeaderDataModel = ShopPageHeaderDataModel().apply {
