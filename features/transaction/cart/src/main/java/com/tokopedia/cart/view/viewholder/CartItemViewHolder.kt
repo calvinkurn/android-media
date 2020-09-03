@@ -322,11 +322,14 @@ class CartItemViewHolder constructor(itemView: View,
     }
 
     private fun renderProductProperties(data: CartItemHolderData) {
-        renderProductPropertiesCashback(data)
-        renderProductPropertiesPriceDrop(data)
-        renderProductPropertiesWholesalePrice(data)
+        // Render from the last information label
         renderProductPropertiesIncidentLabel(data)
-        sendAnalyticsShowInformation(informationLabel, data.cartItemData?.originData?.productId ?: "")
+        renderProductPropertiesWholesalePrice(data)
+        renderProductPropertiesPriceDrop(data)
+        renderProductPropertiesCashback(data)
+
+        sendAnalyticsShowInformation(informationLabel, data.cartItemData?.originData?.productId
+                ?: "")
     }
 
     private fun sendAnalyticsShowInformation(informationList: List<String>, productId: String) {
@@ -336,11 +339,7 @@ class CartItemViewHolder constructor(itemView: View,
 
     private fun renderProductPropertiesIncidentLabel(data: CartItemHolderData) {
         if (data.cartItemData?.originData?.productAlertMessage?.isNotEmpty() == true) {
-            if (textCashback.visibility == View.VISIBLE || textPriceDrop.visibility == View.VISIBLE || textWholesalePrice.visibility == View.VISIBLE) {
-                textIncidentLabel.text = ", ${data.cartItemData?.originData?.productAlertMessage}"
-            } else {
-                textIncidentLabel.text = data.cartItemData?.originData?.productAlertMessage
-            }
+            textIncidentLabel.text = data.cartItemData?.originData?.productAlertMessage
             textIncidentLabel.show()
         } else {
             textIncidentLabel.gone()
@@ -349,8 +348,8 @@ class CartItemViewHolder constructor(itemView: View,
 
     private fun renderProductPropertiesWholesalePrice(data: CartItemHolderData) {
         if (data.cartItemData?.originData?.wholesalePriceData?.isNotEmpty() == true) {
-            if (textCashback.visibility == View.VISIBLE || textPriceDrop.visibility == View.VISIBLE) {
-                textWholesalePrice.text = ", Harga Grosir"
+            if (textIncidentLabel.visibility == View.VISIBLE) {
+                textWholesalePrice.text = "Harga Grosir, "
             } else {
                 textWholesalePrice.text = "Harga Grosir"
             }
@@ -363,8 +362,8 @@ class CartItemViewHolder constructor(itemView: View,
 
     private fun renderProductPropertiesPriceDrop(data: CartItemHolderData) {
         if (data.cartItemData?.originData?.initialPriceBeforeDrop != 0) {
-            if (textCashback.visibility == View.VISIBLE) {
-                textPriceDrop.text = ", Harga Turun"
+            if (textIncidentLabel.visibility == View.VISIBLE || textWholesalePrice.visibility == View.VISIBLE) {
+                textPriceDrop.text = "Harga Turun, "
             } else {
                 textPriceDrop.text = "Harga Turun"
             }
@@ -377,7 +376,11 @@ class CartItemViewHolder constructor(itemView: View,
 
     private fun renderProductPropertiesCashback(data: CartItemHolderData) {
         if (data.cartItemData?.originData?.productCashBack?.isNotBlank() == true) {
-            textCashback.text = data.cartItemData?.originData?.cashBackInfo
+            if (textIncidentLabel.visibility == View.VISIBLE || textWholesalePrice.visibility == View.VISIBLE || textPriceDrop.visibility == View.VISIBLE) {
+                textCashback.text = "${data.cartItemData?.originData?.cashBackInfo}, "
+            } else {
+                textCashback.text = data.cartItemData?.originData?.cashBackInfo
+            }
             textCashback.show()
             informationLabel.add("cashback")
         } else {
