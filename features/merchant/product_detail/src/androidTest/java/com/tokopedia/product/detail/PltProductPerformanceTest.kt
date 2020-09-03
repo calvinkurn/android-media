@@ -35,7 +35,6 @@ class PltProductPerformanceTest {
 
         val intent = ProductDetailActivity.createIntent(context, "1061061424")
         activityRule.launchActivity(intent)
-        activityRule.activity.deleteDatabase("tokopedia_graphql")
     }
 
     private fun createMockModelConfig(): MockModelConfig {
