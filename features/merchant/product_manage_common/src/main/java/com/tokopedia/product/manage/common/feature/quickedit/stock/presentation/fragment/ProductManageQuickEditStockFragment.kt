@@ -103,6 +103,9 @@ class ProductManageQuickEditStockFragment(private var onFinishedListener: OnFini
             val cacheManagerId = it.getString(KEY_CACHE_MANAGER_ID).orEmpty()
             val cacheManager = context?.let { SaveInstanceCacheManager(it, cacheManagerId) }
             product = cacheManager?.get<ProductViewModel>(KEY_PRODUCT, ProductViewModel::class.java, null)
+
+            productId = it.getString(KEY_PRODUCT_ID)
+            productName = it.getString(KEY_PRODUCT_NAME)
             it.getString(KEY_PRODUCT_STATUS)?.run {
                 productStatus = ProductStatus.valueOf(this)
             }
@@ -136,8 +139,12 @@ class ProductManageQuickEditStockFragment(private var onFinishedListener: OnFini
         cacheManager?.put(KEY_PRODUCT, product)
         outState.run {
             putString(KEY_CACHE_MANAGER_ID, cacheManager?.id.orEmpty())
-            putString(KEY_PRODUCT_STATUS, productStatus?.name)
-            putInt(KEY_STOCK, productStock.orZero())
+            if (product == null) {
+                putString(KEY_PRODUCT_ID, productId)
+                putString(KEY_PRODUCT_NAME, productName)
+                putString(KEY_PRODUCT_STATUS, productStatus?.name)
+                putInt(KEY_STOCK, productStock.orZero())
+            }
         }
     }
 
@@ -245,9 +252,9 @@ class ProductManageQuickEditStockFragment(private var onFinishedListener: OnFini
         }
 
         // Set value if not using ProductViewModel
-        productStock.run {
-            quickEditStockQuantityEditor.setValue(this)
-            viewModel.updateStock(this)
+        if (product == null) {
+            quickEditStockQuantityEditor.setValue(productStock)
+            viewModel.updateStock(productStock)
         }
         productStatus?.run {
             viewModel.updateStatus(this)
