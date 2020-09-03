@@ -143,6 +143,8 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         observeDeleteQuestionResponse()
         observeCreateNewCommentResponse()
         observeAttachedProducts()
+        observeUnmaskComment()
+        observeUnmaskQuestion()
         super.onViewCreated(view, savedInstanceState)
         getDiscussionData()
     }
@@ -194,6 +196,8 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         removeObservers(viewModel.followUnfollowResult)
         removeObservers(viewModel.createNewCommentResult)
         removeObservers(viewModel.attachedProducts)
+        removeObservers(viewModel.markCommentNotFraudResult)
+        removeObservers(viewModel.markNotFraudResult)
         super.onDestroy()
     }
 
@@ -272,6 +276,10 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
             return
         }
         viewModel.markQuestionNotFraud(questionId)
+    }
+
+    override fun onDismissUnmaskCard() {
+        onHideReportedContent()
     }
 
     override fun onProductClicked() {
@@ -454,6 +462,18 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         showErrorToaster(newErrorMessage, resources.getBoolean(R.bool.reply_adjust_toaster_height))
     }
 
+    private fun onSuccessUnmaskCommentOrQuestion() {
+        showSuccessToaster(getString(R.string.reply_unmask_toaster_positive), resources.getBoolean(R.bool.reply_adjust_toaster_height))
+    }
+
+    private fun onHideReportedContent() {
+        showSuccessToaster(getString(R.string.reply_unmask_toaster_negative), resources.getBoolean(R.bool.reply_adjust_toaster_height))
+    }
+
+    private fun onFailUnmaskCommentOrQuestion() {
+        showErrorToaster("", resources.getBoolean(R.bool.reply_adjust_toaster_height))
+    }
+
     private fun adjustToasterHeight() {
         if(viewModel.attachedProducts.value?.isNotEmpty() == true) {
             Toaster.toasterCustomBottomHeight = TOASTER_ERROR_WITH_ATTACHED_PRODUCTS_HEIGHT.toPx()
@@ -550,6 +570,24 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
                 showAttachedProduct()
             } else {
                 hideAttachedProduct()
+            }
+        })
+    }
+
+    private fun observeUnmaskComment() {
+        viewModel.markCommentNotFraudResult.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is Success -> onSuccessUnmaskCommentOrQuestion()
+                is Fail -> onFailUnmaskCommentOrQuestion()
+            }
+        })
+    }
+
+    private fun observeUnmaskQuestion() {
+        viewModel.markNotFraudResult.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is Success -> onSuccessUnmaskCommentOrQuestion()
+                is Fail -> onFailUnmaskCommentOrQuestion()
             }
         })
     }

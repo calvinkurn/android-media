@@ -125,6 +125,8 @@
     <string name="reply_unmask">Tokopedia tidak menampilkan konten ini karena melanggar S&amp;K. Tetap tampilkan?</string>
     <string name="reply_unmask_yes">Ya</string>
     <string name="reply_unmask_no">Tidak</string>
+    <string name="reply_unmask_toaster_negative">Konten tidak ditampilkan.</string>
+    <string name="reply_unmask_toaster_positive">Konten berhasil ditampilkan.</string>
 
     <string name="toaster_report_success">Laporanmu berhasil dikirim dan akan segera ditindaklanjuti.</string>
 

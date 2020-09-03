@@ -67,16 +67,24 @@
         app:layout_constraintStart_toEndOf="@+id/barrierReplyLabelName"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <com.tokopedia.talk.feature.reply.presentation.widget.TalkReplyUnmaskCard
+        android:id="@+id/replyCommentUnmaskCard"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_12"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/replyDate"
+        app:layout_constraintStart_toEndOf="@id/replyProfilePicture"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrierReplyMessage"
         android:layout_width="wrap_content"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="replyDisplayName, replySellerLabel, replyDate"
+        app:constraint_referenced_ids="replyDisplayName, replySellerLabel, replyDate, replyCommentUnmaskCard"
         android:layout_height="wrap_content"/>
-    
-    <com.tokopedia.talk.feature.reply.presentation.widget.TalkReplyUnmaskCard
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="wrap_content" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/replyMessage"

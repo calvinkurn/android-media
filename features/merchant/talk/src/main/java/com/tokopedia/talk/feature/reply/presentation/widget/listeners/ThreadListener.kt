@@ -5,4 +5,5 @@ interface ThreadListener {
     fun goToProfilePage(userId:String)
     fun onUrlClicked(link: String): Boolean
     fun onUnmaskCommentOptionSelected(commentId: String)
+    fun onDismissUnmaskCard()
 }

@@ -102,6 +102,8 @@
         android:id="@+id/replyUnmaskCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_12"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/replyHeaderMessage"/>
 
@@ -120,6 +122,13 @@
         tools:text="Follow"
         tools:visibility="visible" />
 
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/reply_header_barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="replyHeaderFollowButton, replyUnmaskCard"
+        app:barrierDirection="bottom"/>
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/replyHeaderTNC"
         android:layout_width="@dimen/layout_lvl0"
@@ -132,7 +141,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/replyHeaderFollowButton"
+        app:layout_constraintTop_toBottomOf="@id/reply_header_barrier"
         app:typographyType="small"
         tools:text="QA adalah tempat kamu bertanya dan kasih jawaban seputar produk. Tetap sopan dan jangan lupa baca SK." />
 

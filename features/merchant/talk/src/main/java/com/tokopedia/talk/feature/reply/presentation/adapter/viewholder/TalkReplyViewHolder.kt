@@ -7,6 +7,7 @@ import android.text.style.URLSpan
 import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
@@ -39,7 +40,8 @@ class TalkReplyViewHolder(view: View,
         if(isMarkNotFraud) {
             threadListener.onUnmaskCommentOptionSelected(commentId)
         } else {
-
+            itemView.replyCommentUnmaskCard.hide()
+            threadListener.onDismissUnmaskCard()
         }
     }
 
@@ -53,7 +55,7 @@ class TalkReplyViewHolder(view: View,
             showAnswer(content, state.isMasked, maskedContent)
             showAttachedProducts(attachedProducts.toMutableList())
             showKebabWithConditions(answerID, state.allowReport, state.allowDelete, onKebabClickedListener)
-            showUnmaskCardWithCondition(state.allowUnmask)
+            showUnmaskCardWithCondition(state.allowUnmask, answerID)
         }
     }
 
@@ -123,6 +125,7 @@ class TalkReplyViewHolder(view: View,
         if(isMasked) {
             itemView.replyMessage.apply {
                 text = maskedContent
+                setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_32))
                 show()
                 isEnabled = false
             }
@@ -130,6 +133,7 @@ class TalkReplyViewHolder(view: View,
         }
         if(answer.isNotEmpty()) {
             itemView.replyMessage.apply {
+                setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_96))
                 text = HtmlLinkHelper(context, answer).spannedString
                 movementMethod = object : LinkMovementMethod() {
                     override fun onTouchEvent(widget: TextView, buffer: Spannable, event: MotionEvent): Boolean {
@@ -189,9 +193,14 @@ class TalkReplyViewHolder(view: View,
         }
     }
 
-    private fun showUnmaskCardWithCondition(allowUnmask: Boolean) {
+    private fun showUnmaskCardWithCondition(allowUnmask: Boolean, commentId: String) {
         if(allowUnmask) {
-
+            itemView.replyCommentUnmaskCard.apply {
+                show()
+                setListener(this@TalkReplyViewHolder, commentId)
+            }
+        } else {
+            itemView.replyCommentUnmaskCard.hide()
         }
     }
 }

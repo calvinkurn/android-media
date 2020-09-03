@@ -39,6 +39,7 @@
             android:text="@string/reply_unmask_no"
             android:layout_marginTop="@dimen/dp_12"
             android:textColor="@color/Green_G500"
+            app:typographyWeight="bold"
             app:typographyType="body_3"
             app:layout_constraintTop_toBottomOf="@id/talk_reply_unmask_body"
             app:layout_constraintStart_toStartOf="@id/talk_reply_unmask_body"/>
@@ -50,6 +51,7 @@
             android:text="@string/reply_unmask_yes"
             android:layout_marginStart="@dimen/layout_lvl4"
             android:textColor="@color/Neutral_N700_68"
+            app:typographyWeight="bold"
             app:typographyType="body_3"
             app:layout_constraintTop_toTopOf="@id/talkReplyUnmaskNoOption"
             app:layout_constraintStart_toEndOf="@id/talkReplyUnmaskNoOption"/>

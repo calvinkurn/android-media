@@ -6,6 +6,7 @@ import android.text.style.URLSpan
 import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
@@ -53,6 +54,7 @@ class TalkReplyHeaderViewHolder(view: View,
         if(isMarkNotFraud) {
             threadListener.onUnmaskCommentOptionSelected(commentId)
         } else {
+            threadListener.onDismissUnmaskCard()
             itemView.replyUnmaskCard.hide()
         }
     }
@@ -130,10 +132,12 @@ class TalkReplyHeaderViewHolder(view: View,
     private fun showQuestionWithCondition(isMasked: Boolean, question: String, maskedContent: String) {
         itemView.replyHeaderMessage.apply {
             if (isMasked) {
+                setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_32))
                 text = maskedContent
                 isEnabled = false
                 return
             }
+            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_96))
             text = HtmlLinkHelper(context, question).spannedString
             setCustomMovementMethod(fun(link: String): Boolean { return threadListener.onUrlClicked(link) })
         }
