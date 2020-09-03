@@ -2159,7 +2159,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun gotoEditProduct() {
-        val id = viewModel.getDynamicProductInfoP1?.parentProductId ?: return
+        val id = viewModel.parentProductId ?: return
 
         val applink = Uri.parse(ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW)
                 .buildUpon()
