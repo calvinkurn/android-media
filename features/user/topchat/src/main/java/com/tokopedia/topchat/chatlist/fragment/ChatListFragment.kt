@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -111,6 +112,7 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
     private var filterChecked = 0
     private var filterMenu = FilterMenu()
     private var chatBannedSellerTicker: Ticker? = null
+    private var rv: RecyclerView? = null
     private lateinit var broadCastButton: FloatingActionButton
 
     private val sellerMigrationStaticCommunicationBottomSheet by lazy {
@@ -292,6 +294,7 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
         showLoading()
         broadCastButton = view.findViewById(R.id.fab_broadcast)
         chatBannedSellerTicker = view.findViewById(R.id.ticker_ban_status)
+        rv = view.findViewById(R.id.recycler_view)
     }
 
     private fun setUpRecyclerView(view: View) {
@@ -717,6 +720,12 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
         chatItemListViewModel.pinUnpinChat(msgId, isPinChat,
                 {
                     element.updatePinStatus(isPinChat)
+                    if (isPinChat) { // chat pinned
+                        adapter?.pinChatItem(element, position)
+                        rv?.scrollToPosition(0)
+                    } else { // chat unpinned
+
+                    }
                 },
                 {
                     showSnackbarError(it)

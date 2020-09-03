@@ -4,7 +4,9 @@ import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.kotlin.extensions.view.goToFirst
 import com.tokopedia.topchat.chatlist.adapter.typefactory.ChatListTypeFactoryImpl
+import com.tokopedia.topchat.chatlist.adapter.viewholder.ChatItemListViewHolder.Companion.PAYLOAD_UPDATE_PIN_STATUS
 import com.tokopedia.topchat.chatlist.model.EmptyChatModel
 import com.tokopedia.topchat.chatlist.pojo.ItemChatListPojo
 
@@ -55,6 +57,17 @@ class ChatListAdapter(adapterTypeFactory: ChatListTypeFactoryImpl) :
 
         data.removeAt(position)
         notifyItemRemoved(position)
+    }
+
+    fun pinChatItem(element: ItemChatListPojo, position: Int) {
+        val chatItem = visitables.getOrNull(position)
+        if (chatItem != null && chatItem == element) {
+            visitables.goToFirst(position)
+            notifyItemMoved(position, 0)
+            notifyItemChanged(0, PAYLOAD_UPDATE_PIN_STATUS)
+        } else {
+
+        }
     }
 
 }

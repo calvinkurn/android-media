@@ -47,6 +47,17 @@ class ChatItemListViewHolder(
 
     private val menu = LongClickMenu()
 
+    override fun bind(element: ItemChatListPojo, payloads: MutableList<Any>) {
+        super.bind(element, payloads)
+        when (getFirstPayload(payloads)) {
+            PAYLOAD_READ_STATE -> bindReadState(element)
+            PAYLOAD_TYPING_STATE -> bindTypingState()
+            PAYLOAD_STOP_TYPING_STATE -> bindMessageState(element)
+            PAYLOAD_UPDATE_PIN_STATUS -> bindPin(element)
+            else -> bind(element)
+        }
+    }
+
     override fun bind(element: ItemChatListPojo) {
         bindItemChatClick(element)
         bindItemChatLongClick(element)
@@ -66,16 +77,6 @@ class ChatItemListViewHolder(
         } else {
             smartReplyIndicator?.hide()
             bindReadState(element)
-        }
-    }
-
-    override fun bind(element: ItemChatListPojo, payloads: MutableList<Any>) {
-        super.bind(element, payloads)
-        when (getFirstPayload(payloads)) {
-            PAYLOAD_READ_STATE -> bindReadState(element)
-            PAYLOAD_TYPING_STATE -> bindTypingState()
-            PAYLOAD_STOP_TYPING_STATE -> bindMessageState(element)
-            else -> bind(element)
         }
     }
 
@@ -304,6 +305,7 @@ class ChatItemListViewHolder(
         const val PAYLOAD_READ_STATE = 8796
         const val PAYLOAD_TYPING_STATE = 3207
         const val PAYLOAD_STOP_TYPING_STATE = 5431
+        const val PAYLOAD_UPDATE_PIN_STATUS = 5432
 
         const val BUYER_TAG = "Pengguna"
         const val SELLER_TAG = "Penjual"
