@@ -54,9 +54,9 @@ abstract class BaseWidgetUiTest{
 
     open val homeVisitableFactory = HomeVisitableFactoryImpl(userSessionInterface.get(), remoteConfig, HomeDefaultDataSource())
     open val homeDynamicChannelVisitableFactory = HomeDynamicChannelVisitableFactoryImpl(userSessionInterface.get(), remoteConfig, HomeDefaultDataSource())
-    open val context = InstrumentationRegistry.getInstrumentation().context
-    open val homeDataMapper = HomeDataMapper(context, homeVisitableFactory, mockk(relaxed = true),
-            HomeDynamicChannelDataMapper(context, homeDynamicChannelVisitableFactory, TrackingQueue(context)))
+    open val instrumentationContext = InstrumentationRegistry.getInstrumentation().context
+    open val homeDataMapper = HomeDataMapper(instrumentationContext, homeVisitableFactory, mockk(relaxed = true),
+            HomeDynamicChannelDataMapper(instrumentationContext, homeDynamicChannelVisitableFactory, TrackingQueue(instrumentationContext)))
 
     open fun reInitViewModel() = HomeViewModel(
             dismissHomeReviewUseCase = dismissHomeReviewUseCase,

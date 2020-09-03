@@ -84,9 +84,9 @@ class PlayBannerUITest : BaseWidgetUiTest(){
     override val remoteConfig = mockk<RemoteConfig>(relaxed = true)
     override val homeVisitableFactory = HomeVisitableFactoryImpl(userSessionInterface.get(), remoteConfig, HomeDefaultDataSource())
     override val homeDynamicChannelVisitableFactory = HomeDynamicChannelVisitableFactoryImpl(userSessionInterface.get(), remoteConfig, HomeDefaultDataSource())
-    override val context = InstrumentationRegistry.getInstrumentation().context
-    override val homeDataMapper = HomeDataMapper(context, homeVisitableFactory, mockk(relaxed = true),
-            HomeDynamicChannelDataMapper(context, homeDynamicChannelVisitableFactory, TrackingQueue(context)))
+    override val instrumentationContext = InstrumentationRegistry.getInstrumentation().context
+    override val homeDataMapper = HomeDataMapper(instrumentationContext, homeVisitableFactory, mockk(relaxed = true),
+            HomeDynamicChannelDataMapper(instrumentationContext, homeDynamicChannelVisitableFactory, TrackingQueue(instrumentationContext)))
     private lateinit var viewModel: HomeViewModel
 
     companion object{

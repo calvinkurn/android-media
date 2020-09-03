@@ -45,17 +45,17 @@ class HomeBenchmarkTestNetworkRequest: CoroutineScope {
 
     @Test
     fun benchmark_HomeDataMapper_mapToHomeViewModel() {
-        val context = ApplicationProvider.getApplicationContext<Context>()
-        val remoteConfig = FirebaseRemoteConfigImpl(context)
-        val homeVisitableFactory = HomeVisitableFactoryImpl(null, remoteConfig, HomeDefaultDataSource())
-        val trackingQueue = TrackingQueue(context)
-        val homeDataMapper = HomeDataMapper(context, homeVisitableFactory, trackingQueue)
-
-        val gson = Gson()
-        val homeData = gson.fromJson(getDynamicHomeChannel(context), HomeData::class.java)
-
-        benchmarkRule.measureRepeated {
-            homeDataMapper.mapToHomeViewModel(homeData, false)
-        }
+//        val context = ApplicationProvider.getApplicationContext<Context>()
+//        val remoteConfig = FirebaseRemoteConfigImpl(context)
+//        val homeVisitableFactory = HomeVisitableFactoryImpl(null, remoteConfig, HomeDefaultDataSource())
+//        val trackingQueue = TrackingQueue(context)
+//        val homeDataMapper = HomeDataMapper(context, homeVisitableFactory, trackingQueue)
+//
+//        val gson = Gson()
+//        val homeData = gson.fromJson(getDynamicHomeChannel(context), HomeData::class.java)
+//
+//        benchmarkRule.measureRepeated {
+//            homeDataMapper.mapToHomeViewModel(homeData, false)
+//        }
     }
 }
