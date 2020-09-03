@@ -185,6 +185,7 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
                     hideFullPageError()
                     hideFullPageLoading()
                     if(it.page == TalkConstants.DEFAULT_INITIAL_PAGE && it.data.isEmpty()) {
+                        hideLoading()
                         when(it.filter) {
                             is TalkInboxFilter.TalkInboxNoFilter -> {
                                 showEmptyInbox()

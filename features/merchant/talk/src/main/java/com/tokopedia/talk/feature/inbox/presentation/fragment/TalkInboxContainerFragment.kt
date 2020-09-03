@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.tabs.TabLayout
 import com.tokopedia.TalkInstance
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -25,6 +26,7 @@ class TalkInboxContainerFragment : BaseDaggerFragment(), HasComponent<TalkInboxC
             return TalkInboxContainerFragment()
         }
     }
+
     @Inject
     lateinit var userSession: UserSessionInterface
 
@@ -54,6 +56,7 @@ class TalkInboxContainerFragment : BaseDaggerFragment(), HasComponent<TalkInboxC
         super.onViewCreated(view, savedInstanceState)
         setupViewPager()
         setupAdapter()
+        setupTabLayout()
     }
 
     private fun setupViewPager() {
@@ -63,8 +66,25 @@ class TalkInboxContainerFragment : BaseDaggerFragment(), HasComponent<TalkInboxC
         }
         talkInboxViewPager.registerOnPageChangeCallback(object: ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
-                talkInboxTabs.getUnifyTabLayout().getTabAt(position)
+                talkInboxTabs.getUnifyTabLayout().getTabAt(position)?.select()
             }
+        })
+    }
+
+    private fun setupTabLayout() {
+        talkInboxTabs.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabReselected(tab: TabLayout.Tab) {
+                //No Op
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab) {
+                //No Op
+            }
+
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                talkInboxViewPager.setCurrentItem(tab.position, true)
+            }
+
         })
     }
 

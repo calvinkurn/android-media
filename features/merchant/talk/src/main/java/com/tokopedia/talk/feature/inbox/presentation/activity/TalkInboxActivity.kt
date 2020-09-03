@@ -2,6 +2,7 @@ package com.tokopedia.talk.feature.inbox.presentation.activity
 
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -16,6 +17,8 @@ import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.feature.inbox.data.TalkInboxTab
 import com.tokopedia.talk.feature.inbox.presentation.fragment.TalkInboxContainerFragment
 import com.tokopedia.talk.feature.inbox.presentation.fragment.TalkInboxFragment
+import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
 
 class TalkInboxActivity : BaseSimpleActivity(), TalkPerformanceMonitoringListener, HasComponent<TalkComponent> {
 
@@ -25,10 +28,22 @@ class TalkInboxActivity : BaseSimpleActivity(), TalkPerformanceMonitoringListene
         }
     }
 
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        component.inject(this)
+        super.onCreate(savedInstanceState)
+    }
 
     override fun getNewFragment(): Fragment? {
         if(GlobalConfig.isSellerApp()) {
+            return TalkInboxFragment.createNewInstance(TalkInboxTab.TalkShopInboxTab())
+        }
+        if(userSession.hasShop()) {
             return TalkInboxContainerFragment.createNewInstance()
         }
         return TalkInboxFragment.createNewInstance(TalkInboxTab.TalkBuyerInboxTab())
