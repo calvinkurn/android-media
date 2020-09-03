@@ -10,6 +10,7 @@ import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigState.Device as
 import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigState.PushNotification as PushNotification
 import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigState.Notification as Notification
 import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigState.Ringtone as Ringtone
+import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigState.Undefined as Undefined
 import com.tokopedia.troubleshooter.notification.ui.uiview.StatusState.Loading as Loading
 import com.tokopedia.troubleshooter.notification.ui.uiview.StatusState.Success as Success
 import com.tokopedia.troubleshooter.notification.ui.uiview.StatusState.Warning as Warning
@@ -65,6 +66,7 @@ data class ConfigUIView(
                         R.string.notif_failed_menu_push
                     }
                 }
+                is Undefined -> 0
             }
         }
 
