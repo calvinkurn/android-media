@@ -297,4 +297,18 @@
     <string name="som_buyer_cancellation_cancel_button">Kembali</string>
     <string name="som_header_detail_ticker_cancellation">Dibatalkan karena</string>
 
+
+    <!--CONTENT DESC-->
+    <string name="content_desc_label_status_order">text status pesanan</string>
+    <string name="content_desc_label_reject">text menu</string>
+    <string name="content_desc_tf_no_resi">input nomor resi</string>
+    <string name="content_desc_label">text kurir pengiriman</string>
+    <string name="content_desc_label_choosen_courier">text kurir terpilih</string>
+    <string name="content_desc_switch_change_courier">button ganti kurir</string>
+    <string name="content_desc_btn_confirm_shipping">button konirmasi</string>
+    <string name="content_desc_tf_cancel_notes">input alasan pembatalan</string>
+    <string name="content_desc_btn_cancel_order_canceled">button batal</string>
+    <string name="content_desc_btn_cancel_order_confirmed">button ubah</string>
+    <string name="content_desc_btn_primary">button utama</string>
+    <string name="content_desc_btn_secondary">button three dots</string>
 </resources>
