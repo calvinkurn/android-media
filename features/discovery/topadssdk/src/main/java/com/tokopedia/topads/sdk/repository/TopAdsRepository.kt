@@ -6,13 +6,12 @@ import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.common.network.data.model.RestCacheStrategy
 import com.tokopedia.common.network.data.model.RestRequest
+import com.tokopedia.topads.sdk.UrlTopAdsSdk.getTopAdsImageViewUrl
 import com.tokopedia.topads.sdk.domain.interactor.DIMEN_ID
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsmageViewResponse
 import com.tokopedia.usecase.RequestParams
 import java.lang.reflect.Type
-
-private const val BASE_URL = "https://ta-staging.tokopedia.com/v1.3/display"
 
 class TopAdsRepository {
 
@@ -20,7 +19,7 @@ class TopAdsRepository {
 
     suspend fun getImageData(queryParams: MutableMap<String, Any>): ArrayList<TopAdsImageViewModel> {
 
-        val response = this.getRestData<TopAdsmageViewResponse>(BASE_URL,
+        val response = this.getRestData<TopAdsmageViewResponse>(getTopAdsImageViewUrl(),
                 object : TypeToken<TopAdsmageViewResponse>() {}.type,
                 queryMap = queryParams)
 
@@ -51,6 +50,8 @@ class TopAdsRepository {
             val model = TopAdsImageViewModel()
             val image = getImageById(data?.banner?.images, queryParams[DIMEN_ID] as? Int)
             with(model) {
+                bannerId = data?.id.toString()
+                bannerName = data?.banner?.name ?: ""
                 adClickUrl = data?.adClickUrl ?: ""
                 adViewUrl = data?.adViewUrl ?: ""
                 applink = data?.applinks ?: ""

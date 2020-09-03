@@ -1,139 +1,102 @@
 package com.tokopedia.liveness.presentation.viewmodel
 
-import androidx.lifecycle.Observer
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.liveness.data.model.response.LivenessData
 import com.tokopedia.liveness.domain.UploadLivenessResultUseCase
-import com.tokopedia.liveness.util.InstantTaskExecutorRule
+import com.tokopedia.liveness.util.getOrAwaitValue
 import com.tokopedia.liveness.view.viewmodel.LivenessDetectionViewModel
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.*
-import kotlinx.coroutines.CoroutineDispatcher
+import io.mockk.coEvery
+import io.mockk.mockk
+import junit.framework.TestCase.assertFalse
 import kotlinx.coroutines.Dispatchers
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.gherkin.Feature
-import java.lang.Exception
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
-import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class LivenessDetectionViewModelTest: Spek({
-    InstantTaskExecutorRule(this)
+class LivenessDetectionViewModelTest {
 
-    val uploadLivenessResultUseCase = mockk<UploadLivenessResultUseCase>(relaxed = true)
-    val dispatcher : CoroutineDispatcher = Dispatchers.Unconfined
+    private val useCase = mockk<UploadLivenessResultUseCase>(relaxed = true)
+    private lateinit var viewModel: LivenessDetectionViewModel
 
-    val viewModel = LivenessDetectionViewModel(
-            uploadLivenessResultUseCase = uploadLivenessResultUseCase,
-            dispatcher = dispatcher
-    )
+    private val ktpPath = "test"
+    private val facePath = "test"
+    private val projectId = "1"
 
-    Feature("Liveness Detection Response") {
-        val observerSuccess = mockk<Observer<com.tokopedia.usecase.coroutines.Result<LivenessData>>>(relaxed = true)
-        val ktpPath = "test"
-        val facePath = "test"
-        val tkpdProjectId = "1"
+    @get:Rule
+    val rule = InstantTaskExecutorRule()
+
+    @Before
+    fun setup() {
+        viewModel = LivenessDetectionViewModel(useCase, Dispatchers.Unconfined)
+    }
+
+    /**
+     * Liveness Detection Response
+     * */
+    @Test
+    fun `Register - Test do success response`() {
         val livenessData = LivenessData()
+
+        coEvery {
+            useCase.uploadImages(any(), any(), any())
+        } answers {
+            livenessData.isSuccessRegister = true
+            livenessData
+        }
+
+        viewModel.uploadImages(ktpPath, facePath, projectId)
+
+        val result = viewModel.livenessResponseLiveData.getOrAwaitValue()
+        assertEquals(result, Success(livenessData))
+        assertTrue((result as Success).data.isSuccessRegister)
+    }
+
+    @Test
+    fun `Register - Test do failed response`() {
+        val livenessData = LivenessData()
+
+        coEvery {
+            useCase.uploadImages(any(), any(), any())
+        } answers {
+            livenessData.isSuccessRegister = false
+            livenessData
+        }
+
+        viewModel.uploadImages(ktpPath, facePath, projectId)
+
+        val result = viewModel.livenessResponseLiveData.getOrAwaitValue()
+        assertFalse((result as Success).data.isSuccessRegister)
+    }
+
+    @Test
+    fun `API - get error response`() {
+        val viewModelMock = mockk<LivenessDetectionViewModel>(relaxed = true)
         val exceptionMock = Exception("Oops!")
 
-        Scenario("get success register result from Liveness API") {
-            Given("usecase succeed properly") {
-                coEvery {
-                    uploadLivenessResultUseCase.uploadImages(ktpPath, facePath, tkpdProjectId)
-                } answers {
-                    livenessData.isSuccessRegister = true
-                    livenessData
-                }
+        coEvery {
+            viewModelMock.uploadImages(any(), any(), any())
+        } throws exceptionMock
 
-                viewModel.livenessResponseLiveData.observeForever(observerSuccess)
-            }
-
-            When("Success upload and get response") {
-                viewModel.uploadImages(ktpPath, facePath, tkpdProjectId)
-            }
-
-            Then("It should return response from API correctly") {
-                verify { observerSuccess.onChanged(Success(livenessData)) }
-            }
-
-            Then("Liveness Live Data should be instance of Success"){
-                viewModel.livenessResponseLiveData.value.shouldBeInstanceOf<Success<LivenessData>>()
-            }
-
-            Then("The variable isSuccessRegister should be true"){
-                val result = viewModel.livenessResponseLiveData.value
-                assertTrue { (result as Success).data.isSuccessRegister }
-            }
-        }
-
-        Scenario("get failed register result from Liveness API") {
-            Given("usecase fail properly") {
-                coEvery {
-                    uploadLivenessResultUseCase.uploadImages(ktpPath, facePath, tkpdProjectId)
-                } answers {
-                    livenessData.isSuccessRegister = false
-                    livenessData
-                }
-
-                viewModel.livenessResponseLiveData.observeForever(observerSuccess)
-            }
-
-            When("Fail upload and get response") {
-                viewModel.uploadImages(ktpPath, facePath, tkpdProjectId)
-            }
-
-            Then("It should return response from API correctly too") {
-                verify { observerSuccess.onChanged(Success(livenessData)) }
-            }
-
-            Then("Liveness Live Data should be instance of Success too"){
-                viewModel.livenessResponseLiveData.value.shouldBeInstanceOf<Success<LivenessData>>()
-            }
-
-            Then("The variable isSuccessRegister should be false"){
-                val result = viewModel.livenessResponseLiveData.value
-                assertFalse { (result as Success).data.isSuccessRegister }
-            }
-        }
-
-        Scenario("get error from Liveness API") {
-            val errorViewModel = mockk<LivenessDetectionViewModel>()
-
-            Given("uploadImages throw something") {
-                coEvery {
-                    errorViewModel.uploadImages(ktpPath, facePath, tkpdProjectId)
-                } throws exceptionMock
-            }
-
-            Then("It should throw something") {
-                assertFailsWith<Exception> {
-                    errorViewModel.uploadImages(ktpPath, facePath, tkpdProjectId)
-                }
-            }
-        }
-
-        Scenario("get result from Liveness API with bad params (ktp path or image path empty string)") {
-            val errorViewModel = mockk<LivenessDetectionViewModel>()
-
-            Given("uploadImages throw something") {
-                coEvery {
-                    errorViewModel.uploadImages("", "", tkpdProjectId)
-                } throws exceptionMock
-            }
-
-            Then("It should throw something") {
-                assertFailsWith<Exception> {
-                    errorViewModel.uploadImages(ktpPath, facePath, tkpdProjectId)
-                }
-            }
+        assertFailsWith<Exception> {
+            viewModelMock.uploadImages(ktpPath, facePath, projectId)
         }
     }
-})
 
-private inline fun <reified T> Any?.shouldBeInstanceOf() {
-    if (this !is T) {
-        val actualClassName = if (this == null) "null" else this::class.simpleName
-        val expectedClassName = T::class.simpleName
+    @Test
+    fun `API - get error response with empty params`() {
+        val viewModelMock = mockk<LivenessDetectionViewModel>(relaxed = true)
+        val exceptionMock = Exception("Oops!")
 
-        throw AssertionError("$actualClassName should be instance of $expectedClassName")
+        coEvery {
+            viewModelMock.uploadImages(any(), any(), any())
+        } throws exceptionMock
+
+        assertFailsWith<Exception> {
+            viewModelMock.uploadImages("", "", "")
+        }
     }
 }

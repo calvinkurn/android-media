@@ -4,9 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.text.TextUtils
 import android.view.View
-import androidx.annotation.Nullable
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -24,7 +22,6 @@ import com.tokopedia.user.session.UserSession
 class TokoPointsHomeNewActivity : BaseSimpleActivity(), HasComponent<TokopointBundleComponent>, onAppBarCollapseListener {
     private val tokoPointComponent: TokopointBundleComponent by lazy { initInjector() }
     lateinit var mUserSession: UserSession
-    private var initialLoggedInState = false
     override fun onCreate(savedInstanceState: Bundle?) {
         mUserSession = UserSession(applicationContext)
         super.onCreate(savedInstanceState)

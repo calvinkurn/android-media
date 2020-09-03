@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.home.R
+import com.tokopedia.home.analytics.v2.PopularKeywordTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordListDataModel
@@ -54,6 +55,8 @@ class PopularKeywordViewHolder (val view: View,
 
     override fun bind(element: PopularKeywordListDataModel) {
         performanceMonitoring?.startTrace(performanceTraceName)
+        homeCategoryListener.sendIrisTrackerHashMap(PopularKeywordTracking.getPopularKeywordImpressionIris(element.channel, element.popularKeywordList, adapterPosition) as HashMap<String, Any>)
+
         initStub(element)
         initAdapter(element)
     }

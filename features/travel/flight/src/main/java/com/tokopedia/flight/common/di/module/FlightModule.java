@@ -62,9 +62,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 @FlightScope
 @Module
 public class FlightModule {
-    private static final int NET_READ_TIMEOUT = 30;
-    private static final int NET_WRITE_TIMEOUT = 30;
-    private static final int NET_CONNECT_TIMEOUT = 30;
+    private static final int NET_READ_TIMEOUT = 60;
+    private static final int NET_WRITE_TIMEOUT = 60;
+    private static final int NET_CONNECT_TIMEOUT = 60;
     private static final int NET_RETRY = 1;
     private static final String GSON_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ";
 

@@ -16,7 +16,7 @@ import com.tokopedia.core.analytics.AppEventTracking
 import com.tokopedia.core.analytics.UnifyTracking
 import com.tokopedia.design.text.watcher.AfterTextWatcher
 import com.tokopedia.design.utils.StringUtils.removeComma
-import com.tokopedia.gm.resource.GMConstant
+import com.tokopedia.gm.common.constant.GM_TITLE
 import com.tokopedia.product.manage.item.R
 import com.tokopedia.product.manage.item.common.util.CurrencyIdrTextWatcher
 import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef
@@ -26,6 +26,7 @@ import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddE
 import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_IS_MOVE_TO_GM
 import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_IS_OFFICIAL_STORE
 import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_PRICE
+import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_STOCK
 import com.tokopedia.product.manage.item.price.model.ProductPrice
 import com.tokopedia.product.manage.item.utils.ProductPriceRangeUtils
 import com.tokopedia.product.manage.item.variant.dialog.ProductChangeVariantPriceDialogFragment
@@ -41,6 +42,7 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
     private var selectedCurrencyType: Int = CurrencyTypeDef.TYPE_IDR
 
     private var productPrice = ProductPrice()
+    private var productStock = 0
     private val isOfficialStore by lazy { activity?.intent?.getBooleanExtra(EXTRA_IS_OFFICIAL_STORE, false) ?: false }
     private val hasVariant by lazy { activity?.intent?.getBooleanExtra(EXTRA_HAS_VARIANT, false) ?: false }
     private val isGoldMerchant by lazy { activity?.intent?.getBooleanExtra(EXTRA_IS_GOLD_MERCHANT, false) ?: false}
@@ -54,11 +56,15 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
         setHasOptionsMenu(true)
         activity?.run {
             if(intent.hasExtra(EXTRA_PRICE)) {
-            productPrice = intent.getParcelableExtra(EXTRA_PRICE) }
+                productPrice = intent.getParcelableExtra(EXTRA_PRICE)
+            }
+            if(intent.hasExtra(EXTRA_STOCK)) {
+                productStock = intent.getIntExtra(EXTRA_STOCK, 0)
+            }
         }
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey(SAVED_PRODUCT_PRICE)) {
-                productPrice = savedInstanceState.getParcelable(SAVED_PRODUCT_PRICE)
+                productPrice = savedInstanceState.getParcelable(SAVED_PRODUCT_PRICE) ?: ProductPrice()
             }
         }
     }
@@ -113,7 +119,7 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
         if (resultCode == Activity.RESULT_OK && data != null) {
             when (requestCode) {
                 REQUEST_CODE_GET_WHOLESALE -> {
-                    wholesalePrice = data.getParcelableArrayListExtra(EXTRA_PRODUCT_WHOLESALE)
+                    wholesalePrice = data.getParcelableArrayListExtra(EXTRA_PRODUCT_WHOLESALE) ?: arrayListOf()
                     setEditTextPriceState(wholesalePrice)
                     setLabelViewWholesale(wholesalePrice)
                 }
@@ -182,6 +188,10 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
             editTextMinOrder.setError(getString(R.string.product_error_product_minimum_order_not_valid, MIN_ORDER, MAX_ORDER))
             return false
         }
+        else if (getMinOrderValue() > productStock) {
+            editTextMinOrder.setError(getString(R.string.product_error_product_minimum_order_not_valid_3))
+            return false
+        }
         editTextMinOrder.setError(null)
         return true
     }
@@ -195,23 +205,6 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
         }
         editTextMaxOrder.setError(null)
         return true
-    }
-
-    private fun showDialogGoToGM(){
-        val builder = AlertDialog.Builder(context!!,
-                R.style.AppCompatAlertDialogStyle)
-        val gm = getString(GMConstant.getGMTitleResource(context))
-        builder.setTitle(getString(R.string.add_product_title_alert_dialog_dollar_dynamic, gm))
-        builder.setMessage(getString(R.string.add_product_label_alert_save_as_draft_dollar_and_video,
-                getString(R.string.product_add_label_alert_dialog_dollar, gm)))
-        builder.setCancelable(true)
-        builder.setPositiveButton(R.string.change) { dialog, _ ->
-            dialog.cancel()
-            setResult(true)
-        }
-        builder.setNegativeButton(R.string.close) { dialog, _ -> dialog.cancel() }
-        val alert = builder.create()
-        alert.show()
     }
 
     private fun showEditPriceDialog() {

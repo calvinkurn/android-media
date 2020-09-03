@@ -49,7 +49,9 @@ class PromoInputViewHolder(private val view: View,
             textFieldInputPromo.setFirstIcon(com.tokopedia.abstraction.R.color.white)
         }
 
-        textFieldInputPromo.textFieldInput.setOnClickListener { listener.onClickPromoManualInputTextField() }
+        textFieldInputPromo.textFieldInput.setOnClickListener {
+            listener.onClickPromoManualInputTextField()
+        }
         textFieldInputPromo.textFieldInput.imeOptions = EditorInfo.IME_ACTION_DONE
         textFieldInputPromo.textFieldInput.setText(element.uiData.promoCode)
         textFieldInputPromo.textFieldInput.addTextChangedListener(object : TextWatcher {

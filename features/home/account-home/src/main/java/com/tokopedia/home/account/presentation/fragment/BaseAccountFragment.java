@@ -1,5 +1,6 @@
 package com.tokopedia.home.account.presentation.fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,17 +19,18 @@ import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant;
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds;
+import com.tokopedia.applink.internal.ApplinkConstInternalTravel;
+import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
-import com.tokopedia.gm.resource.GMConstant;
 import com.tokopedia.home.account.AccountConstants;
-import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.analytics.AccountAnalytics;
 import com.tokopedia.home.account.constant.SettingConstant;
 import com.tokopedia.home.account.presentation.activity.TkpdPaySettingActivity;
+import com.tokopedia.home.account.presentation.bottomsheet.BottomSheetAddProduct;
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 import com.tokopedia.home.account.presentation.util.AccountByMeHelper;
 import com.tokopedia.home.account.presentation.view.SeeAllView;
@@ -44,6 +46,9 @@ import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayBSModel;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity;
+import com.tokopedia.seller_migration_common.presentation.model.SellerFeatureUiModel;
+import com.tokopedia.seller_migration_common.presentation.widget.SellerFeatureCarousel;
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSession;
@@ -51,44 +56,42 @@ import com.tokopedia.user_identification_common.KycCommonUrl;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import static com.tokopedia.affiliatecommon.AffiliateCommonConstantKt.DISCOVERY_BY_ME;
-import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
+import static com.tokopedia.gm.common.constant.GMCommonConstantKt.POWER_MERCHANT_URL;
 import static com.tokopedia.home.account.AccountConstants.Analytics.AKUN_SAYA;
 import static com.tokopedia.home.account.AccountConstants.Analytics.BY_ME_CURATION;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK;
-import static com.tokopedia.home.account.AccountConstants.Analytics.CREATIVE_KUPON_SAYA;
-import static com.tokopedia.home.account.AccountConstants.Analytics.CREATIVE_TOKOPOINTS;
-import static com.tokopedia.home.account.AccountConstants.Analytics.CREATIVE_TOKO_MEMBER;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_CATEGORY_AKUN_PEMBELI;
-import static com.tokopedia.home.account.AccountConstants.Analytics.ITEM_POWER_MERCHANT;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PEMBELI;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PENJUAL;
-import static com.tokopedia.home.account.AccountConstants.Analytics.POSITION_KUPON_SAYA;
-import static com.tokopedia.home.account.AccountConstants.Analytics.POSITION_TOKOMEMBER;
-import static com.tokopedia.home.account.AccountConstants.Analytics.POSITION_TOKOPOINT;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PROFILE;
-import static com.tokopedia.home.account.AccountConstants.Analytics.SECTION_OTHER_FEATURE;
-import static com.tokopedia.home.account.AccountConstants.TOP_SELLER_APPLICATION_PACKAGE;
 import static com.tokopedia.home.account.data.util.StaticBuyerModelGeneratorKt.RESCENTER_BUYER;
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT;
 
 /**
  * @author okasurya on 7/26/18.
  */
-public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements AccountItemListener {
+public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements AccountItemListener, BottomSheetAddProduct.AddEditMenuClickListener, SellerFeatureCarousel.SellerFeatureClickListener {
 
     public static final String PARAM_USER_ID = "{user_id}";
     public static final String PARAM_SHOP_ID = "{shop_id}";
     public static final int OPEN_SHOP_SUCCESS = 100;
     public static final int REQUEST_PHONE_VERIFICATION = 123;
     public static final String OVO = "OVO";
+    private static final String TOKOPEDIA_TITLE = "Tokopedia";
+    private boolean mShowTokopointNative = false;
+    private BottomSheetAddProduct addProductBottomSheet = null;
 
     private AccountAnalytics accountAnalytics;
     UserSession userSession;
     private AffiliatePreference affiliatePreference;
     private TrackingQueue trackingQueue;
+    private RemoteConfig remoteConfig;
+
+    private static final String URL_ACCOUNT_PAGE = "https://m.tokopedia.com/user/settings/account";
 
     abstract void notifyItemChanged(int position);
 
@@ -99,10 +102,12 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
         userSession = new UserSession(getContext());
         affiliatePreference = new AffiliatePreference(getContext());
         trackingQueue = new TrackingQueue(getActivity());
+        remoteConfig = new FirebaseRemoteConfigImpl(getContext());
     }
 
     @Override
     public void onPause() {
+        dismissProductBottomSheet();
         super.onPause();
         trackingQueue.sendAll();
     }
@@ -129,20 +134,9 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
             seeAllView.show(getActivity().getSupportFragmentManager(), SeeAllView.class.getName());
         } else if (applink.equals(AccountConstants.Navigation.TOPADS)) {
             RouteManager.route(getContext(), ApplinkConstInternalTopAds.TOPADS_DASHBOARD_CUSTOMER);
-        } else if (applink.equals(AccountConstants.Navigation.TRAIN_ORDER_LIST)
-                && getContext().getApplicationContext() instanceof AccountHomeRouter) {
-            getActivity().startActivity(((AccountHomeRouter) getContext().getApplicationContext()).getTrainOrderListIntent
-                    (getContext()));
-        } else if (applink.equals(AccountConstants.Navigation.FEATURED_PRODUCT)
-                && getContext().getApplicationContext() instanceof AccountHomeRouter) {
-            Intent launchIntent = getContext().getPackageManager()
-                    .getLaunchIntentForPackage(TOP_SELLER_APPLICATION_PACKAGE);
-            if (launchIntent != null) {
-                getContext().startActivity(launchIntent);
-            } else if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
-                ((AccountHomeRouter) getContext().getApplicationContext()).goToCreateMerchantRedirect(getContext());
-            }
-        }else if(applink.equals(RESCENTER_BUYER) || applink.equals(SettingConstant.RESCENTER_SELLER)){
+        } else if (applink.equals(AccountConstants.Navigation.TRAIN_ORDER_LIST)) {
+            goToTrainOrderListIntent();
+        } else if (applink.equals(RESCENTER_BUYER) || applink.equals(SettingConstant.RESCENTER_SELLER)) {
             return true;
         }
 
@@ -151,9 +145,8 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
 
     @Override
     public void onProfileClicked(BuyerCardViewModel element) {
-        sendTracking(PEMBELI, AKUN_SAYA,
-                String.format("%s %s", CLICK, PROFILE));
-        openApplink(ApplinkConst.PROFILE.replace(PARAM_USER_ID, element.getUserId()));
+        sendTracking(PEMBELI, AKUN_SAYA, String.format("%s %s", CLICK, PROFILE));
+        openWebview(URL_ACCOUNT_PAGE);
     }
 
     @Override
@@ -162,15 +155,15 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
     }
 
     @Override
-    public void onBuyerTokopointClicked(BuyerCardViewModel element) {
-        accountAnalytics.eventAccountPromoClick(CREATIVE_TOKOPOINTS, CREATIVE_TOKOPOINTS, POSITION_TOKOPOINT);
-        RouteManager.route(getContext(), ApplinkConstInternalPromo.TOKOPOINTS_HOME);
+    public void onBuyerTokopointClicked(String element, String title) {
+        accountAnalytics.eventAccountPromoClick(title);
+        RouteManager.route(getContext(), element);
     }
 
     @Override
-    public void onBuyerVoucherClicked(BuyerCardViewModel element) {
-        accountAnalytics.eventAccountPromoClick(CREATIVE_KUPON_SAYA, CREATIVE_KUPON_SAYA, POSITION_KUPON_SAYA);
-        openApplink(ApplinkConst.COUPON_LISTING);
+    public void onBuyerVoucherClicked(String element, String title) {
+        accountAnalytics.eventAccountPromoClick(title);
+        openApplink(element);
     }
 
     @Override
@@ -189,6 +182,19 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
             sendTracking(PEMBELI, BY_ME_CURATION, "", true);
             RouteManager.route(getContext(), ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST);
         }
+    }
+
+    @Override
+    public void onClickMemberDetail() {
+        //Fallback strategy for new Rewards Page
+        mShowTokopointNative = remoteConfig.getBoolean(ApplinkConst.RewardFallback.RemoteConfig.APP_SHOW_TOKOPOINT_NATIVE, false);
+        if (mShowTokopointNative) {
+            RouteManager.route(getContext(), ApplinkConst.TokoPoints.HOMEPAGE);
+        } else {
+            RouteManager.route(getContext(), String.format("%s?title=%s&url=%s", ApplinkConst.WEBVIEW, TOKOPEDIA_TITLE,
+                    ApplinkConst.RewardFallback.RewardWebview.REWARD_WEBVIEW));
+        }
+        accountAnalytics.eventAccountPromoRewardClick();
     }
 
     @Override
@@ -269,7 +275,10 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
     public void onAddProductClicked() {
         sendTracking(PENJUAL, getString(R.string.title_menu_product), getString(R.string
                 .label_button_add_product));
-        openApplink(ApplinkConst.PRODUCT_ADD);
+        if (addProductBottomSheet == null) {
+            addProductBottomSheet = new BottomSheetAddProduct(getView(), this, this, getChildFragmentManager());
+        }
+        addProductBottomSheet.show();
     }
 
     @Override
@@ -377,16 +386,12 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
 
     @Override
     public void onTopadsInfoClicked() {
-        if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
-            openApplink(String.format("%s?url=%s", ApplinkConst.WEBVIEW, TopAdsCommonConstant.TOPADS_SELLER_CENTER));
-        }
+        openApplink(String.format("%s?url=%s", ApplinkConst.WEBVIEW, TopAdsCommonConstant.TOPADS_SELLER_CENTER));
     }
 
     @Override
     public void onGMInfoClicked() {
-        if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
-            openApplink(String.format("%s?url=%s", ApplinkConst.WEBVIEW, GMConstant.getGMEduUrl(getContext())));
-        }
+        openApplink(String.format("%s?url=%s", ApplinkConst.WEBVIEW, POWER_MERCHANT_URL));
     }
 
     @Override
@@ -400,9 +405,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
     }
 
     protected void moveToCreateShop() {
-        if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
-            startActivityForResult(RouteManager.getIntent(getContext(), ApplinkConst.CREATE_SHOP), OPEN_SHOP_SUCCESS);
-        }
+        startActivityForResult(RouteManager.getIntent(getContext(), ApplinkConst.CREATE_SHOP), OPEN_SHOP_SUCCESS);
     }
 
     @Override
@@ -430,6 +433,10 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
             applinkRouter.goToApplinkActivity(getActivity(),
                     String.format("%s?url=%s", ApplinkConst.WEBVIEW, url));
         }
+    }
+
+    private void trackClickPowerMerchantSetting() {
+        accountAnalytics.eventClickPowerMerchantSetting();
     }
 
     private void sendOVOTracking(String title, String section, String item) {
@@ -479,6 +486,10 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
         );
     }
 
+    private void goToTrainOrderListIntent() {
+        RouteManager.route(getContext(), ApplinkConstInternalTravel.TRAIN_ORDER_LIST);
+    }
+
     private void sendTrackingOvoActivation() {
         if (accountAnalytics == null)
             return;
@@ -521,18 +532,14 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
 
     @Override
     public void onPowerMerchantSettingClicked() {
-        sendTracking(
-                PENJUAL,
-                SECTION_OTHER_FEATURE,
-                ITEM_POWER_MERCHANT
-        );
+        trackClickPowerMerchantSetting();
         RouteManager.route(getActivity(), ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE);
     }
 
     @Override
-    public void onTokomemberClicked() {
-        accountAnalytics.eventAccountPromoClick(CREATIVE_TOKO_MEMBER, CREATIVE_TOKO_MEMBER, POSITION_TOKOMEMBER);
-        openWebview("https://m.tokopedia.com/membership");
+    public void onTokomemberClicked(String url, String title) {
+        accountAnalytics.eventAccountPromoClick(title);
+        RouteManager.route(getContext(), url);
     }
 
     @NotNull
@@ -553,5 +560,43 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
         RouteManager.route(getContext(), resultGenerateUrl);
         sendTracking(rekeningPremiumViewModel.getTitleTrack(), rekeningPremiumViewModel.getSectionTrack(),
                 rekeningPremiumViewModel.getMenu());
+    }
+
+    @NotNull
+    @Override
+    public RemoteConfig getRemoteConfig() {
+        return remoteConfig;
+    }
+
+    @Override
+    public void onAddProductWithNoVariantClicked() {
+        Context context = getContext();
+        if (context != null) {
+            RouteManager.route(context, ApplinkConst.PRODUCT_ADD);
+        }
+    }
+
+    @Override
+    public void onSellerFeatureClicked(@NotNull SellerFeatureUiModel item) {
+        if (item instanceof SellerFeatureUiModel.ProductManageSetVariantFeatureWithDataUiModel) {
+            ArrayList<String> appLinks = new ArrayList();
+            appLinks.add(ApplinkConst.PRODUCT_MANAGE);
+            appLinks.add(ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW);
+            Intent intent = SellerMigrationActivity.Companion.createIntent(getContext(), SellerMigrationFeatureName.FEATURE_SET_VARIANT, getScreenName(), appLinks);
+            startActivity(intent);
+            dismissProductBottomSheet();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        dismissProductBottomSheet();
+        super.onDestroy();
+    }
+
+    private void dismissProductBottomSheet(){
+        if(addProductBottomSheet != null){
+            addProductBottomSheet.dismiss();
+        }
     }
 }

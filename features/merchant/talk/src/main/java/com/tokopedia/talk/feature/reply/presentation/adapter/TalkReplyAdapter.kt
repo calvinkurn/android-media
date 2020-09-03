@@ -27,9 +27,9 @@ class TalkReplyAdapter(talkReplyAdapterTypeFactory: TalkReplyAdapterTypeFactory)
 
     fun setIsFollowingButton(isFollowing: Boolean) {
         visitables.forEachIndexed { index, visitable ->
-            if(visitable is TalkReplyHeaderModel) {
+            if (visitable is TalkReplyHeaderModel) {
                 with(visitable) {
-                    visitables[index] = TalkReplyHeaderModel(date, question, isFollowing, allowFollow, allowReport, allowDelete, isMasked, maskedContent)
+                    visitables[index] = TalkReplyHeaderModel(date, question, isFollowing, allowFollow, allowReport, allowDelete, isMasked, maskedContent, userThumbnail , userName, userId, isMyQuestion)
                     notifyItemChanged(index)
                     return
                 }

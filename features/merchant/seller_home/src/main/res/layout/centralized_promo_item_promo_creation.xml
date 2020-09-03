@@ -78,18 +78,6 @@
                 app:typographyWeight="bold"
                 tools:text="100 Kuota Gratis" />
 
-            <View
-                android:id="@+id/icRecommendedPromoExtra"
-                android:layout_width="@dimen/centralized_promo_promo_creation_extra_icon_size"
-                android:layout_height="@dimen/centralized_promo_promo_creation_extra_icon_size"
-                android:layout_marginStart="@dimen/centralized_promo_dimen_4dp"
-                android:layout_marginLeft="@dimen/centralized_promo_dimen_4dp"
-                android:layout_marginBottom="@dimen/centralized_promo_dimen_4dp"
-                android:background="@drawable/sh_bg_small_green_circle"
-                app:layout_constraintBottom_toBottomOf="@id/tvRecommendedPromoExtra"
-                app:layout_constraintLeft_toRightOf="@id/tvRecommendedPromoExtra"
-                app:layout_constraintStart_toEndOf="@id/tvRecommendedPromoExtra" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.tokopedia.unifycomponents.CardUnify>

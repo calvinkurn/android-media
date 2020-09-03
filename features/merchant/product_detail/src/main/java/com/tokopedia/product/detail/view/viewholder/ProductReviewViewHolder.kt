@@ -10,7 +10,6 @@ import com.tokopedia.gallery.customview.RatingView
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.data.model.product.Rating
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMostHelpfulReviewDataModel
 import com.tokopedia.product.detail.data.model.review.Review
@@ -22,7 +21,6 @@ import com.tokopedia.product.detail.view.util.ProductDetailUtil
 import kotlinx.android.synthetic.main.item_dynamic_image_review.view.*
 import kotlinx.android.synthetic.main.item_dynamic_mosthelpful_review.view.*
 import kotlinx.android.synthetic.main.item_dynamic_mosthelpful_review.view.container_most_helpful_review
-import kotlinx.android.synthetic.main.item_dynamic_review.view.*
 import kotlinx.android.synthetic.main.item_dynamic_review.view.container_image_review
 
 class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetailListener) :
@@ -50,29 +48,29 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
         }
 
         element?.imageReviews?.let {
-            renderImageReview(it, element.rating ?: Rating(), getComponentTrackData(element))
+            renderImageReview(it, element.totalRating, element.ratingScore, getComponentTrackData(element))
         }
     }
 
-    private fun renderImageReview(imageReviews: List<ImageReviewItem>, rating: Rating, componentTrackDataModel: ComponentTrackDataModel) {
+    private fun renderImageReview(imageReviews: List<ImageReviewItem>, totalRating: Int, ratingScore: Float, componentTrackDataModel: ComponentTrackDataModel) {
         val showSeeAll = if (imageReviews.isNotEmpty()) {
             imageReviews.first().hasNext
         } else {
             false
         }
 
-        view.image_review_list.adapter = ImageReviewAdapter(imageReviews.toMutableList(), showSeeAll, listener::onImageReviewClick, listener::onSeeAllReviewClick,
+        view.image_review_list.adapter = ImageReviewAdapter(imageReviews.toMutableList(), showSeeAll, listener::onImageReviewClick, listener::onSeeAllLastItemImageReview,
                 componentTrackDataModel)
 
         with(view) {
             txt_see_all_partial.setOnClickListener {
-                listener.onReviewClick()
+                listener.onSeeAllTextView(componentTrackDataModel)
             }
-            review_count.text = context.getString(R.string.review_counter, rating.totalRating)
+            review_count.text = context.getString(R.string.review_counter, totalRating)
             review_rating.setCompoundDrawablesWithIntrinsicBounds(null, null, MethodChecker.getDrawable(context, R.drawable.ic_rating_gold), null)
-            review_rating.text = context.getString(R.string.counter_pattern_string, rating.ratingScore, 5)
+            review_rating.text = ratingScore.toString()
 
-            if (rating.totalRating > 0) container_image_review.visible() else container_image_review.gone()
+            if (totalRating > 0) container_image_review.visible() else container_image_review.gone()
 
             if (imageReviews.isNotEmpty())
                 image_review_list.visible()

@@ -10,6 +10,7 @@
     <string name="path_change_inactive_phone_form">/change-inactive-phone-form</string>
     <string name="path_choose_account">/choose-account</string>
     <string name="path_withdraw">/withdraw</string>
+    <string name="path_autoWithdrawSettings">/autoWithdrawSettings</string>
     <string name="path_add_name_register">/add-name-register</string>
     <string name="path_forgot_password">/forgot-password</string>
     <string name="path_add_password">/add-password</string>
@@ -50,6 +51,7 @@
     <string name="path_setting_bank" translatable="false">/setting-bank</string>
     <string name="path_add_bank" translatable="false">/add-bank</string>
     <string name="path_general_setting" translatable="false">/general-setting</string>
+    <string name="path_account_setting" translatable="false">/account-setting</string>
     <string name="path_advanced_setting" translatable="false">/advanced-setting</string>
     <string name="path_push_notification_troubleshooter" translatable="false">/push-notification-troubleshooter</string>
     <string name="path_change_email_register">/change-email-register</string>
@@ -68,7 +70,9 @@
     <string name="path_add_fingerprint_onboarding">/add-fingerprint-onboarding</string>
     <string name="path_manage_notification">/manage-notification</string>
 
+    <string name="path_seller_seamless_login" translatable="false">/login-seamless</string>
     <string name="path_reply_talk" translatable="false">/reply-talk/.*\\/</string>
+    <string name="two_factor_register">/two-factor-register</string>
 
     <string name="path_screen_recorder">/screen-recorder</string>
 </resources>

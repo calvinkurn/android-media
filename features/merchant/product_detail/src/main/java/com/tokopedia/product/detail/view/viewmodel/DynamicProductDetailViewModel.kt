@@ -14,23 +14,29 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.common_tradein.model.TradeInParams
-import com.tokopedia.common_tradein.model.ValidateTradeInResponse
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
-import com.tokopedia.product.detail.common.data.model.carttype.CartRedirection
+import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
-import com.tokopedia.product.detail.data.model.*
-import com.tokopedia.product.detail.data.model.datamodel.*
-import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
+import com.tokopedia.product.detail.data.model.ProductInfoP2Login
+import com.tokopedia.product.detail.data.model.ProductInfoP2Other
+import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
+import com.tokopedia.product.detail.data.model.ProductInfoP3
+import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductLastSeenDataModel
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
+import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkLastAction
-import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.ADS_COUNT
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.DIMEN_ID
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.PAGE_SOURCE
 import com.tokopedia.product.detail.usecase.*
 import com.tokopedia.product.detail.view.util.DynamicProductDetailDispatcherProvider
 import com.tokopedia.product.detail.view.util.asFail
@@ -45,12 +51,14 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.variant_common.model.ProductVariantCommon
 import com.tokopedia.variant_common.model.VariantCategory
-import com.tokopedia.variant_common.model.VariantMultiOriginWarehouse
+import com.tokopedia.variant_common.model.WarehouseInfo
 import com.tokopedia.variant_common.util.VariantCommonMapper
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
@@ -70,10 +78,10 @@ import javax.inject.Inject
 open class DynamicProductDetailViewModel @Inject constructor(private val dispatcher: DynamicProductDetailDispatcherProvider,
                                                              private val stickyLoginUseCase: StickyLoginUseCase,
                                                              private val getPdpLayoutUseCase: GetPdpLayoutUseCase,
-                                                             private val getProductInfoP2ShopUseCase: GetProductInfoP2ShopUseCase,
                                                              private val getProductInfoP2LoginUseCase: GetProductInfoP2LoginUseCase,
-                                                             private val getProductInfoP2GeneralUseCase: GetProductInfoP2GeneralUseCase,
-                                                             private val getProductInfoP3RateEstimateUseCase: GetProductInfoP3RateEstimateUseCase,
+                                                             private val getProductInfoP2OtherUseCase: GetProductInfoP2OtherUseCase,
+                                                             private val getProductInfoP2DataUseCase: GetProductInfoP2DataUseCase,
+                                                             private val getProductInfoP3UseCase: GetProductInfoP3UseCase,
                                                              private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
                                                              private val removeWishlistUseCase: RemoveWishListUseCase,
                                                              private val addWishListUseCase: AddWishListUseCase,
@@ -86,35 +94,30 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                                              private val addToCartUseCase: AddToCartUseCase,
                                                              private val addToCartOcsUseCase: AddToCartOcsUseCase,
                                                              private val addToCartOccUseCase: AddToCartOccUseCase,
-                                                             private val getProductInfoP3VariantUseCase: GetProductInfoP3VariantUseCase,
                                                              private val toggleNotifyMeUseCase: ToggleNotifyMeUseCase,
-                                                             private val sendTopAdsUseCase: SendTopAdsUseCase,
                                                              private val discussionMostHelpfulUseCase: DiscussionMostHelpfulUseCase,
+                                                             private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
                                                              val userSessionInterface: UserSessionInterface) : BaseViewModel(dispatcher.ui()) {
 
     private val _productLayout = MutableLiveData<Result<List<DynamicPdpDataModel>>>()
     val productLayout: LiveData<Result<List<DynamicPdpDataModel>>>
         get() = _productLayout
 
-    private val _p2ShopDataResp = MutableLiveData<ProductInfoP2ShopData>()
-    val p2ShopDataResp: LiveData<ProductInfoP2ShopData>
-        get() = _p2ShopDataResp
-
     private val _p2Login = MutableLiveData<ProductInfoP2Login>()
     val p2Login: LiveData<ProductInfoP2Login>
         get() = _p2Login
 
-    private val _p2General = MutableLiveData<ProductInfoP2General>()
-    val p2General: LiveData<ProductInfoP2General>
-        get() = _p2General
+    private val _p2Data = MutableLiveData<ProductInfoP2UiData>()
+    val p2Data: LiveData<ProductInfoP2UiData>
+        get() = _p2Data
 
-    private val _productInfoP3RateEstimate = MediatorLiveData<ProductInfoP3>()
-    val productInfoP3RateEstimate: LiveData<ProductInfoP3>
-        get() = _productInfoP3RateEstimate
+    private val _p2Other = MutableLiveData<ProductInfoP2Other>()
+    val p2Other: LiveData<ProductInfoP2Other>
+        get() = _p2Other
 
-    private val _p3VariantResponse = MediatorLiveData<ProductInfoP3Variant>()
-    val p3VariantResponse: LiveData<ProductInfoP3Variant>
-        get() = _p3VariantResponse
+    private val _productInfoP3 = MediatorLiveData<ProductInfoP3>()
+    val productInfoP3: LiveData<ProductInfoP3>
+        get() = _productInfoP3
 
     private val _loadTopAdsProduct = MutableLiveData<Result<List<RecommendationWidget>>>()
     val loadTopAdsProduct: LiveData<Result<List<RecommendationWidget>>>
@@ -156,12 +159,12 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     val discussionMostHelpful: LiveData<Result<DiscussionMostHelpfulResponseWrapper>>
         get() = _discussionMostHelpful
 
+    private val _topAdsImageView: MutableLiveData<Result<ArrayList<TopAdsImageViewModel>>> = MutableLiveData()
+    val topAdsImageView: LiveData<Result<ArrayList<TopAdsImageViewModel>>>
+        get() = _topAdsImageView
+
     var notifyMeAction: String = ProductDetailCommonConstant.VALUE_TEASER_ACTION_UNREGISTER
-    var selectedMultiOrigin: VariantMultiOriginWarehouse = VariantMultiOriginWarehouse()
-    var cartTypeData: CartRedirection? = null
     var getDynamicProductInfoP1: DynamicProductInfoP1? = null
-    var shopInfo: ShopInfo? = null
-    var installmentData: FinancingDataResponse? = null
     var tradeInParams: TradeInParams = TradeInParams()
     var enableCaching: Boolean = true
     var variantData: ProductVariantCommon? = null
@@ -173,43 +176,27 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     var talkLastAction: DynamicProductDetailTalkLastAction? = null
     private var forceRefresh: Boolean = false
     private var shopDomain: String? = null
+
     private var submitTicketSubscription: Subscription? = null
     private var updateCartCounterSubscription: Subscription? = null
-    private val isUserHasShop: Boolean
-        get() = userSessionInterface.hasShop()
 
-    fun hasShopAuthority(): Boolean {
-        return isShopOwner() || shopInfo?.allowManage == true
-    }
-
+    fun hasShopAuthority(): Boolean = isShopOwner() || getShopInfo().allowManage
     fun isShopOwner(): Boolean = isUserSessionActive && userSessionInterface.shopId.toIntOrNull() == getDynamicProductInfoP1?.basic?.getShopId()
     val isUserSessionActive: Boolean
         get() = userSessionInterface.isLoggedIn
+
     val userId: String
         get() = userSessionInterface.userId
-    var deviceId: String = userSessionInterface.deviceId
+
+    var deviceId: String = userSessionInterface.deviceId ?: ""
 
     init {
-        _p3VariantResponse.addSource(_p2General) { p2General ->
-            launchCatchError(block = {
-                getDynamicProductInfoP1?.let { p1 ->
-                    val isVariant = p1.data.variant.isVariant && p2General.variantResp != null
-                    getProductInfoP3Variant(isVariant).let {
-                        cartTypeData = it.cartRedirectionResponse?.cartRedirection
-                        _p3VariantResponse.postValue(it)
-                    }
-                }
-            }) {
-                Timber.d(it)
-            }
-        }
-
-        _productInfoP3RateEstimate.addSource(_p2ShopDataResp) { p2Shop ->
-            launchCatchError(block = {
+        _productInfoP3.addSource(_p2Data) { p2Data ->
+            launchCatchError(context = dispatcher.io(), block = {
                 getDynamicProductInfoP1?.let {
-                    getProductInfoP3RateEstimate(shopDomain, it)?.let { p3Data ->
+                    getProductInfoP3(shopDomain, it)?.let { p3Data ->
                         updateShippingValue(p3Data.ratesModel?.getMinimumShippingPrice())
-                        _productInfoP3RateEstimate.value = p3Data
+                        _productInfoP3.postValue(p3Data)
                     }
                 }
             }) {
@@ -222,10 +209,9 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         super.flush()
         stickyLoginUseCase.cancelJobs()
         getPdpLayoutUseCase.cancelJobs()
-        getProductInfoP2ShopUseCase.cancelJobs()
         getProductInfoP2LoginUseCase.cancelJobs()
-        getProductInfoP2GeneralUseCase.cancelJobs()
-        getProductInfoP3RateEstimateUseCase.cancelJobs()
+        getProductInfoP2OtherUseCase.cancelJobs()
+        getProductInfoP3UseCase.cancelJobs()
         toggleFavoriteUseCase.cancelJobs()
         trackAffiliateUseCase.cancelJobs()
         moveProductToWarehouseUseCase.cancelJobs()
@@ -240,21 +226,55 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         discussionMostHelpfulUseCase.cancelJobs()
     }
 
-    fun sendTopAds(url: String) {
-        sendTopAdsUseCase.executeOnBackground(url)
+    fun clearCacheP2Data() {
+        getProductInfoP2DataUseCase.clearCache()
+    }
+
+    fun getShopInfo(): ShopInfo {
+        return p2Data.value?.shopInfo ?: ShopInfo()
+    }
+
+    fun getCartTypeByProductId() : CartTypeData? {
+        return p2Data.value?.cartRedirection?.get(getDynamicProductInfoP1?.basic?.productID ?: "")
+    }
+
+    fun updateLastAction(talkLastAction: DynamicProductDetailTalkLastAction) {
+        this.talkLastAction = talkLastAction
+    }
+
+    fun updateNotifyMeData() {
+        val selectedUpcoming = p2Data.value?.upcomingCampaigns?.get(getDynamicProductInfoP1?.basic?.productID)
+        p2Data.value?.upcomingCampaigns?.get(getDynamicProductInfoP1?.basic?.productID)?.notifyMe = selectedUpcoming?.notifyMe != true
+    }
+
+    fun updateDynamicProductInfoData(data: DynamicProductInfoP1?) {
+        data?.let {
+            getDynamicProductInfoP1 = it
+        }
+    }
+
+    /**
+     * If variant change, make sure this function is called after update product Id
+     */
+    fun getMultiOriginByProductId(): WarehouseInfo {
+        getDynamicProductInfoP1?.let {
+            return p2Data.value?.nearestWarehouseInfo?.get(it.basic.productID) ?: WarehouseInfo()
+        }
+
+        return WarehouseInfo()
     }
 
     fun processVariant(data: ProductVariantCommon, mapOfSelectedVariant: MutableMap<String, Int>?) {
-        launch {
+        launchCatchError(block = {
             withContext(dispatcher.io()) {
                 _initialVariantData.postValue(VariantCommonMapper.processVariant(data, mapOfSelectedVariant))
             }
-        }
+        }) {}
     }
 
     fun onVariantClicked(data: ProductVariantCommon?, mapOfSelectedVariant: MutableMap<String, Int>?,
                          isPartialySelected: Boolean, variantLevel: Int, imageVariant: String) {
-        launch {
+        launchCatchError(block = {
             withContext(dispatcher.io()) {
                 val processedVariant = VariantCommonMapper.processVariant(data, mapOfSelectedVariant, variantLevel, isPartialySelected)
 
@@ -270,7 +290,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                     _onVariantClickedData.postValue(processedVariant)
                 }
             }
-        }
+        }) {}
     }
 
     private fun addPartialImage(imageUrl: String): List<Media> {
@@ -308,24 +328,31 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    fun getProductP1(productParams: ProductParams, refreshPage: Boolean = false, isAffiliate: Boolean = false) {
+    fun getProductP1(productParams: ProductParams, refreshPage: Boolean = false, isAffiliate: Boolean = false, layoutId: String = "") {
         launchCatchError(block = {
             shopDomain = productParams.shopDomain
             forceRefresh = refreshPage
-            var shopCredibilityExist = false
 
             getPdpLayout(productParams.productId ?: "", productParams.shopDomain
-                    ?: "", productParams.productName ?: "").also {
+                    ?: "", productParams.productName ?: "", productParams.warehouseId ?: "", layoutId).also {
                 addStaticComponent(it)
-                getDynamicProductInfoP1 = it.layoutData
+                getDynamicProductInfoP1 = it.layoutData.also {
+                    listOfParentMedia = it.data.media.toMutableList()
+                }
+
+                variantData = if (getDynamicProductInfoP1?.isProductVariant() == false) null else it.variantData
+
+                //Create tradein params
+                assignTradeinParams()
+
                 //Remove any unused component based on P1 / PdpLayout
                 removeDynamicComponent(it.listOfLayout, isAffiliate)
-                shopCredibilityExist = it.listOfLayout.filterIsInstance<ProductShopCredibilityDataModel>().isNotEmpty()
-                //Render initial data first
+
+                //Render initial data
                 _productLayout.value = it.listOfLayout.asSuccess()
             }
             // Then update the following, it will not throw anything when error
-            getProductP2(productParams.warehouseId, shopCredibilityExist)
+            getProductP2()
 
         }) {
             _productLayout.value = it.asFail()
@@ -355,21 +382,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     private fun addStaticComponent(it: ProductDetailDataModel) {
         it.listOfLayout.add(ProductLastSeenDataModel())
-    }
-
-    private fun createTradeinParam(productInfoP1: DynamicProductInfoP1?, deviceId: String?): TradeInParams {
-        productInfoP1?.let {
-            tradeInParams.categoryId = it.basic.category.id.toIntOrZero()
-            tradeInParams.deviceId = deviceId ?: ""
-            tradeInParams.userId = userId.toIntOrZero()
-            tradeInParams.setPrice(it.data.price.value)
-            tradeInParams.productId = it.basic.getProductId()
-            tradeInParams.shopId = it.basic.getShopId()
-            tradeInParams.productName = it.getProductName
-            tradeInParams.isPreorder = it.data.preOrder.isPreOrderActive()
-            tradeInParams.isOnCampaign = it.data.campaign.isActive
-        }
-        return tradeInParams
     }
 
     private suspend fun getAddToCartUseCase(requestParams: RequestParams) {
@@ -409,60 +421,51 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    private suspend fun getProductP2(warehouseId: String?, shopCredibilityExist: Boolean) {
+    private suspend fun getProductP2() {
         getDynamicProductInfoP1?.let {
-            val p2ShopDeferred = getProductInfoP2ShopAsync(it.basic.getShopId(),
-                    it.basic.productID, warehouseId ?: "", shopCredibilityExist)
-
             val p2LoginDeferred: Deferred<ProductInfoP2Login>? = if (isUserSessionActive) {
                 getProductInfoP2LoginAsync(it.basic.getShopId(),
                         it.basic.getProductId())
             } else null
+            val p2DataDeffered: Deferred<ProductInfoP2UiData> = getProductInfoP2DataAsync(it.basic.productID, it.pdpSession)
+            val p2OtherDeffered: Deferred<ProductInfoP2Other> = getProductInfoP2OtherAsync(it.basic.getProductId(), it.basic.getShopId())
 
-            val userIdInt = userId.toIntOrNull() ?: 0
-            val categoryId = it.basic.category.id.toIntOrNull() ?: 0
-
-            val p2GeneralAsync: Deferred<ProductInfoP2General> = getProductInfoP2GeneralAsync(it.basic.getShopId(),
-                    it.basic.getProductId(), it.data.price.value,
-                    it.basic.condition,
-                    it.getProductName,
-                    categoryId, it.basic.catalogID, userIdInt, it.basic.minOrder, warehouseId, it.data.variant.isVariant)
-
-            _p2ShopDataResp.value = p2ShopDeferred.await().also {
-                shopInfo = it.shopInfo
-                selectedMultiOrigin = it.variantMultiOrigin
-                val tradeInResponse = it.tradeinResponse?.validateTradeInPDP
-                        ?: ValidateTradeInResponse()
-                tradeInParams.isEligible = if (tradeInResponse.isEligible) 1 else 0
-                tradeInParams.usedPrice = tradeInResponse.usedPrice
-                tradeInParams.remainingPrice = tradeInResponse.remainingPrice
-                tradeInParams.isUseKyc = if (tradeInResponse.isUseKyc) 1 else 0
-                tradeInParams.widgetString = tradeInResponse.widgetString
-            }
-
-            _p2General.value = p2GeneralAsync.await().also { p2General ->
-                variantData = p2General.variantResp
+            _p2Data.value = p2DataDeffered.await().also { value ->
+                updateTradeinParams(value.validateTradeIn)
             }
 
             p2LoginDeferred?.let {
                 _p2Login.value = it.await()
             }
+
+            _p2Other.value = p2OtherDeffered.await()
+
+            getTopAdsImageViewData(it.basic.productID)
         }
     }
 
-    private suspend fun getProductInfoP3Variant(isVariant: Boolean): ProductInfoP3Variant {
-        getProductInfoP3VariantUseCase.requestParams = GetProductInfoP3VariantUseCase.createParams(isVariant, DynamicProductDetailMapper.generateCartTypeVariantParams(getDynamicProductInfoP1, variantData))
-        getProductInfoP3VariantUseCase.setRefresh(forceRefresh)
-        return getProductInfoP3VariantUseCase.executeOnBackground()
+    private fun getTopAdsImageViewData(productID: String) {
+        launchCatchError(block = {
+            val result = topAdsImageViewUseCase.getImageData(topAdsImageViewUseCase.getQueryMap(
+                    "",
+                    PAGE_SOURCE,
+                    "",
+                    ADS_COUNT,
+                    DIMEN_ID,
+                    "",
+                    productID
+            ))
+            _topAdsImageView.postValue(result.asSuccess())
+        }){
+            _topAdsImageView.postValue(it.asFail())
+        }
     }
 
-    private suspend fun getProductInfoP3RateEstimate(shopDomain: String?, productInfo: DynamicProductInfoP1): ProductInfoP3? {
-        if (!isUserSessionActive) return null
-        val p2ShopValue = _p2ShopDataResp.value ?: return null
-        val domain = shopDomain ?: p2ShopValue.shopInfo?.shopCore?.domain ?: return null
-        val origin = if (selectedMultiOrigin.warehouseInfo.isFulfillment) selectedMultiOrigin.warehouseInfo.getOrigin() else null
+    private suspend fun getProductInfoP3(shopDomain: String?, productInfo: DynamicProductInfoP1): ProductInfoP3? {
+        val domain = shopDomain ?: getShopInfo().shopCore.domain
+        val origin = if (getMultiOriginByProductId().isFulfillment) getMultiOriginByProductId().getOrigin() else null
 
-        return getProductInfoP3RateEstimate(productInfo.basic.getWeightUnit(), domain, origin, productInfo.shouldShowCod)
+        return getProductInfoP3(productInfo.basic.getWeightUnit(), domain, origin, productInfo.shouldShowCod)
     }
 
     private fun updateShippingValue(shippingPriceValue: Int?) {
@@ -474,10 +477,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         val isTradein = getDynamicProductInfoP1?.data?.isTradeIn == true
         val hasWholesale = getDynamicProductInfoP1?.data?.hasWholesale == true
         val isOfficialStore = getDynamicProductInfoP1?.data?.isOS == true
-        val isVariant = getDynamicProductInfoP1?.data?.variant?.isVariant == true
-        val isTeaser = getDynamicProductInfoP1?.shouldShowNotifyMe() ?: false
-        val layoutName = getDynamicProductInfoP1?.layoutName ?: ""
-        val headNshoulderView = layoutName == ProductDetailConstant.LAYOUT_DEFAULT || layoutName == ProductDetailConstant.LAYOUT_HEAD_N_SHOULDERS
+        val isVariant = getDynamicProductInfoP1?.isProductVariant() ?: false
+        val isVariantEmpty = variantData == null || variantData?.hasChildren == false
 
         val removedData = initialLayoutData.map {
             if ((!isTradein || isShopOwner()) && it.name() == ProductDetailConstant.TRADE_IN) {
@@ -490,13 +491,9 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 it
             } else if (it.name() == ProductDetailConstant.PRODUCT_VARIANT_INFO) {
                 it
-            } else if (it.name() == ProductDetailConstant.VARIANT && !isVariant) {
-                it
-            } else if (it.name() == ProductDetailConstant.UPCOMING_DEALS && !isTeaser && !isVariant) {
+            } else if (it.name() == ProductDetailConstant.VARIANT_OPTIONS && (!isVariant || isVariantEmpty)) {
                 it
             } else if (GlobalConfig.isSellerApp() && it.type() == ProductDetailConstant.PRODUCT_LIST) {
-                it
-            } else if ((it.type() == ProductDetailConstant.SOCIAL_PROOF || it.type() == ProductDetailConstant.VALUE_PROP) && headNshoulderView) {
                 it
             } else if (it.name() == ProductDetailConstant.BY_ME && isAffiliate && !GlobalConfig.isSellerApp()) {
                 it
@@ -691,44 +688,64 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    fun updateLastAction(talkLastAction: DynamicProductDetailTalkLastAction) {
-        this.talkLastAction = talkLastAction
+    private fun assignTradeinParams() {
+        getDynamicProductInfoP1?.let {
+            tradeInParams.categoryId = it.basic.category.id.toIntOrZero()
+            tradeInParams.deviceId = deviceId
+            tradeInParams.userId = userId.toIntOrZero()
+            tradeInParams.setPrice(it.data.price.value)
+            tradeInParams.productId = it.basic.getProductId()
+            tradeInParams.shopId = it.basic.getShopId()
+            tradeInParams.productName = it.getProductName
+            tradeInParams.isPreorder = it.data.preOrder.isPreOrderActive()
+            tradeInParams.isOnCampaign = it.data.campaign.isActive
+        }
     }
 
-    private fun getProductInfoP2ShopAsync(shopId: Int, productId: String,
-                                          warehouseId: String,shopCredibilityExist:Boolean): Deferred<ProductInfoP2ShopData> {
+    private fun updateTradeinParams(validateTradeIn: ValidateTradeIn) {
+        tradeInParams.isEligible = if (validateTradeIn.isEligible) 1 else 0
+        tradeInParams.usedPrice = validateTradeIn.usedPrice.toIntOrZero()
+        tradeInParams.remainingPrice = validateTradeIn.remainingPrice.toIntOrZero()
+        tradeInParams.isUseKyc = if (validateTradeIn.useKyc) 1 else 0
+        tradeInParams.widgetString = validateTradeIn.widgetString
+    }
+
+    private fun getProductInfoP2OtherAsync(productId: Int, shopId: Int): Deferred<ProductInfoP2Other> {
         return async {
-            getProductInfoP2ShopUseCase.requestParams = GetProductInfoP2ShopUseCase.createParams(shopId, productId, forceRefresh, createTradeinParam(getDynamicProductInfoP1, deviceId),
-                    DynamicProductDetailMapper.generateCartTypeParam(getDynamicProductInfoP1), warehouseId, shopCredibilityExist)
-            getProductInfoP2ShopUseCase.executeOnBackground()
+            getProductInfoP2OtherUseCase.executeOnBackground(GetProductInfoP2OtherUseCase.createParams(productId, shopId), forceRefresh)
         }
     }
 
     private fun getProductInfoP2LoginAsync(shopId: Int, productId: Int): Deferred<ProductInfoP2Login> {
         return async {
-            getProductInfoP2LoginUseCase.requestParams = GetProductInfoP2LoginUseCase.createParams(shopId, productId)
+            getProductInfoP2LoginUseCase.requestParams = GetProductInfoP2LoginUseCase.createParams(shopId, productId, isShopOwner())
             getProductInfoP2LoginUseCase.executeOnBackground()
         }
     }
 
-    private fun getProductInfoP2GeneralAsync(shopId: Int, productId: Int, productPrice: Int,
-                                             condition: String, productTitle: String, categoryId: Int, catalogId: String,
-                                             userId: Int, minOrder: Int,
-                                             warehouseId: String?, isVariant: Boolean): Deferred<ProductInfoP2General> {
+    private fun getProductInfoP2DataAsync(productId: String, pdpSession: String): Deferred<ProductInfoP2UiData> {
         return async {
-            getProductInfoP2GeneralUseCase.requestParams = GetProductInfoP2GeneralUseCase.createParams(shopId, productId, productPrice, condition, productTitle, categoryId, catalogId, userId, forceRefresh, minOrder, warehouseId, isVariant)
-            getProductInfoP2GeneralUseCase.executeOnBackground()
+            getProductInfoP2DataUseCase.executeOnBackground(GetProductInfoP2DataUseCase.createParams(productId, generatePdpSessionWithDeviceId(pdpSession)), forceRefresh)
         }
     }
 
-    private suspend fun getProductInfoP3RateEstimate(weight: Float, shopDomain: String, origin: String?, needRequestCod: Boolean): ProductInfoP3 {
-        getProductInfoP3RateEstimateUseCase.mapOfParam = GetProductInfoP3RateEstimateUseCase.createParams(weight, shopDomain, origin, needRequestCod)
-        getProductInfoP3RateEstimateUseCase.setRefresh(forceRefresh)
-        return getProductInfoP3RateEstimateUseCase.executeOnBackground()
+    private fun generatePdpSessionWithDeviceId(pdpSession: String): String {
+        return if (getDynamicProductInfoP1?.data?.isTradeIn == false) {
+            pdpSession
+        } else {
+            pdpSession + ProductDetailConstant.DELIMITER_DEVICE_ID + deviceId
+        }
     }
 
-    private suspend fun getPdpLayout(productId: String, shopDomain: String, productKey: String): ProductDetailDataModel {
-        getPdpLayoutUseCase.requestParams = GetPdpLayoutUseCase.createParams(productId, shopDomain, productKey)
+    private suspend fun getProductInfoP3(weight: Float, shopDomain: String?, origin: String?, needRequestCod: Boolean): ProductInfoP3 {
+        return getProductInfoP3UseCase.executeOnBackground(
+                GetProductInfoP3UseCase.createParams(weight, shopDomain, origin, needRequestCod),
+                forceRefresh,
+                isUserSessionActive)
+    }
+
+    private suspend fun getPdpLayout(productId: String, shopDomain: String, productKey: String, whId: String, layoutId: String): ProductDetailDataModel {
+        getPdpLayoutUseCase.requestParams = GetPdpLayoutUseCase.createParams(productId, shopDomain, productKey, whId, layoutId)
         getPdpLayoutUseCase.forceRefresh = forceRefresh
         getPdpLayoutUseCase.enableCaching = enableCaching
         return getPdpLayoutUseCase.executeOnBackground()

@@ -1,7 +1,6 @@
 package com.tokopedia.product.detail.data.util
 
 import android.content.Intent
-import androidx.collection.ArrayMap
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.chat_common.data.preview.ProductPreview
 import com.tokopedia.common.network.util.CommonUtil
@@ -10,9 +9,9 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.BasicInfo
 import com.tokopedia.product.detail.common.data.model.pdplayout.ComponentData
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
-import com.tokopedia.product.detail.common.data.model.product.Stock
 import com.tokopedia.product.detail.view.util.toDate
-import com.tokopedia.variant_common.model.*
+import com.tokopedia.variant_common.model.ProductVariantCommon
+import com.tokopedia.variant_common.model.VariantChildCommon
 
 /**
  * Created by Yehezkiel on 2020-02-26
@@ -69,32 +68,13 @@ object VariantMapper {
         intent.putExtra(ApplinkConst.Chat.PRODUCT_PREVIEWS, stringProductPreviews)
     }
 
-    fun updateSelectedMultiOrigin(oldData: VariantMultiOriginWarehouse, newData: VariantChildCommon?): VariantMultiOriginWarehouse {
-
-        val newWarehouseInfo = oldData.warehouseInfo.copy(
-                id = newData?.warehouseInfo?.warehouseId ?: "",
-                isFulfillment = newData?.warehouseInfo?.isFulfillment ?: false,
-                districtId = newData?.warehouseInfo?.districtId ?: "",
-                postalCode = newData?.warehouseInfo?.postalCode ?: "",
-                geoLocation = newData?.warehouseInfo?.geoLocation ?: ""
-        )
-
-        return oldData.copy(
-                productId = newData?.productId.toString(),
-                stock = newData?.getVariantFinalStock() ?: 0,
-                price = newData?.price?.toInt() ?: 0,
-                stockWording = newData?.stock?.stockWordingHTML ?: "",
-                warehouseInfo = newWarehouseInfo
-        )
-    }
-
     fun updateDynamicProductInfo(oldData: DynamicProductInfoP1?, newData: VariantChildCommon?, existingListMedia: List<Media>?): DynamicProductInfoP1? {
         if (oldData == null) return null
 
         val basic = oldData.basic.copy(
                 productID = newData?.productId.toString(),
                 sku = newData?.sku ?: "",
-                minOrder = newData?.stock?.minimumOrder ?: 0,
+                minOrder = newData?.getFinalMinOrder() ?: 0,
                 status = if (newData?.isBuyable == true) {
                     ProductStatusTypeDef.ACTIVE
                 } else {
@@ -118,14 +98,20 @@ object VariantMapper {
                 percentageAmount = newData?.campaign?.discountedPercentage?.toInt() ?: 0,
                 stockSoldPercentage = newData?.campaign?.stockSoldPercentage?.toInt() ?: 0,
                 isCheckImei = newData?.campaign?.isCheckImei ?: false,
-                isUsingOvo = newData?.campaign?.isUsingOvo ?: false
+                isUsingOvo = newData?.campaign?.isUsingOvo ?: false,
+                hideGimmick = newData?.campaign?.hideGimmick ?: false
         )
 
         val newMedia = if (newData?.hasPicture == true) {
             val copyOfOldMedia = existingListMedia?.toMutableList()
-            copyOfOldMedia?.add(0, Media(type = "image", uRL300 = newData.picture?.original
+            val newMedia = Media(type = "image", uRL300 = newData.picture?.original
                     ?: "", uRLOriginal = newData.picture?.original
-                    ?: "", uRLThumbnail = newData.picture?.original ?: ""))
+                    ?: "", uRLThumbnail = newData.picture?.original ?: "").apply {
+                id = (newData.productId + System.nanoTime()).toString()
+            }
+
+            copyOfOldMedia?.add(0, newMedia)
+
             copyOfOldMedia ?: mutableListOf()
         } else {
             oldData.data.media
@@ -137,7 +123,7 @@ object VariantMapper {
 
         val newStock = oldData.data.stock.copy(
                 value = newData?.stock?.stock ?: 0,
-                stockWording = newData?.stock?.stockWording ?: ""
+                stockWording = newData?.stock?.stockWordingHTML ?: ""
         )
 
         val data = oldData.data.copy(
@@ -147,34 +133,10 @@ object VariantMapper {
                 price = newPrice,
                 name = newData?.name ?: "",
                 media = newMedia,
-                stock = newStock,
-                //upcoming campaign data
-                campaignId = newData?.upcoming?.campaignId ?: "",
-                campaignType = newData?.upcoming?.campaignType ?: "",
-                campaignTypeName = newData?.upcoming?.campaignTypeName ?: "",
-                startDate = newData?.upcoming?.startDate ?: "",
-                endDate = newData?.upcoming?.endDate ?: "",
-                notifyMe = newData?.upcoming?.notifyMe ?: false
+                stock = newStock
         )
 
         return DynamicProductInfoP1(basic, data, oldData.layoutName)
-    }
-
-    fun updateVariantDeals(variantData: ProductVariantCommon?, productId: Int): ProductVariantCommon? {
-        val children = variantData?.children
-        val childrenTemp: MutableList<VariantChildCommon> = mutableListOf()
-        children?.forEach {
-            if (productId == it.productId) {
-                val upcomingData = it.upcoming
-                val upcomingTempData = upcomingData?.copy(notifyMe = upcomingData.notifyMe != true)
-                val childCommonUpdated = it.copy(upcoming = upcomingTempData)
-                childrenTemp.add(childCommonUpdated)
-            } else {
-                childrenTemp.add(it)
-            }
-        }
-
-        return variantData?.copy(children = childrenTemp)
     }
 
     fun updateMediaToCurrentP1Data(oldData: DynamicProductInfoP1?, media: MutableList<Media>): DynamicProductInfoP1 {
@@ -184,5 +146,13 @@ object VariantMapper {
         )
         return DynamicProductInfoP1(basic ?: BasicInfo(), data
                 ?: ComponentData(), oldData?.layoutName ?: "")
+    }
+
+    fun generateVariantString(variantData:ProductVariantCommon?): String {
+        return try {
+            variantData?.variant?.map { it.name }?.joinToString(separator = ", ") ?: ""
+        } catch (e: Throwable) {
+            ""
+        }
     }
 }

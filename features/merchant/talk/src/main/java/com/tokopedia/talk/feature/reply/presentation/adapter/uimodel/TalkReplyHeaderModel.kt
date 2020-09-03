@@ -11,7 +11,11 @@ class TalkReplyHeaderModel(
         val allowReport: Boolean,
         val allowDelete: Boolean,
         val isMasked: Boolean,
-        val maskedContent: String
+        val maskedContent: String,
+        val userThumbnail: String,
+        val userName: String,
+        val userId: Int,
+        val isMyQuestion:Boolean
 ) : Visitable<TalkReplyAdapterTypeFactory> {
 
     override fun type(typeFactory: TalkReplyAdapterTypeFactory): Int {

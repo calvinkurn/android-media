@@ -1,5 +1,6 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.addedit
 
+import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.logisticaddaddress.R
 
@@ -15,14 +16,16 @@ class AddEditAddressActivity: BaseSimpleActivity() {
         var fragment: AddEditAddressFragment? = null
         if (intent.extras != null) {
             val bundle = intent.extras
-            fragment = AddEditAddressFragment.newInstance(bundle)
+            fragment = AddEditAddressFragment.newInstance(bundle?: Bundle())
         }
         return fragment
     }
 
+    override fun getParentViewResourceID(): Int = R.id.add_new_address_parent
+
     override fun onBackPressed() {
         val fragment =
-                this.supportFragmentManager.findFragmentById(R.id.parent_view)
+                this.supportFragmentManager.findFragmentById(R.id.add_new_address_parent)
         (fragment as? IOnBackPressed)?.onBackPressed()?.not()?.let {
             super.onBackPressed()
         }

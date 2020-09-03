@@ -1,5 +1,7 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter
 
+import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
@@ -11,6 +13,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryListViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem.ProductCardItemViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shimmer.ShimmerProductCardViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.DiscoveryHomeFactory
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 
@@ -26,7 +29,9 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
             ?: "") + noOfObject++, DiscoveryListViewModel::class.java)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder {
-        return DiscoveryHomeFactory.createViewHolder(parent, viewType, fragment) as AbstractViewHolder
+        val itemView: View =
+                LayoutInflater.from(parent.context).inflate(ComponentsList.values()[viewType].id, parent, false)
+        return DiscoveryHomeFactory.createViewHolder(itemView, viewType, fragment) as AbstractViewHolder
     }
 
     override fun onBindViewHolder(holder: AbstractViewHolder, position: Int) {
@@ -95,6 +100,10 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
 
     fun getViewModelAtPosition(position: Int): DiscoveryBaseViewModel? {
         return viewHolderListModel.getViewModelAtPosition(position)
+    }
+
+    fun isStickyHeaderView(it: Int): Boolean {
+        return DiscoveryHomeFactory.isStickyHeader(getItemViewType(it))
     }
 }
 

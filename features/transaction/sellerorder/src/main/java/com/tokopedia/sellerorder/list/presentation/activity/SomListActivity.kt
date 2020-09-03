@@ -1,5 +1,6 @@
 package com.tokopedia.sellerorder.list.presentation.activity
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -28,11 +29,16 @@ class SomListActivity: BaseSimpleActivity(), HasComponent<SomListComponent> {
     override fun getNewFragment(): SomListFragment? {
         var bundle = Bundle()
         if (intent.extras != null) {
-            bundle = intent.extras
+            bundle = intent.extras ?: Bundle()
         } else {
             bundle.putString(TAB_ACTIVE, "")
         }
         return SomListFragment.newInstance(bundle)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        window.decorView.setBackgroundColor(Color.WHITE)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

@@ -11,6 +11,7 @@ import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist
 import java.util.*
@@ -20,6 +21,8 @@ import java.util.*
  */
 
 interface ICartListView : CustomerView {
+
+    fun refreshCart()
 
     fun getAllShopDataList(): List<CartShopHolderData>
 
@@ -124,5 +127,5 @@ interface ICartListView : CustomerView {
 
     fun resetRecentViewList()
 
-    fun sendATCTrackingURL(clickUrl: String)
+    fun sendATCTrackingURL(recommendationItem: RecommendationItem)
 }

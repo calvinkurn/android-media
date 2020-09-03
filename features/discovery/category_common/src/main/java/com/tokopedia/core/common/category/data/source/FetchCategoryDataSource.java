@@ -20,20 +20,11 @@ import rx.functions.Func1;
 
 public class FetchCategoryDataSource {
 
-
     private final CategoryDataManager categoryDataManager;
 
     @Inject
     public FetchCategoryDataSource(CategoryDataManager categoryDataManager) {
         this.categoryDataManager = categoryDataManager;
-    }
-
-    public Observable<List<CategoryDomainModel>> fetchCategoryLevelOne(long categoryId) {
-        return Observable.just(categoryId).map(new FetchFromParent()).map(new CategoryDataToDomainMapper());
-    }
-
-    public Observable<List<CategoryLevelDomainModel>> fetchCategoryFromSelected(long categoryId) {
-        return Observable.just(categoryId).map(new FetchCategoryFromSelected());
     }
 
     public Observable<List<String>> fetchCategoryDisplay(long categoryId) {
@@ -63,14 +54,6 @@ public class FetchCategoryDataSource {
             }
             while (categoryLevelDomainModels.get(0).getParentCategoryId() != CategoryDataBase.LEVEL_ONE_PARENT);
             return categoryLevelDomainModels;
-        }
-    }
-
-    private class FetchFromParent implements Func1<Long, List<CategoryDataBase>> {
-
-        @Override
-        public List<CategoryDataBase> call(Long parent) {
-            return getCategoryFromParent(parent);
         }
     }
 

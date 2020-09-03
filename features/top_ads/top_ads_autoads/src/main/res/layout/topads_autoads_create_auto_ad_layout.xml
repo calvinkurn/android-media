@@ -3,20 +3,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@color/white"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
-    <ProgressBar
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible" />
+        app:loader_type="circular" />
 
     <ImageView
         android:layout_width="match_parent"
@@ -106,10 +106,10 @@
                 android:lineSpacingExtra="6sp"
                 android:text="@string/range_start"
                 android:textSize="12sp"
-                app:typographyType="body_3"
                 app:layout_constraintBottom_toTopOf="@+id/budget_parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/seekbar" />
+                app:layout_constraintTop_toBottomOf="@+id/seekbar"
+                app:typographyType="body_3" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/range_end"
@@ -119,10 +119,10 @@
                 android:lineSpacingExtra="6sp"
                 android:text="@string/range_end"
                 android:textSize="12sp"
-                app:typographyType="body_3"
                 app:layout_constraintBottom_toTopOf="@+id/budget_parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/seekbar" />
+                app:layout_constraintTop_toBottomOf="@+id/seekbar"
+                app:typographyType="body_3" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/budget_parent"
@@ -136,8 +136,8 @@
                 <com.tokopedia.seller.common.widget.PrefixEditText
                     android:id="@+id/budgetEditText"
                     style="@style/EditText.Currency"
-                    android:layout_height="wrap_content"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_24"
                     android:maxLines="1"
                     app:prefix="Rp " />
@@ -204,6 +204,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
+        android:enabled="false"
         android:text="@string/iklankan"
         app:layout_constraintBottom_toTopOf="@+id/info_text"
         app:layout_constraintEnd_toEndOf="parent"
@@ -220,6 +221,6 @@
         android:gravity="center_horizontal"
         android:text="@string/info_text"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:typographyType="body_3"></com.tokopedia.unifyprinciples.Typography>
+        app:typographyType="body_3" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

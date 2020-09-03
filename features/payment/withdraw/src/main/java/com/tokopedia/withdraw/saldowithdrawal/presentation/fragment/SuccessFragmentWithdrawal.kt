@@ -55,8 +55,8 @@ class SuccessFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
         arguments?.let {
             if (it.containsKey(ARG_WITHDRAWAL_REQUEST)
                     && it.containsKey(ARG_SUBMIT_WITHDRAWAL_RESPONSE)) {
-                withdrawalRequest = it.getParcelable(ARG_WITHDRAWAL_REQUEST)
-                withdrawalResponse = it.getParcelable(ARG_SUBMIT_WITHDRAWAL_RESPONSE)
+                withdrawalRequest = it.getParcelable(ARG_WITHDRAWAL_REQUEST) ?: WithdrawalRequest()
+                withdrawalResponse = it.getParcelable(ARG_SUBMIT_WITHDRAWAL_RESPONSE) ?: SubmitWithdrawalResponse()
             } else {
                 activity?.finish()
             }
@@ -93,9 +93,11 @@ class SuccessFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
     private fun showRekeningWidgets(context: Context) {
         when {
             withdrawalRequest.isJoinRekeningPremium -> {
-                withdrawalSuccessTicker.visible()
-                cardUnifyJoinRekeningProgram.gone()
-                showJoinRekeningRequestTicker(withdrawalResponse.joinPromptMessageResponse)
+                withdrawalResponse.joinPromptMessageResponse?.let {
+                    withdrawalSuccessTicker.visible()
+                    cardUnifyJoinRekeningProgram.gone()
+                    showJoinRekeningRequestTicker(it)
+                }
             }
             withdrawalRequest.showJoinRekeningWidget -> {
                 tvComeOnJoinRPDescriptionClickable.movementMethod = LinkMovementMethod()
@@ -165,9 +167,10 @@ class SuccessFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
     private fun onGoToSaldoDetail() {
         val eventLabel = when {
             withdrawalRequest.isJoinRekeningPremium -> {
-                String.format(LABEL_FORMAT_TICKER_REASON, withdrawalRequest.bankAccount.bankName,
-                        withdrawalResponse.joinPromptMessageResponse.title,
-                        withdrawalResponse.joinPromptMessageResponse.description)
+                withdrawalResponse.joinPromptMessageResponse?.let {
+                    String.format(LABEL_FORMAT_TICKER_REASON, withdrawalRequest.bankAccount.bankName,
+                            it.title,it.description)
+                }
             }
             withdrawalRequest.showJoinRekeningWidget -> {
                 String.format(LABEL_FORMAT_TICKER_REASON, withdrawalRequest.bankAccount.bankName,
@@ -179,7 +182,9 @@ class SuccessFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
         activity?.let { activity ->
             val resultIntent = Intent()
             activity.setResult(Activity.RESULT_OK, resultIntent)
-            analytics.get().eventClickBackToSaldoPage(eventLabel)
+            eventLabel?.let {
+                analytics.get().eventClickBackToSaldoPage(eventLabel)
+            }
             activity.finish()
         }
     }
@@ -187,19 +192,22 @@ class SuccessFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
 
     override fun onDescriptionViewClick(linkUrl: CharSequence) {
         val joinPromptMessageResponse = withdrawalResponse.joinPromptMessageResponse
-        WithdrawConstant.openSessionBaseURL(context,
-                joinPromptMessageResponse.actionLink)
-        if (joinPromptMessageResponse.isSuccess) {
-            analytics.get().onSuccessPageRekeningPremiumLinkClick(
-                    String.format(LABEL_FORMAT_TICKER, withdrawalRequest.bankAccount.bankName,
-                            joinPromptMessageResponse.title)
-            )
-        } else {
-            analytics.get().onClickUpgradeToPowerMerchant(
-                    String.format(LABEL_FORMAT_TICKER, withdrawalRequest.bankAccount.bankName,
-                            joinPromptMessageResponse.title)
-            )
+        joinPromptMessageResponse?.let {
+            WithdrawConstant.openSessionBaseURL(context,
+                    joinPromptMessageResponse.actionLink)
+            if (joinPromptMessageResponse.isSuccess) {
+                analytics.get().onSuccessPageRekeningPremiumLinkClick(
+                        String.format(LABEL_FORMAT_TICKER, withdrawalRequest.bankAccount.bankName,
+                                joinPromptMessageResponse.title)
+                )
+            } else {
+                analytics.get().onClickUpgradeToPowerMerchant(
+                        String.format(LABEL_FORMAT_TICKER, withdrawalRequest.bankAccount.bankName,
+                                joinPromptMessageResponse.title)
+                )
+            }
         }
+
     }
 
     override fun onDismiss() {
@@ -207,16 +215,20 @@ class SuccessFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
     }
 
     fun onCloseButtonClick() {
+        val joinPromptMessageResponse= withdrawalResponse.joinPromptMessageResponse
         val label = when {
             withdrawalRequest.isJoinRekeningPremium -> {
-                String.format(LABEL_FORMAT_TICKER_REASON, withdrawalRequest.bankAccount.bankName,
-                        withdrawalResponse.joinPromptMessageResponse.title,
-                        withdrawalResponse.joinPromptMessageResponse.description)
+                joinPromptMessageResponse?.let {
+                    String.format(LABEL_FORMAT_TICKER_REASON, withdrawalRequest.bankAccount.bankName,
+                            joinPromptMessageResponse.title,
+                            joinPromptMessageResponse.description)
+                }
             }
             else -> String.format(LABEL_FORMAT_TICKER_REASON, withdrawalRequest.bankAccount.bankName, "", "")
         }
-
-        analytics.get().onClickCloseOnSuccessScreen(label)
+        label?.let {
+            analytics.get().onClickCloseOnSuccessScreen(label)
+        }
     }
 
     companion object {

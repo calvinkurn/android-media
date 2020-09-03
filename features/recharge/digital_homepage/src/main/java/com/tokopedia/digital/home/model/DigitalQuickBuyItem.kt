@@ -1,10 +1,11 @@
 package com.tokopedia.digital.home.model
 
-import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 class DigitalQuickBuyItem(
         @SerializedName("id")
         @Expose
@@ -51,53 +52,4 @@ class DigitalQuickBuyItem(
         @SerializedName("template_id")
         @Expose
         val templateId: Int = 0
-): Parcelable {
-    constructor(parcel: Parcel) : this(
-            parcel.readInt(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readInt(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readInt())
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeInt(id)
-        parcel.writeString(name)
-        parcel.writeString(imageUrl)
-        parcel.writeString(url)
-        parcel.writeString(applink)
-        parcel.writeString(title1st)
-        parcel.writeString(desc1st)
-        parcel.writeString(title2nd)
-        parcel.writeString(desc2nd)
-        parcel.writeString(tagName)
-        parcel.writeInt(tagType)
-        parcel.writeString(price)
-        parcel.writeString(originalPrice)
-        parcel.writeString(pricePrefix)
-        parcel.writeInt(templateId)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<DigitalQuickBuyItem> {
-        override fun createFromParcel(parcel: Parcel): DigitalQuickBuyItem {
-            return DigitalQuickBuyItem(parcel)
-        }
-
-        override fun newArray(size: Int): Array<DigitalQuickBuyItem?> {
-            return arrayOfNulls(size)
-        }
-    }
-}
+): Parcelable

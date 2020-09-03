@@ -22,8 +22,7 @@
     <string name="money_in_alert_payment_successful">Pembayaran Berhasil</string>
     <string name="header_section_price">Anda dapat menjual HP Anda hingga harga</string>
     <string name="not_elligible_price_high">Mohon maaf, harga device Anda lebih tinggi dari device Anda pilih. Baca Selengkapnya</string>
-    <string name="money_in_need_permission">Untuk dapat melanjutkan proses Langsung Laku,
-        kami membutuhkan ijin ada untuk mengakses beberapa fungsi di telepon anda</string>
+    <string name="money_in_need_permission">Untuk dapat melanjutkan proses Langsung Laku, kami membutuhkan ijin untuk mengakses beberapa fungsi di telpon anda</string>
     <string name="money_in_request_permission">Mulai berikan ijin</string>
     <string name="not_elligible">Mohon maaf, model HP Anda belum dapat digunakan untuk tukar tambah.</string>
     <string name="not_elligible_money_in">Mohon maaf, model HP Anda belum dapat digunakan untuk langsung laku.</string>

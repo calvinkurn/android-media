@@ -38,7 +38,7 @@ class ProductRecommendationViewHolder(private val view: View,
             view.loadingRecom.gone()
             view.titleRecom.text = title
             view.rvProductRecom.show()
-            if (seeMoreAppLink.isNotEmpty() && RemoteConfigInstance.getInstance().abTestPlatform.getString(EXPERIMENT_NAME) != SEE_MORE_CARD_AB_VALUE) {
+            if (seeMoreAppLink.isNotEmpty()) {
                 view.seeMoreRecom.show()
             } else {
                 view.seeMoreRecom.hide()
@@ -61,7 +61,7 @@ class ProductRecommendationViewHolder(private val view: View,
                         val productRecommendation = product.recommendationItemList.getOrNull(carouselProductCardPosition) ?: return
                         val topAdsClickUrl = productRecommendation.clickUrl
                         if (productCardModel.isTopAds) {
-                            listener.sendTopAds(topAdsClickUrl)
+                            listener.sendTopAdsClick(topAdsClickUrl, productRecommendation.productId.toString(), productRecommendation.name, productRecommendation.imageUrl)
                         }
 
                         listener.eventRecommendationClick(productRecommendation, carouselProductCardPosition, product.pageName, product.title, componentTrackDataModel)
@@ -82,7 +82,7 @@ class ProductRecommendationViewHolder(private val view: View,
                         val productRecommendation = product.recommendationItemList.getOrNull(carouselProductCardPosition) ?: return
                         val topAdsImageUrl = productRecommendation.trackerImageUrl
                         if (productCardModel.isTopAds) {
-                            listener.sendTopAds(topAdsImageUrl)
+                            listener.sendTopAdsImpression(topAdsImageUrl, productRecommendation.productId.toString(), productRecommendation.name, productRecommendation.imageUrl)
                         }
 
                         listener.eventRecommendationImpression(productRecommendation,

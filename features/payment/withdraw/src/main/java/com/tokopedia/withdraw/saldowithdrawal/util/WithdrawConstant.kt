@@ -23,7 +23,7 @@ object WithdrawConstant {
 
     private val rekeningPageURL = when (TokopediaUrl.getInstance().TYPE) {
         Env.STAGING -> "https://staging.tokopedia.com/payment/rekening-premium"
-        else -> "https://tokopedia.com/payment/rekening-premium"
+        else -> "https://m.tokopedia.com/payment/rekening-premium"
     }
 
     private val bankRekeningPageURL = when (TokopediaUrl.getInstance().TYPE) {

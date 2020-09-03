@@ -52,6 +52,7 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
     private List<LabelGroupViewModel> labelGroupList = new ArrayList<>();
     private FreeOngkirViewModel freeOngkirViewModel = new FreeOngkirViewModel();
     private String boosterList = "";
+    private String sourceEngine = "";
 
     public boolean isTopAds() {
         return isTopAds;
@@ -321,6 +322,14 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         return this.boosterList;
     }
 
+    public void setSourceEngine(String sourceEngine) {
+        this.sourceEngine = sourceEngine;
+    }
+
+    public String getSourceEngine() {
+        return this.sourceEngine;
+    }
+
     public ProductItemViewModel() {
     }
 
@@ -347,7 +356,8 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
                 "dimension88", "search - product",
                 "dimension90", searchRef,
                 "dimension96", getBoosterList(),
-                "dimension99", System.currentTimeMillis()
+                "dimension99", System.currentTimeMillis(),
+                "dimension100", getSourceEngine()
         );
     }
 

@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -21,7 +22,6 @@ import com.tokopedia.thankyou_native.data.mapper.*
 import com.tokopedia.thankyou_native.di.component.ThankYouPageComponent
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
-import com.tokopedia.thankyou_native.presentation.dialog.CloseableBottomSheetFragment
 import com.tokopedia.thankyou_native.presentation.helper.DialogHelper
 import com.tokopedia.thankyou_native.presentation.helper.OnDialogRedirectListener
 import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel
@@ -43,7 +43,6 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     abstract fun getLoadingView(): View?
     abstract fun onThankYouPageDataReLoaded(data: ThanksPageData)
 
-    private lateinit var invoiceBottomSheets: CloseableBottomSheetFragment
     private lateinit var dialogHelper: DialogHelper
 
     @Inject
@@ -65,7 +64,9 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         viewModelProvider.get(ThanksPageDataViewModel::class.java)
     }
 
-    private var trackingQueue: TrackingQueue? = null
+    private var topAdsTrackingQueue: TrackingQueue? = null
+    private var nonTopAdsTrackingQueue: TrackingQueue? = null
+    private var digitalRecomTrackingQueue: TrackingQueue? = null
 
     lateinit var thanksPageData: ThanksPageData
 
@@ -77,22 +78,24 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         super.onCreate(savedInstanceState)
         arguments?.let {
             if (it.containsKey(ARG_THANK_PAGE_DATA)) {
-                thanksPageData = it.getParcelable(ARG_THANK_PAGE_DATA)
+                thanksPageData = it.getParcelable(ARG_THANK_PAGE_DATA)!!
             }
         }
-        activity?.let { trackingQueue = TrackingQueue(it) }
+        activity?.apply {
+            nonTopAdsTrackingQueue = TrackingQueue(this)
+            topAdsTrackingQueue = TrackingQueue(this)
+            digitalRecomTrackingQueue = TrackingQueue(this)
+        }
 
     }
 
     override fun onPause() {
         super.onPause()
-        trackingQueue?.sendAll()
+        nonTopAdsTrackingQueue?.sendAll()
+        topAdsTrackingQueue?.sendAll()
+        digitalRecomTrackingQueue?.sendAll()
     }
 
-
-    open fun getTrackingQueue(): TrackingQueue? {
-        return trackingQueue
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -117,25 +120,29 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
             }
         }
     }
-    private fun addMarketPlaceRecommendation(){
+
+    private fun addMarketPlaceRecommendation() {
         val recomContainer = getRecommendationContainer()
         iRecommendationView = recomContainer?.let { container ->
             val view = getRecommendationView(marketRecommendationPlaceLayout)
             container.addView(view)
             view.findViewById<MarketPlaceRecommendation>(R.id.marketPlaceRecommendationView)
         }
-        getTrackingQueue()?.let { iRecommendationView?.loadRecommendation(this, it) }
-
+        if (::thanksPageData.isInitialized)
+            iRecommendationView?.loadRecommendation(thanksPageData.paymentID.toString(),
+                    this, topAdsTrackingQueue, nonTopAdsTrackingQueue)
     }
-    private fun addDigitalRecommendation(){
+
+    private fun addDigitalRecommendation() {
         val recomContainer = getRecommendationContainer()
-        iDigitalRecommendationView =  recomContainer?.let { container ->
+        iDigitalRecommendationView = recomContainer?.let { container ->
             val view = getRecommendationView(digitalRecommendationLayout)
             container.addView(view)
             view.findViewById<DigitalRecommendation>(R.id.digitalRecommendationView)
         }
-        getTrackingQueue()?.let { iDigitalRecommendationView?.loadRecommendation(this, it) }
-
+        if (::thanksPageData.isInitialized)
+            iDigitalRecommendationView?.loadRecommendation(thanksPageData.paymentID.toString(),
+                    this, digitalRecomTrackingQueue)
     }
 
     private fun getRecommendationView(@LayoutRes layout: Int): View {
@@ -167,7 +174,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
 
     fun openHowTOPay(thanksPageData: ThanksPageData) {
         RouteManager.route(context, thanksPageData.howToPay)
-        thankYouPageAnalytics.get().sendOnHowtoPayClickEvent()
+        thankYouPageAnalytics.get().sendOnHowtoPayClickEvent(thanksPageData.paymentID.toString())
     }
 
     fun showPaymentStatusDialog(isTimerFinished: Boolean,
@@ -192,31 +199,47 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         }
     }
 
-    fun openInvoiceDetail(thanksPageData: ThanksPageData) {
-        if (!::invoiceBottomSheets.isInitialized)
-            invoiceBottomSheets = CloseableBottomSheetFragment
-                    .newInstance(InvoiceFragment.getInvoiceFragment(thanksPageData),
-                            true,
-                            getString(R.string.thank_payment_detail),
-                            null,
-                            CloseableBottomSheetFragment.STATE_FULL)
-        activity?.let {
-            invoiceBottomSheets.showNow(it.supportFragmentManager, "")
+    fun setUpHomeButton(homeButton: TextView?) {
+        homeButton?.let {
+            homeButton.setOnClickListener {
+                thanksPageData.thanksCustomization?.let {
+                    if (it.customHomeUrlApp.isNullOrBlank())
+                        gotoHomePage()
+                    else
+                        launchApplink(it.customHomeUrlApp)
+                } ?: run {
+                    gotoHomePage()
+                }
+            }
         }
+    }
 
+    fun openInvoiceDetail(thanksPageData: ThanksPageData) {
+        InvoiceFragment.openInvoiceBottomSheet(activity, thanksPageData)
         thankYouPageAnalytics.get().sendLihatDetailClickEvent(PaymentPageMapper
-                .getPaymentPageType(thanksPageData.pageType))
+                .getPaymentPageType(thanksPageData.pageType), thanksPageData.paymentID.toString())
     }
 
     override fun gotoHomePage() {
         RouteManager.route(context, ApplinkConst.HOME, "")
-        thankYouPageAnalytics.get().sendBelanjaLagiClickEvent()
+        thankYouPageAnalytics.get().sendBelanjaLagiClickEvent(
+                PaymentPageMapper.getPaymentPageType(thanksPageData.pageType),
+                thanksPageData.paymentID.toString())
         activity?.finish()
     }
 
     override fun launchApplink(applink: String) {
-        RouteManager.route(context, applink, "")
-        thankYouPageAnalytics.get().sendBelanjaLagiClickEvent()
+        val homeIntent = RouteManager.getIntent(context, ApplinkConst.HOME, "")
+        val intent = RouteManager.getIntent(context, applink, "")
+        intent?.let {
+            TaskStackBuilder.create(context)
+                    .addNextIntent(homeIntent)
+                    .addNextIntent(intent)
+                    .startActivities()
+        }
+        thankYouPageAnalytics.get().sendBelanjaLagiClickEvent(
+                PaymentPageMapper.getPaymentPageType(thanksPageData.pageType),
+                thanksPageData.paymentID.toString())
         activity?.finish()
     }
 
@@ -235,7 +258,8 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
 
     override fun gotoOrderList() {
         try {
-            thankYouPageAnalytics.get().sendCheckTransactionListEvent()
+            thankYouPageAnalytics.get()
+                    .sendCheckTransactionListEvent(thanksPageData.paymentID.toString())
             val homeIntent = RouteManager.getIntent(context, ApplinkConst.HOME, "")
             val orderListListIntent = getOrderListPageIntent()
             orderListListIntent?.let {
@@ -253,8 +277,9 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         try {
             if(applink.isNullOrBlank()){
                 gotoOrderList()
-            }else {
-                thankYouPageAnalytics.get().sendCheckTransactionListEvent()
+            } else {
+                thankYouPageAnalytics.get()
+                        .sendCheckTransactionListEvent(thanksPageData.paymentID.toString())
                 val homeIntent = RouteManager.getIntent(context, ApplinkConst.HOME, "")
                 val orderListListIntent = RouteManager.getIntent(context, applink)
                 orderListListIntent?.let {
@@ -271,8 +296,6 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
 
 
     private fun getOrderListPageIntent(): Intent? {
-        //todo need multi deeplink once other type of transaction integrated.
-        // ..currently it is for only market place
         return RouteManager.getIntent(context, ApplinkConst.MARKETPLACE_ORDER)
     }
 

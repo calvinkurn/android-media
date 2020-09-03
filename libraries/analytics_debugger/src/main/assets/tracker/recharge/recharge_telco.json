@@ -1,0 +1,317 @@
+{
+  "readme": "Telco revamp product with filter and cluster prepaid & postpaid",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "openScreen",
+      "screenName": "{{/digital/.*}}",
+      "isLoggedInStatus": "{{true|false}}",
+      "currentSite": "tokopediadigital",
+      "userId": "{{.*}}",
+      "businessUnit": "recharge",
+      "category": "{{.*}}",
+      "digitalCategoryId": "{{.*}}",
+      "clientId": "{{.*}}",
+      "sessionIris": "{{.*}}",
+      "shopId": "{{.*}}",
+      "appsflyerId": "{{.*}}",
+      "networkSpeed": "{{.*}}"
+    },
+    {
+      "event": "clickHomepage",
+      "eventCategory": "digital - homepage",
+      "eventAction": "input manual number",
+      "eventLabel": "{{.* - .*}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "clickHomepage",
+      "eventCategory": "digital - homepage",
+      "eventAction": "input from contact",
+      "eventLabel": "{{.* - .*}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "clickHomepage",
+      "eventCategory": "digital - homepage",
+      "eventAction": "input from favorite number",
+      "eventLabel": "{{.* - .*}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "clickHomepage",
+      "eventCategory": "digital - homepage",
+      "eventAction": "click on contact number",
+      "eventLabel": "",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "clickHomepage",
+      "eventCategory": "digital - homepage",
+      "eventAction": "click x on input number",
+      "eventLabel": "",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "clickHomepage",
+      "eventCategory": "digital - homepage",
+      "eventAction": "click on telco category",
+      "eventLabel": "{{.* - .*}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "clickHomepage",
+      "eventCategory": "digital - homepage",
+      "eventAction": "user click back button",
+      "eventLabel": "{{.*}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "clickHomepage",
+      "eventCategory": "digital - homepage",
+      "eventAction": "user click see more",
+      "eventLabel": "{{.*}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "clickHomepage",
+      "eventCategory": "digital - homepage",
+      "eventAction": "click x on detail product",
+      "eventLabel": "{{.*}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "clickHomepage",
+      "eventCategory": "digital - homepage",
+      "eventAction": "click salin promo digital",
+      "eventLabel": "{{.* - .*}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "clickHomepage",
+      "eventCategory": "digital - homepage",
+      "eventAction": "click cek tagihan",
+      "eventLabel": "{{.* - .*}}",
+      "currentSite": "tokopediadigital",
+      "userId": "{{.*}}",
+      "businessUnit": "recharge",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "clickHomepage",
+      "eventCategory": "digital - homepage",
+      "eventAction": "click tab promo",
+      "eventLabel": "{{.*}}",
+      "currentSite": "tokopediadigital",
+      "userId": "{{.*}}",
+      "businessUnit": "recharge",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "clickHomepage",
+      "eventCategory": "digital - homepage",
+      "eventAction": "click tab recent",
+      "eventLabel": "{{.*}}",
+      "currentSite": "tokopediadigital",
+      "userId": "{{.*}}",
+      "businessUnit": "recharge",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "view_item_list",
+      "eventCategory": "digital - homepage",
+      "eventAction": "impression product cluster",
+      "eventLabel": "{{.* - .*}}",
+      "currentSite": "tokopediadigital",
+      "userId": "{{.*}}",
+      "businessUnit": "recharge",
+      "item_list": "{{.*}}",
+      "sessionIris": "{{.*}}",
+      "clientId": "{{.*}}",
+      "items": [
+        {
+          "item_id": "{{.*}}",
+          "item_name": "{{.*}}",
+          "item_brand": "{{.*}}",
+          "item_variant": "{{.*}}",
+          "item_category": "{{.*}}",
+          "index": "{{\\d*.\\d*}}",
+          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}"
+        }
+      ]
+    },
+    {
+      "event": "select_content",
+      "eventCategory": "digital - homepage",
+      "eventAction": "click product cluster",
+      "eventLabel": "{{.* - .* - .*}}",
+      "currentSite": "tokopediadigital",
+      "userId": "{{.*}}",
+      "businessUnit": "recharge",
+      "item_list": "{{.*}}",
+      "sessionIris": "{{.*}}",
+      "clientId": "{{.*}}",
+      "items": [
+        {
+          "item_id": "{{.*}}",
+          "item_name": "{{.*}}",
+          "item_brand": "{{.*}}",
+          "item_variant": "{{.*}}",
+          "item_category": "{{.*}}",
+          "index": "{{\\d*.\\d*}}",
+          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
+          "dimension40": "{{.*}}"
+        }
+      ]
+    },
+    {
+      "event": "add_to_cart",
+      "eventCategory": "digital - homepage",
+      "eventAction": "click pilih detail cluster",
+      "clientId": "{{.*}}",
+      "screenName": "{{pulsa|paket data|roaming}}",
+      "eventLabel": "{{.* - .* - .*}}",
+      "currentSite": "tokopediadigital",
+      "userId": "{{.*}}",
+      "sessionIris": "{{.*}}",
+      "businessUnit": "recharge",
+      "items": [
+        {
+          "item_id": "{{.*}}",
+          "item_name": "{{.*}}",
+          "item_brand": "{{.*}}",
+          "item_variant": "{{.*}}",
+          "item_category": "{{.*}}",
+          "quantity": "{{\\d*.\\d*}}",
+          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}"
+        }
+      ]
+    },
+    {
+      "event": "view_item",
+      "eventCategory": "digital - homepage",
+      "eventAction": "impression promo digital",
+      "eventLabel": "{{.*}}",
+      "sessionIris": "{{.*}}",
+      "promotions": [
+        {
+          "creative_name": "{{.*}}",
+          "creative_slot": "{{.*}}",
+          "item_id": "{{.*}}",
+          "item_name": "{{.*}}",
+          "promo_code": "{{.*}}",
+          "promo_id": "{{.*}}",
+          "category": "{{.*}}"
+        }
+      ]
+    },
+    {
+      "event": "select_content",
+      "eventCategory": "digital - homepage",
+      "eventAction": "click promo digital",
+      "eventLabel": "{{.* - .*}}",
+      "sessionIris": "{{.*}}",
+      "promotions": [
+        {
+          "creative_name": "{{.*}}",
+          "creative_slot": "{{.*}}",
+          "item_id": "{{.*}}",
+          "item_name": "{{.*}}",
+          "promo_code": "{{.*}}",
+          "promo_id": "{{.*}}",
+          "category": "{{.*}}",
+          "creative_url": "{{.*}}"
+        }
+      ]
+    },
+    {
+      "event": "view_item_list",
+      "eventCategory": "digital - homepage",
+      "eventAction": "impression recent icon",
+      "eventLabel": "{{.*}}",
+      "sessionIris": "{{.*}}",
+      "item_list": "{{.*}}",
+      "items": [
+        {
+          "item_id": "{{.*}}",
+          "item_name": "{{.*}}",
+          "item_brand": "{{.*}}",
+          "item_variant": "{{.*}}",
+          "item_category": "{{.*}}",
+          "index": "{{\\d*.\\d*}}",
+          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
+          "dimension40": "{{.*}}"
+        }
+      ]
+    },
+    {
+      "event": "select_content",
+      "eventCategory": "digital - homepage",
+      "eventAction": "click recent icon",
+      "eventLabel": "{{.* - .*}}",
+      "sessionIris": "{{.*}}",
+      "item_list": "{{.* - .* - .* - .*}}",
+      "items": [
+        {
+          "item_id": "{{.*}}",
+          "item_name": "{{.*}}",
+          "item_brand": "{{.*}}",
+          "item_variant": "{{.*}}",
+          "item_category": "{{.*}}",
+          "index": "{{\\d*.\\d*}}",
+          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}"
+        }
+      ]
+    },
+    {
+      "event": "clickHomepage",
+      "eventCategory": "digital - homepage",
+      "eventAction": "click 3 dots",
+      "eventLabel": "{{.*}}",
+      "currentSite": "tokopediadigital",
+      "userId": "{{.*}}",
+      "businessUnit": "recharge",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "clickHomepage",
+      "eventCategory": "digital - homepage",
+      "eventAction": "click quick filter",
+      "eventLabel": "{{.* - .*}}",
+      "currentSite": "tokopediadigital",
+      "userId": "{{.*}}",
+      "businessUnit": "recharge",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "clickHomepage",
+      "eventCategory": "digital - homepage",
+      "eventAction": "click Simpan",
+      "eventLabel": "{{.*}}",
+      "currentSite": "tokopediadigital",
+      "userId": "{{.*}}",
+      "businessUnit": "recharge",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "clickHomepage",
+      "eventCategory": "digital - homepage",
+      "eventAction": "click Reset filter bottom sheet",
+      "eventLabel": "{{.* - .*}}",
+      "currentSite": "tokopediadigital",
+      "userId": "{{.*}}",
+      "businessUnit": "recharge",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "clickHomepage",
+      "eventCategory": "digital - homepage",
+      "eventAction": "click reset cluster",
+      "eventLabel": "{{.*}}",
+      "currentSite": "tokopediadigital",
+      "userId": "{{.*}}",
+      "businessUnit": "recharge",
+      "sessionIris": "{{.*}}"
+    }
+  ]
+}

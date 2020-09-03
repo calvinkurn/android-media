@@ -31,3 +31,5 @@ internal fun GtmLogDB.toUiModel() = GtmLogUi(
 internal fun Map<String, Any>.getQueryMap(): List<Map<String, Any>> {
     return this["query"] as List<Map<String, Any>>
 }
+
+internal fun Map<String, Any>.getMode(): String = this["mode"] as String

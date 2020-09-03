@@ -52,21 +52,6 @@
 
     <string name="list_sold_product_text">Daftar Produk Terjual</string>
 
-    <!-- reputation history -->
-    <string name="shop_reputation">Reputasi Toko</string>
-    <string name="reputation_point_calculation">Perhitungan Poin Reputasi</string>
-
-    <string name="point"> poin</string>
-    <string name="reputation_history_label_good_job">Tidak ada penalti pada periode ini</string>
-    <string name="reputation_history_label_info_no_penalty">Ubah tanggal untuk melihat penalti pada periode sebelumnya.</string>
-    <string name="reputation_history_label_change_date">Ubah Tanggal</string>
-    <string name="reputation_history_label_congrats_no_penalty">Anda tidak memiliki Penalti</string>
-    <string name="reputation_history_label_improve_selling_get_badge">Tingkatkan terus penjualan &amp; pelayanan toko Anda untuk mendapatkan badge &amp; poin reputasi</string>
-    <string name="best_deal">BEST DEAL!</string>
-    <string name="message_exception_description">Terjadi kesalahan koneksi.\nSilahkan coba kembali"</string>
-    <string name="try_again">COBA KEMBALI</string>
-
-
     <!-- SHOP SETTING-->
     <string name="title_activity_payment_editor">Pembayaran</string>
     <string name="title_activity_etalase_shop_editor">Pengaturan Etalase Toko</string>
@@ -84,9 +69,6 @@
 
     <string name="app_widget_title_new_order">Order</string>
     <string name="app_widget_new_order_wording_empty">Belum ada data</string>
-    <string name="app_widget_label_today">Hari ini</string>
-    <string name="app_widget_label_tomorrow">Besok</string>
-    <string name="app_widget_label_left_day">%d Hari Lagi</string>
     <string name="product_instagram_draft_error_save_unknown">Terjadi kesalahan ketika mengupload draft instagram.</string>
     <string name="product_instagram_draft_error_save_resolution">Gambar instagram memiliki resolusi di bawah 300 pixel.</string>
     <string name="product_draft_instagram_save_success">%1$d Produk Instagram Anda berhasil ditambahkan di draft.</string>
@@ -342,6 +324,6 @@
 
     <!--Charge BO-->
     <string name="charge_bo_ticker_title">Bebas Ongkir untuk PM akan dikenai biaya</string>
-    <string name="charge_bo_ticker_content">Power Merchant (PM) bisa nonaktifkan Bebas Ongkir saja tanpa harus nonaktifkan siCepat &amp; AntarAja &lt;a href="#"&gt;di sini.&lt;/a&gt;</string>
+    <string name="charge_bo_ticker_content">Power Merchant (PM) bisa nonaktifkan Bebas Ongkir saja tanpa harus nonaktifkan SiCepat &amp; AntarAja &lt;a href="#"&gt;di sini.&lt;/a&gt;</string>
 
 </resources>

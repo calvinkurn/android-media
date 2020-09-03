@@ -48,8 +48,14 @@
     <string name="ya_saya_mau">Ya, Saya Mau!</string>
     <string name="batalkan">Batalkan</string>
     <string name="terpakai">Terpakai Rp %,.0f</string>
-    <string name="anggaran_harian_status">Anggaran Harian Rp %,.0f</string>
     <string name="toaster_inactive_success">Iklan Otomatis berhasil dinonaktifkan</string>
+
+    <!-- Edit auto ads -->
+    <string name="edit_auto_ads_sheet_desc1">Semakin tinggi anggaran harian, semakin besar potensi produkmu menjangkau lebih banyak pembeli.</string>
+    <string name="edit_auto_ads_sheet_desc2">Anggaran harian hanya akan mengiklankan produk-produkmu yang berpotensi laku.</string>
+    <string name="edit_auto_ads_sheet_desc3">Kamu dapat atur atau hentikan anggaran harian kapan saja!</string>
+    <string name="edit_auto_ads_sheet_desc4">Jumlah klik produk dipengaruhi oleh kualitas gambar, rating, dan ulasan dari pembeli.</string>
+
 
     //Ad Create Auto
     <string name="tip_title">Seputar Anggaran Harian</string>
@@ -59,10 +65,36 @@
     <string name="more_info">https://seller.tokopedia.com/edu/cara-topads-mendeteksi-klik-tampil-yang-tidak-valid/</string>
     <string name="range_start">Rp%d</string>
     <string name="range_end">Rp%d</string>
-    <string name="potential_ads_reach">Iklan berpotensi menjangkau hingga</string>
-    <string name="price_range">orang per hari</string>
+    <string name="potential_ads_reach">Potensi maksimum klik harian hingga</string>
+    <string name="price_range">kali</string>
     <string name="iklankan">Iklankan</string>
     <string name="budget_range">Anggaran Harian</string>
     <string name="auto_ads_creation">Buat Iklan Otomatis</string>
     <string name="info_text">Sistem TopAds melindungi iklanmu dari klik yang tidak valid. Info Selengkapnya</string>
+    <string name="confirmation_switch_manual_description">Dengan Iklan Otomatis, pasti lebih mudah dan cepat untuk promosikan produkmu di halaman teratas.</string>
+    <string name="confirmation_switch_manual">Yakin beralih dari Iklan Otomatis?</string>
+    <string name="gunakan_iklan_manual">Mulai Iklan Manual</string>
+    <string name="cancel_btn">Batalkan</string>
+
+
+    <!-- Auto ads status widget-->
+    <string name="autoads_inprogress_desc">Tunggu ya, proses pembuatan iklanmu membutuhkan waktu.</string>
+    <string name="autoads_outofstock_desc">Iklan tidak tampil karena stok barang habis.</string>
+    <string name="autoads_outofcredit_desc">Iklan tidak tampil karena kredit kurang.</string>
+    <string name="autoads_merchant_closed_desc">Iklan tidak tampil karena toko sedang tutup.</string>
+    <string name="autoads_outofcredit_desc_edit">Iklan tidak tampil kredit tidak mencukupi.</string>
+    <string name="autoads_outofbudget_desc_edit">Anggaran Harian Habis. Naikan anggaran untuk mulai tampil lagi.</string>
+    <string name="autoads_outofbudget_desc">Iklan tidak tampil karena anggaran harian habis.</string>
+    <string name="autoads_lottie_title1">Semakin mudah beriklan</string>
+    <string name="autoads_lottie_desc1">Cukup atur anggaran harian, Iklan Otomatis akan pilih produk dan bid terbaik untuk optimalkan iklanmu.</string>
+    <string name="autoads_lottie_title2">Iklankan produk terbaik</string>
+    <string name="autoads_lottie_desc2">Iklan Otomatis memilih produk yang tepat untuk meningkatkan performa penjualanmu.</string>
+    <string name="autoads_lottie_title3">Efektif pasang biaya iklan</string>
+    <string name="autoads_lottie_desc3">Biaya iklanmu akan otomatis disesuaikan agar performa iklan lebih optimal.</string>
+    <string name="autoads_selanjutnya">Selanjutnya</string>
+    <string name="autoads_coba_iklan">Coba Iklan Otomatis</string>
+    <string name="autoads_skip">"Skip</string>
+
+
+
 </resources>

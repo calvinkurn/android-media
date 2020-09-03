@@ -1,2 +1,21 @@
-<manifest package="com.tokopedia.seller_migration_common">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.seller_migration_common">
+
+    <application>
+        <activity
+            android:name=".presentation.activity.SellerMigrationActivity"
+            android:theme="@style/Theme.White">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_seller"
+                    android:path="@string/path_seller_migration"
+                    android:scheme="@string/tokopedia_scheme" />
+            </intent-filter>
+        </activity>
+    </application>
 </manifest>

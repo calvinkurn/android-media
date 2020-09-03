@@ -41,7 +41,7 @@ import kotlin.math.roundToInt
 /**
  * Created by Lukas on 2019-08-20
  */
-class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : AbstractViewHolder<HeaderDataModel>(itemView) {
+class OvoViewHolder(itemView: View, val listener: HomeCategoryListener?) : AbstractViewHolder<HeaderDataModel>(itemView) {
     private val context = itemView.context
 
     companion object {
@@ -50,7 +50,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
         @LayoutRes
         val NON_LOGIN_LAYOUT = R.layout.layout_item_widget_ovo_tokopoint_nonlogin
 
-        private const val TITLE_HEADER_WEBSITE = "TokoPoints"
+        private const val TITLE_HEADER_WEBSITE = "Tokopedia"
         private const val TITLE = "OVO"
         private const val WALLET_TYPE = "OVO"
         private const val CDN_URL = "https://ecs7.tokopedia.net/img/android/"
@@ -82,7 +82,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
 
         container.setOnClickListener {
             HomePageTracking.eventTokopointNonLogin(itemView.context)
-            listener.onTokopointCheckNowClicked(ApplinkConstInternalPromo.TOKOPOINTS_HOME)
+            listener?.onTokopointCheckNowClicked(ApplinkConstInternalPromo.TOKOPOINTS_HOME)
         }
         scanHolder.setOnClickListener { goToScanner() }
     }
@@ -114,7 +114,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
         if (element.homeHeaderWalletActionData == null && element.isWalletDataError) {
             tokoCashHolder.setOnClickListener {
                 tokocashProgressBar.visibility = View.VISIBLE
-                listener.onRefreshTokoCashButtonClicked()
+                listener?.onRefreshTokoCashButtonClicked()
             }
             tvTitleTokocash.setText(R.string.home_header_tokocash_unable_to_load_label)
             tvActionTokocash.setText(R.string.home_header_tokocash_refresh_label)
@@ -147,6 +147,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
                         if (homeHeaderWalletAction.isShowTopup) {
                             tvBalanceTokocash.setTextColor(itemView.context.getResColor(R.color.tkpd_main_green))
                             tvBalanceTokocash.text = itemView.resources.getString(R.string.home_header_topup_ovo)
+                            tvBalanceTokocash.setTypeface(tvBalanceTokocash.getTypeface(), Typeface.BOLD)
                             tokoCashHolder.setOnClickListener { gotToTopupOvo(homeHeaderWalletAction.topupUrl) }
                         } else {
                             tvBalanceTokocash.text = itemView.resources.getString(R.string.home_header_fintech_points, homeHeaderWalletAction.pointBalance)
@@ -160,7 +161,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
                                 tvTitleTokocash.text = "(+ ${element?.cashBackData?.amountText} )"
                             }
                         } else {
-                            listener.onRequestPendingCashBack()
+                            listener?.onRequestPendingCashBack()
                         }
                         tvTitleTokocash.visibility = View.VISIBLE
                     }
@@ -172,7 +173,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
                         if (!homeHeaderWalletAction.appLinkActionButton.contains("webview") && !homeHeaderWalletAction.isLinked) {
                             HomePageTracking.eventTokoCashActivateClick(itemView.context)
                         }
-                        listener.actionAppLinkWalletHeader(homeHeaderWalletAction.appLinkActionButton)
+                        listener?.actionAppLinkWalletHeader(homeHeaderWalletAction.appLinkActionButton)
                     }
                     tokoCashHolder.setOnClickListener {
                         if (homeHeaderWalletAction.appLinkBalance != "" &&
@@ -181,7 +182,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
                             HomePageTracking.eventTokoCashCheckSaldoClick(itemView.context)
                         }
 
-                        listener.actionAppLinkWalletHeader(homeHeaderWalletAction.appLinkBalance)
+                        listener?.actionAppLinkWalletHeader(homeHeaderWalletAction.appLinkBalance)
                     }
                     ivLogoTokocash.setImageResource(R.drawable.ic_tokocash)
 
@@ -194,19 +195,17 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
                     } else {
                         tvBalanceTokocash.visibility = View.GONE
                         tvActionTokocash.visibility = View.VISIBLE
-                        if (element.isPendingTokocashChecked && element.cashBackData != null) {
-                            if (element.cashBackData?.amount?:0 > 0) {
-                                tvActionTokocash.visibility = View.GONE
-                                tvBalanceTokocash.visibility = View.VISIBLE
-                                tvBalanceTokocash.text = element?.cashBackData?.amountText?:""
-                                tvBalanceTokocash.setOnClickListener {
-                                    element.cashBackData?.let {
-                                        listener.actionInfoPendingCashBackTokocash(it, homeHeaderWalletAction.appLinkActionButton)
-                                    }
+                        if (element.isPendingTokocashChecked && element.cashBackData != null && element.cashBackData?.amount?:0 > 0) {
+                            tvActionTokocash.visibility = View.GONE
+                            tvBalanceTokocash.visibility = View.VISIBLE
+                            tvBalanceTokocash.text = element?.cashBackData?.amountText?:""
+                            tvBalanceTokocash.setOnClickListener {
+                                element.cashBackData?.let {
+                                    listener?.actionInfoPendingCashBackTokocash(it, homeHeaderWalletAction.appLinkActionButton)
                                 }
                             }
                         } else {
-                            listener.onRequestPendingCashBack()
+                            listener?.onRequestPendingCashBack()
                         }
                     }
                 }
@@ -226,7 +225,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
         if (element.tokopointsDrawerHomeData == null && element.isTokoPointDataError) {
             tokoPointHolder.setOnClickListener {
                 tokopointProgressBarLayout.visibility = View.VISIBLE
-                listener.onRefreshTokoPointButtonClicked()
+                listener?.onRefreshTokoPointButtonClicked()
             }
             mTextCouponCount.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
             mTextCouponCount.visibility = View.VISIBLE
@@ -270,7 +269,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
                 if (element.tokopointsDrawerHomeData != null) {
                     HomePageTracking.eventUserProfileTokopoints(itemView.context)
                     element.tokopointsDrawerHomeData?.let {tokopointsDrawerHomeData->
-                        listener.actionTokoPointClicked(
+                        listener?.actionTokoPointClicked(
                                 tokopointsDrawerHomeData.redirectAppLink,
                                 tokopointsDrawerHomeData.redirectURL,
                                 if (TextUtils.isEmpty(tokopointsDrawerHomeData.mainPageTitle))
@@ -355,7 +354,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
     }
     private fun gotToTopupOvo(applinkString: String) {
         if (RouteManager.isSupportApplink(context, applinkString)) {
-            OvoWidgetTracking.eventTopupOvo(listener.userId)
+            OvoWidgetTracking.eventTopupOvo(listener?.userId)
             val intentBalanceWallet = RouteManager.getIntent(context, applinkString)
             context.startActivity(intentBalanceWallet)
         }

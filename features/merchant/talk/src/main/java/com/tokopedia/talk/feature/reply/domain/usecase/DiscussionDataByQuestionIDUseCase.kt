@@ -30,6 +30,7 @@ class DiscussionDataByQuestionIDUseCase @Inject constructor(graphqlRepository: G
                       maskedContent
                       userName
                       userID
+                      userThumbnail
                       createTime
                       createTimeFormatted
                       state {
@@ -40,6 +41,7 @@ class DiscussionDataByQuestionIDUseCase @Inject constructor(graphqlRepository: G
                         allowFollow
                         isFollowed
                         isMasked
+                        isYours
                       }
                       totalAnswer
                       answer {
@@ -60,6 +62,7 @@ class DiscussionDataByQuestionIDUseCase @Inject constructor(graphqlRepository: G
                           allowUnmask
                           allowReport
                           allowDelete
+                          isYours
                         }
                         attachedProductCount
                         attachedProduct {

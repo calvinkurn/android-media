@@ -1,15 +1,15 @@
 package com.tokopedia.analyticsdebugger.database
 
+import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import android.content.Context
 import com.tokopedia.analyticsdebugger.debugger.data.source.*
 
 /**
  * @author okasurya on 5/14/18.
  */
-@Database(entities = [GtmLogDB::class, FpmLogDB::class, ApplinkLogDB::class, TopAdsLogDB::class, IrisSaveLogDB::class, IrisSendLogDB::class, GtmErrorLogDB::class], version = 5)
+@Database(entities = [GtmLogDB::class, FpmLogDB::class, ApplinkLogDB::class, TopAdsLogDB::class, IrisSaveLogDB::class, IrisSendLogDB::class, GtmErrorLogDB::class], version = 6)
 abstract class TkpdAnalyticsDatabase : RoomDatabase() {
 
     abstract fun gtmLogDao(): GtmLogDao

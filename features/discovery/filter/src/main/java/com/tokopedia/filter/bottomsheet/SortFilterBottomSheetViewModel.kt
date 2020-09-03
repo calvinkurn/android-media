@@ -23,6 +23,7 @@ internal class SortFilterBottomSheetViewModel {
 
     companion object {
         private const val SORT_VIEW_POSITION = 0
+        private const val SHOW_KNOB_MINIMUM_SECTION = 3
         const val MAX_OPTION_SIZE = 5
     }
 
@@ -36,6 +37,9 @@ internal class SortFilterBottomSheetViewModel {
     private val selectedSortMap = mutableMapOf<String, String>()
 
     private var dynamicFilterModel: DynamicFilterModel? = null
+
+    var showKnob = true
+        private set
 
     private val sortFilterListMutableLiveData = MutableLiveData<List<Visitable<SortFilterBottomSheetTypeFactory>>>()
     val sortFilterListLiveData: LiveData<List<Visitable<SortFilterBottomSheetTypeFactory>>>
@@ -61,6 +65,10 @@ internal class SortFilterBottomSheetViewModel {
     val trackPriceRangeClickEventLiveData: LiveData<Event<Map<String, Any>>>
         get() = trackPriceRangeClickEventMutableLiveData
 
+    private val isLoadingForDynamicFilterMutableLiveData = MutableLiveData<Boolean>()
+    val isLoadingForDynamicFilterLiveData: LiveData<Boolean>
+        get() = isLoadingForDynamicFilterMutableLiveData
+
     private val sortFilterList = mutableListOf<Visitable<SortFilterBottomSheetTypeFactory>>()
     private val filterController = FilterController()
     private val sortApplyFilterMap = mutableMapOf<String, String>()
@@ -69,11 +77,27 @@ internal class SortFilterBottomSheetViewModel {
 
     fun init(mapParameter: Map<String, String>, dynamicFilterModel: DynamicFilterModel?) {
         this.mutableMapParameter = mapParameter.toMutableMap()
+
+        initializeDynamicFilterModel(dynamicFilterModel)
+    }
+
+    private fun initializeDynamicFilterModel(dynamicFilterModel: DynamicFilterModel?) {
         this.dynamicFilterModel = dynamicFilterModel
 
-        filterController.initFilterController(mapParameter, dynamicFilterModel?.data?.filter)
+        showKnob = determineShouldShowKnob(dynamicFilterModel)
+
+        filterController.initFilterController(mutableMapParameter, dynamicFilterModel?.data?.filter)
         originalFilterViewState.addAll(filterController.filterViewStateSet)
         originalSortValue = getSelectedSortValue()
+    }
+
+    private fun determineShouldShowKnob(dynamicFilterModel: DynamicFilterModel?): Boolean {
+        dynamicFilterModel ?: return true
+
+        val hasSort = dynamicFilterModel.data.sort.isNotEmpty()
+        val sectionCount = (dynamicFilterModel.data.filter.size + if (hasSort) 1 else 0)
+
+        return sectionCount > SHOW_KNOB_MINIMUM_SECTION
     }
 
     private fun getSelectedSortValue(): String {
@@ -87,14 +111,27 @@ internal class SortFilterBottomSheetViewModel {
     fun getSelectedCategoryFilterValue() = filterController.getFilterValue(SearchApiConst.SC)
 
     fun onViewCreated() {
-        val dynamicFilterModel = this.dynamicFilterModel ?: return
+        if (this.dynamicFilterModel == null) {
+            isLoadingForDynamicFilterMutableLiveData.value = true
+            return
+        }
 
+        this.dynamicFilterModel?.let { processSortFilterList(it) }
+    }
+
+    fun lateInitDynamicFilterModel(dynamicFilterModel: DynamicFilterModel) {
+        initializeDynamicFilterModel(dynamicFilterModel)
+        processSortFilterList(dynamicFilterModel)
+    }
+
+    private fun processSortFilterList(dynamicFilterModel: DynamicFilterModel) {
         val dynamicFilterModelData = dynamicFilterModel.data
         processSortData(dynamicFilterModelData)
         processFilterData(dynamicFilterModelData)
 
         if (sortFilterList.isEmpty()) return
 
+        isLoadingForDynamicFilterMutableLiveData.value = false
         sortFilterListMutableLiveData.value = sortFilterList
         isButtonResetVisibleMutableLiveData.value = isButtonResetVisible()
     }
@@ -412,14 +449,27 @@ internal class SortFilterBottomSheetViewModel {
     }
 
     fun onSortItemClick(sortItemViewModel: SortItemViewModel) {
-        sortItemViewModel.isSelected = true
+        val appliedSort = getAppliedSort(sortItemViewModel)
 
-        applySort(sortItemViewModel)
+        applySort(appliedSort)
 
         notifyViewOnSortItemClick()
     }
 
+    private fun getAppliedSort(sortItemViewModel: SortItemViewModel): SortItemViewModel {
+        if (sortItemViewModel.isSelected) {
+            val sortViewModel = sortFilterList[SORT_VIEW_POSITION]
+
+            if (sortViewModel is SortViewModel)
+                return sortViewModel.getDefaultSortItemViewModel() ?: sortItemViewModel
+        }
+
+        return sortItemViewModel
+    }
+
     private fun applySort(sortItemViewModel: SortItemViewModel) {
+        sortItemViewModel.isSelected = true
+
         val selectedSort = sortItemViewModel.sort
 
         sortApplyFilterMap.replaceWithMap(selectedSort.applyFilter.toMapParam())

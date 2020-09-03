@@ -2,13 +2,13 @@ package com.tokopedia.notifications.inApp;
 
 import android.app.Activity;
 import android.app.Application;
-import android.content.Intent;
-import android.net.Uri;
-import android.util.Log;
+import android.view.View;
+import android.widget.FrameLayout;
 
 import com.google.firebase.messaging.RemoteMessage;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.notifications.CMRouter;
+import com.tokopedia.notifications.R;
 import com.tokopedia.notifications.common.IrisAnalyticsEvents;
 import com.tokopedia.notifications.inApp.ruleEngine.RulesManager;
 import com.tokopedia.notifications.inApp.ruleEngine.interfaces.DataProvider;
@@ -19,6 +19,7 @@ import com.tokopedia.notifications.inApp.viewEngine.CMInAppController;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConvertor;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppListener;
 import com.tokopedia.notifications.inApp.viewEngine.ElementType;
+import com.tokopedia.notifications.inApp.viewEngine.ViewEngine;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -27,18 +28,26 @@ import androidx.annotation.NonNull;
 
 import static com.tokopedia.notifications.inApp.ruleEngine.RulesUtil.Constants.RemoteConfig.KEY_CM_INAPP_END_TIME_INTERVAL;
 import static com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConvertor.HOURS_24_IN_MILLIS;
-
+import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_INTERSTITIAL;
+import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_INTERSTITIAL_IMAGE_ONLY;
 
 /**
  * @author lalit.singh
  */
-public class CMInAppManager implements CmInAppListener {
+public class CMInAppManager implements CmInAppListener, DataProvider {
 
     private static CMInAppManager inAppManager;
     private Application application;
     private WeakReference<Activity> currentActivity;
     private CmInAppListener cmInAppListener;
     private final Object lock = new Object();
+    private List<String> excludeScreenList;
+
+    /*
+    * This flag is used for validation of the dialog to be displayed.
+    * This is useful for avoiding InApp dialog appearing more than once.
+    * */
+    private Boolean isDialogShowing = false;
 
     static {
         inAppManager = new CMInAppManager();
@@ -61,10 +70,8 @@ public class CMInAppManager implements CmInAppListener {
     }
 
     public static CmInAppListener getCmInAppListener() {
-        if (inAppManager == null)
-            return null;
-        if (inAppManager.cmInAppListener == null)
-            return null;
+        if (inAppManager == null) return null;
+        if (inAppManager.cmInAppListener == null) return null;
         return inAppManager.cmInAppListener;
     }
 
@@ -77,30 +84,88 @@ public class CMInAppManager implements CmInAppListener {
     }
 
     private void showInAppNotification() {
-        DataProvider dataProvider = inAppDataList -> {
-            synchronized (lock) {
-                if (canShowInApp(inAppDataList)) {
-                    CMInApp cmInApp = inAppDataList.get(0);
-                    showDialog(cmInApp);
-                    dataConsumed(cmInApp);
-                }
-            }
-        };
-
+        if (excludeScreenList != null && excludeScreenList.contains(currentActivity.get().getClass().getName()))
+            return;
         RulesManager.getInstance().checkValidity(
                 currentActivity.get().getClass().getName(),
                 0L,
-                dataProvider
+                this
         );
     }
 
-    private void showDialog(CMInApp data) {
+    @Override
+    public void notificationsDataResult(List<CMInApp> inAppDataList) {
+        synchronized (lock) {
+            if (canShowInApp(inAppDataList)) {
+                CMInApp cmInApp = inAppDataList.get(0);
+                sendEventInAppPrepared(cmInApp);
+                showDialog(cmInApp);
+                dataConsumed(cmInApp);
+            }
+        }
+    }
+
+    private void sendEventInAppPrepared(CMInApp cmInApp) {
+        sendPushEvent(cmInApp, IrisAnalyticsEvents.INAPP_PREREAD, null);
+    }
+
+    @Override
+    public void sendEventInAppDelivered(CMInApp cmInApp) {
+        sendPushEvent(cmInApp, IrisAnalyticsEvents.INAPP_DELIVERED, null);
+    }
+
+    /**
+     * legacy dialog
+     * @param cmInApp
+     */
+    private void showLegacyDialog(CMInApp cmInApp) {
+        Activity activity = getCurrentActivity();
+        ViewEngine viewEngine = new ViewEngine(currentActivity.get());
+
+        final View view = viewEngine.createView(cmInApp);
+        if (view == null) return;
+
+        View inAppViewPrev = activity.findViewById(R.id.mainContainer);
+        //In-App view already present on Activity
+        if (null != inAppViewPrev) return;
+
+        FrameLayout root = (FrameLayout) activity.getWindow()
+                .getDecorView()
+                .findViewById(android.R.id.content)
+                .getRootView();
+        root.addView(view);
+
+        // set flag if has dialog showing
+        isDialogShowing = true;
+    }
+
+    /**
+     * dialog for interstitial and interstitialImg
+     * @param data
+     */
+    private void interstitialDialog(CMInApp data) {
         if (getCurrentActivity() == null) return;
         Activity activity = getCurrentActivity();
         try {
+            // show interstitial banner
             BannerView.create(activity, data);
+
+            // set flag if has dialog showing
+            isDialogShowing = true;
         } catch (Exception e) {
             onCMInAppInflateException(data);
+        }
+    }
+
+    private void showDialog(CMInApp data) {
+        switch (data.getType()) {
+            case TYPE_INTERSTITIAL_IMAGE_ONLY:
+            case TYPE_INTERSTITIAL:
+                interstitialDialog(data);
+                break;
+            default:
+                showLegacyDialog(data);
+                break;
         }
     }
 
@@ -121,16 +186,19 @@ public class CMInAppManager implements CmInAppListener {
     }
 
     public void onActivityStartedInternal(Activity activity) {
-        if (application == null)
-            application = activity.getApplication();
+        if (application == null) application = activity.getApplication();
         updateCurrentActivity(activity);
-        showInAppNotification();
+
+        if (!isDialogShowing) {
+            showInAppNotification();
+        }
     }
 
     public void onActivityStopInternal(Activity activity) {
         if (currentActivity != null && currentActivity.get().getClass().
-                getSimpleName().equalsIgnoreCase(activity.getClass().getSimpleName()))
+                getSimpleName().equalsIgnoreCase(activity.getClass().getSimpleName())) {
             currentActivity.clear();
+        }
     }
 
     private void dataConsumed(CMInApp inAppData) {
@@ -150,8 +218,10 @@ public class CMInAppManager implements CmInAppListener {
         try {
             CMInApp cmInApp = CmInAppBundleConvertor.getCmInApp(remoteMessage);
             if (null != cmInApp) {
-                if (currentActivity != null && currentActivity.get() != null)
-                    new CMInAppController().downloadImagesAndUpdateDB(currentActivity.get(), cmInApp);
+                if (application != null) {
+                    sendEventInAppDelivered(cmInApp);
+                    new CMInAppController().downloadImagesAndUpdateDB(application, cmInApp);
+                }
             }
         } catch (Exception e) {
         }
@@ -160,6 +230,7 @@ public class CMInAppManager implements CmInAppListener {
     @Override
     public void onCMinAppDismiss(CMInApp inApp) {
         RulesManager.getInstance().viewDismissed(inApp.id);
+        isDialogShowing = false;
     }
 
     @Override
@@ -168,7 +239,12 @@ public class CMInAppManager implements CmInAppListener {
     }
 
     @Override
-    public void onCMInAppLinkClick(Uri deepLinkUri, CMInApp cmInApp, ElementType elementType) {
+    public void onCMInAppLinkClick(String appLink, CMInApp cmInApp, ElementType elementType) {
+        if (getCurrentActivity() != null) {
+            Activity activity = currentActivity.get();
+            activity.startActivity(RouteManager.getIntent(activity, appLink));
+        }
+
         switch (elementType.getViewType()) {
             case ElementType.BUTTON:
                 sendPushEvent(cmInApp, IrisAnalyticsEvents.INAPP_CLICKED, elementType.getElementId());
@@ -180,8 +256,8 @@ public class CMInAppManager implements CmInAppListener {
     }
 
     private void sendPushEvent(CMInApp cmInApp, String eventName, String elementId) {
-        if (cmInApp == null)
-            return;
+        if (cmInApp == null) return;
+
         if (elementId != null) {
             IrisAnalyticsEvents.INSTANCE.sendPushEvent(application.getApplicationContext(), eventName, cmInApp, elementId);
         } else {
@@ -197,5 +273,9 @@ public class CMInAppManager implements CmInAppListener {
     @Override
     public void onCMInAppInflateException(CMInApp inApp) {
         RulesManager.getInstance().dataInflateError(inApp.id);
+    }
+
+    public void setExcludeScreenList(List<String> excludeScreenList) {
+        this.excludeScreenList = excludeScreenList;
     }
 }

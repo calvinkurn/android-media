@@ -1,6 +1,7 @@
 package com.tokopedia.oneclickcheckout.preference.list.view
 
 import android.content.Intent
+import android.graphics.Color
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -90,7 +91,7 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
             val message = data?.getStringExtra(PreferenceEditActivity.EXTRA_RESULT_MESSAGE)
             if (message != null && message.isNotBlank()) {
                 view?.let {
-                    Toaster.make(it, message)
+                    Toaster.build(it, message).show()
                 }
             }
             viewModel.getAllPreference()
@@ -105,7 +106,7 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
     }
 
     private fun initViewModel() {
-        viewModel.preferenceList.observe(this, Observer {
+        viewModel.preferenceList.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is OccState.Success -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -138,36 +139,35 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
                     }
                 }
                 is OccState.Failed -> {
+                    swipeRefreshLayout?.isRefreshing = false
                     it.getFailure()?.let { failure ->
-                        swipeRefreshLayout?.isRefreshing = false
-                        if (failure.throwable != null) {
-                            handleError(failure.throwable)
-                        }
+                        handleError(failure.throwable)
                     }
                 }
                 else -> swipeRefreshLayout?.isRefreshing = true
             }
         })
-        viewModel.setDefaultPreference.observe(this, Observer {
+        viewModel.setDefaultPreference.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is OccState.Success -> {
                     progressDialog?.dismiss()
                     view?.let { view ->
                         it.data.getData()?.let { message ->
-                            Toaster.make(view, message)
+                            Toaster.build(view, message).show()
                         }
                     }
                 }
                 is OccState.Failed -> {
                     progressDialog?.dismiss()
+                    adapter.notifyDataSetChanged()
                     it.getFailure()?.let { failure ->
                         view?.let { view ->
                             if (failure.throwable is MessageErrorException) {
-                                Toaster.make(view, failure.throwable.message
-                                        ?: DEFAULT_LOCAL_ERROR_MESSAGE, type = Toaster.TYPE_ERROR)
+                                Toaster.build(view, failure.throwable.message
+                                        ?: DEFAULT_LOCAL_ERROR_MESSAGE, type = Toaster.TYPE_ERROR).show()
                             } else {
-                                Toaster.make(view, failure.throwable?.localizedMessage
-                                        ?: DEFAULT_LOCAL_ERROR_MESSAGE, type = Toaster.TYPE_ERROR)
+                                Toaster.build(view, failure.throwable?.localizedMessage
+                                        ?: DEFAULT_LOCAL_ERROR_MESSAGE, type = Toaster.TYPE_ERROR).show()
                             }
                         }
                     }
@@ -187,22 +187,20 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
         })
     }
 
-    private fun handleError(throwable: Throwable) {
+    private fun handleError(throwable: Throwable?) {
         when (throwable) {
             is SocketTimeoutException, is UnknownHostException, is ConnectException -> {
-                view?.let {
-                    showGlobalError(GlobalError.NO_CONNECTION)
-                }
+                showGlobalError(GlobalError.NO_CONNECTION)
             }
             is RuntimeException -> {
-                when (throwable.localizedMessage.toIntOrNull()) {
+                when (throwable.localizedMessage?.toIntOrNull()) {
                     GATEWAY_TIMEOUT, REQUEST_TIMEOUT -> showGlobalError(GlobalError.NO_CONNECTION)
                     NOT_FOUND -> showGlobalError(GlobalError.PAGE_NOT_FOUND)
                     INTERNAL_SERVER_ERROR -> showGlobalError(GlobalError.SERVER_ERROR)
                     else -> {
                         view?.let {
                             showGlobalError(GlobalError.SERVER_ERROR)
-                            Toaster.make(it, DEFAULT_ERROR_MESSAGE, type = Toaster.TYPE_ERROR)
+                            Toaster.build(it, DEFAULT_ERROR_MESSAGE, type = Toaster.TYPE_ERROR).show()
                         }
                     }
                 }
@@ -210,8 +208,8 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
             else -> {
                 view?.let {
                     showGlobalError(GlobalError.SERVER_ERROR)
-                    Toaster.make(it, throwable.message
-                            ?: DEFAULT_ERROR_MESSAGE, type = Toaster.TYPE_ERROR)
+                    Toaster.build(it, throwable?.message
+                            ?: DEFAULT_ERROR_MESSAGE, type = Toaster.TYPE_ERROR).show()
                 }
             }
         }
@@ -227,6 +225,7 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
     }
 
     private fun initViews() {
+        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
         buttonPreferenceListAction?.setOnClickListener {
             preferenceListAnalytics.eventAddPreferenceFromPurchaseSetting()
             val profileNumber = adapter.itemCount + 1

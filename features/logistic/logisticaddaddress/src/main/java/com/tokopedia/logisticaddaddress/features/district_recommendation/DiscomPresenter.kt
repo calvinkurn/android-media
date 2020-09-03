@@ -2,9 +2,9 @@ package com.tokopedia.logisticaddaddress.features.district_recommendation
 
 import com.tokopedia.logisticaddaddress.domain.mapper.DistrictRecommendationMapper
 import com.tokopedia.logisticaddaddress.domain.model.AddressResponse
-import com.tokopedia.logisticaddaddress.domain.model.district_recommendation.DistrictRecommendationResponse
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictRecommendation
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictRequestUseCase
+import com.tokopedia.logisticaddaddress.utils.SimpleIdlingResource
 import com.tokopedia.logisticdata.data.entity.address.Token
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
@@ -33,6 +33,7 @@ class DiscomPresenter @Inject constructor(
      * NANA feature, thus the hit load is still divided with REST loadData
      */
     override fun loadData(query: String, page: Int) {
+        SimpleIdlingResource.increment()
         gqlUsecase.execute(query, page)
                 .doOnSubscribe { view?.setLoadingState(true) }
                 .subscribe(
@@ -43,7 +44,7 @@ class DiscomPresenter @Inject constructor(
                         {
                             view?.setLoadingState(false)
                             view?.showGetListError(it)
-                        }, {}
+                        }, { SimpleIdlingResource.decrement() }
                 )
     }
 

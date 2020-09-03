@@ -4,7 +4,6 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 class Voucher {
-
     @SerializedName("voucher_id")
     @Expose
     var voucherId: Int = 0
@@ -47,4 +46,7 @@ class Voucher {
     @SerializedName("owner_id")
     @Expose
     var ownerId: Int = 0
+    @SerializedName("is_public")
+    @Expose
+    var isPublic: Int = 1
 }

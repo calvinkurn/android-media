@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,6 +18,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
@@ -26,13 +28,12 @@ import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
-import com.tokopedia.talk.common.analytics.TalkTrackingConstants
 import com.tokopedia.talk.common.constants.TalkConstants
 import com.tokopedia.talk.common.constants.TalkConstants.PARAM_SHOP_ID
-import com.tokopedia.talk.common.constants.TalkConstants.PARAM_PRODUCT_ID
 import com.tokopedia.talk.common.constants.TalkConstants.PARAM_SOURCE
 import com.tokopedia.talk.common.constants.TalkConstants.QUESTION_ID
 import com.tokopedia.talk.feature.reply.analytics.TalkReplyTracking
+import com.tokopedia.talk.feature.reply.analytics.TalkReplyTrackingConstants
 import com.tokopedia.talk.feature.reply.data.mapper.TalkReplyMapper
 import com.tokopedia.talk.feature.reply.data.model.discussion.AttachedProduct
 import com.tokopedia.talk.feature.reply.data.model.discussion.DiscussionDataByQuestionIDResponseWrapper
@@ -94,13 +95,15 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     private var shopId = ""
     private var productId = ""
     private var source = ""
+    private var didUserWriteQuestion = false
+    private var hideSuccessToaster = false
     private var adapter: TalkReplyAdapter? = null
     private var attachedProductAdapter: TalkReplyAttachedProductAdapter? = null
     private var talkPerformanceMonitoringListener: TalkPerformanceMonitoringListener? = null
     private var toaster: Snackbar? = null
 
     override fun getScreenName(): String {
-        return TalkTrackingConstants.TALK_SEND_SCREEN_SCREEN_NAME
+        return TalkReplyTrackingConstants.REPLY_SCREEN_NAME
     }
 
     override fun initInjector() {
@@ -255,19 +258,16 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         goToProfileActivity(userId)
     }
 
+    override fun goToProfilePage(userId: String) {
+        goToProfileActivity(userId)
+    }
+
     override fun onUrlClicked(link: String): Boolean {
         return RouteManager.route(context, link)
     }
 
     override fun onProductClicked() {
         goToPdp(productId)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        activity?.run {
-            TalkReplyTracking.sendScreen(screenName)
-        }
     }
 
     private fun goToReportActivity(commentId: String) {
@@ -320,13 +320,10 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     private fun showPageError() {
         pageError.visibility = View.VISIBLE
-        pageError.readingConnectionErrorRetryButton.setOnClickListener {
+        pageError.talkConnectionErrorRetryButton.setOnClickListener {
             showPageLoading()
             hidePageError()
             getDiscussionData()
-        }
-        pageError.readingConnectionErrorGoToSettingsButton.setOnClickListener {
-            RouteManager.route(context, ApplinkConstInternalGlobal.GENERAL_SETTING)
         }
     }
 
@@ -403,6 +400,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         showSuccessToaster(getString(R.string.delete_toaster_success), resources.getBoolean(R.bool.reply_adjust_toaster_height))
         adapter?.clearAllElements()
         getDiscussionData()
+        didUserWriteQuestion = true
     }
 
     private fun onFailDeleteComment() {
@@ -411,7 +409,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     private fun onSuccessDeleteQuestion() {
         this.activity?.let {
-            it.setResult(Activity.RESULT_OK, Intent().putExtra(QUESTION_ID, questionId))
+            it.setResult(Activity.RESULT_FIRST_USER, Intent().putExtra(QUESTION_ID, questionId))
             it.finish()
         }
     }
@@ -436,6 +434,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         adapter?.clearAllElements()
         getDiscussionData()
         showPageLoading()
+        didUserWriteQuestion = true
     }
 
     private fun onFailCreateComment(errorMessage: String?) {
@@ -485,16 +484,21 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
                         }
                         adapter?.showHeader(TalkReplyMapper.mapDiscussionDataResponseToTalkReplyHeaderModel(it.data, viewModel.isMyShop))
                         if(discussionDataByQuestionID.question.totalAnswer > 0) {
-                            showAnswers(this)
+                            showAnswers(this, viewModel.userId)
                         } else {
-                            onAnswersEmpty(discussionDataByQuestionID.question.userId)
+                            onAnswersEmpty(discussionDataByQuestionID.question.questionState.isYours)
                         }
                         setIsFollowing(discussionDataByQuestionID.question.questionState.isFollowed)
                         initTextBox(discussionDataByQuestionID.maxAnswerLength)
                         setProductId(it.data.discussionDataByQuestionID.productId)
+                        TalkReplyTracking.sendScreen(screenName, productId, viewModel.userId)
                         hidePageError()
                         hidePageLoading()
                         replySwipeRefresh.isRefreshing = false
+                        if(isFromWrite() && !hideSuccessToaster) {
+                            hideSuccessToaster = true
+                            showSuccessToaster(getString(R.string.reading_create_question_toaster_success))
+                        }
                     }
                 }
                 else -> {
@@ -607,13 +611,13 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         dialog.show()
     }
 
-    private fun onAnswersEmpty(userId: Int) {
-        showEmpty(userId)
+    private fun onAnswersEmpty(isYours: Boolean) {
+        showEmpty(isYours)
     }
 
-    private fun showAnswers(discussionDataByQuestionIDResponseWrapper: DiscussionDataByQuestionIDResponseWrapper) {
+    private fun showAnswers(discussionDataByQuestionIDResponseWrapper: DiscussionDataByQuestionIDResponseWrapper, userId:String) {
         adapter?.displayAnswers(TalkReplyAnswerCountModel(discussionDataByQuestionIDResponseWrapper.discussionDataByQuestionID.question.totalAnswer),
-                    TalkReplyMapper.mapDiscussionDataResponseToTalkReplyModels(discussionDataByQuestionIDResponseWrapper))
+                    TalkReplyMapper.mapDiscussionDataResponseToTalkReplyModels(discussionDataByQuestionIDResponseWrapper, userId))
     }
 
     private fun deleteReply(commentId: String) {
@@ -684,11 +688,11 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         viewModel.setAttachedProducts(mutableListOf())
     }
 
-    private fun showEmpty(userId: Int) {
-        adapter?.showEmpty(TalkReplyEmptyModel(viewModel.userId == userId.toString()))
+    private fun showEmpty(isYours: Boolean) {
+        adapter?.showEmpty(TalkReplyEmptyModel(isYours))
         replyEditText.apply {
             setOnFocusChangeListener { v, hasFocus ->
-                if (hasFocus) {
+                if (hasFocus && !isYours) {
                     activity.let {
                         KeyboardHandler.showSoftKeyboard(it)
                     }
@@ -711,7 +715,25 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         return source == TalkConstants.NOTIFICATION_SOURCE
     }
 
+    private fun isFromWrite(): Boolean {
+        return source == TalkConstants.WRITING_SOURCE
+    }
+
     private fun setProductId(productId: String) {
         this.productId = productId
+    }
+
+    fun getDidUserWriteQuestion(): Boolean {
+        return didUserWriteQuestion || isFromWrite()
+    }
+
+    fun goToReading() {
+        val intent = RouteManager.getIntent(context,
+                Uri.parse(UriUtil.buildUri(ApplinkConstInternalGlobal.PRODUCT_TALK, productId))
+                        .buildUpon()
+                        .appendQueryParameter(PARAM_SHOP_ID, shopId)
+                        .build().toString()
+        )
+        startActivity(intent)
     }
 }

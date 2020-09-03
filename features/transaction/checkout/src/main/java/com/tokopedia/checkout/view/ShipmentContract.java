@@ -309,7 +309,7 @@ public interface ShipmentContract {
 
         List<DataCheckoutRequest> updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(List<ShipmentCartItemModel> shipmentCartItemModels);
 
-        boolean isIneligbilePromoDialogEnabled();
+        boolean isIneligiblePromoDialogEnabled();
 
         void processSubmitHelpTicket(CheckoutData checkoutData);
 

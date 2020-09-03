@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.common_category.usecase.*
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.hotlist.domain.usecases.HotlistDetailUseCase
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
@@ -42,12 +43,6 @@ class HotlistNavUseCaseModule {
 
     @HotlistNavScope
     @Provides
-    fun provideTopAdsUseCase(context: Context): TopAdsProductsUseCase {
-        return TopAdsProductsUseCase(context)
-    }
-
-    @HotlistNavScope
-    @Provides
     fun getProductListUseCase(categoryProductUseCase: CategoryProductUseCase
                               , topAdsProductsUseCase
                               : TopAdsProductsUseCase)
@@ -71,5 +66,6 @@ class HotlistNavUseCaseModule {
 
     @HotlistNavScope
     @Provides
-    fun provideSendTopAdsUseCase() = SendTopAdsUseCase()
+    fun provideSendTopAdsUseCase(topAdsUrlHitter: TopAdsUrlHitter) = SendTopAdsUseCase(topAdsUrlHitter)
+
 }

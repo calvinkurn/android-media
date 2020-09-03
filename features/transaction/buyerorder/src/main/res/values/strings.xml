@@ -32,7 +32,7 @@
     <string name="title_invoice">Invoice</string>
     <string name="detail_product">Detail Pengiriman</string>
     <string name="awb_number_copied">Nomor Resi berhasil disalin</string>
-    <string name="additional_text">Masa Perlindungan JKK JKM</string>
+    <string name="additional_text">Detail Periode</string>
     <string name="tkpdtransaction_bebas_ongkir">Bebas Ongkir</string>
     <string name="bom_check_cart">Lihat</string>
     <string name="contact_us_text">Untuk bantuan silakan klik disini</string>
@@ -43,7 +43,9 @@
     <color name="title_gray_color">#f531353b</color>
     <string name="text_redeem_voucher">Redeem Voucher</string>
     <string name="deal_voucher_code_copied">Berhasil! Silakan cek voucher di</string>
-    <string name="event_voucher_code_copied">Berhasil! Silakan cek e-tiket di</string>
+    <string name="event_voucher_code_copied">Detail pembelian sudah dikirim ulang ke e-mail yang terdaftar di akun ini.</string>
+    <string name="event_voucher_code_fail">Gagal mengirim email</string>
+    <string name="event_voucher_code_success">Email Telah Terkirim</string>
     <string name="title_voucher_code_copied">Kode Voucher berhasil tersalin</string>
     <string name="tkpdtransaction_widget_title">Top-up &amp; Tagihanmu</string>
     <string name="thank_you">Thank You</string>
@@ -440,9 +442,9 @@ Anda di sini.</string>
     <string name="invoice_placeholder">INV/20161025/XVI/X/55069657</string>
     <string name="product_name_placeholder">Apple iPhone 11 Max Pro 256 GB ORIGINAL BNIB</string>
     <string name="product_price_placeholder">Rp 10.000.000</string>
-    <string name="see_all_placeholder">Lihat Semua Produk (3)</string>
+    <string name="see_all_placeholder">Lihat Semua Produk</string>
     <string name="ask_1_placeholder">Mengapa kamu ingin membatalkan pesanan ini?</string>
-    <string name="ask_2_placeholder">Informasi pesanan apa yang ingin kamu ubah?</string>
+    <string name="ask_2_placeholder">Apa detail pembatalan dari pesanan ini?</string>
     <string name="reason_placeholder">Pilih alasan</string>
     <string name="ajukan_btn">Ajukan</string>
     <string name="chat_penjual">Chat Penjual</string>
@@ -451,9 +453,31 @@ Anda di sini.</string>
     <string name="bottomsheet_title">Pilih alasan pembatalan</string>
     <string name="fail_cancellation">Terjadi kesalahan, mohon dicoba kembali</string>
     <string name="tulis_alasan">Tulis alasan...</string>
-    <string name="ask_2_lainnya">Kendala apa yang kamu alami?</string>
+    <string name="ask_2_lainnya">Tulis detail pembatalan pesanan.</string>
     <string name="icon_placeholder">Icon</string>
     <string name="toaster_lainnya_empty">Mohon isi kendala yang kamu alami</string>
     <string name="toaster_manual_max">Max 160 karakter</string>
     <string name="toaster_manual_min">Min. 15 karakter</string>
+    <string name="salin_text">Salin</string>
+    <string name="image_desc">Image Description</string>
+    <string name="booking_code">TPR9QTMYE</string>
+
+
+    <string name="ticker_info_selengkapnya">
+        <![CDATA[
+        <html>
+        <body>
+        <a href="#ticker_url"><strong style="color: green;">#ticker_label</strong></a>
+        </body>
+        </html>
+        ]]>
+    </string>
+
+    <string name="mengerti_button">Mengerti</string>
+    <string name="pusat_bantuan_button">Hubungi Pusat Bantuan</string>
+    <string name="min_char_reason_lainnya">Min. 15 karakter</string>
+    <string name="max_char_reason_lainnya">Max. 160 karakter</string>
+    <string name="cancellation_no_connection_title">Koneksi internetmu terganggu!</string>
+    <string name="cancellation_no_connection_desc">Yuk, pastikan internetmu lancar dengan cek ulang paket data, WiFi, atau jaringan di tempatmu.</string>
+    <string name="cancellation_no_connection_btn">Coba Lagi</string>
 </resources>

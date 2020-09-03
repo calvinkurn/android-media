@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
-import android.text.TextUtils;
 import android.text.style.ClickableSpan;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,11 +47,11 @@ import com.tokopedia.design.component.Dialog;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationActivity;
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationListActivity;
+import com.tokopedia.flight.cancellationV2.presentation.activity.FlightCancellationPassengerActivity;
 import com.tokopedia.flight.common.di.component.FlightComponent;
 import com.tokopedia.flight.detail.presenter.ExpandableOnClickListener;
 import com.tokopedia.flight.detail.presenter.FlightDetailOrderContract;
 import com.tokopedia.flight.detail.presenter.FlightDetailOrderPresenter;
-import com.tokopedia.flight.detail.view.activity.FlightInvoiceActivity;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailOrderAdapter;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailOrderPassengerAdapter;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailOrderPassengerAdapterTypeFactory;
@@ -288,9 +287,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         containerDownloadInvoice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!TextUtils.isEmpty(invoiceLink)) {
-                    startActivity(FlightInvoiceActivity.newInstance(getActivity(), invoiceLink));
-                }
+                RouteManager.route(requireContext(), flightOrder.getInvoiceUri());
             }
         });
 
@@ -515,10 +512,24 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     @Override
     public void navigateToCancellationPage(String invoiceId, List<FlightCancellationJourney> items) {
-        startActivityForResult(
-                FlightCancellationActivity.createIntent(getContext(), invoiceId, items),
-                REQUEST_CODE_CANCELLATION
-        );
+        Boolean newSearchEnabledStatus = remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_FLIGHT_NEW_SEARCH_FLOW, true);
+
+        if (newSearchEnabledStatus) {
+            startActivityForResult(
+                    FlightCancellationPassengerActivity.Companion
+                            .createIntent(getContext(),
+                                    invoiceId,
+                                    items),
+                    REQUEST_CODE_CANCELLATION
+            );
+        } else {
+            startActivityForResult(
+                    FlightCancellationActivity.createIntent(getContext(),
+                            invoiceId,
+                            items),
+                    REQUEST_CODE_CANCELLATION
+            );
+        }
 
     }
 

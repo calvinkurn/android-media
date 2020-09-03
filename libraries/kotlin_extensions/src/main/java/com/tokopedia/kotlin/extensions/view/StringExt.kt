@@ -89,3 +89,5 @@ fun String.asUpperCase(): String {
     val locale = Locale("id")
     return this.toUpperCase(locale)
 }
+
+fun String?.toEmpty(): String = ""

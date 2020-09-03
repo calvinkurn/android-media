@@ -2,7 +2,6 @@ package com.tokopedia.notifications.inApp.viewEngine
 
 import android.app.Activity
 import android.app.AlertDialog
-import android.net.Uri
 import android.util.DisplayMetrics
 import android.view.View
 import android.view.WindowManager
@@ -10,8 +9,9 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.notifications.R
+import com.tokopedia.notifications.analytics.InAppAnalytics
 import com.tokopedia.notifications.inApp.CMInAppManager
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMButton
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp
@@ -29,13 +29,9 @@ internal open class BannerView(activity: Activity) {
     private lateinit var btnClose: ImageView
     private lateinit var lstActionButton: RecyclerView
 
-    private val listener by lazy {
-        CMInAppManager.getCmInAppListener()
-    }
-
-    private val dialog by lazy {
-        alertDialog.create()
-    }
+    private val listener by lazy { CMInAppManager.getCmInAppListener() }
+    private val dialog by lazy { alertDialog.create() }
+    private val analytics by lazy { InAppAnalytics }
 
     fun dialog(data: CMInApp) {
         alertDialog.setView(createView(data))
@@ -44,6 +40,9 @@ internal open class BannerView(activity: Activity) {
 
         // resize dialog's width with 80% of screen
         setWindowAttributes(dialog, getDisplayMetrics(mActivity.get()).first)
+
+        // impression tracker
+        analytics.impression(data)
     }
 
     private fun createView(data: CMInApp): View? {
@@ -69,12 +68,13 @@ internal open class BannerView(activity: Activity) {
         setBanner(data)
         setActionButton(data)
         setCloseButton(data)
+        setBannerClicked(data)
     }
 
     private fun viewState(data: CMInApp) {
         when (data.getType()) {
-            TYPE_FULL_SCREEN_IMAGE_ONLY -> {
-                fullScreenImageOnly(data)
+            TYPE_INTERSTITIAL_IMAGE_ONLY -> {
+                lstActionButton.visibility = View.GONE
             }
         }
     }
@@ -108,22 +108,39 @@ internal open class BannerView(activity: Activity) {
 
     private fun onActionClicked(button: CMButton, data: CMInApp) {
         trackAppLinkClick(data, button.getAppLink(), ElementType(ElementType.BUTTON))
+        analytics.click(data)
         dialog?.dismiss()
     }
 
     private fun setCloseButton(data: CMInApp) {
+        btnClose.showWithCondition(data.isCancelable)
         btnClose.setOnClickListener {
             dismissInteractionTracking(data)
             dialog.dismiss()
         }
     }
 
-    private fun fullScreenImageOnly(data: CMInApp) {
-        lstActionButton.visibility = View.GONE
+    private fun getBannerAppLink(data: CMInApp): String {
+        with(data.getCmLayout()) {
+            return if (data.type == TYPE_INTERSTITIAL && getButton().isNotEmpty()) {
+                getButton().first().getAppLink()
+            } else {
+                getAppLink()
+            }
+        }
+    }
 
-        imgBanner.setOnClickListener {
-            trackAppLinkClick(data, data.getCmLayout().appLink, ElementType(ElementType.MAIN))
-            RouteManager.route(mActivity.get(), data.getCmLayout().getAppLink())
+    private fun setBannerClicked(data: CMInApp) {
+        // prevent banner click if has more than one CTA button
+        with(data.getCmLayout()) {
+            if (getButton().size > 1) return
+            val bannerAppLink = getBannerAppLink(data)
+
+            imgBanner.setOnClickListener {
+                trackAppLinkClick(data, bannerAppLink, ElementType(ElementType.MAIN))
+                analytics.click(data)
+                dialog?.dismiss()
+            }
         }
     }
 
@@ -140,9 +157,13 @@ internal open class BannerView(activity: Activity) {
             appLink: String,
             elementType: ElementType
     ) {
+        if (appLink.equals("close", true)) {
+            dismissInteractionTracking(data)
+            return
+        }
+
         listener?.let {
-            val uri = Uri.parse(appLink)
-            it.onCMInAppLinkClick(uri, data, elementType)
+            it.onCMInAppLinkClick(appLink, data, elementType)
             it.onCMinAppDismiss(data)
             it.onCMinAppInteraction(data)
         }
@@ -167,7 +188,8 @@ internal open class BannerView(activity: Activity) {
 
         @JvmStatic
         fun create(activity: Activity, data: CMInApp) {
-            BannerView(activity).dialog(data)
+            val bannerView by lazy { BannerView(activity) }
+            bannerView.dialog(data)
         }
     }
 }

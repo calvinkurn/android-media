@@ -1,6 +1,7 @@
 package com.tokopedia.oneclickcheckout.preference.edit.view.payment
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
 import android.net.http.SslError
@@ -9,20 +10,38 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.*
+import android.webkit.SslErrorHandler
+import android.webkit.WebResourceResponse
+import android.webkit.WebView
+import android.webkit.WebViewClient
+import android.widget.ProgressBar
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import com.google.android.play.core.splitcompat.SplitCompat
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.config.GlobalConfig
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
+import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
+import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.preference.analytics.PreferenceListAnalytics
+import com.tokopedia.oneclickcheckout.preference.edit.data.payment.ListingParam
+import com.tokopedia.oneclickcheckout.preference.edit.data.payment.PaymentListingParamRequest
 import com.tokopedia.oneclickcheckout.preference.edit.di.PreferenceEditComponent
 import com.tokopedia.oneclickcheckout.preference.edit.view.PreferenceEditParent
 import com.tokopedia.oneclickcheckout.preference.edit.view.summary.PreferenceSummaryFragment
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_payment_method.*
-import rx.subscriptions.CompositeSubscription
+import java.net.ConnectException
+import java.net.SocketTimeoutException
+import java.net.URLEncoder
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class PaymentMethodFragment : BaseDaggerFragment() {
@@ -46,22 +65,36 @@ class PaymentMethodFragment : BaseDaggerFragment() {
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    private val compositeSubscription = CompositeSubscription()
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val viewModel: PaymentMethodViewModel by lazy {
+        ViewModelProviders.of(this, viewModelFactory)[PaymentMethodViewModel::class.java]
+    }
+
+    private var webView: WebView? = null
+    private var progressBar: ProgressBar? = null
+    private var globalError: GlobalError? = null
+
+    private var param: ListingParam? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_payment_method, container, false)
     }
 
-    override fun onDestroyView() {
-        compositeSubscription.clear()
-        super.onDestroyView()
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initViews(view)
         initHeader()
         initWebView()
+        loadPaymentParams()
+    }
+
+    private fun initViews(view: View) {
+        webView = view.findViewById(R.id.web_view)
+        progressBar = view.findViewById(R.id.progress_bar)
+        globalError = view.findViewById(R.id.global_error)
     }
 
     private fun initHeader() {
@@ -69,45 +102,135 @@ class PaymentMethodFragment : BaseDaggerFragment() {
         if (parent is PreferenceEditParent) {
             parent.hideAddButton()
             parent.hideDeleteButton()
-            parent.setHeaderTitle(getString(R.string.lbl_choose_payment))
+            val parentContext: Context = parent
+            SplitCompat.installActivity(parentContext)
+            parent.setHeaderTitle(parentContext.getString(R.string.lbl_choose_payment_method))
             if (arguments?.getBoolean(ARG_IS_EDIT) == true) {
                 parent.hideStepper()
             } else {
-                parent.setHeaderSubtitle(getString(R.string.step_choose_payment))
+                parent.setHeaderSubtitle(parentContext.getString(R.string.step_choose_payment))
                 parent.showStepper()
-                parent.setStepperValue(75, true)
+                parent.setStepperValue(75)
             }
         }
     }
 
     @SuppressLint("SetJavaScriptEnabled")
     private fun initWebView() {
-        web_view.clearCache(true)
-        val webSettings: WebSettings = web_view.settings
-        webSettings.javaScriptEnabled = true
-        webSettings.cacheMode = WebSettings.LOAD_NO_CACHE
-        webSettings.domStorageEnabled = true
-        webSettings.builtInZoomControls = false
-        webSettings.displayZoomControls = true
-        web_view.webViewClient = PaymentMethodWebViewClient()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            webSettings.mediaPlaybackRequiresUserGesture = false
+        webView?.clearCache(true)
+        val webSettings = webView?.settings
+        webSettings?.apply {
+            javaScriptEnabled = true
+            domStorageEnabled = true
+            builtInZoomControls = false
+            displayZoomControls = true
+            setAppCacheEnabled(true)
         }
+        webView?.webViewClient = PaymentMethodWebViewClient()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            webSettings?.mediaPlaybackRequiresUserGesture = false
+        }
+    }
 
-        var addressId = ""
+    private fun loadPaymentParams() {
+        viewModel.paymentListingParam.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is OccState.Success -> {
+                    loadWebView(it.data)
+                }
+                is OccState.Failed -> {
+                    it.getFailure()?.let { failure ->
+                        handleError(failure.throwable)
+                    }
+                }
+                is OccState.Loading -> {
+                    progressBar?.visible()
+                    globalError?.gone()
+                    webView?.gone()
+                }
+            }
+        })
+
+        viewModel.getPaymentListingParam(generatePaymentListingRequest())
+    }
+
+    private fun loadWebView(param: ListingParam) {
+        this.param = param
+        val url = "${TokopediaUrl.getInstance().PAY}/v2/payment/register/listing"
+        webView?.postUrl(url, getPayload(param).toByteArray())
+        webView?.visible()
+        globalError?.gone()
+    }
+
+    private fun getPayload(param: ListingParam): String {
+        return "merchant_code=${getUrlEncoded(param.merchantCode)}&" +
+                "profile_code=${getUrlEncoded(param.profileCode)}&" +
+                "user_id=${getUrlEncoded(param.userId)}&" +
+                "customer_name=${getUrlEncoded(param.customerName)}&" +
+                "customer_email=${getUrlEncoded(param.customerEmail)}&" +
+                "customer_msisdn=${getUrlEncoded(param.customerMsisdn)}&" +
+                "address_id=${getUrlEncoded(param.addressId)}&" +
+                "callback_url=${getUrlEncoded(param.callbackUrl)}&" +
+                "version=${getUrlEncoded("android-${GlobalConfig.VERSION_NAME}")}&" +
+                "signature=${getUrlEncoded(param.hash)}"
+    }
+
+    private fun generatePaymentListingRequest(): PaymentListingParamRequest {
+        return PaymentListingParamRequest("tokopedia",
+                "EXPRESS_SAVE",
+                "${TokopediaUrl.getInstance().PAY}/dummy/payment/listing",
+                getAddressId(),
+                "android-${GlobalConfig.VERSION_NAME}")
+    }
+
+    private fun getAddressId(): String {
         val parent = activity
         if (parent is PreferenceEditParent) {
-            addressId = parent.getAddressId().toString()
+            return parent.getAddressId().toString()
         }
-        val phoneNumber = userSession.phoneNumber
-        val msisdnVerified = userSession.isMsisdnVerified
-        var phone = ""
-        if (msisdnVerified && phoneNumber.isNotBlank()) {
-            phone = phoneNumber
+        return ""
+    }
+
+    private fun getUrlEncoded(valueStr: String): String {
+        return URLEncoder.encode(valueStr, "UTF-8")
+    }
+
+    private fun handleError(throwable: Throwable?) {
+        when (throwable) {
+            is SocketTimeoutException, is UnknownHostException, is ConnectException -> {
+                showGlobalError(GlobalError.NO_CONNECTION)
+            }
+            is RuntimeException -> {
+                when (throwable.localizedMessage?.toIntOrNull()) {
+                    ReponseStatus.GATEWAY_TIMEOUT, ReponseStatus.REQUEST_TIMEOUT -> showGlobalError(GlobalError.NO_CONNECTION)
+                    ReponseStatus.NOT_FOUND -> showGlobalError(GlobalError.PAGE_NOT_FOUND)
+                    ReponseStatus.INTERNAL_SERVER_ERROR -> showGlobalError(GlobalError.SERVER_ERROR)
+                    else -> {
+                        view?.let {
+                            showGlobalError(GlobalError.SERVER_ERROR)
+                            Toaster.build(it, DEFAULT_ERROR_MESSAGE, type = Toaster.TYPE_ERROR).show()
+                        }
+                    }
+                }
+            }
+            else -> {
+                view?.let {
+                    showGlobalError(GlobalError.SERVER_ERROR)
+                    Toaster.build(it, throwable?.message
+                            ?: DEFAULT_ERROR_MESSAGE, type = Toaster.TYPE_ERROR).show()
+                }
+            }
         }
-        val data = "merchant_code=tokopediatest&profile_code=EXPRESS_SAVE&user_id=${userSession.userId}&customer_name=${userSession.name.trim()}&customer_email=${userSession.email}&customer_msisdn=${phone}&address_id=${addressId}&callback_url=${TokopediaUrl.getInstance().PAY}/dummy/payment/listing"
-        val url = "${TokopediaUrl.getInstance().PAY}/v2/payment/register/listing"
-        web_view.postUrl(url, data.toByteArray())
+    }
+
+    private fun showGlobalError(type: Int) {
+        globalError?.setType(type)
+        globalError?.setActionClickListener {
+            viewModel.getPaymentListingParam(generatePaymentListingRequest())
+        }
+        globalError?.visible()
+        webView?.gone()
+        progressBar?.gone()
     }
 
     override fun getScreenName(): String {
@@ -122,8 +245,28 @@ class PaymentMethodFragment : BaseDaggerFragment() {
         super.onStart()
         val parent = activity
         if (parent is PreferenceEditParent) {
-            parent.setStepperValue(75, true)
+            parent.setStepperValue(75)
         }
+    }
+
+    private fun goToNextStep(gatewayCode: String, metadata: String) {
+        val parent = activity
+        if (parent is PreferenceEditParent) {
+            parent.setGatewayCode(gatewayCode)
+            parent.setPaymentQuery(metadata)
+            if (arguments?.getBoolean(ARG_IS_EDIT) == true) {
+                parent.goBack()
+            } else {
+                parent.addFragment(PreferenceSummaryFragment.newInstance())
+            }
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        webView = null
+        progressBar = null
+        globalError = null
     }
 
     inner class PaymentMethodWebViewClient : WebViewClient() {
@@ -131,17 +274,17 @@ class PaymentMethodFragment : BaseDaggerFragment() {
         override fun onReceivedSslError(view: WebView?, handler: SslErrorHandler?, error: SslError?) {
             super.onReceivedSslError(view, handler, error)
             handler?.cancel()
-            progress_bar?.gone()
+            progressBar?.gone()
         }
 
         override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
             super.onPageStarted(view, url, favicon)
-            progress_bar?.visible()
+            progressBar?.visible()
         }
 
         override fun onPageFinished(view: WebView?, url: String?) {
             super.onPageFinished(view, url)
-            progress_bar?.gone()
+            progressBar?.gone()
         }
 
         override fun shouldInterceptRequest(view: WebView?, url: String?): WebResourceResponse? {
@@ -165,18 +308,4 @@ class PaymentMethodFragment : BaseDaggerFragment() {
             return Gson().toJson(map)
         }
     }
-
-    private fun goToNextStep(gatewayCode: String, metadata: String) {
-        val parent = activity
-        if (parent is PreferenceEditParent) {
-            parent.setGatewayCode(gatewayCode)
-            parent.setPaymentQuery(metadata)
-            if (arguments?.getBoolean(ARG_IS_EDIT) == true) {
-                parent.goBack()
-            } else {
-                parent.addFragment(PreferenceSummaryFragment.newInstance())
-            }
-        }
-    }
-
 }

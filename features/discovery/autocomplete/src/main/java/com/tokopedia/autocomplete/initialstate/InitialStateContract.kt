@@ -18,8 +18,6 @@ interface InitialStateContract {
 
         fun onPopularSearchImpressed(list: List<Any>)
 
-        fun dropKeyBoard()
-
         fun route(applink: String, searchParameter: Map<String, String>)
 
         fun finish()
@@ -32,7 +30,7 @@ interface InitialStateContract {
     interface Presenter : CustomerPresenter<View> {
         fun getInitialStateData()
 
-        fun deleteRecentSearchItem(keyword: String)
+        fun deleteRecentSearchItem(item: BaseItemInitialStateSearch)
 
         fun deleteAllRecentSearch()
 

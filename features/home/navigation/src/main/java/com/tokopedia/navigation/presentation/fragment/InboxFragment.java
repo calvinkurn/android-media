@@ -19,17 +19,18 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.applink.internal.ApplinkConstInternalOperational;
 import com.tokopedia.discovery.common.manager.ProductCardOptionsManager;
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel;
 import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.R;
 import com.tokopedia.navigation.analytics.InboxGtmTracker;
 import com.tokopedia.navigation.domain.model.Inbox;
+import com.tokopedia.navigation.domain.model.InboxTopAdsBannerUiModel;
 import com.tokopedia.navigation.domain.model.Recommendation;
 import com.tokopedia.navigation.presentation.adapter.InboxAdapter;
 import com.tokopedia.navigation.presentation.adapter.InboxAdapterTypeFactory;
 import com.tokopedia.navigation.presentation.adapter.RecomItemDecoration;
+import com.tokopedia.navigation.presentation.adapter.viewholder.InboxTopAdsBannerViewHolder;
 import com.tokopedia.navigation.presentation.base.BaseTestableParentFragment;
 import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent;
 import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
@@ -42,9 +43,13 @@ import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
-import com.tokopedia.topads.sdk.utils.ImpresionTask;
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel;
+import com.tokopedia.topads.sdk.listener.TopAdsImageVieWApiResponseListener;
+import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener;
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
@@ -64,7 +69,7 @@ import kotlin.jvm.functions.Function2;
  * Created by meta on 19/06/18.
  */
 public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent, InboxPresenter> implements
-        InboxView, InboxAdapterListener, RecommendationListener {
+        InboxView, InboxAdapterListener, RecommendationListener, TopAdsImageVieWApiResponseListener, TopAdsImageViewClickListener {
 
     public static final int CHAT_MENU = 0;
     public static final int DISCUSSION_MENU = 1;
@@ -119,6 +124,8 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
             boolean wishlistStatusFromPdp = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST,
                     false);
             int position = data.getIntExtra(PDP_EXTRA_UPDATED_POSITION, -1);
+            if(position < 0 || adapter.getList().size() < position) return;
+
             if(adapter.getList().get(position) instanceof  Recommendation){
                 Recommendation recommendation = (Recommendation) adapter.getList().get(position);
                 recommendation.getRecommendationItem().setWishlist(wishlistStatusFromPdp);
@@ -207,7 +214,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         presenter.setView(this);
 
         List<Visitable> dataInbox = getData();
-        InboxAdapterTypeFactory typeFactory = new InboxAdapterTypeFactory(this, this);
+        InboxAdapterTypeFactory typeFactory = new InboxAdapterTypeFactory(this, this, this, this);
         adapter = new InboxAdapter(typeFactory, dataInbox);
 
         emptyLayout = view.findViewById(R.id.empty_layout);
@@ -326,6 +333,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         inboxList.add(new Inbox(R.drawable.ic_tanyajawab, R.string.diskusi, R.string.diskusi_desc));
         inboxList.add(new Inbox(R.drawable.ic_ulasan, R.string.ulasan, R.string.ulasan_desc));
         inboxList.add(new Inbox(R.drawable.ic_pesan_bantuan, R.string.pesan_bantuan, R.string.pesan_bantuan_desc));
+        inboxList.add(new InboxTopAdsBannerUiModel());
         return inboxList;
     }
 
@@ -450,7 +458,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     }
 
     private void onImpressionTopAds(RecommendationItem item) {
-        new ImpresionTask(getActivity().getClass().getName()).execute(item.getTrackerImageUrl());
+        new TopAdsUrlHitter(getActivity().getClass().getName()).hitImpressionUrl(getContext(), item.getTrackerImageUrl(), String.valueOf(item.getProductId()), item.getName(), item.getImageUrl());
         InboxGtmTracker.getInstance().addInboxProductViewImpressions(item, item.getPosition(), item.isTopAds());
     }
 
@@ -459,11 +467,28 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     }
 
     private void onClickTopAds(RecommendationItem item) {
-        new ImpresionTask(getActivity().getClass().getName()).execute(item.getClickUrl());
+        new TopAdsUrlHitter(getActivity().getClass().getName()).hitClickUrl(getContext(), item.getClickUrl(), String.valueOf(item.getProductId()), item.getName(), item.getImageUrl());
         InboxGtmTracker.getInstance().eventInboxProductClick(getContext(), item, item.getPosition(), item.isTopAds());
     }
 
     private void onClickOrganic(RecommendationItem item) {
         InboxGtmTracker.getInstance().eventInboxProductClick(getContext(), item, item.getPosition(), item.isTopAds());
+    }
+
+    @Override
+    public void onImageViewResponse(@NotNull ArrayList<TopAdsImageViewModel> imageDataList) {
+        if (imageDataList.isEmpty()) return;
+        adapter.updateTopAdsBanner(imageDataList.get(0));
+    }
+
+    @Override
+    public void onError(@NotNull Throwable t) {
+
+    }
+
+    @Override
+    public void onTopAdsImageViewClicked(@org.jetbrains.annotations.Nullable String applink) {
+        if (applink == null) return;
+        RouteManager.route(getContext(), applink);
     }
 }

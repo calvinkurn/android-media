@@ -3,6 +3,8 @@ package com.tokopedia.discovery2.data
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.discovery2.StockWording
 import com.tokopedia.discovery2.data.productcardcarousel.FreeOngkir
+import com.tokopedia.filter.common.data.Filter
+import com.tokopedia.filter.common.data.Sort
 
 
 data class DataItem(
@@ -25,8 +27,11 @@ data class DataItem(
         @SerializedName("background_image")
         val backgroundImage: String? = "",
 
-        @SerializedName("filter")
-        val filter: String? = "",
+        @SerializedName("filters")
+        val filter: ArrayList<Filter>? = null,
+
+        @SerializedName("sort")
+        val sort: ArrayList<Sort>? = null,
 
         @SerializedName("filter_value")
         val filterValue: String? = "",
@@ -333,6 +338,18 @@ data class DataItem(
 
         @SerializedName("campaign_id")
         val campaignId: String = "",
+
+        @SerializedName("image")
+        val image: String = "",
+
+        @SerializedName("tracking_fields")
+        val trackingFields: TrackingFields? = null,
+
+        @SerializedName("body")
+        val body: String = "",
+
+        @SerializedName("buttonStr")
+        val claimButtonStr: String? = null,
 
         var shopAdsClickURL : String? = "",
 

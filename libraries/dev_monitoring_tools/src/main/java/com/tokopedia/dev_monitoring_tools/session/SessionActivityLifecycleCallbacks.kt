@@ -22,20 +22,20 @@ class SessionActivityLifecycleCallbacks : Application.ActivityLifecycleCallbacks
     private var lastSumTx: Long = 0
     private var lastSumRx: Long = 0
     private var running = false
+    private var returnFromOtherActivity = false
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
         openedPageCount++
         openedPageCountTotal++
+        addJourney(activity)
     }
 
     override fun onActivityStarted(activity: Activity) { // No-op
     }
 
     override fun onActivityResumed(activity: Activity) {
-        var bundle = Bundle()
-        activity.intent.extras?.let {
-            bundle = it
+        if (returnFromOtherActivity) {
+            addJourney(activity)
         }
-        UserJourney.addJourneyActivity(activity.javaClass.simpleName, bundle)
         if (running) {
             return
         }
@@ -45,6 +45,7 @@ class SessionActivityLifecycleCallbacks : Application.ActivityLifecycleCallbacks
     }
 
     override fun onActivityPaused(activity: Activity) { // No-op
+        returnFromOtherActivity = true
     }
 
     override fun onActivityStopped(activity: Activity) { // No-op
@@ -54,6 +55,14 @@ class SessionActivityLifecycleCallbacks : Application.ActivityLifecycleCallbacks
     }
 
     override fun onActivityDestroyed(activity: Activity) { // No-op
+    }
+
+    private fun addJourney(activity: Activity) {
+        var bundle = Bundle()
+        activity.intent.extras?.let {
+            bundle = it
+        }
+        UserJourney.addJourneyActivity(activity.javaClass.simpleName, bundle)
     }
 
     private fun checkSession(activityName: String, connectionType: String?) {

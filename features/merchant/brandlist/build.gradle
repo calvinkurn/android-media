@@ -55,6 +55,7 @@ dependencies {
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation project(rootProject.ext.features.review)
 
     implementation rootProject.ext.supportLibDependencies.supportV4
     kapt rootProject.ext.miscDependencies.daggerCompiler
@@ -79,3 +80,4 @@ project.ext {
 
 apply from: '../../../publish_local.gradle'
 apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'

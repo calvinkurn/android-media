@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/spacing_lvl4"
+    android:paddingStart="@dimen/spacing_lvl4"
+    android:paddingEnd="@dimen/spacing_lvl4"
+    android:orientation="horizontal">
+
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/rating_checkbox"
+        android:layout_width="@dimen/spacing_lvl5"
+        android:layout_height="@dimen/spacing_lvl5"
+        app:bold="true"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toStartOf="@+id/rating_star_icon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/rating_star_icon"
+        android:layout_width="@dimen/dp_20"
+        android:layout_height="@dimen/dp_20"
+        android:layout_marginStart="@dimen/dp_18"
+        android:layout_marginLeft="@dimen/dp_18"
+        android:layout_marginTop="@dimen/spacing_lvl1"
+        android:contentDescription="@string/rating_star_icon_content_description"
+        android:adjustViewBounds="true"
+        app:layout_constraintStart_toEndOf="@+id/rating_checkbox"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_rating_star_item" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/rating_star_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginLeft="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl1"
+        android:textColor="@color/typography_black"
+        app:layout_constraintStart_toEndOf="@id/rating_star_icon"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_1"
+        app:typographyWeight="bold"
+        tools:text="@string/product_rating_bar_value" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/dividerRatingFilter"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rating_star_icon"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

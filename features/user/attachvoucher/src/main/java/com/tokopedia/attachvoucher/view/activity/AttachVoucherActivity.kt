@@ -17,8 +17,7 @@ import com.tokopedia.attachvoucher.view.fragment.AttachVoucherFragment
 class AttachVoucherActivity : BaseSimpleActivity(), HasComponent<AttachVoucherComponent> {
 
     override fun getNewFragment(): Fragment? {
-        val shopId = intent.getStringExtra(ApplinkConst.AttachVoucher.PARAM_SHOP_ID) ?: ""
-        return AttachVoucherFragment.createInstance(shopId)
+        return AttachVoucherFragment.createInstance()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

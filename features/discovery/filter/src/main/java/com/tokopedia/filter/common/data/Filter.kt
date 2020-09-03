@@ -1,30 +1,28 @@
 package com.tokopedia.filter.common.data
 
-import android.os.Parcel
 import android.os.Parcelable
-
 import com.google.gson.Gson
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
+import java.util.*
 
-import java.util.ArrayList
+@Parcelize
+class Filter(@SerializedName("title")
+             @Expose
+             var title: String = "",
 
-class Filter() : Parcelable {
-    @SerializedName("title")
-    @Expose
-    var title: String = ""
+             @SerializedName("template_name")
+             @Expose
+             var templateName: String = "",
 
-    @SerializedName("template_name")
-    @Expose
-    var templateName: String = ""
+             @SerializedName("search")
+             @Expose
+             var search: Search = Search(),
 
-    @SerializedName("search")
-    @Expose
-    var search: Search = Search()
-
-    @SerializedName("options")
-    @Expose
-    var options: List<Option> = ArrayList()
+             @SerializedName("options")
+             @Expose
+             var options: List<Option> = ArrayList()) : Parcelable {
 
     val isSeparator: Boolean
         get() = TEMPLATE_NAME_SEPARATOR.equals(templateName)
@@ -65,24 +63,6 @@ class Filter() : Parcelable {
         return Gson().toJson(this)
     }
 
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    override fun writeToParcel(dest: Parcel, flags: Int) {
-        dest.writeString(this.title)
-        dest.writeString(this.templateName)
-        dest.writeParcelable(this.search, flags)
-        dest.writeTypedList(this.options)
-    }
-
-    protected constructor(`in`: Parcel) : this() {
-        this.title = `in`.readString()
-        this.templateName = `in`.readString()
-        this.search = `in`.readParcelable(Search::class.java.getClassLoader())
-        this.options = `in`.createTypedArrayList(Option.CREATOR)
-    }
-
     companion object {
 
         const val TEMPLATE_NAME_LOCATION = "template_location"
@@ -96,15 +76,5 @@ class Filter() : Parcelable {
         const val TEMPLATE_NAME_BRAND = "template_brand"
         const val TEMPLATE_NAME_OFFERING = "template_offer"
 
-        @JvmField
-        val CREATOR: Parcelable.Creator<Filter> = object : Parcelable.Creator<Filter> {
-            override fun createFromParcel(source: Parcel): Filter {
-                return Filter(source)
-            }
-
-            override fun newArray(size: Int): Array<Filter?> {
-                return arrayOfNulls(size)
-            }
-        }
     }
 }

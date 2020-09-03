@@ -17,7 +17,7 @@ class SomConfirmReqPickupActivity: BaseSimpleActivity(), HasComponent<SomConfirm
     override fun getNewFragment(): Fragment? {
         var bundle = Bundle()
         if (intent.extras != null) {
-            bundle = intent.extras
+            bundle = intent.extras ?: Bundle()
         } else {
             bundle.putString(PARAM_ORDER_ID, "")
         }

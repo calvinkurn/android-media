@@ -1,7 +1,7 @@
 package com.tokopedia.navigation.presentation.activity;
 
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -13,7 +13,6 @@ import android.content.pm.ShortcutInfo;
 import android.content.pm.ShortcutManager;
 import android.graphics.Color;
 import android.graphics.drawable.Icon;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,30 +20,21 @@ import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.SparseArray;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
-import androidx.asynclayoutinflater.view.AsyncLayoutInflater;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.airbnb.lottie.LottieComposition;
-import com.airbnb.lottie.LottieCompositionFactory;
 import com.airbnb.lottie.LottieDrawable;
-import com.airbnb.lottie.LottieTask;
-import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
@@ -90,6 +80,7 @@ import com.tokopedia.navigation_common.listener.MainParentStatusBarListener;
 import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitoringListener;
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener;
 import com.tokopedia.navigation_common.listener.ShowCaseListener;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseDialog;
@@ -106,6 +97,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import dagger.Lazy;
 
 import static com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_SOURCE;
 import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
@@ -164,14 +157,12 @@ public class MainParentActivity extends BaseActivity implements
 
     ArrayList<BottomMenu> menu = new ArrayList<>();
 
-    @Inject
-    UserSessionInterface userSession;
-    @Inject
-    MainParentPresenter presenter;
-    @Inject
-    GlobalNavAnalytics globalNavAnalytics;
-    @Inject
-    ApplicationUpdate appUpdate;
+    @Inject Lazy<UserSessionInterface> userSession;
+    @Inject Lazy<MainParentPresenter> presenter;
+    @Inject Lazy<GlobalNavAnalytics> globalNavAnalytics;
+    @Inject Lazy<ApplicationUpdate> appUpdate;
+    @Inject Lazy<RemoteConfig> remoteConfig;
+
     private LottieBottomNavbar bottomNavigation;
     private ShowCaseDialog showCaseDialog;
     List<Fragment> fragmentList;
@@ -224,9 +215,9 @@ public class MainParentActivity extends BaseActivity implements
 
         super.onCreate(savedInstanceState);
         initInjector();
-        presenter.setView(this);
+        presenter.get().setView(this);
         if (savedInstanceState != null) {
-            presenter.setIsRecurringApplink(savedInstanceState.getBoolean(IS_RECURRING_APPLINK, false));
+            presenter.get().setIsRecurringApplink(savedInstanceState.getBoolean(IS_RECURRING_APPLINK, false));
         }
         cacheManager = PreferenceManager.getDefaultSharedPreferences(this);
         createView(savedInstanceState);
@@ -243,17 +234,19 @@ public class MainParentActivity extends BaseActivity implements
 
     private void installDFonBackground() {
         List<String> moduleNameList = new ArrayList<>();
-        if (userSession.isLoggedIn()) {
+        if (userSession.get().isLoggedIn()) {
             moduleNameList.add(DeeplinkDFMapper.DF_PROMO_TOKOPOINTS);
             moduleNameList.add(DeeplinkDFMapper.DF_USER_SETTINGS);
             moduleNameList.add(DeeplinkDFMapper.DF_OPERATIONAL_CONTACT_US);
             moduleNameList.add(DeeplinkDFMapper.DF_PROMO_GAMIFICATION);
+            moduleNameList.add(DeeplinkDFMapper.DF_MERCHANT_LOGIN);
         }
-        if (userSession.hasShop()) {
+        if (userSession.get().hasShop()) {
             moduleNameList.add(DeeplinkDFMapper.DF_MERCHANT_SELLER);
         }
         moduleNameList.add(DeeplinkDFMapper.DF_TRAVEL);
         moduleNameList.add(DeeplinkDFMapper.DF_SALAM_UMRAH);
+        moduleNameList.add(DeeplinkDFMapper.DF_ENTERTAINMENT);
         DFInstaller.installOnBackground(this.getApplication(), moduleNameList, "Home");
     }
 
@@ -266,7 +259,7 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     protected void onStart() {
         super.onStart();
-        if (presenter.isFirstTimeUser()) {
+        if (presenter.get().isFirstTimeUser()) {
             setDefaultShakeEnable();
             routeOnboarding();
         }
@@ -315,7 +308,7 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     public boolean isFirstTimeUser() {
-        return userSession.isFirstTimeUser();
+        return userSession.get().isFirstTimeUser();
     }
 
     private void createView(Bundle savedInstanceState) {
@@ -336,41 +329,11 @@ public class MainParentActivity extends BaseActivity implements
         showSelectedPage();
         checkAppUpdateAndInApp();
         checkApplinkCouponCode(getIntent());
-        inflateBottomNavigationViewAsync(savedInstanceState);
-    }
-
-    private void inflateBottomNavigationViewAsync(Bundle savedInstanceState){
-        AsyncLayoutInflater asyncLayoutInflater = new AsyncLayoutInflater(getContext());
-        AsyncLayoutInflater.OnInflateFinishedListener inflationCompleteListener = new AsyncLayoutInflater.OnInflateFinishedListener() {
-            @Override
-            public void onInflateFinished(@NonNull View view, int resid, @Nullable ViewGroup parent) {
-                parent.addView(view);
-                afterBottomNavigationInflation(savedInstanceState);
-            }
-        };
-        final ViewGroup viewGroup = (ViewGroup) ((ViewGroup) this
-                .findViewById(android.R.id.content)).getChildAt(0);
-        asyncLayoutInflater.inflate(R.layout.bottom_navigation_view, viewGroup, inflationCompleteListener);
-    }
-
-    private void afterBottomNavigationInflation(Bundle savedInstanceState){
+        showSelectedPage();
         bottomNavigation = findViewById(R.id.bottom_navbar);
+        populateBottomNavigationView();
         bottomNavigation.setMenuClickListener(this);
 
-        menu.add(new BottomMenu(R.id.menu_home, getResources().getString(R.string.home), R.raw.bottom_nav_home, R.raw.bottom_nav_home_to_enabled, R.drawable.ic_bottom_nav_home_active, R.drawable.ic_bottom_nav_home_enabled, com.tokopedia.navigation.R.color.color_active_bottom_nav, true, 1f, 3f));
-        menu.add(new BottomMenu(R.id.menu_feed, getResources().getString(R.string.feed), R.raw.bottom_nav_feed, R.raw.bottom_nav_feed_to_enabled,  R.drawable.ic_bottom_nav_feed_active, R.drawable.ic_bottom_nav_feed_enabled,com.tokopedia.navigation.R.color.color_active_bottom_nav, true, 1f, 3f));
-        menu.add(new BottomMenu(R.id.menu_os, getResources().getString(R.string.official), R.raw.bottom_nav_official, R.raw.bottom_nav_os_to_enabled,  R.drawable.ic_bottom_nav_os_active, R.drawable.ic_bottom_nav_os_enabled,com.tokopedia.navigation.R.color.color_active_bottom_nav_os, true, 1f, 3f));
-        menu.add(new BottomMenu(R.id.menu_cart, getResources().getString(R.string.keranjang), R.raw.bottom_nav_cart, R.raw.bottom_nav_cart_to_enabled,  R.drawable.ic_bottom_nav_cart_active, R.drawable.ic_bottom_nav_cart_enabled, com.tokopedia.navigation.R.color.color_active_bottom_nav, true, 1f, 3f));
-
-        if (userSession.isLoggedIn()) {
-            menu.add(new BottomMenu(R.id.menu_account, getResources().getString(R.string.akun), R.raw.bottom_nav_account,   R.raw.bottom_nav_account_to_enabled, R.drawable.ic_bottom_nav_account_active, R.drawable.ic_bottom_nav_account_enabled,com.tokopedia.navigation.R.color.color_active_bottom_nav, true, 1f, 3f));
-        } else {
-            menu.add(new BottomMenu(R.id.menu_account, getResources().getString(R.string.akun_non_login), null,   null, R.drawable.ic_bottom_nav_nonlogin_enabled, null, com.tokopedia.navigation.R.color.color_active_bottom_nav, true, 1f, 3f));
-        }
-        bottomNavigation.setMenu(menu);
-        showSelectedPage();
-
-        handleAppLinkBottomNavigation(savedInstanceState);
         initNewFeedClickReceiver();
         registerNewFeedClickedReceiver();
     }
@@ -378,7 +341,7 @@ public class MainParentActivity extends BaseActivity implements
     @NotNull
     private boolean executeFirstTimeEvent(){
         if (isFirstTime()) {
-            globalNavAnalytics.trackFirstTime(MainParentActivity.this);
+            globalNavAnalytics.get().trackFirstTime(MainParentActivity.this);
         }
         return true;
     }
@@ -401,7 +364,7 @@ public class MainParentActivity extends BaseActivity implements
     private int getTabPositionFromIntent() {
         int position = getIntent().getExtras().getInt(ARGS_TAB_POSITION, -1);
         if (position != -1) return position;
-        
+
         try {
             String posString = getIntent().getExtras().getString(ARGS_TAB_POSITION);
             return Integer.parseInt(posString);
@@ -424,7 +387,10 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
-    private void handleAppLinkBottomNavigation(Bundle savedInstanceState) {
+    private void handleAppLinkBottomNavigation() {
+
+        if (bottomNavigation == null) return;
+
         if (getIntent().getExtras() != null) {
             int tabPosition = getTabPositionFromIntent();
             switch (tabPosition) {
@@ -443,7 +409,7 @@ public class MainParentActivity extends BaseActivity implements
                     bottomNavigation.setSelected(HOME_MENU);
                     break;
             }
-        } else if (savedInstanceState == null) {
+        } else {
             bottomNavigation.setSelected(HOME_MENU);
         }
     }
@@ -460,6 +426,10 @@ public class MainParentActivity extends BaseActivity implements
         checkIsNeedUpdateIfComeFromUnsupportedApplink(intent);
         checkApplinkCouponCode(intent);
         checkAgeVerificationExtra(intent);
+
+        setIntent(intent);
+        showSelectedPage();
+        handleAppLinkBottomNavigation();
     }
 
     private void initInjector() {
@@ -474,7 +444,7 @@ public class MainParentActivity extends BaseActivity implements
     public void reInitInjector(GlobalNavComponent globalNavComponent) {
         globalNavComponent.inject(this);
 
-        presenter.setView(this);
+        presenter.get().setView(this);
     }
 
     private int getPositionFragmentByMenu(int i) {
@@ -596,7 +566,7 @@ public class MainParentActivity extends BaseActivity implements
 
     @RestrictTo(RestrictTo.Scope.TESTS)
     public void setUserSession(UserSessionInterface userSession) {
-        this.userSession = userSession;
+        this.userSession = (Lazy<UserSessionInterface>) userSession;
     }
 
 
@@ -611,11 +581,13 @@ public class MainParentActivity extends BaseActivity implements
         // if user is downloading the update (in app update feature),
         // check if the download is finished or is in progress
         checkForInAppUpdateInProgressOrCompleted();
-        presenter.onResume();
-        if (userSession.isLoggedIn() && isUserFirstTimeLogin) {
+        presenter.get().onResume();
+        clearNotification();
+
+        if (userSession.get().isLoggedIn() && isUserFirstTimeLogin) {
             reloadPage();
         }
-        isUserFirstTimeLogin = !userSession.isLoggedIn();
+        isUserFirstTimeLogin = !userSession.get().isLoggedIn();
 
         WeaveInterface addShortcutsWeave = new WeaveInterface() {
             @NotNull
@@ -636,6 +608,13 @@ public class MainParentActivity extends BaseActivity implements
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(checkAppSignatureWeave, RemoteConfigKey.ENABLE_ASYNC_CHECKAPPSIGNATURE, getContext());
 
         if (currentFragment != null) configureStatusBarBasedOnFragment(currentFragment);
+    }
+
+    private void clearNotification() {
+        if (remoteConfig.get().getBoolean(RemoteConfigKey.NOTIFICATION_TRAY_CLEAR)) {
+            ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).cancelAll();
+            NotificationManagerCompat.from(this).cancelAll();
+        }
     }
 
     @NotNull
@@ -669,7 +648,7 @@ public class MainParentActivity extends BaseActivity implements
     protected void onDestroy() {
         super.onDestroy();
         if (presenter != null)
-            presenter.onDestroy();
+            presenter.get().onDestroy();
     }
 
     private void reloadPage() {
@@ -699,14 +678,18 @@ public class MainParentActivity extends BaseActivity implements
     public void renderNotification(Notification notification) {
         this.notification = notification;
         if(bottomNavigation != null) {
-            bottomNavigation.setBadge(notification.getTotalCart(), CART_MENU, View.VISIBLE);
+            if (notification.getTotalCart() != 0) {
+                bottomNavigation.setBadge(notification.getTotalCart(), CART_MENU, View.VISIBLE);
+            } else {
+                bottomNavigation.setBadge(notification.getTotalCart(), CART_MENU, View.INVISIBLE);
+            }
             if (notification.getHaveNewFeed()) {
                 bottomNavigation.setBadge(0, FEED_MENU, View.VISIBLE);
                 Intent intent = new Intent(BROADCAST_FEED);
                 intent.putExtra(PARAM_BROADCAST_NEW_FEED, notification.getHaveNewFeed());
                 LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
             } else {
-                bottomNavigation.setBadge(0, FEED_MENU, View.VISIBLE);
+                bottomNavigation.setBadge(0, FEED_MENU, View.GONE);
             }
         }
         if (currentFragment != null)
@@ -765,12 +748,12 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     public void onNotifyCart() {
         if (presenter != null)
-            this.presenter.getNotificationData();
+            this.presenter.get().getNotificationData();
     }
 
     private void saveInstanceState(Bundle outState) {
         if (getIntent() != null) {
-            outState.putBoolean(IS_RECURRING_APPLINK, presenter.isRecurringApplink());
+            outState.putBoolean(IS_RECURRING_APPLINK, presenter.get().isRecurringApplink());
         }
     }
 
@@ -850,7 +833,7 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void checkAppUpdateRemoteConfig() {
-        appUpdate.checkApplicationUpdate(new ApplicationUpdate.OnUpdateListener() {
+        appUpdate.get().checkApplicationUpdate(new ApplicationUpdate.OnUpdateListener() {
             @Override
             public void onNeedUpdate(DetailUpdate detail) {
                 if (!isFinishing()) {
@@ -861,17 +844,17 @@ public class MainParentActivity extends BaseActivity implements
                                     new AppUpdateDialogBuilder.Listener() {
                                         @Override
                                         public void onPositiveButtonClicked(DetailUpdate detail) {
-                                            globalNavAnalytics.eventClickAppUpdate(detail.isForceUpdate());
+                                            globalNavAnalytics.get().eventClickAppUpdate(detail.isForceUpdate());
                                         }
 
                                         @Override
                                         public void onNegativeButtonClicked(DetailUpdate detail) {
-                                            globalNavAnalytics.eventClickCancelAppUpdate(detail.isForceUpdate());
+                                            globalNavAnalytics.get().eventClickCancelAppUpdate(detail.isForceUpdate());
                                         }
                                     }
                             );
                     appUpdateDialogBuilder.getAlertDialog().show();
-                    globalNavAnalytics.eventImpressionAppUpdate(detail.isForceUpdate());
+                    globalNavAnalytics.get().eventImpressionAppUpdate(detail.isForceUpdate());
                 }
             }
 
@@ -898,7 +881,7 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void checkApplinkCouponCode(Intent intent) {
-        if (!presenter.isRecurringApplink() && !TextUtils.isEmpty(intent.getStringExtra(ApplinkRouter.EXTRA_APPLINK))) {
+        if (!presenter.get().isRecurringApplink() && !TextUtils.isEmpty(intent.getStringExtra(ApplinkRouter.EXTRA_APPLINK))) {
             String applink = intent.getStringExtra(ApplinkRouter.EXTRA_APPLINK);
 
             if (intent.getStringExtra(MO_ENGAGE_COUPON_CODE) != null &&
@@ -915,7 +898,7 @@ public class MainParentActivity extends BaseActivity implements
 
             RouteManager.route(this, applink);
 
-            presenter.setIsRecurringApplink(true);
+            presenter.get().setIsRecurringApplink(true);
         }
     }
 
@@ -927,6 +910,8 @@ public class MainParentActivity extends BaseActivity implements
                     boolean isHaveNewFeed = intent.getBooleanExtra(PARAM_BROADCAST_NEW_FEED_CLICKED, false);
                     if (isHaveNewFeed) {
                         bottomNavigation.setBadge(0, FEED_MENU, View.VISIBLE);
+                    } else {
+                        bottomNavigation.setBadge(0, FEED_MENU, View.GONE);
                     }
                 }
             }
@@ -945,12 +930,12 @@ public class MainParentActivity extends BaseActivity implements
 
     @RestrictTo(RestrictTo.Scope.TESTS)
     public MainParentPresenter getPresenter() {
-        return presenter;
+        return (MainParentPresenter) presenter;
     }
 
     @RestrictTo(RestrictTo.Scope.TESTS)
     public void setPresenter(MainParentPresenter presenter) {
-        this.presenter = presenter;
+        this.presenter = (Lazy<MainParentPresenter>) presenter;
     }
 
     @NotNull
@@ -983,7 +968,7 @@ public class MainParentActivity extends BaseActivity implements
                             .build();
                     shortcutInfos.add(productShortcut);
 
-                    if (userSession.isLoggedIn()) {
+                    if (userSession.get().isLoggedIn()) {
                         Intent wishlistIntent = RouteManager.getIntent(MainParentActivity.this, ApplinkConst.NEW_WISHLIST);
                         wishlistIntent.setAction(Intent.ACTION_VIEW);
                         wishlistIntent.putExtras(args);
@@ -1011,11 +996,11 @@ public class MainParentActivity extends BaseActivity implements
                             .build();
                     shortcutInfos.add(digitalShortcut);
 
-                    if (userSession.isLoggedIn()) {
-                        String shopID = userSession.getShopId();
+                    if (userSession.get().isLoggedIn()) {
+                        String shopID = userSession.get().getShopId();
 
                         Intent shopIntent;
-                        if (!userSession.hasShop()) {
+                        if (!userSession.get().hasShop()) {
                             shopIntent = RouteManager.getIntent(getContext(), OPEN_SHOP);
                         } else {
                             shopIntent = RouteManager.getIntent(getContext(), SHOP_PAGE, shopID);
@@ -1046,7 +1031,7 @@ public class MainParentActivity extends BaseActivity implements
 
     @Override
     public void onRefreshNotification() {
-        presenter.getNotificationData();
+        presenter.get().getNotificationData();
     }
 
     private void startMainParentPerformanceMonitoring() {
@@ -1117,16 +1102,16 @@ public class MainParentActivity extends BaseActivity implements
 
     @Override
     public void stopOfficialStorePerformanceMonitoring() {
-        if(getOfficialStorePageLoadTimePerformanceInterface() != null){
-            getOfficialStorePageLoadTimePerformanceInterface().stopRenderPerformanceMonitoring();
-            getOfficialStorePageLoadTimePerformanceInterface().stopMonitoring();
+        if (officialStorePageLoadTimePerformanceCallback != null) {
+            officialStorePageLoadTimePerformanceCallback.stopRenderPerformanceMonitoring();
+            officialStorePageLoadTimePerformanceCallback.stopMonitoring();
             officialStorePageLoadTimePerformanceCallback = null;
         }
     }
 
     @Override
     public void startOfficialStorePerformanceMonitoring() {
-        if(officialStorePageLoadTimePerformanceCallback == null) {
+        if (officialStorePageLoadTimePerformanceCallback == null) {
             officialStorePageLoadTimePerformanceCallback = new PageLoadTimePerformanceCallback(
                     OFFICIAL_STORE_PERFORMANCE_MONITORING_PREPARE_METRICS,
                     OFFICIAL_STORE_PERFORMANCE_MONITORING_NETWORK_METRICS,
@@ -1137,8 +1122,8 @@ public class MainParentActivity extends BaseActivity implements
                     0,
                     null
             );
-            getOfficialStorePageLoadTimePerformanceInterface().startMonitoring(OFFICIAL_STORE_PERFORMANCE_MONITORING_KEY);
-            getOfficialStorePageLoadTimePerformanceInterface().startPreparePagePerformanceMonitoring();
+            officialStorePageLoadTimePerformanceCallback.startMonitoring(OFFICIAL_STORE_PERFORMANCE_MONITORING_KEY);
+            officialStorePageLoadTimePerformanceCallback.startPreparePagePerformanceMonitoring();
         }
     }
 
@@ -1152,7 +1137,7 @@ public class MainParentActivity extends BaseActivity implements
         int position = getPositionFragmentByMenu(index);
         this.currentSelectedFragmentPosition = position;
         if (!isFirstNavigationImpression) {
-            globalNavAnalytics.eventBottomNavigation(menu.get(index).getTitle()); // push analytics
+            globalNavAnalytics.get().eventBottomNavigation(menu.get(index).getTitle()); // push analytics
         }
         isFirstNavigationImpression = false;
 
@@ -1161,7 +1146,7 @@ public class MainParentActivity extends BaseActivity implements
             LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
         }
 
-        if ((position == CART_MENU || position == ACCOUNT_MENU) && !presenter.isUserLogin()) {
+        if ((position == CART_MENU || position == ACCOUNT_MENU) && !presenter.get().isUserLogin()) {
             Intent intent = RouteManager.getIntent(this, ApplinkConst.LOGIN);
             intent.putExtra(PARAM_SOURCE, SOURCE_ACCOUNT);
             startActivity(intent);
@@ -1180,5 +1165,20 @@ public class MainParentActivity extends BaseActivity implements
     public void menuReselected(int position, int id) {
         Fragment fragment = fragmentList.get(getPositionFragmentByMenu(position));
         scrollToTop(fragment); // enable feature scroll to top for home & feed
+    }
+
+    public void populateBottomNavigationView(){
+        menu.add(new BottomMenu(R.id.menu_home, getResources().getString(R.string.home), R.raw.bottom_nav_home, R.raw.bottom_nav_home_to_enabled, R.drawable.ic_bottom_nav_home_active, R.drawable.ic_bottom_nav_home_enabled, com.tokopedia.navigation.R.color.color_active_bottom_nav, true, 1f, 3f));
+        menu.add(new BottomMenu(R.id.menu_feed, getResources().getString(R.string.feed), R.raw.bottom_nav_feed, R.raw.bottom_nav_feed_to_enabled,  R.drawable.ic_bottom_nav_feed_active, R.drawable.ic_bottom_nav_feed_enabled,com.tokopedia.navigation.R.color.color_active_bottom_nav, true, 1f, 3f));
+        menu.add(new BottomMenu(R.id.menu_os, getResources().getString(R.string.official), R.raw.bottom_nav_official, R.raw.bottom_nav_os_to_enabled,  R.drawable.ic_bottom_nav_os_active, R.drawable.ic_bottom_nav_os_enabled,com.tokopedia.navigation.R.color.color_active_bottom_nav_os, true, 1f, 3f));
+        menu.add(new BottomMenu(R.id.menu_cart, getResources().getString(R.string.keranjang), R.raw.bottom_nav_cart, R.raw.bottom_nav_cart_to_enabled,  R.drawable.ic_bottom_nav_cart_active, R.drawable.ic_bottom_nav_cart_enabled, com.tokopedia.navigation.R.color.color_active_bottom_nav, true, 1f, 3f));
+
+        if (userSession.get().isLoggedIn()) {
+            menu.add(new BottomMenu(R.id.menu_account, getResources().getString(R.string.akun), R.raw.bottom_nav_account,   R.raw.bottom_nav_account_to_enabled, R.drawable.ic_bottom_nav_account_active, R.drawable.ic_bottom_nav_account_enabled,com.tokopedia.navigation.R.color.color_active_bottom_nav, true, 1f, 3f));
+        } else {
+            menu.add(new BottomMenu(R.id.menu_account, getResources().getString(R.string.akun_non_login), null,   null, R.drawable.ic_bottom_nav_nonlogin_enabled, null, com.tokopedia.navigation.R.color.color_active_bottom_nav, true, 1f, 3f));
+        }
+        bottomNavigation.setMenu(menu);
+        handleAppLinkBottomNavigation();
     }
 }

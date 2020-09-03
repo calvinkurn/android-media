@@ -40,6 +40,9 @@ public class OrderDetails {
     @SerializedName("additionalTickerInfo")
     @Expose
     private List<AdditionalTickerInfo> additionalTickerInfos;
+    @SerializedName("ticker_info")
+    @Expose
+    private TickerInfo tickerInfo;
     @SerializedName("pricing")
     @Expose
     private List<Pricing> pricing;
@@ -84,6 +87,10 @@ public class OrderDetails {
     @SerializedName("requestCancelInfo")
     @Expose
     private RequestCancelInfo requestCancelInfo;
+
+    @SerializedName("metadata")
+    @Expose
+    private String metadata;
 
     static final String ATTRIBUTE_BOUGHT_DATE = "Tanggal Pembelian";
     static final String ATTRIBUTE_ID = "id";
@@ -141,6 +148,8 @@ public class OrderDetails {
     public List<AdditionalTickerInfo> getAdditionalTickerInfos() {
         return additionalTickerInfos;
     }
+
+    public TickerInfo getTickerInfo() { return tickerInfo; }
 
     public List<Pricing> pricing() {
         return pricing;
@@ -209,6 +218,7 @@ public class OrderDetails {
                 + "detail="+detail +","
                 + "additionalInfo="+additionalInfo +","
                 + "additionalTickerInfo="+additionalTickerInfos +","
+                + "tickerInfo="+tickerInfo +","
                 + "pricing="+pricing +","
                 + "paymentMethod="+paymentMethod +","
                 + "paymethods="+payMethods +","
@@ -293,4 +303,6 @@ public class OrderDetails {
     public String getInvoiceUrl() {
         return invoice.invoiceUrl();
     }
+
+    public String getMetadata(){ return metadata;}
 }

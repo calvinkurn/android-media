@@ -16,6 +16,8 @@ object HomeQuery{
               message
               color
               layout
+              ticker_type
+              title
             }
           }
           slides(device: 32) {
@@ -33,6 +35,7 @@ object HomeQuery{
               promo_code
               creative_name
               type
+              category_id
               campaignCode
             }
           }
@@ -66,6 +69,7 @@ object HomeQuery{
               perso_type
               campaignCode
               has_close_button
+              isAutoRefreshAfterExpired
               header {
                 id
                 name
@@ -114,6 +118,11 @@ object HomeQuery{
                 has_buy_button
                 rating
                 count_review
+                benefit {
+                    type
+                    value
+                }
+                textColor
               }
               banner {
                 id
@@ -136,11 +145,14 @@ object HomeQuery{
             }
           }
           homeFlag{
-            flags(name: "has_recom_nav_button,dynamic_icon_wrap,has_tokopoints"){
-              name
-              is_active
+                event_time
+                server_time
+                flags(name: "has_recom_nav_button,dynamic_icon_wrap,has_tokopoints,is_autorefresh"){
+                    name
+                    is_active
+                }
             }
-          }
         }
     """.trimIndent()
 }
+

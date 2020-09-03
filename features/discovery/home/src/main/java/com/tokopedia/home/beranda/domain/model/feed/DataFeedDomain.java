@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.domain.model.feed;
 
-import javax.annotation.Nullable;
+
+import androidx.annotation.Nullable;
 
 public class DataFeedDomain {
 

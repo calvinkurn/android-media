@@ -92,7 +92,7 @@ public class ShipmentMapper implements IShipmentMapper {
             dataResult.setError(!UtilsKt.isNullOrEmpty(shipmentAddressFormDataResponse.getErrors()));
             dataResult.setErrorMessage(UtilsKt.convertToString(shipmentAddressFormDataResponse.getErrors()));
             dataResult.setShowOnboarding(shipmentAddressFormDataResponse.isShowOnboarding());
-            dataResult.setIneligbilePromoDialogEnabled(shipmentAddressFormDataResponse.isIneligbilePromoDialogEnabled());
+            dataResult.setIneligiblePromoDialogEnabled(shipmentAddressFormDataResponse.isIneligiblePromoDialogEnabled());
             dataResult.setOpenPrerequisiteSite(shipmentAddressFormDataResponse.isOpenPrerequisiteSite());
             dataResult.setEligibleNewShippingExperience(shipmentAddressFormDataResponse.isEligibleNewShippingExperience());
 

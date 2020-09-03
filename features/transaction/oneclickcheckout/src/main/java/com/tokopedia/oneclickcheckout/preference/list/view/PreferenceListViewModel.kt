@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.tokopedia.oneclickcheckout.common.domain.GetPreferenceListUseCase
+import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.view.model.Failure
 import com.tokopedia.oneclickcheckout.common.view.model.OccEvent
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
@@ -24,20 +25,26 @@ class PreferenceListViewModel @Inject constructor(private val getPreferenceListU
 
     fun changeDefaultPreference(preference: ProfilesItemModel) {
         _setDefaultPreference.value = OccState.Loading
+        OccIdlingResource.increment()
         setDefaultPreferenceUseCase.execute(preference.profileId, { response: String ->
             _setDefaultPreference.value = OccState.Success(OccEvent(response))
             getAllPreference()
+            OccIdlingResource.decrement()
         }, { throwable: Throwable ->
             _setDefaultPreference.value = OccState.Failed(Failure(throwable))
+            OccIdlingResource.decrement()
         })
     }
 
     fun getAllPreference() {
         _preferenceList.value = OccState.Loading
+        OccIdlingResource.increment()
         getPreferenceListUseCase.execute({ preferenceListResponseModel: PreferenceListResponseModel ->
             _preferenceList.value = OccState.Success(preferenceListResponseModel)
+            OccIdlingResource.decrement()
         }, { throwable: Throwable ->
             _preferenceList.value = OccState.Failed(Failure(throwable))
+            OccIdlingResource.decrement()
         })
     }
 

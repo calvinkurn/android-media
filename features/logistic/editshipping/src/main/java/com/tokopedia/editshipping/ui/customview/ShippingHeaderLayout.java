@@ -16,7 +16,7 @@ import androidx.annotation.NonNull;
 
 import com.google.android.material.textfield.TextInputLayout;
 import com.tokopedia.editshipping.R;
-import com.tokopedia.editshipping.model.editshipping.ShopShipping;
+import com.tokopedia.editshipping.domain.model.editshipping.ShopShipping;
 import com.tokopedia.editshipping.presenter.EditShippingPresenter;
 import com.tokopedia.editshipping.ui.EditShippingViewListener;
 
@@ -107,8 +107,8 @@ public class ShippingHeaderLayout extends EditShippingCustomView<ShopShipping,
         if (!zipCodes.contains(header)) {
             zipCodes.add(0, header);
         }
-        zipCodeAdapter = new ArrayAdapter<>(getContext(), R.layout.item_autocomplete_text_double_row,
-                R.id.item, presenter.getselectedAddress().getZipCodes());
+        zipCodeAdapter = new ArrayAdapter<>(getContext(), com.tokopedia.design.R.layout.item_autocomplete_text_double_row,
+                com.tokopedia.design.R.id.item, presenter.getselectedAddress().getZipCodes());
         zipCode.setAdapter(zipCodeAdapter);
     }
 

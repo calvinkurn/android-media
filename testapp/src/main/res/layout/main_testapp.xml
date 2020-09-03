@@ -26,6 +26,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <Button
+        android:id="@+id/devOptButton"
+        android:text="Developer Options"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <Button
         android:id="@+id/button"
         android:text="open"
         android:layout_width="match_parent"

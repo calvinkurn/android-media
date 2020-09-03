@@ -7,6 +7,7 @@ import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewModel
 import com.tokopedia.filter.bottomsheet.sort.SortViewModel
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper.OPTION_SEPARATOR
 import com.tokopedia.filter.testutils.jsonToObject
 import org.junit.Test
 
@@ -75,7 +76,7 @@ internal class ResetSortAndFilterTest: SortFilterBottomSheetViewModelTestFixture
         return mutableMapOf<String, String>().also {
             it[SearchApiConst.Q] = "samsung"
             it[SearchApiConst.OFFICIAL] = true.toString()
-            it[SearchApiConst.FCITY] = locationFilter.options[0].value + "," + locationFilter.options[2].value
+            it[SearchApiConst.FCITY] = locationFilter.options[0].value + OPTION_SEPARATOR + locationFilter.options[2].value
             it[SearchApiConst.PMIN] = minPriceFilterValue
             it[SearchApiConst.PMAX] = maxPriceFilterValue
             it[SearchApiConst.OB] = SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT

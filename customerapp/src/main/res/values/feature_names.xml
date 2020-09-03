@@ -96,6 +96,7 @@
     <string name="title_autocomplete">Pencarian</string>
     <string name="title_autocomplete_module_name">Pencarian</string>
     <string name="title_home_wishlist_module_name">Wishlist</string>
+    <string name="recom_home_recommendation">Pilihan Tokopedia</string>
     <string name="autocomplete_app_name">autocomplete</string>
     <string name="title_search_result">Pencarian</string>
     <string name="title_search_result_module_name">Pencarian</string>
@@ -149,7 +150,7 @@
     <string name="submit_ticket_title">Form Bantuan</string>
     <string name="survey_layanan">Survey Layanan</string>
     <string name="detail_kendala">Detail Kendala</string>
-    <string name="inbox">Inbox</string>
+    <string name="contact_us_inbox">Pesan Bantuan</string>
 
     <string name="instant_loan_app_name">Dana Instan</string>
 
@@ -174,12 +175,15 @@
     <!--    Logistic-->
     <string name="title_dropoff_picker">Pilih Lokasi Titik Ambil</string>
     <string name="title_autocomplete_page">Cari Lokasi</string>
-    
+
     <string name="label_tracking_activity">Lacak</string>
     <string name="title_receipt_shipement_barcode_scanner">Scan Barcode</string>
     <string name="title_confirm_shipment_logistic_module">Konfirmasi Pengiriman</string>
-    
+
     <string name="label_manage_address">Daftar Alamat</string>
+
+    <string name="title_activity_add_address">Tambah Alamat</string>
+    <string name="title_activity_search_address">Tulis Kota/Kecamatan</string>
 
     <!-- Dynamic feature for Setting Bank-->
     <string name="onboarding_app_name">OnBoarding</string>
@@ -191,6 +195,7 @@
 
     <!-- Setting-Notif-->
     <string name="setting_notif_app_name">Setting Notif</string>
+    <string name="notif_troubleshooter_app_name">Push Notification Troubleshooter</string>
 
     <!-- Payment-Setting-->
     <string name="df_payment_instant_debit_bca">Instant Debit BCA</string>
@@ -213,6 +218,7 @@
     <string name="filter_expand_activity">Expand</string>
     <string name="product_manage_set_cashback">Cashback</string>
     <string name="product_manage_etalase_picker_title">Pindah Etalase</string>
+    <string name="product_manage_campaign_stock_allocation">Alokasi Stok</string>
 
     <!-- Dynamic feature for manage Seller Order Management-->
     <string name="title_seller_order">Seller Order Management</string>
@@ -243,7 +249,7 @@
 
     <!-- Dynamic feature for user talk-->
     <string name="write_new_talk">Kirim Pertanyaan</string>
-    <string name="title_product_discussion">Q&amp;A</string>
+    <string name="title_product_discussion">Diskusi</string>
     <string name="title_report_talk">Laporkan</string>
 
     <string name="sbank_title_add_bank_account">Tambah Rekening</string>
@@ -256,15 +262,21 @@
     <string name="title_talk_discuss">Diskusi</string>
 
     <!-- Dynamic feature for event-->
-    <string name="entertainment_event_hiburan"><![CDATA[Event & Hiburan]]></string>
-    <string name="entertainment_event_search"><![CDATA[Search Event]]></string>
-    <string name="entertainment_event_location"><![CDATA[Lokasi]]></string>
+    <string name="df_title_entertainment">Entertainment</string>
+    <string name="ent_home_page_event_hiburan"><![CDATA[Event & Hiburan]]></string>
+    <string name="ent_search_title"><![CDATA[Search Event]]></string>
+    <string name="ent_search_event_location"><![CDATA[Lokasi]]></string>
+    <string name="ent_event_checkout_title_page">Ringkasan Pemesanan</string>
+    <string name="ent_pdp_title_form">Data Pemesan</string>
 
 
 
     <!--Play-->
     <string name="title_play_df">Play</string>
-    
+
+    <!--Interest Pick-->
+    <string name="ip_title">Pilih Inspirasi Kamu</string>
+
     <!--Promo-->
     <string name="title_gamification_df">Gamification</string>
     <string name="title_tokopoints_df">Tokopoints</string>
@@ -278,6 +290,7 @@
     <string name="checkout_module_title_activity_multiple_address">Kirim ke Banyak Alamat</string>
     <string name="title_one_click_checkout">Beli Langsung</string>
     <string name="title_one_click_checkout_preference">Pengaturan Beli Langsung</string>
+    <string name="title_one_click_checkout_credit_card_and_debit">Kartu Kredit</string>
     <string name="promo_checkout_marketplace_module_title_activity_promo_list">Pakai Promo</string>
 
     <!-- Content -->
@@ -287,5 +300,23 @@
     <string name="kol_title_video_detail">Video Detail</string>
     <string name="kol_title_post_youtube">Post Youtube</string>
     <string name="kol_title_report">Laporan Konten</string>
+    <string name="cp_title_create_post">Create Post</string>
+    <string name="cp_title_edit">Edit</string>
+    <string name="cp_title_image_picker">Tambah Foto</string>
+    <string name="cp_title_image_video">Tambah Video</string>
+    <string name="cp_title_image_editor">Edit</string>
+
+    <!-- Merchant Login -->
+    <string name="title_module_merchant_login">Fitur Toko</string>
+
+    <!-- Shop Page -->
+    <string name="shop_info_title">Shop Info</string>
+    <string name="shop_info_label_physical_shop">Toko Fisik</string>
+    <string name="note_title">Catatan</string>
+    <string name="shop_sort_title">Urutkan</string>
+    <string name="shop_product_title">Produk</string>
+    <string name="favorited_shop_title">Followers Toko</string>
+    <string name="shop_search_product">Search Shop Product</string>
+    <string name="shop_page_setting_title">Toko Kamu</string>
 
 </resources>

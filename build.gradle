@@ -36,18 +36,16 @@ buildscript {
         classpath 'io.fabric.tools:gradle:1.28.0'
         classpath "com.vanniktech:gradle-code-quality-tools-plugin:0.17.0"
         classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.7"
-        classpath "com.gradle:gradle-enterprise-gradle-plugin:3.1.1"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
-        classpath 'com.meituan.robust:gradle-plugin:0.4.95'
-        classpath 'com.meituan.robust:auto-patch-plugin:0.4.95'
+        classpath 'com.meituan.robust:gradle-plugin:0.4.99'
+        classpath 'com.meituan.robust:auto-patch-plugin:0.4.99'
         classpath 'com.bugsnag:bugsnag-android-gradle-plugin:4.7.3'
+        classpath "androidx.benchmark:benchmark-gradle-plugin:1.0.0"
+        classpath "android.arch.navigation:navigation-safe-args-gradle-plugin:1.0.0"
     }
 }
 
 apply from: 'buildproj.gradle'
-apply plugin: 'com.gradle.build-scan'
-apply from: 'buildconfig/build-scan.gradle'
-
 
 //Installing Git Hooks
 task installGitHooks(type: Copy) {

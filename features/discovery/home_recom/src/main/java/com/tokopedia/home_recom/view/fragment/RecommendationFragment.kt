@@ -5,17 +5,22 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.home_recom.HomeRecommendationActivity
+import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
+import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
+import com.tokopedia.discovery.common.manager.showProductCardOptions
+import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.analytics.RecommendationPageTracking
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
@@ -38,6 +43,7 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.linker.model.LinkerShareResult
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.TYPE_CAROUSEL
 import com.tokopedia.recommendation_widget_common.TYPE_CUSTOM_HORIZONTAL
 import com.tokopedia.recommendation_widget_common.TYPE_SCROLL
@@ -45,6 +51,7 @@ import com.tokopedia.recommendation_widget_common.listener.RecommendationListene
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 
 /**
@@ -103,9 +110,9 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         private const val SHARE_PRODUCT_TITLE = "Bagikan Produk Ini"
         private const val REQUEST_FROM_PDP = 394
 
-        fun newInstance(productId: String = "", source: String = "", ref: String = "null", internalRef: String = "") = RecommendationFragment().apply {
+        fun newInstance(productId: String = "", queryParam: String = "", ref: String = "null", internalRef: String = "") = RecommendationFragment().apply {
             this.productId = productId
-            this.queryParam = source
+            this.queryParam = queryParam
             this.ref = ref
             this.internalRef = internalRef
         }
@@ -137,7 +144,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         super.onViewCreated(view, savedInstanceState)
         displayProductInfo()
         activity?.run{
-            (this as HomeRecommendationActivity).supportActionBar?.title = getString(R.string.recom_home_recommendation)
+            (this as AppCompatActivity).supportActionBar?.title = getString(R.string.recom_home_recommendation)
         }
         if(productId.isEmpty()) {
             RecommendationPageTracking.sendScreenRecommendationPage(
@@ -178,6 +185,10 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         return true
     }
 
+    override fun getRecyclerViewResourceId(): Int {
+        return com.tokopedia.home_recom.R.id.recycler_view
+    }
+
     override fun getRecyclerViewLayoutManager(): RecyclerView.LayoutManager {
         return StaggeredGridLayoutManager(SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
     }
@@ -214,6 +225,97 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
     override fun disableLoadMore() {
         super.disableLoadMore()
         getRecyclerView(view).isNestedScrollingEnabled = false
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_FROM_PDP) {
+            data?.let {
+                val wishlistStatusFromPdp = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST,
+                        false)
+                val position = data.getIntExtra(PDP_EXTRA_UPDATED_POSITION, -1)
+                if(position >= 0 && adapter.data.size > position) {
+                    (adapter.data[position] as RecommendationItemDataModel).productItem.isWishlist = wishlistStatusFromPdp
+                    adapter.notifyItemChanged(position, wishlistStatusFromPdp)
+                }
+            }
+        }
+        handleProductCardOptionsActivityResult(requestCode, resultCode, data,
+                object : ProductCardOptionsWishlistCallback {
+                    override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
+                        handleWishlistAction(productCardOptionsModel)
+                    }
+                })
+    }
+
+    private fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel?) {
+        if (productCardOptionsModel == null) return
+        val wishlistResult = productCardOptionsModel.wishlistResult
+        if (wishlistResult.isUserLoggedIn) {
+            if (wishlistResult.isSuccess) {
+                if (wishlistResult.isAddWishlist) {
+                    if(productId.isNotBlank() || productId.isNotEmpty()){
+                        RecommendationPageTracking.eventUserClickRecommendationWishlistForLoginWithProductId(true, ref)
+                    }else {
+                        RecommendationPageTracking.eventUserClickRecommendationWishlistForLogin(true, productCardOptionsModel.screenName, ref)
+                    }
+                    showMessageSuccessAddWishlist()
+                } else {
+                    if(productId.isNotBlank() || productId.isNotEmpty()){
+                        RecommendationPageTracking.eventUserClickRecommendationWishlistForLoginWithProductId(false, ref)
+                    }else {
+                        RecommendationPageTracking.eventUserClickRecommendationWishlistForLogin(false, productCardOptionsModel.screenName, ref)
+                    }
+                    showMessageSuccessRemoveWishlist()
+                }
+                updateWishlist(wishlistResult.isAddWishlist, productCardOptionsModel.productPosition)
+            } else {
+                showMessageFailedWishlistAction()
+            }
+        } else {
+            RouteManager.route(context, ApplinkConst.LOGIN)
+        }
+    }
+
+    private fun updateWishlist(isWishlist: Boolean, position: Int) {
+        if(position > -1 && adapter.itemCount > 0 &&
+                adapter.itemCount > position) {
+            (adapter.data[position] as RecommendationItemDataModel).productItem.isWishlist = isWishlist
+            adapter.notifyItemChanged(position, isWishlist)
+        }
+    }
+
+    private fun showMessageSuccessAddWishlist() {
+        if (activity == null) return
+        val view = activity!!.findViewById<View>(android.R.id.content)
+        val message = getString(R.string.recom_msg_success_add_wishlist)
+        view?.let {
+            Toaster.make(
+                    it,
+                    message,
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL,
+                    getString(R.string.home_recom_go_to_wishlist),
+                    View.OnClickListener { goToWishlist() })
+        }
+    }
+
+    private fun goToWishlist() {
+        if (activity == null) return
+        RouteManager.route(activity, ApplinkConst.NEW_WISHLIST)
+    }
+
+    private fun showMessageSuccessRemoveWishlist() {
+        if (activity == null) return
+        val view = activity!!.findViewById<View>(android.R.id.content)
+        val message = getString(R.string.recom_msg_success_remove_wishlist)
+        Toaster.make(view, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL)
+    }
+
+    private fun showMessageFailedWishlistAction() {
+        if (activity == null) return
+        val view = activity?.findViewById<View>(android.R.id.content)
+        view?.let { Toaster.make(it, ErrorHandler.getErrorMessage(activity, null), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR) }
     }
 
     private fun observeLiveData(){
@@ -277,6 +379,12 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
                RecommendationPageTracking.eventUserClickRecommendationWishlistForNonLogin(getHeaderName(item), ref)
             }
         }
+    }
+
+    override fun onThreeDotsClick(item: RecommendationItem, vararg position: Int) {
+        showProductCardOptions(
+                this,
+                createProductCardOptionsModel(item, position[0]))
     }
 
     /**
@@ -363,7 +471,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
      */
     private fun displayProductInfo(){
         childFragmentManager.beginTransaction()
-                .replace(R.id.product_info_container, ProductInfoFragment.newInstance(productId, ref, queryParam, internalRef))
+                .replace(com.tokopedia.home_recom.R.id.product_info_container, ProductInfoFragment.newInstance(productId, ref, queryParam, internalRef))
                 .commit()
     }
 
@@ -460,7 +568,9 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
             LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
                     productDataToLinkerDataMapper(id, name, description, imageUrl), object : ShareCallback {
                 override fun urlCreated(linkerShareData: LinkerShareResult) {
-                    openIntentShare(name, context.getString(R.string.recom_home_recommendation), linkerShareData.url)
+                    if(linkerShareData.url != null) {
+                        openIntentShare(name, context.getString(R.string.recom_home_recommendation), linkerShareData.url)
+                    }
                 }
 
                 override fun onError(linkerError: LinkerError) {
@@ -517,6 +627,18 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         }
 
         activity?.startActivity(Intent.createChooser(shareIntent, SHARE_PRODUCT_TITLE))
+    }
+
+    private fun createProductCardOptionsModel(recommendationItem: RecommendationItem, position: Int): ProductCardOptionsModel {
+        val productCardOptionsModel = ProductCardOptionsModel()
+        productCardOptionsModel.hasWishlist = true
+        productCardOptionsModel.isWishlisted = recommendationItem.isWishlist
+        productCardOptionsModel.productId = recommendationItem.productId.toString()
+        productCardOptionsModel.isTopAds = recommendationItem.isTopAds
+        productCardOptionsModel.topAdsWishlistUrl = recommendationItem.wishlistUrl
+        productCardOptionsModel.productPosition = position
+        productCardOptionsModel.screenName = recommendationItem.header
+        return productCardOptionsModel
     }
 
 }

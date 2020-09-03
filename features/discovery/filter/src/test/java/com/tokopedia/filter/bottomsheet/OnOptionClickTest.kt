@@ -52,11 +52,21 @@ internal class OnOptionClickTest: SortFilterBottomSheetViewModelTestFixtures() {
     private fun assertMapValueContainsClickedOption(mapParameter: Map<String, String>, clickedOptionViewModel: OptionViewModel) {
         val option = clickedOptionViewModel.option
 
-        val mapParameterOptionValues = mapParameter[option.key]?.split(",") ?: listOf()
-        val optionValues = option.value.split(",")
+        val mapParameterOptions = mapParameter[option.key]?.split(OptionHelper.OPTION_SEPARATOR) ?: listOf()
+        val optionValues = option.value.split(OptionHelper.VALUE_SEPARATOR)
 
-        assert(mapParameterOptionValues.containsAll(optionValues)) {
-            "Map Parameter ${option.key} should contains all value $optionValues.\nActual Map Parameter contains $mapParameterOptionValues"
+        var mapParameterContainsClickedOption = false
+        mapParameterOptions.forEach { mapParameterOption ->
+            val mapParameterOptionValues = mapParameterOption.split(OptionHelper.VALUE_SEPARATOR)
+
+            mapParameterContainsClickedOption =
+                    mapParameterOptionValues.size == optionValues.size && mapParameterOptionValues.containsAll(optionValues)
+
+            if (mapParameterContainsClickedOption) return
+        }
+
+        assert(mapParameterContainsClickedOption) {
+            "Map Parameter ${option.key} should contains all value $optionValues.\nActual Map Parameter contains $mapParameterOptions"
         }
     }
 

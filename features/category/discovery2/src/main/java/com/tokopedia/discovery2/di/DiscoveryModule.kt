@@ -3,6 +3,8 @@ package com.tokopedia.discovery2.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.repository.campaignsubscribe.CampaignSubscribeGQLRepository
@@ -24,10 +26,17 @@ import com.tokopedia.discovery2.repository.productcards.ProductCardsRepository
 import com.tokopedia.discovery2.repository.productcards.ProductCardsRestRepository
 import com.tokopedia.discovery2.repository.pushstatus.pushstatus.PushStatusGQLRepository
 import com.tokopedia.discovery2.repository.pushstatus.pushstatus.PushStatusRepository
+import com.tokopedia.discovery2.repository.quickFilter.QuickFilterRepository
+import com.tokopedia.discovery2.repository.quickFilter.QuickFilterRestRepository
 import com.tokopedia.discovery2.repository.quickcoupon.QuickCouponGQLRepository
 import com.tokopedia.discovery2.repository.quickcoupon.QuickCouponRepository
 import com.tokopedia.discovery2.repository.tokopoints.TokopointsRepository
 import com.tokopedia.discovery2.repository.tokopoints.TokopointsRestRepository
+import com.tokopedia.discovery2.usecase.topAdsUseCase.DiscoveryTopAdsTrackingUseCase
+import com.tokopedia.discovery2.viewcontrollers.activity.DISCOVERY_PLT_NETWORK_METRICS
+import com.tokopedia.discovery2.viewcontrollers.activity.DISCOVERY_PLT_PREPARE_METRICS
+import com.tokopedia.discovery2.viewcontrollers.activity.DISCOVERY_PLT_RENDER_METRICS
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -48,8 +57,8 @@ class DiscoveryModule {
     }
 
     @Provides
-    fun provideCpmTopAdsGQLRepository(@ApplicationContext context: Context): CpmTopAdsRepository {
-        return CpmTopAdsGQLRepository(provideGetStringMethod(context))
+    fun provideCpmTopAdsGQLRepository(): CpmTopAdsRepository {
+        return CpmTopAdsGQLRepository()
     }
 
     @Provides
@@ -119,5 +128,25 @@ class DiscoveryModule {
     @Provides
     fun provideQuickCouponGQLRepository(@ApplicationContext context: Context): QuickCouponRepository {
         return QuickCouponGQLRepository(provideGetStringMethod(context))
+    }
+
+    @Provides
+    fun providesDiscoveryTopAdsTrackingUseCase(topAdsUrlHitter: TopAdsUrlHitter): DiscoveryTopAdsTrackingUseCase {
+        return DiscoveryTopAdsTrackingUseCase(topAdsUrlHitter)
+    }
+
+    @Provides
+    fun provideQuickFilterRestRepository(): QuickFilterRepository {
+        return QuickFilterRestRepository()
+    }
+
+    @DiscoveryScope
+    @Provides
+    fun providePageLoadTimePerformanceMonitoring() : PageLoadTimePerformanceInterface {
+        return PageLoadTimePerformanceCallback(
+                DISCOVERY_PLT_PREPARE_METRICS,
+                DISCOVERY_PLT_NETWORK_METRICS,
+                DISCOVERY_PLT_RENDER_METRICS,0,0,0,0,null
+        )
     }
 }
