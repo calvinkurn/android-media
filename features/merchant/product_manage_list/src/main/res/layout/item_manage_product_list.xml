@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
     android:paddingTop="@dimen/product_manage_list_padding_top">
 
     <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
