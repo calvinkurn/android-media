@@ -118,20 +118,20 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     private var productItemList: List<ProductReviewUiModel>? = null
 
-    var chipsSortText: String? = ""
-    var chipsFilterText: String? = ""
-    var searchFilterText: String? = ""
-    var isEmptyFilter = false
+    private var chipsSortText: String? = ""
+    private var chipsFilterText: String? = ""
+    private var searchFilterText: String? = ""
+    private var isEmptyFilter = false
 
-    var sortBy: String? = ""
-    var filterBy: String? = ""
+    private var sortBy: String? = ""
+    private var filterBy: String? = ""
 
-    var filterAllText: String? = ""
+    private var filterAllText: String? = ""
 
-    var positionFilter = 0
-    var positionSort = 0
+    private var positionFilter = 0
+    private var positionSort = 0
 
-    var isCompletedCoachMark = false
+    private var isCompletedCoachMark = false
 
     private var isClickTrackingAlreadySent = false
 
@@ -250,8 +250,8 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         endlessRecyclerViewScrollListener?.resetState()
         reviewSellerAdapter.clearAllElements()
         rvRatingProduct?.show()
-        filter_and_sort_layout?.hide()
         search_bar_layout?.hide()
+        filter_and_sort_layout?.hide()
         globalError_reviewSeller?.hide()
         emptyState_reviewProduct?.hide()
         showLoading()
@@ -337,13 +337,13 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     private fun onSearchKeywordEmpty() {
         searchFilterText = "$searchQuery="
         filterAllText = ReviewUtil.setFilterJoinValueFormat(filterBy.orEmpty(), searchFilterText.orEmpty())
-        searchBarRatingProduct.searchBarTextField.text.clear()
-        searchBarRatingProduct.searchBarPlaceholder = getString(R.string.product_search)
+        searchBarRatingProduct?.searchBarTextField?.text?.clear()
+        searchBarRatingProduct?.searchBarPlaceholder = getString(R.string.product_search)
         loadInitialData()
     }
 
     private fun observeLiveData() {
-        viewModelListReviewList?.productRatingOverall?.observe(this, Observer {
+        viewModelListReviewList?.productRatingOverall?.observe(viewLifecycleOwner, Observer {
             hideLoading()
             when (it) {
                 is Success -> {
@@ -355,7 +355,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
             }
         })
 
-        viewModelListReviewList?.reviewProductList?.observe(this, Observer {
+        viewModelListReviewList?.reviewProductList?.observe(viewLifecycleOwner, Observer {
             hideLoading()
             when (it) {
                 is Success -> {
