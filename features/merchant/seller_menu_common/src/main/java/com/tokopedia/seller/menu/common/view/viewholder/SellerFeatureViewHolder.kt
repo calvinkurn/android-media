@@ -28,13 +28,6 @@ class SellerFeatureViewHolder(itemView: View): AbstractViewHolder<SellerFeatureU
             )
         }
 
-        itemView.cardPromo.setOnClickListener {
-            goToSellerMigrationPage(
-                SellerMigrationFeatureName.FEATURE_CENTRALIZED_PROMO,
-                arrayListOf(ApplinkConstInternalSellerapp.CENTRALIZED_PROMO)
-            )
-        }
-
         itemView.cardFeedAndPlay.setOnClickListener {
             val appLinks = java.util.ArrayList<String>().apply {
                 add(ApplinkConstInternalSellerapp.SELLER_HOME)
