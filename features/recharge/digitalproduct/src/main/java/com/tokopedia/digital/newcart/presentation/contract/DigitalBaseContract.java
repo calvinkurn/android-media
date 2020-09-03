@@ -15,6 +15,7 @@ import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParamet
 import com.tokopedia.common_digital.cart.view.model.checkout.InstantCheckoutData;
 import com.tokopedia.digital.newcart.domain.model.CheckoutDigitalData;
 import com.tokopedia.digital.newcart.presentation.model.DigitalSubscriptionParams;
+import com.tokopedia.promocheckout.common.view.model.PromoData;
 
 import java.util.HashMap;
 import java.util.List;
@@ -115,16 +116,17 @@ public interface DigitalBaseContract {
         void stopPerfomanceMonitoringTrace();
 
         DigitalSubscriptionParams getDigitalSubscriptionParams();
+
+        void successCancelVoucherCart();
+
+        void failedCancelVoucherCart(Throwable message);
     }
 
     interface Presenter<T extends View> extends CustomerPresenter<T>{
 
         void onViewCreated();
 
-        void onReceivePromoCode(String couponTitle,
-                             String couponMessage,
-                             String couponCode,
-                             int isCoupon);
+        void onReceivePromoCode(PromoData promoData);
 
         void processToCheckout();
 
@@ -133,5 +135,7 @@ public interface DigitalBaseContract {
         void processPatchOtpCart(String categoryId);
 
         void processGetCartDataAfterCheckout(String categoryId);
+
+        void cancelVoucherCart();
     }
 }

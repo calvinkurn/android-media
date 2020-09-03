@@ -2,12 +2,15 @@ package com.tokopedia.review.feature.createreputation.presentation.widget
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.MotionEvent
 import android.view.View
+import android.view.View.OnTouchListener
 import androidx.core.content.ContextCompat
 import com.tokopedia.review.R
 import com.tokopedia.review.feature.createreputation.presentation.listener.TextAreaListener
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.widget_create_review_text_area.view.*
+
 
 class CreateReviewTextArea : BaseCustomView {
 
@@ -24,7 +27,21 @@ class CreateReviewTextArea : BaseCustomView {
 
     private fun init() {
         View.inflate(context, R.layout.widget_create_review_text_area, this)
-        createReviewEditText.setHintTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_32))
+        createReviewEditText.apply {
+            setOnTouchListener(OnTouchListener { v, event ->
+                if (createReviewEditText.hasFocus()) {
+                    v.parent.requestDisallowInterceptTouchEvent(true)
+                    when (event.action and MotionEvent.ACTION_MASK) {
+                        MotionEvent.ACTION_SCROLL -> {
+                            v.parent.requestDisallowInterceptTouchEvent(false)
+                            return@OnTouchListener true
+                        }
+                    }
+                }
+                false
+            })
+            setHintTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_32))
+        }
     }
 
     fun setListener(textAreaListener: TextAreaListener) {
