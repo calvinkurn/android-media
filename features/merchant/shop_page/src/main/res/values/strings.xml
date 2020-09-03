@@ -276,6 +276,9 @@
     <string name="shop_page_share_text_with_link">Semakin mudah belanja produk %1$s di Tokopedia. Cek aja, pasti ada yang kamu suka\n%2$s</string>
 
     <!-- content description shop page -->
+    <string name="content_desc_menu_action_share">image share toko</string>
+    <string name="content_desc_menu_action_cart">image cart toko</string>
+    <string name="content_desc_menu_action_shop_info">image info toko</string>
     <string name="content_desc_shop_page_main_profile_image">image gambar toko</string>
     <string name="content_desc_shop_page_main_profile_badge">image badge toko</string>
     <string name="content_desc_shop_page_main_profile_name">text nama toko</string>

@@ -12,7 +12,7 @@
 
     <ImageView
         android:id="@+id/product_image"
-        android:contentDescription="@string/content_desc_product_image_review"
+        android:contentDescription="@string/content_desc_product_image_shop_review"
         android:layout_width="@dimen/dp_48"
         android:layout_height="@dimen/dp_48"
         android:layout_gravity="center_vertical"
@@ -20,7 +20,7 @@
 
     <TextView
         android:id="@+id/product_name"
-        android:contentDescription="@string/content_desc_product_name_review"
+        android:contentDescription="@string/content_desc_product_name_shop_review"
         style="@style/TextView.Small.Bold"
         android:layout_marginLeft="@dimen/dp_10"
         android:layout_marginStart="@dimen/dp_10"
