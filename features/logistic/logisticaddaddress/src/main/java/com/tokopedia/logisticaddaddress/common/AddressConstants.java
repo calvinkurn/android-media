@@ -57,6 +57,9 @@ public class AddressConstants {
     public static final String EXTRA_IS_FULL_FLOW = "EXTRA_IS_FULL_FLOW";
     public static final String EXTRA_ADDRESS_MODEL = "EXTRA_ADDRESS_MODEL";
     public static final String EXTRA_IS_LOGISTIC_LABEL = "EXTRA_IS_LOGISTIC_LABEL";
+    public static final String EXTRA_IS_CIRCUIT_BREAKER = "EXTRA_IS_CIRCUIT_BREAKER";
+
+    public static final Integer CIRCUIT_BREAKER_ON_CODE = 101;
 
     public static final Double DEFAULT_LAT = MONAS_LAT;
     public static final Double DEFAULT_LONG = MONAS_LONG;
