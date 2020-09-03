@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.chatlist.adapter
 
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
@@ -61,12 +62,16 @@ class ChatListAdapter(adapterTypeFactory: ChatListTypeFactoryImpl) :
 
     fun pinChatItem(element: ItemChatListPojo, position: Int) {
         val chatItem = visitables.getOrNull(position)
-        if (chatItem != null && chatItem == element) {
-            visitables.goToFirst(position)
-            notifyItemMoved(position, 0)
-            notifyItemChanged(0, PAYLOAD_UPDATE_PIN_STATUS)
+        val chatItemPosition = if (chatItem != null && chatItem == element) {
+            position
         } else {
+            visitables.indexOf(element)
+        }
 
+        if (chatItemPosition != RecyclerView.NO_POSITION) {
+            visitables.goToFirst(chatItemPosition)
+            notifyItemMoved(chatItemPosition, 0)
+            notifyItemChanged(0, PAYLOAD_UPDATE_PIN_STATUS)
         }
     }
 
