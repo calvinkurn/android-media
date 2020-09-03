@@ -324,7 +324,7 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".receiver.AppMediaButtonReceiver" >
+        <receiver android:name="com.tokopedia.tkpd.receiver.AppMediaButtonReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>

@@ -82,7 +82,7 @@ public class MediaGrid extends SquareFrameLayout implements View.OnClickListener
         boolean loadFitCenter = min != 0 && (max / min) > 2;
         if (loadFitCenter) {
             Glide.with(getContext())
-                    .load(file)
+                    .load(mMedia.getContentUri())
                     .placeholder(mPreBindInfo.mPlaceholder)
                     .error(mPreBindInfo.error)
                     .override(mPreBindInfo.mResize, mPreBindInfo.mResize)
@@ -90,7 +90,7 @@ public class MediaGrid extends SquareFrameLayout implements View.OnClickListener
                     .into(mThumbnail);
         } else {
             Glide.with(getContext())
-                    .load(file)
+                    .load(mMedia.getContentUri())
                     .placeholder(mPreBindInfo.mPlaceholder)
                     .error(mPreBindInfo.error)
                     .override(mPreBindInfo.mResize, mPreBindInfo.mResize)
