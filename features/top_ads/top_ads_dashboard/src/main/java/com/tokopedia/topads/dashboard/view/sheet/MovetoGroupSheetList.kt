@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.data.model.CountDataItem
 import com.tokopedia.topads.dashboard.view.adapter.movetogroup.MovetoGroupAdapter
 import com.tokopedia.topads.dashboard.view.adapter.movetogroup.MovetoGroupAdapterTypeFactoryImpl
 import com.tokopedia.topads.dashboard.view.adapter.movetogroup.viewmodel.MovetoGroupItemViewModel
@@ -95,6 +96,10 @@ class MovetoGroupSheetList {
 
     fun updateData(data: MutableList<MovetoGroupViewModel>) {
         adapter?.updateData(data)
+    }
+
+    fun updateKeyCount(data: List<CountDataItem>) {
+        adapter?.setItemCount(data)
     }
 
     fun getSelectedFilter(): String {

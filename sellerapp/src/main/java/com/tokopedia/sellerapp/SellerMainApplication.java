@@ -57,6 +57,8 @@ import java.util.concurrent.TimeUnit;
 
 import timber.log.Timber;
 import com.tokopedia.tokopatch.TokoPatch;
+import kotlin.Pair;
+import com.tokopedia.authentication.AuthHelper;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -139,13 +141,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         com.tokopedia.config.GlobalConfig.DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME = DeepLinkHandlerActivity.class.getName();
         com.tokopedia.config.GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME = DeepLinkActivity.class.getName();
         com.tokopedia.config.GlobalConfig.DEVICE_ID = DeviceInfo.getAndroidId(this);
-        try {
-            PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-            com.tokopedia.config.GlobalConfig.VERSION_NAME = pInfo.versionName;
-            com.tokopedia.config.GlobalConfig.VERSION_NAME = pInfo.versionName;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
+        setVersionName();
         FpmLogger.init(this);
         TokopediaUrl.Companion.init(this);
         generateSellerAppNetworkKeys();
@@ -171,7 +167,28 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         initAppNotificationReceiver();
         registerActivityLifecycleCallbacks();
         initBlockCanary();
-//        TokoPatch.init(this);
+        TokoPatch.init(this);
+    }
+
+    private void setVersionName(){
+        try {
+            PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            Pair<String, String> versions = AuthHelper.getVersionName(pInfo.versionName);
+            String version = versions.getFirst();
+            String suffixVersion = versions.getSecond();
+
+            if (!version.equalsIgnoreCase(AuthHelper.ERROR)) {
+                GlobalConfig.VERSION_NAME = version;
+                com.tokopedia.config.GlobalConfig.VERSION_NAME = version;
+                com.tokopedia.config.GlobalConfig.VERSION_NAME_SUFFIX = suffixVersion;
+            } else {
+                GlobalConfig.VERSION_NAME = pInfo.versionName;
+                com.tokopedia.config.GlobalConfig.VERSION_NAME = pInfo.versionName;
+            }
+            com.tokopedia.config.GlobalConfig.RAW_VERSION_NAME = pInfo.versionName;// save raw version name
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     private void initBugsnag() {

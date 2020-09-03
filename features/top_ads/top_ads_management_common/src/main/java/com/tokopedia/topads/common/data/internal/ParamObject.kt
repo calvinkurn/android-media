@@ -51,4 +51,9 @@ object ParamObject {
     const val SINGLE_ROW = "is_single_row"
     const val KEYWORD_ID = "keywordID"
     const val KEYWORD_PRICE_BID = "keywordPriceBid"
+    const val INSIGHT_TYPE = "insightType"
+    const val INSIGHT_SOURCE = "keyword_insight_app"
+    const val SEARCH_TERM = "search_term"
+    const val NEXT_CURSOR = "next_cursor"
+    const val LIMIT = "limit"
 }

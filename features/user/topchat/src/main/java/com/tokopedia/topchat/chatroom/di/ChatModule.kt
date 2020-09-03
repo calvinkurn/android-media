@@ -8,12 +8,12 @@ import com.tokopedia.abstraction.common.network.exception.HeaderErrorListRespons
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor
 import com.tokopedia.chat_common.network.ChatUrl
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.mediauploader.di.MediaUploaderModule
 import com.tokopedia.mediauploader.di.MediaUploaderNetworkModule
 import com.tokopedia.mediauploader.di.NetworkModule
@@ -30,9 +30,6 @@ import com.tokopedia.topchat.chatroom.domain.mapper.GetTemplateChatRoomMapper
 import com.tokopedia.topchat.chatroom.domain.pojo.imageserver.ChatImageServerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingResponse
 import com.tokopedia.topchat.chatroom.domain.usecase.GetTemplateChatRoomUseCase
-import com.tokopedia.topchat.chatroom.view.listener.ChatSettingsInterface
-import com.tokopedia.topchat.chatroom.view.presenter.ChatSettingsPresenter
-import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics
 import com.tokopedia.topchat.common.chat.api.ChatApi
 import com.tokopedia.topchat.common.di.qualifier.InboxQualifier
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
@@ -41,6 +38,7 @@ import com.tokopedia.topchat.common.network.TopchatCacheManagerImpl
 import com.tokopedia.topchat.common.network.XUserIdInterceptor
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.websocket.RxWebSocketUtil
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Module
@@ -144,6 +142,16 @@ class ChatModule {
 
     @ChatScope
     @Provides
+    fun provideRxWebSocketUtil(
+            tkpdAuthInterceptor: TkpdAuthInterceptor,
+            fingerprintInterceptor: FingerprintInterceptor
+    ): RxWebSocketUtil {
+        val interceptors = listOf(tkpdAuthInterceptor, fingerprintInterceptor)
+        return RxWebSocketUtil.getInstance(interceptors)
+    }
+
+    @ChatScope
+    @Provides
     fun provideOkHttpClient(@ApplicationContext context: Context,
                             @InboxQualifier retryPolicy: OkHttpRetryPolicy,
                             errorResponseInterceptor: ErrorResponseInterceptor,
@@ -201,14 +209,6 @@ class ChatModule {
 
     @ChatScope
     @Provides
-    fun provideChatSettingsPresenter(graphqlUseCase: GraphqlUseCase,
-                                     chatSettingsAnalytics: ChatSettingsAnalytics):
-            ChatSettingsInterface.Presenter {
-        return ChatSettingsPresenter(graphqlUseCase, chatSettingsAnalytics)
-    }
-
-    @ChatScope
-    @Provides
     @Named("atcMutation")
     fun provideAddToCartMutation(@TopchatContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart)
@@ -259,4 +259,10 @@ class ChatModule {
         return com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase(graphqlRepository)
     }
 
+    @ChatScope
+    @Provides
+    @Named(AtcConstant.MUTATION_ATC_OCC)
+    fun provideAtcOccMutation(@ApplicationContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_one_click_checkout)
+    }
 }

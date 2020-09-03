@@ -7,6 +7,7 @@ import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_DUAL_A
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUOTATION
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_STICKER
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_VOUCHER
+import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.chat_common.domain.mapper.GetExistingChatMapper
 import com.tokopedia.chat_common.domain.pojo.ChatRepliesItem
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
@@ -39,23 +40,24 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                 latestHeaderDate = chatItemPojo.date
             }
             for (chatItemPojoByDate in chatItemPojo.chats) {
-                var chatIndex = 0
-                while (chatIndex < chatItemPojoByDate.replies.size) {
-                    val chatDateTime = chatItemPojoByDate.replies[chatIndex]
+                var replyIndex = 0
+                while (replyIndex < chatItemPojoByDate.replies.size) {
+                    val chatDateTime = chatItemPojoByDate.replies[replyIndex]
                     if (hasAttachment(chatDateTime)) {
-                        val nextItem = chatItemPojoByDate.replies.getOrNull(chatIndex + 1)
-                        if (chatDateTime.isMultipleProductAttachment(nextItem)) {
-                            val products = mergeProduct(chatIndex, chatItemPojoByDate.replies)
+                        val nextItem = chatItemPojoByDate.replies.getOrNull(replyIndex + 1)
+                        if (nextItem != null && chatDateTime.isMultipleProductAttachment(nextItem)) {
+                            val products = mergeProduct(replyIndex, chatItemPojoByDate.replies, chatDateTime.isBroadCast())
                             val carouselProducts = createCarouselProduct(chatDateTime, products)
                             listChat.add(carouselProducts)
-                            chatIndex += products.size
+                            replyIndex += products.size
                         } else {
                             listChat.add(mapAttachment(chatDateTime))
-                            chatIndex++
+                            replyIndex++
                         }
                     } else {
-                        listChat.add(convertToMessageViewModel(chatDateTime))
-                        chatIndex++
+                        val textMessage = convertToMessageViewModel(chatDateTime)
+                        listChat.add(textMessage)
+                        replyIndex++
                     }
                 }
             }
@@ -84,16 +86,22 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
         }
     }
 
-    private fun mergeProduct(index: Int, replies: List<Reply>): List<Visitable<*>> {
+    private fun mergeProduct(index: Int, replies: List<Reply>, isBroadCast: Boolean): List<Visitable<*>> {
         val products = mutableListOf<Visitable<*>>()
         var idx = index
         while (idx < replies.size) {
             val chat = replies[idx]
             if (chat.isProductAttachment()) {
-                products.add(convertToProductAttachment(chat))
+                val product = convertToProductAttachment(chat)
+                products.add(product)
                 idx++
             } else {
                 break
+            }
+        }
+        if (isBroadCast) {
+            products.sortBy {
+                return@sortBy (it as ProductAttachmentViewModel).hasEmptyStock()
             }
         }
         return products

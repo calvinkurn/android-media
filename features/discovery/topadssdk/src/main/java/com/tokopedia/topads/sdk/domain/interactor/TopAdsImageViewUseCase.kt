@@ -13,6 +13,7 @@ const val DIMEN_ID = "dimen_id"
 private const val USER_ID = "user_id"
 private const val DEP_ID = "dep_id"
 private const val QUERY = "q"
+private const val PRODUCT_ID = "product_id"
 
 class TopAdsImageViewUseCase constructor(private val userId: String,
                                          private val repository: TopAdsRepository) {
@@ -21,7 +22,7 @@ class TopAdsImageViewUseCase constructor(private val userId: String,
         return repository.getImageData(queryParams)
     }
 
-    fun getQueryMap(query: String, source: String, pageToken: String, adsCount: Int, dimenId: Int, depId: String): MutableMap<String, Any> {
+    fun getQueryMap(query: String, source: String, pageToken: String, adsCount: Int, dimenId: Int, depId: String, productID: String = ""): MutableMap<String, Any> {
         val queryMap = HashMap<String, Any>()
         queryMap[USER_ID] = userId
         queryMap[ADS_TYPE] = "banner"
@@ -32,6 +33,7 @@ class TopAdsImageViewUseCase constructor(private val userId: String,
         queryMap[DIMEN_ID] = dimenId
         if (query.isNotEmpty()) queryMap[QUERY] = query
         if (depId.isNotEmpty()) queryMap[DEP_ID] = depId
+        if (productID.isNotEmpty()) queryMap[PRODUCT_ID] = productID
 
         return queryMap
     }

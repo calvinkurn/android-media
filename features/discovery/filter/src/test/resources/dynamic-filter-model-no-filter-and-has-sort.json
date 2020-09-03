@@ -1,0 +1,41 @@
+{
+  "data": {
+    "sort": [
+      {
+        "name": "Paling Sesuai",
+        "key": "ob",
+        "value": "23",
+        "inputType": "checkbox",
+        "applyFilter": ""
+      },
+      {
+        "name": "Ulasan",
+        "key": "ob",
+        "value": "5",
+        "inputType": "checkbox",
+        "applyFilter": ""
+      },
+      {
+        "name": "Terbaru",
+        "key": "ob",
+        "value": "9",
+        "inputType": "checkbox",
+        "applyFilter": ""
+      },
+      {
+        "name": "Harga Tertinggi",
+        "key": "ob",
+        "value": "4",
+        "inputType": "checkbox",
+        "applyFilter": ""
+      },
+      {
+        "name": "Harga Terendah",
+        "key": "ob",
+        "value": "3",
+        "inputType": "checkbox",
+        "applyFilter": "pmin=400000&origin_filter=sort_price"
+      }
+    ]
+  }
+}

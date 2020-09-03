@@ -25,6 +25,7 @@ class AddEditProductDetailConstants {
         const val DEBOUNCE_DELAY_MILLIS = 500L
         const val MIN_PRODUCT_PRICE_LIMIT = 100
         const val MIN_PRODUCT_STOCK_LIMIT = 1
+        const val MAX_PRODUCT_PRICE_LIMIT = 100000000
         const val MAX_PRODUCT_STOCK_LIMIT = 999999
         const val MIN_MIN_ORDER_QUANTITY = 1
         const val MIN_PREORDER_DURATION = 1
@@ -37,5 +38,12 @@ class AddEditProductDetailConstants {
         const val SET_CASHBACK_CACHE_MANAGER_KEY = "set_cashback_cache_id"
         const val SET_CASHBACK_RESULT = "set_cashback_result"
         const val EXTRA_CASHBACK_SHOP_ID = "extra_shop_id"
+        const val EXTRA_CASHBACK_IS_DRAFTING = "extra_is_drafting"
+        // request key for set fragment result
+        const val REQUEST_KEY_ADD_MODE = "request_key_add_mode"
+        const val REQUEST_KEY_DESCRIPTION = "request_key_description"
+        const val REQUEST_KEY_DETAIL = "request_key_detail"
+        const val REQUEST_KEY_SHIPMENT = "request_key_shipment"
+        const val BUNDLE_CACHE_MANAGER_ID = "bundle_cache_manager_id"
     }
 }

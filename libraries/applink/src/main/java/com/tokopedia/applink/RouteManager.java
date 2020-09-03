@@ -93,7 +93,7 @@ public class RouteManager {
 
         if (shouldRedirectToSellerApp && !GlobalConfig.isSellerApp()) {
             return getIntentRedirectSellerApp(context, uri);
-        } else if (resolveInfos == null || resolveInfos.size() == 0) {
+        } else if (resolveInfos.size() == 0) {
             // intent cannot be viewed in app
             ApplinkLogger.getInstance(context).appendTrace("Intent cannot be viewed in app");
             ApplinkLogger.getInstance(context).appendTrace("Explicit intent result:\nnull");
@@ -209,7 +209,7 @@ public class RouteManager {
         } else if (URLUtil.isNetworkUrl(mappedDeeplink)) {
             ApplinkLogger.getInstance(context).appendTrace("Network url detected");
             intent = buildInternalImplicitIntent(context, mappedDeeplink);
-            if (intent == null || intent.resolveActivity(context.getPackageManager()) == null) {
+            if (intent.resolveActivity(context.getPackageManager()) == null) {
                 intent = new Intent();
                 intent.setClassName(context.getPackageName(), GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME);
                 intent.setData(Uri.parse(uriString));

@@ -7,6 +7,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant
+import com.tokopedia.shop.common.di.ShopPageContext
 import com.tokopedia.shop.common.graphql.domain.usecase.shopnotes.GetShopNotesByShopIdUseCase
 import com.tokopedia.shop.info.data.GQLQueryStringConst
 import com.tokopedia.shop.info.di.scope.ShopInfoScope
@@ -36,22 +37,22 @@ class ShopInfoModule {
 
     @ShopInfoScope
     @Provides
-    fun provideUserSessionInterface(@ApplicationContext context: Context?): UserSessionInterface {
+    fun provideUserSessionInterface(@ShopPageContext context: Context?): UserSessionInterface {
         return UserSession(context)
     }
 
     @ShopInfoScope
     @Named(GQLQueryNamedConstant.SHOP_NOTES_BY_SHOP_ID)
     @Provides
-    fun getGqlQueryShopNotesByShopId(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_shop_notes_by_shop_id)
+    fun getGqlQueryShopNotesByShopId(@ShopPageContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.shop.common.R.raw.gql_get_shop_notes_by_shop_id)
     }
 
     @ShopInfoScope
     @IntoMap
     @StringKey(GQLQueryStringConst.GET_SHOP_PACK_SPEED)
     @Provides
-    fun getStringQueryShopPackSpeed(@ApplicationContext context: Context): String {
+    fun getStringQueryShopPackSpeed(@ShopPageContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_shop_package_process)
     }
 
@@ -59,16 +60,16 @@ class ShopInfoModule {
     @IntoMap
     @StringKey(GQLQueryStringConst.GET_SHOP_RATING)
     @Provides
-    fun getStringQueryShopRating(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_shop_rating)
+    fun getStringQueryShopRating(@ShopPageContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.shop.common.R.raw.gql_get_shop_rating)
     }
 
     @ShopInfoScope
     @IntoMap
     @StringKey(GQLQueryStringConst.GET_SHOP_SATISFACTION)
     @Provides
-    fun getStringQueryShopSatisfaction(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_shop_satisfaction)
+    fun getStringQueryShopSatisfaction(@ShopPageContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.shop.common.R.raw.gql_get_shop_satisfaction)
     }
 
     @ShopInfoScope

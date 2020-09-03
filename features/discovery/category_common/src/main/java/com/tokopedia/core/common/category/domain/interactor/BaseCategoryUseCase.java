@@ -22,16 +22,8 @@ public abstract class BaseCategoryUseCase<T> extends UseCase<T> {
     @Override
     public final Observable<T> createObservable(RequestParams requestParams) {
         return Observable.just(true)
-                .flatMap(new CheckVersion())
                 .flatMap(new CheckCategoryAvailable())
                 .flatMap(new FetchCategoryObservable(requestParams));
-    }
-
-    private class CheckVersion implements Func1<Boolean, Observable<Boolean>> {
-        @Override
-        public Observable<Boolean> call(Boolean aBoolean) {
-            return categoryRepository.checkVersion();
-        }
     }
 
     private class CheckCategoryAvailable implements Func1<Boolean, Observable<Boolean>> {

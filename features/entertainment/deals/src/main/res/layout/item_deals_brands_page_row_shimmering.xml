@@ -13,7 +13,7 @@
         android:layout_marginBottom="@dimen/spacing_lvl2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/shimmering_brand_2"
+        app:layout_constraintRight_toLeftOf="@+id/shimmering_brand_2"
         app:layout_constraintTop_toTopOf="parent" />
 
     <include
@@ -24,8 +24,8 @@
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_marginBottom="@dimen/spacing_lvl2"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/shimmering_brand_1"
-        app:layout_constraintRight_toLeftOf="@id/shimmering_brand_3"
+        app:layout_constraintLeft_toRightOf="@+id/shimmering_brand_1"
+        app:layout_constraintRight_toLeftOf="@+id/shimmering_brand_3"
         app:layout_constraintTop_toTopOf="parent" />
 
     <include
@@ -36,8 +36,8 @@
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_marginBottom="@dimen/spacing_lvl2"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/shimmering_brand_2"
-        app:layout_constraintRight_toLeftOf="@id/shimmering_brand_4"
+        app:layout_constraintLeft_toRightOf="@+id/shimmering_brand_2"
+        app:layout_constraintRight_toLeftOf="@+id/shimmering_brand_4"
         app:layout_constraintTop_toTopOf="parent" />
 
     <include
@@ -49,7 +49,7 @@
         android:layout_marginRight="@dimen/spacing_lvl3"
         android:layout_marginBottom="@dimen/spacing_lvl2"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/shimmering_brand_3"
+        app:layout_constraintLeft_toRightOf="@+id/shimmering_brand_3"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

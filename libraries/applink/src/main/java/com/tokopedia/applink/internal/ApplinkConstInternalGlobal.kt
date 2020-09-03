@@ -51,6 +51,9 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val PARAM_FACE_PATH = "facePath"
 
+    @JvmField
+    val PARAM_IS_FROM_2FA = "isFromTwoFactor"
+
     //VerificationActivity Param
     @JvmField
     val PARAM_CAN_USE_OTHER_METHOD = "can_use_other_method"
@@ -64,6 +67,10 @@ object ApplinkConstInternalGlobal {
     val PARAM_OTP_CODE = "otp_code"
     @JvmField
     val PARAM_IS_SKIP_OTP = "is_skip_otp"
+    @JvmField
+    val PARAM_TWO_FACTOR_TYPE = "two_factor_type"
+    @JvmField
+    val KEY_REDIRECT_SEAMLESS_APPLINK = "redirect_seamless"
 
     @JvmField
     val INTERNAL_GLOBAL = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_GLOBAL}"
@@ -72,6 +79,10 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/withdraw
     @JvmField
     val WITHDRAW = "$INTERNAL_GLOBAL/withdraw"
+    // WithdrawActivity
+    // tokopedia-android-internal://global/withdraw
+    @JvmField
+    val AUTO_WITHDRAW_SETTING = "$INTERNAL_GLOBAL/autoWithdrawSettings"
 
     // ChangeInactiveFormRequestActivity
     // tokopedia-android-internal://global/change-inactive-phone-form
@@ -160,6 +171,9 @@ object ApplinkConstInternalGlobal {
     val USER_IDENTIFICATION_FORM = "$USER_IDENTIFICATION_FORM_BASE?projectId={projectId}"
     @JvmField
     val PARAM_PROJECT_ID = "projectId"
+
+    @JvmField
+    val PARAM_CALL_BACK = "callBack"
 
     // InboxTalkActivity
     // tokopedia-android-internal://global/inbox-talk
@@ -477,6 +491,12 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/screen-recorder
     @JvmField
     val SCREEN_RECORDER = "$INTERNAL_GLOBAL/screen-recorder"
+
+    // TwoFactorActivity
+    // tokopedia-android-internal://global/two-factor-register
+    @JvmField
+    val TWO_FACTOR_REGISTER = "$INTERNAL_GLOBAL/two-factor-register"
+
 
     //SeamlessActivity
     @JvmField

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/charts_10dp">
+
+    <View
+        android:id="@+id/vPieChartLegendDot"
+        android:layout_width="@dimen/charts_10dp"
+        android:layout_height="@dimen/charts_10dp"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        app:layout_constraintBottom_toBottomOf="@+id/tvPieChartLegend"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvPieChartLegend"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPieChartLegend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/charts_6dp"
+        android:layout_marginLeft="@dimen/charts_6dp"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textColor="@color/Neutral_N700_68"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/vPieChartLegendDot"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_3"
+        tools:text="Pembeli baru" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPieChartLegendValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/light_N700_96"
+        app:layout_constraintStart_toStartOf="@+id/tvPieChartLegend"
+        app:layout_constraintTop_toBottomOf="@+id/tvPieChartLegend"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:text="20" />
+</androidx.constraintlayout.widget.ConstraintLayout>

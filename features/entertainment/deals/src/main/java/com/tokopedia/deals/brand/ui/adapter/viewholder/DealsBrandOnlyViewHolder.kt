@@ -25,7 +25,6 @@ class DealsBrandOnlyViewHolder(itemView: View,
             } else {
                 shimmering.hide()
                 cl_containter_brand?.show()
-                brandActionListener.showTitle(brands)
                 setupItemAdapter(itemView, brands)
             }
         }

@@ -3,23 +3,22 @@ package com.tokopedia.manageaddress.ui.cornerlist
 import com.tokopedia.logisticdata.domain.model.AddressListModel
 import com.tokopedia.manageaddress.AddressDummyDataProvider
 import com.tokopedia.manageaddress.domain.GetCornerList
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
+import io.mockk.verifyOrder
 import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.mockito.InjectMocks
-import org.mockito.Matchers
-import org.mockito.Mock
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.inOrder
-import org.mockito.runners.MockitoJUnitRunner
 import rx.Observable
 
-@RunWith(MockitoJUnitRunner::class)
 class CornerListPresenterTest {
 
-    @Mock lateinit var usecase: GetCornerList
-    @Mock lateinit var view: CornerContract.View
-    @InjectMocks lateinit var presenter: CornerListPresenter
+    private val useCase: GetCornerList = mockk(relaxed = true)
+    private val view: CornerContract.View = mockk(relaxed = true)
+
+    private val presenter by lazy {
+        CornerListPresenter(useCase)
+    }
 
     @Before
     fun setup() {
@@ -27,50 +26,103 @@ class CornerListPresenterTest {
     }
 
     @Test
-    fun searchQueryNormalReturn() {
-        val items: AddressListModel = AddressDummyDataProvider.getCornerList()
+    fun `Search Query Success`() {
+        val items = AddressDummyDataProvider.getAddressList()
 
-        `when`(usecase.execute(Matchers.anyString())).thenReturn(Observable.just(items))
+        every { useCase.execute(any()) } returns Observable.just(items)
 
         presenter.getList("")
 
-        inOrder(view).apply {
-            this.verify(view).setLoadingState(true)
-            this.verify(view).showData(items.listAddress)
-            this.verify(view).setLoadingState(false)
+        verifyOrder {
+            view.setLoadingState(true)
+            view.showData(items.listAddress)
+            view.setLoadingState(false)
         }
     }
 
     @Test
-    fun searchQueryEmptyReturn() {
+    fun `Search Query Return Empty`() {
         val items = AddressListModel()
 
-        `when`(usecase.execute(Matchers.anyString())).thenReturn(Observable.just(items))
+        every { useCase.execute(any()) } returns Observable.just(items)
 
         presenter.getList("")
 
-        inOrder(view).apply {
-            this.verify(view).setLoadingState(true)
-            this.verify(view).showEmptyView()
-            this.verify(view).setLoadingState(false)
+        verifyOrder {
+            view.setLoadingState(true)
+            view.showEmptyView()
+            view.setLoadingState(false)
         }
     }
 
     @Test
-    fun searchQueryErrorReturn() {
-        val err = Throwable()
+    fun `Search Query Error`() {
+        val response = Throwable()
 
-        `when`(usecase.execute(Matchers.anyString())).thenReturn(Observable.error(err))
+        every { useCase.execute(any()) } returns Observable.error(response)
 
         presenter.getList("")
 
-        inOrder(view).apply {
-            this.verify(view).setLoadingState(true)
-
-            // When onError case, doOnTerminate method is executed after onNext/onComplete and
-            // before onError
-            this.verify(view).setLoadingState(false)
-            this.verify(view).showError(err)
+        verifyOrder {
+            view.setLoadingState(true)
+            view.setLoadingState(false)
+            view.showError(response)
         }
     }
+
+    @Test
+    fun `LoadMore Address Success`() {
+        val items = AddressDummyDataProvider.getAddressList()
+
+        every { useCase.loadMore(any(), any()) } returns Observable.just(items)
+
+        presenter.loadMore(2)
+
+        verifyOrder {
+            view.setLoadingState(true)
+            view.appendData(items.listAddress)
+            view.setLoadingState(false)
+        }
+    }
+
+    @Test
+    fun `Page has No LoadMore`() {
+        val items = AddressListModel()
+
+        every { useCase.loadMore(any(), any()) } returns Observable.just(items)
+
+        presenter.loadMore(2)
+
+        verifyOrder {
+            view.setLoadingState(true)
+            view.notifyHasNotNextPage()
+            view.setLoadingState(false)
+        }
+    }
+
+    @Test
+    fun `LoadMore Address Error`() {
+        val response = Throwable()
+
+        every { useCase.loadMore(any(), any()) } returns Observable.error(response)
+
+        presenter.loadMore(2)
+
+        verifyOrder {
+            view.setLoadingState(true)
+            view.setLoadingState(false)
+            view.showError(response)
+        }
+    }
+
+
+    @Test
+    fun `Detach View`() {
+        presenter.detachView()
+
+        verify {
+            useCase.unsubscribe()
+        }
+    }
+
 }

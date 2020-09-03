@@ -3,17 +3,16 @@ package com.tokopedia.topads.view.adapter.bidinfo
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.topads.view.adapter.bidinfo.viewModel.BidInfoItemViewModel
 import com.tokopedia.topads.view.adapter.bidinfo.viewModel.BidInfoViewModel
 import com.tokopedia.topads.view.adapter.bidinfo.viewholder.BidInfoViewHolder
 
 class BidInfoAdapter(private val typeFactory: BindInfoAdapterTypeFactory) : RecyclerView.Adapter<BidInfoViewHolder<BidInfoViewModel>>() {
 
     var items: MutableList<BidInfoViewModel> = mutableListOf()
-
+    val typeList :MutableList<Int> = mutableListOf()
 
     override fun onBindViewHolder(holder: BidInfoViewHolder<BidInfoViewModel>, position: Int) {
-        holder.bind(items[position])
+        holder.bind(items[position],typeList)
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -29,15 +28,9 @@ class BidInfoAdapter(private val typeFactory: BindInfoAdapterTypeFactory) : Recy
         return items.count()
     }
 
-    fun isError(): Boolean {
-        items.forEach {
-            if (it is BidInfoItemViewModel) {
-                if (it.isError) {
-                    return true
-                }
-            }
-        }
-        return false
+    fun setType(list:MutableList<Int>){
+        typeList.addAll(list)
+        notifyDataSetChanged()
     }
 
 }

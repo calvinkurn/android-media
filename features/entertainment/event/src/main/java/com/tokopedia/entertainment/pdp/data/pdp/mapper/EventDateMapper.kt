@@ -35,7 +35,7 @@ object EventDateMapper{
         for(date in listActiveDate){
             if (selectedDate.isEmpty() && listActiveDate.size == 1)
                 return true
-            else if(EventDateUtil.convertUnixToToday(date.toLong()) == selectedDate.toLong()){
+            else if(EventDateUtil.convertUnixToToday(date.toLong()) == EventDateUtil.convertUnixToToday(selectedDate.toLong())){
                 return true
             }
         }

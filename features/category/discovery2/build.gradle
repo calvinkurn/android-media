@@ -45,6 +45,9 @@ dependencies {
     testImplementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.chips
     implementation rootProject.ext.unifyDependencies.global_error
+    implementation rootProject.ext.unifyDependencies.sortFilter
+    implementation project(rootProject.ext.features.filter)
+    implementation project(rootProject.ext.features.discoveryCommon)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation(rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true

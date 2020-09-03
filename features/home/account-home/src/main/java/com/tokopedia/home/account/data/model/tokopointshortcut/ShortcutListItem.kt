@@ -1,21 +1,27 @@
 package com.tokopedia.home.account.data.model.tokopointshortcut
 
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class ShortcutListItem(
 
 	@SerializedName("cta")
-	val cta: Cta? = null,
+	@Expose
+	val cta: Cta = Cta(),
 
 	@SerializedName("iconImageURL")
-	val iconImageURL: String? = null,
+	@Expose
+	val iconImageURL: String = "",
 
 	@SerializedName("iconImageURLOptimized")
-	val iconImageURLOptimized: String? = null,
+	@Expose
+	val iconImageURLOptimized: String = "",
 
 	@SerializedName("description")
-	val description: String? = null,
+	@Expose
+	val description: String = "",
 
 	@SerializedName("id")
-	val id: Int? = null
+	@Expose
+	val id: Int = 0
 )

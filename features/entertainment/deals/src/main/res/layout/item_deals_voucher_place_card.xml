@@ -34,7 +34,7 @@
             android:layout_marginEnd="@dimen/deals_dp_12"
             android:layout_marginRight="@dimen/deals_dp_12"
             android:textColor="@color/dark_N700_96"
-            app:layout_constraintBottom_toTopOf="@id/txt_voucher_place_card_count"
+            app:layout_constraintBottom_toTopOf="@+id/txt_voucher_place_card_count"
             app:layout_constraintStart_toStartOf="parent"
             app:typographyType="heading_5"
             tools:text="Lotte Avenue"

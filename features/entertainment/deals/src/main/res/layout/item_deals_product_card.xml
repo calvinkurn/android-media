@@ -10,7 +10,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/img_product_card"
@@ -29,12 +29,11 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/deals_dp_12"
             android:layout_marginTop="@dimen/deals_dp_12"
-            android:layout_marginBottom="@dimen/spacing_lvl2"
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/img_product_card">
+            app:layout_constraintTop_toBottomOf="@+id/img_product_card">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/txt_product_card_category"
@@ -73,7 +72,7 @@
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/product_card_title_container"
+            app:layout_constraintTop_toBottomOf="@+id/product_card_title_container"
             app:layout_constraintVertical_bias="1.0">
 
             <LinearLayout
