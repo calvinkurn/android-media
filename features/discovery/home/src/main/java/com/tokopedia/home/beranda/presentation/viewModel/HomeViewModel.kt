@@ -400,7 +400,7 @@ open class HomeViewModel @Inject constructor(
                 headerDataModel = headerDataModel?.copy(isTokoPointDataError = it)
             }
             headerDataModel = headerDataModel?.copy(isUserLogin = userSession.get().isLoggedIn)
-            homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(headerDataModel!!, currentPosition, this))
+            homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(headerDataModel!!, currentPosition, this))
         }
 
     }
@@ -1327,32 +1327,36 @@ open class HomeViewModel @Inject constructor(
 // ================================ Live Data Controller ======================================
 // ============================================================================================
     override fun updateWidget(visitable: Visitable<*>, position: Int) {
-        val newList = _homeLiveData.value?.list?.toMutableList()
+        val newList = _homeLiveData.value?.list?.toMutableList() ?: mutableListOf()
         logChannelUpdate("Update channel: (Update widget ${visitable.javaClass.simpleName})")
-        if (position != -1 && newList?.isNotEmpty() == true && newList.size > position && newList[position]::class.java == visitable::class.java) {
+        if (position != -1 && newList.isNotEmpty() && newList.size > position && newList[position]::class.java == visitable::class.java) {
             newList[position] = visitable
         } else {
-            newList?.withIndex()?.find {
-                it.value::class.java == visitable::class.java && getVisitableId(it.value) == getVisitableId(visitable) }?.let {
+            newList.withIndex().find {
+                it.value::class.java == visitable::class.java && getVisitableId(it.value) == getVisitableId(visitable)
+            }?.let {
                 newList[it.index] = visitable
             }
         }
+        _homeLiveData.value = _homeLiveData.value?.copy(list = newList)
     }
 
     override fun addWidget(visitable: Visitable<*>, position: Int) {
-        val newList = _homeLiveData.value?.list?.toMutableList()
+        val newList = _homeLiveData.value?.list?.toMutableList() ?: mutableListOf()
         logChannelUpdate("Update channel: (Add widget ${visitable.javaClass.simpleName})")
-        if(position == -1 || position > (newList?.size ?: 0)) newList?.add(visitable)
-        else newList?.add(position, visitable)
+        if(position == -1 || position > newList.size) newList.add(visitable)
+        else newList.add(position, visitable)
+        _homeLiveData.value = _homeLiveData.value?.copy(list = newList)
     }
 
     override fun deleteWidget(visitable: Visitable<*>, position: Int) {
-        val newList = _homeLiveData.value?.list?.toMutableList()
+        val newList = _homeLiveData.value?.list?.toMutableList() ?: mutableListOf()
         logChannelUpdate("Update channel: (Remove widget ${visitable.javaClass.simpleName} | ${getVisitableId(visitable)})")
-        newList?.find { it::class.java == visitable::class.java
+        newList.find { it::class.java == visitable::class.java
                 && getVisitableId(it) == getVisitableId(visitable)}?.let {
             newList.remove(it)
         }
+        _homeLiveData.value = _homeLiveData.value?.copy(list = newList)
     }
 
     override fun updateHomeData(homeDataModel: HomeDataModel) {

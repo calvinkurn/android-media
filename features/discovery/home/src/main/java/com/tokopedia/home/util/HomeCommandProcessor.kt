@@ -74,6 +74,10 @@ class HomeCommandProcessor : CoroutineScope{
                 channel.send(orderCommand)
             }
         }) {
+            channel = Channel(10)
+            channel.send(orderCommand)
+            processCommands()
+            it.printStackTrace()
         }
     }
 
@@ -87,6 +91,10 @@ class HomeCommandProcessor : CoroutineScope{
                 orderCommands.forEach { channel.send(it) }
             }
         }) {
+            channel = Channel(10)
+            orderCommands.forEach { channel.send(it) }
+            processCommands()
+            it.printStackTrace()
         }
     }
 
@@ -96,6 +104,7 @@ class HomeCommandProcessor : CoroutineScope{
                 it.send()
             }
         }){
+            it.printStackTrace()
         }
     }
 
