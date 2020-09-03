@@ -92,6 +92,7 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                         id
                         name
                         city
+                        rating_average
                     }
                     freeOngkir {
                         isActive
@@ -124,6 +125,7 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                         show
                     }
                     wishlist
+                    count_sold
                 }
             }
         }
