@@ -116,6 +116,7 @@ class DynamicChannelComponentAnalyticsTest {
 //                hasAllSuccess())
 //        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_LIST_CAROUSEL),
 //                hasAllSuccess())
+        //cant mock occ response
 
         //worked
         assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_TICKER),
