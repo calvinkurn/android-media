@@ -155,6 +155,20 @@
       "eventAction": "preference - click atur preferensi for new buyer",
       "sessionIris": "{{.*}}",
       "eventLabel": "{{.*}}"
+    },
+    {
+      "eventCategory": "order summary",
+      "event": "clickCheckoutExpress",
+      "eventAction": "click (?:bayar|pilih pembayaran) - not success",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{not success - (?:.*)}}"
+    },
+    {
+      "eventCategory": "order summary",
+      "event": "viewCheckoutExpressIris",
+      "eventAction": "view error message",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{.*}}"
     }
   ],
   "readme": "OCC Order Summary Page Tracking"
