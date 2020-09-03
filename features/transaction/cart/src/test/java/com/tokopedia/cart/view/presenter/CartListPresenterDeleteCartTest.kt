@@ -101,7 +101,7 @@ object CartListPresenterDeleteCartTest : Spek({
 
             Then("should render success") {
                 verify {
-                    view.renderInitialGetCartListDataSuccess(emptyCartListData)
+                    view.onDeleteCartDataSuccess(arrayListOf("0"), true)
                 }
             }
         }
