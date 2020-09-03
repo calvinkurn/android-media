@@ -21,14 +21,14 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.device.info.DeviceInfo
 import com.tokopedia.device.info.DeviceScreenInfo
+import com.tokopedia.devicefingerprint.model.DeviceInfoPayload
+import com.tokopedia.devicefingerprint.model.Screen
 import com.tokopedia.user.session.UserSession
 import timber.log.Timber
 import java.io.File
 import java.lang.reflect.Field
-import java.lang.reflect.Method
 import java.math.BigInteger
 import java.net.InetAddress
-import java.net.UnknownHostException
 import java.nio.ByteOrder
 import java.text.SimpleDateFormat
 import java.util.*
@@ -40,7 +40,7 @@ import kotlin.coroutines.suspendCoroutine
 import kotlin.math.sqrt
 
 
-class Utils @Inject constructor(
+class DevicePayloadCreator @Inject constructor(
         val context: Context,
         val userSession: UserSession,
         val fusedLocationClient: FusedLocationProviderClient
@@ -49,7 +49,7 @@ class Utils @Inject constructor(
     private val TIMESTAMP_FORMAT = "dd/MM/yyyy HH:mm:ss"
     private val telephonyManager = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
 
-    suspend fun createDevicePayload(context: Context): DeviceInfoPayload {
+    suspend fun createDevicePayload(): DeviceInfoPayload {
         val location = getLocation()
         val latitude = location?.latitude ?: 0f
         val longitude = location?.longitude ?: 0f

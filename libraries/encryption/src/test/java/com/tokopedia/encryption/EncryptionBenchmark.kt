@@ -193,5 +193,4 @@ class EncryptionBenchmark {
         assert(DESedeEncryptor.decrypt(encrypted, DESedeKey) == dummy_data)
     }
 
-
 }
