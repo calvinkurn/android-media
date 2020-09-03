@@ -100,8 +100,10 @@ class SellerAccountMapper @Inject constructor(
         val mitraTopperUrl = getPreApproveData(accountDataModel).url
 
         val tickerViewModel = parseTickerSeller(context, accountDataModel)
-        if (!tickerViewModel.listMessage.isNullOrEmpty()) {
-            items.add(tickerViewModel)
+        tickerViewModel?.let {
+            if (!it.listMessage.isNullOrEmpty()) {
+                items.add(it)
+            }
         }
 
         items.add(getShopInfoMenu(accountDataModel, dataDeposit))
@@ -168,14 +170,14 @@ class SellerAccountMapper @Inject constructor(
         return FieldDataModel()
     }
 
-    private fun parseTickerSeller(context: Context, accountDataModel: AccountDataModel): TickerViewModel {
+    private fun parseTickerSeller(context: Context, accountDataModel: AccountDataModel): TickerViewModel? {
         val sellerTickerModel = TickerViewModel(ArrayList())
         if (accountDataModel.kycStatusPojo.kycStatusDetailPojo.isSuccess == KYCConstant.IS_SUCCESS_GET_STATUS
                 && accountDataModel.kycStatusPojo.kycStatusDetailPojo.status == KYCConstant.STATUS_NOT_VERIFIED) {
             sellerTickerModel.listMessage.add(context.getString(R.string.ticker_unverified))
         } else if (!(accountDataModel.shopInfo.owner.goldMerchant)) {
             val tickerMessage: String? = remoteConfig.getString(RemoteConfigKey.SELLER_ACCOUNT_TICKER_MSG, "")
-            if (!TextUtils.isEmpty(tickerMessage)) {
+            if (!tickerMessage.isNullOrEmpty()) {
                 sellerTickerModel.listMessage.add(tickerMessage)
             }
         }
