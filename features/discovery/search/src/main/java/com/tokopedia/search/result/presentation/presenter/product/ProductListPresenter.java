@@ -27,7 +27,7 @@ import com.tokopedia.search.analytics.SearchEventTracking;
 import com.tokopedia.search.result.domain.model.SearchProductModel;
 import com.tokopedia.search.result.presentation.ProductListSectionContract;
 import com.tokopedia.search.result.presentation.mapper.ProductViewModelMapper;
-import com.tokopedia.search.result.presentation.ShopRatingABTest;
+import com.tokopedia.search.result.presentation.ShopRatingABTestStrategy;
 import com.tokopedia.search.result.presentation.mapper.RecommendationViewModelMapper;
 import com.tokopedia.search.result.presentation.model.BadgeItemViewModel;
 import com.tokopedia.search.result.presentation.model.BannedProductsEmptySearchViewModel;
@@ -131,7 +131,7 @@ final class ProductListPresenter
     private boolean useRatingString = false;
     private String responseCode = "";
     private int topAdsCount = 1;
-    private ShopRatingABTest shopRatingABTest = null;
+    private ShopRatingABTestStrategy shopRatingABTestStrategy = null;
 
     private List<Visitable> productList;
     private List<InspirationCarouselViewModel> inspirationCarouselViewModel;
@@ -178,7 +178,7 @@ final class ProductListPresenter
         super.attachView(view);
 
         useRatingString = getIsUseRatingString();
-        shopRatingABTest = getShopRatingABTest();
+        shopRatingABTestStrategy = getShopRatingABTestStrategy();
     }
 
     private boolean getIsUseRatingString() {
@@ -193,7 +193,7 @@ final class ProductListPresenter
         }
     }
 
-    private ShopRatingABTest getShopRatingABTest() {
+    private ShopRatingABTestStrategy getShopRatingABTestStrategy() {
         String shopRatingABVariant = getShopRatingABVariant();
 
         switch(shopRatingABVariant) {
@@ -441,7 +441,7 @@ final class ProductListPresenter
         if (isViewAttached()) {
             int lastProductItemPositionFromCache = getView().getLastProductItemPositionFromCache();
 
-            ProductViewModelMapper mapper = new ProductViewModelMapper(shopRatingABTest);
+            ProductViewModelMapper mapper = new ProductViewModelMapper(shopRatingABTestStrategy);
             ProductViewModel productViewModel = mapper
                     .convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, useRatingString);
 
@@ -525,8 +525,8 @@ final class ProductListPresenter
                     item.setPosition(topAdsCount);
                     item.setCategoryBreadcrumb(topAds.getProduct().getCategoryBreadcrumb());
 
-                    if (shopRatingABTest != null) {
-                        shopRatingABTest.processShopRatingVariant(topAds, item);
+                    if (shopRatingABTestStrategy != null) {
+                        shopRatingABTestStrategy.processShopRatingVariant(topAds, item);
                     }
 
                     list.add(i, item);
@@ -759,7 +759,7 @@ final class ProductListPresenter
 
         int lastProductItemPositionFromCache = getView().getLastProductItemPositionFromCache();
 
-        ProductViewModelMapper mapper = new ProductViewModelMapper(shopRatingABTest);
+        ProductViewModelMapper mapper = new ProductViewModelMapper(shopRatingABTestStrategy);
         ProductViewModel productViewModel = mapper
                 .convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, useRatingString);
 

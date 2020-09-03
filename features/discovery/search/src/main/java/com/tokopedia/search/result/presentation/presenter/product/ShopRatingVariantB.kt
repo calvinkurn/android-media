@@ -2,12 +2,12 @@ package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.discovery.common.constants.SearchConstant.ProductCardLabel
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.presentation.ShopRatingABTest
+import com.tokopedia.search.result.presentation.ShopRatingABTestStrategy
 import com.tokopedia.search.result.presentation.model.LabelGroupViewModel
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel
 import com.tokopedia.topads.sdk.domain.model.Data
 
-class ShopRatingABTestVariantB: ShopRatingABTest {
+class ShopRatingABTestVariantB: ShopRatingABTestStrategy {
 
     override fun processShopRatingVariant(productModel: SearchProductModel.Product, productItemViewModel: ProductItemViewModel) {
         try {

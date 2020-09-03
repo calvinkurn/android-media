@@ -17,17 +17,17 @@ import com.tokopedia.search.result.presentation.model.ProductViewModel;
 import com.tokopedia.search.result.presentation.model.RelatedViewModel;
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
 import com.tokopedia.search.result.presentation.model.TickerViewModel;
-import com.tokopedia.search.result.presentation.ShopRatingABTest;
+import com.tokopedia.search.result.presentation.ShopRatingABTestStrategy;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ProductViewModelMapper {
 
-    @Nullable private final ShopRatingABTest shopRatingABTest;
+    @Nullable private final ShopRatingABTestStrategy shopRatingABTestStrategy;
 
-    public ProductViewModelMapper(@Nullable ShopRatingABTest shopRatingABTest) {
-        this.shopRatingABTest = shopRatingABTest;
+    public ProductViewModelMapper(@Nullable ShopRatingABTestStrategy shopRatingABTestStrategy) {
+        this.shopRatingABTestStrategy = shopRatingABTestStrategy;
     }
 
     public ProductViewModel convertToProductViewModel(int lastProductItemPositionFromCache, SearchProductModel searchProductModel, boolean useRatingString) {
@@ -233,8 +233,8 @@ public class ProductViewModelMapper {
         productItem.setTopadsClickUrl(productModel.getAds().getProductClickUrl());
         productItem.setTopadsWishlistUrl(productModel.getAds().getProductWishlistUrl());
 
-        if (shopRatingABTest != null) {
-            shopRatingABTest.processShopRatingVariant(productModel, productItem);
+        if (shopRatingABTestStrategy != null) {
+            shopRatingABTestStrategy.processShopRatingVariant(productModel, productItem);
         }
 
         return productItem;
