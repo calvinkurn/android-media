@@ -35,6 +35,7 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import kotlin.collections.HashSet
 
 /**
  * Created by stevenfredian on 10/19/17.
@@ -85,8 +86,8 @@ class ChatItemListViewModel @Inject constructor(
     val chatBannedSellerStatus: LiveData<Result<Boolean>>
         get() = _chatBannedSellerStatus
 
-    val pinnedMsgId: LinkedHashSet<String> = LinkedHashSet()
-    val unpinnedMsgId: LinkedHashSet<String> = LinkedHashSet()
+    val pinnedMsgId: HashSet<String> = HashSet()
+    val unpinnedMsgId: HashSet<String> = HashSet()
 
     override fun getChatListMessage(page: Int, filterIndex: Int, tab: String) {
         queryGetChatListMessage(page, arrayFilterParam[filterIndex], tab)
