@@ -132,5 +132,6 @@ object SellerMigrationTracking {
                 TRACKING_USER_ID to userId,
                 KEY_CUSTOM_DIMENSION_BUSINESS_UNIT to VALUE_CUSTOM_DIMENSION_BUSINESS_UNIT_PG
         )
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 }
