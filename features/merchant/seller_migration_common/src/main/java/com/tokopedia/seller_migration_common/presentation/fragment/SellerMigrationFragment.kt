@@ -151,7 +151,7 @@ class SellerMigrationFragment : Fragment(), SellerFeatureCarousel.RecyclerViewLi
             }
             SellerMigrationFeatureName.FEATURE_SHOP_CASHBACK_VOUCHER, SellerMigrationFeatureName.FEATURE_TOPADS,
             SellerMigrationFeatureName.FEATURE_ADS, SellerMigrationFeatureName.FEATURE_ADS_DETAIL,
-            SellerMigrationFeatureName.FEATURE_BROADCAST_CHAT -> {
+            SellerMigrationFeatureName.FEATURE_BROADCAST_CHAT, SellerMigrationFeatureName.FEATURE_CENTRALIZED_PROMO -> {
                 ADS_TAB
             }
             SellerMigrationFeatureName.FEATURE_SHOP_INSIGHT, SellerMigrationFeatureName.FEATURE_MARKET_INSIGHT -> {
