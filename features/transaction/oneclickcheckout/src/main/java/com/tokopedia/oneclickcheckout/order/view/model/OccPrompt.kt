@@ -12,10 +12,11 @@ data class OccPrompt(
         const val FROM_CHECKOUT = 1
 
         const val TYPE_DIALOG = "dialog_box"
+        const val TYPE_BOTTOM_SHEET = "bottom_sheet"
     }
 
     fun shouldShowPrompt(): Boolean {
-        return type == TYPE_DIALOG
+        return type == TYPE_DIALOG || type == TYPE_BOTTOM_SHEET
     }
 
     fun getPrimaryButton(): OccPromptButton? {

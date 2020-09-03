@@ -33,6 +33,7 @@ import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
@@ -69,6 +70,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleActionListener
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleBottomsheet
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -974,23 +976,45 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     }
 
     private fun showPrompt(prompt: OccPrompt) {
-        if (prompt.type.equals(OccPrompt.TYPE_DIALOG, false)) {
-            val ctx = context ?: return
+        val ctx = context ?: return
+        if (prompt.type == OccPrompt.TYPE_DIALOG) {
             val actionType = if (prompt.buttons.size > 1) DialogUnify.HORIZONTAL_ACTION else DialogUnify.SINGLE_ACTION
             val dialogUnify = DialogUnify(ctx, actionType, DialogUnify.NO_IMAGE)
-            dialogUnify.setTitle(prompt.title)
-            dialogUnify.setDescription(prompt.description)
-            prompt.getPrimaryButton()?.also { primaryButton ->
-                dialogUnify.setPrimaryCTAText(primaryButton.text)
-                dialogUnify.setPrimaryCTAClickListener { onDialogPromptButtonClicked(dialogUnify, prompt, primaryButton) }
-                prompt.getSecondButton(primaryButton)?.also { secondaryButton ->
-                    dialogUnify.setSecondaryCTAText(secondaryButton.text)
-                    dialogUnify.setSecondaryCTAClickListener { onDialogPromptButtonClicked(dialogUnify, prompt, secondaryButton) }
+            dialogUnify.apply {
+                setTitle(prompt.title)
+                setDescription(prompt.description)
+                prompt.getPrimaryButton()?.also { primaryButton ->
+                    setPrimaryCTAText(primaryButton.text)
+                    setPrimaryCTAClickListener { onDialogPromptButtonClicked(dialogUnify, prompt, primaryButton) }
+                    prompt.getSecondButton(primaryButton)?.also { secondaryButton ->
+                        setSecondaryCTAText(secondaryButton.text)
+                        setSecondaryCTAClickListener { onDialogPromptButtonClicked(dialogUnify, prompt, secondaryButton) }
+                    }
                 }
+                setOverlayClose(false)
+                setCancelable(false)
+            }.show()
+        } else if (prompt.type == OccPrompt.TYPE_BOTTOM_SHEET) {
+            fragmentManager?.let {
+                val bottomSheetUnify = BottomSheetUnify()
+                bottomSheetUnify.apply {
+                    showCloseIcon = true
+                    val child = View.inflate(ctx, R.layout.bottom_sheet_error_checkout, null)
+                    child.findViewById<EmptyStateUnify>(R.id.es_checkout).apply {
+                        setTitle(prompt.title)
+                        setDescription(prompt.description)
+                        prompt.getPrimaryButton()?.also { primaryButton ->
+                            setPrimaryCTAText(primaryButton.text)
+                            setPrimaryCTAClickListener { onBottomSheetPromptButtonClicked(bottomSheetUnify, prompt, primaryButton) }
+                            prompt.getSecondButton(primaryButton)?.also { secondaryButton ->
+                                setSecondaryCTAText(secondaryButton.text)
+                                setSecondaryCTAClickListener { onBottomSheetPromptButtonClicked(bottomSheetUnify, prompt, secondaryButton) }
+                            }
+                        }
+                    }
+                    setChild(child)
+                }.show(it, null)
             }
-            dialogUnify.setOverlayClose(false)
-            dialogUnify.setCancelable(false)
-            dialogUnify.show()
         }
     }
 
@@ -1000,6 +1024,20 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             activity?.finish()
         } else if (button.action == OccPromptButton.ACTION_RELOAD) {
             dialog.dismiss()
+            if (prompt.from == OccPrompt.FROM_CART) {
+                refresh()
+            } else if (prompt.from == OccPrompt.FROM_CHECKOUT) {
+                viewModel.finalUpdate(onSuccessCheckout(), false)
+            }
+        }
+    }
+
+    private fun onBottomSheetPromptButtonClicked(bottomSheet: BottomSheetUnify, prompt: OccPrompt, button: OccPromptButton) {
+        if (button.action == OccPromptButton.ACTION_OPEN) {
+            RouteManager.route(context, button.link)
+            activity?.finish()
+        } else if (button.action == OccPromptButton.ACTION_RELOAD) {
+            bottomSheet.dismiss()
             if (prompt.from == OccPrompt.FROM_CART) {
                 refresh()
             } else if (prompt.from == OccPrompt.FROM_CHECKOUT) {
