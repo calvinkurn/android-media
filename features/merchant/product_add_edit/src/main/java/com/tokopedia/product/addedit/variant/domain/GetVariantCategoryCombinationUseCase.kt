@@ -15,7 +15,7 @@ class GetVariantCategoryCombinationUseCase @Inject constructor(
         private const val PARAM_TYPE = "type"
         private val query =
                 """
-                query GetVariantCategoryCombination(${'$'}categoryID: Int!, ${'$'}productVariants: String!, ${'$'}type: String!) {
+                query GetVariantCategoryCombination(${'$'}categoryID: Int!, ${'$'}productVariants: String, ${'$'}type: String!) {
                   getVariantCategoryCombination(categoryID: ${'$'}categoryID, productVariants: ${'$'}productVariants, type: ${'$'}type) {
                     header {
                       processTime
