@@ -36,15 +36,8 @@
     <dimen name="setting_toolbar_height">56dp</dimen>
     <dimen name="setting_shop_error_margin">16dp</dimen>
     <dimen name="setting_shop_badge_shimmer_height">10dp</dimen>
-    <dimen name="setting_topads_bottomsheet_padding">16dp</dimen>
-    <dimen name="setting_topads_description_padding_horizontal">3dp</dimen>
-    <dimen name="setting_topads_button_margin">20dp</dimen>
-    <dimen name="setting_topads_padding_bottom">30dp</dimen>
     <dimen name="setting_spacing_default">6dp</dimen>
     <dimen name="setting_logout_margin_top">-2dp</dimen>
-
-    <dimen category="font-size" name="line_spacing_6">6sp</dimen>
-    <dimen category="font-size" name="top_ads_description_size">14sp</dimen>
 
     // centralized promo
     <dimen name="centralized_promo_dimen_minus_2dp">-2dp</dimen>

@@ -32,8 +32,6 @@
     <string name="setting_tc_divider">|</string>
     <string name="setting_terms_and_condition">Syarat dan Ketentuan</string>
     <string name="setting_privacy_terms">Kebijakan Privasi</string>
-    <string name="setting_toaster_error_retry">Muat Ulang</string>
-    <string name="setting_toaster_error_message">Oops, informasi gagal ditampilkan</string>
     <string name="msg_share_apps">Sudah punya aplikasi Tokopedia belum? cek disini </string>
     <string name="title_share">Bagikan</string>
     <string name="setting_menu_improve_sales">TINGKATKAN PENJUALAN</string>
@@ -51,12 +49,6 @@
     <string name="setting_menu_share_app">Bagikan Aplikasi</string>
     <string name="setting_menu_review_app">Review Aplikasi</string>
     <string name="setting_menu_developer_options">Developer Options</string>
-    <string name="setting_topads_status">Tambah Kredit Otomatis kamu %1$s aktif</string>
-    <string name="setting_topads_status_active">sedang</string>
-    <string name="setting_topads_status_inactive">belum</string>
-    <string name="setting_topads_description_active">Nggak perlu khawatir kehabisan, kredit TopAds akan otomatis ditambahkan dari Saldo Penghasilan setiap kreditmu menipis.</string>
-    <string name="setting_topads_description_inactive">Dengan mengaktifkan, kredit TopAds akan otomatis ditambahkan dari Saldo Penghasilan setiap kreditmu menipis.</string>
-    <string name="setting_topads_next">Atur</string>
 
     <!--  Centralized Promo  -->
     <string name="centralized_promo_toolbar_title">Iklan dan Promosi</string>

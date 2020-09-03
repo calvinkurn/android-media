@@ -9,7 +9,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sellerhome.common.viewmodel.NonNullLiveData
-import com.tokopedia.sellerhome.settings.domain.usecase.GetAllShopInfoUseCase
+import com.tokopedia.seller.menu.common.domain.usecase.GetAllShopInfoUseCase
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.SettingShopInfoUiModel
 import com.tokopedia.shop.common.domain.interactor.GetShopFreeShippingInfoUseCase
