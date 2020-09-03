@@ -4,11 +4,9 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.talk.feature.inbox.presentation.adapter.uimodel.TalkInboxUiModel
 import com.tokopedia.talk_old.R
-import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_talk_inbox.view.*
 
@@ -31,7 +29,7 @@ class TalkInboxViewHolder(view: View) : AbstractViewHolder<TalkInboxUiModel>(vie
     private fun setProductThumbnail(productThumbnail: String) {
         with(itemView) {
             if(productThumbnail.isEmpty()) {
-            itemView.talkInboxProductThumbnail.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_deleted_talk_inbox))
+            itemView.talkInboxProductThumbnail.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_deleted_talk_placeholder))
                 talkInboxProductName.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_32))
                 return
             }

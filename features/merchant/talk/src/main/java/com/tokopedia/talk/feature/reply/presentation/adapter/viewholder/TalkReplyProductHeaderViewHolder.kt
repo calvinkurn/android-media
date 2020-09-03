@@ -7,7 +7,6 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.TalkReplyProductHeaderModel
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.TalkReplyProductHeaderListener
 import com.tokopedia.talk_old.R
-import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_talk_reply_product_header.view.*
 
 class TalkReplyProductHeaderViewHolder(view: View, private val talkReplyProductHeaderListener: TalkReplyProductHeaderListener) : AbstractViewHolder<TalkReplyProductHeaderModel>(view) {
@@ -32,7 +31,7 @@ class TalkReplyProductHeaderViewHolder(view: View, private val talkReplyProductH
                 }
                 return
             }
-            setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_deleted_talk_inbox))
+            setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_deleted_talk_placeholder))
             setOnClickListener(null)
         }
     }
