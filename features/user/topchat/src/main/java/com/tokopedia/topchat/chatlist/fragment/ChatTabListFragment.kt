@@ -1,7 +1,7 @@
 package com.tokopedia.topchat.chatlist.fragment
 
-import android.graphics.Color
 import android.content.Context
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -139,7 +139,7 @@ class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListContract
     }
 
     private fun initChatCounterObserver() {
-        chatNotifCounterViewModel.chatNotifCounter.observe(this,
+        chatNotifCounterViewModel.chatNotifCounter.observe(viewLifecycleOwner,
                 Observer { result ->
                     when (result) {
                         is Success -> {
