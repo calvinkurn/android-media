@@ -127,6 +127,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         initTickerInboxReview()
         initSortFilterInboxReview()
         initRatingFilterList()
+        setupMarginSortFilter()
     }
 
     override fun onResume() {
@@ -200,7 +201,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
     }
 
     override fun onItemReplyOrEditClicked(data: FeedbackInboxUiModel, isEmptyReply: Boolean, adapterPosition: Int) {
-        if(isEmptyReply) {
+        if (isEmptyReply) {
             InboxReviewTracking.eventClickReviewNotYetReplied(data.feedbackId.toString(),
                     getQuickFilter(),
                     inboxReviewViewModel.userSession.shopId.orEmpty(),
@@ -261,7 +262,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
     }
 
     override fun onBackgroundMarginIsReplied(isNotReplied: Boolean) {
-        val paramsMargin = sortFilterInboxReview.layoutParams as? LinearLayout.LayoutParams
+        val paramsMargin = sortFilterInboxReview?.layoutParams as? LinearLayout.LayoutParams
         if (isNotReplied) {
             paramsMargin?.bottomMargin = 16.toPx()
         } else {
@@ -326,6 +327,13 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         }
     }
 
+    private fun setupMarginSortFilter() {
+        if (tickerInboxReview?.isVisible == false) {
+            val sortFilterMargin = sortFilterInboxReview?.layoutParams as? LinearLayout.LayoutParams
+            sortFilterMargin?.topMargin = 8.toPx()
+        }
+    }
+
     private fun onSuccessGetFeedbackInboxReview(data: InboxReviewUiModel) {
         inboxReviewUiModel = data
         feedbackInboxList = data.feedbackInboxList.toMutableList()
@@ -334,7 +342,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
         if (isUnAnsweredHasNextFalse(data)) {
             statusFilter = ANSWERED_VALUE
-            if(data.feedbackInboxList.isNotEmpty() && inboxReviewAdapter.itemCount.isZero()) {
+            if (data.feedbackInboxList.isNotEmpty() && inboxReviewAdapter.itemCount.isZero()) {
                 endlessRecyclerViewScrollListener?.resetState()
                 inboxReviewAdapter.setFeedbackListData(data.feedbackInboxList)
                 endlessRecyclerViewScrollListener?.loadMoreNextPage()
