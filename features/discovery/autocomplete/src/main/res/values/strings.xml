@@ -21,4 +21,15 @@
     <string name="dummy_recent_search">pulsa xl 10rb</string>
     <string name="dummy_recent_search_two_lines">Iced Matcha Latte Starbak Makin Enak Pakai Biskuit dan Mochi Kenyal Sekali</string>
     <string name="dummy_recent_search_subtitle">Jakarta</string>
+    <string name="content_desc_searchTextView">input search</string>
+    <string name="content_desc_actionEmptyButton">button hapus search</string>
+    <string name="content_desc_titleTextView">text title autocomplete</string>
+    <string name="content_desc_actionDeleteButton">button hapus semua</string>
+    <string name="content_desc_actionRefreshButton">button refresh</string>
+    <string name="content_desc_singleLineTitle">text single line</string>
+    <string name="content_desc_actionShortcutButton">button shortcut</string>
+    <string name="content_desc_suggestionTitleTextView">text title suggestion</string>
+    <string name="content_desc_dl_iconTitle">image double line title</string>
+    <string name="content_desc_doubleLineTitle">text title double line</string>
+    <string name="content_desc_doubleLineSubtitle">text subtitle double line</string>
 </resources>
