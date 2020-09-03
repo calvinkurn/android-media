@@ -55,7 +55,6 @@ import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_inbox_review.*
-import kotlinx.android.synthetic.main.item_sort_filter_inbox_review.*
 import javax.inject.Inject
 
 class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTypeFactory>(),
@@ -128,6 +127,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         initTickerInboxReview()
         initSortFilterInboxReview()
         initRatingFilterList()
+        setupMarginSortFilter()
     }
 
     override fun onResume() {
@@ -153,7 +153,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
     override fun onItemClicked(t: Visitable<*>?) {}
 
     override fun loadInitialData() {
-        sortFilterLayout?.hide()
+        sortFilterInboxReview?.hide()
         isLoadingInitialData = true
         statusFilter = UNANSWERED_VALUE
         endlessRecyclerViewScrollListener?.resetState()
@@ -274,6 +274,13 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         loadInitialData()
     }
 
+    private fun setupMarginSortFilter() {
+        if (tickerInboxReview?.isVisible == false) {
+            val sortFilterMargin = sortFilterInboxReview?.layoutParams as? LinearLayout.LayoutParams
+            sortFilterMargin?.topMargin = 16.toPx()
+        }
+    }
+
     private fun observeInboxReview() {
         observe(inboxReviewViewModel.inboxReview) {
             hideLoading()
@@ -331,7 +338,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         inboxReviewUiModel = data
         feedbackInboxList = data.feedbackInboxList.toMutableList()
         swipeToRefresh?.isRefreshing = false
-        sortFilterLayout?.show()
+        sortFilterInboxReview?.show()
 
         if (isUnAnsweredHasNextFalse(data)) {
             statusFilter = ANSWERED_VALUE
@@ -340,7 +347,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
                 inboxReviewAdapter.setFeedbackListData(data.feedbackInboxList)
                 endlessRecyclerViewScrollListener?.loadMoreNextPage()
             } else {
-                sortFilterLayout?.hide()
+                sortFilterInboxReview?.hide()
                 isLoadingInitialData = true
                 inboxReviewAdapter.clearAllElements()
                 hideLoading()
@@ -348,10 +355,10 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
             }
         } else {
             if (data.feedbackInboxList.isEmpty() && isFilter && data.page == 1) {
-                sortFilterLayout?.hide()
+                sortFilterInboxReview?.show()
                 inboxReviewAdapter.addInboxFeedbackEmpty(true)
             } else if (data.feedbackInboxList.isEmpty() && !isFilter && data.page == 1) {
-                sortFilterLayout?.hide()
+                sortFilterInboxReview?.show()
                 inboxReviewAdapter.clearAllElements()
                 inboxReviewAdapter.addInboxFeedbackEmpty(false)
             } else {
@@ -424,7 +431,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
     private fun resetAllFiltersUnselected() {
         val positionRatingFilter = 0
-        sortFilterLayout?.hide()
+        sortFilterInboxReview?.hide()
         isLoadingInitialData = true
         inboxReviewAdapter.clearAllElements()
         inboxReviewAdapter.showLoading()
@@ -449,7 +456,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
     private fun onRatingFilterSelected(filterRatingList: List<ListItemRatingWrapper>) {
         val countSelected = inboxReviewViewModel.getRatingFilterListUpdated().filter { it.isSelected }.count()
-        sortFilterLayout?.hide()
+        sortFilterInboxReview?.hide()
         endlessRecyclerViewScrollListener?.resetState()
         updatedFilterRatingInboxReview(filterRatingList)
         selectedRatingsFilter(countSelected)
@@ -489,7 +496,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
             InboxReviewTracking.eventClickHasBeenRepliedFilter(quickFilter, isActive.toString(), inboxReviewViewModel.userSession.shopId.orEmpty())
         }
 
-        sortFilterLayout?.hide()
+        sortFilterInboxReview?.hide()
         inboxReviewAdapter.clearAllElements()
         inboxReviewAdapter.showLoading()
 

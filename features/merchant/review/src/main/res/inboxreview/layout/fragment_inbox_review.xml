@@ -28,14 +28,17 @@
             app:tickerType="information"
             app:tickerShapeType="loose" />
 
-        <include
-            android:id="@+id/sortFilterLayout"
-            layout="@layout/item_sort_filter_inbox_review"
+        <com.tokopedia.sortfilter.SortFilter
+            android:id="@+id/sortFilterInboxReview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:paddingTop="@dimen/spacing_lvl3"
+            android:paddingBottom="@dimen/spacing_lvl3"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:sort_filter_relationship="AND"
+            app:sort_filter_type="quick" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
