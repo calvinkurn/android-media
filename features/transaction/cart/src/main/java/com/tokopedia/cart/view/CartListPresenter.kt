@@ -450,6 +450,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                         wholesalePriceData.prdPrc, false).removeDecimalSuffix()
                 originData.wholesalePriceFormatted = wholesalePriceFormatted
                 originData.wholesalePrice = wholesalePriceData.prdPrc
+                subtotalBeforeSlashedPrice = itemQty * originData.wholesalePrice.toDouble()
                 break
             }
         }
@@ -462,10 +463,12 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                         wholesalePrice, false).removeDecimalSuffix()
                 originData.wholesalePriceFormatted = wholesalePriceFormatted
                 originData.wholesalePrice = wholesalePrice
+                subtotalBeforeSlashedPrice = itemQty * originData.wholesalePrice.toDouble()
             } else {
                 subTotalWholesalePrice = itemQty * originData.pricePlan
                 originData.wholesalePriceFormatted = null
                 originData.wholesalePrice = 0
+                subtotalBeforeSlashedPrice = itemQty * originData.pricePlan
             }
         }
 
@@ -475,8 +478,6 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                     ?: 0.toDouble()
             subtotalWholesaleCashback = cashbackPercentage / PERCENTAGE * subTotalWholesalePrice
         }
-
-        subtotalBeforeSlashedPrice = (itemQty * originData.priceOriginal).toDouble()
 
         return Triple(subtotalBeforeSlashedPrice, subTotalWholesalePrice, subtotalWholesaleCashback)
     }
