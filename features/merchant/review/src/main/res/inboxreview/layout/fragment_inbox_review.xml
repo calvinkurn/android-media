@@ -23,7 +23,7 @@
             android:layout_marginEnd="@dimen/spacing_lvl4"
             android:layout_marginRight="@dimen/spacing_lvl4"
             android:layout_marginTop="@dimen/spacing_lvl4"
-            app:layout_scrollFlags="scroll|enterAlways"
+            app:layout_scrollFlags="scroll"
             app:closeButtonVisibility="visible"
             app:tickerType="information"
             app:tickerShapeType="loose" />
