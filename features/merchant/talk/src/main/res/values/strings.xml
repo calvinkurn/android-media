@@ -42,7 +42,6 @@
     <string name="menu_report_talk">Laporkan Diskusi</string>
     <string name="menu_report_comment">Laporkan Diskusi</string>
     <string name="menu_delete_comment">Hapus Diskusi</string>
-    <string name="empty_product_talk_title">Belum ada diskusi untuk produk ini</string>
     <string name="empty_talk_subtitle">Jadilah yang pertama bertanya dengan penjual atau pengguna
         lain</string>
     <string name="empty_inbox_talk_title">Belum ada diskusi</string>
@@ -64,11 +63,8 @@
     <string name="hint_send_discussion">Balas diskusi..</string>
     <string name="success_report_talk_masked_message">Diskusi ini telah anda laporkan sebagai
         konten yang tidak relevan dan sedang dalam proses peninjauan.</string>
-    <string name="failed_send_talk">Diskusi gagal dikirim</string>
     <string name="success_send_talk">Diskusi berhasil dikirim</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="success_delete_comment_talk">Diskusi berhasil dihapus</string>
     <string name="success_unfollow_talk">Berhasil berhenti mengikuti diskusi</string>
     <string name="success_follow_talk">Berhasil mengikuti diskusi</string>
@@ -83,22 +79,15 @@
     <string name="reading_connection_error_title">Koneksi internetmu terganggu!</string>
     <string name="reading_connection_error_subtitle">Yuk, pastikan internetmu lancar dengan cek ulang paket data, WiFi, atau jaringan di tempatmu.</string>
     <string name="reading_connection_error_retry_button">Coba Lagi</string>
-    <string name="reading_connection_error_go_to_settings_page">Ke Pengaturan</string>
     <string name="reading_connection_error_toaster_message">Ada kendala dengan koneksi internetmu. Silakan refresh.</string>
     <string name="reading_empty_title">Malu bertanya sesat di jalan</string>
     <string name="reading_empty_subtitle">Masih ada hal yang mengganjal di hati? Kirim aja pertanyaanmu terkait barang ini di sini!</string>
-    <string name="reading_relevant_sort_option">Pertanyaan Paling Relevan</string>
-    <string name="reading_latest_sort_option">Pertanyaan Terbaru</string>
-    <string name="reading_popular_sort_option">Pertanyaan Terpopuler</string>
     <string name="reading_sort_bottom_sheet_title">Urutkan berdasarkan</string>
-    <string name="reading_sort_chip_string">%s (%d)</string>
     <string name="reading_seller_label">Penjual</string>
     <string name="reading_no_answer">Bantu jawab</string>
     <string name="delete_question_toaster_success">Pertanyaanmu berhasil dihapus.</string>
     <string name="reading_create_question_toaster_success">Pertanyaanmu berhasil dibuat.</string>
-    <string name="reading_attached_product">%d produk</string>
     <string name="reading_other_answers">%d jawaban lainnya</string>
-    <string name="reading_ellipsis">…</string>
     <string name="reading_dot">•</string>
     <string name="reading_your_question_label">Kamu</string>
 
@@ -121,11 +110,9 @@
     <string name="delete_cancel_button">Batal</string>
     <string name="delete_question_toaster_fail">Pertanyaan belum terhapus. Cek koneksi internetmu dan coba lagi, ya.</string>
     <string name="reply_total_answer">Jawaban (%d)</string>
-    <string name="reply_empty_state">Bantu orang bisa dari hal-hal kecil. Seperti kasih jawabanmu di sini</string>
     <string name="delete_question_bottom_sheet">Hapus Pertanyaan</string>
     <string name="delete_answer_bottom_sheet">Hapus Jawaban</string>
     <string name="report_bottom_sheet_text">Laporkan</string>
-    <string name="reply_report_question_ticker">Tokopedia tidak menampilkan konten ini karena melanggar S&amp;K. Tetap tampilkan?</string>
     <string name="reply_header_follow_button">Follow</string>
     <string name="reply_header_following_button">Following</string>
     <string name="reply_empty_title_own_question">Tunggu ya…</string>
@@ -140,18 +127,15 @@
     <string name="reply_unmask_no">Tidak</string>
 
     <string name="toaster_report_success">Laporanmu berhasil dikirim dan akan segera ditindaklanjuti.</string>
-    <string name="toaster_report_fail">Laporanmu gagal dikirim. Cek koneksi internetmu dan coba lagi, ya.</string>
 
     <string name="write_category_title">Pilih topik</string>
-    <string name="write_question_title">Tulis pertanyaan</string>
     <string name="write_question_placeholder">Tulis Pertanyaanmu</string>
     <string name="write_question_error_message">Oops, sudah melebihi maks. karakter.</string>
     <string name="write_question_length_minimum_error">Oops, minimal 5 karakter.</string>
-    <string name="write_category_details_subtitle">Hal lain terkait stok bisa &lt;a href = "#">chat penjual.&lt;/a></string>
     <string name="write_submit_error">Pertanyaan tidak terkirim. Cek koneksi internetmu dan coba lagi, ya.</string>
 
     <string name="reply_dot_builder">• %s</string>
-    
+
     <string name="inbox_read">Sudah Dibaca</string>
     <string name="inbox_unread">Belum Dibaca</string>
     <string name="inbox_total_count_and_date">%s jawaban • %s</string>

@@ -16,6 +16,7 @@ object TalkConstants {
     const val AB_TEST_WRITE_KEY = "Talk Writing Revamp"
     const val WRITE_OLD_FLOW = "Old Talk Form"
     const val PARAM_APPLINK_IS_VARIANT_SELECTED = "is_variant_selected"
+    const val PARAM_APPLINK_AVAILABLE_VARIANT = "available variants"
     const val DEFAULT_INITIAL_PAGE = 1
     const val DEFAULT_ITEM_LIMIT = 10
     const val AB_TEST_INBOX_KEY = "Inbox Talk Release"

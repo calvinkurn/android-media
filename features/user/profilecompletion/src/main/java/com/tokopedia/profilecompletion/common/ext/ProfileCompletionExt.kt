@@ -1,4 +1,4 @@
-package com.tokopedia.profilecompletion.customview
+package com.tokopedia.profilecompletion.common.ext
 
 import android.content.Context
 import android.view.inputmethod.InputMethodManager

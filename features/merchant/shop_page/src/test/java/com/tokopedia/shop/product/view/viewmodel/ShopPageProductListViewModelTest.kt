@@ -37,7 +37,9 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                     listOf(),
                     ShopEtalaseItemDataModel(),
                     anyString(),
-                    false)
+                    false,
+                    Pair(true, listOf())
+            )
 
             verify { GetMembershipUseCaseNew.createRequestParams(anyInt()) }
 
@@ -58,7 +60,8 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                     listOf(),
                     ShopEtalaseItemDataModel(),
                     anyString(),
-                    anyBoolean()
+                    anyBoolean(),
+                    Pair(true, listOf())
             )
 
             verify { GetMembershipUseCaseNew.createRequestParams(anyInt()) }
@@ -66,43 +69,6 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
             verifyGetMemberShipUseCaseCalled()
 
             Assert.assertTrue(viewModelShopPageProductListViewModel.productListData.value is  Fail)
-        }
-    }
-
-    @Test
-    fun `check whether response get seller shop page product tab data success is not null`() {
-        runBlocking {
-
-            coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct()
-            viewModelShopPageProductListViewModel.getSellerShopPageProductTabData(
-                    anyString(),
-                    ShopEtalaseItemDataModel(),
-                    anyString()
-            )
-
-            verify { GqlGetShopProductUseCase.createParams(anyString(), any()) }
-
-            verifyGetShopProductUseCaseCaseCalled()
-            Assert.assertTrue(viewModelShopPageProductListViewModel.productListData.value is Success)
-            Assert.assertNotNull(viewModelShopPageProductListViewModel.productListData.value)
-        }
-    }
-
-    @Test
-    fun `check whether response get seller shop page product tab data error is null`() {
-        runBlocking {
-
-            coEvery { getShopProductUseCase.executeOnBackground() } throws Exception()
-            viewModelShopPageProductListViewModel.getSellerShopPageProductTabData(
-                    anyString(),
-                    ShopEtalaseItemDataModel(),
-                    anyString()
-            )
-
-            verify { GqlGetShopProductUseCase.createParams(anyString(), any()) }
-
-            verifyGetShopProductUseCaseCaseCalled()
-            Assert.assertTrue(viewModelShopPageProductListViewModel.productListData.value is Fail)
         }
     }
 

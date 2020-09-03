@@ -82,11 +82,11 @@ class EditFormDefaultViewModel @Inject constructor(
                 })
     }
 
-    fun getAdKeyword(groupId: Int, onSuccess: (List<GetKeywordResponse.KeywordsItem>) -> Unit) {
-        getAdKeywordUseCase.setParams(groupId)
+    fun getAdKeyword(groupId: Int,cursor:String, onSuccess: (List<GetKeywordResponse.KeywordsItem>,cursor:String) -> Unit) {
+        getAdKeywordUseCase.setParams(groupId,cursor)
         getAdKeywordUseCase.executeQuerySafeMode(
                 {
-                    onSuccess(it.topAdsListKeyword.data.keywords)
+                    onSuccess(it.topAdsListKeyword.data.keywords,it.topAdsListKeyword.data.pagination.cursor)
                 },
                 { throwable ->
                     throwable.printStackTrace()
