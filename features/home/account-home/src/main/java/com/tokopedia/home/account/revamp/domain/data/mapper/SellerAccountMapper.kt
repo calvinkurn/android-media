@@ -186,7 +186,7 @@ class SellerAccountMapper @Inject constructor(
 
     private fun setKycToModel(shopCard: ShopCardViewModel, accountDataModel: AccountDataModel) {
         if (accountDataModel?.kycStatusPojo?.kycStatusDetailPojo?.isSuccess == KYCConstant.IS_SUCCESS_GET_STATUS) {
-            shopCard.verificationStatus = accountDataModel?.kycStatusPojo?.kycStatusDetailPojo.status
+            shopCard.verificationStatus = accountDataModel?.kycStatusPojo?.kycStatusDetailPojo?.status
             shopCard.verificationStatusName = accountDataModel?.kycStatusPojo?.kycStatusDetailPojo?.statusName
         } else {
             shopCard.verificationStatus = KYCConstant.STATUS_ERROR
