@@ -26,7 +26,7 @@ class HotelSearchResultViewModel @Inject constructor(
     var filter: Filter = Filter()
 
     val liveSearchResult = MutableLiveData<Result<PropertySearch>>()
-    val liveSelectedFilter = MutableLiveData<List<ParamFilterV2>>()
+    val liveSelectedFilter = MutableLiveData<Pair<List<ParamFilterV2>, Boolean>>()
 
     var isFilter = false
 
@@ -67,7 +67,7 @@ class HotelSearchResultViewModel @Inject constructor(
         }
     }
 
-    fun getSelectedFilter(): List<ParamFilterV2> = liveSelectedFilter.value?.toMutableList() ?: mutableListOf()
+    fun getSelectedFilter(): List<ParamFilterV2> = liveSelectedFilter.value?.first?.toMutableList() ?: mutableListOf()
 
     fun searchProperty(page: Int, searchQuery: String) {
         searchParam.page = page
@@ -92,8 +92,8 @@ class HotelSearchResultViewModel @Inject constructor(
         }
     }
 
-    fun addFilter(filterV2: List<ParamFilterV2>) {
-        liveSelectedFilter.value = filterV2.filter { it.values.isNotEmpty() }.toMutableList()
+    fun addFilter(filterV2: List<ParamFilterV2>, notifyUi: Boolean = true) {
+        liveSelectedFilter.value = Pair(filterV2.filter { it.values.isNotEmpty() }.toMutableList(), notifyUi)
     }
 
     fun addFilter(quickFilters: List<QuickFilter>, sortFilterItems: ArrayList<SortFilterItem>) {

@@ -70,7 +70,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
 
             val selectedParam = it.getParcelable(ARG_FILTER_PARAM) ?: ParamFilterV2()
             if (selectedParam.name.isNotEmpty()) {
-                searchResultviewModel.searchParam.filters.add(selectedParam)
+                searchResultviewModel.addFilter(listOf(selectedParam), false)
             }
 
             searchResultviewModel.initSearchParam(hotelSearchModel)
@@ -90,10 +90,12 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
             stopTrace()
         })
 
-        searchResultviewModel.liveSelectedFilter.observe(viewLifecycleOwner, Observer {
-            showQuickFilterShimmering(true)
-            setUpQuickFilterBaseOnSelectedFilter(it)
-            loadInitialData()
+        searchResultviewModel.liveSelectedFilter.observe(viewLifecycleOwner, Observer { (data, notifyUi) ->
+            if (notifyUi) {
+                showQuickFilterShimmering(true)
+                setUpQuickFilterBaseOnSelectedFilter(data)
+                loadInitialData()
+            }
         })
     }
 
@@ -133,6 +135,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     }
 
     fun changeSearchParam() {
+        bottom_action_view.visibility = View.GONE
         searchResultviewModel.addFilter(listOf())
     }
 
@@ -153,8 +156,8 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
 
         bottom_action_view.visibility = View.VISIBLE
         bottom_action_view.filterItem.active = searchResultviewModel.isFilter
-
         showQuickFilterShimmering(false)
+
         super.renderList(searchProperties, searchProperties.isNotEmpty())
 
         generateSortMenu(data.displayInfo.sort)
@@ -190,6 +193,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         }
 
         quick_filter_sort_filter.dismissListener = {
+            bottom_action_view.visibility = View.GONE
             searchResultviewModel.addFilter(quickFilters, quick_filter_sort_filter.chipItems)
         }
 
@@ -207,6 +211,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
             item.refChipUnify.setOnClickListener {
                 item.toggleSelected()
                 trackingHotelUtil.clickOnQuickFilter(context, SEARCH_SCREEN_NAME, item.title.toString(), index)
+                bottom_action_view.visibility = View.GONE
                 searchResultviewModel.addFilter(quickFilters, quick_filter_sort_filter.chipItems)
             }
         }
@@ -303,6 +308,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     }
 
     override fun onSubmitFilter(selectedFilter: List<ParamFilterV2>) {
+        bottom_action_view.visibility = View.GONE
         trackingHotelUtil.clickSubmitFilterOnBottomSheet(context, SEARCH_SCREEN_NAME, selectedFilter)
         searchResultviewModel.addFilter(selectedFilter)
     }
@@ -354,7 +360,6 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     }
 
     override fun loadData(page: Int) {
-        bottom_action_view.visibility = View.GONE
         val searchQuery = GraphqlHelper.loadRawString(resources, R.raw.gql_get_property_search)
         searchResultviewModel.searchProperty(page, searchQuery)
     }
