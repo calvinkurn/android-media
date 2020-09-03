@@ -15,10 +15,10 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
+import com.tokopedia.product.manage.common.feature.list.constant.DRAFT_PRODUCT
+import com.tokopedia.product.manage.common.feature.list.constant.ProductManageDataLayer
 import com.tokopedia.product.manage.common.util.ProductManageListErrorHandler
-import com.tokopedia.product.manage.feature.list.analytics.ProductManageTracking
-import com.tokopedia.product.manage.feature.list.constant.DRAFT_PRODUCT
-import com.tokopedia.product.manage.feature.list.constant.ProductManageDataLayer
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant
 import com.tokopedia.product.manage.feature.list.di.ProductManageListInstance
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductDraftListCountViewModel

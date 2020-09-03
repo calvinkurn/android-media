@@ -413,7 +413,7 @@
  -keep class com.tokopedia.product.manage.feature.cashback.data.** { *; }
  -keep class com.tokopedia.product.manage.feature.filter.data.** { *; }
  -keep class com.tokopedia.product.manage.feature.multiedit.data.** { *; }
- -keep class com.tokopedia.product.manage.feature.quickedit.common.data.** { *; }
+ -keep class com.tokopedia.product.manage.common.quickedit.common.data.** { *; }
  -keep class com.tokopedia.product.manage.feature.quickedit.delete.data.** { *; }
  -keep class com.tokopedia.product.manage.feature.quickedit.price.data.** { *; }
  -keep class com.tokopedia.product.manage.feature.quickedit.stock.data.** { *; }

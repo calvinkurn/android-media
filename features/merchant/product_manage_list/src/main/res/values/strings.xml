@@ -108,7 +108,6 @@
     <string name="filter_button">Tampilkan Produk</string>
     <string name="filter_search_bar">Cari Kategori</string>
     <string name="filter_expand_activity">Expand</string>
-    <string name="filter_expand_save_button">Simpan</string>
     <string name="filter_expand_reset">Reset</string>
     <string name="filter_expand_category_not_found">Oops, kategori yang kamu cari tidak ditemukan.</string>
     <string name="product_manage_filter_sort_select_title">Urutkan</string>
@@ -177,9 +176,6 @@
     <string name="product_manage_quick_edit_max_price_error">Maks. Rp100.000.000</string>
     <string name="product_manage_quick_edit_price_success">Harga produk \"%1$s\" berhasil diubah.</string>
 
-    <string name="product_manage_quick_edit_stock_title">Atur Stok</string>
-    <string name="product_manage_quick_edit_stock_active_product">Produk Aktif</string>
-    <string name="product_manage_quick_edit_stock_total_stock">Jumlah Stok</string>
     <string name="product_manage_quick_edit_stock_success">Ketersediaan produk \"%1$s\" berhasil diubah.</string>
 
     <string name="product_manage_delete_product_title">Hapus Produk?</string>
@@ -224,7 +220,6 @@
     <string name="product_manage_etalase_picker_empty_description">Masukkan produk sesuai kategori ke dalam etalase agar mudah dicari calon pembeli</string>
     <string name="product_manage_add_etalase">Tambah Etalase</string>
     <string name="product_manage_etalase_search_hint">Cari nama etalase</string>
-    <string name="product_manage_stock_info_description">Produk ini tidak bisa dilihat calon pembeli karena stok 0.</string>
     <string name="product_manage_stock_information">Informasi Stok</string>
 
     <string name="add_product_text_description">Tambah Produk</string>

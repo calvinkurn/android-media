@@ -4,6 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.common.feature.list.model.ProductViewModel
 import com.tokopedia.product.manage.feature.list.view.adapter.factory.ProductMenuAdapterFactory
 
 sealed class ProductMenuViewModel(

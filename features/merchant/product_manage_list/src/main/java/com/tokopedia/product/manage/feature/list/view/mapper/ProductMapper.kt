@@ -9,8 +9,8 @@ import com.tokopedia.product.manage.feature.list.view.model.FilterTabViewModel.*
 import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult
 import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult.ShowFilterTab
 import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult.UpdateFilterTab
-import com.tokopedia.product.manage.feature.list.view.model.PriceUiModel
-import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
+import com.tokopedia.product.manage.common.feature.list.model.PriceUiModel
+import com.tokopedia.product.manage.common.feature.list.model.ProductViewModel
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.Product
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus.*
@@ -25,26 +25,26 @@ object ProductMapper {
             val picture = it.pictures?.firstOrNull()
 
             ProductViewModel(
-                id = it.id,
-                title = it.name,
-                imageUrl = picture?.urlThumbnail,
-                minPrice = PriceUiModel(
-                        price = minPrice.toString(),
-                        priceFormatted = minPrice?.getCurrencyFormatted()
-                ),
-                maxPrice = PriceUiModel(
-                        price = maxPrice.toString(),
-                        priceFormatted = maxPrice?.getCurrencyFormatted()
-                ),
-                status = mapProductStatus(it),
-                stock = it.stock,
-                isVariant = it.isVariant,
-                isFeatured = it.featured > 0,
-                url = it.url,
-                cashBack = it.cashback,
-                multiSelectActive = multiSelectActive,
-                isChecked = false,
-                hasStockReserved = it.hasStockReserved
+                    id = it.id,
+                    title = it.name,
+                    imageUrl = picture?.urlThumbnail,
+                    minPrice = PriceUiModel(
+                            price = minPrice.toString(),
+                            priceFormatted = minPrice?.getCurrencyFormatted()
+                    ),
+                    maxPrice = PriceUiModel(
+                            price = maxPrice.toString(),
+                            priceFormatted = maxPrice?.getCurrencyFormatted()
+                    ),
+                    status = mapProductStatus(it),
+                    stock = it.stock,
+                    isVariant = it.isVariant,
+                    isFeatured = it.featured > 0,
+                    url = it.url,
+                    cashBack = it.cashback,
+                    multiSelectActive = multiSelectActive,
+                    isChecked = false,
+                    hasStockReserved = it.hasStockReserved
             )
         } ?: emptyList()
     }

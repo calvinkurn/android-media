@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.coroutine.CoroutineDispatchers
+import com.tokopedia.product.manage.common.feature.list.model.ProductViewModel
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper.Companion.countSelectedFilter
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
 import com.tokopedia.product.manage.feature.filter.domain.GetProductListMetaUseCase
@@ -29,8 +30,8 @@ import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeletePr
 import com.tokopedia.product.manage.feature.quickedit.delete.domain.DeleteProductUseCase
 import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPriceResult
 import com.tokopedia.product.manage.feature.quickedit.price.domain.EditPriceUseCase
-import com.tokopedia.product.manage.feature.quickedit.stock.data.model.EditStockResult
-import com.tokopedia.product.manage.feature.quickedit.stock.domain.EditStockUseCase
+import com.tokopedia.product.manage.common.quickedit.stock.data.model.EditStockResult
+import com.tokopedia.product.manage.common.quickedit.stock.domain.EditStockUseCase
 import com.tokopedia.product.manage.feature.quickedit.variant.data.mapper.ProductManageVariantMapper.mapResultToUpdateParam
 import com.tokopedia.product.manage.feature.quickedit.variant.presentation.data.EditVariantResult
 import com.tokopedia.product.manage.feature.quickedit.variant.domain.EditProductVariantUseCase
@@ -55,19 +56,19 @@ import rx.Subscriber
 import javax.inject.Inject
 
 class ProductManageViewModel @Inject constructor(
-    private val editPriceUseCase: EditPriceUseCase,
-    private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase,
-    private val userSessionInterface: UserSessionInterface,
-    private val topAdsGetShopDepositGraphQLUseCase: TopAdsGetShopDepositGraphQLUseCase,
-    private val popupManagerAddProductUseCase: PopupManagerAddProductUseCase,
-    private val getProductListUseCase: GQLGetProductListUseCase,
-    private val setFeaturedProductUseCase: SetFeaturedProductUseCase,
-    private val editStockUseCase: EditStockUseCase,
-    private val deleteProductUseCase: DeleteProductUseCase,
-    private val multiEditProductUseCase: MultiEditProductUseCase,
-    private val getProductListMetaUseCase: GetProductListMetaUseCase,
-    private val editProductVariantUseCase: EditProductVariantUseCase,
-    private val dispatchers: CoroutineDispatchers
+        private val editPriceUseCase: EditPriceUseCase,
+        private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase,
+        private val userSessionInterface: UserSessionInterface,
+        private val topAdsGetShopDepositGraphQLUseCase: TopAdsGetShopDepositGraphQLUseCase,
+        private val popupManagerAddProductUseCase: PopupManagerAddProductUseCase,
+        private val getProductListUseCase: GQLGetProductListUseCase,
+        private val setFeaturedProductUseCase: SetFeaturedProductUseCase,
+        private val editStockUseCase: EditStockUseCase,
+        private val deleteProductUseCase: DeleteProductUseCase,
+        private val multiEditProductUseCase: MultiEditProductUseCase,
+        private val getProductListMetaUseCase: GetProductListMetaUseCase,
+        private val editProductVariantUseCase: EditProductVariantUseCase,
+        private val dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.main) {
 
     companion object {

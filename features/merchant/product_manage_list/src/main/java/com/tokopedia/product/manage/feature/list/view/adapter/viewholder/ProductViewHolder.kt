@@ -9,7 +9,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.manage.R
-import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
+import com.tokopedia.product.manage.common.feature.list.model.ProductViewModel
 import kotlinx.android.synthetic.main.item_manage_product_list.view.*
 
 class ProductViewHolder(

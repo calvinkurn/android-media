@@ -8,11 +8,11 @@ import com.tokopedia.gm.common.domain.repository.GMCommonRepository
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.product.manage.common.draft.data.db.AddEditProductDraftDao
-import com.tokopedia.product.manage.common.draft.data.db.AddEditProductDraftDb
-import com.tokopedia.product.manage.common.draft.data.db.repository.AddEditProductDraftRepository
-import com.tokopedia.product.manage.common.draft.data.db.repository.AddEditProductDraftRepositoryImpl
-import com.tokopedia.product.manage.common.draft.data.db.source.AddEditProductDraftDataSource
+import com.tokopedia.product.manage.common.feature.draft.data.db.AddEditProductDraftDao
+import com.tokopedia.product.manage.common.feature.draft.data.db.AddEditProductDraftDb
+import com.tokopedia.product.manage.common.feature.draft.data.db.repository.AddEditProductDraftRepository
+import com.tokopedia.product.manage.common.feature.draft.data.db.repository.AddEditProductDraftRepositoryImpl
+import com.tokopedia.product.manage.common.feature.draft.data.db.source.AddEditProductDraftDataSource
 import com.tokopedia.product.manage.feature.list.constant.GQL_FEATURED_PRODUCT
 import com.tokopedia.product.manage.feature.list.constant.GQL_UPDATE_PRODUCT
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant

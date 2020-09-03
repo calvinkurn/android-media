@@ -16,7 +16,7 @@ import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.result.Non
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.result.StockAllocationResult
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.result.UpdateCampaignStockResult
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.result.VariantStockAllocationResult
-import com.tokopedia.product.manage.feature.quickedit.stock.domain.EditStockUseCase
+import com.tokopedia.product.manage.common.quickedit.stock.domain.EditStockUseCase
 import com.tokopedia.product.manage.feature.quickedit.variant.data.mapper.ProductManageVariantMapper
 import com.tokopedia.product.manage.feature.quickedit.variant.data.model.param.UpdateVariantParam
 import com.tokopedia.product.manage.feature.quickedit.variant.domain.EditProductVariantUseCase

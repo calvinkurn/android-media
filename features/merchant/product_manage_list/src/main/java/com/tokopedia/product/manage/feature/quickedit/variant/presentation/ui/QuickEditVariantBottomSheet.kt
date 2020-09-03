@@ -17,7 +17,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.product.manage.ProductManageInstance
+import com.tokopedia.product.manage.common.ProductManageInstance
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.quickedit.variant.adapter.model.ProductVariant
 import com.tokopedia.product.manage.feature.quickedit.variant.di.DaggerQuickEditVariantComponent

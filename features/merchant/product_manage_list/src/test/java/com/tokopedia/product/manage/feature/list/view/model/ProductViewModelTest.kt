@@ -1,7 +1,8 @@
 package com.tokopedia.product.manage.feature.list.view.model
 
+import com.tokopedia.product.manage.common.feature.list.model.PriceUiModel
 import com.tokopedia.product.manage.data.createProductViewModel
-import com.tokopedia.product.manage.feature.list.view.adapter.factory.ProductManageAdapterFactory
+import com.tokopedia.product.manage.common.feature.list.view.adapter.factory.ProductManageAdapterFactory
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import io.mockk.every
 import io.mockk.mockk

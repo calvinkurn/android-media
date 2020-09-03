@@ -2,7 +2,7 @@ package com.tokopedia.product.manage.feature.quickedit.variant.domain
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.product.manage.feature.quickedit.common.data.model.ProductUpdateV3Response
+import com.tokopedia.product.manage.common.quickedit.common.data.model.ProductUpdateV3Response
 import com.tokopedia.product.manage.feature.quickedit.variant.data.model.param.UpdateVariantParam
 import com.tokopedia.product.manage.feature.quickedit.variant.data.query.ProductUpdateV3
 import com.tokopedia.usecase.RequestParams

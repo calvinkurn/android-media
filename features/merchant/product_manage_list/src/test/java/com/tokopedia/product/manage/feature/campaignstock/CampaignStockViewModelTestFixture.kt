@@ -2,18 +2,17 @@ package com.tokopedia.product.manage.feature.campaignstock
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.product.manage.common.feature.quickedit.stock.domain.EditStockUseCase
 import com.tokopedia.product.manage.coroutine.TestCoroutineDispatchers
 import com.tokopedia.product.manage.feature.campaignstock.domain.usecase.CampaignStockAllocationUseCase
 import com.tokopedia.product.manage.feature.campaignstock.domain.usecase.OtherCampaignStockDataUseCase
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.result.StockAllocationResult
 import com.tokopedia.product.manage.feature.campaignstock.ui.viewmodel.CampaignStockViewModel
-import com.tokopedia.product.manage.feature.quickedit.stock.domain.EditStockUseCase
 import com.tokopedia.product.manage.feature.quickedit.variant.domain.EditProductVariantUseCase
 import com.tokopedia.product.manage.feature.quickedit.variant.domain.GetProductVariantUseCase
 import com.tokopedia.usecase.coroutines.Result
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule

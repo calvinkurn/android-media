@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">product_manage_common</string>
+
+    <string name="product_manage_quick_edit_stock_title">Atur Stok</string>
+    <string name="product_manage_quick_edit_stock_total_stock">Jumlah Stok</string>
+    <string name="product_manage_stock_info_description">Produk ini tidak bisa dilihat calon pembeli karena stok 0.</string>
+    <string name="filter_expand_save_button">Simpan</string>
+    <string name="product_manage_quick_edit_stock_active_product">Produk Aktif</string>
+
 </resources>

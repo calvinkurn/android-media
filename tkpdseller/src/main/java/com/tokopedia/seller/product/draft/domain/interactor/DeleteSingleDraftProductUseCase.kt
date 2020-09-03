@@ -1,6 +1,6 @@
 package com.tokopedia.seller.product.draft.domain.interactor
 
-import com.tokopedia.product.manage.common.draft.constant.AddEditProductDraftConstant
+import com.tokopedia.product.manage.common.feature.draft.constant.AddEditProductDraftConstant
 import com.tokopedia.product.manage.common.draft.data.db.repository.AddEditProductDraftRepository
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
@@ -12,13 +12,13 @@ class DeleteSingleDraftProductUseCase @Inject constructor(private val addEditPro
     companion object {
         fun createRequestParams(productId: Long): RequestParams {
             val requestParams = RequestParams.create()
-            requestParams.putLong(AddEditProductDraftConstant.DRAFT_PRODUCT_ID, productId)
+            requestParams.putLong(_root_ide_package_.com.tokopedia.product.manage.common.feature.draft.constant.AddEditProductDraftConstant.DRAFT_PRODUCT_ID, productId)
             return requestParams
         }
     }
     
     override fun createObservable(params: RequestParams): Observable<Boolean> {
-        val param = params.getLong(AddEditProductDraftConstant.DRAFT_PRODUCT_ID, Long.MIN_VALUE)
+        val param = params.getLong(_root_ide_package_.com.tokopedia.product.manage.common.feature.draft.constant.AddEditProductDraftConstant.DRAFT_PRODUCT_ID, Long.MIN_VALUE)
         return Observable.just(addEditProductDraftRepository.deleteDraft(param))
     }
 }
