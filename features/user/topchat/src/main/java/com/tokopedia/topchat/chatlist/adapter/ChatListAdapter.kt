@@ -69,6 +69,14 @@ class ChatListAdapter(adapterTypeFactory: ChatListTypeFactoryImpl) :
         }
     }
 
+    fun unpinChatItem(element: ItemChatListPojo, position: Int) {
+        val chatItemPosition = getItemPosition(element, position)
+        if (chatItemPosition != RecyclerView.NO_POSITION) {
+            visitables.removeAt(chatItemPosition)
+            notifyItemRemoved(chatItemPosition)
+        }
+    }
+
     private fun getItemPosition(element: ItemChatListPojo, previouslyKnownPosition: Int): Int {
         val chatItem = visitables.getOrNull(previouslyKnownPosition)
         return if (chatItem != null && chatItem == element) {

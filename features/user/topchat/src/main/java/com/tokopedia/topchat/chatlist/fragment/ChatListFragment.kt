@@ -518,6 +518,7 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
 
     override fun loadInitialData() {
         super.loadInitialData()
+        chatItemListViewModel.clearPinUnpinData()
         if (isTabSeller()) {
             chatItemListViewModel.loadTopBotWhiteList()
             chatItemListViewModel.loadChatBannedSellerStatus()
@@ -720,11 +721,18 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
         chatItemListViewModel.pinUnpinChat(msgId, isPinChat,
                 {
                     element.updatePinStatus(isPinChat)
-                    if (isPinChat) { // chat pinned
+                    if (isPinChat) {
+                        // chat pinned
+                        chatItemListViewModel.pinnedMsgId.add(element.msgId)
                         adapter?.pinChatItem(element, position)
                         rv?.scrollToPosition(0)
-                    } else { // chat unpinned
-
+                    } else if (!isPinChat && chatItemListViewModel.unpinnedMsgId.contains(element.msgId)) {
+                        // chat unpinned and can be restored to current list
+                        chatItemListViewModel.pinnedMsgId.remove(element.msgId)
+                    } else {
+                        // chat unpinned and can not be restored to current list, just remove the item
+                        chatItemListViewModel.pinnedMsgId.remove(element.msgId)
+                        adapter?.unpinChatItem(element, position)
                     }
                 },
                 {

@@ -53,6 +53,8 @@ interface ChatItemListContract {
             onSuccess: (Boolean) -> Unit,
             onError: (Throwable) -> Unit
     )
+
+    fun clearPinUnpinData()
 }
 
 class ChatItemListViewModel @Inject constructor(
@@ -156,6 +158,11 @@ class ChatItemListViewModel @Inject constructor(
         } else {
             unpinChatUseCase.unpinChat(msgId, onSuccess, onError)
         }
+    }
+
+    override fun clearPinUnpinData() {
+        pinnedMsgId.clear()
+        unpinnedMsgId.clear()
     }
 
     private fun changeMessageState(
