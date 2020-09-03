@@ -61,17 +61,20 @@ class ChatListAdapter(adapterTypeFactory: ChatListTypeFactoryImpl) :
     }
 
     fun pinChatItem(element: ItemChatListPojo, position: Int) {
-        val chatItem = visitables.getOrNull(position)
-        val chatItemPosition = if (chatItem != null && chatItem == element) {
-            position
-        } else {
-            visitables.indexOf(element)
-        }
-
+        val chatItemPosition = getItemPosition(element, position)
         if (chatItemPosition != RecyclerView.NO_POSITION) {
             visitables.goToFirst(chatItemPosition)
             notifyItemMoved(chatItemPosition, 0)
             notifyItemChanged(0, PAYLOAD_UPDATE_PIN_STATUS)
+        }
+    }
+
+    private fun getItemPosition(element: ItemChatListPojo, previouslyKnownPosition: Int): Int {
+        val chatItem = visitables.getOrNull(previouslyKnownPosition)
+        return if (chatItem != null && chatItem == element) {
+            previouslyKnownPosition
+        } else {
+            visitables.indexOf(element)
         }
     }
 
