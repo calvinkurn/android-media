@@ -3,6 +3,7 @@
     <string name="gql_save">Save</string>
     <string name="gql_reset">Reset</string>
     <string name="gql_export">Export</string>
+    <string name="gql_delete">Delete</string>
     <string name="gql_import">Import</string>
     <string name="gql_search">Search</string>
     <string name="gql_share">Share</string>
