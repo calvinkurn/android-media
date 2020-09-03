@@ -130,8 +130,8 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
         super.onViewCreated(view, savedInstanceState)
         selectedStatisticType = TopAdsStatisticsType.PRODUCT_ADS
         initStatisticComponent()
-        image.setImageDrawable(context?.getResDrawable(R.drawable.topads_ic_wallet))
-        arrow.setImageDrawable(context?.getResDrawable(R.drawable.topads_ic_arrow))
+        image.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_wallet))
+        arrow.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_arrow))
         help_section.setOnClickListener {
             RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, SELLER_CENTER_URL)
         }
@@ -150,8 +150,8 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
         endDate = Utils.getEndDate()
         startDate = Utils.getStartDate()
         loadData()
-        hari_ini?.date_image?.setImageDrawable(context?.getResDrawable(R.drawable.topads_ic_calendar))
-        hari_ini?.next_image?.setImageDrawable(context?.getResDrawable(R.drawable.topads_ic_arrow))
+        hari_ini?.date_image?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_calendar))
+        hari_ini?.next_image?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_arrow))
         hari_ini?.setOnClickListener {
             showBottomSheet()
         }

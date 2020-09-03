@@ -73,7 +73,7 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
     private fun setEmptyView() {
         rvTabInsight.visibility = View.GONE
         empty_view.visibility = View.VISIBLE
-        empty_view.image_empty.setImageDrawable(context?.getResDrawable(R.drawable.ill_success))
+        empty_view.image_empty.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.ill_success))
         view_pager.visibility = View.GONE
         searchBar.visibility = View.GONE
     }

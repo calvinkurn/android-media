@@ -207,8 +207,8 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
         topAdsDashboardPresenter.saveDate(startDate!!, endDate!!)
         topAdsDashboardPresenter.saveSelectionDatePicker()
         loadData()
-        hari_ini?.date_image?.setImageDrawable(context?.getResDrawable(R.drawable.topads_ic_calendar))
-        hari_ini?.next_image?.setImageDrawable(context?.getResDrawable(R.drawable.topads_ic_arrow))
+        hari_ini?.date_image?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_calendar))
+        hari_ini?.next_image?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_arrow))
         hari_ini?.setOnClickListener {
             showBottomSheet()
         }

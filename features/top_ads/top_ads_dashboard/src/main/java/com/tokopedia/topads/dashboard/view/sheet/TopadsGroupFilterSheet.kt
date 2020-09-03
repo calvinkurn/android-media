@@ -36,7 +36,7 @@ class TopadsGroupFilterSheet : BottomSheetUnify() {
                     behavior.isHideable = false
                 }
             }
-            it.btn_close.setImageDrawable(context.getResDrawable(R.drawable.topads_create_ic_group_close))
+            it.btn_close.setImageDrawable(context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_create_ic_group_close))
             it.status?.visibility = View.VISIBLE
             it.status_title?.visibility = View.VISIBLE
 

@@ -22,7 +22,7 @@ class DatePickerSheet {
             val listUnify = ArrayList<ListItemUnify>()
             val dateModel = Utils.getPeriodRangeList(context)
 
-            dialog.btn_close.setImageDrawable(context.getResDrawable(R.drawable.topads_create_ic_group_close))
+            dialog.btn_close.setImageDrawable(context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_create_ic_group_close))
             dateModel.forEachIndexed { index, periodRangeModel ->
 
                 val data = if (index != CUSTOM_DATE)

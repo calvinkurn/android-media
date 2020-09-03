@@ -159,8 +159,8 @@ class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboa
         header_toolbar.setNavigationOnClickListener {
             super.onBackPressed()
         }
-        hari_ini?.date_image?.setImageDrawable(this.getResDrawable(R.drawable.topads_ic_calendar))
-        hari_ini?.next_image?.setImageDrawable(this.getResDrawable(R.drawable.topads_ic_arrow))
+        hari_ini?.date_image?.setImageDrawable(this.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_calendar))
+        hari_ini?.next_image?.setImageDrawable(this.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_arrow))
         hari_ini?.setOnClickListener {
             showBottomSheet()
         }
