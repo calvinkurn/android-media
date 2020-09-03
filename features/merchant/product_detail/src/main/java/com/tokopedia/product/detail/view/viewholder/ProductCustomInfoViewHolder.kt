@@ -3,7 +3,9 @@ package com.tokopedia.product.detail.view.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductCustomInfoDataModel
@@ -40,14 +42,10 @@ class ProductCustomInfoViewHolder(val view: View, private val listener: DynamicP
     }
 
     private fun setupApplink(applink: String, title: String, componentTrackData: ComponentTrackDataModel) = with(view) {
-        if (applink.isNotEmpty()) {
-            custom_arrow?.show()
-            custom_arrow?.setOnClickListener {
+        custom_arrow.shouldShowWithAction(applink.isNotEmpty()) {
+            this.setOnClickListener {
                 listener.onBbiInfoClick(applink, title, componentTrackData)
             }
-        } else {
-            custom_arrow?.hide()
-            custom_arrow?.setOnClickListener {}
         }
     }
 
