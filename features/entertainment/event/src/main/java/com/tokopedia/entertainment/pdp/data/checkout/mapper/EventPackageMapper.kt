@@ -1,6 +1,8 @@
 package com.tokopedia.entertainment.pdp.data.checkout.mapper
 
 import com.tokopedia.entertainment.pdp.data.*
+import com.tokopedia.entertainment.pdp.data.checkout.AdditionalType
+import com.tokopedia.entertainment.pdp.data.checkout.EventCheckoutAdditionalData
 import com.tokopedia.entertainment.pdp.data.pdp.ItemMap
 import com.tokopedia.entertainment.pdp.data.pdp.ItemMapResponse
 import com.tokopedia.entertainment.pdp.data.pdp.MetaDataResponse
@@ -8,31 +10,6 @@ import java.util.regex.Matcher
 import java.util.regex.Pattern
 
 object EventPackageMapper {
-
-    fun getPackage(scheduleId: String, groupID: String, packageID: String,
-                   productDetailData: ProductDetailData): Package {
-
-        var packet: Package = Package()
-        for (i in 0..productDetailData.schedules.size-1) {
-            val groups = productDetailData.schedules[i].groups
-
-            for (j in 0..groups.size-1) {
-
-                if (groups[j].id.equals(groupID)) {
-                    val packages = groups[j].packages
-
-                    for (k in 0..packages.size-1) {
-                        if(packages[k].id.equals(packageID)){
-                            packet = packages[k]
-                        }
-                    }
-                }
-            }
-        }
-
-        return packet
-    }
-
 
     fun getPackage(productDetailData: ProductDetailData, packageID: String):PackageV3{
         var packageV3 = PackageV3()
@@ -56,32 +33,6 @@ object EventPackageMapper {
         return itemMapResponse
     }
 
-    fun getPackageItem(productDetailData: ProductDetailData, packageID: String):PackageItem{
-        var packageItem = PackageItem()
-        for(packageV3 in productDetailData.packages){
-            if(packageID.equals(packageV3.id)){
-                for (packageItems in packageV3.packageItems){
-                    packageItem = packageItems
-                }
-            }
-        }
-        return packageItem
-    }
-
-
-    fun getSchedule(scheduleId: String, productDetailData: ProductDetailData): Schedule {
-
-        var schedule = Schedule()
-        for (i in 0..productDetailData.schedules.size-1) {
-            val scheduleTemp = productDetailData.schedules[i].schedule
-            if(scheduleTemp.id.equals(scheduleId)){
-                schedule =  productDetailData.schedules[i].schedule
-            }
-        }
-
-        return schedule
-    }
-
     fun getDigit(str: String): Int{
         if(str.isNotBlank()){
             val pattern = Pattern.compile("[^0-9]")
@@ -91,5 +42,20 @@ object EventPackageMapper {
         else return -1
     }
 
+    fun getAdditionalList(pdp: ProductDetailData, packageID: String, itemMaps: List<ItemMapResponse>):List<EventCheckoutAdditionalData>{
+        val additionalList = mutableListOf<EventCheckoutAdditionalData>()
+        if (!getPackage(pdp, packageID).formsPackages.isNullOrEmpty()){
+            additionalList.add(EventCheckoutAdditionalData(idPackage = packageID, additionalType = AdditionalType.PACKAGE_UNFILL))
+        }
 
+        if(!itemMaps.isNullOrEmpty()){
+            itemMaps.map {
+                for(i in 1..it.quantity) {
+                    additionalList.add(EventCheckoutAdditionalData(idItem = it.id, titleItem = it.name+" "+i, additionalType = AdditionalType.ITEM_UNFILL))
+                }
+            }
+        }
+
+        return additionalList
+    }
 }

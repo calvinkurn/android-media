@@ -6,14 +6,32 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.pdp.data.checkout.EventCheckoutAdditionalData
+import kotlinx.android.synthetic.main.item_checkout_event_data_tambahan_item.view.*
 
 class EventCheckoutAdditionalAdapter : RecyclerView.Adapter<EventCheckoutAdditionalAdapter.EventCheckoutAdditionalViewHolder>(){
 
     private var listAdditional = emptyList<EventCheckoutAdditionalData>()
 
     inner class EventCheckoutAdditionalViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        fun bind(valueAccordion: EventCheckoutAdditionalData) {
+        fun bind(additionalData: EventCheckoutAdditionalData) {
             with(itemView) {
+                when(additionalData.additionalType.type){
+                    1 -> {
+
+                    }
+
+                    2 -> {
+
+                    }
+
+                    3 -> {
+                        tg_event_additional_item_title.text = additionalData.titleItem
+                    }
+
+                    4 -> {
+
+                    }
+                }
             }
         }
     }

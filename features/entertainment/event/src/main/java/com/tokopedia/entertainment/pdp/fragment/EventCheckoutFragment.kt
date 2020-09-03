@@ -47,6 +47,7 @@ import com.tokopedia.entertainment.pdp.data.checkout.AdditionalType
 import com.tokopedia.entertainment.pdp.data.checkout.EventCheckoutAdditionalData
 import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventMetaDataMapper.getCheckoutParam
 import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventMetaDataMapper.getPassengerMetaData
+import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventPackageMapper.getAdditionalList
 import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventPackageMapper.getItemMap
 import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventPackageMapper.getPackage
 import com.tokopedia.entertainment.pdp.data.pdp.MetaDataResponse
@@ -230,7 +231,7 @@ class EventCheckoutFragment : BaseDaggerFragment() {
         renderDesc(eventProductDetailEntity.eventProductDetail.productDetailData)
         renderPassenger()
         renderSummary(eventProductDetailEntity.eventProductDetail.productDetailData)
-        renderAdditional()
+        renderAdditional(eventProductDetailEntity.eventProductDetail.productDetailData)
         renderFooter(eventProductDetailEntity.eventProductDetail.productDetailData)
 
     }
@@ -283,13 +284,17 @@ class EventCheckoutFragment : BaseDaggerFragment() {
         eventPDPTracking.onViewCheckoutPage(getPackage(pdp, packageID), pdp, amount)
     }
 
-    private fun renderAdditional(){
-        val listAdditional = listOf(EventCheckoutAdditionalData(AdditionalType.PACKAGE_UNFILL), EventCheckoutAdditionalData(AdditionalType.ITEM_UNFILL))
-        val adapterAdditional = EventCheckoutAdditionalAdapter()
-        adapterAdditional.setList(listAdditional)
-        rv_event_checkout_additional.apply {
-            layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-            adapter = adapterAdditional
+    private fun renderAdditional(pdp: ProductDetailData){
+        val listAdditional = getAdditionalList(pdp, packageID, metadata.itemMap)
+        if (!listAdditional.isNullOrEmpty()) {
+            val adapterAdditional = EventCheckoutAdditionalAdapter()
+            adapterAdditional.setList(listAdditional)
+            rv_event_checkout_additional.apply {
+                layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+                adapter = adapterAdditional
+            }
+        } else {
+            partial_event_checkout_additional.visibility = View.GONE
         }
     }
 

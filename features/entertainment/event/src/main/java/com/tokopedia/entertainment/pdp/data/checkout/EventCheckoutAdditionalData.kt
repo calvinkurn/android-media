@@ -1,10 +1,9 @@
 package com.tokopedia.entertainment.pdp.data.checkout
 
-class EventCheckoutAdditionalList (
-        val eventCheckoutAdditionalList : List<EventCheckoutAdditionalData> = emptyList()
-)
-
 class EventCheckoutAdditionalData(
+    val idPackage : String = "",
+    val idItem : String = "",
+    val titleItem : String = "",
     val additionalType: AdditionalType
 )
 
