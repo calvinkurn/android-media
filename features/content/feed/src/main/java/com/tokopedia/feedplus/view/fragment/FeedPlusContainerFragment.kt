@@ -240,13 +240,11 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         }
         setAdapter()
         onNotificationChanged(badgeNumberNotification, badgeNumberInbox) // notify badge after toolbar created
-        feed_appbar.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
-            override fun onOffsetChanged(appBarLayout: AppBarLayout?, verticalOffset: Int) {
-                if (verticalOffset + (toolbar?.height ?: 0) < 0) {
-                    showNormalTextWhiteToolbar()
-                } else {
-                    showWhiteTextTransparentToolbar()
-                }
+        feed_appbar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
+            if (verticalOffset + (toolbar?.height ?: 0) < 0) {
+                showNormalTextWhiteToolbar()
+            } else {
+                showWhiteTextTransparentToolbar()
             }
         })
 
@@ -371,54 +369,57 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     private fun showFeedFab(whitelistDomain: WhitelistDomain) {
         fab_feed.show()
         isFabExpanded = true
-        if (whitelistDomain.authors.size > 1) {
-            fab_feed.setOnClickListener(fabClickListener(whitelistDomain))
-        } else if (whitelistDomain.authors.size == 1) {
-            val author = whitelistDomain.authors.first()
-            fab_feed.setOnClickListener { onGoToLink(author.link) }
+        when {
+            isSellerMigrationEnabled(context) -> {
+                fab_feed.setOnClickListener {
+                    for (author in whitelistDomain.authors) {
+                        val intent = context?.let { context ->
+                            SellerMigrationActivity.createIntent(
+                                    context = context,
+                                    featureName = SellerMigrationFeatureName.FEATURE_POST_FEED,
+                                    screenName = FeedPlusContainerFragment::class.simpleName.orEmpty(),
+                                    appLinks = arrayListOf(author.link),
+                                    isStackBuilder = false)
+                        }
+                        if (intent != null) {
+                            setupBottomSheetFeedSellerMigration(::goToCreateAffiliate, intent)
+                        }
+                    }
+                }
+            }
+            else -> {
+                if (whitelistDomain.authors.size > 1) {
+                    fab_feed.setOnClickListener(fabClickListener(whitelistDomain))
+                } else if (whitelistDomain.authors.size == 1) {
+                    val author = whitelistDomain.authors.first()
+                    fab_feed.setOnClickListener { onGoToLink(author.link) }
+                }
+            }
         }
     }
 
     private fun fabClickListener(whitelistDomain: WhitelistDomain): View.OnClickListener {
         return View.OnClickListener {
-            //seller migration enabled
-            if (isSellerMigrationEnabled(context)) {
-                for (author in whitelistDomain.authors) {
-                    val intent = context?.let { context ->
-                        SellerMigrationActivity.createIntent(
-                                context = context,
-                                featureName = SellerMigrationFeatureName.FEATURE_POST_FEED,
-                                screenName = FeedPlusContainerFragment::class.simpleName.orEmpty(),
-                                appLinks = arrayListOf(author.link),
-                                isStackBuilder = false)
-                    }
-                    if (intent != null) {
-                        val isAuthorAffiliate = author.type.equals(Author.TYPE_AFFILIATE, ignoreCase = true)
-                        setupBottomSheetFeedSellerMigration(::goToCreateAffiliate, isAuthorAffiliate, intent)
-                    }
-                }
+            if (isFabExpanded) {
+                hideAllFab(false)
             } else {
-                if (isFabExpanded) {
-                    hideAllFab(false)
-                } else {
-                    fab_feed.animation = AnimationUtils.loadAnimation(activity, R.anim.rotate_forward)
-                    layout_grey_popup.visibility = View.VISIBLE
-                    for (author in whitelistDomain.authors) {
-                        if (author.type.equals(Author.TYPE_AFFILIATE, ignoreCase = true)) {
-                            fab_feed_byme.show()
-                            text_fab_byme.visibility = View.VISIBLE
-                            text_fab_byme.text = author.title
-                            fab_feed_byme.setOnClickListener { goToCreateAffiliate() }
-                        } else {
-                            fab_feed_shop.show()
-                            text_fab_shop.visibility = View.VISIBLE
-                            text_fab_shop.text = author.title
-                            fab_feed_shop.setOnClickListener { onGoToLink(author.link) }
-                        }
+                fab_feed.animation = AnimationUtils.loadAnimation(activity, R.anim.rotate_forward)
+                layout_grey_popup.visibility = View.VISIBLE
+                for (author in whitelistDomain.authors) {
+                    if (author.type.equals(Author.TYPE_AFFILIATE, ignoreCase = true)) {
+                        fab_feed_byme.show()
+                        text_fab_byme.visibility = View.VISIBLE
+                        text_fab_byme.text = author.title
+                        fab_feed_byme.setOnClickListener { goToCreateAffiliate() }
+                    } else {
+                        fab_feed_shop.show()
+                        text_fab_shop.visibility = View.VISIBLE
+                        text_fab_shop.text = author.title
+                        fab_feed_shop.setOnClickListener { onGoToLink(author.link) }
                     }
-                    layout_grey_popup.setOnClickListener { hideAllFab(false) }
-                    isFabExpanded = true
                 }
+                layout_grey_popup.setOnClickListener { hideAllFab(false) }
+                isFabExpanded = true
             }
         }
     }

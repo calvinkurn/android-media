@@ -213,7 +213,6 @@ val Fragment.getUnifyFeedList: ArrayList<ListItemUnify>
 fun Fragment.setupListUnifyFeedSellerMigration(feedListUnify: ListUnify,
                                                bottomSheet: BottomSheetUnify,
                                                goToCreateAffiliate: () -> Unit = {},
-                                               isAuthorAffiliate: Boolean,
                                                onGoToLink: Intent) {
     val positionPostFavoriteItem = 0
     val positionPostInSeller = 1
@@ -223,10 +222,8 @@ fun Fragment.setupListUnifyFeedSellerMigration(feedListUnify: ListUnify,
             it.setOnItemClickListener { _, _, position, _ ->
                 when (position) {
                     positionPostFavoriteItem -> {
-                        if (isAuthorAffiliate) {
-                            goToCreateAffiliate()
-                            bottomSheet.dismiss()
-                        }
+                        goToCreateAffiliate()
+                        bottomSheet.dismiss()
                     }
                     positionPostInSeller -> {
                         startActivity(onGoToLink)
@@ -239,14 +236,13 @@ fun Fragment.setupListUnifyFeedSellerMigration(feedListUnify: ListUnify,
 }
 
 fun Fragment.setupBottomSheetFeedSellerMigration(goToCreateAffiliate: () -> Unit = {},
-                                                 isAuthorAffiliate: Boolean,
                                                  onGoToLink: Intent) {
     val viewBottomSheet = View.inflate(context, R.layout.bottom_sheet_feed_content_seller_migration, null)
     val bottomSheet = BottomSheetUnify()
     val feedListUnify = viewBottomSheet.findViewById<ListUnify>(R.id.feedListUnify)
     bottomSheet.setChild(viewBottomSheet)
 
-    setupListUnifyFeedSellerMigration(feedListUnify, bottomSheet, goToCreateAffiliate, isAuthorAffiliate, onGoToLink)
+    setupListUnifyFeedSellerMigration(feedListUnify, bottomSheet, goToCreateAffiliate, onGoToLink)
 
     bottomSheet.apply {
         showCloseIcon = true
