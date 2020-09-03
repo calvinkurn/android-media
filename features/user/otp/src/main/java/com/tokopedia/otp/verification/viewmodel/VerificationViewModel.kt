@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.otp.verification.common.DispatcherProvider
+import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.otp.verification.domain.data.OtpModeListData
 import com.tokopedia.otp.verification.domain.data.OtpRequestData
 import com.tokopedia.otp.verification.domain.data.OtpValidateData
@@ -107,7 +108,11 @@ class VerificationViewModel @Inject constructor(
             userId: Int
     ) {
         launchCatchError(coroutineContext, {
-            val params = otpValidateUseCase.getParams(code, otpType, msisdn, fpData, getSL, email, mode, signature, timeUnix, userId)
+            val params = if(mode == OtpConstant.OtpMode.PIN && otpType == "148"){
+                otpValidateUseCase.getParams2FA(otpType = otpType, validateToken = msisdn, userIdEnc = email, mode = mode, code = code)
+            }else {
+                otpValidateUseCase.getParams(code, otpType, msisdn, fpData, getSL, email, mode, signature, timeUnix, userId)
+            }
             val data = otpValidateUseCase.getData(params).data
             when {
                 data.success -> {

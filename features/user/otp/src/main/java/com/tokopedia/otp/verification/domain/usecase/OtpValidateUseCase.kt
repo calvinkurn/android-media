@@ -48,6 +48,20 @@ class OtpValidateUseCase @Inject constructor(
         PARAM_USERID to userId
     )
 
+    fun getParams2FA(
+            otpType: String,
+            validateToken: String,
+            userIdEnc: String = "",
+            mode: String = "",
+            code: String
+            ): Map<String, Any> = mapOf(
+            PARAM_OTP_TYPE to otpType,
+            PARAM_CODE to code,
+            PARAM_MODE to mode,
+            PARAM_USERID_ENC to userIdEnc,
+            PARAM_VALIDATE_TOKEN_2FA to validateToken
+    )
+
     override suspend fun getData(parameter: Map<String, Any>): OtpValidatePojo = withContext(coroutineContext) {
         val cacheStrategy =
                 GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
@@ -70,5 +84,8 @@ class OtpValidateUseCase @Inject constructor(
         private const val PARAM_SIGNATURE = "signature"
         private const val PARAM_TIME_UNIX = "timeUnix"
         private const val PARAM_USERID = "userId"
+        private const val PARAM_USERID_ENC = "UserIDEnc"
+        private const val PARAM_VALIDATE_TOKEN_2FA = "ValidateToken"
+
     }
 }
