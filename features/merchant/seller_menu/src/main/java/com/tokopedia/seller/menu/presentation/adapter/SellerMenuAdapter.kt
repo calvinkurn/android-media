@@ -2,6 +2,7 @@ package com.tokopedia.seller.menu.presentation.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
+import com.tokopedia.seller.menu.common.view.uimodel.ShopOrderUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.ShopProductUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.SettingShopInfoUiModel
@@ -32,9 +33,15 @@ class SellerMenuAdapter(
         }
     }
 
-    fun showProductSection(productUiModel: ShopProductUiModel) {
+    fun showProductSection(product: ShopProductUiModel) {
         findIndex { it is ShopProductUiModel }?.let { index ->
-            updateItemAt(index, productUiModel)
+            updateItemAt(index, product)
+        }
+    }
+
+    fun showOrderSection(order: ShopOrderUiModel) {
+        findIndex { it is ShopOrderUiModel }?.let { index ->
+            updateItemAt(index, order)
         }
     }
 

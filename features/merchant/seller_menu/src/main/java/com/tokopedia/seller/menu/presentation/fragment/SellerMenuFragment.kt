@@ -183,6 +183,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     private fun observeViewModel() {
         observeShopInfo()
         observeProductCount()
+        observeNotifications()
         observeErrorToaster()
         getAllShopInfo()
     }
@@ -201,6 +202,18 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
         observe(viewModel.shopProductLiveData) {
             when (it) {
                 is Success -> adapter.showProductSection(it.data)
+            }
+            swipeRefreshLayout.isRefreshing = false
+        }
+    }
+
+    private fun observeNotifications() {
+        observe(viewModel.sellerMenuNotification) {
+            when (it) {
+                is Success -> {
+                    val order = it.data.order
+                    adapter.showOrderSection(order)
+                }
             }
             swipeRefreshLayout.isRefreshing = false
         }
@@ -234,6 +247,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     private fun getAllShopInfo() {
         viewModel.getAllSettingShopInfo()
         viewModel.getProductCount()
+        viewModel.getNotifications()
     }
 
     private fun setupMenuList() {

@@ -11,6 +11,9 @@ import com.tokopedia.seller.menu.common.view.uimodel.ShopProductUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.SettingShopInfoUiModel
 import com.tokopedia.seller.menu.coroutine.CoroutineDispatchers
+import com.tokopedia.seller.menu.domain.usecase.GetSellerNotificationUseCase
+import com.tokopedia.seller.menu.presentation.uimodel.NotificationUiModel
+import com.tokopedia.seller.menu.presentation.util.SellerUiModelMapper.mapToNotificationUiModel
 import com.tokopedia.seller.menu.presentation.util.SellerUiModelMapper.mapToProductUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -24,6 +27,7 @@ import javax.inject.Inject
 class SellerMenuViewModel @Inject constructor(
     private val getAllShopInfoUseCase: GetAllShopInfoUseCase,
     private val getProductListMetaUseCase: GetProductListMetaUseCase,
+    private val getSellerMenuNotifications: GetSellerNotificationUseCase,
     private val userSession: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
@@ -39,11 +43,15 @@ class SellerMenuViewModel @Inject constructor(
     val shopProductLiveData: LiveData<Result<ShopProductUiModel>>
         get() = _shopProductLiveData
 
+    val sellerMenuNotification: LiveData<Result<NotificationUiModel>>
+        get() = _sellerMenuNotification
+
     val isToasterAlreadyShown: LiveData<Boolean>
         get() = _isToasterAlreadyShown
 
     private val _settingShopInfoLiveData = MutableLiveData<Result<SettingShopInfoUiModel>>()
     private val _shopProductLiveData = MutableLiveData<Result<ShopProductUiModel>>()
+    private val _sellerMenuNotification = MutableLiveData<Result<NotificationUiModel>>()
     private val _isToasterAlreadyShown = MutableLiveData(false)
 
     fun getAllSettingShopInfo(isToasterRetry: Boolean = false) {
@@ -68,6 +76,19 @@ class SellerMenuViewModel @Inject constructor(
             _shopProductLiveData.value = Success(mapToProductUiModel(response))
         }, onError = {
             _shopProductLiveData.value = Fail(it)
+        })
+    }
+
+    fun getNotifications() {
+        launchCatchError(block = {
+            val data = withContext(dispatchers.io) {
+                val response = getSellerMenuNotifications.executeOnBackground()
+                mapToNotificationUiModel(response)
+            }
+
+            _sellerMenuNotification.value = Success(data)
+        }, onError = {
+            _sellerMenuNotification.value = Fail(it)
         })
     }
 
