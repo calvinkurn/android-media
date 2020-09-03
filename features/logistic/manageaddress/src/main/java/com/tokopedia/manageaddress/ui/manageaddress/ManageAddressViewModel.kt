@@ -15,11 +15,12 @@ import javax.inject.Inject
 class ManageAddressViewModel @Inject constructor(
         private val getPeopleAddressUseCase: GetAddressCornerUseCase,
         private val deletePeopleAddressUseCase: DeletePeopleAddressUseCase,
-        private val setDeletePeopleAddressUseCase: SetDefaultPeopleAddressUseCase) : ViewModel() {
+        private val setDefaultPeopleAddressUseCase: SetDefaultPeopleAddressUseCase) : ViewModel() {
 
-    private val token: Token = Token()
+    var token: Token? = null
     var savedQuery: String = ""
     var page: Int = 1
+    var canLoadMore: Boolean = true
 
     private val _addressList = MutableLiveData<ManageAddressState<AddressListModel>>()
     val addressList: LiveData<ManageAddressState<AddressListModel>>
@@ -34,15 +35,18 @@ class ManageAddressViewModel @Inject constructor(
     fun searchAddress(query: String) {
         _addressList.value = ManageAddressState.Loading
         compositeSubscription.add(
-                getPeopleAddressUseCase.getAll(query)
+                getPeopleAddressUseCase.execute(query)
                         .subscribe(object: rx.Observer<AddressListModel> {
                             override fun onError(it: Throwable?) {
                                 _addressList.value = ManageAddressState.Fail(it, "")
                             }
 
                             override fun onNext(addressModel: AddressListModel) {
+                                page = 1
+                                token = addressModel.token
                                 savedQuery = query
-                                mapToModel(addressModel)
+                                canLoadMore = true
+                                _addressList.value = ManageAddressState.Success(addressModel)
                             }
 
                             override fun onCompleted() {
@@ -52,38 +56,46 @@ class ManageAddressViewModel @Inject constructor(
         )
     }
 
-    fun mapToModel(addressListModel: AddressListModel) {
-        _addressList.value = ManageAddressState.Success(addressListModel)
-    }
+    fun loadMore() {
+        _addressList.value = ManageAddressState.Loading
+        compositeSubscription.add(
+                getPeopleAddressUseCase.loadMore(savedQuery, page + 1)
+                        .subscribe(object: rx.Observer<AddressListModel> {
+                            override fun onError(it: Throwable?) {
+                                _addressList.value = ManageAddressState.Fail(it, "")
+                            }
 
-    fun getToken(): Token {
-        return token
+                            override fun onNext(addressModel: AddressListModel) {
+                                page++
+                                if(addressModel.listAddress.isEmpty()) canLoadMore = false
+                                _addressList.value = ManageAddressState.Success(addressModel)
+                            }
+
+                            override fun onCompleted() {
+                                //no-op
+                            }
+                        })
+        )
     }
 
     fun deletePeopleAddress(id: String) {
-        val value = _addressList.value
-        if (value is ManageAddressState.Success) {
-            _result.value = ManageAddressState.Loading
-            deletePeopleAddressUseCase.execute(id.toInt(), {
-                _result.value = ManageAddressState.Success("Success")
-                searchAddress("")
-            },  {
-                _addressList.value  = ManageAddressState.Fail(it, "")
-            })
-        }
+        _result.value = ManageAddressState.Loading
+        deletePeopleAddressUseCase.execute(id.toInt(), {
+            _result.value = ManageAddressState.Success("Success")
+            searchAddress("")
+        },  {
+            _addressList.value  = ManageAddressState.Fail(it, "")
+        })
     }
 
     fun setDefaultPeopleAddress(id: String) {
-        val value = _addressList.value
-        if (value is ManageAddressState.Success) {
-            _result.value = ManageAddressState.Loading
-            setDeletePeopleAddressUseCase.execute(id.toInt(), {
-                _result.value = ManageAddressState.Success("Success")
-                searchAddress("")
-            },  {
-                _addressList.value  = ManageAddressState.Fail(it, "")
-            })
-        }
+        _result.value = ManageAddressState.Loading
+        setDefaultPeopleAddressUseCase.execute(id.toInt(), {
+            _result.value = ManageAddressState.Success("Success")
+            searchAddress("")
+        },  {
+            _addressList.value  = ManageAddressState.Fail(it, "")
+        })
     }
 
     override fun onCleared() {

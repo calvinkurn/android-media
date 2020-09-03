@@ -5,6 +5,7 @@ import com.akamai.botman.CYFMonitor
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.tokopedia.akamai_bot_lib.isAkamai
+import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.graphql.FingerprintManager
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.graphql.GraphqlConstant
@@ -101,7 +102,7 @@ class GraphqlCloudDataStore @Inject constructor(
 
             yield()
 
-            val gJsonArray = if (result?.body() == null) JsonArray() else result.body()
+            val gJsonArray = CommonUtils.getOriginalResponse(result)
 
             //Checking response CLC headers.
             val cacheHeaders = if (result?.headers()?.get(GraphqlConstant.GqlApiKeys.CACHE) == null) ""

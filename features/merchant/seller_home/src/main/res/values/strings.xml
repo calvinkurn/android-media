@@ -74,6 +74,7 @@
     <string name="setting_menu_password">Kata Sandi</string>
     <string name="setting_menu_app_setting">Pengaturan aplikasi</string>
     <string name="setting_menu_chat_and_notification">Chat &amp; Notifikasi</string>
+    <string name="setting_notification_troubleshooter">Push Notification Troubleshooter</string>
     <string name="setting_menu_share_app">Bagikan Aplikasi</string>
     <string name="setting_menu_review_app">Review Aplikasi</string>
     <string name="setting_menu_developer_options">Developer Options</string>
@@ -105,7 +106,7 @@
     <string name="centralized_promo_promo_creation_broadcast_chat_description">Tingkatkan penjualan dengan kirim pesan promosi ke pembeli</string>
     <string name="centralized_promo_promo_creation_merchant_voucher_title">Voucher Toko</string>
     <string name="centralized_promo_promo_creation_merchant_voucher_cashback_title">Voucher Cashback</string>
-    <string name="centralized_promo_promo_creation_merchant_voucher_description">Gunakan voucher toko yang sesuai target pembeli tokomu</string>
+    <string name="centralized_promo_promo_creation_merchant_voucher_description">Tambah minat pembeli untuk berbelanja lebih di tokomu dengan cashback</string>
 
     <!-- First merchant voucher -->
     <string name="centralized_promo_bottomsheet_title">Yuk, buat Voucher Cashback!</string>

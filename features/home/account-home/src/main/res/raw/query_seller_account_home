@@ -1,4 +1,4 @@
-query SellerAccountHome($shop_ids:[Int!]!, $merchantID:Int!, $projectId:Int!){
+query SellerAccountHome($shop_ids: [Int!]!, $merchantID: Int!, $projectId: Int!) {
   status
   isAuthenticated
   userShopInfo {
@@ -12,7 +12,7 @@ query SellerAccountHome($shop_ids:[Int!]!, $merchantID:Int!, $projectId:Int!){
       is_gold_merchant
     }
   }
-  notifications{
+  notifications {
     resolutionAs {
       seller
     }
@@ -33,40 +33,40 @@ query SellerAccountHome($shop_ids:[Int!]!, $merchantID:Int!, $projectId:Int!){
   }
   le_preapprove(merchantID: $merchantID) {
     fieldData {
-        url
-        preApp {
-            valid
-            partnerName
-            partnerMaxLoan
-            partnerMinRate
-        }
+      url
+      preApp {
+        valid
+        partnerName
+        partnerMaxLoan
+        partnerMinRate
+      }
     }
   }
   kycStatus(projectID: $projectId) {
-        Message
-        Detail {
-          IsSuccess
-          UserId
-          ProjectId
-          Status
-          StatusName
-          CreateTime
-          CreateBy
-          UpdateTime
-        }
+    Message
+    Detail {
+      IsSuccess
+      UserId
+      ProjectId
+      Status
+      StatusName
+    }
+  }
+  CheckEligible {
+    status
+    message
+    data {
+      isPowerMerchant
+      copywriting {
+        title
+        subtitle
+        cta
+        url
       }
-
-  CheckEligible{
-          status
-          message
-          data {
-              isPowerMerchant
-              copywriting {
-                  title
-                  subtitle
-                  cta
-                  url
-              }
-          }
-      }
+    }
+  }
+  balance {
+    buyer_usable
+    seller_usable
+  }
 }

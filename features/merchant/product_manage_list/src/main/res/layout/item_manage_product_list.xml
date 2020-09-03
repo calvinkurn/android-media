@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
     android:paddingTop="@dimen/product_manage_list_padding_top">
 
     <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
@@ -37,13 +36,14 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textTitle"
+        android:contentDescription="@string/content_desc_textTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLines="2"
         android:textColor="@color/product_manage_title_color"
         app:layout_constraintLeft_toRightOf="@id/imageProduct"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintRight_toRightOf="@id/rightGuideline"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3"
         app:typographyWeight="bold"
@@ -51,6 +51,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textPrice"
+        android:contentDescription="@string/content_desc_textPrice"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ellipsize="end"
@@ -82,6 +83,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textStockCount"
+        android:contentDescription="@string/content_desc_textStockCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/spacing_lvl3"
@@ -98,28 +100,30 @@
 
     <com.tokopedia.unifycomponents.Label
         android:id="@+id/labelActive"
+        android:contentDescription="@string/content_desc_labelActive"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/product_manage_item_label_horizontal_spacing"
-        android:layout_marginEnd="@dimen/spacing_lvl3"
-        android:layout_marginRight="@dimen/spacing_lvl3"
+        android:layout_marginEnd="@dimen/spacing_lvl2"
+        android:layout_marginRight="@dimen/spacing_lvl2"
         android:visibility="gone"
         app:labelTitle="@string/product_manage_active"
         app:labelType="general_light_green"
         app:layout_constraintLeft_toRightOf="@id/imageStockInformation"
-        app:layout_constraintRight_toLeftOf="@id/labelVariant"
+        app:layout_constraintRight_toLeftOf="@id/labelInactive"
         app:layout_constraintTop_toBottomOf="@id/textPrice"
         tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.Label
-        android:id="@+id/labelVariant"
+        android:id="@+id/labelInactive"
+        android:contentDescription="@string/content_desc_labelInactive"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/product_manage_item_label_horizontal_spacing"
-        android:layout_marginEnd="@dimen/spacing_lvl3"
-        android:layout_marginRight="@dimen/spacing_lvl3"
+        android:layout_marginEnd="@dimen/spacing_lvl2"
+        android:layout_marginRight="@dimen/spacing_lvl2"
         android:visibility="gone"
-        app:labelTitle="@string/product_manage_variant"
+        app:labelTitle="@string/product_manage_inactive"
         app:labelType="general_light_grey"
         app:layout_constraintLeft_toRightOf="@id/labelActive"
         app:layout_constraintRight_toLeftOf="@id/labelBanned"
@@ -131,12 +135,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/product_manage_item_label_horizontal_spacing"
-        android:layout_marginEnd="@dimen/spacing_lvl3"
-        android:layout_marginRight="@dimen/spacing_lvl3"
+        android:layout_marginEnd="@dimen/spacing_lvl2"
+        android:layout_marginRight="@dimen/spacing_lvl2"
         android:visibility="gone"
         app:labelTitle="@string/product_manage_banned"
         app:labelType="general_light_red"
-        app:layout_constraintLeft_toRightOf="@id/labelVariant"
+        app:layout_constraintLeft_toRightOf="@id/labelInactive"
         app:layout_constraintRight_toLeftOf="@id/labelDraft"
         app:layout_constraintTop_toBottomOf="@id/textPrice"
         tools:visibility="visible" />
@@ -146,30 +150,46 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/product_manage_item_label_horizontal_spacing"
-        android:layout_marginEnd="@dimen/spacing_lvl3"
-        android:layout_marginRight="@dimen/spacing_lvl3"
+        android:layout_marginEnd="@dimen/spacing_lvl2"
+        android:layout_marginRight="@dimen/spacing_lvl2"
         android:visibility="gone"
         app:labelTitle="@string/product_manage_draft"
         app:labelType="general_light_blue"
         app:layout_constraintLeft_toRightOf="@id/labelBanned"
-        app:layout_constraintRight_toLeftOf="@id/labelInactive"
+        app:layout_constraintRight_toLeftOf="@id/labelVariant"
         app:layout_constraintTop_toBottomOf="@id/textPrice"
         tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.Label
-        android:id="@+id/labelInactive"
+        android:id="@+id/labelVariant"
+        android:contentDescription="@string/content_desc_labelVariant"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/product_manage_item_label_horizontal_spacing"
-        android:layout_marginEnd="@dimen/spacing_lvl3"
-        android:layout_marginRight="@dimen/spacing_lvl3"
+        android:layout_marginEnd="@dimen/spacing_lvl2"
+        android:layout_marginRight="@dimen/spacing_lvl2"
         android:visibility="gone"
-        app:labelTitle="@string/product_manage_inactive"
-        app:labelType="general_light_grey"
+        app:labelTitle="@string/product_manage_variant"
+        app:labelType="general_dark_grey"
         app:layout_constraintLeft_toRightOf="@id/labelDraft"
-        app:layout_constraintRight_toLeftOf="@id/labelInactive"
+        app:layout_constraintRight_toLeftOf="@id/labelCampaign"
         app:layout_constraintTop_toBottomOf="@id/textPrice"
         tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/labelCampaign"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/product_manage_item_label_horizontal_spacing"
+        android:layout_marginEnd="@dimen/spacing_lvl2"
+        android:layout_marginRight="@dimen/spacing_lvl2"
+        android:visibility="gone"
+        app:labelTitle="@string/product_manage_campaign"
+        app:labelType="general_light_red"
+        app:layout_constraintLeft_toRightOf="@id/labelVariant"
+        app:layout_constraintRight_toLeftOf="@id/labelCampaign"
+        app:layout_constraintTop_toBottomOf="@id/textPrice"
+        tools:visibility="visible"/>
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imageStockInformation"
@@ -188,6 +208,7 @@
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnEditPrice"
+        android:contentDescription="@string/content_desc_btnEditPrice"
         android:layout_width="0dp"
         android:layout_height="@dimen/layout_lvl4"
         android:text="@string/product_manage_menu_edit_price"
@@ -205,6 +226,7 @@
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnEditStock"
+        android:contentDescription="@string/content_desc_btnEditStock"
         android:layout_width="0dp"
         android:layout_height="@dimen/layout_lvl4"
         android:layout_marginStart="@dimen/product_manage_button_horizontal_spacing_long"
@@ -245,6 +267,7 @@
 
     <ImageView
         android:id="@+id/btnMoreOptions"
+        android:contentDescription="@string/content_desc_btnMoreOptions"
         android:layout_width="@dimen/product_manage_button_width"
         android:layout_height="@dimen/layout_lvl4"
         android:layout_gravity="center_horizontal"

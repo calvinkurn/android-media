@@ -6,16 +6,18 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextPaint
-import android.text.format.Time
 import android.text.style.ClickableSpan
 import android.text.style.StyleSpan
 import android.view.View
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
+import com.tokopedia.product.detail.data.model.description.DescriptionData
 import com.tokopedia.unifyprinciples.getTypeface
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -38,6 +40,18 @@ object ProductDetailUtil {
             MethodChecker.fromHtml(review)
         }
     }
+
+    fun generateDescriptionData(productInfo: DynamicProductInfoP1, textDescription: String) = DescriptionData(
+            basicId = productInfo.basic.productID,
+            basicName = productInfo.getProductName,
+            basicPrice = productInfo.data.price.value.toFloat(),
+            shopName = productInfo.basic.shopName,
+            thumbnailPicture = productInfo.data.getFirstProductImage() ?: "",
+            basicDescription = textDescription,
+            videoUrlList = productInfo.data.videos.map { it.url },
+            isOfficial = productInfo.data.isOS,
+            isGoldMerchant = productInfo.data.isPowerMerchant)
+
 }
 
 fun String.linkTextWithGiven(context: Context, vararg textToBold: Pair<String, () -> Unit>): SpannableString {
@@ -108,6 +122,22 @@ internal fun Int.getRelativeDateByHours(context: Context): String {
         context.getString(R.string.shop_chat_speed_in_days_with_icon, hourInput / dayInHours)
     } else {
         context.getString(R.string.shop_chat_speed_in_hours_with_icon, hourInput)
+    }
+}
+
+internal fun String.isGivenDateIsBelowThan24H(): Boolean {
+    return try {
+        val endDate = Date(this.toLongOrZero() * 1000)
+        val now = System.currentTimeMillis()
+        val diff = (endDate.time - now).toFloat()
+        if (diff < 0) {
+            //End date is out dated
+            false
+        } else {
+            TimeUnit.MILLISECONDS.toDays(endDate.time - now) < 1
+        }
+    } catch (e: Throwable) {
+        false
     }
 }
 
@@ -205,6 +235,13 @@ fun <T : Any> Result<T>.doSuccessOrFail(success: (Success<T>) -> Unit, fail: (Fa
         is Fail -> {
             fail.invoke(this.throwable)
         }
+    }
+}
+
+inline fun <reified T> GraphqlResponse.doActionIfNotNull(listener: (T) -> Unit){
+    val data : T? = this.getData<T>(T::class.java)
+    data?.let {
+        listener.invoke(it)
     }
 }
 

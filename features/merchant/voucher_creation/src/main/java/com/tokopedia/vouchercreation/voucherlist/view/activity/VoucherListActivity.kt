@@ -2,9 +2,11 @@ package com.tokopedia.vouchercreation.voucherlist.view.activity
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.Resources
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.kotlin.extensions.view.setLightStatusBar
@@ -15,6 +17,7 @@ import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringInterfac
 import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringListener
 import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringType
 import com.tokopedia.vouchercreation.voucherlist.view.fragment.VoucherListFragment
+import timber.log.Timber
 
 /**
  * Created By @ilhamsuaib on 17/04/20
@@ -57,6 +60,7 @@ class VoucherListActivity : BaseActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_mvc_voucher_list)
 
+        window.decorView.setBackgroundColor(Color.WHITE)
         setWhiteStatusBar()
 
         var isActive = true
@@ -132,8 +136,12 @@ class VoucherListActivity : BaseActivity(),
 
     private fun setWhiteStatusBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            setStatusBarColor(Color.WHITE)
-            setLightStatusBar(true)
+            try {
+                setStatusBarColor(ContextCompat.getColor(this, com.tokopedia.design.R.color.transparent))
+                setLightStatusBar(true)
+            } catch (ex: Resources.NotFoundException) {
+                Timber.e(ex)
+            }
         }
     }
 

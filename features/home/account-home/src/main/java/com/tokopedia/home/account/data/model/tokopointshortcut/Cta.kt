@@ -1,15 +1,19 @@
 package com.tokopedia.home.account.data.model.tokopointshortcut
 
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class Cta(
 
 	@SerializedName("appLink")
-	val appLink: String? = null,
+	@Expose
+	val appLink: String = "",
 
 	@SerializedName("text")
-	val text: String? = null,
+	@Expose
+	val text: String = "",
 
 	@SerializedName("url")
-	val url: String? = null
+	@Expose
+	val url: String = ""
 )

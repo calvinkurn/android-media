@@ -34,7 +34,7 @@ class HomeViewModelPlayTest{
     @Test
     fun `Get play data success and image url valid and try update view`() {
         val playDataModel = PlayCardDataModel(DynamicHomeChannel.Channels())
-        val playCardHome = PlayChannel(coverUrl = "cobacoba.com")
+        val playCardHome = PlayChannel(coverUrl = "cobacoba.com", channelId = "0")
 
         // dynamic banner
         getHomeUseCase.givenGetHomeDataReturn(
@@ -67,12 +67,12 @@ class HomeViewModelPlayTest{
         }
 
         // Update view triggered
-        homeViewModel.updateBannerTotalView("0")
+        homeViewModel.updateBannerTotalView("0", "20 Juta")
 
         // Expect the view updated
         homeViewModel.homeLiveData.observeOnce { homeDataModel ->
             assert((homeDataModel.list.find { it::class.java == playDataModel::class.java } as? PlayCardDataModel)?.playCardHome != null
-                    && (homeDataModel.list.find { it::class.java == playDataModel::class.java } as? PlayCardDataModel)?.playCardHome!!.totalView == "0"
+                    && (homeDataModel.list.find { it::class.java == playDataModel::class.java } as? PlayCardDataModel)?.playCardHome!!.totalView == "20 Juta"
             )
         }
     }
@@ -80,7 +80,7 @@ class HomeViewModelPlayTest{
     @Test
     fun `Get play data success and image url valid and home refresh`() {
         val playDataModel = PlayCardDataModel(DynamicHomeChannel.Channels())
-        val playCardHome = PlayChannel(coverUrl = "cobacoba.com")
+        val playCardHome = PlayChannel(coverUrl = "cobacoba.com", channelId = "0")
 
         // dynamic banner
         coEvery { getHomeUseCase.getHomeData() } returns flow{
@@ -117,12 +117,12 @@ class HomeViewModelPlayTest{
         }
 
         // Update view triggered
-        homeViewModel.updateBannerTotalView("0")
+        homeViewModel.updateBannerTotalView("0", "20")
 
         // Expect the view updated
         homeViewModel.homeLiveData.observeOnce { homeDataModel ->
             assert((homeDataModel.list.find { it::class.java == playDataModel::class.java } as? PlayCardDataModel)?.playCardHome != null
-                    && (homeDataModel.list.find { it::class.java == playDataModel::class.java } as? PlayCardDataModel)?.playCardHome!!.totalView == "0"
+                    && (homeDataModel.list.find { it::class.java == playDataModel::class.java } as? PlayCardDataModel)?.playCardHome!!.totalView == "20"
             )
         }
     }

@@ -3,7 +3,6 @@ package com.tokopedia.tokopatch.utils
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.widget.Toast
 import com.tokopedia.tokopatch.model.Patch
 import com.tokopedia.tokopatch.patch.PatchCallBack
@@ -14,11 +13,28 @@ import timber.log.Timber
  */
 class PatchLogger : PatchCallBack {
 
+    private var start: Long = 0L
+    private var end: Long = 0L
+
+    private object HOLDER {
+        val INSTANCE = PatchLogger()
+    }
+
+    override fun onStart() {
+        start = System.currentTimeMillis()
+    }
+
+    override fun onFinish() {
+        end = System.currentTimeMillis()
+        var elapsed = end - start
+        Timber.i("P1#ROBUST#patch process time took: %s ms", elapsed.toString())
+    }
+
     override fun onPatchListFetched(
             context: Context,
             result: Boolean,
             isNet: Boolean,
-            patches: MutableList<Patch>
+            patches: List<Patch>
     ) {
         for (patch in patches) {
             Timber.w("P1#ROBUST#onPatchListFetched patch: %s", patch.name)
@@ -34,6 +50,8 @@ class PatchLogger : PatchCallBack {
             Handler(Looper.getMainLooper()).post {
                 Toast.makeText(context, "Applied patch" + patch.name, Toast.LENGTH_LONG).show()
             }
+        } else {
+            Timber.w("P1#ROBUST#onPatchApplied patch name: ${patch.name} result: $result")
         }
     }
 
@@ -43,15 +61,14 @@ class PatchLogger : PatchCallBack {
 
     override fun logMessage(context: Context, log: String) {
         Timber.i("P1#ROBUST#$log")
-
     }
 
     override fun exceptionNotify(context: Context, throwable: Throwable, where: String) {
         Timber.e(throwable, "P1#ROBUST#exceptionNotify where: $where")
-
     }
 
     companion object {
         const val TAG = "ROBUST_LOGS"
+        val instance: PatchLogger by lazy { HOLDER.INSTANCE }
     }
 }

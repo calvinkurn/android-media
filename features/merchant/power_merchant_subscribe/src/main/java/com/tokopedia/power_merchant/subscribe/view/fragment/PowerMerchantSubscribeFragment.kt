@@ -133,6 +133,11 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         viewModel.detachView()
     }
 
+    override fun onResume() {
+        super.onResume()
+        trackOpenScreen()
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == ACTIVATE_INTENT_CODE && resultCode == Activity.RESULT_OK) {
@@ -144,6 +149,10 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         } else if (requestCode == FREE_SHIPPING_INTENT_CODE){
             refreshData()
         }
+    }
+
+    private fun trackOpenScreen() {
+        powerMerchantTracking.eventOpenScreen(screenName)
     }
 
     private fun showEmptyState(throwable: Throwable) {
@@ -248,7 +257,15 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
                 onClickCancelMembership()
                 bottomSheetCancel?.dismiss()
             }
+
+            override fun onClickBackButton() {
+                trackClickBackCancelMembership()
+            }
         })
+    }
+
+    private fun trackClickBackCancelMembership() {
+        powerMerchantTracking.eventClickBackCancelMembership()
     }
 
     private fun onClickCancelMembership() {
@@ -277,7 +294,9 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         val showFreeShipping = isFreeShippingEligible && chargePeriod
 
         if(showFreeShipping) {
-            trackSuccessBottomSheetPopUp(freeShipping)
+            trackFreeShippingSuccessBottomSheet(freeShipping)
+        } else {
+            trackPowerMerchantSuccessBottomSheet()
         }
 
         val primaryBtnLabel = if(showFreeShipping) {
@@ -321,11 +340,15 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         startActivityForResult(intent, FREE_SHIPPING_INTENT_CODE)
     }
 
-    private fun trackSuccessBottomSheetPopUp(freeShipping: PowerMerchantFreeShippingStatus) {
-        PowerMerchantFreeShippingTracker.sendSuccessBottomSheetPopUp(
+    private fun trackFreeShippingSuccessBottomSheet(freeShipping: PowerMerchantFreeShippingStatus) {
+        PowerMerchantFreeShippingTracker.eventFreeShippingSuccessBottomSheet(
             userSessionInterface,
             freeShipping
         )
+    }
+
+    private fun trackPowerMerchantSuccessBottomSheet() {
+        powerMerchantTracking.eventPowerMerchantSuccessBottomSheet()
     }
 
     private fun trackSuccessBottomSheetClickLearnMore(freeShipping: PowerMerchantFreeShippingStatus) {

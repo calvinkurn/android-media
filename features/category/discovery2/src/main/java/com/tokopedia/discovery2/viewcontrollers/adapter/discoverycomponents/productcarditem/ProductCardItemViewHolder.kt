@@ -11,13 +11,12 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.DataItem
@@ -26,6 +25,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewH
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
 
 
@@ -58,7 +58,9 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     private var notifyMeView: TextView = itemView.findViewById(R.id.textViewNotifyMe)
     private var linearLayoutImageRating: LinearLayout = itemView.findViewById(R.id.linearLayoutImageRating)
     private var textViewReviewCount: TextView = itemView.findViewById(R.id.textViewReviewCount)
-    private var stockHabisLabel: TextView = itemView.findViewById(R.id.labelStock)
+    private var stockHabisLabel: Label = itemView.findViewById(R.id.labelStock)
+    private var outOfStockOverlay: View = itemView.findViewById(R.id.outOfStockOverlay)
+    private var componentPosition: Int? = null
 
     private lateinit var productCardItemViewModel: ProductCardItemViewModel
     private var productCardName = ""
@@ -90,10 +92,8 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
             })
 
             productCardItemViewModel.getShowLoginData().observe(lifecycleOwner, Observer { showLogin ->
-                context?.let {
-                    if (showLogin) {
-                        it.startActivity(RouteManager.getIntent(it, ApplinkConst.LOGIN))
-                    }
+                if (showLogin == true) {
+                    componentPosition?.let { position -> (fragment as DiscoveryFragment).openLoginScreen(position) }
                 }
             })
             productCardItemViewModel.notifyMeCurrentStatus().observe(lifecycleOwner, Observer { status ->
@@ -102,6 +102,15 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
 
             productCardItemViewModel.showNotifyToastMessage().observe(lifecycleOwner, Observer { message ->
                 showNotifyResultToast(message)
+            })
+            productCardItemViewModel.getComponentPosition().observe(lifecycleOwner, Observer {
+                componentPosition = it
+            })
+            productCardItemViewModel.getSyncPageLiveData().observe(it, Observer { needResync ->
+                if (needResync) {
+                    (fragment as DiscoveryFragment).reSync()
+                }
+
             })
 
         }
@@ -153,15 +162,19 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     }
 
     private fun showOutOfStockLabel(productStock: String?, saleStockValidation : Int = 0) {
-        when {
-            productStock.isNullOrEmpty() -> {
-                stockHabisLabel.hide()
-            }
-            productStock.toIntOrNull() == saleStockValidation -> {
-                stockHabisLabel.show()
+        when(saleStockValidation) {
+            productStock?.toIntOrNull()-> {
+                stockHabisLabel.apply {
+                    unlockFeature = true
+                    val colorHexString = "#${Integer.toHexString(ContextCompat.getColor(context, R.color.clr_AD31353B))}"
+                    stockHabisLabel.setLabelType(colorHexString)
+                    show()
+                }
+                outOfStockOverlay.show()
             }
             else -> {
                 stockHabisLabel.hide()
+                outOfStockOverlay.hide()
             }
         }
     }

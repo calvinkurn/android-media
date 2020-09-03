@@ -46,6 +46,7 @@
 
     <!-- Dynamic feature for Groupchat-->
     <string name="groupchat_app_name">Play</string>
+    <string name="play_broadcaster_app_name">Play Broadcaster</string>
 
     <!--    Change Phone Number-->
     <string name="change_phone_number_app_module_name">changephonenumber</string>
@@ -129,7 +130,7 @@
     <string name="submit_ticket_title">Form Bantuan</string>
     <string name="survey_layanan">Survey Layanan</string>
     <string name="detail_kendala">Detail Kendala</string>
-    <string name="inbox">Inbox</string>
+    <string name="contact_us_inbox">Pesan Bantuan</string>
 
     <string name="instant_loan_app_name">Dana Instan</string>
 
@@ -221,7 +222,7 @@
     <string name="chat_incoming_settings">Atur Penerimaan Chat</string>
 
     <!-- Dynamic features Voucher Creation -->
-    <string name="title_voucher_creation">Voucher Create</string>
+    <string name="title_voucher_creation">Voucher Creation</string>
 
     <!-- Dynamic features Shop Score / Performa Toko -->
     <string name="title_shop_score_seller">Skor Performa Toko</string>
@@ -242,5 +243,18 @@
     <string name="cp_title_image_picker">Tambah Foto</string>
     <string name="cp_title_image_video">Tambah Video</string>
     <string name="cp_title_image_editor">Edit</string>
+
+    <!-- Shop Page -->
+    <string name="shop_info_title">Shop Info</string>
+    <string name="shop_info_label_physical_shop">Toko Fisik</string>
+    <string name="note_title">Catatan</string>
+    <string name="shop_sort_title">Urutkan</string>
+    <string name="shop_product_title">Produk</string>
+    <string name="favorited_shop_title">Followers Toko</string>
+    <string name="shop_search_product">Search Shop Product</string>
+    <string name="shop_page_setting_title">Toko Kamu</string>
+
+    <!-- Dynamic feature Statistic -->
+    <string name="title_statistic">Statistic</string>
 
 </resources>

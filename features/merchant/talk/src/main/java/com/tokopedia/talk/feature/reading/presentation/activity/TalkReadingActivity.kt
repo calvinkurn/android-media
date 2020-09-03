@@ -26,6 +26,8 @@ class TalkReadingActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, T
 
     private var productId: String = ""
     private var shopId: String = ""
+    private var isVariantSelected: Boolean = false
+    private var availableVariants: String = ""
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,7 +45,7 @@ class TalkReadingActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, T
     }
 
     override fun getNewFragment(): Fragment? {
-        return TalkReadingFragment.createNewInstance(productId, shopId)
+        return TalkReadingFragment.createNewInstance(productId, shopId, isVariantSelected, availableVariants)
     }
 
     override fun getComponent(): TalkComponent {
@@ -118,6 +120,14 @@ class TalkReadingActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, T
         val productIdString = uri.pathSegments[uri.pathSegments.size - 1] ?: return
         if (productIdString.isNotEmpty()) {
             this.productId = productIdString
+        }
+        val isVariantSelectedString = uri.getQueryParameter(TalkConstants.PARAM_APPLINK_IS_VARIANT_SELECTED) ?: ""
+        if (isVariantSelectedString.isNotEmpty()) {
+            this.isVariantSelected = isVariantSelectedString.toBoolean()
+        }
+        val availableVariantsFromApplink = uri.getQueryParameter(TalkConstants.PARAM_APPLINK_AVAILABLE_VARIANT) ?: ""
+        if (availableVariantsFromApplink.isNotEmpty()) {
+            this.availableVariants = availableVariantsFromApplink
         }
     }
 

@@ -39,13 +39,6 @@
         </activity>
 
         <activity
-            android:name=".address.view.activity.ShopAddressListActivity"
-            android:exported="true"
-            android:label="@string/shop_info_label_physical_shop"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
-
-        <activity
             android:name=".note.view.activity.ShopNoteDetailActivity"
             android:exported="true"
             android:label="@string/note_title"
@@ -53,7 +46,7 @@
             android:theme="@style/Theme.White" />
 
         <activity
-            android:name="com.tokopedia.shop.product.view.activity.ShopProductListActivity"
+            android:name="com.tokopedia.shop.product.view.activity.ShopProductListResultActivity"
             android:exported="true"
             android:label="@string/shop_product_title"
             android:screenOrientation="portrait"

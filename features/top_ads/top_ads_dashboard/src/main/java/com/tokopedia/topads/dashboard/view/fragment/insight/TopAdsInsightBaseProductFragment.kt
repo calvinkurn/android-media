@@ -1,0 +1,28 @@
+package com.tokopedia.topads.dashboard.view.fragment.insight
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
+
+/**
+ * Created by Pika on 20/7/20.
+ */
+
+class TopAdsInsightBaseProductFragment : BaseDaggerFragment() {
+    override fun getScreenName(): String {
+        return TopAdsInsightBaseProductFragment::class.java.name
+    }
+
+    override fun initInjector() {
+        getComponent(TopAdsDashboardComponent::class.java).inject(this)
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.topads_dash_insight_empty_state, container, false)
+    }
+
+}

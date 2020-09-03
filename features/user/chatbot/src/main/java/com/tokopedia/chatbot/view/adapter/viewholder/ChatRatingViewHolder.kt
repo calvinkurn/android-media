@@ -12,13 +12,13 @@ import androidx.fragment.app.FragmentActivity
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
-import com.tokopedia.chat_common.util.ChatTimeConverter
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chatbot.EllipsizeMaker
 import com.tokopedia.chatbot.EllipsizeMaker.MESSAGE_LINE_COUNT
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
+import com.tokopedia.chatbot.util.ChatBotTimeConverter
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatRatingListener
 import com.tokopedia.chatbot.view.customview.ReadMoreBottomSheet
 import java.util.*
@@ -73,16 +73,7 @@ class ChatRatingViewHolder(itemView: View,
             date.visibility = View.GONE
         }
 
-
-        var hourTime: String?
-
-        try {
-            hourTime = ChatTimeConverter.formatTime((element.replyTime)?.toLong() ?: 0)
-        } catch (e: NumberFormatException) {
-            hourTime = element.replyTime
-        }
-
-        hour.text = hourTime
+        hour.text = getHourTime(element.replyTime ?: "")
 
         when (element.ratingStatus) {
             ChatRatingViewModel.RATING_NONE -> {
@@ -111,6 +102,10 @@ class ChatRatingViewHolder(itemView: View,
             }
         }
 
+    }
+
+    override fun getHourTime(replyTime: String): String {
+        return ChatBotTimeConverter.getHourTime(replyTime)
     }
 
     private fun setMessage(element: ChatRatingViewModel) {

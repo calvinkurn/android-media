@@ -50,7 +50,8 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                          private val mixLeftComponentListener: MixLeftComponentListener,
                          private val mixTopComponentListener: MixTopComponentListener,
                          private val reminderWidgetListener: ReminderWidgetListener,
-                         private val productHighlightListener: ProductHighlightListener
+                         private val productHighlightListener: ProductHighlightListener,
+                         private val lego4AutoBannerListener: Lego4AutoBannerListener
 ) :
         BaseAdapterTypeFactory(),
         HomeTypeFactory, HomeComponentTypeFactory{
@@ -132,6 +133,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         return PlayCardViewHolder.LAYOUT
     }
 
+    override fun type(playCard: PlayCarouselCardDataModel): Int {
+        return PlayBannerCardViewHolder.LAYOUT
+    }
+
     override fun type(homeLoadingMoreModel: HomeLoadingMoreModel): Int {
         return HomeLoadingMoreViewHolder.LAYOUT
     }
@@ -171,6 +176,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
 
     override fun type(productHighlightDataModel: ProductHighlightDataModel): Int {
         return ProductHighlightComponentViewHolder.LAYOUT
+    }
+
+    override fun type(lego4AutoDataModel: Lego4AutoDataModel): Int {
+        return Lego4AutoBannerViewHolder.LAYOUT
     }
     //end of Home-Component section
 
@@ -249,6 +258,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             BannerImageViewHolder.LAYOUT -> viewHolder = BannerImageViewHolder(view, listener)
             ReviewViewHolder.LAYOUT -> viewHolder = ReviewViewHolder(view, homeReviewListener, listener)
             PlayCardViewHolder.LAYOUT -> viewHolder = PlayCardViewHolder(view, listener)
+            PlayBannerCardViewHolder.LAYOUT -> viewHolder = PlayBannerCardViewHolder(view, listener)
             HomeLoadingMoreViewHolder.LAYOUT -> viewHolder = HomeLoadingMoreViewHolder(view)
             ErrorPromptViewHolder.LAYOUT -> viewHolder = ErrorPromptViewHolder(view, listener)
             PopularKeywordViewHolder.LAYOUT -> viewHolder = PopularKeywordViewHolder(view, listener, popularKeywordListener)
@@ -286,6 +296,12 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             ReminderWidgetViewHolder.LAYOUT -> viewHolder =
                     ReminderWidgetViewHolder(view,reminderWidgetListener)
             TopadsBannerViewHolder.LAYOUT -> viewHolder = TopadsBannerViewHolder(view, listener)
+            Lego4AutoBannerViewHolder.LAYOUT -> viewHolder =
+                    Lego4AutoBannerViewHolder(
+                            view,
+                            lego4AutoBannerListener,
+                            homeComponentListener,
+                            parentRecycledViewPool)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 

@@ -61,7 +61,6 @@ dependencies {
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.loyaltyCommon)
     implementation project(rootProject.ext.features.navigationCommon)
-    implementation project(rootProject.ext.features.phoneVerification)
     implementation project(rootProject.ext.features.playCommon)
     implementation project(rootProject.ext.features.productCard)
     implementation project(rootProject.ext.features.promoGamificationCommon)
@@ -70,7 +69,6 @@ dependencies {
     implementation project(rootProject.ext.features.searchbar)
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.stickyLogin)
-    implementation project(rootProject.ext.features.tkpdcore)
     implementation project(rootProject.ext.features.tokopointsNotification)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.wishlistCommon)
@@ -193,5 +191,6 @@ project.ext {
 
 apply from: '../../../publish_local.gradle'
 apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'

@@ -1,0 +1,242 @@
+{
+  "data": {
+    "GetSellerDashboardPageLayout": {
+      "widget": [
+        {
+          "widgetType": "section",
+          "title": "Penting hari ini",
+          "subtitle": "",
+          "dataKey": "",
+          "ctaText": "",
+          "applink": "",
+          "tooltip": {
+            "title": "Penting hari ini",
+            "content": "",
+            "list": [
+              {
+                "title": "Pesanan baru",
+                "description": "Jumlah pesanan yang perlu diproses."
+              },
+              {
+                "title": "Siap dikirim",
+                "description": "Jumlah pesanan yang perlu dikirim."
+              },
+              {
+                "title": "Komplain pesanan",
+                "description": "Jumlah komplain dari pembeli yang perlu diselesaikan."
+              },
+              {
+                "title": "Chat belum dibaca",
+                "description": "Jumlah chat dari pembeli yang perlu dibaca."
+              },
+              {
+                "title": "Diskusi belum dibaca",
+                "description": "Jumlah diskusi dari pembeli yang perlu dibaca."
+              }
+            ]
+          }
+        },
+        {
+          "widgetType": "card",
+          "title": "Pesanan baru",
+          "subtitle": "",
+          "dataKey": "newOrder",
+          "ctaText": "",
+          "applink": "tokopedia://seller/new-order",
+          "tooltip": {
+            "title": "",
+            "content": "",
+            "list": []
+          }
+        },
+        {
+          "widgetType": "card",
+          "title": "Siap dikirim",
+          "subtitle": "",
+          "dataKey": "readyToShipOrder",
+          "ctaText": "",
+          "applink": "tokopedia://seller/shipment",
+          "tooltip": {
+            "title": "",
+            "content": "",
+            "list": []
+          }
+        },
+        {
+          "widgetType": "card",
+          "title": "Komplain pesanan",
+          "subtitle": "",
+          "dataKey": "complaint",
+          "ctaText": "",
+          "applink": "tokopedia://webview?url=https://m-staging.tokopedia.com/resolution-center/inbox/seller/mobile",
+          "tooltip": {
+            "title": "",
+            "content": "",
+            "list": []
+          }
+        },
+        {
+          "widgetType": "card",
+          "title": "Chat belum dibaca",
+          "subtitle": "",
+          "dataKey": "unreadChat",
+          "ctaText": "",
+          "applink": "tokopedia://topchat",
+          "tooltip": {
+            "title": "",
+            "content": "",
+            "list": []
+          }
+        },
+        {
+          "widgetType": "card",
+          "title": "Diskusi belum dibaca",
+          "subtitle": "",
+          "dataKey": "discussion",
+          "ctaText": "",
+          "applink": "tokopedia://talk",
+          "tooltip": {
+            "title": "",
+            "content": "",
+            "list": [
+              {
+                "title": "",
+                "description": ""
+              }
+            ]
+          }
+        },
+        {
+          "widgetType": "section",
+          "title": "Ringkasan penjualan",
+          "subtitle": "{DATE_YESTERDAY_PAST_7D} - {DATE_YESTERDAY}",
+          "dataKey": "",
+          "ctaText": "",
+          "applink": "",
+          "tooltip": {
+            "title": "Ringkasan penjualan",
+            "content": "",
+            "list": [
+              {
+                "title": "Produk dilihat",
+                "description": "Jumlah calon pembeli yang masuk ke halaman produkmu."
+              },
+              {
+                "title": "Produk terjual",
+                "description": "Jumlah produk terjual dari setiap transaksi sukses."
+              },
+              {
+                "title": "Pendapatan kotor",
+                "description": "Jumlah pemasukan dari produk terjual beserta ongkos kirim."
+              }
+            ]
+          }
+        },
+        {
+          "widgetType": "card",
+          "title": "Produk dilihat",
+          "subtitle": "",
+          "dataKey": "productViewStatistic",
+          "ctaText": "",
+          "applink": "",
+          "tooltip": {
+            "title": "",
+            "content": "",
+            "list": []
+          }
+        },
+        {
+          "widgetType": "card",
+          "title": "Produk terjual",
+          "subtitle": "",
+          "dataKey": "productSoldStatistic",
+          "ctaText": "",
+          "applink": "",
+          "tooltip": {
+            "title": "",
+            "content": "",
+            "list": []
+          }
+        },
+        {
+          "widgetType": "lineGraph",
+          "title": "Pendapatan kotor",
+          "subtitle": "7 hari terakhir",
+          "dataKey": "grossIncome",
+          "ctaText": "Selengkapnya",
+          "applink": "tokopedia://gold-merchant-statistic-dashboard",
+          "tooltip": {
+            "title": "",
+            "content": "",
+            "list": []
+          }
+        },
+        {
+          "widgetType": "section",
+          "title": "Performa toko",
+          "subtitle": "{DATE_YESTERDAY_PAST_7D} - {DATE_YESTERDAY}",
+          "dataKey": "",
+          "ctaText": "",
+          "applink": "",
+          "tooltip": {
+            "title": "",
+            "content": "",
+            "list": []
+          }
+        },
+        {
+          "widgetType": "progressBar",
+          "title": "Official Store",
+          "subtitle": "Skor",
+          "dataKey": "shopScore",
+          "ctaText": "Selengkapnya",
+          "applink": "tokopedia://shop-score-detail",
+          "tooltip": {
+            "title": "",
+            "content": "",
+            "list": []
+          }
+        },
+        {
+          "widgetType": "carouselImage",
+          "title": "Khusus untukmu",
+          "subtitle": "",
+          "dataKey": "home",
+          "ctaText": "",
+          "applink": "",
+          "tooltip": {
+            "title": "",
+            "content": "",
+            "list": []
+          }
+        },
+        {
+          "widgetType": "post",
+          "title": "Info Seller",
+          "subtitle": "",
+          "dataKey": "sellerInfo",
+          "ctaText": "Selengkapnya",
+          "applink": "tokopedia://sellerinfo",
+          "tooltip": {
+            "title": "",
+            "content": "",
+            "list": []
+          }
+        },
+        {
+          "widgetType": "post",
+          "title": "Artikel",
+          "subtitle": "",
+          "dataKey": "article",
+          "ctaText": "Selengkapnya",
+          "applink": "tokopedia://webview?url=https://seller.tokopedia.com/edu/articles/",
+          "tooltip": {
+            "title": "",
+            "content": "",
+            "list": []
+          }
+        }
+      ]
+    }
+  }
+}

@@ -14,8 +14,8 @@ import com.tokopedia.attachproduct.analytics.AttachProductAnalytics;
 import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel;
 import com.tokopedia.chat_common.data.BannedProductAttachmentViewModel;
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel;
-import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress;
 import com.tokopedia.iris.IrisAnalytics;
+import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress;
 import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewUiModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel;
 import com.tokopedia.track.TrackApp;
@@ -29,8 +29,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
-
-import timber.log.Timber;
 
 /**
  * Created by stevenfredian on 11/6/17.
@@ -128,6 +126,7 @@ public class TopChatAnalytics {
         String CLICK_OP_CTA_DESCRIPTION = "click cta on order progress card";
         String CLICK_OP_ORDER_HISTORY = "click on order history";
         String VIEW_ORDER_PROGRESS_WIDGET = "view on order progress widget";
+        String CLICK_OCC_PRODUCT_THUMBNAIL = "click occ on product thumbnail";
     }
 
     public interface Label {
@@ -299,14 +298,14 @@ public class TopChatAnalytics {
                 null,
                 product.getPriceInt(),
                 null,
-                getItemDimension40(product),
+                getFrom(product),
                 PRODUCT_INDEX,
                 new HashMap<>()
         );
         products.add(topChatProduct);
 
         Bundle bundle = ProductListClickBundler.getBundle(
-                getItemList(product),
+                getFrom(product),
                 products,
                 Category.CHAT_DETAIL,
                 Action.CLICK_PRODUCT_IMAGE,
@@ -337,15 +336,15 @@ public class TopChatAnalytics {
                 product.getPriceInt() + 0.0,
                 null,
                 PRODUCT_INDEX,
-                getField(String.valueOf(product.getBlastId())),
-                getField(String.valueOf(product.getBlastId())),
+                getFrom(product),
+                getFrom(product),
                 null,
                 null
         );
         products.add(product1);
 
         Bundle bundle = com.tokopedia.abstraction.processor.beta.ProductListImpressionBundler.getBundle(
-                getField(String.valueOf(product.getBlastId())),
+                getFrom(product),
                 products,
                 null,
                 ProductListImpressionBundler.KEY,
@@ -378,20 +377,20 @@ public class TopChatAnalytics {
                 product.getPriceInt() + 0.0,
                 null,
                 PRODUCT_INDEX,
-                getItemList(product),
-                getItemDimension40(product),
+                getFrom(product),
+                getFrom(product),
                 null,
                 null
         );
         products.add(product1);
 
         Bundle bundle = ProductListImpressionBundler.getBundle(
-                getField(String.valueOf(product.getBlastId())),
+                getFrom(product),
                 products,
                 null,
                 ProductListImpressionBundler.KEY,
-                Category.CHAT_DETAIL+devConst,
-                Action.VIEW_PRODUCT_PREVIEW+devConst,
+                Category.CHAT_DETAIL + devConst,
+                Action.VIEW_PRODUCT_PREVIEW + devConst,
                 null,
                 null
         );
@@ -401,21 +400,12 @@ public class TopChatAnalytics {
         );
     }
 
-    private String getItemList(ProductAttachmentViewModel product) {
+    private String getFrom(ProductAttachmentViewModel product) {
         String blastId = product.getStringBlastId();
         if (!sourcePage.isEmpty() && sourcePage.equals(ApplinkConst.Chat.SOURCE_CHAT_SEARCH)) {
             return "/chat - search chat";
         } else {
-            return getField(blastId);
-        }
-    }
-
-    private String getItemDimension40(ProductAttachmentViewModel product) {
-        String blastId = product.getStringBlastId();
-        if (!sourcePage.isEmpty() && sourcePage.equals(ApplinkConst.Chat.SOURCE_CHAT_SEARCH)) {
-            return "/chat - search chat";
-        } else {
-            return getField(blastId);
+            return "/" + getField(blastId);
         }
     }
 
@@ -638,6 +628,44 @@ public class TopChatAnalytics {
                 Category.CHAT_DETAIL,
                 Action.VIEW_ORDER_PROGRESS_WIDGET,
                 "buyer - " + chatOrder.getStatus()
+        );
+    }
+
+    // #OCC1
+    public void trackClickOccProduct(
+            @NotNull ProductAttachmentViewModel product,
+            @NotNull String shopType,
+            @NotNull String shopName,
+            @NotNull String cartId
+    ) {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        EVENT_NAME, Name.EVENT_NAME_ATC,
+                        EVENT_CATEGORY, Category.CHAT_DETAIL,
+                        EVENT_ACTION, Action.CLICK_OCC_PRODUCT_THUMBNAIL,
+                        EVENT_LABEL, "",
+                        ECOMMERCE, DataLayer.mapOf(
+                                "currencyCode", "IDR",
+                                "add", DataLayer.mapOf(
+                                        "products", DataLayer.listOf(
+                                                DataLayer.mapOf(
+                                                        "name", product.getProductName(),
+                                                        "id", product.getIdString(),
+                                                        "price", product.getPriceInt(),
+                                                        "brand", "",
+                                                        "category", product.getCategory(),
+                                                        "variant", product.getVariants().toString(),
+                                                        "quantity", product.getMinOrder(),
+                                                        "dimension79", product.getShopId(),
+                                                        "dimension81", shopType,
+                                                        "dimension80", shopName,
+                                                        "dimension45", cartId,
+                                                        "dimension40", getFrom(product)
+                                                )
+                                        )
+                                )
+                        )
+                )
         );
     }
 }

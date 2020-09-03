@@ -1,12 +1,14 @@
 package com.tokopedia.tokopatch.patch
 
 import android.content.Context
-import android.os.Build
 import android.text.TextUtils
 import com.meituan.robust.ChangeQuickRedirect
 import com.meituan.robust.PatchesInfo
 import com.tokopedia.tokopatch.model.Patch
 import dalvik.system.DexClassLoader
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.io.File
 import java.lang.reflect.Field
 import java.util.*
@@ -15,24 +17,37 @@ import java.util.*
  * Author errysuprayogi on 11,June,2020
  */
 class PatchExecutors(
-    context: Context,
-    patches: List<Patch>,
-    callBack: PatchCallBack
-) : Thread() {
+        context: Context,
+        patches: List<Patch>,
+        callBack: PatchCallBack
+) {
     private val context: Context = context.applicationContext
     private val callBack: PatchCallBack
     private val patchList: List<Patch>
-    override fun run() {
-        try {
-            applyPatchList(patchList)
-        } catch (e: Exception) {
-            e.printStackTrace()
+
+    fun start() {
+        GlobalScope.launch(Dispatchers.IO){
+            try {
+                callBack.onStart()
+                applyPatchList(patchList)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            } finally {
+                callBack.onFinish()
+            }
         }
     }
 
     companion object {
         private const val ROBUST_PATCH_CACHE_DIR = "patch_"
         private const val TAG = "robust"
+
+        fun getInstance(context: Context, patches: List<Patch>, callBack: PatchCallBack): PatchExecutors {
+            val instance: PatchExecutors by lazy {
+                PatchExecutors(context, patches, callBack)
+            }
+            return instance
+        }
     }
 
     init {
@@ -40,46 +55,30 @@ class PatchExecutors(
         patchList = patches
     }
 
-    private fun applyPatchList(patches: List<Patch>?) {
+    private suspend fun applyPatchList(patches: List<Patch>) {
         if (null == patches || patches.isEmpty()) {
             return
         }
-        callBack.logMessage(context, "patchManipulate list size is ${patches.size}")
         for (p in patches) {
             if (p.isAppliedSuccess) {
-                callBack.logMessage(context, "p.isAppliedSuccess() skip ${p.tempPath}")
                 continue
             }
-            var currentPatchResult = false
             try {
-                currentPatchResult = patch(context, p)
+                p.isAppliedSuccess = patch(context, p)
             } catch (t: Throwable) {
-                callBack.exceptionNotify(
-                        context, t, "class:PatchExecutor method:applyPatchList line:69"
-                )
-            }
-            if (currentPatchResult) {
-                p.isAppliedSuccess = true
-                callBack.onPatchApplied(context, true, p)
-            } else {
-                callBack.onPatchApplied(context, false, p)
+                callBack.exceptionNotify(context, t, "class:PatchExecutor method:applyPatchList line:57")
             }
             p.delete()
-            callBack.logMessage(context, "patch :${p.name}, apply result $currentPatchResult")
         }
     }
 
-    private fun patch(
+    private suspend fun patch(
             context: Context,
             patch: Patch
     ): Boolean {
         val classLoader: ClassLoader
         try {
-            val dexOutputDir: File = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                context.codeCacheDir
-            } else {
-                getPatchCacheDirPath(context, patch.version + patch.md5)
-            }
+            val dexOutputDir: File = getPatchCacheDirPath(context, patch.md5)
             classLoader = DexClassLoader(
                     patch.tempPath, dexOutputDir.absolutePath,
                     null, PatchExecutors::class.java.classLoader
@@ -89,10 +88,6 @@ class PatchExecutors(
             val patchesInfoClass: Class<*>
             var patchesInfo: PatchesInfo? = null
             try {
-                callBack.logMessage(
-                        context,
-                        "patch patch_info_name:${patch.patchesInfoImplClassFullName}"
-                )
                 patchesInfoClass = classLoader.loadClass(patch.patchesInfoImplClassFullName)
                 patchesInfo = patchesInfoClass.newInstance() as PatchesInfo
             } catch (t: Throwable) {
@@ -130,22 +125,15 @@ class PatchExecutors(
                     )
                     continue
                 }
-                callBack.logMessage(context, "current path:$patchedClassName")
                 try {
                     try {
                         sourceClass = classLoader.loadClass(patchedClassName.trim { it <= ' ' })
                     } catch (e: ClassNotFoundException) {
                         error = true
-                        callBack.exceptionNotify(
-                                context,
-                                e,
-                                "class:PatchExecutor method:patch line:258"
-                        )
+                        callBack.exceptionNotify(context, e,"class:PatchExecutor method:patch line:258")
                         continue
                     }
-                    val fields =
-                            sourceClass.declaredFields
-                    callBack.logMessage(context, "oldClass : $sourceClass fields ${fields.size}")
+                    val fields = sourceClass.declaredFields
                     var changeQuickRedirectField: Field? = null
                     for (field in fields) {
                         if (TextUtils.equals(
@@ -164,7 +152,7 @@ class PatchExecutors(
                         callBack.logNotify(
                                 context,
                                 "changeQuickRedirectField  is null, patch info:id = ${patch.name},md5 = ${patch.md5}",
-                                "class:PatchExecutor method:patch line:147"
+                                "class:PatchExecutor method:patch line:156"
                         )
                         callBack.logMessage(
                                 context,
@@ -172,51 +160,22 @@ class PatchExecutors(
                         )
                         continue
                     }
-                    callBack.logMessage(
-                            context,
-                            "current path:$patchedClassName find:ChangeQuickRedirect $patchClassName"
-                    )
                     try {
                         patchClass = classLoader.loadClass(patchClassName)
                         val patchObject = patchClass.newInstance()
                         changeQuickRedirectField.isAccessible = true
                         changeQuickRedirectField[null] = patchObject
-                        callBack.logNotify(
-                                context,
-                                "changeQuickRedirectField set success",
-                                patchClassName
-                        )
                     } catch (t: Throwable) {
                         callBack.logNotify(context, "patch failed! ", patchClassName)
                         error = true
-                        callBack.exceptionNotify(
-                                context,
-                                t,
-                                "class:PatchExecutor method:patch line:163"
-                        )
+                        callBack.exceptionNotify(context,t ,"class:PatchExecutor method:patch line:163")
                     }
                 } catch (t: Throwable) {
                     error = true
-                    callBack.exceptionNotify(
-                            context,
-                            t,
-                            "class:PatchExecutor method:patch line:169"
-                    )
+                    callBack.exceptionNotify(context,t,"class:PatchExecutor method:patch line:169")
                 }
             }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                cleanUp(
-                        File(
-                                String.format(
-                                        "%s/oat",
-                                        context.cacheDir.absolutePath
-                                )
-                        )
-                )
-            } else {
-                cleanUp(dexOutputDir)
-            }
-            callBack.logMessage(context, "patch finished result ${!error}")
+            cleanUp(dexOutputDir)
             return !error
         } catch (throwable: Throwable) {
             throwable.printStackTrace()
@@ -224,8 +183,7 @@ class PatchExecutors(
         return false
     }
 
-    private fun cleanUp(fileOrDirectory: File) {
-        callBack.logMessage(context, "Cleanup.. ${fileOrDirectory.absolutePath}")
+    private suspend fun cleanUp(fileOrDirectory: File) {
         if (fileOrDirectory.isDirectory) for (child in Objects.requireNonNull(
                 fileOrDirectory.listFiles()
         )) cleanUp(child)

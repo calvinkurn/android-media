@@ -243,9 +243,10 @@ class KeywordTabFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessKeyword(response: KeywordsResponse.GetTopadsDashboardKeywords) {
-        //     totalCount = response.meta.page.total
         totalPage = (totalCount / response.meta.page.perPage) + 1
+        recyclerviewScrollListener.updateStateAfterGetData()
         loader.visibility = View.GONE
+        recyclerviewScrollListener.updateStateAfterGetData()
         response.data.forEach { result ->
             adapter.items.add(KeywordItemViewModel(result))
         }
@@ -285,13 +286,14 @@ class KeywordTabFragment : BaseDaggerFragment() {
             val coroutineScope = CoroutineScope(Dispatchers.Main)
             coroutineScope.launch {
                 delay(TOASTER_DURATION)
-                if (!deleteCancel) {
-                    viewModel.setKeywordAction(actionActivate, getAdIds(), resources, ::onSuccessAction)
-                    activity?.setResult(Activity.RESULT_OK)
-
+                if (activity != null && isAdded) {
+                    if (!deleteCancel) {
+                        viewModel.setKeywordAction(actionActivate, getAdIds(), resources, ::onSuccessAction)
+                        activity?.setResult(Activity.RESULT_OK)
+                    }
+                    deleteCancel = false
+                    setSelectMode(false)
                 }
-                deleteCancel = false
-                setSelectMode(false)
             }
         } else {
             viewModel.setKeywordAction(actionActivate, getAdIds(), resources, ::onSuccessAction)

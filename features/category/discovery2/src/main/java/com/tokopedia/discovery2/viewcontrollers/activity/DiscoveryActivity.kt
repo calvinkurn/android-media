@@ -43,6 +43,11 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
 
     companion object {
         const val END_POINT = "end_point"
+        const val SOURCE_QUERY = "source"
+        const val PINNED_COMPONENT_ID = "componentID"
+        const val PINNED_ACTIVE_TAB = "activeTab"
+        const val PINNED_COMP_ID = "pinnedcompID"
+        const val PINNED_PRODUCT = "PinnedProduct"
 
         @JvmField
         var config: String = ""
@@ -120,8 +125,11 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
 
 
     override fun getNewFragment(): Fragment? {
-        return DiscoveryFragment.getInstance(intent?.data?.lastPathSegment
-                ?: intent?.getStringExtra(END_POINT))
+        val intentData = intent?.data
+        return DiscoveryFragment.getInstance(intentData?.lastPathSegment,
+                intentData?.let { it ->
+                    discoveryViewModel.getMapOfQueryParameter(it)
+                })
     }
 
     override fun getViewModelType(): Class<DiscoveryViewModel> {
@@ -155,4 +163,5 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
         super.onStop()
         preSelectedTab = -1
     }
+
 }

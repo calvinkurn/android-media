@@ -205,6 +205,14 @@ class ContainerFragment : Fragment() {
             } else {
                 transaction.show(fragment)
             }
+        } else if (page.needToRecreate) {
+            val productManageFragment = sellerHomeRouter?.getProductManageFragment(arrayListOf(), "")
+            if (null != productManageFragment) {
+                transaction.remove(fragment)
+                addFragmentToTransaction(transaction, productManageFragment, fragmentName)
+            } else {
+                transaction.show(fragment)
+            }
         } else {
             addFragmentToTransaction(transaction, fragment, fragmentName)
         }
@@ -236,6 +244,14 @@ class ContainerFragment : Fragment() {
             }
         } else if(page.tabPage.isBlank() && searchKeyword.isNotBlank()) {
             val productManageFragment = sellerHomeRouter?.getProductManageFragment(arrayListOf(), searchKeyword)
+            if (null != productManageFragment) {
+                transaction.remove(fmt)
+                addFragmentToTransaction(transaction, productManageFragment, fragmentName)
+            } else {
+                transaction.show(fmt)
+            }
+        } else if (page.needToRecreate) {
+            val productManageFragment = sellerHomeRouter?.getProductManageFragment(arrayListOf(), "")
             if (null != productManageFragment) {
                 transaction.remove(fmt)
                 addFragmentToTransaction(transaction, productManageFragment, fragmentName)

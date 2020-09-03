@@ -10,8 +10,8 @@ import androidx.room.*
 @Dao
 interface DataDao {
 
-    @Query("SELECT * FROM result WHERE version LIKE :ver")
-    fun getAllResult(ver: String): LiveData<List<DataResponse.Result>>
+    @Query("SELECT * FROM result WHERE version_code LIKE :versionCode")
+    fun getAllResultList(versionCode: String): List<DataResponse.Result>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(result: DataResponse.Result)
@@ -21,4 +21,5 @@ interface DataDao {
 
     @Query("DELETE FROM result")
     suspend fun deleteAll()
+
 }

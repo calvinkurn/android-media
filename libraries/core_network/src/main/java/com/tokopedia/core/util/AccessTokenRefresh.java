@@ -3,19 +3,26 @@ package com.tokopedia.core.util;
 import android.content.Context;
 
 import com.google.gson.GsonBuilder;
+import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
 import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core.network.apiservices.accounts.apis.AccountsBasicApi;
 import com.tokopedia.core.network.core.OkHttpFactory;
-import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.session.model.TokenModel;
+import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.network.converter.StringResponseConverter;
+import com.tokopedia.network.interceptor.FingerprintInterceptor;
+import com.tokopedia.network.refreshtoken.AccountsBasicInterceptor;
+import com.tokopedia.network.utils.TkpdOkHttpBuilder;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -42,7 +49,7 @@ public class AccessTokenRefresh {
         params.put(ACCESS_TOKEN, userSession.getAccessToken());
         params.put(REFRESH_TOKEN, EncoderDecoder.Decrypt(userSession.getFreshToken(), userSession.getRefreshTokenIV()));
 
-        Call<String> responseCall = getRetrofit().create(AccountsBasicApi.class).getTokenSynchronous(params);
+        Call<String> responseCall = getRetrofit(context, userSession, (NetworkRouter) context).create(AccountsBasicApi.class).getTokenSynchronous(params);
 
         String tokenResponse = null;
         String tokenResponseError = null;
@@ -85,11 +92,16 @@ public class AccessTokenRefresh {
         }
     }
 
-    private Retrofit getRetrofit() {
+    private Retrofit getRetrofit(Context context, UserSessionInterface userSession, NetworkRouter
+            networkRouter) {
+        TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(context, new OkHttpClient.Builder());
         return new Retrofit.Builder()
                 .baseUrl(TokopediaUrl.Companion.getInstance().getACCOUNTS())
                 .addConverterFactory(new StringResponseConverter())
-                .client(OkHttpFactory.create().buildBasicAuth())
+                .client(tkpdOkHttpBuilder.addInterceptor(new AccountsBasicInterceptor(context, networkRouter, userSession))
+                        .addInterceptor(new FingerprintInterceptor(networkRouter, userSession))
+                        .addInterceptor(new AkamaiBotInterceptor(context))
+                        .build())
                 .build();
     }
 

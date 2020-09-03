@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
@@ -18,7 +19,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.RouteManager
@@ -47,6 +48,7 @@ import com.tokopedia.vouchercreation.common.exception.VoucherCancellationExcepti
 import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringListener
 import com.tokopedia.vouchercreation.common.utils.SharingUtil
 import com.tokopedia.vouchercreation.common.utils.Socmed
+import com.tokopedia.vouchercreation.common.utils.showErrorToaster
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.create.view.activity.CreateMerchantVoucherStepsActivity
 import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStep
@@ -58,6 +60,7 @@ import com.tokopedia.vouchercreation.voucherlist.model.ui.*
 import com.tokopedia.vouchercreation.voucherlist.model.ui.BaseHeaderChipUiModel.HeaderChip
 import com.tokopedia.vouchercreation.voucherlist.model.ui.BaseHeaderChipUiModel.ResetChip
 import com.tokopedia.vouchercreation.voucherlist.model.ui.MoreMenuUiModel.*
+import com.tokopedia.vouchercreation.voucherlist.view.adapter.VoucherListAdapter
 import com.tokopedia.vouchercreation.voucherlist.view.adapter.factory.VoucherListAdapterFactoryImpl
 import com.tokopedia.vouchercreation.voucherlist.view.viewholder.VoucherViewHolder
 import com.tokopedia.vouchercreation.voucherlist.view.viewmodel.VoucherListViewModel
@@ -80,7 +83,7 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 17/04/20
  */
 
-class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFactoryImpl>(),
+class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherListAdapterFactoryImpl>(),
         VoucherViewHolder.Listener, DownloadHelper.DownloadHelperListener {
 
     companion object {
@@ -118,16 +121,13 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         ViewModelProvider(this, viewModelFactory).get(VoucherListViewModel::class.java)
     }
     private val moreBottomSheet: MoreMenuBottomSheet? by lazy {
-        val parent = view as? ViewGroup ?: return@lazy null
-        return@lazy MoreMenuBottomSheet(parent)
+        return@lazy MoreMenuBottomSheet.createInstance(isActiveVoucher)
     }
     private val sortBottomSheet: SortBottomSheet? by lazy {
-        val parent = view as? ViewGroup ?: return@lazy null
-        return@lazy SortBottomSheet(parent)
+        return@lazy SortBottomSheet.createInstance()
     }
     private val filterBottomSheet: FilterBottomSheet? by lazy {
-        val parent = view as? ViewGroup ?: return@lazy null
-        return@lazy FilterBottomSheet(parent)
+        return@lazy FilterBottomSheet.createInstance()
     }
 
     private val sortItems: MutableList<SortUiModel> by lazy {
@@ -203,6 +203,11 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         super.onCreateOptionsMenu(menu, inflater)
     }
 
+    override fun createAdapterInstance(): BaseListAdapter<BaseVoucherListUiModel, VoucherListAdapterFactoryImpl> =
+            VoucherListAdapter(adapterTypeFactory).apply {
+                setOnAdapterInteractionListener(this@VoucherListFragment)
+            }
+
     override fun getRecyclerViewResourceId(): Int = R.id.rvVoucherList
 
     override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipeMvcList
@@ -227,7 +232,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
 
     override fun hasInitialSwipeRefresh(): Boolean = true
 
-    override fun onItemClicked(t: Visitable<*>?) {
+    override fun onItemClicked(t: BaseVoucherListUiModel?) {
 
     }
 
@@ -311,7 +316,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
             it.setOnModeClickListener(voucher) { menu ->
                 onMoreMenuItemClickListener(menu, voucher)
             }
-            it.show(isActiveVoucher, childFragmentManager)
+            it.show(childFragmentManager)
         }
     }
 
@@ -484,12 +489,15 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
             when (resultCode) {
                 Activity.RESULT_CANCELED -> {
                     view?.run {
-                        val errorMessage = data?.getStringExtra(CreateMerchantVoucherStepsActivity.ERROR_INITIATE)
-                        errorMessage?.let { message ->
-                            Toaster.make(this,
-                                    message,
-                                    Toaster.LENGTH_SHORT,
-                                    Toaster.TYPE_ERROR)
+                        val errorString = data?.getStringExtra(CreateMerchantVoucherStepsActivity.ERROR_INITIATE)
+                        errorString?.let { message ->
+                            val errorMessage =
+                                    if (message.isNotBlank()) {
+                                        message
+                                    } else {
+                                        context?.getString(R.string.mvc_general_error).toBlankOrString()
+                                    }
+                            showErrorToaster(errorMessage)
                         }
                     }
                 }
@@ -556,26 +564,25 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
 
     private fun showEditPeriodBottomSheet(voucher: VoucherUiModel) {
         if (!isAdded) return
-        val parent = view as? ViewGroup ?: return
-        VoucherPeriodBottomSheet.createInstance(parent, voucher)
+        VoucherPeriodBottomSheet.createInstance(voucher)
                 .setOnSuccessClickListener {
                     onSuccessUpdateVoucherPeriod()
                 }
-                .setOnFailClickListener { errorMessage ->
-                    view?.run {
-                        Toaster.make(this,
-                                errorMessage,
-                                Snackbar.LENGTH_SHORT,
-                                Toaster.TYPE_ERROR)
-                    }
+                .setOnFailClickListener { message ->
+                    val errorMessage =
+                            if (message.isNotBlank()) {
+                                message
+                            } else {
+                                context?.getString(R.string.mvc_general_error).toBlankOrString()
+                            }
+                    view?.showErrorToaster(errorMessage)
                 }
                 .show(childFragmentManager)
     }
 
     private fun showShareBottomSheet(voucher: VoucherUiModel) {
         if (!isAdded) return
-        val parent = view as? ViewGroup ?: return
-        ShareVoucherBottomSheet(parent)
+        ShareVoucherBottomSheet.createInstance()
                 .setOnItemClickListener { socmedType ->
                     context?.run {
                         if (socmedType != SocmedType.COPY_LINK || socmedType != SocmedType.LAINNYA) {
@@ -652,8 +659,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
 
     private fun showDownloadBottomSheet(voucher: VoucherUiModel) {
         if (!isAdded) return
-        val parent = view as? ViewGroup ?: return
-        DownloadVoucherBottomSheet(parent, voucher.image, voucher.imageSquare, userSession)
+        DownloadVoucherBottomSheet.createInstance(voucher.image, voucher.imageSquare, userSession.userId)
                 .setOnDownloadClickListener { voucherList ->
                     activity?.run {
                         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
@@ -693,8 +699,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
 
     private fun showEditQuotaBottomSheet(voucher: VoucherUiModel) {
         if (!isAdded) return
-        val parent = view as? ViewGroup ?: return
-        EditQuotaBottomSheet.createInstance(parent, voucher)
+        EditQuotaBottomSheet.createInstance(voucher)
                 .setOnSuccessUpdateVoucher {
                     loadInitialData()
                     view?.run {
@@ -705,13 +710,14 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
                                 context?.getString(R.string.mvc_oke).toBlankOrString())
                     }
                 }
-                .setOnFailUpdateVoucher { errorMessage ->
-                    view?.run {
-                        Toaster.make(this,
-                                errorMessage,
-                                Toaster.LENGTH_SHORT,
-                                Toaster.TYPE_ERROR)
-                    }
+                .setOnFailUpdateVoucher { message ->
+                    val errorMessage =
+                            if (message.isNotBlank()) {
+                                message
+                            } else {
+                                context?.getString(R.string.mvc_general_error).toBlankOrString()
+                            }
+                    view?.showErrorToaster(errorMessage)
                 }.show(childFragmentManager)
     }
 
@@ -722,6 +728,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         headerChipMvc.init {
             setOnChipListener(it)
         }
+        toolbarMvcList?.setBackgroundColor(Color.TRANSPARENT)
     }
 
     private fun setupRecyclerViewVoucherList() {
@@ -739,10 +746,12 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     }
 
     private fun showAppBarElevation(isShown: Boolean) = view?.run {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            val elevation: Float = if (isShown) context.dpToPx(4) else 0f
-            appBarMvc?.elevation = elevation
-        }
+        dividerMvcList?.visibility =
+                if (isShown) {
+                    View.VISIBLE
+                } else {
+                    View.INVISIBLE
+                }
     }
 
     private fun setupActionBar() = view?.run {
@@ -1018,10 +1027,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
             }
         })
         mViewModel.localVoucherListLiveData.observe(viewLifecycleOwner, Observer { result ->
-            when(result) {
-                is Success -> setOnSuccessGetVoucherList(result.data)
-                is Fail -> setOnErrorGetVoucherList(result.throwable)
-            }
+            setOnSuccessGetVoucherList(result)
         })
         mViewModel.cancelVoucherResponseLiveData.observe(viewLifecycleOwner, Observer { result ->
             when(result) {
@@ -1069,8 +1075,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
                                     View.OnClickListener {})
                         }
                     } else {
-                        val parent = view as? ViewGroup ?: return@Observer
-                        SuccessCreateBottomSheet.createInstance(parent, uiModel)
+                        SuccessCreateBottomSheet.createInstance(uiModel)
                                 .setOnShareClickListener {
                                     VoucherCreationTracking.sendCreateVoucherClickTracking(
                                             step = VoucherCreationStep.REVIEW,

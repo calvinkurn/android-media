@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.akamai.botman.CYFMonitor;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.tokopedia.graphql.CommonUtils;
 import com.tokopedia.graphql.FingerprintManager;
 import com.tokopedia.graphql.GraphqlCacheManager;
 import com.tokopedia.graphql.GraphqlConstant;
@@ -138,6 +139,10 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
                     return new GraphqlResponseInternal(httpResponse.body(), false,
                             httpResponse.headers().get(GraphqlConstant.GqlApiKeys.CACHE),
                             httpResponse.headers().get(GraphqlConstant.GqlApiKeys.QUERYHASH));
+
+                    JsonArray gJsonArray = CommonUtils.getOriginalResponse(httpResponse);
+
+                    return new GraphqlResponseInternal(gJsonArray, false, httpResponse.headers().get(GraphqlConstant.GqlApiKeys.CACHE));
                 }).doOnNext(graphqlResponseInternal -> {
                     //Handling backend cache
                     Map<String, BackendCache> caches = CacheHelper.parseCacheHeaders(graphqlResponseInternal.getBeCache());

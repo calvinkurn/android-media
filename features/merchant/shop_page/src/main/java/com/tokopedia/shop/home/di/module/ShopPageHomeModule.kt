@@ -1,15 +1,24 @@
 package com.tokopedia.shop.home.di.module
 
 import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.common.network.coroutines.RestRequestInteractor
 import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.play_common.domain.model.PlayToggleChannelEntity
+import com.tokopedia.play_common.domain.usecases.GetPlayWidgetUseCase
+import com.tokopedia.play_common.domain.usecases.PlayToggleChannelReminderUseCase
+import com.tokopedia.shop.R
 import com.tokopedia.network.interceptor.CommonErrorResponseInterceptor
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant.GQL_CHECK_WISHLIST
+import com.tokopedia.shop.common.di.ShopPageContext
 import com.tokopedia.shop.home.GqlQueryConstant.GQL_ATC_MUTATION
+import com.tokopedia.shop.home.GqlQueryConstant.GQL_CHECK_CAMPAIGN_NOTIFY_ME
+import com.tokopedia.shop.home.GqlQueryConstant.GQL_GET_CAMPAIGN_NOTIFY_ME
+import com.tokopedia.shop.home.GqlQueryConstant.GQL_GET_SHOP_NPL_CAMPAIGN_TNC
 import com.tokopedia.shop.home.GqlQueryConstant.GQL_GET_SHOP_PAGE_HOME_LAYOUT
 import com.tokopedia.shop.home.di.scope.ShopPageHomeScope
 import com.tokopedia.shop.home.util.CoroutineDispatcherProvider
@@ -35,7 +44,7 @@ class ShopPageHomeModule {
     @ShopPageHomeScope
     @Provides
     @Named(GQL_GET_SHOP_PAGE_HOME_LAYOUT)
-    fun getShopFeaturedProductQuery(@ApplicationContext context: Context): String {
+    fun getShopPageHomeLayoutQuery(@ShopPageContext context: Context): String {
         return """
             query get_shop_page_home_layout(${'$'}shopId: String!,${'$'}status:String,${'$'}layoutId:String){
               shopPageGetLayout (shopID:${'$'}shopId,status:${'$'}status,layoutID:${'$'}layoutId){
@@ -109,6 +118,48 @@ class ShopPageHomeModule {
                         identifier
                       }
                     }
+                    ... on CampaignWidget {
+                      campaignID
+                      name
+                      description
+                      startDate
+                      endDate
+                      statusCampaign
+                      timeDescription
+                      timeCounter
+                      totalNotify
+                      totalNotifyWording
+                      banners {
+                        imageID
+                        imageURL
+                        bannerType
+                      }
+                      products {
+                        id
+                        name
+                        url
+                        urlApps
+                        urlMobile
+                        imageURL
+                        price
+                        countSold
+                        stock
+                        status
+                        discountedPrice
+                        discountPercentage
+                        position
+                        stockWording {
+                          title
+                        }
+                        hideGimmick
+                        stockSoldPercentage
+                        labelGroups {
+                          position
+                          type
+                          title
+                        }
+                      }
+                    }
                   }
                 }
               }
@@ -118,8 +169,59 @@ class ShopPageHomeModule {
 
     @ShopPageHomeScope
     @Provides
+    @Named(GQL_CHECK_CAMPAIGN_NOTIFY_ME)
+    fun getCheckCampaignNotifyMeQuery(@ShopPageContext context: Context): String {
+        return """
+            mutation check_campaign_notify_me(${'$'}params : CheckCampaignNotifyMeRequest!){
+              checkCampaignNotifyMe(params:${'$'}params ) {
+                campaign_id
+                success
+                message
+                error_message
+              }
+            }
+        """.trimIndent()
+    }
+
+    @ShopPageHomeScope
+    @Provides
+    @Named(GQL_GET_SHOP_NPL_CAMPAIGN_TNC)
+    fun getShopNplCampaignTncQuery(@ShopPageContext context: Context): String {
+        return """
+            query get_merchant_campaign_tnc(${'$'}param: GetMerchantCampaignTNCRequest!){
+              getMerchantCampaignTNC (params:${'$'}param){
+                title,
+    			messages,
+    			error {
+    			  error_code
+    			  error_message
+    			}
+              }
+            }
+        """.trimIndent()
+    }
+
+    @ShopPageHomeScope
+    @Provides
+    @Named(GQL_GET_CAMPAIGN_NOTIFY_ME)
+    fun getCampaignNotifyMeQuery(@ShopPageContext context: Context): String {
+        return """
+            query get_campaign_notify_me(${'$'}params:GetCampaignNotifyMeRequest!){
+              getCampaignNotifyMe (params: ${'$'}params ){
+                campaign_id
+                success
+                message
+                error_message
+                is_available
+              }
+            }
+        """.trimIndent()
+    }
+
+    @ShopPageHomeScope
+    @Provides
     @Named(GQLQueryConstant.SHOP_PRODUCT)
-    fun getShopProductQuery(@ApplicationContext context: Context): String {
+    fun getShopProductQuery(@ShopPageContext context: Context): String {
         return """
             query getShopProduct(${'$'}shopId: String!,${'$'}filter: ProductListFilter!){
               GetShopProduct(shopID:${'$'}shopId, filter:${'$'}filter){
@@ -185,14 +287,14 @@ class ShopPageHomeModule {
     @ShopPageHomeScope
     @Provides
     @Named(GQL_ATC_MUTATION)
-    fun provideAddToCartMutation(@ApplicationContext context: Context): String {
+    fun provideAddToCartMutation(@ShopPageContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart);
     }
 
     @ShopPageHomeScope
     @Provides
     @Named(GQL_CHECK_WISHLIST)
-    fun provideCheckWishlistQuery(@ApplicationContext context: Context): String {
+    fun provideCheckWishlistQuery(@ShopPageContext context: Context): String {
         return """
             query CheckWishList(${'$'}productID:String!){
               checkWishlist(productID:${'$'}productID){
@@ -219,7 +321,7 @@ class ShopPageHomeModule {
     @ShopPageHomeScope
     @Provides
     fun provideRestRepository(interceptors: MutableList<Interceptor>,
-                              @ApplicationContext context: Context): RestRepository {
+                              @ShopPageContext context: Context): RestRepository {
         return RestRequestInteractor.getInstance().restRepository.apply {
             updateInterceptors(interceptors, context)
         }
@@ -242,14 +344,27 @@ class ShopPageHomeModule {
 
     @ShopPageHomeScope
     @Provides
-    fun provideAddToWishListUseCase(@ApplicationContext context: Context?): AddWishListUseCase {
+    fun provideAddToWishListUseCase(@ShopPageContext context: Context?): AddWishListUseCase {
         return AddWishListUseCase(context)
     }
 
     @ShopPageHomeScope
     @Provides
-    fun provideRemoveFromWishListUseCase(@ApplicationContext context: Context?): RemoveWishListUseCase {
+    fun provideRemoveFromWishListUseCase(@ShopPageContext context: Context?): RemoveWishListUseCase {
         return RemoveWishListUseCase(context)
+    }
+
+    @ShopPageHomeScope
+    @Provides
+    fun provideGetPlayWidgetUseCase(graphqlRepository: GraphqlRepository): GetPlayWidgetUseCase{
+        return GetPlayWidgetUseCase(graphqlRepository)
+    }
+
+    @ShopPageHomeScope
+    @Provides
+    fun providePlayToggleChannelReminderUseCase(graphqlRepository: GraphqlRepository): PlayToggleChannelReminderUseCase{
+        val graphQlUseCase = GraphqlUseCase<PlayToggleChannelEntity>(graphqlRepository)
+        return PlayToggleChannelReminderUseCase(graphQlUseCase)
     }
 
     @ShopPageHomeScope
@@ -260,13 +375,13 @@ class ShopPageHomeModule {
 
     @ShopPageHomeScope
     @Provides
-    fun provideUserSessionInterface(@ApplicationContext context: Context?): UserSessionInterface {
+    fun provideUserSessionInterface(@ShopPageContext context: Context?): UserSessionInterface {
         return UserSession(context)
     }
 
     @ShopPageHomeScope
     @Provides
-    fun provideShopPageHomeTracking(@ApplicationContext context: Context): ShopPageHomeTracking {
+    fun provideShopPageHomeTracking(@ShopPageContext context: Context): ShopPageHomeTracking {
         return ShopPageHomeTracking(TrackingQueue(context))
     }
 

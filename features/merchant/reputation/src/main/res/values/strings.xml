@@ -3,6 +3,7 @@
     <string name="title_activity_reputation_review">Ulasan</string>
     <string name="title_tab_waiting_review">Menunggu Diulas</string>
     <string name="title_rating_product">Rating Produk</string>
+    <string name="title_inbox_ulasan">Inbox Ulasan</string>
     <string name="title_tab_my_review">Ulasan Saya</string>
     <string name="title_tab_buyer_review">Penilaian Pembeli</string>
     <string name="empty_inbox_reputation">Reputasi kosong</string>
@@ -140,6 +141,8 @@
     <string name="review_min_character">Minimal 30 karakter</string>
     <string name="review_label_all">Semua</string>
     <string name="review_label_with_photo">Dengan Foto</string>
+    <string name="seller_migration_review_title">Ulasan produk dan template</string>
+    <string name="seller_migration_review_description">Fitur unggulan untuk mempermudah pantau dan balas ulasan pembeli.</string>
 
     <string name="review_add_photo_txt">Tambah \nfoto</string>
     <string name="image_picker_title">Pilih foto</string>
@@ -161,4 +164,6 @@
         <item>Semua</item>
         <item>Belum Dibaca</item>
     </string-array>
+
+    <string name="title_review_inbox">Inbox Ulasan</string>
 </resources>

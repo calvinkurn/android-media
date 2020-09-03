@@ -18,12 +18,12 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/iv_payment_success"
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/lottieAnimationView"
                 android:layout_width="@dimen/thank_success_img_width"
                 android:layout_height="@dimen/thank_success_img_height"
                 android:layout_marginTop="@dimen/dp_24"
-                app:srcCompat="@drawable/thank_instant_payment_banner"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -37,7 +37,7 @@
                 android:textColor="@color/Neutral_N700_96"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/iv_payment_success"
+                app:layout_constraintTop_toBottomOf="@+id/lottieAnimationView"
                 app:typographyType="heading_4"
                 tools:visibility="visible" />
 
@@ -208,6 +208,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
+                android:paddingBottom="@dimen/spacing_lvl3"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/view_divider_2" />
 

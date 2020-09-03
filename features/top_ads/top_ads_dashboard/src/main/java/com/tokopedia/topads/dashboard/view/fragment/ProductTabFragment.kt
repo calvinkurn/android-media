@@ -25,6 +25,7 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTI
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_DELETE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_MOVE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TOASTER_DURATION
+import com.tokopedia.topads.dashboard.data.model.CountDataItem
 import com.tokopedia.topads.dashboard.data.model.GroupListDataItem
 import com.tokopedia.topads.dashboard.data.model.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.dashboard.data.model.nongroupItem.NonGroupResponse
@@ -43,7 +44,6 @@ import com.tokopedia.topads.dashboard.view.sheet.MovetoGroupSheetList
 import com.tokopedia.topads.dashboard.view.sheet.TopadsGroupFilterSheet
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.topads_dash_fragment_non_group_list.actionbar
-import kotlinx.android.synthetic.main.topads_dash_fragment_product_list.*
 import kotlinx.android.synthetic.main.topads_dash_fragment_product_list.loader
 import kotlinx.android.synthetic.main.topads_dash_layout_common_action_bar.*
 import kotlinx.android.synthetic.main.topads_dash_layout_common_searchbar_layout.*
@@ -127,7 +127,7 @@ class ProductTabFragment : BaseDaggerFragment() {
         layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         recyclerviewScrollListener = onRecyclerViewListener()
         recyclerView.adapter = adapter
-        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.layoutManager = layoutManager
         recyclerView.addOnScrollListener(recyclerviewScrollListener)
     }
 
@@ -238,16 +238,26 @@ class ProductTabFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessGroupList(list: List<GroupListDataItem>) {
-        val grouplist: MutableList<MovetoGroupViewModel> = mutableListOf()
+        val groupList: MutableList<MovetoGroupViewModel> = mutableListOf()
+        val groupIds: MutableList<String> = mutableListOf()
+
         list.forEach {
-            if (it.groupName != arguments?.getString(TopAdsDashboardConstant.GROUP_NAME))
-                grouplist.add(MovetoGroupItemViewModel(it))
+            if (it.groupName != arguments?.getString(TopAdsDashboardConstant.GROUP_NAME)) {
+                groupList.add(MovetoGroupItemViewModel(it))
+                groupIds.add(it.groupId.toString())
+            }
         }
         if (list.isEmpty()) {
             movetoGroupSheet.setButtonDisable()
-            grouplist.add(MovetoGroupEmptyViewModel())
-        }
-        movetoGroupSheet.updateData(grouplist)
+            groupList.add(MovetoGroupEmptyViewModel())
+        } else
+            viewModel.getCountProductKeyword(resources, groupIds,::onSuccessCount)
+        movetoGroupSheet.updateData(groupList)
+    }
+
+    private fun onSuccessCount(countList: List<CountDataItem>) {
+        movetoGroupSheet.updateKeyCount(countList)
+        loader.visibility = View.GONE
     }
 
     private fun getAdIds(): MutableList<String> {
@@ -303,7 +313,9 @@ class ProductTabFragment : BaseDaggerFragment() {
     private fun onProductFetch(response: NonGroupResponse.TopadsDashboardGroupProducts) {
         totalCount = response.meta.page.total
         totalPage = (totalCount / response.meta.page.perPage)  + 1
+        recyclerviewScrollListener.updateStateAfterGetData()
         loader.visibility = View.GONE
+        recyclerviewScrollListener.updateStateAfterGetData()
         if (searchBar?.searchBarTextField?.text.toString().isEmpty()
                 && groupFilterSheet.getSelectedSortId() == ""
                 && groupFilterSheet.getSelectedStatusId() == null) {
@@ -353,17 +365,19 @@ class ProductTabFragment : BaseDaggerFragment() {
                 val coroutineScope = CoroutineScope(Dispatchers.Main)
                 coroutineScope.launch {
                     delay(TOASTER_DURATION)
-                    if (!deleteCancel) {
-                        totalProductCount -= getAdIds().size
-                        viewModel.setProductAction(::onSuccessAction, actionActivate, getAdIds(), resources, selectedFilter)
-                        if (totalProductCount == 0) {
-                            viewModel.setGroupAction(ACTION_DELETE, listOf(arguments?.getInt(TopAdsDashboardConstant.GROUP_ID).toString()),
-                                    resources)
-                            activity?.finish()
+                    if (activity != null && isAdded) {
+                        if (!deleteCancel) {
+                            totalProductCount -= getAdIds().size
+                            viewModel.setProductAction(::onSuccessAction, actionActivate, getAdIds(), resources, selectedFilter)
+                            if (totalProductCount == 0) {
+                                viewModel.setGroupAction(ACTION_DELETE, listOf(arguments?.getInt(TopAdsDashboardConstant.GROUP_ID).toString()),
+                                        resources)
+                                activity?.finish()
+                            }
                         }
+                        deleteCancel = false
+                        setSelectMode(false)
                     }
-                    deleteCancel = false
-                    setSelectMode(false)
                 }
             }
             ACTION_MOVE -> {

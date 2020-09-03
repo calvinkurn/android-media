@@ -9,6 +9,7 @@ import android.webkit.URLUtil
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.ViewFlipper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.PagerAdapter
@@ -16,14 +17,24 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.adapter.*
 import com.tokopedia.tokopoints.view.model.section.ImageList
 import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.tokopoints.view.util.CommonConstant
+import com.tokopedia.tokopoints.view.util.convertDpToPixel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.listener.TopAdsImageVieWApiResponseListener
+import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
+import com.tokopedia.topads.sdk.listener.TopAdsImageViewImpressionListener
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.TimerUnify
+import kotlinx.android.synthetic.main.tp_topads_reward_layout.view.*
+import org.json.JSONObject
 import java.util.*
+import kotlin.collections.ArrayList
 
 class ExploreSectionPagerAdapter(context: Context?, presenter: TokoPointsHomeViewModel, sections: List<SectionContent>?) : PagerAdapter() {
     private val mLayoutInflater: LayoutInflater
@@ -32,6 +43,7 @@ class ExploreSectionPagerAdapter(context: Context?, presenter: TokoPointsHomeVie
     private val swipeToRefresh = arrayOfNulls<SwipeToRefresh>(2)
     private var countDownView: TimerUnify? = null
     private val mCouponListAdapterList: ArrayList<CouponListAdapter>? = ArrayList()
+
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         var view: View? = null
         if (position == TAB_EXPLORE) {
@@ -79,6 +91,13 @@ class ExploreSectionPagerAdapter(context: Context?, presenter: TokoPointsHomeVie
                 container.addView(getCatalogCarousel(sectionContent))
                 continue
             }
+
+            if (sectionContent.layoutTopAdsAttr != null && sectionContent.layoutTopAdsAttr.jsonTopAdsDisplayParam!=null
+                    && !sectionContent.layoutTopAdsAttr.jsonTopAdsDisplayParam.isEmpty()) {
+                container.addView(getTopadsBanner(sectionContent))
+                continue
+            }
+
             if (sectionContent.layoutBannerAttr == null
                     || sectionContent.layoutBannerAttr.bannerType == null) {
                 continue
@@ -97,6 +116,78 @@ class ExploreSectionPagerAdapter(context: Context?, presenter: TokoPointsHomeVie
                 }
             }
         }
+    }
+
+    private fun getTopadsBanner(content: SectionContent): View? {
+
+        val view = mLayoutInflater.inflate(R.layout.tp_topads_reward_layout, null, false)
+        if (content == null || content.sectionTitle == null || content.layoutBannerAttr == null) {
+            view.visibility = View.GONE
+            return view
+        }
+        ImageHandler.loadBackgroundImage(view, content.backgroundImgURLMobile)
+        if (!content.cta.isEmpty) {
+            val btnSeeAll = view.findViewById<TextView>(R.id.tv_topads_see_all)
+            btnSeeAll.visibility = View.VISIBLE
+            btnSeeAll.text = content.cta.text
+            btnSeeAll.setOnClickListener { v: View? ->
+                handledClick(content.cta.appLink, content.cta.url,
+                        AnalyticsTrackerUtil.ActionKeys.CLICK_SEE_ALL_EXPLORE_BANNER, "")
+            }
+        }
+        if (!TextUtils.isEmpty(content.sectionTitle)) {
+            view.findViewById<View>(R.id.tv_topad_title).visibility = View.VISIBLE
+            (view.findViewById<View>(R.id.tv_topad_title) as TextView).text = content.sectionTitle
+        }
+        if (!TextUtils.isEmpty(content.sectionSubTitle)) {
+            view.findViewById<View>(R.id.tv_topads_sub_title).visibility = View.VISIBLE
+            (view.findViewById<View>(R.id.tv_topads_sub_title) as TextView).text = content.sectionSubTitle
+        }
+        val containerTopads = view.findViewById<ViewFlipper>(R.id.container_topads)
+
+        val jObject = JSONObject(content.layoutTopAdsAttr.jsonTopAdsDisplayParam)
+        view.topads_reward.getImageData(
+                jObject.getString(INVENTORY_ID),
+                jObject.getInt(ITEM),
+                TOPADS_BANNER_DIMENSION,
+                "",
+                ""
+        )
+
+        view.topads_reward.setApiResponseListener(object : TopAdsImageVieWApiResponseListener {
+            override fun onImageViewResponse(imageDataList: ArrayList<TopAdsImageViewModel>) {
+                if (imageDataList.isNotEmpty()) {
+                    containerTopads.displayedChild = 1
+                    val stack: Stack<TopAdsImageViewModel> = Stack()
+                    stack.addAll(imageDataList.toMutableList())
+                    stack.reverse()
+                    view.topads_reward.loadImage(stack.pop(), convertDpToPixel(10, view.context))
+                    view.topads_reward.setTopAdsImageViewImpression(object : TopAdsImageViewImpressionListener {
+                        override fun onTopAdsImageViewImpression(viewUrl: String) {
+                            sendBannerImpression(content.sectionTitle)
+                            TopAdsUrlHitter(packageName).hitImpressionUrl(
+                                    view.context,
+                                    viewUrl,
+                                    "",
+                                    "",
+                                    ""
+                            )
+                        }
+                    })
+
+                    view.topads_reward.setTopAdsImageViewClick(object : TopAdsImageViewClickListener {
+                        override fun onTopAdsImageViewClicked(applink: String?) {
+                            RouteManager.route(view.context, applink)
+                        }
+                    })
+                } else
+                    view.hide()
+            }
+            override fun onError(t: Throwable) {
+                view.hide()
+            }
+        })
+        return view
     }
 
     fun getCatalogCarousel(content: SectionContent?): View {
@@ -136,7 +227,6 @@ class ExploreSectionPagerAdapter(context: Context?, presenter: TokoPointsHomeVie
         if (content.layoutCatalogAttr.catalogList != null) {
             view.setPadding(0, view.paddingTop, 0, 0)
             val rvCarousel: RecyclerView = view.findViewById(R.id.rv_carousel)
-            //rvCarousel.addItemDecoration(CarouselItemDecoration(mLayoutInflater.context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_4)))
             rvCarousel.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
             val adapter = CatalogListCarouselAdapter(mPresenter, content.layoutCatalogAttr.catalogList, rvCarousel)
             rvCarousel.adapter = adapter
@@ -602,7 +692,7 @@ class ExploreSectionPagerAdapter(context: Context?, presenter: TokoPointsHomeVie
         if (content.layoutCatalogAttr.catalogList != null) {
             view.setPadding(0, view.paddingTop, 0, 0)
             val rvCarousel: RecyclerView = view.findViewById(R.id.rv_carousel)
-            rvCarousel.addItemDecoration(NonCarouselItemDecoration(mLayoutInflater.context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_2)))
+            rvCarousel.addItemDecoration(NonCarouselItemDecoration(mLayoutInflater.context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_4)))
             rvCarousel.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
             val adapter = CouponListAdapter(content.layoutCouponAttr.couponList)
             rvCarousel.adapter = adapter
@@ -680,6 +770,10 @@ class ExploreSectionPagerAdapter(context: Context?, presenter: TokoPointsHomeVie
     companion object {
         const val TAB_EXPLORE = 0
         const val TAB_MY_COUPON = 1
+        val packageName = ExploreSectionPagerAdapter::class.java.`package`.toString()
+        const val ITEM = "item"
+        const val INVENTORY_ID = "inventory_id"
+        const val TOPADS_BANNER_DIMENSION = 3
     }
 
     init {

@@ -22,6 +22,7 @@ import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.widget.LongClickMenu
@@ -39,14 +40,13 @@ import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatAdapter
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatTypeFactoryImpl
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
-import com.tokopedia.topchat.common.util.Utils
 import com.tokopedia.unifycomponents.toPx
 
 /**
  * @author : Steven 29/11/18
  */
 
-class TopChatViewStateImpl(
+class TopChatViewStateImpl constructor(
         @NonNull override val view: View,
         private val typingListener: TypingListener,
         private val sendListener: SendButtonListener,
@@ -54,6 +54,7 @@ class TopChatViewStateImpl(
         private val imagePickerListener: ImagePickerListener,
         private val attachmentMenuListener: AttachmentMenu.AttachmentMenuListener,
         private val stickerMenuListener: ChatMenuStickerView.StickerMenuListener,
+        private val headerMenuListener: HeaderMenuListener,
         toolbar: Toolbar,
         val analytics: TopChatAnalytics
 ) : BaseChatViewStateImpl(view, toolbar, typingListener, attachmentMenuListener),
@@ -73,13 +74,13 @@ class TopChatViewStateImpl(
     lateinit var chatRoomViewModel: ChatroomViewModel
 
     var isShopFollowed: Boolean = false
+    var blockStatus: BlockedStatus = BlockedStatus()
 
     var roomMenu = LongClickMenu()
 
     override fun getOfflineIndicatorResource() = R.drawable.ic_topchat_status_indicator_offline
     override fun getOnlineIndicatorResource() = R.drawable.ic_topchat_status_indicator_online
     override fun getRecyclerViewId() = R.id.recycler_view
-    override fun getProgressId() = R.id.progress
     override fun getNewCommentId() = R.id.new_comment
     override fun getReplyBoxId() = R.id.reply_box
     override fun getActionBoxId() = R.id.add_comment_area
@@ -87,6 +88,7 @@ class TopChatViewStateImpl(
     override fun getNotifierId() = R.id.notifier
     override fun getChatMenuId() = R.id.iv_chat_menu
     override fun getRootViewId() = R.id.main
+    override fun shouldShowSellerLabel(): Boolean = false
 
     init {
         initView()
@@ -96,6 +98,7 @@ class TopChatViewStateImpl(
 
     override fun initView() {
         super.initView()
+        recyclerView.setHasFixedSize(true)
         (recyclerView.layoutManager as LinearLayoutManager).stackFromEnd = false
         (recyclerView.layoutManager as LinearLayoutManager).reverseLayout = true
         replyEditText.setOnFocusChangeListener { v, hasFocus ->
@@ -149,6 +152,15 @@ class TopChatViewStateImpl(
         }
     }
 
+    override fun setChatBlockStatus(isBlocked: Boolean) {
+        blockStatus.isBlocked = isBlocked
+    }
+
+    override fun setChatPromoBlockStatus(isBlocked: Boolean, due: String) {
+        blockStatus.isPromoBlocked = isBlocked
+        blockStatus.blockedUntil = due
+    }
+
     override fun onKeyboardOpened() {
         chatMenu?.isKeyboardOpened = true
         hideChatMenu()
@@ -197,7 +209,7 @@ class TopChatViewStateImpl(
         sendListener.onEmptyProductPreview()
     }
 
-    private fun hideProductPreviewLayout() {
+    override fun hideProductPreviewLayout() {
         attachmentPreviewContainer.hide()
         setChatTemplatesBottomPadding(0)
     }
@@ -239,18 +251,19 @@ class TopChatViewStateImpl(
     fun onSuccessLoadFirstTime(viewModel: ChatroomViewModel,
                                onToolbarClicked: () -> Unit,
                                headerMenuListener: HeaderMenuListener,
-                               alertDialog: Dialog,
-                               onUnblockChatClicked: () -> Unit) {
+                               alertDialog: Dialog) {
         chatRoomViewModel = viewModel
-        hideLoading()
+        updateBlockStatus(viewModel)
         scrollToBottom()
         updateHeader(viewModel, onToolbarClicked)
         showLastTimeOnline(viewModel)
         setHeaderMenuButton(headerMenuListener, alertDialog)
         showReplyBox(viewModel.replyable)
-        onCheckChatBlocked(viewModel.headerModel.role, viewModel.headerModel.name, viewModel
-                .blockedStatus, onUnblockChatClicked)
+        onCheckChatBlocked(viewModel.headerModel.role, viewModel.headerModel.name, viewModel.blockedStatus)
+    }
 
+    private fun updateBlockStatus(viewModel: ChatroomViewModel) {
+        blockStatus = viewModel.blockedStatus
     }
 
     override fun updateHeader(chatroomViewModel: ChatroomViewModel, onToolbarClicked: () -> Unit) {
@@ -322,24 +335,55 @@ class TopChatViewStateImpl(
         val listMenu = ArrayList<Menus.ItemMenus>()
 
         if (userChatRoom.isChattingWithSeller()) {
-            val followStatusTitle: String
-            @DrawableRes val followStatusDrawable: Int
-
-            if (isShopFollowed) {
-                followStatusTitle = view.context.getString(R.string.already_follow_store)
-                followStatusDrawable = R.drawable.ic_topchat_check_bold_grey
-            } else {
-                followStatusTitle = view.context.getString(R.string.follow_store)
-                followStatusDrawable = R.drawable.ic_topchat_add_bold_grey
-            }
-            val followMenu = Menus.ItemMenus(followStatusTitle, followStatusDrawable)
-            listMenu.add(followMenu)
+            val followStatusMenu = createFollowMenu()
+            val promoStatusChanger = createPromoMenu()
+            listMenu.add(followStatusMenu)
+            listMenu.add(promoStatusChanger)
         }
-
-        listMenu.add(Menus.ItemMenus(view.context.getString(R.string.chat_incoming_settings), R.drawable.ic_topchat_chat_setting_bold_grey))
+        val blockChatMenu = createBlockChatMenu()
+        listMenu.add(blockChatMenu)
         listMenu.add(Menus.ItemMenus(view.context.getString(R.string.chat_report_user), R.drawable.ic_topchat_report_bold_grey))
         listMenu.add(Menus.ItemMenus(view.context.getString(R.string.delete_conversation), R.drawable.ic_trash_filled_grey))
         return listMenu
+    }
+
+    private fun createBlockChatMenu(): Menus.ItemMenus {
+        val blockChatStatusTitle: String
+        @DrawableRes val blockChatStatusDrawable: Int
+        if (blockStatus.isBlocked) {
+            blockChatStatusTitle = view.context.getString(R.string.title_unblock_user_chat)
+            blockChatStatusDrawable = R.drawable.ic_topchat_unblock_user_chat
+        } else {
+            blockChatStatusTitle = view.context.getString(R.string.title_block_user_chat)
+            blockChatStatusDrawable = R.drawable.ic_topchat_block_user_chat
+        }
+        return Menus.ItemMenus(blockChatStatusTitle, blockChatStatusDrawable)
+    }
+
+    private fun createFollowMenu(): Menus.ItemMenus {
+        val followStatusTitle: String
+        @DrawableRes val followStatusDrawable: Int
+        if (isShopFollowed) {
+            followStatusTitle = view.context.getString(R.string.already_follow_store)
+            followStatusDrawable = R.drawable.ic_topchat_check_bold_grey
+        } else {
+            followStatusTitle = view.context.getString(R.string.follow_store)
+            followStatusDrawable = R.drawable.ic_topchat_add_bold_grey
+        }
+        return Menus.ItemMenus(followStatusTitle, followStatusDrawable)
+    }
+
+    private fun createPromoMenu(): Menus.ItemMenus {
+        val promoStatusTitle: String
+        @DrawableRes val promoStatusDrawable: Int
+        if (blockStatus.isPromoBlocked) {
+            promoStatusTitle = view.context.getString(R.string.title_allow_promo)
+            promoStatusDrawable = R.drawable.ic_topchat_allow_promo
+        } else {
+            promoStatusTitle = view.context.getString(R.string.title_block_promo)
+            promoStatusDrawable = R.drawable.ic_topchat_block_promo
+        }
+        return Menus.ItemMenus(promoStatusTitle, promoStatusDrawable)
     }
 
     private fun handleRoomMenuClick(
@@ -349,6 +393,18 @@ class TopChatViewStateImpl(
             alertDialog: Dialog
     ) {
         when {
+            itemMenus.icon == R.drawable.ic_topchat_unblock_user_chat -> {
+                headerMenuListener.unBlockChat()
+            }
+            itemMenus.icon == R.drawable.ic_topchat_block_user_chat -> {
+                showConfirmationBlockChat()
+            }
+            itemMenus.icon == R.drawable.ic_topchat_allow_promo -> {
+                headerMenuListener.onClickAllowPromo()
+            }
+            itemMenus.icon == R.drawable.ic_topchat_block_promo -> {
+                headerMenuListener.onClickBlockPromo()
+            }
             itemMenus.title == view.context.getString(R.string.delete_conversation) -> {
                 showDeleteChatDialog(headerMenuListener, alertDialog)
             }
@@ -358,15 +414,35 @@ class TopChatViewStateImpl(
             itemMenus.title == view.context.getString(R.string.already_follow_store) -> {
                 headerMenuListener.followUnfollowShop(false)
             }
-            itemMenus.title == view.context.getString(R.string.chat_incoming_settings) -> {
-                headerMenuListener.onGoToChatSetting(chatroomViewModel.blockedStatus)
-            }
             itemMenus.title == view.context.getString(R.string.chat_report_user) -> {
                 headerMenuListener.onGoToReportUser()
             }
             else -> {
             }
         }
+    }
+
+    override fun showConfirmationBlockChat() {
+        val title = view.context.getString(R.string.title_confirm_block_promo)
+        val desc = view.context.getString(R.string.desc_confirm_block_promo)
+        val titleCtaBlock = view.context.getString(R.string.title_block_user_chat)
+        val titleCtaCancel = view.context.getString(R.string.title_block_and_report_user_chat)
+        val dialog = DialogUnify(view.context, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
+            setTitle(title)
+            setDescription(desc)
+            setPrimaryCTAText(titleCtaBlock)
+            setPrimaryCTAClickListener {
+                headerMenuListener.blockChat()
+                dismiss()
+            }
+            setSecondaryCTAText(titleCtaCancel)
+            setSecondaryCTAClickListener {
+                headerMenuListener.blockChat()
+                headerMenuListener.onGoToReportUser()
+                dismiss()
+            }
+        }
+        dialog.show()
     }
 
     override fun getLastItem(): Parcelable? {
@@ -391,11 +467,11 @@ class TopChatViewStateImpl(
         return null
     }
 
-    override fun onCheckChatBlocked(opponentRole: String,
-                                    opponentName: String,
-                                    blockedStatus: BlockedStatus,
-                                    onUnblockChatClicked: () -> Unit) {
-
+    override fun onCheckChatBlocked(
+            opponentRole: String,
+            opponentName: String,
+            blockedStatus: BlockedStatus
+    ) {
 
         val isBlocked = when {
             opponentRole.toLowerCase().contains(ChatRoomHeaderViewModel.Companion.ROLE_OFFICIAL)
@@ -414,16 +490,13 @@ class TopChatViewStateImpl(
         }
 
         if (isBlocked) {
-            showChatBlocked(blockedStatus, opponentRole, opponentName, onUnblockChatClicked)
+            showChatBlocked(blockedStatus, opponentRole, opponentName)
         } else {
             removeChatBlocked(blockedStatus)
         }
     }
 
-    private fun showChatBlocked(it: BlockedStatus,
-                                opponentRole: String,
-                                opponentName: String,
-                                onUnblockChatClicked: () -> Unit) {
+    private fun showChatBlocked(it: BlockedStatus, opponentRole: String, opponentName: String) {
         updateChatroomBlockedStatus(it)
 
         showReplyBox(false)
@@ -433,7 +506,7 @@ class TopChatViewStateImpl(
         setChatBlockedText(chatBlockLayout, it, opponentRole, opponentName)
 
         val unblockText = chatBlockLayout.findViewById<TextView>(R.id.enable_chat_textView)
-        unblockText.setOnClickListener { onUnblockChatClicked() }
+        unblockText.setOnClickListener { headerMenuListener.unBlockChat() }
 
     }
 
@@ -458,12 +531,7 @@ class TopChatViewStateImpl(
                 ""
             }
         }
-        val blockString = String.format(
-                chatBlockLayout.context.getString(com.tokopedia.chat_common.R.string.chat_blocked_text),
-                category,
-                opponentName,
-                Utils.getDateTime(blockedStatus.blockedUntil))
-
+        val blockString = chatBlockLayout.context.getString(R.string.desc_chat_blocked)
         blockText.text = blockString
     }
 

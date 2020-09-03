@@ -207,7 +207,7 @@
 
     <View
         android:id="@+id/divider1"
-        android:layout_width="0.5dp"
+        android:layout_width="1dp"
         android:layout_height="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_16"
@@ -222,7 +222,7 @@
 
     <View
         android:id="@+id/divider2"
-        android:layout_width="0.5dp"
+        android:layout_width="1dp"
         android:layout_height="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_16"

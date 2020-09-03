@@ -190,6 +190,7 @@ class GetSearchQueryUseCase @Inject constructor(
                   oppositeType
                   replyId
                   roomId
+                  productId
                 }
                 hasNext
               }

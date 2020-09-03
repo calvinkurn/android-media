@@ -9,7 +9,6 @@ import com.chuckerteam.chucker.api.Chucker
 import com.tokopedia.application.MyApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalTestApp
 import com.tokopedia.tkpd.helper.logout
 import com.tokopedia.tkpd.network.DataSource
@@ -22,7 +21,7 @@ class MainActivity : AppCompatActivity() {
 
     val REQUEST_CODE_LOGIN = 123
     val REQUEST_CODE_LOGOUT = 456
-    lateinit var userSession : UserSessionInterface
+    lateinit var userSession: UserSessionInterface
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,7 +75,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        when(requestCode) {
+        when (requestCode) {
             REQUEST_CODE_LOGIN -> {
                 if (userSession.isLoggedIn) {
                     Toast.makeText(this, "Login Success", Toast.LENGTH_SHORT).show()
@@ -99,7 +98,8 @@ class MainActivity : AppCompatActivity() {
         /* @example: open groupchat module;
          * startActivity(PlayActivity.getCallingIntent(this, "668", true))
          * or, you can use route like this:
-         * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS) */
-        RouteManager.route(this, ApplinkConsInternalHome.HOME_INBOX)
+         * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS)
+         * LEAVE THIS EMPTY AS DEFAULT!!
+         * */
     }
 }

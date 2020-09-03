@@ -223,9 +223,7 @@ public interface ApplinkConst {
     String SALDO = "tokopedia://saldo";
     String LAYANAN_FINANSIAL = "tokopedia://layanan-finansial";
     String SALDO_INTRO = "tokopedia://saldo-intro";
-    String INSTANT_LOAN = "tokopedia://loan";
-    String INSTANT_LOAN_TAB = "tokopedia://loan/category/instan";
-    String PINJAMAN_ONLINE_TAB = "tokopedia://loan/category/pinjamanonline";
+
 
     String CHANGE_PASSWORD = "tokopedia://settings/changepassword";
     String HAS_PASSWORD = "tokopedia://settings/haspassword";
@@ -250,6 +248,7 @@ public interface ApplinkConst {
     String AFFILIATE_PRODUCT = "tokopedia://affiliate/product/{product_id}";
 
     String PLAY_DETAIL = "tokopedia://play/{channel_id}";
+    String PLAY_BROADCASTER = "tokopedia://play-broadcaster";
 
     String CHALLENGE = "tokopedia://challenges";
     String ADD_NAME_REGISTER = "tokopedia://addnameregister/{phone}";
@@ -312,6 +311,8 @@ public interface ApplinkConst {
     String DFFALLBACKURL_KEY = "dffallbackurl";
 
     String OCC = "tokopedia://occ";
+
+    String SELLER_MIGRATION = "tokopedia://seller/seller-migration";
 
     interface Discovery {
         String CATEGORY = "tokopedia://category";
@@ -386,6 +387,7 @@ public interface ApplinkConst {
         String VOUCHER_DETAIL = "sellerapp://voucher-detail";
         String CREATE_VOUCHER = "sellerapp://create-voucher";
         String SELLER_SEARCH = "sellerapp://seller-search";
+        String PLAY_BROADCASTER = "sellerapp://play-broadcaster";
     }
 
     interface Query {
@@ -438,6 +440,8 @@ public interface ApplinkConst {
 
         String SOURCE_ASK_SELLER = "tx_ask_seller";
         String SOURCE_PAGE = "source_page";
+        String SEARCH_CREATE_TIME = "search_create_time_str";
+        String SEARCH_PRODUCT_KEYWORD = "search_product_keyword";
 
         // chat source page
         String SOURCE_CHAT_SEARCH = "chat_search";
@@ -528,7 +532,7 @@ public interface ApplinkConst {
     }
 
     interface ResCenter {
-        String MOBILE =  "/mobile";
+        String MOBILE = "/mobile";
         String RESO_CREATE = "resolution-center/create/%s" + MOBILE;
     }
 
@@ -537,11 +541,13 @@ public interface ApplinkConst {
         interface RemoteConfig {
             String APP_SHOW_TOKOPOINT_NATIVE = "app_enable_tokopoint_native";
         }
-        interface RewardWebview{
+
+        interface RewardWebview {
             String REWARD_WEBVIEW = "https://m.tokopedia.com/tokopoints";
         }
-        interface Reward{
-            String REWARDS= "rewards";
+
+        interface Reward {
+            String REWARDS = "rewards";
         }
     }
 

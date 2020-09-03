@@ -15,6 +15,8 @@ import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommend
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetSingleRecommendationUseCase
 import com.tokopedia.smart_recycler_helper.SmartExecutors
 import com.tokopedia.topads.sdk.di.TopAdsWishlistModule
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.repository.TopAdsRepository
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
@@ -77,6 +79,10 @@ open class WishlistModule {
     @Provides
     @WishlistScope
     fun provideBulkRemoveWishlistUseCase(graphqlUseCase: GraphqlUseCase): BulkRemoveWishlistUseCase = BulkRemoveWishlistUseCase(graphqlUseCase)
+
+    @Provides
+    @WishlistScope
+    fun provideTopAdsImageViewUseCase(userSession: UserSessionInterface): TopAdsImageViewUseCase = TopAdsImageViewUseCase(userSession.userId, TopAdsRepository())
 
     @Provides
     @WishlistScope
