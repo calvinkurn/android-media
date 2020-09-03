@@ -349,12 +349,12 @@ object HomePageTrackingV2 : BaseTracking() {
             ) as HashMap<String, Any>
         }
 
-        private fun getRecommendationListSeeAllCardClick(channel: DynamicHomeChannel.Channels, userId: String): HashMap<String, Any>{
+        private fun getRecommendationListSeeAllCardClick(channelId: String, headerName: String, userId: String): HashMap<String, Any>{
             return DataLayer.mapOf(
                     Event.KEY, Event.CLICK_HOMEPAGE,
                     Category.KEY, Category.HOMEPAGE,
                     Action.KEY, RECOMMENDATION_LIST_SEE_ALL_CARD_EVENT_ACTION,
-                    Label.KEY, Label.FORMAT_2_ITEMS.format(channel.id, channel.header.name),
+                    Label.KEY, Label.FORMAT_2_ITEMS.format(channelId, headerName),
                     UserId.KEY, userId
             ) as HashMap<String, Any>
         }
@@ -363,8 +363,8 @@ object HomePageTrackingV2 : BaseTracking() {
             getTracker().sendGeneralEvent(getRecommendationListSeeAllClick(channelId, headerName, userId))
         }
 
-        fun sendRecommendationListSeeAllCardClick(channel: DynamicHomeChannel.Channels, userId: String) {
-            getTracker().sendGeneralEvent(getRecommendationListSeeAllCardClick(channel, userId))
+        fun sendRecommendationListSeeAllCardClick(channelId: String, headerName: String, userId: String) {
+            getTracker().sendGeneralEvent(getRecommendationListSeeAllCardClick(channelId, headerName, userId))
         }
 
         fun getCloseClickOnDynamicListCarousel(channel: DynamicHomeChannel.Channels, userId: String = "") = DataLayer.mapOf(

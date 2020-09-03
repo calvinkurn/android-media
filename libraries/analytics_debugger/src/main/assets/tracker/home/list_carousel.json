@@ -55,7 +55,7 @@
       "screenName": "/",
       "event": "add_to_cart",
       "userId": "{{.*}}",
-      "eventAction": "click add to card on dynamic channel list carousel",
+      "eventAction": "click add to cart on dynamic channel list carousel",
       "sessionIris": "{{.*}}",
       "items": [{
         "quantity": "{{\\d*.\\d*}}",

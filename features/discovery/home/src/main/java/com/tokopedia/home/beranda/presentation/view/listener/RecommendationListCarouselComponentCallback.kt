@@ -24,6 +24,11 @@ class RecommendationListCarouselComponentCallback(val homeViewModel: HomeViewMod
         homeCategoryListener.onDynamicChannelClicked(applink)
     }
 
+    override fun onRecommendationSeeMoreCardClick(channelModel: ChannelModel, applink: String) {
+        HomePageTrackingV2.RecommendationList.sendRecommendationListSeeAllCardClick(channelModel.id, channelModel.channelHeader.name, homeViewModel.getUserId())
+        homeCategoryListener.onDynamicChannelClicked(applink)
+    }
+
     override fun onRecommendationProductClick(channelModel: ChannelModel,
                                               channelGrid: ChannelGrid,
                                               position: Int,
