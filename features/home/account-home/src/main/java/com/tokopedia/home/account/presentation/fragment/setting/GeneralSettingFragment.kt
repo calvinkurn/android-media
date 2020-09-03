@@ -186,6 +186,9 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
         settingItems.add(SwitchSettingItemViewModel(SettingConstant.SETTING_GEOLOCATION_ID,
                 getString(R.string.title_geolocation_setting), getString(R.string.subtitle_geolocation_setting), true))
 
+        settingItems.add(SettingItemViewModel(SettingConstant.SETTING_IMAGE_QUALITY,
+                getString(R.string.title_image_quality_setting), getString(R.string.subtitle_image_quality_setting)))
+
         if (settingsPresenter.adultAgeVerified)
             settingItems.add(SwitchSettingItemViewModel(SettingConstant.SETTING_SAFE_SEARCH_ID,
                     getString(R.string.title_safe_mode_setting), getString(R.string.subtitle_safe_mode_setting), true))
@@ -279,6 +282,9 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
             }
             SettingConstant.SETTING_OCC_PREFERENCE_ID -> {
                 RouteManager.route(context, ApplinkConstInternalMarketplace.PREFERENCE_LIST)
+            }
+            SettingConstant.SETTING_IMAGE_QUALITY -> {
+                RouteManager.route(context, ApplinkConstInternalGlobal.IMAGE_QUALITY_SETTING)
             }
             else -> {
             }

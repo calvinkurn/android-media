@@ -39,6 +39,7 @@ object SettingConstant {
     const val SETTING_APP_ADVANCED_CLEAR_CACHE = 1
     const val SETTING_APP_ADVANCED_PUSH_NOTIFICATION = 2
     const val SETTING_ABOUT_US = 36
+    const val SETTING_IMAGE_QUALITY = 37
     const val PLAYSTORE_URL = "https://play.google.com/store/apps/details?id="
     const val RESCENTER_SELLER = "https://m.tokopedia.com/resolution-center/inbox/seller"
 
