@@ -71,6 +71,7 @@ import kotlinx.coroutines.launch
 import org.json.JSONException
 import rx.Observer
 import rx.subscriptions.CompositeSubscription
+import timber.log.Timber
 import javax.inject.Inject
 import kotlin.math.ceil
 
@@ -167,7 +168,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         OccIdlingResource.increment()
         getOccCartUseCase.execute({ orderData: OrderData ->
             orderCart = orderData.cart
-            _orderPreference = OrderPreference(orderData.onboarding, orderData.profileIndex, orderData.profileRecommendation, orderData.preference, true)
+            _orderPreference = OrderPreference(orderData.ticker, orderData.onboarding, orderData.profileIndex, orderData.profileRecommendation, orderData.preference, true)
             orderPreference.value = OccState.FirstLoad(_orderPreference)
             if (isFullRefresh) {
                 _orderShipment = OrderShipment()
@@ -190,7 +191,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             }
             OccIdlingResource.decrement()
         }, { throwable: Throwable ->
-            throwable.printStackTrace()
+            Timber.d(throwable)
             _orderPreference = OrderPreference()
             orderCart = OrderCart()
             validateUsePromoRevampUiModel = null

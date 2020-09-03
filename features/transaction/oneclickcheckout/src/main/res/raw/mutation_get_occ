@@ -14,6 +14,12 @@ query get_occ_cart_page($source: String) {
         ErrorProductMaxQuantity
         ErrorProductMinQuantity
       }
+      tickers {
+        id
+        message
+        page
+        title
+      }
       ticker_message {
         message
         replacement {

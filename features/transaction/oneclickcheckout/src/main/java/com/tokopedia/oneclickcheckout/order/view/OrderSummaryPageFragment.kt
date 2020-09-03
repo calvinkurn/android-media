@@ -483,6 +483,14 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     }
 
     private fun showMessage(orderPreference: OrderPreference) {
+        if (orderPreference.ticker != null) {
+            tickerOsp?.tickerTitle = orderPreference.ticker.title
+            tickerOsp?.setHtmlDescription(orderPreference.ticker.message)
+            tickerOsp?.visible()
+        } else {
+            tickerOsp?.gone()
+        }
+
         val preference = orderPreference.preference
         if (preference.profileId > 0) {
             tvHeader2?.text = getString(R.string.lbl_osp_secondary_header)

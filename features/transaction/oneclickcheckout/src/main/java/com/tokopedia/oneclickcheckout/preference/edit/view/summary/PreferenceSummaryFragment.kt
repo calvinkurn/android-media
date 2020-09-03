@@ -252,6 +252,8 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
         } else {
             tvPaymentDetail?.gone()
         }
+//        tvPaymentInfo?.text = MethodChecker.fromHtml("Pembelian barang Sale ini hanya bisa dibayar menggunakan <b>OVO</b>.")
+//        tvPaymentInfo?.visible()
 
         val parent = activity
         if (parent is PreferenceEditParent) {

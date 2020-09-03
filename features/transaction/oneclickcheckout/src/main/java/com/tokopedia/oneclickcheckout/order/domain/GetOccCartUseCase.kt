@@ -15,6 +15,8 @@ import com.tokopedia.oneclickcheckout.order.view.card.OrderProductCard
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.oneclickcheckout.order.view.model.ProductTrackerData
 import com.tokopedia.oneclickcheckout.order.view.model.WholesalePrice
+import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
+import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import java.util.*
@@ -55,7 +57,8 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
                     }
                     kero = OrderKero(response.response.data.keroToken, response.response.data.keroDiscomToken, response.response.data.keroUnixTime)
                 }
-                return OrderData(response.response.data.occMainOnboarding,
+                return OrderData(mapTicker(response.response.data.tickers),
+                        response.response.data.occMainOnboarding,
                         orderCart,
                         response.response.data.profileIndex,
                         response.response.data.profileRecommendation,
@@ -262,12 +265,14 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
     }
 
     private fun mapPrompt(promptResponse: OccPromptResponse): OccPrompt {
-//        return OccPrompt(OccPrompt.FROM_CART, OccPrompt.TYPE_DIALOG, "title disini", "desc disini", listOf(
-//                OccPromptButton("text ini", "tokopedia://home", OccPromptButton.ACTION_OPEN, OccPromptButton.COLOR_PRIMARY)
-//        ))
         return OccPrompt(OccPrompt.FROM_CART, promptResponse.type.toLowerCase(Locale.ROOT), promptResponse.title, promptResponse.description, promptResponse.buttons.map {
             OccPromptButton(it.text, it.link, it.action.toLowerCase(Locale.ROOT), it.color.toLowerCase(Locale.ROOT))
         })
+    }
+
+    private fun mapTicker(tickers: List<Ticker>): TickerData? {
+        val ticker = tickers.firstOrNull() ?: return null
+        return TickerData(ticker.id, ticker.message, ticker.page, ticker.title)
     }
 
     companion object {

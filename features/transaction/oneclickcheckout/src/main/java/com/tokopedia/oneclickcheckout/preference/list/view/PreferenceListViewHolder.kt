@@ -127,7 +127,9 @@ class PreferenceListViewHolder(itemView: View, private val listener: PreferenceL
         }
 
         ivEditPreference.setOnClickListener {
-            listener.onPreferenceEditClicked(preference, adapterPosition + 1, profileSize)
+            if (preference.enable) {
+                listener.onPreferenceEditClicked(preference, adapterPosition + 1, profileSize)
+            }
         }
     }
 }
