@@ -133,8 +133,8 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         initView()
         initVar()
         setViewListener()
-            setActionVar()
-        }
+        setActionVar()
+    }
 
     private fun initInjector() {
         DaggerFingerprintComponent
