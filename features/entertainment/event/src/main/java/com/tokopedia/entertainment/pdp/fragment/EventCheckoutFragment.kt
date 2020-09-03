@@ -52,6 +52,7 @@ import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventPackageMapper.g
 import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventPackageMapper.getPackage
 import com.tokopedia.entertainment.pdp.data.pdp.MetaDataResponse
 import com.tokopedia.entertainment.pdp.di.EventPDPComponent
+import com.tokopedia.entertainment.pdp.listener.OnAdditionalListener
 import com.tokopedia.entertainment.pdp.viewmodel.EventCheckoutViewModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
@@ -74,7 +75,7 @@ import java.io.Serializable
 import javax.inject.Inject
 
 
-class EventCheckoutFragment : BaseDaggerFragment() {
+class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
 
     private var urlPDP: String = ""
     private var metadata = MetaDataResponse()
@@ -287,7 +288,7 @@ class EventCheckoutFragment : BaseDaggerFragment() {
     private fun renderAdditional(pdp: ProductDetailData){
         val listAdditional = getAdditionalList(pdp, packageID, metadata.itemMap)
         if (!listAdditional.isNullOrEmpty()) {
-            val adapterAdditional = EventCheckoutAdditionalAdapter()
+            val adapterAdditional = EventCheckoutAdditionalAdapter(this)
             adapterAdditional.setList(listAdditional)
             rv_event_checkout_additional.apply {
                 layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
@@ -408,6 +409,10 @@ class EventCheckoutFragment : BaseDaggerFragment() {
                 }
             }
         }
+    }
+
+    override fun onClickAdditional(additonal: EventCheckoutAdditionalData) {
+        goToPageForm()
     }
 
 

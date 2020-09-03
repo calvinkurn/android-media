@@ -6,9 +6,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.pdp.data.checkout.EventCheckoutAdditionalData
+import com.tokopedia.entertainment.pdp.listener.OnAdditionalListener
 import kotlinx.android.synthetic.main.item_checkout_event_data_tambahan_item.view.*
+import kotlinx.android.synthetic.main.item_checkout_event_data_tambahan_package.view.*
 
-class EventCheckoutAdditionalAdapter : RecyclerView.Adapter<EventCheckoutAdditionalAdapter.EventCheckoutAdditionalViewHolder>(){
+class EventCheckoutAdditionalAdapter(private val listener: OnAdditionalListener) : RecyclerView.Adapter<EventCheckoutAdditionalAdapter.EventCheckoutAdditionalViewHolder>(){
 
     private var listAdditional = emptyList<EventCheckoutAdditionalData>()
 
@@ -17,19 +19,28 @@ class EventCheckoutAdditionalAdapter : RecyclerView.Adapter<EventCheckoutAdditio
             with(itemView) {
                 when(additionalData.additionalType.type){
                     1 -> {
-
+                        item_checkout_event_additional_package.setOnClickListener {
+                            clickedItem(additionalData)
+                        }
                     }
 
                     2 -> {
-
+                        item_checkout_event_additional_package.setOnClickListener {
+                            clickedItem(additionalData)
+                        }
                     }
 
                     3 -> {
                         tg_event_additional_item_title.text = additionalData.titleItem
+                        item_checkout_event_additional_item.setOnClickListener {
+                            clickedItem(additionalData)
+                        }
                     }
 
                     4 -> {
-
+                        item_checkout_event_additional_item.setOnClickListener {
+                            clickedItem(additionalData)
+                        }
                     }
                 }
             }
@@ -61,5 +72,9 @@ class EventCheckoutAdditionalAdapter : RecyclerView.Adapter<EventCheckoutAdditio
     fun setList(list: List<EventCheckoutAdditionalData>) {
         listAdditional = list
         notifyDataSetChanged()
+    }
+
+    private fun clickedItem(additionalData: EventCheckoutAdditionalData){
+        listener.onClickAdditional(additionalData)
     }
 }
