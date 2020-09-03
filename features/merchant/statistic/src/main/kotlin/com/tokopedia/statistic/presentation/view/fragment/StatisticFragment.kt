@@ -649,10 +649,12 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     private fun notifyWidgetChanged(widget: BaseWidgetUiModel<*>) {
-        val widgetPosition = adapter.data.indexOf(widget)
-        if (widgetPosition > -1) {
-            adapter.notifyItemChanged(widgetPosition)
-            view?.swipeRefreshStc?.isRefreshing = false
+        recyclerView.post {
+            val widgetPosition = adapter.data.indexOf(widget)
+            if (widgetPosition != RecyclerView.NO_POSITION) {
+                adapter.notifyItemChanged(widgetPosition)
+                view?.swipeRefreshStc?.isRefreshing = false
+            }
         }
     }
 
@@ -682,9 +684,9 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         mViewModel.tickers.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> showTickers(it.data)
-                is Fail -> removeTicker()
             }
         })
+
         mViewModel.getTickers()
     }
 
@@ -723,11 +725,6 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     private fun showTickers(tickers: List<TickerItemUiModel>) {
         tickerWidget.data?.tickers = tickers
-        notifyWidgetChanged(tickerWidget)
-    }
-
-    private fun removeTicker() {
-        tickerWidget.data?.tickers = emptyList()
         notifyWidgetChanged(tickerWidget)
     }
 
