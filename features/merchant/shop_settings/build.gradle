@@ -21,6 +21,9 @@ dependencies {
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.libraries.trackingOptimizer)
+    implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.goldMerchantCommon)
 
@@ -32,6 +35,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     testImplementation rootProject.ext.testDependencies.mockk
