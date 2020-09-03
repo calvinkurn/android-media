@@ -607,7 +607,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             orderList.tickers.forEach {
                 var desc = it.text
                 if (it.action.appUrl.isNotEmpty() && it.action.label.isNotEmpty()) {
-                    desc += " ${getString(R.string.ticker_info_selengkapnya)
+                    desc += " ${getString(R.string.buyer_ticker_info_selengkapnya)
                             .replace(UohConsts.TICKER_URL, it.action.appUrl)
                             .replace(UohConsts.TICKER_LABEL, it.action.label)}"
                 }
@@ -635,7 +635,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 ticker_info?.tickerTitle = it.title
                 var desc = it.text
                 if (it.action.appUrl.isNotEmpty() && it.action.label.isNotEmpty()) {
-                    desc += " ${getString(R.string.ticker_info_selengkapnya)
+                    desc += " ${getString(R.string.buyer_ticker_info_selengkapnya)
                             .replace(UohConsts.TICKER_URL, it.action.appUrl)
                             .replace(UohConsts.TICKER_LABEL, it.action.label)}"
                 }

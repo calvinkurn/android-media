@@ -14,7 +14,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -28,7 +27,6 @@ import com.tokopedia.home.account.AccountConstants
 import com.tokopedia.home.account.R
 import com.tokopedia.home.account.analytics.AccountAnalytics
 import com.tokopedia.home.account.data.util.StaticBuyerModelGenerator
-import com.tokopedia.home.account.data.util.StaticBuyerModelGeneratorUoh
 import com.tokopedia.home.account.di.component.DaggerBuyerAccountComponent
 import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory
 import com.tokopedia.home.account.presentation.adapter.buyer.BuyerAccountAdapter
@@ -42,6 +40,7 @@ import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
@@ -53,9 +52,6 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-
-
-
 
 /**
  * @author okasurya on 7/16/18.
@@ -241,11 +237,7 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
             context?.let {
                 adapter.clearAllElements()
                 useUoh()?.let { newFlow ->
-                    if (newFlow) {
-                        adapter.setElement(StaticBuyerModelGeneratorUoh.getModel(it, null, remoteConfig, null))
-                    } else {
-                        adapter.setElement(StaticBuyerModelGenerator.getModel(it, null, remoteConfig))
-                    }
+                    adapter.setElement(StaticBuyerModelGenerator.getModel(it, null, getRemoteConfig(), newFlow))
                 }
             }
         }
@@ -454,18 +446,6 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
         context?.let {
             showLoading()
             viewModel.getBuyerData()
-
-            useUoh()?.let { newFlow ->
-                if (newFlow) {
-                    val uohCounterQuery = GraphqlHelper.loadRawString(it.resources, R.raw
-                            .query_uoh_order_count)
-                    presenter.getBuyerData(GraphqlHelper.loadRawString(it.resources, R.raw
-                            .query_buyer_account_home), saldoQuery, uohCounterQuery)
-                } else {
-                    presenter.getOldBuyerData(GraphqlHelper.loadRawString(it.resources, R.raw
-                            .query_buyer_account_home), saldoQuery)
-                }
-            }
         }
     }
 

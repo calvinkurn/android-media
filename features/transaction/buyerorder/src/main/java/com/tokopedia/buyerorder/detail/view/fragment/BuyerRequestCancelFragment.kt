@@ -723,7 +723,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             visible()
             tickerType = Utils.getTickerType(tickerInfo.type)
             tickerShape = Ticker.SHAPE_LOOSE
-            setHtmlDescription(tickerInfo.text + " ${getString(R.string.ticker_info_selengkapnya)
+            setHtmlDescription(tickerInfo.text + " ${getString(R.string.buyer_ticker_info_selengkapnya)
                     .replace(TICKER_URL, tickerInfo.actionUrl)
                     .replace(TICKER_LABEL, tickerInfo.actionText)}")
             setDescriptionClickEvent(object : TickerCallback {

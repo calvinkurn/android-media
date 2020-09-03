@@ -12,7 +12,6 @@ import com.tokopedia.home.account.data.model.tokopointshortcut.ShortcutGroupList
 import com.tokopedia.home.account.data.model.tokopointshortcut.ShortcutListItem;
 import com.tokopedia.home.account.data.model.tokopointshortcut.ShortcutResponse;
 import com.tokopedia.home.account.data.util.StaticBuyerModelGenerator;
-import com.tokopedia.home.account.data.util.StaticBuyerModelGeneratorUoh;
 import com.tokopedia.home.account.presentation.viewmodel.BuyerCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayBSModel;
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayViewModel;
@@ -195,11 +194,7 @@ public class BuyerAccountMapper implements Func1<AccountDataModel, BuyerViewMode
             tokopediaPayViewModel.setBsDataCentre(null);
         }
 
-        if (useUoh()) {
-            items.addAll(StaticBuyerModelGeneratorUoh.Companion.getModel(context, accountDataModel, remoteConfig, accountModel.getUohOrderCount()));
-        } else {
-            items.addAll(StaticBuyerModelGenerator.Companion.getModel(context, accountDataModel, remoteConfig));
-        }
+        items.addAll(StaticBuyerModelGenerator.Companion.getModel(context, accountDataModel, remoteConfig, useUoh()));
         model.setItems(items);
 
         return model;

@@ -103,4 +103,12 @@ query {
            buyer_usable
            seller_usable
    }
+   {
+     uohOrderCount {
+       onProcess
+       onProcessText
+       activeTickets
+       activeTicketsText
+   	}
+   }
 }

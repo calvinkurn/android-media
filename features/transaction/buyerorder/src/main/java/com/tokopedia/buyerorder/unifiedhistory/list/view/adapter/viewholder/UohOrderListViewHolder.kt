@@ -41,7 +41,7 @@ class UohOrderListViewHolder(itemView: View, private val actionListener: UohItem
                     item.dataObject.metadata.tickers.forEach {
                         var desc = it.text
                         if (it.action.appUrl.isNotEmpty() && it.action.label.isNotEmpty()) {
-                            desc += " ${itemView.context.getString(R.string.ticker_info_selengkapnya)
+                            desc += " ${itemView.context.getString(R.string.buyer_ticker_info_selengkapnya)
                                     .replace(UohConsts.TICKER_URL, it.action.appUrl)
                                     .replace(UohConsts.TICKER_LABEL, it.action.label)}"
                         }
@@ -69,7 +69,7 @@ class UohOrderListViewHolder(itemView: View, private val actionListener: UohItem
                         itemView.ticker_info_inside_card?.tickerTitle = it.title
                         var desc = it.text
                         if (it.action.appUrl.isNotEmpty() && it.action.label.isNotEmpty()) {
-                            desc += " ${itemView.context.getString(R.string.ticker_info_selengkapnya)
+                            desc += " ${itemView.context.getString(R.string.buyer_ticker_info_selengkapnya)
                                     .replace(UohConsts.TICKER_URL, it.action.appUrl)
                                     .replace(UohConsts.TICKER_LABEL, it.action.label)}"
                         }

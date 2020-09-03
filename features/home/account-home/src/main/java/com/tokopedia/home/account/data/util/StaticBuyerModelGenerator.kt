@@ -8,48 +8,63 @@ import com.tokopedia.home.account.R
 import com.tokopedia.home.account.presentation.viewmodel.*
 import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewModel
 import com.tokopedia.home.account.revamp.domain.data.model.AccountDataModel
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import java.lang.Boolean
 
 const val RESCENTER_BUYER = "https://m.tokopedia.com/resolution-center/inbox/buyer"
 
 class StaticBuyerModelGenerator private constructor() {
 
     companion object {
-        fun getModel(context: Context, accountDataModel: AccountDataModel?, remoteConfig: RemoteConfig): List<ParcelableViewModel<*>> {
+        fun getModel(context: Context, accountDataModel: AccountDataModel?, remoteConfig: RemoteConfig, isUseUoh: Boolean): List<ParcelableViewModel<*>> {
             val viewItems = arrayListOf<ParcelableViewModel<*>>()
 
             viewItems.add(MenuTitleViewModel().apply {
                 title = context.getString(R.string.title_menu_transaction)
             })
 
-            viewItems.add(MenuListViewModel().apply {
-                menu = context.getString(R.string.title_menu_waiting_for_payment)
-                menuDescription = context.getString(R.string.label_menu_waiting_for_payment)
-                val paymentStatus = accountDataModel?.notifications?.buyerOrder?.paymentStatus?: "0"
-                count = if(paymentStatus.isNotEmpty()) { paymentStatus.toInt(10) } else { 0 }
-                applink = ApplinkConst.PMS
-                titleTrack = AccountConstants.Analytics.PEMBELI
-                sectionTrack = context.getString(R.string.title_menu_transaction)
-            })
+            if (isUseUoh) {
+                viewItems.add(MenuGridIconNotificationViewModel().apply {
+                    setItems(getUohMenu(context, accountDataModel))
+                })
 
-            MenuGridViewModel().apply {
-                title = context.getString(R.string.title_menu_shopping_transaction)
-                linkText = context.getString(R.string.label_menu_show_history)
-                titleTrack = AccountConstants.Analytics.PEMBELI
-                sectionTrack = context.getString(R.string.title_menu_transaction)
-                applinkUrl = ApplinkConst.BELANJA_ORDER
-                items = when (remoteConfig.getBoolean(RemoteConfigKey.APP_GLOBAL_NAV_NEW_DESIGN, true)) {
-                    true -> getMarketPlaceOrderMenu(context, accountDataModel)
-                    else -> getPurchaseOrderMenu(context, accountDataModel)
+                viewItems.add(MenuListViewModel().apply {
+                    menu = accountDataModel?.uohOrderCount?.activeTicketsText
+                    menuDescription = context.getString(R.string.e_ticket_desc)
+                    count = accountDataModel?.uohOrderCount?.activeTickets.toIntOrZero()
+                    applink = ApplinkConst.UnifyOrder.UNIFY_ORDER_STATUS.replace(ApplinkConst.UnifyOrder.PARAM_CUSTOM_FILTER, ApplinkConst.UnifyOrder.PARAM_E_TIKET)
+                    titleTrack = AccountConstants.Analytics.PEMBELI
+                    sectionTrack = context.getString(R.string.title_menu_transaction)
+                })
+            } else {
+                viewItems.add(MenuListViewModel().apply {
+                    menu = context.getString(R.string.title_menu_waiting_for_payment)
+                    menuDescription = context.getString(R.string.label_menu_waiting_for_payment)
+                    val paymentStatus = accountDataModel?.notifications?.buyerOrder?.paymentStatus?: "0"
+                    count = if(paymentStatus.isNotEmpty()) { paymentStatus.toInt(10) } else { 0 }
+                    applink = ApplinkConst.PMS
+                    titleTrack = AccountConstants.Analytics.PEMBELI
+                    sectionTrack = context.getString(R.string.title_menu_transaction)
+                })
+
+                MenuGridViewModel().apply {
+                    title = context.getString(R.string.title_menu_shopping_transaction)
+                    linkText = context.getString(R.string.label_menu_show_history)
+                    titleTrack = AccountConstants.Analytics.PEMBELI
+                    sectionTrack = context.getString(R.string.title_menu_transaction)
+                    applinkUrl = ApplinkConst.BELANJA_ORDER
+                    items = when (remoteConfig.getBoolean(RemoteConfigKey.APP_GLOBAL_NAV_NEW_DESIGN, true)) {
+                        true -> getMarketPlaceOrderMenu(context, accountDataModel)
+                        else -> getPurchaseOrderMenu(context, accountDataModel)
+                    }
                 }
-            }
 
-            viewItems.add(MenuGridViewModel().apply {
-                title = context.getString(R.string.title_menu_other_transaction)
-                items = getDigitalOrderMenu(context, remoteConfig)
-            })
+                viewItems.add(MenuGridViewModel().apply {
+                    title = context.getString(R.string.title_menu_other_transaction)
+                    items = getDigitalOrderMenu(context, remoteConfig)
+                })
+            }
 
             viewItems.add(MenuListViewModel().apply {
                 menu = context.getString(R.string.ulasan)
@@ -72,7 +87,7 @@ class StaticBuyerModelGenerator private constructor() {
                 title = context.getString(R.string.title_menu_favorites)
             })
 
-            if (remoteConfig.getBoolean("mainapp_enable_interest_pick", Boolean.TRUE)) {
+            if (remoteConfig.getBoolean("mainapp_enable_interest_pick", true)) {
                 viewItems.add(MenuListViewModel().apply {
                     menu = context.getString(R.string.title_menu_favorite_topic)
                     menuDescription = context.getString(R.string.label_menu_favorite_topic)
@@ -277,6 +292,39 @@ class StaticBuyerModelGenerator private constructor() {
                     R.drawable.ic_see_all,
                     context.getString(R.string.title_menu_show_all),
                     AccountConstants.Navigation.SEE_ALL,
+                    0,
+                    AccountConstants.Analytics.PEMBELI,
+                    context.getString(R.string.title_menu_transaction)
+            ))
+
+            return gridItems
+        }
+
+        private fun getUohMenu(context: Context, accountDataModel: AccountDataModel?): ArrayList<MenuGridIconNotificationItemViewModel> {
+            val gridItems = arrayListOf<MenuGridIconNotificationItemViewModel>()
+
+            gridItems.add(MenuGridIconNotificationItemViewModel(
+                    R.drawable.ic_uoh_menunggu_pembayaran,
+                    context.getString(R.string.title_uoh_1),
+                    ApplinkConst.PMS,
+                    accountDataModel?.notifications?.buyerOrder?.paymentStatus?.toInt(10) ?: 0,
+                    AccountConstants.Analytics.PEMBELI,
+                    context.getString(R.string.title_menu_transaction)
+            ))
+
+            gridItems.add(MenuGridIconNotificationItemViewModel(
+                    R.drawable.ic_uoh_belanja,
+                    accountDataModel?.uohOrderCount?.onProcessText.toString(),
+                    ApplinkConst.UnifyOrder.UNIFY_ORDER_STATUS.replace(ApplinkConst.UnifyOrder.PARAM_CUSTOM_FILTER, ApplinkConst.UnifyOrder.PARAM_DALAM_PROSES),
+                    accountDataModel?.uohOrderCount?.onProcess.toIntOrZero(),
+                    AccountConstants.Analytics.PEMBELI,
+                    context.getString(R.string.title_menu_transaction)
+            ))
+
+            gridItems.add(MenuGridIconNotificationItemViewModel(
+                    R.drawable.ic_uoh_all_transactions,
+                    context.getString(R.string.title_uoh_3),
+                    ApplinkConst.UnifyOrder.UNIFY_ORDER_STATUS.replace(ApplinkConst.UnifyOrder.PARAM_CUSTOM_FILTER, ApplinkConst.UnifyOrder.PARAM_SEMUA_TRANSAKSI),
                     0,
                     AccountConstants.Analytics.PEMBELI,
                     context.getString(R.string.title_menu_transaction)
