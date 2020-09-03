@@ -74,10 +74,11 @@ class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean
                     view.klik_count.text = statsData[index].statTotalClick
                     view.persentase_klik_count.text = statsData[index].statTotalCtr
                     view.pengeluaran_count.text = statsData[index].statTotalSpent
-                    view.pendapatan_count.text = statsData[index].statTotalConversion
-                    view.produk_terjual_count.text = statsData[index].statTotalSold
+                    view.produk_terjual_count.text = statsData[index].statTotalConversion
                 }
             }
+            view.pendapatan.visibility = View.GONE
+            view.pendapatan_count.visibility = View.GONE
             view.item_card?.setOnClickListener { _ ->
                 if (!selectedMode) {
                     if (item.data.groupPriceDailyBar.isNotEmpty())
