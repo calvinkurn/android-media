@@ -1,18 +1,37 @@
-package com.tokopedia.play
+package com.tokopedia.play.data
 
 import android.content.Context
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 
 
 /**
- * Created by mzennis on 24/08/20.
+ * Created by mzennis on 03/09/20.
+ *
+ * type:
+ * live
+ * vertical
+ * with shop info
+ * with pinned message (without pinned product)
+ * with quick reply
+ * with container chat
+ *
+ * action:
+ * follow - unfollow shop
  */
-class PlayMockModelConfig : MockModelConfig() {
+class PlayLiveMockModelConfig : MockModelConfig() {
 
     override fun createMockModel(context: Context): MockModelConfig {
         addMockResponse(
                 KEY_QUERY,
                 RESPONSE_MOCK_CHANNEL_DETAIL,
+                FIND_BY_QUERY_NAME)
+        addMockResponse(
+                KEY_QUERY_SHOP_INFO,
+                RESPONSE_MOCK_SHOP_INFO,
+                FIND_BY_QUERY_NAME)
+        addMockResponse(
+                KEY_MUTATION_FOLLOW_SHOP,
+                RESPONSE_MOCK_SHOP_FOLLOW,
                 FIND_BY_QUERY_NAME)
         return this
     }
@@ -29,7 +48,7 @@ class PlayMockModelConfig : MockModelConfig() {
                     "description": "",
                     "start_time": "2020-08-11T12:30:00+07:00",
                     "end_time": "2020-08-11T13:00:00+07:00",
-                    "is_live": false,
+                    "is_live": true,
                     "partner": {
                       "id": "6496952",
                       "type": "shop",
@@ -40,7 +59,7 @@ class PlayMockModelConfig : MockModelConfig() {
                     "video": {
                       "id": "6453",
                       "orientation": "vertical",
-                      "type": "vod",
+                      "type": "live",
                       "cover_url": "https://ecs7.tokopedia.net/img/jJtrdn/2020/8/10/d8bff2c4-7ff9-4482-9e71-3c62ae25c826.jpg",
                       "stream_source": "https://vod.tokopedia.com/view/adaptive.m3u8?id=d3c51411b12746ca9f03253b10c99e3d",
                       "autoplay": true,
@@ -52,10 +71,10 @@ class PlayMockModelConfig : MockModelConfig() {
                       }
                     },
                     "pinned_message": {
-                      "id": "",
-                      "title": "",
+                      "id": "123",
+                      "title": "Ada promo menarik buat belanja barang pilihan kami",
                       "message": "",
-                      "redirect_url": ""
+                      "redirect_url": "tokopedia://shop/3598808"
                     },
                     "quick_replies": [
                       "Halo",
@@ -69,8 +88,8 @@ class PlayMockModelConfig : MockModelConfig() {
                       "max_chars": 200,
                       "max_retries": 5,
                       "min_reconnect_delay": 5000,
-                      "show_cart": true,
-                      "show_pinned_product": true,
+                      "show_cart": false,
+                      "show_pinned_product": false,
                       "published": false,
                       "active": true,
                       "freezed": false,
@@ -113,6 +132,43 @@ class PlayMockModelConfig : MockModelConfig() {
                     "app_link": "tokopedia://webview?url=https%3A%2F%2Fwww.tokopedia.com%2Fplay%2Fupdate",
                     "web_link": "https://www.tokopedia.com/play/update"
                   }
+                }
+              }
+            }
+        """
+        private const val KEY_QUERY_SHOP_INFO = "getShopInfo"
+        private const val RESPONSE_MOCK_SHOP_INFO = """
+            {
+              "data": {
+                "shopInfoByID": {
+                  "result": [
+                    {
+                      "shopCore": {
+                        "name": "RAVPower Official Store",
+                        "shopID": "6496952"
+                      },
+                      "favoriteData": {
+                        "totalFavorite": 3347,
+                        "alreadyFavorited": 0
+                      }
+                    }
+                  ],
+                  "error": {
+                    "message": ""
+                  }
+                }
+              }
+            }
+        """
+
+        // TODO is it necessary?
+        private const val KEY_MUTATION_FOLLOW_SHOP = "followShop"
+        private const val RESPONSE_MOCK_SHOP_FOLLOW = """
+            {
+              "data": {
+                "followShop": {
+                  "success": true,
+                  "message": "Berhasil follow"
                 }
               }
             }
