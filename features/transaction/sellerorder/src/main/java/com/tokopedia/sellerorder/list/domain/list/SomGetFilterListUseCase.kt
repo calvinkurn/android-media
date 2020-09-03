@@ -12,12 +12,12 @@ import javax.inject.Inject
  */
 class SomGetFilterListUseCase @Inject constructor(private val useCase: GraphqlUseCase<SomListFilter.Data>) {
 
-    suspend fun execute(query: String): Result<MutableList<SomListFilter.Data.OrderFilterSom.StatusList>> {
+    suspend fun execute(query: String): Result<SomListFilter.Data.OrderFilterSom> {
         useCase.setGraphqlQuery(query)
         useCase.setTypeClass(SomListFilter.Data::class.java)
 
         return try {
-            val resultFilterList = useCase.executeOnBackground().orderFilterSom.statusList.toMutableList()
+            val resultFilterList = useCase.executeOnBackground().orderFilterSom
             Success(resultFilterList)
         } catch (throwable: Throwable) {
             Fail(throwable)

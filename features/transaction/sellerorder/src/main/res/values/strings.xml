@@ -296,5 +296,6 @@
     <string name="som_buyer_cancellation_confirm_accept_order_button">Lanjut Terima</string>
     <string name="som_buyer_cancellation_cancel_button">Kembali</string>
     <string name="som_header_detail_ticker_cancellation">Dibatalkan karena</string>
+    <string name="som_list_order_waiting_payment_button_text">%1$s (%2$s)</string>
 
 </resources>

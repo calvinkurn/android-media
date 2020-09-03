@@ -6,22 +6,26 @@ import com.google.gson.annotations.SerializedName
 /**
  * Created by fwidjaja on 2019-08-29.
  */
-data class SomListFilter (
+data class SomListFilter(
         @SerializedName("data")
         @Expose
         val data: Data = Data()
 ) {
-    data class Data (
+    data class Data(
             @SerializedName("orderFilterSom")
             @Expose
             val orderFilterSom: OrderFilterSom = OrderFilterSom()
     ) {
-        data class OrderFilterSom (
+        data class OrderFilterSom(
                 @SerializedName("status_list")
                 @Expose
-                val statusList: List<StatusList> = listOf()
+                val statusList: List<StatusList> = listOf(),
+
+                @SerializedName("waiting_payment_counter")
+                @Expose
+                val waitingPaymentCounter: WaitingPaymentCounter = WaitingPaymentCounter()
         ) {
-            data class StatusList (
+            data class StatusList(
                     @SerializedName("order_status_id")
                     @Expose
                     val orderStatusIdList: List<Int> = listOf(),
@@ -46,24 +50,34 @@ data class SomListFilter (
                     @Expose
                     val childStatusList: List<ChildStatus> = listOf()
             ) {
-                data class ChildStatus (
-                       @SerializedName("id")
-                       @Expose
-                       val childId: List<Int> = listOf(),
+                data class ChildStatus(
+                        @SerializedName("id")
+                        @Expose
+                        val childId: List<Int> = listOf(),
 
-                       @SerializedName("key")
-                       @Expose
-                       val childKey: String = "",
+                        @SerializedName("key")
+                        @Expose
+                        val childKey: String = "",
 
-                       @SerializedName("text")
-                       @Expose
-                       val childText: String = "",
+                        @SerializedName("text")
+                        @Expose
+                        val childText: String = "",
 
-                       @SerializedName("amount")
-                       @Expose
-                       val childAmount: Int = 0
+                        @SerializedName("amount")
+                        @Expose
+                        val childAmount: Int = 0
                 )
             }
+
+            data class WaitingPaymentCounter(
+                    @SerializedName("text")
+                    @Expose
+                    val text: String = "Menunggu Pembayaran",
+
+                    @SerializedName("amount")
+                    @Expose
+                    val amount: Int = (Math.random() * 1000).toInt()
+            )
         }
     }
 }

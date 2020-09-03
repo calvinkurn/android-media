@@ -62,6 +62,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_CODE_ORDER_DELIVER
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_CODE_ORDER_DELIVERED_DUE_LIMIT
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_DELIVERED
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_DONE
+import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_NEW_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ORDER_CANCELLED
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_ACTIVE
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_STATUS
@@ -86,6 +87,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.empty_list.*
 import kotlinx.android.synthetic.main.fragment_som_list.*
+import kotlinx.android.synthetic.main.partial_som_list_waiting_payment.*
 import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -152,7 +154,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private val somListViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SomListViewModel::class.java]
     }
-    
+
     private var userNotAllowedDialog: DialogUnify? = null
 
     companion object {
@@ -244,7 +246,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     private fun showSellerMigrationTicker() {
-        if(isSellerMigrationEnabled(context)) {
+        if (isSellerMigrationEnabled(context)) {
             somListSellerMigrationTicker.apply {
                 tickerTitle = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_generic_ticker_title)
                 setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_generic_ticker_content))
@@ -252,6 +254,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     override fun onDescriptionViewClick(charSequence: CharSequence) {
                         openSellerMigrationBottomSheet()
                     }
+
                     override fun onDismiss() {
                         // No Op
                     }
@@ -410,7 +413,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         }
     }
 
-    private fun observingTicker() = somListViewModel.tickerListResult.observe(this, Observer {
+    private fun observingTicker() = somListViewModel.tickerListResult.observe(viewLifecycleOwner, Observer {
         when (it) {
             is Success -> {
                 renderInfoTicker(it.data)
@@ -423,10 +426,10 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     })
 
     private fun observingFilter() {
-        somListViewModel.filterListResult.observe(this, Observer {
+        somListViewModel.filterResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    filterList = it.data
+                    filterList = it.data.statusList
                     renderFilter()
                     if (filterStatusId != 0) {
                         loadStatusOrderList()
@@ -443,7 +446,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         })
     }
 
-    private fun observingStatusList() = somListViewModel.statusOrderListResult.observe(this, Observer {
+    private fun observingStatusList() = somListViewModel.statusOrderListResult.observe(viewLifecycleOwner, Observer {
         when (it) {
             is Success -> {
                 it.data.forEach { statusList ->
@@ -523,7 +526,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     private fun loadFilterList() {
         activity?.resources?.let {
-            somListViewModel.loadFilterList(GraphqlHelper.loadRawString(it, R.raw.gql_som_filter))
+            somListViewModel.loadFilter(GraphqlHelper.loadRawString(it, R.raw.gql_som_filter))
         }
     }
 
@@ -550,7 +553,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                             SomAnalytics.eventClickSeeMoreOnTicker(itemData.toString())
                         }
                     })
-                    ticker_info?.setDescriptionClickEvent(object: TickerCallback {
+                    ticker_info?.setDescriptionClickEvent(object : TickerCallback {
                         override fun onDescriptionViewClick(linkUrl: CharSequence) {}
 
                         override fun onDismiss() {
@@ -648,7 +651,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     @SuppressLint("SimpleDateFormat")
     private fun observingOrders() {
-        somListViewModel.orderListResult.observe(this, androidx.lifecycle.Observer {
+        somListViewModel.orderListResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> {
                     orderList = it.data
@@ -656,9 +659,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     if (orderList.orders.isNotEmpty()) {
                         renderOrderList()
                         showCoachMarkProducts()
-                    }
-
-                    else {
+                    } else {
                         if (isFilterApplied) {
                             if (!paramOrder.startDate.equals(defaultStartDate, true) || !paramOrder.endDate.equals(defaultEndDate, true)) {
                                 val inputFormat = SimpleDateFormat("dd/MM/yyyy")
@@ -693,9 +694,27 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
         if (!onLoadMore) {
             somListItemAdapter.addList(orderList.orders)
+            renderWaitingForPaymentCard()
         } else {
             somListItemAdapter.appendList(orderList.orders)
             scrollListener.updateStateAfterGetData()
+        }
+    }
+
+    private fun renderWaitingForPaymentCard() {
+        if (tabActive == STATUS_NEW_ORDER || tabActive == STATUS_ALL_ORDER) {
+            val filterResult = somListViewModel.filterResult.value
+            if (filterResult is Success) {
+                val amount = if (filterResult.data.waitingPaymentCounter.amount > 100) "99+"
+                else filterResult.data.waitingPaymentCounter.amount.toString()
+                tvTitle.text = getString(
+                        R.string.som_list_order_waiting_payment_button_text,
+                        filterResult.data.waitingPaymentCounter.text,
+                        amount)
+                somWaitingPaymentButton.visible()
+            }
+        } else {
+            somWaitingPaymentButton.gone()
         }
     }
 
@@ -844,7 +863,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                         val msg = data.getStringExtra(RESULT_SET_DELIVERED)
                         refreshThenShowToasterOk(msg)
                     }
-                    data.hasExtra(RESULT_PROCESS_REQ_PICKUP)  ->  {
+                    data.hasExtra(RESULT_PROCESS_REQ_PICKUP) -> {
                         val resultProcessReqPickup = data.getParcelableExtra<SomProcessReqPickup.Data.MpLogisticRequestPickup>(RESULT_PROCESS_REQ_PICKUP)
                         refreshThenShowToasterOk(resultProcessReqPickup.listMessage.first())
                     }

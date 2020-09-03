@@ -179,11 +179,11 @@ class SomListViewModelTest {
         } returns Success(SomListFilter.Data.OrderFilterSom(listFilter).statusList.toMutableList())
 
         //when
-        somListViewModel.loadFilterList("")
+        somListViewModel.loadFilter("")
 
         //then
-        assert(somListViewModel.filterListResult.value is Success)
-        assert((somListViewModel.filterListResult.value as Success<MutableList<SomListFilter.Data.OrderFilterSom.StatusList>>).data[0].orderStatus == "400")
+        assert(somListViewModel.filterResult.value is Success)
+        assert((somListViewModel.filterResult.value as Success<MutableList<SomListFilter.Data.OrderFilterSom.StatusList>>).data[0].orderStatus == "400")
     }
 
     @Test
@@ -194,10 +194,10 @@ class SomListViewModelTest {
         } returns Fail(Throwable())
 
         //when
-        somListViewModel.loadFilterList("")
+        somListViewModel.loadFilter("")
 
         //then
-        assert(somListViewModel.filterListResult.value is Fail)
+        assert(somListViewModel.filterResult.value is Fail)
     }
 
     @Test
@@ -208,11 +208,11 @@ class SomListViewModelTest {
         } returns Success(SomListFilter.Data.OrderFilterSom(listFilter).statusList.toMutableList())
 
         //when
-        somListViewModel.loadFilterList("")
+        somListViewModel.loadFilter("")
 
         //then
-        assert(somListViewModel.filterListResult.value is Success)
-        assert((somListViewModel.filterListResult.value as Success<MutableList<SomListFilter.Data.OrderFilterSom.StatusList>>).data.size > 0)
+        assert(somListViewModel.filterResult.value is Success)
+        assert((somListViewModel.filterResult.value as Success<MutableList<SomListFilter.Data.OrderFilterSom.StatusList>>).data.size > 0)
     }
 
     // order_list

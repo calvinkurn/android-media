@@ -33,9 +33,9 @@ class SomListViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
     val tickerListResult: LiveData<Result<MutableList<SomListTicker.Data.OrderTickers.Tickers>>>
         get() = _tickerListResult
 
-    private val _filterListResult = MutableLiveData<Result<MutableList<SomListFilter.Data.OrderFilterSom.StatusList>>>()
-    val filterListResult: LiveData<Result<MutableList<SomListFilter.Data.OrderFilterSom.StatusList>>>
-        get() = _filterListResult
+    private val _filterResult = MutableLiveData<Result<SomListFilter.Data.OrderFilterSom>>()
+    val filterResult: LiveData<Result<SomListFilter.Data.OrderFilterSom>>
+        get() = _filterResult
 
     private val _statusOrderListResult = MutableLiveData<Result<MutableList<SomListAllFilter.Data.OrderFilterSomSingle.StatusList>>>()
     val statusOrderListResult: LiveData<Result<MutableList<SomListAllFilter.Data.OrderFilterSomSingle.StatusList>>>
@@ -68,11 +68,11 @@ class SomListViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
         })
     }
 
-    fun loadFilterList(filterQuery: String) {
+    fun loadFilter(filterQuery: String) {
         launchCatchError(block =  {
-            _filterListResult.postValue(getFilterListUseCase.execute(filterQuery))
+            _filterResult.postValue(getFilterListUseCase.execute(filterQuery))
         }, onError = {
-            _filterListResult.postValue(Fail(it))
+            _filterResult.postValue(Fail(it))
         })
     }
 
