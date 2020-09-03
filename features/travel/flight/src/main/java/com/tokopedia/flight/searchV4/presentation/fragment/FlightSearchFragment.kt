@@ -106,7 +106,6 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
                 is Success -> {
                     clearAllData()
                     renderSearchList(it.data)
-                    flightSearchViewModel.isDoneLoadData()
                 }
                 is Fail -> {
                     if (it.throwable is FlightSearchThrowable) {
