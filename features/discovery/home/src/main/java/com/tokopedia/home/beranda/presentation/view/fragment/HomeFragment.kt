@@ -728,7 +728,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun observeHomeData() {
-        getHomeViewModel().homeLiveData.observe(this, Observer { data: HomeDataModel? ->
+        getHomeViewModel().homeLiveData.observe(viewLifecycleOwner, Observer { data: HomeDataModel? ->
             if (data != null) {
                 if (data.list.size > VISITABLE_SIZE_WITH_DEFAULT_BANNER) {
                     configureHomeFlag(data.homeFlag)
@@ -741,7 +741,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun observeUpdateNetworkStatusData() {
-        getHomeViewModel().updateNetworkLiveData.observe(this, Observer { (status) ->
+        getHomeViewModel().updateNetworkLiveData.observe(viewLifecycleOwner, Observer { (status) ->
             resetImpressionListener()
             if (status === Result.Status.SUCCESS) {
                 hideLoading()
@@ -755,7 +755,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun observeTrackingData() {
-        getHomeViewModel().trackingLiveData.observe(this, Observer<Event<List<HomeVisitable?>>> { trackingData: Event<List<HomeVisitable?>> ->
+        getHomeViewModel().trackingLiveData.observe(viewLifecycleOwner, Observer<Event<List<HomeVisitable?>>> { trackingData: Event<List<HomeVisitable?>> ->
             val homeVisitables = trackingData.getContentIfNotHandled()
             homeVisitables?.let {
                 val visitables: List<Visitable<*>> = it as List<Visitable<*>>
@@ -810,7 +810,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun observePlayReminder(){
-        getHomeViewModel().reminderPlayLiveData.observe(this, Observer {
+        getHomeViewModel().reminderPlayLiveData.observe(viewLifecycleOwner, Observer {
             if(it.isSuccess()){
                 showToaster(
                         if(it.data == true) getString(R.string.home_page_play_card_success_add_reminder)
@@ -857,7 +857,7 @@ open class HomeFragment : BaseDaggerFragment(),
     @VisibleForTesting
     private fun observeRequestImagePlayBanner() {
         context?.let {
-            getHomeViewModel().requestImageTestLiveData.observe(this, Observer { playCardViewModelEvent: Event<PlayCardDataModel> ->
+            getHomeViewModel().requestImageTestLiveData.observe(viewLifecycleOwner, Observer { playCardViewModelEvent: Event<PlayCardDataModel> ->
                 Glide.with(it)
                         .asBitmap()
                         .load(playCardViewModelEvent.peekContent().playCardHome?.coverUrl)
@@ -877,7 +877,7 @@ open class HomeFragment : BaseDaggerFragment(),
 
     private fun observeSalamWidget(){
         context?.let{
-            getHomeViewModel().salamWidgetLiveData.observe(this, Observer {
+            getHomeViewModel().salamWidgetLiveData.observe(viewLifecycleOwner, Observer {
                 getHomeViewModel().insertSalamWidget(it.peekContent())
             })
         }
@@ -885,7 +885,7 @@ open class HomeFragment : BaseDaggerFragment(),
 
     private fun observeRechargeRecommendation(){
         context?.let {
-            getHomeViewModel().rechargeRecommendationLiveData.observe(this, Observer {
+            getHomeViewModel().rechargeRecommendationLiveData.observe(viewLifecycleOwner, Observer {
                 getHomeViewModel().insertRechargeRecommendation(it.peekContent())
             })
         }

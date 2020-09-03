@@ -263,12 +263,14 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
                     override fun onAnimationRepeat(animation: Animation?) {}
                     override fun onAnimationEnd(animation: Animation?) {
                         if(iterator.hasNext()) {
-                            hint = iterator.next().placeholder
-                            keyword = iterator.next().keyword
+                            val placeholder = iterator.next()
+                            hint = placeholder.placeholder
+                            keyword = placeholder.keyword
                         } else {
                             iterator = hints.iterator()
-                            hint = iterator.next().placeholder
-                            keyword = iterator.next().keyword
+                            val placeholder = iterator.next()
+                            hint = placeholder.placeholder
+                            keyword = placeholder.keyword
                         }
                         editTextSearch.hint = hint
                         editTextSearch.startAnimation(slideUpIn)
@@ -276,7 +278,9 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
                     override fun onAnimationStart(animation: Animation?) {}
                 })
                 editTextSearch.startAnimation(slideOutUp)
-                onClickHint(keyword, isFirstInstall)
+                editTextSearch.setOnClickListener {
+                    onClickHint(keyword, isFirstInstall)
+                }
                 delay(INTERVAL_HINT.toLong())
             }
         }
@@ -284,21 +288,21 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
 
     private fun setHintSingle(hint: HintData, isFirstInstall: Boolean) {
         editTextSearch.hint = if (hint.placeholder.isEmpty()) context.getString(R.string.search_tokopedia) else hint.placeholder
-        onClickHint(hint.keyword, isFirstInstall)
+        editTextSearch.setOnClickListener {
+            onClickHint(hint.keyword, isFirstInstall)
+        }
     }
 
     private fun onClickHint(keyword: String, isFirstInstall: Boolean) {
-        editTextSearch.setOnClickListener {
-            searchBarAnalytics.eventTrackingSearchBar(screenName, keyword)
-            if (keyword.isEmpty()) {
-                RouteManager.route(context, ApplinkConstInternalDiscovery.AUTOCOMPLETE)
-            } else {
-                RouteManager.route(context,
-                        ApplinkConstInternalDiscovery.AUTOCOMPLETE + PARAM_APPLINK_AUTOCOMPLETE,
-                        HOME_SOURCE,
-                        safeEncodeUTF8(keyword),
-                        isFirstInstall.toString())
-            }
+        searchBarAnalytics.eventTrackingSearchBar(screenName, keyword)
+        if (keyword.isEmpty()) {
+            RouteManager.route(context, ApplinkConstInternalDiscovery.AUTOCOMPLETE)
+        } else {
+            RouteManager.route(context,
+                    ApplinkConstInternalDiscovery.AUTOCOMPLETE + PARAM_APPLINK_AUTOCOMPLETE,
+                    HOME_SOURCE,
+                    safeEncodeUTF8(keyword),
+                    isFirstInstall.toString())
         }
     }
 
