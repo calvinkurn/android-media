@@ -16,11 +16,15 @@ import kotlinx.android.synthetic.main.topads_dash_filter_bottomsheet.view.*
 /**
  * Created by Pika on 3/6/20.
  */
+private const val SELECTED_STATUS_0 = 0;
+private const val SELECTED_STATUS_1 = 1;
+private const val SELECTED_STATUS_2 = 2;
+private const val SELECTED_STATUS_3 = 3;
 class TopadsGroupFilterSheet : BottomSheetUnify() {
     private var dialog: BottomSheetDialog? = null
     var onSubmitClick: (() -> Unit)? = null
     private var filterCount = 0
-    private var selectedStatus = 0
+    private var selectedStatus = SELECTED_STATUS_0
 
     private fun setupView(context: Context) {
         dialog?.let {
@@ -39,11 +43,11 @@ class TopadsGroupFilterSheet : BottomSheetUnify() {
             it.active?.setOnClickListener { v ->
                 if(v.active.chipType == ChipsUnify.TYPE_NORMAL) {
                     v.active.chipType =  ChipsUnify.TYPE_SELECTED
-                    selectedStatus = 1
+                    selectedStatus = SELECTED_STATUS_1
                 }
                 else {
                     v.active.chipType = ChipsUnify.TYPE_NORMAL
-                    selectedStatus = 0
+                    selectedStatus = SELECTED_STATUS_0
                 }
                 it.tidak_aktif?.chipType = ChipsUnify.TYPE_NORMAL
                 it.tidak_tampil?.chipType = ChipsUnify.TYPE_NORMAL
@@ -51,10 +55,10 @@ class TopadsGroupFilterSheet : BottomSheetUnify() {
             it.tidak_tampil?.setOnClickListener { v ->
                  if(v.tidak_tampil.chipType == ChipsUnify.TYPE_NORMAL) {
                      v.tidak_tampil.chipType= ChipsUnify.TYPE_SELECTED
-                     selectedStatus = 2
+                     selectedStatus = SELECTED_STATUS_2
                  } else {
                      v.tidak_tampil.chipType = ChipsUnify.TYPE_NORMAL
-                     selectedStatus = 0
+                     selectedStatus = SELECTED_STATUS_0
                  }
                 it.active?.chipType = ChipsUnify.TYPE_NORMAL
                 it.tidak_aktif?.chipType = ChipsUnify.TYPE_NORMAL
@@ -62,10 +66,10 @@ class TopadsGroupFilterSheet : BottomSheetUnify() {
             it.tidak_aktif?.setOnClickListener { v ->
                 if(v.tidak_aktif.chipType == ChipsUnify.TYPE_NORMAL) {
                     v.tidak_aktif.chipType = ChipsUnify.TYPE_SELECTED
-                    selectedStatus = 3
+                    selectedStatus = SELECTED_STATUS_3
                 } else {
                     v.tidak_aktif.chipType = ChipsUnify.TYPE_NORMAL
-                    selectedStatus = 0
+                    selectedStatus = SELECTED_STATUS_0
                 }
                 it.active?.chipType = ChipsUnify.TYPE_NORMAL
                 it.tidak_tampil?.chipType = ChipsUnify.TYPE_NORMAL

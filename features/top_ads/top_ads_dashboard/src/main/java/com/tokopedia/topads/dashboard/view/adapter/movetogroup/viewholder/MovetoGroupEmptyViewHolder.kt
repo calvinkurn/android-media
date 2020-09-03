@@ -11,7 +11,7 @@ import kotlinx.android.synthetic.main.topads_dash_no_search_result.view.*
 /**
  * Created by Pika on 7/6/20.
  */
-class MovetoGroupEmptyViewHolder(val view: View) : MovetoGroupViewHolder<MovetoGroupEmptyViewModel>(view){
+class MovetoGroupEmptyViewHolder(val view: View) : MovetoGroupViewHolder<MovetoGroupEmptyViewModel>(view) {
 
     companion object {
         @LayoutRes
@@ -19,10 +19,7 @@ class MovetoGroupEmptyViewHolder(val view: View) : MovetoGroupViewHolder<MovetoG
     }
 
     override fun bind(item: MovetoGroupEmptyViewModel, lastSelected: Int, countList: MutableList<CountDataItem>) {
-        item.let {
-            view.image_empty.setImageDrawable(view.context.getResDrawable(R.drawable.ill_no_product))
-        }
-
+        view.image_empty.setImageDrawable(view.context.getResDrawable(R.drawable.ill_no_product))
     }
 
 }
