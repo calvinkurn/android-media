@@ -35,6 +35,7 @@ import timber.log.Timber;
 
 import static com.tokopedia.akamai_bot_lib.UtilsKt.isAkamai;
 import static com.tokopedia.graphql.util.Const.AKAMAI_SENSOR_DATA_HEADER;
+import static com.tokopedia.graphql.util.Const.QUERY_HASHING_HEADER;
 
 /**
  * Retrieve the response from Cloud and dump the same in disk if cache was enable by consumer.
@@ -65,7 +66,34 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
             Map<String, String> header = new HashMap<>();
             header.put(AKAMAI_SENSOR_DATA_HEADER, GraphqlClient.getFunction().getAkamaiValue());
             return mApi.getResponse(requests, header, FingerprintManager.getQueryDigest(requests));
-        } else {
+        }
+        else if(requests.get(0).isDoQueryHash()){
+            Map<String, String> header = new HashMap<>();
+            StringBuilder queryHashingHeaderValue = new StringBuilder();
+            for (GraphqlRequest graphqlRequest:requests) {
+                String queryHashValue = mCacheManager.getQueryHashValue(graphqlRequest.getMd5());
+                if(TextUtils.isEmpty(queryHashValue)){
+                    queryHashingHeaderValue.append("");
+                } else {
+                    if(queryHashingHeaderValue.length() <= 0) {
+                        queryHashingHeaderValue.append(queryHashValue);
+                    } else {
+                        queryHashingHeaderValue.append(",")
+                                .append(queryHashValue);
+                    }
+                    graphqlRequest.setQuery("");
+                }
+            }
+            if(TextUtils.isEmpty(queryHashingHeaderValue.toString())){
+                queryHashingHeaderValue.append(";true");
+            }
+            else{
+                queryHashingHeaderValue.append(";false");
+            }
+            header.put(QUERY_HASHING_HEADER, queryHashingHeaderValue.toString());
+            return mApi.getResponse(requests, header, FingerprintManager.getQueryDigest(requests));
+        }
+        else {
             return mApi.getResponse(requests, new HashMap<>(), FingerprintManager.getQueryDigest(requests));
         }
     }
@@ -88,6 +116,18 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
                     if (httpResponse == null) {
                         return null;
                     }
+                    if(httpResponse.code() == Const.GQL_QUERY_HASHING_ERROR){
+                        //Reset request bodies
+                        if(requests.size() > 0) {
+                            for (GraphqlRequest graphqlRequest : requests) {
+                                graphqlRequest.setQuery(graphqlRequest.getQueryCopy());
+                                mCacheManager.deleteQueryHashValue(graphqlRequest.getMd5());
+                            }
+                        }
+                        Map<String, String> header = new HashMap<>();
+                        header.put(QUERY_HASHING_HEADER, ";false");
+                        mApi.getResponse(requests, header, FingerprintManager.getQueryDigest(requests));
+                    }
                     if (httpResponse.code() != Const.GQL_RESPONSE_HTTP_OK && httpResponse.body() != null) {
                         LoggingUtils.logGqlResponseCode(httpResponse.code(), requests.toString(), httpResponse.body().toString());
                         return null;
@@ -95,19 +135,30 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
                     if (httpResponse.body() != null) {
                         LoggingUtils.logGqlSize("java", requests.toString(), httpResponse.body().toString());
                     }
-                    return new GraphqlResponseInternal(httpResponse.body(), false, httpResponse.headers().get(GraphqlConstant.GqlApiKeys.CACHE));
+                    return new GraphqlResponseInternal(httpResponse.body(), false,
+                            httpResponse.headers().get(GraphqlConstant.GqlApiKeys.CACHE),
+                            httpResponse.headers().get(GraphqlConstant.GqlApiKeys.QUERYHASH));
                 }).doOnNext(graphqlResponseInternal -> {
                     //Handling backend cache
                     Map<String, BackendCache> caches = CacheHelper.parseCacheHeaders(graphqlResponseInternal.getBeCache());
+                    String qhValues [] = CacheHelper.parseQueryHashHeader(graphqlResponseInternal.getQueryHash());
+                    boolean executeCacheFlow = false;
+                    boolean executeQueryHashFlow = false;
+                    if(qhValues.length > 0){
+                        executeQueryHashFlow = true;
+                    }
                     if (caches != null && !caches.isEmpty()) {
+                        executeCacheFlow = true;
+                    }
                         int size = requests.size();
                         for (int i = 0; i < size; i++) {
                             GraphqlRequest request = requests.get(i);
-                            if (request == null || request.isNoCache() || caches.get(request.getMd5()) == null) {
+                            if(executeQueryHashFlow){
+                                mCacheManager.saveQueryHash(request.getMd5(), qhValues[i]);
+                            }
+                            if (request == null || request.isNoCache() || (executeCacheFlow && caches.get(request.getMd5()) == null)) {
                                 continue;
                             }
-
-                            BackendCache cache = caches.get(request.getMd5());
 
                             JsonElement rawResp = graphqlResponseInternal.getOriginalResponse().get(i);
                             if (rawResp == null
@@ -117,13 +168,12 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
                             }
 
                             JsonElement childResp = rawResp.getAsJsonObject().get(GraphqlConstant.GqlApiKeys.DATA);
-                            if (childResp != null) {
+                            if (executeCacheFlow && childResp != null) {
+                                BackendCache cache = caches.get(request.getMd5());
                                 mCacheManager.save(request.cacheKey(), childResp.toString(), cache.getMaxAge() * 1000);
                                 Timber.d("Android CLC - Request saved to cache " + CacheHelper.getQueryName(request.getQuery()) + " KEY: " + request.cacheKey());
                             }
                         }
-                    }
-
 
                     if (cacheStrategy == null || graphqlResponseInternal == null) {
                         return;
