@@ -69,6 +69,8 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
                         {
                             if (it.messageError.isEmpty()) {
                                 view?.onSuccessAutofill(it.data)
+                            } else if (it.errorCode == 101){
+                                view?.goToAddNewAddressNegative()
                             } else {
                                 val msg = it.messageError[0]
                                 when {
