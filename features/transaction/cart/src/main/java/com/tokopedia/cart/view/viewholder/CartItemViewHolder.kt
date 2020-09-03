@@ -304,7 +304,7 @@ class CartItemViewHolder constructor(itemView: View,
     }
 
     private fun renderProductInfo(data: CartItemHolderData, parentPosition: Int) {
-        textProductName.text = Html.fromHtml(data.cartItemData?.originData?.productName)
+        textProductName.text = Html.fromHtml(data.cartItemData?.originData?.productName ?: "")
         ImageHandler.loadImageRounded2(
                 this.itemView.context, this.ivProductImage,
                 data.cartItemData?.originData?.productImage
@@ -378,9 +378,9 @@ class CartItemViewHolder constructor(itemView: View,
     private fun renderProductPropertiesCashback(data: CartItemHolderData) {
         if (data.cartItemData?.originData?.productCashBack?.isNotBlank() == true) {
             if (textIncidentLabel.visibility == View.VISIBLE || textWholesalePrice.visibility == View.VISIBLE || textPriceDrop.visibility == View.VISIBLE) {
-                textCashback.text = "${data.cartItemData?.originData?.cashBackInfo}, "
+                textCashback.text = "${data.cartItemData?.originData?.cashBackInfo ?: ""}, "
             } else {
-                textCashback.text = data.cartItemData?.originData?.cashBackInfo
+                textCashback.text = data.cartItemData?.originData?.cashBackInfo ?: ""
             }
             textCashback.show()
             informationLabel.add("cashback")
@@ -396,7 +396,7 @@ class CartItemViewHolder constructor(itemView: View,
 
     private fun renderPrice(data: CartItemHolderData) {
         if (data.cartItemData?.originData?.wholesalePriceFormatted != null) {
-            textProductPrice.text = data.cartItemData?.originData?.wholesalePriceFormatted
+            textProductPrice.text = data.cartItemData?.originData?.wholesalePriceFormatted ?: ""
         } else {
             textProductPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(
                     data.cartItemData?.originData?.pricePlan
@@ -529,7 +529,7 @@ class CartItemViewHolder constructor(itemView: View,
             } else {
                 // Has notes from pdp
                 this.etRemark.visibility = View.GONE
-                this.tvRemark.text = Utils.getHtmlFormat(data.cartItemData?.updatedData?.remark)
+                this.tvRemark.text = Utils.getHtmlFormat(data.cartItemData?.updatedData?.remark ?: "")
                 this.tvRemark.visibility = View.VISIBLE
                 this.tvLabelRemarkOption.visibility = View.VISIBLE
                 this.tvNoteCharCounter.visibility = View.GONE
@@ -683,10 +683,10 @@ class CartItemViewHolder constructor(itemView: View,
                     this.tvErrorFormValidation.visibility = View.GONE
                 }
                 this.tvErrorFormRemarkValidation.visibility = View.VISIBLE
-                this.tvErrorFormRemarkValidation.text = data.errorFormItemValidationMessage
+                this.tvErrorFormRemarkValidation.text = data.errorFormItemValidationMessage ?: ""
                 this.tvNoteCharCounter.visibility = View.GONE
             } else {
-                this.tvErrorFormValidation.text = data.errorFormItemValidationMessage
+                this.tvErrorFormValidation.text = data.errorFormItemValidationMessage ?: ""
                 this.tvErrorFormValidation.visibility = View.VISIBLE
                 this.tvErrorFormRemarkValidation.visibility = View.GONE
                 this.tvErrorFormRemarkValidation.text = ""

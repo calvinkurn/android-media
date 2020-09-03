@@ -164,6 +164,7 @@
 
                         <com.tokopedia.unifycomponents.UnifyButton
                             android:id="@+id/go_to_courier_page_button"
+                            android:contentDescription="@string/content_desc_go_to_courier_page_button"
                             android:layout_width="@dimen/dp_150"
                             android:layout_height="@dimen/dp_40"
                             android:layout_marginStart="@dimen/dp_10"

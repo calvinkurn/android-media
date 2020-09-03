@@ -6,4 +6,5 @@
     <color name="line_separator">#e5e7e9</color>
     <color name="text_color_grey">#ae31353b</color>
     <color name="text_color_orange">#fa591d</color>
+    <color name="clr_FF5C84">#FF5C84</color>
 </resources>

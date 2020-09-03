@@ -270,7 +270,7 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
         val clip = ClipData.newPlainText("Tokopedia", contents)
         clipboard.setPrimaryClip(clip)
         applyPromoCode(context, contents)
-        Toast.makeText(context, "${context.getString(R.string.cm_tv_coupon_code_copied)} $contents"
+        Toast.makeText(context, context.getString(R.string.cm_tv_coupon_code_copied)
                 , Toast.LENGTH_LONG).show()
     }
 
@@ -284,11 +284,7 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
         dataManager.attribution(baseNotificationModel)
 
         handleMainClick(context, intent, notificationId)
-        if (intent.hasExtra(CMConstant.CouponCodeExtra.COUPON_CODE)) {
-            val coupon = intent.getStringExtra(CMConstant.CouponCodeExtra.COUPON_CODE)
-            if (!TextUtils.isEmpty(coupon))
-                copyToClipboard(context, coupon)
-        }
+        handleCouponCode(intent, context)
     }
 
     private fun handleActionButtonClick(
@@ -331,6 +327,16 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
         }
         NotificationManagerCompat.from(context.applicationContext).cancel(notificationId)
         context.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
+        handleCouponCode(intent, context)
+    }
+
+    private fun handleCouponCode(intent: Intent, context: Context) {
+        if (intent.hasExtra(CMConstant.CouponCodeExtra.COUPON_CODE)) {
+            val coupon = intent.getStringExtra(CMConstant.CouponCodeExtra.COUPON_CODE)
+            coupon?.let {
+                copyToClipboard(context, coupon)
+            }
+        }
     }
 
     private fun handleProductPurchaseClick(
