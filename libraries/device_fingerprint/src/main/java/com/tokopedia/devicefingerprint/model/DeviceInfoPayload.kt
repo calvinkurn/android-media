@@ -41,8 +41,6 @@ data class DeviceInfoPayload(
         @SerializedName("tsinceboot") val timeSinceBoot: Long,
         @SerializedName("1stboot") val firstBootTime: Long,
         @SerializedName("scrinf") val screenInfo: String,
-        @SerializedName("simid") val simId: String,
-        @SerializedName("imsi") val imsi: String,
         @SerializedName("mcc") val mcc: String,
         @SerializedName("mnc") val mnc: String,
         @SerializedName("bootcount") val bootCount: Int,

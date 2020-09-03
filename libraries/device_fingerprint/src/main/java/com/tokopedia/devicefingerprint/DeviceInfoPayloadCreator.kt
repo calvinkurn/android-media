@@ -40,7 +40,7 @@ import kotlin.coroutines.suspendCoroutine
 import kotlin.math.sqrt
 
 
-class DevicePayloadCreator @Inject constructor(
+class DeviceInfoPayloadCreator @Inject constructor(
         val context: Context,
         val userSession: UserSession,
         val fusedLocationClient: FusedLocationProviderClient
@@ -93,8 +93,6 @@ class DevicePayloadCreator @Inject constructor(
                 timeSinceBoot = SystemClock.elapsedRealtime(),
                 firstBootTime = System.currentTimeMillis() - SystemClock.elapsedRealtime(),
                 screenInfo = getScreenInfo(),
-                simId = getSimId(),
-                imsi = getImsi(),
                 mcc = getMcc(),
                 mnc = getMnc(),
                 bootCount = getBootCount(),
@@ -206,16 +204,6 @@ class DevicePayloadCreator @Inject constructor(
         } else {
             networkOperator.substring(0, 3)
         }
-    }
-
-    private fun getImsi(): String {
-//        return telephonyManager.subscriberId
-        return ""
-    }
-
-    private fun getSimId(): String {
-//        return telephonyManager.simSerialNumber
-        return ""
     }
 
     private fun isFromPlayStore(): Boolean {
