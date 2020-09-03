@@ -164,7 +164,6 @@ fun Fragment.initializeSellerMigrationAccountSettingTicker(ticker: Ticker?) {
     ticker?.run {
         if (isSellerMigrationEnabled(context)) {
             tickerTitle = getString(AccountSettingData.titleRes)
-            //applink need improvement
             setHtmlDescription(getString(AccountSettingData.descRes))
             setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
