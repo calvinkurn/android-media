@@ -115,6 +115,7 @@
                         android:layout_marginTop="8dp"
                         android:layout_marginRight="@dimen/dp_4"
                         android:gravity="center_vertical"
+                        android:visibility="gone"
                         app:labelType="general_dark_red"
                         tools:labelTitle="60%"
                         tools:visibility="visible" />

@@ -101,7 +101,6 @@ class CartItemViewHolder constructor(itemView: View,
     private var quantityDebounceSubscription: Subscription? = null
     private var noteDebounceSubscription: Subscription? = null
     private var cbChangeJob: Job? = null
-    private var prevShopIsChecked: Boolean? = null
     private var informationLabel: MutableList<String> = mutableListOf()
 
     init {
@@ -402,8 +401,11 @@ class CartItemViewHolder constructor(itemView: View,
     }
 
     private fun renderSlashPrice(data: CartItemHolderData) {
-        if (data.cartItemData?.originData?.priceOriginal != 0 || data.cartItemData?.originData?.wholesalePrice != 0) {
-            var slashPricePercentage = 0.0
+        val hasPriceOriginal = data.cartItemData?.originData?.priceOriginal != 0
+        val hasWholesalePrice = data.cartItemData?.originData?.wholesalePrice != 0
+        val hasPriceDrop = data.cartItemData?.originData?.initialPriceBeforeDrop ?: 0 > 0 &&
+                data.cartItemData?.originData?.initialPriceBeforeDrop ?: 0 < data.cartItemData?.originData?.pricePlan?.toInt() ?: 0
+        if (hasPriceOriginal || hasWholesalePrice || hasPriceDrop) {
             if (data.cartItemData?.originData?.slashPriceLabel?.isNotBlank() == true) {
                 // Slash price
                 renderSlashPriceFromCampaign(data)
@@ -411,58 +413,42 @@ class CartItemViewHolder constructor(itemView: View,
                 val wholesalePrice = data.cartItemData?.originData?.wholesalePrice ?: 0
                 if (wholesalePrice > 0 && wholesalePrice.toDouble() < data.cartItemData?.originData?.pricePlan ?: 0.0) {
                     // Wholesale
-                    slashPricePercentage = renderSlashPriceFromWholesale(data, slashPricePercentage)
+                    renderSlashPriceFromWholesale(data)
                 } else {
                     // Price drop
-                    slashPricePercentage = renderSlashPriceFromPriceDrop(data, slashPricePercentage)
+                    renderSlashPriceFromPriceDrop(data)
                 }
             } else if (data.cartItemData?.originData?.wholesalePrice != 0) {
                 // Wholesale
-                slashPricePercentage = renderSlashPriceFromWholesale(data, slashPricePercentage)
+                renderSlashPriceFromWholesale(data)
             }
 
-            if (slashPricePercentage in 0.0..100.0) {
-                textSlashPrice.paintFlags = textSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-                textSlashPrice.show()
-                labelSlashPricePercentage.show()
-                informationLabel.add("label diskon")
-            } else {
-                textSlashPrice.gone()
-                labelSlashPricePercentage.gone()
-            }
+            textSlashPrice.paintFlags = textSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+            textSlashPrice.show()
         } else {
             textSlashPrice.gone()
             labelSlashPricePercentage.gone()
         }
     }
 
-    private fun renderSlashPriceFromWholesale(data: CartItemHolderData, slashPricePercentage: Double): Double {
-        var tmpSlashPricePercentage = slashPricePercentage
+    private fun renderSlashPriceFromWholesale(data: CartItemHolderData) {
         val priceDropValue = data.cartItemData?.originData?.initialPriceBeforeDrop ?: 0
         val pricePlan = data.cartItemData?.originData?.pricePlanInt ?: 0
         val originalPrice = if (priceDropValue > 0) priceDropValue else pricePlan
         textSlashPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(originalPrice, false).removeDecimalSuffix()
-        val wholesalePrice = data.cartItemData?.originData?.wholesalePrice ?: 0
-        tmpSlashPricePercentage = (pricePlan.toDouble() - wholesalePrice) / pricePlan * 100
-        labelSlashPricePercentage.text = "${tmpSlashPricePercentage.roundToInt()}%"
-        return tmpSlashPricePercentage
     }
 
-    private fun renderSlashPriceFromPriceDrop(data: CartItemHolderData, slashPricePercentage: Double): Double {
-        var tmpSlashPricePercentage = slashPricePercentage
+    private fun renderSlashPriceFromPriceDrop(data: CartItemHolderData) {
         textSlashPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(data.cartItemData?.originData?.initialPriceBeforeDrop
                 ?: 0, false).removeDecimalSuffix()
-        val pricePlan = data.cartItemData?.originData?.pricePlan ?: 0.0
-        val priceOriginal = data.cartItemData?.originData?.initialPriceBeforeDrop ?: 1
-        tmpSlashPricePercentage = (priceOriginal - pricePlan) / priceOriginal * 100
-        labelSlashPricePercentage.text = "${tmpSlashPricePercentage.roundToInt()}%"
-        return tmpSlashPricePercentage
     }
 
     private fun renderSlashPriceFromCampaign(data: CartItemHolderData) {
         textSlashPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(data.cartItemData?.originData?.priceOriginal
                 ?: 0, false).removeDecimalSuffix()
         labelSlashPricePercentage.text = data.cartItemData?.originData?.slashPriceLabel
+        labelSlashPricePercentage.show()
+        informationLabel.add("label diskon")
     }
 
     private fun renderWarningMessage(data: CartItemHolderData) {
