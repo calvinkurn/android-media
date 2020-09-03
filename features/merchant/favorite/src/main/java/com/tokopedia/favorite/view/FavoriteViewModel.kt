@@ -198,7 +198,6 @@ class FavoriteViewModel
                 setNextPaging(favoriteShop.pagingModel)
             }
         }, onError = { e ->
-//            e.printStackTrace()
             returnPagingHandlerToPreviousPage()
             _isLoadingFavoriteShop.value = false
             _isErrorLoadMore.value = true
