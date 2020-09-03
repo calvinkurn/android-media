@@ -7,7 +7,7 @@ object IncentiveOvoMapper {
 
     fun mapIncentiveOvoReviewtoIncentiveOvoInbox(productrevIncentiveOvo: ProductRevIncentiveOvoResponse): ProductRevIncentiveOvoDomain {
         val productRevIncentiveOvoDomain = ProductRevIncentiveOvoDomain()
-        productRevIncentiveOvoDomain.productrevIncentiveOvo.apply {
+        productRevIncentiveOvoDomain.productrevIncentiveOvo?.apply {
             title = productrevIncentiveOvo.title
             subtitle = productrevIncentiveOvo.subtitle
             numberedList = productrevIncentiveOvo.numberedList

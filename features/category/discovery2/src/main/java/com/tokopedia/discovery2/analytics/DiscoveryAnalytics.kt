@@ -237,6 +237,24 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
         getTracker().sendGeneralEvent(map)
     }
 
+    fun trackClickQuickFilter(filterName: String, componentName: String?) {
+        val map = createGeneralEvent(eventAction = QUICK_FILTER_CLICK, eventLabel = "$componentName - $filterName")
+        getTracker().sendGeneralEvent(map)
+    }
+
+    fun trackClickDetailedFilter(componentName: String?) {
+        val map = createGeneralEvent(eventAction = DETAILED_FILTER_CLICK, eventLabel = componentName ?: "")
+        getTracker().sendGeneralEvent(map)
+    }
+
+    fun trackClickApplyFilter(mapParameters: Map<String, String>) {
+        var label = ""
+        for (map in mapParameters) {
+            label = "$label&${map.key}-${map.value}"
+        }
+        val map = createGeneralEvent(eventAction = APPLY_FILTER_CLICK, eventLabel = label.removePrefix("&"))
+        getTracker().sendGeneralEvent(map)
+    }
 
     fun trackTimerSprintSale() {
         val map = createGeneralEvent(eventAction = TIMER_SPRINT_SALE_CLICK)

@@ -9,6 +9,7 @@ object ProductDetailCommonConstant{
     const val PARAM_SHOP_DOMAIN = "shopDomain"
     const val PARAM_PRODUCT_KEY = "productKey"
     const val PARAM_WAREHOUSE_ID = "whID"
+    const val PARAM_LAYOUT_ID = "layoutID"
     const val PARAM_INPUT = "input"
     const val PARAM_CATALOG_ID = "catalogId"
     const val PARAM_IS_SHOP_OWNER = "isShopOwner"
@@ -44,4 +45,6 @@ object ProductDetailCommonConstant{
     const val VALUE_TEASER_SOURCE = "pdp"
 
     const val PARAM_APPLINK_SHOP_ID = "shop_id"
+    const val PARAM_APPLINK_IS_VARIANT_SELECTED = "is_variant_selected"
+    const val PARAM_APPLINK_AVAILABLE_VARIANT = "available variants"
 }

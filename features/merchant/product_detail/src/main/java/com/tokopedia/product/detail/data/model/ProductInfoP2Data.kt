@@ -36,7 +36,7 @@ data class ProductInfoP2Data(
 
         @SerializedName("shopCommitment")
         @Expose
-        var shopCommitment: ShopCommitment = ShopCommitment(),
+        var shopCommitment: ShopCommitment.Result = ShopCommitment.Result(),
 
         @SerializedName("ppGetItemDetailPage")
         @Expose
