@@ -297,5 +297,10 @@
     <string name="som_buyer_cancellation_cancel_button">Kembali</string>
     <string name="som_header_detail_ticker_cancellation">Dibatalkan karena</string>
     <string name="som_list_order_waiting_payment_button_text">%1$s (%2$s)</string>
+    <string name="som_list_coachmark_waiting_payment_order_title">Menunggu pembayaran pembeli</string>
+    <string name="som_list_coachmark_check_and_mange_product_stock_title">Cek dan atur stok produkmu</string>
+    <string name="som_list_coachmark_waiting_payment_order_description">Di sini kamu bisa pantau pesanan yang menunggu pembayaran, dan akan hilang jika pesanan terbayar atau stok habis. &lt;a href="#"&gt;Pelajari Selengkapnya&lt;/a&gt;</string>
+    <string name="som_list_coachmark_check_and_mange_product_stock_description">Sembari menunggu, kamu juga bisa atur ketersediaan stok produk untuk memenuhi pesanan yang masuk. &lt;a href="#"&gt;Pelajari Selengkapnya&lt;/a&gt;</string>
+    <string name="som_list_waiting_payment_order_max_counter">99+</string>
 
 </resources>

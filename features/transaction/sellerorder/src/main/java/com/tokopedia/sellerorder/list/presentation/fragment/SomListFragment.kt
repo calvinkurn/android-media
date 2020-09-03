@@ -92,6 +92,7 @@ import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 /**
@@ -120,6 +121,21 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     private val coachMarkFilter: CoachMarkItem by lazy {
         CoachMarkItem(filter_action_button, getString(R.string.coachmark_filter), getString(R.string.coachmark_filter_info))
+    }
+
+    private val coachMarkWatingPaymentButton: ArrayList<CoachMarkItem> by lazy {
+        arrayListOf(
+                CoachMarkItem(
+                        somWaitingPaymentButton,
+                        getString(R.string.som_list_coachmark_waiting_payment_order_title),
+                        getString(R.string.som_list_coachmark_waiting_payment_order_description).parseAsHtml().toString()
+                ),
+                CoachMarkItem(
+                        somWaitingPaymentButton,
+                        getString(R.string.som_list_coachmark_check_and_mange_product_stock_title),
+                        getString(R.string.som_list_coachmark_check_and_mange_product_stock_description).parseAsHtml().toString()
+                )
+        )
     }
 
     private val FLAG_DETAIL = 3333
@@ -702,10 +718,10 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     private fun renderWaitingForPaymentCard() {
-        if (tabActive == STATUS_NEW_ORDER || tabActive == STATUS_ALL_ORDER) {
+        if (shouldShowWaitingPaymentButton()) {
             val filterResult = somListViewModel.filterResult.value
             if (filterResult is Success) {
-                val amount = if (filterResult.data.waitingPaymentCounter.amount > 100) "99+"
+                val amount = if (filterResult.data.waitingPaymentCounter.amount > 100) getString(R.string.som_list_waiting_payment_order_max_counter)
                 else filterResult.data.waitingPaymentCounter.amount.toString()
                 tvTitle.text = getString(
                         R.string.som_list_order_waiting_payment_button_text,
@@ -720,13 +736,24 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     private fun showCoachMarkProducts() {
         if (!coachMark.hasShown(activity, TAG_COACHMARK) && !GlobalConfig.isSellerApp()) {
-            coachMark.show(activity, TAG_COACHMARK, arrayListOf(coachMarkSearch, coachMarkProduct, coachMarkFilter))
+            val coachMarkItems = arrayListOf(
+                    coachMarkSearch,
+                    coachMarkProduct,
+                    coachMarkFilter
+            )
+            if (shouldShowWaitingPaymentButton()) coachMarkItems.addAll(coachMarkWatingPaymentButton)
+            coachMark.show(activity, TAG_COACHMARK, coachMarkItems)
         }
     }
 
     private fun showCoachMarkProductsEmpty() {
         if (!coachMark.hasShown(activity, TAG_COACHMARK) && !GlobalConfig.isSellerApp()) {
-            coachMark.show(activity, TAG_COACHMARK, arrayListOf(coachMarkSearch, coachMarkFilter))
+            val coachMarkItems = arrayListOf(
+                    coachMarkSearch,
+                    coachMarkFilter
+            )
+            if (shouldShowWaitingPaymentButton()) coachMarkItems.addAll(coachMarkWatingPaymentButton)
+            coachMark.show(activity, TAG_COACHMARK, coachMarkItems)
         }
     }
 
@@ -897,5 +924,11 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         var orderStatusName = tabActive
         if (orderStatusName.isEmpty()) orderStatusName = STATUS_ALL_ORDER
         SomAnalytics.eventClickChatIconOnOrderList(orderStatusName)
+    }
+
+    private fun shouldShowWaitingPaymentButton(): Boolean {
+        val filterResult = somListViewModel.filterResult.value
+        return filterResult is Success && filterResult.data.waitingPaymentCounter.amount > 0 &&
+                (tabActive == STATUS_ALL_ORDER || tabActive == STATUS_NEW_ORDER)
     }
 }
