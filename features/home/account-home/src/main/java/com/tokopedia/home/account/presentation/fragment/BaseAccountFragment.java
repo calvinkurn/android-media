@@ -62,8 +62,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import static com.tokopedia.affiliatecommon.AffiliateCommonConstantKt.DISCOVERY_BY_ME;
-import static com.tokopedia.gm.common.constant.GMCommonConstantKt.POWER_MERCHANT_URL;
-import static com.tokopedia.applink.ApplinkConst.RESCENTER_BUYER;
 import static com.tokopedia.home.account.AccountConstants.Analytics.AKUN_SAYA;
 import static com.tokopedia.home.account.AccountConstants.Analytics.BY_ME_CURATION;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK;
@@ -71,6 +69,7 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_CATEGO
 import static com.tokopedia.home.account.AccountConstants.Analytics.PEMBELI;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PENJUAL;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PROFILE;
+import static com.tokopedia.home.account.constant.SettingConstant.POWER_MERCHANT_URL;
 import static com.tokopedia.home.account.data.util.StaticBuyerModelGeneratorKt.RESCENTER_BUYER;
 import static com.tokopedia.home.account.AccountConstants.Analytics.SECTION_OTHER_FEATURE;
 import static com.tokopedia.home.account.AccountConstants.TOP_SELLER_APPLICATION_PACKAGE;
@@ -141,7 +140,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
             RouteManager.route(getContext(), ApplinkConstInternalTopAds.TOPADS_DASHBOARD_CUSTOMER);
         } else if (applink.equals(AccountConstants.Navigation.TRAIN_ORDER_LIST)) {
             goToTrainOrderListIntent();
-        } else if (applink.equals(RESCENTER_BUYER) || applink.equals(SettingConstant.RESCENTER_SELLER)) {
+        } else if (applink.equals(SettingConstant.RESCENTER_BUYER) || applink.equals(SettingConstant.RESCENTER_SELLER)) {
             return true;
         }
 
