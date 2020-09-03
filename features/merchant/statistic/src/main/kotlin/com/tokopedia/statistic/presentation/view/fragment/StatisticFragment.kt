@@ -28,6 +28,7 @@ import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.sellerhomecommon.utils.Utils
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.analytics.StatisticTracker
+import com.tokopedia.statistic.common.utils.DateFilterFormatUtil
 import com.tokopedia.statistic.di.DaggerStatisticComponent
 import com.tokopedia.statistic.presentation.view.bottomsheet.DateFilterBottomSheet
 import com.tokopedia.statistic.presentation.view.model.DateFilterItem
@@ -285,9 +286,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     private fun setDefaultRange() = view?.run {
         val headerSubTitle: String = context.getString(R.string.stc_last_n_days_cc, DEFAULT_START_DAYS.plus(1))
-        val startDateStr: String = DateTimeUtil.format(defaultStartDate.time, "dd")
-        val endDateStr: String = DateTimeUtil.format(defaultEndDate.time, "dd MMM yyyy")
-        val subTitle = "$headerSubTitle ($startDateStr - $endDateStr)"
+        val startEndDateFmt = DateFilterFormatUtil.getDateRangeStr(defaultStartDate, defaultEndDate)
+        val subTitle = "$headerSubTitle ($startEndDateFmt)"
 
         setHeaderSubTitle(subTitle)
     }
