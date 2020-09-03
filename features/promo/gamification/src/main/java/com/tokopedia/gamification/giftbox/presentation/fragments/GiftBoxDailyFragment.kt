@@ -387,6 +387,8 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                             val messageList = it.data?.gamiCrack?.resultStatus?.message
                             if (!messageList.isNullOrEmpty()) {
                                 renderOpenBoxError(messageList[0], "Oke", "${GiftBoxErrorCause.GAMI_CRACK_RESULT_STATUS_CODE} = $code")
+                            }else{
+                                renderOpenBoxError(defaultErrorMessage, "Oke", "${GiftBoxErrorCause.GAMI_CRACK_RESULT_STATUS_CODE} = $code")
                             }
                         }
                     }
