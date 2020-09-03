@@ -228,6 +228,11 @@ class AddEditProductVariantFragment :
 
         // button save on click listener
         buttonSave.setOnClickListener {
+            // track click action on continue button
+            viewModel.isEditMode.value?.let { isEditMode ->
+                if (isEditMode) ProductEditVariantTracking.continueToVariantDetailPage(shopId)
+                else ProductAddVariantTracking.continueToVariantDetailPage(shopId)
+            }
             // perform the save button function
             if (viewModel.isRemovingVariant.value == true) {
                 submitVariantInput()
