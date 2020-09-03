@@ -441,7 +441,7 @@ final class ProductListPresenter
         if (isViewAttached()) {
             int lastProductItemPositionFromCache = getView().getLastProductItemPositionFromCache();
 
-            ProductViewModelMapper mapper = new ProductViewModelMapper(shopRatingABTest);;
+            ProductViewModelMapper mapper = new ProductViewModelMapper(shopRatingABTest);
             ProductViewModel productViewModel = mapper
                     .convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, useRatingString);
 
