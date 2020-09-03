@@ -5,7 +5,7 @@ import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.Properties
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.repository.productcards.ProductCardsRepository
-import java.util.*
+import java.util.HashMap
 import javax.inject.Inject
 
 class ProductCardsUseCase @Inject constructor(private val productCardsRepository: ProductCardsRepository) {
@@ -46,11 +46,9 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
     }
 
     private fun getQueryParameterMap(pageStart: Int, properties: Properties?, chipSelectionData: DataItem?, selectedFilters: HashMap<String, String>?, selectedSort: HashMap<String, String>?, rpcPinnedProduct: String? = null): MutableMap<String, Any> {
-        val productsPerPage:String = if(properties!=null && properties.limitProduct){
-            properties.limitNumber
-        }else{
-            PRODUCT_PER_PAGE.toString()
-        }
+        val productsPerPage:String = properties?.run {
+            limitNumber.takeIf { limitProduct }
+        } ?: PRODUCT_PER_PAGE.toString()
         val queryParameterMap = mutableMapOf<String, Any>()
         queryParameterMap[RPC_ROWS] = productsPerPage
         queryParameterMap[RPC_START] = pageStart.toString()
