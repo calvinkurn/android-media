@@ -61,7 +61,6 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
                 PaymentDeductionKey.POTENTIAL_CASH_BACK -> benefitMapList.add(BenefitMap(it.itemDesc, it.amountStr, true))
             }
         }
-        visitableList.add(PaymentMethodModel(thanksPageData.gatewayName))
         val invoiceSummery = InvoiceSummery(
                 totalItemCount = totalItemCount.toString(),
                 totalPriceStr = CurrencyFormatUtil.convertPriceValue(totalPrice.toDouble(), false),
