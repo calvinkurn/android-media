@@ -73,7 +73,10 @@ class DigitalHomePageViewModel @Inject constructor(
 
     fun getRechargeHomepageSectionSkeleton(mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false) {
         launchCatchError(block = {
-            val graphqlRequest = GraphqlRequest(SKELETON_QUERY, RechargeHomepageSectionSkeleton.Response::class.java, mapParams)
+            val graphqlRequest = GraphqlRequest(
+                    RechargeHomepageQueries.SKELETON_QUERY,
+                    RechargeHomepageSectionSkeleton.Response::class.java, mapParams
+            )
             val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
                     .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
             val data = withContext(dispatcher.IO) {
@@ -91,7 +94,10 @@ class DigitalHomePageViewModel @Inject constructor(
     fun getRechargeHomepageSections(mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false) {
         val requestIDs = (mapParams[PARAM_RECHARGE_HOMEPAGE_SECTIONS_SECTION_IDS] as? List<Int>) ?: listOf()
         launchCatchError(block = {
-            val graphqlRequest = GraphqlRequest(SECTION_QUERY, RechargeHomepageSections.Response::class.java, mapParams)
+            val graphqlRequest = GraphqlRequest(
+                    RechargeHomepageQueries.SECTION_QUERY,
+                    RechargeHomepageSections.Response::class.java, mapParams
+            )
             val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
                     .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
             val data = withContext(dispatcher.IO) {
@@ -117,7 +123,10 @@ class DigitalHomePageViewModel @Inject constructor(
 
     fun triggerRechargeSectionAction(mapParams: Map<String, Any>) {
         launchCatchError(block = {
-            val graphqlRequest = GraphqlRequest(ACTION_QUERY, RechargeHomepageSections.Action::class.java, mapParams)
+            val graphqlRequest = GraphqlRequest(
+                    RechargeHomepageQueries.ACTION_QUERY,
+                    RechargeHomepageSections.Action::class.java, mapParams
+            )
             val data = withContext(dispatcher.IO) {
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<RechargeHomepageSections.Action>()
@@ -189,81 +198,5 @@ class DigitalHomePageViewModel @Inject constructor(
         const val SECTION_LEGO_BANNERS = "LEGO_BANNERS"
         const val SECTION_PRODUCT_CARD_ROW = "PRODUCT_CARD_ROW"
         const val SECTION_COUNTDOWN_PRODUCT_BANNER = "COUNTDOWN_PRODUCT_BANNER"
-
-        val SKELETON_QUERY by lazy {
-            val platformID = "\$platformID"
-            val enablePersonalize = "\$enablePersonalize"
-
-            """
-                query rechargeGetDynamicPageSkeleton($platformID: Int!, $enablePersonalize: Boolean) {
-                  rechargeGetDynamicPageSkeleton(platformID: $platformID, enablePersonalize: $enablePersonalize){
-                    sections {
-                      id
-                      template
-                    }
-                  }
-                }
-            """.trimIndent()
-        }
-
-        val SECTION_QUERY by lazy {
-            val platformID = "\$platformID"
-            val sectionIDs = "\$sectionIDs"
-            val enablePersonalize = "\$enablePersonalize"
-
-            """
-                query rechargeGetDynamicPage($platformID: Int!, $sectionIDs: [Int], $enablePersonalize: Boolean) {
-                  rechargeGetDynamicPage(platformID: $platformID, sectionIDs: $sectionIDs, enablePersonalize: $enablePersonalize){
-                    sections {
-                      id
-                      object_id
-                      title
-                      sub_title
-                      template
-                      app_link
-                      tracking {
-                        action
-                        data
-                      }
-                      items {
-                        id
-                        object_id
-                        title
-                        sub_title
-                        tracking {
-                          action
-                          data
-                        }
-                        content
-                        app_link
-                        web_link
-                        text_link
-                        media_url
-                        template
-                        button_type
-                        label_1
-                        label_2
-                        label_3
-                        server_date
-                        due_date
-                      }
-                    }
-                  }
-                }
-            """.trimIndent()
-        }
-
-        val ACTION_QUERY by lazy {
-            val sectionID = "\$sectionID"
-            val action = "\$action"
-
-            """
-                mutation rechargePostDynamicPageAction($sectionID: Int!, $action: String!) {
-                  rechargePostDynamicPageAction(sectionID: $sectionID, action: $action) {
-                    message
-                  }
-                }
-            """.trimIndent()
-        }
     }
 }

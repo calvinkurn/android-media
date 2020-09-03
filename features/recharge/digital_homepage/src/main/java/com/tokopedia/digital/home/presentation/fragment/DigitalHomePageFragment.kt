@@ -195,7 +195,7 @@ class DigitalHomePageFragment : BaseDaggerFragment(),
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        viewModel.digitalHomePageList.observe(this, Observer {
+        viewModel.digitalHomePageList.observe(viewLifecycleOwner, Observer {
             hideLoading()
             it?.run {
                 DigitalHomePageCategoryDataMapper.mapCategoryData(this[DigitalHomePageViewModel.CATEGORY_SECTION_ORDER])?.let { categoryData ->
@@ -206,18 +206,18 @@ class DigitalHomePageFragment : BaseDaggerFragment(),
             }
         })
 
-        viewModel.isAllError.observe(this, Observer {
+        viewModel.isAllError.observe(viewLifecycleOwner, Observer {
             hideLoading()
             it?.let { isAllError ->
                 if (isAllError) NetworkErrorHelper.showEmptyState(context, view?.rootView) { loadData() }
             }
         })
 
-        viewModel.rechargeHomepageSectionSkeleton.observe(this, Observer {
+        viewModel.rechargeHomepageSectionSkeleton.observe(viewLifecycleOwner, Observer {
             if (it is Fail) adapter.showGetListError(it.throwable)
         })
 
-        viewModel.rechargeHomepageSections.observe(this, Observer {
+        viewModel.rechargeHomepageSections.observe(viewLifecycleOwner, Observer {
             hideLoading()
 
             val mappedData = RechargeHomepageSectionMapper.mapHomepageSections(it)
