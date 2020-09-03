@@ -87,6 +87,7 @@ class PlayBannerUITest : BaseWidgetUiTest(){
     override val instrumentationContext = InstrumentationRegistry.getInstrumentation().context
     override val homeDataMapper = HomeDataMapper(instrumentationContext, homeVisitableFactory, mockk(relaxed = true),
             HomeDynamicChannelDataMapper(instrumentationContext, homeDynamicChannelVisitableFactory, TrackingQueue(instrumentationContext)))
+    val context = InstrumentationRegistry.getInstrumentation().context
     private lateinit var viewModel: HomeViewModel
 
     companion object{
