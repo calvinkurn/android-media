@@ -54,14 +54,14 @@ class ProductManageQuickEditStockFragment(private var onFinishedListener: OnFini
 
         fun createInstance(productId: String,
                            productName: String,
-                           productStatus: ProductStatus,
+                           productStatus: String,
                            stock: Int,
                            onFinishedListener: OnFinishedListener): ProductManageQuickEditStockFragment {
             return ProductManageQuickEditStockFragment(onFinishedListener).apply {
                 Bundle().apply {
                     putString(KEY_PRODUCT_ID, productId)
                     putString(KEY_PRODUCT_NAME, productName)
-                    putString(KEY_PRODUCT_STATUS, productStatus.name)
+                    putString(KEY_PRODUCT_STATUS, productStatus)
                     putInt(KEY_STOCK, stock)
                     arguments = this
                 }

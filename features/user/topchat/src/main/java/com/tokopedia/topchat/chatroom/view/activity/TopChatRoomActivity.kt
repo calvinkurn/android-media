@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.activity
 
+import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.os.Build
@@ -7,16 +8,21 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel.Companion.MODE_DEFAULT_GET_CHAT
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kotlin.extensions.view.toZeroStringIfNull
+import com.tokopedia.product.manage.common.feature.list.model.ProductViewModel
+import com.tokopedia.product.manage.common.feature.quickedit.stock.presentation.fragment.ProductManageQuickEditStockFragment
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.topchat.chatroom.view.fragment.TopChatRoomFragment
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 
-class TopChatRoomActivity : BaseChatToolbarActivity() {
+class TopChatRoomActivity : BaseChatToolbarActivity(), ProductManageQuickEditStockFragment.OnFinishedListener {
 
     override fun getScreenName(): String {
         return "/${TopChatAnalytics.Category.CHAT_DETAIL}"
@@ -31,6 +37,11 @@ class TopChatRoomActivity : BaseChatToolbarActivity() {
         }
 
         return TopChatRoomFragment.createInstance(bundle)
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        handleNewIntent(intent)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,6 +69,14 @@ class TopChatRoomActivity : BaseChatToolbarActivity() {
     override fun setupToolbar() {
         super.setupToolbar()
         decreaseToolbarElevation()
+    }
+
+    override fun onFinishEditStock(modifiedProduct: ProductViewModel) {
+        //No op. This should not be run if it is from top chat page
+    }
+
+    override fun onFinishEditStock(productId: String, productName: String, productStatus: ProductStatus, stock: Int) {
+        TODO("Not yet implemented")
     }
 
     private fun decreaseToolbarElevation() {
@@ -124,12 +143,57 @@ class TopChatRoomActivity : BaseChatToolbarActivity() {
         }
     }
 
+    private fun handleNewIntent(intent: Intent?) {
+        intent?.data?.run {
+            when {
+                pathSegments.contains(ApplinkConst.Chat.PATH_STOCK) -> {
+                    getQueryParameter(ApplinkConst.Chat.SHOP_ID)?.let { shopId ->
+                        getQueryParameter(ApplinkConst.Chat.QUICKEDIT_PRODUCT_ID)?.let { productId ->
+                            getQueryParameter(ApplinkConst.Chat.QUICKEDIT_PRODUCT_NAME)?.let { productName ->
+                                getQueryParameter(ApplinkConst.Chat.QUICKEDIT_PRODUCT_STATUS)?.let { productStatus ->
+                                    getQueryParameter(ApplinkConst.Chat.QUICKEDIT_STOCK)?.toIntOrNull()?.let { productStock ->
+                                        getQueryParameter(ApplinkConst.Chat.QUICKEDIT_HAS_RESERVED)?.toBoolean()?.let { hasReservedStock ->
+                                            openStockQuickEdit(shopId, productId, productName, productStatus, productStock, hasReservedStock)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                else -> {}
+            }
+        }
+    }
+
+    private fun openStockQuickEdit(shopId: String,
+                                   productId: String,
+                                   productName: String,
+                                   productStatus: String,
+                                   productStock: Int,
+                                   hasReservedStock: Boolean) {
+        if (hasReservedStock) {
+            RouteManager.route(this, ApplinkConstInternalMarketplace.RESERVED_STOCK, productId, shopId)
+        } else {
+            ProductManageQuickEditStockFragment.createInstance(
+                    productId,
+                    productName,
+                    productStatus,
+                    productStock,
+                    this).let { bottomSheet ->
+                bottomSheet.show(supportFragmentManager, QUICKEDIT_STOCK_TAG)
+            }
+        }
+    }
+
     companion object {
         val REQUEST_CODE_CHAT_IMAGE = 2325
         val LABEL_USER = "Pengguna"
         val LABEL_SELLER = "Penjual"
         val ROLE_SELLER = "shop"
         val ROLE_USER = "user"
+
+        private const val QUICKEDIT_STOCK_TAG = "quickedit_stock"
     }
 
 }
