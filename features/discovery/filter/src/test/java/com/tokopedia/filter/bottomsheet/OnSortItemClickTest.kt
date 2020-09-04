@@ -183,4 +183,38 @@ internal class OnSortItemClickTest: SortFilterBottomSheetViewModelTestFixtures()
                 expectedIsButtonApplyVisible = false
         )
     }
+
+    @Test
+    fun `onSortItemClicked twice with same SortItemViewModel should revert to default sort`() {
+        val mapParameter = mapOf(SearchApiConst.Q to "samsung")
+        val dynamicFilterModel = "dynamic-filter-model-common.json".jsonToObject<DynamicFilterModel>()
+        `Given SortFilterBottomSheet view is already created`(mapParameter, dynamicFilterModel)
+
+        `When click same sort item twice`()
+
+        val defaultSortItemViewModel = this.sortFilterList!!.findAndReturn<SortViewModel>()!!.sortItemViewModelList.find {
+            it.sort.value == SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT
+        }!!
+
+        val expectedMapParameter = mapParameter.toMutableMap().also {
+            it[defaultSortItemViewModel.sort.key] = defaultSortItemViewModel.sort.value
+            it[SearchApiConst.ORIGIN_FILTER] = SearchApiConst.DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_SORT_PAGE
+        }
+
+        `Then assert sort item click`(
+                expectedMapParameter,
+                mapOf(defaultSortItemViewModel.sort.key to defaultSortItemViewModel.sort.value),
+                defaultSortItemViewModel.sort.name,
+                defaultSortItemViewModel,
+                expectedResetButtonVisibility = false,
+                expectedIsButtonApplyVisible = false
+        )
+    }
+
+    private fun `When click same sort item twice`() {
+        val clickedSortItemViewModel = this.sortFilterList!!.getAnyUnselectedSort()
+
+        sortFilterBottomSheetViewModel.onSortItemClick(clickedSortItemViewModel)
+        sortFilterBottomSheetViewModel.onSortItemClick(clickedSortItemViewModel)
+    }
 }

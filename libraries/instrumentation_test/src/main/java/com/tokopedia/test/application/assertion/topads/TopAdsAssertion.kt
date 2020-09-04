@@ -1,6 +1,5 @@
 package com.tokopedia.test.application.assertion.topads
 
-import android.app.Activity
 import android.content.Context
 import android.util.Log
 import com.tokopedia.analyticsdebugger.database.STATUS_MATCH
@@ -11,10 +10,10 @@ import com.tokopedia.analyticsdebugger.debugger.data.source.TopAdsLogDBSource
 import com.tokopedia.analyticsdebugger.debugger.data.source.TopAdsVerificationNetworkSource
 import com.tokopedia.analyticsdebugger.debugger.domain.GetTopAdsLogDataUseCase
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
 import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil.deleteTopAdsVerificatorReportData
 import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil.writeTopAdsVerificatorLog
-import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil.writeTopAdsVerificatorReportData
+import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil.writeTopAdsVerificatorReportCoverage
+import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
 import com.tokopedia.usecase.RequestParams
 import org.junit.Assert
 
@@ -53,16 +52,17 @@ class TopAdsAssertion(val context: Context,
         verifyImpressionMoreThanClick(allCount, impressedCount, clickCount)
         verifyImpressionMoreThanResponse(impressedCount, topAdsVerificatorInterface)
 
-        logTestMessage("Waiting for topads backend verificator ready... (>5mins)")
+        logTestMessage("Waiting for topads backend verificator ready...")
 
         waitForVerificatorReady()
 
         val listTopAdsDb = readDataFromDatabase(context)
 
+        writeTopAdsVerificatorReportCoverage(context, listTopAdsDb)
+
         listTopAdsDb.forEach {
             logTestMessage(it.sourceName+" - "+it.eventType+" - "+it.eventStatus)
             Assert.assertEquals(STATUS_MATCH, it.eventStatus)
-            writeTopAdsVerificatorReportData(context, it)
         }
     }
 

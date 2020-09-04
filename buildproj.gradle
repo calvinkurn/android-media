@@ -89,6 +89,7 @@ subprojects {
             substitute module('com.facebook.soloader:soloader') with module("com.facebook.soloader:soloader:0.8.0")
             substitute module('org.jetbrains.kotlin:kotlin-reflect') with module("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
             substitute module('androidx.sqlite:sqlite-framework') with module("androidx.sqlite:sqlite-framework:${sqliteFrameworkVersion}")
+            substitute module('com.google.guava:listenablefuture') with module("com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava")
             if (!rootProject.ext.debugToolsEnabled) {
                 substitute module(rootProject.ext.debugToolsDependencies.chuck) with module(rootProject.ext.tkpdInternalLibDependencies.chuckNoOp)
             }

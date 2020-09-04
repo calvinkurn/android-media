@@ -132,6 +132,7 @@ public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<
     }
 
     protected void setHeaderDate(BaseChatViewModel element) {
+        if (date == null) return;
         String time;
 
         try {
@@ -160,6 +161,7 @@ public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<
     }
 
     protected void bindChatReadStatus(SendableViewModel element) {
+        if (chatReadStatus == null) return;
         int imageResource;
         if (element.isShowTime() || alwaysShowTime()) {
             chatReadStatus.setVisibility(View.VISIBLE);
