@@ -42,11 +42,15 @@ class PaymentInfoViewHolder(val view: View) : AbstractViewHolder<PaymentInfo>(vi
         val paymentModeItemView = inflater.inflate(R.layout.thank_payment_mode_item, null, false)
         paymentModeItemView.findViewById<TextView>(R.id.tvInvoicePaymentModeName).text = paymentModeMap.paymentModeStr
         paymentModeItemView.findViewById<TextView>(R.id.tvInvoicePaidWithModeValue)
-                .text = getString(R.string.thankyou_rp_without_space, paymentModeMap.paidAmountStr)
+                .text = if (paymentModeMap.paymentModeStr == MODE_OVO_POINT)
+            paymentModeMap.paidAmountStr
+        else
+            getString(R.string.thankyou_rp_without_space, paymentModeMap.paidAmountStr)
         return paymentModeItemView
     }
 
     companion object {
+        private const val MODE_OVO_POINT = "OVOPOINTS"
         val LAYOUT_ID = R.layout.thank_widget_payment_info
     }
 }
