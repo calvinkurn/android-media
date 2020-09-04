@@ -106,6 +106,11 @@ class PlayViewModel @Inject constructor(
             val videoPlayer = _observableVideoMeta.value?.videoPlayer
             return videoPlayer ?: Unknown
         }
+    val viewerVideoState: PlayViewerVideoState
+        get() {
+            val videoState = _observableVideoProperty.value?.state
+            return videoState ?: PlayViewerVideoState.Unknown
+        }
     val feedInfoUiModel: FeedInfoUiModel?
         get() {
             val channelInfo = _observableCompleteInfo.value?.channelInfo

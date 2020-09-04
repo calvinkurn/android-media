@@ -9,6 +9,7 @@ sealed class PlayViewerVideoState {
     object Pause : PlayViewerVideoState()
     object End : PlayViewerVideoState()
     object Waiting : PlayViewerVideoState()
+    object Unknown : PlayViewerVideoState()
     data class Buffer(val bufferSource: BufferSource) : PlayViewerVideoState()
     data class Error(val error: Throwable) : PlayViewerVideoState()
 }

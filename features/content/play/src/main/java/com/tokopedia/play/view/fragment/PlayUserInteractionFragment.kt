@@ -472,10 +472,11 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun observeVideoProperty() {
         playViewModel.observableVideoProperty.observe(viewLifecycleOwner, DistinctObserver {
-            if (it.state == PlayViewerVideoState.Play) {
+            if (it.state == PlayViewerVideoState.Waiting || it.state is PlayViewerVideoState.Buffer) {
+                triggerImmersive(false)
+            } else if (it.state == PlayViewerVideoState.Play) {
                 PlayAnalytics.clickPlayVideo(channelId, playViewModel.channelType)
-            }
-            if (it.state == PlayViewerVideoState.End) showInteractionIfWatchMode()
+            } else if (it.state == PlayViewerVideoState.End) showInteractionIfWatchMode()
 
             playButtonViewOnStateChanged(state = it.state)
         })
@@ -639,8 +640,13 @@ class PlayUserInteractionFragment @Inject constructor(
             animation.start(container)
         }
 
+        fun isLoadingState(): Boolean {
+            val videoState = playViewModel.viewerVideoState
+            return (videoState == PlayViewerVideoState.Waiting || videoState is PlayViewerVideoState.Buffer)
+        }
+
         when {
-            playViewModel.isFreezeOrBanned -> {
+            playViewModel.isFreezeOrBanned || isLoadingState() -> {
                 container.alpha = VISIBLE_ALPHA
                 systemUiVisibility = PlayFullScreenHelper.getShowSystemUiVisibility()
             }
