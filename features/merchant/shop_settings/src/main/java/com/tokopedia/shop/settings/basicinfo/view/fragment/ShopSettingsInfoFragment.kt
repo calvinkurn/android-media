@@ -400,7 +400,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         container_regular_merchant.visibility = View.GONE
         container_power_merchant.visibility = View.GONE
         iv_logo_official_store.visibility = View.VISIBLE
-        iv_logo_official_store.setImageResource(R.drawable.ic_official_store)
+        iv_logo_official_store.setImageResource(R.drawable.ic_shop_setting_official_store)
         tv_official_store.text = getString(com.tokopedia.design.R.string.label_official_store)
         tv_official_store_expiration.text = "Berlaku hingga $expirationDate"
     }
