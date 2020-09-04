@@ -20,22 +20,6 @@ import com.tokopedia.track.TrackAppUtils
 
 class DigitalTopupAnalytics {
 
-    fun eventOpenScreen(userId: String, categoryId: Int) {
-        val categoryName = getTrackingCategoryName(categoryId)
-        val stringScreenName = StringBuilder(DigitalTopupEventTracking.Additional.DIGITAL_SCREEN_NAME)
-        stringScreenName.append(categoryName.toLowerCase())
-
-        val mapOpenScreen = HashMap<String, String>()
-        mapOpenScreen[DigitalTopupEventTracking.Additional.IS_LOGIN_STATUS] = if (userId.isEmpty())  "false" else "true"
-        mapOpenScreen[DigitalTopupEventTracking.Additional.BUSINESS_UNIT] = DigitalTopupEventTracking.Additional.BUSINESS_UNIT_RECHARGE
-        mapOpenScreen[DigitalTopupEventTracking.Additional.CURRENT_SITE] = DigitalTopupEventTracking.Additional.CURRENT_SITE_RECHARGE
-        mapOpenScreen[DigitalTopupEventTracking.Additional.USER_ID] = userId
-        mapOpenScreen[DigitalTopupEventTracking.Additional.CATEGORY] = categoryName
-        mapOpenScreen[DigitalTopupEventTracking.Additional.CATEGORY_ID] = categoryId.toString()
-
-        TrackApp.getInstance().gtm.sendScreenAuthenticated(stringScreenName.toString(), mapOpenScreen)
-    }
-
     fun eventInputNumberManual(categoryId: Int, operatorName: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 DigitalTopupEventTracking.Event.CLICK_HOMEPAGE,

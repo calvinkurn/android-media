@@ -298,7 +298,6 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     }
 
     private fun sendOpenScreenTracking() {
-//        topupAnalytics.eventOpenScreen(userSession.userId, getTelcoCategoryId())
         rechargeAnalytics.eventOpenScreen(
                 userSession.userId,
                 topupAnalytics.getCategoryName(getTelcoCategoryId()),
