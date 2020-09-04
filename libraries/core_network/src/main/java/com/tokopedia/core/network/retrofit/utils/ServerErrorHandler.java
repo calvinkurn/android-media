@@ -7,6 +7,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tokopedia.core.network.CoreNetworkApplication;
+import com.tokopedia.user.session.UserSession;
 
 /**
  * @author anggaprasetiyo on 5/23/17.
@@ -21,6 +22,8 @@ public class ServerErrorHandler {
     public static final String STATUS_UNDER_MAINTENANCE = "UNDER_MAINTENANCE";
     public static final String STATUS_REQUEST_DENIED = "REQUEST_DENIED";
     public static final String STATUS_FORBIDDEN = "FORBIDDEN";
+    private static final String ACCESS_TOKEN = "accessToken";
+    private static final int THRESHOLD_DIGITS = 10;
     
     public static void showMaintenancePage() {
         CoreNetworkApplication.getAppContext().startActivity(
@@ -30,6 +33,12 @@ public class ServerErrorHandler {
     public static void showForceLogoutDialog() {
         Intent intent = new Intent();
         intent.setAction(ACTION_FORCE_LOGOUT);
+        UserSession userSession = new UserSession(CoreNetworkApplication.getAppContext());
+        if(userSession.getAccessToken().length() > THRESHOLD_DIGITS) {
+            intent.putExtra(ACCESS_TOKEN, userSession.getAccessToken().substring(userSession.getAccessToken().length() - THRESHOLD_DIGITS));
+        } else {
+            intent.putExtra(ACCESS_TOKEN, userSession.getAccessToken());
+        }
         LocalBroadcastManager.getInstance(CoreNetworkApplication.getAppContext()).sendBroadcast(intent);
     }
 
