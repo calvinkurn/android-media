@@ -2,6 +2,7 @@ package com.tokopedia.seller.menu.presentation.util
 
 import android.content.Context
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.seller.menu.R
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingConstant
@@ -17,6 +18,7 @@ object SellerSettingsList {
     private const val LOGOUT_BUTTON_NAME = "Logout"
     private const val SHIPPING_SERVICE_ALIAS = "shipping service"
     private const val LOGOUT_ALIAS = "logout"
+    private const val EXTRA_OPEN_SELLER_NOTIF = "extra_open_seller_notif"
 
     fun create(context: Context): List<SettingUiModel> {
         val trackingAliasMap = trackingAliasMap(context)
@@ -50,8 +52,11 @@ object SellerSettingsList {
             MenuItemUiModel(
                 context.getString(R.string.seller_menu_notification_setting),
                 R.drawable.ic_app_setting,
-                clickApplink = ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING,
-                eventActionSuffix = SettingTrackingConstant.SETTINGS)
+                eventActionSuffix = SettingTrackingConstant.SETTINGS) {
+                val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING)
+                intent.putExtra(EXTRA_OPEN_SELLER_NOTIF, true)
+                context.startActivity(intent)
+            }
         )
     }
 
