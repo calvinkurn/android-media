@@ -58,8 +58,6 @@ class ShopHomeViewModel @Inject constructor(
         private val addToCartUseCase: AddToCartUseCase,
         private val getPlayWidgetUseCase: GetPlayWidgetUseCase,
         private val playToggleChannelReminderUseCase: PlayToggleChannelReminderUseCase,
-        private val addWishListUseCase: AddWishListUseCase,
-        private val removeWishlistUseCase: RemoveWishListUseCase,
         private val gqlCheckWishlistUseCase: Provider<GQLCheckWishlistUseCase>,
         private val getYoutubeVideoUseCase: GetYoutubeVideoDetailUseCase,
         private val getCampaignNotifyMeUseCase: Provider<GetCampaignNotifyMeUseCase>,

@@ -44,6 +44,7 @@ class ProductManageActivity : BaseSimpleActivity(), HasComponent<ProductManageLi
         initInjector()
 
         if (!GlobalConfig.isSellerApp()) {
+            window.decorView.setBackgroundColor(Color.WHITE)
             setupLayout(savedInstanceState)
         }
 

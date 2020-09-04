@@ -7,7 +7,6 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.swipeUp
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intending
@@ -18,6 +17,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.oneclickcheckout.R
+import com.tokopedia.oneclickcheckout.common.action.scrollTo
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.interceptor.OneClickCheckoutInterceptor
 import com.tokopedia.oneclickcheckout.common.interceptor.RATES_RESPONSE_WITH_INSURANCE
@@ -89,7 +89,7 @@ class OrderSummaryPageActivityTest {
 
         onView(withId(R.id.tv_payment_name)).check(matches(withText("Payment 1")))
 
-        onView(withId(R.id.nested_scroll_view)).perform(swipeUp())
+        onView(withId(R.id.btn_pay)).perform(scrollTo())
         onView(withId(R.id.tv_total_payment_value)).check(matches(withText("Rp116.000")))
         onView(withId(R.id.btn_pay)).check(matches(withText("Bayar")))
         onView(withId(R.id.btn_pay)).perform(click())
@@ -111,6 +111,7 @@ class OrderSummaryPageActivityTest {
         onView(withId(R.id.tv_shipping_duration)).check(matches(withText("Durasi 2-4 hari - Kurir Rekomendasi")))
         onView(withId(R.id.tv_shipping_price)).check(matches(withText("Rp15.000")))
 
+        onView(withId(R.id.tv_shipping_price)).perform(scrollTo())
         onView(withId(R.id.tv_shipping_price)).perform(click())
         onView(withText("AnterAja")).perform(click())
 
@@ -118,7 +119,7 @@ class OrderSummaryPageActivityTest {
         onView(withId(R.id.tv_shipping_name)).check(matches(withText("Pengiriman Reguler")))
         onView(withId(R.id.tv_shipping_duration)).check(matches(withText("Durasi 2-4 hari - AnterAja")))
         onView(withId(R.id.tv_shipping_price)).check(matches(withText("Rp16.000")))
-        onView(withId(R.id.nested_scroll_view)).perform(swipeUp())
+        onView(withId(R.id.btn_pay)).perform(scrollTo())
         onView(withId(R.id.tv_total_payment_value)).check(matches(withText("Rp117.000")))
         onView(withId(R.id.btn_pay)).check(matches(withText("Bayar")))
         onView(withId(R.id.btn_pay)).perform(click())
@@ -139,7 +140,7 @@ class OrderSummaryPageActivityTest {
         Thread.sleep(1500)
         onView(withId(R.id.et_qty)).check(matches(withText("2")))
 
-        onView(withId(R.id.nested_scroll_view)).perform(swipeUp())
+        onView(withId(R.id.btn_pay)).perform(scrollTo())
         onView(withId(R.id.tv_total_payment_value)).check(matches(withText("Rp216.000")))
         onView(withId(R.id.btn_pay)).check(matches(withText("Bayar")))
         onView(withId(R.id.btn_pay)).perform(click())
@@ -158,9 +159,11 @@ class OrderSummaryPageActivityTest {
         activityRule.launchActivity(null)
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
-        onView(withId(R.id.nested_scroll_view)).perform(swipeUp())
+        onView(withId(R.id.cb_insurance)).perform(scrollTo())
         onView(withId(R.id.cb_insurance)).perform(click())
         onView(withId(R.id.cb_insurance)).check(matches(isChecked()))
+
+        onView(withId(R.id.btn_pay)).perform(scrollTo())
         onView(withId(R.id.tv_total_payment_value)).check(matches(withText("Rp117.000")))
         onView(withId(R.id.btn_pay)).check(matches(withText("Bayar")))
         onView(withId(R.id.btn_pay)).perform(click())
@@ -192,7 +195,7 @@ class OrderSummaryPageActivityTest {
         onView(withId(R.id.tv_shipping_duration)).check(matches(withText("Durasi 4-6 hari")))
         onView(withId(R.id.tv_shipping_price)).check(matches(withText(R.string.lbl_osp_free_shipping_only_price)))
 
-        onView(withId(R.id.nested_scroll_view)).perform(swipeUp())
+        onView(withId(R.id.btn_pay)).perform(scrollTo())
         onView(withId(R.id.tv_total_payment_value)).check(matches(withText("Rp101.000")))
         onView(withId(R.id.btn_pay)).check(matches(withText("Bayar")))
         onView(withId(R.id.btn_pay)).perform(click())

@@ -39,7 +39,7 @@ ext {
     constraintLayoutVersion = '2.0.0-beta3'
     materialVersion = '1.0.0'
 
-    exoPlayerVersion = '2.10.8'
+    exoPlayerVersion = '2.11.8'
     stfalconVersion = '1.0.0'
 
     playServiceFirebaseConfig = '16.1.3'
@@ -95,7 +95,7 @@ ext {
     ]
 
     unifyIconVersion = '0.0.4'
-    unifyPrinciplesVersion = '1.1.8'
+    unifyPrinciplesVersion = '1.2.0'
     unifyComponentsVersion = '1.1.45'
     unifyCoachMarkVersion = '1.2.6'
     unifyCalendarVersion = '1.0.2'
@@ -105,7 +105,7 @@ ext {
     unifyPinVersion = '1.0.3'
     unifyEmptyStateVersion = '1.0.6-beta-1'
     unifyGlobalErrorVersion = '1.0.9'
-    unifyHeaderVersion = '1.1.1'
+    unifyHeaderVersion = '1.1.4'
     unifySortFilterVersion = '1.0.3'
     unifyIconNotificationVersion = '1.0.0'
     unifyCarouselVersion = '1.0.4'
@@ -179,7 +179,7 @@ ext {
             messaging  : "com.google.firebase:firebase-messaging:${playServiceFirebaseMessaging}",
             config     : "com.google.firebase:firebase-config:${playServiceFirebaseRemoteConfig}",
             performance: "com.google.firebase:firebase-perf:${playServiceFirebasePerfMon}",
-            fireStore  : "com.google.firebase:firebase-firestore:17.1.2"
+            fireStore  : "com.google.firebase:firebase-firestore:21.4.3"
     ]
 
     viewDependencies = [
@@ -257,7 +257,7 @@ ext {
             archCoreRuntime       : "androidx.arch.core:core-runtime:$archCoreVersion",
             archCoreCommon        : "androidx.arch.core:core-common:$archCoreVersion",
             twitter               : "org.twitter4j:twitter4j-core:$twitter4JVersion",
-            laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:1.4.2",
+            laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:1.4.8",
             androidjunit5         : "de.mannodermaus.gradle.plugins:android-junit5:1.5.1.0",
             rootbeer              : "com.scottyab:rootbeer-lib:0.0.7",
             viewPager2            : "androidx.viewpager2:viewpager2:$viewPager2",
