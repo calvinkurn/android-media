@@ -216,6 +216,7 @@ object HomePageTrackingV2 : BaseTracking() {
         private const val RECOMMENDATION_LIST_SEE_ALL_EVENT_ACTION = "click view all on dynamic channel list carousel"
         private const val RECOMMENDATION_LIST_SEE_ALL_CARD_EVENT_ACTION = "click view all card on dynamic channel list carousel"
         private const val RECOMMENDATION_LIST_CLOSE_EVENT_ACTION = "click on close dynamic channel list carousel"
+        private const val LIST_DYNAMIC_CHANNEL_LIST_CAROUSEL = "/ - p%s - dynamic channel list carousel - product - %s - %s - %s - %s"
 
         fun getRecommendationListImpression(channel: DynamicHomeChannel.Channels, isToIris: Boolean = false, userId: String) = getBasicProductChannelView(
                 event = if(isToIris) Event.PRODUCT_VIEW_IRIS else Event.PRODUCT_VIEW,
@@ -236,11 +237,14 @@ object HomePageTrackingV2 : BaseTracking() {
                             isFreeOngkir = grid.freeOngkir.isActive,
                             persoType = channel.persoType,
                             categoryId = channel.categoryID,
-                            isTopAds = grid.isTopads
+                            isTopAds = grid.isTopads,
+                            headerName = channel.header.name,
+                            isCarousel = true,
+                            recommendationType = grid.recommendationType
                     )
                 },
                 list = String.format(
-                        Value.LIST_WITH_HEADER, "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT, channel.header.name
+                        "/ - p%s", "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT
                 ),
                 channelId = channel.id
         )
@@ -264,11 +268,14 @@ object HomePageTrackingV2 : BaseTracking() {
                             isFreeOngkir = grid.isFreeOngkirActive,
                             persoType = channel.trackingAttributionModel.persoType,
                             categoryId = channel.trackingAttributionModel.categoryId,
-                            isTopAds = grid.isTopads
+                            isTopAds = grid.isTopads,
+                            recommendationType = grid.recommendationType,
+                            headerName = channel.channelHeader.name,
+                            isCarousel = true
                     )
                 },
                 list = String.format(
-                        Value.LIST_WITH_HEADER, "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT, channel.channelHeader.name
+                        "/ - p%s", "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT
                 ),
                 channelId = channel.id
         )
@@ -294,11 +301,14 @@ object HomePageTrackingV2 : BaseTracking() {
                                 isFreeOngkir = grid.freeOngkir.isActive,
                                 persoType = channel.persoType,
                                 categoryId = channel.categoryID,
-                                isTopAds = grid.isTopads
+                                isTopAds = grid.isTopads,
+                                headerName = channel.header.name,
+                                isCarousel = true,
+                                recommendationType = grid.recommendationType
                         )
                 ),
                 list = String.format(
-                        Value.LIST_WITH_HEADER, "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT, channel.header.name
+                        "/ - p%s", "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT
                 )
         )
 
@@ -323,11 +333,14 @@ object HomePageTrackingV2 : BaseTracking() {
                                 isFreeOngkir = grid.isFreeOngkirActive,
                                 persoType = channel.trackingAttributionModel.persoType,
                                 categoryId = channel.trackingAttributionModel.categoryId,
-                                isTopAds = grid.isTopads
+                                isTopAds = grid.isTopads,
+                                headerName = channel.channelHeader.name,
+                                isCarousel = true,
+                                recommendationType = grid.recommendationType
                         )
                 ),
                 list = String.format(
-                        Value.LIST_WITH_HEADER, "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT, channel.channelHeader.name
+                        "/ - p%s", "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT
                 )
         )
 
@@ -413,11 +426,14 @@ object HomePageTrackingV2 : BaseTracking() {
                                     categoryId = channel.categoryID,
                                     isTopAds = grid.isTopads,
                                     quantity = quantity,
-                                    cartId = cartId
+                                    cartId = cartId,
+                                    isCarousel = true,
+                                    recommendationType = grid.recommendationType,
+                                    headerName = channel.header.name
                             )
                     ),
                     list = String.format(
-                            Value.LIST_WITH_HEADER, "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT, channel.header.name
+                            "/ - p%s", "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT
                     )
                 )
 
@@ -449,11 +465,14 @@ object HomePageTrackingV2 : BaseTracking() {
                                 categoryId = channel.trackingAttributionModel.categoryId,
                                 isTopAds = grid.isTopads,
                                 quantity = quantity,
-                                cartId = cartId
+                                cartId = cartId,
+                                isCarousel = true,
+                                recommendationType = grid.recommendationType,
+                                headerName = channel.channelHeader.name
                         )
                 ),
                 list = String.format(
-                        Value.LIST_WITH_HEADER, "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT, channel.channelHeader.name
+                        "/ - p%s", "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT
                 )
         )
 
