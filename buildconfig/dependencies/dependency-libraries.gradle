@@ -15,7 +15,7 @@ ext {
             betaNotif               : "com.tokopedia.graphql:beta.notif:0.0.6",
             chuckNoOp               : "com.tokopedia.chuckernoop:chucker_no_op:0.0.1",
             akamaiBMP               : "AkamaiBMP:AkamaiBMP:2.1.2",
-            fakeresponse            : "com.tokopedia.fakeresponse:fakeresponse:0.0.6",
+            fakeresponse            : "com.tokopedia.fakeresponse:fakeresponse:0.0.7",
             fakeresponseNoOp        : "com.tokopedia.fakeresponse:fakeresponse_no_op:0.0.6",
             analyticAnnotation      : "com.tokopedia.analytic:annotation:0.0.3",
             analyticParam           : "com.tokopedia.analytic:param:0.0.2",
