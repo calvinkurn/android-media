@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="desc_cod_layout_extend">Cod layout extend</string>
+    <string name="cod_desc_text">Produk jualanmu dapat dibeli dengan sistem pembayaran di tempat.</string>
+    <string name="cod_title_text">Bayar di Tempat</string>
+    <string name="advantage_title_text">Keuntungan</string>
+    <string name="advantage_desc_text">Layanan Bayar di Tempat dapat menarik pengguna baru untuk membeli produkmu</string>
+    <string name="tnc_title_cod"><![CDATA[Syarat & ketentuan]]></string>
+
+    <string name="label_layanan">Layanan</string>
+</resources>
