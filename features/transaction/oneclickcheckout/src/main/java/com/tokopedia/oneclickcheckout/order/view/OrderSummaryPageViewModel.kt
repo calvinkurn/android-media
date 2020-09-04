@@ -178,15 +178,15 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             orderPayment.value = _orderPayment
             validateUsePromoRevampUiModel = null
             lastValidateUsePromoRequest = null
-            orderPromo.value = orderData.promo.copy(state = ButtonBayarState.NORMAL)
+            orderPromo.value = orderData.promo.copy(state = OccButtonState.NORMAL)
             if (orderData.prompt.shouldShowPrompt()) {
                 globalEvent.value = OccGlobalEvent.Prompt(orderData.prompt)
             }
             if (orderProduct.productId > 0 && orderData.preference.shipment.serviceId > 0) {
-                orderTotal.value = orderTotal.value.copy(buttonState = ButtonBayarState.LOADING)
+                orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
                 getRates()
             } else {
-                orderTotal.value = orderTotal.value.copy(buttonState = ButtonBayarState.DISABLE)
+                orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
                 sendViewOspEe()
             }
             OccIdlingResource.decrement()
@@ -210,7 +210,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         if (shouldReloadRates) {
             calculateTotal()
             if (!product.quantity.isStateError) {
-                orderTotal.value = orderTotal.value.copy(buttonState = ButtonBayarState.LOADING)
+                orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
                 debounce()
             }
         }
@@ -243,7 +243,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                                         shippingRecommendationData = null
                                 )
                                 orderShipment.value = _orderShipment
-                                orderTotal.value = orderTotal.value.copy(buttonState = ButtonBayarState.DISABLE)
+                                orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
                                 sendViewOspEe()
                                 OccIdlingResource.decrement()
                             }
@@ -409,7 +409,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                                     if (shipping.serviceErrorMessage.isNullOrEmpty()) {
                                         validateUsePromo()
                                     } else {
-                                        orderTotal.value = orderTotal.value.copy(buttonState = ButtonBayarState.DISABLE)
+                                        orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
                                         sendViewShippingErrorMessage(shippingErrorId)
                                     }
                                     sendPreselectedCourierOption(preselectedSpId)
@@ -537,7 +537,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     private fun autoApplyLogisticPromo(logisticPromoUiModel: LogisticPromoUiModel, oldCode: String, shipping: OrderShipment) {
-        orderPromo.value = orderPromo.value.copy(state = ButtonBayarState.LOADING)
+        orderPromo.value = orderPromo.value.copy(state = OccButtonState.LOADING)
         val requestParams = RequestParams.create()
         requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, generateValidateUsePromoRequestWithBbo(logisticPromoUiModel, oldCode))
         OccIdlingResource.increment()
@@ -547,11 +547,11 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                         .observeOn(executorSchedulers.main)
                         .subscribe(object : Observer<ValidateUsePromoRevampUiModel> {
                             override fun onError(e: Throwable) {
-                                orderPromo.value = orderPromo.value.copy(state = ButtonBayarState.DISABLE)
+                                orderPromo.value = orderPromo.value.copy(state = OccButtonState.DISABLE)
                                 globalEvent.value = OccGlobalEvent.Error(e)
                                 _orderShipment = shipping.copy(logisticPromoTickerMessage = if (shipping.serviceErrorMessage.isNullOrEmpty()) "Tersedia ${logisticPromoUiModel.title}" else null, isApplyLogisticPromo = false, logisticPromoShipping = null)
                                 orderShipment.value = _orderShipment
-                                orderTotal.value = orderTotal.value.copy(buttonState = ButtonBayarState.DISABLE)
+                                orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
                                 calculateTotal()
                                 OccIdlingResource.decrement()
                             }
@@ -679,7 +679,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             if (newShipping.serviceErrorMessage.isNullOrEmpty()) {
                 validateUsePromo()
             } else {
-                orderTotal.value = orderTotal.value.copy(buttonState = ButtonBayarState.DISABLE)
+                orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
                 calculateTotal()
             }
         }
@@ -904,7 +904,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     fun finalUpdate(onSuccessCheckout: (CheckoutOccResult) -> Unit, skipCheckIneligiblePromo: Boolean) {
-        if (orderTotal.value.buttonState == ButtonBayarState.NORMAL) {
+        if (orderTotal.value.buttonState == OccButtonState.NORMAL) {
             globalEvent.value = OccGlobalEvent.Loading
             val product = orderProduct
             val shop = orderShop
@@ -1280,8 +1280,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     fun validateUsePromo() {
-        orderTotal.value = orderTotal.value.copy(buttonState = ButtonBayarState.LOADING)
-        orderPromo.value = orderPromo.value.copy(state = ButtonBayarState.LOADING)
+        orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
+        orderPromo.value = orderPromo.value.copy(state = OccButtonState.LOADING)
         val validateUsePromoRequest = generateValidateUsePromoRequest()
         val requestParams = RequestParams.create()
         requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, validateUsePromoRequest)
@@ -1292,8 +1292,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                         .observeOn(executorSchedulers.main)
                         .subscribe(object : Observer<ValidateUsePromoRevampUiModel> {
                             override fun onError(e: Throwable) {
-                                orderPromo.value = orderPromo.value.copy(state = ButtonBayarState.DISABLE)
-                                orderTotal.value = orderTotal.value.copy(buttonState = ButtonBayarState.DISABLE)
+                                orderPromo.value = orderPromo.value.copy(state = OccButtonState.DISABLE)
+                                orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
                                 OccIdlingResource.decrement()
                             }
 
@@ -1329,8 +1329,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     fun updatePromoState(promoUiModel: PromoUiModel) {
-        orderPromo.value = orderPromo.value.copy(lastApply = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel), state = ButtonBayarState.NORMAL)
-        orderTotal.value = orderTotal.value.copy(buttonState = if (shouldButtonStateEnable(_orderShipment)) ButtonBayarState.NORMAL else ButtonBayarState.DISABLE)
+        orderPromo.value = orderPromo.value.copy(lastApply = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel), state = OccButtonState.NORMAL)
+        orderTotal.value = orderTotal.value.copy(buttonState = if (shouldButtonStateEnable(_orderShipment)) OccButtonState.NORMAL else OccButtonState.DISABLE)
         calculateTotal()
     }
 
@@ -1338,7 +1338,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         val quantity = orderProduct.quantity
         var payment = _orderPayment
         if (quantity.orderQuantity <= 0 || !_orderPreference.isValid) {
-            orderTotal.value = orderTotal.value.copy(orderCost = OrderCost(), buttonState = ButtonBayarState.DISABLE)
+            orderTotal.value = orderTotal.value.copy(orderCost = OrderCost(), buttonState = OccButtonState.DISABLE)
             return
         }
         val totalProductPrice = quantity.orderQuantity * orderProduct.getPrice().toDouble()
@@ -1355,46 +1355,46 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         val orderCost = OrderCost(subtotal, totalProductPrice, totalShippingPrice, insurancePrice, fee, shippingDiscount, productDiscount, cashbacks)
 
         var currentState = orderTotal.value.buttonState
-        if (currentState == ButtonBayarState.NORMAL && (!shouldButtonStateEnable(shipping))) {
-            currentState = ButtonBayarState.DISABLE
+        if (currentState == OccButtonState.NORMAL && (!shouldButtonStateEnable(shipping))) {
+            currentState = OccButtonState.DISABLE
         }
         if (payment.errorTickerMessage.isNotEmpty()) {
             _orderPayment = payment.copy(isCalculationError = false)
             orderPayment.value = _orderPayment
-            orderTotal.value = orderTotal.value.copy(orderCost = orderCost, paymentErrorMessage = payment.errorTickerMessage, isButtonChoosePayment = true, buttonState = currentState)
+            orderTotal.value = orderTotal.value.copy(orderCost = orderCost, paymentErrorMessage = payment.errorTickerMessage, buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
         } else if (payment.errorMessage.message.isNotEmpty() && payment.errorMessage.button.text.isNotEmpty()) {
-            if (currentState == ButtonBayarState.NORMAL) {
-                currentState = ButtonBayarState.DISABLE
+            if (currentState == OccButtonState.NORMAL) {
+                currentState = OccButtonState.DISABLE
             }
             _orderPayment = payment.copy(isCalculationError = false)
             orderPayment.value = _orderPayment
-            orderTotal.value = orderTotal.value.copy(orderCost = orderCost, paymentErrorMessage = null, isButtonChoosePayment = false, buttonState = currentState)
+            orderTotal.value = orderTotal.value.copy(orderCost = orderCost, paymentErrorMessage = null, buttonType = OccButtonType.PAY, buttonState = currentState)
         } else if (payment.minimumAmount > subtotal) {
             orderTotal.value = orderTotal.value.copy(orderCost = orderCost,
                     paymentErrorMessage = "Belanjaanmu kurang dari min. transaksi ${payment.gatewayName} (${CurrencyFormatUtil.convertPriceValueToIdrFormat(payment.minimumAmount, false).removeDecimalSuffix()}). Silahkan pilih pembayaran lain.",
-                    isButtonChoosePayment = true, buttonState = currentState)
+                    buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
             _orderPayment = payment.copy(isCalculationError = true)
             orderPayment.value = _orderPayment
         } else if (payment.maximumAmount > 0 && payment.maximumAmount < subtotal) {
             orderTotal.value = orderTotal.value.copy(orderCost = orderCost,
                     paymentErrorMessage = "Belanjaanmu melebihi limit transaksi ${payment.gatewayName} (${CurrencyFormatUtil.convertPriceValueToIdrFormat(payment.maximumAmount, false).removeDecimalSuffix()}). Silahkan pilih pembayaran lain.",
-                    isButtonChoosePayment = true, buttonState = currentState)
+                    buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
             _orderPayment = payment.copy(isCalculationError = true)
             orderPayment.value = _orderPayment
         } else if (payment.gatewayCode.contains(OVO_GATEWAY_CODE) && subtotal > payment.walletAmount) {
             orderTotal.value = orderTotal.value.copy(orderCost = orderCost,
                     paymentErrorMessage = OVO_INSUFFICIENT_ERROR_MESSAGE,
-                    isButtonChoosePayment = true, buttonState = currentState)
+                    buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
             _orderPayment = payment.copy(isCalculationError = true)
             orderPayment.value = _orderPayment
             orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_PAYMENT_OVO_BALANCE)
         } else {
-            if (payment.creditCard.selectedTerm?.isError == true && currentState == ButtonBayarState.NORMAL) {
-                currentState = ButtonBayarState.DISABLE
+            if (payment.creditCard.selectedTerm?.isError == true && currentState == OccButtonState.NORMAL) {
+                currentState = OccButtonState.DISABLE
             }
             _orderPayment = payment.copy(isCalculationError = false)
             orderPayment.value = _orderPayment
-            orderTotal.value = orderTotal.value.copy(orderCost = orderCost, paymentErrorMessage = null, isButtonChoosePayment = false, buttonState = currentState)
+            orderTotal.value = orderTotal.value.copy(orderCost = orderCost, paymentErrorMessage = null, buttonType = OccButtonType.PAY, buttonState = currentState)
         }
     }
 
@@ -1476,7 +1476,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 it.isError = false
             }
             _orderPayment = _orderPayment.copy(creditCard = creditCard.copy(selectedTerm = selectedInstallmentTerm, availableTerms = availableTerms))
-            orderTotal.value = orderTotal.value.copy(buttonState = if (shouldButtonStateEnable(_orderShipment)) ButtonBayarState.NORMAL else ButtonBayarState.DISABLE)
+            orderTotal.value = orderTotal.value.copy(buttonState = if (shouldButtonStateEnable(_orderShipment)) OccButtonState.NORMAL else OccButtonState.DISABLE)
             calculateTotal()
             globalEvent.value = OccGlobalEvent.Normal
         }, {
@@ -1519,7 +1519,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             selectedTerm.isError = true
             _orderPayment = _orderPayment.copy(creditCard = creditCard.copy(selectedTerm = selectedTerm, availableTerms = availableTerms))
             orderPayment.value = _orderPayment
-            orderTotal.value = orderTotal.value.copy(buttonState = ButtonBayarState.DISABLE)
+            orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
             globalEvent.value = OccGlobalEvent.Error(errorMessage = INSTALLMENT_INVALID_MIN_AMOUNT)
             return false
         }

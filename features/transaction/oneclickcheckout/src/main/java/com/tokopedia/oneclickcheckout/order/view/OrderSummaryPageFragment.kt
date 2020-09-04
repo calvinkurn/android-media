@@ -648,10 +648,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     private fun setupButtonPromo(orderPromo: OrderPromo) {
         //loading
         when (orderPromo.state) {
-            ButtonBayarState.LOADING -> {
+            OccButtonState.LOADING -> {
                 btnPromoCheckout?.state = ButtonPromoCheckoutView.State.LOADING
             }
-            ButtonBayarState.DISABLE -> {
+            OccButtonState.DISABLE -> {
                 //failed
                 btnPromoCheckout?.state = ButtonPromoCheckoutView.State.INACTIVE
                 btnPromoCheckout?.title = getString(com.tokopedia.purchase_platform.common.R.string.promo_checkout_inactive_label)
@@ -730,7 +730,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
         override fun chooseCourier() {
             orderSummaryAnalytics.eventChangeCourierOSP(viewModel.getCurrentShipperId().toString())
-            if (viewModel.orderTotal.value.buttonState != ButtonBayarState.LOADING) {
+            if (viewModel.orderTotal.value.buttonState != OccButtonState.LOADING) {
                 orderPreferenceCard.showCourierBottomSheet(this@OrderSummaryPageFragment)
             }
         }
@@ -739,7 +739,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             if (isDurationError) {
                 orderSummaryAnalytics.eventClickUbahWhenDurationError(userSession.userId)
             }
-            if (viewModel.orderTotal.value.buttonState != ButtonBayarState.LOADING) {
+            if (viewModel.orderTotal.value.buttonState != OccButtonState.LOADING) {
                 orderPreferenceCard.showDurationBottomSheet(this@OrderSummaryPageFragment)
             }
         }
@@ -761,7 +761,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
 
         override fun onInstallmentDetailClicked() {
-            if (viewModel.orderTotal.value.buttonState != ButtonBayarState.LOADING) {
+            if (viewModel.orderTotal.value.buttonState != OccButtonState.LOADING) {
                 orderPreferenceCard.showInstallmentDetailBottomSheet(this@OrderSummaryPageFragment)
             }
         }
