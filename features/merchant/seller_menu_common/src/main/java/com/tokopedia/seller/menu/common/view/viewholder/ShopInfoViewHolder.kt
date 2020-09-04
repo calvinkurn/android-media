@@ -19,7 +19,6 @@ import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
 import com.tokopedia.seller.menu.common.analytics.sendClickShopNameTracking
 import com.tokopedia.seller.menu.common.analytics.sendSettingShopInfoClickTracking
 import com.tokopedia.seller.menu.common.analytics.sendSettingShopInfoImpressionTracking
-import com.tokopedia.seller.menu.common.analytics.sendShopInfoClickNextButtonTracking
 import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantStatus
 import com.tokopedia.seller.menu.common.view.uimodel.base.RegularMerchant
 import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
@@ -56,8 +55,6 @@ class ShopInfoViewHolder(
     private val context by lazy { itemView.context }
 
     override fun bind(uiModel: ShopInfoUiModel) {
-        itemView.setOnClickAction()
-
         with(uiModel.data) {
             itemView.apply {
                 when {
@@ -248,15 +245,6 @@ class ShopInfoViewHolder(
         }
         powerMerchantIcon?.setImageDrawable(ResourcesCompat.getDrawable(resources, powerMerchantDrawableIcon, null))
         return this
-    }
-
-    private fun View.setOnClickAction() {
-        successShopInfoLayout?.run {
-            settingShopNext.setOnClickListener {
-                listener?.onShopInfoClicked()
-                sendShopInfoClickNextButtonTracking()
-            }
-        }
     }
 
     private fun LocalLoad.setup() {
