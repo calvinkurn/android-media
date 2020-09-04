@@ -342,16 +342,23 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
         if (isUnAnsweredHasNextFalse(data)) {
             statusFilter = ANSWERED_VALUE
-            if (data.feedbackInboxList.isNotEmpty() && inboxReviewAdapter.itemCount.isZero()) {
-                endlessRecyclerViewScrollListener?.resetState()
-                inboxReviewAdapter.setFeedbackListData(data.feedbackInboxList)
-                endlessRecyclerViewScrollListener?.loadMoreNextPage()
-            } else {
+
+            /**
+             * parameter: hasNext = false, action case 1 & 3 is the same.
+             * case 1 : if adapter is not empty and data is not empty in unanaswered parameter, request lazy load using answered parameter
+             * case 2 : if adapter is empty && data is empty in unanaswered parameter, start the new request using parameter answered
+             * case 3 : if adapter is empty && data is not empty in answered parameter, request lazy load using answered parameter
+             **/
+            if (data.feedbackInboxList.isEmpty()) {
                 sortFilterInboxReview?.hide()
                 isLoadingInitialData = true
                 inboxReviewAdapter.clearAllElements()
                 hideLoading()
                 inboxReviewViewModel.getInitInboxReview(statusFilter = statusFilter)
+            } else {
+                endlessRecyclerViewScrollListener?.resetState()
+                inboxReviewAdapter.setFeedbackListData(data.feedbackInboxList)
+                endlessRecyclerViewScrollListener?.loadMoreNextPage()
             }
         } else {
             if (data.feedbackInboxList.isEmpty() && isFilter && data.page == 1) {
