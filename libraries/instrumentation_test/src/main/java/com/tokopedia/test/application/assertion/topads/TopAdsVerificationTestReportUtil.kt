@@ -1,9 +1,12 @@
 package com.tokopedia.test.application.assertion.topads
 
 import android.content.Context
+import android.os.Environment
 import com.tokopedia.analyticsdebugger.database.STATUS_MATCH
 import com.tokopedia.analyticsdebugger.database.TopAdsLogDB
 import java.io.File
+import java.text.SimpleDateFormat
+import java.util.*
 
 object TopAdsVerificationTestReportUtil {
     private val FILE_TOPADS_REPORT_ROOT = "topads_verificator_data"
@@ -62,10 +65,10 @@ object TopAdsVerificationTestReportUtil {
                 "$url\n")
     }
 
-    fun writeTopAdsVerificatorReportCoverage(context: Context, topAdsLogDBList: List<TopAdsLogDB>) {
+    fun writeTopAdsVerificatorReportCoverage(callerClass: String, topAdsLogDBList: List<TopAdsLogDB>) {
         val reportList = generateTopAdsVerificatorReportCoverage(topAdsLogDBList)
 
-        createTopAdsCoverageReportFile(context, reportList)
+        createTopAdsCoverageReportFile(callerClass, reportList)
     }
 
     fun generateTopAdsVerificatorReportCoverage(topAdsLogDBList: List<TopAdsLogDB>): List<String> {
@@ -128,23 +131,6 @@ object TopAdsVerificationTestReportUtil {
         else listOf()
     }
 
-    private fun getSuccessPercentage(success: Int, total: Int): String {
-        if (total == 0) return "-"
-
-        return (success * 100 / total).toDouble().toString() + "%"
-    }
-
-    private fun createTopAdsCoverageReportFile(context: Context, reportList: List<String>) {
-        val externalFilesDir = context.getExternalFilesDir(null)
-        val topAdsReportRootDir = File(externalFilesDir, FILE_TOPADS_REPORT_ROOT)
-        if (!topAdsReportRootDir.exists()) {
-            makeInitialReportDir(topAdsReportRootDir)
-        }
-        val topAdsCoverageReportFile = File(topAdsReportRootDir, FILE_TOPADS_VERIFICATOR_DATA)
-
-        topAdsCoverageReportFile.appendText(reportList.joinToString("\n"))
-    }
-
     private fun mapToTopAdsCoverageReport(componentName: String, topAdsLogDBList: List<TopAdsLogDB>): TopAdsCoverageReport {
         val impressionLog = topAdsLogDBList.filter { it.eventType == EVENT_IMPRESSION }
         val impressionCount = impressionLog.size
@@ -156,6 +142,32 @@ object TopAdsVerificationTestReportUtil {
 
         return TopAdsCoverageReport(componentName, impressionSuccess, impressionCount, clickSuccess, clickCount)
     }
+
+    private fun getSuccessPercentage(success: Int, total: Int): String {
+        if (total == 0) return "-"
+
+        return (success * 100 / total).toDouble().toString() + "%"
+    }
+
+    private fun createTopAdsCoverageReportFile(callerClass: String, reportList: List<String>) {
+        val externalFilesDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+
+        val topAdsReportRootDir = File(externalFilesDir, FILE_TOPADS_REPORT_ROOT)
+        if (!topAdsReportRootDir.exists()) {
+            topAdsReportRootDir.mkdirs()
+        }
+
+        val topAdsVerificatorFileName = getTopAdsVerificatorFileName(callerClass)
+        val topAdsCoverageReportFile = File(topAdsReportRootDir, topAdsVerificatorFileName)
+
+        topAdsCoverageReportFile.appendText(reportList.joinToString("\n"))
+    }
+
+    private fun getTopAdsVerificatorFileName(callerClass: String) =
+            SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date()) +
+                    "_" +
+                    callerClass +
+                    ".csv"
 
     data class TopAdsCoverageReport(
             val componentName: String,

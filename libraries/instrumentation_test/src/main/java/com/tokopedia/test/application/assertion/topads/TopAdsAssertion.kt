@@ -48,27 +48,11 @@ class TopAdsAssertion(val context: Context,
         val impressedCount = listTopAdsDbFirst.filter { it.eventType == "impression" }.size
         val clickCount = listTopAdsDbFirst.filter { it.eventType == "click" }.size
         val allCount = listTopAdsDbFirst.size
+        val callerClass = Class.forName(Thread.currentThread().stackTrace[3].className).simpleName
 
         verifyImpressionMoreThanClick(allCount, impressedCount, clickCount)
         verifyImpressionMoreThanResponse(impressedCount, topAdsVerificatorInterface)
-
-        logTestMessage("Waiting for topads backend verificator ready...")
-
-        waitForVerificatorReady()
-
-        val listTopAdsDb = readDataFromDatabase(context)
-
-        writeTopAdsVerificatorReportCoverage(context, listTopAdsDb)
-
-        listTopAdsDb.forEach {
-            logTestMessage(it.sourceName+" - "+it.eventType+" - "+it.eventStatus)
-
-            val component = if (it.componentName.isEmpty()) it.sourceName else it.componentName
-
-            Assert.assertEquals(
-                    "Component $component",
-                    STATUS_MATCH, it.eventStatus)
-        }
+        verifyUrlWithTopAdsVerificator(callerClass)
     }
 
     private fun readDataFromDatabase(context: Context): List<TopAdsLogDB> {
@@ -107,9 +91,32 @@ class TopAdsAssertion(val context: Context,
         logTestMessage("Topads impression product recorded on database is more than minimum! -> PASSED")
     }
 
+    private fun verifyUrlWithTopAdsVerificator(callerClass: String) {
+        logTestMessage("Waiting for topads backend verificator ready...")
+        waitForVerificatorReady()
+
+        val listTopAdsDb = readDataFromDatabase(context)
+
+        writeTopAdsVerificatorReportCoverage(callerClass, listTopAdsDb)
+
+        listTopAdsDb.assertAllStatusMatch()
+    }
+
     private fun waitForVerificatorReady() {
         //wait for 15 seconds
         Thread.sleep(15000)
+    }
+
+    private fun List<TopAdsLogDB>.assertAllStatusMatch() {
+        forEach {
+            logTestMessage(it.sourceName + " - " + it.eventType + " - " + it.eventStatus)
+
+            val component = if (it.componentName.isEmpty()) it.sourceName else it.componentName
+
+            Assert.assertEquals(
+                    "Component $component",
+                    STATUS_MATCH, it.eventStatus)
+        }
     }
 
     private fun logTestMessage(message: String) {
