@@ -39,6 +39,12 @@ public class BuyerCardPresenter implements BuyerCardContract.Presenter {
             view.setEggImage(buyerCard.getEggImageUrl());
             view.setMemberStatus(buyerCard.getMemberStatus());
 
+            if(buyerCard.isHasSop()) {
+                view.showSellerAccountCard(buyerCard.getShopName());
+            } else {
+                view.showShopOpenCard();
+            }
+
             if (buyerCard.getTokopointSize() == 0) {
                 view.setCardVisibility(GONE);
             }

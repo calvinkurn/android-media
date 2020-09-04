@@ -1,6 +1,7 @@
 package com.tokopedia.home.account.presentation.view.buyercardview;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -12,10 +13,16 @@ import androidx.appcompat.widget.AppCompatImageView;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
+import androidx.core.content.ContextCompat;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.home.account.R;
+import com.tokopedia.unifycomponents.CardUnify;
+import com.tokopedia.unifyprinciples.Typography;
 
 /**
  * @author okasurya on 7/17/18.
@@ -45,6 +52,8 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
     private AppCompatImageView ivMemberBadge;
     private BuyerCardPresenter buyerCardPresenter;
     private CardView widget;
+    private CardUnify sellerAccountCard;
+    private CardUnify sellerOpenShopCard;
 
     public BuyerCardView(@NonNull Context context) {
         super(context);
@@ -84,6 +93,8 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
         dividerTwo = view.findViewById(R.id.divider2);
         ivMemberBadge = view.findViewById(R.id.ivMemberBadge);
         widget = view.findViewById(R.id.cardView);
+        sellerAccountCard = view.findViewById(R.id.sellerAccountCard);
+        sellerOpenShopCard = view.findViewById(R.id.sellerOpenShopCard);
         buyerCardPresenter = new BuyerCardPresenter();
         buyerCardPresenter.attachView(this);
     }
@@ -236,5 +247,31 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
             ivMemberBadge.setVisibility(VISIBLE);
             ImageHandler.loadImageCircle2(getContext(), ivMemberBadge, eggImageUrl, R.drawable.placeholder_grey);
         }
+    }
+
+    @Override
+    public void showSellerAccountCard(String shopName) {
+        Typography shopNameTxt = sellerAccountCard.findViewById(R.id.shopName);
+        Drawable icon = ContextCompat.getDrawable(getContext(), R.drawable.ic_seller_shop_account);
+
+        shopNameTxt.setCompoundDrawablesWithIntrinsicBounds(icon, null, null,  null);
+        shopNameTxt.setText(getContext().getString(R.string.account_home_shop_name_card, shopName));
+
+        sellerAccountCard.setOnClickListener(v ->
+            RouteManager.route(getContext(), ApplinkConstInternalSellerapp.SELLER_MENU)
+        );
+
+        sellerAccountCard.setVisibility(View.VISIBLE);
+        sellerOpenShopCard.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showShopOpenCard() {
+        sellerAccountCard.setOnClickListener(v ->
+            RouteManager.route(getContext(), ApplinkConstInternalMarketplace.OPEN_SHOP)
+        );
+
+        sellerAccountCard.setVisibility(View.GONE);
+        sellerOpenShopCard.setVisibility(View.VISIBLE);
     }
 }

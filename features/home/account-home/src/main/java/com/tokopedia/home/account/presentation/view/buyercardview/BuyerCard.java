@@ -10,6 +10,7 @@ public class BuyerCard implements Parcelable {
     private String avatar;
     private int progress;
     private String username;
+    private String shopName;
     private String tokopointTitle;
     private String tokopointAmount;
     private String tokopointImageUrl;
@@ -28,6 +29,7 @@ public class BuyerCard implements Parcelable {
     private int couponSize;
     private String memberStatus;
     private boolean isAffiliate;
+    private boolean isHasSop;
 
     public BuyerCard() {
 
@@ -35,6 +37,7 @@ public class BuyerCard implements Parcelable {
 
     BuyerCard(String avatar,
               String username,
+              String shopName,
               int progress,
               String tokopointTitle,
               String tokopointAmount,
@@ -45,6 +48,7 @@ public class BuyerCard implements Parcelable {
               String couponImageUrl,
               String couponApplink,
               boolean isAffiliate,
+              boolean isHasSop,
               String tokomemberTitle,
               String tokoMemberAmount,
               String tokomemberImageUrl,
@@ -57,6 +61,7 @@ public class BuyerCard implements Parcelable {
         this.avatar = avatar;
         this.progress = progress;
         this.username = username;
+        this.shopName = shopName;
         this.tokopointTitle = tokopointTitle;
         this.tokopointAmount = tokopointAmount;
         this.tokopointImageUrl = tokopointImageUrl;
@@ -66,6 +71,7 @@ public class BuyerCard implements Parcelable {
         this.couponImageUrl = couponImageUrl;
         this.couponApplink = couponApplink;
         this.isAffiliate = isAffiliate;
+        this.isHasSop = isHasSop;
         this.tokomemberTitle = tokomemberTitle;
         this.tokoMemberAmount = tokoMemberAmount;
         this.tokomemberImageUrl = tokomemberImageUrl;
@@ -97,12 +103,20 @@ public class BuyerCard implements Parcelable {
         return username;
     }
 
+    public String getShopName() {
+        return shopName;
+    }
+
     public void setUsername(String username) {
         this.username = username;
     }
 
     public String getTokopointAmount() {
         return tokopointAmount;
+    }
+
+    public boolean isHasSop() {
+        return isHasSop;
     }
 
     public boolean isAffiliate() {
@@ -240,6 +254,7 @@ public class BuyerCard implements Parcelable {
     public static class Builder {
         private String avatar;
         private String username;
+        private String shopName;
         private int progress;
         private String tokopointTitle;
         private String tokopointAmount;
@@ -259,6 +274,7 @@ public class BuyerCard implements Parcelable {
         private int couponSize;
         private String memberStatus;
         private boolean isAffiliate;
+        private boolean isHasShop;
 
         public Builder avatar(String avatar) {
             this.avatar = avatar;
@@ -267,6 +283,11 @@ public class BuyerCard implements Parcelable {
 
         public Builder username(String username) {
             this.username = username;
+            return this;
+        }
+
+        public Builder shopName(String shopName) {
+            this.shopName = shopName;
             return this;
         }
 
@@ -320,6 +341,11 @@ public class BuyerCard implements Parcelable {
             return this;
         }
 
+        public Builder isHasShop(boolean isHasShop) {
+            this.isHasShop = isHasShop;
+            return this;
+        }
+
         public Builder tokomemberTitle(String title) {
             this.tokomemberTitle = title;
             return this;
@@ -366,8 +392,8 @@ public class BuyerCard implements Parcelable {
         }
 
         public BuyerCard build() {
-            return new BuyerCard(avatar, username, progress, tokopointTitle, tokopointAmount, tokopointImageUrl,
-                    tokopointAppplink, couponTitle, couponAmount, couponImageUrl, couponApplink, isAffiliate,
+            return new BuyerCard(avatar, username, shopName, progress, tokopointTitle, tokopointAmount, tokopointImageUrl,
+                    tokopointAppplink, couponTitle, couponAmount, couponImageUrl, couponApplink, isAffiliate, isHasShop,
                     tokomemberTitle, tokoMemberAmount, tokomemberImageUrl, tokomemberApplink,
                     tokopointSize, tokomemberSize, couponSize, memberStatus,eggImageUrl);
         }
@@ -383,6 +409,7 @@ public class BuyerCard implements Parcelable {
         dest.writeString(this.avatar);
         dest.writeInt(this.progress);
         dest.writeString(this.username);
+        dest.writeString(this.shopName);
         dest.writeString(this.tokopointTitle);
         dest.writeString(this.tokopointAmount);
         dest.writeString(this.tokopointImageUrl);
@@ -401,12 +428,14 @@ public class BuyerCard implements Parcelable {
         dest.writeInt(this.couponSize);
         dest.writeString(this.memberStatus);
         dest.writeByte(this.isAffiliate ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isHasSop ? (byte) 1 : (byte) 0);
     }
 
     protected BuyerCard(Parcel in) {
         this.avatar = in.readString();
         this.progress = in.readInt();
         this.username = in.readString();
+        this.shopName = in.readString();
         this.tokopointTitle = in.readString();
         this.tokopointAmount = in.readString();
         this.tokopointImageUrl = in.readString();
@@ -425,6 +454,7 @@ public class BuyerCard implements Parcelable {
         this.couponSize = in.readInt();
         this.memberStatus = in.readString();
         this.isAffiliate = in.readByte() != 0;
+        this.isHasSop = in.readByte() != 0;
     }
 
     public static final Parcelable.Creator<BuyerCard> CREATOR = new Parcelable.Creator<BuyerCard>() {

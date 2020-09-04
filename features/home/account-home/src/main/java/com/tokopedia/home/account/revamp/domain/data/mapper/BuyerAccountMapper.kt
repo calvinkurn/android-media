@@ -62,6 +62,9 @@ class BuyerAccountMapper @Inject constructor(
             userId = accountDataModel.profile.userId.toEmptyStringIfNull()
             name = accountDataModel.profile.fullName.toEmptyStringIfNull()
 
+            shopName = userSession.shopName
+            isHasShop = userSession.hasShop()
+
             setShortcutResponse(accountDataModel, this)
 
             imageUrl = accountDataModel.profile.profilePicture.toEmptyStringIfNull()
