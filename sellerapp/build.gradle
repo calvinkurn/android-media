@@ -252,6 +252,7 @@ dependencies {
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.logisticorder)
     implementation project(rootProject.ext.features.editshipping)
+    implementation project(rootProject.ext.features.activation)
     implementation project(rootProject.ext.features.topchat)
     implementation project(rootProject.ext.features.chatbot)
     implementation project(rootProject.ext.features.chatcommon)
