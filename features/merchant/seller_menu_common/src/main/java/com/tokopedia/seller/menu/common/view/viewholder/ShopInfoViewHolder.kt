@@ -203,6 +203,10 @@ class ShopInfoViewHolder(
             }
         }
 
+        val paddingTop = itemView.resources.getDimensionPixelSize(R.dimen.spacing_lvl3)
+        val paddingBottom = itemView.resources.getDimensionPixelSize(R.dimen.setting_status_padding_bottom)
+        itemView.setPadding(0, paddingTop, 0, paddingBottom)
+
         shopStatusLayout?.let { view ->
             (this.itemView.shopStatus as LinearLayout).run {
                 removeAllViews()
