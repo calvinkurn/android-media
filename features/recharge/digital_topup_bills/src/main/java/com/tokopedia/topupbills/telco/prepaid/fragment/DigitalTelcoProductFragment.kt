@@ -141,6 +141,10 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
                         if (list.label == titleProduct && it == titleProduct &&
                                 list.product.dataCollections.isNotEmpty()) {
                             telcoTelcoProductView.getVisibleProductItemsToUsersTracking(list.product.dataCollections[0].products)
+
+                            if (list.filterTagComponents.isNotEmpty()) {
+                                topupAnalytics.impressionFilterCluster(categoryId, userSession.userId)
+                            }
                         }
                     }
                 }

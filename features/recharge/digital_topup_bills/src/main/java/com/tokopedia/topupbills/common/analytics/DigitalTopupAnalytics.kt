@@ -208,6 +208,15 @@ class DigitalTopupAnalytics {
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
 
+    fun impressionFilterCluster(categoryId: Int, userId: String) {
+        val mapEvent = TrackAppUtils.gtmData(
+                DigitalTopupEventTracking.Event.VIEW_HOMEPAGE_IRIS,
+                DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
+                DigitalTopupEventTracking.Action.IMPRESSION_FILTER_CLUSTER,
+                getCategoryName(categoryId))
+        sendGeneralEvent(mapEvent, userId)
+    }
+
     fun impressionEnhanceCommerceProduct(digitalTrackProductTelcoList: List<DigitalTrackProductTelco>, operatorName: String,
                                          userId: String) {
         val productTelcoList = ArrayList<Bundle>()
