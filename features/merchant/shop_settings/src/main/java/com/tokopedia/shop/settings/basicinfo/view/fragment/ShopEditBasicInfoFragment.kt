@@ -421,14 +421,16 @@ class ShopEditBasicInfoFragment: Fragment() {
         val readMore = getString(R.string.ticker_warning_read_more)
         val color = ContextCompat.getColor(requireContext(), R.color.merchant_green)
         val message = shopEditTicker.getDescriptionWithSpannable(color, description, readMore)
-        shopEditTicker.tickerType = Ticker.TYPE_WARNING
-        shopEditTicker.setTextDescription(message)
-        shopEditTicker.setDescriptionClickEvent(object: TickerCallback {
-            override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                clickReadMore()
-            }
-            override fun onDismiss() {}
-        })
+        shopEditTicker.apply {
+            tickerType = Ticker.TYPE_WARNING
+            setTextDescription(message)
+            setDescriptionClickEvent(object : TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    clickReadMore()
+                }
+                override fun onDismiss() {}
+            })
+        }
     }
 
     private fun showDomainNotAllowedTicker(data: AllowShopNameDomainChangesData) {
