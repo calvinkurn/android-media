@@ -107,6 +107,7 @@ object HomeQuery{
                 isOutOfStock
                 warehouseID
                 minOrder
+                recommendationType
                 shop{
                     shopID
                 }
@@ -138,7 +139,6 @@ object HomeQuery{
                 }
                 applink
                 text_color
-                recommendationType
                 image_url
                 attribution
                 gradient_color
