@@ -487,7 +487,7 @@ object CartListPresenterCalculateSubTotalTest : Spek({
             Then("should have 4084 subtotal and 400 cashback") {
                 verify {
                     view.updateCashback(400.0)
-                    view.renderDetailInfoSubTotal("10", 4048.0, 4048.0, true, false, false)
+                    view.renderDetailInfoSubTotal("10", 4084.0, 4084.0, true, false, false)
                 }
             }
         }

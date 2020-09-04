@@ -3,9 +3,9 @@ package com.tokopedia.cart.domain.mapper
 import android.content.Context
 import com.google.gson.Gson
 import com.tokopedia.cart.R
-import com.tokopedia.cart.apiResponseAllShopWithWholeSaleJson
-import com.tokopedia.cart.apiResponseAvailableShopJson
-import com.tokopedia.cart.apiResponseShopErrorJson
+import com.tokopedia.cart.availableAndErrorCartItemMockData
+import com.tokopedia.cart.availableCartItemMockData
+import com.tokopedia.cart.errorCartItemMockData
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartDataListResponse
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.ShopGroupSimplifiedGqlResponse
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData
@@ -33,7 +33,7 @@ object CartMapperV3Test : Spek({
         Scenario("available shops with no error") {
 
             Given("api response") {
-                cartDataListResponse = Gson().fromJson(apiResponseAvailableShopJson, ShopGroupSimplifiedGqlResponse::class.java).shopGroupSimplifiedResponse.data
+                cartDataListResponse = Gson().fromJson(availableCartItemMockData, ShopGroupSimplifiedGqlResponse::class.java).shopGroupSimplifiedResponse.data
             }
 
             When("map response") {
@@ -45,7 +45,7 @@ object CartMapperV3Test : Spek({
             }
 
             Then("should contains ticker data") {
-                assertEquals(TickerData(0, "Pesanan di keranjangmu berpotensi dapat Bebas Ongkir", "cart"), result.tickerData)
+                assertEquals(TickerData(0, "Hai Member Gold, kuota Bebas Ongkir kamu sisa 3x (untuk 1 pesanan/transaksi) buat minggu ini.", "cart"), result.tickerData)
             }
 
             Then("should contains 1 available shop") {
@@ -60,7 +60,7 @@ object CartMapperV3Test : Spek({
         Scenario("error shops with no available") {
 
             Given("api response") {
-                cartDataListResponse = Gson().fromJson(apiResponseShopErrorJson, ShopGroupSimplifiedGqlResponse::class.java).shopGroupSimplifiedResponse.data
+                cartDataListResponse = Gson().fromJson(errorCartItemMockData, ShopGroupSimplifiedGqlResponse::class.java).shopGroupSimplifiedResponse.data
             }
 
             When("map response") {
@@ -88,7 +88,7 @@ object CartMapperV3Test : Spek({
         Scenario("available & error shops") {
 
             Given("api response") {
-                cartDataListResponse = Gson().fromJson(apiResponseAllShopWithWholeSaleJson, ShopGroupSimplifiedGqlResponse::class.java).shopGroupSimplifiedResponse.data
+                cartDataListResponse = Gson().fromJson(availableAndErrorCartItemMockData, ShopGroupSimplifiedGqlResponse::class.java).shopGroupSimplifiedResponse.data
             }
 
             When("map response") {
@@ -105,7 +105,7 @@ object CartMapperV3Test : Spek({
             }
 
             Then("should contains 2 available shops") {
-                assertEquals(2, result.shopGroupAvailableDataList.size)
+                assertEquals(1, result.shopGroupAvailableDataList.size)
             }
 
             Then("should contains 1 error shop") {
