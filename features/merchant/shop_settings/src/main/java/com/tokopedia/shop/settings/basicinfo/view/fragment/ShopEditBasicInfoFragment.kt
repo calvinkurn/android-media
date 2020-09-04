@@ -419,7 +419,7 @@ class ShopEditBasicInfoFragment: Fragment() {
         val description = getString(R.string.ticker_warning_can_only_change_shopname_once)
         val readMore = getString(R.string.ticker_warning_read_more)
         val color = ContextCompat.getColor(requireContext(), R.color.merchant_green)
-        val message = shopEditTicker.getDescriptionWithSpannable(color, description, readMore, ::clickReadMore)
+        val message = shopEditTicker.getDescriptionWithSpannable(color, description, readMore) { clickReadMore() }
         shopEditTicker.tickerType = Ticker.TYPE_WARNING
         shopEditTicker.setTextDescription(message)
     }

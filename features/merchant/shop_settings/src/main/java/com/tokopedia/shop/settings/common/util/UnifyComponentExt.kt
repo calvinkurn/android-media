@@ -9,13 +9,13 @@ import android.text.style.ClickableSpan
 import android.view.View
 import com.tokopedia.unifycomponents.ticker.Ticker
 
-fun Ticker.getDescriptionWithSpannable(color: Int, descriptionText: String, endOfText: String, clickText :() -> Unit): SpannableStringBuilder {
+fun Ticker.getDescriptionWithSpannable(color: Int, descriptionText: String, endOfText: String, onClick: (() -> Unit)? = null): SpannableStringBuilder {
     val spannableText = SpannableString(endOfText)
     val startIndex = 0
     val endIndex = spannableText.length
     val clickableSpan = object : ClickableSpan() {
         override fun onClick(widget: View) {
-            clickText()
+            onClick?.invoke()
         }
 
         override fun updateDrawState(ds: TextPaint) {
