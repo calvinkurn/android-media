@@ -24,6 +24,8 @@ import com.tokopedia.kotlin.extensions.view.toZeroStringIfNull
 import com.tokopedia.product.manage.common.feature.list.model.ProductViewModel
 import com.tokopedia.product.manage.common.feature.quickedit.stock.data.model.EditStockResult
 import com.tokopedia.product.manage.common.feature.quickedit.stock.presentation.fragment.ProductManageQuickEditStockFragment
+import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
+import com.tokopedia.product.manage.common.feature.variant.presentation.ui.QuickEditVariantStockBottomSheet
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
@@ -187,6 +189,12 @@ class TopChatRoomActivity : BaseChatToolbarActivity(), ProductManageQuickEditSto
                 is Fail -> showErrorStockEditToaster(it.throwable as EditStockResult)
             }
         })
+        mViewModel.editVariantStockResult.observe(this, Observer {
+            when(it) {
+                is Success -> showSuccessStockEditToaster(it.data.productName)
+                is Fail -> showErrorStockEditToaster(it.throwable as EditStockResult)
+            }
+        })
     }
 
     private fun showSuccessStockEditToaster(productName: String) {
@@ -224,6 +232,7 @@ class TopChatRoomActivity : BaseChatToolbarActivity(), ProductManageQuickEditSto
         intent?.data?.run {
             when {
                 pathSegments.contains(ApplinkConst.Chat.PATH_STOCK) -> handleStockQuickEditUri()
+                pathSegments.contains(ApplinkConst.Chat.PATH_VARIANT) -> handleVariantStockQuickEditUri()
                 else -> {}
             }
         }
@@ -243,6 +252,14 @@ class TopChatRoomActivity : BaseChatToolbarActivity(), ProductManageQuickEditSto
         }
     }
 
+    private fun Uri.handleVariantStockQuickEditUri() {
+        getQueryParameter(ApplinkConst.Chat.QUICKEDIT_PRODUCT_ID)?.let { productId ->
+            getQueryParameter(ApplinkConst.Chat.QUICKEDIT_HAS_RESERVED)?.toBoolean()?.let { hasReservedStock ->
+                openVariantStockQuickEdit(productId, hasReservedStock)
+            }
+        }
+    }
+
     private fun openStockQuickEdit(productId: String,
                                    productName: String,
                                    productStatus: String,
@@ -256,10 +273,21 @@ class TopChatRoomActivity : BaseChatToolbarActivity(), ProductManageQuickEditSto
                     productName,
                     productStatus,
                     productStock,
-                    this).let { bottomSheet ->
-                bottomSheet.show(supportFragmentManager, QUICKEDIT_STOCK_TAG)
-            }
+                    this).show(supportFragmentManager, QUICKEDIT_STOCK_TAG)
         }
+    }
+
+    private fun openVariantStockQuickEdit(productId: String,
+                                          hasReservedStock: Boolean) {
+        if (hasReservedStock) {
+            RouteManager.route(this, ApplinkConstInternalMarketplace.RESERVED_STOCK, productId, userSession.shopId)
+        } else {
+            QuickEditVariantStockBottomSheet.createInstance(productId,::onSaveVariantStock).show(supportFragmentManager, QUICKEDIT_VARIANT_TAG)
+        }
+    }
+
+    private fun onSaveVariantStock(editVariantResult: EditVariantResult) {
+        mViewModel.editVariantsStock(userSession.shopId, editVariantResult)
     }
 
     companion object {
@@ -270,6 +298,7 @@ class TopChatRoomActivity : BaseChatToolbarActivity(), ProductManageQuickEditSto
         val ROLE_USER = "user"
 
         private const val QUICKEDIT_STOCK_TAG = "quickedit_stock"
+        private const val QUICKEDIT_VARIANT_TAG = "quickedit_variant"
     }
 
 }
