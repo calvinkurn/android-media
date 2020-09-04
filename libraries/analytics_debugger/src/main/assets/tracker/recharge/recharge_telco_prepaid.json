@@ -144,6 +144,16 @@
       ]
     },
     {
+      "event": "viewHomepageIris",
+      "eventCategory": "digital - homepage",
+      "eventAction": "impression filter cluster",
+      "eventLabel": "{{.*}}",
+      "currentSite": "tokopediadigital",
+      "userId": "{{.*}}",
+      "businessUnit": "recharge",
+      "sessionIris": "{{.*}}"
+    },
+    {
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "click 3 dots",
