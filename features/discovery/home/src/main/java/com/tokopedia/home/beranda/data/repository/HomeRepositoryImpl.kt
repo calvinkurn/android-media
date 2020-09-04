@@ -11,6 +11,8 @@ import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import dagger.Lazy
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -35,29 +37,33 @@ class HomeRepositoryImpl @Inject constructor(
     }
 
     override fun updateHomeData(): Flow<Result<Any>> = flow{
-        val isCacheExistForProcess = isCacheExist
-        val homeDataResponse = homeRemoteDataSource.getHomeData()
-        val currentTimeMillisString = System.currentTimeMillis().toString()
-        var currentToken = ""
+        coroutineScope {
+            val isCacheExistForProcess = isCacheExist
+            val homeDataResponse = async { homeRemoteDataSource.getHomeData() }
+            val currentTimeMillisString = System.currentTimeMillis().toString()
+            var currentToken = ""
 
-        var dynamicChannelResponse = homeRemoteDataSource.getDynamicChannelData(numOfChannel = 2)
 
-        if (!isCacheExistForProcess) {
-            currentToken = processFirstPageDynamicChannel(dynamicChannelResponse, homeDataResponse, currentToken)
+            var dynamicChannelResponse = async { homeRemoteDataSource.getDynamicChannelData(numOfChannel = 2) }
+
+            if (!isCacheExistForProcess) {
+                currentToken = processFirstPageDynamicChannel(dynamicChannelResponse, homeDataResponse, currentToken)
+            }
+
+            if ((!isCacheExistForProcess && currentToken.isNotEmpty()) ||
+                    isCacheExistForProcess) {
+                dynamicChannelResponse = processFullPageDynamicChannel(dynamicChannelResponse, homeDataResponse)
+            }
+
+            dynamicChannelResponse.dynamicHomeChannel.channels.forEach {
+                it.timestamp = currentTimeMillisString
+            }
+            homeDataResponse.let {
+                emit(Result.success(null))
+                homeCachedDataSource.saveToDatabase(homeDataResponse)
+            }
         }
 
-        if ((!isCacheExistForProcess && currentToken.isNotEmpty()) ||
-                isCacheExistForProcess) {
-            dynamicChannelResponse = processFullPageDynamicChannel(dynamicChannelResponse, homeDataResponse)
-        }
-
-        dynamicChannelResponse.dynamicHomeChannel.channels.forEach {
-            it.timestamp = currentTimeMillisString
-        }
-        homeDataResponse.let {
-            emit(Result.success(null))
-            homeCachedDataSource.saveToDatabase(homeDataResponse)
-        }
     }
 
     override suspend fun onDynamicChannelExpired(groupId: String): List<Visitable<*>> {

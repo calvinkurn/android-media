@@ -57,37 +57,37 @@ class HomeBenchmarkTestNetworkRequest: CoroutineScope {
 
         @BeforeClass @JvmStatic
         fun setupComponents() {
-            setupGraphqlMockResponse(HomeMockResponseConfig())
-            context = ApplicationProvider.getApplicationContext<Context>()
-            val homeDatabase = HomeDatabase.buildDatabase(context)
-            homeDao = homeDatabase.homeDao()
-            gson = Gson()
-            val homeData = gson.fromJson(getDynamicHomeChannel(context), HomeData::class.java)
-            runBlocking {
-                homeDao.save(HomeRoomData(homeData = homeData))
-            }
-            val remoteConfig = FirebaseRemoteConfigImpl(context)
-            val homeVisitableFactory = HomeVisitableFactoryImpl(null, remoteConfig, HomeDefaultDataSource())
-            val trackingQueue = TrackingQueue(context)
-            homeDataMapper = HomeDataMapper(context, homeVisitableFactory, trackingQueue)
-
-            val homeCachedDataSource = HomeCachedDataSource(homeDao)
-            val homeRemoteDataSource = HomeRemoteDataSource(
-                    GraphqlInteractor.getInstance().graphqlRepository,
-                    HomeDispatcherProviderImpl())
-            val geolocationRemoteDataSource: Lazy<GeolocationRemoteDataSource> = Lazy {
-                GeolocationRemoteDataSource(HomeAceApi { Observable.just(Response.success("Test")) })
-            }
-            val homeRepository = HomeRepositoryImpl(
-                    homeCachedDataSource,
-                    homeRemoteDataSource,
-                    HomeDefaultDataSource(),
-                    geolocationRemoteDataSource
-            )
-            homeUseCase = HomeUseCase(
-                    homeRepository,
-                    homeDataMapper
-            )
+//            setupGraphqlMockResponse(HomeMockResponseConfig())
+//            context = ApplicationProvider.getApplicationContext<Context>()
+//            val homeDatabase = HomeDatabase.buildDatabase(context)
+//            homeDao = homeDatabase.homeDao()
+//            gson = Gson()
+//            val homeData = gson.fromJson(getDynamicHomeChannel(context), HomeData::class.java)
+//            runBlocking {
+//                homeDao.save(HomeRoomData(homeData = homeData))
+//            }
+//            val remoteConfig = FirebaseRemoteConfigImpl(context)
+//            val homeVisitableFactory = HomeVisitableFactoryImpl(null, remoteConfig, HomeDefaultDataSource())
+//            val trackingQueue = TrackingQueue(context)
+//            homeDataMapper = HomeDataMapper(context, homeVisitableFactory, trackingQueue)
+//
+//            val homeCachedDataSource = HomeCachedDataSource(homeDao)
+//            val homeRemoteDataSource = HomeRemoteDataSource(
+//                    GraphqlInteractor.getInstance().graphqlRepository,
+//                    HomeDispatcherProviderImpl(), )
+//            val geolocationRemoteDataSource: Lazy<GeolocationRemoteDataSource> = Lazy {
+//                GeolocationRemoteDataSource(HomeAceApi { Observable.just(Response.success("Test")) })
+//            }
+//            val homeRepository = HomeRepositoryImpl(
+//                    homeCachedDataSource,
+//                    homeRemoteDataSource,
+//                    HomeDefaultDataSource(),
+//                    geolocationRemoteDataSource
+//            )
+//            homeUseCase = HomeUseCase(
+//                    homeRepository,
+//                    homeDataMapper
+//            )
         }
     }
 
