@@ -11,11 +11,13 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
+import com.meituan.robust.patch.annotaion.Add
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.common.util.EventQuery
 import com.tokopedia.entertainment.common.util.EventQuery.eventContentById
+import com.tokopedia.entertainment.pdp.activity.EventPDPFormActivity.Companion.EXTRA_ADDITIONAL_DATA
 import com.tokopedia.entertainment.pdp.di.EventPDPComponent
 import com.tokopedia.entertainment.pdp.viewmodel.EventPDPFormViewModel
 import javax.inject.Inject
@@ -28,6 +30,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.ent_pdp_form_fragment.*
 import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.EMPTY_TYPE
 import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.REGEX_TYPE
+import com.tokopedia.entertainment.pdp.data.checkout.AdditionalType
+import com.tokopedia.entertainment.pdp.data.checkout.EventCheckoutAdditionalData
 import timber.log.Timber
 import java.io.Serializable
 
@@ -41,8 +45,6 @@ class EventPDPFormFragment : BaseDaggerFragment(){
     lateinit var userSession:UserSessionInterface
 
     lateinit var formAdapter: EventPDPFormAdapter
-
-    var mDataIntent: List<Form> = listOf()
 
     override fun getScreenName(): String = String.format(resources.getString(R.string.ent_pdp_title_form))
 
@@ -110,7 +112,7 @@ class EventPDPFormFragment : BaseDaggerFragment(){
     }
 
     private fun observeViewModel(){
-        viewModel.mFormData.observe(this, Observer {
+        viewModel.mFormData.observe(viewLifecycleOwner, Observer {
             hideProgressBar()
             renderList(it)
             showData()
@@ -128,17 +130,32 @@ class EventPDPFormFragment : BaseDaggerFragment(){
     }
 
     private fun setupData() {
-        val dataIntent = activity?.intent
-        mDataIntent = dataIntent?.getSerializableExtra(EXTRA_DATA_PESSANGER) as List<Form>
+        val listForm = activity?.intent?.getSerializableExtra(EXTRA_DATA_PESSANGER)
+        val eventCheckoutAdditionalData = activity?.intent?.extras?.getParcelable(EXTRA_ADDITIONAL_DATA) ?:
+        EventCheckoutAdditionalData(additionalType = AdditionalType.NULL_DATA)
 
-        if(mDataIntent.isNotEmpty()){
-            hideProgressBar()
-            renderList(mDataIntent.toMutableList())
-            showData()
-        } else{
-            viewModel.getData(urlPDP, EventQuery.eventPDPV3(),
-                    eventContentById())
+        if (listForm != null) {
+            val listFormPemesan = listForm as List<Form>
+            if (listFormPemesan.isNotEmpty()) {
+                hideProgressBar()
+                renderList(listForm.toMutableList())
+                showData()
+            } else {
+                requestData(eventCheckoutAdditionalData)
+            }
         }
+
+        if(eventCheckoutAdditionalData.additionalType!=AdditionalType.NULL_DATA){
+            hideProgressBar()
+            requestData(eventCheckoutAdditionalData)
+            showData()
+        }
+
+    }
+
+    private fun requestData(eventCheckoutAdditionalData: EventCheckoutAdditionalData){
+        viewModel.getData(urlPDP, EventQuery.eventPDPV3(),
+                eventContentById(), eventCheckoutAdditionalData)
     }
 
     private fun renderList(formData: MutableList<Form>){

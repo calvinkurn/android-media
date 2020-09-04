@@ -31,5 +31,6 @@ class EventPDPFormActivity: BaseSimpleActivity(), HasComponent<EventPDPComponent
 
     companion object{
         const val EXTRA_URL_PDP= "EXTRA_URL_PDP"
+        const val EXTRA_ADDITIONAL_DATA = "EXTRA_ADDITIONAL_DATA"
     }
 }

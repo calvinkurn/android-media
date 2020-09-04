@@ -87,6 +87,7 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
     private var promoCode: String = ""
 
     private var forms: List<Form> = emptyList()
+    private var listAdditional : List<EventCheckoutAdditionalData> = emptyList()
 
     lateinit var performanceMonitoring: PerformanceMonitoring
 
@@ -286,7 +287,7 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
     }
 
     private fun renderAdditional(pdp: ProductDetailData){
-        val listAdditional = getAdditionalList(pdp, packageID, metadata.itemMap)
+        listAdditional = getAdditionalList(pdp, packageID, metadata.itemMap)
         if (!listAdditional.isNullOrEmpty()) {
             val adapterAdditional = EventCheckoutAdditionalAdapter(this)
             adapterAdditional.setList(listAdditional)
@@ -412,7 +413,11 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
     }
 
     override fun onClickAdditional(additonal: EventCheckoutAdditionalData) {
-        goToPageForm()
+        context?.run {
+            val intent = RouteManager.getIntent(this, "${ApplinkConstInternalEntertainment.EVENT_FORM}/$urlPDP")
+            intent.putExtra(EXTRA_ADDITIONAL_DATA,additonal)
+            startActivityForResult(intent, REQUEST_CODE_FORM)
+        }
     }
 
 
@@ -426,6 +431,8 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
         const val REQUEST_CODE_FORM = 100
 
         const val EXTRA_DATA_PESSANGER = "EXTRA_DATA_PESSANGER"
+        const val EXTRA_ADDITIONAL_DATA = "EXTRA_ADDITIONAL_DATA"
+
 
         const val PASSENGER_NAME = "fullname"
         const val PASSENGER_EMAIL = "email"

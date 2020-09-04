@@ -20,7 +20,7 @@ class EventPDPFormAdapter(val userSession: UserSessionInterface): RecyclerView.A
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return EventPDPTextFieldViewHolder(LayoutInflater.from(parent.context).inflate(EventPDPTextFieldViewHolder.LAYOUT, parent, false),
+        return EventPDPTextFieldViewHolder(LayoutInflater.from(parent.context).inflate(EventPDPTextFieldViewHolder.LAYOUT_TEXT, parent, false),
                 ::addOrRemoveData, userSession)
     }
 
@@ -62,10 +62,15 @@ class EventPDPFormAdapter(val userSession: UserSessionInterface): RecyclerView.A
     }
 
     companion object{
-        val FULLNAME_TYPE = "fullname"
-        val EMAIL_TYPE = "email"
-        val PHONE_TYPE = "no-telp"
-        val EMPTY_TYPE = 1
-        val REGEX_TYPE = 2
+        const val FULLNAME_TYPE = "fullname"
+        const val EMAIL_TYPE = "email"
+        const val PHONE_TYPE = "no-telp"
+        const val EMPTY_TYPE = 1
+        const val REGEX_TYPE = 2
+
+        const val ELEMENT_TEXT = "text"
+        const val ELEMENT_LIST = "list"
+        const val TEXT_TYPE = 1
+        const val LIST_TYPE = 2
     }
 }
