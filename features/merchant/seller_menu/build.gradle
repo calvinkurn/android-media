@@ -18,6 +18,7 @@ dependencies {
     implementation project(rootProject.ext.features.sellerMenuCommon)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.productManageCommon)
+    implementation project(rootProject.ext.features.goldMerchantCommon)
 
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
