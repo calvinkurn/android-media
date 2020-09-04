@@ -7,4 +7,8 @@ class FakeResponseInterceptorProvider {
     fun getInterceptor(context: Context): Interceptor? {
         return null
     }
+
+    fun getRestInterceptor(context: Context): Interceptor? {
+        return null
+    }
 }
