@@ -247,7 +247,7 @@ class ShopHomeAdapter(
             it::class.java == ShopHomeProductViewModel::class.java
         }
         val totalProductViewModelData = visitables.filterIsInstance<ShopHomeProductViewModel>().size
-        if (firstProductViewModelIndex >= 0 && totalProductViewModelData <= visitables.size && firstProductViewModelIndex < totalProductViewModelData) {
+        if (firstProductViewModelIndex >= 0 && totalProductViewModelData <= visitables.size) {
             visitables.removeAll(visitables.filterIsInstance<ShopHomeProductViewModel>())
             productListViewModel.clear()
             notifyRemovedItemRange(firstProductViewModelIndex, totalProductViewModelData)
