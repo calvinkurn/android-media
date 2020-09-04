@@ -49,7 +49,7 @@ data class ProductVariantCommon(
         var children: List<VariantChildCommon> = listOf()
 ) {
     fun getVariantsIdentifier(): String {
-        return if (variant.isEmpty()) "" else variant.joinToString(" & ") { it.name.toString() }
+        return if (variant.any { it.name == null }) "" else variant.joinToString(" & ") { it.name.toString() }
     }
 
     fun isSelectedChildHasFlashSale(optionId: Int): Boolean {
