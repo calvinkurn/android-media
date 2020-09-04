@@ -1,5 +1,6 @@
 package com.tokopedia.track.builder
 
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.track.builder.`interface`.BaseTrackerBuilderInterface
 import com.tokopedia.track.builder.util.BaseTrackerConst
 
@@ -15,11 +16,12 @@ class BaseTrackerBuilder : BaseTrackerConst(), BaseTrackerBuilderInterface{
                                              eventAction: String,
                                              eventLabel: String,
                                              promotions: List<Promotion>): BaseTrackerBuilderInterface {
-        dataLayer[Event.KEY] = event
-        dataLayer[Category.KEY] = eventCategory
-        dataLayer[Action.KEY] = eventAction
-        dataLayer[Label.KEY] = eventLabel
-        dataLayer[Ecommerce.KEY] = Ecommerce.getEcommercePromoView(promotions)
+        dataLayer = DataLayer.mapOf(
+                Event.KEY, event,
+                Category.KEY, eventCategory,
+                Action.KEY, eventAction,
+                Label.KEY, eventLabel,
+                Ecommerce.KEY, Ecommerce.getEcommercePromoView(promotions))
         return this
     }
 
@@ -29,11 +31,12 @@ class BaseTrackerBuilder : BaseTrackerConst(), BaseTrackerBuilderInterface{
                                            eventLabel: String,
                                            list: String,
                                            products: List<Product>): BaseTrackerBuilderInterface {
-        dataLayer[Event.KEY] = event
-        dataLayer[Category.KEY] = eventCategory
-        dataLayer[Action.KEY] = eventAction
-        dataLayer[Label.KEY] = eventLabel
-        dataLayer[Ecommerce.KEY] = Ecommerce.getEcommerceProductView(products, list)
+        dataLayer = DataLayer.mapOf(
+                Event.KEY, event,
+                Category.KEY, eventCategory,
+                Action.KEY, eventAction,
+                Label.KEY, eventLabel,
+                Ecommerce.KEY, Ecommerce.getEcommerceProductView(products, list))
         return this
     }
 
@@ -42,12 +45,12 @@ class BaseTrackerBuilder : BaseTrackerConst(), BaseTrackerBuilderInterface{
                                               eventAction: String,
                                               eventLabel: String,
                                               promotions: List<Promotion>): BaseTrackerBuilderInterface {
-
-        dataLayer[Event.KEY] = event
-        dataLayer[Category.KEY] = eventCategory
-        dataLayer[Action.KEY] = eventAction
-        dataLayer[Label.KEY] = eventLabel
-        dataLayer[Ecommerce.KEY] = Ecommerce.getEcommercePromoClick(promotions)
+        dataLayer = DataLayer.mapOf(
+                Event.KEY, event,
+                Category.KEY, eventCategory,
+                Action.KEY, eventAction,
+                Label.KEY, eventLabel,
+                Ecommerce.KEY, Ecommerce.getEcommercePromoClick(promotions))
         return this
     }
 
@@ -57,12 +60,12 @@ class BaseTrackerBuilder : BaseTrackerConst(), BaseTrackerBuilderInterface{
                                             eventLabel: String,
                                             list: String,
                                             products: List<Product>): BaseTrackerBuilderInterface {
-
-        dataLayer[Event.KEY] = event
-        dataLayer[Category.KEY] = eventCategory
-        dataLayer[Action.KEY] = eventAction
-        dataLayer[Label.KEY] = eventLabel
-        dataLayer[Ecommerce.KEY] = Ecommerce.getEcommerceProductClick(products, list)
+        dataLayer = DataLayer.mapOf(
+                Event.KEY, event,
+                Category.KEY, eventCategory,
+                Action.KEY, eventAction,
+                Label.KEY, eventLabel,
+                Ecommerce.KEY, Ecommerce.getEcommerceProductClick(products, list))
         return this
     }
 
