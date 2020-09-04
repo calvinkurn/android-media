@@ -72,20 +72,6 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
         ))
     }
 
-    private val topAdsBottomSheet by lazy {
-        BottomSheetUnify().apply {
-            setCloseClickListener {
-                this.dismiss()
-            }
-        }
-    }
-
-    private val topAdsBottomSheetView by lazy {
-        context?.let {
-            View.inflate(it, R.layout.setting_topads_bottomsheet_layout, null)
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
         setHasOptionsMenu(true)
@@ -144,26 +130,6 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     override fun onRefreshShopInfo() {
         showShopInfoLoading()
         getAllShopInfo()
-    }
-
-    override fun onKreditTopadsClicked() {
-        val bottomSheet = childFragmentManager.findFragmentByTag(TOPADS_BOTTOMSHEET_TAG)
-        if (bottomSheet is BottomSheetUnify) {
-            bottomSheet.dismiss()
-            RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_AUTO_TOPUP)
-        } else {
-            RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_CREDIT)
-        }
-    }
-
-    override fun onTopAdsTooltipClicked(isTopAdsActive: Boolean) {
-        val bottomSheetChildView = setupBottomSheetLayout(isTopAdsActive)
-        bottomSheetChildView?.run {
-            with(topAdsBottomSheet) {
-                setChild(this@run)
-                show(this@SellerMenuFragment.childFragmentManager, TOPADS_BOTTOMSHEET_TAG)
-            }
-        }
     }
 
     private fun initInjector() {
@@ -282,26 +248,6 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
 
     private fun showShopInfoLoading() {
         adapter.showShopInfoLoading()
-    }
-
-    private fun setupBottomSheetLayout(isTopAdsActive: Boolean) : View? {
-        val bottomSheetInfix: String
-        val bottomSheetDescription: String
-        if (isTopAdsActive) {
-            bottomSheetInfix = resources.getString(R.string.setting_topads_status_active)
-            bottomSheetDescription = resources.getString(R.string.setting_topads_description_active)
-        } else {
-            bottomSheetInfix = resources.getString(R.string.setting_topads_status_inactive)
-            bottomSheetDescription = resources.getString(R.string.setting_topads_description_inactive)
-        }
-        val bottomSheetTitle = resources.getString(R.string.setting_topads_status, bottomSheetInfix)
-        return topAdsBottomSheetView?.apply {
-            findViewById<Typography>(R.id.topAdsBottomSheetTitle).text = bottomSheetTitle
-            findViewById<TextView>(R.id.topAdsBottomSheetDescription).text = bottomSheetDescription
-            findViewById<UnifyButton>(R.id.topAdsNextButton).setOnClickListener{
-                onKreditTopadsClicked()
-            }
-        }
     }
 
     private fun goToReputationHistory() {
