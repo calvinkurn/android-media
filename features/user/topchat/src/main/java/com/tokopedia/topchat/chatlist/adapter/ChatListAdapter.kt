@@ -92,7 +92,7 @@ class ChatListAdapter(adapterTypeFactory: ChatListTypeFactoryImpl) :
     private fun findElementFinalIndex(element: ItemChatListPojo, offset: Int): Int {
         if (offset < 0 || offset >= visitables.size) return RecyclerView.NO_POSITION
         var finalIndex = RecyclerView.NO_POSITION
-        for (i in offset..visitables.size) {
+        for (i in offset until visitables.size) {
             val chat = visitables[i]
             if (chat is ItemChatListPojo) {
                 val itemChatTimeStamp = chat.lastReplyTime
@@ -100,6 +100,9 @@ class ChatListAdapter(adapterTypeFactory: ChatListTypeFactoryImpl) :
                 if (elementTimeStamp > itemChatTimeStamp) {
                     finalIndex = i - 1
                     break
+                }
+                if (i == visitables.lastIndex) {
+                    finalIndex = visitables.lastIndex
                 }
             }
         }
