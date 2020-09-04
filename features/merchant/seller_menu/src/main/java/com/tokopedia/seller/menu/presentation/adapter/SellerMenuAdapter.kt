@@ -2,6 +2,8 @@ package com.tokopedia.seller.menu.presentation.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
+import com.tokopedia.seller.menu.common.view.uimodel.ShopOrderUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.ShopProductUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.SettingShopInfoUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopInfoErrorUiModel
@@ -10,37 +12,57 @@ import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopInfoUiModel
 
 class SellerMenuAdapter(
     factory: OtherMenuAdapterTypeFactory
-): BaseListAdapter<SettingUiModel, OtherMenuAdapterTypeFactory>(factory) {
+) : BaseListAdapter<SettingUiModel, OtherMenuAdapterTypeFactory>(factory) {
 
-    companion object {
-        private const val SHOP_INFO_INDEX = 0
-    }
-
-    fun showShopInfo(shopInfo: SettingShopInfoUiModel) {
-        removeShopInfoItem()
-
-        val shopInfoUiModel = ShopInfoUiModel(shopInfo)
-        addElement(SHOP_INFO_INDEX, shopInfoUiModel)
-
-        notifyItemChanged(SHOP_INFO_INDEX)
+    fun showShopInfo(shopInfo: SettingShopInfoUiModel, shopScore: Int) {
+        findShopInfoIndex()?.let { index ->
+            val shopInfoUiModel = ShopInfoUiModel(shopInfo, shopScore)
+            updateItemAt(index, shopInfoUiModel)
+        }
     }
 
     fun showShopInfoLoading() {
-        removeShopInfoItem()
-
-        addElement(SHOP_INFO_INDEX, ShopInfoLoadingUiModel)
-        notifyItemChanged(SHOP_INFO_INDEX)
+        findShopInfoIndex()?.let { index ->
+            updateItemAt(index, ShopInfoLoadingUiModel)
+        }
     }
 
     fun showShopInfoError() {
-        removeShopInfoItem()
-
-        addElement(SHOP_INFO_INDEX, ShopInfoErrorUiModel)
-        notifyItemChanged(SHOP_INFO_INDEX)
+        findShopInfoIndex()?.let { index ->
+            updateItemAt(index, ShopInfoErrorUiModel)
+        }
     }
 
-    private fun removeShopInfoItem() {
-        visitables.removeAt(SHOP_INFO_INDEX)
-        notifyItemRemoved(SHOP_INFO_INDEX)
+    fun showProductSection(product: ShopProductUiModel) {
+        findIndex { it is ShopProductUiModel }?.let { index ->
+            updateItemAt(index, product)
+        }
+    }
+
+    fun showOrderSection(order: ShopOrderUiModel) {
+        findIndex { it is ShopOrderUiModel }?.let { index ->
+            updateItemAt(index, order)
+        }
+    }
+
+    private fun updateItemAt(index: Int, item: SettingUiModel) {
+        visitables.removeAt(index)
+        notifyItemRemoved(index)
+
+        addElement(index, item)
+        notifyItemChanged(index)
+    }
+
+    private fun findShopInfoIndex(): Int? {
+        return findIndex {
+            it is ShopInfoUiModel ||
+            it is ShopInfoLoadingUiModel ||
+            it is ShopInfoErrorUiModel
+        }
+    }
+
+    private fun findIndex(predicate: (SettingUiModel) -> Boolean): Int? {
+        val item = data.firstOrNull { predicate.invoke(it) }
+        return item?.let { data.indexOf(it) }
     }
 }

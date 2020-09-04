@@ -7,7 +7,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
@@ -35,10 +34,7 @@ import com.tokopedia.seller.menu.di.component.DaggerSellerMenuComponent
 import com.tokopedia.seller.menu.presentation.adapter.SellerMenuAdapter
 import com.tokopedia.seller.menu.presentation.util.SellerMenuList
 import com.tokopedia.seller.menu.presentation.viewmodel.SellerMenuViewModel
-import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -49,9 +45,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     ShopInfoErrorViewHolder.ShopInfoErrorListener {
 
     companion object {
-        private const val GO_TO_REPUTATION_HISTORY = "GO_TO_REPUTATION_HISTORY"
         private const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
-        private const val TOPADS_BOTTOMSHEET_TAG = "topads_bottomsheet"
     }
 
     @Inject
@@ -70,20 +64,6 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
             this,
             userSession
         ))
-    }
-
-    private val topAdsBottomSheet by lazy {
-        BottomSheetUnify().apply {
-            setCloseClickListener {
-                this.dismiss()
-            }
-        }
-    }
-
-    private val topAdsBottomSheetView by lazy {
-        context?.let {
-            View.inflate(it, R.layout.setting_topads_bottomsheet_layout, null)
-        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -124,10 +104,6 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
         RouteManager.route(context, ApplinkConst.SHOP, userSession.shopId)
     }
 
-    override fun onShopBadgeClicked() {
-        goToReputationHistory()
-    }
-
     override fun onFollowersCountClicked() {
         goToShopFavouriteList()
     }
@@ -146,26 +122,6 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
         getAllShopInfo()
     }
 
-    override fun onKreditTopadsClicked() {
-        val bottomSheet = childFragmentManager.findFragmentByTag(TOPADS_BOTTOMSHEET_TAG)
-        if (bottomSheet is BottomSheetUnify) {
-            bottomSheet.dismiss()
-            RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_AUTO_TOPUP)
-        } else {
-            RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_CREDIT)
-        }
-    }
-
-    override fun onTopAdsTooltipClicked(isTopAdsActive: Boolean) {
-        val bottomSheetChildView = setupBottomSheetLayout(isTopAdsActive)
-        bottomSheetChildView?.run {
-            with(topAdsBottomSheet) {
-                setChild(this@run)
-                show(this@SellerMenuFragment.childFragmentManager, TOPADS_BOTTOMSHEET_TAG)
-            }
-        }
-    }
-
     private fun initInjector() {
         DaggerSellerMenuComponent.builder()
             .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
@@ -182,6 +138,8 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
 
     private fun observeViewModel() {
         observeShopInfo()
+        observeProductCount()
+        observeNotifications()
         observeErrorToaster()
         getAllShopInfo()
     }
@@ -189,8 +147,29 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     private fun observeShopInfo() {
         observe(viewModel.settingShopInfoLiveData) {
             when (it) {
-                is Success -> showShopInfo(it.data)
+                is Success -> showShopInfo(it.data.shopInfo, it.data.shopScore)
                 is Fail -> showShopInfo(SettingError)
+            }
+            swipeRefreshLayout.isRefreshing = false
+        }
+    }
+
+    private fun observeProductCount() {
+        observe(viewModel.shopProductLiveData) {
+            when (it) {
+                is Success -> adapter.showProductSection(it.data)
+            }
+            swipeRefreshLayout.isRefreshing = false
+        }
+    }
+
+    private fun observeNotifications() {
+        observe(viewModel.sellerMenuNotification) {
+            when (it) {
+                is Success -> {
+                    val order = it.data.order
+                    adapter.showOrderSection(order)
+                }
             }
             swipeRefreshLayout.isRefreshing = false
         }
@@ -202,11 +181,11 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
         }
     }
 
-    private fun showShopInfo(settingResponseState: SettingResponseState) {
+    private fun showShopInfo(settingResponseState: SettingResponseState, shopScore: Int = 0) {
         when (settingResponseState) {
             is SettingSuccess -> {
                 if (settingResponseState is SettingShopInfoUiModel) {
-                    adapter.showShopInfo(settingResponseState)
+                    adapter.showShopInfo(settingResponseState, shopScore)
                 }
             }
             is SettingLoading -> {
@@ -223,6 +202,8 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
 
     private fun getAllShopInfo() {
         viewModel.getAllSettingShopInfo()
+        viewModel.getProductCount()
+        viewModel.getNotifications()
     }
 
     private fun setupMenuList() {
@@ -257,33 +238,6 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
 
     private fun showShopInfoLoading() {
         adapter.showShopInfoLoading()
-    }
-
-    private fun setupBottomSheetLayout(isTopAdsActive: Boolean) : View? {
-        val bottomSheetInfix: String
-        val bottomSheetDescription: String
-        if (isTopAdsActive) {
-            bottomSheetInfix = resources.getString(R.string.setting_topads_status_active)
-            bottomSheetDescription = resources.getString(R.string.setting_topads_description_active)
-        } else {
-            bottomSheetInfix = resources.getString(R.string.setting_topads_status_inactive)
-            bottomSheetDescription = resources.getString(R.string.setting_topads_description_inactive)
-        }
-        val bottomSheetTitle = resources.getString(R.string.setting_topads_status, bottomSheetInfix)
-        return topAdsBottomSheetView?.apply {
-            findViewById<Typography>(R.id.topAdsBottomSheetTitle).text = bottomSheetTitle
-            findViewById<TextView>(R.id.topAdsBottomSheetDescription).text = bottomSheetDescription
-            findViewById<UnifyButton>(R.id.topAdsNextButton).setOnClickListener{
-                onKreditTopadsClicked()
-            }
-        }
-    }
-
-    private fun goToReputationHistory() {
-        val reputationHistoryIntent = RouteManager.getIntent(context, ApplinkConst.REPUTATION).apply {
-            putExtra(GO_TO_REPUTATION_HISTORY, true)
-        }
-        startActivity(reputationHistoryIntent)
     }
 
     private fun goToShopFavouriteList() {

@@ -1,12 +1,12 @@
-package com.tokopedia.product.manage.feature.filter.data.model
+package com.tokopedia.product.manage.common.list.data.model.filter
 
 import com.google.gson.annotations.SerializedName
 
-data class Tab(
+data class Filter(
         @SerializedName("id")
         val id: String = "",
         @SerializedName("value")
-        val value: String = "",
+        val value: List<String> = listOf(),
         @SerializedName("name")
         val name: String = ""
 )

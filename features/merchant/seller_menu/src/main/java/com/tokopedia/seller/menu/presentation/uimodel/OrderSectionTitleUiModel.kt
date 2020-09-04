@@ -10,5 +10,5 @@ object OrderSectionTitleUiModel: SectionTitleUiModel(
 ) {
 
     override val onClickApplink: String?
-        get() = ApplinkConst.MARKETPLACE_ORDER
+        get() = ApplinkConst.SELLER_HISTORY
 }

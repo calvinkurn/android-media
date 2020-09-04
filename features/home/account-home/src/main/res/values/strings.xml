@@ -252,5 +252,7 @@
     <string name="account_home_add_phone_title">Tambah Nomor Ponsel</string>
     <string name="account_home_add_phone_message">Tambah dan verifikasi nomor ponsel terlebih dahulu sebelum membuat PIN</string>
     <string name="clear_cache">clear cache</string>
+    <string name="account_home_seller_open_shop">Buka Toko Gratis</string>
+    <string name="account_home_shop_name_card">Toko Saya: **%1$s**</string>
 
 </resources>

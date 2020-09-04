@@ -58,6 +58,7 @@ import java.util.List;
 public class  InboxReputationActivity extends BaseActivity implements HasComponent, InboxReputationListener {
 
     public static final String GO_TO_REPUTATION_HISTORY = "GO_TO_REPUTATION_HISTORY";
+    public static final String GO_TO_BUYER_REVIEW = "GO_TO_BUYER_REVIEW";
     public static final String IS_DIRECTLY_GO_TO_RATING = "is_directly_go_to_rating";
 
     public static final int TAB_WAITING_REVIEW = 1;
@@ -81,6 +82,7 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
     private UserSessionInterface userSession;
 
     private boolean goToReputationHistory;
+    private boolean goToBuyerReview;
     private boolean canFireTracking;
     private ReputationTracking reputationTracking;
     private boolean isAppLinkProccessed = false;
@@ -92,6 +94,7 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         goToReputationHistory = getIntent().getBooleanExtra(GO_TO_REPUTATION_HISTORY, false);
+        goToBuyerReview = getIntent().getBooleanExtra(GO_TO_BUYER_REVIEW, false);
         canFireTracking = !goToReputationHistory;
         userSession = new UserSession(this);
         reputationTracking = new ReputationTracking();
@@ -173,6 +176,10 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
 
         if (goToReputationHistory) {
             viewPager.setCurrentItem(TAB_SELLER_REPUTATION_HISTORY);
+        }
+
+        if(goToBuyerReview) {
+            viewPager.setCurrentItem(TAB_BUYER_REVIEW);
         }
 
         wrapTabIndicatorToTitle(indicator.getUnifyTabLayout(), (int) ReputationUtil.DptoPx(this, MARGIN_START_END_TAB), (int) ReputationUtil.DptoPx(this, MARGIN_TAB));

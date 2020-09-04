@@ -7,7 +7,6 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
-import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -20,7 +19,6 @@ import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
 import com.tokopedia.seller.menu.common.analytics.sendClickShopNameTracking
 import com.tokopedia.seller.menu.common.analytics.sendSettingShopInfoClickTracking
 import com.tokopedia.seller.menu.common.analytics.sendSettingShopInfoImpressionTracking
-import com.tokopedia.seller.menu.common.analytics.sendShopInfoClickNextButtonTracking
 import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantStatus
 import com.tokopedia.seller.menu.common.view.uimodel.base.RegularMerchant
 import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
@@ -28,7 +26,6 @@ import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.*
 import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.setting_balance.view.*
-import kotlinx.android.synthetic.main.setting_balance_topads.view.*
 import kotlinx.android.synthetic.main.layout_seller_menu_shop_info_success.view.*
 import kotlinx.android.synthetic.main.setting_partial_others_local_load.view.*
 import kotlinx.android.synthetic.main.setting_partial_shop_info_success.view.*
@@ -58,9 +55,7 @@ class ShopInfoViewHolder(
     private val context by lazy { itemView.context }
 
     override fun bind(uiModel: ShopInfoUiModel) {
-        itemView.setOnClickAction()
-
-        with(uiModel.data) {
+        with(uiModel.shopInfo) {
             itemView.apply {
                 when {
                     partialResponseStatus.first && partialResponseStatus.second -> {
@@ -68,7 +63,6 @@ class ShopInfoViewHolder(
 
                         shopStatusUiModel?.let { setShopStatusType(it) }
                         saldoBalanceUiModel?.let { setSaldoBalance(it) }
-                        topadsBalanceUiModel?.let { setKreditTopadsBalance(it) }
                         shopBadgeUiModel?.let { setShopBadge(it) }
                         shopFollowersUiModel?.let { setShopTotalFollowers(it) }
 
@@ -98,7 +92,6 @@ class ShopInfoViewHolder(
                         showNameAndAvatar()
 
                         saldoBalanceUiModel?.let { setSaldoBalance(it) }
-                        topadsBalanceUiModel?.let { setKreditTopadsBalance(it) }
 
                         dot?.gone()
                         shopStatus?.gone()
@@ -110,6 +103,7 @@ class ShopInfoViewHolder(
                         topAdsBalance?.visible()
                     }
                 }
+                showShopScore(uiModel)
             }
         }
     }
@@ -122,10 +116,13 @@ class ShopInfoViewHolder(
     private fun setShopBadge(shopBadgeUiModel: ShopBadgeUiModel) {
         itemView.successShopInfoLayout.shopBadges?.run {
             ImageHandler.LoadImage(this, shopBadgeUiModel.shopBadgeUrl)
-            setOnClickListener {
-                listener?.onShopBadgeClicked()
-                shopBadgeUiModel.sendSettingShopInfoClickTracking()
-            }
+        }
+    }
+
+    private fun showShopScore(uiModel: ShopInfoUiModel) {
+        itemView.shopScore.text = uiModel.shopScore.toString()
+        itemView.shopScore.setOnClickListener {
+            listener?.onShopInfoClicked()
         }
     }
 
@@ -171,31 +168,6 @@ class ShopInfoViewHolder(
             balanceValue.setOnClickListener {
                 listener?.onSaldoClicked()
                 saldoBalanceUiModel.sendSettingShopInfoClickTracking()
-            }
-        }
-    }
-
-    private fun setKreditTopadsBalance(topadsBalanceUiModel: TopadsBalanceUiModel) {
-        itemView.topAdsBalance.run {
-            topadsBalanceTitle?.text = context.resources.getString(R.string.setting_topads_credits)
-            topadsBalanceValue?.text = topadsBalanceUiModel.balanceValue
-            sendSettingShopInfoImpressionTracking(topadsBalanceUiModel, trackingListener::sendImpressionDataIris)
-            topadsBalanceValue.setOnClickListener {
-                listener?.onKreditTopadsClicked()
-                topadsBalanceUiModel.sendSettingShopInfoClickTracking()
-            }
-            val isTopAdsUser = topadsBalanceUiModel.isTopAdsUser
-            val topAdsTooltipDrawable =
-                if (isTopAdsUser) {
-                    ContextCompat.getDrawable(context, R.drawable.ic_topads_active)
-                } else {
-                    ContextCompat.getDrawable(context, R.drawable.ic_topads_inactive)
-                }
-            topAdsStatusTooltip.run {
-                setImageDrawable(topAdsTooltipDrawable)
-                setOnClickListener {
-                    listener?.onTopAdsTooltipClicked(isTopAdsUser)
-                }
             }
         }
     }
@@ -283,15 +255,6 @@ class ShopInfoViewHolder(
         return this
     }
 
-    private fun View.setOnClickAction() {
-        successShopInfoLayout?.run {
-            settingShopNext.setOnClickListener {
-                listener?.onShopInfoClicked()
-                sendShopInfoClickNextButtonTracking()
-            }
-        }
-    }
-
     private fun LocalLoad.setup() {
         title?.text = context.resources.getString(R.string.setting_error_message)
         description?.text = context.resources.getString(R.string.setting_error_description)
@@ -302,11 +265,8 @@ class ShopInfoViewHolder(
 
     interface ShopInfoListener {
         fun onShopInfoClicked()
-        fun onShopBadgeClicked()
         fun onFollowersCountClicked()
         fun onSaldoClicked()
         fun onRefreshShopInfo()
-        fun onKreditTopadsClicked()
-        fun onTopAdsTooltipClicked(isTopAdsActive: Boolean)
     }
 }

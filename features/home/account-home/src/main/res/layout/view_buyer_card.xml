@@ -43,7 +43,7 @@
         app:cardUseCompatPadding="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/image_profile_completed">
+        app:layout_constraintTop_toBottomOf="@id/sellerCard">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/card_holder"
@@ -349,4 +349,26 @@
         app:layout_constraintTop_toTopOf="@id/ivMemberBadge"
         app:typographyType="body_2"
         tools:text="Gold Member " />
+
+    <FrameLayout
+        android:id="@+id/sellerCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/spacing_lvl3"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_profile_completion">
+        <include
+            android:id="@+id/sellerAccountCard"
+            layout="@layout/layout_seller_account_card"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/account_home_seller_account_height"
+            android:visibility="gone" />
+
+        <include
+            android:id="@+id/sellerOpenShopCard"
+            layout="@layout/layout_seller_open_shop_card"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/account_home_seller_account_height"
+            android:visibility="gone" />
+    </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
