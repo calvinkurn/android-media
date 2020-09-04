@@ -325,8 +325,9 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
     }
 
     private Boolean useNewPage() {
-        if (getABTestRemoteConfig() != null) {
-            String remoteConfigValue = getABTestRemoteConfig().getString(ReviewConstants.AB_TEST_KEY);
+        RemoteConfig remoteConfig = getABTestRemoteConfig();
+        if (remoteConfig != null) {
+            String remoteConfigValue = remoteConfig.getString(ReviewConstants.AB_TEST_KEY);
             return remoteConfigValue.equals(ReviewConstants.NEW_REVIEW_FLOW);
         }
         return false;
