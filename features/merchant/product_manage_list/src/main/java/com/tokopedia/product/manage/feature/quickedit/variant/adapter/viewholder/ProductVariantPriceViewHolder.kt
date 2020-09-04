@@ -8,8 +8,8 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.manage.R
-import com.tokopedia.product.manage.common.quickedit.common.constant.EditProductConstant.MAXIMUM_PRICE_LENGTH
-import com.tokopedia.product.manage.common.quickedit.common.constant.EditProductConstant.MINIMUM_PRICE
+import com.tokopedia.product.manage.common.feature.quickedit.common.constant.EditProductConstant.MAXIMUM_PRICE_LENGTH
+import com.tokopedia.product.manage.common.feature.quickedit.common.constant.EditProductConstant.MINIMUM_PRICE
 import com.tokopedia.product.manage.common.feature.variant.adapter.model.ProductVariant
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.utils.text.currency.CurrencyIdrTextWatcher

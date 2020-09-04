@@ -14,7 +14,7 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.product.manage.common.ProductManageInstance
+import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.util.ProductManageListErrorHandler
 import com.tokopedia.product.manage.feature.cashback.data.SetCashbackResult

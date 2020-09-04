@@ -17,7 +17,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.product.manage.common.ProductManageInstance
+import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.util.ProductManageListErrorHandler
 import com.tokopedia.product.manage.feature.etalase.data.model.EtalaseViewModel

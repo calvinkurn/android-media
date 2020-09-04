@@ -1,7 +1,7 @@
 package com.tokopedia.product.manage.feature.list.di
 
 import android.content.Context
-import com.tokopedia.product.manage.common.ProductManageInstance
+import com.tokopedia.product.manage.ProductManageInstance
 
 object ProductManageListInstance {
     private var productManageListComponent: ProductManageListComponent? = null
