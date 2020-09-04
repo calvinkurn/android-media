@@ -70,11 +70,17 @@ class ChatListAdapter(adapterTypeFactory: ChatListTypeFactoryImpl) :
         }
     }
 
-    fun unpinChatItem(element: ItemChatListPojo, position: Int) {
-        val chatItemPosition = getItemPosition(element, position)
-        if (chatItemPosition != RecyclerView.NO_POSITION) {
-            visitables.removeAt(chatItemPosition)
-            notifyItemRemoved(chatItemPosition)
+    fun unpinChatItem(element: ItemChatListPojo, position: Int, offset: Int) {
+        val fromPosition = getItemPosition(element, position)
+        val toPosition = findElementFinalIndex(element, offset)
+        if (fromPosition != RecyclerView.NO_POSITION && toPosition != RecyclerView.NO_POSITION) {
+            visitables.moveTo(fromPosition, toPosition)
+            notifyItemRemoved(fromPosition)
+            notifyItemInserted(toPosition)
+            notifyItemChanged(toPosition, PAYLOAD_UPDATE_PIN_STATUS)
+        } else if (fromPosition != RecyclerView.NO_POSITION) {
+            visitables.removeAt(fromPosition)
+            notifyItemRemoved(fromPosition)
         }
     }
 
@@ -84,7 +90,7 @@ class ChatListAdapter(adapterTypeFactory: ChatListTypeFactoryImpl) :
         if (toPosition == RecyclerView.NO_POSITION) {
             toPosition = visitables.lastIndex
         }
-        if (toPosition != RecyclerView.NO_POSITION && fromPosition != RecyclerView.NO_POSITION) {
+        if (fromPosition != RecyclerView.NO_POSITION && toPosition != RecyclerView.NO_POSITION) {
             visitables.moveTo(fromPosition, toPosition)
             notifyItemRemoved(fromPosition)
             notifyItemInserted(toPosition)

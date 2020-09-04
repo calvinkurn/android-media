@@ -732,7 +732,7 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
                         chatItemListViewModel.pinnedMsgId.remove(element.msgId)
                     } else {
                         // chat unpinned and can not be restored to current list, just remove the item
-                        adapter?.unpinChatItem(element, position)
+                        adapter?.unpinChatItem(element, position, chatItemListViewModel.pinnedMsgId.size)
                         chatItemListViewModel.pinnedMsgId.remove(element.msgId)
                     }
                 },
