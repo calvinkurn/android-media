@@ -2,6 +2,7 @@ package com.tokopedia.sellerorder.list.presentation.fragment
 
 import android.animation.Animator
 import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
@@ -166,6 +167,8 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private var _animator: Animator? = null
     private var isFromWidget: Boolean? = false
     private var textChangedJob: Job? = null
+    private var waitingPaymentCounterAnimator: ValueAnimator? = null
+
 
     private val somListViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SomListViewModel::class.java]
@@ -542,6 +545,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     private fun loadFilterList() {
         activity?.resources?.let {
+            waitingPaymentCounterAnimator?.end()
             somListViewModel.loadFilter(GraphqlHelper.loadRawString(it, R.raw.gql_som_filter))
         }
     }
@@ -721,17 +725,35 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         if (shouldShowWaitingPaymentButton()) {
             val filterResult = somListViewModel.filterResult.value
             if (filterResult is Success) {
-                val amount = if (filterResult.data.waitingPaymentCounter.amount > 100) getString(R.string.som_list_waiting_payment_order_max_counter)
-                else filterResult.data.waitingPaymentCounter.amount.toString()
-                tvTitle.text = getString(
-                        R.string.som_list_order_waiting_payment_button_text,
-                        filterResult.data.waitingPaymentCounter.text,
-                        amount)
                 somWaitingPaymentButton.visible()
+                animateWaitingPaymentButtonCounter(filterResult)
                 showCoachMarkWaitingPayment()
             }
         } else {
             somWaitingPaymentButton.gone()
+        }
+    }
+
+    private fun animateWaitingPaymentButtonCounter(filterResult: Success<SomListFilter.Data.OrderFilterSom>) {
+        val regex = Regex("\\d+")
+        val start = regex.find(tvTitle.text)?.value.toIntOrZero()
+        val end = filterResult.data.waitingPaymentCounter.amount
+        val maxValue = 99
+        val checkedStart = if (start > maxValue) maxValue + 1 else start
+        val checkedEnd = if (end > maxValue) maxValue + 1 else end
+        if (checkedStart == checkedEnd || (checkedStart > maxValue && checkedEnd > maxValue)) return
+        waitingPaymentCounterAnimator = ValueAnimator().apply {
+            setObjectValues(checkedStart, checkedEnd)
+            addUpdateListener { animation ->
+                val newValue = animation.animatedValue as Int
+                val newValueString = if (newValue > maxValue) getString(R.string.som_list_waiting_payment_order_max_counter) else newValue.toString()
+                tvTitle.text = getString(
+                        R.string.som_list_order_waiting_payment_button_text,
+                        filterResult.data.waitingPaymentCounter.text,
+                        newValueString)
+            }
+            duration = 1000
+            start()
         }
     }
 
