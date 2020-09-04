@@ -118,10 +118,6 @@ class ShopInfoViewHolder(
     private fun setShopBadge(shopBadgeUiModel: ShopBadgeUiModel) {
         itemView.successShopInfoLayout.shopBadges?.run {
             ImageHandler.LoadImage(this, shopBadgeUiModel.shopBadgeUrl)
-            setOnClickListener {
-                listener?.onShopBadgeClicked()
-                shopBadgeUiModel.sendSettingShopInfoClickTracking()
-            }
         }
     }
 
@@ -273,7 +269,6 @@ class ShopInfoViewHolder(
 
     interface ShopInfoListener {
         fun onShopInfoClicked()
-        fun onShopBadgeClicked()
         fun onFollowersCountClicked()
         fun onSaldoClicked()
         fun onRefreshShopInfo()
