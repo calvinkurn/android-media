@@ -7,10 +7,11 @@ import com.tokopedia.topads.create.R
 import com.tokopedia.topads.view.adapter.bidinfo.viewModel.BidInfoItemViewModel
 import kotlinx.android.synthetic.main.topads_create_layout_budget_list_item.view.*
 
-class BidInfoItemViewHolder(val view: View, var selectedKeywords: MutableList<String>, var selectedSuggestBid: MutableList<Int>,private var suggestBidInitial: List<Int>, var actionClose: ((pos: Int) -> Unit)?, private val actionClick: (() -> MutableMap<String, Int>)?, var actionEnable: (() -> Unit)?) : BidInfoViewHolder<BidInfoItemViewModel>(view) {
+class BidInfoItemViewHolder(val view: View, var selectedKeywords: MutableList<String>?, var selectedSuggestBid: MutableList<Int>?, private var suggestBidInitial: List<Int>?, var actionClose: ((pos: Int) -> Unit)?, private val actionClick: (() -> MutableMap<String, Int>)?, var actionEnable: (() -> Unit)?) : BidInfoViewHolder<BidInfoItemViewModel>(view) {
 
     companion object {
         private const val FACTOR = 50
+
         @LayoutRes
         var LAYOUT = R.layout.topads_create_layout_budget_list_item
         private var bidMap = mutableMapOf<String, Int>()
@@ -19,14 +20,16 @@ class BidInfoItemViewHolder(val view: View, var selectedKeywords: MutableList<St
     override fun bind(item: BidInfoItemViewModel) {
         bidMap = actionClick!!.invoke()
         item.let {
-            if (selectedKeywords.size != 0) {
-                view.title.text = selectedKeywords[adapterPosition]
-                if (selectedSuggestBid[adapterPosition] != 0) {
-                    view.budget.textFieldInput.setText(selectedSuggestBid[adapterPosition].toString())
-                    setMessageErrorField((view.resources.getString(R.string.recommendated_bid_message)), selectedSuggestBid[adapterPosition], false)
+            if (selectedKeywords?.size != 0) {
+                view.title.text = selectedKeywords?.get(adapterPosition)
+                if (selectedSuggestBid?.get(adapterPosition) != 0) {
+                    view.budget.textFieldInput.setText(selectedSuggestBid?.get(adapterPosition).toString())
+                    setMessageErrorField((view.resources.getString(R.string.recommendated_bid_message)), selectedSuggestBid?.get(adapterPosition)
+                            ?: 0, false)
                 } else {
                     view.budget.textFieldInput.setText(bidMap["min"].toString())
-                    setMessageErrorField((view.resources.getString(R.string.recommendated_bid_message)), bidMap["min"]!!, false)
+                    setMessageErrorField((view.resources.getString(R.string.recommendated_bid_message)), bidMap["min"]
+                            ?: 0, false)
 
 
                 }
@@ -36,26 +39,30 @@ class BidInfoItemViewHolder(val view: View, var selectedKeywords: MutableList<St
                 override fun onNumberChanged(number: Double) {
                     super.onNumberChanged(number)
                     val result = number.toInt()
-                    selectedSuggestBid[adapterPosition] = result
+                    selectedSuggestBid?.set(adapterPosition, result)
                     when {
                         result < bidMap["min"]!! -> {
                             item.isError = true
-                            setMessageErrorField(view.resources.getString(R.string.min_bid_error), bidMap["min"]!!, true)
+                            setMessageErrorField(view.resources.getString(R.string.min_bid_error), bidMap["min"]
+                                    ?: 0, true)
                         }
                         result > bidMap["max"]!! -> {
                             item.isError = true
-                            setMessageErrorField(view.resources.getString(R.string.max_bid_error), bidMap["max"]!!, true)
+                            setMessageErrorField(view.resources.getString(R.string.max_bid_error), bidMap["max"]
+                                    ?: 0, true)
                         }
-                        result % FACTOR != 0 ->{
+                        result % FACTOR != 0 -> {
                             item.isError = true
-                            setMessageErrorField(view.resources.getString(R.string.error_multiple_50),FACTOR ,true)
+                            setMessageErrorField(view.resources.getString(R.string.error_multiple_50), FACTOR, true)
                         }
                         else -> {
                             item.isError = false
-                            if (suggestBidInitial[adapterPosition] != 0) {
-                                setMessageErrorField((view.resources.getString(R.string.recommendated_bid_message)), suggestBidInitial[adapterPosition], false)
+                            if (suggestBidInitial?.get(adapterPosition) != 0) {
+                                setMessageErrorField((view.resources.getString(R.string.recommendated_bid_message)), suggestBidInitial?.get(adapterPosition)
+                                        ?: 0, false)
                             } else {
-                                setMessageErrorField((view.resources.getString(R.string.recommendated_bid_message)), bidMap["min"]!!, false)
+                                setMessageErrorField((view.resources.getString(R.string.recommendated_bid_message)), bidMap["min"]
+                                        ?: 0, false)
                             }
                         }
                     }
