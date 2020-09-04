@@ -41,10 +41,10 @@ class KeywordItemViewHolder(val view: View,
             view.label.text = it.result.keywordTypeDesc
             view.tampil_count.text = it.result.statTotalImpression
             view.klik_count.text = it.result.statTotalClick
-            view.persentase_klik_count.text = it.result.statTotalClick
+            view.persentase_klik_count.text = it.result.statTotalCtr
             view.pengeluaran_count.text = it.result.statTotalSpent
             view.pendapatan_count.text = it.result.statTotalConversion
-            view.produk_terjual_count.text = it.result.statTotalSold
+            view.produk_terjual_count.text = it.result.statTotalConversion
             view.price_bid.text = it.result.keywordPriceBidFmt
             if (!view.check_box.isChecked) {
                 view.card_view.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_dash_white))

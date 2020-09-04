@@ -7,7 +7,7 @@ import com.tokopedia.topads.view.adapter.bidinfo.viewholder.BidInfoEmptyViewHold
 import com.tokopedia.topads.view.adapter.bidinfo.viewholder.BidInfoItemViewHolder
 import com.tokopedia.topads.view.adapter.bidinfo.viewholder.BidInfoViewHolder
 
-class BidInfoAdapterTypeFactoryImpl(private var selectedKeywords: MutableList<String>, private var selectedSuggestBid: MutableList<Int>,  private var suggestBidInitial: List<Int>,private var actionClose: (pos: Int) -> Unit, private var actionClick: () -> MutableMap<String, Int>, var actionEnable: () -> Unit) : BindInfoAdapterTypeFactory {
+class BidInfoAdapterTypeFactoryImpl(private var selectedKeywords: MutableList<String>?, private var selectedSuggestBid: MutableList<Int>?,  private var suggestBidInitial: List<Int>?,private var actionClose: (pos: Int) -> Unit, private var actionClick: () -> MutableMap<String, Int>, var actionEnable: () -> Unit) : BindInfoAdapterTypeFactory {
 
     override fun type(model: BidInfoEmptyViewModel): Int {
         return BidInfoEmptyViewHolder.LAYOUT

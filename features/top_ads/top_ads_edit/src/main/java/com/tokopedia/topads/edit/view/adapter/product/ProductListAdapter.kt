@@ -43,7 +43,7 @@ class ProductListAdapter(private val typeFactory: ProductListAdapterTypeFactory)
 
     fun getSelectedItems(): List<ResponseProductList.Result.TopadsGetListProduct.Data> {
 
-        var selected = mutableListOf<ResponseProductList.Result.TopadsGetListProduct.Data>()
+        val selected = mutableListOf<ResponseProductList.Result.TopadsGetListProduct.Data>()
         items.forEach { item ->
             if (item is ProductItemViewModel)
                 if (item.isChecked)
@@ -56,7 +56,7 @@ class ProductListAdapter(private val typeFactory: ProductListAdapterTypeFactory)
     fun setSelectedList(selectedProductIds: List<ResponseProductList.Result.TopadsGetListProduct.Data>) {
         items.forEachIndexed { _, productViewModel ->
             selectedProductIds.forEach {
-                if ((productViewModel as ProductItemViewModel).data.productID == it.productID) {
+                if ((productViewModel is ProductItemViewModel) && productViewModel.data.productID == it.productID) {
                     productViewModel.isChecked = true
                 }
             }
