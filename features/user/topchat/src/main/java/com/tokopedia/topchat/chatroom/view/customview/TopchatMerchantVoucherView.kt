@@ -11,7 +11,6 @@ import com.tokopedia.topchat.R
 class TopchatMerchantVoucherView : MerchantVoucherView {
 
     private var voucherContainer: LinearLayout? = null
-    private var readStatusContainer: LinearLayout? = null
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -30,20 +29,6 @@ class TopchatMerchantVoucherView : MerchantVoucherView {
     override fun initView(view: View) {
         super.initView(view)
         voucherContainer = view.findViewById(R.id.vgVoucherView)
-        readStatusContainer = view.findViewById(R.id.llReadStatusContainer)
-    }
-
-    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        measureChildWithMargins(readStatusContainer, widthMeasureSpec, 0, heightMeasureSpec, 0)
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-    }
-
-    override fun maxYModifier(): Int {
-        readStatusContainer?.let {
-            val readStatusContainerParam = it.layoutParams as LinearLayout.LayoutParams
-            return it.measuredHeight - readStatusContainerParam.bottomMargin
-        }
-        return 0
     }
 
     override fun getShadowColor(): Int {
