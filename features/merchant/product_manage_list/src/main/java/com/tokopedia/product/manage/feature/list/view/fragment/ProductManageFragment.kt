@@ -113,9 +113,9 @@ import com.tokopedia.product.manage.feature.multiedit.ui.toast.MultiEditToastMes
 import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeleteProductResult
 import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPriceResult
 import com.tokopedia.product.manage.feature.quickedit.price.presentation.fragment.ProductManageQuickEditPriceFragment
-import com.tokopedia.product.manage.feature.quickedit.variant.presentation.data.EditVariantResult
+import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
 import com.tokopedia.product.manage.feature.quickedit.variant.presentation.ui.QuickEditVariantPriceBottomSheet
-import com.tokopedia.product.manage.feature.quickedit.variant.presentation.ui.QuickEditVariantStockBottomSheet
+import com.tokopedia.product.manage.common.feature.variant.presentation.ui.QuickEditVariantStockBottomSheet
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import com.tokopedia.seller_migration_common.presentation.model.SellerFeatureUiModel

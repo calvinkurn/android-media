@@ -1,0 +1,14 @@
+package com.tokopedia.product.manage.common.feature.variant.di
+
+import com.tokopedia.product.manage.common.di.ProductManageComponent
+import com.tokopedia.product.manage.common.feature.variant.presentation.ui.QuickEditVariantBottomSheet
+import dagger.Component
+
+@QuickEditVariantScope
+@Component(
+    dependencies = [ProductManageComponent::class],
+    modules = [QuickEditVariantViewModelModule::class]
+)
+interface QuickEditVariantComponent {
+    fun inject(view: QuickEditVariantBottomSheet)
+}

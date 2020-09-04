@@ -10,7 +10,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.quickedit.common.constant.EditProductConstant.MAXIMUM_PRICE_LENGTH
 import com.tokopedia.product.manage.common.quickedit.common.constant.EditProductConstant.MINIMUM_PRICE
-import com.tokopedia.product.manage.feature.quickedit.variant.adapter.model.ProductVariant
+import com.tokopedia.product.manage.common.feature.variant.adapter.model.ProductVariant
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.utils.text.currency.CurrencyIdrTextWatcher
 import kotlinx.android.synthetic.main.item_product_manage_variant.view.*

@@ -36,7 +36,7 @@ import com.tokopedia.product.manage.feature.campaignstock.ui.util.convertCheckMa
 import com.tokopedia.product.manage.feature.campaignstock.ui.viewmodel.CampaignStockViewModel
 import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant
-import com.tokopedia.product.manage.feature.quickedit.variant.presentation.data.GetVariantResult
+import com.tokopedia.product.manage.common.feature.variant.presentation.data.GetVariantResult
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success

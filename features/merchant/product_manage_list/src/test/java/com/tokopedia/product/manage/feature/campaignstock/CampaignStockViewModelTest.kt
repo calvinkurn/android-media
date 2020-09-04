@@ -9,8 +9,8 @@ import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.result.Sto
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.result.UpdateCampaignStockResult
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.result.VariantStockAllocationResult
 import com.tokopedia.product.manage.common.quickedit.common.data.model.ProductUpdateV3Response
-import com.tokopedia.product.manage.feature.quickedit.variant.data.mapper.ProductManageVariantMapper
-import com.tokopedia.product.manage.feature.quickedit.variant.data.model.response.GetProductVariantResponse
+import com.tokopedia.product.manage.common.feature.variant.data.mapper.ProductManageVariantMapper
+import com.tokopedia.product.manage.common.feature.variant.data.model.response.GetProductVariantResponse
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery

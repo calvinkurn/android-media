@@ -32,9 +32,9 @@ import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeletePr
 import com.tokopedia.product.manage.feature.quickedit.delete.domain.DeleteProductUseCase
 import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPriceResult
 import com.tokopedia.product.manage.feature.quickedit.price.domain.EditPriceUseCase
-import com.tokopedia.product.manage.feature.quickedit.variant.data.mapper.ProductManageVariantMapper.mapResultToUpdateParam
-import com.tokopedia.product.manage.feature.quickedit.variant.domain.EditProductVariantUseCase
-import com.tokopedia.product.manage.feature.quickedit.variant.presentation.data.EditVariantResult
+import com.tokopedia.product.manage.common.feature.variant.data.mapper.ProductManageVariantMapper.mapResultToUpdateParam
+import com.tokopedia.product.manage.common.feature.variant.domain.EditProductVariantUseCase
+import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.Product
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption

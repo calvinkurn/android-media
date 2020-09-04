@@ -17,11 +17,11 @@ import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.result.Sto
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.result.UpdateCampaignStockResult
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.result.VariantStockAllocationResult
 import com.tokopedia.product.manage.common.quickedit.stock.domain.EditStockUseCase
-import com.tokopedia.product.manage.feature.quickedit.variant.data.mapper.ProductManageVariantMapper
-import com.tokopedia.product.manage.feature.quickedit.variant.data.model.param.UpdateVariantParam
-import com.tokopedia.product.manage.feature.quickedit.variant.domain.EditProductVariantUseCase
-import com.tokopedia.product.manage.feature.quickedit.variant.domain.GetProductVariantUseCase
-import com.tokopedia.product.manage.feature.quickedit.variant.presentation.data.EditVariantResult
+import com.tokopedia.product.manage.common.feature.variant.data.mapper.ProductManageVariantMapper
+import com.tokopedia.product.manage.common.feature.variant.data.model.param.UpdateVariantParam
+import com.tokopedia.product.manage.common.feature.variant.domain.EditProductVariantUseCase
+import com.tokopedia.product.manage.common.feature.variant.domain.GetProductVariantUseCase
+import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
