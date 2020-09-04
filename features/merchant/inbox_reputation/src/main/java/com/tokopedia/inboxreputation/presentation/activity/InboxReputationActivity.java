@@ -96,7 +96,7 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
         userSession = new UserSession(this);
         reputationTracking = new ReputationTracking();
         super.onCreate(savedInstanceState);
-        if (useNewPage()) {
+        if (useNewPage() && !GlobalConfig.isSellerApp()) {
             startActivity(ReviewInboxActivity.Companion.createNewInstance(this));
             finish();
         }
@@ -168,6 +168,7 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
         }
 
         sectionAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), getFragmentList(), indicator.getUnifyTabLayout());
+        viewPager.setOffscreenPageLimit(getFragmentList().size());
         viewPager.setAdapter(sectionAdapter);
 
         if (goToReputationHistory) {
@@ -240,9 +241,7 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
         if (GlobalConfig.isSellerApp()) {
             fragmentList.add(reviewSellerFragment);
             fragmentList.add(inboxReviewFragment);
-            if (userSession.hasShop()) {
-                fragmentList.add(InboxReputationFragment.createInstance(TAB_BUYER_REVIEW));
-            }
+            fragmentList.add(InboxReputationFragment.createInstance(TAB_BUYER_REVIEW));
             fragmentList.add(sellerReputationFragment);
         } else {
             fragmentList.add(InboxReputationFragment.createInstance(TAB_WAITING_REVIEW));
