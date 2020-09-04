@@ -50,6 +50,9 @@ class InboxTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent>,
         val MY_PRODUCT = "inbox-talk-my-product"
         val FOLLOWING = "inbox-talk-following"
 
+        const val MY_PRODUCT_TAB = 1
+        const val GO_TO_MY_PRODUCT_TAB = "GO_TO_MY_PRODUCT"
+
         @JvmStatic
         fun createIntent(context: Context) = Intent(context, InboxTalkActivity::class.java)
 
@@ -82,6 +85,8 @@ class InboxTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent>,
     }
 
     private fun initPagerAdapter() {
+        val goToMyProduct = intent.extras?.getBoolean(GO_TO_MY_PRODUCT_TAB) ?: false
+
         if (GlobalConfig.isSellerApp()) {
             titles = arrayOf(getString(R.string.title_tab_talk_my_product))
             tabLayout.visibility = View.GONE
@@ -124,6 +129,10 @@ class InboxTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent>,
                 setTabSelected(tab)
             }
         })
+
+        if(goToMyProduct) {
+            viewPager.currentItem = MY_PRODUCT_TAB
+        }
     }
 
     override fun getToolbarResourceID(): Int = R.id.activity_talk_inbox_toolbar

@@ -60,8 +60,11 @@ object SellerMenuList {
             MenuItemUiModel(
                 context.getString(R.string.setting_menu_discussion),
                 R.drawable.ic_setting_discussion,
-                ApplinkConst.TALK,
-                eventActionSuffix = SettingTrackingConstant.DISCUSSION),
+                eventActionSuffix = SettingTrackingConstant.DISCUSSION) {
+                val intent = RouteManager.getIntent(context, ApplinkConst.TALK)
+                intent.putExtra(GO_TO_MY_PRODUCT, true)
+                context.startActivity(intent)
+            },
             MenuItemUiModel(
                 context.getString(R.string.setting_menu_complaint),
                 R.drawable.ic_complaint,
