@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATA_INSIGHT
@@ -59,6 +60,7 @@ class TopAdsInsightKeyBidFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         adapter = TopAdsInsightBidKeyAdapter(this::butttonClicked)
         setView()
+        toolTip.setImageDrawable(context?.getResDrawable(R.drawable.topads_dash_info_tooltip))
         toolTip.setOnClickListener {
             val sheet = InsightKeyBottomSheet.createInstance(2)
             sheet.show(fragmentManager!!, "")
@@ -68,7 +70,7 @@ class TopAdsInsightKeyBidFragment : BaseDaggerFragment() {
     }
 
     private fun butttonClicked(data: MutationData) {
-        itemCountCallBack?.onButtonClickedBid(listOf(data), key ?: "", 1)
+        itemCountCallBack?.onButtonClickedBid(listOf(data), key ?: "", 1, false)
     }
 
     private fun setView() {
@@ -83,7 +85,7 @@ class TopAdsInsightKeyBidFragment : BaseDaggerFragment() {
         setHeader(totalPotential)
         btnTambah.setOnClickListener {
             itemCountCallBack?.onButtonClickedBid(mutationList, key
-                    ?: "", dataInsight?.get(key)?.bid?.size ?: 0)
+                    ?: "", dataInsight?.get(key)?.bid?.size ?: 0, true)
         }
         adapter.notifyDataSetChanged()
     }
@@ -115,7 +117,7 @@ class TopAdsInsightKeyBidFragment : BaseDaggerFragment() {
     }
 
     interface OnKeywordBidAdded {
-        fun onButtonClickedBid(data: List<MutationData>, groupId: String, countToAdd: Int)
+        fun onButtonClickedBid(data: List<MutationData>, groupId: String, countToAdd: Int, forAllButton: Boolean)
     }
 
 }

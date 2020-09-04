@@ -41,7 +41,8 @@ class MarketPlaceRecommendation : FrameLayout, IRecommendationView {
 
 
     private lateinit var fragment: BaseDaggerFragment
-    private lateinit var trackingQueue: TrackingQueue
+    private var topAdsTrackingQueue: TrackingQueue? = null
+    private var nonTopAdsTrackingQueue: TrackingQueue? = null
     private lateinit var paymentId: String
 
 
@@ -93,11 +94,12 @@ class MarketPlaceRecommendation : FrameLayout, IRecommendationView {
         LayoutInflater.from(context).inflate(getLayout(), this, true)
     }
 
-    override fun loadRecommendation(paymentId: String,
-                                    fragment: BaseDaggerFragment, trackingQueue: TrackingQueue) {
+    override fun loadRecommendation(paymentId: String, fragment: BaseDaggerFragment,
+                                    topAdsTrackingQueue: TrackingQueue?, nonTopsAdsTrackingQueue: TrackingQueue?) {
         this.paymentId = paymentId
         this.fragment = fragment
-        this.trackingQueue = trackingQueue
+        this.topAdsTrackingQueue = topAdsTrackingQueue
+        this.nonTopAdsTrackingQueue = nonTopsAdsTrackingQueue
         startViewModelObserver()
         viewModel.loadRecommendationData()
     }
@@ -193,7 +195,8 @@ class MarketPlaceRecommendation : FrameLayout, IRecommendationView {
             override fun onRecommendationItemDisplayed(recommendationItem: RecommendationItem,
                                                        position: Int) {
                 analytics.get().sendRecommendationItemDisplayed(recommendationItem, position,
-                        trackingQueue, paymentId)
+                        paymentId, topAdsTrackingQueue = topAdsTrackingQueue,
+                        nonTopsAdsTrackingQueue = nonTopAdsTrackingQueue)
             }
 
             override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean,

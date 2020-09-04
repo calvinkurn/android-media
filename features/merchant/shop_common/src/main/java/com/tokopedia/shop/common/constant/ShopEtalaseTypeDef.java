@@ -15,5 +15,6 @@ import static com.tokopedia.shop.common.constant.ShopEtalaseTypeDef.ETALASE_DEFA
 @IntDef({ETALASE_DEFAULT, ETALASE_CUSTOM})
 public @interface ShopEtalaseTypeDef {
     int ETALASE_DEFAULT = -1;
+    int ETALASE_CAMPAIGN = -2;
     int ETALASE_CUSTOM = 1;
 }

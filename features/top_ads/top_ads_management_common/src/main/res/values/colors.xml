@@ -14,5 +14,8 @@
     <color name="topads_actionbar_black">#31353B</color>
     <color name="topads_action_bar_image">#9FA6B0</color>
     <color name="topads_light_shadow">#AD31353B</color>
+    <color name="topads_common_red">#d6001c</color>
+    <color name="topads_item_selected">#EBFFEF</color>
+
 
 </resources>

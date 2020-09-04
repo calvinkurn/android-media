@@ -5,9 +5,9 @@ import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedContentGqlResponse
 import com.tokopedia.home.beranda.domain.gql.feed.Product
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.BannerRecommendationDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
-import com.tokopedia.home.beranda.presentation.view.fragment.HomeRecommendationFragment.Companion.DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE
 import java.util.*
 
 class HomeRecommendationMapper {
@@ -26,11 +26,17 @@ class HomeRecommendationMapper {
         Collections.reverse(productStack)
         bannerStack.addAll(convertToHomeBannerFeedModel(recommendationProduct.banners, tabName, pageNumber))
 
-        recommendationProduct.layoutTypes.forEachIndexed { _, layoutType ->
-            if (layoutType.type == TYPE_PRODUCT) {
-                visitables.add(productStack.pop())
-            } else if(layoutType.type == TYPE_BANNER) {
-                visitables.add(bannerStack.pop())
+        recommendationProduct.layoutTypes.forEachIndexed { index, layoutType ->
+            when (layoutType.type) {
+                TYPE_PRODUCT -> {
+                    visitables.add(productStack.pop())
+                }
+                TYPE_BANNER -> {
+                    visitables.add(bannerStack.pop())
+                }
+                TYPE_BANNER_ADS -> {
+                    visitables.add(HomeRecommendationBannerTopAdsDataModel(position = index))
+                }
             }
         }
         return HomeRecommendationDataModel(visitables, recommendationProduct.hasNextPage)
@@ -76,5 +82,6 @@ class HomeRecommendationMapper {
     companion object{
         private const val TYPE_PRODUCT = "product"
         private const val TYPE_BANNER = "banner"
+        private const val TYPE_BANNER_ADS = "banner_ads"
     }
 }

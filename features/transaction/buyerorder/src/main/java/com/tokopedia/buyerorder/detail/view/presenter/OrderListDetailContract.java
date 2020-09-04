@@ -24,6 +24,7 @@ import com.tokopedia.buyerorder.detail.data.PayMethod;
 import com.tokopedia.buyerorder.detail.data.Pricing;
 import com.tokopedia.buyerorder.detail.data.ShopInfo;
 import com.tokopedia.buyerorder.detail.data.Status;
+import com.tokopedia.buyerorder.detail.data.TickerInfo;
 import com.tokopedia.buyerorder.detail.data.Title;
 import com.tokopedia.buyerorder.list.data.ConditionalInfo;
 import com.tokopedia.buyerorder.list.data.PaymentData;
@@ -49,9 +50,13 @@ public interface OrderListDetailContract {
 
         void setDetail(Detail detail);
 
+        void setIsRequestedCancel(Boolean isRequestedCancel);
+
         void setAdditionalInfo(AdditionalInfo additionalInfo);
 
         void setAdditionalTickerInfo(List<AdditionalTickerInfo> tickerInfos, @Nullable String url);
+
+        void setTickerInfo(TickerInfo tickerInfo);
 
         void setPricing(Pricing pricing);
 

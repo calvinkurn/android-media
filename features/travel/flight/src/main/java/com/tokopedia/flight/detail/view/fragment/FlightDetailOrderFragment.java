@@ -47,6 +47,7 @@ import com.tokopedia.design.component.Dialog;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationActivity;
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationListActivity;
+import com.tokopedia.flight.cancellationV2.presentation.activity.FlightCancellationPassengerActivity;
 import com.tokopedia.flight.common.di.component.FlightComponent;
 import com.tokopedia.flight.detail.presenter.ExpandableOnClickListener;
 import com.tokopedia.flight.detail.presenter.FlightDetailOrderContract;
@@ -511,10 +512,24 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     @Override
     public void navigateToCancellationPage(String invoiceId, List<FlightCancellationJourney> items) {
-        startActivityForResult(
-                FlightCancellationActivity.createIntent(getContext(), invoiceId, items),
-                REQUEST_CODE_CANCELLATION
-        );
+        Boolean newSearchEnabledStatus = remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_FLIGHT_NEW_SEARCH_FLOW, true);
+
+        if (newSearchEnabledStatus) {
+            startActivityForResult(
+                    FlightCancellationPassengerActivity.Companion
+                            .createIntent(getContext(),
+                                    invoiceId,
+                                    items),
+                    REQUEST_CODE_CANCELLATION
+            );
+        } else {
+            startActivityForResult(
+                    FlightCancellationActivity.createIntent(getContext(),
+                            invoiceId,
+                            items),
+                    REQUEST_CODE_CANCELLATION
+            );
+        }
 
     }
 

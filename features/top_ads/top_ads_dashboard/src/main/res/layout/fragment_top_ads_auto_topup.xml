@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             app:layout_scrollFlags="scroll">
 
-            <com.tokopedia.design.component.TextViewCompat
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/min_auto_topup_descr"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -29,8 +29,8 @@
                 android:layout_marginRight="@dimen/dp_16"
                 android:layout_marginEnd="@dimen/dp_16"
                 android:lineSpacingExtra="@dimen/sp_5"
-                app:fontSize="micro"
-                app:textViewTheme="lightSecondary"
+                app:typographyType="body_3"
+                android:textColor="@color/light_secondary"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -38,7 +38,8 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text = "@string/descr_min_autotopup"/>
 
-            <Switch android:id="@+id/auto_topup_toggle"
+            <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
+                android:id="@+id/auto_topup_toggle"
                 style="@style/Switch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -49,7 +50,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintRight_toRightOf="parent"/>
 
-            <com.tokopedia.design.component.TextViewCompat
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/auto_topup_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -57,22 +58,22 @@
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_10"
                 android:layout_marginEnd="@dimen/dp_10"
-                app:fontSize="small"
-                app:textViewTheme="lightPrimary"
+                app:typographyType="body_2"
+                android:textColor="@color/light_secondary"
                 app:layout_constraintEnd_toStartOf="@+id/auto_topup_toggle"
                 app:layout_constraintRight_toLeftOf="@+id/auto_topup_toggle"
                 app:layout_constraintTop_toTopOf="@+id/auto_topup_toggle"
                 app:layout_constraintBottom_toBottomOf="@+id/auto_topup_toggle"
                 tools:text = "@string/topads_inactive"/>
 
-            <com.tokopedia.design.component.TextViewCompat
+            <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:text="@string/label_status"
-                app:fontSize="small"
-                app:textViewTheme="lightPrimary"
+                app:typographyType="body_2"
+                android:textColor="@color/light_secondary"
                 app:layout_constraintBottom_toBottomOf="@+id/auto_topup_toggle"
                 app:layout_constraintEnd_toStartOf="@+id/auto_topup_status"
                 app:layout_constraintRight_toLeftOf="@+id/auto_topup_status"
@@ -94,7 +95,7 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/auto_topup_toggle"/>
 
-            <com.tokopedia.design.component.TextViewCompat
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -104,16 +105,15 @@
                 android:layout_marginEnd="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
                 android:text="@string/title_add_auto_topup"
-                app:fontSize="small"
-                app:textViewTheme="lightPrimary"
-                app:weight="medium"
+                app:typographyType="body_2"
+                android:textColor="@color/light_secondary"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/divider" />
 
-            <com.tokopedia.design.component.TextViewCompat
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/subtitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -124,8 +124,8 @@
                 android:layout_marginEnd="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
                 android:text="@string/subtitle_add_auto_topup"
-                app:fontSize="micro"
-                app:textViewTheme="lightSecondary"
+                app:typographyType="body_3"
+                android:textColor="@color/light_secondary"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -145,15 +145,18 @@
         android:paddingBottom="@dimen/dp_2"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
-    <Button android:layout_gravity="bottom"
+    <com.tokopedia.unifycomponents.UnifyButton android:layout_gravity="bottom"
         android:id="@+id/button_submit"
+        app:unifyButtonType="main"
         style="@style/Button.Submit.Green"
         android:text="@string/label_save"/>
 
-    <ProgressBar android:id="@+id/progress_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/progress_bar"
+        android:layout_width="@dimen/dp_50"
+        android:layout_height="@dimen/dp_50"
         android:layout_gravity="center"
+        app:loader_type="circular"
         android:visibility="gone"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

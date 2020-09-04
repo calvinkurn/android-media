@@ -150,7 +150,7 @@ class ReportDialogFragment : DialogFragment() {
             override fun onClick(widget: View) {
                 activity?.run {
                     val intent = (applicationContext as ApplinkRouter).getApplinkIntent(this,
-                            ApplinkConst.CONTACT_US)
+                            ApplinkConst.CONTACT_US_NATIVE)
                     if (intent != null) {
                         intent.putExtra("PARAM_REDIRECT", status)
                         intent.putExtra("PARAM_URL", link)

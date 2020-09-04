@@ -233,7 +233,7 @@
 
                     <com.tokopedia.unifyprinciples.Typography
                         style="@style/TextView.Micro"
-                        android:id="@+id/daily_budget_butt"
+                        android:id="@+id/dailyBudgetType"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"

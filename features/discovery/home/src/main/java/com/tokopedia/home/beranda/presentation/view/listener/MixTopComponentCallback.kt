@@ -12,19 +12,15 @@ import com.tokopedia.home_component.model.ChannelModel
 class MixTopComponentCallback(val homeCategoryListener: HomeCategoryListener)
     : MixTopComponentListener {
     override fun onMixTopImpressed(channel: ChannelModel, parentPos: Int) {
-
-        //iris
-        homeCategoryListener.putEEToIris(MixTopTracking.getMixTopViewIris(
-                MixTopTracking.mapChannelToProductTracker(channel), channel.channelHeader.name, channel.id, parentPos.toString()) as java.util.HashMap<String, Any>)
     }
 
     override fun onSeeAllBannerClicked(channel: ChannelModel, applink: String) {
-        homeCategoryListener.sendEETracking(MixTopTracking.getMixTopSeeAllClick(channel.id, channel.channelHeader.name) as HashMap<String, Any>)
+        homeCategoryListener.sendEETracking(MixTopTracking.getMixTopSeeAllClick(channel.id, channel.channelHeader.name, homeCategoryListener.userId) as HashMap<String, Any>)
         homeCategoryListener.onDynamicChannelClicked(channel.channelHeader.applink)
     }
 
     override fun onMixtopButtonClicked(channel: ChannelModel) {
-        homeCategoryListener.sendEETracking(MixTopTracking.getMixTopButtonClick(channel.id, channel.channelHeader.name, channel.channelBanner.cta.text) as java.util.HashMap<String, Any>)
+        homeCategoryListener.sendEETracking(MixTopTracking.getMixTopButtonClick(channel.id, channel.channelHeader.name, channel.channelBanner.cta.text, homeCategoryListener.userId) as java.util.HashMap<String, Any>)
     }
 
     override fun onSectionItemClicked(applink: String) {
@@ -46,6 +42,14 @@ class MixTopComponentCallback(val homeCategoryListener: HomeCategoryListener)
                         channel.channelHeader.name,
                         adapterPosition.toString()
                 ) as HashMap<String, Any>)
+        
+        //iris
+        homeCategoryListener.putEEToIris(MixTopTracking.getMixTopViewIris(
+                listOf(product),
+                channel.channelHeader.name,
+                channel.id,
+                adapterPosition.toString()
+        ) as java.util.HashMap<String, Any>)
 
     }
 
