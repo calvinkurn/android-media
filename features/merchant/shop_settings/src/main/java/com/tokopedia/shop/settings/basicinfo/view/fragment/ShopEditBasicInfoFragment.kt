@@ -10,12 +10,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.design.text.watcher.AfterTextWatcher
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef
@@ -31,16 +35,19 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.settings.R
-import com.tokopedia.shop.settings.basicinfo.data.AllowShopNameDomainChanges.*
+import com.tokopedia.shop.settings.analytics.ShopSettingsTracking
 import com.tokopedia.shop.settings.basicinfo.data.AllowShopNameDomainChangesData
 import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditBasicInfoActivity.Companion.EXTRA_MESSAGE
 import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditBasicInfoActivity.Companion.EXTRA_SHOP_MODEL
 import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopEditBasicInfoViewModel
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
+import com.tokopedia.shop.settings.common.util.ShopTypeDef
+import com.tokopedia.shop.settings.common.util.getDescriptionWithSpannable
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_shop_edit_basic_info.*
 import kotlinx.android.synthetic.main.partial_toolbar_save_button.*
 import javax.inject.Inject
@@ -48,6 +55,7 @@ import javax.inject.Inject
 class ShopEditBasicInfoFragment: Fragment() {
 
     companion object {
+        private const val URL_PUSAT_SELLER = "https://seller.tokopedia.com/edu/cara-memilih-nama-toko-online/"
         private const val SAVED_IMAGE_PATH = "saved_img_path"
         private const val MAX_FILE_SIZE_IN_KB = 10240
         private const val REQUEST_CODE_IMAGE = 846
@@ -63,6 +71,9 @@ class ShopEditBasicInfoFragment: Fragment() {
 
     @Inject
     lateinit var viewModel: ShopEditBasicInfoViewModel
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private var shopDomainTextWatcher: TextWatcher? = null
     private var shopBasicDataModel: ShopBasicDataModel? = null
@@ -181,11 +192,14 @@ class ShopEditBasicInfoFragment: Fragment() {
 
     private fun setupShopAvatar() {
         imageAvatar.setOnClickListener { openImagePicker() }
-        textChangeAvatar.setOnClickListener { openImagePicker() }
+        textChangeAvatar.setOnClickListener {
+            openImagePicker()
+            ShopSettingsTracking.clickChangeShopLogo(userSession.shopId, getShopType())
+        }
     }
 
     private fun setupSaveBtn() {
-        tvSave.setOnClickListener { onSaveButtonClicked() }
+        tvSave.setOnClickListener { createSaveDialog() }
     }
 
     private fun setupShopNameTextField() {
@@ -402,7 +416,10 @@ class ShopEditBasicInfoFragment: Fragment() {
     }
 
     private fun showWarningTicker() {
-        val message = context?.getString(R.string.ticker_warning_can_only_change_shopname_once).orEmpty()
+        val description = getString(R.string.ticker_warning_can_only_change_shopname_once)
+        val readMore = getString(R.string.ticker_warning_read_more)
+        val color = ContextCompat.getColor(requireContext(), R.color.merchant_green)
+        val message = shopEditTicker.getDescriptionWithSpannable(color, description, readMore) { clickReadMore() }
         shopEditTicker.tickerType = Ticker.TYPE_WARNING
         shopEditTicker.setTextDescription(message)
     }
@@ -570,5 +587,35 @@ class ShopEditBasicInfoFragment: Fragment() {
             getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
             viewModel.getAllowShopNameDomainChanges()
         })
+    }
+
+    private fun clickReadMore() {
+        RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, URL_PUSAT_SELLER)
+        ShopSettingsTracking.clickRedirectToPusatSeller(userSession.shopId, getShopType())
+    }
+
+    private fun getShopType(): String {
+        return when {
+            shopBasicDataModel?.isOfficialStore ?: false -> ShopTypeDef.OFFICIAL_STORE
+            shopBasicDataModel?.isGold ?: false -> ShopTypeDef.GOLD_MERCHANT
+            else -> ShopTypeDef.REGULAR_MERCHANT
+        }
+    }
+
+    private fun createSaveDialog() {
+        DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+            setTitle(getString(R.string.shop_edit_dialog_title))
+            setDescription(getString(R.string.shop_edit_dialog_description))
+            setPrimaryCTAText(getString(R.string.shop_edit_dialog_primary_cta))
+            setSecondaryCTAText(getString(R.string.shop_edit_dialog_secondary_cta))
+            setPrimaryCTAClickListener {
+                dismiss()
+                ShopSettingsTracking.clickCancelChangeShopName(userSession.shopId, getShopType())
+            }
+            setSecondaryCTAClickListener {
+                onSaveButtonClicked()
+                ShopSettingsTracking.clickConfirmChangeShopName(userSession.shopId, getShopType())
+            }
+        }.show()
     }
 }

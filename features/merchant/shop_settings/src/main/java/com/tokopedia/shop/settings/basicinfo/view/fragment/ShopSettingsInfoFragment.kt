@@ -33,12 +33,13 @@ import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
-import com.tokopedia.shop.common.graphql.data.shopbasicdata.gql.ShopBasicDataQuery
 import com.tokopedia.shop.settings.R
+import com.tokopedia.shop.settings.analytics.ShopSettingsTracking
 import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditBasicInfoActivity
 import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditScheduleActivity
 import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopSettingsInfoViewModel
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
+import com.tokopedia.shop.settings.common.util.ShopTypeDef
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -182,9 +183,14 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         btnChangeShopInfo.setOnClickListener {
             val intent = ShopEditBasicInfoActivity.createIntent(context!!, shopBasicDataModel)
             startActivityForResult(intent, REQUEST_EDIT_BASIC_INFO)
+            ShopSettingsTracking.clickChange(shopId, getShopType())
         }
 
-        vgShopStatusContainer.setOnClickListener { showShopStatusManageMenu() }
+        vgShopStatusContainer.setOnClickListener {
+            showShopStatusManageMenu()
+            ShopSettingsTracking.clickStatusToko(shopId, getShopType())
+        }
+
         loadShopBasicData()
         shopSettingsInfoViewModel.validateOsMerchantType(shopId.toInt())
 
@@ -453,6 +459,14 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun getShopType(): String {
+        return when {
+            shopBasicDataModel?.isOfficialStore ?: false -> ShopTypeDef.OFFICIAL_STORE
+            shopBasicDataModel?.isGold ?: false -> ShopTypeDef.GOLD_MERCHANT
+            else -> ShopTypeDef.REGULAR_MERCHANT
+        }
+    }
+
     fun showSubmitLoading(message: String) {
         progressDialog = progressDialog ?: ProgressDialog(context)
         progressDialog!!.run {
@@ -490,5 +504,4 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
             return ShopSettingsInfoFragment()
         }
     }
-
 }
