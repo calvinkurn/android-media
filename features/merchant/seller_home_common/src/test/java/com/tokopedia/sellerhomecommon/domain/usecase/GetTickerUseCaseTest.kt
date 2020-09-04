@@ -3,6 +3,7 @@ package com.tokopedia.sellerhomecommon.domain.usecase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.sellerhomecommon.domain.mapper.TickerMapper
 import com.tokopedia.sellerhomecommon.domain.model.GetTickerResponse
+import com.tokopedia.sellerhomecommon.presentation.model.TickerItemUiModel
 import com.tokopedia.sellerhomecommon.utils.TestHelper
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -54,10 +55,22 @@ class GetTickerUseCaseTest {
         getTickerUseCase.params = params
 
         val successResponse = TestHelper.createSuccessResponse<GetTickerResponse>(SUCCESS_RESPONSE)
+        val expectedTickers = listOf(TickerItemUiModel(
+                id = "253",
+                title = "ticker seller",
+                type = 1,
+                message = "Bantu kami menjadi lebih baik dengan membagikan pengalamanmu <a href=\"https://docs.google.com/forms/d/1t-KeapZJwOeYOBnbXDEmzRJiUqMBicE9cQIauc40qMU\">di sini</a><br>",
+                color = "#cde4c3",
+                redirectUrl = "https://docs.google.com/forms/d/1t-KeapZJwOeYOBnbXDEmzRJiUqMBicE9cQIauc40qMU"
+        ))
 
         coEvery {
             gqlRepository.getReseponse(any(), any())
         } returns successResponse
+
+        coEvery {
+            mapper.mapRemoteModelToUiModel(any())
+        } returns expectedTickers
 
         val result = getTickerUseCase.executeOnBackground()
 
@@ -65,7 +78,11 @@ class GetTickerUseCaseTest {
             gqlRepository.getReseponse(any(), any())
         }
 
-        Assert.assertTrue(!result.isNullOrEmpty())
+        coVerify {
+            mapper.mapRemoteModelToUiModel(any())
+        }
+
+        Assert.assertEquals(expectedTickers, result)
     }
 
     @Test
