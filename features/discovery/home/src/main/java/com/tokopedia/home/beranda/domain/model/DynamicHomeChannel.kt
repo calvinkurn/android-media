@@ -75,8 +75,6 @@ data class DynamicHomeChannel(
             val isAutoRefreshAfterExpired: Boolean = false,
             @SerializedName("token")
             var token: String = "",
-            @SerializedName("isAutoRefreshAfterExpired")
-            val isAutoRefreshAfterExpired: Boolean = false,
             var timestamp: String = ""
     ) : ImpressHolder() {
 
