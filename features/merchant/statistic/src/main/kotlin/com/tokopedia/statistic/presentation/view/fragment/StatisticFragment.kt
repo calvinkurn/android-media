@@ -707,8 +707,9 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     private fun observeUserRole() {
         mViewModel.userRole.observe(viewLifecycleOwner, Observer {
-            if (it is Success) {
-                checkUserRole(it.data)
+            when (it) {
+                is Success -> checkUserRole(it.data)
+                is Fail -> StatisticLogger.logToCrashlytics(it.throwable, StatisticLogger.ERROR_SELLER_ROLE)
             }
         })
         mViewModel.getUserRole()
@@ -718,9 +719,9 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         mViewModel.tickers.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> showTickers(it.data)
+                is Fail -> StatisticLogger.logToCrashlytics(it.throwable, StatisticLogger.ERROR_TICKER)
             }
         })
-
         mViewModel.getTickers()
     }
 
