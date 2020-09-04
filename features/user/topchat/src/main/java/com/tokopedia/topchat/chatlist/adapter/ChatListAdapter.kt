@@ -80,7 +80,10 @@ class ChatListAdapter(adapterTypeFactory: ChatListTypeFactoryImpl) :
 
     fun putToOriginalPosition(element: ItemChatListPojo, position: Int, offset: Int) {
         val fromPosition = getItemPosition(element, position)
-        val toPosition = findElementFinalIndex(element, offset)
+        var toPosition = findElementFinalIndex(element, offset)
+        if (toPosition == RecyclerView.NO_POSITION) {
+            toPosition = visitables.lastIndex
+        }
         if (toPosition != RecyclerView.NO_POSITION && fromPosition != RecyclerView.NO_POSITION) {
             visitables.moveTo(fromPosition, toPosition)
             notifyItemRemoved(fromPosition)
@@ -100,9 +103,6 @@ class ChatListAdapter(adapterTypeFactory: ChatListTypeFactoryImpl) :
                 if (elementTimeStamp > itemChatTimeStamp) {
                     finalIndex = i - 1
                     break
-                }
-                if (i == visitables.lastIndex) {
-                    finalIndex = visitables.lastIndex
                 }
             }
         }
