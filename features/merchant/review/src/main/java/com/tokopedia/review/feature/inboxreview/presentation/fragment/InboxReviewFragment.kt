@@ -346,7 +346,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
             /**
              * parameter: hasNext = false, action case 1 & 3 is the same.
              * case 1 : if adapter is not empty and data is not empty in unanaswered parameter, request lazy load using answered parameter
-             * case 2 : if adapter is empty && data is empty in unanaswered parameter, start the new request using parameter answered
+             * case 2 : if adapter is empty && data is empty in unanaswered parameter, start the new request using answered parameter
              * case 3 : if adapter is empty && data is not empty in answered parameter, request lazy load using answered parameter
              **/
             if (data.feedbackInboxList.isEmpty()) {
