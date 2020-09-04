@@ -53,4 +53,12 @@
     <string name="setting_topads_status_inactive">belum</string>
     <string name="setting_topads_description_active">Nggak perlu khawatir kehabisan, kredit TopAds akan otomatis ditambahkan dari Saldo Penghasilan setiap kreditmu menipis.</string>
     <string name="setting_topads_description_inactive">Dengan mengaktifkan, kredit TopAds akan otomatis ditambahkan dari Saldo Penghasilan setiap kreditmu menipis.</string>
+    <string name="seller_menu_shop_statistics">Statistik Toko</string>
+    <string name="seller_menu_shop_statistics_description">Cek perkembangan statistik produk dan toko agar jadi lebih kompetitif.</string>
+    <string name="seller_menu_ads_and_promo">Iklan dan Promosi</string>
+    <string name="seller_menu_ads_and_promo_description">Iklankan produkmu untuk jangkau lebih banyak pembeli.</string>
+    <string name="seller_menu_feed_and_play">Feed dan Play</string>
+    <string name="seller_menu_feed_and_play_description">Posting info terbaru dan promo khusus toko untuk pelanggan setia.</string>
+    <string name="seller_menu_financial_service">Layanan Keuangan</string>
+    <string name="seller_menu_financial_service_description">Kelola arus dana untuk keuangan tokomu dengan mudah dan cepat.</string>
 </resources>
