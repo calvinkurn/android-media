@@ -13,13 +13,12 @@
         android:id="@+id/iv_loading"
         android:layout_width="@dimen/dp_40"
         android:layout_height="@dimen/dp_40"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_constraintBottom_toTopOf="@id/iv_loading_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:loader_type="circular"
-        tools:visibility="visible"
         />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -27,16 +26,16 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl6"
+        android:layout_marginTop="@dimen/play_offset_18"
         android:layout_marginEnd="@dimen/spacing_lvl6"
         android:gravity="center"
-        android:text="@string/play_buffer_reason_seller_side"
         android:textColor="@color/Neutral_N0"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_2"
+        app:layout_constraintTop_toBottomOf="@id/iv_loading"
+        tools:text="@string/play_buffer_reason_seller_side"
         tools:visibility="visible"
         />
 

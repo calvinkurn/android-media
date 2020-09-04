@@ -15,17 +15,24 @@ class PlayViewerVideoStateProcessorImpl @Inject constructor(
 ) : PlayViewerVideoStateProcessor {
 
     private var error: Throwable? = null
+    private var isFirstTime: Boolean = true
+
+    private val goodStates = arrayOf(PlayVideoState.Playing, PlayVideoState.Pause, PlayVideoState.Ended)
 
     init {
         playVideoManager.addListener(object : PlayVideoManager.Listener {
             override fun onPlayerStateChanged(state: PlayVideoState) {
+                if (state in goodStates) isFirstTime = false
+
                 when (state) {
                     is PlayVideoState.Error -> error = state.error
-                    PlayVideoState.Buffering -> broadcastState(
-                            PlayViewerVideoState.Buffer(
-                                    getBufferSourceFromError(error)
-                            )
-                    )
+                    PlayVideoState.Buffering -> {
+                        val bufferSource = getBufferSourceFromError(error)
+                        broadcastState(
+                                if (isFirstTime && bufferSource == BufferSource.Broadcaster) PlayViewerVideoState.Waiting
+                                else PlayViewerVideoState.Buffer(bufferSource)
+                        )
+                    }
                     PlayVideoState.Playing -> {
                         error = null
                         broadcastState(PlayViewerVideoState.Play)
