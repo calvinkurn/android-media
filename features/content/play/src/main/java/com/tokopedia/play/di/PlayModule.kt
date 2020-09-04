@@ -104,13 +104,4 @@ class PlayModule(val mContext: Context) {
     fun provideExoPlaybackExceptionParser(): ExoPlaybackExceptionParser {
         return ExoPlaybackExceptionParser()
     }
-
-    @Provides
-    @PlayScope
-    fun providePlayViewerVideoStateProcessor(
-            videoManager: PlayVideoManager,
-            exoPlaybackExceptionParser: ExoPlaybackExceptionParser
-    ): PlayViewerVideoStateProcessor {
-        return PlayViewerVideoStateProcessorImpl(videoManager, exoPlaybackExceptionParser)
-    }
 }

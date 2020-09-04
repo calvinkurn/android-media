@@ -20,7 +20,7 @@ import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.Event
 import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.util.video.state.PlayViewerVideoStateListener
-import com.tokopedia.play.util.video.state.PlayViewerVideoStateProcessor
+import com.tokopedia.play.util.video.state.PlayViewerVideoStateProcessorImpl
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.mapper.PlayUiMapper
@@ -29,7 +29,6 @@ import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.player.PlayVideoManager
-import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -39,7 +38,7 @@ import javax.inject.Inject
  */
 class PlayViewModel @Inject constructor(
         private val playVideoManager: PlayVideoManager,
-        private val videoStateProcessor: PlayViewerVideoStateProcessor,
+        private val videoStateProcessorFactory: PlayViewerVideoStateProcessorImpl.Factory,
         private val getChannelInfoUseCase: GetChannelDetailUseCase,
         private val getSocketCredentialUseCase: GetSocketCredentialUseCase,
         private val getPartnerInfoUseCase: GetPartnerInfoUseCase,
@@ -222,6 +221,8 @@ class PlayViewModel @Inject constructor(
     private val stateHandlerObserver = object : Observer<Unit> {
         override fun onChanged(t: Unit?) {}
     }
+
+    private val videoStateProcessor = videoStateProcessorFactory.create { channelType }
 
     init {
         playVideoManager.addListener(videoManagerListener)
