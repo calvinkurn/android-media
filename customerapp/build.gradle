@@ -291,6 +291,7 @@ dependencies {
     implementation project(rootProject.ext.features.reputation)
     implementation project(rootProject.ext.features.inboxReputation)
     implementation project(rootProject.ext.features.review)
+    implementation project(rootProject.ext.features.sellerMenu)
     implementation project(rootProject.ext.features.sellerActiveCommon)
     implementation project(rootProject.ext.features.buyerorder)
     implementation project(rootProject.ext.features.tkpdseller)
