@@ -10,5 +10,6 @@
     <string name="product_manage_quick_edit_stock_success">Ketersediaan produk \"%1$s\" berhasil diubah.</string>
     <string name="product_manage_snack_bar_retry">Coba lagi</string>
     <string name="product_manage_snack_bar_fail">Oops, permintaan kamu tidak dapat diproses.</string>
+    <string name="product_manage_error_description">Oops, ada gangguan yang perlu kami bereskan.</string>
 
 </resources>

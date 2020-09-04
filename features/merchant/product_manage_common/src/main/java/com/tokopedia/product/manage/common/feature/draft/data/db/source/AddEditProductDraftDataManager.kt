@@ -45,7 +45,7 @@ class AddEditProductDraftDataManager @Inject constructor(private val draftDao: A
         val draft = getDraft(productId) ?: AddEditProductDraftEntity()
         draft.apply {
             this.data = data
-            this.version = _root_ide_package_.com.tokopedia.product.manage.common.feature.draft.constant.AddEditProductDraftConstant.DB_VERSION_9
+            this.version =AddEditProductDraftConstant.DB_VERSION_9
         }
         draftDao.updateDraft(draft)
         return productId
@@ -56,7 +56,7 @@ class AddEditProductDraftDataManager @Inject constructor(private val draftDao: A
         draft.apply {
             this.data = data
             this.isUploading = isUploading
-            this.version = _root_ide_package_.com.tokopedia.product.manage.common.feature.draft.constant.AddEditProductDraftConstant.DB_VERSION_9
+            this.version = AddEditProductDraftConstant.DB_VERSION_9
         }
         draftDao.updateDraft(draft)
         return productId

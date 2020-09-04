@@ -7,6 +7,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.getNumberFormatted
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.common.R
 import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking

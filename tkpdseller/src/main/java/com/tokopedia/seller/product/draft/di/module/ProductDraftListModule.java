@@ -3,11 +3,11 @@ package com.tokopedia.seller.product.draft.di.module;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.product.manage.common.draft.data.db.AddEditProductDraftDao;
-import com.tokopedia.product.manage.common.draft.data.db.AddEditProductDraftDb;
-import com.tokopedia.product.manage.common.draft.data.db.repository.AddEditProductDraftRepository;
-import com.tokopedia.product.manage.common.draft.data.db.repository.AddEditProductDraftRepositoryImpl;
-import com.tokopedia.product.manage.common.draft.data.db.source.AddEditProductDraftDataSource;
+import com.tokopedia.product.manage.common.feature.draft.data.db.AddEditProductDraftDao;
+import com.tokopedia.product.manage.common.feature.draft.data.db.AddEditProductDraftDb;
+import com.tokopedia.product.manage.common.feature.draft.data.db.repository.AddEditProductDraftRepository;
+import com.tokopedia.product.manage.common.feature.draft.data.db.repository.AddEditProductDraftRepositoryImpl;
+import com.tokopedia.product.manage.common.feature.draft.data.db.source.AddEditProductDraftDataSource;
 import com.tokopedia.product.manage.item.main.add.di.ProductAddModule;
 import com.tokopedia.product.manage.item.main.add.di.ProductAddScope;
 import com.tokopedia.product.manage.item.main.draft.data.db.ProductDraftDB;

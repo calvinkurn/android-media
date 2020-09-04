@@ -17,8 +17,11 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.product.manage.common.ProductManageCommonInstance
 import com.tokopedia.product.manage.common.R
 import com.tokopedia.product.manage.common.feature.variant.adapter.model.ProductVariant
+import com.tokopedia.product.manage.common.feature.variant.di.DaggerQuickEditVariantComponent
+import com.tokopedia.product.manage.common.feature.variant.di.QuickEditVariantComponent
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
 import com.tokopedia.product.manage.common.feature.variant.presentation.viewmodel.QuickEditVariantViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -79,7 +82,7 @@ abstract class QuickEditVariantBottomSheet: BottomSheetUnify(), HasComponent<Qui
     override fun getComponent(): QuickEditVariantComponent? {
         return activity?.run {
             DaggerQuickEditVariantComponent.builder()
-                .productManageComponent(ProductManageInstance.getComponent(application))
+                .productManageCommonComponent(ProductManageCommonInstance.getComponent(application))
                 .build()
         }
     }

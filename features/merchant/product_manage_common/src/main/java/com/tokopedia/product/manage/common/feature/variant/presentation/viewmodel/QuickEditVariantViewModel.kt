@@ -8,6 +8,7 @@ import com.tokopedia.product.manage.common.coroutine.CoroutineDispatchers
 import com.tokopedia.product.manage.common.feature.variant.adapter.model.ProductVariant
 import com.tokopedia.product.manage.common.feature.variant.data.mapper.ProductManageVariantMapper.mapToVariantsResult
 import com.tokopedia.product.manage.common.feature.variant.data.mapper.ProductManageVariantMapper.mapVariantsToEditResult
+import com.tokopedia.product.manage.common.feature.variant.data.mapper.ProductManageVariantMapper.updateVariant
 import com.tokopedia.product.manage.common.feature.variant.domain.GetProductVariantUseCase
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.GetVariantResult
