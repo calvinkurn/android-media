@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.buyerorder.R
+import com.tokopedia.buyerorder.list.data.Order
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohListOrder
 import com.tokopedia.buyerorder.unifiedhistory.list.view.fragment.UohListFragment
 import kotlinx.android.synthetic.main.bottomsheet_kebab_uoh_item.view.*
@@ -15,9 +16,10 @@ import kotlinx.android.synthetic.main.bottomsheet_option_uoh_item.view.*
  */
 class UohBottomSheetKebabMenuAdapter(private var listener: ActionListener): RecyclerView.Adapter<UohBottomSheetKebabMenuAdapter.ViewHolder>()  {
     var uohKebabMenuList = mutableListOf<UohListOrder.Data.UohOrders.Order.Metadata.DotMenu>()
+    var _orderData: UohListOrder.Data.UohOrders.Order? = null
 
     interface ActionListener {
-        fun onKebabItemClick(dotMenu: UohListOrder.Data.UohOrders.Order.Metadata.DotMenu, index: Int)
+        fun onKebabItemClick(index: Int, orderData: UohListOrder.Data.UohOrders.Order)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -30,14 +32,15 @@ class UohBottomSheetKebabMenuAdapter(private var listener: ActionListener): Recy
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.itemView.label_kebab_option?.text = uohKebabMenuList[position].label
-        holder.itemView.label_kebab_option?.setOnClickListener {
-            listener.onKebabItemClick(uohKebabMenuList[position], position)
+        holder.itemView.rl_kebab_item?.setOnClickListener {
+            _orderData?.let { it1 -> listener.onKebabItemClick(position, orderData = it1) }
         }
     }
 
-    fun addList(list: List<UohListOrder.Data.UohOrders.Order.Metadata.DotMenu>) {
+    fun addList(orderData: UohListOrder.Data.UohOrders.Order) {
+        _orderData = orderData
         uohKebabMenuList.clear()
-        uohKebabMenuList.addAll(list)
+        uohKebabMenuList.addAll(orderData.metadata.dotMenus)
         notifyDataSetChanged()
     }
 

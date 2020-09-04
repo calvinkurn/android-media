@@ -1,6 +1,7 @@
 package com.tokopedia.buyerorder.unifiedhistory.list.view.fragment
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -22,8 +23,12 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.UnifyOrder.*
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.buyerorder.R
+import com.tokopedia.buyerorder.common.util.BuyerConsts
+import com.tokopedia.buyerorder.detail.view.activity.BuyerRequestCancelActivity
+import com.tokopedia.buyerorder.detail.view.fragment.MarketPlaceDetailFragment
 import com.tokopedia.buyerorder.unifiedhistory.common.di.UohComponentInstance
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.APPLINK_RESO
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.APP_LINK_TYPE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.EMAIL_MUST_NOT_BE_EMPTY
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.END_DATE
@@ -34,6 +39,8 @@ import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_FINISH_
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_FLIGHT_EMAIL
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_LS_FINISH
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_LS_LACAK
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_MP_CHAT
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_MP_FINISH
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_MP_REJECT
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_RECHARGE_BATALKAN
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_TRACK
@@ -78,9 +85,9 @@ import kotlinx.android.synthetic.main.bottomsheet_option_uoh.*
 import kotlinx.android.synthetic.main.bottomsheet_option_uoh.view.*
 import kotlinx.android.synthetic.main.bottomsheet_send_email.*
 import kotlinx.android.synthetic.main.bottomsheet_send_email.view.*
-import kotlinx.android.synthetic.main.bottomsheet_send_email.view.btn_send_email
 import kotlinx.android.synthetic.main.fragment_uoh_list.*
 import kotlinx.coroutines.*
+import java.io.Serializable
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -203,8 +210,8 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             defaultStartDateStr = getCalculatedFormattedDate("dd MMM yyyy", -90)
             defaultEndDate = Date().toFormattedString("yyyy-MM-dd")
             defaultEndDateStr = Date().toFormattedString("dd MMM yyyy")
-            // paramUohOrder.createTimeStart = defaultStartDate
-            // paramUohOrder.createTimeEnd = defaultEndDate
+            paramUohOrder.createTimeStart = defaultStartDate
+            paramUohOrder.createTimeEnd = defaultEndDate
         }
         paramUohOrder.page = 1
 
@@ -797,11 +804,12 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         fragmentManager?.let { bottomSheetKebabMenu?.show(it, getString(R.string.show_bottomsheet)) }
     }
 
-    private fun showBottomSheetFinishOrder(index: Int, orderId: String) {
+    private fun showBottomSheetFinishOrder(index: Int, orderId: String, isFromKebabMenu: Boolean) {
         val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_finish_order_uoh, null).apply {
 
             btn_finish_order?.setOnClickListener {
-                bottomSheetFinishOrder?.dismiss()
+                bottomSheetKebabMenu?.dismiss()
+                if (isFromKebabMenu) bottomSheetFinishOrder?.dismiss()
                 chosenOrder = uohItemAdapter.getDataAtIndex(index)
                 uohItemAdapter.showLoaderAtIndex(index)
                 currIndexNeedUpdate = index
@@ -813,7 +821,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             }
 
             btn_ajukan_komplain?.setOnClickListener {
-                // go to komplain page
+                RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, APPLINK_RESO.replace(REPLACE_ORDER_ID, orderId)))
             }
         }
 
@@ -1039,12 +1047,13 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         }
     }
 
-    override fun onKebabMenuClicked(listDotMenu: List<UohListOrder.Data.UohOrders.Order.Metadata.DotMenu>) {
+    override fun onKebabMenuClicked(order: UohListOrder.Data.UohOrders.Order) {
         showBottomSheetKebabMenu()
-        uohBottomSheetKebabMenuAdapter.addList(listDotMenu)
+        uohBottomSheetKebabMenuAdapter.addList(order)
     }
 
-    override fun onKebabItemClick(dotMenu: UohListOrder.Data.UohOrders.Order.Metadata.DotMenu, index: Int) {
+    override fun onKebabItemClick(index: Int, orderData: UohListOrder.Data.UohOrders.Order) {
+        val dotMenu = orderData.metadata.dotMenus[index]
         if (dotMenu.actionType.equals(TYPE_ACTION_BUTTON_LINK, true)) {
             RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, dotMenu.appURL))
         } else {
@@ -1058,12 +1067,33 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 dotMenu.actionType.equals(GQL_MP_REJECT, true) -> {
                     goToBuyerCancellation()
                 }
+                dotMenu.actionType.equals(GQL_MP_CHAT, true) -> {
+                    RouteManager.route(context, dotMenu.appURL)
+                }
+                dotMenu.actionType.equals(GQL_MP_FINISH, true) -> {
+                    orderIdNeedUpdated = orderData.orderUUID
+                    showBottomSheetFinishOrder(index, orderData.verticalID, true)
+                }
             }
         }
     }
 
     private fun goToBuyerCancellation() {
-
+        /*val buyerReqCancelIntent = Intent(context, BuyerRequestCancelActivity::class.java).apply {
+            putExtra(BuyerConsts.PARAM_SHOP_NAME, shopInfo.getShopName())
+            putExtra(BuyerConsts.PARAM_INVOICE, invoiceNum)
+            putExtra(BuyerConsts.PARAM_LIST_PRODUCT, listProducts as Serializable?)
+            putExtra(BuyerConsts.PARAM_ORDER_ID, arguments!!.getString(MarketPlaceDetailFragment.KEY_ORDER_ID))
+            putExtra(BuyerConsts.PARAM_IS_CANCEL_ALREADY_REQUESTED, isRequestedCancel)
+            putExtra(BuyerConsts.PARAM_TITLE_CANCEL_REQUESTED, actionButton.getActionButtonPopUp().getTitle())
+            putExtra(BuyerConsts.PARAM_BODY_CANCEL_REQUESTED, actionButton.getActionButtonPopUp().getBody())
+            putExtra(BuyerConsts.PARAM_SHOP_ID, shopInfo.getShopId())
+            putExtra(BuyerConsts.PARAM_BOUGHT_DATE, boughtDate)
+            putExtra(BuyerConsts.PARAM_INVOICE_URL, invoiceUrl)
+            putExtra(BuyerConsts.PARAM_STATUS_ID, status.status())
+            putExtra(BuyerConsts.PARAM_STATUS_INFO, status.statusText())
+        }
+        startActivityForResult(buyerReqCancelIntent, MarketPlaceDetailFragment.REQUEST_CANCEL_ORDER)*/
     }
 
     override fun onListItemClicked(detailUrl: UohListOrder.Data.UohOrders.Order.Metadata.DetailUrl) {
@@ -1090,7 +1120,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             when {
                 button.actionType.equals(GQL_FINISH_ORDER, true) -> {
                     orderIdNeedUpdated = orderUUID
-                    showBottomSheetFinishOrder(index, verticalId)
+                    showBottomSheetFinishOrder(index, verticalId, false)
                 }
                 button.actionType.equals(GQL_ATC, true) -> {
                     val listOfStrings = Gson().fromJson(listProducts, mutableListOf<String>().javaClass)
@@ -1115,5 +1145,10 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 }
             }
         }
+    }
+
+    override fun onEmptyResultResetBtnClicked() {
+        resetFilter()
+        refreshHandler?.startRefresh()
     }
 }

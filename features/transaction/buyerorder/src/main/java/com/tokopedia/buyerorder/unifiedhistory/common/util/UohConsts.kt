@@ -58,6 +58,8 @@ object UohConsts {
     const val GQL_FLIGHT_EMAIL = "gql-flight-email"
     const val GQL_TRAIN_EMAIL = "gql-train-email"
     const val GQL_MP_REJECT = "gql-mp-reject"
+    const val GQL_MP_CHAT = "gql-mp-chat"
+    const val GQL_MP_FINISH = "gql-mp-finish"
     const val GQL_RECHARGE_BATALKAN = "gql-recharge-batalkan"
 
     const val FINISH_ORDER_BOTTOMSHEET_TITLE = "Selesaikan pesanan ini?"
@@ -84,4 +86,5 @@ object UohConsts {
 
     const val APP_LINK_TYPE = "APP_LINK"
     const val WEB_LINK_TYPE = "WEB_LINK"
+    const val APPLINK_RESO = "tokopedia-android-internal://global/webview?url=https://m.tokopedia.com/resolution-center/create/{order_id}/mobile"
 }

@@ -31,13 +31,14 @@ class UohItemAdapter : RecyclerView.Adapter<UohItemAdapter.BaseViewHolder<*>>() 
     }
 
     interface ActionListener {
-        fun onKebabMenuClicked(listDotMenu: List<UohListOrder.Data.UohOrders.Order.Metadata.DotMenu>)
+        fun onKebabMenuClicked(order: UohListOrder.Data.UohOrders.Order)
         fun onListItemClicked(detailUrl: UohListOrder.Data.UohOrders.Order.Metadata.DetailUrl)
         fun onActionButtonClicked(button: UohListOrder.Data.UohOrders.Order.Metadata.Button,
                                   index: Int,
                                   orderUUID: String,
                                   verticalId: String,
                                   listProducts: String)
+        fun onEmptyResultResetBtnClicked()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<*> {
@@ -52,7 +53,7 @@ class UohItemAdapter : RecyclerView.Adapter<UohItemAdapter.BaseViewHolder<*>>() 
             }
             LAYOUT_EMPTY_STATE -> {
                 val view = LayoutInflater.from(parent.context).inflate(R.layout.uoh_empty_state, parent, false)
-                UohEmptyStateViewHolder(view)
+                UohEmptyStateViewHolder(view, actionListener)
             }
             LAYOUT_RECOMMENDATION_TITLE -> {
                 val view = LayoutInflater.from(parent.context).inflate(R.layout.uoh_recommendation_title, parent, false)
