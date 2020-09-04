@@ -123,7 +123,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         CoachMarkItem(filter_action_button, getString(R.string.coachmark_filter), getString(R.string.coachmark_filter_info))
     }
 
-    private val coachMarkWatingPaymentButton: ArrayList<CoachMarkItem> by lazy {
+    private val coachMarkWaitingPaymentButton: ArrayList<CoachMarkItem> by lazy {
         arrayListOf(
                 CoachMarkItem(
                         somWaitingPaymentButton,
@@ -728,6 +728,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                         filterResult.data.waitingPaymentCounter.text,
                         amount)
                 somWaitingPaymentButton.visible()
+                showCoachMarkWaitingPayment()
             }
         } else {
             somWaitingPaymentButton.gone()
@@ -736,24 +737,19 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     private fun showCoachMarkProducts() {
         if (!coachMark.hasShown(activity, TAG_COACHMARK) && !GlobalConfig.isSellerApp()) {
-            val coachMarkItems = arrayListOf(
-                    coachMarkSearch,
-                    coachMarkProduct,
-                    coachMarkFilter
-            )
-            if (shouldShowWaitingPaymentButton()) coachMarkItems.addAll(coachMarkWatingPaymentButton)
-            coachMark.show(activity, TAG_COACHMARK, coachMarkItems)
+            coachMark.show(activity, TAG_COACHMARK, arrayListOf(coachMarkSearch, coachMarkProduct, coachMarkFilter))
         }
     }
 
     private fun showCoachMarkProductsEmpty() {
         if (!coachMark.hasShown(activity, TAG_COACHMARK) && !GlobalConfig.isSellerApp()) {
-            val coachMarkItems = arrayListOf(
-                    coachMarkSearch,
-                    coachMarkFilter
-            )
-            if (shouldShowWaitingPaymentButton()) coachMarkItems.addAll(coachMarkWatingPaymentButton)
-            coachMark.show(activity, TAG_COACHMARK, coachMarkItems)
+            coachMark.show(activity, TAG_COACHMARK, arrayListOf(coachMarkSearch, coachMarkFilter))
+        }
+    }
+
+    private fun showCoachMarkWaitingPayment() {
+        if (!coachMark.hasShown(activity, TAG_COACHMARK) && GlobalConfig.isSellerApp()) {
+            coachMark.show(activity, TAG_COACHMARK, coachMarkWaitingPaymentButton)
         }
     }
 
