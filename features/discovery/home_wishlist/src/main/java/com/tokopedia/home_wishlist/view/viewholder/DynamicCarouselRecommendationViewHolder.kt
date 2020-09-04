@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.smart_recycler_helper.SmartAbstractViewHolder
 import com.tokopedia.smart_recycler_helper.SmartListener
+import kotlinx.android.synthetic.main.layout_dynamic_recommendation_carousel.view.*
 
 class DynamicCarouselRecommendationViewHolder(val view: View) : SmartAbstractViewHolder<RecommendationCarouselDataModel>(view)  {
     private val title: TextView by lazy { view.findViewById<TextView>(R.id.title) }
@@ -22,6 +23,7 @@ class DynamicCarouselRecommendationViewHolder(val view: View) : SmartAbstractVie
     private val disabledView: View by lazy { view.findViewById<View>(R.id.disabled_view) }
 
     override fun bind(element: RecommendationCarouselDataModel, listener: SmartListener) {
+        itemView.dynamic_recommendation_container?.visibility = if(element.list.isEmpty()) View.GONE else View.VISIBLE
         title.text = element.title
         seeMore.visibility = if(element.seeMoreAppLink.isEmpty()) View.GONE else View.VISIBLE
         seeMore.setOnClickListener{

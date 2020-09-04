@@ -11,6 +11,4 @@ public interface SearchNavigationListener {
     interface ClickListener {
         void onChangeGridClick();
     }
-
-    void configureTabLayout(boolean isVisible);
 }

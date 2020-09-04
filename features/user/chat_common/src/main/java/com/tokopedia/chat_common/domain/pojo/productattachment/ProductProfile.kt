@@ -65,4 +65,7 @@ class ProductProfile {
     @SerializedName("is_preorder")
     @Expose
     val isPreOrder: Boolean = false
+    @SerializedName("campaign_id")
+    @Expose
+    val campaignId: Int = 0
 }
