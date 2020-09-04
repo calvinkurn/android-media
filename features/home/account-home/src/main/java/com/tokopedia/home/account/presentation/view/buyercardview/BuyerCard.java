@@ -29,7 +29,7 @@ public class BuyerCard implements Parcelable {
     private int couponSize;
     private String memberStatus;
     private boolean isAffiliate;
-    private boolean isHasSop;
+    private boolean isHasShop;
 
     public BuyerCard() {
 
@@ -48,7 +48,7 @@ public class BuyerCard implements Parcelable {
               String couponImageUrl,
               String couponApplink,
               boolean isAffiliate,
-              boolean isHasSop,
+              boolean isHasShop,
               String tokomemberTitle,
               String tokoMemberAmount,
               String tokomemberImageUrl,
@@ -71,7 +71,7 @@ public class BuyerCard implements Parcelable {
         this.couponImageUrl = couponImageUrl;
         this.couponApplink = couponApplink;
         this.isAffiliate = isAffiliate;
-        this.isHasSop = isHasSop;
+        this.isHasShop = isHasShop;
         this.tokomemberTitle = tokomemberTitle;
         this.tokoMemberAmount = tokoMemberAmount;
         this.tokomemberImageUrl = tokomemberImageUrl;
@@ -115,8 +115,8 @@ public class BuyerCard implements Parcelable {
         return tokopointAmount;
     }
 
-    public boolean isHasSop() {
-        return isHasSop;
+    public boolean isHasShop() {
+        return isHasShop;
     }
 
     public boolean isAffiliate() {
@@ -428,7 +428,7 @@ public class BuyerCard implements Parcelable {
         dest.writeInt(this.couponSize);
         dest.writeString(this.memberStatus);
         dest.writeByte(this.isAffiliate ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.isHasSop ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isHasShop ? (byte) 1 : (byte) 0);
     }
 
     protected BuyerCard(Parcel in) {
@@ -454,7 +454,7 @@ public class BuyerCard implements Parcelable {
         this.couponSize = in.readInt();
         this.memberStatus = in.readString();
         this.isAffiliate = in.readByte() != 0;
-        this.isHasSop = in.readByte() != 0;
+        this.isHasShop = in.readByte() != 0;
     }
 
     public static final Parcelable.Creator<BuyerCard> CREATOR = new Parcelable.Creator<BuyerCard>() {

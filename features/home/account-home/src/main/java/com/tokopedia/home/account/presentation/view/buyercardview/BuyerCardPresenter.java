@@ -39,7 +39,7 @@ public class BuyerCardPresenter implements BuyerCardContract.Presenter {
             view.setEggImage(buyerCard.getEggImageUrl());
             view.setMemberStatus(buyerCard.getMemberStatus());
 
-            if(buyerCard.isHasSop()) {
+            if(buyerCard.isHasShop()) {
                 view.showSellerAccountCard(buyerCard.getShopName());
             } else {
                 view.showShopOpenCard();
