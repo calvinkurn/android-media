@@ -38,6 +38,7 @@ data class ItemChatAttributesPojo(
 
 ) {
 
+
     // Constructor to create new chat item if it is not on the list
     constructor(
             lastReplyMessage: String,
@@ -53,4 +54,6 @@ data class ItemChatAttributesPojo(
             pinStatus = 0,
             contact = contact
     )
+
+    var lastReplyTimestamp: Long = 0
 }

@@ -26,6 +26,7 @@ data class ItemChatListPojo(
         var messageKey: String = ""
 ) : Visitable<ChatListTypeFactory> {
     val tag: String get() = attributes?.contact?.tag ?: ""
+    val lastReplyTime: Long get() = attributes?.lastReplyTimestamp ?: 0
     val lastReplyTimeStr: String get() = attributes?.lastReplyTimeStr ?: ""
     val lastReplyMessage: String get() = attributes?.lastReplyMessage ?: ""
     val thumbnail: String get() = attributes?.contact?.thumbnail ?: ""

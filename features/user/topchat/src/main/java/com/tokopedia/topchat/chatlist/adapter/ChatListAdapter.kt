@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.kotlin.extensions.view.goToFirst
+import com.tokopedia.kotlin.extensions.view.moveTo
 import com.tokopedia.topchat.chatlist.adapter.typefactory.ChatListTypeFactoryImpl
 import com.tokopedia.topchat.chatlist.adapter.viewholder.ChatItemListViewHolder.Companion.PAYLOAD_UPDATE_PIN_STATUS
 import com.tokopedia.topchat.chatlist.model.EmptyChatModel
@@ -75,6 +76,34 @@ class ChatListAdapter(adapterTypeFactory: ChatListTypeFactoryImpl) :
             visitables.removeAt(chatItemPosition)
             notifyItemRemoved(chatItemPosition)
         }
+    }
+
+    fun putToOriginalPosition(element: ItemChatListPojo, position: Int, offset: Int) {
+        val fromPosition = getItemPosition(element, position)
+        val toPosition = findElementFinalIndex(element, offset)
+        if (toPosition != RecyclerView.NO_POSITION && fromPosition != RecyclerView.NO_POSITION) {
+            visitables.moveTo(fromPosition, toPosition)
+            notifyItemRemoved(fromPosition)
+            notifyItemInserted(toPosition)
+            notifyItemChanged(toPosition, PAYLOAD_UPDATE_PIN_STATUS)
+        }
+    }
+
+    private fun findElementFinalIndex(element: ItemChatListPojo, offset: Int): Int {
+        if (offset < 0 || offset >= visitables.size) return RecyclerView.NO_POSITION
+        var finalIndex = RecyclerView.NO_POSITION
+        for (i in offset..visitables.size) {
+            val chat = visitables[i]
+            if (chat is ItemChatListPojo) {
+                val itemChatTimeStamp = chat.lastReplyTime
+                val elementTimeStamp = element.lastReplyTime
+                if (elementTimeStamp > itemChatTimeStamp) {
+                    finalIndex = i - 1
+                    break
+                }
+            }
+        }
+        return finalIndex
     }
 
     private fun getItemPosition(element: ItemChatListPojo, previouslyKnownPosition: Int): Int {

@@ -34,6 +34,7 @@ class GetChatListMessageUseCase @Inject constructor(
                         setRequestParams(params)
                         setGraphqlQuery(query)
                     }.executeOnBackground()
+                    mapper.convertStrTimestampToLong(response)
                     val pinnedChatMsgId = mapper.mapPinChat(response, page)
                     val unPinnedChatMsgId = mapper.mapUnpinChat(response)
                     withContext(dispatchers.Main) {
