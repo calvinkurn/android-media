@@ -18,8 +18,8 @@ import com.tokopedia.common.topupbills.data.*
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity.Companion.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
-import com.tokopedia.topupbills.telco.common.model.TelcoTabItem
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
+import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
@@ -27,11 +27,12 @@ import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.common.analytics.DigitalTopupAnalytics
 import com.tokopedia.topupbills.common.analytics.DigitalTopupEventTracking
 import com.tokopedia.topupbills.telco.common.covertContactUriToContactData
+import com.tokopedia.topupbills.telco.common.di.DigitalTelcoComponent
+import com.tokopedia.topupbills.telco.common.model.TelcoTabItem
+import com.tokopedia.topupbills.telco.common.viewmodel.SharedTelcoViewModel
 import com.tokopedia.topupbills.telco.data.RechargeCatalogPrefixSelect
 import com.tokopedia.topupbills.telco.data.TelcoCatalogPrefixSelect
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentName
-import com.tokopedia.topupbills.telco.common.di.DigitalTelcoComponent
-import com.tokopedia.topupbills.telco.common.viewmodel.SharedTelcoViewModel
 import com.tokopedia.topupbills.telco.prepaid.widget.DigitalClientNumberWidget
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -57,6 +58,8 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var rechargeAnalytics: RechargeAnalytics
     @Inject
     lateinit var topupAnalytics: DigitalTopupAnalytics
 
@@ -295,7 +298,12 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     }
 
     private fun sendOpenScreenTracking() {
-        topupAnalytics.eventOpenScreen(userSession.userId, getTelcoCategoryId())
+//        topupAnalytics.eventOpenScreen(userSession.userId, getTelcoCategoryId())
+        rechargeAnalytics.eventOpenScreen(
+                userSession.userId,
+                topupAnalytics.getCategoryName(getTelcoCategoryId()),
+                getTelcoCategoryId().toString()
+        )
     }
 
     protected fun setTrackingOnTabMenu(title: String) {
