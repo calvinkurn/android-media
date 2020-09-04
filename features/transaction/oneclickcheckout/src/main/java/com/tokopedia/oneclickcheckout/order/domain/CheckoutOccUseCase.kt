@@ -4,8 +4,12 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.oneclickcheckout.order.data.checkout.CheckoutOccGqlResponse
 import com.tokopedia.oneclickcheckout.order.data.checkout.CheckoutOccRequest
 import com.tokopedia.oneclickcheckout.order.view.model.*
+import kotlinx.coroutines.CoroutineScope
 import java.util.*
 import javax.inject.Inject
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 class CheckoutOccUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase<CheckoutOccGqlResponse>) {
 
@@ -19,6 +23,20 @@ class CheckoutOccUseCase @Inject constructor(private val graphqlUseCase: Graphql
         }, { throwable: Throwable ->
             onError(throwable)
         })
+    }
+
+    suspend fun executeSuspend(coroutineScope: CoroutineScope, param: CheckoutOccRequest): CheckoutOccData {
+        return suspendCoroutine {
+            graphqlUseCase.setGraphqlQuery(QUERY)
+            graphqlUseCase.setTypeClass(CheckoutOccGqlResponse::class.java)
+            graphqlUseCase.setRequestParams(generateParam(param))
+
+            graphqlUseCase.execute({ checkoutOccGqlResponse: CheckoutOccGqlResponse ->
+                it.resume(mapCheckoutData(checkoutOccGqlResponse))
+            }, { throwable: Throwable ->
+                it.resumeWithException(throwable)
+            })
+        }
     }
 
     private fun generateParam(param: CheckoutOccRequest): Map<String, Any?> {

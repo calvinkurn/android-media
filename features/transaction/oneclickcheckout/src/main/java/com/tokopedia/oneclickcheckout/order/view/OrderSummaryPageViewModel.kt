@@ -1608,6 +1608,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
         const val INSTALLMENT_INVALID_MIN_AMOUNT = "Oops, tidak bisa bayar dengan cicilan karena min. pembeliannya kurang."
 
-        private const val TRANSACTION_ID_KEY = "transaction_id"
+        const val TRANSACTION_ID_KEY = "transaction_id"
     }
 }
