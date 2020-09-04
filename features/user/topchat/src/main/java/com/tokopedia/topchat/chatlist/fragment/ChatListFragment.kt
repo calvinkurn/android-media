@@ -356,16 +356,16 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
                     return
                 }
                 //not found on list
-                index == -1 -> {
+                index == RecyclerView.NO_POSITION -> {
+                    val newChatIndex = chatItemListViewModel.pinnedMsgId.size
                     if (adapter.hasEmptyModel()) {
                         adapter.clearAllElements()
                     }
                     val attributes = ItemChatAttributesPojo(newChat.message, newChat.time, newChat.contact)
                     val item = ItemChatListPojo(newChat.messageId, attributes, "")
-                    adapter.list.add(0, item)
-                    adapter.notifyItemInserted(0)
+                    adapter.list.add(newChatIndex, item)
+                    adapter.notifyItemInserted(newChatIndex)
                     increaseNotificationCounter()
-                    animateWhenOnTop()
                 }
                 //found on list, not the first
                 index > 0 -> {
