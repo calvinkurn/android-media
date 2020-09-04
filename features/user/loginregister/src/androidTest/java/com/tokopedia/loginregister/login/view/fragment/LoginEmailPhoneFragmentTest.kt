@@ -3,22 +3,17 @@ package com.tokopedia.loginregister.login.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import android.widget.EditText
-import android.widget.SearchView
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.lifecycle.Lifecycle
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.UiController
-import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.ActivityResultMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
@@ -29,8 +24,6 @@ import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.TkpdIdlingResource
 import com.tokopedia.loginregister.TkpdIdlingResourceProvider
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
-import org.hamcrest.CoreMatchers.allOf
-import org.hamcrest.Matcher
 import org.hamcrest.MatcherAssert
 import org.junit.After
 import org.junit.Before
@@ -87,7 +80,10 @@ class LoginEmailPhoneFragmentTest {
 
     private fun setupIdlingResource() {
         idlingResource = TkpdIdlingResourceProvider.provideIdlingResource("LOGIN")
-        IdlingRegistry.getInstance().register(idlingResource!!.countingIdlingResource)
+        if (idlingResource != null)
+            IdlingRegistry.getInstance().register(idlingResource?.countingIdlingResource)
+        else
+            throw RuntimeException("No idling resource found")
     }
 
     private fun launchActivity() {
@@ -100,28 +96,10 @@ class LoginEmailPhoneFragmentTest {
         activityRule.launchActivity(intent)
     }
 
-    private fun setupFragment() {
-        val scenario = launchFragmentInContainer<LoginEmailPhoneFragment>()
-        scenario.onFragment {
-            try {
-                val fieldSmartLock = it.javaClass.getDeclaredField("isEnableSmartLock")
-                fieldSmartLock.isAccessible = true
-                fieldSmartLock.set(it, false)
-            } catch (ex: Exception) {
-                ex.printStackTrace()
-            }
-
-        }
-        scenario.moveToState(Lifecycle.State.CREATED)
-    }
-
     @After
     fun unregisterIdlingResource() {
         idlingResource?.let {
             IdlingRegistry.getInstance().unregister(it.countingIdlingResource)
         }
     }
-
-
-
 }

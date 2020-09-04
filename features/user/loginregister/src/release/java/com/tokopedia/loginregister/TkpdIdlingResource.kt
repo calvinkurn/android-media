@@ -4,13 +4,13 @@ import androidx.test.espresso.idling.CountingIdlingResource
 
 class TkpdIdlingResource(resName: String) {
 
-    val countingIdlingResource = CountingIdlingResource(resName)
+    val countingIdlingResource :CountingIdlingResource? = null
 
     fun increment() {
-        countingIdlingResource.increment()
+
     }
 
     fun decrement() {
-        countingIdlingResource.decrement()
+
     }
 }
