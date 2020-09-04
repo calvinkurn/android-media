@@ -23,7 +23,6 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp;
 import com.tokopedia.design.component.badge.BadgeView;
 import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.R;
@@ -214,26 +213,6 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.addTab(tabLayout.newTab().setText(R.string.label_account_buyer));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.label_account_seller));
-
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                if (position == 1) {
-                    RouteManager.route(getContext(), ApplinkConstInternalSellerapp.SELLER_MENU);
-                    viewPager.setCurrentItem(0);
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
 
         onNotificationChanged(counterNumber, 0);
     }
