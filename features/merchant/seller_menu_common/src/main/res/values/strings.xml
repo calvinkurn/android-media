@@ -61,4 +61,6 @@
     <string name="seller_menu_feed_and_play_description">Posting info terbaru dan promo khusus toko untuk pelanggan setia.</string>
     <string name="seller_menu_financial_service">Layanan Keuangan</string>
     <string name="seller_menu_financial_service_description">Kelola arus dana untuk keuangan tokomu dengan mudah dan cepat.</string>
+    <string name="seller_menu_shop_score_label">Skor performa Toko</string>
+    <string name="seller_menu_shop_score_max_label">/100</string>
 </resources>

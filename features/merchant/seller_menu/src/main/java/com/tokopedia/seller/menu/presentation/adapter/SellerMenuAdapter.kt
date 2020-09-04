@@ -14,9 +14,9 @@ class SellerMenuAdapter(
     factory: OtherMenuAdapterTypeFactory
 ) : BaseListAdapter<SettingUiModel, OtherMenuAdapterTypeFactory>(factory) {
 
-    fun showShopInfo(shopInfo: SettingShopInfoUiModel) {
+    fun showShopInfo(shopInfo: SettingShopInfoUiModel, shopScore: Int) {
         findShopInfoIndex()?.let { index ->
-            val shopInfoUiModel = ShopInfoUiModel(shopInfo)
+            val shopInfoUiModel = ShopInfoUiModel(shopInfo, shopScore)
             updateItemAt(index, shopInfoUiModel)
         }
     }

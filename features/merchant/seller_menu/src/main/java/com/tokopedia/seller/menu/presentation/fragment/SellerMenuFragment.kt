@@ -147,7 +147,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     private fun observeShopInfo() {
         observe(viewModel.settingShopInfoLiveData) {
             when (it) {
-                is Success -> showShopInfo(it.data)
+                is Success -> showShopInfo(it.data.shopInfo, it.data.shopScore)
                 is Fail -> showShopInfo(SettingError)
             }
             swipeRefreshLayout.isRefreshing = false
@@ -181,11 +181,11 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
         }
     }
 
-    private fun showShopInfo(settingResponseState: SettingResponseState) {
+    private fun showShopInfo(settingResponseState: SettingResponseState, shopScore: Int = 0) {
         when (settingResponseState) {
             is SettingSuccess -> {
                 if (settingResponseState is SettingShopInfoUiModel) {
-                    adapter.showShopInfo(settingResponseState)
+                    adapter.showShopInfo(settingResponseState, shopScore)
                 }
             }
             is SettingLoading -> {

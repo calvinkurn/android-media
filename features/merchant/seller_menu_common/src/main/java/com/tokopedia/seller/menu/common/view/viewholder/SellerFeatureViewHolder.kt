@@ -18,6 +18,8 @@ class SellerFeatureViewHolder(itemView: View): AbstractViewHolder<SellerFeatureU
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_seller_menu_feature_section
+
+        private const val SCREEN_NAME = "MA - Akun Toko"
     }
 
     override fun bind(feature: SellerFeatureUiModel) {
@@ -36,7 +38,7 @@ class SellerFeatureViewHolder(itemView: View): AbstractViewHolder<SellerFeatureU
         }
 
         itemView.cardFeedAndPlay.setOnClickListener {
-            val appLinks = java.util.ArrayList<String>().apply {
+            val appLinks = ArrayList<String>().apply {
                 add(ApplinkConstInternalSellerapp.SELLER_HOME)
                 add(UriUtil.buildUri(ApplinkConst.SHOP, feature.userSession.shopId))
                 add(ApplinkConst.CONTENT_CREATE_POST)
@@ -45,16 +47,17 @@ class SellerFeatureViewHolder(itemView: View): AbstractViewHolder<SellerFeatureU
         }
 
         itemView.cardFintech.setOnClickListener {
-            goToSellerMigrationPage(
-                SellerMigrationFeatureName.FEATURE_FINANCIAL_SERVICES,
-                arrayListOf(ApplinkConst.LAYANAN_FINANSIAL)
-            )
+            val appLinks = ArrayList<String>().apply {
+                add(ApplinkConstInternalSellerapp.SELLER_HOME)
+                add(ApplinkConst.LAYANAN_FINANSIAL)
+            }
+            goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_FINANCIAL_SERVICES, appLinks)
         }
     }
 
     private fun goToSellerMigrationPage(@SellerMigrationFeatureName featureName: String, appLinks: ArrayList<String>) {
         itemView.context?.run {
-            val intent = SellerMigrationActivity.createIntent(this, featureName, featureName, appLinks)
+            val intent = SellerMigrationActivity.createIntent(this, featureName, SCREEN_NAME, appLinks)
             startActivity(intent)
         }
     }

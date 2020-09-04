@@ -55,7 +55,7 @@ class ShopInfoViewHolder(
     private val context by lazy { itemView.context }
 
     override fun bind(uiModel: ShopInfoUiModel) {
-        with(uiModel.data) {
+        with(uiModel.shopInfo) {
             itemView.apply {
                 when {
                     partialResponseStatus.first && partialResponseStatus.second -> {
@@ -103,6 +103,7 @@ class ShopInfoViewHolder(
                         topAdsBalance?.visible()
                     }
                 }
+                showShopScore(uiModel)
             }
         }
     }
@@ -115,6 +116,13 @@ class ShopInfoViewHolder(
     private fun setShopBadge(shopBadgeUiModel: ShopBadgeUiModel) {
         itemView.successShopInfoLayout.shopBadges?.run {
             ImageHandler.LoadImage(this, shopBadgeUiModel.shopBadgeUrl)
+        }
+    }
+
+    private fun showShopScore(uiModel: ShopInfoUiModel) {
+        itemView.shopScore.text = uiModel.shopScore.toString()
+        itemView.shopScore.setOnClickListener {
+            listener?.onShopInfoClicked()
         }
     }
 
