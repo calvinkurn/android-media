@@ -5,5 +5,6 @@ data class ChannelConfig (
         val showPromoBadge: Boolean = false,
         val hasCloseButton: Boolean = false,
         var serverTimeOffset: Long = 0,
-        val createdTimeMillis: String = ""
+        val createdTimeMillis: String = "",
+        val isAutoRefreshAfterExpired: Boolean = false
 )

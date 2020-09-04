@@ -75,6 +75,8 @@ data class DynamicHomeChannel(
             val isAutoRefreshAfterExpired: Boolean = false,
             @SerializedName("token")
             var token: String = "",
+            @SerializedName("isAutoRefreshAfterExpired")
+            val isAutoRefreshAfterExpired: Boolean = false,
             var timestamp: String = ""
     ) : ImpressHolder() {
 
@@ -302,6 +304,7 @@ data class DynamicHomeChannel(
             const val LAYOUT_BANNER_GIF: String = "banner_image"
             const val LAYOUT_LEGO_3_IMAGE: String = "lego_3_image"
             const val LAYOUT_LEGO_4_IMAGE: String = "lego_4_image"
+            const val LAYOUT_LEGO_4_AUTO: String = "4_banners_auto"
             const val LAYOUT_SPRINT_CAROUSEL: String = "sprint_carousel"
             const val LAYOUT_TOPADS: String = "topads"
             const val LAYOUT_SPOTLIGHT: String = "spotlight"
@@ -425,9 +428,23 @@ data class DynamicHomeChannel(
             @SerializedName("rating")
             var rating: Int = 0,
             @SerializedName("count_review")
-            val countReview: Int = 0
+            val countReview: Int = 0,
+            @Expose
+            @SerializedName("benefit")
+            val benefit: Benefit = Benefit(),
+            @Expose
+            @SerializedName("textColor")
+            val textColor: String = ""
     )
 
+    data class Benefit(
+            @Expose
+            @SerializedName("type")
+            val type: String = "",
+            @Expose
+            @SerializedName("value")
+            val value: String = ""
+    )
     data class Header(
             @Expose
             @SerializedName("id")

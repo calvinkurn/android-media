@@ -240,11 +240,18 @@ class EventCheckoutFragment : BaseDaggerFragment() {
     private fun renderPassenger() {
         ticker_event_checkout.setTextDescription(resources.getString(R.string.ent_event_checkout_pessanger_ticker))
         btn_event_checkout_passenger.setOnClickListener {
-            context?.run {
-                val intent = RouteManager.getIntent(this, "${ApplinkConstInternalEntertainment.EVENT_FORM}/$urlPDP")
-                intent.putExtra(EXTRA_DATA_PESSANGER, forms as Serializable)
-                startActivityForResult(intent, REQUEST_CODE_FORM)
-            }
+            goToPageForm()
+        }
+        widget_event_checkout_pessangers.setOnClickListener {
+            goToPageForm()
+        }
+    }
+
+    private fun goToPageForm(){
+        context?.run {
+            val intent = RouteManager.getIntent(this, "${ApplinkConstInternalEntertainment.EVENT_FORM}/$urlPDP")
+            intent.putExtra(EXTRA_DATA_PESSANGER, forms as Serializable)
+            startActivityForResult(intent, REQUEST_CODE_FORM)
         }
     }
 

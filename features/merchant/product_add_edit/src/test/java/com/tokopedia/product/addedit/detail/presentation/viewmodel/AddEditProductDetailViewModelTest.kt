@@ -187,17 +187,6 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
-    fun `isInputValid should return false when no input is error and isAdding is true also isEditing is false`() {
-        viewModel.isAdding = true
-        viewModel.isEditing = false
-        mIsProductNameInputError.value = null
-        mIsProductNameInputError.value = null
-
-        val isValid = viewModel.isInputValid.getOrAwaitValue()
-        Assert.assertFalse(isValid)
-    }
-
-    @Test
     fun `isInputValid should return false when there is no photo`() {
         viewModel.validateProductPhotoInput(0)
 
@@ -681,7 +670,11 @@ class AddEditProductDetailViewModelTest {
         val originalImageUrl = viewModel.productInputModel.detailInputModel.pictureList.map { it.urlOriginal }
         val editedStatus = arrayListOf(false, false)
 
-        viewModel.updateProductPhotos(imagePickerResult, ArrayList(originalImageUrl), editedStatus)
+        val newUpdatedPhotos = viewModel.updateProductPhotos(imagePickerResult, ArrayList(originalImageUrl), editedStatus)
+        viewModel.productInputModel.detailInputModel.apply {
+            pictureList = newUpdatedPhotos.pictureList
+            imageUrlOrPathList = newUpdatedPhotos.imageUrlOrPathList
+        }
 
         Assert.assertTrue(viewModel.productInputModel.detailInputModel.pictureList == sampleProductPhotos)
     }
@@ -694,7 +687,11 @@ class AddEditProductDetailViewModelTest {
         val originalImageUrl = viewModel.productInputModel.detailInputModel.pictureList.map { it.urlOriginal }
         val editedStatus = arrayListOf(false, false, true)
 
-        viewModel.updateProductPhotos(imagePickerResult, ArrayList(originalImageUrl), editedStatus)
+        val newUpdatedPhotos = viewModel.updateProductPhotos(imagePickerResult, ArrayList(originalImageUrl), editedStatus)
+        viewModel.productInputModel.detailInputModel.apply {
+            pictureList = newUpdatedPhotos.pictureList
+            imageUrlOrPathList = newUpdatedPhotos.imageUrlOrPathList
+        }
 
         Assert.assertTrue(viewModel.productInputModel.detailInputModel.pictureList == sampleProductPhotos &&
                 viewModel.productPhotoPaths.size == 3 &&
@@ -711,7 +708,11 @@ class AddEditProductDetailViewModelTest {
         val originalImageUrl = viewModel.productInputModel.detailInputModel.pictureList.map { it.urlOriginal }
         val editedStatus = arrayListOf(true, false)
 
-        viewModel.updateProductPhotos(imagePickerResult, ArrayList(originalImageUrl), editedStatus)
+        val newUpdatedPhotos = viewModel.updateProductPhotos(imagePickerResult, ArrayList(originalImageUrl), editedStatus)
+        viewModel.productInputModel.detailInputModel.apply {
+            pictureList = newUpdatedPhotos.pictureList
+            imageUrlOrPathList = newUpdatedPhotos.imageUrlOrPathList
+        }
 
         Assert.assertTrue(viewModel.productInputModel.detailInputModel.pictureList.size != sampleProductPhotos.size &&
                 viewModel.productInputModel.detailInputModel.pictureList.size == 1 &&
@@ -728,7 +729,11 @@ class AddEditProductDetailViewModelTest {
         val originalImageUrl = viewModel.productInputModel.detailInputModel.pictureList.map { it.urlOriginal }
         val editedStatus = arrayListOf(false, true)
 
-        viewModel.updateProductPhotos(imagePickerResult, ArrayList(originalImageUrl), editedStatus)
+        val newUpdatedPhotos = viewModel.updateProductPhotos(imagePickerResult, ArrayList(originalImageUrl), editedStatus)
+        viewModel.productInputModel.detailInputModel.apply {
+            pictureList = newUpdatedPhotos.pictureList
+            imageUrlOrPathList = newUpdatedPhotos.imageUrlOrPathList
+        }
 
         Assert.assertTrue(viewModel.productInputModel.detailInputModel.pictureList.size != sampleProductPhotos.size &&
                 viewModel.productInputModel.detailInputModel.pictureList.size == 1 &&
@@ -745,7 +750,11 @@ class AddEditProductDetailViewModelTest {
         val originalImageUrl = viewModel.productInputModel.detailInputModel.pictureList.map { it.urlOriginal }
         val editedStatus = arrayListOf(true, false)
 
-        viewModel.updateProductPhotos(imagePickerResult, ArrayList(originalImageUrl), editedStatus)
+        val newUpdatedPhotos = viewModel.updateProductPhotos(imagePickerResult, ArrayList(originalImageUrl), editedStatus)
+        viewModel.productInputModel.detailInputModel.apply {
+            pictureList = newUpdatedPhotos.pictureList
+            imageUrlOrPathList = newUpdatedPhotos.imageUrlOrPathList
+        }
 
         Assert.assertTrue(viewModel.productInputModel.detailInputModel.pictureList.size != sampleProductPhotos.size &&
                 viewModel.productInputModel.detailInputModel.pictureList.size == 1 &&

@@ -51,7 +51,8 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                          private val mixLeftComponentListener: MixLeftComponentListener,
                          private val mixTopComponentListener: MixTopComponentListener,
                          private val reminderWidgetListener: ReminderWidgetListener,
-                         private val productHighlightListener: ProductHighlightListener
+                         private val productHighlightListener: ProductHighlightListener,
+                         private val lego4AutoBannerListener: Lego4AutoBannerListener
 ) :
         BaseAdapterTypeFactory(),
         HomeTypeFactory, HomeComponentTypeFactory{
@@ -181,6 +182,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
     override fun type(dynamicChannelLoadingModel: DynamicChannelLoadingModel): Int {
         return DynamicChannelLoadingViewHolder.LAYOUT
     }
+
+    override fun type(lego4AutoDataModel: Lego4AutoDataModel): Int {
+        return Lego4AutoBannerViewHolder.LAYOUT
+    }
     //end of Home-Component section
 
     private fun getDynamicChannelLayoutFromType(layout: String): Int {
@@ -297,6 +302,12 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                     ReminderWidgetViewHolder(view,reminderWidgetListener)
             TopadsBannerViewHolder.LAYOUT -> viewHolder = TopadsBannerViewHolder(view, listener)
             DynamicChannelLoadingViewHolder.LAYOUT -> viewHolder = DynamicChannelLoadingViewHolder(view)
+            Lego4AutoBannerViewHolder.LAYOUT -> viewHolder =
+                    Lego4AutoBannerViewHolder(
+                            view,
+                            lego4AutoBannerListener,
+                            homeComponentListener,
+                            parentRecycledViewPool)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 

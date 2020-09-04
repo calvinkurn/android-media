@@ -233,7 +233,7 @@
     </string>
 
     <string name="som_chat_buyer">Chat Pembeli</string>
-    <string name="som_shop_performance_info">Skor performa toko tidak akan dikurangi untuk pembatalan ini</string>
+    <string name="som_shop_performance_info">Skor performa tokomu tidak akan dikurangi untuk pembatalan pesanan ini.</string>
     <string name="som_request_buyer_notes_1">telah mengajukan pembatalan pesanan</string>
     <string name="som_request_buyer_notes_2">dengan alasan : </string>
 
@@ -276,5 +276,25 @@
     <string name="dialog_title_cannot_access_page">Kamu tidak memiliki akses ke halaman ini</string>
     <string name="dialog_description_cannot_access_page">Akses ke halaman penjualan hanya dapat diberikan oleh pemilik toko</string>
     <string name="button_understand">Ya, saya mengerti</string>
+
+    <!--  instant cancel  -->
+    <string name="bottomsheet_buyer_request_cancel">Alasan pembeli mengajukan pembatalan pesanan:</string>
+    <string name="bottomsheet_order_cancellation_response_negative_button_code_220">Terima Pesanan</string>
+    <string name="bottomsheet_order_cancellation_response_positive_button_code_220">Batalkan Pesanan</string>
+    <string name="bottomsheet_order_cancellation_response_negative_button_code_400">Konfirmasi Pengiriman</string>
+    <string name="bottomsheet_order_cancellation_response_positive_button_code_400">Batalkan Pesanan</string>
+    <string name="som_error_message_no_internet_connection">Oops, koneksi internetmu terganggu. Silahkan cek koneksi internet dan coba lagi, ya.</string>
+    <string name="som_error_message_server_fault">Oops, ada gangguan yang perlu kami bereskan. Silahkan coba lagi, ya.</string>
+    <string name="som_buyer_cancellation_confirm_shipping_title">Kirim pesanan ini?</string>
+    <string name="som_buyer_cancellation_confirm_shipping_description">Pastikan kamu sudah berdiskusi dengan pembeli. Pesanan yang diproses secara paksa berpotensi komplain.</string>
+    <string name="som_buyer_cancellation_confirm_shipping_button">Kirim Pesanan</string>
+    <string name="som_buyer_cancellation_confirm_accept_cancellation_title">Batalkan pesanan ini?</string>
+    <string name="som_buyer_cancellation_confirm_accept_cancellation_description">Skor performa tokomu tidak akan dikurangi untuk pembatalan ini.</string>
+    <string name="som_buyer_cancellation_confirm_accept_cancellation_button">Batalkan Pesanan</string>
+    <string name="som_buyer_cancellation_confirm_accept_order_title">Konfirmasi terima pesanan?</string>
+    <string name="som_buyer_cancellation_confirm_accept_order_description">Lanjut memproses pesanan tanpa konfirmasi dari pembeli dapat menyebabkan pengajuan komplain</string>
+    <string name="som_buyer_cancellation_confirm_accept_order_button">Lanjut Terima</string>
+    <string name="som_buyer_cancellation_cancel_button">Kembali</string>
+    <string name="som_header_detail_ticker_cancellation">Dibatalkan karena</string>
 
 </resources>

@@ -41,6 +41,7 @@ class DiscussionDataByQuestionIDUseCase @Inject constructor(graphqlRepository: G
                         allowFollow
                         isFollowed
                         isMasked
+                        isYours
                       }
                       totalAnswer
                       answer {
@@ -61,6 +62,7 @@ class DiscussionDataByQuestionIDUseCase @Inject constructor(graphqlRepository: G
                           allowUnmask
                           allowReport
                           allowDelete
+                          isYours
                         }
                         attachedProductCount
                         attachedProduct {

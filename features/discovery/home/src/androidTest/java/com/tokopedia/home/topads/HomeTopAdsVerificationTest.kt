@@ -13,6 +13,7 @@ import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInte
 import com.tokopedia.test.application.espresso_component.CommonActions.clickOnEachItemRecyclerView
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
+import com.tokopedia.test.application.util.setupTopAdsDetector
 import org.junit.*
 
 /**
@@ -26,7 +27,12 @@ class HomeTopAdsVerificationTest {
     private var topAdsAssertion: TopAdsAssertion? = null
 
     @get:Rule
-    var activityRule: ActivityTestRule<InstrumentationHomeTestActivity> = ActivityTestRule(InstrumentationHomeTestActivity::class.java)
+    var activityRule = object: ActivityTestRule<InstrumentationHomeTestActivity>(InstrumentationHomeTestActivity::class.java) {
+        override fun beforeActivityLaunched() {
+            super.beforeActivityLaunched()
+            setupTopAdsDetector()
+        }
+    }
 
     @Before
     fun setTopAdsAssertion() {
@@ -56,20 +62,19 @@ class HomeTopAdsVerificationTest {
     }
 
     private fun checkProductOnDynamicChannel(homeRecyclerView: RecyclerView, i: Int) {
-        val viewholder = homeRecyclerView.findViewHolderForAdapterPosition(i)
-        when (viewholder) {
+        when (val viewHolder = homeRecyclerView.findViewHolderForAdapterPosition(i)) {
             is MixTopComponentViewHolder -> {
-                clickOnEachItemRecyclerView(viewholder.itemView, R.id.dc_banner_rv, 0)
+                clickOnEachItemRecyclerView(viewHolder.itemView, R.id.dc_banner_rv, 0)
             }
             is MixLeftComponentViewHolder -> {
-                clickOnEachItemRecyclerView(viewholder.itemView, R.id.rv_product, 0)
+                clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_product, 0)
             }
             is DynamicChannelSprintViewHolder -> {
-                clickOnEachItemRecyclerView(viewholder.itemView, R.id.recycleList, 0)
+                clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recycleList, 0)
             }
             is HomeRecommendationFeedViewHolder -> {
                 waitForData()
-                clickOnEachItemRecyclerView(viewholder.itemView, R.id.home_feed_fragment_recycler_view, 0)
+                clickOnEachItemRecyclerView(viewHolder.itemView, R.id.home_feed_fragment_recycler_view, 0)
             }
         }
     }

@@ -12,6 +12,7 @@ import com.tokopedia.url.Env;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import com.google.android.gms.security.ProviderInstaller;
+import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
@@ -39,6 +40,7 @@ import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.tkpd.ActivityFrameMetrics;
 import com.tokopedia.tkpd.BuildConfig;
+import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.network.DataSource;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.ContextAnalytics;
@@ -108,6 +110,11 @@ public class MyApplication extends BaseMainApplication
 
         super.onCreate();
         initCacheApi();
+
+        ResourceDownloadManager
+                .Companion.getManager()
+                .setBaseAndRelativeUrl("http://dummy.dummy", "dummy")
+                .initialize(this, R.raw.dummy_description);
 
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());

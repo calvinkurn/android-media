@@ -1,6 +1,0 @@
-mutation uploadProof($transactionID: String!, $merchantCode: String!, $filePath: String!) {
-  uploadProof(transactionID: $transactionID, merchantCode: $merchantCode, filePath: $filePath) {
-    success
-    message
-  }
-}

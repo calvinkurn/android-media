@@ -15,14 +15,18 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.RemoteInput
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.chat_common.data.ReplyChatViewModel
+import com.tokopedia.device.info.DeviceConnectionInfo
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
 import com.tokopedia.topchat.chatroom.domain.usecase.ReplyChatUseCase
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import rx.Subscriber
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-
 
 class NotificationChatService : JobIntentService() {
 
@@ -38,6 +42,7 @@ class NotificationChatService : JobIntentService() {
     lateinit var analytics: TopChatAnalytics
 
     private var jobScheduler: JobScheduler? = null
+    private var remoteConfig: RemoteConfig? = null
 
     companion object {
         private const val JOB_ID_RETRY = 712
@@ -69,6 +74,8 @@ class NotificationChatService : JobIntentService() {
             jobScheduler = applicationContext.getSystemService(Context.JOB_SCHEDULER_SERVICE) as? JobScheduler
                     ?: return
         }
+
+        remoteConfig = FirebaseRemoteConfigImpl(this)
     }
 
     override fun onHandleWork(intent: Intent) {
@@ -110,9 +117,21 @@ class NotificationChatService : JobIntentService() {
             override fun onCompleted() {}
 
             override fun onError(e: Throwable?) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    jobScheduler?.cancelAll()
-                    setRetryJob(messageId, message, notificationId, userId)
+                if (!DeviceConnectionInfo.isInternetAvailable(applicationContext,
+                                checkWifi = true,
+                                checkCellular = true,
+                                checkEthernet = true)) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        jobScheduler?.cancelAll()
+                        if (isEnableReplyChatNotification()) {
+                            setRetryJob(messageId, message, notificationId, if (userId.isNullOrBlank()) "0" else userId)
+                        }
+                    }
+                } else {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        jobScheduler?.cancelAll()
+                    }
+                    Timber.w("P2#PUSH_NOTIF_REPLY_CHAT#'ErrorReplyChat';error='%s';", e?.message)
                 }
             }
         })
@@ -165,4 +184,7 @@ class NotificationChatService : JobIntentService() {
         notificationManager.cancel(notificationId)
     }
 
+    private fun isEnableReplyChatNotification(): Boolean {
+        return remoteConfig?.getBoolean(RemoteConfigKey.ENABLE_PUSH_NOTIFICATION_CHAT_SELLER, false) == true
+    }
 }

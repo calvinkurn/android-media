@@ -143,7 +143,7 @@ class HomeUseCaseModule {
             "}"
 
     private val walletBalanceQuery : String = "{\n" +
-            "  wallet {\n" +
+            "  wallet(isGetTopup:true) {\n" +
             "    linked\n" +
             "    balance\n" +
             "    rawBalance\n" +
@@ -212,25 +212,47 @@ class HomeUseCaseModule {
             "            imageUrl\n" +
             "            attribution\n" +
             "          }\n" +
-            "          grids {\n" +
-            "            id\n" +
-            "            name\n" +
-            "            url\n" +
-            "            applink\n" +
-            "            price\n" +
-            "            slashedPrice\n" +
-            "            discount\n" +
-            "            imageUrl\n" +
-            "            label\n" +
-            "            soldPercentage\n" +
-            "            attribution\n" +
-            "            productClickUrl\n" +
-            "            impression\n" +
-            "            cashback\n" +
-            "            freeOngkir {\n" +
-            "              isActive\n" +
-            "              imageUrl\n" +
-            "            }\n" +
+            "           grids {\n" +
+            "             id\n" +
+            "             back_color\n" +
+            "             name\n" +
+            "             url\n" +
+            "             applink\n" +
+            "             price\n" +
+            "             slashedPrice\n" +
+            "             discount\n" +
+            "             imageUrl\n" +
+            "             label\n" +
+            "             soldPercentage\n" +
+            "             attribution\n" +
+            "             productClickUrl\n" +
+            "             impression\n" +
+            "             cashback\n" +
+            "             isTopads\n" +
+            "             freeOngkir {\n" +
+            "                isActive\n" +
+            "                imageUrl\n" +
+            "              }\n" +
+            "              productViewCountFormatted\n" +
+            "              isOutOfStock\n" +
+            "              warehouseID\n" +
+            "              minOrder\n" +
+            "              shop{\n" +
+            "                shopID\n" +
+            "               }\n" +
+            "              labelGroup {\n" +
+            "                title\n" +
+            "                position\n" +
+            "                type\n" +
+            "              }\n" +
+            "              has_buy_button\n" +
+            "              rating\n" +
+            "              count_review\n" +
+            "              benefit {\n" +
+            "                 type\n" +
+            "                 value\n" +
+            "              }\n" +
+            "              textColor\n" +
             "          }\n" +
             "          banner {\n" +
             "            id\n" +
