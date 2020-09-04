@@ -18,6 +18,7 @@ public class UserIdentificationInfoActivity extends BaseSimpleActivity {
 
     boolean isSourceSeller;
     private int projectId = -1;
+    private String callbackUrl = null;
     public interface Listener {
         void onTrackBackPressed();
     }
@@ -48,6 +49,7 @@ public class UserIdentificationInfoActivity extends BaseSimpleActivity {
     protected Fragment getNewFragment() {
         try {
             projectId = Integer.parseInt(getIntent().getData().getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID));
+            callbackUrl = getIntent().getData().getQueryParameter(ApplinkConstInternalGlobal.PARAM_CALL_BACK);
         }
         catch (NullPointerException | NumberFormatException ex) {
             projectId = KYCConstant.STATUS_DEFAULT;
@@ -55,6 +57,6 @@ public class UserIdentificationInfoActivity extends BaseSimpleActivity {
         catch (Exception e) {
             e.printStackTrace();
         }
-        return UserIdentificationInfoFragment.createInstance(isSourceSeller, projectId);
+        return UserIdentificationInfoFragment.createInstance(isSourceSeller, projectId,callbackUrl);
     }
 }

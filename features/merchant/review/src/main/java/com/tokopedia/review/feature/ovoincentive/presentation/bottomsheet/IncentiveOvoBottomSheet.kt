@@ -48,6 +48,7 @@ class IncentiveOvoBottomSheet(private val productRevIncentiveOvoDomain: ProductR
             dismiss()
             ReviewTracking.onClickContinueIncentiveOvoBottomSheetTracker(category)
         }
+        isFullpage = false
     }
 
     private inner class ProductRevIncentiveOvoAdapter(private val list: List<String>)

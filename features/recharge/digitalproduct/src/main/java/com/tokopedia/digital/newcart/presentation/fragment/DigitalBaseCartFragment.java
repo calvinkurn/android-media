@@ -45,6 +45,8 @@ import com.tokopedia.digital.newcart.presentation.compoundview.InputPriceHolderV
 import com.tokopedia.digital.newcart.presentation.contract.DigitalBaseContract;
 import com.tokopedia.digital.newcart.presentation.model.DigitalSubscriptionParams;
 import com.tokopedia.digital.utils.DeviceUtil;
+import com.tokopedia.network.constant.ErrorNetMessage;
+import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.nps.presentation.view.dialog.AppFeedbackRatingBottomSheet;
 import com.tokopedia.promocheckout.common.data.ConstantKt;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
@@ -269,8 +271,23 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     @Override
     public void onDisablePromoDiscount() {
         digitalAnalytics.eventclickCancelApplyCoupon(getCategoryName(), promoData.getPromoCode());
+        presenter.cancelVoucherCart();
+    }
+
+    @Override
+    public void successCancelVoucherCart() {
+        checkoutHolderView.resetPromoTicker();
         promoData.setPromoCode("");
         disableVoucherCheckoutDiscount();
+    }
+
+    @Override
+    public void failedCancelVoucherCart(Throwable throwable) {
+        String message = ErrorNetMessage.MESSAGE_ERROR_DEFAULT;
+        if (throwable != null && !throwable.getMessage().equals("")) {
+            message = ErrorHandler.getErrorMessage(getActivity(), throwable);
+        }
+        showToastMessage(message);
     }
 
     private String getCategoryName() {
@@ -318,6 +335,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public void disableVoucherCheckoutDiscount() {
+        detailHolderView.removeAdditionalInfo();
         checkoutHolderView.disableVoucherDiscount();
     }
 
@@ -337,11 +355,11 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
                     }
                     case FAILED: {
                         promoData.setPromoCode("");
-                        presenter.onReceivePromoCode(promoData.getTitle(), promoData.getDescription(), promoData.getPromoCode(), promoData.getTypePromo());
+                        presenter.onReceivePromoCode(promoData);
                         break;
                     }
                     case ACTIVE: {
-                        presenter.onReceivePromoCode(promoData.getTitle(), promoData.getDescription(), promoData.getPromoCode(), promoData.getTypePromo());
+                        presenter.onReceivePromoCode(promoData);
                         break;
                     }
                     default: {

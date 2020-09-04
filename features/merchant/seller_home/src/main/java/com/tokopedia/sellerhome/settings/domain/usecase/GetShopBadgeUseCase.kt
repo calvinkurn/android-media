@@ -33,7 +33,7 @@ class GetShopBadgeUseCase @Inject constructor(private val gqlRepository: Graphql
         if (errors.isNullOrEmpty()) {
             val result: ReputationShopsResult = gqlResponse.getData(ReputationShopsResult::class.java)
             return result.mapReputationToBadgeUrl()
-        } else throw MessageErrorException(errors.firstOrNull()?.message)
+        } else throw MessageErrorException(errors.joinToString { it.message })
     }
 
     private fun ReputationShopsResult.mapReputationToBadgeUrl() : String =

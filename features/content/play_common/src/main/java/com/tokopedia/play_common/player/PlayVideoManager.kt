@@ -64,11 +64,18 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
 
     private val liveDataPlayerEventListener = object : Player.EventListener {
         override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
-            _observablePlayVideoState.value = safeProcessPlaybackState(playWhenReady, playbackState)
+            when (playbackState) {
+                Player.STATE_IDLE -> _observablePlayVideoState.threadSafeSetValue(PlayVideoState.NoMedia)
+                Player.STATE_BUFFERING -> _observablePlayVideoState.threadSafeSetValue(PlayVideoState.Buffering)
+                Player.STATE_READY -> {
+                    _observablePlayVideoState.threadSafeSetValue(if (!playWhenReady) PlayVideoState.Pause else PlayVideoState.Playing)
+                }
+                Player.STATE_ENDED -> _observablePlayVideoState.threadSafeSetValue(PlayVideoState.Ended)
+            }
         }
 
         override fun onPlayerError(error: ExoPlaybackException) {
-            _observablePlayVideoState.value = PlayVideoState.Error(error)
+            _observablePlayVideoState.threadSafeSetValue(PlayVideoState.Error(error))
         }
     }
 
@@ -138,7 +145,7 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
     private var playerModel: PlayPlayerModel by Delegates.observable(initVideoPlayer(null, PlayBufferControl())) { _, old, new ->
         if (old.player != new.player) {
             broadcastVideoPlayerToListeners(new.player)
-            _observableVideoPlayer.value = new.player
+            _observableVideoPlayer.threadSafeSetValue(new.player)
         }
     }
 
@@ -352,6 +359,14 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
 
     private fun broadcastVideoPlayerToListeners(exoPlayer: ExoPlayer) {
         listeners.forEach { it.onVideoPlayerChanged(exoPlayer) }
+    }
+
+    private fun <T> MutableLiveData<T>.threadSafeSetValue(newValue: T) {
+        try {
+            value = newValue
+        } catch (e: Throwable) {
+            postValue(newValue)
+        }
     }
 
     /**
