@@ -55,6 +55,7 @@ interface ChatItemListContract {
     )
 
     fun clearPinUnpinData()
+    fun resetState()
 }
 
 class ChatItemListViewModel @Inject constructor(
@@ -88,6 +89,7 @@ class ChatItemListViewModel @Inject constructor(
     val chatBannedSellerStatus: LiveData<Result<Boolean>>
         get() = _chatBannedSellerStatus
 
+    val chatListHasNext: Boolean get() = getChatListUseCase.hasNext
     val pinnedMsgId: HashSet<String> = HashSet()
     val unpinnedMsgId: HashSet<String> = HashSet()
 
@@ -163,6 +165,10 @@ class ChatItemListViewModel @Inject constructor(
     override fun clearPinUnpinData() {
         pinnedMsgId.clear()
         unpinnedMsgId.clear()
+    }
+
+    override fun resetState() {
+        getChatListUseCase.reset()
     }
 
     private fun changeMessageState(

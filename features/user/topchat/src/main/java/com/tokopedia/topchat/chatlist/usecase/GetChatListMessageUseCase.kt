@@ -17,6 +17,8 @@ class GetChatListMessageUseCase @Inject constructor(
         private var dispatchers: TopchatCoroutineContextProvider
 ) : CoroutineScope {
 
+    var hasNext = false
+
     override val coroutineContext: CoroutineContext get() = dispatchers.Main + SupervisorJob()
 
     fun getChatList(
@@ -34,6 +36,7 @@ class GetChatListMessageUseCase @Inject constructor(
                         setRequestParams(params)
                         setGraphqlQuery(query)
                     }.executeOnBackground()
+                    hasNext = response.data.hasNext
                     mapper.convertStrTimestampToLong(response)
                     val pinnedChatMsgId = mapper.mapPinChat(response, page)
                     val unPinnedChatMsgId = mapper.mapUnpinChat(response)
@@ -59,6 +62,10 @@ class GetChatListMessageUseCase @Inject constructor(
                 paramFilter to filter,
                 paramTab to tab
         )
+    }
+
+    fun reset() {
+        hasNext = false
     }
 
     val query = """
