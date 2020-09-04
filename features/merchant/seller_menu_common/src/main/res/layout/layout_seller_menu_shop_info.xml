@@ -32,10 +32,6 @@
         android:id="@+id/saldoBalance"
         layout="@layout/setting_balance"/>
 
-    <include
-        android:id="@+id/topAdsBalance"
-        layout="@layout/setting_balance_topads"/>
-
     <com.tokopedia.unifycomponents.DividerUnify
         android:layout_width="match_parent"
         android:layout_height="@dimen/setting_divider_thick"/>
