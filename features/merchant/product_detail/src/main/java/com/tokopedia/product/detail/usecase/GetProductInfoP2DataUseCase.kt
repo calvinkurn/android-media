@@ -40,7 +40,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
 
         val QUERY = """
         query GetPdpGetData(${'$'}productID: String,${'$'}deviceID: String, ${'$'}pdpSession: String) {
-          pdpGetData(productID: ${'$'}productID,deviceID: ${'$'}deviceID pdpSession: ${'$'}pdpSession) {
+          pdpGetData(productID: ${'$'}productID,deviceID: ${'$'}deviceID, pdpSession: ${'$'}pdpSession) {
             error {
               Code
               Message
