@@ -76,7 +76,7 @@ data class SomListFilter(
 
                     @SerializedName("amount")
                     @Expose
-                    val amount: Int = (Math.random() * 1000).toInt()
+                    val amount: Int = (Math.random() * 200).toInt()
             )
         }
     }
