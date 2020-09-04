@@ -222,6 +222,7 @@
     <string name="action_variant_next">Lanjut</string>
     <string name="action_variant_save">Simpan</string>
     <string name="action_variant_add">Tambah</string>
+    <string name="action_variant_add_button">Tambah %1$s Lain</string>
     <string name="action_variant_delete">Hapus</string>
     <string name="action_clear_sizechart">Hapus</string>
     <string name="action_replace_sizechart">Ubah Foto</string>
