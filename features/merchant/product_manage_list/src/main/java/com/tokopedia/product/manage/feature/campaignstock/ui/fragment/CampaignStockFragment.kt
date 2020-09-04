@@ -18,8 +18,11 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.product.manage.common.ProductManageInstance
+import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
+import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant
+import com.tokopedia.product.manage.common.feature.variant.presentation.data.GetVariantResult
 import com.tokopedia.product.manage.feature.campaignstock.di.DaggerCampaignStockComponent
 import com.tokopedia.product.manage.feature.campaignstock.domain.model.response.GetStockAllocationData
 import com.tokopedia.product.manage.feature.campaignstock.domain.model.response.GetStockAllocationSummary
@@ -34,9 +37,6 @@ import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.Se
 import com.tokopedia.product.manage.feature.campaignstock.ui.util.CampaignStockMapper
 import com.tokopedia.product.manage.feature.campaignstock.ui.util.convertCheckMaximumStockLimit
 import com.tokopedia.product.manage.feature.campaignstock.ui.viewmodel.CampaignStockViewModel
-import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
-import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant
-import com.tokopedia.product.manage.common.feature.variant.presentation.data.GetVariantResult
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -155,10 +155,10 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
                     with(result.data) {
                         if (isSuccess) {
                             val resultIntent = Intent().apply {
-                                putExtra(ProductManageListConstant.EXTRA_PRODUCT_ID, productId)
-                                putExtra(ProductManageListConstant.EXTRA_PRODUCT_NAME, productName)
-                                putExtra(ProductManageListConstant.EXTRA_UPDATED_STOCK, stock)
-                                putExtra(ProductManageListConstant.EXTRA_UPDATED_STATUS, status.name)
+                                putExtra(ProductManageCommonConstant.EXTRA_PRODUCT_ID, productId)
+                                putExtra(ProductManageCommonConstant.EXTRA_PRODUCT_NAME, productName)
+                                putExtra(ProductManageCommonConstant.EXTRA_UPDATED_STOCK, stock)
+                                putExtra(ProductManageCommonConstant.EXTRA_UPDATED_STATUS, status.name)
                             }
                             activity?.run {
                                 setResult(Activity.RESULT_OK, resultIntent)
@@ -325,7 +325,7 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
         activity?.run {
             val intent = Intent().apply {
                 errorMessage?.run {
-                    putExtra(ProductManageListConstant.EXTRA_UPDATE_MESSAGE, this)
+                    putExtra(ProductManageCommonConstant.EXTRA_UPDATE_MESSAGE, this)
                 }
             }
             setResult(Activity.RESULT_CANCELED, intent)

@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.chatroom.view.activity
 
 import android.accounts.NetworkErrorException
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
@@ -21,6 +22,7 @@ import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel.Companio
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toZeroStringIfNull
+import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant
 import com.tokopedia.product.manage.common.feature.list.model.ProductViewModel
 import com.tokopedia.product.manage.common.feature.quickedit.stock.data.model.EditStockResult
 import com.tokopedia.product.manage.common.feature.quickedit.stock.presentation.fragment.ProductManageQuickEditStockFragment
@@ -80,6 +82,37 @@ class TopChatRoomActivity : BaseChatToolbarActivity(), ProductManageQuickEditSto
         initWindowBackground()
         initTopchatToolbar()
         observeEditStock()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        intent?.let {
+            when(requestCode) {
+                ProductManageCommonConstant.REQUEST_CODE_CAMPAIGN_STOCK ->
+                    when(resultCode) {
+                        Activity.RESULT_OK -> {
+                            val productName = it.getStringExtra(ProductManageCommonConstant.EXTRA_PRODUCT_NAME)
+                            val successMessage = getString(R.string.product_manage_campaign_stock_success_toast, productName)
+                            Toaster.build(
+                                    parent_view,
+                                    successMessage,
+                                    Snackbar.LENGTH_SHORT,
+                                    Toaster.TYPE_NORMAL)
+                                    .show()
+                        }
+                        Activity.RESULT_CANCELED -> {
+                            val errorMessage = it.getStringExtra(ProductManageCommonConstant.EXTRA_UPDATE_MESSAGE) ?: getString(R.string.product_manage_campaign_stock_error_toast)
+                            Toaster.build(
+                                    parent_view,
+                                    errorMessage,
+                                    Snackbar.LENGTH_SHORT,
+                                    Toaster.TYPE_ERROR)
+                                    .show()
+                        }
+                        else -> {}
+                    }
+                else -> super.onActivityResult(requestCode, resultCode, data)
+            }
+        }
     }
 
     private fun initInjector() {
@@ -266,7 +299,9 @@ class TopChatRoomActivity : BaseChatToolbarActivity(), ProductManageQuickEditSto
                                    productStock: Int,
                                    hasReservedStock: Boolean) {
         if (hasReservedStock) {
-            RouteManager.route(this, ApplinkConstInternalMarketplace.RESERVED_STOCK, productId, userSession.shopId)
+            RouteManager.getIntent(this, ApplinkConstInternalMarketplace.RESERVED_STOCK, productId, userSession.shopId).let { intent ->
+                startActivityForResult(intent, ProductManageCommonConstant.REQUEST_CODE_CAMPAIGN_STOCK)
+            }
         } else {
             ProductManageQuickEditStockFragment.createInstance(
                     productId,
@@ -280,7 +315,9 @@ class TopChatRoomActivity : BaseChatToolbarActivity(), ProductManageQuickEditSto
     private fun openVariantStockQuickEdit(productId: String,
                                           hasReservedStock: Boolean) {
         if (hasReservedStock) {
-            RouteManager.route(this, ApplinkConstInternalMarketplace.RESERVED_STOCK, productId, userSession.shopId)
+            RouteManager.getIntent(this, ApplinkConstInternalMarketplace.RESERVED_STOCK, productId, userSession.shopId).let { intent ->
+                startActivityForResult(intent, ProductManageCommonConstant.REQUEST_CODE_CAMPAIGN_STOCK)
+            }
         } else {
             QuickEditVariantStockBottomSheet.createInstance(productId,::onSaveVariantStock).show(supportFragmentManager, QUICKEDIT_VARIANT_TAG)
         }
