@@ -14,6 +14,10 @@ android {
     }
 }
 
+dependencies {
+    implementation rootProject.ext.supportLibDependencies.kotlinSupport
+}
+
 project.ext {
     artifactId = 'attachcommon'
     groupId = 'com.tokopedia.user'
