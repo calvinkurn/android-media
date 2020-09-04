@@ -8,8 +8,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/spacing_lvl2">
+        android:layout_height="match_parent">
 
         <ImageView
             android:id="@+id/imageOpenShop"
@@ -30,8 +29,9 @@
             tools:ignore="ContentDescription" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl2"
             android:drawablePadding="@dimen/spacing_lvl2"
             android:gravity="center_vertical"
             android:padding="@dimen/spacing_lvl2"
