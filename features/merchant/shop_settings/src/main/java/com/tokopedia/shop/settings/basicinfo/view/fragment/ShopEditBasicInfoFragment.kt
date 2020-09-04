@@ -419,7 +419,7 @@ class ShopEditBasicInfoFragment: Fragment() {
         val description = getString(R.string.ticker_warning_can_only_change_shopname_once)
         val readMore = getString(R.string.ticker_warning_read_more)
         val color = ContextCompat.getColor(requireContext(), R.color.merchant_green)
-        val message = shopEditTicker.getDescriptionWithSpannable(color, description, readMore) { clickReadMore() }
+        val message = shopEditTicker.getDescriptionWithSpannable(color, description, readMore, ::clickReadMore)
         shopEditTicker.tickerType = Ticker.TYPE_WARNING
         shopEditTicker.setTextDescription(message)
     }
@@ -606,15 +606,15 @@ class ShopEditBasicInfoFragment: Fragment() {
         DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
             setTitle(getString(R.string.shop_edit_dialog_title))
             setDescription(getString(R.string.shop_edit_dialog_description))
-            setPrimaryCTAText(getString(R.string.shop_edit_dialog_primary_cta))
-            setSecondaryCTAText(getString(R.string.shop_edit_dialog_secondary_cta))
+            setPrimaryCTAText(getString(R.string.shop_edit_dialog_secondary_cta))
+            setSecondaryCTAText(getString(R.string.shop_edit_dialog_primary_cta))
             setPrimaryCTAClickListener {
-                dismiss()
-                ShopSettingsTracking.clickCancelChangeShopName(userSession.shopId, getShopType())
-            }
-            setSecondaryCTAClickListener {
                 onSaveButtonClicked()
                 ShopSettingsTracking.clickConfirmChangeShopName(userSession.shopId, getShopType())
+            }
+            setSecondaryCTAClickListener {
+                dismiss()
+                ShopSettingsTracking.clickCancelChangeShopName(userSession.shopId, getShopType())
             }
         }.show()
     }

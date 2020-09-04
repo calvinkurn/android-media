@@ -14,7 +14,7 @@ fun Ticker.getDescriptionWithSpannable(color: Int, descriptionText: String, endO
     val endIndex = spannableText.length
     val clickableSpan = object : ClickableSpan() {
         override fun onClick(widget: View) {
-            clickText.invoke()
+            clickText()
         }
 
         override fun updateDrawState(ds: TextPaint) {
