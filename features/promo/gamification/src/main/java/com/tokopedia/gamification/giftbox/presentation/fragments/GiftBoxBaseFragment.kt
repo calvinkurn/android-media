@@ -10,7 +10,6 @@ import android.util.DisplayMetrics
 import android.view.*
 import android.widget.FrameLayout
 import android.widget.ViewFlipper
-import androidx.annotation.StringDef
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
