@@ -606,8 +606,8 @@ class ShopEditBasicInfoFragment: Fragment() {
         DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
             setTitle(getString(R.string.shop_edit_dialog_title))
             setDescription(getString(R.string.shop_edit_dialog_description))
-            setPrimaryCTAText(getString(R.string.shop_edit_dialog_secondary_cta))
-            setSecondaryCTAText(getString(R.string.shop_edit_dialog_primary_cta))
+            setPrimaryCTAText(getString(R.string.shop_edit_dialog_primary_cta))
+            setSecondaryCTAText(getString(R.string.shop_edit_dialog_secondary_cta))
             setPrimaryCTAClickListener {
                 onSaveButtonClicked()
                 ShopSettingsTracking.clickConfirmChangeShopName(userSession.shopId, getShopType())
