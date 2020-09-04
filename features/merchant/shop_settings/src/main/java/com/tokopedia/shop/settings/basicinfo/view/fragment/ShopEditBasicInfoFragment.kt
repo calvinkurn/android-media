@@ -42,7 +42,7 @@ import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditBasicInfoActi
 import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopEditBasicInfoViewModel
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.util.ShopTypeDef
-import com.tokopedia.shop.settings.common.util.getDescriptionWithSpannable
+import com.tokopedia.shop.settings.common.util.getTextWithSpannable
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -420,7 +420,7 @@ class ShopEditBasicInfoFragment: Fragment() {
         val description = getString(R.string.ticker_warning_can_only_change_shopname_once)
         val readMore = getString(R.string.ticker_warning_read_more)
         val color = ContextCompat.getColor(requireContext(), R.color.merchant_green)
-        val message = shopEditTicker.getDescriptionWithSpannable(color, description, readMore)
+        val message = getTextWithSpannable(color, description, readMore)
         shopEditTicker.apply {
             tickerType = Ticker.TYPE_WARNING
             setTextDescription(message)

@@ -7,9 +7,8 @@ import android.text.SpannableStringBuilder
 import android.text.TextPaint
 import android.text.style.ClickableSpan
 import android.view.View
-import com.tokopedia.unifycomponents.ticker.Ticker
 
-fun Ticker.getDescriptionWithSpannable(color: Int, descriptionText: String, endOfText: String, onClick: (() -> Unit)? = null): SpannableStringBuilder {
+fun getTextWithSpannable(color: Int, text: String, endOfText: String, onClick: (() -> Unit)? = null): SpannableStringBuilder {
     val spannableText = SpannableString(endOfText)
     val startIndex = 0
     val endIndex = spannableText.length
@@ -26,5 +25,5 @@ fun Ticker.getDescriptionWithSpannable(color: Int, descriptionText: String, endO
         }
     }
     spannableText.setSpan(clickableSpan, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-    return SpannableStringBuilder(descriptionText).append(" ").append(spannableText).append(".")
+    return SpannableStringBuilder(text).append(" ").append(spannableText).append(".")
 }
