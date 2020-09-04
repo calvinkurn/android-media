@@ -1,5 +1,6 @@
 package com.tokopedia.shop.settings.common.util
 
+import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
@@ -21,6 +22,7 @@ fun Ticker.getDescriptionWithSpannable(color: Int, descriptionText: String, endO
             super.updateDrawState(ds)
             ds.isUnderlineText = false
             ds.color = color
+            ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
         }
     }
     spannableText.setSpan(clickableSpan, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
