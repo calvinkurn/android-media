@@ -25,7 +25,7 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TYPE_ACTIVE_LIMITED
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TYPE_WAREHOUSE
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
-import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
+import com.tokopedia.product.manage.common.feature.draft.data.model.ProductDraft
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success

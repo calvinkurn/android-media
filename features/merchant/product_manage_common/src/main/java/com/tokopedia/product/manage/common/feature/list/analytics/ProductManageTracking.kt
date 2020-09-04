@@ -240,7 +240,7 @@ object ProductManageTracking {
             } else {
                 STATUS_TOGGLE_OFF
             }
-            com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking.eventProductManage(EVENT_ACTION_CLICK_ON_STATUS_TOGGLE_VARIANT, label)
+            eventProductManage(EVENT_ACTION_CLICK_ON_STATUS_TOGGLE_VARIANT, label)
         }
     }
 

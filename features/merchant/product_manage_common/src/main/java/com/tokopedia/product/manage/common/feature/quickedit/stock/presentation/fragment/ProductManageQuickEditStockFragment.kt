@@ -30,6 +30,7 @@ import com.tokopedia.product.manage.common.feature.quickedit.stock.presentation.
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.fragment_quick_edit_stock.*
+import java.util.*
 import javax.inject.Inject
 
 class ProductManageQuickEditStockFragment(private var onFinishedListener: OnFinishedListener? = null,
@@ -91,7 +92,7 @@ class ProductManageQuickEditStockFragment(private var onFinishedListener: OnFini
                     productName = name
                 }
                 getString(KEY_PRODUCT_STATUS)?.let { status ->
-                    productStatus = ProductStatus.valueOf(status)
+                    productStatus = ProductStatus.valueOf(status.toUpperCase(Locale.ROOT))
                 }
                 getInt(KEY_STOCK).let { stock ->
                     productStock = stock
@@ -107,7 +108,7 @@ class ProductManageQuickEditStockFragment(private var onFinishedListener: OnFini
             productId = it.getString(KEY_PRODUCT_ID)
             productName = it.getString(KEY_PRODUCT_NAME)
             it.getString(KEY_PRODUCT_STATUS)?.run {
-                productStatus = ProductStatus.valueOf(this)
+                productStatus = ProductStatus.valueOf(toUpperCase(Locale.ROOT))
             }
             productStock = it.getInt(KEY_STOCK)
         }

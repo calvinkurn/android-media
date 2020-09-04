@@ -1,8 +1,8 @@
 package com.tokopedia.product.manage.feature.list.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.product.manage.common.draft.domain.usecase.ClearAllDraftProductsUseCase
-import com.tokopedia.product.manage.common.draft.domain.usecase.GetAllDraftProductsCountUseCase
+import com.tokopedia.product.manage.common.feature.draft.domain.usecase.ClearAllDraftProductsUseCase
+import com.tokopedia.product.manage.common.feature.draft.domain.usecase.GetAllDraftProductsCountUseCase
 import com.tokopedia.product.manage.coroutine.TestCoroutineDispatchers
 import com.tokopedia.usecase.RequestParams
 import io.mockk.every

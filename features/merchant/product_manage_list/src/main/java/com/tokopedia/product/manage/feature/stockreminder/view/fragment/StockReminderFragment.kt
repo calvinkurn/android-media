@@ -25,8 +25,8 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
+import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_PRODUCT_NAME
 import com.tokopedia.product.manage.common.util.ProductManageListErrorHandler
-import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_PRODUCT_NAME
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_THRESHOLD
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.createupdateresponse.CreateStockReminderResponse
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.createupdateresponse.UpdateStockReminderResponse

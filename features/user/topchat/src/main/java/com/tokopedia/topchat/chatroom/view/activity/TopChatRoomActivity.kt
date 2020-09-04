@@ -40,7 +40,6 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.activity_base_simple.*
 import javax.inject.Inject
 
 class TopChatRoomActivity : BaseChatToolbarActivity(), ProductManageQuickEditStockFragment.OnFinishedListener {
@@ -93,7 +92,7 @@ class TopChatRoomActivity : BaseChatToolbarActivity(), ProductManageQuickEditSto
                             val productName = it.getStringExtra(ProductManageCommonConstant.EXTRA_PRODUCT_NAME)
                             val successMessage = getString(R.string.product_manage_campaign_stock_success_toast, productName)
                             Toaster.build(
-                                    parent_view,
+                                    findViewById<View>(R.id.parent_view),
                                     successMessage,
                                     Snackbar.LENGTH_SHORT,
                                     Toaster.TYPE_NORMAL)
@@ -102,7 +101,7 @@ class TopChatRoomActivity : BaseChatToolbarActivity(), ProductManageQuickEditSto
                         Activity.RESULT_CANCELED -> {
                             val errorMessage = it.getStringExtra(ProductManageCommonConstant.EXTRA_UPDATE_MESSAGE) ?: getString(R.string.product_manage_campaign_stock_error_toast)
                             Toaster.build(
-                                    parent_view,
+                                    findViewById<View>(R.id.parent_view),
                                     errorMessage,
                                     Snackbar.LENGTH_SHORT,
                                     Toaster.TYPE_ERROR)
@@ -207,6 +206,8 @@ class TopChatRoomActivity : BaseChatToolbarActivity(), ProductManageQuickEditSto
                     intent.putExtra(ApplinkConst.Chat.TO_USER_ID, toUserId)
                     intent.putExtra(ApplinkConst.Chat.OPPONENT_ID, toUserId)
                 }
+                pathSegments.contains(ApplinkConst.Chat.PATH_STOCK) -> {}
+                pathSegments.contains(ApplinkConst.Chat.PATH_VARIANT) -> {}
                 else -> {
                     val messageId = intent?.data?.lastPathSegment.toZeroStringIfNull()
                     intent.putExtra(ApplinkConst.Chat.MESSAGE_ID, messageId)
@@ -231,7 +232,7 @@ class TopChatRoomActivity : BaseChatToolbarActivity(), ProductManageQuickEditSto
     }
 
     private fun showSuccessStockEditToaster(productName: String) {
-        Toaster.make(parent_view, getString(
+        Toaster.make(findViewById<View>(R.id.parent_view), getString(
                 R.string.product_manage_quick_edit_stock_success, productName),
                 Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
     }
@@ -255,7 +256,7 @@ class TopChatRoomActivity : BaseChatToolbarActivity(), ProductManageQuickEditSto
             actionLabel: String = getString(com.tokopedia.abstraction.R.string.close),
             listener: () -> Unit = {}
     ) {
-        parent_view?.let {
+        findViewById<View>(R.id.parent_view)?.let {
             val onClickActionLabel = View.OnClickListener { listener.invoke() }
             Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, actionLabel, onClickActionLabel)
         }
