@@ -52,7 +52,12 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
         }?.message ?: "Tampilkan Semua"
         cartListData.isPromoCouponActive = cartDataListResponse.isCouponActive == 1
 
-        val errorCount = cartDataListResponse.totalProductError
+        var errorCount = 0
+        cartDataListResponse.unavailableSections.forEach {
+            it.unavailableGroups.forEach {
+                errorCount += it.cartDetails.size
+            }
+        }
         cartListData.isError = errorCount > 0
         if (cartListData.isError) {
             cartListData.cartTickerErrorData = mapCartTickerErrorData(errorCount)
