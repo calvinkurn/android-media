@@ -1,7 +1,6 @@
 package com.tokopedia.buyerorder.unifiedhistory.list.view.fragment
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -23,9 +22,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.UnifyOrder.*
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.buyerorder.R
-import com.tokopedia.buyerorder.common.util.BuyerConsts
-import com.tokopedia.buyerorder.detail.view.activity.BuyerRequestCancelActivity
-import com.tokopedia.buyerorder.detail.view.fragment.MarketPlaceDetailFragment
 import com.tokopedia.buyerorder.unifiedhistory.common.di.UohComponentInstance
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.APPLINK_RESO
@@ -87,7 +83,6 @@ import kotlinx.android.synthetic.main.bottomsheet_send_email.*
 import kotlinx.android.synthetic.main.bottomsheet_send_email.view.*
 import kotlinx.android.synthetic.main.fragment_uoh_list.*
 import kotlinx.coroutines.*
-import java.io.Serializable
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -119,9 +114,20 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private var bottomSheetLsFinishOrder: BottomSheetUnify? = null
     private var bottomSheetKebabMenu: BottomSheetUnify? = null
     private var bottomSheetResendEmail: BottomSheetUnify? = null
-    private var currFilterKey: String = ""
-    private var currFilterLabel: String = ""
+    private var currFilterDateKey: String = ""
+    private var currFilterStatusKey: String = ""
+    private var currFilterCategoryKey: String = ""
+    private var currFilterDateLabel: String = ""
+    private var currFilterStatusLabel: String = ""
+    private var currFilterCategoryLabel: String = ""
     private var currFilterType: Int = -1
+    private var tempFilterDateKey: String = ""
+    private var tempFilterStatusKey: String = ""
+    private var tempFilterCategoryKey: String = ""
+    private var tempFilterDateLabel: String = ""
+    private var tempFilterStatusLabel: String = ""
+    private var tempFilterCategoryLabel: String = ""
+    private var tempFilterType: Int = -1
     private var filter1: SortFilterItem? = null
     private var filter2: SortFilterItem? = null
     private var filter3: SortFilterItem? = null
@@ -177,8 +183,8 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 }
                 paramUohOrder.status = status
                 currFilterType = UohConsts.TYPE_FILTER_STATUS
-                currFilterKey = status
-                currFilterLabel = status
+                currFilterStatusKey = status
+                currFilterStatusLabel = status
             }
         }
         loadOrderHistoryList()
@@ -214,7 +220,6 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             paramUohOrder.createTimeEnd = defaultEndDate
         }
         paramUohOrder.page = 1
-
         arrayFilterDate = resources.getStringArray(R.array.filter_date)
     }
 
@@ -247,8 +252,6 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
                     if (!isTyping) {
                         isTyping = true
-
-                        // resetting
                         resetFilter()
                     }
 
@@ -516,19 +519,21 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             ChipsUnify.TYPE_SELECTED
         }
 
-        filter1 = SortFilterItem(UohConsts.ALL_DATE, typeDate, ChipsUnify.SIZE_MEDIUM)
+        filter1 = SortFilterItem(UohConsts.ALL_DATE, typeDate, ChipsUnify.SIZE_SMALL)
         filter1?.listener = {
             uohBottomSheetOptionAdapter = UohBottomSheetOptionAdapter(this)
-            showBottomSheetOptions(UohConsts.CHOOSE_DATE)
-            val mapKey = HashMap<String, String>()
+            showBottomSheetFilterOptions(UohConsts.CHOOSE_DATE)
+            val arrayListMap = arrayListOf<HashMap<String, String>>()
             var i = 0
             arrayFilterDate.forEach { optionDate ->
+                val mapKey = HashMap<String, String>()
                 mapKey["$i"] = optionDate
+                arrayListMap.add(mapKey)
                 i++
             }
-            uohBottomSheetOptionAdapter.uohItemMapKeyList = mapKey
+            uohBottomSheetOptionAdapter.uohItemMapKeyList = arrayListMap
             uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_DATE
-            uohBottomSheetOptionAdapter.selectedKey = currFilterKey
+            uohBottomSheetOptionAdapter.selectedKey = currFilterDateKey
             uohBottomSheetOptionAdapter.isReset = isReset
             uohBottomSheetOptionAdapter.notifyDataSetChanged()
         }
@@ -544,36 +549,43 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         } else {
             ChipsUnify.TYPE_SELECTED
         }
-        filter2 = SortFilterItem(UohConsts.ALL_STATUS, typeStatus, ChipsUnify.SIZE_MEDIUM)
+        filter2 = SortFilterItem(UohConsts.ALL_STATUS, typeStatus, ChipsUnify.SIZE_SMALL)
         filter2?.listener = {
             uohBottomSheetOptionAdapter = UohBottomSheetOptionAdapter(this)
-            showBottomSheetOptions(UohConsts.CHOOSE_FILTERS)
-            val mapKey = HashMap<String, String>()
+            showBottomSheetFilterOptions(UohConsts.CHOOSE_FILTERS)
+            val arrayListMap = arrayListOf<HashMap<String, String>>()
             orderList.filters.forEach { option ->
+                val mapKey = HashMap<String, String>()
                 mapKey[option] = option
+                arrayListMap.add(mapKey)
             }
-            uohBottomSheetOptionAdapter.uohItemMapKeyList = mapKey
+            uohBottomSheetOptionAdapter.uohItemMapKeyList = arrayListMap
             uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_STATUS
-            uohBottomSheetOptionAdapter.selectedKey = currFilterKey
+            uohBottomSheetOptionAdapter.selectedKey = currFilterStatusKey
             uohBottomSheetOptionAdapter.isReset = isReset
             uohBottomSheetOptionAdapter.notifyDataSetChanged()
         }
         if (filterStatus.isNotEmpty() && !isReset) {
-            filter2?.title = currFilterLabel
+            filter2?.title = currFilterStatusLabel
         }
         filter2?.let { chips.add(it) }
 
-        filter3 = SortFilterItem(UohConsts.ALL_CATEGORIES, ChipsUnify.TYPE_NORMAL, ChipsUnify.SIZE_MEDIUM)
+        filter3 = SortFilterItem(UohConsts.ALL_CATEGORIES, ChipsUnify.TYPE_NORMAL, ChipsUnify.SIZE_SMALL)
         filter3?.listener = {
             uohBottomSheetOptionAdapter = UohBottomSheetOptionAdapter(this)
-            showBottomSheetOptions(UohConsts.CHOOSE_CATEGORIES)
-            val mapKey = HashMap<String, String>()
+            showBottomSheetFilterOptions(UohConsts.CHOOSE_CATEGORIES)
+            val arrayListMap = arrayListOf<HashMap<String, String>>()
+            val mapKeyDefault = HashMap<String, String>()
+            mapKeyDefault[UohConsts.ALL_CATEGORIES] = UohConsts.ALL_CATEGORIES_TRANSACTION
+            arrayListMap.add(mapKeyDefault)
             orderList.categories.forEach { category ->
+                val mapKey = HashMap<String, String>()
                 mapKey[category.value] = category.label
+                arrayListMap.add(mapKey)
             }
-            uohBottomSheetOptionAdapter.uohItemMapKeyList = mapKey
+            uohBottomSheetOptionAdapter.uohItemMapKeyList = arrayListMap
             uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_CATEGORY
-            uohBottomSheetOptionAdapter.selectedKey = currFilterKey
+            uohBottomSheetOptionAdapter.selectedKey = currFilterCategoryKey
             uohBottomSheetOptionAdapter.isReset = isReset
             uohBottomSheetOptionAdapter.notifyDataSetChanged()
         }
@@ -597,6 +609,23 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     private fun resetFilter() {
+        filterStatus = ""
+
+        currFilterDateKey = ""
+        currFilterDateLabel = ""
+        tempFilterDateKey = ""
+        tempFilterDateLabel = ""
+
+        currFilterStatusKey = ""
+        currFilterStatusLabel = ""
+        tempFilterStatusKey = ""
+        tempFilterStatusLabel = ""
+
+        currFilterCategoryKey = ""
+        currFilterCategoryLabel = ""
+        tempFilterCategoryKey = ""
+        tempFilterCategoryLabel = ""
+
         isFilterClicked = false
         isReset = true
         uoh_sort_filter?.resetAllFilters()
@@ -604,6 +633,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         filter2?.title = UohConsts.ALL_STATUS
         filter3?.title = UohConsts.ALL_CATEGORIES
         paramUohOrder = UohListParam()
+        setInitialValue()
     }
 
     private fun renderTicker() {
@@ -746,7 +776,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         }
     }
 
-    private fun showBottomSheetOptions(title: String) {
+    private fun showBottomSheetFilterOptions(title: String) {
         val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_option_uoh, null).apply {
             rv_option?.apply {
                 layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
@@ -754,26 +784,34 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             }
 
             btn_apply?.setOnClickListener {
+                isReset = false
+                currFilterType = tempFilterType
                 when (currFilterType) {
                     UohConsts.TYPE_FILTER_DATE -> {
+                        currFilterDateKey = tempFilterDateKey
+                        currFilterDateLabel = tempFilterDateLabel
                         filter1?.type = ChipsUnify.TYPE_SELECTED
-                        if (currFilterKey.toInt() == 3) {
+                        if (currFilterDateKey.toInt() == 3) {
                             if (paramUohOrder.createTimeStart.isNotEmpty() && paramUohOrder.createTimeEnd.isNotEmpty()) {
                                 val splitStartDate = paramUohOrder.createTimeStart.split('-')
                                 val splitEndDate = paramUohOrder.createTimeEnd.split('-')
                                 filter1?.title = "${splitStartDate[2]}/${splitStartDate[1]}/${splitStartDate[0]} - ${splitEndDate[2]}/${splitEndDate[1]}/${splitEndDate[0]}"
                             }
                         } else {
-                            filter1?.title = currFilterLabel
+                            filter1?.title = currFilterDateLabel
                         }
                     }
                     UohConsts.TYPE_FILTER_STATUS -> {
+                        currFilterStatusKey = tempFilterStatusKey
+                        currFilterStatusLabel = tempFilterStatusLabel
                         filter2?.type = ChipsUnify.TYPE_SELECTED
-                        filter2?.title = currFilterLabel
+                        filter2?.title = currFilterStatusLabel
                     }
                     UohConsts.TYPE_FILTER_CATEGORY -> {
+                        currFilterCategoryKey = tempFilterCategoryKey
+                        currFilterCategoryLabel = tempFilterCategoryLabel
                         filter3?.type = ChipsUnify.TYPE_SELECTED
-                        filter3?.title = currFilterLabel
+                        filter3?.title = currFilterCategoryLabel
                     }
                 }
                 bottomSheetOption?.dismiss()
@@ -917,12 +955,12 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
     override fun onOptionItemClick(option: String, label: String, filterType: Int) {
         isFilterClicked = true
-        currFilterKey = option
-        currFilterLabel = label
-        currFilterType = filterType
+        tempFilterType = filterType
 
         when (filterType) {
             UohConsts.TYPE_FILTER_DATE -> {
+                tempFilterDateKey = option
+                tempFilterDateLabel = label
                 when {
                     option.toInt() == 0 -> {
                         bottomSheetOption?.apply {
@@ -969,9 +1007,13 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 }
             }
             UohConsts.TYPE_FILTER_STATUS -> {
+                tempFilterStatusKey = option
+                tempFilterStatusLabel = label
                 paramUohOrder.status = option
             }
             UohConsts.TYPE_FILTER_CATEGORY -> {
+                tempFilterCategoryKey = option
+                tempFilterCategoryLabel = label
                 paramUohOrder.verticalCategory = option
             }
         }

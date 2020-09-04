@@ -18,6 +18,9 @@ object UohConsts {
     const val START_DATE = "start_date"
     const val END_DATE = "end_date"
 
+    const val ALL_STATUS_TRANSACTION = "Semua Status Transaksi"
+    const val ALL_CATEGORIES_TRANSACTION = "Semua Kategori Transaksi"
+
     const val TICKER_TYPE_ANNOUNCEMENT = "announcement"
     const val TICKER_TYPE_ERROR = "error"
     const val TICKER_TYPE_INFORMATION = "information"

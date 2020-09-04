@@ -20,8 +20,8 @@ class AtcMultiProductsUseCase @Inject constructor(private val useCase: GraphqlUs
         useCase.setRequestParams(generateParam(paramJsonArray))
 
         return try {
-            val finishOrder = useCase.executeOnBackground()
-            Success(finishOrder)
+            val atc = useCase.executeOnBackground()
+            Success(atc)
         } catch (throwable: Throwable) {
             Fail(throwable)
         }
