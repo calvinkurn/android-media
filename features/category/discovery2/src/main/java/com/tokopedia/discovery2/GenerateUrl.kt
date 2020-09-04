@@ -3,7 +3,7 @@ package com.tokopedia.discovery2
 class GenerateUrl {
 
     companion object {
-        private const val BASE_URL = "https://ace-staging.tokopedia.com"
+        private const val BASE_URL = "https://ace.tokopedia.com"
         private const val PAGE_URL = "$BASE_URL/discopage/discovery/api/page/"
         private const val CLAIM_COUPON_URL = "$BASE_URL/discopage/discovery/api/component/"
         private const val CLAIM_COUPON = "tokopedia://rewards/kupon/detail/"
