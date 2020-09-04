@@ -465,7 +465,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         val domain = shopDomain ?: getShopInfo().shopCore.domain
         val origin = if (getMultiOriginByProductId().isFulfillment) getMultiOriginByProductId().getOrigin() else null
 
-        return getProductInfoP3(productInfo.basic.getWeightUnit(), domain, origin, productInfo.shouldShowCod)
+        return getProductInfoP3(productInfo.basic.getWeightUnit(), domain, origin)
     }
 
     private fun updateShippingValue(shippingPriceValue: Int?) {
@@ -737,9 +737,9 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    private suspend fun getProductInfoP3(weight: Float, shopDomain: String?, origin: String?, needRequestCod: Boolean): ProductInfoP3 {
+    private suspend fun getProductInfoP3(weight: Float, shopDomain: String?, origin: String?): ProductInfoP3 {
         return getProductInfoP3UseCase.executeOnBackground(
-                GetProductInfoP3UseCase.createParams(weight, shopDomain, origin, needRequestCod),
+                GetProductInfoP3UseCase.createParams(weight, shopDomain, origin),
                 forceRefresh,
                 isUserSessionActive)
     }
