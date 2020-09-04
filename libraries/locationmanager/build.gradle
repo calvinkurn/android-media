@@ -3,7 +3,9 @@ apply plugin: 'kotlin-kapt'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/simple-module.gradle"
 
 dependencies {
-    implementation rootProject.ext.miscDependencies.javaxInject
+    compileOnly rootProject.ext.miscDependencies.javaxAnnotation
+    implementation rootProject.ext.miscDependencies.dagger
+    kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation project(rootProject.ext.libraries.permissionchecker)
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 
