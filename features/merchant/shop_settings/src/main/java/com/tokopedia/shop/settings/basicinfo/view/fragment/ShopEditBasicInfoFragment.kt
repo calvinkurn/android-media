@@ -45,6 +45,7 @@ import com.tokopedia.shop.settings.common.util.ShopTypeDef
 import com.tokopedia.shop.settings.common.util.getDescriptionWithSpannable
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -419,9 +420,15 @@ class ShopEditBasicInfoFragment: Fragment() {
         val description = getString(R.string.ticker_warning_can_only_change_shopname_once)
         val readMore = getString(R.string.ticker_warning_read_more)
         val color = ContextCompat.getColor(requireContext(), R.color.merchant_green)
-        val message = shopEditTicker.getDescriptionWithSpannable(color, description, readMore) { clickReadMore() }
+        val message = shopEditTicker.getDescriptionWithSpannable(color, description, readMore)
         shopEditTicker.tickerType = Ticker.TYPE_WARNING
         shopEditTicker.setTextDescription(message)
+        shopEditTicker.setDescriptionClickEvent(object: TickerCallback {
+            override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                clickReadMore()
+            }
+            override fun onDismiss() {}
+        })
     }
 
     private fun showDomainNotAllowedTicker(data: AllowShopNameDomainChangesData) {
