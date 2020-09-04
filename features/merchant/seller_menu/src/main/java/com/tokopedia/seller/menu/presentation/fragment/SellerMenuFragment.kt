@@ -51,7 +51,6 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     companion object {
         private const val GO_TO_REPUTATION_HISTORY = "GO_TO_REPUTATION_HISTORY"
         private const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
-        private const val TOPADS_BOTTOMSHEET_TAG = "topads_bottomsheet"
     }
 
     @Inject
