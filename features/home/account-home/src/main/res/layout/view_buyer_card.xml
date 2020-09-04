@@ -361,14 +361,14 @@
             android:id="@+id/sellerAccountCard"
             layout="@layout/layout_seller_account_card"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/account_home_seller_account_height"
             android:visibility="gone" />
 
         <include
             android:id="@+id/sellerOpenShopCard"
             layout="@layout/layout_seller_open_shop_card"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/account_home_seller_account_height"
             android:visibility="gone" />
     </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
