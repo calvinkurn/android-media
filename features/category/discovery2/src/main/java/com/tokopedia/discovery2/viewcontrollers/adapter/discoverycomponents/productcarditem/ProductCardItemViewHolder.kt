@@ -11,6 +11,7 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
@@ -57,8 +58,8 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     private var textViewReviewCount: TextView = itemView.findViewById(R.id.textViewReviewCount)
     private var statusLabel: Label = itemView.findViewById(R.id.statusLabel)
     private var priceLabel: Label = itemView.findViewById(R.id.cashback_labelPromo)
+    private var outOfStockOverlay: View = itemView.findViewById(R.id.outOfStockOverlay)
     private var componentPosition: Int? = null
-
     private lateinit var productCardItemViewModel: ProductCardItemViewModel
     private var productCardName = ""
     private var context: Context? = fragment.activity
@@ -165,15 +166,19 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     }
 
     private fun showOutOfStockLabel(productStock: String?, saleStockValidation : Int = 0) {
-        when {
-            productStock.isNullOrEmpty() -> {
-                statusLabel.hide()
-            }
-            productStock.toIntOrNull() == saleStockValidation -> {
-                statusLabel.show()
+        when(saleStockValidation) {
+            productStock?.toIntOrNull()-> {
+                statusLabel.apply {
+                    unlockFeature = true
+                    val colorHexString = "#${Integer.toHexString(ContextCompat.getColor(context, R.color.clr_AD31353B))}"
+                    statusLabel.setLabelType(colorHexString)
+                    show()
+                }
+                outOfStockOverlay.show()
             }
             else -> {
                 statusLabel.hide()
+                outOfStockOverlay.hide()
             }
         }
     }

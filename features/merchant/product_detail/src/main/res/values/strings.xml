@@ -323,7 +323,5 @@
     <string name="content_desc_btn_buy_now">button beli</string>
     <string name="content_desc_btn_add_to_cart">button tambah keranjang</string>
     <string name="content_desc_img_pdp_video">image product</string>
-    <string name="content_desc_txtChipVariant">text varian</string>
-    <string name="content_desc_promoChipVariant">text varian promo</string>
 
 </resources>
