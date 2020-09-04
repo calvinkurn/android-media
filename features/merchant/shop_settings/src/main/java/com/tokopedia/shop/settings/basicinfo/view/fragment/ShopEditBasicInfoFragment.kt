@@ -401,8 +401,6 @@ class ShopEditBasicInfoFragment: Fragment() {
             isDomainAllowed && !isNameAllowed -> showNameNotAllowedTicker(data)
             else -> showNameAndDomainNotAllowedTicker()
         }
-
-        shopEditTicker.show()
     }
 
     private fun showShopNameDomainTextField(data: AllowShopNameDomainChangesData) {
@@ -420,37 +418,41 @@ class ShopEditBasicInfoFragment: Fragment() {
         val description = getString(R.string.ticker_warning_can_only_change_shopname_once)
         val readMore = getString(R.string.ticker_warning_read_more)
         val color = ContextCompat.getColor(requireContext(), R.color.merchant_green)
-        val message = getTextWithSpannable(color, description, readMore)
-        shopEditTicker.apply {
-            tickerType = Ticker.TYPE_WARNING
-            setTextDescription(message)
-            setDescriptionClickEvent(object : TickerCallback {
-                override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    clickReadMore()
-                }
-                override fun onDismiss() {}
-            })
-        }
+        val message = getTextWithSpannable(color, description, readMore).toString()
+        showShopTicker(message, Ticker.TYPE_WARNING)
     }
 
     private fun showDomainNotAllowedTicker(data: AllowShopNameDomainChangesData) {
         val message = data.reasonDomainNotAllowed
-        showInfoTicker(message)
+        showShopTicker(message, Ticker.TYPE_INFORMATION)
     }
 
     private fun showNameNotAllowedTicker(data: AllowShopNameDomainChangesData) {
         val message = data.reasonNameNotAllowed
-        showInfoTicker(message)
+        showShopTicker(message, Ticker.TYPE_INFORMATION)
     }
 
     private fun showNameAndDomainNotAllowedTicker() {
         val message = getString(R.string.shop_edit_change_name_and_domain_not_allowed)
-        showInfoTicker(message)
+        showShopTicker(message, Ticker.TYPE_INFORMATION)
     }
 
-    private fun showInfoTicker(message: String) {
-        shopEditTicker.tickerType = Ticker.TYPE_INFORMATION
+    private fun showShopTicker(message: String, type: Int) {
+        shopEditTicker.tickerType = type
         shopEditTicker.setTextDescription(message)
+        if (type == Ticker.TYPE_WARNING) {
+            shopEditTicker?.run {
+                tickerType = type
+                setTextDescription(message)
+                setDescriptionClickEvent(object : TickerCallback {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        clickReadMore()
+                    }
+                    override fun onDismiss() {}
+                })
+            }
+        }
+        shopEditTicker.show()
     }
 
     private fun initInjector() {
