@@ -2,6 +2,7 @@ package com.tokopedia.seller.menu.common.di.module
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.seller.menu.common.analytics.SettingFreeShippingTracker
 import com.tokopedia.seller.menu.common.di.scope.SellerMenuCommonScope
 import com.tokopedia.track.TrackApp
@@ -22,5 +23,12 @@ class SellerMenuCommonModule {
     fun provideFreeShippingTracker(userSession: UserSessionInterface): SettingFreeShippingTracker {
         val analytics = TrackApp.getInstance().gtm
         return SettingFreeShippingTracker(analytics, userSession)
+    }
+
+    @SellerMenuCommonScope
+    @Provides
+    fun provideSellerMenuTracker(userSession: UserSessionInterface): SellerMenuTracker {
+        val analytics = TrackApp.getInstance().gtm
+        return SellerMenuTracker(analytics, userSession)
     }
 }

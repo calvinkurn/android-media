@@ -4,6 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
 import com.tokopedia.seller.menu.common.view.uimodel.*
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopInfoErrorUiModel
@@ -16,6 +17,7 @@ class OtherMenuAdapterTypeFactory(
     private val trackingListener: SettingTrackingListener,
     private val shopInfoListener: ShopInfoViewHolder.ShopInfoListener? = null,
     private val shopInfoErrorListener: ShopInfoErrorViewHolder.ShopInfoErrorListener? = null,
+    private val sellerMenuTracker: SellerMenuTracker? = null,
     private val userSession: UserSessionInterface? = null
 ) : BaseAdapterTypeFactory(), OtherMenuTypeFactory {
 
@@ -34,7 +36,7 @@ class OtherMenuAdapterTypeFactory(
             ShopInfoLoadingViewHolder.LAYOUT -> ShopInfoLoadingViewHolder(parent)
             ShopInfoErrorViewHolder.LAYOUT -> ShopInfoErrorViewHolder(parent, shopInfoErrorListener)
             ShopOrderViewHolder.LAYOUT -> ShopOrderViewHolder(parent)
-            SellerMenuTitleViewHolder.LAYOUT -> SellerMenuTitleViewHolder(parent)
+            SellerMenuTitleViewHolder.LAYOUT -> SellerMenuTitleViewHolder(parent, sellerMenuTracker)
             ShopProductViewHolder.LAYOUT -> ShopProductViewHolder(parent)
             SellerFeatureViewHolder.LAYOUT -> SellerFeatureViewHolder(parent)
             else -> super.createViewHolder(parent, type)
