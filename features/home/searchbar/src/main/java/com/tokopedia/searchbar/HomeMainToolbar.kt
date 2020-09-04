@@ -297,6 +297,18 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
         }
     }
 
+    fun startHintAnimation() {
+        if (::animationJob.isInitialized) {
+            animationJob.start()
+        }
+    }
+
+    fun stopHintAnimation() {
+        if (::animationJob.isInitialized) {
+            animationJob.cancel()
+        }
+    }
+
     private fun setHintSingle(hint: HintData, isFirstInstall: Boolean) {
         editTextSearch.hint = if (hint.placeholder.isEmpty()) context.getString(R.string.search_tokopedia) else hint.placeholder
         editTextSearch.setOnClickListener {

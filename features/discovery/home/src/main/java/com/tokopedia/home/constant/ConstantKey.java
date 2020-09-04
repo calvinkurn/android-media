@@ -44,6 +44,6 @@ public class ConstantKey {
 
     public class ABtestValue {
         public static final String VALUE_NEW_REVIEW_FLOW = "New Review Flow";
-        public static final String AUTO_TRANSITION_VARIANT = "default";
+        public static final String AUTO_TRANSITION_VARIANT = "auto_transition";
     }
 }

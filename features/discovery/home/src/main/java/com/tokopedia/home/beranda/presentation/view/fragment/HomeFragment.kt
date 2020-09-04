@@ -614,6 +614,7 @@ open class HomeFragment : BaseDaggerFragment(),
             setAutoRefreshOnHome(autoRefreshFlag)
         }
         shouldPausePlay = true
+        homeMainToolbar?.startHintAnimation()
     }
 
     private fun conditionalViewModelRefresh(){
@@ -650,6 +651,7 @@ open class HomeFragment : BaseDaggerFragment(),
         if (isEnableToAutoRefresh(autoRefreshFlag)) {
             stopAutoRefreshJob(autoRefreshHandler, autoRefreshRunnable)
         }
+        homeMainToolbar?.stopHintAnimation()
     }
 
     override fun onDestroy() {
