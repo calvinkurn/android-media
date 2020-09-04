@@ -5,10 +5,16 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.product.manage.common.list.domain.usecase.GetProductListMetaUseCase
 import com.tokopedia.seller.menu.common.domain.usecase.GetAllShopInfoUseCase
+import com.tokopedia.seller.menu.common.view.uimodel.ShopProductUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.SettingShopInfoUiModel
 import com.tokopedia.seller.menu.coroutine.CoroutineDispatchers
+import com.tokopedia.seller.menu.domain.usecase.GetSellerNotificationUseCase
+import com.tokopedia.seller.menu.presentation.uimodel.NotificationUiModel
+import com.tokopedia.seller.menu.presentation.util.SellerUiModelMapper.mapToNotificationUiModel
+import com.tokopedia.seller.menu.presentation.util.SellerUiModelMapper.mapToProductUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -20,6 +26,8 @@ import javax.inject.Inject
 
 class SellerMenuViewModel @Inject constructor(
     private val getAllShopInfoUseCase: GetAllShopInfoUseCase,
+    private val getProductListMetaUseCase: GetProductListMetaUseCase,
+    private val getSellerMenuNotifications: GetSellerNotificationUseCase,
     private val userSession: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
@@ -29,14 +37,22 @@ class SellerMenuViewModel @Inject constructor(
         private const val ERROR_EXCEPTION_MESSAGE = "seller menu shop info and topads failed"
     }
 
-    private val _settingShopInfoLiveData = MutableLiveData<Result<SettingShopInfoUiModel>>()
-    private val _isToasterAlreadyShown = MutableLiveData(false)
-
     val settingShopInfoLiveData: LiveData<Result<SettingShopInfoUiModel>>
         get() = _settingShopInfoLiveData
 
+    val shopProductLiveData: LiveData<Result<ShopProductUiModel>>
+        get() = _shopProductLiveData
+
+    val sellerMenuNotification: LiveData<Result<NotificationUiModel>>
+        get() = _sellerMenuNotification
+
     val isToasterAlreadyShown: LiveData<Boolean>
         get() = _isToasterAlreadyShown
+
+    private val _settingShopInfoLiveData = MutableLiveData<Result<SettingShopInfoUiModel>>()
+    private val _shopProductLiveData = MutableLiveData<Result<ShopProductUiModel>>()
+    private val _sellerMenuNotification = MutableLiveData<Result<NotificationUiModel>>()
+    private val _isToasterAlreadyShown = MutableLiveData(false)
 
     fun getAllSettingShopInfo(isToasterRetry: Boolean = false) {
         if (isToasterRetry) {
@@ -45,6 +61,35 @@ class SellerMenuViewModel @Inject constructor(
             }
         }
         getAllShopInfoData()
+    }
+
+    fun getProductCount() {
+        launchCatchError(block = {
+            val response = withContext(dispatchers.io) {
+                getProductListMetaUseCase.setParams(userSession.shopId)
+                getProductListMetaUseCase.executeOnBackground()
+                    .productListMetaWrapper
+                    .productListMetaData
+                    .tabs
+            }
+
+            _shopProductLiveData.value = Success(mapToProductUiModel(response))
+        }, onError = {
+            _shopProductLiveData.value = Fail(it)
+        })
+    }
+
+    fun getNotifications() {
+        launchCatchError(block = {
+            val data = withContext(dispatchers.io) {
+                val response = getSellerMenuNotifications.executeOnBackground()
+                mapToNotificationUiModel(response)
+            }
+
+            _sellerMenuNotification.value = Success(data)
+        }, onError = {
+            _sellerMenuNotification.value = Fail(it)
+        })
     }
 
     private fun getAllShopInfoData() {

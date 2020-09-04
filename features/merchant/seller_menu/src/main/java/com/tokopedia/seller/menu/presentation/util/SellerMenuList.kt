@@ -32,10 +32,10 @@ object SellerMenuList {
 
         menuList.add(ShopInfoLoadingUiModel)
         menuList.add(OrderSectionTitleUiModel)
-        menuList.add(ShopOrderUiModel(2, 3))
+        menuList.add(ShopOrderUiModel())
         menuList.add(DividerUiModel(DividerType.THIN_PARTIAL))
         menuList.add(ProductSectionTitleUiModel)
-        menuList.add(ShopProductUiModel(5))
+        menuList.add(ShopProductUiModel())
         menuList.add(DividerUiModel(DividerType.THIN_PARTIAL))
         menuList.addAll(buyerInfoMenu)
         menuList.addAll(helpAndOtherMenu)

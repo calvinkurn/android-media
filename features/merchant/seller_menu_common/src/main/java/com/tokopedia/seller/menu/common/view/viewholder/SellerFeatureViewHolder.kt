@@ -23,7 +23,7 @@ class SellerFeatureViewHolder(itemView: View): AbstractViewHolder<SellerFeatureU
     override fun bind(feature: SellerFeatureUiModel) {
         itemView.cardStatistics.setOnClickListener {
             goToSellerMigrationPage(
-                SellerMigrationFeatureName.FEATURE_REVIEW_TEMPLATE_AND_STATISTICS,
+                SellerMigrationFeatureName.FEATURE_SHOP_INSIGHT,
                 arrayListOf(ApplinkConstInternalMarketplace.GOLD_MERCHANT_STATISTIC_DASHBOARD)
             )
         }
