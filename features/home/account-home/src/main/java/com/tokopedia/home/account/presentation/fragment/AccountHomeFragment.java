@@ -153,6 +153,14 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
         tabLayout = view.findViewById(R.id.tab_home_account);
         viewPager = view.findViewById(R.id.pager_home_account);
         setAdapter();
+        showBuyerPage();
+    }
+
+    private void showBuyerPage() {
+        getChildFragmentManager()
+            .beginTransaction()
+            .add(R.id.container, BuyerAccountFragment.Companion.newInstance())
+            .commit();
     }
 
     private void setToolbar(View view) {
