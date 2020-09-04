@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -27,14 +28,13 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.inbox_reputation.R;
-import com.tokopedia.review.feature.reputationhistory.view.fragment.SellerReputationFragment;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.review.common.util.ReviewConstants;
 import com.tokopedia.review.feature.inbox.common.presentation.activity.ReviewInboxActivity;
 import com.tokopedia.review.feature.inboxreview.presentation.fragment.InboxReviewFragment;
+import com.tokopedia.review.feature.reputationhistory.view.fragment.SellerReputationFragment;
 import com.tokopedia.review.feature.reviewlist.view.fragment.RatingProductFragment;
-import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTrackingConstant;
 import com.tokopedia.tkpd.tkpdreputation.constant.Constant;
@@ -315,12 +315,20 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
         tickerTitle = title;
     }
 
+    @Nullable
     private RemoteConfig getABTestRemoteConfig() {
-        return RemoteConfigInstance.getInstance().getABTestPlatform();
+        try {
+            return RemoteConfigInstance.getInstance().getABTestPlatform();
+        } catch (IllegalStateException exception) {
+            return null;
+        }
     }
 
     private Boolean useNewPage() {
-        String remoteConfigValue = getABTestRemoteConfig().getString(ReviewConstants.AB_TEST_KEY);
-        return remoteConfigValue.equals(ReviewConstants.NEW_REVIEW_FLOW);
+        if (getABTestRemoteConfig() != null) {
+            String remoteConfigValue = getABTestRemoteConfig().getString(ReviewConstants.AB_TEST_KEY);
+            return remoteConfigValue.equals(ReviewConstants.NEW_REVIEW_FLOW);
+        }
+        return false;
     }
 }
