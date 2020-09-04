@@ -141,7 +141,7 @@ public class BranchHelper {
     }
 
     public static void sendAddToCartEvent(Context context, LinkerData linkerData){
-        new BranchEvent(BRANCH_STANDARD_EVENT.ADD_TO_CART)
+        BranchEvent branchEvent = new BranchEvent(BRANCH_STANDARD_EVENT.ADD_TO_CART)
                 .addCustomDataProperty(LinkerConstants.PRODUCT_ID, linkerData.getId())
                 .addCustomDataProperty(LinkerConstants.PRICE, linkerData.getPrice())
                 .addCustomDataProperty(LinkerConstants.CATEGORY_LEVEL_1, linkerData.getCatLvl1())

@@ -139,7 +139,7 @@ class GtmLogger private constructor(private val context: Context) : AnalyticsLog
                 override val isNotificationEnabled: Boolean
                     get() = false
 
-                override fun save(name: String, data: Map<String, Any>,@AnalyticsSource source:String) {
+                override fun save(name: String, data: Map<String, Any>, @AnalyticsSource source:String) {
 
                 }
 
