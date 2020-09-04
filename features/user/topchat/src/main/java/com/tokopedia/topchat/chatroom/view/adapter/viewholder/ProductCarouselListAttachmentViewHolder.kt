@@ -52,16 +52,29 @@ class ProductCarouselListAttachmentViewHolder constructor(
 
     override fun bind(carousel: ProductCarouselUiModel, payloads: MutableList<Any>) {
         if (payloads.isEmpty()) return
-        when (payloads[0]) {
-            DeferredAttachment.PAYLOAD_DEFERRED -> bindDeferredAttachment(carousel)
+        when (val payload = payloads[0]) {
+            DeferredAttachment.PAYLOAD_DEFERRED -> bind(carousel)
+            is TopchatProductAttachmentViewHolder.OccState -> bindNewOccState(payload)
         }
     }
 
+    override fun bind(carousel: ProductCarouselUiModel) {
+        super.bind(carousel)
+        bindDeferredAttachment(carousel)
+        bindProductCarousel(carousel)
+        bindScrollState()
+    }
+
+    private fun bindNewOccState(payload: TopchatProductAttachmentViewHolder.OccState) {
+        adapter.notifyItemChanged(payload.childPosition, payload)
+    }
+
     private fun bindDeferredAttachment(carousel: ProductCarouselUiModel) {
+        if (!carousel.isLoading()) return
         val attachments = deferredAttachment.getLoadedChatAttachments()
         for (product in carousel.products) {
             if (product is ProductAttachmentViewModel) {
-                val attachment = attachments[product.id] ?: continue
+                val attachment = attachments[product.id] ?: return
                 if (attachment is ErrorAttachment) {
                     product.syncError()
                 } else {
@@ -69,13 +82,11 @@ class ProductCarouselListAttachmentViewHolder constructor(
                 }
             }
         }
-        bind(carousel)
-    }
-
-    override fun bind(carousel: ProductCarouselUiModel) {
-        super.bind(carousel)
-        bindProductCarousel(carousel)
-        bindScrollState()
+        if (carousel.isBroadCast()) {
+            carousel.products = carousel.products.sortedBy {
+                return@sortedBy (it as ProductAttachmentViewModel).hasEmptyStock()
+            }
+        }
     }
 
     private fun bindProductCarousel(carousel: ProductCarouselUiModel) {

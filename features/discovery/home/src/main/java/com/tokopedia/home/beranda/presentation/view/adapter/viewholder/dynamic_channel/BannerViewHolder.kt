@@ -23,7 +23,7 @@ import com.tokopedia.unifycomponents.PageControl
  * @author by errysuprayogi on 11/28/17.
  */
 
-class BannerViewHolder(itemView: View, private val listener: HomeCategoryListener)
+class BannerViewHolder(itemView: View, private val listener: HomeCategoryListener?)
     : AbstractViewHolder<HomepageBannerDataModel>(itemView),
         CircularListener {
     private var slidesList: List<BannerSlidesModel>? = null
@@ -104,26 +104,26 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
     override fun onClick(position: Int) {
         slidesList?.let {
             if(it.size > position) {
-                listener.onPromoClick(position, it[position])
+                listener?.onPromoClick(position, it[position])
             }
         }
     }
 
     private fun onPromoScrolled(position: Int) {
-        if (listener.isMainViewVisible) {
+        if (listener?.isMainViewVisible?:false) {
             slidesList?.let {
-                listener.onPromoScrolled(it[position])
+                listener?.onPromoScrolled(it[position])
                 it[position].invoke()
             }
         }
     }
 
     private fun onPageDragStateChanged(isDrag: Boolean) {
-        listener.onPageDragStateChanged(isDrag)
+        listener?.onPageDragStateChanged(isDrag)
     }
 
     private fun onPromoAllClick() {
-        listener.onPromoAllClick()
+        listener?.onPromoAllClick()
     }
 
     fun onResume(){

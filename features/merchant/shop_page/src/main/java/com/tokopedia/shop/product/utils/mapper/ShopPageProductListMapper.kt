@@ -71,6 +71,7 @@ object ShopPageProductListMapper {
                     it.labelGroupList = labelGroupList.map { labelGroup -> mapToLabelGroupViewModel(labelGroup) }
                     it.etalaseType = etalaseType
                     if(it.etalaseType == ETALASE_CAMPAIGN) {
+                        it.isUpcoming  = campaign.isUpcoming
                         if (!campaign.isUpcoming) {
                             val viewCount = stats.viewCount
                             if (viewCount >= THRESHOLD_VIEW_COUNT)
