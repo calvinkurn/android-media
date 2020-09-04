@@ -6,4 +6,5 @@ object ReviewInboxConstants {
     const val NO_SHADOW_ELEVATION = 0F
     const val REVIEW_INBOX_NO_PRODUCTS_BOUGHT_IMAGE = "https://ecs7.tokopedia.net/android/others/review_inbox_no_products.png"
     const val REVIEW_INBOX_NO_PRODUCTS_SEARCH_IMAGE = "https://ecs7.tokopedia.net/android/others/review_inbox_search_empty.png"
+    const val CREATE_REVIEW_ERROR_MESSAGE = "create_review_error"
 }

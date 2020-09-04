@@ -17,8 +17,4 @@
     <dimen name="max_width_incentive_ovo_subtitle">300dp</dimen>
     <dimen name="margin_top_incentive_ovo_description">30dp</dimen>
     <dimen name="size_incentive_ovo_image">200dp</dimen>
-    <dimen name="toolbar_font_size">7sp</dimen>
-    <dimen name="chips_font_size">7sp</dimen>
-    <dimen name="chips_padding_size">3dp</dimen>
-    <dimen name="banner_margin">-42dp</dimen>
 </resources>

@@ -173,6 +173,7 @@
     <!--Talk-->
     <string name="title_reading_page">Diskusi</string>
     <string name="title_reply_page">Balas Pertanyaan</string>
+    <string name="title_write_page">Kirim Pertanyaan</string>
 
     <!-- Dynamic feature Product Add Edit -->
     <string name="action_pick_photo">Pilih Foto</string>

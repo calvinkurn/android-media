@@ -5,10 +5,12 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sellerhome.common.viewmodel.NonNullLiveData
 import com.tokopedia.sellerhome.settings.domain.usecase.GetAllShopInfoUseCase
+import com.tokopedia.sellerhome.settings.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType
 import com.tokopedia.sellerhome.settings.view.uimodel.shopinfo.SettingShopInfoUiModel
 import com.tokopedia.shop.common.domain.interactor.GetShopFreeShippingInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GetShopFreeShippingStatusUseCase
@@ -16,11 +18,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import javax.inject.Inject
 import javax.inject.Named
 class OtherMenuViewModel @Inject constructor(
@@ -33,6 +31,8 @@ class OtherMenuViewModel @Inject constructor(
 
     companion object {
         private const val DELAY_TIME = 5000L
+
+        private const val CUSTOM_ERROR_EXCEPTION_MESSAGE = "both shop info and topads response are failed"
     }
 
     private val _settingShopInfoLiveData = MutableLiveData<Result<SettingShopInfoUiModel>>()
@@ -81,7 +81,17 @@ class OtherMenuViewModel @Inject constructor(
 
     private fun getAllShopInfoData() {
         launchCatchError(block = {
-            _settingShopInfoLiveData.value = Success(getAllShopInfoUseCase.executeOnBackground())
+            _settingShopInfoLiveData.value = Success(
+                    withContext(Dispatchers.IO) {
+                        with(getAllShopInfoUseCase.executeOnBackground()) {
+                            if (first is PartialSettingSuccessInfoType || second is PartialSettingSuccessInfoType) {
+                                SettingShopInfoUiModel(first, second, userSession)
+                            } else {
+                                throw MessageErrorException(CUSTOM_ERROR_EXCEPTION_MESSAGE)
+                            }
+                        }
+                    }
+            )
         }, onError = {
             _settingShopInfoLiveData.value = Fail(it)
         })

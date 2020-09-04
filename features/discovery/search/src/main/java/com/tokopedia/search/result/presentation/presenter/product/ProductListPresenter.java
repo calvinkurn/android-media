@@ -1441,7 +1441,8 @@ final class ProductListPresenter
                 item.getTopadsImpressionUrl(),
                 item.getProductID(),
                 item.getProductName(),
-                item.getImageUrl()
+                item.getImageUrl(),
+                SearchConstant.TopAdsComponent.TOP_ADS
         );
 
         getView().sendTopAdsGTMTrackingProductImpression(item);
@@ -1454,7 +1455,8 @@ final class ProductListPresenter
                     item.getTopadsImpressionUrl(),
                     item.getProductID(),
                     item.getProductName(),
-                    item.getImageUrl()
+                    item.getImageUrl(),
+                    SearchConstant.TopAdsComponent.ORGANIC_ADS
             );
 
         getView().sendProductImpressionTrackingEvent(item);
@@ -1478,7 +1480,8 @@ final class ProductListPresenter
                 item.getTopadsClickUrl(),
                 item.getProductID(),
                 item.getProductName(),
-                item.getImageUrl()
+                item.getImageUrl(),
+                SearchConstant.TopAdsComponent.TOP_ADS
         );
 
         getView().sendTopAdsGTMTrackingProductClick(item);
@@ -1491,7 +1494,8 @@ final class ProductListPresenter
                     item.getTopadsClickUrl(),
                     item.getProductID(),
                     item.getProductName(),
-                    item.getImageUrl()
+                    item.getImageUrl(),
+                    SearchConstant.TopAdsComponent.ORGANIC_ADS
             );
 
         getView().sendGTMTrackingProductClick(item, getUserId());
