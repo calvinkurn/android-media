@@ -8,7 +8,7 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iconImage"
-        android:contentDescription="@string/content_desc_iconImage"
+        android:contentDescription="@string/content_desc_dl_iconImage"
         android:layout_width="@dimen/dp_32"
         android:layout_height="@dimen/dp_32"
         android:layout_marginStart="@dimen/dp_16"
