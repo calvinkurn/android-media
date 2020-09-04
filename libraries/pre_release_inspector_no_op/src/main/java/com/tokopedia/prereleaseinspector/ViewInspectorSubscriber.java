@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.os.Bundle;
 
-class ViewInspectorSubscriber implements Application.ActivityLifecycleCallbacks {
+public class ViewInspectorSubscriber implements Application.ActivityLifecycleCallbacks {
 
     @Override
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
