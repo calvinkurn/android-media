@@ -18,7 +18,8 @@ import kotlin.math.abs
  * Created by jegul on 02/09/20
  */
 class PortraitChatListHeightManager(
-        container: ViewGroup
+        container: ViewGroup,
+        private val chatListHeightMap: MutableMap<ChatHeightMapKey, Float>
 ) : ChatListHeightManager {
 
     private val pinnedView: View = container.findViewById(R.id.view_pinned)
@@ -29,8 +30,6 @@ class PortraitChatListHeightManager(
 
     private val videoChatMargin = container.resources.getDimensionPixelOffset(R.dimen.play_landscape_video_chat_margin)
     private val maxVerticalChatHeight = container.resources.getDimension(R.dimen.play_chat_vertical_max_height)
-
-    private val chatListHeightMap = mutableMapOf<ChatHeightMapKey, Float>()
 
     override suspend fun invalidateHeightNonChatMode(
             videoOrientation: VideoOrientation,
@@ -112,9 +111,4 @@ class PortraitChatListHeightManager(
     }
 
     private fun getKey(videoOrientation: VideoOrientation, isChatMode: Boolean) = ChatHeightMapKey(videoOrientation, isChatMode)
-
-    data class ChatHeightMapKey(
-            val videoOrientation: VideoOrientation,
-            val isChatMode: Boolean
-    )
 }

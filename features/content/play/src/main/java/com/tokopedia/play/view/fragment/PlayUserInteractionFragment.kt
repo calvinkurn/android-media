@@ -30,18 +30,19 @@ import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.DistinctEventObserver
 import com.tokopedia.play.util.event.EventObserver
-import com.tokopedia.play.view.measurement.ScreenOrientationDataSource
-import com.tokopedia.play.view.measurement.bounds.provider.videobounds.PlayVideoBoundsProvider
-import com.tokopedia.play.view.measurement.bounds.provider.videobounds.VideoBoundsProvider
-import com.tokopedia.play.view.measurement.layout.DynamicLayoutManager
-import com.tokopedia.play.view.measurement.layout.PlayDynamicLayoutManager
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.view.bottomsheet.PlayMoreActionBottomSheet
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayNavigation
 import com.tokopedia.play.view.contract.PlayOrientationListener
+import com.tokopedia.play.view.measurement.ScreenOrientationDataSource
+import com.tokopedia.play.view.measurement.bounds.manager.chatlistheight.ChatHeightMapKey
 import com.tokopedia.play.view.measurement.bounds.manager.chatlistheight.ChatListHeightManager
 import com.tokopedia.play.view.measurement.bounds.manager.chatlistheight.PlayChatListHeightManager
+import com.tokopedia.play.view.measurement.bounds.provider.videobounds.PlayVideoBoundsProvider
+import com.tokopedia.play.view.measurement.bounds.provider.videobounds.VideoBoundsProvider
+import com.tokopedia.play.view.measurement.layout.DynamicLayoutManager
+import com.tokopedia.play.view.measurement.layout.PlayDynamicLayoutManager
 import com.tokopedia.play.view.measurement.scaling.PlayVideoScalingManager
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
@@ -145,6 +146,8 @@ class PlayUserInteractionFragment @Inject constructor(
     private var videoBoundsProvider: VideoBoundsProvider? = null
     private var dynamicLayoutManager: DynamicLayoutManager? = null
     private var chatListHeightManager: ChatListHeightManager? = null
+
+    private val chatListHeightMap = mutableMapOf<ChatHeightMapKey, Float>()
 
     private var mMaxTopChatMode: Int? = null
 
@@ -907,7 +910,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun getChatListHeightManager(): ChatListHeightManager = synchronized(this) {
         if (chatListHeightManager == null) {
-            chatListHeightManager = PlayChatListHeightManager(requireView() as ViewGroup, screenOrientationDataSource)
+            chatListHeightManager = PlayChatListHeightManager(requireView() as ViewGroup, screenOrientationDataSource, chatListHeightMap)
         }
         return chatListHeightManager!!
     }
