@@ -64,5 +64,8 @@ data class BarChartValueModel(
         val value: Int = 0,
         @Expose
         @SerializedName("valueFmt")
-        val valueFmt: String = ""
+        val valueFmt: String = "",
+        @Expose
+        @SerializedName("color")
+        val hexColor: String = ""
 )
