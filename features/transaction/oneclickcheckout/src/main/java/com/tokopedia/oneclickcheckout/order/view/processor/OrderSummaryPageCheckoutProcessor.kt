@@ -1,17 +1,24 @@
 package com.tokopedia.oneclickcheckout.order.view.processor
 
+import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.STATUS_OK
+import com.tokopedia.oneclickcheckout.common.dispatchers.ExecutorDispatchers
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
+import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
+import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryPageEnhanceECommerce
 import com.tokopedia.oneclickcheckout.order.data.checkout.*
 import com.tokopedia.oneclickcheckout.order.domain.CheckoutOccUseCase
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel
 import com.tokopedia.oneclickcheckout.order.view.bottomsheet.ErrorCheckoutBottomSheet
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
+import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class OrderSummaryPageCheckoutProcessor(private val checkoutOccUseCase: CheckoutOccUseCase,
-                                        private val orderSummaryAnalytics: OrderSummaryAnalytics) {
+class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkoutOccUseCase: CheckoutOccUseCase,
+                                                            private val orderSummaryAnalytics: OrderSummaryAnalytics,
+                                                            private val executorDispatchers: ExecutorDispatchers) {
 
     private fun generateShopPromos(finalPromo: ValidateUsePromoRevampUiModel?, orderCart: OrderCart): List<PromoRequest> {
         if (finalPromo != null) {
@@ -37,74 +44,81 @@ class OrderSummaryPageCheckoutProcessor(private val checkoutOccUseCase: Checkout
         return list
     }
 
-    private fun doCheckout(finalPromo: ValidateUsePromoRevampUiModel?,
+    suspend fun doCheckout(finalPromo: ValidateUsePromoRevampUiModel?,
                            orderCart: OrderCart,
                            product: OrderProduct,
                            shop: OrderShop,
                            pref: OrderPreference,
                            orderShipment: OrderShipment,
                            orderTotal: OrderTotal,
-                           onSuccessCheckout: (CheckoutOccResult) -> Unit) : Pair<String, Any> {
-        val shopPromos = generateShopPromos(finalPromo, orderCart)
-        val checkoutPromos = generateCheckoutPromos(finalPromo)
-        val allPromoCodes = checkoutPromos.map { it.code } + shopPromos.map { it.code }
-        val param = CheckoutOccRequest(Profile(pref.preference.profileId), ParamCart(data = listOf(ParamData(
-                pref.preference.address.addressId,
-                listOf(
-                        ShopProduct(
-                                shopId = shop.shopId,
-                                isPreorder = product.isPreorder,
-                                warehouseId = product.warehouseId,
-                                finsurance = if (orderShipment.isCheckInsurance) 1 else 0,
-                                productData = listOf(
-                                        ProductData(
-                                                product.productId,
-                                                product.quantity.orderQuantity,
-                                                product.notes
-                                        )
-                                ),
-                                shippingInfo = ShippingInfo(
-                                        orderShipment.getRealShipperId(),
-                                        orderShipment.getRealShipperProductId(),
-                                        orderShipment.getRealRatesId(),
-                                        orderShipment.getRealUt(),
-                                        orderShipment.getRealChecksum()
-                                ),
-                                promos = shopPromos
-                        )
-                )
-        )), promos = checkoutPromos, mode = if (orderTotal.isButtonChoosePayment) 1 else 0))
+                           orderSummaryPageEnhanceECommerce: OrderSummaryPageEnhanceECommerce): Pair<CheckoutOccResult?, OccGlobalEvent?> {
         OccIdlingResource.increment()
-        checkoutOccUseCase.execute(param, { checkoutOccData: CheckoutOccData ->
-            if (checkoutOccData.status.equals(STATUS_OK, true)) {
-                if (checkoutOccData.result.success == 1 || checkoutOccData.result.paymentParameter.redirectParam.url.isNotEmpty()) {
-                    onSuccessCheckout(checkoutOccData.result)
-//                    orderSummaryAnalytics.eventClickBayarSuccess(orderTotal.isButtonChoosePayment, getTransactionId(checkoutOccData.result.paymentParameter.redirectParam.form), generateOspEe(OrderSummaryPageEnhanceECommerce.STEP_2, OrderSummaryPageEnhanceECommerce.STEP_2_OPTION, allPromoCodes))
-                } else {
-                    val error = checkoutOccData.result.error
-                    val errorCode = error.code
-                    orderSummaryAnalytics.eventClickBayarNotSuccess(orderTotal.isButtonChoosePayment, errorCode)
-                    if (checkoutOccData.result.prompt.shouldShowPrompt()) {
-//                        globalEvent.value = OccGlobalEvent.Prompt(checkoutOccData.result.prompt)
-                    } else if (errorCode == ErrorCheckoutBottomSheet.ERROR_CODE_PRODUCT_STOCK_EMPTY || errorCode == ErrorCheckoutBottomSheet.ERROR_CODE_PRODUCT_ERROR || errorCode == ErrorCheckoutBottomSheet.ERROR_CODE_SHOP_CLOSED) {
-//                        globalEvent.value = OccGlobalEvent.CheckoutError(error)
-                    } else if (errorCode == OrderSummaryPageViewModel.ERROR_CODE_PRICE_CHANGE) {
-//                        globalEvent.value = OccGlobalEvent.PriceChangeError(PriceChangeMessage(OrderSummaryPageViewModel.PRICE_CHANGE_ERROR_MESSAGE, error.message, OrderSummaryPageViewModel.PRICE_CHANGE_ACTION_MESSAGE))
-                    } else if (error.message.isNotBlank()) {
-//                        globalEvent.value = OccGlobalEvent.TriggerRefresh(errorMessage = error.message)
+        val result = withContext(executorDispatchers.io) {
+            val shopPromos = generateShopPromos(finalPromo, orderCart)
+            val checkoutPromos = generateCheckoutPromos(finalPromo)
+            val allPromoCodes = checkoutPromos.map { it.code } + shopPromos.map { it.code }
+            val param = CheckoutOccRequest(Profile(pref.preference.profileId), ParamCart(data = listOf(ParamData(
+                    pref.preference.address.addressId,
+                    listOf(
+                            ShopProduct(
+                                    shopId = shop.shopId,
+                                    isPreorder = product.isPreorder,
+                                    warehouseId = product.warehouseId,
+                                    finsurance = if (orderShipment.isCheckInsurance) 1 else 0,
+                                    productData = listOf(
+                                            ProductData(
+                                                    product.productId,
+                                                    product.quantity.orderQuantity,
+                                                    product.notes
+                                            )
+                                    ),
+                                    shippingInfo = ShippingInfo(
+                                            orderShipment.getRealShipperId(),
+                                            orderShipment.getRealShipperProductId(),
+                                            orderShipment.getRealRatesId(),
+                                            orderShipment.getRealUt(),
+                                            orderShipment.getRealChecksum()
+                                    ),
+                                    promos = shopPromos
+                            )
+                    )
+            )), promos = checkoutPromos, mode = if (orderTotal.isButtonChoosePayment) 1 else 0))
+
+            try {
+                val checkoutOccData = checkoutOccUseCase.executeSuspend(param)
+                if (checkoutOccData.status.equals(STATUS_OK, true)) {
+                    if (checkoutOccData.result.success == 1 || checkoutOccData.result.paymentParameter.redirectParam.url.isNotEmpty()) {
+                        orderSummaryAnalytics.eventClickBayarSuccess(orderTotal.isButtonChoosePayment,
+                                getTransactionId(checkoutOccData.result.paymentParameter.redirectParam.form),
+                                orderSummaryPageEnhanceECommerce.apply { setPromoCode(allPromoCodes) }.build(OrderSummaryPageEnhanceECommerce.STEP_2, OrderSummaryPageEnhanceECommerce.STEP_2_OPTION)
+                        )
+                        checkoutOccData.result to null
                     } else {
-//                        globalEvent.value = OccGlobalEvent.TriggerRefresh(errorMessage = "Terjadi kesalahan dengan kode $errorCode")
+                        val error = checkoutOccData.result.error
+                        val errorCode = error.code
+                        orderSummaryAnalytics.eventClickBayarNotSuccess(orderTotal.isButtonChoosePayment, errorCode)
+                        if (checkoutOccData.result.prompt.shouldShowPrompt()) {
+                            null to OccGlobalEvent.Prompt(checkoutOccData.result.prompt)
+                        } else if (errorCode == ErrorCheckoutBottomSheet.ERROR_CODE_PRODUCT_STOCK_EMPTY || errorCode == ErrorCheckoutBottomSheet.ERROR_CODE_PRODUCT_ERROR || errorCode == ErrorCheckoutBottomSheet.ERROR_CODE_SHOP_CLOSED) {
+                            null to OccGlobalEvent.CheckoutError(error)
+                        } else if (errorCode == OrderSummaryPageViewModel.ERROR_CODE_PRICE_CHANGE) {
+                            null to OccGlobalEvent.PriceChangeError(PriceChangeMessage(OrderSummaryPageViewModel.PRICE_CHANGE_ERROR_MESSAGE, error.message, OrderSummaryPageViewModel.PRICE_CHANGE_ACTION_MESSAGE))
+                        } else if (error.message.isNotBlank()) {
+                            null to OccGlobalEvent.TriggerRefresh(errorMessage = error.message)
+                        } else {
+                            null to OccGlobalEvent.TriggerRefresh(errorMessage = "Terjadi kesalahan dengan kode $errorCode")
+                        }
                     }
+                } else {
+                    null to OccGlobalEvent.TriggerRefresh(errorMessage = checkoutOccData.headerMessage
+                            ?: DEFAULT_ERROR_MESSAGE)
                 }
-            } else {
-//                globalEvent.value = OccGlobalEvent.TriggerRefresh(errorMessage = checkoutOccData.headerMessage
-//                        ?: DEFAULT_ERROR_MESSAGE)
+            } catch (t: Throwable) {
+                null to OccGlobalEvent.Error(t)
             }
-            OccIdlingResource.decrement()
-        }, { throwable: Throwable ->
-//            globalEvent.value = OccGlobalEvent.Error(throwable)
-            OccIdlingResource.decrement()
-        })
+        }
+        OccIdlingResource.decrement()
+        return result
     }
 
     private fun getTransactionId(query: String): String {

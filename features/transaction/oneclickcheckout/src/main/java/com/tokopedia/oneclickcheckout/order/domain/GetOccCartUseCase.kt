@@ -32,49 +32,43 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
         }
     }
 
-    override suspend fun executeOnBackground(): OrderData {
+    suspend fun executeSuspend(params: RequestParams): OrderData {
         graphqlUseCase.setTypeClass(GetOccCartGqlResponse::class.java)
-        val graphqlRequest = GraphqlHelper.loadRawString(context.resources,
-                R.raw.mutation_get_occ)
+        val graphqlRequest = GraphqlHelper.loadRawString(context.resources, R.raw.mutation_get_occ)
         graphqlUseCase.setGraphqlQuery(graphqlRequest)
-        graphqlUseCase.setRequestParams(useCaseRequestParams.parameters)
+        graphqlUseCase.setRequestParams(params.parameters)
         val response = graphqlUseCase.executeOnBackground()
         if (response.response.status.equals(STATUS_OK, true)) {
-            if (response.response.data.errors.isNotEmpty()) {
-                throw MessageErrorException(response.response.data.errors[0])
-            } else if (response.response.data.cartList.isNotEmpty()) {
-                val cart = response.response.data.cartList[0]
-                val orderCart = OrderCart().apply {
-                    cartId = cart.cartId
-                    cartString = cart.cartString
-                    paymentProfile = cart.paymentProfile
-                    product = generateOrderProduct(cart.product).apply {
-                        quantity = mapQuantity(response.response.data)
-                        tickerMessage = mapProductTickerMessage(response.response.data.tickerMessage)
-                    }
-                    shop = generateOrderShop(cart.shop).apply {
-                        errors = cart.errors
-                    }
-                    kero = OrderKero(response.response.data.keroToken, response.response.data.keroDiscomToken, response.response.data.keroUnixTime)
+            val errorMessage = response.response.data.errors.firstOrNull()
+            val cart = response.response.data.cartList.firstOrNull()
+            if (!errorMessage.isNullOrEmpty() || cart == null) {
+                throw MessageErrorException(errorMessage ?: DEFAULT_ERROR_MESSAGE)
+            }
+            val orderCart = OrderCart().apply {
+                cartId = cart.cartId
+                cartString = cart.cartString
+                paymentProfile = cart.paymentProfile
+                product = generateOrderProduct(cart.product).apply {
+                    quantity = mapQuantity(response.response.data)
+                    tickerMessage = mapProductTickerMessage(response.response.data.tickerMessage)
                 }
-                return OrderData(mapTicker(response.response.data.tickers),
-                        response.response.data.occMainOnboarding,
-                        orderCart,
-                        response.response.data.profileIndex,
-                        response.response.data.profileRecommendation,
-                        mapProfile(response.response.data.profileResponse),
-                        LastApplyMapper.mapPromo(response.response.data.promo),
-                        mapOrderPayment(response.response.data),
-                        mapPrompt(response.response.data.prompt))
-            } else {
-                throw MessageErrorException(DEFAULT_ERROR_MESSAGE)
+                shop = generateOrderShop(cart.shop).apply {
+                    errors = cart.errors
+                }
+                kero = OrderKero(response.response.data.keroToken, response.response.data.keroDiscomToken, response.response.data.keroUnixTime)
             }
+            return OrderData(mapTicker(response.response.data.tickers),
+                    response.response.data.occMainOnboarding,
+                    orderCart,
+                    response.response.data.profileIndex,
+                    response.response.data.profileRecommendation,
+                    mapProfile(response.response.data.profileResponse),
+                    LastApplyMapper.mapPromo(response.response.data.promo),
+                    mapOrderPayment(response.response.data),
+                    mapPrompt(response.response.data.prompt))
         } else {
-            if (response.response.errorMessages.isNotEmpty()) {
-                throw MessageErrorException(response.response.errorMessages[0])
-            } else {
-                throw MessageErrorException(DEFAULT_ERROR_MESSAGE)
-            }
+            throw MessageErrorException(response.response.errorMessages.firstOrNull()
+                    ?: DEFAULT_ERROR_MESSAGE)
         }
     }
 
@@ -277,5 +271,10 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
 
     companion object {
         private const val PARAM_SOURCE = "source"
+    }
+
+    override suspend fun executeOnBackground(): OrderData {
+        // temporary
+        return OrderData()
     }
 }
