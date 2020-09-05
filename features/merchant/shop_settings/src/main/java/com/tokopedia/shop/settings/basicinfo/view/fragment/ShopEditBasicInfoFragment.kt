@@ -28,10 +28,7 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerEditorBuilder
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.observe
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.settings.R
@@ -102,6 +99,7 @@ class ShopEditBasicInfoFragment: Fragment() {
         setupDomainSuggestion()
         setupShopAvatar()
         setupSaveBtn()
+        setupShopTicker()
 
         observeLiveData()
         getAllowShopNameDomainChanges()
@@ -217,6 +215,19 @@ class ShopEditBasicInfoFragment: Fragment() {
             setText(shopBasicDataModel?.domain)
             addTextChangedListener(shopDomainTextWatcher)
             isEnabled = false
+        }
+    }
+
+    private fun setupShopTicker() {
+        shopEditTicker?.run {
+            setDescriptionClickEvent(object : TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    if (shopEditTicker.tickerType == Ticker.TYPE_WARNING) {
+                        clickReadMore()
+                    }
+                }
+                override fun onDismiss() {}
+            })
         }
     }
 
@@ -440,18 +451,6 @@ class ShopEditBasicInfoFragment: Fragment() {
     private fun showShopTicker(message: String, type: Int) {
         shopEditTicker.tickerType = type
         shopEditTicker.setTextDescription(message)
-        if (type == Ticker.TYPE_WARNING) {
-            shopEditTicker?.run {
-                tickerType = type
-                setTextDescription(message)
-                setDescriptionClickEvent(object : TickerCallback {
-                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        clickReadMore()
-                    }
-                    override fun onDismiss() {}
-                })
-            }
-        }
         shopEditTicker.show()
     }
 
