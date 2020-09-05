@@ -104,9 +104,8 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
 
-    implementation (rootProject.ext.serviceDependencies.crashlytics) {
-        transitive = true
-    }
+    implementation (rootProject.ext.firebase.crashlytics) {
+        transitive = true	        }
 }
 
 project.ext {

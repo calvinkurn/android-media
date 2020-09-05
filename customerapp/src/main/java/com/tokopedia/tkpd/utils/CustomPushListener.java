@@ -13,7 +13,7 @@ import com.moe.pushlibrary.utils.MoEHelperUtils;
 import com.moengage.core.ConfigurationProvider;
 import com.moengage.pushbase.push.PushMessageListener;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
-import com.tokopedia.tkpd.R;
+import com.tokopedia.intl.R;
 
 public class CustomPushListener extends PushMessageListener {
 

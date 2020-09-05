@@ -1,7 +1,7 @@
 package com.tokopedia.product.manage.item.common.util
 
 import android.text.TextUtils
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.network.data.model.response.ResponseV4ErrorException
 
 /**
@@ -21,7 +21,7 @@ object UploadProductErrorHandler {
     @JvmStatic
     fun logExceptionToCrashlytics(t: Throwable) {
         try {
-            Crashlytics.logException(t)
+            FirebaseCrashlytics.getInstance().recordException(t)
         } catch (e: IllegalStateException) {
             e.printStackTrace()
         }

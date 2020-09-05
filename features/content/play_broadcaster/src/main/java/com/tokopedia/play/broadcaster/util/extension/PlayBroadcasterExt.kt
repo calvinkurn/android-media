@@ -19,7 +19,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.dialog.DialogUnify
 
@@ -186,6 +186,9 @@ internal fun Dialog.updateNavigationBarColor(@ColorRes colorRes: Int, useDarkIco
 
 internal fun sendCrashlyticsLog(throwable: Throwable) {
     try {
-        Crashlytics.logException(throwable)
-    } catch (e: Exception) {}
+        FirebaseCrashlytics.getInstance().recordException(PlayBroadcasterException(message))
+    } catch (e: Exception) {
+    }
 }
+
+class PlayBroadcasterException(message: String) : Throwable(message)

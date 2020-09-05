@@ -33,6 +33,7 @@ object SettingConstant {
     const val SETTING_BANK_ACCOUNT_ID = 33
     const val SETTING_CREDIT_CARD_ID = 34
     const val SETTING_DEBIT_INSTANT = 35
+    const val SETTING_FEEDBACK_FORM = 37
     const val SETTING_DEV_OPTIONS = 0
     const val SETTING_APP_REVIEW_ID = 10
     const val SETTING_APP_ADVANCED_SETTING = 11

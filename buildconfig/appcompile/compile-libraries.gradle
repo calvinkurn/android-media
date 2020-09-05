@@ -72,3 +72,4 @@ include "libraries:mapviewer"
 include "libraries:tokopatch"
 include ':libraries:annotation_proc_central'
 include "libraries:screen_recorder"
+include "libraries:screenshot_observer"
