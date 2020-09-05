@@ -1097,7 +1097,12 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     override fun onKebabItemClick(index: Int, orderData: UohListOrder.Data.UohOrders.Order) {
         val dotMenu = orderData.metadata.dotMenus[index]
         if (dotMenu.actionType.equals(TYPE_ACTION_BUTTON_LINK, true)) {
-            RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, dotMenu.appURL))
+            val linkUrl = if (dotMenu.appURL.contains(UohConsts.WEBVIEW)) {
+                dotMenu.webURL
+            } else {
+                dotMenu.appURL
+            }
+            RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
         } else {
             when {
                 dotMenu.actionType.equals(GQL_FLIGHT_EMAIL, true) -> {

@@ -90,4 +90,5 @@ object UohConsts {
     const val APP_LINK_TYPE = "APP_LINK"
     const val WEB_LINK_TYPE = "WEB_LINK"
     const val APPLINK_RESO = "tokopedia-android-internal://global/webview?url=https://m.tokopedia.com/resolution-center/create/{order_id}/mobile"
+    const val WEBVIEW = "webview"
 }
