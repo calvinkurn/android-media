@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -323,12 +324,12 @@ class ShopEditBasicInfoFragment: Fragment(),
 
     private fun showSubmitLoading() {
         progressBar.show()
-        scrollViewContent.hide()
+        recyclerView.hide()
     }
 
     private fun hideSubmitLoading() {
         progressBar.hide()
-        scrollViewContent.show()
+        recyclerView.show()
     }
 
     private fun loadShopBasicData() {
@@ -467,5 +468,8 @@ class ShopEditBasicInfoFragment: Fragment(),
         listVisitable?.add(ShopEditTickerViewHolder.POSITION, shopEditTickerModel)
         listVisitable?.add(ShopEditMainInfoViewHolder.POSITION, shopEditMainInfoModel)
         shopEditBasicInfoAdapter?.setVisitables(listVisitable)
+        val linearLayoutManager = LinearLayoutManager(context)
+        recyclerView.layoutManager = linearLayoutManager
+        recyclerView.adapter = shopEditBasicInfoAdapter
     }
 }
