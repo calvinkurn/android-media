@@ -173,12 +173,17 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 when (filterStatus) {
                     PARAM_DALAM_PROSES -> {
                         status = DALAM_PROSES
+                        paramUohOrder.createTimeStart = ""
+                        paramUohOrder.createTimeEnd = ""
                     }
                     PARAM_E_TIKET -> {
                         status = E_TIKET
+                        paramUohOrder.createTimeStart = ""
+                        paramUohOrder.createTimeEnd = ""
                     }
                     PARAM_SEMUA_TRANSAKSI -> {
                         status = SEMUA_TRANSAKSI
+                        setDefaultDate()
                     }
                 }
                 paramUohOrder.status = status
@@ -212,15 +217,19 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
     private fun setInitialValue() {
         if (filterStatus.isEmpty()) {
-            defaultStartDate = getCalculatedFormattedDate("yyyy-MM-dd", -90)
-            defaultStartDateStr = getCalculatedFormattedDate("dd MMM yyyy", -90)
-            defaultEndDate = Date().toFormattedString("yyyy-MM-dd")
-            defaultEndDateStr = Date().toFormattedString("dd MMM yyyy")
-            paramUohOrder.createTimeStart = defaultStartDate
-            paramUohOrder.createTimeEnd = defaultEndDate
+            setDefaultDate()
         }
         paramUohOrder.page = 1
         arrayFilterDate = resources.getStringArray(R.array.filter_date)
+    }
+
+    private fun setDefaultDate() {
+        defaultStartDate = getCalculatedFormattedDate("yyyy-MM-dd", -90)
+        defaultStartDateStr = getCalculatedFormattedDate("dd MMM yyyy", -90)
+        defaultEndDate = Date().toFormattedString("yyyy-MM-dd")
+        defaultEndDateStr = Date().toFormattedString("dd MMM yyyy")
+        paramUohOrder.createTimeStart = defaultStartDate
+        paramUohOrder.createTimeEnd = defaultEndDate
     }
 
     private fun observingData() {
@@ -310,14 +319,6 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             when (it) {
                 is Success -> {
                     orderList = it.data
-
-                    /*if (currFilterKey.isEmpty() && currFilterType == -1) {
-                        if (orderList.filters.isNotEmpty() && orderList.categories.isNotEmpty()) {
-                            renderChipsFilter()
-                        }
-                    } else {
-                        renderChipsFilter()
-                    }*/
 
                     if (!isFilterClicked) renderChipsFilter()
 
@@ -513,7 +514,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private fun renderChipsFilter() {
         val chips = arrayListOf<SortFilterItem>()
 
-        val typeDate = if (isReset || filterStatus.isNotEmpty()) {
+        val typeDate = if (isReset || (paramUohOrder.createTimeStart.isEmpty() && paramUohOrder.createTimeEnd.isEmpty())) {
             ChipsUnify.TYPE_NORMAL
         } else {
             ChipsUnify.TYPE_SELECTED
@@ -1111,9 +1112,6 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 dotMenu.actionType.equals(GQL_TRAIN_EMAIL, true) -> {
                     showBottomSheetSendEmail(GQL_TRAIN_EMAIL, index)
                 }
-                dotMenu.actionType.equals(GQL_MP_REJECT, true) -> {
-                    goToBuyerCancellation()
-                }
                 dotMenu.actionType.equals(GQL_MP_CHAT, true) -> {
                     RouteManager.route(context, dotMenu.appURL)
                 }
@@ -1125,33 +1123,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         }
     }
 
-    private fun goToBuyerCancellation() {
-        /*val buyerReqCancelIntent = Intent(context, BuyerRequestCancelActivity::class.java).apply {
-            putExtra(BuyerConsts.PARAM_SHOP_NAME, shopInfo.getShopName())
-            putExtra(BuyerConsts.PARAM_INVOICE, invoiceNum)
-            putExtra(BuyerConsts.PARAM_LIST_PRODUCT, listProducts as Serializable?)
-            putExtra(BuyerConsts.PARAM_ORDER_ID, arguments!!.getString(MarketPlaceDetailFragment.KEY_ORDER_ID))
-            putExtra(BuyerConsts.PARAM_IS_CANCEL_ALREADY_REQUESTED, isRequestedCancel)
-            putExtra(BuyerConsts.PARAM_TITLE_CANCEL_REQUESTED, actionButton.getActionButtonPopUp().getTitle())
-            putExtra(BuyerConsts.PARAM_BODY_CANCEL_REQUESTED, actionButton.getActionButtonPopUp().getBody())
-            putExtra(BuyerConsts.PARAM_SHOP_ID, shopInfo.getShopId())
-            putExtra(BuyerConsts.PARAM_BOUGHT_DATE, boughtDate)
-            putExtra(BuyerConsts.PARAM_INVOICE_URL, invoiceUrl)
-            putExtra(BuyerConsts.PARAM_STATUS_ID, status.status())
-            putExtra(BuyerConsts.PARAM_STATUS_INFO, status.statusText())
-        }
-        startActivityForResult(buyerReqCancelIntent, MarketPlaceDetailFragment.REQUEST_CANCEL_ORDER)*/
-    }
-
     override fun onListItemClicked(detailUrl: UohListOrder.Data.UohOrders.Order.Metadata.DetailUrl) {
-        /*if (verticalCategory.equals(UohConsts.LS_PRINT_VERTICAL_CATEGORY, true)) {
-            val url = "m.tokopedia.com/order-details/lsprint/$verticalId&upstream=$upstream"
-            RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
-        } else {
-            val applink = "${UohConsts.APPLINK_BASE}${UohConsts.APPLINK_PATH_ORDER}/$verticalId?${UohConsts.APPLINK_PATH_UPSTREAM}$upstream"
-            RouteManager.route(context, applink)
-        }*/
-
         if (detailUrl.appTypeLink == WEB_LINK_TYPE) {
             RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, detailUrl.webURL))
         } else if (detailUrl.appTypeLink == APP_LINK_TYPE) {
