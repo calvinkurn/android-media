@@ -18,12 +18,12 @@ object DeeplinkMapperBuyerOrder {
 
     fun getRegisteredNavigationBuyerOrder(deeplink: String): String {
         var returnedDeeplink = ""
-        /*if (deeplink.startsWith(ApplinkConst.MARKETPLACE_ORDER)) {
+        if (deeplink.startsWith(ApplinkConst.BELANJA_ORDER)) {
             useUoh()?.let { newFlow ->
                 returnedDeeplink = if (newFlow) ApplinkConstInternalOrder.UNIFY_ORDER
                 else deeplink
             }
-        } else*/ if (deeplink.startsWith(ApplinkConst.MARKETPLACE_ORDER_SUB)) {
+        } else if (deeplink.startsWith(ApplinkConst.MARKETPLACE_ORDER_SUB)) {
             useUoh()?.let { newFlow ->
                 returnedDeeplink = if (newFlow) ApplinkConstInternalOrder.UNIFY_ORDER_IN_PROCESS
                 else deeplink
