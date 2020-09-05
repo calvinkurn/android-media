@@ -3,22 +3,16 @@ package com.tokopedia.shop.settings.basicinfo.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextUtils
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.design.text.watcher.AfterTextWatcher
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
@@ -36,16 +30,20 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.analytics.ShopSettingsTracking
-import com.tokopedia.shop.settings.basicinfo.data.AllowShopNameDomainChangesData
 import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditBasicInfoActivity.Companion.EXTRA_MESSAGE
 import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditBasicInfoActivity.Companion.EXTRA_SHOP_MODEL
+import com.tokopedia.shop.settings.basicinfo.view.adapter.ShopEditBasicInfoAdapter
+import com.tokopedia.shop.settings.basicinfo.view.adapter.ShopEditBasicInfoAdapterFactoryImpl
+import com.tokopedia.shop.settings.basicinfo.view.model.ShopEditMainInfoModel
+import com.tokopedia.shop.settings.basicinfo.view.model.ShopEditProfilePictureModel
+import com.tokopedia.shop.settings.basicinfo.view.model.ShopEditTickerModel
+import com.tokopedia.shop.settings.basicinfo.view.viewholder.ShopEditMainInfoViewHolder
+import com.tokopedia.shop.settings.basicinfo.view.viewholder.ShopEditProfilePictureViewHolder
+import com.tokopedia.shop.settings.basicinfo.view.viewholder.ShopEditTickerViewHolder
 import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopEditBasicInfoViewModel
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.util.ShopTypeDef
-import com.tokopedia.shop.settings.common.util.getTextWithSpannable
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.ticker.Ticker
-import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -53,14 +51,17 @@ import kotlinx.android.synthetic.main.fragment_shop_edit_basic_info.*
 import kotlinx.android.synthetic.main.partial_toolbar_save_button.*
 import javax.inject.Inject
 
-class ShopEditBasicInfoFragment: Fragment() {
+class ShopEditBasicInfoFragment: Fragment(),
+        ShopEditMainInfoViewHolder.ShopEditMainInfoListener,
+        ShopEditProfilePictureViewHolder.ShopEditProfilePictureListener,
+        ShopEditTickerViewHolder.ShopEditTickerListener
+{
 
     companion object {
         private const val URL_PUSAT_SELLER = "https://seller.tokopedia.com/edu/cara-memilih-nama-toko-online/"
         private const val SAVED_IMAGE_PATH = "saved_img_path"
         private const val MAX_FILE_SIZE_IN_KB = 10240
         private const val REQUEST_CODE_IMAGE = 846
-        private const val MIN_INPUT_LENGTH = 3
 
         @JvmStatic
         fun newInstance(bundle: Bundle?): ShopEditBasicInfoFragment {
@@ -76,10 +77,14 @@ class ShopEditBasicInfoFragment: Fragment() {
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    private var shopDomainTextWatcher: TextWatcher? = null
     private var shopBasicDataModel: ShopBasicDataModel? = null
     private var savedLocalImageUrl: String? = null
     private var needUpdatePhotoUI: Boolean = false
+    private var shopEditBasicInfoAdapter: ShopEditBasicInfoAdapter? = null
+    private var listVisitable: ArrayList<Visitable<*>>? = null
+    private var shopEditProfilePictureModel = ShopEditProfilePictureModel()
+    private var shopEditTickerModel = ShopEditTickerModel()
+    private var shopEditMainInfoModel = ShopEditMainInfoModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
@@ -98,10 +103,8 @@ class ShopEditBasicInfoFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setupToolbar()
-        setupTextField()
-        setupDomainSuggestion()
-        setupShopAvatar()
         setupSaveBtn()
+        setupShopEditAdapter()
 
         observeLiveData()
         getAllowShopNameDomainChanges()
@@ -139,6 +142,35 @@ class ShopEditBasicInfoFragment: Fragment() {
         }
     }
 
+    override fun onCancelValidateShopName() {
+        viewModel.cancelValidateShopName()
+    }
+
+    override fun onCancelValidateShopDomain() {
+        viewModel.cancelValidateShopDomain()
+    }
+
+    override fun onValidateShopName(name: String) {
+        viewModel.validateShopName(name)
+    }
+
+    override fun onValidateShopDomain(domain: String) {
+        viewModel.validateShopDomain(domain)
+    }
+
+    override fun onImageChangeAvatarClick() {
+        openImagePicker()
+    }
+
+    override fun onTextChangeAvatarClick() {
+        openImagePicker()
+        ShopSettingsTracking.clickChangeShopLogo(userSession.shopId, getShopType())
+    }
+
+    override fun onReadMoreClick() {
+        clickReadMore()
+    }
+
     private fun initGqlClient() {
         context?.let { GraphqlClient.init(it) }
     }
@@ -152,136 +184,8 @@ class ShopEditBasicInfoFragment: Fragment() {
         }
     }
 
-    private fun setupTextField() {
-        setShopDomainTextWatcher()
-        setupShopNameTextField()
-        setupShopDomainTextField()
-        setupShopTagLineTextField()
-        setupShopDescriptionTextField()
-    }
-
-    private fun setupShopTagLineTextField() {
-        shopTagLineTextField.textFieldInput.addTextChangedListener(object : AfterTextWatcher() {
-            override fun afterTextChanged(s: Editable) {
-                shopTagLineTextField.setMessage("")
-                shopTagLineTextField.setError(false)
-            }
-        })
-    }
-
-    private fun setupShopDescriptionTextField() {
-        shopDescriptionTextField.textFieldInput.addTextChangedListener(object : AfterTextWatcher() {
-            override fun afterTextChanged(s: Editable) {
-                shopDescriptionTextField.setMessage("")
-                shopDescriptionTextField.setError(false)
-            }
-        })
-    }
-
-    private fun setupDomainSuggestion() {
-        shopDomainSuggestions.setOnItemClickListener { domain ->
-            shopDomainTextField.textFieldInput.apply {
-                removeTextChangedListener(shopDomainTextWatcher)
-                resetShopDomainInput()
-                setText(domain)
-                setSelection(text.length)
-                addTextChangedListener(shopDomainTextWatcher)
-            }
-            shopDomainSuggestions.hide()
-        }
-    }
-
-    private fun setupShopAvatar() {
-        imageAvatar.setOnClickListener { openImagePicker() }
-        textChangeAvatar.setOnClickListener {
-            openImagePicker()
-            ShopSettingsTracking.clickChangeShopLogo(userSession.shopId, getShopType())
-        }
-    }
-
     private fun setupSaveBtn() {
         tvSave.setOnClickListener { createSaveDialog() }
-    }
-
-    private fun setupShopNameTextField() {
-        shopNameTextField.textFieldInput.apply {
-            val textWatcher = createShopNameTextWatcher()
-            setText(shopBasicDataModel?.name)
-            addTextChangedListener(textWatcher)
-            isEnabled = false
-        }
-    }
-
-    private fun setupShopDomainTextField() {
-        shopDomainTextField.textFieldInput.apply {
-            setText(shopBasicDataModel?.domain)
-            addTextChangedListener(shopDomainTextWatcher)
-            isEnabled = false
-        }
-    }
-
-    private fun createShopNameTextWatcher(): TextWatcher {
-        return object : TextWatcher {
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                shopDomainSuggestions.hide()
-            }
-
-            override fun afterTextChanged(s: Editable) {
-                val input = s.toString()
-                if (input.length < MIN_INPUT_LENGTH) {
-                    val message = context?.getString(R.string.shop_edit_name_too_short).orEmpty()
-                    showShopNameInputError(message)
-                    viewModel.cancelValidateShopName()
-                } else {
-                    resetShopNameInput()
-                    viewModel.validateShopName(input)
-                }
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-        }
-    }
-
-    private fun setShopDomainTextWatcher() {
-        shopDomainTextWatcher = object : TextWatcher {
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                shopDomainSuggestions.hide()
-            }
-
-            override fun afterTextChanged(s: Editable) {
-                val input = s.toString()
-                if (input.length < MIN_INPUT_LENGTH) {
-                    val message = context?.getString(R.string.shop_edit_domain_too_short).orEmpty()
-                    showShopDomainInputError(message)
-                    viewModel.cancelValidateShopDomain()
-                } else {
-                    resetShopDomainInput()
-                    viewModel.validateShopDomain(input)
-                }
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-        }
-    }
-
-    private fun showShopNameInputError(message: String) {
-        shopNameTextField.setError(true)
-        shopNameTextField.setMessage(message)
-    }
-
-    private fun showShopDomainInputError(message: String) {
-        shopDomainTextField.setError(true)
-        shopDomainTextField.setMessage(message)
-    }
-
-    private fun resetShopNameInput() {
-        shopNameTextField.setError(false)
-        shopNameTextField.setMessage("")
-    }
-
-    private fun resetShopDomainInput() {
-        shopDomainTextField.setError(false)
-        shopDomainTextField.setMessage("")
     }
 
     private fun observeLiveData() {
@@ -328,8 +232,10 @@ class ShopEditBasicInfoFragment: Fragment() {
             when(it) {
                 is Success -> {
                     val data = it.data
-                    showShopEditShopInfoTicker(data)
-                    showShopNameDomainTextField(data)
+                    shopEditMainInfoModel.apply {
+                        isNameAllowed = data.isNameAllowed
+                        isDomainAllowed = data.isDomainAllowed
+                    }
                 }
                 is Fail -> {
                     val throwable = it.throwable
@@ -344,17 +250,16 @@ class ShopEditBasicInfoFragment: Fragment() {
             when(it) {
                 is Success -> {
                     val validateDomainShopName = it.data.validateDomainShopName
-                    val notValid = !validateDomainShopName.isValid
+                    shopEditMainInfoModel.nameNotValid = !validateDomainShopName.isValid
 
-                    if(notValid) {
+                    if(shopEditMainInfoModel.nameNotValid) {
                         val message = validateDomainShopName.error.message
-                        showShopNameInputError(message)
+                        shopEditMainInfoModel.nameErrorMessage = message
                     }
                 }
                 is Fail -> {
                     val message = (it as Success).data.validateDomainShopName.error.message
-                    showShopNameInputError(message)
-                    shopDomainSuggestions.hide()
+                    shopEditMainInfoModel.nameErrorMessage = message
                 }
             }
         }
@@ -363,17 +268,16 @@ class ShopEditBasicInfoFragment: Fragment() {
             when(it) {
                 is Success -> {
                     val validateDomainShopName = it.data.validateDomainShopName
-                    val notValid = !validateDomainShopName.isValid
+                    shopEditMainInfoModel.domainNotValid = !validateDomainShopName.isValid
 
-                    if(notValid) {
+                    if(shopEditMainInfoModel.domainNotValid) {
                         val message = validateDomainShopName.error.message
-                        showShopDomainInputError(message)
+                        shopEditMainInfoModel.domainErrorMessage = message
                     }
                 }
                 is Fail -> {
                     val message = (it as Success).data.validateDomainShopName.error.message
-                    showShopNameInputError(message)
-                    shopDomainSuggestions.hide()
+                    shopEditMainInfoModel.domainErrorMessage = message
                 }
             }
         }
@@ -385,74 +289,10 @@ class ShopEditBasicInfoFragment: Fragment() {
                 is Success -> {
                     val result = it.data.shopDomainSuggestion.result
                     val shopDomains = result.shopDomains
-                    shopDomainSuggestions.show(shopDomains)
+                    shopEditMainInfoModel.shopDomains = shopDomains
                 }
             }
         }
-    }
-
-    private fun showShopEditShopInfoTicker(data: AllowShopNameDomainChangesData) {
-        val isNameAllowed = data.isNameAllowed
-        val isDomainAllowed = data.isDomainAllowed
-
-        when {
-            isNameAllowed && isDomainAllowed -> showWarningTicker()
-            isNameAllowed && !isDomainAllowed -> showDomainNotAllowedTicker(data)
-            isDomainAllowed && !isNameAllowed -> showNameNotAllowedTicker(data)
-            else -> showNameAndDomainNotAllowedTicker()
-        }
-    }
-
-    private fun showShopNameDomainTextField(data: AllowShopNameDomainChangesData) {
-        val isNameAllowed = data.isNameAllowed
-        val isDomainAllowed = data.isDomainAllowed
-
-        val shopNameInput = shopNameTextField.textFieldInput
-        val shopDomainInput = shopDomainTextField.textFieldInput
-
-        shopNameInput.isEnabled = isNameAllowed
-        shopDomainInput.isEnabled = isDomainAllowed
-    }
-
-    private fun showWarningTicker() {
-        val description = getString(R.string.ticker_warning_can_only_change_shopname_once)
-        val readMore = getString(R.string.ticker_warning_read_more)
-        val color = ContextCompat.getColor(requireContext(), R.color.merchant_green)
-        val message = getTextWithSpannable(color, description, readMore).toString()
-        showShopTicker(message, Ticker.TYPE_WARNING)
-    }
-
-    private fun showDomainNotAllowedTicker(data: AllowShopNameDomainChangesData) {
-        val message = data.reasonDomainNotAllowed
-        showShopTicker(message, Ticker.TYPE_INFORMATION)
-    }
-
-    private fun showNameNotAllowedTicker(data: AllowShopNameDomainChangesData) {
-        val message = data.reasonNameNotAllowed
-        showShopTicker(message, Ticker.TYPE_INFORMATION)
-    }
-
-    private fun showNameAndDomainNotAllowedTicker() {
-        val message = getString(R.string.shop_edit_change_name_and_domain_not_allowed)
-        showShopTicker(message, Ticker.TYPE_INFORMATION)
-    }
-
-    private fun showShopTicker(message: String, type: Int) {
-        shopEditTicker.tickerType = type
-        shopEditTicker.setTextDescription(message)
-        if (type == Ticker.TYPE_WARNING) {
-            shopEditTicker?.run {
-                tickerType = type
-                setTextDescription(message)
-                setDescriptionClickEvent(object : TickerCallback {
-                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        clickReadMore()
-                    }
-                    override fun onDismiss() {}
-                })
-            }
-        }
-        shopEditTicker.show()
     }
 
     private fun initInjector() {
@@ -467,10 +307,10 @@ class ShopEditBasicInfoFragment: Fragment() {
     private fun onSaveButtonClicked() {
         showSubmitLoading()
 
-        val name = shopNameTextField.textFieldInput.text.toString()
-        val domain = shopDomainTextField.textFieldInput.text.toString()
-        val tagLine = shopTagLineTextField.textFieldInput.text.toString()
-        val desc = shopDescriptionTextField.textFieldInput.text.toString()
+        val name = shopEditMainInfoModel.name
+        val domain = shopEditMainInfoModel.domain
+        val tagLine = shopEditMainInfoModel.tagLine
+        val desc = shopEditMainInfoModel.description
 
         if (!savedLocalImageUrl.isNullOrEmpty()) {
             viewModel.uploadShopImage(savedLocalImageUrl!!, name, domain, tagLine, desc)
@@ -537,34 +377,24 @@ class ShopEditBasicInfoFragment: Fragment() {
     private fun setUIShopBasicData(shopBasicDataModel: ShopBasicDataModel) {
         updatePhotoUI(shopBasicDataModel)
 
-        shopTagLineTextField.textFieldInput.run {
-            if (TextUtils.isEmpty(text)) {
-                setText(shopBasicDataModel.tagline)
-                text?.length?.let { setSelection(it) }
-            }
+        shopBasicDataModel.name?.let {
+            shopEditMainInfoModel.name = it
         }
-
-        shopDescriptionTextField.textFieldInput.run {
-            if (TextUtils.isEmpty(text)) {
-                setText(shopBasicDataModel.description)
-                text?.length?.let { setSelection(it) }
-            }
+        shopBasicDataModel.domain?.let {
+            shopEditMainInfoModel.domain = it
+        }
+        shopBasicDataModel.tagline?.let {
+            shopEditMainInfoModel.tagLine = it
+        }
+        shopBasicDataModel.description?.let {
+            shopEditMainInfoModel.description = it
         }
     }
 
     private fun updatePhotoUI(shopBasicDataModel: ShopBasicDataModel?) {
         shopBasicDataModel?.let {
-            if (TextUtils.isEmpty(savedLocalImageUrl)) {
-                val logoUrl = it.logo
-                if (TextUtils.isEmpty(logoUrl)) {
-                    imageAvatar.setImageDrawable(
-                        MethodChecker.getDrawable(imageAvatar.context, R.drawable.ic_shop_edit_avatar))
-                } else {
-                    ImageHandler.LoadImage(imageAvatar, logoUrl)
-                }
-            } else {
-                ImageHandler.LoadImage(imageAvatar, savedLocalImageUrl)
-            }
+            shopEditProfilePictureModel.savedLocalImageUrl = savedLocalImageUrl ?: ""
+            shopEditProfilePictureModel.logoUrl = it.logo ?: ""
         }
     }
 
@@ -628,5 +458,14 @@ class ShopEditBasicInfoFragment: Fragment() {
                 ShopSettingsTracking.clickCancelChangeShopName(userSession.shopId, getShopType())
             }
         }.show()
+    }
+
+    private fun setupShopEditAdapter() {
+        shopEditBasicInfoAdapter = ShopEditBasicInfoAdapter(ShopEditBasicInfoAdapterFactoryImpl(this,this,this))
+        listVisitable = ArrayList()
+        listVisitable?.add(ShopEditProfilePictureViewHolder.POSITION, shopEditProfilePictureModel)
+        listVisitable?.add(ShopEditTickerViewHolder.POSITION, shopEditTickerModel)
+        listVisitable?.add(ShopEditMainInfoViewHolder.POSITION, shopEditMainInfoModel)
+        shopEditBasicInfoAdapter?.setVisitables(listVisitable)
     }
 }
