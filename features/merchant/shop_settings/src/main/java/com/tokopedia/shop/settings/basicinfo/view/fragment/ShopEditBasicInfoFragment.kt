@@ -448,7 +448,7 @@ class ShopEditBasicInfoFragment: Fragment() {
 
     private fun showShopTicker(message: String, type: Int) {
         shopEditTicker.tickerType = type
-        shopEditTicker.setTextDescription(message)
+        shopEditTicker.setHtmlDescription(message)
         shopEditTicker.show()
     }
 
