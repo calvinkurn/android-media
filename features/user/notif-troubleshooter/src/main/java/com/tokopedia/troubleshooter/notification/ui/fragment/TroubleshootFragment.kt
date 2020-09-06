@@ -1,30 +1,23 @@
 package com.tokopedia.troubleshooter.notification.ui.fragment
 
-import android.app.NotificationManager.IMPORTANCE_HIGH
-import android.app.NotificationManager.IMPORTANCE_LOW
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.fcmcommon.FirebaseMessagingManager
 import com.tokopedia.fcmcommon.di.DaggerFcmComponent
 import com.tokopedia.fcmcommon.di.FcmModule
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.loadImageDrawable
-import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.settingnotif.usersetting.util.CacheManager.saveLastCheckedDate
 import com.tokopedia.troubleshooter.notification.R
+import com.tokopedia.troubleshooter.notification.analytics.TroubleshooterTimber
+import com.tokopedia.troubleshooter.notification.data.entity.NotificationSendTroubleshoot
 import com.tokopedia.troubleshooter.notification.di.DaggerTroubleshootComponent
 import com.tokopedia.troubleshooter.notification.di.module.TroubleshootModule
 import com.tokopedia.troubleshooter.notification.ui.activity.TroubleshootActivity
@@ -33,15 +26,15 @@ import com.tokopedia.troubleshooter.notification.ui.adapter.factory.Troubleshoot
 import com.tokopedia.troubleshooter.notification.ui.listener.ConfigItemListener
 import com.tokopedia.troubleshooter.notification.ui.uiview.*
 import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigState.*
-import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigUIView.Companion.importantNotification
+import com.tokopedia.troubleshooter.notification.ui.uiview.RingtoneState.Silent
+import com.tokopedia.troubleshooter.notification.ui.uiview.RingtoneState.Vibrate
+import com.tokopedia.troubleshooter.notification.ui.uiview.TickerItemUIView.Companion.ticker
 import com.tokopedia.troubleshooter.notification.ui.viewmodel.TroubleshootViewModel
-import com.tokopedia.troubleshooter.notification.util.combineWith
-import com.tokopedia.troubleshooter.notification.util.gotoNotificationSetting
-import com.tokopedia.troubleshooter.notification.util.prefixToken
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.troubleshooter.notification.util.*
+import com.tokopedia.troubleshooter.notification.ui.state.Error
+import com.tokopedia.troubleshooter.notification.ui.state.Result
+import com.tokopedia.troubleshooter.notification.ui.state.Success
 import kotlinx.android.synthetic.main.fragment_notif_troubleshooter.*
-import timber.log.Timber
 import javax.inject.Inject
 
 class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
@@ -51,18 +44,16 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
 
     private lateinit var viewModel: TroubleshootViewModel
 
-    private val additionalItems = mutableListOf<Visitable<*>>()
-
     private val adapter by lazy(LazyThreadSafetyMode.NONE) {
         TroubleshooterAdapter(TroubleshooterItemFactory(this))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders
-                .of(this, viewModelFactory)
-                .get(TroubleshootViewModel::class.java)
-
+        viewModel = ViewModelProvider(
+                this,
+                viewModelFactory
+        ).get(TroubleshootViewModel::class.java)
         lifecycle.addObserver(viewModel)
     }
 
@@ -78,15 +69,10 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
         ).apply { setupToolbar() }
     }
 
-    override fun onResume() {
-        adapter.removeTicker()
-        super.onResume()
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initView()
         initObservable()
+        initView()
 
         /*
         * adding interval to request
@@ -97,116 +83,178 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
         }, REQ_DELAY)
     }
 
+    override fun onResume() {
+        super.onResume()
+        adapter.removeTicker()
+    }
+
     private fun initView() {
         lstConfig?.layoutManager = LinearLayoutManager(context)
         lstConfig?.adapter = adapter
+        adapter.status(StatusState.Loading)
         adapter.addElement(ConfigUIView.items())
+        adapter.addElement(FooterUIView())
     }
 
     private fun initObservable() {
         viewModel.token.observe(viewLifecycleOwner, Observer { newToken ->
             setUpdateTokenStatus(newToken)
-            Timber.d("Troubleshoot Token $newToken")
+            TroubleshooterTimber.token(newToken)
         })
 
         viewModel.notificationSetting.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    setNotificationSettingStatus(it.data)
-                    Timber.d("Notifikasi yang aktif ${it.data.totalOn} dari ${it.data.notifications}")
-                }
-                is Fail -> {
-                    troubleshooterStatusWarning()
-                    adapter.updateStatus(Notification, StatusState.Error)
-                }
-            }
+            notificationSetting(it)
         })
 
         viewModel.deviceSetting.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    when (it.data) {
-                        is DeviceSettingState.Normal -> {
-                            adapter.updateStatus(Device, StatusState.Success)
-                        }
-                        is DeviceSettingState.High -> {
-                            adapter.updateStatus(Device, StatusState.Success)
-                        }
-                        is DeviceSettingState.Low -> {
-                            adapter.updateStatus(Device, StatusState.Warning)
-                            additionalItems.add(TickerUIView.ticker(
-                                    "Ada kategori push notification Tokopedia yang belum aktif di HP.",
-                                    "Perbaiki!")
-                            )
-                        }
-                    }
-                }
-                is Fail -> {
-                    troubleshooterStatusWarning()
-                    adapter.updateStatus(Device, StatusState.Error)
-                }
-            }
+            deviceSetting(it)
         })
 
-        viewModel.notificationRingtoneUri.observe(viewLifecycleOwner, Observer { ringtone ->
-            adapter.setRingtoneStatus(ringtone, isState(ringtone != null))
+        viewModel.notificationRingtoneUri.observe(viewLifecycleOwner, Observer {
+            ringtoneSetting(it)
         })
 
         viewModel.troubleshoot.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    adapter.updateStatus(PushNotification, isState(
-                            it.data.isTroubleshootSuccess()
-                    ))
-                    adapter.addElement(WarningTitleUIVIew("Rekomendasi lebih optimal"))
-                    additionalItems.forEach { item -> adapter.addElement(item) }
-                    adapter.addElement(FooterUIView())
-                    saveLastCheckedDate(requireContext())
-                    troubleshooterStatusPassed()
-                }
-                is Fail -> {
-                    troubleshooterStatusWarning()
-                    adapter.updateStatus(PushNotification, StatusState.Error)
-                }
-            }
+            troubleshooterPushNotification(it)
         })
 
-        viewModel.token.combineWith(
+        combineFourth(
+                viewModel.token,
                 viewModel.notificationSetting,
-                viewModel.deviceSetting
-        ) { token, setting, device ->
-            Timber.w("P2#LOG_PUSH_NOTIF#'Troubleshooter';token='%s';setting='%s';device='%s';",
-                    token,
-                    setting,
-                    device
+                viewModel.deviceSetting,
+                viewModel.notificationRingtoneUri
+        ).observe(viewLifecycleOwner, Observer {
+            val token = it.first
+            val notification = it.second
+            val device = it.third
+            val ringtone = it.fourth?.second
+
+            if (token.isNotNull() && notification.isNotNull() && device.isNotNull() && ringtone.isNotNull()) {
+                if (notification.isTrue() && device.isTrue() && ringtone.isRinging()) {
+                    troubleshooterStatusPassed()
+                } else {
+                    troubleshooterStatusWarning()
+                }
+
+                adapter.addWarningTicker(TickerUIView(viewModel.tickerItems))
+                TroubleshooterTimber.combine(token, notification, device)
+            }
+        })
+    }
+
+    private fun notificationSetting(result: Result<UserSettingUIView>) {
+        when (result) {
+            is Success -> {
+                setNotificationSettingStatus(result.data)
+                TroubleshooterTimber.notificationSetting(result.data)
+            }
+            is Error -> {
+                updateConfigStatus(
+                        Notification,
+                        StatusState.Error,
+                        getString(R.string.notif_ticker_net_error),
+                        R.string.btn_notif_try_again
+                )
+            }
+        }
+    }
+
+    private fun setNotificationSettingStatus(userSetting: UserSettingUIView) {
+        when {
+            userSetting.totalOn == userSetting.notifications -> {
+                adapter.updateStatus(Notification, StatusState.Success)
+            }
+            userSetting.totalOn != userSetting.notifications -> {
+                val inactive = userSetting.notifications - userSetting.totalOn
+                if (inactive != userSetting.notifications) {
+                    updateConfigStatus(
+                            Notification,
+                            StatusState.Warning,
+                            getString(R.string.notif_us_ticker_warning, inactive.toString()),
+                            R.string.btn_notif_activation
+                    )
+                } else {
+                    updateConfigStatus(
+                            Notification,
+                            StatusState.Error,
+                            getString(R.string.notif_us_ticker_error),
+                            R.string.btn_notif_try_again
+                    )
+                }
+            }
+        }
+    }
+
+    private fun deviceSetting(result: Result<DeviceSettingState>) {
+        when (result) {
+            is Error -> activity?.finish()
+            is Success -> {
+                when (result.data) {
+                    is DeviceSettingState.Normal -> adapter.updateStatus(Device, StatusState.Success)
+                    is DeviceSettingState.High -> adapter.updateStatus(Device, StatusState.Success)
+                    is DeviceSettingState.Low -> {
+                        updateConfigStatus(
+                                Device,
+                                StatusState.Warning,
+                                getString(R.string.notif_dv_ticker_warning),
+                                R.string.btn_notif_repair
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private fun ringtoneSetting(status: Pair<Uri?, RingtoneState>) {
+        if (status.second == Vibrate || status.second == Silent) {
+            updateConfigStatus(
+                    Ringtone,
+                    StatusState.Error,
+                    getString(R.string.notif_rn_ticker_warning),
+                    R.string.btn_notif_play
             )
+        } else {
+            adapter.setRingtoneStatus(status.first, StatusState.Success)
+        }
+    }
+
+    private fun troubleshooterPushNotification(result: Result<NotificationSendTroubleshoot>) {
+        when (result) {
+            is Success -> {
+                adapter.updateStatus(PushNotification, isState(
+                        result.data.isTroubleshootSuccess()
+                ))
+                saveLastCheckedDate(requireContext())
+            }
+            is Error -> {
+                updateConfigStatus(
+                        PushNotification,
+                        StatusState.Error,
+                        getString(R.string.notif_ticker_net_error),
+                        R.string.btn_notif_try_again
+                )
+            }
         }
     }
 
     private fun troubleshooterStatusPassed() {
-        imgStatus.loadImageDrawable(R.drawable.ic_ts_notif_status_checked)
-        txtStatus?.text = getString(R.string.notif_status_checked)
-        pgLoader?.hide()
+        adapter.status(StatusState.Success)
     }
 
     private fun troubleshooterStatusWarning() {
-        imgStatus.loadImageDrawable(R.drawable.ic_ts_notif_status_warning)
-        txtStatus?.text = getString(R.string.notif_status_warning)
-        pgLoader?.hide()
+        adapter.status(StatusState.Warning)
     }
 
     private fun setUpdateTokenStatus(newToken: String) {
         val currentToken = fcmManager.currentToken().prefixToken().trim()
         val newTrimToken = newToken.prefixToken().trim()
 
-        val message = if (fcmManager.isNewToken(newToken)) {
+        txtToken?.text = if (fcmManager.isNewToken(newToken)) {
             viewModel.updateToken(newToken)
             tokenUpdateMessage(currentToken, newTrimToken)
         } else {
             tokenCurrentMessage(currentToken, newTrimToken)
         }
-
-        //adapter.addMessage(PushNotification, message)
     }
 
     private fun tokenCurrentMessage(currentToken: String, newToken: String): String {
@@ -225,57 +273,23 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
         }
     }
 
-    private fun setNotificationSettingStatus(userSetting: UserSettingUIView) {
-        when {
-            userSetting.totalOn == userSetting.notifications -> {
-                adapter.updateStatus(Notification, StatusState.Success)
-            }
-            userSetting.totalOn != userSetting.notifications -> {
-                val inactive = userSetting.notifications - userSetting.totalOn
-                adapter.updateStatus(Notification, StatusState.Warning)
-                additionalItems.add(TickerUIView.ticker(
-                        "Kamu belum mengaktifkan push notification untuk $inactive jenis info",
-                        "Aktifkan!")
-                )
-            }
-            else -> {
-                adapter.updateStatus(Notification, StatusState.Error)
-            }
+    private fun setupToolbar() {
+        activity?.let {
+            it as? TroubleshootActivity?
+        }.also {
+            it?.supportActionBar?.title = screenName
         }
     }
-//
-//    private fun setNotificationImportanceStatus(importance: Int) {
-//        val isImportance = importantNotification(importance)
-//        val hasNotCategory = importance == Int.MAX_VALUE
-//
-//        if (hasNotCategory) {
-//            //adapter.hideNotificationChannel()
-//            return
-//        }
-//
-//        when {
-//            isImportance -> {
-//                adapter.updateStatus(Channel, isImportance)
-//            }
-//            importance != IMPORTANCE_HIGH -> {
-//                adapter.updateStatus(Channel, false)
-//                onShowTicker(importance)
-//            }
-//        }
-//    }
-//
-//    private fun onShowTicker(importance: Int) {
-//        adapter.addTicker(when (importance) {
-//            IMPORTANCE_LOW -> getString(
-//                    R.string.notif_ticker_importance_low,
-//                    importance
-//            ).parseAsHtml().trim()
-//            else -> getString(
-//                    R.string.notif_ticker_importance_none,
-//                    importance
-//            ).parseAsHtml().trim()
-//        })
-//    }
+
+    private fun updateConfigStatus(
+            type: ConfigState,
+            status: StatusState,
+            message: String,
+            buttonText: Int
+    ) {
+        adapter.updateStatus(type, status)
+        viewModel.tickers(ticker(type, message, getString(buttonText)))
+    }
 
     override fun onRingtoneTest(uri: Uri) {
         RingtoneManager.getRingtone(context, uri).play()
@@ -283,14 +297,6 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
 
     override fun goToNotificationSettings() {
         context.gotoNotificationSetting()
-    }
-
-    private fun setupToolbar() {
-        activity?.let {
-            it as? TroubleshootActivity?
-        }.also {
-            it?.supportActionBar?.title = screenName
-        }
     }
 
     override fun initInjector() {

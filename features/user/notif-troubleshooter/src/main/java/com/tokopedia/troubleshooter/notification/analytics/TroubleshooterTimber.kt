@@ -3,7 +3,7 @@ package com.tokopedia.troubleshooter.notification.analytics
 import com.tokopedia.troubleshooter.notification.ui.uiview.DeviceSettingState
 import com.tokopedia.troubleshooter.notification.ui.uiview.UserSettingUIView
 import com.tokopedia.troubleshooter.notification.util.isNotNull
-import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.troubleshooter.notification.ui.state.Result
 import timber.log.Timber
 
 object TroubleshooterTimber {

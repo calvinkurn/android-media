@@ -3,6 +3,7 @@ package com.tokopedia.troubleshooter.notification.ui.viewmodel
 import android.media.RingtoneManager.TYPE_NOTIFICATION
 import android.net.Uri
 import androidx.lifecycle.*
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.fcmcommon.FirebaseMessagingManager
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -12,19 +13,22 @@ import com.tokopedia.troubleshooter.notification.data.entity.NotificationSendTro
 import com.tokopedia.troubleshooter.notification.data.service.channel.NotificationChannelManager
 import com.tokopedia.troubleshooter.notification.data.service.fcm.FirebaseInstanceManager
 import com.tokopedia.troubleshooter.notification.data.service.notification.NotificationCompatManager
+import com.tokopedia.troubleshooter.notification.data.service.ringtone.RingtoneModeService
+import com.tokopedia.troubleshooter.notification.ui.state.Error
 import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigUIView.Companion.importantNotification
 import com.tokopedia.troubleshooter.notification.ui.uiview.DeviceSettingState
+import com.tokopedia.troubleshooter.notification.ui.uiview.RingtoneState
 import com.tokopedia.troubleshooter.notification.ui.uiview.UserSettingUIView
 import com.tokopedia.troubleshooter.notification.util.dispatchers.DispatcherProvider
 import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.troubleshooter.notification.ui.state.Result
+import com.tokopedia.troubleshooter.notification.ui.state.Success
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import android.media.RingtoneManager.getDefaultUri as getRingtoneUri
 
 interface TroubleshootContract {
+    fun tickers(element: Visitable<*>)
     fun userSetting()
     fun deviceSetting()
     fun soundNotification()
@@ -40,6 +44,7 @@ class TroubleshootViewModel @Inject constructor(
         private val messagingManager: FirebaseMessagingManager,
         private val userSettingUseCase: GetUserSettingUseCase,
         private val instanceManager: FirebaseInstanceManager,
+        private val ringtoneMode: RingtoneModeService,
         private val dispatcher: DispatcherProvider
 ) : BaseViewModel(dispatcher.io()), TroubleshootContract, LifecycleObserver {
 
@@ -49,8 +54,8 @@ class TroubleshootViewModel @Inject constructor(
     private val _deviceSetting = MutableLiveData<Result<DeviceSettingState>>()
     val deviceSetting: LiveData<Result<DeviceSettingState>> get() = _deviceSetting
 
-    private val _notificationRingtoneUri = MutableLiveData<Uri?>()
-    val notificationRingtoneUri: LiveData<Uri?> get() = _notificationRingtoneUri
+    private val _notificationRingtoneUri = MutableLiveData<Pair<Uri?, RingtoneState>>()
+    val notificationRingtoneUri: LiveData<Pair<Uri?, RingtoneState>> get() = _notificationRingtoneUri
 
     private val _troubleshoot = MutableLiveData<Result<NotificationSendTroubleshoot>>()
     val troubleshoot: LiveData<Result<NotificationSendTroubleshoot>> get() = _troubleshoot
@@ -58,11 +63,17 @@ class TroubleshootViewModel @Inject constructor(
     private val _token = MediatorLiveData<String>()
     val token: LiveData<String> get() = _token
 
+    private val _tickerItems = mutableListOf<Visitable<*>>()
+    val tickerItems: List<Visitable<*>> get() = _tickerItems
+
     init {
         _token.addSource(_troubleshoot) {
             getNewToken()
         }
+    }
 
+    override fun tickers(element: Visitable<*>) {
+        _tickerItems.add(element)
     }
 
     override fun troubleshoot() {
@@ -72,7 +83,7 @@ class TroubleshootViewModel @Inject constructor(
                 _troubleshoot.value = Success(result.notificationSendTroubleshoot)
             }
         }, onError = {
-            _troubleshoot.postValue(Fail(it))
+            _troubleshoot.postValue(Error(it))
         })
     }
 
@@ -82,7 +93,7 @@ class TroubleshootViewModel @Inject constructor(
             val result = userSettingUseCase.executeOnBackground()
             withContext(dispatcher.main()) {
                 val userNotification = UserSettingUIView()
-                result.userSetting.settingSections.forEach {section ->
+                result.userSetting.settingSections.forEach { section ->
                     section?.listSettings?.forEach {
                         userNotification.notifications++
                         if (it?.status == true) {
@@ -90,35 +101,39 @@ class TroubleshootViewModel @Inject constructor(
                         }
                     }
                 }
-                _notificationSetting.value = Success(userNotification)
+
+                _notificationSetting.value =  Success(userNotification)
             }
         }, onError = {
-            _notificationSetting.postValue(Fail(it))
+            _notificationSetting.postValue(Error(it))
         })
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     override fun deviceSetting() {
-        if (notificationCompat.isNotificationEnabled()) {
-            if (notificationChannel.hasNotificationChannel()) {
-                val channel = notificationChannel.getNotificationChannel()
-                val isImportance = importantNotification(channel)
-                if (isImportance) {
-                    _deviceSetting.value = Success(DeviceSettingState.High)
-                } else {
-                    _deviceSetting.value = Success(DeviceSettingState.Low)
-                }
+        if (!notificationCompat.isNotificationEnabled()) {
+            _deviceSetting.postValue(Error(Throwable("")))
+            return
+        }
+
+        if (notificationChannel.hasNotificationChannel()) {
+            val channel = notificationChannel.getNotificationChannel()
+            val isImportance = importantNotification(channel)
+            if (isImportance) {
+                _deviceSetting.value = Success(DeviceSettingState.High)
             } else {
-                _deviceSetting.value = Success(DeviceSettingState.Normal)
+                _deviceSetting.value = Success(DeviceSettingState.Low)
             }
         } else {
-            _deviceSetting.value = Fail(Throwable(""))
+            _deviceSetting.value = Success(DeviceSettingState.Normal)
         }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     override fun soundNotification() {
-        _notificationRingtoneUri.value = getRingtoneUri(TYPE_NOTIFICATION)
+        val ringtoneUri = getRingtoneUri(TYPE_NOTIFICATION)
+        val isRinging = ringtoneMode.isRing()
+        _notificationRingtoneUri.value = Pair(ringtoneUri, isRinging)
     }
 
     override fun updateToken(newToken: String) {

@@ -17,4 +17,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txtToken"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:lineSpacingExtra="@dimen/dp_6"
+        android:maxLines="2"
+        android:padding="@dimen/dp_8"
+        android:background="@android:color/white"
+        android:textColor="@color/charcoal_grey_68"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler"
+        tools:text="Token anda" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

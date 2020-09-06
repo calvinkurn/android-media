@@ -15,6 +15,7 @@ import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigState
 import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigUIView
 import com.tokopedia.troubleshooter.notification.ui.uiview.StatusState
 import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.abstraction.common.utils.view.MethodChecker.getDrawable as drawable
 
 open class ConfigViewHolder(
@@ -25,6 +26,7 @@ open class ConfigViewHolder(
     private val pgLoader = view.findViewById<LoaderUnify>(R.id.pgLoader)
     private val imgStatus = view.findViewById<ImageView>(R.id.imgStatus)
     private val txtTitle = view.findViewById<TextView>(R.id.txtTitle)
+    private val btnAction = view.findViewById<UnifyButton>(R.id.btnAction)
     private val context by lazy { itemView.context }
 
     override fun bind(element: ConfigUIView?) {
@@ -35,27 +37,26 @@ open class ConfigViewHolder(
     }
 
     private fun viewState(element: ConfigUIView) {
-        with(element) {
-            troubleshootStatus(this)
+        troubleshootStatus(element)
 
-            when (state) {
-                is ConfigState.Notification -> {
-                    itemView.setOnClickListener {
-                        context.startActivity(RouteManager.getIntent(context, USER_NOTIFICATION_SETTING))
-                    }
+        when (element.state) {
+            is ConfigState.Notification -> {
+                itemView.setOnClickListener {
+                    context.startActivity(RouteManager.getIntent(context, USER_NOTIFICATION_SETTING))
                 }
-                is ConfigState.Device -> {
-                    itemView.setOnClickListener {
-                        listener.goToNotificationSettings()
-                    }
-                }
-                is ConfigState.Ringtone -> {
-                    itemView.setOnClickListener {
-                        ringtone?.let { listener.onRingtoneTest(it) }
-                    }
-                }
-                is ConfigState.PushNotification -> {}
             }
+            is ConfigState.Device -> {
+                itemView.setOnClickListener {
+                    listener.goToNotificationSettings()
+                }
+            }
+            is ConfigState.Ringtone -> {
+                btnAction?.show()
+                btnAction?.setOnClickListener {
+                    element.ringtone?.let { listener.onRingtoneTest(it) }
+                }
+            }
+            is ConfigState.PushNotification -> {}
         }
     }
 

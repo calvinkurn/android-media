@@ -6,11 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.troubleshooter.notification.ui.adapter.factory.TroubleshooterItemFactory
 import com.tokopedia.troubleshooter.notification.ui.uiview.*
-import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigState.*
-import com.tokopedia.troubleshooter.notification.ui.uiview.StatusState.Error
-import com.tokopedia.troubleshooter.notification.ui.uiview.StatusState.Success
-import com.tokopedia.troubleshooter.notification.ui.uiview.TickerUIView.Companion.ticker
-import com.tokopedia.troubleshooter.notification.util.dropFirst
+import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigState.Ringtone
 import com.tokopedia.troubleshooter.notification.util.getWithIndex
 
 internal open class TroubleshooterAdapter(
@@ -41,6 +37,29 @@ internal open class TroubleshooterAdapter(
         notifyDataSetChanged()
     }
 
+    fun addWarningTicker(ticker: Visitable<*>) {
+        visitables.removeAll { it is TickerUIView }
+        visitables.add(visitables.size - 1, ticker)
+        notifyDataSetChanged()
+    }
+
+    fun status(state: StatusState) {
+        if (visitables.isNotEmpty() && visitables.first() is StatusUIView) {
+            visitables.removeAt(INDEX_STATUS)
+        }
+        visitables.add(INDEX_STATUS, StatusUIView(state))
+        notifyItemInserted(INDEX_STATUS)
+    }
+
+    fun removeTicker() {
+        visitables.removeAll { it is TickerUIView }
+        notifyDataSetChanged()
+    }
+
+    fun updateToken(message: String) {
+
+    }
+
 //    fun addMessage(state: ConfigState, message: String) {
 //        val viewState = configUIViewByState(state)?: return
 //        val index = viewState.first
@@ -55,11 +74,8 @@ internal open class TroubleshooterAdapter(
 //        notifyItemRemoved(index)
 //    }
 
-    fun removeTicker() {
-//        if (visitables.size > 0 && visitables.first() is TickerUIView) {
-//            visitables.dropFirst()
-//            notifyItemRemoved(TICKER_INDEX)
-//        }
+    companion object {
+        private const val INDEX_STATUS = 0
     }
 
 }
