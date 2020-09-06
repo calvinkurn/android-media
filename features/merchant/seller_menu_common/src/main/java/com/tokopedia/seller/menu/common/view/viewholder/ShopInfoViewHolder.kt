@@ -121,7 +121,7 @@ class ShopInfoViewHolder(
 
     private fun showShopScore(uiModel: ShopInfoUiModel) {
         itemView.shopScore.text = uiModel.shopScore.toString()
-        itemView.shopScore.setOnClickListener {
+        itemView.shopScoreChevronRight.setOnClickListener {
             listener?.onShopInfoClicked()
         }
     }
