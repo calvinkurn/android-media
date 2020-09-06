@@ -538,7 +538,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             uohBottomSheetOptionAdapter.isReset = isReset
             uohBottomSheetOptionAdapter.notifyDataSetChanged()
         }
-        if (filterStatus.isEmpty() && !isReset) {
+        if (filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true) && !isReset) {
             filter1?.title = arrayFilterDate[2]
         }
         filter1?.let {

@@ -362,6 +362,7 @@ object DeeplinkMapper {
             DLP.exact(ApplinkConst.MERCHANT_VOUCHER_LIST, ApplinkConstInternalSellerapp.VOUCHER_LIST),
             DLP.exact(ApplinkConst.NOTIFICATION_TROUBLESHOOTER, ApplinkConstInternalGlobal.PUSH_NOTIFICATION_TROUBLESHOOTER),
             DLP.exact(ApplinkConst.PROFILE_COMPLETION, ApplinkConstInternalGlobal.PROFILE_COMPLETION),
+            DLP.startWith(ApplinkConst.BELANJA_ORDER) { _, _, deeplink-> DeeplinkMapperBuyerOrder.getRegisteredNavigationBuyerOrder(deeplink) },
             DLP.startWith(ApplinkConst.MARKETPLACE_ORDER) { _, _, deeplink-> DeeplinkMapperBuyerOrder.getRegisteredNavigationBuyerOrder(deeplink) },
             DLP.startWith(ApplinkConst.MARKETPLACE_ORDER_SUB) { _, _, deeplink -> DeeplinkMapperBuyerOrder.getRegisteredNavigationBuyerOrder(deeplink) }
     ).toMutableList()
