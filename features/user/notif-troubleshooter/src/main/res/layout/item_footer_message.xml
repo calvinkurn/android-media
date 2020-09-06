@@ -44,7 +44,7 @@
         android:textColor="@color/charcoal_grey_68" />
 
     <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/btnClearCache"
+        android:id="@+id/btnAction"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_24"

@@ -64,4 +64,9 @@
     <string name="notif_dv_ticker_warning">Ada kategori push notification Tokopedia yang belum aktif di HP.</string>
     <string name="notif_rn_ticker_warning">HP-mu dalam Mode Getar atau Mode Sunyi dan tidak bisa menyetel bunyi notifikasi.</string>
 
+    <string name="notif_clear_cache_warning">Peringatan</string>
+    <string name="notif_clear_cache_message">Dengan membersihkan cache, berarti Anda juga setuju untuk <b>keluar</b> dan <b>menutup aplikasi</b>.</string>
+    <string name="notif_label_clear_cache_ok">Lakukan</string>
+    <string name="notif_label_clear_cache_cancel">Batal</string>
+
 </resources>
