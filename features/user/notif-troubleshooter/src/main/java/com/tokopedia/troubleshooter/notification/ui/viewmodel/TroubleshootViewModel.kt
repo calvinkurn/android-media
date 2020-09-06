@@ -3,7 +3,6 @@ package com.tokopedia.troubleshooter.notification.ui.viewmodel
 import android.media.RingtoneManager.TYPE_NOTIFICATION
 import android.net.Uri
 import androidx.lifecycle.*
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.fcmcommon.FirebaseMessagingManager
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -15,20 +14,18 @@ import com.tokopedia.troubleshooter.notification.data.service.fcm.FirebaseInstan
 import com.tokopedia.troubleshooter.notification.data.service.notification.NotificationCompatManager
 import com.tokopedia.troubleshooter.notification.data.service.ringtone.RingtoneModeService
 import com.tokopedia.troubleshooter.notification.ui.state.Error
-import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigUIView.Companion.importantNotification
-import com.tokopedia.troubleshooter.notification.ui.uiview.DeviceSettingState
-import com.tokopedia.troubleshooter.notification.ui.uiview.RingtoneState
-import com.tokopedia.troubleshooter.notification.ui.uiview.UserSettingUIView
-import com.tokopedia.troubleshooter.notification.util.dispatchers.DispatcherProvider
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.troubleshooter.notification.ui.state.Result
 import com.tokopedia.troubleshooter.notification.ui.state.Success
+import com.tokopedia.troubleshooter.notification.ui.uiview.*
+import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigUIView.Companion.importantNotification
+import com.tokopedia.troubleshooter.notification.util.dispatchers.DispatcherProvider
+import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import android.media.RingtoneManager.getDefaultUri as getRingtoneUri
 
 interface TroubleshootContract {
-    fun tickers(element: Visitable<*>)
+    fun tickers(element: TickerItemUIView, status: StatusState)
     fun userSetting()
     fun deviceSetting()
     fun soundNotification()
@@ -63,8 +60,8 @@ class TroubleshootViewModel @Inject constructor(
     private val _token = MediatorLiveData<String>()
     val token: LiveData<String> get() = _token
 
-    private val _tickerItems = mutableListOf<Visitable<*>>()
-    val tickerItems: List<Visitable<*>> get() = _tickerItems
+    private val _tickerItems = mutableListOf<TickerItemUIView>()
+    val tickerItems: List<TickerItemUIView> get() = _tickerItems
 
     init {
         _token.addSource(_troubleshoot) {
@@ -72,7 +69,8 @@ class TroubleshootViewModel @Inject constructor(
         }
     }
 
-    override fun tickers(element: Visitable<*>) {
+    override fun tickers(element: TickerItemUIView, status: StatusState) {
+        if (_tickerItems.contains(element)) return
         _tickerItems.add(element)
     }
 

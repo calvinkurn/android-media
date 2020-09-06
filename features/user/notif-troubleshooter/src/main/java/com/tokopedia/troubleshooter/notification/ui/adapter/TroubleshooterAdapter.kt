@@ -56,24 +56,6 @@ internal open class TroubleshooterAdapter(
         notifyDataSetChanged()
     }
 
-    fun updateToken(message: String) {
-
-    }
-
-//    fun addMessage(state: ConfigState, message: String) {
-//        val viewState = configUIViewByState(state)?: return
-//        val index = viewState.first
-//        val view = viewState.second
-//        view?.let { it.message = message }
-//        notifyItemChanged(index)
-//    }
-
-//    fun hideNotificationChannel() {
-//        val index = configUIViewByState(Channel)?.first?: return
-//        visitables.removeAt(index)
-//        notifyItemRemoved(index)
-//    }
-
     companion object {
         private const val INDEX_STATUS = 0
     }

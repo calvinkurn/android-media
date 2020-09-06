@@ -36,6 +36,7 @@ import com.tokopedia.troubleshooter.notification.ui.state.Result
 import com.tokopedia.troubleshooter.notification.ui.state.Success
 import kotlinx.android.synthetic.main.fragment_notif_troubleshooter.*
 import javax.inject.Inject
+import com.tokopedia.troubleshooter.notification.ui.uiview.RingtoneState.Normal as Normal
 
 class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
 
@@ -130,14 +131,14 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
             val ringtone = it.fourth?.second
 
             if (token.isNotNull() && notification.isNotNull() && device.isNotNull() && ringtone.isNotNull()) {
-                if (notification.isTrue() && device.isTrue() && ringtone.isRinging()) {
-                    troubleshooterStatusPassed()
-                } else {
-                    troubleshooterStatusWarning()
-                }
-
-                adapter.addWarningTicker(TickerUIView(viewModel.tickerItems))
                 TroubleshooterTimber.combine(token, notification, device)
+                adapter.addWarningTicker(TickerUIView(viewModel.tickerItems))
+
+                if (notification.isTrue() && device.isTrue() && ringtone.isRinging()) {
+                    adapter.status(StatusState.Success)
+                } else {
+                    adapter.status(StatusState.Warning)
+                }
             }
         })
     }
@@ -150,10 +151,10 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
             }
             is Error -> {
                 updateConfigStatus(
-                        Notification,
-                        StatusState.Error,
-                        getString(R.string.notif_ticker_net_error),
-                        R.string.btn_notif_try_again
+                        type = Notification,
+                        status = StatusState.Error,
+                        message = getString(R.string.notif_ticker_net_error),
+                        buttonText = R.string.btn_notif_try_again
                 )
             }
         }
@@ -168,17 +169,17 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
                 val inactive = userSetting.notifications - userSetting.totalOn
                 if (inactive != userSetting.notifications) {
                     updateConfigStatus(
-                            Notification,
-                            StatusState.Warning,
-                            getString(R.string.notif_us_ticker_warning, inactive.toString()),
-                            R.string.btn_notif_activation
+                            type = Notification,
+                            status = StatusState.Warning,
+                            message = getString(R.string.notif_us_ticker_warning, inactive.toString()),
+                            buttonText = R.string.btn_notif_activation
                     )
                 } else {
                     updateConfigStatus(
-                            Notification,
-                            StatusState.Error,
-                            getString(R.string.notif_us_ticker_error),
-                            R.string.btn_notif_try_again
+                            type = Notification,
+                            status = StatusState.Error,
+                            message = getString(R.string.notif_us_ticker_error),
+                            buttonText = R.string.btn_notif_try_again
                     )
                 }
             }
@@ -189,60 +190,49 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
         when (result) {
             is Error -> activity?.finish()
             is Success -> {
-                when (result.data) {
-                    is DeviceSettingState.Normal -> adapter.updateStatus(Device, StatusState.Success)
-                    is DeviceSettingState.High -> adapter.updateStatus(Device, StatusState.Success)
-                    is DeviceSettingState.Low -> {
-                        updateConfigStatus(
-                                Device,
-                                StatusState.Warning,
-                                getString(R.string.notif_dv_ticker_warning),
-                                R.string.btn_notif_repair
-                        )
-                    }
+                if (result.data == DeviceSettingState.Normal || result.data == DeviceSettingState.High) {
+                    adapter.updateStatus(Device, StatusState.Success)
+                } else {
+                    updateConfigStatus(
+                            type = Device,
+                            status = StatusState.Warning,
+                            message = getString(R.string.notif_dv_ticker_warning),
+                            buttonText = R.string.btn_notif_repair
+                    )
                 }
             }
         }
     }
 
     private fun ringtoneSetting(status: Pair<Uri?, RingtoneState>) {
-        if (status.second == Vibrate || status.second == Silent) {
-            updateConfigStatus(
-                    Ringtone,
-                    StatusState.Error,
-                    getString(R.string.notif_rn_ticker_warning),
-                    R.string.btn_notif_play
-            )
-        } else {
+        if (status.second == Normal) {
             adapter.setRingtoneStatus(status.first, StatusState.Success)
+        } else {
+            updateConfigStatus(
+                    type = Ringtone,
+                    status = StatusState.Error,
+                    message = getString(R.string.notif_rn_ticker_warning),
+                    buttonText = R.string.btn_notif_play
+            )
         }
     }
 
     private fun troubleshooterPushNotification(result: Result<NotificationSendTroubleshoot>) {
         when (result) {
             is Success -> {
-                adapter.updateStatus(PushNotification, isState(
-                        result.data.isTroubleshootSuccess()
-                ))
+                val isSuccess = isState(result.data.isTroubleshootSuccess())
+                adapter.updateStatus(PushNotification, isSuccess)
                 saveLastCheckedDate(requireContext())
             }
             is Error -> {
                 updateConfigStatus(
-                        PushNotification,
-                        StatusState.Error,
-                        getString(R.string.notif_ticker_net_error),
-                        R.string.btn_notif_try_again
+                        type = PushNotification,
+                        status = StatusState.Error,
+                        message = getString(R.string.notif_ticker_net_error),
+                        buttonText = R.string.btn_notif_try_again
                 )
             }
         }
-    }
-
-    private fun troubleshooterStatusPassed() {
-        adapter.status(StatusState.Success)
-    }
-
-    private fun troubleshooterStatusWarning() {
-        adapter.status(StatusState.Warning)
     }
 
     private fun setUpdateTokenStatus(newToken: String) {
@@ -284,11 +274,16 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
     private fun updateConfigStatus(
             type: ConfigState,
             status: StatusState,
-            message: String,
-            buttonText: Int
+            message: String = "",
+            buttonText: Int = 0
     ) {
+        val ticker = ticker(
+                type,
+                message,
+                getString(buttonText)
+        )
+        viewModel.tickers(ticker, status)
         adapter.updateStatus(type, status)
-        viewModel.tickers(ticker(type, message, getString(buttonText)))
     }
 
     override fun onRingtoneTest(uri: Uri) {
