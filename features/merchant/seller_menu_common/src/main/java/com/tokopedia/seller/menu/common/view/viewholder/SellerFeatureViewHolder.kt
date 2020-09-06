@@ -24,17 +24,19 @@ class SellerFeatureViewHolder(itemView: View): AbstractViewHolder<SellerFeatureU
 
     override fun bind(feature: SellerFeatureUiModel) {
         itemView.cardStatistics.setOnClickListener {
-            goToSellerMigrationPage(
-                SellerMigrationFeatureName.FEATURE_SHOP_INSIGHT,
-                arrayListOf(ApplinkConstInternalMarketplace.GOLD_MERCHANT_STATISTIC_DASHBOARD)
-            )
+            val appLinks = ArrayList<String>().apply {
+                add(ApplinkConstInternalSellerapp.SELLER_HOME)
+                add(ApplinkConstInternalMarketplace.GOLD_MERCHANT_STATISTIC_DASHBOARD)
+            }
+            goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_SHOP_INSIGHT, appLinks)
         }
 
         itemView.cardPromo.setOnClickListener {
-            goToSellerMigrationPage(
-                SellerMigrationFeatureName.FEATURE_CENTRALIZED_PROMO,
-                arrayListOf(ApplinkConstInternalSellerapp.CENTRALIZED_PROMO)
-            )
+            val appLinks = ArrayList<String>().apply {
+                add(ApplinkConstInternalSellerapp.SELLER_HOME)
+                add(ApplinkConstInternalSellerapp.CENTRALIZED_PROMO)
+            }
+            goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_CENTRALIZED_PROMO, appLinks)
         }
 
         itemView.cardFeedAndPlay.setOnClickListener {
