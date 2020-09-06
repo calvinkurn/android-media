@@ -11,6 +11,8 @@ import com.tokopedia.hotel.search.data.model.params.ParamFilter
 import com.tokopedia.hotel.search.data.model.params.ParamFilterV2
 import com.tokopedia.hotel.search.presentation.viewmodel.HotelSearchResultViewModel
 import com.tokopedia.hotel.search.usecase.SearchPropertyUseCase
+import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
@@ -327,6 +329,53 @@ class HotelSearchResultViewModelTest {
 
         //then
         assert(hotelSearchResultViewModel.getSelectedFilter().size == 1)
-        assert(hotelSearchResultViewModel.isFilter)
+    }
+
+    @Test
+    fun addFilterWithQuickFilter_shouldUpdateFilterV2() {
+        //given
+        val quickFilters= listOf(QuickFilter(name = "hygiene verified", values = listOf("hygiene verified")),
+                                                QuickFilter(name = "clean", values = listOf("clean")))
+        val sortFilterItems = arrayListOf(SortFilterItem("hygiene  verified", type = ChipsUnify.TYPE_SELECTED),
+                SortFilterItem("hygiene  verified", type = ChipsUnify.TYPE_NORMAL))
+
+        //when
+        hotelSearchResultViewModel.addFilter(quickFilters, sortFilterItems)
+
+        assert(hotelSearchResultViewModel.getSelectedFilter().size == 1)
+    }
+
+    @Test
+    fun addFilterWithQuickFilter_shouldUpdateFilterV2_2() {
+        //given
+        val selectedFilter = listOf(ParamFilterV2(name = "hygiene verified", values = mutableListOf("hygiene verified")))
+        hotelSearchResultViewModel.addFilter(selectedFilter)
+
+        val quickFilters= listOf(QuickFilter(name = "hygiene verified", values = listOf("hygiene verified")),
+                QuickFilter(name = "clean", values = listOf("clean")))
+        val sortFilterItems = arrayListOf(SortFilterItem("hygiene  verified", type = ChipsUnify.TYPE_SELECTED),
+                SortFilterItem("hygiene  verified", type = ChipsUnify.TYPE_NORMAL))
+
+        //when
+        hotelSearchResultViewModel.addFilter(quickFilters, sortFilterItems)
+
+        assert(hotelSearchResultViewModel.getSelectedFilter().size == 1)
+    }
+
+    @Test
+    fun addFilterWithQuickFilter_shouldUpdateFilterV2_3() {
+        //given
+        val selectedFilter = listOf(ParamFilterV2(name = "hygiene verified", values = mutableListOf("hygiene verified")))
+        hotelSearchResultViewModel.addFilter(selectedFilter)
+
+        val quickFilters= listOf(QuickFilter(name = "hygiene verified", values = listOf("hygiene verified")),
+                QuickFilter(name = "clean", values = listOf("clean")))
+        val sortFilterItems = arrayListOf(SortFilterItem("hygiene  verified", type = ChipsUnify.TYPE_NORMAL),
+                SortFilterItem("hygiene  verified", type = ChipsUnify.TYPE_NORMAL))
+
+        //when
+        hotelSearchResultViewModel.addFilter(quickFilters, sortFilterItems)
+
+        assert(hotelSearchResultViewModel.getSelectedFilter().size == 0)
     }
 }
