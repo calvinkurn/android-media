@@ -21,12 +21,13 @@ class InAppDataProviderSubscriber(
                 val iter = it.iterator()
                 while (iter.hasNext()) {
                     val inAppData = iter.next()
-                    if (!(checkIfActiveInTimeFrame(inAppData, inAppData.currentTime) &&
-                                    checkIfFrequencyIsValid(inAppData, inAppData.currentTime) &&
-                                    checkIfBehaviourRulesAreValid(inAppData))) {
+                    if (!(checkIfActiveInTimeFrame(inAppData, System.currentTimeMillis()) &&
+                                    checkIfFrequencyIsValid(inAppData, System.currentTimeMillis()))) {
                         iter.remove()
-                        if (performdeletion(inAppData)) {
-                            RepositoryManager.getInstance().storageProvider.deleteRecord(inAppData.id).subscribe()
+                        if (performDeletion(inAppData)) {
+                            RepositoryManager.getInstance()
+                                    .storageProvider
+                                    .deleteRecord(inAppData.id)
                         }
                     }
                 }
@@ -41,7 +42,7 @@ class InAppDataProviderSubscriber(
     }
 
     override fun onError(e: Throwable?) {
-
+        dataProvider?.notificationsDataResult(null)
     }
 
     private fun checkIfActiveInTimeFrame(inAppData: CMInApp, currentTime: Long): Boolean {
@@ -91,15 +92,10 @@ class InAppDataProviderSubscriber(
         }
     }
 
-    private fun performdeletion(inAppData: CMInApp): Boolean {
-        return !inAppData.isShown && (inAppData.freq == 0 || inAppData.freq < RulesUtil.Constants.DEFAULT_FREQ)
-    }
-
-    private fun checkIfBehaviourRulesAreValid(inAppData: CMInApp): Boolean {
-        //check for behaviour base expiry
-        //if no behaviour data is present then return true
-        //need to figure out which format to use to send behaviour data
-        return true
+    private fun performDeletion(inAppData: CMInApp): Boolean {
+        val perstOn = inAppData.isPersistentToggle
+        return if (!perstOn && checkIfActiveInTimeFrame(inAppData, System.currentTimeMillis())) false else inAppData.endTime < System.currentTimeMillis() ||
+                !inAppData.isShown && (inAppData.freq == 0 || inAppData.freq < RulesUtil.Constants.DEFAULT_FREQ)
     }
 
 }

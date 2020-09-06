@@ -109,13 +109,12 @@ public class StorageProvider implements InterfaceDataStore {
     }
 
     @Override
-    public void interactedWithView(final long id) {
-        Completable.fromAction(new Action0() {
+    public Completable interactedWithView(final long id) {
+        return Completable.fromAction(new Action0() {
             @Override
             public void call() {
                 inAppDataDao.updateFreqWithPerst(id);
             }
-        }).subscribeOn(Schedulers.io())
-                .subscribe();
+        }).subscribeOn(Schedulers.io());
     }
 }

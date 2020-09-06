@@ -19,6 +19,7 @@ import rx.schedulers.Schedulers;
 
 public class RuleInterpreterImpl implements InterfaceRuleInterpreter {
 
+    private List<CMInApp> inAppList;
     private ElapsedTime elapsedTimeObj;
 
     @Override

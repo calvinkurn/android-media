@@ -25,7 +25,7 @@ class CMInAppManagerTest {
     fun tearDown() {
     }
 
-    @Test
+    /*@Test
     fun handlePushPayloadTestWithoutNullCMInApp() {
 
         mockkStatic(CmInAppBundleConvertor::class)
@@ -37,7 +37,7 @@ class CMInAppManagerTest {
         cmInAppManager.handlePushPayload(remoteMessage)
 
         verify { RepositoryManager.getInstance().storageProvider.putDataToStore(cmInApp) }
-    }
+    }*/
 
     @Test
     fun handlePushPayloadTestWithNullCMInApp() {
