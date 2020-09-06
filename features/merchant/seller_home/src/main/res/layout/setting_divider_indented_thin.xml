@@ -11,7 +11,6 @@
         android:id="@+id/thinIndentedDivider"
         android:layout_width="0dp"
         android:layout_height="@dimen/setting_divider_thin"
-        android:background="@color/white"
         app:layout_constraintWidth_percent="0.85"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>

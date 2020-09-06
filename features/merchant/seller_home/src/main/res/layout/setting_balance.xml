@@ -2,8 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/white">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -31,7 +30,8 @@
             app:layout_constraintWidth_percent="0.5"
             app:typographyType="body_2"
             app:typographyWeight="bold"
-            app:layout_constraintEnd_toEndOf="@id/guidelineVerticalRight"/>
+            app:layout_constraintEnd_toEndOf="@id/guidelineVerticalRight"
+            tools:text="Rp123.456.789"/>
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guidelineVerticalLeft"
