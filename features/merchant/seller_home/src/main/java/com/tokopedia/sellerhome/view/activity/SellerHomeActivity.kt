@@ -19,6 +19,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.kotlin.extensions.view.hide
@@ -93,6 +94,8 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
     private var shouldMoveToCentralizedPromo: Boolean = false
     private var shouldMoveToShopPage: Boolean = false
     private var shouldMoveToBalance: Boolean = false
+    private var shouldMoveToStatistics: Boolean = false
+    private var shouldMoveToFinancialService: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
@@ -109,6 +112,8 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
             shouldMoveToCentralizedPromo = this == ApplinkConstInternalSellerapp.CENTRALIZED_PROMO
             shouldMoveToShopPage = this.startsWith(SHOP_PAGE_PREFIX)
             shouldMoveToBalance = this == ApplinkConstInternalGlobal.SALDO_DEPOSIT
+            shouldMoveToFinancialService = this == ApplinkConst.LAYANAN_FINANSIAL
+            shouldMoveToStatistics = this == ApplinkConstInternalMarketplace.GOLD_MERCHANT_STATISTIC_DASHBOARD
         }
         val isRedirectedFromSellerMigration = intent?.hasExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA) ?: false ||
                 intent?.hasExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME) ?: false
@@ -128,17 +133,22 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         val appLinks = ArrayList(intent?.getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA).orEmpty())
         if (appLinks.isNotEmpty()) {
             val appLinkToOpen = appLinks.firstOrNull().orEmpty()
-            if (shouldMoveToReview || shouldMoveToCentralizedPromo || shouldMoveToShopPage || shouldMoveToBalance) {
+            if (shouldMoveToReview || shouldMoveToCentralizedPromo || shouldMoveToShopPage || shouldMoveToBalance || shouldMoveToFinancialService || shouldMoveToStatistics) {
                 shouldMoveToReview = false
                 shouldMoveToCentralizedPromo = false
                 shouldMoveToShopPage = false
                 shouldMoveToBalance = false
+                shouldMoveToStatistics = false
+                shouldMoveToFinancialService = false
                 RouteManager.getIntent(this, appLinkToOpen).apply {
                     replaceExtras(this@SellerHomeActivity.intent.extras)
                     appLinks.find { it != ApplinkConst.REPUTATION &&
                                     it != ApplinkConstInternalSellerapp.CENTRALIZED_PROMO &&
                                     !it.startsWith(SHOP_PAGE_PREFIX) &&
-                                    it != ApplinkConstInternalGlobal.SALDO_DEPOSIT }?.let { nextDestinationApplink ->
+                                    it != ApplinkConstInternalGlobal.SALDO_DEPOSIT &&
+                                    it != ApplinkConstInternalMarketplace.GOLD_MERCHANT_STATISTIC_DASHBOARD &&
+                                    it != ApplinkConst.LAYANAN_FINANSIAL
+                    }?.let { nextDestinationApplink ->
                         putExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, nextDestinationApplink)
                     }
                     addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
