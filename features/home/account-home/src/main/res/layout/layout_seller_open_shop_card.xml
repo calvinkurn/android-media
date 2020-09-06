@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/account_home_seller_account_height"
+    android:layout_height="@dimen/account_home_seller_open_shop_height"
     android:layout_margin="@dimen/spacing_lvl3">
 
     <androidx.constraintlayout.widget.ConstraintLayout
