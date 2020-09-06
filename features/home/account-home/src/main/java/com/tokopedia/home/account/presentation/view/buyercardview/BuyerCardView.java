@@ -267,7 +267,7 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
 
     @Override
     public void showShopOpenCard() {
-        sellerAccountCard.setOnClickListener(v ->
+        sellerOpenShopCard.setOnClickListener(v ->
             RouteManager.route(getContext(), ApplinkConstInternalMarketplace.OPEN_SHOP)
         );
 
