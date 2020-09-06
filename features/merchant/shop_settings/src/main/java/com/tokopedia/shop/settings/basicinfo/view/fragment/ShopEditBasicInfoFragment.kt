@@ -219,16 +219,14 @@ class ShopEditBasicInfoFragment: Fragment() {
     }
 
     private fun setupShopTicker() {
-        shopEditTicker?.run {
-            setDescriptionClickEvent(object : TickerCallback {
-                override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    if (shopEditTicker.tickerType == Ticker.TYPE_WARNING) {
-                        clickReadMore()
-                    }
+        shopEditTicker.setDescriptionClickEvent(object : TickerCallback {
+            override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                if (shopEditTicker.tickerType == Ticker.TYPE_WARNING) {
+                    clickReadMore()
                 }
-                override fun onDismiss() {}
-            })
-        }
+            }
+            override fun onDismiss() {}
+        })
     }
 
     private fun createShopNameTextWatcher(): TextWatcher {
