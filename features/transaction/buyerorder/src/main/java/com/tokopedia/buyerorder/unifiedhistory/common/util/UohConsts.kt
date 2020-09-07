@@ -26,8 +26,6 @@ object UohConsts {
     const val TICKER_TYPE_INFORMATION = "information"
     const val TICKER_TYPE_WARNING = "warning"
 
-    const val TICKER_URL = "#url"
-    const val TICKER_LABEL = "#label"
     const val DATE_LIMIT = "#date_limit"
 
     const val BUTTON_VARIANT_FILLED = "filled"

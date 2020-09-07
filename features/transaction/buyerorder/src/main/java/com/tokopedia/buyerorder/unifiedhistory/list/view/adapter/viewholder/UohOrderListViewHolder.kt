@@ -4,6 +4,8 @@ import android.view.View
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.buyerorder.R
+import com.tokopedia.buyerorder.common.util.BuyerConsts.TICKER_LABEL
+import com.tokopedia.buyerorder.common.util.BuyerConsts.TICKER_URL
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohUtils
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohListOrder
@@ -42,8 +44,8 @@ class UohOrderListViewHolder(itemView: View, private val actionListener: UohItem
                         var desc = it.text
                         if (it.action.appUrl.isNotEmpty() && it.action.label.isNotEmpty()) {
                             desc += " ${itemView.context.getString(R.string.buyer_ticker_info_selengkapnya)
-                                    .replace(UohConsts.TICKER_URL, it.action.appUrl)
-                                    .replace(UohConsts.TICKER_LABEL, it.action.label)}"
+                                    .replace(TICKER_URL, it.action.appUrl)
+                                    .replace(TICKER_LABEL, it.action.label)}"
                         }
                         listTickerData.add(TickerData(it.title, desc, UohUtils.getTickerType(it.text), true))
                     }
@@ -70,8 +72,8 @@ class UohOrderListViewHolder(itemView: View, private val actionListener: UohItem
                         var desc = it.text
                         if (it.action.appUrl.isNotEmpty() && it.action.label.isNotEmpty()) {
                             desc += " ${itemView.context.getString(R.string.buyer_ticker_info_selengkapnya)
-                                    .replace(UohConsts.TICKER_URL, it.action.appUrl)
-                                    .replace(UohConsts.TICKER_LABEL, it.action.label)}"
+                                    .replace(TICKER_URL, it.action.appUrl)
+                                    .replace(TICKER_LABEL, it.action.label)}"
                         }
                         itemView.ticker_info_inside_card?.setHtmlDescription(desc)
                         itemView.ticker_info_inside_card?.tickerType = UohUtils.getTickerType(it.type)

@@ -22,6 +22,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.UnifyOrder.*
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.buyerorder.R
+import com.tokopedia.buyerorder.common.util.BuyerConsts.TICKER_LABEL
+import com.tokopedia.buyerorder.common.util.BuyerConsts.TICKER_URL
 import com.tokopedia.buyerorder.unifiedhistory.common.di.UohComponentInstance
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.APPLINK_RESO
@@ -646,8 +648,8 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 var desc = it.text
                 if (it.action.appUrl.isNotEmpty() && it.action.label.isNotEmpty()) {
                     desc += " ${getString(R.string.buyer_ticker_info_selengkapnya)
-                            .replace(UohConsts.TICKER_URL, it.action.appUrl)
-                            .replace(UohConsts.TICKER_LABEL, it.action.label)}"
+                            .replace(TICKER_URL, it.action.appUrl)
+                            .replace(TICKER_LABEL, it.action.label)}"
                 }
                 listTickerData.add(TickerData(it.title, desc, UohUtils.getTickerType(it.text), true))
             }
@@ -674,8 +676,8 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 var desc = it.text
                 if (it.action.appUrl.isNotEmpty() && it.action.label.isNotEmpty()) {
                     desc += " ${getString(R.string.buyer_ticker_info_selengkapnya)
-                            .replace(UohConsts.TICKER_URL, it.action.appUrl)
-                            .replace(UohConsts.TICKER_LABEL, it.action.label)}"
+                            .replace(TICKER_URL, it.action.appUrl)
+                            .replace(TICKER_LABEL, it.action.label)}"
                 }
                 ticker_info?.setHtmlDescription(desc)
                 ticker_info?.tickerType = UohUtils.getTickerType(it.type)
