@@ -53,6 +53,6 @@ dependencies {
     implementation (rootProject.ext.debugToolsDependencies.timber){
         exclude group: 'org.jetbrains', module: 'annotations'
     }
-
+    implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.miscDependencies.robust
 }

@@ -28,6 +28,10 @@ buildscript {
     }
 }
 
+dependencies {
+    implementation rootProject.ext.supportLibDependencies.supportV13
+}
+
 project.ext {
     artifactId = 'blockcanary'
     groupId = 'com.tokopedia.library'
