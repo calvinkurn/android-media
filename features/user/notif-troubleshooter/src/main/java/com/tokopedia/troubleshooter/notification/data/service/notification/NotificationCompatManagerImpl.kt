@@ -1,5 +1,7 @@
 package com.tokopedia.troubleshooter.notification.data.service.notification
 
+import android.app.NotificationManager
+import android.app.NotificationManager.INTERRUPTION_FILTER_ALL
 import android.content.Context
 import android.os.Build
 import android.provider.Settings
@@ -20,7 +22,7 @@ class NotificationCompatManagerImpl(
     override fun isDndModeEnabled(): Boolean {
 //        val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 //        return manager.currentInterruptionFilter == INTERRUPTION_FILTER_ALL
-        return Settings.Global.getInt(context.contentResolver, "zen_mode") == 2
+        return Settings.Global.getInt(context.contentResolver, "zen_mode") != 0
     }
 
 }

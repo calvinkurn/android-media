@@ -5,6 +5,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.troubleshooter.notification.R
 import com.tokopedia.troubleshooter.notification.ui.listener.FooterListener
@@ -30,7 +31,12 @@ class FooterViewHolder(
 
         if (element.isDndMode) {
             txtStatus?.show()
+            btnAction?.text = context?.getString(R.string.btn_notif_turnoff_dnd)
             txtMessage?.text = context?.getString(R.string.notif_footer_dnd_message)
+        } else {
+            txtStatus?.hide()
+            btnAction?.text = context?.getString(R.string.btn_notif_clear_cache)
+            txtMessage?.text = context?.getString(R.string.notif_footer_message)
         }
 
         btnAction?.setOnClickListener { onActionClicked(element.isDndMode) }

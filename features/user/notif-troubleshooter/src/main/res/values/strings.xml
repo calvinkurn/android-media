@@ -57,6 +57,7 @@
     <string name="notif_footer_status">Status HP : <b>Jangan Ganggu</b></string>
 
     <string name="btn_notif_clear_cache">Bersihkan Cache</string>
+    <string name="btn_notif_turnoff_dnd">Matikan Mode</string>
     <string name="btn_notif_try_again">Coba lagi</string>
     <string name="btn_notif_activation">Aktifkan</string>
     <string name="btn_notif_repair">Perbaiki</string>
