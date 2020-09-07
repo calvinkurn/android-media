@@ -39,6 +39,7 @@ object SomAnalytics {
     private const val CLICK_BUTTON_CHAT_PEMBELI_POPUP = "click button chat pembeli - popup"
     private const val CLICK_SEARCH_RECENT_SEARCH = "top nav - click search - search box"
     private const val CLICK_BUTTON_DOWNLOAD_INVOICE = "click button download invoice"
+    private const val CLICK_START_ADVERTISE = "click start advertise"
     private const val TO_APP_ORDER = "To App - Order"
     private const val SELLER_WIDGET = "sellerWidget"
     private const val SELLER_APP_WIDGET = "Seller App Widget"
@@ -169,5 +170,9 @@ object SomAnalytics {
 
     fun eventClickWidgetNewOrder() {
         sendEventCategoryActionLabel(SELLER_WIDGET, SELLER_APP_WIDGET,  CLICK, TO_APP_ORDER)
+    }
+
+    fun eventClickStartAds(orderName: String) {
+        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_START_ADVERTISE, orderName)
     }
 }

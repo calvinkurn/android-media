@@ -15,7 +15,6 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -47,10 +46,7 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHO
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_TIPS_URL_2
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_TIPS_URL_3
 import com.tokopedia.product.addedit.common.constant.ProductStatus.STATUS_ACTIVE
-import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
-import com.tokopedia.product.addedit.common.util.InputPriceUtil
-import com.tokopedia.product.addedit.common.util.getNavigationResult
-import com.tokopedia.product.addedit.common.util.removeNavigationResult
+import com.tokopedia.product.addedit.common.util.*
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.BUNDLE_CACHE_MANAGER_ID
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.EXTRA_CASHBACK_IS_DRAFTING
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.EXTRA_CASHBACK_SHOP_ID
@@ -1059,7 +1055,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             }
             val destination = AddEditProductPreviewFragmentDirections.actionAddEditProductPreviewFragmentToAddEditProductDetailFragment()
             destination.cacheManagerId = cacheManager.id ?: "0"
-            findNavController().navigate(destination)
+            NavigationController.navigate(this@AddEditProductPreviewFragment, destination)
             doneButton?.hide()
         }
     }
@@ -1074,7 +1070,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             }
             val destination = AddEditProductPreviewFragmentDirections.actionAddEditProductPreviewFragmentToAddEditProductDescriptionFragment()
             destination.cacheManagerId = cacheManager.id ?: "0"
-            findNavController().navigate(destination)
+            NavigationController.navigate(this@AddEditProductPreviewFragment, destination)
             doneButton?.hide()
         }
     }
@@ -1089,7 +1085,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             }
             val destination = AddEditProductPreviewFragmentDirections.actionAddEditProductPreviewFragmentToAddEditProductShipmentFragment()
             destination.cacheManagerId = cacheManager.id ?: "0"
-            findNavController().navigate(destination)
+            NavigationController.navigate(this@AddEditProductPreviewFragment, destination)
             doneButton?.hide()
         }
     }
