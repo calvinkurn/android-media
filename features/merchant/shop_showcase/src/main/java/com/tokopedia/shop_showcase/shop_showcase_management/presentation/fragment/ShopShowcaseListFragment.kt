@@ -58,7 +58,8 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         @JvmStatic
         fun createInstance(shopType: String, shopId: String?, selectedEtalaseId: String?,
                            isShowDefault: Boolean? = false, isShowZeroProduct: Boolean? = false,
-                           isMyShop: Boolean? = false, isNeedToGoToAddShowcase: Boolean? = false
+                           isMyShop: Boolean? = false, isNeedToGoToAddShowcase: Boolean? = false,
+                           isSellerNeedToHideShowcaseGroupValue: Boolean = false
         ): ShopShowcaseListFragment {
             val fragment = ShopShowcaseListFragment()
             val bundle = Bundle()
@@ -71,6 +72,8 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
             bundle.putBoolean(ShopShowcaseListParam.EXTRA_IS_MY_SHOP, isMyShop ?: false)
             bundle.putBoolean(ShopShowcaseListParam.EXTRA_IS_NEED_TO_GOTO_ADD_SHOWCASE, isNeedToGoToAddShowcase
                     ?: false)
+            bundle.putBoolean(ShopShowcaseListParam.EXTRA_IS_SELLER_NEED_TO_HIDE_SHOWCASE_GROUP_VALUE,
+                    isSellerNeedToHideShowcaseGroupValue)
             fragment.arguments = bundle
             return fragment
         }
@@ -106,6 +109,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     private var shopType = ""
     private var isNeedToGoToAddShowcase = false
     private var isReorderList = false
+    private var isSellerNeedToHideShowcaseGroupValue = false
 
 
     override fun getScreenName(): String {
@@ -176,6 +180,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
             isShowZeroProduct = it.getBoolean(ShopShowcaseListParam.EXTRA_IS_SHOW_ZERO_PRODUCT)
             isMyShop = it.getBoolean(ShopShowcaseListParam.EXTRA_IS_MY_SHOP)
             isNeedToGoToAddShowcase = it.getBoolean(ShopShowcaseListParam.EXTRA_IS_NEED_TO_GOTO_ADD_SHOWCASE)
+            isSellerNeedToHideShowcaseGroupValue = it.getBoolean(ShopShowcaseListParam.EXTRA_IS_SELLER_NEED_TO_HIDE_SHOWCASE_GROUP_VALUE)
         }
         super.onCreate(savedInstanceState)
     }
@@ -434,9 +439,13 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
             }, 500)
         } else {
             if (!isMyShop) {
-                viewModel.getShopShowcaseListAsBuyer(shopId, false)
+                viewModel.getShopShowcaseListAsBuyer(shopId, isOwner = false)
             } else {
-                viewModel.getShopShowcaseListAsSeller()
+                if (isSellerNeedToHideShowcaseGroupValue) {
+                    viewModel.getShopShowcaseListAsBuyer(shopId, isOwner = true) // Treat as a seller
+                } else {
+                    viewModel.getShopShowcaseListAsSeller()
+                }
             }
         }
     }

@@ -1947,6 +1947,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 shopEtalasePickerIntent.putExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_ID, etalaseId)
                 shopEtalasePickerIntent.putExtra(ShopShowcaseParamConstant.EXTRA_IS_SHOW_DEFAULT, false)
                 shopEtalasePickerIntent.putExtra(ShopShowcaseParamConstant.EXTRA_IS_SHOW_ZERO_PRODUCT, true)
+                shopEtalasePickerIntent.putExtra(ShopShowcaseParamConstant.EXTRA_IS_SELLER_NEED_TO_HIDE_SHOWCASE_GROUP_VALUE, true)
                 startActivityForResult(shopEtalasePickerIntent, ProductDetailConstant.REQUEST_CODE_ETALASE)
             }
         }
