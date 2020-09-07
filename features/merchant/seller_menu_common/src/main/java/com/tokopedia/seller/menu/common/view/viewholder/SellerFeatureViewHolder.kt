@@ -8,7 +8,6 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.seller.menu.common.R
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.seller.menu.common.view.uimodel.SellerFeatureUiModel
