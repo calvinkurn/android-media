@@ -85,6 +85,7 @@ import kotlinx.android.synthetic.main.bottomsheet_send_email.*
 import kotlinx.android.synthetic.main.bottomsheet_send_email.view.*
 import kotlinx.android.synthetic.main.fragment_uoh_list.*
 import kotlinx.coroutines.*
+import java.net.URLDecoder
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -676,7 +677,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 var desc = it.text
                 if (it.action.appUrl.isNotEmpty() && it.action.label.isNotEmpty()) {
                     desc += " ${getString(R.string.buyer_ticker_info_selengkapnya)
-                            .replace(TICKER_URL, it.action.appUrl)
+                            .replace(TICKER_URL, URLDecoder.decode(it.action.appUrl, "UTF-8"))
                             .replace(TICKER_LABEL, it.action.label)}"
                 }
                 ticker_info?.setHtmlDescription(desc)

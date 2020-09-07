@@ -37,7 +37,7 @@ import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.getRegisteredNaviga
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.getRegisteredNavigationReputation
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.getRegisteredNavigationShopReview
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.isShopReview
-import com.tokopedia.applink.order.DeeplinkMapperBuyerOrder
+import com.tokopedia.applink.order.DeeplinkMapperUohOrder
 import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerAwbChange
 import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerAwbInvalid
 import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerComplaint
@@ -62,8 +62,6 @@ import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomNewOrderAp
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomReadyToShipAppLink
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomShippedAppLink
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import java.lang.Exception
 
 /**
  * Function to map the deeplink to applink (registered in manifest)
@@ -362,9 +360,17 @@ object DeeplinkMapper {
             DLP.exact(ApplinkConst.MERCHANT_VOUCHER_LIST, ApplinkConstInternalSellerapp.VOUCHER_LIST),
             DLP.exact(ApplinkConst.NOTIFICATION_TROUBLESHOOTER, ApplinkConstInternalGlobal.PUSH_NOTIFICATION_TROUBLESHOOTER),
             DLP.exact(ApplinkConst.PROFILE_COMPLETION, ApplinkConstInternalGlobal.PROFILE_COMPLETION),
-            DLP.startWith(ApplinkConst.BELANJA_ORDER) { _, _, deeplink-> DeeplinkMapperBuyerOrder.getRegisteredNavigationBuyerOrder(deeplink) },
-            DLP.startWith(ApplinkConst.MARKETPLACE_ORDER) { _, _, deeplink-> DeeplinkMapperBuyerOrder.getRegisteredNavigationBuyerOrder(deeplink) },
-            DLP.startWith(ApplinkConst.MARKETPLACE_ORDER_SUB) { _, _, deeplink -> DeeplinkMapperBuyerOrder.getRegisteredNavigationBuyerOrder(deeplink) }
+            DLP.startWith(ApplinkConst.BELANJA_ORDER) { _, _, deeplink-> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(deeplink) },
+            DLP.startWith(ApplinkConst.MARKETPLACE_ORDER) { _, _, deeplink-> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(deeplink) },
+            DLP.startWith(ApplinkConst.MARKETPLACE_ORDER_SUB) { _, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(deeplink) },
+            DLP.startWith(ApplinkConst.DIGITAL_ORDER) { _, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(deeplink) },
+            DLP.startWith(ApplinkConst.EVENTS_ORDER) { _, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(deeplink) },
+            DLP.startWith(ApplinkConst.DEALS_ORDER) { _, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(deeplink) },
+            DLP.startWith(ApplinkConst.FLIGHT_ORDER) { _, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(deeplink) },
+            DLP.startWith(ApplinkConst.GIFT_CARDS_ORDER) { _, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(deeplink) },
+            DLP.startWith(ApplinkConst.INSURANCE_ORDER) { _, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(deeplink) },
+            DLP.startWith(ApplinkConst.MODAL_TOKO_ORDER) { _, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(deeplink) },
+            DLP.startWith(ApplinkConst.HOTEL_ORDER) { _, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(deeplink) }
     ).toMutableList()
 
     /**

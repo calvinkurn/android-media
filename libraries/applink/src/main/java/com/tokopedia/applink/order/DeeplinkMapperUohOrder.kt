@@ -13,12 +13,16 @@ import com.tokopedia.remoteconfig.RemoteConfigInstance
 /**
  * Created by fwidjaja on 27/08/20.
  */
-object DeeplinkMapperBuyerOrder {
+object DeeplinkMapperUohOrder {
     private var UOH_AB_TEST_KEY = "UOH_android"
 
-    fun getRegisteredNavigationBuyerOrder(deeplink: String): String {
+    fun getRegisteredNavigationUohOrder(deeplink: String): String {
         var returnedDeeplink = ""
-        if (deeplink.startsWith(ApplinkConst.BELANJA_ORDER)) {
+        if (deeplink.startsWith(ApplinkConst.BELANJA_ORDER) || deeplink.startsWith(ApplinkConst.DIGITAL_ORDER)
+                || deeplink.startsWith(ApplinkConst.EVENTS_ORDER) || deeplink.startsWith(ApplinkConst.DEALS_ORDER)
+                || deeplink.startsWith(ApplinkConst.FLIGHT_ORDER) || deeplink.startsWith(ApplinkConst.GIFT_CARDS_ORDER)
+                || deeplink.startsWith(ApplinkConst.INSURANCE_ORDER) || deeplink.startsWith(ApplinkConst.MODAL_TOKO_ORDER)
+                || deeplink.startsWith(ApplinkConst.HOTEL_ORDER)) {
             useUoh()?.let { newFlow ->
                 returnedDeeplink = if (newFlow) ApplinkConstInternalOrder.UNIFY_ORDER
                 else deeplink
