@@ -296,24 +296,4 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
 
         `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)
     }
-
-    @Test
-    fun `Load Data Success With Redirection Response Code 9`() {
-        val searchProductModel = responseCode9.jsonToObject<SearchProductModel>()
-        val previousKeyword = ""
-        val expectedGeneralSearchTrackingModel = GeneralSearchTrackingModel(
-                eventLabel = String.format(
-                        SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
-                        keyword,
-                        searchProductModel.searchProduct.header.keywordProcess,
-                        searchProductModel.searchProduct.header.responseCode
-                ),
-                isResultFound = true,
-                categoryIdMapping = "65",
-                categoryNameMapping = "Handphone & Tablet",
-                relatedKeyword = "none - none"
-        )
-
-        `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)
-    }
 }
