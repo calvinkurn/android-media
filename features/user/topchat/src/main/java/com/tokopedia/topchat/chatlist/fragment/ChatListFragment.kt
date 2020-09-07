@@ -693,12 +693,14 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
                         chatItemListViewModel.pinnedMsgId.remove(element.msgId)
                         showToaster(R.string.title_success_unpin_chat)
                     } else {
+                        // check if it can be repositioned in the  middle. else
                         // chat unpinned and can not be restored to current list, just remove the item
                         adapter?.unpinChatItem(
                                 element,
                                 position,
                                 chatItemListViewModel.pinnedMsgId.size,
-                                chatItemListViewModel.chatListHasNext
+                                chatItemListViewModel.chatListHasNext,
+                                chatItemListViewModel.unpinnedMsgId
                         )
                         chatItemListViewModel.pinnedMsgId.remove(element.msgId)
                         showToaster(R.string.title_success_unpin_chat)

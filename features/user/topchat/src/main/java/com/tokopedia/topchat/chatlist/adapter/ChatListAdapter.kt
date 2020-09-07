@@ -77,9 +77,20 @@ class ChatListAdapter constructor(
         }
     }
 
-    fun unpinChatItem(element: ItemChatListPojo, position: Int, offset: Int, hasNextPage: Boolean) {
-        val fromPosition = getItemPosition(element, position)
-        var toPosition = findElementFinalIndex(element, offset)
+    fun unpinChatItem(
+            element: ItemChatListPojo,
+            previouslyKnownPosition: Int,
+            offset: Int,
+            hasNextPage: Boolean,
+            unpinnedMsgId: HashSet<String>
+    ) {
+        val fromPosition = getItemPosition(element, previouslyKnownPosition)
+        val canRepositionToMiddle = canRepositionToMiddle(element)
+        var toPosition = if (canRepositionToMiddle) {
+            findElementFinalIndex(element, offset)
+        } else {
+            RecyclerView.NO_POSITION
+        }
         if (toPosition == RecyclerView.NO_POSITION && !hasNextPage) {
             toPosition = visitables.lastIndex
         }
@@ -88,10 +99,31 @@ class ChatListAdapter constructor(
             notifyItemRemoved(fromPosition)
             notifyItemInserted(toPosition)
             notifyItemChanged(toPosition, PAYLOAD_UPDATE_PIN_STATUS)
+            unpinnedMsgId.add(element.msgId)
         } else if (fromPosition != RecyclerView.NO_POSITION) {
             visitables.removeAt(fromPosition)
             notifyItemRemoved(fromPosition)
         }
+    }
+
+    private fun canRepositionToMiddle(element: ItemChatListPojo): Boolean {
+        val elementLastReplyTimestamp = element.lastReplyTime
+        val lastChatItem = getLastChatItem()
+        if (lastChatItem != null) {
+            val lastItemChatReplyTimestamp = lastChatItem.lastReplyTime
+            return elementLastReplyTimestamp > lastItemChatReplyTimestamp
+        }
+        return false
+    }
+
+    private fun getLastChatItem(): ItemChatListPojo? {
+        for (i in (visitables.size - 1) downTo 0)  {
+            val item = visitables[i]
+            if (item is ItemChatListPojo) {
+                return item
+            }
+        }
+        return null
     }
 
     fun putToOriginalPosition(element: ItemChatListPojo, position: Int, offset: Int) {
