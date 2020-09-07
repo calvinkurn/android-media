@@ -1,9 +1,6 @@
 package com.tokopedia.common.travel.ticker.domain
 
-import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.common.travel.R
+import com.tokopedia.common.travel.data.TravelTickerGQLQuery
 import com.tokopedia.common.travel.ticker.data.response.TravelTickerAttribute
 import com.tokopedia.common.travel.ticker.data.response.TravelTickerEntity
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
@@ -21,7 +18,6 @@ import javax.inject.Inject
  * @author by furqan on 31/03/2020
  */
 class TravelTickerCoroutineUseCase @Inject constructor(
-        @ApplicationContext val context: Context,
         private val useCase: MultiRequestGraphqlUseCase) {
 
     suspend fun execute(instanceName: String = "", pageName: String = ""): Result<TravelTickerModel> {
@@ -34,7 +30,7 @@ class TravelTickerCoroutineUseCase @Inject constructor(
                 PARAM_PAGE to pageName
         )
         return try {
-            val query = GraphqlHelper.loadRawString(context.resources, R.raw.query_travel_ticker)
+            val query = TravelTickerGQLQuery.TRAVEL_TICKER
             val graphqlRequest = GraphqlRequest(query, TravelTickerEntity::class.java, params)
             useCase.addRequest(graphqlRequest)
 
