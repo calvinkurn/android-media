@@ -9,7 +9,7 @@ import com.tokopedia.troubleshooter.notification.ui.adapter.viewholder.StatusVie
 import com.tokopedia.troubleshooter.notification.ui.adapter.viewholder.TickerViewHolder
 import com.tokopedia.troubleshooter.notification.ui.listener.ConfigItemListener
 import com.tokopedia.troubleshooter.notification.ui.listener.FooterListener
-import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigUIView
+import com.tokopedia.troubleshooter.notification.ui.state.ConfigUIView
 import com.tokopedia.troubleshooter.notification.ui.uiview.FooterUIView
 import com.tokopedia.troubleshooter.notification.ui.uiview.StatusUIView
 import com.tokopedia.troubleshooter.notification.ui.uiview.TickerUIView

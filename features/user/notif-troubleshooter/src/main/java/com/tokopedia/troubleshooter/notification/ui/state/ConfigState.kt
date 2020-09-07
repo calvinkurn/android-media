@@ -1,4 +1,4 @@
-package com.tokopedia.troubleshooter.notification.ui.uiview
+package com.tokopedia.troubleshooter.notification.ui.state
 
 sealed class ConfigState {
     object PushNotification: ConfigState()

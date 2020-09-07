@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.troubleshooter.notification.R
 import com.tokopedia.troubleshooter.notification.ui.adapter.TickerAdapter
 import com.tokopedia.troubleshooter.notification.ui.adapter.factory.TickerItemFactory
-import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigState.Ringtone
+import com.tokopedia.troubleshooter.notification.ui.state.ConfigState.Ringtone
 import com.tokopedia.troubleshooter.notification.ui.uiview.TickerItemUIView
 import com.tokopedia.troubleshooter.notification.ui.uiview.TickerUIView
 import com.tokopedia.unifyprinciples.Typography

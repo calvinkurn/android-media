@@ -5,7 +5,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.troubleshooter.notification.R
-import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigState
+import com.tokopedia.troubleshooter.notification.ui.state.ConfigState
 import com.tokopedia.troubleshooter.notification.ui.uiview.TickerItemUIView
 import com.tokopedia.troubleshooter.notification.util.gotoAudioSetting
 import com.tokopedia.troubleshooter.notification.util.gotoNotificationSetting

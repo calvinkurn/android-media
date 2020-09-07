@@ -13,13 +13,16 @@ import com.tokopedia.troubleshooter.notification.data.service.channel.Notificati
 import com.tokopedia.troubleshooter.notification.data.service.fcm.FirebaseInstanceManager
 import com.tokopedia.troubleshooter.notification.data.service.notification.NotificationCompatManager
 import com.tokopedia.troubleshooter.notification.data.service.ringtone.RingtoneModeService
-import com.tokopedia.troubleshooter.notification.ui.state.Error
-import com.tokopedia.troubleshooter.notification.ui.state.Result
-import com.tokopedia.troubleshooter.notification.ui.state.Success
+import com.tokopedia.troubleshooter.notification.ui.state.RingtoneState
+import com.tokopedia.troubleshooter.notification.ui.state.StatusState
 import com.tokopedia.troubleshooter.notification.ui.uiview.*
-import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigUIView.Companion.importantNotification
+import com.tokopedia.troubleshooter.notification.ui.state.ConfigUIView.Companion.importantNotification
+import com.tokopedia.troubleshooter.notification.ui.state.DeviceSettingState
 import com.tokopedia.troubleshooter.notification.util.dispatchers.DispatcherProvider
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import android.media.RingtoneManager.getDefaultUri as getRingtoneUri
@@ -74,11 +77,6 @@ class TroubleshootViewModel @Inject constructor(
         }
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    override fun isDndModeEnabled() {
-        _dndMode.value = notificationCompat.isDndModeEnabled()
-    }
-
     override fun tickers(element: TickerItemUIView, status: StatusState) {
         if (_tickerItems.contains(element)) return
         _tickerItems.add(element)
@@ -88,6 +86,17 @@ class TroubleshootViewModel @Inject constructor(
         _tickerItems.clear()
     }
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    override fun isDndModeEnabled() {
+        val isDndEnabled = try {
+            notificationCompat.isDndModeEnabled()
+        } catch (e: Throwable) {
+            false // device hasn't DnD mode
+        }
+
+        _dndMode.value = isDndEnabled
+    }
+
     override fun troubleshoot() {
         launchCatchError(block = {
             val result = troubleshootUseCase(RequestParams.EMPTY)
@@ -95,7 +104,7 @@ class TroubleshootViewModel @Inject constructor(
                 _troubleshoot.value = Success(result.notificationSendTroubleshoot)
             }
         }, onError = {
-            _troubleshoot.postValue(Error(it))
+            _troubleshoot.postValue(Fail(it))
         })
     }
 
@@ -117,14 +126,14 @@ class TroubleshootViewModel @Inject constructor(
                 _notificationSetting.value =  Success(userNotification)
             }
         }, onError = {
-            _notificationSetting.postValue(Error(it))
+            _notificationSetting.postValue(Fail(it))
         })
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     override fun deviceSetting() {
         if (!notificationCompat.isNotificationEnabled()) {
-            _deviceSetting.postValue(Error(Throwable("")))
+            _deviceSetting.postValue(Fail(Throwable("")))
             return
         }
 

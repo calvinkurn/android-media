@@ -9,9 +9,9 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.troubleshooter.notification.R
 import com.tokopedia.troubleshooter.notification.ui.listener.ConfigItemListener
-import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigState
-import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigUIView
-import com.tokopedia.troubleshooter.notification.ui.uiview.StatusState
+import com.tokopedia.troubleshooter.notification.ui.state.ConfigState
+import com.tokopedia.troubleshooter.notification.ui.state.ConfigUIView
+import com.tokopedia.troubleshooter.notification.ui.state.StatusState
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.abstraction.common.utils.view.MethodChecker.getDrawable as drawable

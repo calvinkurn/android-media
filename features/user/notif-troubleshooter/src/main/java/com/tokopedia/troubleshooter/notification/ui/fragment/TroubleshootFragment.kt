@@ -25,18 +25,20 @@ import com.tokopedia.troubleshooter.notification.ui.adapter.TroubleshooterAdapte
 import com.tokopedia.troubleshooter.notification.ui.adapter.factory.TroubleshooterItemFactory
 import com.tokopedia.troubleshooter.notification.ui.listener.ConfigItemListener
 import com.tokopedia.troubleshooter.notification.ui.listener.FooterListener
-import com.tokopedia.troubleshooter.notification.ui.state.Error
-import com.tokopedia.troubleshooter.notification.ui.state.Result
-import com.tokopedia.troubleshooter.notification.ui.state.Success
+import com.tokopedia.troubleshooter.notification.ui.state.*
 import com.tokopedia.troubleshooter.notification.ui.uiview.*
-import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigState.*
-import com.tokopedia.troubleshooter.notification.ui.uiview.RingtoneState.Normal
+import com.tokopedia.troubleshooter.notification.ui.state.ConfigState.*
+import com.tokopedia.troubleshooter.notification.ui.state.DeviceSettingState.Companion.isPriorityNormalOrHigh
+import com.tokopedia.troubleshooter.notification.ui.state.RingtoneState.Normal
 import com.tokopedia.troubleshooter.notification.ui.uiview.TickerItemUIView.Companion.ticker
 import com.tokopedia.troubleshooter.notification.ui.viewmodel.TroubleshootViewModel
 import com.tokopedia.troubleshooter.notification.util.*
 import com.tokopedia.troubleshooter.notification.util.TroubleshooterDialog.showInformationDialog
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_notif_troubleshooter.*
 import javax.inject.Inject
+import com.tokopedia.troubleshooter.notification.ui.state.RingtoneState.Companion.isSilent as isSilent
 
 class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterListener {
 
@@ -138,7 +140,7 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
                 TroubleshooterTimber.combine(token, notification, device)
                 adapter.addWarningTicker(TickerUIView(viewModel.tickerItems))
 
-                if (notification.isTrue() && device.isTrue() && ringtone.isRinging()) {
+                if (notification.isTrue() && device.isTrue() && isSilent(ringtone)) {
                     adapter.status(StatusState.Success)
                 } else {
                     adapter.status(StatusState.Warning)
@@ -194,7 +196,7 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
         when (result) {
             is Error -> activity?.finish()
             is Success -> {
-                if (result.data == DeviceSettingState.Normal || result.data == DeviceSettingState.High) {
+                if (isPriorityNormalOrHigh(result.data)) {
                     adapter.updateStatus(Device, StatusState.Success)
                 } else {
                     updateConfigStatus(
@@ -224,7 +226,7 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
     private fun troubleshooterPushNotification(result: Result<NotificationSendTroubleshoot>) {
         when (result) {
             is Success -> {
-                val isSuccess = isState(result.data.isTroubleshootSuccess())
+                val isSuccess = StatusState(result.data.isTroubleshootSuccess())
                 adapter.updateStatus(PushNotification, isSuccess)
                 saveLastCheckedDate(requireContext())
             }

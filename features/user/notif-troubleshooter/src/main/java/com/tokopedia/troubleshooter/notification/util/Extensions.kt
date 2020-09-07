@@ -2,15 +2,9 @@ package com.tokopedia.troubleshooter.notification.util
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import com.tokopedia.troubleshooter.notification.ui.uiview.RingtoneState
-import com.tokopedia.troubleshooter.notification.ui.state.Result
-import com.tokopedia.troubleshooter.notification.ui.state.Success
-import java.lang.Exception
-
-fun <T> MutableList<T>.dropFirst() {
-    if (isEmpty()) return
-    removeAt(0)
-}
+import com.tokopedia.troubleshooter.notification.ui.state.RingtoneState
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 
 fun Any?.isNotNull(): Boolean {
     return this != null
@@ -62,15 +56,6 @@ fun <T1, T2, T3, T4> combineFourth(
 inline fun <reified T: Any> Result<T>?.isTrue(): Boolean {
     return when (this) {
         is Success -> true
-        else -> false
-    }
-}
-
-fun RingtoneState?.isRinging(): Boolean {
-    return when (this) {
-        is RingtoneState.Normal -> true
-        is RingtoneState.Vibrate -> false
-        is RingtoneState.Silent -> false
         else -> false
     }
 }

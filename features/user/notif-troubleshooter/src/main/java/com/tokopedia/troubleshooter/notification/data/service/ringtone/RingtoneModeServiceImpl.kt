@@ -2,7 +2,7 @@ package com.tokopedia.troubleshooter.notification.data.service.ringtone
 
 import android.content.Context
 import android.media.AudioManager
-import com.tokopedia.troubleshooter.notification.ui.uiview.RingtoneState
+import com.tokopedia.troubleshooter.notification.ui.state.RingtoneState
 
 class RingtoneModeServiceImpl(
         private val context: Context

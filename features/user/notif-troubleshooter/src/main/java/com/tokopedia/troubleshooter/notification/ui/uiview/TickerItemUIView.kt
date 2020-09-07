@@ -2,7 +2,8 @@ package com.tokopedia.troubleshooter.notification.ui.uiview
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.troubleshooter.notification.ui.adapter.factory.TickerTypeFactory
-import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigState.Undefined as Undefined
+import com.tokopedia.troubleshooter.notification.ui.state.ConfigState
+import com.tokopedia.troubleshooter.notification.ui.state.ConfigState.Undefined as Undefined
 
 data class TickerItemUIView(
         val message: CharSequence = "",
