@@ -32,7 +32,9 @@ import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Menus
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -46,7 +48,6 @@ import com.tokopedia.topchat.chatlist.adapter.ChatListAdapter
 import com.tokopedia.topchat.chatlist.adapter.decoration.ChatListItemDecoration
 import com.tokopedia.topchat.chatlist.adapter.typefactory.ChatListTypeFactoryImpl
 import com.tokopedia.topchat.chatlist.adapter.viewholder.ChatItemListViewHolder
-import com.tokopedia.topchat.chatlist.adapter.viewholder.ChatItemListViewHolder.Companion.PAYLOAD_NEW_INCOMING_CHAT
 import com.tokopedia.topchat.chatlist.analytic.ChatListAnalytic
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_READ
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_TOPBOT
@@ -62,7 +63,6 @@ import com.tokopedia.topchat.chatlist.model.IncomingChatWebSocketModel
 import com.tokopedia.topchat.chatlist.model.IncomingTypingWebSocketModel
 import com.tokopedia.topchat.chatlist.pojo.ChatChangeStateResponse
 import com.tokopedia.topchat.chatlist.pojo.ChatListDataPojo
-import com.tokopedia.topchat.chatlist.pojo.ItemChatAttributesPojo
 import com.tokopedia.topchat.chatlist.pojo.ItemChatListPojo
 import com.tokopedia.topchat.chatlist.viewmodel.ChatItemListViewModel
 import com.tokopedia.topchat.chatlist.viewmodel.ChatItemListViewModel.Companion.arrayFilterParam
