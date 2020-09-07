@@ -23,7 +23,6 @@
 
         <TextView
             android:id="@+id/chip_text"
-            android:contentDescription="@string/content_desc_chip_text"
             android:layout_gravity="center_vertical"
             android:maxLines="1"
             android:textColor="@color/Neutral_N700_68"
