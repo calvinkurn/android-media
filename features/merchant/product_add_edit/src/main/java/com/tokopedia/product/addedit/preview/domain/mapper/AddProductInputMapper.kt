@@ -22,7 +22,6 @@ class AddProductInputMapper @Inject constructor() {
 
     companion object{
         const val PRICE_CURRENCY = "IDR"
-        const val STOCK_STATUS = "LIMITED"
         const val UNIT_GRAM = "GR"
         const val UNIT_KILOGRAM = "KG"
         const val UNIT_DAY = "DAY"
@@ -119,7 +118,7 @@ class AddProductInputMapper @Inject constructor() {
                 it.description,
                 it.fileName,
                 it.filePath,
-                it.picID,
+                "",
                 it.isFromIG == "true",
                 it.width.toInt(),
                 it.height.toInt(),
@@ -135,7 +134,7 @@ class AddProductInputMapper @Inject constructor() {
                     sizecharts.description,
                     sizecharts.fileName,
                     sizecharts.filePath,
-                    sizecharts.picID,
+                    "",
                     sizecharts.isFromIG == "true",
                     sizecharts.width.toInt(),
                     sizecharts.height.toInt(),
