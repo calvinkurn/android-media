@@ -1,46 +1,67 @@
 package com.tokopedia.topads.detail_sheet.viewmodel
 
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
+import android.content.res.Resources
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.common.network.coroutines.repository.RestRepository
-import com.tokopedia.common.network.data.model.CacheType
-import com.tokopedia.common.network.data.model.RequestType
-import com.tokopedia.common.network.data.model.RestCacheStrategy
-import com.tokopedia.common.network.data.model.RestRequest
-import com.tokopedia.network.data.model.response.DataResponse
-import com.tokopedia.topads.detail_sheet.UrlConstant.BASE_REST_URL
-import com.tokopedia.topads.detail_sheet.UrlConstant.PARAM_AD_ID
-import com.tokopedia.topads.detail_sheet.UrlConstant.PARAM_END_DATE
-import com.tokopedia.topads.detail_sheet.UrlConstant.PARAM_SHOP_ID
-import com.tokopedia.topads.detail_sheet.UrlConstant.PARAM_START_DATE
-import com.tokopedia.topads.detail_sheet.data.Data
-import com.tokopedia.usecase.launch_cache_error.launchCatchError
-import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.topads.common.data.internal.ParamObject
+import com.tokopedia.topads.common.data.response.groupitem.GroupItemResponse
+import com.tokopedia.topads.common.data.response.nongroupItem.WithoutGroupDataItem
+import com.tokopedia.topads.common.domain.interactor.TopAdsGetGroupDataUseCase
+import com.tokopedia.topads.common.domain.interactor.TopAdsGetGroupProductDataUseCase
+import com.tokopedia.topads.common.domain.interactor.TopAdsGetProductStatisticsUseCase
+import com.tokopedia.topads.common.domain.interactor.TopAdsProductActionUseCase
+import com.tokopedia.topads.detail_sheet.R
+import com.tokopedia.topads.detail_sheet.data.AdData
+import com.tokopedia.topads.detail_sheet.data.AdInfo
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
-import com.tokopedia.topads.detail_sheet.UrlConstant.PATH_TOPADS_GROUP_PRODUCT
-import com.tokopedia.topads.detail_sheet.UrlConstant.PATH_BULK_ACTION_PRODUCT_AD
-import com.tokopedia.topads.detail_sheet.data.Ad
-import com.tokopedia.topads.detail_sheet.data.ActionRequest
-import com.tokopedia.topads.detail_sheet.data.Bulk
-import java.text.SimpleDateFormat
-import java.util.*
-import com.tokopedia.authentication.AuthHelper
 
 /**
  * Author errysuprayogi on 22,October,2019
  */
-class TopAdsSheetViewModel @Inject constructor(private val restRepository: RestRepository,
-                                               private val userSession: UserSessionInterface,
-                                               private val urlMap: Map<String, String>,
-                                               @Named("Main")
-                                               val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
+class TopAdsSheetViewModel @Inject constructor(
+        private val topAdsGetGroupProductDataUseCase: TopAdsGetGroupProductDataUseCase,
+        private val topAdsGetProductStatisticsUseCase: TopAdsGetProductStatisticsUseCase,
+        private val topAdsGetGroupIdUseCase: GraphqlUseCase<AdInfo>,
+        private val topAdsProductActionUseCase: TopAdsProductActionUseCase,
+        private val topAdsGetGroupDataUseCase: TopAdsGetGroupDataUseCase,
+        @Named("Main")
+        val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
-    private val REQUEST_DATE_FORMAT = "yyyy-MM-dd"
+    companion object {
+        const val GROUP_REQUEST = """query topAdsGetPromo(${'$'}shopID: String!, ${'$'}adID: String!) { 
+            topAdsGetPromo(shopID: ${'$'}shopID, adID: ${'$'}adID) {
+              data { 
+                adID 
+                adType 
+                groupID 
+                shopID 
+                itemID 
+                status 
+                priceBid 
+                priceDaily 
+                adStartDate 
+                adStartTime 
+                adEndDate 
+                adEndTime 
+                adImage 
+                adTitle 
+              } 
+              errors { 
+                code 
+                detail 
+                title 
+              } 
+             } 
+            }""""
+
+
+    }
+
 
     private fun getDate(daysAgo: Int): Date {
         val calendar = Calendar.getInstance()
@@ -48,73 +69,88 @@ class TopAdsSheetViewModel @Inject constructor(private val restRepository: RestR
         return calendar.time
     }
 
-    fun getAdsProduct(adId: String, onSuccessGetAds: ((Data) -> Unit),
-                      onErrorGetAds: ((Throwable) -> Unit)) {
-        launchCatchError(
-                block = {
-                    val endDate = SimpleDateFormat(REQUEST_DATE_FORMAT, Locale.ENGLISH).format(getDate(7))
-                    val startDate = SimpleDateFormat(REQUEST_DATE_FORMAT, Locale.ENGLISH).format(getDate(0))
-                    val result = withContext(Dispatchers.IO) {
-                        val queryMap = mutableMapOf<String, String>(
-                                PARAM_AD_ID to adId,
-                                PARAM_SHOP_ID to userSession.shopId,
-                                PARAM_START_DATE to startDate,
-                                PARAM_END_DATE to endDate
-                        )
-                        AuthHelper.generateParamsNetwork(
-                                userSession.userId, userSession.deviceId, queryMap)
-                        val restRequest = RestRequest.Builder(
-                                urlMap[PATH_TOPADS_GROUP_PRODUCT] ?: "",
-                                object : TypeToken<DataResponse<List<Data>>>() {}.type)
-                                .setQueryParams(queryMap)
-                                .build()
-                        restRepository.getResponse(restRequest)
-                    }
-                    (result.getData() as DataResponse<List<Data>>).data.get(0)?.let { onSuccessGetAds(it) }
+
+    fun getProductStats(resources: Resources, adIds: List<String>, onSuccess: ((List<WithoutGroupDataItem>) -> Unit)) {
+        topAdsGetProductStatisticsUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources,
+                R.raw.gql_query_product_statistics))
+        topAdsGetProductStatisticsUseCase.setParams("", "", adIds)
+        topAdsGetProductStatisticsUseCase.executeQuerySafeMode(
+                {
+                    onSuccess(it.getDashboardProductStatistics.data)
                 },
-                onError = {
-                    onErrorGetAds(it)
-                }
+                {
+                    it.printStackTrace()
+                })
+
+    }
+
+    fun getGroupData(resources: Resources, page: Int, search: String, sort: String, status: Int?,
+                     startDate: String, endDate: String, onSuccess: ((GroupItemResponse.GetTopadsDashboardGroups) -> Unit)) {
+        topAdsGetGroupDataUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources,
+                R.raw.query_get_groups_dashboard))
+        topAdsGetGroupDataUseCase.setParams(search, page, sort, status, startDate, endDate)
+        topAdsGetGroupDataUseCase.executeQuerySafeMode(
+                {
+                    onSuccess(it.getTopadsDashboardGroups)
+                },
+                {
+                    it.printStackTrace()
+                })
+    }
+
+
+    fun getGroupProductData(resources: Resources, groupId: Int,
+                            onSuccess: ((List<WithoutGroupDataItem>) -> Unit)) {
+        topAdsGetGroupProductDataUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources,
+                R.raw.query_get_group_products_dashboard))
+        topAdsGetGroupProductDataUseCase.setParams(groupId, 0, "", "", null, "", "")
+        topAdsGetGroupProductDataUseCase.executeQuerySafeMode(
+                {
+                    onSuccess(it.topadsDashboardGroupProducts.data)
+                },
+                {
+                    it.printStackTrace()
+
+                })
+    }
+
+    @GqlQuery("CategoryList", GROUP_REQUEST)
+    fun getGroupId(shopId: String, adId: String, onSuccess: ((List<AdData>) -> Unit)) {
+        val params = mapOf(ParamObject.SHOP_ID to shopId,
+                ParamObject.AD_ID to adId)
+
+        topAdsGetGroupIdUseCase.setTypeClass(AdInfo::class.java)
+        topAdsGetGroupIdUseCase.setRequestParams(params)
+        topAdsGetGroupIdUseCase.setGraphqlQuery(CategoryList.GQL_QUERY)
+        topAdsGetGroupIdUseCase.execute(
+                onSuccessGroup(onSuccess),
+                onError()
         )
     }
 
-    fun postPromo(action: String, adId: Int, onSuccess: ((Bulk) -> Unit), onError: ((Throwable) -> Unit)) {
-        launchCatchError(
-                block = {
-                    val result = withContext(Dispatchers.IO) {
-                        val headers = HashMap<String, String>()
-                        headers.put("Content-Type", "application/json")
-                        val restRequest = RestRequest.Builder(BASE_REST_URL + PATH_BULK_ACTION_PRODUCT_AD, object : TypeToken<ActionRequest>() {}.type)
-                                .setBody(Gson().toJson(generateActionRequest(action, userSession.shopId, adId.toString())))
-                                .setHeaders(headers)
-                                .setRequestType(RequestType.PATCH)
-                                .build()
-                        restRepository.getResponse(restRequest)
-                    }
-                    (result.getData() as ActionRequest).data?.let {
-                        onSuccess(it)
-                    }
+
+    fun setProductAction(onSuccess: ((action: String) -> Unit), action: String, adIds: List<String>, resources: Resources, selectedFilter: String?) {
+        topAdsProductActionUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources,
+                R.raw.gql_query_product_action))
+        topAdsProductActionUseCase.setParams(action, adIds, selectedFilter)
+        topAdsProductActionUseCase.executeQuerySafeMode(
+                {
+                    onSuccess(action)
                 },
-                onError = {
-                    onError(it)
-                }
-        )
+                {
+                    it.printStackTrace()
+                })
     }
 
-    private fun generateActionRequest(action: String, shopId: String, adId: String): ActionRequest {
-        return ActionRequest(
-                Bulk(action,
-                        listOf(Ad(null,
-                                null,
-                                null,
-                                adId,
-                                null,
-                                null,
-                                null,
-                                null,
-                                null,
-                                null)),
-                        shopId)
-        )
+    private fun onSuccessGroup(onSuccess: (List<AdData>) -> Unit): (AdInfo) -> Unit {
+        return {
+            onSuccess(it.topAdsGetPromo.data)
+        }
+    }
+
+    private fun onError(): (Throwable) -> Unit {
+        return {
+            it.printStackTrace()
+        }
     }
 }

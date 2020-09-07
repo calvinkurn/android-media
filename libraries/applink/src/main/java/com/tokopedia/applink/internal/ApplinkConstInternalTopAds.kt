@@ -40,6 +40,8 @@ object ApplinkConstInternalTopAds {
     @JvmField
     val TOPADS_EDIT_ADS = "${INTERNAL_TOPADS}/edit-ads"
     @JvmField
+    val TOPADS_CREATION_ONBOARD = "${INTERNAL_TOPADS}/creation-onboard"
+    @JvmField
     val TOPADS_HISTORY_CREDIT = "${INTERNAL_TOPADS}/history-credit"
     @JvmField
     val TOPADS_AUTOADS = "${DeeplinkConstant.SCHEME_SELLERAPP}://${HOST_TOPADS}/autoads"

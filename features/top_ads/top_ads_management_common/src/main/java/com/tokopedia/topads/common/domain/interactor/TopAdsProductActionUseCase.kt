@@ -1,14 +1,14 @@
-package com.tokopedia.topads.dashboard.domain.interactor
+package com.tokopedia.topads.common.domain.interactor
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.topads.common.data.internal.ParamObject
+import com.tokopedia.topads.common.data.internal.ParamObject.ACTION
+import com.tokopedia.topads.common.data.internal.ParamObject.ADS
 import com.tokopedia.topads.common.data.internal.ParamObject.PRICE_BID
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.AD_ID
-import com.tokopedia.topads.dashboard.data.model.ProductActionResponse
+import com.tokopedia.topads.common.data.response.ProductActionResponse
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -17,6 +17,8 @@ import javax.inject.Inject
  */
 
 class TopAdsProductActionUseCase @Inject constructor(graphqlRepository: GraphqlRepository, val userSession: UserSessionInterface) : GraphqlUseCase<ProductActionResponse>(graphqlRepository) {
+
+
 
     fun setParams(action: String, adIds: List<String>, selectedFilter: String?) {
 
@@ -30,7 +32,7 @@ class TopAdsProductActionUseCase @Inject constructor(graphqlRepository: GraphqlR
         val queryMap = HashMap<String, Any?>()
         queryMap[ParamObject.SHOP_ID] = userSession.shopId
         queryMap[ACTION] = action
-        queryMap[AD_ID] = product
+        queryMap[ADS] = product
         setRequestParams(queryMap)
     }
 

@@ -7,15 +7,9 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.AD_IDS
 import com.tokopedia.topads.common.data.internal.ParamObject.END_DATE
-import com.tokopedia.topads.common.data.internal.ParamObject.GROUP_iDS
-import com.tokopedia.topads.common.data.internal.ParamObject.KEYWORD
-import com.tokopedia.topads.common.data.internal.ParamObject.PAGE
 import com.tokopedia.topads.common.data.internal.ParamObject.QUERY_INPUT
-import com.tokopedia.topads.common.data.internal.ParamObject.SORT
 import com.tokopedia.topads.common.data.internal.ParamObject.START_DATE
-import com.tokopedia.topads.common.data.internal.ParamObject.STATUS
-import com.tokopedia.topads.dashboard.data.model.groupitem.GroupStatisticsResponse
-import com.tokopedia.topads.dashboard.data.model.nongroupItem.ProductStatisticsResponse
+import com.tokopedia.topads.common.data.response.nongroupItem.ProductStatisticsResponse
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 

@@ -1,4 +1,4 @@
-package com.tokopedia.topads.dashboard.data.model.groupitem
+package com.tokopedia.topads.common.data.response.groupitem
 
 import com.google.gson.annotations.SerializedName
 

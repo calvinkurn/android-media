@@ -1,4 +1,4 @@
-package com.tokopedia.topads.dashboard.data.model
+package com.tokopedia.topads.common.data.response
 
 import com.google.gson.annotations.SerializedName
 
@@ -13,7 +13,7 @@ data class ProductActionResponse(
             val data: Data = Data(),
 
             @field:SerializedName("errors")
-            val errors: List<ErrorsItem> = listOf()
+            val errors: List<Error> = listOf()
     ) {
         data class Data(
 

@@ -34,6 +34,25 @@
             android:windowSoftInputMode="adjustPan" />
 
         <activity
+            android:name="com.tokopedia.topads.view.activity.CreationOnboardingActivity"
+            android:label="@string/topads_create_onboarding_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="adjustPan" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_topads"
+                    android:path="@string/path_topads_creation_onboard"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
+        <activity
             android:name="com.tokopedia.topads.view.activity.AdCreationChooserActivity"
             android:label="@string/creat_ad"
             android:screenOrientation="portrait"

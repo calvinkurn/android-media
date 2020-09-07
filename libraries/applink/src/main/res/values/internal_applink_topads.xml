@@ -21,5 +21,6 @@
     <string name="path_autoads_onboarding" translatable="false">/autoads-onboarding</string>
     <string name="path_topads_edit_autoads" translatable="false">/edit-autoads</string>
     <string name="path_topads_edit_without_group" translatable="false">/edit-without-group</string>
+    <string name="path_topads_creation_onboard" translatable="false">/creation-onboard</string>
 
 </resources>

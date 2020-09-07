@@ -240,11 +240,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private val tradeinDialog: ProductAccessRequestDialogFragment? by lazy {
         setupTradeinDialog()
     }
-    private val topAdsDetailSheet: TopAdsDetailSheet? by lazy {
-        context?.let {
-            TopAdsDetailSheet.newInstance(it)
-        }
-    }
 
     private val recommendationCarouselPositionSavedState = SparseIntArray()
 
@@ -2271,11 +2266,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
         actionButtonView.rincianTopAdsClick = {
             if (GlobalConfig.isSellerApp()) {
-                context?.let {
-                    topAdsDetailSheet?.show(
-                            topAdsGetProductManage.data.adId,
-                            viewModel.p2Login.value?.topAdsGetShopInfo?.category ?: 0)
-                }
+                    showTopAdsBottomSheet()
+
             } else {
                 val appLink = UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
                 val parameterizedAppLink = Uri.parse(appLink).buildUpon()
@@ -2289,31 +2281,23 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             }
         }
 
-        topAdsDetailSheet?.detailTopAdsClick = {
-            val applink = Uri.parse(ApplinkConst.SellerApp.TOPADS_PRODUCT_CREATE).buildUpon()
-                    .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_SHOP_ID, viewModel.getDynamicProductInfoP1?.basic?.shopID
-                            ?: "")
-                    .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_ITEM_ID, viewModel.getDynamicProductInfoP1?.basic?.productID)
-                    .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_KEY_SOURCE,
-                            if (GlobalConfig.isSellerApp()) TopAdsSourceOption.SA_PDP else TopAdsSourceOption.MA_PDP).build().toString()
-
-            context?.let {
-                startActivityForResult(RouteManager.getIntent(it, applink), ProductDetailConstant.REQUEST_CODE_EDIT_PRODUCT)
-            }
-        }
-
         actionButtonView.tingkatkanPenjualanClicked = {
             val firstAppLink = UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
-            var secondAppLink = ApplinkConst.SellerApp.TOPADS_CREATE_ADS
+            val secondAppLink = ApplinkConst.SellerApp.TOPADS_CREATE_ADS
 
             if (GlobalConfig.isSellerApp()) {
-                secondAppLink = if (viewModel.p2Login.value?.topAdsGetShopInfo?.category == TopAdsShopCategoryTypeDef.AUTOADS_USER) {
-                    ApplinkConst.SellerApp.TOPADS_DASHBOARD
-                } else {
-                    ApplinkConst.SellerApp.TOPADS_CREATE_ADS
+                when (viewModel.p2Login.value?.topAdsGetShopInfo?.category) {
+                    TopAdsShopCategoryTypeDef.MANUAL_USER -> {
+                        RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_CREATE_ADS)
+                    }
+                    TopAdsShopCategoryTypeDef.NO_ADS -> {
+                        RouteManager.route(context,ApplinkConst.SellerApp.TOPADS_CREATE_ONBOARDING)
+                    }
+                    else -> {
+                        showTopAdsBottomSheet()
+                    }
                 }
 
-                context?.let { RouteManager.route(it, secondAppLink) }
             } else {
                 goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_ADS, arrayListOf(
                         ApplinkConst.PRODUCT_MANAGE,
@@ -2343,6 +2327,14 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             val isLeasing = viewModel.getDynamicProductInfoP1?.basic?.isLeasing ?: false
             val atcKey = DynamicProductDetailMapper.generateButtonAction(cartType, isAtcButton, isLeasing)
             doAtc(atcKey)
+        }
+    }
+
+    private fun showTopAdsBottomSheet() {
+        context?.let {
+            val topAdsDetailSheet = TopAdsDetailSheet.newInstance(topAdsGetProductManage.data.adType,topAdsGetProductManage.data.adId,viewModel.p2Login.value?.topAdsGetShopInfo?.category ?: 0)
+            topAdsDetailSheet.show(childFragmentManager,"")
+
         }
     }
 

@@ -62,7 +62,7 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet?) : CardUnify(context,
     @Inject
     lateinit var factory: AutoAdsWidgetViewModelFactory
     private var baseLayout: ConstraintLayout? = null
-    private var fromEdit: Int = 0
+    private var entryPoint: Int = 0
     private var currentBudget = 0
     val requestType = "auto_ads"
     val source = "update_auto_ads"
@@ -151,7 +151,7 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet?) : CardUnify(context,
         baseLayout?.addView(view)
         getDrwableforNotDeliverd(view)
         val desc = view.findViewById<TextView>(R.id.status_desc)
-        if (fromEdit == 1) {
+        if (entryPoint == 1) {
             desc.text = resources.getString(R.string.autoads_outofbudget_desc_edit)
         } else {
             desc.text = resources.getString(R.string.autoads_outofbudget_desc)
@@ -216,19 +216,27 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet?) : CardUnify(context,
         val switch = view.findViewById<SwitchUnify>(R.id.btn_switch)
         val setting = view.findViewById<ImageView>(R.id.setting)
         switch.isChecked = true
-        if (fromEdit == 1) {
-            setting.visibility = View.GONE
-            switch.visibility = View.VISIBLE
-            switch.setOnClickListener {
-                val manual = ManualAdsConfirmationSheet.newInstance(context as BaseActivity, ::switchToManual)
-                manual.show()
-                manual.dismissed = { switch.isChecked = true }
+        when (entryPoint) {
+            1 -> {
+                setting.visibility = View.GONE
+                switch.visibility = View.VISIBLE
+                switch.setOnClickListener {
+                    val manual = ManualAdsConfirmationSheet.newInstance(context as BaseActivity, ::switchToManual)
+                    manual.show()
+                    manual.dismissed = { switch.isChecked = true }
+                }
             }
-        } else {
-            switch.visibility = View.INVISIBLE
-            setting.setOnClickListener {
-                startEditActivity()
-                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_SETTING_ICON, "")
+            2 -> {
+                switch.visibility = View.INVISIBLE
+                setting.visibility = View.INVISIBLE
+
+            }
+            else -> {
+                switch.visibility = View.INVISIBLE
+                setting.setOnClickListener {
+                    startEditActivity()
+                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_SETTING_ICON, "")
+                }
             }
         }
     }
@@ -244,7 +252,7 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet?) : CardUnify(context,
         getDrwableforNotDeliverd(view)
         val desc = view.findViewById<TextView>(R.id.status_desc)
         view.let {
-            if (fromEdit == 1)
+            if (entryPoint == 1)
                 desc.text = resources.getString(R.string.autoads_outofcredit_desc_edit)
             else
                 desc.text = resources.getString(R.string.autoads_outofcredit_desc)
@@ -285,19 +293,26 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet?) : CardUnify(context,
                 progress_bar.progress = dailyUsage
             }
             it.btn_switch.isChecked = true
-            if (fromEdit == 1) {
-                setting.visibility = View.GONE
-                it.btn_switch.visibility = View.VISIBLE
-                it.btn_switch.setOnClickListener {
-                    val man = ManualAdsConfirmationSheet.newInstance(context as BaseActivity, ::switchToManual)
-                    man.show()
-                    man.dismissed = { it.btn_switch.isChecked = true }
+            when (entryPoint) {
+                1 -> {
+                    setting.visibility = View.GONE
+                    it.btn_switch.visibility = View.VISIBLE
+                    it.btn_switch.setOnClickListener {
+                        val man = ManualAdsConfirmationSheet.newInstance(context as BaseActivity, ::switchToManual)
+                        man.show()
+                        man.dismissed = { it.btn_switch.isChecked = true }
+                    }
                 }
-            } else {
-                it.btn_switch.visibility = View.INVISIBLE
-                it.setting.setOnClickListener {
-                    startEditActivity()
-                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_SETTING_ICON, "")
+                2 -> {
+                    it.setting.visibility = View.INVISIBLE
+                    it.btn_switch.visibility = View.INVISIBLE
+                }
+                else -> {
+                    it.btn_switch.visibility = View.INVISIBLE
+                    it.setting.setOnClickListener {
+                        startEditActivity()
+                        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_SETTING_ICON, "")
+                    }
                 }
             }
         }
@@ -319,7 +334,7 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet?) : CardUnify(context,
     }
 
     fun loadData(fromEdit: Int) {
-        this.fromEdit = fromEdit
+        this.entryPoint = fromEdit
         widgetViewModel.getAutoAdsStatus(userSession.shopId.toInt())
     }
 

@@ -1,4 +1,4 @@
-package com.tokopedia.topads.dashboard.domain.interactor
+package com.tokopedia.topads.common.domain.interactor
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -13,12 +13,12 @@ import com.tokopedia.topads.common.data.internal.ParamObject.QUERY_INPUT
 import com.tokopedia.topads.common.data.internal.ParamObject.SORT
 import com.tokopedia.topads.common.data.internal.ParamObject.START_DATE
 import com.tokopedia.topads.common.data.internal.ParamObject.STATUS
-import com.tokopedia.topads.dashboard.data.model.groupitem.GroupItemResponse
+import com.tokopedia.topads.common.data.response.groupitem.GroupItemResponse
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 /**
- * Created by Pika on 29/5/20.
+ * Created by Pika on 6/9/20.
  */
 
 
