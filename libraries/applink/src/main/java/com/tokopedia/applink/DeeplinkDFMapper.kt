@@ -327,7 +327,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(DEALS_HOMEPAGE) ||
                     it.startsWith(DEALS_BRAND_PAGE) ||
                     it.startsWith(DEALS_CATEGORY_PAGE) ||
-                    it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG_BASE)
+                    it.startsWith("tokopedia-android-internal://global/deals-slug/")
             },DF_ENTERTAINMENT, R.string.title_entertainment, {DFWebviewFallbackUrl.ENTERTAINMENT_DEALS}))
 
             // Salam
