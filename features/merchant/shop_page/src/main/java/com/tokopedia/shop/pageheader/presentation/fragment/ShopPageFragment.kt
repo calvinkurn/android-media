@@ -303,7 +303,6 @@ class ShopPageFragment :
             tvTitleTabFeedHasPost.movementMethod = LinkMovementMethod.getInstance()
             ivTabFeedHasPost.setImageDrawable(context?.let { ContextCompat.getDrawable(it, R.drawable.ic_tab_feed_has_post_seller_migration) })
             tvTitleTabFeedHasPost.setOnClickLinkSpannable(getString(R.string.seller_migration_tab_feed_bottom_sheet_content), ::trackContentFeedBottomSheet) {
-                //nunggu calvyn & Andrew
 //                val appLink = String.format(ApplinkConstInternalFeed.)
                 val intent = context?.let { context ->
                     SellerMigrationActivity.createIntent(
