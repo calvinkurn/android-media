@@ -657,9 +657,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         RouteManager.route(context, url)
     }
 
-    override fun onBbiInfoClick(url: String, title:String, componentTrackDataModel: ComponentTrackDataModel) {
-        DynamicProductDetailTracking.Click.eventClickCustomInfo(title, viewModel.userId, viewModel.getDynamicProductInfoP1, componentTrackDataModel)
-        goToApplink(url)
+    override fun onBbiInfoClick(url: String, title: String, componentTrackDataModel: ComponentTrackDataModel) {
+        if (url.isNotEmpty()) {
+            DynamicProductDetailTracking.Click.eventClickCustomInfo(title, viewModel.userId, viewModel.getDynamicProductInfoP1, componentTrackDataModel)
+            goToApplink(url)
+        }
     }
 
     /**
@@ -2158,7 +2160,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun gotoEditProduct() {
-        val id = viewModel.getDynamicProductInfoP1?.parentProductId ?: return
+        val id = viewModel.parentProductId ?: return
 
         val applink = Uri.parse(ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW)
                 .buildUpon()
