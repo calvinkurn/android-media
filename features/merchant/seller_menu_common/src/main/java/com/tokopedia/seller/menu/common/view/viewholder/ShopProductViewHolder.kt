@@ -6,7 +6,6 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.seller.menu.common.R
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.seller.menu.common.view.uimodel.ShopProductUiModel
@@ -31,12 +30,7 @@ class ShopProductViewHolder(
 
         itemView.setOnClickListener {
             RouteManager.route(itemView.context, ApplinkConst.PRODUCT_MANAGE)
-            sendProductListTracker()
+            tracker?.sendEventClickProductList()
         }
-    }
-
-    private fun sendProductListTracker() {
-        if (GlobalConfig.isSellerApp()) return
-        tracker?.sendEventClickProductList()
     }
 }
