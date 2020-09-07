@@ -91,8 +91,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private val mLayoutManager by lazy { StatisticLayoutManager(context, 2) }
     private val recyclerView by lazy { super.getRecyclerView(view) }
     private val dateFilterBottomSheet by lazy { DateFilterBottomSheet.newInstance() }
-    private val defaultStartDate = Date(DateTimeUtil.getNPastDaysTimestamp(DEFAULT_START_DAYS))
-    private val defaultEndDate = Date()
+    private val defaultStartDate by lazy { Date(DateTimeUtil.getNPastDaysTimestamp(DEFAULT_START_DAYS)) }
+    private val defaultEndDate by lazy { Date() }
     private val job = Job()
     private val coroutineScope by lazy { CoroutineScope(Dispatchers.Unconfined + job) }
     private val tickerWidget: TickerWidgetUiModel by getTickerWidget()
