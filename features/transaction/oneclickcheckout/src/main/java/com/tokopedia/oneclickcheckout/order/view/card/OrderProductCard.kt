@@ -107,9 +107,12 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
             oldQtyValue = product.quantity.orderQuantity
             qtyEditorProduct?.setValue(product.quantity.orderQuantity)
             qtyEditorProduct?.setValueChangedListener { newValue, _, _ ->
-                product.quantity.orderQuantity = newValue
-                listener.onProductChange(product)
-                showPrice()
+                // prevent multiple callback with same newValue
+                if (product.quantity.orderQuantity != newValue) {
+                    product.quantity.orderQuantity = newValue
+                    listener.onProductChange(product)
+                    showPrice()
+                }
             }
             qtyEditorProduct?.setAddClickListener {
                 orderSummaryAnalytics.eventEditQuantityIncrease(product.productId.toString(), shop.shopId.toString(), product.quantity.orderQuantity.toString())
@@ -119,6 +122,7 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
             }
             quantityTextWatcher = object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
+                    // for automatic reload rates when typing
                     val newValue = s.toString().replace("[^0-9]".toRegex(), "").toIntOrZero()
                     if (oldQtyValue != newValue) {
                         oldQtyValue = newValue
