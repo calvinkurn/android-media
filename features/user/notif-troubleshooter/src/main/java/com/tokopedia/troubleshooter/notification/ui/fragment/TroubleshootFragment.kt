@@ -140,7 +140,7 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
                 TroubleshooterTimber.combine(token, notification, device)
                 adapter.addWarningTicker(TickerUIView(viewModel.tickerItems))
 
-                if (notification.isTrue() && device.isTrue() && isSilent(ringtone)) {
+                if (notification.isTrue() && device.isTrue() && !isSilent(ringtone)) {
                     adapter.status(StatusState.Success)
                 } else {
                     adapter.status(StatusState.Warning)
