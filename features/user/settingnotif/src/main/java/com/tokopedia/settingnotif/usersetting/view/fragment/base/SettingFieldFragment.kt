@@ -155,7 +155,7 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
 
     override fun onItemClicked() {
         activity?.let {
-            (it as ParentActivity).openSellerFiled()
+            (it as ParentActivity).openPushNotificationFiled()
         }
     }
 
