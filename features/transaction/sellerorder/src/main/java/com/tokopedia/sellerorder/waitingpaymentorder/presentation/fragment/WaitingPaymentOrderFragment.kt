@@ -17,9 +17,11 @@ import com.tokopedia.sellerorder.waitingpaymentorder.di.DaggerWaitingPaymentOrde
 import com.tokopedia.sellerorder.waitingpaymentorder.domain.model.WaitingPaymentOrderRequestParam
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.WaitingPaymentOrderAdapter
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.typefactory.WaitingPaymentOrderAdapterTypeFactory
+import com.tokopedia.sellerorder.waitingpaymentorder.presentation.bottomsheet.BottomSheetWaitingPaymentOrderTips
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingPaymentOrder
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.viewmodel.WaitingPaymentOrderViewModel
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_waiting_payment_order.*
@@ -29,11 +31,19 @@ import javax.inject.Inject
 
 class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, WaitingPaymentOrderAdapterTypeFactory>() {
 
+    companion object {
+        const val TAG_BOTTOM_SHEET = "bottom_sheet"
+    }
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val waitingPaymentOrderViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(WaitingPaymentOrderViewModel::class.java)
+    }
+
+    private val bottomSheetTips by lazy {
+        BottomSheetWaitingPaymentOrderTips()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -124,6 +134,7 @@ class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, Waitin
     }
 
     private fun setupViews() {
+        setupTicker()
         context?.run {
             with(rvWaitingPaymentOrder) {
                 addItemDecoration(WaitingPaymentOrderAdapter.ItemDivider(this@run))
@@ -137,6 +148,25 @@ class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, Waitin
                 loadInitialData()
             }
         }
+    }
+
+    private fun setupTicker() {
+        with(tickerWaitingPaymentOrder) {
+            setHtmlDescription(getString(R.string.som_waiting_payment_orders_ticker_description))
+            setDescriptionClickEvent(object : TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    showTipsBottomSheet()
+                }
+
+                override fun onDismiss() {
+                    // no op
+                }
+            })
+        }
+    }
+
+    private fun showTipsBottomSheet() {
+        bottomSheetTips.show(childFragmentManager, TAG_BOTTOM_SHEET)
     }
 
     private fun fakeRefresh() {

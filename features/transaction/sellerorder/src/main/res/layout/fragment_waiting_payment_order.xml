@@ -18,7 +18,7 @@
             android:layout_marginTop="@dimen/layout_lvl1"
             android:layout_marginEnd="@dimen/dp_14"
             app:closeButtonVisibility="gone"
-            app:descriptionText="Atur ketersediaan stok produkmu sembari menunggu pembayaran. Pesanan yang gagal bayar atau terbayar saat stok habis tidak akan ditampilkan. Pelajari Lebih Lanjut"
+            app:descriptionText="@string/som_waiting_payment_orders_ticker_description"
             app:layout_constraintBottom_toTopOf="@id/rvWaitingPaymentOrder"
             app:layout_constraintTop_toTopOf="parent"
             app:tickerShapeType="loose" />
