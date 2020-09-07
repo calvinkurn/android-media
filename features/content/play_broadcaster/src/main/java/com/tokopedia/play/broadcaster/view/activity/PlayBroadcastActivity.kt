@@ -169,8 +169,10 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString(CHANNEL_ID, viewModel.channelId)
-        outState.putString(CHANNEL_TYPE, channelType.value)
+        try {
+            outState.putString(CHANNEL_ID, viewModel.channelId)
+            outState.putString(CHANNEL_TYPE, channelType.value)
+        } catch (e: Throwable) {}
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -302,7 +304,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
     private fun populateSavedState(savedInstanceState: Bundle) {
         val channelId = savedInstanceState.getString(CHANNEL_ID)
         val channelType = savedInstanceState.getString(CHANNEL_TYPE)
-        channelId?.let {viewModel.setChannelId(it)}
+        channelId?.let { viewModel.setChannelId(it) }
         channelType?.let {
             this.channelType = ChannelType.getByValue(it)
         }
