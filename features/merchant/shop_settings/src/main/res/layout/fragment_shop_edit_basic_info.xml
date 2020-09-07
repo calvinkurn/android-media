@@ -83,6 +83,7 @@
                 app:descriptionText="@string/ticker_warning_can_only_change_shopname_once"
                 app:tckv_content_text_size="@dimen/dp_12"
                 app:tickerType="warning"
+                app:tickerShapeType="loose"
                 tools:visibility="visible" />
 
             <com.tokopedia.unifycomponents.TextFieldUnify

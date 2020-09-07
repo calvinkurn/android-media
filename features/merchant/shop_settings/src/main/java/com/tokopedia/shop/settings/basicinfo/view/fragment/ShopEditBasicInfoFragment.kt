@@ -392,12 +392,13 @@ class ShopEditBasicInfoFragment: Fragment() {
         val isNameAllowed = data.isNameAllowed
         val isDomainAllowed = data.isDomainAllowed
 
-        when {
-            isNameAllowed && isDomainAllowed -> showWarningTicker()
-            isNameAllowed && !isDomainAllowed -> showDomainNotAllowedTicker(data)
-            isDomainAllowed && !isNameAllowed -> showNameNotAllowedTicker(data)
-            else -> showNameAndDomainNotAllowedTicker()
-        }
+        showWarningTicker()
+//        when {
+//            isNameAllowed && isDomainAllowed -> showWarningTicker()
+//            isNameAllowed && !isDomainAllowed -> showDomainNotAllowedTicker(data)
+//            isDomainAllowed && !isNameAllowed -> showNameNotAllowedTicker(data)
+//            else -> showNameAndDomainNotAllowedTicker()
+//        }
     }
 
     private fun showShopNameDomainTextField(data: AllowShopNameDomainChangesData) {
@@ -416,7 +417,7 @@ class ShopEditBasicInfoFragment: Fragment() {
         val readMore = getString(R.string.ticker_warning_read_more)
         val color = ContextCompat.getColor(requireContext(), R.color.merchant_green)
         //val message = getTextWithSpannable(color, description, readMore).toString()
-        val message = "$description <span style='color:$color'>$readMore</span>."
+        val message = "$description <b><span style='color:$color'>$readMore</span></b>."
         showShopTicker(message, Ticker.TYPE_WARNING)
     }
 
@@ -438,14 +439,11 @@ class ShopEditBasicInfoFragment: Fragment() {
     private fun showShopTicker(message: String, type: Int) {
         shopEditTicker.tickerType = type
         shopEditTicker.setHtmlDescription(message)
-        shopEditTicker.setDescriptionClickEvent(object : TickerCallback {
-            override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                if (shopEditTicker.tickerType == Ticker.TYPE_WARNING) {
-                    clickReadMore()
-                }
+        shopEditTicker.setOnClickListener {
+            if (shopEditTicker.tickerType == Ticker.TYPE_WARNING) {
+                clickReadMore()
             }
-            override fun onDismiss() {}
-        })
+        }
         shopEditTicker.show()
     }
 
