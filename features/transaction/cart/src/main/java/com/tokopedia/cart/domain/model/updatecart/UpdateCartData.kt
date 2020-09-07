@@ -1,7 +1,7 @@
 package com.tokopedia.cart.domain.model.updatecart
 
 import android.os.Parcelable
-import com.tokopedia.cart.domain.model.updatecart.PromptPageData
+import com.tokopedia.cart.domain.model.cartlist.OutOfServiceData
 import kotlinx.android.parcel.Parcelize
 
 /**
@@ -11,6 +11,6 @@ import kotlinx.android.parcel.Parcelize
 data class UpdateCartData(
         var isSuccess: Boolean = false,
         var message: String = "",
-        var promptPageData: PromptPageData = PromptPageData(),
+        var outOfServiceData: OutOfServiceData = OutOfServiceData(),
         var toasterActionData: ToasterActionData = ToasterActionData()
 ) : Parcelable

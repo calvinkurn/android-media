@@ -45,7 +45,6 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.cart.R
 import com.tokopedia.cart.data.model.response.recentview.RecentView
 import com.tokopedia.cart.domain.model.cartlist.*
-import com.tokopedia.cart.domain.model.updatecart.PromptPageData
 import com.tokopedia.cart.view.CartActivity.Companion.INVALID_PRODUCT_ID
 import com.tokopedia.cart.view.adapter.CartAdapter
 import com.tokopedia.cart.view.adapter.CartItemAdapter
@@ -2302,11 +2301,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    override fun renderErrorToShipmentForm(promptPageData: PromptPageData) {
-        layoutGlobalError.errorTitle.text = promptPageData.title
-        layoutGlobalError.errorDescription.text = promptPageData.descriptions
-        layoutGlobalError.errorIllustration.setImage(promptPageData.image, 0f)
-        promptPageData.buttons.forEach {
+    override fun renderErrorToShipmentForm(outOfServiceData: OutOfServiceData) {
+        layoutGlobalError.errorTitle.text = outOfServiceData.title
+        layoutGlobalError.errorDescription.text = outOfServiceData.description
+        layoutGlobalError.errorIllustration.setImage(outOfServiceData.image, 0f)
+        outOfServiceData.buttons.forEach {
             layoutGlobalError.errorAction.text = it.message
             return@forEach
         }

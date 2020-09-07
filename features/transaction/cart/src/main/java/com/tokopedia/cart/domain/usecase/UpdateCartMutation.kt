@@ -13,15 +13,17 @@ fun getUpdateCartMutation(): String {
                         text
                         show_cta
                     }
-                    prompt_page {
-                        type
+                    out_of_service {
+                        id
+                        code
+                        image
                         title
                         description
                         buttons {
-                            text
-                            link
-                            action
-                            color
+                          id
+                          code
+                          message
+                          color
                         }
                     }
                 }

@@ -8,8 +8,8 @@ import com.tokopedia.purchase_platform.common.feature.insurance.response.Insuran
 import com.tokopedia.cart.data.model.response.recentview.RecentView
 import com.tokopedia.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.cart.domain.model.cartlist.CartListData
+import com.tokopedia.cart.domain.model.cartlist.OutOfServiceData
 import com.tokopedia.cart.domain.model.cartlist.UndoDeleteCartData
-import com.tokopedia.cart.domain.model.updatecart.PromptPageData
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
@@ -56,7 +56,7 @@ interface ICartListView : CustomerView {
 
     fun renderErrorToShipmentForm(throwable: Throwable)
 
-    fun renderErrorToShipmentForm(promptPageData: PromptPageData)
+    fun renderErrorToShipmentForm(outOfServiceData: OutOfServiceData)
 
     fun renderDetailInfoSubTotal(qty: String, subtotalBeforeSlashedPrice: Double, subtotalPrice: Double, selectAllItem: Boolean, unselectAllItem: Boolean, noAvailableItems: Boolean)
 
