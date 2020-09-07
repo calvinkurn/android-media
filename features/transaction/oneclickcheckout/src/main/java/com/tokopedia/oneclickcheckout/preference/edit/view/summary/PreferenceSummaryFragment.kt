@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
@@ -252,8 +253,12 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
         } else {
             tvPaymentDetail?.gone()
         }
-//        tvPaymentInfo?.text = MethodChecker.fromHtml("Pembelian barang Sale ini hanya bisa dibayar menggunakan <b>OVO</b>.")
-//        tvPaymentInfo?.visible()
+        if (paymentModel.tickerMessage.isNotBlank()) {
+            tvPaymentInfo?.text = MethodChecker.fromHtml(paymentModel.tickerMessage)
+            tvPaymentInfo?.visible()
+        } else {
+            tvPaymentInfo?.gone()
+        }
 
         val parent = activity
         if (parent is PreferenceEditParent) {

@@ -207,7 +207,7 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
         return OrderProfilePayment(payment.enable, payment.active, payment.gatewayCode, payment.gatewayName, payment.image,
                 payment.description, payment.url, payment.minimumAmount, payment.maximumAmount, payment.fee,
                 payment.walletAmount, payment.metadata, payment.mdr, mapPaymentCreditCard(payment.creditCard, null),
-                mapPaymentErrorMessage(payment.errorMessage)
+                mapPaymentErrorMessage(payment.errorMessage), payment.tickerMessage
         )
     }
 

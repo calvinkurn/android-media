@@ -85,6 +85,7 @@ class GetPreferenceByIdUseCase @Inject constructor(private val graphqlUseCase: G
                                     pin
                                 }
                                 metadata
+                                ticker_message
                         }
                         shipment {
                                 service_id

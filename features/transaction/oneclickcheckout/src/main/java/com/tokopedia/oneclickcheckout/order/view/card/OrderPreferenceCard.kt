@@ -257,8 +257,12 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         } else {
             tvPaymentDetail?.gone()
         }
-//        tvPaymentInfo?.text = MethodChecker.fromHtml("Khusus <b>Kejar Diskon</b>, hanya bisa gunakan metode bayar tertentu.")
-//        tvPaymentInfo?.visible()
+        if (paymentModel.tickerMessage.isNotBlank()) {
+            tvPaymentInfo?.text = MethodChecker.fromHtml(paymentModel.tickerMessage)
+            tvPaymentInfo?.visible()
+        } else {
+            tvPaymentInfo?.gone()
+        }
 
         val payment = payment
         if (payment != null) {

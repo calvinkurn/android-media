@@ -146,8 +146,13 @@ class PreferenceListBottomSheet(
     private fun updateList(preferences: PreferenceListResponseModel) {
         adapter?.submitList(preferences.profiles)
         progressBar?.gone()
-//        ticker?.visible()
-//        ticker?.setHtmlDescription("Khusus belanja <b>Kejar Diskon</b>, hanya bisa gunakan metode pembayaran tertentu. ")
+        val tickerMessage = preferences.ticker
+        if (tickerMessage != null) {
+            ticker?.setHtmlDescription(tickerMessage)
+            ticker?.visible()
+        } else {
+            ticker?.gone()
+        }
         rvPreferenceList?.visible()
         if (preferences.profiles.size >= preferences.maxProfile) {
             btnAddPreference?.visible()

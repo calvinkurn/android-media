@@ -283,6 +283,7 @@ query get_occ_cart_page($source: String) {
                 link
             }
           }
+          ticker_message
         }
         shipment {
           service_id

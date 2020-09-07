@@ -223,7 +223,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             delay(1000)
             if (isActive) {
                 updateCart()
-                getRates()
+                if (_orderPreference.isValid && _orderPreference.preference.shipment.serviceId > 0) {
+                    getRates()
+                }
                 OccIdlingResource.decrement()
             }
         }
