@@ -3,19 +3,24 @@ package com.tokopedia.troubleshooter.notification.ui.adapter.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.troubleshooter.notification.R
-import com.tokopedia.troubleshooter.notification.ui.listener.ConfigItemListener
+import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigState
 import com.tokopedia.troubleshooter.notification.ui.uiview.TickerItemUIView
+import com.tokopedia.troubleshooter.notification.util.gotoAudioSetting
+import com.tokopedia.troubleshooter.notification.util.gotoNotificationSetting
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING as USER_NOTIFICATION_SETTING
 
 class TickerItemViewHolder(
-        private val listener: ConfigItemListener,
         view: View
 ): AbstractViewHolder<TickerItemUIView>(view) {
 
     private val txtDescription: Typography? = view.findViewById(R.id.txtDescription)
     private val btnActivation: UnifyButton? = view.findViewById(R.id.btnActivation)
+
+    private val context by lazy { itemView.context }
 
     override fun bind(element: TickerItemUIView?) {
         if (element == null) return
@@ -23,7 +28,17 @@ class TickerItemViewHolder(
         btnActivation?.text = element.buttonText
 
         btnActivation?.setOnClickListener {
-            listener.goToNotificationSettings()
+            when (element.type) {
+                is ConfigState.Device -> {
+                    context.gotoNotificationSetting()
+                }
+                is ConfigState.Notification -> {
+                    context.startActivity(RouteManager.getIntent(context, USER_NOTIFICATION_SETTING))
+                }
+                is ConfigState.Ringtone -> {
+                    context?.gotoAudioSetting()
+                }
+            }
         }
     }
 

@@ -25,18 +25,18 @@ import com.tokopedia.troubleshooter.notification.ui.adapter.TroubleshooterAdapte
 import com.tokopedia.troubleshooter.notification.ui.adapter.factory.TroubleshooterItemFactory
 import com.tokopedia.troubleshooter.notification.ui.listener.ConfigItemListener
 import com.tokopedia.troubleshooter.notification.ui.listener.FooterListener
-import com.tokopedia.troubleshooter.notification.ui.uiview.*
-import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigState.*
-import com.tokopedia.troubleshooter.notification.ui.uiview.TickerItemUIView.Companion.ticker
-import com.tokopedia.troubleshooter.notification.ui.viewmodel.TroubleshootViewModel
-import com.tokopedia.troubleshooter.notification.util.*
 import com.tokopedia.troubleshooter.notification.ui.state.Error
 import com.tokopedia.troubleshooter.notification.ui.state.Result
 import com.tokopedia.troubleshooter.notification.ui.state.Success
+import com.tokopedia.troubleshooter.notification.ui.uiview.*
+import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigState.*
+import com.tokopedia.troubleshooter.notification.ui.uiview.RingtoneState.Normal
+import com.tokopedia.troubleshooter.notification.ui.uiview.TickerItemUIView.Companion.ticker
+import com.tokopedia.troubleshooter.notification.ui.viewmodel.TroubleshootViewModel
+import com.tokopedia.troubleshooter.notification.util.*
 import com.tokopedia.troubleshooter.notification.util.TroubleshooterDialog.showInformationDialog
 import kotlinx.android.synthetic.main.fragment_notif_troubleshooter.*
 import javax.inject.Inject
-import com.tokopedia.troubleshooter.notification.ui.uiview.RingtoneState.Normal as Normal
 
 class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterListener {
 
@@ -72,8 +72,8 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initObservable()
         initView()
+        initObservable()
 
         /*
         * adding interval to request
@@ -94,7 +94,7 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
         lstConfig?.adapter = adapter
         adapter.status(StatusState.Loading)
         adapter.addElement(ConfigUIView.items())
-        adapter.addElement(FooterUIView())
+        adapter.footerMessage(false)
     }
 
     private fun initObservable() {
@@ -117,6 +117,10 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
 
         viewModel.troubleshoot.observe(viewLifecycleOwner, Observer {
             troubleshooterPushNotification(it)
+        })
+
+        viewModel.dndMode.observe(viewLifecycleOwner, Observer {
+            adapter.footerMessage(it)
         })
 
         combineFourth(
@@ -292,10 +296,6 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
 
     override fun onRingtoneTest(uri: Uri) {
         RingtoneManager.getRingtone(context, uri).play()
-    }
-
-    override fun goToNotificationSettings() {
-        context.gotoNotificationSetting()
     }
 
     override fun initInjector() {

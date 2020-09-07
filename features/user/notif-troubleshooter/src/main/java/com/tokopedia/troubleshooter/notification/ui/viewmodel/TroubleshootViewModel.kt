@@ -32,6 +32,7 @@ interface TroubleshootContract {
     fun troubleshoot()
     fun getNewToken()
     fun updateToken(newToken: String)
+    fun isDndModeEnabled()
 }
 
 class TroubleshootViewModel @Inject constructor(
@@ -63,10 +64,18 @@ class TroubleshootViewModel @Inject constructor(
     private val _tickerItems = mutableListOf<TickerItemUIView>()
     val tickerItems: List<TickerItemUIView> get() = _tickerItems
 
+    private val _dndMode = MediatorLiveData<Boolean>()
+    val dndMode: LiveData<Boolean> get() = _dndMode
+
     init {
         _token.addSource(_troubleshoot) {
             getNewToken()
         }
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    override fun isDndModeEnabled() {
+        _dndMode.value = notificationCompat.isDndModeEnabled()
     }
 
     override fun tickers(element: TickerItemUIView, status: StatusState) {

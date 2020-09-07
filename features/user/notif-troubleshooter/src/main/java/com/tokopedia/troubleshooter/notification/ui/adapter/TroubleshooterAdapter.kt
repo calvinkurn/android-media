@@ -56,6 +56,15 @@ internal open class TroubleshooterAdapter(
         notifyDataSetChanged()
     }
 
+    fun footerMessage(isDndEnabled: Boolean) {
+        if (visitables.last() is FooterUIView) {
+            visitables.removeAt(visitables.size - 1)
+        }
+
+        visitables.add(FooterUIView(isDndEnabled))
+        notifyDataSetChanged()
+    }
+
     companion object {
         private const val INDEX_STATUS = 0
     }

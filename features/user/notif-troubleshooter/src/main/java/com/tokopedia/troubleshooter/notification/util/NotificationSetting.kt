@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
+import android.provider.Settings.ACTION_SOUND_SETTINGS
 
 const val INTENT_SETTINGS = "android.settings.APP_NOTIFICATION_SETTINGS"
 
@@ -29,4 +30,8 @@ fun Context?.gotoNotificationSetting() {
             }
         }
     })
+}
+
+fun Context?.gotoAudioSetting() {
+    this?.startActivity(Intent(ACTION_SOUND_SETTINGS))
 }

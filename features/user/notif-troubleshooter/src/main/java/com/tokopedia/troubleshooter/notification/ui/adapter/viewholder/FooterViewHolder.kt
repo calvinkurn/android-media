@@ -2,8 +2,10 @@ package com.tokopedia.troubleshooter.notification.ui.adapter.viewholder
 
 import android.view.View
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.troubleshooter.notification.R
 import com.tokopedia.troubleshooter.notification.ui.listener.FooterListener
 import com.tokopedia.troubleshooter.notification.ui.uiview.FooterUIView
@@ -17,17 +19,30 @@ class FooterViewHolder(
 ): AbstractViewHolder<FooterUIView>(view) {
 
     private val btnAction = view.findViewById<UnifyButton>(R.id.btnAction)
+    private val txtMessage = view.findViewById<TextView>(R.id.txtMessage)
+    private val txtStatus = view.findViewById<TextView>(R.id.txtStatus)
     private val btnInfo = view.findViewById<ImageView>(R.id.btnInfo)
+
     private val context by lazy { itemView.context }
 
     override fun bind(element: FooterUIView?) {
-        btnAction?.setOnClickListener {
-            showClearCache(context)
+        if (element == null) return
+
+        if (element.isDndMode) {
+            txtStatus?.show()
+            txtMessage?.text = context?.getString(R.string.notif_footer_dnd_message)
         }
 
-        btnInfo?.setOnClickListener {
-            listener.onInfoClicked()
-        }
+        btnAction?.setOnClickListener { onActionClicked(element.isDndMode) }
+        btnInfo?.setOnClickListener { listener.onInfoClicked() }
+    }
+
+    private fun onActionClicked(isDndMode: Boolean) {
+        if (!isDndMode) showClearCache(context) else dndMode()
+    }
+
+    private fun dndMode() {
+
     }
 
     companion object {

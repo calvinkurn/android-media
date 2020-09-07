@@ -8,18 +8,12 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.troubleshooter.notification.R
 import com.tokopedia.troubleshooter.notification.ui.adapter.TickerAdapter
 import com.tokopedia.troubleshooter.notification.ui.adapter.factory.TickerItemFactory
-import com.tokopedia.troubleshooter.notification.ui.listener.ConfigItemListener
-import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigState
+import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigState.Ringtone
 import com.tokopedia.troubleshooter.notification.ui.uiview.TickerItemUIView
 import com.tokopedia.troubleshooter.notification.ui.uiview.TickerUIView
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigState.Ringtone as Ringtone
-import kotlin.LazyThreadSafetyMode.NONE as NONE
 
-class TickerViewHolder(
-        private val listener: ConfigItemListener,
-        view: View
-): AbstractViewHolder<TickerUIView>(view) {
+class TickerViewHolder(view: View): AbstractViewHolder<TickerUIView>(view) {
 
     private val txtTitle = view.findViewById<Typography>(R.id.txtTitle)
     private val lstTicker = view.findViewById<RecyclerView>(R.id.lstTicker)
@@ -31,7 +25,7 @@ class TickerViewHolder(
         warningTitle(element)
 
         if (adapter == null) {
-            adapter = TickerAdapter(TickerItemFactory(listener))
+            adapter = TickerAdapter(TickerItemFactory())
             lstTicker?.layoutManager = LinearLayoutManager(context)
             lstTicker?.adapter = adapter
         }
