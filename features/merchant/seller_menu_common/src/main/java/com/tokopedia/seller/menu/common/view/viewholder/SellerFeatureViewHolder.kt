@@ -34,7 +34,7 @@ class SellerFeatureViewHolder(
                 add(ApplinkConstInternalMarketplace.GOLD_MERCHANT_STATISTIC_DASHBOARD)
             }
             goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_SHOP_INSIGHT, appLinks)
-            sendClickStatisticTracking()
+            sellerMenuTracker?.sendEventClickShopStatistic()
         }
 
         itemView.cardPromo.setOnClickListener {
@@ -43,7 +43,7 @@ class SellerFeatureViewHolder(
                 add(ApplinkConstInternalSellerapp.CENTRALIZED_PROMO)
             }
             goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_CENTRALIZED_PROMO, appLinks)
-            sendClickPromoTracking()
+            sellerMenuTracker?.sendEventClickCentralizePromo()
         }
 
         itemView.cardFeedAndPlay.setOnClickListener {
@@ -53,7 +53,7 @@ class SellerFeatureViewHolder(
                 add(ApplinkConst.CONTENT_CREATE_POST)
             }
             goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_PLAY_FEED, appLinks)
-            sendClickFeedAndPlay()
+            sellerMenuTracker?.sendEventClickFeedAndPlay()
         }
 
         itemView.cardFintech.setOnClickListener {
@@ -62,7 +62,7 @@ class SellerFeatureViewHolder(
                 add(ApplinkConst.LAYANAN_FINANSIAL)
             }
             goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_FINANCIAL_SERVICES, appLinks)
-            sendClickFintechTracking()
+            sellerMenuTracker?.sendEventClickFintech()
         }
     }
 
@@ -71,25 +71,5 @@ class SellerFeatureViewHolder(
             val intent = SellerMigrationActivity.createIntent(this, featureName, SCREEN_NAME, appLinks)
             startActivity(intent)
         }
-    }
-
-    private fun sendClickStatisticTracking() {
-        if (GlobalConfig.isSellerApp()) return
-        sellerMenuTracker?.sendEventClickShopStatistic()
-    }
-
-    private fun sendClickPromoTracking() {
-        if (GlobalConfig.isSellerApp()) return
-        sellerMenuTracker?.sendEventClickCentralizePromo()
-    }
-
-    private fun sendClickFeedAndPlay() {
-        if (GlobalConfig.isSellerApp()) return
-        sellerMenuTracker?.sendEventClickFeedAndPlay()
-    }
-
-    private fun sendClickFintechTracking() {
-        if (GlobalConfig.isSellerApp()) return
-        sellerMenuTracker?.sendEventClickFintech()
     }
 }
