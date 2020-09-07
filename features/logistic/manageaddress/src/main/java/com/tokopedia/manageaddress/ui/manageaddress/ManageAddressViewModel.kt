@@ -20,7 +20,8 @@ class ManageAddressViewModel @Inject constructor(
     var token: Token? = null
     var savedQuery: String = ""
     var page: Int = 1
-    var canLoadMore: Boolean = false
+    var canLoadMore: Boolean = true
+    var isClearData: Boolean = true
 
     private val _addressList = MutableLiveData<ManageAddressState<AddressListModel>>()
     val addressList: LiveData<ManageAddressState<AddressListModel>>
@@ -67,6 +68,7 @@ class ManageAddressViewModel @Inject constructor(
 
                             override fun onNext(addressModel: AddressListModel) {
                                 page++
+                                isClearData = false
                                 if(addressModel.listAddress.isEmpty()) canLoadMore = false
                                 _addressList.value = ManageAddressState.Success(addressModel)
                             }
@@ -82,6 +84,7 @@ class ManageAddressViewModel @Inject constructor(
         _result.value = ManageAddressState.Loading
         deletePeopleAddressUseCase.execute(id.toInt(), {
             _result.value = ManageAddressState.Success("Success")
+            isClearData = true
             searchAddress("")
         },  {
             _addressList.value  = ManageAddressState.Fail(it, "")
@@ -92,6 +95,7 @@ class ManageAddressViewModel @Inject constructor(
         _result.value = ManageAddressState.Loading
         setDefaultPeopleAddressUseCase.execute(id.toInt(), {
             _result.value = ManageAddressState.Success("Success")
+            isClearData = true
             searchAddress("")
         },  {
             _addressList.value  = ManageAddressState.Fail(it, "")
