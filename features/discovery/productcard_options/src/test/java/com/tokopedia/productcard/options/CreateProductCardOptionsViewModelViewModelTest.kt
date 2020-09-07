@@ -9,12 +9,12 @@ internal class CreateProductCardOptionsViewModelViewModelTest: ProductCardOption
 
     @Test
     fun `Null Options`() {
-        `When Create product Card Options View Model with null options`()
+        `When Create Product Card Options View Model`(null)
         `Then Assert product card options item model list is empty`()
     }
 
-    private fun `When Create product Card Options View Model with null options`() {
-        createProductCardOptionsViewModel(null)
+    private fun `When Create Product Card Options View Model`(productCardOptionsModel: ProductCardOptionsModel?) {
+        createProductCardOptionsViewModel(productCardOptionsModel)
     }
 
     private fun `Then Assert product card options item model list is empty`() {
@@ -25,14 +25,10 @@ internal class CreateProductCardOptionsViewModelViewModelTest: ProductCardOption
 
     @Test
     fun `Options Has Similar Search`() {
-        `When Create Product Card Options View Model with hasSimilarSearch = true`()
-        `Then Assert product card options item model list contains option to see similar products`()
-    }
-
-    private fun `When Create Product Card Options View Model with hasSimilarSearch = true`() {
-        createProductCardOptionsViewModel(ProductCardOptionsModel(
+        `When Create Product Card Options View Model`(ProductCardOptionsModel(
                 hasSimilarSearch = true
         ))
+        `Then Assert product card options item model list contains option to see similar products`()
     }
 
     private fun `Then Assert product card options item model list contains option to see similar products`() {
@@ -45,14 +41,10 @@ internal class CreateProductCardOptionsViewModelViewModelTest: ProductCardOption
 
     @Test
     fun `Options Does not Have Similar Search`() {
-        `When Create Product Card Options View Model with hasSimilarSearch = false`()
-        `Then Assert product card options item model list does not contain option to see similar products`()
-    }
-
-    private fun `When Create Product Card Options View Model with hasSimilarSearch = false`() {
-        createProductCardOptionsViewModel(ProductCardOptionsModel(
+        `When Create Product Card Options View Model`(ProductCardOptionsModel(
                 hasSimilarSearch = false
         ))
+        `Then Assert product card options item model list does not contain option to see similar products`()
     }
 
     private fun `Then Assert product card options item model list does not contain option to see similar products`() {
@@ -65,15 +57,11 @@ internal class CreateProductCardOptionsViewModelViewModelTest: ProductCardOption
 
     @Test
     fun `Options Has Wishlist and Is not Wishlisted`() {
-        `When Create Product Card Options View Model with hasWishlist = true, and isWishlisted = false`()
-        `Then Assert product card options item model list contains option to add to wishlist`()
-    }
-
-    private fun `When Create Product Card Options View Model with hasWishlist = true, and isWishlisted = false`() {
-        createProductCardOptionsViewModel(ProductCardOptionsModel(
+        `When Create Product Card Options View Model`(ProductCardOptionsModel(
                 hasWishlist = true,
                 isWishlisted = false
         ))
+        `Then Assert product card options item model list contains option to add to wishlist`()
     }
 
     private fun `Then Assert product card options item model list contains option to add to wishlist`() {
@@ -86,15 +74,11 @@ internal class CreateProductCardOptionsViewModelViewModelTest: ProductCardOption
 
     @Test
     fun `Options Has Wishlist and Is Wishlisted`() {
-        `When Product Card Options View Model with hasWishlist = true, and isWishlisted = true`()
-        `Then Assert product card options item model list contains option to delete from wishlist`()
-    }
-
-    private fun `When Product Card Options View Model with hasWishlist = true, and isWishlisted = true`() {
-        createProductCardOptionsViewModel(ProductCardOptionsModel(
+        `When Create Product Card Options View Model`(ProductCardOptionsModel(
                 hasWishlist = true,
                 isWishlisted = true
         ))
+        `Then Assert product card options item model list contains option to delete from wishlist`()
     }
 
     private fun `Then Assert product card options item model list contains option to delete from wishlist`() {
@@ -107,14 +91,10 @@ internal class CreateProductCardOptionsViewModelViewModelTest: ProductCardOption
 
     @Test
     fun `Options Does not Have Wishlist`() {
-        `When Product Card Options View Model with hasWishlist = false`()
-        `Then Assert product card options item model list does not contain option to save or remove wishlist`()
-    }
-
-    private fun `When Product Card Options View Model with hasWishlist = false`() {
-        createProductCardOptionsViewModel(ProductCardOptionsModel(
+        `When Create Product Card Options View Model`(ProductCardOptionsModel(
                 hasWishlist = false
         ))
+        `Then Assert product card options item model list does not contain option to save or remove wishlist`()
     }
 
     private fun `Then Assert product card options item model list does not contain option to save or remove wishlist`() {
@@ -123,6 +103,56 @@ internal class CreateProductCardOptionsViewModelViewModelTest: ProductCardOption
         productCardOptionsItemModelList.shouldNotContain {
             it is ProductCardOptionsItemModel
                     && (it.title == SAVE_TO_WISHLIST || it.title == DELETE_FROM_WISHLIST)
+        }
+    }
+
+    @Test
+    fun `Options has add to cart does not have ATC params`() {
+        `When Create Product Card Options View Model`(ProductCardOptionsModel(
+                hasAddToCart = false
+        ))
+
+        `Then Assert product card options item model list does not contain option to Add to Cart`()
+    }
+
+    private fun `Then Assert product card options item model list does not contain option to Add to Cart`() {
+        val productCardOptionsItemModelList = productCardOptionsViewModel.getOptionsListLiveData().value
+
+        productCardOptionsItemModelList.shouldNotContain {
+            it is ProductCardOptionsItemModel
+                    && (it.title == ADD_TO_CART)
+        }
+    }
+
+    @Test
+    fun `Options has add to cart without ATC params`() {
+        `When Create Product Card Options View Model`(ProductCardOptionsModel(
+                hasAddToCart = true
+        ))
+
+        `Then Assert product card options item model list does not contain option to Add to Cart`()
+    }
+
+    @Test
+    fun `Options has add to cart with all required ATC params`() {
+        `When Create Product Card Options View Model`(ProductCardOptionsModel(
+                hasAddToCart = true,
+                productId = "12345",
+                productName = "Product Name",
+                shopId = "123456",
+                categoryName = "Handphone",
+                price = "Rp32.900",
+                addToCartParams = ProductCardOptionsModel.AddToCartParams(quantity = 1)
+        ))
+
+        `Then Assert product card options item model list contains option to Add to Cart`()
+    }
+
+    private fun `Then Assert product card options item model list contains option to Add to Cart`() {
+        val productCardOptionsItemModelList = productCardOptionsViewModel.getOptionsListLiveData().value
+
+        productCardOptionsItemModelList.shouldContain {
+            it is ProductCardOptionsItemModel && (it.title == ADD_TO_CART)
         }
     }
 

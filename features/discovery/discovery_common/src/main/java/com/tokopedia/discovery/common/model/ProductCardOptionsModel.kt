@@ -6,6 +6,9 @@ import android.os.Parcelable
 data class ProductCardOptionsModel(
         var hasSimilarSearch: Boolean = false,
         var hasWishlist: Boolean = false,
+        var hasAddToCart: Boolean = false,
+        var hasVisitShop: Boolean = false,
+        var hasShareProduct: Boolean = false,
         var isWishlisted: Boolean = false,
         var keyword: String = "",
         var productId: String = "",
@@ -14,12 +17,30 @@ data class ProductCardOptionsModel(
         var isRecommendation: Boolean = false,
         var productPosition: Int = 0,
         var screenName: String = "",
-        var seeSimilarProductEvent: String = ""
+        var seeSimilarProductEvent: String = "",
+        var addToCartParams: AddToCartParams? = null,
+        var shopId: String = "",
+        var productName: String = "",
+        var categoryName: String = "",
+        var price: String = ""
 ): Parcelable {
 
     var wishlistResult: WishlistResult = WishlistResult()
 
+    fun canAddToCart(): Boolean {
+        return hasAddToCart
+                && productId.isNotEmpty()
+                && productName.isNotEmpty()
+                && shopId.isNotEmpty()
+                && categoryName.isNotEmpty()
+                && price.isNotEmpty()
+                && addToCartParams?.quantity ?: 0 > 0
+    }
+
     constructor(parcel: Parcel) : this(
+            parcel.readByte() != 0.toByte(),
+            parcel.readByte() != 0.toByte(),
+            parcel.readByte() != 0.toByte(),
             parcel.readByte() != 0.toByte(),
             parcel.readByte() != 0.toByte(),
             parcel.readByte() != 0.toByte(),
@@ -30,11 +51,20 @@ data class ProductCardOptionsModel(
             parcel.readByte() != 0.toByte(),
             parcel.readInt(),
             parcel.readString() ?: "",
-            parcel.readString() ?: "")
+            parcel.readString() ?: "",
+            parcel.readParcelable(AddToCartParams::class.java.classLoader) ?: AddToCartParams(),
+            parcel.readString() ?: "",
+            parcel.readString() ?: "",
+            parcel.readString() ?: "",
+            parcel.readString() ?: ""
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeByte(if (hasSimilarSearch) 1 else 0)
         parcel.writeByte(if (hasWishlist) 1 else 0)
+        parcel.writeByte(if (hasAddToCart) 1 else 0)
+        parcel.writeByte(if (hasVisitShop) 1 else 0)
+        parcel.writeByte(if (hasShareProduct) 1 else 0)
         parcel.writeByte(if (isWishlisted) 1 else 0)
         parcel.writeString(keyword)
         parcel.writeString(productId)
@@ -44,6 +74,11 @@ data class ProductCardOptionsModel(
         parcel.writeInt(productPosition)
         parcel.writeString(screenName)
         parcel.writeString(seeSimilarProductEvent)
+        parcel.writeParcelable(addToCartParams, flags)
+        parcel.writeString(shopId)
+        parcel.writeString(productName)
+        parcel.writeString(categoryName)
+        parcel.writeString(price)
         parcel.writeParcelable(wishlistResult, flags)
     }
 
@@ -89,6 +124,31 @@ data class ProductCardOptionsModel(
             }
 
             override fun newArray(size: Int): Array<WishlistResult?> {
+                return arrayOfNulls(size)
+            }
+        }
+    }
+
+    data class AddToCartParams(
+            var quantity: Int = 0
+    ): Parcelable {
+
+        constructor(parcel: Parcel) : this(parcel.readInt())
+
+        override fun writeToParcel(parcel: Parcel, flags: Int) {
+            parcel.writeInt(quantity)
+        }
+
+        override fun describeContents(): Int {
+            return 0
+        }
+
+        companion object CREATOR : Parcelable.Creator<AddToCartParams> {
+            override fun createFromParcel(parcel: Parcel): AddToCartParams {
+                return AddToCartParams(parcel)
+            }
+
+            override fun newArray(size: Int): Array<AddToCartParams?> {
                 return arrayOfNulls(size)
             }
         }

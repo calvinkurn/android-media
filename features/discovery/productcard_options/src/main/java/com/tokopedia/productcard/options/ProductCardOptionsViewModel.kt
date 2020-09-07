@@ -33,10 +33,12 @@ internal class ProductCardOptionsViewModel(
     private val closeProductCardOptionsEventLiveData = MutableLiveData<Event<Boolean>>()
     private val wishlistEventLiveData = MutableLiveData<Event<Boolean>>()
     private val trackingSeeSimilarProductEventLiveData = MutableLiveData<Event<Boolean>>()
+    private val routeToLoginPageEventLiveData = MutableLiveData<Event<Boolean>>()
 
     init {
         initSeeSimilarProductsOption()
         initWishlistOption()
+        initAddToCartOption()
 
         postOptionListLiveData()
     }
@@ -194,6 +196,15 @@ internal class ProductCardOptionsViewModel(
 
     private fun getProductId() = productCardOptionsModel?.productId ?: "0"
 
+    private fun initAddToCartOption() {
+        if (productCardOptionsModel?.canAddToCart() == true) {
+            productCardOptionsItemList.addOption(ADD_TO_CART) {
+                routeToLoginPageEventLiveData.postValue(Event(true))
+            }
+            productCardOptionsItemList.addDivider()
+        }
+    }
+
     private fun postOptionListLiveData() {
         productCardOptionsItemListLiveData.postValue(productCardOptionsItemList)
     }
@@ -207,4 +218,8 @@ internal class ProductCardOptionsViewModel(
     fun getWishlistEventLiveData(): LiveData<Event<Boolean>> = wishlistEventLiveData
 
     fun getTrackingSeeSimilarProductEventLiveData(): LiveData<Event<Boolean>> = trackingSeeSimilarProductEventLiveData
+
+    fun routeToLoginPageEventLiveData(): LiveData<Event<Boolean>> {
+        return routeToLoginPageEventLiveData
+    }
 }
