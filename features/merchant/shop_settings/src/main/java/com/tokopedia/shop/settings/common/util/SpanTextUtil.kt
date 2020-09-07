@@ -32,3 +32,25 @@ fun getSpandableColorText(strToPut: String, stringToBold: String, color: Foregro
         return spannableStringBuilder
     }
 }
+
+fun getSpandableColorText(strToPut: String, stringToBold: String, color: Int): CharSequence {
+    val spannableStringBuilder = SpannableStringBuilder(stringToBold)
+    val indexStart = 0
+    val indexEnd = indexStart + stringToBold.length
+
+    spannableStringBuilder.setSpan(
+            android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
+            indexStart,
+            indexEnd,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+    )
+
+    spannableStringBuilder.setSpan(
+            color,
+            indexStart,
+            indexEnd,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+    )
+    return SpannableStringBuilder(strToPut).append(" ").append(stringToBold).append(".")
+}
+

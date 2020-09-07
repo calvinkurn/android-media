@@ -39,6 +39,7 @@ import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditBasicInfoActi
 import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopEditBasicInfoViewModel
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.util.ShopTypeDef
+import com.tokopedia.shop.settings.common.util.getSpandableColorText
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.usecase.coroutines.Fail
@@ -396,6 +397,7 @@ class ShopEditBasicInfoFragment: Fragment() {
             isDomainAllowed && !isNameAllowed -> showNameNotAllowedTicker(data)
             else -> showNameAndDomainNotAllowedTicker()
         }
+        shopEditTicker.show()
     }
 
     private fun showShopNameDomainTextField(data: AllowShopNameDomainChangesData) {
@@ -413,34 +415,36 @@ class ShopEditBasicInfoFragment: Fragment() {
         val description = getString(R.string.ticker_warning_can_only_change_shopname_once)
         val readMore = getString(R.string.ticker_warning_read_more)
         val color = ContextCompat.getColor(requireContext(), R.color.merchant_green)
-        val message = "$description <b><span style='color:$color;'>$readMore</span></b>."
-        showShopTicker(message, Ticker.TYPE_WARNING)
+        val message = getSpandableColorText(description, readMore, color)
+        showShopTicker(message)
     }
 
     private fun showDomainNotAllowedTicker(data: AllowShopNameDomainChangesData) {
         val message = data.reasonDomainNotAllowed
-        showShopTicker(message, Ticker.TYPE_INFORMATION)
+        showShopTicker(message)
     }
 
     private fun showNameNotAllowedTicker(data: AllowShopNameDomainChangesData) {
         val message = data.reasonNameNotAllowed
-        showShopTicker(message, Ticker.TYPE_INFORMATION)
+        showShopTicker(message)
     }
 
     private fun showNameAndDomainNotAllowedTicker() {
         val message = getString(R.string.shop_edit_change_name_and_domain_not_allowed)
-        showShopTicker(message, Ticker.TYPE_INFORMATION)
+        showShopTicker(message)
     }
 
-    private fun showShopTicker(message: String, type: Int) {
-        shopEditTicker.tickerType = type
-        shopEditTicker.setHtmlDescription(message)
+    private fun showShopTicker(message: String) {
+        shopEditTicker.tickerType = Ticker.TYPE_INFORMATION
+        shopEditTicker.setTextDescription(message)
+    }
+
+    private fun showShopTicker(message: CharSequence) {
+        shopEditTicker.tickerType = Ticker.TYPE_WARNING
+        shopEditTicker.setTextDescription(message)
         shopEditTicker.setOnClickListener {
-            if (shopEditTicker.tickerType == Ticker.TYPE_WARNING) {
-                clickReadMore()
-            }
+            clickReadMore()
         }
-        shopEditTicker.show()
     }
 
     private fun initInjector() {
