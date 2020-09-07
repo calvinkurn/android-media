@@ -10,6 +10,8 @@ import com.tokopedia.kotlin.extensions.view.moveTo
 import com.tokopedia.topchat.chatlist.adapter.typefactory.ChatListTypeFactoryImpl
 import com.tokopedia.topchat.chatlist.adapter.viewholder.ChatItemListViewHolder.Companion.PAYLOAD_UPDATE_PIN_STATUS
 import com.tokopedia.topchat.chatlist.model.EmptyChatModel
+import com.tokopedia.topchat.chatlist.model.IncomingChatWebSocketModel
+import com.tokopedia.topchat.chatlist.pojo.ItemChatAttributesPojo
 import com.tokopedia.topchat.chatlist.pojo.ItemChatListPojo
 
 /**
@@ -99,6 +101,17 @@ class ChatListAdapter(adapterTypeFactory: ChatListTypeFactoryImpl) :
             notifyItemInserted(toPosition)
             notifyItemChanged(toPosition, PAYLOAD_UPDATE_PIN_STATUS)
         }
+    }
+
+    fun onNewItemChatMessage(newChat: IncomingChatWebSocketModel, pinMsgIds: Set<String>) {
+        val newChatIndex = pinMsgIds.size
+        if (hasEmptyModel()) {
+            clearAllElements()
+        }
+        val attributes = ItemChatAttributesPojo(newChat.message, newChat.time, newChat.contact)
+        val item = ItemChatListPojo(newChat.messageId, attributes, "")
+        visitables.add(newChatIndex, item)
+        notifyItemInserted(newChatIndex)
     }
 
     private fun findElementFinalIndex(element: ItemChatListPojo, offset: Int): Int {
