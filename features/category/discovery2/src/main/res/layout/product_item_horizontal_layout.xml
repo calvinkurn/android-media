@@ -34,7 +34,9 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:unify_image_corner_radius = "0"/>
+            app:unify_image_corner_radius = "0"
+            tools:layout_height="@dimen/dp_200"
+            tools:layout_width="match_parent"/>
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/buttonWishlist"
@@ -42,7 +44,6 @@
             android:layout_height="@dimen/dp_28"
             android:layout_marginTop="@dimen/dp_4"
             android:layout_marginEnd="@dimen/dp_4"
-            android:layout_marginRight="@dimen/dp_4"
             android:background="@drawable/product_card_wishlist_icon_background"
             android:padding="@dimen/dp_4"
             android:scaleType="fitXY"
@@ -52,19 +53,30 @@
             app:srcCompat="@drawable/product_card_ic_wishlist"
             tools:visibility="visible" />
 
+        <View
+            android:id="@+id/outOfStockOverlay"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/unify_N700_44"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="@+id/imageProduct"
+            app:layout_constraintBottom_toBottomOf="@+id/imageProduct"
+            app:layout_constraintStart_toStartOf="@+id/imageProduct"
+            app:layout_constraintEnd_toEndOf="@+id/imageProduct"
+            tools:visibility="visible"/>
+
         <com.tokopedia.unifycomponents.Label
             android:id="@+id/labelStock"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_20"
             android:layout_marginStart="@dimen/dp_4"
-            android:layout_marginLeft="@dimen/dp_4"
             android:layout_marginBottom="@dimen/dp_4"
-            android:text="@string/stok_habis"
+            android:text="@string/terjual_habis"
             android:visibility="gone"
             app:labelType="general_dark_grey"
             app:layout_constraintBottom_toBottomOf="@id/imageProduct"
             app:layout_constraintLeft_toLeftOf="@id/imageProduct"
-            tools:text="Stok Habis"
+            tools:text="@string/terjual_habis"
             tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -72,7 +84,6 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_14"
             android:layout_marginEnd="@dimen/dp_8"
-            android:layout_marginRight="@dimen/dp_8"
             android:layout_marginBottom="@dimen/dp_4"
             android:shadowColor="@color/clr_5c000000"
             android:shadowDx="1"

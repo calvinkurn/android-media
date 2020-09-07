@@ -30,6 +30,10 @@ class TopadsSelectActionSheet {
                     behavior.isHideable = false
                 }
             }
+            it.btn_close.setImageDrawable(context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_create_ic_group_close))
+            it.img_active.setImageDrawable(context.getResDrawable(R.drawable.topads_dash_green_dot))
+            it.edit_img.setImageDrawable(context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_edit_pen_icon))
+            it.img_delete.setImageDrawable(context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_delete))
             it.btn_close.setOnClickListener {
                 dismissDialog()
             }

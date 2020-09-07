@@ -172,6 +172,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     var buttonActionType: Int = 0
     var buttonActionText: String = ""
     var tradeinDeviceId: String = ""
+    // used only for bringing product id to edit product
+    var parentProductId: String? = null
     var shippingMinimumPrice: Int = getDynamicProductInfoP1?.basic?.getDefaultOngkirInt() ?: 30000
     var talkLastAction: DynamicProductDetailTalkLastAction? = null
     private var forceRefresh: Boolean = false
@@ -341,6 +343,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 }
 
                 variantData = if (getDynamicProductInfoP1?.isProductVariant() == false) null else it.variantData
+                parentProductId = it.layoutData.parentProductId
 
                 //Create tradein params
                 assignTradeinParams()
