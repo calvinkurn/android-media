@@ -99,7 +99,6 @@ class ShopEditBasicInfoFragment: Fragment() {
         setupDomainSuggestion()
         setupShopAvatar()
         setupSaveBtn()
-        setupShopTicker()
 
         observeLiveData()
         getAllowShopNameDomainChanges()
@@ -216,17 +215,6 @@ class ShopEditBasicInfoFragment: Fragment() {
             addTextChangedListener(shopDomainTextWatcher)
             isEnabled = false
         }
-    }
-
-    private fun setupShopTicker() {
-        shopEditTicker.setDescriptionClickEvent(object : TickerCallback {
-            override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                if (shopEditTicker.tickerType == Ticker.TYPE_WARNING) {
-                    clickReadMore()
-                }
-            }
-            override fun onDismiss() {}
-        })
     }
 
     private fun createShopNameTextWatcher(): TextWatcher {
@@ -428,7 +416,7 @@ class ShopEditBasicInfoFragment: Fragment() {
         val readMore = getString(R.string.ticker_warning_read_more)
         val color = ContextCompat.getColor(requireContext(), R.color.merchant_green)
         //val message = getTextWithSpannable(color, description, readMore).toString()
-        val message = "$description + <b>$readMore</b>"
+        val message = "$description <span style='color:$color'>$readMore</span>."
         showShopTicker(message, Ticker.TYPE_WARNING)
     }
 
@@ -450,6 +438,14 @@ class ShopEditBasicInfoFragment: Fragment() {
     private fun showShopTicker(message: String, type: Int) {
         shopEditTicker.tickerType = type
         shopEditTicker.setHtmlDescription(message)
+        shopEditTicker.setDescriptionClickEvent(object : TickerCallback {
+            override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                if (shopEditTicker.tickerType == Ticker.TYPE_WARNING) {
+                    clickReadMore()
+                }
+            }
+            override fun onDismiss() {}
+        })
         shopEditTicker.show()
     }
 
