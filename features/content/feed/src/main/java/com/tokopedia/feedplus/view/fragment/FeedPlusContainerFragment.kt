@@ -378,7 +378,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                                     context = context,
                                     featureName = SellerMigrationFeatureName.FEATURE_POST_FEED,
                                     screenName = FeedPlusContainerFragment::class.simpleName.orEmpty(),
-                                    appLinks = arrayListOf(author.link),
+                                    appLinks = arrayListOf(getSellerApplink(whitelistDomain)),
                                     isStackBuilder = false)
                         }
                         if (intent != null) {
@@ -396,6 +396,18 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                 }
             }
         }
+    }
+
+    private fun getSellerApplink(whitelistDomain: WhitelistDomain): String {
+        var applink = ApplinkConst.CONTENT_CREATE_POST
+        if (whitelistDomain.authors.size != 0) {
+            for (author in whitelistDomain.authors) {
+                if (author.type == Author.TYPE_SHOP) {
+                    applink = author.link
+                }
+            }
+        }
+        return applink
     }
 
     private fun fabClickListener(whitelistDomain: WhitelistDomain): View.OnClickListener {
