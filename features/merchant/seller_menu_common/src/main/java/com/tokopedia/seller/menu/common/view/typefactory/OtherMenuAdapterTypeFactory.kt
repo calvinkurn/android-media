@@ -37,7 +37,7 @@ class OtherMenuAdapterTypeFactory(
             ShopInfoErrorViewHolder.LAYOUT -> ShopInfoErrorViewHolder(parent, shopInfoErrorListener)
             ShopOrderViewHolder.LAYOUT -> ShopOrderViewHolder(parent)
             SellerMenuTitleViewHolder.LAYOUT -> SellerMenuTitleViewHolder(parent, sellerMenuTracker)
-            ShopProductViewHolder.LAYOUT -> ShopProductViewHolder(parent)
+            ShopProductViewHolder.LAYOUT -> ShopProductViewHolder(parent, sellerMenuTracker)
             SellerFeatureViewHolder.LAYOUT -> SellerFeatureViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }

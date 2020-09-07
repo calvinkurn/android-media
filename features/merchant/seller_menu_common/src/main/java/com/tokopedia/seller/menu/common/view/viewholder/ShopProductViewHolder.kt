@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.item_seller_menu_product_section.view.*
 
 class ShopProductViewHolder(
         itemView: View,
-        private val tracker: SellerMenuTracker
+        private val tracker: SellerMenuTracker?
 ): AbstractViewHolder<ShopProductUiModel>(itemView) {
 
     companion object {
@@ -31,12 +31,12 @@ class ShopProductViewHolder(
 
         itemView.setOnClickListener {
             RouteManager.route(itemView.context, ApplinkConst.PRODUCT_MANAGE)
-            sendProductTracker(product)
+            sendProductListTracker()
         }
     }
 
-    private fun sendProductTracker(product: ShopProductUiModel) {
+    private fun sendProductListTracker() {
         if (GlobalConfig.isSellerApp()) return
-        tracker.sendEventClickProductList()
+        tracker?.sendEventClickProductList()
     }
 }
