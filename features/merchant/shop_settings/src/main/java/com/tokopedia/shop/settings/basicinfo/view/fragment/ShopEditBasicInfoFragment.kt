@@ -392,7 +392,6 @@ class ShopEditBasicInfoFragment: Fragment() {
         val isNameAllowed = data.isNameAllowed
         val isDomainAllowed = data.isDomainAllowed
 
-        showWarningTicker()
         when {
             isNameAllowed && isDomainAllowed -> showWarningTicker()
             isNameAllowed && !isDomainAllowed -> showDomainNotAllowedTicker(data)
