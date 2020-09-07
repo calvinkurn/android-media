@@ -12,29 +12,8 @@ class PlayErrorMockModelConfig : MockModelConfig() {
     override fun createMockModel(context: Context): MockModelConfig {
         addMockResponse(
                 KEY_QUERY,
-                RESPONSE_MOCK_CHANNEL_DETAIL,
+                RESPONSE_MOCK_CHANNEL_DETAIL_ERROR,
                 FIND_BY_CONTAINS)
         return this
-    }
-
-    companion object  {
-        private const val KEY_QUERY = "GetPlayChannelDetail"
-        private const val RESPONSE_MOCK_CHANNEL_DETAIL = """
-            {
-              "errors": [
-                {
-                  "message": "too much request",
-                  "path": [
-                    "playGetChannelDetails"
-                  ],
-                  "extensions": {
-                    "developerMessage": "too much request",
-                    "timestamp": "2020-09-03 11:42:53.430468486 +0700 WIB m=+2502.416277421"
-                  }
-                }
-              ],
-              "data": null
-            }
-        """
     }
 }

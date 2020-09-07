@@ -6,6 +6,8 @@ import com.tokopedia.test.application.environment.interceptor.mock.MockModelConf
 
 /**
  * Created by mzennis on 24/08/20.
+ *
+ * mock response for calculating Page Load Time
  */
 class PlayMockModelConfig : MockModelConfig() {
 
