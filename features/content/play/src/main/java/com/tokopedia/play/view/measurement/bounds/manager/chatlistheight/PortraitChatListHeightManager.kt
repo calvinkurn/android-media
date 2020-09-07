@@ -24,7 +24,7 @@ class PortraitChatListHeightManager(
 
     private val pinnedView: View = container.findViewById(R.id.view_pinned)
     private val rvChatList: MaximumHeightRecyclerView = container.findViewById(R.id.rv_chat_list)
-    private val chatListView: View = container.findViewById(R.id.view_chat_list)
+    private val sendChatView: View = container.findViewById(R.id.view_send_chat)
     private val immersiveBoxView: View = container.findViewById(R.id.v_immersive_box)
     private val quickReplyView: View = container.findViewById(R.id.rv_quick_reply)
 
@@ -35,7 +35,7 @@ class PortraitChatListHeightManager(
             videoOrientation: VideoOrientation,
             videoPlayer: VideoPlayerUiModel
     ) {
-        val key = getKey(videoOrientation, false)
+        val key = getKey(videoOrientation, false, null)
         val value = chatListHeightMap[key]
         if (value.orZero() > 0f) {
             rvChatList.setMaxHeight(value!!)
@@ -52,7 +52,7 @@ class PortraitChatListHeightManager(
     }
 
     override suspend fun invalidateHeightChatMode(videoOrientation: VideoOrientation, videoPlayer: VideoPlayerUiModel, maxTopPosition: Int, hasQuickReply: Boolean) {
-        val key = getKey(videoOrientation, true)
+        val key = getKey(videoOrientation, true, hasQuickReply)
         val value = chatListHeightMap[key]
         if (value.orZero() > 0f) {
             rvChatList.setMaxHeight(value!!)
@@ -71,7 +71,7 @@ class PortraitChatListHeightManager(
     private suspend fun measureHorizontalVideoNonChatMode(): Float = coroutineScope {
         val immersiveBoxLayout = async { immersiveBoxView.awaitMeasured() }
         val pinnedViewLayout = async { pinnedView.awaitMeasured() }
-        val rvChatLayout = async { chatListView.awaitMeasured() }
+        val rvChatLayout = async { sendChatView.awaitMeasured() }
 
         awaitAll(immersiveBoxLayout, pinnedViewLayout, rvChatLayout)
 
@@ -79,13 +79,13 @@ class PortraitChatListHeightManager(
         val pinnedViewHeight = pinnedView.height
         val pinnedMargin = pinnedView.layoutParams as ViewGroup.MarginLayoutParams
 
-        val maxHeight = abs(chatListView.globalVisibleRect.bottom - (immersiveBoxBottom + pinnedViewHeight + videoChatMargin + pinnedMargin.bottomMargin))
+        val maxHeight = abs(sendChatView.globalVisibleRect.top - (immersiveBoxBottom + pinnedViewHeight + videoChatMargin + pinnedMargin.bottomMargin))
 
         maxHeight.toFloat()
     }
 
     private suspend fun measureHorizontalVideoChatMode(maxTopPosition: Int, hasQuickReply: Boolean) = coroutineScope {
-        val rvChatLayout = async { chatListView.awaitMeasured() }
+        val rvChatLayout = async { sendChatView.awaitMeasured() }
 
         val quickReplyViewTotalHeight = run {
             val height = if (hasQuickReply) {
@@ -100,7 +100,7 @@ class PortraitChatListHeightManager(
 
         awaitAll(rvChatLayout)
 
-        val maxHeight = abs(chatListView.globalVisibleRect.bottom - (maxTopPosition + videoChatMargin + quickReplyViewTotalHeight))
+        val maxHeight = abs(sendChatView.globalVisibleRect.top - (maxTopPosition + videoChatMargin + quickReplyViewTotalHeight))
 
         maxHeight.toFloat()
     }
@@ -110,5 +110,6 @@ class PortraitChatListHeightManager(
         maxVerticalChatHeight
     }
 
-    private fun getKey(videoOrientation: VideoOrientation, isChatMode: Boolean) = ChatHeightMapKey(videoOrientation, isChatMode)
+    private fun getKey(videoOrientation: VideoOrientation, isChatMode: Boolean, hasQuickReply: Boolean?)
+            = ChatHeightMapKey(videoOrientation, isChatMode, hasQuickReply)
 }

@@ -7,5 +7,6 @@ import com.tokopedia.play.view.type.VideoOrientation
  */
 data class ChatHeightMapKey(
         val videoOrientation: VideoOrientation,
-        val isChatMode: Boolean
+        val isChatMode: Boolean,
+        val hasQuickReply: Boolean?
 )
