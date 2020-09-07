@@ -12,6 +12,9 @@ import com.tokopedia.notifications.R;
 import com.tokopedia.notifications.common.IrisAnalyticsEvents;
 import com.tokopedia.notifications.inApp.ruleEngine.RulesManager;
 import com.tokopedia.notifications.inApp.ruleEngine.interfaces.DataProvider;
+import com.tokopedia.notifications.inApp.ruleEngine.repository.RepositoryManager;
+import com.tokopedia.notifications.inApp.ruleEngine.rulesinterpreter.RuleInterpreterImpl;
+import com.tokopedia.notifications.inApp.ruleEngine.storage.DataConsumerImpl;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp;
 import com.tokopedia.notifications.inApp.viewEngine.BannerView;
 import com.tokopedia.notifications.inApp.viewEngine.CMActivityLifeCycle;
@@ -65,7 +68,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
     public void init(@NonNull Application application) {
         this.application = application;
         this.cmInAppListener = this;
-        RulesManager.initRuleEngine(application);
+        RulesManager.initRuleEngine(application, new RuleInterpreterImpl(), new DataConsumerImpl());
         initInAppManager();
     }
 

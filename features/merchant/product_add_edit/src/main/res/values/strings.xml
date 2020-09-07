@@ -277,4 +277,22 @@
     <string name="label_variant_replacement_notice">akan hilang jika kamu ganti ke</string>
     <string name="error_variant_exist">Nama sudah digunakan.</string>
     <string name="error_variant_unit_value_selection_exceed">Jumlah varianmu sudah melebihi batas maksimal.</string>
+
+    <!--CONTENT DESC-->
+    <string name="content_desc_tv_start_add_edit_product_photo">text mulai</string>
+    <string name="content_desc_tv_add_product_photo">text tambah foto</string>
+    <string name="content_desc_tfu_product_name">input nama</string>
+    <string name="content_desc_tfu_product_price">input harga</string>
+    <string name="content_desc_tfu_available_stock">input stok</string>
+    <string name="content_desc_tfu_minimum_order">input minimum pemesanan</string>
+    <string name="content_desc_tfu_sku">input sku</string>
+    <string name="content_desc_tv_submit_text">button lanjut</string>
+    <string name="content_desc_textFieldDescription">input deskripsi produk</string>
+    <string name="content_desc_btnNext">button lanjut</string>
+    <string name="content_desc_btn_end">button selesai</string>
+    <string name="content_desc_tf_weight_amount">input berat produkk</string>
+    <string name="content_desc_tv_done">button selesai</string>
+    <string name="content_desc_tv_start_add_edit_product_detail">button ubah detail produk</string>
+    <string name="content_desc_tv_start_add_edit_product_description">button ubah deskripsi produk</string>
+    <string name="content_desc_btn_submit">button lanjut</string>
 </resources>
