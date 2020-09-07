@@ -462,8 +462,16 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         showErrorToaster(newErrorMessage, resources.getBoolean(R.bool.reply_adjust_toaster_height))
     }
 
-    private fun onSuccessUnmaskCommentOrQuestion() {
+    private fun onSuccessUnmaskQuestion() {
         showSuccessToaster(getString(R.string.reply_unmask_toaster_positive), resources.getBoolean(R.bool.reply_adjust_toaster_height))
+        getDiscussionData()
+        showPageLoading()
+    }
+
+    private fun onSuccessUnmaskComment(commentId: String) {
+        showSuccessToaster(getString(R.string.reply_unmask_toaster_positive), resources.getBoolean(R.bool.reply_adjust_toaster_height))
+        getDiscussionData()
+        showPageLoading()
     }
 
     private fun onHideReportedContent() {
@@ -577,7 +585,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     private fun observeUnmaskComment() {
         viewModel.markCommentNotFraudResult.observe(viewLifecycleOwner, Observer {
             when(it) {
-                is Success -> onSuccessUnmaskCommentOrQuestion()
+                is Success -> onSuccessUnmaskComment(it.data.commentId)
                 is Fail -> onFailUnmaskCommentOrQuestion()
             }
         })
@@ -586,7 +594,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     private fun observeUnmaskQuestion() {
         viewModel.markNotFraudResult.observe(viewLifecycleOwner, Observer {
             when(it) {
-                is Success -> onSuccessUnmaskCommentOrQuestion()
+                is Success -> onSuccessUnmaskQuestion()
                 is Fail -> onFailUnmaskCommentOrQuestion()
             }
         })

@@ -3,7 +3,7 @@ package com.tokopedia.talk.feature.reply.presentation.adapter.uimodel
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.talk.feature.reply.presentation.adapter.factory.TalkReplyAdapterTypeFactory
 
-class TalkReplyHeaderModel(
+data class TalkReplyHeaderModel(
         val date: String,
         val question: String,
         val isFollowed: Boolean,

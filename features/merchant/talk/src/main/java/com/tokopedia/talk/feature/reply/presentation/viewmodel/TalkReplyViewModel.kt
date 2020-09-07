@@ -13,6 +13,7 @@ import com.tokopedia.talk.feature.reply.data.model.discussion.AttachedProduct
 import com.tokopedia.talk.feature.reply.data.model.discussion.DiscussionDataByQuestionIDResponseWrapper
 import com.tokopedia.talk.feature.reply.data.model.follow.TalkFollowUnfollowTalkResponseWrapper
 import com.tokopedia.talk.feature.reply.data.model.unmask.TalkMarkCommentNotFraudResponseWrapper
+import com.tokopedia.talk.feature.reply.data.model.unmask.TalkMarkCommentNotFraudSuccess
 import com.tokopedia.talk.feature.reply.data.model.unmask.TalkMarkNotFraudResponseWrapper
 import com.tokopedia.talk.feature.reply.domain.usecase.*
 import com.tokopedia.usecase.coroutines.Fail
@@ -67,8 +68,8 @@ class TalkReplyViewModel @Inject constructor(
     val attachedProducts: LiveData<MutableList<AttachedProduct>>
         get() = _attachedProducts
 
-    private val _markCommentNotFraudResult = MutableLiveData<Result<TalkMarkCommentNotFraudResponseWrapper>>()
-    val markCommentNotFraudResult: LiveData<Result<TalkMarkCommentNotFraudResponseWrapper>>
+    private val _markCommentNotFraudResult = MutableLiveData<Result<TalkMarkCommentNotFraudSuccess>>()
+    val markCommentNotFraudResult: LiveData<Result<TalkMarkCommentNotFraudSuccess>>
         get() = _markCommentNotFraudResult
 
     private val _markNotFraudResult = MutableLiveData<Result<TalkMarkNotFraudResponseWrapper>>()
@@ -164,7 +165,7 @@ class TalkReplyViewModel @Inject constructor(
                 talkMarkCommentNotFraudUseCase.executeOnBackground()
             }
             if(response.talkMarkCommentNotFraud.data.isSuccess == MUTATION_SUCCESS) {
-                _markCommentNotFraudResult.postValue(Success(response))
+                _markCommentNotFraudResult.postValue(Success(TalkMarkCommentNotFraudSuccess(commentId)))
             } else {
                 _markCommentNotFraudResult.postValue(Fail(Throwable(response.talkMarkCommentNotFraud.messageError.first())))
             }

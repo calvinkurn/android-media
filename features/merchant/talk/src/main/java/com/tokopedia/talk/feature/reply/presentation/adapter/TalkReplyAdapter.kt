@@ -1,6 +1,7 @@
 package com.tokopedia.talk.feature.reply.presentation.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
+import com.tokopedia.talk.feature.reply.data.model.discussion.Answer
 import com.tokopedia.talk.feature.reply.presentation.adapter.factory.TalkReplyAdapterTypeFactory
 import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.*
 
@@ -28,11 +29,31 @@ class TalkReplyAdapter(talkReplyAdapterTypeFactory: TalkReplyAdapterTypeFactory)
     fun setIsFollowingButton(isFollowing: Boolean) {
         visitables.forEachIndexed { index, visitable ->
             if (visitable is TalkReplyHeaderModel) {
-                with(visitable) {
-                    visitables[index] = TalkReplyHeaderModel(date, question, isFollowing, allowFollow, allowReport, allowDelete, allowUnmask, isMasked, maskedContent, userThumbnail , userName, userId, isMyQuestion)
-                    notifyItemChanged(index)
-                    return
-                }
+                visitables[index] = visitable.copy(isFollowed = isFollowing)
+                notifyItemChanged(index)
+                return
+            }
+        }
+    }
+
+    fun unmaskQuestion() {
+        visitables.forEachIndexed { index, visitable ->
+            if (visitable is TalkReplyHeaderModel) {
+                visitables[index] = visitable.copy(maskedContent = "", isMasked = false, allowUnmask = false)
+                notifyItemChanged(index)
+                return
+            }
+        }
+    }
+
+    fun unmaskComment() {
+        visitables.forEachIndexed { index, visitable ->
+            if (visitable is TalkReplyUiModel) {
+                val state = visitable.answer.state.copy(isMasked = false, allowUnmask = false)
+                val answer = visitable.answer.copy(maskedContent = "", state = state)
+                visitables[index] = visitable.copy(answer = answer)
+                notifyItemChanged(index)
+                return
             }
         }
     }
