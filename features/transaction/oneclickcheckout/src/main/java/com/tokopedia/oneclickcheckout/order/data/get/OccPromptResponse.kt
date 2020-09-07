@@ -9,6 +9,8 @@ data class OccPromptResponse(
         val title: String = "",
         @SerializedName("description")
         val description: String = "",
+        @SerializedName("image_url")
+        val imageUrl: String = "",
         @SerializedName("buttons")
         val buttons: List<OccPromptButtonResponse> = emptyList()
 )

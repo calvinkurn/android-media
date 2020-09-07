@@ -5,6 +5,7 @@ data class OccPrompt(
         val type: String = "",
         val title: String = "",
         val description: String = "",
+        val imageUrl: String = "",
         val buttons: List<OccPromptButton> = emptyList()
 ) {
     companion object {

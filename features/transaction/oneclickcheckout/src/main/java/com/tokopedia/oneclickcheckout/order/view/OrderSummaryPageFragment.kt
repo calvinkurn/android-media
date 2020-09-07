@@ -1001,6 +1001,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     showCloseIcon = true
                     val child = View.inflate(ctx, R.layout.bottom_sheet_error_checkout, null)
                     child.findViewById<EmptyStateUnify>(R.id.es_checkout).apply {
+                        setImageUrl(prompt.imageUrl)
                         setTitle(prompt.title)
                         setDescription(prompt.description)
                         prompt.getPrimaryButton()?.also { primaryButton ->

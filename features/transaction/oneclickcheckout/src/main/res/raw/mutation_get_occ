@@ -462,6 +462,7 @@ query get_occ_cart_page($source: String) {
         type
         title
         description
+        image_url
         buttons {
           text
           link
