@@ -54,8 +54,15 @@ class ChatItemListViewHolder(
             PAYLOAD_TYPING_STATE -> bindTypingState()
             PAYLOAD_STOP_TYPING_STATE -> bindMessageState(element)
             PAYLOAD_UPDATE_PIN_STATUS -> bindPin(element)
+            PAYLOAD_NEW_INCOMING_CHAT -> bindNewIncomingChat(element)
             else -> bind(element)
         }
+    }
+
+    private fun bindNewIncomingChat(element: ItemChatListPojo) {
+        bindTimeStamp(element)
+        bindMessageState(element)
+        bindSmartReplyIndicator(element)
     }
 
     override fun bind(element: ItemChatListPojo) {
@@ -306,6 +313,7 @@ class ChatItemListViewHolder(
         const val PAYLOAD_TYPING_STATE = 3207
         const val PAYLOAD_STOP_TYPING_STATE = 5431
         const val PAYLOAD_UPDATE_PIN_STATUS = 5432
+        const val PAYLOAD_NEW_INCOMING_CHAT = 5433
 
         const val BUYER_TAG = "Pengguna"
         const val SELLER_TAG = "Penjual"

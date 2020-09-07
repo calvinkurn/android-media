@@ -46,6 +46,7 @@ import com.tokopedia.topchat.chatlist.adapter.ChatListAdapter
 import com.tokopedia.topchat.chatlist.adapter.decoration.ChatListItemDecoration
 import com.tokopedia.topchat.chatlist.adapter.typefactory.ChatListTypeFactoryImpl
 import com.tokopedia.topchat.chatlist.adapter.viewholder.ChatItemListViewHolder
+import com.tokopedia.topchat.chatlist.adapter.viewholder.ChatItemListViewHolder.Companion.PAYLOAD_NEW_INCOMING_CHAT
 import com.tokopedia.topchat.chatlist.analytic.ChatListAnalytic
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_READ
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_TOPBOT
@@ -369,11 +370,13 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
                 }
                 //found on list, not the first
                 index > 0 -> {
+                    val newChatIndex = chatItemListViewModel.pinnedMsgId.size
                     updateChatPojo(index, newChat, readStatus)
-                    adapter.list.goToFirst(index)
-                    adapter.notifyItemMoved(index, 0)
-                    adapter.notifyItemChanged(0)
-                    animateWhenOnTop()
+                    if (index != newChatIndex) {
+                        adapter.list.moveTo(index, newChatIndex)
+                        adapter.notifyItemMoved(index, newChatIndex)
+                    }
+                    adapter.notifyItemChanged(newChatIndex, PAYLOAD_NEW_INCOMING_CHAT)
                 }
                 //found on list, and the first item
                 else -> {
