@@ -30,6 +30,7 @@ abstract class GetPreferenceListUseCase(defaultDispatchers: CoroutineDispatcher 
                     status
                     data {
                         messages
+                        tickers
                         success
                         max_profile
                         profiles {

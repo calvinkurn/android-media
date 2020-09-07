@@ -32,7 +32,9 @@ data class Payment(
         @SerializedName("credit_card")
         val creditCard: PaymentCreditCard = PaymentCreditCard(),
         @SerializedName("error_message")
-        val errorMessage: PaymentErrorMessage = PaymentErrorMessage()
+        val errorMessage: PaymentErrorMessage = PaymentErrorMessage(),
+        @SerializedName("ticker_message")
+        val tickerMessage: String = ""
 )
 
 data class PaymentErrorMessage(

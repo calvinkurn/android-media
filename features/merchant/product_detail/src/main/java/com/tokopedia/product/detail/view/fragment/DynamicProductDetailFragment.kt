@@ -91,11 +91,8 @@ import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCart
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
+import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
-import com.tokopedia.product.detail.data.model.datamodel.*
-import com.tokopedia.product.detail.data.model.description.DescriptionData
-import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
-import com.tokopedia.product.detail.data.model.spesification.Specification
 import com.tokopedia.product.detail.data.util.*
 import com.tokopedia.product.detail.data.util.VariantMapper.generateVariantString
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
@@ -2399,7 +2396,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun showErrorVariantUnselected() {
         DynamicProductDetailTracking.Click.onVariantErrorPartialySelected(viewModel.getDynamicProductInfoP1, viewModel.buttonActionType)
         scrollToPosition(dynamicAdapter.getItemComponentIndex(pdpUiUpdater?.productNewVariantDataModel))
-        showToasterError(getString(R.string.add_to_cart_error_variant))
+        val variantErrorMessage = if (viewModel.variantData?.getVariantsIdentifier()?.isEmpty() == true) {
+            getString(R.string.add_to_cart_error_variant)
+        } else {
+            getString(R.string.add_to_cart_error_variant_builder, viewModel.variantData?.getVariantsIdentifier()
+                    ?: "")
+        }
+        showToasterError(variantErrorMessage)
     }
 
     private fun buyAfterTradeinDiagnose(deviceId: String, phoneType: String, phonePrice: String) {

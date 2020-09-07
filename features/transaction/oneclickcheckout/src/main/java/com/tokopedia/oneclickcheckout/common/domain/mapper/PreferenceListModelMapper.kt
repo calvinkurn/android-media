@@ -14,6 +14,7 @@ object PreferenceModelMapper {
             }
             profiles = profilesModules
             maxProfile = data.maxProfile
+            ticker = data.tickers.firstOrNull()
         }
     }
 
@@ -63,6 +64,7 @@ object PreferenceModelMapper {
             image = payment.image
             url = payment.url
             metadata = payment.metadata
+            tickerMessage = payment.tickerMessage
         }
     }
 }

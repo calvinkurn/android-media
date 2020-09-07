@@ -201,7 +201,7 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
         return OrderProfilePayment(payment.enable, payment.active, payment.gatewayCode, payment.gatewayName, payment.image,
                 payment.description, payment.url, payment.minimumAmount, payment.maximumAmount, payment.fee,
                 payment.walletAmount, payment.metadata, payment.mdr, mapPaymentCreditCard(payment.creditCard, null),
-                mapPaymentErrorMessage(payment.errorMessage)
+                mapPaymentErrorMessage(payment.errorMessage), payment.tickerMessage
         )
     }
 
@@ -234,8 +234,8 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
             return OrderPaymentCreditCardAdditionalData()
         }
         return OrderPaymentCreditCardAdditionalData(data.customerData.id, data.customerData.name, data.customerData.email, data.customerData.msisdn,
-                data.paymentAdditionalData.merchantCode, data.paymentAdditionalData.profileCode, data.paymentAdditionalData.signature, data.paymentAdditionalData.changeCcLink,
-                data.paymentAdditionalData.callbackUrl)
+                data.paymentAdditionalData.merchantCode, data.paymentAdditionalData.profileCode, data.paymentAdditionalData.signature,
+                data.paymentAdditionalData.changeCcLink, data.paymentAdditionalData.callbackUrl)
     }
 
     private fun mapPaymentInstallmentTerm(availableTerms: List<InstallmentTerm>): List<OrderPaymentInstallmentTerm> {
@@ -259,9 +259,10 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
     }
 
     private fun mapPrompt(promptResponse: OccPromptResponse): OccPrompt {
-        return OccPrompt(OccPrompt.FROM_CART, promptResponse.type.toLowerCase(Locale.ROOT), promptResponse.title, promptResponse.description, promptResponse.buttons.map {
-            OccPromptButton(it.text, it.link, it.action.toLowerCase(Locale.ROOT), it.color.toLowerCase(Locale.ROOT))
-        })
+        return OccPrompt(OccPrompt.FROM_CART, promptResponse.type.toLowerCase(Locale.ROOT), promptResponse.title,
+                promptResponse.description, promptResponse.imageUrl, promptResponse.buttons.map {
+            OccPromptButton(it.text, it.link, it.action.toLowerCase(Locale.ROOT), it.color.toLowerCase(Locale.ROOT)) }
+        )
     }
 
     private fun mapTicker(tickers: List<Ticker>): TickerData? {
