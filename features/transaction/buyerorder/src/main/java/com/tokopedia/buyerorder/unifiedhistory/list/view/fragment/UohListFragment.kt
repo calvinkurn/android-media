@@ -1118,6 +1118,11 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 dotMenu.actionType.equals(GQL_MP_CHAT, true) -> {
                     RouteManager.route(context, dotMenu.appURL)
                 }
+                dotMenu.actionType.equals(GQL_ATC, true) -> {
+                    val listOfStrings = Gson().fromJson(orderData.metadata.listProducts, mutableListOf<String>().javaClass)
+                    val jsonArray: JsonArray = Gson().toJsonTree(listOfStrings).asJsonArray
+                    uohListViewModel.doAtc(GraphqlHelper.loadRawString(resources, R.raw.buy_again), jsonArray)
+                }
                 dotMenu.actionType.equals(GQL_MP_FINISH, true) -> {
                     orderIdNeedUpdated = orderData.orderUUID
                     showBottomSheetFinishOrder(index, orderData.verticalID, true)
