@@ -381,7 +381,7 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
                 //found on list, and the first item
                 else -> {
                     updateChatPojo(index, newChat, readStatus)
-                    adapter.notifyItemChanged(0)
+                    adapter.notifyItemChanged(0, PAYLOAD_NEW_INCOMING_CHAT)
                 }
             }
         }
