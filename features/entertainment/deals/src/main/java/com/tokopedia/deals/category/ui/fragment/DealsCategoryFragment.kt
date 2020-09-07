@@ -1,16 +1,20 @@
 package com.tokopedia.deals.category.ui.fragment
 
 import android.content.Intent
+import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.adapterdelegate.BaseCommonAdapter
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.deals.R
+import com.tokopedia.deals.brand.model.DealsEmptyDataView
 import com.tokopedia.deals.brand.ui.activity.DealsBrandActivity
 import com.tokopedia.deals.category.di.DealsCategoryComponent
 import com.tokopedia.deals.category.listener.DealsCategoryFilterBottomSheetListener
@@ -18,11 +22,10 @@ import com.tokopedia.deals.category.ui.activity.DealsCategoryActivity
 import com.tokopedia.deals.category.ui.adapter.DealsCategoryAdapter
 import com.tokopedia.deals.category.ui.viewmodel.DealCategoryViewModel
 import com.tokopedia.deals.common.analytics.DealsAnalytics
-import com.tokopedia.deals.common.listener.DealChipsListActionListener
-import com.tokopedia.deals.common.listener.DealsBrandActionListener
-import com.tokopedia.deals.common.listener.ProductListListener
 import com.tokopedia.deals.common.listener.*
+import com.tokopedia.deals.common.model.LoadingMoreUnifyModel
 import com.tokopedia.deals.common.ui.activity.DealsBaseActivity
+import com.tokopedia.deals.common.ui.adapter.DealsProductCardAdapter
 import com.tokopedia.deals.common.ui.dataview.*
 import com.tokopedia.deals.common.ui.fragment.DealsBaseFragment
 import com.tokopedia.deals.common.ui.viewmodel.DealsBaseViewModel
@@ -31,16 +34,19 @@ import com.tokopedia.deals.home.ui.fragment.DealsHomeFragment
 import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.deals.search.ui.activity.DealsSearchActivity
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unifycomponents.toPx
+import kotlinx.android.synthetic.main.fragment_deals_category.*
 import kotlinx.android.synthetic.main.item_deals_chips_list.*
 import javax.inject.Inject
 
 
 class DealsCategoryFragment : DealsBaseFragment(),
         OnBaseLocationActionListener, SearchBarActionListener,
-        DealsBrandActionListener, ProductListListener,
+        DealsBrandActionListener, ProductCardListener,
         DealChipsListActionListener, DealsCategoryFilterBottomSheetListener,
         EmptyStateListener {
 
@@ -75,10 +81,12 @@ class DealsCategoryFragment : DealsBaseFragment(),
         observeLayout()
     }
 
+
     private fun observeLayout() {
         dealCategoryViewModel.observableDealsCategoryLayout.observe(viewLifecycleOwner, Observer {
             isLoadingInitialData = true
-            renderList(it, true)
+            handleShimering(it)
+            handleRanderList(it)
         })
 
         dealCategoryViewModel.errorMessage.observe(viewLifecycleOwner, Observer {
@@ -87,9 +95,8 @@ class DealsCategoryFragment : DealsBaseFragment(),
         })
 
         dealCategoryViewModel.observableProducts.observe(viewLifecycleOwner, Observer {
-            if (it.isNotEmpty()) {
-                renderList(it, true)
-            }
+            val nextPage = it.size >= DEFAULT_MIN_ITEMS_PRODUCT
+            renderList(it, nextPage)
         })
 
         dealCategoryViewModel.observableChips.observe(viewLifecycleOwner, Observer {
@@ -97,9 +104,112 @@ class DealsCategoryFragment : DealsBaseFragment(),
             renderChips()
         })
 
-        baseViewModel.observableCurrentLocation.observe(this, Observer {
+        baseViewModel.observableCurrentLocation.observe(viewLifecycleOwner, Observer {
             onBaseLocationChanged(it)
         })
+
+        handleRecycler()
+    }
+
+    private fun handleRanderList(list: List<DealsBaseItemDataView>) {
+        val nextPage = list.size >= DEFAULT_MIN_ITEMS
+        if (list.size == 2) {
+            list.map {
+                if (it.isLoaded) {
+                    renderList(list, nextPage)
+                }
+            }
+        } else {
+            renderList(list, nextPage)
+        }
+    }
+
+    private fun handleShimering(list: List<DealsBaseItemDataView>) {
+
+        list.forEach {dealsBaseItemDataView ->
+            when (dealsBaseItemDataView) {
+                is DealsBrandsDataView -> {
+                    if (dealsBaseItemDataView.isSuccess) {
+                        one_row_shimmering.hide()
+                        shimmering.hide()
+                    }  else {
+                        one_row_shimmering.show()
+                        shimmering.show()
+                    }
+                }
+
+                is DealsEmptyDataView -> {
+                    shimmering.hide()
+                    one_row_shimmering.hide()
+                }
+            }
+        }
+    }
+
+    override fun enableLoadMore() {
+        val layoutManager = GridLayoutManager(context, PRODUCT_SPAN_COUNT)
+        layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int {
+              return when (position) {
+                0 -> if (adapter.data.first()::class == DealsBrandsDataView::class) 2 else if (adapter.data.first()::class == DealsEmptyDataView::class) 2 else 1
+                adapter.data.lastIndex -> if (adapter.data[adapter.data.lastIndex]::class == LoadingMoreUnifyModel::class) 2 else 1
+                else -> 1
+              }
+            }
+        }
+
+        if (endlessRecyclerViewScrollListener == null) {
+            endlessRecyclerViewScrollListener = object : EndlessRecyclerViewScrollListener(layoutManager) {
+                override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                    showLoadMoreLoading()
+                    loadData(page)
+                }
+            }
+        }
+        endlessRecyclerViewScrollListener?.let {
+            recyclerView.addOnScrollListener(it)
+        }
+
+        recyclerView.layoutManager = layoutManager
+    }
+
+
+    private fun handleRecycler() {
+
+        val decoration = object : RecyclerView.ItemDecoration() {
+            override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+                super.getItemOffsets(outRect, view, parent, state)
+
+                val position = parent.getChildAdapterPosition(view)
+                val totalSpanCount = getTotalSpanCount(parent)
+
+                if (position != RecyclerView.NO_POSITION) {
+                    when (position) {
+                        1 -> outRect.top = 24.toPx()
+                        2 -> outRect.top = 24.toPx()
+                        else -> outRect.top = 0
+                    }
+                    outRect.bottom = if (isInTheFirstRow(position + 2, totalSpanCount)) 24.toPx() else 4.toPx()
+                    outRect.left = if (isFirstInRow(position + 2, totalSpanCount))2.toPx() else 16.toPx()
+                    outRect.right = if (isFirstInRow(position + 2, totalSpanCount)) 16.toPx() else 2.toPx()
+                }
+            }
+        }
+        recyclerView.addItemDecoration(decoration)
+
+    }
+
+    private fun isInTheFirstRow(position: Int, spanCount: Int): Boolean {
+        return position < spanCount
+    }
+
+    private fun isFirstInRow(position: Int, spanCount: Int): Boolean {
+        return position % spanCount == 0
+    }
+
+    private fun getTotalSpanCount(parent: RecyclerView): Int {
+        val layoutManager = parent.layoutManager
+        return (layoutManager as? GridLayoutManager)?.spanCount ?: 1
     }
 
     override fun createAdapterInstance(): BaseCommonAdapter {
@@ -132,7 +242,11 @@ class DealsCategoryFragment : DealsBaseFragment(),
 
         val filterItems = arrayListOf<SortFilterItem>()
         try {
-            val showingChips = if (chips.size > 5) { chips.subList(0, 4) } else { chips }
+            val showingChips = if (chips.size > 5) {
+                chips.subList(0, 4)
+            } else {
+                chips
+            }
             showingChips.forEach {
                 val item = SortFilterItem(it.title)
                 filterItems.add(item)
@@ -145,7 +259,9 @@ class DealsCategoryFragment : DealsBaseFragment(),
 
         sort_filter_deals_category.run {
             filterItems.forEachIndexed { index, sortFilterItem ->
-                if (chips[index].isSelected) { sortFilterItem.type = ChipsUnify.TYPE_SELECTED }
+                if (chips[index].isSelected) {
+                    sortFilterItem.type = ChipsUnify.TYPE_SELECTED
+                }
 
                 sortFilterItem.listener = {
                     sortFilterItem.toggle()
@@ -217,14 +333,6 @@ class DealsCategoryFragment : DealsBaseFragment(),
         startActivity(DealsBrandActivity.getCallingIntent(requireContext(), null, categoryID))
     }
 
-    /** ProductListListener **/
-    override fun onProductClicked(
-            productCardDataView: ProductCardDataView,
-            productItemPosition: Int
-    ) {
-        RouteManager.route(context, productCardDataView.appUrl)
-    }
-
     /** DealChipsListActionListener **/
     override fun onFilterChipClicked(chips: List<ChipDataView>) {
         if (filterBottomSheet == null) {
@@ -274,10 +382,11 @@ class DealsCategoryFragment : DealsBaseFragment(),
             analytics.eventClickChangeLocationCategoryPage(oldLocation = (activity as DealsBaseActivity).currentLoc.name, newLocation = location.name)
         }
         setCurrentLocation(location)
+        recyclerView.smoothScrollToPosition(0)
     }
 
     override fun hasInitialLoadingModel(): Boolean = false
-
+    override fun getMinimumScrollableNumOfItems(): Int = DEFAULT_MIN_ITEMS
     override fun callInitialLoadAutomatically(): Boolean = false
 
     private fun getCurrentLocation() = (activity as DealsBaseActivity).currentLoc
@@ -290,10 +399,15 @@ class DealsCategoryFragment : DealsBaseFragment(),
         analytics.eventClickSearchCategoryPage()
     }
 
-    override fun afterSearchBarTextChanged(text: String) { /* do nothing */ }
+    override fun afterSearchBarTextChanged(text: String) { /* do nothing */
+    }
 
     override fun onImpressionBrand(brand: DealsBrandsDataView.Brand, position: Int) {
-        analytics.eventScrollToBrandPopular(brand,position)
+        analytics.eventScrollToBrandPopular(brand, position)
+    }
+
+    override fun onProductClicked(itemView: View, productCardDataView: ProductCardDataView, position: Int) {
+        RouteManager.route(context, productCardDataView.appUrl)
     }
 
     override fun onImpressionProduct(productCardDataView: ProductCardDataView, productItemPosition: Int, page: Int) {
@@ -324,7 +438,9 @@ class DealsCategoryFragment : DealsBaseFragment(),
 
     companion object {
         const val DEALS_SEARCH_REQUEST_CODE = 27
-        private const val CHIPS_VIEW_HOLDER_POSITION = 0
+        private const val PRODUCT_SPAN_COUNT = 2
+        const val DEFAULT_MIN_ITEMS_PRODUCT = 20
+        const val DEFAULT_MIN_ITEMS = 21
 
         fun getInstance(categoryId: String?): DealsCategoryFragment = DealsCategoryFragment().also {
             it.arguments = Bundle().apply {
