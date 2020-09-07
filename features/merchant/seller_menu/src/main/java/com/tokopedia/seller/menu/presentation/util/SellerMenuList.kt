@@ -6,13 +6,9 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.seller.menu.R
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingConstant
+import com.tokopedia.seller.menu.common.constant.MenuItemType
 import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
-import com.tokopedia.seller.menu.common.view.uimodel.DividerUiModel
-import com.tokopedia.seller.menu.common.view.uimodel.MenuItemUiModel
-import com.tokopedia.seller.menu.common.view.uimodel.SettingTitleUiModel
-import com.tokopedia.seller.menu.common.view.uimodel.SellerFeatureUiModel
-import com.tokopedia.seller.menu.common.view.uimodel.ShopOrderUiModel
-import com.tokopedia.seller.menu.common.view.uimodel.ShopProductUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.*
 import com.tokopedia.seller.menu.common.view.uimodel.base.DividerType
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopInfoLoadingUiModel
@@ -51,25 +47,28 @@ object SellerMenuList {
             SellerBaseUrl.HOSTNAME, SellerBaseUrl.RESO_INBOX_SELLER)
 
         return listOf(
-            SettingTitleUiModel(sectionTitle),
-            MenuItemUiModel(
-                context.getString(R.string.setting_menu_review),
-                R.drawable.ic_star_setting,
-                ApplinkConst.REPUTATION,
-                eventActionSuffix = SettingTrackingConstant.REVIEW),
-            MenuItemUiModel(
-                context.getString(R.string.setting_menu_discussion),
-                R.drawable.ic_setting_discussion,
-                ApplinkConst.TALK,
-                eventActionSuffix = SettingTrackingConstant.DISCUSSION),
-            MenuItemUiModel(
-                context.getString(R.string.setting_menu_complaint),
-                R.drawable.ic_complaint,
-                null,
-                eventActionSuffix = SettingTrackingConstant.COMPLAINT) {
-                val intent = RouteManager.getIntent(context, resolutionInboxApplink)
-                context.startActivity(intent)
-            }
+                SettingTitleUiModel(sectionTitle),
+                SellerMenuItemUiModel(
+                        context.getString(R.string.setting_menu_review),
+                        R.drawable.ic_star_setting,
+                        ApplinkConst.REPUTATION,
+                        type = MenuItemType.REVIEW,
+                        eventActionSuffix = SettingTrackingConstant.REVIEW),
+                SellerMenuItemUiModel(
+                        context.getString(R.string.setting_menu_discussion),
+                        R.drawable.ic_setting_discussion,
+                        ApplinkConst.TALK,
+                        type = MenuItemType.DISCUSSION,
+                        eventActionSuffix = SettingTrackingConstant.DISCUSSION),
+                SellerMenuItemUiModel(
+                        context.getString(R.string.setting_menu_complaint),
+                        R.drawable.ic_complaint,
+                        null,
+                        type = MenuItemType.COMPLAIN,
+                        eventActionSuffix = SettingTrackingConstant.COMPLAINT) {
+                    val intent = RouteManager.getIntent(context, resolutionInboxApplink)
+                    context.startActivity(intent)
+                }
         )
     }
 
@@ -79,27 +78,30 @@ object SellerMenuList {
             SellerBaseUrl.SELLER_HOSTNAME, SellerBaseUrl.SELLER_EDU)
 
         return listOf(
-            DividerUiModel(),
-            SettingTitleUiModel(sectionTitle),
-            MenuItemUiModel(
-                context.getString(R.string.setting_menu_seller_education_center),
-                R.drawable.ic_seller_edu,
-                eventActionSuffix = SettingTrackingConstant.SELLER_CENTER) {
-                val intent = RouteManager.getIntent(context, sellerEduApplink)
-                context.startActivity(intent)
-            },
-            MenuItemUiModel(
-                context.getString(R.string.setting_menu_tokopedia_care),
-                R.drawable.ic_tokopedia_care,
-                ApplinkConst.CONTACT_US_NATIVE,
-                eventActionSuffix = SettingTrackingConstant.TOKOPEDIA_CARE),
-            MenuItemUiModel(
-                context.getString(R.string.setting_menu_shop_setting),
-                R.drawable.ic_pengaturan_toko,
-                null,
-                eventActionSuffix = SettingTrackingConstant.SETTINGS) {
-                context.startActivity(Intent(context, SellerSettingsActivity::class.java))
-            }
+                DividerUiModel(),
+                SettingTitleUiModel(sectionTitle),
+                SellerMenuItemUiModel(
+                        context.getString(R.string.setting_menu_seller_education_center),
+                        R.drawable.ic_seller_edu,
+                        type = MenuItemType.SELLER_EDU,
+                        eventActionSuffix = SettingTrackingConstant.SELLER_CENTER) {
+                    val intent = RouteManager.getIntent(context, sellerEduApplink)
+                    context.startActivity(intent)
+                },
+                SellerMenuItemUiModel(
+                        context.getString(R.string.setting_menu_tokopedia_care),
+                        R.drawable.ic_tokopedia_care,
+                        ApplinkConst.CONTACT_US_NATIVE,
+                        type = MenuItemType.TOKOPEDIA_CARE,
+                        eventActionSuffix = SettingTrackingConstant.TOKOPEDIA_CARE),
+                SellerMenuItemUiModel(
+                        context.getString(R.string.setting_menu_shop_setting),
+                        R.drawable.ic_pengaturan_toko,
+                        null,
+                        type = MenuItemType.SHOP_SETTINGS,
+                        eventActionSuffix = SettingTrackingConstant.SETTINGS) {
+                    context.startActivity(Intent(context, SellerSettingsActivity::class.java))
+                }
         )
     }
 }
