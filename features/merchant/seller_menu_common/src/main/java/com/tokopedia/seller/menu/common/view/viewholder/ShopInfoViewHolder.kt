@@ -10,6 +10,7 @@ import androidx.annotation.LayoutRes
 import androidx.core.content.res.ResourcesCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.gone
@@ -140,7 +141,7 @@ class ShopInfoViewHolder(
     private fun setShopName(shopName: String) {
         itemView.run {
             successShopInfoLayout.shopName?.run {
-                text = shopName
+                text = MethodChecker.fromHtml(shopName)
                 setOnClickListener {
                     listener?.onShopInfoClicked()
                     sendClickShopNameTracking()
