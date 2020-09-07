@@ -140,7 +140,7 @@ class HomeUseCaseModule {
             "}"
 
     private val walletBalanceQuery : String = "{\n" +
-            "  wallet {\n" +
+            "  wallet(isGetTopup:true) {\n" +
             "    linked\n" +
             "    balance\n" +
             "    rawBalance\n" +

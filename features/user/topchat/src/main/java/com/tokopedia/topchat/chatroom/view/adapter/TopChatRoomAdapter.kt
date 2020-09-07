@@ -16,6 +16,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.util.ChatRoomDiffUtil
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.BroadcastSpamHandlerViewHolder.Companion.PAYLOAD_UPDATE_STATE
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ProductCarouselListAttachmentViewHolder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatProductAttachmentViewHolder
 import com.tokopedia.topchat.chatroom.view.uimodel.HeaderDateUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.BroadcastSpamHandlerUiModel
@@ -265,5 +266,28 @@ class TopChatRoomAdapter(
 
     private fun isPossibleBroadcastHandlerExist(): Boolean {
         return visitables.isNotEmpty() && visitables.size >= 2
+    }
+
+    fun updateOccLoadingStatus(product: ProductAttachmentViewModel, position: Int) {
+        val occState = getItemPosition(product, position)
+        if (occState.parentPosition == RecyclerView.NO_POSITION) return
+        notifyItemChanged(occState.parentPosition, occState)
+    }
+
+    private fun getItemPosition(product: ProductAttachmentViewModel, position: Int): TopchatProductAttachmentViewHolder.OccState {
+        val item = visitables.getOrNull(position)
+        if (item == product) {
+            return TopchatProductAttachmentViewHolder.OccState(position)
+        }
+        for ((parentItemIndex, parentItem) in visitables.withIndex()) {
+            if (parentItem == product) return TopchatProductAttachmentViewHolder.OccState(parentItemIndex)
+            if (parentItem is ProductCarouselUiModel) {
+                val carouselPosition = parentItem.products.indexOf(product)
+                if (carouselPosition != RecyclerView.NO_POSITION) {
+                    return TopchatProductAttachmentViewHolder.OccState(parentItemIndex, carouselPosition)
+                }
+            }
+        }
+        return TopchatProductAttachmentViewHolder.OccState(RecyclerView.NO_POSITION)
     }
 }

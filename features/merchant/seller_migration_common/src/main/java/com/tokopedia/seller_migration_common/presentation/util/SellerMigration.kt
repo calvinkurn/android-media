@@ -81,7 +81,8 @@ data class BenefitPoints(val benefitPointsList: List<CharSequence>): Parcelable
  */
 fun Fragment.initializeSellerMigrationCommunicationTicker(bottomSheet: SellerMigrationCommunicationBottomSheet?,
                                                           ticker: Ticker?,
-                                                          communicationInfo: CommunicationInfo) {
+                                                          communicationInfo: CommunicationInfo,
+                                                          tickerAction: () -> Unit = { ticker?.show() }) {
     ticker?.run {
         if (isSellerMigrationEnabled(context)) {
             tickerTitle = context?.getString(R.string.seller_migration_ticker_title).orEmpty()
@@ -100,7 +101,7 @@ fun Fragment.initializeSellerMigrationCommunicationTicker(bottomSheet: SellerMig
                     openSellerMigrationBottomSheet(bottomSheet)
                 }
             })
-            show()
+            tickerAction()
         } else {
             gone()
         }
@@ -120,7 +121,8 @@ private fun Fragment.openSellerMigrationBottomSheet(bottomSheet: SellerMigration
  */
 fun FragmentActivity.initializeSellerMigrationCommunicationTicker(bottomSheet: SellerMigrationCommunicationBottomSheet?,
                                                                   ticker: Ticker?,
-                                                                  communicationInfo: CommunicationInfo) {
+                                                                  communicationInfo: CommunicationInfo,
+                                                                  tickerAction: () -> Unit = { ticker?.show() }) {
     ticker?.run {
         if (isSellerMigrationEnabled(context)) {
             tickerTitle = context?.getString(R.string.seller_migration_ticker_title).orEmpty()
@@ -139,7 +141,7 @@ fun FragmentActivity.initializeSellerMigrationCommunicationTicker(bottomSheet: S
                     openSellerMigrationBottomSheet(bottomSheet)
                 }
             })
-            show()
+            tickerAction()
         } else {
             gone()
         }

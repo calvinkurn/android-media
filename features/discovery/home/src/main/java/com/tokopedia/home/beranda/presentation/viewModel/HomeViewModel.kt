@@ -21,7 +21,6 @@ import com.tokopedia.home.beranda.data.model.TokopointsDrawer
 import com.tokopedia.home.beranda.data.model.UpdateLiveDataModel
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
-import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.InjectCouponTimeBased
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeRecommendation
@@ -61,9 +60,9 @@ import dagger.Lazy
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ClosedSendChannelException
-import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.flowOn
 import retrofit2.Response
 import rx.Subscriber
@@ -394,7 +393,7 @@ open class HomeViewModel @Inject constructor(
 
         val currentPosition = _homeLiveData.value?.list?.withIndex()?.find { (_, model) ->  model is HeaderDataModel }?.index ?: -1
 
-        headerDataModel?.let { headerViewModel ->
+        headerDataModel?.let {
             tokopointsDrawer?.let {
                 headerDataModel = headerDataModel?.copy(tokopointsDrawerHomeData = it)
             }
@@ -887,8 +886,9 @@ open class HomeViewModel @Inject constructor(
                 if (homeDataModel?.isCache == false) {
                     _isRequestNetworkLiveData.postValue(Event(false))
                     val homeDataWithoutExternalComponentPair = evaluateInitialTopAdsBannerComponent(homeDataModel)
+                    var homeData: HomeDataModel? = homeDataWithoutExternalComponentPair.first
                     withContext(homeDispatcher.get().ui()){
-                        var homeData = evaluateGeolocationComponent(homeDataModel)
+                        homeData = evaluateGeolocationComponent(homeData)
                         homeData = evaluateAvailableComponent(homeData)
                         _homeLiveData.value = homeData
                     }
@@ -931,7 +931,7 @@ open class HomeViewModel @Inject constructor(
         logChannelUpdate("init channel")
         jobChannel?.cancelChildren()
         jobChannel = launch (homeDispatcher.get().ui()){
-            updateChannel(channel)
+            updateChannel()
         }
     }
 
@@ -939,12 +939,9 @@ open class HomeViewModel @Inject constructor(
         logChannelUpdate("reinit channel")
         jobChannel?.cancelChildren()
         jobChannel = launch (homeDispatcher.get().ui()){
-            updateChannel(channel)
-        }
-        launch {
-            if (!channel.isClosedForSend){
-                channel.send(widget)
-            }
+            channel = Channel(10)
+            if(!channel.isClosedForSend) channel.send(widget)
+            updateChannel()
         }
     }
 
@@ -1353,11 +1350,13 @@ open class HomeViewModel @Inject constructor(
 
     fun getUserId() = userSession.get().userId ?: ""
 
+    fun getUserName() = userSession.get().name ?: ""
+
 // ============================================================================================
 // ================================ Live Data Controller ======================================
 // ============================================================================================
-    private suspend fun updateChannel(channel: ReceiveChannel<UpdateLiveDataModel>){
-        for(data in channel){
+    private suspend fun updateChannel(){
+        channel.consumeAsFlow().collect {data ->
             if(data.action == ACTION_UPDATE_HOME_DATA){
                 logChannelUpdate("Update channel: (Update all home data) data: ${data.homeData?.list?.map { it.javaClass.simpleName }}")
                 data.homeData?.let { homeData ->

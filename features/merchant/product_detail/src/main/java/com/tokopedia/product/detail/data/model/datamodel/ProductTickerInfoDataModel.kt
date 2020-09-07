@@ -12,7 +12,7 @@ import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 data class ProductTickerInfoDataModel(
         val type: String = "",
         val name: String = "",
-        var generalTickerInfo: List<StickyLoginTickerPojo.TickerDetail> = listOf(),
+        var generalTickerInfo: List<StickyLoginTickerPojo.TickerDetail>? = null,
         var statusInfo: ShopInfo.StatusInfo? = null,
         var closedInfo: ShopInfo.ClosedInfo? = ShopInfo.ClosedInfo()
 
@@ -28,7 +28,7 @@ data class ProductTickerInfoDataModel(
     override val impressHolder: ImpressHolder = ImpressHolder()
 
     fun shouldRemoveComponent(): Boolean {
-        return generalTickerInfo.isEmpty() && (statusInfo == null || (statusInfo?.shopStatus == ProductShopStatusTypeDef.OPEN &&  statusInfo?.isIdle != true))
+        return generalTickerInfo?.isNullOrEmpty() == true && (statusInfo == null || (statusInfo?.shopStatus == ProductShopStatusTypeDef.OPEN && statusInfo?.isIdle != true))
     }
 
     fun getComponentTrackData(adapterPosition: Int) = ComponentTrackDataModel(type, name, adapterPosition + 1)

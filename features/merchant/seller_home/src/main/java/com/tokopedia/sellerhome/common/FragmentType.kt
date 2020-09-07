@@ -10,7 +10,8 @@ import androidx.annotation.IntDef
 @Target(AnnotationTarget.PROPERTY, AnnotationTarget.FIELD, AnnotationTarget.VALUE_PARAMETER)
 @IntDef(value = [
     FragmentType.HOME, FragmentType.PRODUCT,
-    FragmentType.CHAT, FragmentType.ORDER
+    FragmentType.CHAT, FragmentType.ORDER,
+    FragmentType.OTHER
 ])
 annotation class FragmentType {
     companion object {
