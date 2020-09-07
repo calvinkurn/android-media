@@ -2,8 +2,10 @@ package com.tokopedia.talk.feature.inbox
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.talk.coroutines.TestCoroutineDispatchers
+import com.tokopedia.talk.feature.inbox.analytics.TalkInboxTracking
 import com.tokopedia.talk.feature.inbox.domain.usecase.TalkInboxListUseCase
 import com.tokopedia.talk.feature.inbox.presentation.viewmodel.TalkInboxViewModel
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Before
@@ -14,6 +16,12 @@ abstract class TalkInboxViewModelTestFixture {
     @RelaxedMockK
     lateinit var talkInboxListUseCase: TalkInboxListUseCase
 
+    @RelaxedMockK
+    lateinit var userSession: UserSessionInterface
+
+    @RelaxedMockK
+    lateinit var talkInboxTracking: TalkInboxTracking
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -22,7 +30,7 @@ abstract class TalkInboxViewModelTestFixture {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        viewModel = TalkInboxViewModel(TestCoroutineDispatchers, talkInboxListUseCase)
+        viewModel = TalkInboxViewModel(TestCoroutineDispatchers, talkInboxListUseCase, userSession, talkInboxTracking)
         viewModel.inboxList.observeForever {  }
     }
 }

@@ -33,13 +33,16 @@ class TalkInboxActivity : BaseSimpleActivity(), TalkPerformanceMonitoringListene
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    @Inject
+    lateinit var talkInboxTracking: TalkInboxTracking
+
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         component.inject(this)
         super.onCreate(savedInstanceState)
-        TalkInboxTracking.openScreen(screenName)
+        talkInboxTracking.openScreen(screenName)
     }
 
     override fun getNewFragment(): Fragment? {

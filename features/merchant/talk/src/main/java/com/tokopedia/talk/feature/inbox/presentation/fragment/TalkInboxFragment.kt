@@ -66,6 +66,9 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
     @Inject
     lateinit var viewModel: TalkInboxViewModel
 
+    @Inject
+    lateinit var talkInboxTracking: TalkInboxTracking
+
     private var talkPerformanceMonitoringListener: TalkPerformanceMonitoringListener? = null
     private var talkInboxListener: TalkInboxListener? = null
 
@@ -91,7 +94,7 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
 
     override fun onItemClicked(talkUiModel: TalkInboxUiModel?) {
         talkUiModel?.inboxDetail?.let {
-            TalkInboxTracking.eventClickThread(viewModel.getType(), it.questionID, it.productID,
+            talkInboxTracking.eventClickThread(viewModel.getType(), it.questionID, it.productID,
                     viewModel.getActiveFilter(), !it.isUnread, viewModel.getShopId(), viewModel.getUnreadCount(), viewModel.getUserId())
             goToReply(it.questionID)
         }
@@ -189,7 +192,7 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
             when(it) {
                 is TalkInboxViewState.Success -> {
                     with(it.data) {
-                        TalkInboxTracking.eventLazyLoad(viewModel.getType(), it.page, inbox.count { inbox -> inbox.isUnread }, inbox.count { inbox -> !inbox.isUnread }, shopID, viewModel.getUserId())
+                        talkInboxTracking.eventLazyLoad(viewModel.getType(), it.page, inbox.count { inbox -> inbox.isUnread }, inbox.count { inbox -> !inbox.isUnread }, shopID, viewModel.getUserId())
                         hideFullPageError()
                         hideFullPageLoading()
                         if(it.page == TalkConstants.DEFAULT_INITIAL_PAGE) {

@@ -3,8 +3,9 @@ package com.tokopedia.talk.feature.inbox.analytics
 import com.tokopedia.talk.common.analytics.TalkEventTracking
 import com.tokopedia.talk.feature.inbox.data.TalkInboxTab
 import com.tokopedia.track.TrackApp
+import javax.inject.Inject
 
-object TalkInboxTracking {
+class TalkInboxTracking @Inject constructor() {
 
     private val tracker = TrackApp.getInstance().gtm
 

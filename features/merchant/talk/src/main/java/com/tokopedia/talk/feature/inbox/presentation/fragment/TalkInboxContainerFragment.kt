@@ -35,6 +35,9 @@ class TalkInboxContainerFragment : BaseDaggerFragment(), HasComponent<TalkInboxC
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    @Inject
+    lateinit var talkInboxTracking: TalkInboxTracking
+
     private var sellerUnreadCount = 0
     private var buyerUnreadCount = 0
 
@@ -128,9 +131,9 @@ class TalkInboxContainerFragment : BaseDaggerFragment(), HasComponent<TalkInboxC
 
     private fun trackTabChange(position: Int) {
         if(position == SELLER_TAB_INDEX) {
-            TalkInboxTracking.eventClickTab(TalkInboxTab.SHOP_TAB, userSession.userId, userSession.shopId, sellerUnreadCount)
+            talkInboxTracking.eventClickTab(TalkInboxTab.SHOP_TAB, userSession.userId, userSession.shopId, sellerUnreadCount)
         } else {
-            TalkInboxTracking.eventClickTab(TalkInboxTab.BUYER_TAB, userSession.userId, userSession.shopId, buyerUnreadCount)
+            talkInboxTracking.eventClickTab(TalkInboxTab.BUYER_TAB, userSession.userId, userSession.shopId, buyerUnreadCount)
         }
     }
 

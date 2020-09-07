@@ -19,7 +19,8 @@ import javax.inject.Inject
 class TalkInboxViewModel @Inject constructor(
         dispatcher: CoroutineDispatchers,
         private val talkInboxListUseCase: TalkInboxListUseCase,
-        private val userSession: UserSessionInterface
+        private val userSession: UserSessionInterface,
+        private val talkInboxTracking: TalkInboxTracking
 ) : BaseViewModel(dispatcher.io) {
 
     private val _inboxList: MediatorLiveData<TalkInboxViewState<DiscussionInbox>> = MediatorLiveData()
@@ -66,11 +67,11 @@ class TalkInboxViewModel @Inject constructor(
 
     fun setFilter(selectedFilter: TalkInboxFilter) {
         if(this.filter == selectedFilter) {
-            TalkInboxTracking.eventClickFilter(selectedFilter.filterParam, getType(), getUnreadCount(), false, getShopId(), getUserId())
+            talkInboxTracking.eventClickFilter(selectedFilter.filterParam, getType(), getUnreadCount(), false, getShopId(), getUserId())
             resetFilter()
             return
         }
-        TalkInboxTracking.eventClickFilter(selectedFilter.filterParam, getType(), getUnreadCount(), true, getShopId(), getUserId())
+        talkInboxTracking.eventClickFilter(selectedFilter.filterParam, getType(), getUnreadCount(), true, getShopId(), getUserId())
         this.filter = selectedFilter
         resetPage()
     }
