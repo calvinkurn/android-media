@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.config.GlobalConfig
@@ -38,6 +37,7 @@ import com.tokopedia.product.manage.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant
 import com.tokopedia.product.manage.feature.quickedit.variant.presentation.data.GetVariantResult
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
+import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_campaign_stock.*
@@ -67,29 +67,6 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
     }
 
     private var isVariant: Boolean? = null
-
-    private val onTabSelectedListener by lazy {
-        object : TabLayout.OnTabSelectedListener {
-            override fun onTabReselected(p0: TabLayout.Tab) {}
-
-            override fun onTabUnselected(p0: TabLayout.Tab) {}
-
-            override fun onTabSelected(tab: TabLayout.Tab) {
-                val isMainStockTab = tab.position == 0
-                if (!GlobalConfig.isSellerApp()) {
-                    toggleSaveButton(isMainStockTab)
-                }
-                isVariant?.run {
-                    if (isMainStockTab) {
-                        ProductManageTracking.eventClickAllocationMainStock(this)
-                    } else {
-                        ProductManageTracking.eventClickAllocationOnStockCampaign(this)
-                    }
-                }
-                changeViewPagerPage(tab.position)
-            }
-        }
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_campaign_stock, container, false)
@@ -247,10 +224,24 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
     private fun setupFragmentTabs(getStockAllocation: GetStockAllocationData) {
         with(getStockAllocation.summary) {
             tabs_campaign_stock?.run {
-                addNewTab(String.format(context?.getString(R.string.product_manage_campaign_stock_main_stock).orEmpty(), sellableStock.convertCheckMaximumStockLimit(context)))
-                addNewTab(String.format(context?.getString(R.string.product_manage_campaign_stock_campaign_stock).orEmpty(), reserveStock.convertCheckMaximumStockLimit(context)))
+                vp2_campaign_stock?.let { viewPager2 ->
+                    addNewTab(String.format(context?.getString(R.string.product_manage_campaign_stock_main_stock).orEmpty(), sellableStock.convertCheckMaximumStockLimit(context)))
+                    addNewTab(String.format(context?.getString(R.string.product_manage_campaign_stock_campaign_stock).orEmpty(), reserveStock.convertCheckMaximumStockLimit(context)))
 
-                getUnifyTabLayout().addOnTabSelectedListener(onTabSelectedListener)
+                    TabsUnifyMediator(this, viewPager2) { _, position ->
+                        val isMainStockTab = position == 0
+                        if (!GlobalConfig.isSellerApp()) {
+                            toggleSaveButton(isMainStockTab)
+                        }
+                        this@CampaignStockFragment.isVariant?.run {
+                            if (isMainStockTab) {
+                                ProductManageTracking.eventClickAllocationMainStock(this)
+                            } else {
+                                ProductManageTracking.eventClickAllocationOnStockCampaign(this)
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -310,10 +301,6 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
 
     private fun showButtonLoading() {
         btn_campaign_stock_save?.isLoading = true
-    }
-
-    private fun changeViewPagerPage(position: Int) {
-        vp2_campaign_stock?.currentItem = position
     }
 
     private fun toggleSaveButton(isMainStock: Boolean) {
