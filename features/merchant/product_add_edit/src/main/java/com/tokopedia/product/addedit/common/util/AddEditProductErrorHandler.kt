@@ -12,7 +12,7 @@ object AddEditProductErrorHandler {
     fun logMessage(message: String) {
         try {
             if (!BuildConfig.DEBUG) {
-                Crashlytics.log(message)
+                FirebaseCrashlytics.getInstance().log(message)
             } else {
                 Timber.e(message)
             }
