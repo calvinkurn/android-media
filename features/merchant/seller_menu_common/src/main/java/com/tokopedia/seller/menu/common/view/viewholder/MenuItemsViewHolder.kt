@@ -5,7 +5,6 @@ import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.seller.menu.common.R
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
@@ -57,23 +56,20 @@ class MenuItemsViewHolder(
     }
 
     private fun sendTracker(menuItem: MenuItemUiModel) {
-        if (GlobalConfig.isSellerApp()) {
-            menuItem.sendSettingShopInfoClickTracking()
-        } else {
-            sendTrackerForMainApp(menuItem)
+        when(menuItem) {
+            is SellerMenuItemUiModel -> sendTrackerForMainApp(menuItem)
+            else -> menuItem.sendSettingShopInfoClickTracking()
         }
     }
 
-    private fun sendTrackerForMainApp(menuItem: MenuItemUiModel) {
-        if (menuItem is SellerMenuItemUiModel) {
-            when (menuItem.type) {
-                MenuItemType.REVIEW -> sellerMenuTracker?.sendEventClickReview()
-                MenuItemType.DISCUSSION -> sellerMenuTracker?.sendEventClickDiscussion()
-                MenuItemType.COMPLAIN -> sellerMenuTracker?.sendEventClickComplain()
-                MenuItemType.SELLER_EDU -> sellerMenuTracker?.sendEventClickSellerEdu()
-                MenuItemType.TOKOPEDIA_CARE -> sellerMenuTracker?.sendEventClickTokopediaCare()
-                MenuItemType.SHOP_SETTINGS -> sellerMenuTracker?.sendEventClickShopSettings()
-            }
+    private fun sendTrackerForMainApp(menuItem: SellerMenuItemUiModel) {
+        when (menuItem.type) {
+            MenuItemType.REVIEW -> sellerMenuTracker?.sendEventClickReview()
+            MenuItemType.DISCUSSION -> sellerMenuTracker?.sendEventClickDiscussion()
+            MenuItemType.COMPLAIN -> sellerMenuTracker?.sendEventClickComplain()
+            MenuItemType.SELLER_EDU -> sellerMenuTracker?.sendEventClickSellerEdu()
+            MenuItemType.TOKOPEDIA_CARE -> sellerMenuTracker?.sendEventClickTokopediaCare()
+            MenuItemType.SHOP_SETTINGS -> sellerMenuTracker?.sendEventClickShopSettings()
         }
     }
 }
