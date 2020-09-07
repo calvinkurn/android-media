@@ -25,7 +25,6 @@ import com.tokopedia.deals.common.analytics.DealsAnalytics
 import com.tokopedia.deals.common.listener.*
 import com.tokopedia.deals.common.model.LoadingMoreUnifyModel
 import com.tokopedia.deals.common.ui.activity.DealsBaseActivity
-import com.tokopedia.deals.common.ui.adapter.DealsProductCardAdapter
 import com.tokopedia.deals.common.ui.dataview.*
 import com.tokopedia.deals.common.ui.fragment.DealsBaseFragment
 import com.tokopedia.deals.common.ui.viewmodel.DealsBaseViewModel
@@ -113,7 +112,7 @@ class DealsCategoryFragment : DealsBaseFragment(),
 
     private fun handleRanderList(list: List<DealsBaseItemDataView>) {
         val nextPage = list.size >= DEFAULT_MIN_ITEMS
-        if (list.size == 2) {
+        if (list.size == INITIAL_SIZE_BASE_ITEM_VIEW) {
             list.map {
                 if (it.isLoaded) {
                     renderList(list, nextPage)
@@ -185,13 +184,13 @@ class DealsCategoryFragment : DealsBaseFragment(),
 
                 if (position != RecyclerView.NO_POSITION) {
                     when (position) {
-                        1 -> outRect.top = 24.toPx()
-                        2 -> outRect.top = 24.toPx()
+                        1 -> outRect.top = TWENTY_FOUR_DP.toPx()
+                        2 -> outRect.top = TWENTY_FOUR_DP.toPx()
                         else -> outRect.top = 0
                     }
-                    outRect.bottom = if (isInTheFirstRow(position + 2, totalSpanCount)) 24.toPx() else 4.toPx()
-                    outRect.left = if (isFirstInRow(position + 2, totalSpanCount))2.toPx() else 16.toPx()
-                    outRect.right = if (isFirstInRow(position + 2, totalSpanCount)) 16.toPx() else 2.toPx()
+                    outRect.bottom = if (isInTheFirstRow(position + 2, totalSpanCount)) TWENTY_FOUR_DP.toPx() else FOUR_DP.toPx()
+                    outRect.left = if (isFirstInRow(position + 2, totalSpanCount)) TWO_DP.toPx() else SIXTEEN_DP.toPx()
+                    outRect.right = if (isFirstInRow(position + 2, totalSpanCount)) SIXTEEN_DP.toPx() else TWO_DP.toPx()
                 }
             }
         }
@@ -441,6 +440,11 @@ class DealsCategoryFragment : DealsBaseFragment(),
         private const val PRODUCT_SPAN_COUNT = 2
         const val DEFAULT_MIN_ITEMS_PRODUCT = 20
         const val DEFAULT_MIN_ITEMS = 21
+        const val INITIAL_SIZE_BASE_ITEM_VIEW = 2
+        const val TWENTY_FOUR_DP = 24
+        const val TWO_DP = 2
+        const val FOUR_DP = 4
+        const val SIXTEEN_DP = 16
 
         fun getInstance(categoryId: String?): DealsCategoryFragment = DealsCategoryFragment().also {
             it.arguments = Bundle().apply {
