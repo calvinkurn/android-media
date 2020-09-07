@@ -97,7 +97,7 @@ public class HomeApp extends BaseMainApplication implements GlobalNavRouter, Net
     }
 
     @Override
-    public void sendForceLogoutAnalytics(String url, boolean isInvalidToken, boolean isRequestDenied, String type) {
+    public void sendForceLogoutAnalytics(String url, boolean isInvalidToken, boolean isRequestDenied) {
 
     }
 

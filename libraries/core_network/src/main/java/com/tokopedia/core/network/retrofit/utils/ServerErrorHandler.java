@@ -49,8 +49,10 @@ public class ServerErrorHandler {
                 CoreNetworkApplication.getCoreNetworkRouter().legacySessionHandler(),
                 url,
                 isInvalidToken,
-                isRequestDenied,
-                type);
+                isRequestDenied, type);
+    }
+    public static void sendForceLogoutAnalytics(String url, boolean isInvalidToken, boolean isRequestDenied) {
+        sendForceLogoutAnalytics(url, isInvalidToken, isRequestDenied, "");
     }
 
     public static void sendErrorNetworkAnalytics(String url, int errorCode) {
