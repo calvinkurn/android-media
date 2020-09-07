@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.digital.home.domain.DigitalHomePageUseCase
 import com.tokopedia.digital.home.model.DigitalHomePageItemModel
+import com.tokopedia.digital.home.model.RechargeHomepageSectionAction
 import com.tokopedia.digital.home.model.RechargeHomepageSectionSkeleton
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.presentation.Util.DigitalHomePageDispatchersProvider
@@ -43,8 +44,8 @@ class DigitalHomePageViewModel @Inject constructor(
     private val mutableRechargeHomepageSections = MutableLiveData<List<RechargeHomepageSections.Section>>()
     val rechargeHomepageSections: LiveData<List<RechargeHomepageSections.Section>>
         get() = mutableRechargeHomepageSections
-    private val mutableRechargeHomepageSectionAction = MutableLiveData<Result<RechargeHomepageSections.Action>>()
-    val rechargeHomepageSectionAction: LiveData<Result<RechargeHomepageSections.Action>>
+    private val mutableRechargeHomepageSectionAction = MutableLiveData<Result<RechargeHomepageSectionAction>>()
+    val rechargeHomepageSectionAction: LiveData<Result<RechargeHomepageSectionAction>>
         get() = mutableRechargeHomepageSectionAction
 
     fun initialize(queryList: Map<String, String>) {
@@ -125,11 +126,11 @@ class DigitalHomePageViewModel @Inject constructor(
         launchCatchError(block = {
             val graphqlRequest = GraphqlRequest(
                     RechargeHomepageQueries.ACTION_QUERY,
-                    RechargeHomepageSections.Action::class.java, mapParams
+                    RechargeHomepageSectionAction.Response::class.java, mapParams
             )
             val data = withContext(dispatcher.IO) {
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
-            }.getSuccessData<RechargeHomepageSections.Action>()
+            }.getSuccessData<RechargeHomepageSectionAction.Response>().response
 
             mutableRechargeHomepageSectionAction.postValue(Success(data))
         }) {
@@ -152,7 +153,7 @@ class DigitalHomePageViewModel @Inject constructor(
         )
     }
 
-    fun createRechargeHomepageSectionAction(
+    fun createRechargeHomepageSectionActionParams(
             sectionId: Int,
             actionName: String,
             sectionObjectId: String,

@@ -107,12 +107,6 @@ data class RechargeHomepageSections(
             @Expose
             val data: String = ""
     )
-
-    data class Action(
-            @SerializedName("message")
-            @Expose
-            val message: String = ""
-    )
 }
 
 interface RechargeHomepageSectionModel : Visitable<DigitalHomePageAdapterFactory> {

@@ -68,7 +68,6 @@ class DigitalHomePageFragment : BaseDaggerFragment(),
     private var platformId: Int = 0
     private var enablePersonalize: Boolean = false
 
-    lateinit var sectionSkeleton: List<RechargeHomepageSectionSkeleton.Item>
     lateinit var homeComponentsData: List<RechargeHomepageSections.Section>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -338,7 +337,7 @@ class DigitalHomePageFragment : BaseDaggerFragment(),
             val section = homeComponentsData.find { it.id == sectionID }
             if (section != null && section.items.isNotEmpty()) {
                 viewModel.triggerRechargeSectionAction(
-                        viewModel.createRechargeHomepageSectionAction(sectionID, "ActionClose", section.objectId, section.items.first().objectId)
+                        viewModel.createRechargeHomepageSectionActionParams(sectionID, "ActionClose", section.objectId, section.items.first().objectId)
                 )
             }
             onRechargeSectionEmpty(sectionID)
@@ -352,7 +351,7 @@ class DigitalHomePageFragment : BaseDaggerFragment(),
             if (section.items.isNotEmpty()) {
                 with(section) {
                     viewModel.triggerRechargeSectionAction(
-                            viewModel.createRechargeHomepageSectionAction(id, "ActionClose", objectId, items.first().objectId)
+                            viewModel.createRechargeHomepageSectionActionParams(id, "ActionClose", objectId, items.first().objectId)
                     )
                 }
             }
