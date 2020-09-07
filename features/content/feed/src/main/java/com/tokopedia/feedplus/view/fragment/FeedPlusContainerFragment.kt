@@ -25,6 +25,7 @@ import com.tokopedia.affiliatecommon.DISCOVERY_BY_ME
 import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
@@ -378,7 +379,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                                     context = context,
                                     featureName = SellerMigrationFeatureName.FEATURE_POST_FEED,
                                     screenName = FeedPlusContainerFragment::class.simpleName.orEmpty(),
-                                    appLinks = arrayListOf(getSellerApplink(whitelistDomain)),
+                                    appLinks = arrayListOf(ApplinkConstInternalSellerapp.SELLER_HOME, getSellerApplink(whitelistDomain)),
                                     isStackBuilder = false)
                         }
                         if (intent != null) {
