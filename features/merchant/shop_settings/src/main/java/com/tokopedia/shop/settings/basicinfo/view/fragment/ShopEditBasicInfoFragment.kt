@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
+import android.text.SpannableStringBuilder
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -416,34 +417,35 @@ class ShopEditBasicInfoFragment: Fragment() {
         val description = getString(R.string.ticker_warning_can_only_change_shopname_once)
         val readMore = getString(R.string.ticker_warning_read_more)
         val color = ContextCompat.getColor(requireContext(), R.color.merchant_green)
-        //val message = getTextWithSpannable(color, description, readMore).toString()
-        val message = "$description <b><span style='color:$color'>$readMore</span></b>."
-        showShopTicker(message, Ticker.TYPE_WARNING)
+        val message = getTextWithSpannable(color, description, readMore) { clickReadMore() }
+        //val message = "$description <b><span style='color:$color'>$readMore</span></b>."
+        showShopTicker(message)
     }
 
     private fun showDomainNotAllowedTicker(data: AllowShopNameDomainChangesData) {
         val message = data.reasonDomainNotAllowed
-        showShopTicker(message, Ticker.TYPE_INFORMATION)
+        showShopTicker(message)
     }
 
     private fun showNameNotAllowedTicker(data: AllowShopNameDomainChangesData) {
         val message = data.reasonNameNotAllowed
-        showShopTicker(message, Ticker.TYPE_INFORMATION)
+        showShopTicker(message)
     }
 
     private fun showNameAndDomainNotAllowedTicker() {
         val message = getString(R.string.shop_edit_change_name_and_domain_not_allowed)
-        showShopTicker(message, Ticker.TYPE_INFORMATION)
+        showShopTicker(message)
     }
 
-    private fun showShopTicker(message: String, type: Int) {
-        shopEditTicker.tickerType = type
+    private fun showShopTicker(message: String) {
+        shopEditTicker.tickerType = Ticker.TYPE_INFORMATION
         shopEditTicker.setHtmlDescription(message)
-        shopEditTicker.setOnClickListener {
-            if (shopEditTicker.tickerType == Ticker.TYPE_WARNING) {
-                clickReadMore()
-            }
-        }
+        shopEditTicker.show()
+    }
+
+    private fun showShopTicker(message: SpannableStringBuilder) {
+        shopEditTicker.tickerType =  Ticker.TYPE_WARNING
+        shopEditTicker.setTextDescription(message)
         shopEditTicker.show()
     }
 
