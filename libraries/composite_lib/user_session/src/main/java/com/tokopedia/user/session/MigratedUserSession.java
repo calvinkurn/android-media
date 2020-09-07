@@ -14,7 +14,6 @@ public class MigratedUserSession {
         this.context = context;
     }
 
-
     protected String internalGetString(String prefName, String keyName, String defValue) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
         return sharedPrefs.getString(keyName, defValue);
@@ -50,7 +49,6 @@ public class MigratedUserSession {
         editor.apply();
     }
 
-
     protected String getString(String prefName, String keyName, String defValue) {
         if (!IS_ENABLE) {
             prefName = EncoderDecoder.Decrypt(prefName, UserSession.KEY_IV);
@@ -69,7 +67,6 @@ public class MigratedUserSession {
 
         internalCleanKey(prefName, keyName);
     }
-
 
     private void internalCleanKey(String prefName, String keyName){
         SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
@@ -91,13 +88,13 @@ public class MigratedUserSession {
             prefName = EncoderDecoder.Decrypt(prefName, UserSession.KEY_IV);
             keyName = EncoderDecoder.Decrypt(keyName, UserSession.KEY_IV);
         }
-
         internalSetString(prefName, keyName, value);
     }
 
     protected void internalSetString(String prefName, String keyName, String value) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPrefs.edit();
+        value = EncoderDecoder.Encrypt(value, UserSession.KEY_IV);
         editor.putString(keyName, value);
         editor.apply();
     }
@@ -108,6 +105,8 @@ public class MigratedUserSession {
         String oldKeyName = EncoderDecoder.Decrypt(keyName, UserSession.KEY_IV);
 
         String oldValue = internalGetString(oldprefName, oldKeyName, defValue);
+        if (oldValue != null && !oldValue.isEmpty())
+            oldValue = EncoderDecoder.Decrypt(oldValue, UserSession.KEY_IV);
 
         if(!IS_ENABLE)
             return oldValue;
@@ -170,8 +169,4 @@ public class MigratedUserSession {
         SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
         return sharedPrefs.getBoolean(keyName, defValue);
     }
-
-
-
-
 }

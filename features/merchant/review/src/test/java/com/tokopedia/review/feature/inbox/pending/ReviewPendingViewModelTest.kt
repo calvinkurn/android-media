@@ -15,6 +15,8 @@ import com.tokopedia.review.utils.verifyErrorEquals
 import com.tokopedia.review.utils.verifySuccessEquals
 import io.mockk.coEvery
 import io.mockk.coVerify
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 import java.lang.Exception
@@ -68,7 +70,10 @@ class ReviewPendingViewModelTest : ReviewPendingViewModelTestFixture() {
 
         onGetOvoIncentive_thenReturn(response)
 
-        viewModel.getProductIncentiveOvo()
+        runBlocking {
+            viewModel.getProductIncentiveOvo()
+            viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+        }
 
         val expectedResponse = CoroutineSuccess(response)
 
@@ -82,7 +87,10 @@ class ReviewPendingViewModelTest : ReviewPendingViewModelTestFixture() {
 
         onGetOvoIncentiveFail_thenReturn(exception)
 
-        viewModel.getProductIncentiveOvo()
+        runBlocking {
+            viewModel.getProductIncentiveOvo()
+            viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+        }
 
         val expectedError = CoroutineFail(exception)
 
