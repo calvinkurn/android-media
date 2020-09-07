@@ -6,6 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Parcelable
 import android.view.View
+import androidx.constraintlayout.widget.Group
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.tokopedia.applink.ApplinkConst
@@ -24,10 +25,7 @@ import com.tokopedia.seller_migration_common.presentation.model.CommunicationInf
 import com.tokopedia.seller_migration_common.presentation.util.touchlistener.SellerMigrationTouchListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
-import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifycomponents.list.ListItemUnify
-import com.tokopedia.unifycomponents.list.ListUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
@@ -190,59 +188,23 @@ fun Typography.setOnClickLinkSpannable(htmlString: String,
     }
 }
 
-val Fragment.getUnifyFeedList: ArrayList<ListItemUnify>
-    get() {
-        val itemUnifyList: ArrayList<ListItemUnify> = arrayListOf()
-        val postSeller = ListItemUnify(R.layout.partial_seller_migration_feed_post_seller_bottom_sheet) { view, _ ->
-            val tvShopPost = view.findViewById<Typography>(R.id.tvShopPost)
-            val tvInSeller = view.findViewById<Label>(R.id.tvInSeller)
-            tvShopPost.text = getString(R.string.seller_migration_bottom_sheet_feed_post_shop)
-            tvInSeller.setLabel(getString(R.string.seller_migration_bottom_sheet_feed_in_tokopedia_seller))
-            return@ListItemUnify view
-        }
-
-        itemUnifyList.apply {
-            add(ListItemUnify(
-                    title = getString(R.string.seller_migration_bottom_sheet_feed_post_your_favorite_item),
-                    description = ""))
-            add(postSeller)
-        }
-        return itemUnifyList
-    }
-
-fun Fragment.setupListUnifyFeedSellerMigration(feedListUnify: ListUnify,
-                                               bottomSheet: BottomSheetUnify,
-                                               goToCreateAffiliate: () -> Unit = {},
-                                               onGoToLink: Intent) {
-    val positionPostFavoriteItem = 0
-    val positionPostInSeller = 1
-    feedListUnify.setData(getUnifyFeedList)
-    feedListUnify.let {
-        it.onLoadFinish {
-            it.setOnItemClickListener { _, _, position, _ ->
-                when (position) {
-                    positionPostFavoriteItem -> {
-                        goToCreateAffiliate()
-                        bottomSheet.dismiss()
-                    }
-                    positionPostInSeller -> {
-                        startActivity(onGoToLink)
-                        bottomSheet.dismiss()
-                    }
-                }
-            }
-        }
-    }
-}
-
 fun Fragment.setupBottomSheetFeedSellerMigration(goToCreateAffiliate: () -> Unit = {},
                                                  onGoToLink: Intent) {
     val viewBottomSheet = View.inflate(context, R.layout.bottom_sheet_feed_content_seller_migration, null)
+    val postInSeller: Group = viewBottomSheet.findViewById(R.id.groupPostShopSeller)
+    val postFavorite: Typography = viewBottomSheet.findViewById(R.id.tvPostFavorite)
     val bottomSheet = BottomSheetUnify()
-    val feedListUnify = viewBottomSheet.findViewById<ListUnify>(R.id.feedListUnify)
     bottomSheet.setChild(viewBottomSheet)
 
-    setupListUnifyFeedSellerMigration(feedListUnify, bottomSheet, goToCreateAffiliate, onGoToLink)
+    postFavorite.setOnClickListener {
+        goToCreateAffiliate()
+        bottomSheet.dismiss()
+    }
+
+    postInSeller.setAllOnClickListener(View.OnClickListener {
+        startActivity(onGoToLink)
+        bottomSheet.dismiss()
+    })
 
     bottomSheet.apply {
         showCloseIcon = true
@@ -253,5 +215,11 @@ fun Fragment.setupBottomSheetFeedSellerMigration(goToCreateAffiliate: () -> Unit
 
     fragmentManager?.let {
         bottomSheet.show(it, "")
+    }
+}
+
+fun Group.setAllOnClickListener(listener: View.OnClickListener?) {
+    referencedIds.forEach { id ->
+        rootView.findViewById<View>(id).setOnClickListener(listener)
     }
 }
