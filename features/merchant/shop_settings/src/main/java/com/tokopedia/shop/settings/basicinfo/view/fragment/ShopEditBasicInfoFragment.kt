@@ -200,6 +200,8 @@ class ShopEditBasicInfoFragment: Fragment() {
         tvSave.setOnClickListener {
             if (isDialogShown) {
                 createSaveDialog()
+            } else {
+                onSaveButtonClicked()
             }
         }
     }
@@ -269,24 +271,28 @@ class ShopEditBasicInfoFragment: Fragment() {
         shopNameTextField.setError(true)
         shopNameTextField.setMessage(message)
         tvSave.isEnabled = false
+        tvSave.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey))
     }
 
     private fun showShopDomainInputError(message: String) {
         shopDomainTextField.setError(true)
         shopDomainTextField.setMessage(message)
         tvSave.isEnabled = false
+        tvSave.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey))
     }
 
     private fun resetShopNameInput() {
         shopNameTextField.setError(false)
         shopNameTextField.setMessage("")
         tvSave.isEnabled = true
+        tvSave.setTextColor(ContextCompat.getColor(requireContext(), R.color.merchant_green))
     }
 
     private fun resetShopDomainInput() {
         shopDomainTextField.setError(false)
         shopDomainTextField.setMessage("")
         tvSave.isEnabled = true
+        tvSave.setTextColor(ContextCompat.getColor(requireContext(), R.color.merchant_green))
     }
 
     private fun observeLiveData() {
