@@ -5,10 +5,12 @@ if (project.hasProperty("auto-patch")) {
 apply plugin: 'robust'
 apply plugin: 'io.fabric'
 apply plugin: 'io.hansel.preprocessor'
-apply plugin: 'com.bugsnag.android.gradle'
 
 apply from: '../tools/dynamic_feature_inclusion.gradle'
 apply from: '../tools/set_debug_tools.gradle'
+if (!rootProject.ext.debugToolsEnabled) {
+    apply plugin: 'com.bugsnag.android.gradle'
+}
 
 def allowDistribution() {
     if (project.hasProperty('tkpdBuildType') && tkpdBuildType == "hockeyapp") {
