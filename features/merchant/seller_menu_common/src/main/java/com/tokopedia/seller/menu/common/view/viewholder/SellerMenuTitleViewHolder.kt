@@ -4,7 +4,6 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.seller.menu.common.R
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.seller.menu.common.view.uimodel.BaseProductSectionTitleUiModel
@@ -35,12 +34,7 @@ class SellerMenuTitleViewHolder(
 
     private fun sendTracker(menu: SectionTitleUiModel) {
         when(menu) {
-            is BaseProductSectionTitleUiModel -> sendEventAddProductClick()
+            is BaseProductSectionTitleUiModel -> tracker?.sendEventAddProductClick()
         }
-    }
-
-    private fun sendEventAddProductClick() {
-        if (GlobalConfig.isSellerApp()) return
-        tracker?.sendEventAddProductClick()
     }
 }
