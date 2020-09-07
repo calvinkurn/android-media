@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
-import android.text.SpannableStringBuilder
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -394,12 +393,12 @@ class ShopEditBasicInfoFragment: Fragment() {
         val isDomainAllowed = data.isDomainAllowed
 
         showWarningTicker()
-//        when {
-//            isNameAllowed && isDomainAllowed -> showWarningTicker()
-//            isNameAllowed && !isDomainAllowed -> showDomainNotAllowedTicker(data)
-//            isDomainAllowed && !isNameAllowed -> showNameNotAllowedTicker(data)
-//            else -> showNameAndDomainNotAllowedTicker()
-//        }
+        when {
+            isNameAllowed && isDomainAllowed -> showWarningTicker()
+            isNameAllowed && !isDomainAllowed -> showDomainNotAllowedTicker(data)
+            isDomainAllowed && !isNameAllowed -> showNameNotAllowedTicker(data)
+            else -> showNameAndDomainNotAllowedTicker()
+        }
     }
 
     private fun showShopNameDomainTextField(data: AllowShopNameDomainChangesData) {
@@ -417,35 +416,33 @@ class ShopEditBasicInfoFragment: Fragment() {
         val description = getString(R.string.ticker_warning_can_only_change_shopname_once)
         val readMore = getString(R.string.ticker_warning_read_more)
         val color = ContextCompat.getColor(requireContext(), R.color.merchant_green)
-        val message = getTextWithSpannable(color, description, readMore) { clickReadMore() }
-        //val message = "$description <b><span style='color:$color'>$readMore</span></b>."
-        showShopTicker(message)
+        val message = "$description <b style='color:$color'>$readMore</b>."
+        showShopTicker(message, Ticker.TYPE_WARNING)
     }
 
     private fun showDomainNotAllowedTicker(data: AllowShopNameDomainChangesData) {
         val message = data.reasonDomainNotAllowed
-        showShopTicker(message)
+        showShopTicker(message, Ticker.TYPE_INFORMATION)
     }
 
     private fun showNameNotAllowedTicker(data: AllowShopNameDomainChangesData) {
         val message = data.reasonNameNotAllowed
-        showShopTicker(message)
+        showShopTicker(message, Ticker.TYPE_INFORMATION)
     }
 
     private fun showNameAndDomainNotAllowedTicker() {
         val message = getString(R.string.shop_edit_change_name_and_domain_not_allowed)
-        showShopTicker(message)
+        showShopTicker(message, Ticker.TYPE_INFORMATION)
     }
 
-    private fun showShopTicker(message: String) {
-        shopEditTicker.tickerType = Ticker.TYPE_INFORMATION
+    private fun showShopTicker(message: String, type: Int) {
+        shopEditTicker.tickerType = type
         shopEditTicker.setHtmlDescription(message)
-        shopEditTicker.show()
-    }
-
-    private fun showShopTicker(message: SpannableStringBuilder) {
-        shopEditTicker.tickerType =  Ticker.TYPE_WARNING
-        shopEditTicker.setTextDescription(message)
+        shopEditTicker.setOnClickListener {
+            if (shopEditTicker.tickerType == Ticker.TYPE_WARNING) {
+                clickReadMore()
+            }
+        }
         shopEditTicker.show()
     }
 
