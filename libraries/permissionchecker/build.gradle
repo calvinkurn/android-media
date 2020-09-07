@@ -1,12 +1,10 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 
 dependencies {
-    implementation project(rootProject.ext.features.resourcesCommon)
+    implementation rootProject.ext.supportLibDependencies.supportV13
+    implementation rootProject.ext.supportLibDependencies.appCompactV7
     implementation project(rootProject.ext.libraries.tkpddesign)
-
-    implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
 }
 
 project.ext {
