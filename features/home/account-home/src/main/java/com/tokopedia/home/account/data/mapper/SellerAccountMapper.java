@@ -282,10 +282,8 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
 
         if (accountModel.getKycStatusPojo() != null
                 && accountModel.getKycStatusPojo().getKycStatusDetailPojo() != null
-                && accountModel.getKycStatusPojo().getKycStatusDetailPojo()
-                .getIsSuccess() == KYCConstant.IS_SUCCESS_GET_STATUS
-                && accountModel.getKycStatusPojo().getKycStatusDetailPojo()
-                .getStatus() == KYCConstant.STATUS_NOT_VERIFIED) {
+                && accountModel.getKycStatusPojo().getKycStatusDetailPojo().isSuccess() == KYCConstant.IS_SUCCESS_GET_STATUS
+                && accountModel.getKycStatusPojo().getKycStatusDetailPojo().getStatus() == KYCConstant.STATUS_NOT_VERIFIED) {
             sellerTickerModel.getListMessage().add(context.getString(R.string.ticker_unverified));
         } else if (!accountModel.getShopInfo().getOwner().getGoldMerchant()) {
             String tickerMessage = remoteConfig.getString(RemoteConfigKey.SELLER_ACCOUNT_TICKER_MSG);
@@ -302,12 +300,9 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         if (shopCard != null && accountModel != null && accountModel.getKycStatusPojo() != null) {
 
             if (accountModel.getKycStatusPojo().getKycStatusDetailPojo() != null
-                    && accountModel.getKycStatusPojo()
-                    .getKycStatusDetailPojo().getIsSuccess() == KYCConstant.IS_SUCCESS_GET_STATUS) {
-                shopCard.setVerificationStatus(accountModel.getKycStatusPojo()
-                        .getKycStatusDetailPojo().getStatus());
-                shopCard.setVerificationStatusName(accountModel.getKycStatusPojo()
-                        .getKycStatusDetailPojo().getStatusName());
+                    && accountModel.getKycStatusPojo().getKycStatusDetailPojo().isSuccess() == KYCConstant.IS_SUCCESS_GET_STATUS) {
+                shopCard.setVerificationStatus(accountModel.getKycStatusPojo().getKycStatusDetailPojo().getStatus());
+                shopCard.setVerificationStatusName(accountModel.getKycStatusPojo().getKycStatusDetailPojo().getStatusName());
             } else {
                 shopCard.setVerificationStatus(KYCConstant.STATUS_ERROR);
                 shopCard.setVerificationStatusName("");
