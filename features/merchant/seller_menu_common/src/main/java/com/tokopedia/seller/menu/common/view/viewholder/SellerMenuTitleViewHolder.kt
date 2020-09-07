@@ -5,10 +5,15 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.seller.menu.common.R
+import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
+import com.tokopedia.seller.menu.common.view.uimodel.BaseProductSectionTitleUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.SectionTitleUiModel
 import kotlinx.android.synthetic.main.item_seller_menu_title_section.view.*
 
-class SellerMenuTitleViewHolder(itemView: View): AbstractViewHolder<SectionTitleUiModel>(itemView) {
+class SellerMenuTitleViewHolder(
+        itemView: View,
+        private val tracker: SellerMenuTracker?
+) : AbstractViewHolder<SectionTitleUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -22,7 +27,14 @@ class SellerMenuTitleViewHolder(itemView: View): AbstractViewHolder<SectionTitle
         menu.onClickApplink?.let { appLink ->
             itemView.setOnClickListener {
                 RouteManager.route(itemView.context, appLink)
+                sendTracker(menu)
             }
+        }
+    }
+
+    private fun sendTracker(menu: SectionTitleUiModel) {
+        when(menu) {
+            is BaseProductSectionTitleUiModel -> tracker?.sendEventAddProductClick()
         }
     }
 }

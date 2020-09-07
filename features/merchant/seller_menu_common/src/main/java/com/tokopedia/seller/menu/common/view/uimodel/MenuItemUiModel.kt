@@ -8,14 +8,14 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.SettingShopInfoImpress
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiType
 
-class MenuItemUiModel(
-    val title: String = "",
-    val drawableReference: Int? = null,
+open class MenuItemUiModel(
+    open val title: String = "",
+    open val drawableReference: Int? = null,
     private val clickApplink: String? = null,
     eventActionSuffix: String = "",
     settingTypeInfix: String = "",
-    val trackingAlias: String? = null,
-    val clickAction: () -> Unit = {}
+    open val trackingAlias: String? = null,
+    open val clickAction: () -> Unit = {}
 ) : SettingUiModel, SettingShopInfoImpressionTrackable, SettingShopInfoClickTrackable {
 
     override val settingUiType: SettingUiType

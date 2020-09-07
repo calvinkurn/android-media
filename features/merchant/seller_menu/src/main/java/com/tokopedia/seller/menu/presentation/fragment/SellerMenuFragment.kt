@@ -19,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller.menu.R
+import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
 import com.tokopedia.seller.menu.common.analytics.sendShopInfoImpressionData
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
@@ -54,15 +55,18 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     lateinit var userSession: UserSessionInterface
     @Inject
     lateinit var remoteConfig: RemoteConfig
+    @Inject
+    lateinit var sellerMenuTracker: SellerMenuTracker
 
     private var canShowErrorToaster = true
 
     private val adapter by lazy {
         SellerMenuAdapter(OtherMenuAdapterTypeFactory(
-            this,
-            this,
-            this,
-            userSession
+                this,
+                this,
+                this,
+                sellerMenuTracker,
+                userSession
         ))
     }
 
