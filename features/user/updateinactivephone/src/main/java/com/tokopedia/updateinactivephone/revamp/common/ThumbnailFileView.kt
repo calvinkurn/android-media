@@ -1,6 +1,8 @@
 package com.tokopedia.updateinactivephone.revamp.common
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
@@ -11,6 +13,7 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.updateinactivephone.R
+import com.tokopedia.utils.image.ImageUtils
 import java.io.File
 
 class ThumbnailFileView @JvmOverloads constructor(
@@ -54,18 +57,27 @@ class ThumbnailFileView @JvmOverloads constructor(
     }
 
     fun setImage(url: String) {
-        imageThumbnail.clearImage()
-        imageThumbnail.setImage(url, IMAGE_RADIUS)
+        ImageUtils.loadImage(imageThumbnail, url)
     }
 
     fun setImage(file: File) {
         imageThumbnail.clearImage()
         imageThumbnail.setImage(file.absolutePath, IMAGE_RADIUS)
+        requestLayout()
     }
 
     fun setImage(@DrawableRes drawable: Int) {
         imageThumbnail.clearImage()
         imageThumbnail.setImage(drawable, IMAGE_RADIUS)
+        requestLayout()
+    }
+
+    private fun convertToBitmap(path: String): Bitmap {
+        return BitmapFactory.decodeFile(path)
+    }
+
+    private fun convertToBitmap(file: File): Bitmap {
+        return convertToBitmap(file.absolutePath)
     }
 
     companion object {

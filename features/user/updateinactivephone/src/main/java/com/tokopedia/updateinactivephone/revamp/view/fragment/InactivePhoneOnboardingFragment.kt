@@ -36,15 +36,15 @@ class InactivePhoneOnboardingFragment : BaseDaggerFragment() {
         fragmentTransactionInterface = activity as FragmentTransactionInterface
         userSession = UserSession(context)
 
-        btnUploadData?.setOnClickListener {
+        btnNext?.setOnClickListener {
             // check has multiple account ?
             // check login with phone number ?
             // need improvement on login / register page to set login method
-            if (userSession.loginMethod == UserSessionInterface.LOGIN_METHOD_PHONE) {
-                gotoChooseAccount()
-            } else {
+//            if (userSession.loginMethod == UserSessionInterface.LOGIN_METHOD_PHONE) {
+//                gotoChooseAccount()
+//            } else {
                 gotoOnboardingPage()
-            }
+//            }
         }
     }
 
@@ -59,7 +59,7 @@ class InactivePhoneOnboardingFragment : BaseDaggerFragment() {
         context?.let {
             val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.CHOOSE_ACCOUNT)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, TokenGenerator().createBasicTokenGQL())
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, userSession.phoneNumber)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, "089683328209")
             startActivityForResult(intent, REQUEST_CHOOSE_ACCOUNT)
         }
     }

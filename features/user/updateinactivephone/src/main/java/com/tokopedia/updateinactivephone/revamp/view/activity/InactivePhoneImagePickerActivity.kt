@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import com.tokopedia.imagepicker.picker.main.adapter.ImagePickerViewPagerAdapter
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.updateinactivephone.R

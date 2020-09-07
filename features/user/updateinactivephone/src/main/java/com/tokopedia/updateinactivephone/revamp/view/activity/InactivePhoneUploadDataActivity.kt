@@ -3,6 +3,7 @@ package com.tokopedia.updateinactivephone.revamp.view.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst
@@ -22,6 +23,11 @@ class InactivePhoneUploadDataActivity : BaseSimpleActivity() {
         super.setupLayout(savedInstanceState)
         updateTitle(getString(R.string.text_title))
         toolbar.setTitleTextAppearance(this, R.style.BoldToolbar)
+        toolbar.navigationIcon = ContextCompat.getDrawable(this, R.drawable.ic_arrow_back_black_inactive_phone)
+        setSupportActionBar(toolbar)
+        supportActionBar?.apply {
+            elevation = 0f
+        }
     }
 
     override fun onBackPressed() {

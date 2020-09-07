@@ -1,11 +1,10 @@
 package com.tokopedia.updateinactivephone.revamp.common
 
 import android.content.Context
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnFocusChangeListener
 import android.widget.EditText
 import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
@@ -25,7 +24,14 @@ class PhoneNumberView @JvmOverloads constructor(
     private var line: View
 
     var text: String
-        get() = "0${textField.text}"
+        get() {
+            val text = textField.text.toString()
+            return if (text.isEmpty()) {
+                text
+            } else {
+                "0${textField.text}"
+            }
+        }
         set(value) {
             textField.setText(value)
         }

@@ -18,6 +18,7 @@ import com.tokopedia.updateinactivephone.revamp.view.activity.InactivePhoneUploa
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_inactive_phone_onboarding_saving_book.*
 
+@Deprecated("Deleted soon")
 class InactivePhoneOnboardingSavingBookFragment : BaseDaggerFragment() {
 
     private val userSession: UserSession = UserSession(activity)
@@ -38,7 +39,7 @@ class InactivePhoneOnboardingSavingBookFragment : BaseDaggerFragment() {
 
         fragmentTransactionInterface = activity as FragmentTransactionInterface
 
-        btnUploadData?.setOnClickListener {
+        btnNext?.setOnClickListener {
             takePicture()
         }
 

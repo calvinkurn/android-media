@@ -9,8 +9,9 @@
   <com.otaliastudios.cameraview.CameraView
     android:id="@+id/cameraView"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/layout_lvl0"
+    android:layout_height="match_parent"
     android:keepScreenOn="true"
+    android:adjustViewBounds="true"
     app:cameraGestureLongTap="none"
     app:cameraGesturePinch="zoom"
     app:cameraGestureScrollHorizontal="none"
@@ -22,6 +23,7 @@
     app:cameraAudio="off"
     app:cameraMode="picture"
     app:cameraFacing="back"
+    app:cameraPreview="glSurface"
     app:cameraUseDeviceOrientation="false"
     app:layout_constraintTop_toTopOf="parent"
     app:layout_constraintLeft_toLeftOf="parent"
@@ -31,7 +33,7 @@
   <ImageView
     android:id="@+id/imgPreview"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/layout_lvl0"
+    android:layout_height="match_parent"
     android:adjustViewBounds="true"
     android:scaleType="centerCrop"
     android:visibility="gone"
@@ -51,13 +53,13 @@
     app:layout_constraintBottom_toBottomOf="parent"/>
   
   <ImageButton
-    android:id="@+id/imgBack"
+    android:id="@+id/btnBack"
     android:layout_width="@dimen/layout_lvl7"
     android:layout_height="@dimen/layout_lvl7"
     android:background="@android:color/transparent"
     app:layout_constraintLeft_toLeftOf="parent"
     app:layout_constraintTop_toTopOf="parent"
-    app:srcCompat="@drawable/ic_arrow_back" />
+    app:srcCompat="@drawable/ic_arrow_back_inactive_phone" />
   
   <com.tokopedia.unifyprinciples.Typography
     android:id="@+id/txtTitle"
@@ -65,9 +67,9 @@
     android:layout_height="wrap_content"
     android:textColor="@color/Neutral_N0"
     app:typographyType="heading_3"
-    app:layout_constraintBottom_toBottomOf="@id/imgBack"
-    app:layout_constraintLeft_toRightOf="@id/imgBack"
-    app:layout_constraintTop_toTopOf="@id/imgBack"
+    app:layout_constraintBottom_toBottomOf="@id/btnBack"
+    app:layout_constraintLeft_toRightOf="@id/btnBack"
+    app:layout_constraintTop_toTopOf="@id/btnBack"
     app:layout_constraintRight_toRightOf="parent" />
   
   <FrameLayout
@@ -88,11 +90,11 @@
       android:paddingRight="@dimen/spacing_lvl4"
       android:textAlignment="center"
       android:textColor="@color/Neutral_N0"
-      android:text="@string/text_camera_description"
       android:visibility="gone"
       app:typographyType="body_1"
       app:typographyWeight="bold"/>
   
+<!--    DELETE SOON -->
     <com.tokopedia.unifyprinciples.Typography
       android:id="@+id/txtDescriptionSavingBook"
       android:layout_width="match_parent"
@@ -110,7 +112,8 @@
       android:visibility="gone"
       app:typographyType="body_1"
       app:typographyWeight="bold" />
-    
+<!--    END -->
+  
   </FrameLayout>
   
   <ImageView
@@ -156,7 +159,7 @@
     android:layout_height="@dimen/layout_lvl6"
     android:layout_margin="@dimen/spacing_lvl4"
     android:orientation="horizontal"
-    android:visibility="gone"
+    android:visibility="visible"
     android:weightSum="2"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
@@ -176,7 +179,7 @@
       app:typographyType="heading_4" />
   
     <com.tokopedia.unifyprinciples.Typography
-      android:id="@+id/btnUploadData"
+      android:id="@+id/btnNext"
       android:layout_width="@dimen/layout_lvl0"
       android:layout_height="match_parent"
       android:layout_marginEnd="@dimen/spacing_lvl2"

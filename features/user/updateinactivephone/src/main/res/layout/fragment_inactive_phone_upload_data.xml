@@ -3,11 +3,14 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   android:layout_width="match_parent"
-  android:layout_height="match_parent">
+  android:layout_height="match_parent"
+  android:scrollbars="none"
+  android:background="@color/Neutral_N0">
   
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/layout_lvl4">
   
     <com.tokopedia.unifyprinciples.Typography
       android:id="@+id/txtTitle"
@@ -89,8 +92,8 @@
     
     <ImageView
       android:id="@+id/imgIconVerified"
-      android:layout_width="@dimen/spacing_lvl5"
-      android:layout_height="@dimen/spacing_lvl5"
+      android:layout_width="@dimen/spacing_lvl4"
+      android:layout_height="@dimen/spacing_lvl4"
       android:layout_marginStart="@dimen/layout_lvl2"
       android:layout_marginBottom="@dimen/layout_lvl2"
       android:layout_marginTop="@dimen/layout_lvl3"
@@ -105,14 +108,15 @@
       android:textColor="@color/dark_N200"
       android:layout_marginStart="@dimen/layout_lvl1"
       android:layout_marginEnd="@dimen/layout_lvl2"
-      app:typographyType="body_2"
+      android:textSize="@dimen/fontSize_lvl2"
+      app:typographyType="body_3"
       app:layout_constraintTop_toTopOf="@id/imgIconVerified"
       app:layout_constraintLeft_toRightOf="@id/imgIconVerified"
       app:layout_constraintRight_toRightOf="parent"
       app:layout_constraintBottom_toBottomOf="@id/imgIconVerified"/>
   
     <com.tokopedia.unifycomponents.UnifyButton
-      android:id="@+id/btnUploadData"
+      android:id="@+id/btnNext"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_margin="@dimen/layout_lvl2"

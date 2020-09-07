@@ -42,7 +42,7 @@ class InactivePhoneUploadDataFragment : BaseDaggerFragment() {
             }
         }
 
-        btnUploadData?.setOnClickListener {
+        btnNext?.setOnClickListener {
             val phoneNumber = textPhoneNumber?.text.toString()
             when {
                 phoneNumber.isEmpty() -> {

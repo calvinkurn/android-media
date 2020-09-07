@@ -1,36 +1,36 @@
 package com.tokopedia.updateinactivephone.revamp.view.fragment
 
-import android.content.Context
-import android.graphics.Bitmap
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.otaliastudios.cameraview.CameraListener
+import com.otaliastudios.cameraview.CameraUtils
 import com.otaliastudios.cameraview.PictureResult
 import com.otaliastudios.cameraview.controls.Facing
 import com.otaliastudios.cameraview.controls.Mode
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.imagepicker.picker.camera.ImagePickerCameraFragment.OnImagePickerCameraFragmentListener
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.permissionchecker.request
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.revamp.common.InactivePhoneConstant
 import com.tokopedia.updateinactivephone.revamp.common.cameraview.CameraViewMode
 import com.tokopedia.utils.image.ImageUtils
 import kotlinx.android.synthetic.main.fragment_inactive_phone_camera_view.*
 import java.io.File
-import java.io.FileOutputStream
 
 class InactivePhoneCameraFragment : BaseDaggerFragment() {
 
     private var mode = 0
     private val permissionCheckerHelper = PermissionCheckerHelper()
-    private lateinit var onImagePickerCameraFragmentListener: OnImagePickerCameraFragmentListener
 
+    override fun getScreenName(): String = ""
     override fun initInjector() {
 
     }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_inactive_phone_camera_view, container, false)
     }
@@ -69,14 +69,18 @@ class InactivePhoneCameraFragment : BaseDaggerFragment() {
         }
 
         btnReCapture?.setOnClickListener {
+            ImageUtils.clearImage(imgPreview)
             showCamera()
         }
 
-        btnUploadData?.setOnClickListener {
-            onImagePickerCameraFragmentListener.onImageTaken(filePath())
+        btnNext?.setOnClickListener {
+            activity?.let {
+                it.setResult(Activity.RESULT_OK)
+                it.finish()
+            }
         }
 
-        txtTitle?.setOnClickListener {
+        btnBack?.setOnClickListener {
             activity?.onBackPressed()
         }
     }
@@ -87,11 +91,13 @@ class InactivePhoneCameraFragment : BaseDaggerFragment() {
             CameraViewMode.ID_CARD.id -> {
                 cameraView?.facing = Facing.BACK
                 updateTitle(getString(R.string.text_title_id_card))
+                updateDescription(getString((R.string.text_camera_description_id_card)))
                 showCamera()
             }
             CameraViewMode.SELFIE.id -> {
-                cameraView?.facing = Facing.FRONT
+                cameraView?.facing = Facing.BACK
                 updateTitle(getString(R.string.text_title_selfie))
+                updateDescription(getString((R.string.text_camera_description_selfie)))
                 showCamera()
             }
             CameraViewMode.SAVING_BOOK.id -> {
@@ -104,6 +110,10 @@ class InactivePhoneCameraFragment : BaseDaggerFragment() {
 
     private fun updateTitle(title: String) {
         txtTitle?.text = title
+    }
+
+    private fun updateDescription(description: String) {
+        txtDescription?.text = description
     }
 
     private fun showCamera(isSavingBook: Boolean = false) {
@@ -136,7 +146,6 @@ class InactivePhoneCameraFragment : BaseDaggerFragment() {
     }
 
     private fun showPreview(file: File) {
-        ImageUtils.clearImage(imgPreview)
         ImageUtils.loadImage(imgPreview, file.absolutePath)
 
         imgPreview?.visibility = View.VISIBLE
@@ -144,42 +153,29 @@ class InactivePhoneCameraFragment : BaseDaggerFragment() {
         cameraView?.visibility = View.GONE
         btnShutter?.visibility = View.GONE
         btnFlipCamera?.visibility = View.GONE
-
     }
 
     private fun onSuccessTakePicture(pictureResult: PictureResult) {
-        pictureResult.toBitmap {
-            val file = writeImageToCache(it as Bitmap)
-            showPreview(file)
-        }
-    }
-
-    private fun writeImageToCache(bitmap: Bitmap): File {
         val file = File(filePath())
-        if (file.exists()) {
-            file.delete()
+        pictureResult.toFile(file) {
+            if (it != null) {
+                showPreview(it)
+            } else {
+                onError(getString(R.string.text_camera_error_make_file))
+            }
         }
-        try {
-            val out = FileOutputStream(file)
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
-            out.flush()
-            out.close()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        return file
     }
 
     override fun onStop() {
         super.onStop()
         // https://stackoverflow.com/questions/43972053/cameraview-black-on-when-being-used-for-second-time/63629326#63629326
 
-        cameraView?.let {
-            if (it.isOpened) {
-                it.close()
-                it.destroy()
-            }
-        }
+        cameraView?.close()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        cameraView?.destroy()
     }
 
     private fun filePath(): String {
@@ -198,11 +194,11 @@ class InactivePhoneCameraFragment : BaseDaggerFragment() {
         }
     }
 
-    override fun onAttachActivity(context: Context?) {
-        onImagePickerCameraFragmentListener = context as OnImagePickerCameraFragmentListener
+    private fun onError(messgae: String) {
+        view?.let {
+            Toaster.make(it, messgae, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+        }
     }
-
-    override fun getScreenName(): String = ""
 
     companion object {
         private const val KEY_MODE = "mode"

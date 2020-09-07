@@ -8,12 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.updateinactivephone.R
-import com.tokopedia.updateinactivephone.revamp.common.cameraview.CameraViewMode
 import com.tokopedia.updateinactivephone.revamp.common.FragmentTransactionInterface
 import com.tokopedia.updateinactivephone.revamp.common.InactivePhoneConstant.REQUEST_CAPTURE_ID_CARD
+import com.tokopedia.updateinactivephone.revamp.common.cameraview.CameraViewMode
 import com.tokopedia.updateinactivephone.revamp.view.activity.InactivePhoneImagePickerActivity
-import com.tokopedia.user.session.UserSession
-import kotlinx.android.synthetic.main.fragment_inactive_phone_onboarding.*
+import com.tokopedia.utils.image.ImageUtils
+import kotlinx.android.synthetic.main.fragment_inactive_phone_onboarding_id_card.*
 
 class InactivePhoneOnboardingIdCardFragment : BaseDaggerFragment() {
 
@@ -33,11 +33,12 @@ class InactivePhoneOnboardingIdCardFragment : BaseDaggerFragment() {
 
         fragmentTransactionInterface = activity as FragmentTransactionInterface
 
-        btnUploadData?.setOnClickListener {
-            // take picture [ID CARD] [SELFIE]
+        btnNext?.setOnClickListener {
             val intent = InactivePhoneImagePickerActivity.createIntentCamera(context, CameraViewMode.ID_CARD)
             startActivityForResult(intent, REQUEST_CAPTURE_ID_CARD)
         }
+
+        ImageUtils.loadImage(imgHeader, IMAGE_ID_CARD_SAMPLE)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -50,5 +51,9 @@ class InactivePhoneOnboardingIdCardFragment : BaseDaggerFragment() {
 
     private fun gotoOnboardingSelfie() {
         fragmentTransactionInterface.replace(InactivePhoneOnboardingSelfieFragment())
+    }
+
+    companion object {
+        const val IMAGE_ID_CARD_SAMPLE = "https://ecs7.tokopedia.net/android/others/account_verification_ktp_onboarding.png"
     }
 }

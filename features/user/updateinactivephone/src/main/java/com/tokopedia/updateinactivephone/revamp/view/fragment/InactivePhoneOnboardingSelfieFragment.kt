@@ -37,7 +37,7 @@ class InactivePhoneOnboardingSelfieFragment : BaseDaggerFragment() {
 
         fragmentTransactionInterface = activity as FragmentTransactionInterface
 
-        btnUploadData?.setOnClickListener {
+        btnNext?.setOnClickListener {
             val intent = InactivePhoneImagePickerActivity.createIntentCamera(context, CameraViewMode.SELFIE)
             startActivityForResult(intent, REQUEST_CAPTURE_SELFIE)
         }
