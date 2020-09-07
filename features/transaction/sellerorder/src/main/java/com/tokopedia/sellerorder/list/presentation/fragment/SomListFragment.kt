@@ -80,6 +80,7 @@ import com.tokopedia.sellerorder.list.presentation.activity.SomFilterActivity
 import com.tokopedia.sellerorder.list.presentation.adapter.SomListItemAdapter
 import com.tokopedia.sellerorder.list.presentation.viewmodel.SomListViewModel
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
+import com.tokopedia.sellerorder.waitingpaymentorder.presentation.activity.WaitingPaymentOrderActivity
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.*
@@ -727,6 +728,13 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             if (filterResult is Success) {
                 somWaitingPaymentButton.visible()
                 animateWaitingPaymentButtonCounter(filterResult)
+                somWaitingPaymentButton.setOnClickListener {
+                    context?.run {
+                        Intent(this, WaitingPaymentOrderActivity::class.java).apply {
+                            startActivity(this)
+                        }
+                    }
+                }
                 showCoachMarkWaitingPayment()
             }
         } else {

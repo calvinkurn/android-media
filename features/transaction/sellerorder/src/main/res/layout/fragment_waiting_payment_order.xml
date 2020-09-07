@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/swipeRefreshLayoutWaitingPaymentOrder"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.tokopedia.unifycomponents.ticker.Ticker
+            android:id="@+id/tickerWaitingPaymentOrder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_14"
+            android:layout_marginTop="@dimen/layout_lvl1"
+            android:layout_marginEnd="@dimen/dp_14"
+            app:closeButtonVisibility="gone"
+            app:descriptionText="Atur ketersediaan stok produkmu sembari menunggu pembayaran. Pesanan yang gagal bayar atau terbayar saat stok habis tidak akan ditampilkan. Pelajari Lebih Lanjut"
+            app:layout_constraintBottom_toTopOf="@id/rvWaitingPaymentOrder"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tickerShapeType="loose" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvWaitingPaymentOrder"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/layout_lvl0"
+            android:layout_marginTop="@dimen/layout_lvl1"
+            android:layoutAnimation="@anim/recycler_view_animation_top_to_bottom"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toTopOf="@id/cardCheckAndSetStock"
+            app:layout_constraintTop_toBottomOf="@id/tickerWaitingPaymentOrder" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardCheckAndSetStock"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            app:cardCornerRadius="@dimen/layout_lvl0"
+            app:cardElevation="@dimen/layout_lvl1"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/layout_lvl2"
+                android:layout_marginTop="@dimen/layout_lvl1"
+                android:layout_marginEnd="@dimen/layout_lvl2"
+                android:layout_marginBottom="@dimen/layout_lvl1"
+                android:text="Cek &amp; Atur Stok" />
+
+        </androidx.cardview.widget.CardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

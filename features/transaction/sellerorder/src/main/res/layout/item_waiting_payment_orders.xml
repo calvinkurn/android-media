@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="@dimen/layout_lvl2"
+    android:paddingTop="@dimen/layout_lvl2"
+    android:paddingEnd="@dimen/layout_lvl2"
+    android:paddingBottom="@dimen/layout_lvl2">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvLabelPaymentDeadline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Batas Pembayaran: "
+        android:textColor="@color/Neutral_N700_68"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvValuePaymentDeadline"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Neutral_N700_68"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tvLabelPaymentDeadline"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tool:text="13 Sep, 14:55" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvLabelBuyerNameAndPlace"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_4"
+        android:text="Pembeli: "
+        android:textColor="@color/Neutral_N700_96"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvLabelPaymentDeadline"
+        app:typographyType="body_3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvValueBuyerNameAndPlace"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_4"
+        android:textColor="@color/Neutral_N700_96"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tvLabelBuyerNameAndPlace"
+        app:layout_constraintTop_toBottomOf="@id/tvLabelPaymentDeadline"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tool:text="Y*******y (Jakarta Selatan)" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginTop="@dimen/dp_12"
+        android:background="@color/Neutral_N75"
+        app:layout_constraintTop_toBottomOf="@id/tvLabelBuyerNameAndPlace" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvWaitingPaymentOrderProducts"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_13"
+        android:layoutAnimation="@anim/recycler_view_animation_top_to_bottom"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintTop_toBottomOf="@id/divider"
+        tool:itemCount="5"
+        tool:listitem="@layout/item_waiting_payment_order" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvToggleCollapseMoreProducts"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:textColor="@color/Green_G500"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rvWaitingPaymentOrderProducts"
+        app:typographyType="body_2"
+        tool:text="Tampilkan Lebih Banyak" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

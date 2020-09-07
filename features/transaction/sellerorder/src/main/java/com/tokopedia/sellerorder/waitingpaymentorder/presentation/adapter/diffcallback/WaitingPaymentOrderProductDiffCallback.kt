@@ -1,0 +1,28 @@
+package com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.diffcallback
+
+import androidx.recyclerview.widget.DiffUtil
+import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingPaymentOrder
+
+class WaitingPaymentOrderProductDiffCallback(
+        private val oldList: List<WaitingPaymentOrder.Product>,
+        private val newList: List<WaitingPaymentOrder.Product>
+) : DiffUtil.Callback() {
+    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        return oldList[oldItemPosition] === newList[newItemPosition]
+    }
+
+    override fun getOldListSize(): Int {
+        return oldList.size
+    }
+
+    override fun getNewListSize(): Int {
+        return newList.size
+    }
+
+    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        val (oldId, oldName, oldPicture, oldQuantity, oldPrice) = oldList[oldItemPosition]
+        val (newId, newName, newPicture, newQuantity, newPrice) = newList[newItemPosition]
+        return oldId == newId && oldName == newName && oldPicture == newPicture &&
+                oldQuantity == newQuantity && oldPrice == newPrice
+    }
+}
