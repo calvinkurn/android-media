@@ -8,6 +8,7 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.seller.menu.common.R
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.seller.menu.common.view.uimodel.SellerFeatureUiModel
@@ -33,7 +34,7 @@ class SellerFeatureViewHolder(
                 add(ApplinkConstInternalMarketplace.GOLD_MERCHANT_STATISTIC_DASHBOARD)
             }
             goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_SHOP_INSIGHT, appLinks)
-            sellerMenuTracker?.sendEventClickShopStatistic()
+            sendClickStatisticTracking()
         }
 
         itemView.cardPromo.setOnClickListener {
@@ -42,7 +43,7 @@ class SellerFeatureViewHolder(
                 add(ApplinkConstInternalSellerapp.CENTRALIZED_PROMO)
             }
             goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_CENTRALIZED_PROMO, appLinks)
-            sellerMenuTracker?.sendEventClickCentralizePromo()
+            sendClickPromoTracking()
         }
 
         itemView.cardFeedAndPlay.setOnClickListener {
@@ -52,7 +53,7 @@ class SellerFeatureViewHolder(
                 add(ApplinkConst.CONTENT_CREATE_POST)
             }
             goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_PLAY_FEED, appLinks)
-            sellerMenuTracker?.sendEventClickFeedAndPlay()
+            sendClickFeedAndPlay()
         }
 
         itemView.cardFintech.setOnClickListener {
@@ -61,7 +62,7 @@ class SellerFeatureViewHolder(
                 add(ApplinkConst.LAYANAN_FINANSIAL)
             }
             goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_FINANCIAL_SERVICES, appLinks)
-            sellerMenuTracker?.sendEventClickFintech()
+            sendClickFintechTracking()
         }
     }
 
@@ -70,5 +71,25 @@ class SellerFeatureViewHolder(
             val intent = SellerMigrationActivity.createIntent(this, featureName, SCREEN_NAME, appLinks)
             startActivity(intent)
         }
+    }
+
+    private fun sendClickStatisticTracking() {
+        if (GlobalConfig.isSellerApp()) return
+        sellerMenuTracker?.sendEventClickShopStatistic()
+    }
+
+    private fun sendClickPromoTracking() {
+        if (GlobalConfig.isSellerApp()) return
+        sellerMenuTracker?.sendEventClickCentralizePromo()
+    }
+
+    private fun sendClickFeedAndPlay() {
+        if (GlobalConfig.isSellerApp()) return
+        sellerMenuTracker?.sendEventClickFeedAndPlay()
+    }
+
+    private fun sendClickFintechTracking() {
+        if (GlobalConfig.isSellerApp()) return
+        sellerMenuTracker?.sendEventClickFintech()
     }
 }
