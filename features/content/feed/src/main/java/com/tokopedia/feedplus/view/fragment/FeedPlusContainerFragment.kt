@@ -377,7 +377,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                             context = requireContext(),
                             featureName = SellerMigrationFeatureName.FEATURE_POST_FEED,
                             screenName = FeedPlusContainerFragment::class.simpleName.orEmpty(),
-                            appLinks = arrayListOf(ApplinkConstInternalSellerapp.SELLER_HOME, getSellerApplink(whitelistDomain)),
+                            appLinks = arrayListOf(ApplinkConstInternalSellerapp.SELLER_HOME, ApplinkConst.CONTENT_CREATE_POST),
                             isStackBuilder = false)
                     setupBottomSheetFeedSellerMigration(::goToCreateAffiliate, intent)
                 }
