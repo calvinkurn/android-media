@@ -33,7 +33,8 @@ class TickerItemViewHolder(
                     context.gotoNotificationSetting()
                 }
                 is ConfigState.Notification -> {
-                    context.startActivity(RouteManager.getIntent(context, USER_NOTIFICATION_SETTING))
+                    val appLink = "$USER_NOTIFICATION_SETTING$PUSH_NOTIFICATION_NS_QUERY"
+                    context.startActivity(RouteManager.getIntent(context, appLink))
                 }
                 is ConfigState.Ringtone -> {
                     context?.gotoAudioSetting()
@@ -44,6 +45,8 @@ class TickerItemViewHolder(
 
     companion object {
         @LayoutRes val LAYOUT = R.layout.item_notification_ticker
+
+        private const val PUSH_NOTIFICATION_NS_QUERY = "?push_notification=true"
     }
 
 }
