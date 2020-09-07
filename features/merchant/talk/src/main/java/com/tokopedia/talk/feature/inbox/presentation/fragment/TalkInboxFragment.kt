@@ -90,7 +90,7 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
 
     override fun onItemClicked(talkUiModel: TalkInboxUiModel?) {
         talkUiModel?.let {
-            goToReply(it.inboxDetail.questionID, viewModel.getShopId())
+            goToReply(it.inboxDetail.questionID)
         }
     }
 
@@ -172,10 +172,9 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
         observeInboxList()
     }
 
-    private fun goToReply(questionId: String, shopId: String) {
+    private fun goToReply(questionId: String) {
         val intent = RouteManager.getIntent(context, Uri.parse(UriUtil.buildUri(ApplinkConstInternalGlobal.TALK_REPLY, questionId))
                 .buildUpon()
-                .appendQueryParameter(TalkConstants.PARAM_SHOP_ID, shopId)
                 .appendQueryParameter(TalkConstants.PARAM_SOURCE, TalkDetailsActivity.SOURCE_INBOX)
                 .build().toString()
         )
