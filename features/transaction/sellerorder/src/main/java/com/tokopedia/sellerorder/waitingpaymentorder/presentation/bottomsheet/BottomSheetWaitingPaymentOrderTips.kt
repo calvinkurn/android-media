@@ -16,7 +16,6 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.typefactory.WaitingPaymentOrderTipsTypeFactory
-import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingPaymentOrderTipsUiModel
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.provider.WaitingPaymentOrderTipsDataProvider
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -33,7 +32,11 @@ class BottomSheetWaitingPaymentOrderTips : BottomSheetUnify() {
     private var tvHeader: Typography? = null
     private var rvTips: RecyclerView? = null
 
-    private val items: List<WaitingPaymentOrderTipsUiModel> = WaitingPaymentOrderTipsDataProvider().provideData()
+    private val items by lazy {
+        context?.run {
+            WaitingPaymentOrderTipsDataProvider().provideData(this)
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setChildLayout()
