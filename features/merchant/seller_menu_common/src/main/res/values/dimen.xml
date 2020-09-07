@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="sah_dimen_1dp">1dp</dimen>
+    <dimen name="sah_dimen_4dp">4dp</dimen>
+    <dimen name="sah_dimen_5dp">5dp</dimen>
+    <dimen name="sah_dimen_14dp">14dp</dimen>
+    <dimen name="sah_dimen_17dp">17dp</dimen>
+    <dimen name="sah_dimen_19dp">19dp</dimen>
+    <dimen name="sah_dimen_20dp">20dp</dimen>
+
     <dimen name="setting_divider_thin">1dp</dimen>
     <dimen name="setting_divider_thick">8dp</dimen>
     <dimen name="setting_divider_thin_padding">10dp</dimen>
@@ -28,7 +36,7 @@
     <dimen name="setting_shop_badge_height">16dp</dimen>
     <dimen name="setting_next_button_padding">10dp</dimen>
     <dimen name="setting_shop_badge_border_os_margin">5dp</dimen>
-    <dimen name="setting_shop_badge_border_pm_margin">4dp</dimen>
+    <dimen name="setting_shop_badge_border_pm_margin">3dp</dimen>
     <dimen name="setting_shop_error_background_height">150dp</dimen>
     <dimen name="setting_local_load_margin">16dp</dimen>
     <dimen name="setting_balance_padding">3dp</dimen>
