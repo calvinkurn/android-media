@@ -20,7 +20,7 @@ class ManageAddressViewModel @Inject constructor(
     var token: Token? = null
     var savedQuery: String = ""
     var page: Int = 1
-    var canLoadMore: Boolean = true
+    var canLoadMore: Boolean = false
 
     private val _addressList = MutableLiveData<ManageAddressState<AddressListModel>>()
     val addressList: LiveData<ManageAddressState<AddressListModel>>
