@@ -21,11 +21,11 @@
             tools:ignore="ContentDescription" />
 
         <ImageView
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/account_home_ic_open_shop_size"
             android:layout_height="wrap_content"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_seller_open_shop"
+            android:src="@drawable/ic_seller_open_shop"
             tools:ignore="ContentDescription" />
 
         <com.tokopedia.unifyprinciples.Typography

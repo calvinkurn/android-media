@@ -7,4 +7,5 @@
     <dimen name="account_icon_toolbar">38dp</dimen>
     <dimen name="account_home_seller_account_height">50dp</dimen>
     <dimen name="account_home_seller_open_shop_height">55dp</dimen>
+    <dimen name="account_home_ic_open_shop_size">55dp</dimen>
 </resources>
