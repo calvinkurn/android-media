@@ -9,6 +9,8 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.seller.menu.coroutine.CoroutineDispatchers
 import com.tokopedia.seller.menu.coroutine.CoroutineDispatchersProvider
 import com.tokopedia.seller.menu.di.scope.SellerMenuScope
+import com.tokopedia.track.TrackApp
+import com.tokopedia.track.interfaces.Analytics
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -40,4 +42,8 @@ class SellerMenuModule {
     fun provideFirebaseRemoteConfig(@ApplicationContext context: Context): RemoteConfig {
         return FirebaseRemoteConfigImpl(context)
     }
+
+    @SellerMenuScope
+    @Provides
+    fun provideAnalytics(): Analytics = TrackApp.getInstance().gtm
 }
