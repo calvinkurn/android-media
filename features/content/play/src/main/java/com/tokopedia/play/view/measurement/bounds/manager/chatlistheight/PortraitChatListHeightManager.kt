@@ -35,7 +35,7 @@ class PortraitChatListHeightManager(
             videoOrientation: VideoOrientation,
             videoPlayer: VideoPlayerUiModel
     ) {
-        val key = getKey(videoOrientation, false, null)
+        val key = getKey(videoOrientation, null, null)
         val value = chatListHeightMap[key]
         if (value.orZero() > 0f) {
             rvChatList.setMaxHeight(value!!)
@@ -52,7 +52,7 @@ class PortraitChatListHeightManager(
     }
 
     override suspend fun invalidateHeightChatMode(videoOrientation: VideoOrientation, videoPlayer: VideoPlayerUiModel, maxTopPosition: Int, hasQuickReply: Boolean) {
-        val key = getKey(videoOrientation, true, hasQuickReply)
+        val key = getKey(videoOrientation, maxTopPosition, hasQuickReply)
         val value = chatListHeightMap[key]
         if (value.orZero() > 0f) {
             rvChatList.setMaxHeight(value!!)
@@ -110,6 +110,6 @@ class PortraitChatListHeightManager(
         maxVerticalChatHeight
     }
 
-    private fun getKey(videoOrientation: VideoOrientation, isChatMode: Boolean, hasQuickReply: Boolean?)
-            = ChatHeightMapKey(videoOrientation, isChatMode, hasQuickReply)
+    private fun getKey(videoOrientation: VideoOrientation, maxTop: Int?, hasQuickReply: Boolean?)
+            = ChatHeightMapKey(videoOrientation, maxTop, hasQuickReply)
 }
