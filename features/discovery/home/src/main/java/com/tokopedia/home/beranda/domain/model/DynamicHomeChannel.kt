@@ -70,7 +70,9 @@ data class DynamicHomeChannel(
             @SerializedName("homeAttribution")
             val homeAttribution: String = "",
             @SerializedName("has_close_button")
-            val hasCloseButton: Boolean = false
+            val hasCloseButton: Boolean = false,
+            @SerializedName("isAutoRefreshAfterExpired")
+            val isAutoRefreshAfterExpired: Boolean = false
     ) : ImpressHolder() {
 
         private var position: Int = 0

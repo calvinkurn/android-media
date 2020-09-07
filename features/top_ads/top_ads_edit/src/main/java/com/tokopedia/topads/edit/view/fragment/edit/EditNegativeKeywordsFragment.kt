@@ -3,6 +3,7 @@ package com.tokopedia.topads.edit.view.fragment.edit
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -70,7 +71,8 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
     private fun showNegConfirmationDialog(position: Int) {
         val dialog = DialogUnify(context!!, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.setTitle(getString(R.string.topads_edit_delete_neg_keyword_conf_dialog_title))
-        dialog.setDescription(String.format(getString(R.string.topads_edit_delete_neg_keyword_conf_dialog_desc),(adapter.items[position] as EditNegKeywordItemViewModel).data.tag))
+        dialog.setDescription(Html.fromHtml(String.format(getString(R.string.topads_edit_delete_neg_keyword_conf_dialog_desc),
+                (adapter.items[position] as EditNegKeywordItemViewModel).data.tag)))
         dialog.setPrimaryCTAText(getString(R.string.topads_edit_batal))
         dialog.setSecondaryCTAText(getString(R.string.topads_edit_ya))
         dialog.setPrimaryCTAClickListener {
@@ -126,7 +128,7 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
     }
 
     private fun updateItemCount() {
-        keyword_count.text = String.format(getString(R.string.keyword_count), adapter.items.size)
+        keyword_count.text = String.format(getString(R.string.topads_edit_kata_kunci_negative_count), adapter.items.size)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
