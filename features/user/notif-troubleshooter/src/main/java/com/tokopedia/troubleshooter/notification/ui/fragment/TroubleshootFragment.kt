@@ -86,7 +86,7 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
 
     override fun onResume() {
         super.onResume()
-        adapter.removeTicker()
+        viewModel.removeTickers()
     }
 
     private fun initView() {

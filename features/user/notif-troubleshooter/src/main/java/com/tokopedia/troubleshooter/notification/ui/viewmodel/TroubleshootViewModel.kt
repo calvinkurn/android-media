@@ -25,6 +25,7 @@ import javax.inject.Inject
 import android.media.RingtoneManager.getDefaultUri as getRingtoneUri
 
 interface TroubleshootContract {
+    fun removeTickers()
     fun tickers(element: TickerItemUIView, status: StatusState)
     fun userSetting()
     fun deviceSetting()
@@ -81,6 +82,10 @@ class TroubleshootViewModel @Inject constructor(
     override fun tickers(element: TickerItemUIView, status: StatusState) {
         if (_tickerItems.contains(element)) return
         _tickerItems.add(element)
+    }
+
+    override fun removeTickers() {
+        _tickerItems.clear()
     }
 
     override fun troubleshoot() {

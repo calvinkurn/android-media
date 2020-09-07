@@ -51,11 +51,6 @@ internal open class TroubleshooterAdapter(
         notifyItemInserted(INDEX_STATUS)
     }
 
-    fun removeTicker() {
-        visitables.removeAll { it is TickerUIView }
-        notifyDataSetChanged()
-    }
-
     fun footerMessage(isDndEnabled: Boolean) {
         if (visitables.last() is FooterUIView) {
             visitables.removeAt(lastIndex)

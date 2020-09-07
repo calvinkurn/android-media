@@ -12,6 +12,7 @@ import com.tokopedia.troubleshooter.notification.ui.listener.FooterListener
 import com.tokopedia.troubleshooter.notification.ui.uiview.FooterUIView
 import com.tokopedia.troubleshooter.notification.util.ClearCacheUtil
 import com.tokopedia.troubleshooter.notification.util.ClearCacheUtil.showClearCache
+import com.tokopedia.troubleshooter.notification.util.gotoAudioSetting
 import com.tokopedia.unifycomponents.UnifyButton
 
 class FooterViewHolder(
@@ -48,7 +49,7 @@ class FooterViewHolder(
     }
 
     private fun dndMode() {
-
+        context?.gotoAudioSetting()
     }
 
     companion object {
