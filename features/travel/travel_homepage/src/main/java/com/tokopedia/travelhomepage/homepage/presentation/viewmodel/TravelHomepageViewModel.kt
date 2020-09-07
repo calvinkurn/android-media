@@ -17,10 +17,7 @@ import com.tokopedia.travelhomepage.homepage.data.TravelUnifiedSubhomepageData
 import com.tokopedia.travelhomepage.homepage.data.mapper.TravelHomepageMapper
 import com.tokopedia.travelhomepage.homepage.usecase.GetEmptyModelsUseCase
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -35,7 +32,7 @@ class TravelHomepageViewModel @Inject constructor(
     : BaseViewModel(dispatcherProvider.io()) {
 
     var travelItemList = mutableListOf<TravelHomepageItemModel>()
-    val renderList = MutableLiveData<Boolean>()
+    val travelItemListLiveData = MutableLiveData<MutableList<TravelHomepageItemModel>>()
     val isAllError = MutableLiveData<Boolean>()
     private val mapper = TravelHomepageMapper()
 
@@ -47,7 +44,7 @@ class TravelHomepageViewModel @Inject constructor(
             val layoutResult = getEmptyModelsUseCase.getTravelLayoutSubhomepage(rawQuery, isLoadFromCloud)
             if (layoutResult is Success) {
                 travelItemList = layoutResult.data.toMutableList()
-                renderList.postValue(true)
+                travelItemListLiveData.postValue(travelItemList)
             } else isAllError.postValue(true)
         }) {
             isAllError.postValue(true)
@@ -56,7 +53,7 @@ class TravelHomepageViewModel @Inject constructor(
 
     fun getTravelUnifiedData(rawQuery: String, layoutData: TravelLayoutSubhomepage.Data, isFromCloud: Boolean) {
         launch {
-
+            delay(200)
             if (!calledApiList.containsKey(layoutData.position.toString())) {
                 calledApiList[layoutData.position.toString()] = layoutData.position.toString()
 
@@ -70,14 +67,14 @@ class TravelHomepageViewModel @Inject constructor(
                         item.isSuccess = true
                         item.isLoadFromCloud = false
                         travelItemList[layoutData.position] = item
-                        renderList.postValue(true)
+                        travelItemListLiveData.postValue(travelItemList)
                     }
 
                 } catch (e: Throwable) {
                     travelItemList[layoutData.position].isLoaded = true
                     travelItemList[layoutData.position].isSuccess = false
                     if (checkIfAllError()) isAllError.postValue(true)
-                    else renderList.postValue(true)
+                    else travelItemListLiveData.postValue(travelItemList)
                 }
             }
         }
@@ -85,10 +82,11 @@ class TravelHomepageViewModel @Inject constructor(
 
     private suspend fun getSubhomepageData(rawQuery: String, param: Map<String, Any>, isFromCloud: Boolean): List<TravelUnifiedSubhomepageData> {
 
+        delay(300)
         val graphQlCacheStrategy = if (isFromCloud) GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
         else GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
 
-        return withContext(SupervisorJob()) {
+        return withContext(dispatcherProvider.ui()) {
             val response = withContext(dispatcherProvider.ui()) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TravelUnifiedSubhomepageData.Response::class.java, param)
                 graphqlRepository.getReseponse(listOf(graphqlRequest), graphQlCacheStrategy)

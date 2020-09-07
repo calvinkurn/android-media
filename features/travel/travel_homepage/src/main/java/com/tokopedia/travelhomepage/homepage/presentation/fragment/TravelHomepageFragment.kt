@@ -150,11 +150,11 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel,
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        travelHomepageViewModel.renderList.observe(viewLifecycleOwner, Observer {
+        travelHomepageViewModel.travelItemListLiveData.observe(viewLifecycleOwner, Observer {
             if(job.isActive) job.cancel()
             job = launch {
                 isLoadingInitialData = true
-                renderList(travelHomepageViewModel.travelItemList, false)
+                renderList(it, false)
             }
         })
 
