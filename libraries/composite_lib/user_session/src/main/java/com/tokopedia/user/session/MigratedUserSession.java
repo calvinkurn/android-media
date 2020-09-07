@@ -105,7 +105,6 @@ public class MigratedUserSession {
         String oldKeyName = EncoderDecoder.Decrypt(keyName, UserSession.KEY_IV);
 
         String oldValue = internalGetString(oldprefName, oldKeyName, defValue);
-
         if (oldValue != null && !oldValue.isEmpty())
             oldValue = EncoderDecoder.Decrypt(oldValue, UserSession.KEY_IV);
 
