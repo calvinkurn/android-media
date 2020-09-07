@@ -90,12 +90,6 @@ public class ShipmentDataConverter {
         return null;
     }
 
-    public RecipientAddressModel getRecipientAddressModel(UserAddress defaultAddress) {
-        // Trade in is only available on OCS.
-        // OCS is not available to send to multiple address
-        return createRecipientAddressModel(defaultAddress, null, false, false);
-    }
-
     public ShipmentDonationModel getShipmentDonationModel(CartShipmentAddressFormData cartShipmentAddressFormData) {
         ShipmentDonationModel shipmentDonationModel = new ShipmentDonationModel();
         shipmentDonationModel.setChecked(cartShipmentAddressFormData.getDonation().isChecked());
@@ -171,51 +165,25 @@ public class ShipmentDataConverter {
                                                         boolean hasTradeInDropOffAddress) {
         List<ShipmentCartItemModel> shipmentCartItemModels = new ArrayList<>();
 
-        int addressIndex = 0;
-        ShipmentCartItemModel shipmentCartItemModel = null;
-        if (cartShipmentAddressFormData.isMultiple()) {
-            for (GroupAddress groupAddress : cartShipmentAddressFormData.getGroupAddress()) {
-                UserAddress userAddress = groupAddress.getUserAddress();
-                for (GroupShop groupShop : groupAddress.getGroupShop()) {
-                    shipmentCartItemModel = new ShipmentCartItemModel();
-                    shipmentCartItemModel.setUseCourierRecommendation(cartShipmentAddressFormData
-                            .isUseCourierRecommendation());
-                    shipmentCartItemModel.setHidingCourier(cartShipmentAddressFormData.isHidingCourier());
-                    shipmentCartItemModel.setIsBlackbox(cartShipmentAddressFormData.getIsBlackbox());
-                    shipmentCartItemModel.setAddressId(cartShipmentAddressFormData.getGroupAddress()
-                            .get(addressIndex).getUserAddress().getAddressId());
-                    getShipmentItem(shipmentCartItemModel, userAddress, groupShop,
-                            cartShipmentAddressFormData.getKeroToken(),
-                            String.valueOf(cartShipmentAddressFormData.getKeroUnixTime()), true, hasTradeInDropOffAddress);
-                    shipmentCartItemModel.setFulfillment(groupShop.isFulfillment());
-                    shipmentCartItemModel.setFulfillmentId(groupShop.getFulfillmentId());
-                    shipmentCartItemModel.setFulfillmentName(groupShop.getFulfillmentName());
-                    setCartItemModelError(shipmentCartItemModel);
-                    shipmentCartItemModels.add(shipmentCartItemModel);
-                }
-                addressIndex++;
-            }
-        } else {
-            UserAddress userAddress = cartShipmentAddressFormData.getGroupAddress().get(0).getUserAddress();
-            for (GroupShop groupShop : cartShipmentAddressFormData.getGroupAddress().get(0).getGroupShop()) {
-                shipmentCartItemModel = new ShipmentCartItemModel();
-                shipmentCartItemModel.setDropshipperDisable(cartShipmentAddressFormData.isDropshipperDisable());
-                shipmentCartItemModel.setOrderPrioritasDisable(cartShipmentAddressFormData.isOrderPrioritasDisable());
-                shipmentCartItemModel.setUseCourierRecommendation(cartShipmentAddressFormData.isUseCourierRecommendation());
-                shipmentCartItemModel.setIsBlackbox(cartShipmentAddressFormData.getIsBlackbox());
-                shipmentCartItemModel.setHidingCourier(cartShipmentAddressFormData.isHidingCourier());
-                shipmentCartItemModel.setAddressId(cartShipmentAddressFormData.getGroupAddress()
-                        .get(0).getUserAddress().getAddressId());
+        UserAddress userAddress = cartShipmentAddressFormData.getGroupAddress().get(0).getUserAddress();
+        for (GroupShop groupShop : cartShipmentAddressFormData.getGroupAddress().get(0).getGroupShop()) {
+            ShipmentCartItemModel shipmentCartItemModel = new ShipmentCartItemModel();
+            shipmentCartItemModel.setDropshipperDisable(cartShipmentAddressFormData.isDropshipperDisable());
+            shipmentCartItemModel.setOrderPrioritasDisable(cartShipmentAddressFormData.isOrderPrioritasDisable());
+            shipmentCartItemModel.setUseCourierRecommendation(cartShipmentAddressFormData.isUseCourierRecommendation());
+            shipmentCartItemModel.setIsBlackbox(cartShipmentAddressFormData.getIsBlackbox());
+            shipmentCartItemModel.setHidingCourier(cartShipmentAddressFormData.isHidingCourier());
+            shipmentCartItemModel.setAddressId(cartShipmentAddressFormData.getGroupAddress()
+                    .get(0).getUserAddress().getAddressId());
 
-                getShipmentItem(shipmentCartItemModel, userAddress, groupShop, cartShipmentAddressFormData.getKeroToken(),
-                        String.valueOf(cartShipmentAddressFormData.getKeroUnixTime()), false, hasTradeInDropOffAddress);
-                shipmentCartItemModel.setFulfillment(groupShop.isFulfillment());
-                shipmentCartItemModel.setFulfillmentId(groupShop.getFulfillmentId());
-                shipmentCartItemModel.setFulfillmentName(groupShop.getFulfillmentName());
-                setCartItemModelError(shipmentCartItemModel);
-                shipmentCartItemModel.setEligibleNewShippingExperience(cartShipmentAddressFormData.isEligibleNewShippingExperience());
-                shipmentCartItemModels.add(shipmentCartItemModel);
-            }
+            getShipmentItem(shipmentCartItemModel, userAddress, groupShop, cartShipmentAddressFormData.getKeroToken(),
+                    String.valueOf(cartShipmentAddressFormData.getKeroUnixTime()), hasTradeInDropOffAddress);
+            shipmentCartItemModel.setFulfillment(groupShop.isFulfillment());
+            shipmentCartItemModel.setFulfillmentId(groupShop.getFulfillmentId());
+            shipmentCartItemModel.setFulfillmentName(groupShop.getFulfillmentName());
+            setCartItemModelError(shipmentCartItemModel);
+            shipmentCartItemModel.setEligibleNewShippingExperience(cartShipmentAddressFormData.isEligibleNewShippingExperience());
+            shipmentCartItemModels.add(shipmentCartItemModel);
         }
 
         return shipmentCartItemModels;
@@ -233,11 +201,7 @@ public class ShipmentDataConverter {
     private void getShipmentItem(ShipmentCartItemModel shipmentCartItemModel,
                                  UserAddress userAddress, GroupShop groupShop,
                                  String keroToken, String keroUnixTime,
-                                 boolean isMultiple, boolean hasTradeInDropOffAddress) {
-        if (isMultiple) {
-            shipmentCartItemModel.setRecipientAddressModel(getRecipientAddressModel(userAddress));
-        }
-
+                                 boolean hasTradeInDropOffAddress) {
         shipmentCartItemModel.setShopShipmentList(groupShop.getShopShipments());
         shipmentCartItemModel.setError(groupShop.isError());
         if (shipmentCartItemModel.isError()) {

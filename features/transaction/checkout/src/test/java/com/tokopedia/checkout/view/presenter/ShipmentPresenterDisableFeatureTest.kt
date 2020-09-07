@@ -121,49 +121,6 @@ object ShipmentPresenterDisableFeatureTest : Spek({
                 presenter.shipmentCartItemModelList.each { assertEquals(true, isDropshipperDisable) }
             }
 
-            Then("should not have multiple address disabled") {
-                assertEquals(false, presenter.recipientAddressModel.isDisableMultipleAddress)
-            }
-
-            Then("should not have order prioritas disabled in all items") {
-                presenter.shipmentCartItemModelList.each { assertEquals(false, isOrderPrioritasDisable) }
-            }
-
-            Then("should have egold attributes") {
-                assertNotNull(presenter.egoldAttributeModel)
-            }
-
-            Then("should have purchase protection plan data in all items") {
-                presenter.shipmentCartItemModelList.each { cartItemModels.each { assertEquals(true, isProtectionAvailable) } }
-            }
-
-            Then("should have donation") {
-                assertNotNull(presenter.shipmentDonationModel)
-            }
-        }
-
-        Scenario("Disable Multiple Address") {
-
-            Given("mock response") {
-                val dataResponse = gson.fromJson(unitTestFileUtils.getJsonFromAsset(PATH_JSON_SAF_DISABLE_MULTIPLE_ADDRESS), ShipmentAddressFormDataResponse::class.java)
-                val result = hashMapOf<Type, Any>(
-                        ShipmentAddressFormGqlResponse::class.java to ShipmentAddressFormGqlResponse(ShipmentAddressFormResponse(status = "OK", data = dataResponse))
-                )
-                every { graphqlUseCase.createObservable(any()) } returns Observable.just(GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false))
-            }
-
-            When("process initial load checkout page") {
-                presenter.processInitialLoadCheckoutPage(false, false, false, false, false, null, "", "")
-            }
-
-            Then("should not have dropshipper disable in all items") {
-                presenter.shipmentCartItemModelList.each { assertEquals(false, isDropshipperDisable) }
-            }
-
-            Then("should have multiple address disabled") {
-                assertEquals(true, presenter.recipientAddressModel.isDisableMultipleAddress)
-            }
-
             Then("should not have order prioritas disabled in all items") {
                 presenter.shipmentCartItemModelList.each { assertEquals(false, isOrderPrioritasDisable) }
             }
@@ -197,10 +154,6 @@ object ShipmentPresenterDisableFeatureTest : Spek({
 
             Then("should not have dropshipper disable in all items") {
                 presenter.shipmentCartItemModelList.each { assertEquals(false, isDropshipperDisable) }
-            }
-
-            Then("should not have multiple address disabled") {
-                assertEquals(false, presenter.recipientAddressModel.isDisableMultipleAddress)
             }
 
             Then("should have order prioritas disabled in all items") {
@@ -238,10 +191,6 @@ object ShipmentPresenterDisableFeatureTest : Spek({
                 presenter.shipmentCartItemModelList.each { assertEquals(false, isDropshipperDisable) }
             }
 
-            Then("should not have multiple address disabled") {
-                assertEquals(false, presenter.recipientAddressModel.isDisableMultipleAddress)
-            }
-
             Then("should not have order prioritas disabled in all items") {
                 presenter.shipmentCartItemModelList.each { assertEquals(false, isOrderPrioritasDisable) }
             }
@@ -275,10 +224,6 @@ object ShipmentPresenterDisableFeatureTest : Spek({
 
             Then("should not have dropshipper disable in all items") {
                 presenter.shipmentCartItemModelList.each { assertEquals(false, isDropshipperDisable) }
-            }
-
-            Then("should not have multiple address disabled") {
-                assertEquals(false, presenter.recipientAddressModel.isDisableMultipleAddress)
             }
 
             Then("should not have order prioritas disabled in all items") {
@@ -316,10 +261,6 @@ object ShipmentPresenterDisableFeatureTest : Spek({
                 presenter.shipmentCartItemModelList.each { assertEquals(false, isDropshipperDisable) }
             }
 
-            Then("should not have multiple address disabled") {
-                assertEquals(false, presenter.recipientAddressModel.isDisableMultipleAddress)
-            }
-
             Then("should not have order prioritas disabled in all items") {
                 presenter.shipmentCartItemModelList.each { assertEquals(false, isOrderPrioritasDisable) }
             }
@@ -353,10 +294,6 @@ object ShipmentPresenterDisableFeatureTest : Spek({
 
             Then("should have dropshipper disable in all items") {
                 presenter.shipmentCartItemModelList.each { assertEquals(true, isDropshipperDisable) }
-            }
-
-            Then("should have multiple address disabled") {
-                assertEquals(true, presenter.recipientAddressModel.isDisableMultipleAddress)
             }
 
             Then("should have order prioritas disabled in all items") {

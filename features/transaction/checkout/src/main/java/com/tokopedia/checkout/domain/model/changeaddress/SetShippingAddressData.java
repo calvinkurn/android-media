@@ -1,4 +1,4 @@
-package com.tokopedia.checkout.domain.model.cartmultipleshipment;
+package com.tokopedia.checkout.domain.model.changeaddress;
 
 import android.os.Parcel;
 import android.os.Parcelable;

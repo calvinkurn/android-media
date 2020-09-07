@@ -215,9 +215,6 @@ public interface ShipmentContract {
                                             boolean isReloadAfterPriceChangeHinger,
                                             String cornerId, String deviceId, String leasingId);
 
-        void processReloadCheckoutPageFromMultipleAddress(RecipientAddressModel recipientAddressModel,
-                                                          ArrayList<ShipmentCartItemModel> shipmentCartItemModels);
-
         void processCheckout(boolean hasInsurance,
                              boolean isOneClickShipment, boolean isTradeIn,
                              boolean isTradeInDropOff, String deviceId,

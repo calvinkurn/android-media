@@ -5,7 +5,6 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
     data {
       errors
       error_code
-      is_multiple
       kero_token
       kero_discom_token
       kero_unix_time

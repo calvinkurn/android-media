@@ -56,7 +56,6 @@ import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckou
 import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseObject;
-import com.tokopedia.unifycomponents.Label;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifycomponents.ticker.TickerCallback;
 import com.tokopedia.unifyprinciples.Typography;
@@ -129,12 +128,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private TextView tvPPPMore;
     private CheckBox cbPPP;
     private CheckBox cbPPPDisabled;
-    private Typography tvAddressName;
-    private Label tvAddressStatus;
-    private Typography tvRecipientName;
-    private Typography tvRecipientAddress;
-    private Typography tvRecipientPhone;
-    private LinearLayout addressLayout;
     private RecyclerView rvCartItem;
     private Typography tvExpandOtherProduct;
     private ImageView ivExpandOtherProduct;
@@ -165,7 +158,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private TextInputLayout textInputLayoutShipperName;
     private TextInputLayout textInputLayoutShipperPhone;
     private View vSeparatorMultipleProductSameStore;
-    private View vSeparatorAboveCourier;
+    private View vSeparatorBelowProduct;
     private Typography tvAdditionalFee;
     private Typography tvAdditionalFeePrice;
     private TextView tvLabelInsurance;
@@ -296,14 +289,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tvNoteToSellerLabel = itemView.findViewById(R.id.tv_note_to_seller_label);
         tvOptionalNoteToSeller = itemView.findViewById(R.id.tv_optional_note_to_seller);
         llOptionalNoteToSellerLayout = itemView.findViewById(R.id.ll_optional_note_to_seller_layout);
-        tvAddressName = itemView.findViewById(com.tokopedia.logisticdata.R.id.tv_address_name);
-        tvAddressStatus = itemView.findViewById(com.tokopedia.logisticdata.R.id.tv_address_status);
-        tvRecipientName = itemView.findViewById(com.tokopedia.logisticdata.R.id.tv_recipient_name);
-        tvRecipientAddress = itemView.findViewById(com.tokopedia.logisticdata.R.id.tv_recipient_address);
-        tvRecipientPhone = itemView.findViewById(com.tokopedia.logisticdata.R.id.tv_recipient_phone);
         tvProtectionLabel = itemView.findViewById(R.id.tv_purchase_protection_label);
         tvProtectionFee = itemView.findViewById(R.id.tv_purchase_protection_fee);
-        addressLayout = itemView.findViewById(R.id.address_layout);
         rvCartItem = itemView.findViewById(R.id.rv_cart_item);
         tvExpandOtherProduct = itemView.findViewById(R.id.tv_expand_other_product);
         ivExpandOtherProduct = itemView.findViewById(R.id.iv_expand_other_product);
@@ -332,7 +319,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         textInputLayoutShipperName = itemView.findViewById(R.id.text_input_layout_shipper_name);
         textInputLayoutShipperPhone = itemView.findViewById(R.id.text_input_layout_shipper_phone);
         vSeparatorMultipleProductSameStore = itemView.findViewById(R.id.v_separator_multiple_product_same_store);
-        vSeparatorAboveCourier = itemView.findViewById(R.id.v_separator_above_courier);
+        vSeparatorBelowProduct = itemView.findViewById(R.id.v_separator_below_product);
         tvAdditionalFee = itemView.findViewById(R.id.tv_additional_fee);
         tvAdditionalFeePrice = itemView.findViewById(R.id.tv_additional_fee_price);
         tvLabelInsurance = itemView.findViewById(R.id.tv_label_insurance);
@@ -453,7 +440,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         }
         renderShop(shipmentCartItemModel);
         renderFulfillment(shipmentCartItemModel);
-        renderAddress(shipmentCartItemModel.getRecipientAddressModel());
         renderShipping(shipmentCartItemModel, recipientAddressModel, ratesDataConverter, showCaseObjectList);
         renderPrioritas(shipmentCartItemModel);
         renderInsurance(shipmentCartItemModel);
@@ -556,12 +542,12 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         if (shipmentCartItemModel.getCartItemModels() != null && shipmentCartItemModel.getCartItemModels().size() > 1) {
             rlExpandOtherProduct.setVisibility(View.VISIBLE);
             renderOtherCartItems(shipmentCartItemModel, cartItemModelList);
-            vSeparatorAboveCourier.setVisibility(View.VISIBLE);
+            vSeparatorBelowProduct.setVisibility(View.VISIBLE);
         } else {
             rlExpandOtherProduct.setVisibility(View.GONE);
             rvCartItem.setVisibility(View.GONE);
             vSeparatorMultipleProductSameStore.setVisibility(View.GONE);
-            vSeparatorAboveCourier.setVisibility(View.GONE);
+            vSeparatorBelowProduct.setVisibility(View.GONE);
         }
     }
 
@@ -1707,29 +1693,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 }
             }
 
-        }
-    }
-
-    private void renderAddress(RecipientAddressModel recipientAddressModel) {
-        if (recipientAddressModel != null) {
-            tvAddressStatus.setVisibility(View.GONE);
-            if (recipientAddressModel.getAddressStatus() == 2) {
-                tvAddressStatus.setVisibility(View.VISIBLE);
-            } else {
-                tvAddressStatus.setVisibility(View.GONE);
-            }
-            String addressName = recipientAddressModel.getAddressName();
-            String recipientName = recipientAddressModel.getRecipientName();
-            tvRecipientName.setText(Utils.getHtmlFormat(recipientName));
-            tvAddressName.setText(Utils.getHtmlFormat(addressName));
-            String fullAddress = recipientAddressModel.getStreet() + ", "
-                    + recipientAddressModel.getDestinationDistrictName() + ", "
-                    + recipientAddressModel.getCityName() + ", "
-                    + recipientAddressModel.getProvinceName();
-            tvRecipientAddress.setText(Utils.getHtmlFormat(fullAddress));
-            tvRecipientPhone.setText(recipientAddressModel.getRecipientPhoneNumber());
-        } else {
-            addressLayout.setVisibility(View.GONE);
         }
     }
 
