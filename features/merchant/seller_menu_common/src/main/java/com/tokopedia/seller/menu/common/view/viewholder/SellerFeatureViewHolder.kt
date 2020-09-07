@@ -9,11 +9,15 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.seller.menu.common.R
+import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.seller.menu.common.view.uimodel.SellerFeatureUiModel
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import kotlinx.android.synthetic.main.item_seller_menu_feature_section.view.*
 
-class SellerFeatureViewHolder(itemView: View): AbstractViewHolder<SellerFeatureUiModel>(itemView) {
+class SellerFeatureViewHolder(
+        itemView: View,
+        private val sellerMenuTracker: SellerMenuTracker?
+): AbstractViewHolder<SellerFeatureUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -26,6 +30,7 @@ class SellerFeatureViewHolder(itemView: View): AbstractViewHolder<SellerFeatureU
                 SellerMigrationFeatureName.FEATURE_SHOP_INSIGHT,
                 arrayListOf(ApplinkConstInternalMarketplace.GOLD_MERCHANT_STATISTIC_DASHBOARD)
             )
+            sellerMenuTracker?.sendEventClickShopStatistic()
         }
 
         itemView.cardPromo.setOnClickListener {
@@ -33,6 +38,7 @@ class SellerFeatureViewHolder(itemView: View): AbstractViewHolder<SellerFeatureU
                 SellerMigrationFeatureName.FEATURE_CENTRALIZED_PROMO,
                 arrayListOf(ApplinkConstInternalSellerapp.CENTRALIZED_PROMO)
             )
+            sellerMenuTracker?.sendEventClickCentralizePromo()
         }
 
         itemView.cardFeedAndPlay.setOnClickListener {
@@ -42,6 +48,7 @@ class SellerFeatureViewHolder(itemView: View): AbstractViewHolder<SellerFeatureU
                 add(ApplinkConst.CONTENT_CREATE_POST)
             }
             goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_PLAY_FEED, appLinks)
+            sellerMenuTracker?.sendEventClickFeedAndPlay()
         }
 
         itemView.cardFintech.setOnClickListener {
@@ -49,6 +56,7 @@ class SellerFeatureViewHolder(itemView: View): AbstractViewHolder<SellerFeatureU
                 SellerMigrationFeatureName.FEATURE_FINANCIAL_SERVICES,
                 arrayListOf(ApplinkConst.LAYANAN_FINANSIAL)
             )
+            sellerMenuTracker?.sendEventClickFintech()
         }
     }
 
