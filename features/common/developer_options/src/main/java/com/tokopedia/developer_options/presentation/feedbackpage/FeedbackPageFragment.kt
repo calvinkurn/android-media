@@ -20,10 +20,15 @@ import com.tokopedia.screenshot_observer.Screenshot
 import com.tokopedia.screenshot_observer.ScreenshotData
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import okhttp3.MediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
+import java.io.File
+
 
 class FeedbackPageFragment: Fragment() {
 
@@ -39,7 +44,6 @@ class FeedbackPageFragment: Fragment() {
     private lateinit var compositeSubscription: CompositeSubscription
     private lateinit var myPreferences: Preferences
     private lateinit var screenshot: Screenshot
-    private lateinit var uriImage: Uri
 
     private var deviceInfo: String = ""
     private var androidVersion: String = ""
@@ -49,6 +53,7 @@ class FeedbackPageFragment: Fragment() {
     private var sessionToken: String = ""
     private var fcmToken: String = ""
     private var loginState: String = ""
+    private var uriImage: Uri? = null
 
     private var userSession: UserSessionInterface? = null
     private var loadingDialog: LoadingDialog? = null
@@ -79,8 +84,8 @@ class FeedbackPageFragment: Fragment() {
         screenshot = context?.contentResolver?.let {
             Screenshot(it, object : Screenshot.Listener {
                 override fun onScreenShotTaken(screenshotData: ScreenshotData?) {
-                    val uri = Uri.parse(screenshotData?.path)
-                    imageView.setImageURI(uri)
+                    uriImage = Uri.parse(screenshotData?.path)
+                    imageView.setImageURI(uriImage)
                 }
             })
         }!!
@@ -187,7 +192,7 @@ class FeedbackPageFragment: Fragment() {
         screenshot.unregister()
     }
 
-    private fun submitFeedback(email: String, page: String, desc: String, issueType: String, actualResult: String, expectedResult: String) {
+    /*private fun submitFeedback(email: String, page: String, desc: String, issueType: String, actualResult: String, expectedResult: String) {
         loadingDialog?.show()
         compositeSubscription.add(
                 feedbackApi.getResponse(requestMapper(email, page, desc, issueType, actualResult, expectedResult))
@@ -195,10 +200,41 @@ class FeedbackPageFragment: Fragment() {
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(object : Subscriber<FeedbackResponse>() {
                             override fun onNext(t: FeedbackResponse) {
-                                loadingDialog?.dismiss()
-                                Toast.makeText(activity, t.key.toString(), Toast.LENGTH_SHORT).show()
+//                                loadingDialog?.dismiss()
+//                                Toast.makeText(activity, t.key, Toast.LENGTH_SHORT).show()
                                 myPreferences.setSubmitFlag(email, userSession?.userId.toString())
-                                sendUriImage(issueType)
+                                sendUriImage(t.key)
+//                                activity?.finish()
+                            }
+
+                            override fun onCompleted() {
+                                //no-op
+                            }
+
+                            override fun onError(e: Throwable?) {
+                                loadingDialog?.dismiss()
+                                Toast.makeText(activity, e.toString(), Toast.LENGTH_SHORT).show()
+                            }
+
+                        })
+        )
+    }*/
+
+    /*for testing purpose*/
+    private fun submitFeedback(email: String, page: String, desc: String, issueType: String, actualResult: String, expectedResult: String) {
+        loadingDialog?.show()
+//        Log.d("URI_Image", uriImage?.toString())
+        val file = File(uriImage?.path)
+        val requestFile: RequestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file)
+        val fileData = MultipartBody.Part.createFormData("file", file.name, requestFile)
+        compositeSubscription.add(
+                feedbackApi.getImageResponse("issue/AN-20145/attachments/", fileData)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(object : Subscriber<ImageResponse>(){
+                            override fun onNext(t: ImageResponse?) {
+                                loadingDialog?.dismiss()
+                                Toast.makeText(activity, "AN-20145", Toast.LENGTH_SHORT).show()
                                 activity?.finish()
                             }
 
@@ -215,25 +251,28 @@ class FeedbackPageFragment: Fragment() {
         )
     }
 
-    private fun sendUriImage(issueKey: String) {
-        feedbackApi.getImageResponse(issueKey, uriImage)
+/*    private fun sendUriImage(issueKey: String) {
+        feedbackApi.getImageResponse("issue/$issueKey/attachments/", uriImage)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object : Subscriber<ImageResponse>(){
                     override fun onNext(t: ImageResponse?) {
-                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                        loadingDialog?.dismiss()
+                        Toast.makeText(activity, issueKey, Toast.LENGTH_SHORT).show()
+                        activity?.finish()
                     }
 
                     override fun onCompleted() {
-                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                       //no-op
                     }
 
                     override fun onError(e: Throwable?) {
-                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                        loadingDialog?.dismiss()
+                        Toast.makeText(activity, e.toString(), Toast.LENGTH_SHORT).show()
                     }
 
                 })
-    }
+    }*/
 
     private fun requestMapper(email: String, page: String, desc: String, issueType: String, actualResult: String, expectedResult: String): FeedbackRequest {
         val affectedVersion = if (GlobalConfig.isSellerApp()) "SA-$appVersion" else "MA-$appVersion"
