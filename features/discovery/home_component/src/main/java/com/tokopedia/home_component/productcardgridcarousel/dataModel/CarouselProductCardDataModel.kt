@@ -14,6 +14,7 @@ class CarouselProductCardDataModel (
         val grid: ChannelGrid,
         val impressHolder: ImpressHolder = ImpressHolder(),
         val applink: String = "",
+        val componentName: String = "",
         val listener: CommonProductCardCarouselListener
 ): Visitable<CommonCarouselProductCardTypeFactory>{
     override fun type(typeFactory: CommonCarouselProductCardTypeFactory): Int {

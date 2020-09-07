@@ -5,13 +5,11 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -58,14 +56,11 @@ import com.tokopedia.kolcommon.util.PostMenuListener
 import com.tokopedia.kolcommon.util.createBottomMenu
 import com.tokopedia.kolcommon.view.listener.KolPostLikeListener
 import com.tokopedia.kolcommon.view.listener.KolPostViewHolderListener
-import com.tokopedia.seller_migration_common.R.drawable.ic_tab_feed_has_post_seller_migration
-import com.tokopedia.seller_migration_common.R.string.seller_migration_tab_feed_bottom_sheet_content
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTrackingConstants
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.util.goToInformationWebview
 import com.tokopedia.seller_migration_common.presentation.util.goToSellerApp
-import com.tokopedia.seller_migration_common.presentation.util.setOnClickLinkSpannable
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.feed.di.DaggerFeedShopComponent
@@ -76,11 +71,8 @@ import com.tokopedia.shop.feed.view.contract.FeedShopContract
 import com.tokopedia.shop.feed.view.model.EmptyFeedShopSellerMigrationUiModel
 import com.tokopedia.shop.feed.view.model.EmptyFeedShopViewModel
 import com.tokopedia.shop.feed.view.model.WhitelistViewModel
-import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.R.id.bottom_sheet_wrapper
+import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_feed_shop.*
 import javax.inject.Inject
@@ -112,9 +104,9 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     private var isLoading = false
     private var isForceRefresh = false
 
-    private var bottomSheetSellerMigration: BottomSheetBehavior<LinearLayout>? = null
-
     private var whitelistDomain: WhitelistDomain = WhitelistDomain()
+
+    private var bottomSheetSellerMigration: BottomSheetBehavior<LinearLayout>? = null
 
     @Inject
     lateinit var presenter: FeedShopContract.Presenter
@@ -190,7 +182,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         super.onViewCreated(view, savedInstanceState)
         activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
         isLoadingInitialData = true
-        setupBottomSheetSellerMigration(view)
     }
 
     override fun onPause() {
@@ -216,13 +207,13 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                     if (hasFeed()
                             && newState == RecyclerView.SCROLL_STATE_IDLE) {
                         if (isSellerMigrationEnabled(context)) {
-                            bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_EXPANDED
+                            (activity as? ShopPageActivity)?.bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_EXPANDED
                         } else {
-                            bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_HIDDEN
+                            (activity as? ShopPageActivity)?.bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_HIDDEN
                             FeedScrollListener.onFeedScrolled(recyclerView, adapter.list)
                         }
                     } else {
-                        bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_HIDDEN
+                        (activity as? ShopPageActivity)?.bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_HIDDEN
                     }
                 } catch (e: IndexOutOfBoundsException) {
                 }
@@ -923,33 +914,4 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun onTopAdsViewImpression(bannerId: String, imageUrl: String) {
 
     }
-
-    private fun setupBottomSheetSellerMigration(view: View) {
-        if (isSellerMigrationEnabled(context)) {
-
-            val viewTarget: LinearLayout = view.findViewById(bottom_sheet_wrapper)
-            bottomSheetSellerMigration = BottomSheetBehavior.from(viewTarget)
-            BottomSheetUnify.bottomSheetBehaviorKnob(viewTarget, false)
-            BottomSheetUnify.bottomSheetBehaviorHeader(viewTarget, false)
-
-            bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_EXPANDED
-            hideFAB()
-
-            val sellerMigrationLayout = View.inflate(context, R.layout.widget_seller_migration_bottom_sheet_has_post, null)
-            viewTarget.addView(sellerMigrationLayout)
-
-            val ivTabFeedHasPost: ImageUnify = sellerMigrationLayout.findViewById(R.id.ivTabFeedHasPost)
-            val tvTitleTabFeedHasPost: Typography = sellerMigrationLayout.findViewById(R.id.tvTitleTabFeedHasPost)
-            tvTitleTabFeedHasPost.movementMethod = LinkMovementMethod.getInstance()
-            ivTabFeedHasPost.setImageDrawable(context?.let { ContextCompat.getDrawable(it, ic_tab_feed_has_post_seller_migration) })
-            tvTitleTabFeedHasPost.setOnClickLinkSpannable(getString(seller_migration_tab_feed_bottom_sheet_content), ::trackContentFeedBottomSheet) {
-                goToSellerApp()
-            }
-        }
-    }
-
-    private fun trackContentFeedBottomSheet() {
-        SellerMigrationTracking.trackClickShopAccount(userSession.userId.orEmpty())
-    }
-
 }

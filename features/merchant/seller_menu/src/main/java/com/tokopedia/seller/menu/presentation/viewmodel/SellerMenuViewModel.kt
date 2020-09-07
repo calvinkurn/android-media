@@ -3,6 +3,7 @@ package com.tokopedia.seller.menu.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.gm.common.domain.interactor.GetShopScoreUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.manage.common.list.domain.usecase.GetProductListMetaUseCase
@@ -10,6 +11,7 @@ import com.tokopedia.seller.menu.common.domain.usecase.GetAllShopInfoUseCase
 import com.tokopedia.seller.menu.common.view.uimodel.ShopProductUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.SettingShopInfoUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopInfoUiModel
 import com.tokopedia.seller.menu.coroutine.CoroutineDispatchers
 import com.tokopedia.seller.menu.domain.usecase.GetSellerNotificationUseCase
 import com.tokopedia.seller.menu.presentation.uimodel.NotificationUiModel
@@ -19,6 +21,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -28,6 +31,7 @@ class SellerMenuViewModel @Inject constructor(
     private val getAllShopInfoUseCase: GetAllShopInfoUseCase,
     private val getProductListMetaUseCase: GetProductListMetaUseCase,
     private val getSellerMenuNotifications: GetSellerNotificationUseCase,
+    private val getShopScoreUseCase: GetShopScoreUseCase,
     private val userSession: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
@@ -37,7 +41,7 @@ class SellerMenuViewModel @Inject constructor(
         private const val ERROR_EXCEPTION_MESSAGE = "seller menu shop info and topads failed"
     }
 
-    val settingShopInfoLiveData: LiveData<Result<SettingShopInfoUiModel>>
+    val settingShopInfoLiveData: LiveData<Result<ShopInfoUiModel>>
         get() = _settingShopInfoLiveData
 
     val shopProductLiveData: LiveData<Result<ShopProductUiModel>>
@@ -49,7 +53,7 @@ class SellerMenuViewModel @Inject constructor(
     val isToasterAlreadyShown: LiveData<Boolean>
         get() = _isToasterAlreadyShown
 
-    private val _settingShopInfoLiveData = MutableLiveData<Result<SettingShopInfoUiModel>>()
+    private val _settingShopInfoLiveData = MutableLiveData<Result<ShopInfoUiModel>>()
     private val _shopProductLiveData = MutableLiveData<Result<ShopProductUiModel>>()
     private val _sellerMenuNotification = MutableLiveData<Result<NotificationUiModel>>()
     private val _isToasterAlreadyShown = MutableLiveData(false)
@@ -94,17 +98,29 @@ class SellerMenuViewModel @Inject constructor(
 
     private fun getAllShopInfoData() {
         launchCatchError(block = {
-            _settingShopInfoLiveData.value = Success(
-                withContext(dispatchers.io) {
-                    with(getAllShopInfoUseCase.executeOnBackground()) {
-                        if (first is PartialSettingSuccessInfoType || second is PartialSettingSuccessInfoType) {
-                            SettingShopInfoUiModel(first, second, userSession)
-                        } else {
-                            throw MessageErrorException(ERROR_EXCEPTION_MESSAGE)
-                        }
-                    }
+            val getShopInfo = async (dispatchers.io) {
+                val response = getAllShopInfoUseCase.executeOnBackground()
+
+                if (response.first is PartialSettingSuccessInfoType || response.second is PartialSettingSuccessInfoType) {
+                    SettingShopInfoUiModel(response.first, response.second, userSession)
+                } else {
+                    throw MessageErrorException(ERROR_EXCEPTION_MESSAGE)
                 }
-            )
+            }
+
+            val getShopScore = async(dispatchers.io) {
+                val shopId = userSession.shopId
+                val requestParams = GetShopScoreUseCase.createRequestParams(shopId)
+                getShopScoreUseCase.createObservable(requestParams).toBlocking().first()
+            }
+
+            val shopInfoResponse = getShopInfo.await()
+            val shopScoreResponse = getShopScore.await()
+
+            val shopScore = shopScoreResponse.data.value
+            val data = ShopInfoUiModel(shopInfoResponse, shopScore)
+
+            _settingShopInfoLiveData.value = Success(data)
         }, onError = {
             _settingShopInfoLiveData.value = Fail(it)
         })

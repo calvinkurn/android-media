@@ -6,13 +6,20 @@ import com.tokopedia.seller.menu.common.view.uimodel.ShopOrderUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.ShopProductUiModel
 import com.tokopedia.seller.menu.data.model.SellerMenuNotificationResponse
 import com.tokopedia.seller.menu.presentation.uimodel.NotificationUiModel
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 
 object SellerUiModelMapper {
+
+    private val supportedProductStatus = listOf(
+        ProductStatus.ACTIVE.name,
+        ProductStatus.INACTIVE.name,
+        ProductStatus.VIOLATION.name
+    )
 
     fun mapToProductUiModel(response: List<Tab>): ShopProductUiModel {
         var totalProductCount = 0
 
-        response.map {
+        response.filter{ supportedProductStatus.contains(it.id) }.map {
             totalProductCount += it.value.toIntOrZero()
         }
 

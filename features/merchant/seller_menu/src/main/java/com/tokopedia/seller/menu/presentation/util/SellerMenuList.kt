@@ -20,6 +20,8 @@ import com.tokopedia.user.session.UserSessionInterface
 object SellerMenuList {
 
     private const val APPLINK_FORMAT = "%s?url=%s%s"
+    private const val GO_TO_BUYER_REVIEW = "GO_TO_BUYER_REVIEW"
+    private const val GO_TO_MY_PRODUCT = "GO_TO_MY_PRODUCT"
 
     fun create(context: Context, userSession: UserSessionInterface): List<SettingUiModel> {
         val menuList = mutableListOf<SettingUiModel>()
@@ -51,15 +53,21 @@ object SellerMenuList {
                 SellerMenuItemUiModel(
                         context.getString(R.string.setting_menu_review),
                         R.drawable.ic_star_setting,
-                        ApplinkConst.REPUTATION,
                         type = MenuItemType.REVIEW,
-                        eventActionSuffix = SettingTrackingConstant.REVIEW),
+                        eventActionSuffix = SettingTrackingConstant.REVIEW) {
+                    val intent = RouteManager.getIntent(context, ApplinkConst.REPUTATION)
+                    intent.putExtra(GO_TO_BUYER_REVIEW, true)
+                    context.startActivity(intent)
+                },
                 SellerMenuItemUiModel(
                         context.getString(R.string.setting_menu_discussion),
                         R.drawable.ic_setting_discussion,
-                        ApplinkConst.TALK,
                         type = MenuItemType.DISCUSSION,
-                        eventActionSuffix = SettingTrackingConstant.DISCUSSION),
+                        eventActionSuffix = SettingTrackingConstant.DISCUSSION) {
+                    val intent = RouteManager.getIntent(context, ApplinkConst.TALK)
+                    intent.putExtra(GO_TO_MY_PRODUCT, true)
+                    context.startActivity(intent)
+                },
                 SellerMenuItemUiModel(
                         context.getString(R.string.setting_menu_complaint),
                         R.drawable.ic_complaint,

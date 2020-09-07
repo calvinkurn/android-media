@@ -1,7 +1,12 @@
 package com.tokopedia.seller.menu.presentation.fragment
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
@@ -41,9 +46,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     ShopInfoErrorViewHolder.ShopInfoErrorListener {
 
     companion object {
-        private const val GO_TO_REPUTATION_HISTORY = "GO_TO_REPUTATION_HISTORY"
         private const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
-        private const val TOPADS_BOTTOMSHEET_TAG = "topads_bottomsheet"
     }
 
     @Inject
@@ -102,11 +105,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     }
 
     override fun onShopInfoClicked() {
-        RouteManager.route(context, ApplinkConst.SHOP, userSession.shopId)
-    }
-
-    override fun onShopBadgeClicked() {
-        goToReputationHistory()
+        RouteManager.route(context, ApplinkConst.SHOP_SCORE_DETAIL, userSession.shopId)
     }
 
     override fun onFollowersCountClicked() {
@@ -152,7 +151,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     private fun observeShopInfo() {
         observe(viewModel.settingShopInfoLiveData) {
             when (it) {
-                is Success -> showShopInfo(it.data)
+                is Success -> showShopInfo(it.data.shopInfo, it.data.shopScore)
                 is Fail -> showShopInfo(SettingError)
             }
             swipeRefreshLayout.isRefreshing = false
@@ -186,11 +185,11 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
         }
     }
 
-    private fun showShopInfo(settingResponseState: SettingResponseState) {
+    private fun showShopInfo(settingResponseState: SettingResponseState, shopScore: Int = 0) {
         when (settingResponseState) {
             is SettingSuccess -> {
                 if (settingResponseState is SettingShopInfoUiModel) {
-                    adapter.showShopInfo(settingResponseState)
+                    adapter.showShopInfo(settingResponseState, shopScore)
                 }
             }
             is SettingLoading -> {
@@ -243,13 +242,6 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
 
     private fun showShopInfoLoading() {
         adapter.showShopInfoLoading()
-    }
-
-    private fun goToReputationHistory() {
-        val reputationHistoryIntent = RouteManager.getIntent(context, ApplinkConst.REPUTATION).apply {
-            putExtra(GO_TO_REPUTATION_HISTORY, true)
-        }
-        startActivity(reputationHistoryIntent)
     }
 
     private fun goToShopFavouriteList() {

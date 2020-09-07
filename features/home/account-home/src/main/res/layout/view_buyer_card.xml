@@ -354,21 +354,24 @@
         android:id="@+id/sellerCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/spacing_lvl3"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl4"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text_profile_completion">
         <include
             android:id="@+id/sellerAccountCard"
             layout="@layout/layout_seller_account_card"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/account_home_seller_account_height"
             android:visibility="gone" />
 
         <include
             android:id="@+id/sellerOpenShopCard"
             layout="@layout/layout_seller_open_shop_card"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/account_home_seller_open_shop_height"
             android:visibility="gone" />
     </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

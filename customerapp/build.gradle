@@ -314,8 +314,6 @@ dependencies {
     implementation project(rootProject.ext.features.atc_common)
     implementation project(rootProject.ext.features.fcm_common)
     implementation project(rootProject.ext.features.discovery2)
-    implementation project(rootProject.ext.features.purchase_platform_common)
-    implementation project(rootProject.ext.features.cart)
     implementation project(rootProject.ext.features.logisticcart)
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.chatcommon)

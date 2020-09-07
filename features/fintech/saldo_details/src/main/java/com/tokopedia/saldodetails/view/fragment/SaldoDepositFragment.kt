@@ -42,11 +42,9 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_LOCK
-import com.tokopedia.saldodetails.BuildConfig
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants
 import com.tokopedia.saldodetails.design.UserStatusInfoBottomSheet
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent
-import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance
 import com.tokopedia.saldodetails.response.model.GqlDetailsResponse
 import com.tokopedia.saldodetails.response.model.GqlMerchantCreditResponse
 import com.tokopedia.saldodetails.utils.ErrorMessage
@@ -55,6 +53,7 @@ import com.tokopedia.saldodetails.view.activity.SaldoDepositActivity
 import com.tokopedia.saldodetails.view.activity.SaldoHoldInfoActivity
 import com.tokopedia.saldodetails.viewmodels.SaldoDetailViewModel
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
+import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.showcase.*
 import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
@@ -306,6 +305,11 @@ class SaldoDepositFragment : BaseDaggerFragment() {
                 .commit()
         this.saldoHistoryFragment = saldoHistoryFragment
 
+        if(isSellerMigrationEnabled(context)) {
+            merchantDetailLL?.hide()
+        } else {
+            merchantDetailLL?.show()
+        }
     }
 
     private fun setViewModelObservers() {

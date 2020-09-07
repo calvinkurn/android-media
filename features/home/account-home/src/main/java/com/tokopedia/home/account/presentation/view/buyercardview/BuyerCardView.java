@@ -16,6 +16,7 @@ import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.content.ContextCompat;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp;
@@ -255,7 +256,7 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
         Drawable icon = ContextCompat.getDrawable(getContext(), R.drawable.ic_seller_shop_account);
 
         shopNameTxt.setCompoundDrawablesWithIntrinsicBounds(icon, null, null,  null);
-        shopNameTxt.setText(getContext().getString(R.string.account_home_shop_name_card, shopName));
+        shopNameTxt.setText(MethodChecker.fromHtml(getContext().getString(R.string.account_home_shop_name_card, shopName)));
 
         sellerAccountCard.setOnClickListener(v ->
             RouteManager.route(getContext(), ApplinkConstInternalSellerapp.SELLER_MENU)
@@ -267,7 +268,7 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
 
     @Override
     public void showShopOpenCard() {
-        sellerAccountCard.setOnClickListener(v ->
+        sellerOpenShopCard.setOnClickListener(v ->
             RouteManager.route(getContext(), ApplinkConstInternalMarketplace.OPEN_SHOP)
         );
 

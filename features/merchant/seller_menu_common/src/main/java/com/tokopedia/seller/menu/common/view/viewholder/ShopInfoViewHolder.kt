@@ -10,6 +10,7 @@ import androidx.annotation.LayoutRes
 import androidx.core.content.res.ResourcesCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.gone
@@ -19,7 +20,6 @@ import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
 import com.tokopedia.seller.menu.common.analytics.sendClickShopNameTracking
 import com.tokopedia.seller.menu.common.analytics.sendSettingShopInfoClickTracking
 import com.tokopedia.seller.menu.common.analytics.sendSettingShopInfoImpressionTracking
-import com.tokopedia.seller.menu.common.analytics.sendShopInfoClickNextButtonTracking
 import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantStatus
 import com.tokopedia.seller.menu.common.view.uimodel.base.RegularMerchant
 import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
@@ -56,9 +56,7 @@ class ShopInfoViewHolder(
     private val context by lazy { itemView.context }
 
     override fun bind(uiModel: ShopInfoUiModel) {
-        itemView.setOnClickAction()
-
-        with(uiModel.data) {
+        with(uiModel.shopInfo) {
             itemView.apply {
                 when {
                     partialResponseStatus.first && partialResponseStatus.second -> {
@@ -106,6 +104,7 @@ class ShopInfoViewHolder(
                         topAdsBalance?.visible()
                     }
                 }
+                showShopScore(uiModel)
             }
         }
     }
@@ -118,10 +117,13 @@ class ShopInfoViewHolder(
     private fun setShopBadge(shopBadgeUiModel: ShopBadgeUiModel) {
         itemView.successShopInfoLayout.shopBadges?.run {
             ImageHandler.LoadImage(this, shopBadgeUiModel.shopBadgeUrl)
-            setOnClickListener {
-                listener?.onShopBadgeClicked()
-                shopBadgeUiModel.sendSettingShopInfoClickTracking()
-            }
+        }
+    }
+
+    private fun showShopScore(uiModel: ShopInfoUiModel) {
+        itemView.shopScore.text = uiModel.shopScore.toString()
+        itemView.shopScoreChevronRight.setOnClickListener {
+            listener?.onShopInfoClicked()
         }
     }
 
@@ -139,7 +141,7 @@ class ShopInfoViewHolder(
     private fun setShopName(shopName: String) {
         itemView.run {
             successShopInfoLayout.shopName?.run {
-                text = shopName
+                text = MethodChecker.fromHtml(shopName)
                 setOnClickListener {
                     listener?.onShopInfoClicked()
                     sendClickShopNameTracking()
@@ -202,6 +204,10 @@ class ShopInfoViewHolder(
             }
         }
 
+        val paddingTop = itemView.resources.getDimensionPixelSize(R.dimen.spacing_lvl3)
+        val paddingBottom = itemView.resources.getDimensionPixelSize(R.dimen.setting_status_padding_bottom)
+        itemView.setPadding(0, paddingTop, 0, paddingBottom)
+
         shopStatusLayout?.let { view ->
             (this.itemView.shopStatus as LinearLayout).run {
                 removeAllViews()
@@ -254,15 +260,6 @@ class ShopInfoViewHolder(
         return this
     }
 
-    private fun View.setOnClickAction() {
-        successShopInfoLayout?.run {
-            settingShopNext.setOnClickListener {
-                listener?.onShopInfoClicked()
-                sendShopInfoClickNextButtonTracking()
-            }
-        }
-    }
-
     private fun LocalLoad.setup() {
         title?.text = context.resources.getString(R.string.setting_error_message)
         description?.text = context.resources.getString(R.string.setting_error_description)
@@ -273,7 +270,6 @@ class ShopInfoViewHolder(
 
     interface ShopInfoListener {
         fun onShopInfoClicked()
-        fun onShopBadgeClicked()
         fun onFollowersCountClicked()
         fun onSaldoClicked()
         fun onRefreshShopInfo()
