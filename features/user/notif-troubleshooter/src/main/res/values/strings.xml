@@ -2,6 +2,8 @@
 <resources>
     <string name="notif_title">Troubleshooter</string>
 
+    <string name="notif_bottomsheet_info">Kami mengirimkan pesan di atas setelah proses pemeriksaan selesai, untuk memastikan HP-mu bisa terima push notification dari Tokopedia.</string>
+
     <string name="notif_status_waiting">Tunggu sebentar, ya</string>
     <string name="notif_status_checked">Push notification aktif</string>
     <string name="notif_status_warning">Kami menemukan kendala di HP-mu</string>

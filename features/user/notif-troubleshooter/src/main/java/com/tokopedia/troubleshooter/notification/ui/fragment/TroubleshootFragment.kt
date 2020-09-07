@@ -24,21 +24,21 @@ import com.tokopedia.troubleshooter.notification.ui.activity.TroubleshootActivit
 import com.tokopedia.troubleshooter.notification.ui.adapter.TroubleshooterAdapter
 import com.tokopedia.troubleshooter.notification.ui.adapter.factory.TroubleshooterItemFactory
 import com.tokopedia.troubleshooter.notification.ui.listener.ConfigItemListener
+import com.tokopedia.troubleshooter.notification.ui.listener.FooterListener
 import com.tokopedia.troubleshooter.notification.ui.uiview.*
 import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigState.*
-import com.tokopedia.troubleshooter.notification.ui.uiview.RingtoneState.Silent
-import com.tokopedia.troubleshooter.notification.ui.uiview.RingtoneState.Vibrate
 import com.tokopedia.troubleshooter.notification.ui.uiview.TickerItemUIView.Companion.ticker
 import com.tokopedia.troubleshooter.notification.ui.viewmodel.TroubleshootViewModel
 import com.tokopedia.troubleshooter.notification.util.*
 import com.tokopedia.troubleshooter.notification.ui.state.Error
 import com.tokopedia.troubleshooter.notification.ui.state.Result
 import com.tokopedia.troubleshooter.notification.ui.state.Success
+import com.tokopedia.troubleshooter.notification.util.TroubleshooterDialog.showInformationDialog
 import kotlinx.android.synthetic.main.fragment_notif_troubleshooter.*
 import javax.inject.Inject
 import com.tokopedia.troubleshooter.notification.ui.uiview.RingtoneState.Normal as Normal
 
-class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
+class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterListener {
 
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject lateinit var fcmManager: FirebaseMessagingManager
@@ -46,7 +46,7 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
     private lateinit var viewModel: TroubleshootViewModel
 
     private val adapter by lazy(LazyThreadSafetyMode.NONE) {
-        TroubleshooterAdapter(TroubleshooterItemFactory(this))
+        TroubleshooterAdapter(TroubleshooterItemFactory(this, this))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -286,6 +286,10 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
         adapter.updateStatus(type, status)
     }
 
+    override fun onInfoClicked() {
+        showInformationDialog(TEST_SCREEN_NAME)
+    }
+
     override fun onRingtoneTest(uri: Uri) {
         RingtoneManager.getRingtone(context, uri).play()
     }
@@ -306,10 +310,11 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
                 .inject(this)
     }
 
-    override fun getScreenName() = SCREEN_NAME
+    override fun getScreenName() = MAIN_SCREEN_NAME
 
     companion object {
-        private const val SCREEN_NAME = "Push Notification Troubleshooter"
+        private const val MAIN_SCREEN_NAME = "Push Notification Troubleshooter"
+        private const val TEST_SCREEN_NAME = "Tes push notification"
         private const val REQ_DELAY = 2000L
     }
 
