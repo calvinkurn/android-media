@@ -1,4 +1,4 @@
-package com.tokopedia.devicefingerprint.model
+package com.tokopedia.devicefingerprint.payload
 
 data class InsertDeviceInfoPayload(
         val content: String,

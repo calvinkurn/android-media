@@ -1,4 +1,4 @@
-package com.tokopedia.devicefingerprint
+package com.tokopedia.devicefingerprint.utils
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -21,7 +21,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.device.info.DeviceInfo
 import com.tokopedia.device.info.DeviceScreenInfo
-import com.tokopedia.devicefingerprint.model.DeviceInfoPayload
+import com.tokopedia.devicefingerprint.payload.DeviceInfoPayload
 import com.tokopedia.devicefingerprint.model.Screen
 import com.tokopedia.user.session.UserSession
 import timber.log.Timber

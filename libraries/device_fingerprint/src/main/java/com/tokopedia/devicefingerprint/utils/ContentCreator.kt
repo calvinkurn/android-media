@@ -1,7 +1,7 @@
-package com.tokopedia.devicefingerprint
+package com.tokopedia.devicefingerprint.utils
 
 import com.google.gson.Gson
-import com.tokopedia.devicefingerprint.model.DeviceInfoPayload
+import com.tokopedia.devicefingerprint.payload.DeviceInfoPayload
 import com.tokopedia.encryption.security.AESEncryptorCBC
 import com.tokopedia.encryption.security.RSA
 import com.tokopedia.encryption.utils.Utils
@@ -18,11 +18,11 @@ class ContentCreator @Inject constructor(
 
     fun createContent(deviceInfoPayload: DeviceInfoPayload): String {
         // Create key from 32-byte random string, encrypted with RSA using publicKey
-        val secretKeyInString = randomString(32)
+        val secretKeyInString = RandomHelper.randomString(32)
         val key = rsa.encrypt(secretKeyInString, publicKey, Utils::byteToHex)
 
         // Create iv
-        val ivInString = randomNumber(16)
+        val ivInString = RandomHelper.randomNumber(16)
 
         // Encrypt deviceInfoPayload using AES-256-CBC, with iv and secret key generated earlier
         val aesEncryptorCBC = AESEncryptorCBC(ivInString)
@@ -33,14 +33,4 @@ class ContentCreator @Inject constructor(
         return "${key}${ivInString}${encryptedPayload}"
     }
 
-    private fun randomNumber(length: Int): String {
-        val source = ('0'..'9')
-        return (1..length).map { source.random() }.joinToString("")
-    }
-
-    private fun randomString(lengthInBytes: Int): String {
-        var byteArray = ByteArray(lengthInBytes)
-        byteArray = Random.nextBytes(byteArray)
-        return String(byteArray)
-    }
 }

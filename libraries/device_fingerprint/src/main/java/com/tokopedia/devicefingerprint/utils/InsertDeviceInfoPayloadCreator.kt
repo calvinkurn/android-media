@@ -1,7 +1,7 @@
-package com.tokopedia.devicefingerprint
+package com.tokopedia.devicefingerprint.utils
 
 import com.google.gson.Gson
-import com.tokopedia.devicefingerprint.model.InsertDeviceInfoPayload
+import com.tokopedia.devicefingerprint.payload.InsertDeviceInfoPayload
 import java.security.MessageDigest
 
 class InsertDeviceInfoPayloadCreator(
