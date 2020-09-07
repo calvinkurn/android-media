@@ -39,10 +39,8 @@ import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditBasicInfoActi
 import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopEditBasicInfoViewModel
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.util.ShopTypeDef
-import com.tokopedia.shop.settings.common.util.getTextWithSpannable
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
-import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
