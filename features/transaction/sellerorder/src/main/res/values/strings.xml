@@ -318,4 +318,6 @@
     <string name="waiting_payment_orders_more_products">Tampilkan Lebih Banyak</string>
 
     <string name="waiting_payment_orders_product_quantity_and_price">%1$d x %2$s</string>
+
+    <string name="btn_waiting_payment_check_and_set_Stock"><![CDATA[Cek & Atur Stok]]></string>
 </resources>

@@ -12,8 +12,11 @@ import javax.inject.Inject
  */
 class SomGetFilterListUseCase @Inject constructor(private val useCase: GraphqlUseCase<SomListFilter.Data>) {
 
-    suspend fun execute(query: String): Result<SomListFilter.Data.OrderFilterSom> {
-        useCase.setGraphqlQuery(query)
+    init {
+        useCase.setGraphqlQuery(QUERY)
+    }
+
+    suspend fun execute(): Result<SomListFilter.Data.OrderFilterSom> {
         useCase.setTypeClass(SomListFilter.Data::class.java)
 
         return try {
@@ -22,5 +25,40 @@ class SomGetFilterListUseCase @Inject constructor(private val useCase: GraphqlUs
         } catch (throwable: Throwable) {
             Fail(throwable)
         }
+    }
+
+    companion object {
+        private val QUERY = """
+            query OrderFilterSom {
+              orderFilterSom{
+                status_list{
+                    order_status_id
+                  key
+                  order_status
+                  order_status_amount
+                  is_checked
+                  child_status {
+                    id
+                    key
+                    text
+                    amount
+                    is_checked
+                  }
+                }
+                waiting_payment_counter{
+                  text
+                  counter
+                }
+                shipping_list{
+                  shipping_id
+                  shipping_code
+                  shipping_name
+                  shipping_desc
+                  status
+                  img_logo
+                }
+              }
+            }
+        """.trimIndent()
     }
 }

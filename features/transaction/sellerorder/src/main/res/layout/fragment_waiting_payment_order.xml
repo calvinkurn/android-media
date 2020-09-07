@@ -43,13 +43,14 @@
             app:layout_constraintBottom_toBottomOf="parent">
 
             <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btnCheckAndSetStock"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/layout_lvl2"
                 android:layout_marginTop="@dimen/layout_lvl1"
                 android:layout_marginEnd="@dimen/layout_lvl2"
                 android:layout_marginBottom="@dimen/layout_lvl1"
-                android:text="Cek &amp; Atur Stok" />
+                android:text="@string/btn_waiting_payment_check_and_set_Stock" />
 
         </androidx.cardview.widget.CardView>
 

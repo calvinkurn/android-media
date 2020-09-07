@@ -26,7 +26,7 @@ data class WaitingPaymentOrderResponse(
                 @Expose
                 val cursorPaymentDeadline: Long = 0L,
 
-                @SerializedName("cursor_payment_deadline")
+                @SerializedName("paging")
                 @Expose
                 val paging: Paging = Paging(),
 
@@ -37,11 +37,7 @@ data class WaitingPaymentOrderResponse(
             data class Paging(
                     @SerializedName("current_page")
                     @Expose
-                    val currentPage: Int = 0,
-
-                    @SerializedName("current_batch_page")
-                    @Expose
-                    val currentBatchPage: Int = 0
+                    val currentPage: Int = 0
             )
 
             data class Order(
@@ -57,7 +53,7 @@ data class WaitingPaymentOrderResponse(
                     @Expose
                     val buyerNameAndPlace: String = "",
 
-                    @SerializedName("order_product")
+                    @SerializedName("products")
                     @Expose
                     val products: List<Product> = listOf()
             ) {
@@ -70,7 +66,7 @@ data class WaitingPaymentOrderResponse(
                         @Expose
                         val name: String = "",
 
-                        @SerializedName("picture")
+                        @SerializedName("product_picture")
                         @Expose
                         val picture: String = "",
 

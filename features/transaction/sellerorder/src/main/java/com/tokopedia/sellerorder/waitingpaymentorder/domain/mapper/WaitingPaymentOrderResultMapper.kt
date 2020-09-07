@@ -31,8 +31,7 @@ class WaitingPaymentOrderResultMapper @Inject constructor() {
                 },
                 Paging::class.java.simpleName to Paging(
                         currentPage = result.paging.currentPage,
-                        batchPage = result.paging.currentBatchPage,
-                        nextPaymentDeadline = result.cursorPaymentDeadline.toString()
+                        nextPaymentDeadline = result.cursorPaymentDeadline
                 )
         )
     }

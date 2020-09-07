@@ -72,11 +72,11 @@ data class SomListFilter(
             data class WaitingPaymentCounter(
                     @SerializedName("text")
                     @Expose
-                    val text: String = "Menunggu Pembayaran",
+                    val text: String = "",
 
-                    @SerializedName("amount")
+                    @SerializedName("counter")
                     @Expose
-                    val amount: Int = (Math.random() * 200).toInt()
+                    val amount: Int = 0
             )
         }
     }

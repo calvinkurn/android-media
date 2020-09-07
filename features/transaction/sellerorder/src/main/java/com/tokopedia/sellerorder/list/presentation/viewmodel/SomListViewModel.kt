@@ -68,9 +68,9 @@ class SomListViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
         })
     }
 
-    fun loadFilter(filterQuery: String) {
+    fun loadFilter() {
         launchCatchError(block =  {
-            _filterResult.postValue(getFilterListUseCase.execute(filterQuery))
+            _filterResult.postValue(getFilterListUseCase.execute())
         }, onError = {
             _filterResult.postValue(Fail(it))
         })

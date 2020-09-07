@@ -16,7 +16,7 @@ data class WaitingPaymentOrderRequestParam(
 
         @SerializedName("next_payment_deadline")
         @Expose
-        val nextPaymentDeadline: String = "0",
+        val nextPaymentDeadline: Long = 0,
 
         @SerializedName("lang")
         @Expose
@@ -28,21 +28,27 @@ data class WaitingPaymentOrderRequestParam(
 
         @SerializedName("batch_page")
         @Expose
-        val batchPage: Int = 1
+        val batchPage: Int = 1,
+
+        @SerializedName("show_page")
+        @Expose
+        val showPage: Int = 1
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readByte() != 0.toByte(),
+            parcel.readLong(),
             parcel.readString().orEmpty(),
-            parcel.readString().orEmpty(),
+            parcel.readInt(),
             parcel.readInt(),
             parcel.readInt())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeByte(if (isMobile) 1 else 0)
-        parcel.writeString(nextPaymentDeadline)
+        parcel.writeLong(nextPaymentDeadline)
         parcel.writeString(lang)
         parcel.writeInt(page)
         parcel.writeInt(batchPage)
+        parcel.writeInt(showPage)
     }
 
     override fun describeContents(): Int {

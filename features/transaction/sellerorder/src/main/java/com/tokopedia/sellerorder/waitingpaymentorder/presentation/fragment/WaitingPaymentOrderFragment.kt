@@ -1,7 +1,6 @@
 package com.tokopedia.sellerorder.waitingpaymentorder.presentation.fragment
 
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.SomComponentInstance
 import com.tokopedia.sellerorder.waitingpaymentorder.di.DaggerWaitingPaymentOrderComponent
@@ -91,15 +92,14 @@ class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, Waitin
     }
 
     override fun loadData(page: Int) {
-        Handler().postDelayed({
-            waitingPaymentOrderViewModel.loadWaitingPaymentOrder(
-                    WaitingPaymentOrderRequestParam(
-                            page = waitingPaymentOrderViewModel.paging.currentPage,
-                            batchPage = waitingPaymentOrderViewModel.paging.batchPage,
-                            nextPaymentDeadline = waitingPaymentOrderViewModel.paging.nextPaymentDeadline
-                    )
-            )
-        }, 2000)
+        waitingPaymentOrderViewModel.loadWaitingPaymentOrder(
+                WaitingPaymentOrderRequestParam(
+                        page = waitingPaymentOrderViewModel.paging.currentPage + 1,
+                        batchPage = waitingPaymentOrderViewModel.paging.currentPage + 1,
+                        nextPaymentDeadline = waitingPaymentOrderViewModel.paging.nextPaymentDeadline,
+                        showPage = waitingPaymentOrderViewModel.paging.currentPage + 1
+                )
+        )
     }
 
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
@@ -139,6 +139,30 @@ class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, Waitin
 
     private fun setupViews() {
         setupTicker()
+        setupRecyclerView()
+        setupSwipeRefreshLayout()
+        setupCheckAndSetStockButton()
+    }
+
+    private fun setupCheckAndSetStockButton() {
+        btnCheckAndSetStock.setOnClickListener {
+            goToProductManageSeller()
+        }
+    }
+
+    private fun goToProductManageSeller() {
+        context?.let { context ->
+            RouteManager.route(context, ApplinkConstInternalSellerapp.SELLER_HOME_PRODUCT_MANAGE_LIST)
+        }
+    }
+
+    private fun setupSwipeRefreshLayout() {
+        swipeRefreshLayoutWaitingPaymentOrder.setOnRefreshListener {
+            loadInitialData()
+        }
+    }
+
+    private fun setupRecyclerView() {
         context?.run {
             with(rvWaitingPaymentOrder) {
                 addItemDecoration(WaitingPaymentOrderAdapter.ItemDivider(this@run))
@@ -147,9 +171,6 @@ class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, Waitin
                 itemAnimator?.removeDuration = 500
                 itemAnimator?.changeDuration = 500
                 itemAnimator?.moveDuration = 500
-            }
-            swipeRefreshLayoutWaitingPaymentOrder.setOnRefreshListener {
-                loadInitialData()
             }
         }
     }
@@ -204,6 +225,6 @@ class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, Waitin
         })
     }
 
-    private fun hasNextPage(newItemsSize: Int) = waitingPaymentOrderViewModel.paging.nextPaymentDeadline.isNotEmpty() &&
-            waitingPaymentOrderViewModel.paging.nextPaymentDeadline != "0" && newItemsSize != 0
+    private fun hasNextPage(newItemsSize: Int) =
+            waitingPaymentOrderViewModel.paging.nextPaymentDeadline != 0L && newItemsSize != 0
 }

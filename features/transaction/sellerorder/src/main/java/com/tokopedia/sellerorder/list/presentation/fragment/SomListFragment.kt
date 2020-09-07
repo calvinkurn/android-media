@@ -547,7 +547,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private fun loadFilterList() {
         activity?.resources?.let {
             waitingPaymentCounterAnimator?.end()
-            somListViewModel.loadFilter(GraphqlHelper.loadRawString(it, R.raw.gql_som_filter))
+            somListViewModel.loadFilter()
         }
     }
 
