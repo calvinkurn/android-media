@@ -433,7 +433,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                         loadStatusOrderList()
                     } else {
                         nextOrderId = 0
-                        loadOrderList(nextOrderId, true)
+                        loadOrderList(nextOrderId, GlobalConfig.isSellerApp())
                     }
                 }
                 is Fail -> {
@@ -453,11 +453,11 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                         return@forEach
                     }
                 }
-                loadOrderList(nextOrderId, true)
+                loadOrderList(nextOrderId, GlobalConfig.isSellerApp())
             }
             is Fail -> {
                 SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_STATUS_LIST)
-                loadOrderList(nextOrderId, true)
+                loadOrderList(nextOrderId, GlobalConfig.isSellerApp())
             }
         }
     })
@@ -494,7 +494,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     private fun onUserAllowedToViewSOM() {
         toggleSomLayout(false)
-        if (isNewOrderChipSelected() && GlobalConfig.isSellerApp()) {
+        if (GlobalConfig.isSellerApp() && isNewOrderChipSelected()) {
             somListViewModel.loadTopAdsShopInfo(userSession.shopId.toIntOrZero())
         }
         loadTicker()
@@ -761,7 +761,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             desc_empty?.text = getString(R.string.empty_peluang_desc_non_topads_with_filter)
             btn_cek_peluang?.gone()
             SomAnalytics.eventViewEmptyState(tabActive)
-        } else if (!isFilterApplied && GlobalConfig.isSellerApp() && isNewOrderChipSelected()) {
+        } else if (GlobalConfig.isSellerApp() && !isFilterApplied && isNewOrderChipSelected()) {
             desc_empty?.text = getString(R.string.empty_peluang_desc_non_topads_no_filter)
             btn_cek_peluang?.apply {
                 text = getString(R.string.btn_cek_peluang_non_topads)
@@ -799,7 +799,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     override fun onRefresh(view: View?) {
         addEndlessScrollListener()
-        val shouldWaitForTopAdsGetInfo = isNewOrderChipSelected() && GlobalConfig.isSellerApp()
+        val shouldWaitForTopAdsGetInfo = GlobalConfig.isSellerApp() && isNewOrderChipSelected()
         if (shouldWaitForTopAdsGetInfo) {
             somListViewModel.loadTopAdsShopInfo(userSession.shopId.toIntOrZero())
         }
