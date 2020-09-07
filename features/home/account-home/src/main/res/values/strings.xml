@@ -255,4 +255,14 @@
     <string name="account_home_seller_open_shop">Buka Toko Gratis</string>
     <string name="account_home_shop_name_card">Toko Saya: <![CDATA[<strong>%1$s</strong>]]></string>
 
+    <!--CONTENT DESC-->
+    <string name="content_desc_text_shop_name">text nama toko</string>
+    <string name="content_desc_image_shop">image logo toko</string>
+    <string name="content_desc_image_badge">image badge toko</string>
+    <string name="content_desc_text_desc">text menu status pesanan</string>
+    <string name="content_desc_button_add_product">button tambah produk</string>
+    <string name="content_desc_tv_add_product_title">text tambah produk</string>
+    <string name="content_desc_text_view_title">text menu</string>
+
+
 </resources>

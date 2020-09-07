@@ -58,6 +58,7 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
                 PaymentDeductionKey.TOTAL_DISCOUNT -> totalDiscountStr = it.amountStr
                 PaymentDeductionKey.REWARDS_POINT -> paymentModeMapList.add(PaymentModeMap(it.itemDesc, it.amountStr))
                 PaymentDeductionKey.CASH_BACK_OVO_POINT -> benefitMapList.add(BenefitMap(it.itemDesc, it.amountStr))
+                PaymentDeductionKey.POTENTIAL_CASH_BACK -> benefitMapList.add(BenefitMap(it.itemDesc, it.amountStr, true))
             }
         }
         visitableList.add(PaymentMethodModel(thanksPageData.gatewayName))
@@ -104,7 +105,7 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
             var totalProductProtectionForShop = 0.0
             shopOrder.purchaseItemList.forEach { purchasedItem ->
                 orderedItemList.add(OrderedItem(purchasedItem.productName, purchasedItem.quantity,
-                        purchasedItem.priceStr, purchasedItem.totalPriceStr))
+                        purchasedItem.priceStr, purchasedItem.totalPriceStr, purchasedItem.isBBIProduct))
                 totalProductProtectionForShop += purchasedItem.productPlanProtection
             }
 
@@ -158,4 +159,5 @@ object PaymentDeductionKey {
     const val TOTAL_DISCOUNT = "total_discount"
     const val REWARDS_POINT = "rewards_point"
     const val CASH_BACK_OVO_POINT = "cashback"
+    const val POTENTIAL_CASH_BACK = "potential_cashback"
 }
