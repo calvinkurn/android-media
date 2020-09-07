@@ -25,6 +25,7 @@ import com.tokopedia.affiliatecommon.DISCOVERY_BY_ME
 import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.coachmark.CoachMark
@@ -372,12 +373,14 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         isFabExpanded = true
         when {
             isSellerMigrationEnabled(context) -> {
+                val shopAppLink = UriUtil.buildUri(ApplinkConst.SHOP, userSession.shopId)
+                val createPostAppLink = ApplinkConst.CONTENT_CREATE_POST
                 fab_feed.setOnClickListener {
                     val intent = SellerMigrationActivity.createIntent(
                             context = requireContext(),
                             featureName = SellerMigrationFeatureName.FEATURE_POST_FEED,
                             screenName = FeedPlusContainerFragment::class.simpleName.orEmpty(),
-                            appLinks = arrayListOf(ApplinkConstInternalSellerapp.SELLER_HOME, ApplinkConst.CONTENT_CREATE_POST),
+                            appLinks = arrayListOf(ApplinkConstInternalSellerapp.SELLER_HOME, shopAppLink, createPostAppLink),
                             isStackBuilder = false)
                     setupBottomSheetFeedSellerMigration(::goToCreateAffiliate, intent)
                 }
@@ -391,18 +394,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                 }
             }
         }
-    }
-
-    private fun getSellerApplink(whitelistDomain: WhitelistDomain): String {
-        var applink = ApplinkConst.CONTENT_CREATE_POST
-        if (whitelistDomain.authors.size != 0) {
-            for (author in whitelistDomain.authors) {
-                if (author.type == Author.TYPE_SHOP) {
-                    applink = author.link
-                }
-            }
-        }
-        return applink
     }
 
     private fun fabClickListener(whitelistDomain: WhitelistDomain): View.OnClickListener {

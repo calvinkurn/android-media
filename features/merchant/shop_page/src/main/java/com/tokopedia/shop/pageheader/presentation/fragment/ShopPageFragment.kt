@@ -28,6 +28,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
@@ -308,15 +309,14 @@ class ShopPageFragment :
             tvTitleTabFeedHasPost.movementMethod = LinkMovementMethod.getInstance()
             ivTabFeedHasPost.setImageDrawable(context?.let { ContextCompat.getDrawable(it, R.drawable.ic_tab_feed_has_post_seller_migration) })
             tvTitleTabFeedHasPost.setOnClickLinkSpannable(getString(R.string.seller_migration_tab_feed_bottom_sheet_content), ::trackContentFeedBottomSheet) {
-//                val appLink = String.format(ApplinkConstInternalFeed.)
-                val intent = context?.let { context ->
-                    SellerMigrationActivity.createIntent(
-                            context = context,
-                            featureName = SellerMigrationFeatureName.FEATURE_POST_FEED,
-                            screenName = FeedShopFragment::class.simpleName.orEmpty(),
-                            appLinks = arrayListOf(),
-                            isStackBuilder = false)
-                }
+                val appLinkShopPageFeed = UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_FEED, shopId)
+                val intent = SellerMigrationActivity.createIntent(
+                                context = requireContext(),
+                                featureName = SellerMigrationFeatureName.FEATURE_POST_FEED,
+                                screenName = FeedShopFragment::class.simpleName.orEmpty(),
+                                appLinks = arrayListOf(ApplinkConstInternalSellerapp.SELLER_HOME, appLinkShopPageFeed),
+                                isStackBuilder = false)
+                startActivity(intent)
             }
         }
     }
@@ -867,15 +867,15 @@ class ShopPageFragment :
                 selectedPosition
             }
         }
-        if(shouldOverrideTabToProduct){
-            selectedPosition = if(viewPagerAdapter.isFragmentObjectExists(ShopPageProductListFragment::class.java)){
+        if (shouldOverrideTabToProduct) {
+            selectedPosition = if (viewPagerAdapter.isFragmentObjectExists(ShopPageProductListFragment::class.java)) {
                 viewPagerAdapter.getFragmentPosition(ShopPageProductListFragment::class.java)
             } else {
                 selectedPosition
             }
         }
-        if(shouldOverrideTabToFeed){
-            selectedPosition = if(viewPagerAdapter.isFragmentObjectExists(FeedShopFragment::class.java)){
+        if (shouldOverrideTabToFeed) {
+            selectedPosition = if (viewPagerAdapter.isFragmentObjectExists(FeedShopFragment::class.java)) {
                 viewPagerAdapter.getFragmentPosition(FeedShopFragment::class.java)
             } else {
                 selectedPosition
