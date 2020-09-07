@@ -76,6 +76,7 @@ class ShopEditBasicInfoFragment: Fragment() {
     private var shopBasicDataModel: ShopBasicDataModel? = null
     private var savedLocalImageUrl: String? = null
     private var needUpdatePhotoUI: Boolean = false
+    private var isShownDialog: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
@@ -196,7 +197,11 @@ class ShopEditBasicInfoFragment: Fragment() {
     }
 
     private fun setupSaveBtn() {
-        tvSave.setOnClickListener { createSaveDialog() }
+        tvSave.setOnClickListener {
+            if (isShownDialog) {
+                createSaveDialog()
+            }
+        }
     }
 
     private fun setupShopNameTextField() {
@@ -330,6 +335,7 @@ class ShopEditBasicInfoFragment: Fragment() {
                     val data = it.data
                     showShopEditShopInfoTicker(data)
                     showShopNameDomainTextField(data)
+                    isShownDialog = data.isDomainAllowed || data.isNameAllowed
                 }
                 is Fail -> {
                     val throwable = it.throwable
@@ -420,30 +426,30 @@ class ShopEditBasicInfoFragment: Fragment() {
         val readMore = getString(R.string.ticker_warning_read_more)
         val color = ContextCompat.getColor(requireContext(), R.color.merchant_green)
         val message = getSpandableColorText(description, readMore, color)
-        showShopTicker(message)
+        showInfoTicker(message)
     }
 
     private fun showDomainNotAllowedTicker(data: AllowShopNameDomainChangesData) {
         val message = data.reasonDomainNotAllowed
-        showShopTicker(message)
+        showInfoTicker(message)
     }
 
     private fun showNameNotAllowedTicker(data: AllowShopNameDomainChangesData) {
         val message = data.reasonNameNotAllowed
-        showShopTicker(message)
+        showInfoTicker(message)
     }
 
     private fun showNameAndDomainNotAllowedTicker() {
         val message = getString(R.string.shop_edit_change_name_and_domain_not_allowed)
-        showShopTicker(message)
+        showInfoTicker(message)
     }
 
-    private fun showShopTicker(message: String) {
+    private fun showInfoTicker(message: String) {
         shopEditTicker.tickerType = Ticker.TYPE_INFORMATION
         shopEditTicker.setTextDescription(message)
     }
 
-    private fun showShopTicker(message: CharSequence) {
+    private fun showInfoTicker(message: CharSequence) {
         shopEditTicker.tickerType = Ticker.TYPE_WARNING
         shopEditTicker.setTextDescription(message)
         shopEditTicker.setOnClickListener {
