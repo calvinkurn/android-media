@@ -11,6 +11,9 @@ import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import dagger.Lazy
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -35,29 +38,47 @@ class HomeRepositoryImpl @Inject constructor(
     }
 
     override fun updateHomeData(): Flow<Result<Any>> = flow{
-        val isCacheExistForProcess = isCacheExist
-        val homeDataResponse = homeRemoteDataSource.getHomeData()
-        val currentTimeMillisString = System.currentTimeMillis().toString()
-        var currentToken = ""
+        coroutineScope {
+            val isCacheExistForProcess = isCacheExist
+            val currentTimeMillisString = System.currentTimeMillis().toString()
+            var currentToken = ""
 
-        var dynamicChannelResponse = homeRemoteDataSource.getDynamicChannelData(numOfChannel = 2)
+            val homeDataResponse = async { homeRemoteDataSource.getHomeData() }
+            var dynamicChannelResponse = async { homeRemoteDataSource.getDynamicChannelData(numOfChannel = 2) }
+            var homeChannelCombined = HomeChannelData()
 
-        if (!isCacheExistForProcess) {
-            currentToken = processFirstPageDynamicChannel(dynamicChannelResponse, homeDataResponse, currentToken)
+            val dynamicChannnelResponseValue = dynamicChannelResponse.await()
+            val homeDataResponseValue = homeDataResponse.await()
+
+            if (!isCacheExistForProcess) {
+                val extractPair = extractToken(dynamicChannnelResponseValue)
+
+                homeDataResponseValue.dynamicHomeChannel = extractPair.second.dynamicHomeChannel
+                homeDataResponseValue.token = extractPair.first
+                currentToken = homeDataResponseValue.token
+
+                if (homeDataResponse == null) {
+                    homeCachedDataSource.saveToDatabase(homeDefaultDataSource.getDefaultHomeData())
+                } else {
+                    homeCachedDataSource.saveToDatabase(homeDataResponseValue)
+                }
+            }
+
+            if ((!isCacheExistForProcess && currentToken.isNotEmpty()) ||
+                    isCacheExistForProcess) {
+                homeChannelCombined = processFullPageDynamicChannel(dynamicChannnelResponseValue, homeDataResponseValue)
+            }
+
+            homeChannelCombined.dynamicHomeChannel.channels.forEach {
+                it.timestamp = currentTimeMillisString
+            }
+            homeDataResponseValue.let {
+                it.dynamicHomeChannel = homeChannelCombined.dynamicHomeChannel
+                emit(Result.success(null))
+                homeCachedDataSource.saveToDatabase(it)
+            }
         }
 
-        if ((!isCacheExistForProcess && currentToken.isNotEmpty()) ||
-                isCacheExistForProcess) {
-            dynamicChannelResponse = processFullPageDynamicChannel(dynamicChannelResponse, homeDataResponse)
-        }
-
-        dynamicChannelResponse.dynamicHomeChannel.channels.forEach {
-            it.timestamp = currentTimeMillisString
-        }
-        homeDataResponse.let {
-            emit(Result.success(null))
-            homeCachedDataSource.saveToDatabase(homeDataResponse)
-        }
     }
 
     override suspend fun onDynamicChannelExpired(groupId: String): List<Visitable<*>> {
@@ -79,17 +100,18 @@ class HomeRepositoryImpl @Inject constructor(
         return dynamicChannelResponse1
     }
 
-    private suspend fun processFirstPageDynamicChannel(dynamicChannelResponse: HomeChannelData, homeDataResponse: HomeData, currentToken: String): String {
+    private suspend fun processFirstPageDynamicChannel(dynamicChannelResponse: Deferred<HomeChannelData>, homeDataResponse: Deferred<HomeData>, currentToken: String): String {
         var currentToken1 = currentToken
-        val extractPair = extractToken(dynamicChannelResponse)
+        val extractPair = extractToken(dynamicChannelResponse.await())
 
-        homeDataResponse.dynamicHomeChannel = extractPair.second.dynamicHomeChannel
-        homeDataResponse.token = extractPair.first
-        currentToken1 = homeDataResponse.token
+        val homeDataResponseValue = homeDataResponse.await()
+        homeDataResponseValue.dynamicHomeChannel = extractPair.second.dynamicHomeChannel
+        homeDataResponseValue.token = extractPair.first
+        currentToken1 = homeDataResponseValue.token
         if (homeDataResponse == null) {
             homeCachedDataSource.saveToDatabase(homeDefaultDataSource.getDefaultHomeData())
         } else {
-            homeCachedDataSource.saveToDatabase(homeDataResponse)
+            homeCachedDataSource.saveToDatabase(homeDataResponseValue)
         }
         return currentToken1
     }
