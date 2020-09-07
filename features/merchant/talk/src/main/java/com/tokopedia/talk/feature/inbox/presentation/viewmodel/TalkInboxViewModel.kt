@@ -7,6 +7,8 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.talk.common.constants.TalkConstants
 import com.tokopedia.talk.common.coroutine.CoroutineDispatchers
+import com.tokopedia.talk.feature.inbox.analytics.TalkInboxTracking
+import com.tokopedia.talk.feature.inbox.data.DiscussionInbox
 import com.tokopedia.talk.feature.inbox.data.TalkInboxFilter
 import com.tokopedia.talk.feature.inbox.domain.usecase.TalkInboxListUseCase
 import com.tokopedia.talk.feature.inbox.presentation.adapter.uimodel.TalkInboxUiModel
@@ -18,8 +20,8 @@ class TalkInboxViewModel @Inject constructor(
         private val talkInboxListUseCase: TalkInboxListUseCase
 ) : BaseViewModel(dispatcher.io) {
 
-    private val _inboxList: MediatorLiveData<TalkInboxViewState<List<TalkInboxUiModel>>> = MediatorLiveData()
-    val inboxList: LiveData<TalkInboxViewState<List<TalkInboxUiModel>>>
+    private val _inboxList: MediatorLiveData<TalkInboxViewState<DiscussionInbox>> = MediatorLiveData()
+    val inboxList: LiveData<TalkInboxViewState<DiscussionInbox>>
         get() = _inboxList
 
     private var shopId: String = ""
@@ -70,10 +72,8 @@ class TalkInboxViewModel @Inject constructor(
             _inboxList.postValue(TalkInboxViewState.Loading(page))
             talkInboxListUseCase.setRequestParam(type, filter.filterParam, page)
             val response = talkInboxListUseCase.executeOnBackground()
-            with(response.discussionInbox) {
-                shopId = shopID
-                _inboxList.postValue(TalkInboxViewState.Success(inbox.map { TalkInboxUiModel(it) }, page, filter, hasNext))
-            }
+            shopId = response.discussionInbox.shopID
+            _inboxList.postValue(TalkInboxViewState.Success(response.discussionInbox, page, filter))
         }) {
             _inboxList.postValue(TalkInboxViewState.Fail(it, page))
         }

@@ -6,11 +6,7 @@ object TalkInboxTracking {
 
     }
 
-    fun eventClickItem(productId: Int, talkId: Int, tab: String, isRead: Boolean) {
-
-    }
-
-    fun eventLazyLoad() {
+    fun eventLazyLoad(page: Int, numberOfRead: Int, numberOfUnread: Int, shopId: String) {
 
     }
 

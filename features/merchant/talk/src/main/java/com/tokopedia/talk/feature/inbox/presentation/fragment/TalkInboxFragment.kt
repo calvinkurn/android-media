@@ -25,6 +25,7 @@ import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
 import com.tokopedia.talk.common.constants.TalkConstants
+import com.tokopedia.talk.feature.inbox.analytics.TalkInboxTracking
 import com.tokopedia.talk.feature.inbox.data.TalkInboxFilter
 import com.tokopedia.talk.feature.inbox.data.TalkInboxTab
 import com.tokopedia.talk.feature.inbox.di.DaggerTalkInboxComponent
@@ -32,6 +33,7 @@ import com.tokopedia.talk.feature.inbox.di.TalkInboxComponent
 import com.tokopedia.talk.feature.inbox.presentation.adapter.TalkInboxAdapterTypeFactory
 import com.tokopedia.talk.feature.inbox.presentation.adapter.uimodel.TalkInboxUiModel
 import com.tokopedia.talk.feature.inbox.data.TalkInboxViewState
+import com.tokopedia.talk.feature.inbox.presentation.listener.TalkInboxListener
 import com.tokopedia.talk.feature.inbox.presentation.viewmodel.TalkInboxViewModel
 import com.tokopedia.talk_old.R
 import com.tokopedia.talk_old.talkdetails.view.activity.TalkDetailsActivity
@@ -50,8 +52,9 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
         const val EMPTY_DISCUSSION_IMAGE = "https://ecs7.tokopedia.net/android/talk_inbox_empty.png"
         const val REPLY_REQUEST_CODE = 420
 
-        fun createNewInstance(tab: TalkInboxTab): TalkInboxFragment {
+        fun createNewInstance(tab: TalkInboxTab, talkInboxListener: TalkInboxListener? = null): TalkInboxFragment {
             return TalkInboxFragment().apply {
+                this.talkInboxListener = talkInboxListener
                 arguments = Bundle().apply {
                     putString(TAB_PARAM, tab.tabParam)
                 }
@@ -63,6 +66,7 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
     lateinit var viewModel: TalkInboxViewModel
 
     private var talkPerformanceMonitoringListener: TalkPerformanceMonitoringListener? = null
+    private var talkInboxListener: TalkInboxListener? = null
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if(requestCode == REPLY_REQUEST_CODE) {
@@ -184,22 +188,25 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
                 is TalkInboxViewState.Success -> {
                     hideFullPageError()
                     hideFullPageLoading()
-                    if(it.page == TalkConstants.DEFAULT_INITIAL_PAGE && it.data.isEmpty()) {
+                    if(it.page == TalkConstants.DEFAULT_INITIAL_PAGE) {
+                        talkInboxListener?.updateUnreadCounter(it.data.sellerUnread, it.data.buyerUnread)
                         hideLoading()
-                        when(it.filter) {
-                            is TalkInboxFilter.TalkInboxNoFilter -> {
-                                showEmptyInbox()
+                        if(it.data.inbox.isEmpty()) {
+                            when(it.filter) {
+                                is TalkInboxFilter.TalkInboxNoFilter -> {
+                                    showEmptyInbox()
+                                }
+                                is TalkInboxFilter.TalkInboxUnreadFilter -> {
+                                    showEmptyUnread()
+                                }
+                                is TalkInboxFilter.TalkInboxReadFilter -> {
+                                    showEmptyRead()
+                                }
                             }
-                            is TalkInboxFilter.TalkInboxUnreadFilter -> {
-                                showEmptyUnread()
-                            }
-                            is TalkInboxFilter.TalkInboxReadFilter -> {
-                                showEmptyRead()
-                            }
+                            return@Observer
                         }
-                    } else {
-                        renderData(it.data, it.hasNext)
                     }
+                    renderData(it.data.inbox.map { inbox -> TalkInboxUiModel(inbox) }, it.data.hasNext)
                 }
                 is TalkInboxViewState.Fail -> {
                     hideFullPageLoading()

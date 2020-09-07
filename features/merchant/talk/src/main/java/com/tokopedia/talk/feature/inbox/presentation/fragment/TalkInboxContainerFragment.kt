@@ -14,12 +14,13 @@ import com.tokopedia.talk.feature.inbox.data.TalkInboxTab
 import com.tokopedia.talk.feature.inbox.di.DaggerTalkInboxContainerComponent
 import com.tokopedia.talk.feature.inbox.di.TalkInboxContainerComponent
 import com.tokopedia.talk.feature.inbox.presentation.adapter.TalkInboxContainerAdapter
+import com.tokopedia.talk.feature.inbox.presentation.listener.TalkInboxListener
 import com.tokopedia.talk_old.R
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_talk_inbox_container.*
 import javax.inject.Inject
 
-class TalkInboxContainerFragment : BaseDaggerFragment(), HasComponent<TalkInboxContainerComponent> {
+class TalkInboxContainerFragment : BaseDaggerFragment(), HasComponent<TalkInboxContainerComponent>, TalkInboxListener {
 
     companion object {
         fun createNewInstance(): TalkInboxContainerFragment {
@@ -59,6 +60,15 @@ class TalkInboxContainerFragment : BaseDaggerFragment(), HasComponent<TalkInboxC
         setupTabLayout()
     }
 
+    override fun updateUnreadCounter(sellerUnread: Int, buyerUnread: Int) {
+        if(sellerUnread != 0) {
+            talkInboxTabs.tabLayout.getTabAt(0)?.text = "${userSession.shopName} $sellerUnread"
+        }
+        if(buyerUnread != 0) {
+            talkInboxTabs.tabLayout.getTabAt(1)?.text = "${userSession.name} $buyerUnread"
+        }
+    }
+
     private fun setupViewPager() {
         val tabTitles = getTabTitles()
         tabTitles.forEach {
@@ -94,8 +104,8 @@ class TalkInboxContainerFragment : BaseDaggerFragment(), HasComponent<TalkInboxC
 
     private fun getFragmentList(): List<Fragment> {
         return listOf(
-                TalkInboxFragment.createNewInstance(TalkInboxTab.TalkShopInboxTab()),
-                TalkInboxFragment.createNewInstance(TalkInboxTab.TalkBuyerInboxTab())
+                TalkInboxFragment.createNewInstance(TalkInboxTab.TalkShopInboxTab(), this),
+                TalkInboxFragment.createNewInstance(TalkInboxTab.TalkBuyerInboxTab(), this)
         )
     }
 
@@ -104,6 +114,5 @@ class TalkInboxContainerFragment : BaseDaggerFragment(), HasComponent<TalkInboxC
             listOf(shopName, name)
         }
     }
-
 
 }

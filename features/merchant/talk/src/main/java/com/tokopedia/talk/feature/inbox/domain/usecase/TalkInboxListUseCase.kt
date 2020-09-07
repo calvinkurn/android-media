@@ -28,6 +28,8 @@ class TalkInboxListUseCase @Inject constructor(graphqlRepository: GraphqlReposit
                     shopID
                     shopName
                     inboxType
+                    sellerUnread
+                    buyerUnread
                     hasNext
                     inbox {
                       inboxID

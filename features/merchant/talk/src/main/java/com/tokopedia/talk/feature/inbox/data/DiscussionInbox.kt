@@ -16,6 +16,12 @@ data class DiscussionInbox(
         @SerializedName("inboxType")
         @Expose
         val inboxType: String = "",
+        @SerializedName("sellerUnread")
+        @Expose
+        val sellerUnread: Int = 0,
+        @SerializedName("buyerUnread")
+        @Expose
+        val buyerUnread: Int = 0,
         @SerializedName("hasNext")
         @Expose
         val hasNext: Boolean = false,
