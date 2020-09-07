@@ -101,7 +101,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     }
 
     override fun onShopInfoClicked() {
-        RouteManager.route(context, ApplinkConst.SHOP, userSession.shopId)
+        RouteManager.route(context, ApplinkConst.SHOP_SCORE_DETAIL, userSession.shopId)
     }
 
     override fun onFollowersCountClicked() {
