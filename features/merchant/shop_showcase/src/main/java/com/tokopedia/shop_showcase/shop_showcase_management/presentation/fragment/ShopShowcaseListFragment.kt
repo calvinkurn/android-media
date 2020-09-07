@@ -533,7 +533,11 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
 
     private fun setupBuyerSellerView() {
         if (isMyShop) {
-            setupSellerView()
+            if (isSellerNeedToHideShowcaseGroupValue) {
+                setupBuyerView() // Provides seller with buyer view
+            } else {
+                setupSellerView()
+            }
         } else {
             setupBuyerView()
         }
