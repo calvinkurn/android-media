@@ -5,16 +5,21 @@ import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.seller.menu.common.R
+import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
 import com.tokopedia.seller.menu.common.analytics.sendSettingShopInfoClickTracking
 import com.tokopedia.seller.menu.common.analytics.sendSettingShopInfoImpressionTracking
+import com.tokopedia.seller.menu.common.constant.MenuItemType
 import com.tokopedia.seller.menu.common.view.uimodel.MenuItemUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.SellerMenuItemUiModel
 import kotlinx.android.synthetic.main.setting_menu_list.view.*
 
 class MenuItemsViewHolder(
     itemView: View,
-    private val trackingListener: SettingTrackingListener
+    private val trackingListener: SettingTrackingListener,
+    private val sellerMenuTracker: SellerMenuTracker?
 ) : AbstractViewHolder<MenuItemUiModel>(itemView) {
 
     companion object {
@@ -40,13 +45,34 @@ class MenuItemsViewHolder(
             }
             setOnClickListener {
                 element.run {
-                    sendSettingShopInfoClickTracking()
+                    sendTracker(this)
                     if (onClickApplink.isNullOrEmpty()) {
                         clickAction.invoke()
                     } else {
                         RouteManager.route(context, onClickApplink)
                     }
                 }
+            }
+        }
+    }
+
+    private fun sendTracker(menuItem: MenuItemUiModel) {
+        if (GlobalConfig.isSellerApp()) {
+            menuItem.sendSettingShopInfoClickTracking()
+        } else {
+            sendTrackerForMainApp(menuItem)
+        }
+    }
+
+    private fun sendTrackerForMainApp(menuItem: MenuItemUiModel) {
+        if (menuItem is SellerMenuItemUiModel) {
+            when (menuItem.type) {
+                MenuItemType.REVIEW -> sellerMenuTracker?.sendEventClickReview()
+                MenuItemType.DISCUSSION -> sellerMenuTracker?.sendEventClickDiscussion()
+                MenuItemType.COMPLAIN -> sellerMenuTracker?.sendEventClickComplain()
+                MenuItemType.SELLER_EDU -> sellerMenuTracker?.sendEventClickSellerEdu()
+                MenuItemType.TOKOPEDIA_CARE -> sellerMenuTracker?.sendEventClickTokopediaCare()
+                MenuItemType.SHOP_SETTINGS -> sellerMenuTracker?.sendEventClickShopSettings()
             }
         }
     }
