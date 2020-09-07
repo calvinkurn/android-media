@@ -4,5 +4,6 @@ data class ChannelConfig (
         val layout: String = "",
         val showPromoBadge: Boolean = false,
         val hasCloseButton: Boolean = false,
-        var serverTimeOffset: Long = 0
+        var serverTimeOffset: Long = 0,
+        val isAutoRefreshAfterExpired: Boolean = false
 )

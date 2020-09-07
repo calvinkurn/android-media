@@ -11,6 +11,8 @@ private const val KEY_EVENT_CATEGORY = "eventCategory"
 private const val KEY_EVENT_ACTION = "eventAction"
 private const val KEY_EVENT_LABEL = "eventLabel"
 private const val KEY_EVENT_CATEGORY_VALUE = "ads creation form"
+private const val KEY_EVENT_CATEGORY_VALUE_EDIT = "edit group form"
+private const val KEY_EVENT_VALUE_EDIT = "clickEditGroup"
 private const val KEY_EVENT_VALUE = "clickAdsCreation"
 private const val KEY_EVENT_DASHBOARD_VALUE = "clickAutoAds"
 private const val KEY_EVENT_DASHBOARD_CATEGORY_VALUE = "auto ads dashboard"
@@ -32,6 +34,28 @@ class TopAdsCreateAnalytics {
         return TrackApp.getInstance().gtm
     }
 
+
+    fun sendTopAdsEvent(eventAction: String, eventLabel: String,userId: String) {
+        val map = mapOf(
+                KEY_EVENT to KEY_EVENT_VALUE,
+                KEY_EVENT_CATEGORY to KEY_EVENT_CATEGORY_VALUE,
+                KEY_EVENT_ACTION to eventAction,
+                KEY_EVENT_LABEL to eventLabel,
+                KEY_EVENT_USER_ID to userId)
+
+        getTracker().sendGeneralEvent(map)
+    }
+
+    fun sendTopAdsEventEdit(eventAction: String, eventLabel: String,userId: String) {
+        val map = mapOf(
+                KEY_EVENT to KEY_EVENT_VALUE_EDIT,
+                KEY_EVENT_CATEGORY to KEY_EVENT_CATEGORY_VALUE_EDIT,
+                KEY_EVENT_ACTION to eventAction,
+                KEY_EVENT_LABEL to eventLabel,
+                KEY_EVENT_USER_ID to userId)
+
+        getTracker().sendGeneralEvent(map)
+    }
 
     fun sendTopAdsEvent(eventAction: String, eventLabel: String) {
         val map = mapOf(

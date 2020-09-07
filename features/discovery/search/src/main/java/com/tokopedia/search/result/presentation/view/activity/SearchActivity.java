@@ -53,6 +53,7 @@ import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewMod
 import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewModelFactoryModule;
 import com.tokopedia.search.utils.CountDrawable;
 import com.tokopedia.search.utils.UrlParamUtils;
+import com.tokopedia.unifycomponents.LoaderUnify;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.Nullable;
@@ -83,7 +84,7 @@ public class SearchActivity extends BaseActivity
 
     private Toolbar toolbar;
     private MotionLayout container;
-    private ProgressBar loadingView;
+    private LoaderUnify loadingView;
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private SearchSectionPagerAdapter searchSectionPagerAdapter;

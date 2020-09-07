@@ -124,7 +124,7 @@ class VerificationMethodFragment : BaseVerificationFragment(), IOnBackPressed {
     }
 
     private fun initObserver() {
-        viewmodel.getVerificationMethodResult.observe(this, Observer {
+        viewmodel.getVerificationMethodResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessGetVerificationMethod().invoke(it.data)
                 is Fail -> onFailedGetVerificationMethod().invoke(it.throwable)

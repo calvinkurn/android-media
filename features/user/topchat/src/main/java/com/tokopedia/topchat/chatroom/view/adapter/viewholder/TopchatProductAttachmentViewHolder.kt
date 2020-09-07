@@ -65,8 +65,6 @@ open class TopchatProductAttachmentViewHolder constructor(
     private val white2 = "#fff"
     private val labelEmptyStockColor = "#AD31353B"
 
-    override fun alwaysShowTime(): Boolean = true
-
     override fun bind(element: ProductAttachmentViewModel, payloads: MutableList<Any>) {
         if (payloads.isEmpty()) return
         when (payloads[0]) {
@@ -104,7 +102,6 @@ open class TopchatProductAttachmentViewHolder constructor(
             bindFooter(product)
             bindPreOrderLabel(product)
             bindEmptyStockLabel(product)
-            bindChatReadStatus(product)
             listener.trackSeenProduct(product)
         }
     }
