@@ -33,7 +33,7 @@
     <string name="change_name_visible_on_public_note">Nama akan terlihat oleh publik</string>
     <string name="change_name_visible_on_another_user">Nama dapat dilihat oleh pengguna lainnya</string>
     <string name="change_name_change_success">Nama lengkap berhasil diubah</string>
-  
+
     <!-- PROFILE COMPLETION -->
     <string name="title_profile_completion">Lengkapi Profil</string>
 
@@ -132,21 +132,25 @@
     <string name="subtitle_create_pin">PIN Tokopedia digunakan untuk meningkatkan keamanan transaksi</string>
     <string name="info_create_pin">Hindari menggunakan kombinasi angka yang mudah ditebak, seperti tanggal lahir atau nomor telepon.</string>
     <string name="confirm_create_pin">Konfirmasi PIN Tokopedia</string>
-    <string name="subtitle_confirm_create_pin">Masukkan kembali PIN Tokopedia kamu</string>
-    <string name="error_wrong_pin">PIN yang Anda masukkan tidak sesuai</string>
+    <string name="subtitle_confirm_create_pin">Ketik ulang PIN Tokopedia kamu.</string>
+    <string name="error_wrong_pin">PIN tokopedia tidak sesuai</string>
     <string name="complete_add_pin">Selesai</string>
     <string name="title_complete_add_pin">PIN Tokopedia Kamu Berhasil Disimpan</string>
     <string name="subtitle_complete_add_pin">PIN Tokopedia digunakan untuk meningkatkan keamanan transaksi kamu</string>
     <string name="ticker_complete_add_pin">Jangan bagikan PIN Tokopedia kamu kepada pihak mana pun</string>
+    <string name="title_create_pin">PIN Baru Tokopedia</string>
+    <string name="desc_create_pin">Masukkan 6 digit PIN Tokopedia untuk verifikasi saat login dan transaksi.</string>
+    <string name="message_create_pin">Hindari penggunaan angka yang mudah ditebak seperti tanggal lahir atau nomor telepon.</string>
 
     <!--ERROR MESSAGE-->
     <string name="error_from_cotp">cotp failed</string>
 
     <!--CHANGE PIN-->
-    <string name="change_pin_success">PIN Tokopedia Kamu Berhasil Diubah</string>
+    <string name="change_pin_success">PIN Tokopedia kamu berhasil diubah</string>
     <string name="change_pin_input_old_pin">Masukkan PIN Lama Tokopedia kamu</string>
     <string name="change_pin_title_old_pin">PIN Lama Tokopedia</string>
-    <string name="change_pin_forgot_btn">Lupa PIN Tokopedia?</string>
+    <string name="change_pin_desc_old_pin">Masukkan 6 digit PIN Tokopedia kamu.</string>
+    <string name="change_pin_forgot_btn">Lupa PIN Tokopedia</string>
     <string name="change_pin_avoid_info">Hindari menggunakan kombinasi angka yang mudah ditebak, seperti tanggal lahir atau nomor telepon.</string>
     <string name="change_pin_title_new_pin">PIN Baru Tokopedia</string>
     <string name="change_pin_subtitle_new_pin">Masukkan PIN Baru kamu</string>
@@ -164,4 +168,12 @@
 
     <string name="invalid_date">Tanggal Lahir tidak valid</string>
     <string name="invalid_gender">Jenis Kelamin tidak valid</string>
+
+    <string name="add_pin_heading">Tambah keamanan ekstra\ndengan PIN Tokopedia</string>
+    <string name="add_pin_body">PIN Tokopedia adalah verifikasi 2 langkah untuk meningkatkan keamanan akun.</string>
+    <string name="add_pin_button_title">Buat PIN Tokopedia</string>
+
+    <string name="add_pin_success_heading">PIN Tokopedia kamu berhasil disimpan</string>
+    <string name="add_pin_success_body">Jangan bagikan PIN Tokopedia kamu kepada pihak mana pun.</string>
+    <string name="add_pin_success_button_title">Selesai</string>
 </resources>
