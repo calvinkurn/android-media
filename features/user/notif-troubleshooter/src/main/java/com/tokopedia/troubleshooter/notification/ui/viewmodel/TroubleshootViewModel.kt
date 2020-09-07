@@ -16,7 +16,6 @@ import com.tokopedia.troubleshooter.notification.data.service.ringtone.RingtoneM
 import com.tokopedia.troubleshooter.notification.ui.state.RingtoneState
 import com.tokopedia.troubleshooter.notification.ui.state.StatusState
 import com.tokopedia.troubleshooter.notification.ui.uiview.*
-import com.tokopedia.troubleshooter.notification.ui.state.ConfigUIView.Companion.importantNotification
 import com.tokopedia.troubleshooter.notification.ui.state.DeviceSettingState
 import com.tokopedia.troubleshooter.notification.util.dispatchers.DispatcherProvider
 import com.tokopedia.usecase.RequestParams
@@ -68,7 +67,7 @@ class TroubleshootViewModel @Inject constructor(
     private val _tickerItems = mutableListOf<TickerItemUIView>()
     val tickerItems: List<TickerItemUIView> get() = _tickerItems
 
-    private val _dndMode = MediatorLiveData<Boolean>()
+    private val _dndMode = MutableLiveData<Boolean>()
     val dndMode: LiveData<Boolean> get() = _dndMode
 
     init {
@@ -133,14 +132,12 @@ class TroubleshootViewModel @Inject constructor(
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     override fun deviceSetting() {
         if (!notificationCompat.isNotificationEnabled()) {
-            _deviceSetting.postValue(Fail(Throwable("")))
+            _deviceSetting.value = Fail(Throwable(""))
             return
         }
 
         if (notificationChannel.hasNotificationChannel()) {
-            val channel = notificationChannel.getNotificationChannel()
-            val isImportance = importantNotification(channel)
-            if (isImportance) {
+            if (notificationChannel.isImportanceChannel()) {
                 _deviceSetting.value = Success(DeviceSettingState.High)
             } else {
                 _deviceSetting.value = Success(DeviceSettingState.Low)
