@@ -1,11 +1,10 @@
 package com.tokopedia.home.util
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collect
@@ -55,10 +54,10 @@ class DeleteWidgetCommand(private val visitable: Visitable<*>?, private val posi
     }
 }
 
-class HomeCommandProcessor : CoroutineScope{
+class HomeCommandProcessor (dispatchers: CoroutineDispatcher): CoroutineScope{
     private val masterJob = SupervisorJob()
     private var channel = Channel<SubmitCommand>(10)
-    override val coroutineContext: CoroutineContext = Dispatchers.Main + masterJob
+    override val coroutineContext: CoroutineContext = dispatchers + masterJob
 
     init {
         processCommands()

@@ -15,6 +15,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home.rules.TestDispatcherProvider
+import com.tokopedia.home.util.HomeCommandProcessor
 import com.tokopedia.play_common.domain.usecases.GetPlayWidgetUseCase
 import com.tokopedia.play_common.domain.usecases.PlayToggleChannelReminderUseCase
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselDataModel
@@ -57,7 +58,8 @@ fun createHomeViewModel(
         getSalamWidgetUseCase: GetSalamWidgetUseCase = mockk(relaxed = true),
         declineSalamWidgetUseCase: DeclineSalamWIdgetUseCase = mockk{ mockk(relaxed = true)},
         declineRechargeRecommendationUseCase: DeclineRechargeRecommendationUseCase = mockk(relaxed = true),
-        topadsImageViewUseCase: TopAdsImageViewUseCase = mockk(relaxed = true)
+        topadsImageViewUseCase: TopAdsImageViewUseCase = mockk(relaxed = true),
+        dispatchers: TestDispatcherProvider = TestDispatcherProvider()
 ): HomeViewModel{
 
 
@@ -73,7 +75,7 @@ fun createHomeViewModel(
             getPlayCardHomeUseCase = Lazy{getPlayLiveDynamicUseCase},
             getRecommendationTabUseCase = Lazy{getRecommendationTabUseCase},
             getWalletBalanceUseCase = Lazy{getCoroutineWalletBalanceUseCase},
-            homeDispatcher = Lazy{TestDispatcherProvider()},
+            homeDispatcher = Lazy{ dispatchers },
             homeUseCase = Lazy{ getHomeUseCase },
             popularKeywordUseCase = Lazy{getPopularKeywordUseCase},
             sendGeolocationInfoUseCase = Lazy{getSendGeolocationInfoUseCase},
@@ -88,7 +90,8 @@ fun createHomeViewModel(
             topAdsImageViewUseCase = Lazy{topadsImageViewUseCase},
             getPlayBannerUseCase = Lazy{getPlayBannerUseCase},
             playToggleChannelReminderUseCase = Lazy{playToggleChannelReminderUseCase},
-            getRechargeRecommendationUseCase = Lazy{getRechargeRecommendationUseCase}
+            getRechargeRecommendationUseCase = Lazy{getRechargeRecommendationUseCase},
+            homeProcessor = Lazy{ HomeCommandProcessor(dispatchers.ui()) }
     )
 }
 
