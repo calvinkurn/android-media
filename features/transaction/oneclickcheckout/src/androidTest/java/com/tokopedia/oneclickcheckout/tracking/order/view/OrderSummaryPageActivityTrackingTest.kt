@@ -12,6 +12,7 @@ import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.analyticsdebugger.validator.core.getAnalyticsWithQuery
 import com.tokopedia.analyticsdebugger.validator.core.hasAllSuccess
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
+import com.tokopedia.oneclickcheckout.common.interceptor.CHECKOUT_EMPTY_STOCK_RESPONSE_PATH
 import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_NO_PROFILE_RESPONSE_PATH
 import com.tokopedia.oneclickcheckout.common.interceptor.OneClickCheckoutInterceptor
 import com.tokopedia.oneclickcheckout.common.interceptor.VALIDATE_USE_PROMO_REVAMP_BBO_APPLIED_RESPONSE
@@ -96,6 +97,11 @@ class OrderSummaryPageActivityTrackingTest {
             promoInterceptor.customValidateUseResponsePath = VALIDATE_USE_PROMO_REVAMP_BBO_APPLIED_RESPONSE
             clickBboTicker()
 
+            checkoutInterceptor.customCheckoutResponsePath = CHECKOUT_EMPTY_STOCK_RESPONSE_PATH
+            pay()
+            closeBottomSheet()
+
+            checkoutInterceptor.customCheckoutResponsePath = null
             pay()
         }
 

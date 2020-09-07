@@ -44,7 +44,7 @@
       "checkout_step": "2",
       "payment_id": "{{\\d+}}",
       "event": "checkout_progress",
-      "eventAction": "{{click bayar|click pilih pembayaran}}",
+      "eventAction": "{{click (?:bayar|pilih pembayaran)}}",
       "sessionIris": "{{.*}}",
       "items": [
         {
@@ -153,6 +153,20 @@
       "eventCategory": "order summary",
       "event": "clickCheckoutExpress",
       "eventAction": "preference - click atur preferensi for new buyer",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{.*}}"
+    },
+    {
+      "eventCategory": "order summary",
+      "event": "clickCheckoutExpress",
+      "eventAction": "{{click (?:bayar|pilih pembayaran) - not success}}",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{not success - (?:.*)}}"
+    },
+    {
+      "eventCategory": "order summary",
+      "event": "viewCheckoutExpressIris",
+      "eventAction": "view error message",
       "sessionIris": "{{.*}}",
       "eventLabel": "{{.*}}"
     }

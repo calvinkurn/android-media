@@ -30,3 +30,4 @@ class CheckoutTestInterceptor : BaseOccInterceptor() {
 const val CHECKOUT_QUERY = "one_click_checkout"
 
 const val CHECKOUT_DEFAULT_RESPONSE_PATH = "checkout/one_click_checkout_default_response.json"
+const val CHECKOUT_EMPTY_STOCK_RESPONSE_PATH = "checkout/one_click_checkout_empty_stock_error_response.json"
