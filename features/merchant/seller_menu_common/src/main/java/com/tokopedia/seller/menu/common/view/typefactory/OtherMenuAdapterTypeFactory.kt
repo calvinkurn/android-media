@@ -29,8 +29,8 @@ class OtherMenuAdapterTypeFactory(
             DividerViewHolder.THIN_LAYOUT_INDENTED -> DividerViewHolder(parent)
             SettingTitleViewHolder.LAYOUT -> SettingTitleViewHolder(parent)
             IndentedSettingTitleViewHolder.LAYOUT -> IndentedSettingTitleViewHolder(parent)
-            MenuItemsViewHolder.LAYOUT -> MenuItemsViewHolder(parent, trackingListener)
-            MenuItemsViewHolder.LAYOUT_NO_ICON -> MenuItemsViewHolder(parent, trackingListener)
+            MenuItemsViewHolder.LAYOUT -> MenuItemsViewHolder(parent, trackingListener, sellerMenuTracker)
+            MenuItemsViewHolder.LAYOUT_NO_ICON -> MenuItemsViewHolder(parent, trackingListener, sellerMenuTracker)
             SettingTitleMenuViewHolder.LAYOUT -> SettingTitleMenuViewHolder(parent)
             ShopInfoViewHolder.LAYOUT -> ShopInfoViewHolder(parent, shopInfoListener, trackingListener, userSession)
             ShopInfoLoadingViewHolder.LAYOUT -> ShopInfoLoadingViewHolder(parent)
@@ -38,7 +38,7 @@ class OtherMenuAdapterTypeFactory(
             ShopOrderViewHolder.LAYOUT -> ShopOrderViewHolder(parent)
             SellerMenuTitleViewHolder.LAYOUT -> SellerMenuTitleViewHolder(parent, sellerMenuTracker)
             ShopProductViewHolder.LAYOUT -> ShopProductViewHolder(parent, sellerMenuTracker)
-            SellerFeatureViewHolder.LAYOUT -> SellerFeatureViewHolder(parent)
+            SellerFeatureViewHolder.LAYOUT -> SellerFeatureViewHolder(parent, sellerMenuTracker)
             else -> super.createViewHolder(parent, type)
         }
     }
