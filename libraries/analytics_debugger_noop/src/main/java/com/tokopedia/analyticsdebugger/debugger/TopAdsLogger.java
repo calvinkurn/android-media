@@ -19,7 +19,7 @@ public class TopAdsLogger {
 
                 @Override
                 public void save(@NotNull String url, @NotNull String eventType, @NotNull String sourceName,
-                        @NotNull String productId, @NotNull String productName, @NotNull String imageUrl) {
+                        @NotNull String productId, @NotNull String productName, @NotNull String imageUrl, @NotNull String componentName) {
 
                 }
 

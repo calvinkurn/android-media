@@ -29,6 +29,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.datepicker.range.view.constant.DatePickerConstant
 import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.topads.auto.view.activity.AutoAdsOnboardingActivity
 import com.tokopedia.topads.auto.view.widget.AutoAdsWidget
@@ -67,10 +68,19 @@ import com.tokopedia.topads.dashboard.view.sheet.DatePickerSheet
 import com.tokopedia.topads.dashboard.view.sheet.TopadsGroupFilterSheet
 import kotlinx.android.synthetic.main.partial_top_ads_dashboard_statistics.*
 import kotlinx.android.synthetic.main.topads_dash_auto_ads_onboarding_widget.*
+import kotlinx.android.synthetic.main.topads_dash_fragment_beranda_base.*
+import kotlinx.android.synthetic.main.topads_dash_fragment_group_detail_view_layout.*
 import kotlinx.android.synthetic.main.topads_dash_fragment_product_iklan.*
+import kotlinx.android.synthetic.main.topads_dash_fragment_product_iklan.app_bar_layout_2
+import kotlinx.android.synthetic.main.topads_dash_fragment_product_iklan.hari_ini
+import kotlinx.android.synthetic.main.topads_dash_fragment_product_iklan.swipe_refresh_layout
+import kotlinx.android.synthetic.main.topads_dash_fragment_product_iklan.tab_layout
+import kotlinx.android.synthetic.main.topads_dash_fragment_product_iklan.view_pager_frag
 import kotlinx.android.synthetic.main.topads_dash_layout_common_searchbar_layout.*
 import kotlinx.android.synthetic.main.topads_dash_layout_hari_ini.*
+import kotlinx.android.synthetic.main.topads_dash_layout_hari_ini.view.*
 import kotlinx.android.synthetic.main.topads_dash_product_iklan_empty_view.*
+import kotlinx.android.synthetic.main.topads_dash_product_iklan_empty_view.view.*
 import java.util.*
 import javax.inject.Inject
 import kotlin.math.abs
@@ -174,6 +184,8 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
         super.onViewCreated(view, savedInstanceState)
         topAdsDashboardPresenter.attachView(this)
         initStatisticComponent()
+
+        auto_ad_status_image.setImageDrawable(context?.getResDrawable(R.drawable.ill_iklan_otomatis))
         onBoarding.setOnClickListener {
             if (GlobalConfig.isSellerApp())
                 RouteManager.route(activity, ApplinkConstInternalTopAds.TOPADS_AUTOADS_ONBOARDING)
@@ -194,6 +206,8 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
         topAdsDashboardPresenter.saveDate(startDate!!, endDate!!)
         topAdsDashboardPresenter.saveSelectionDatePicker()
         loadData()
+        hari_ini?.date_image?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_calendar))
+        hari_ini?.next_image?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_arrow))
         hari_ini?.setOnClickListener {
             showBottomSheet()
         }
@@ -253,7 +267,7 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
         layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         recyclerviewScrollListener = onRecyclerViewListener()
         recyclerView.adapter = autoAdsAdapter
-        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.layoutManager = layoutManager
         recyclerView.addOnScrollListener(recyclerviewScrollListener)
     }
 
@@ -330,6 +344,7 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
         view_pager_frag.visibility = View.GONE
         autoads_layout.visibility = View.GONE
         app_bar_layout_2.visibility = View.GONE
+        empty_view.image_empty.setImageDrawable(context?.getResDrawable(R.drawable.topads_dashboard_empty_product))
         empty_view.visibility = View.VISIBLE
         mulai_beriklan.setOnClickListener {
             if (GlobalConfig.isSellerApp())
@@ -450,7 +465,9 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
     private fun onSuccessResult(response: NonGroupResponse.TopadsDashboardGroupProducts) {
         totalCount = response.meta.page.total
         totalPage = (totalCount / response.meta.page.perPage) + 1
+        recyclerviewScrollListener.updateStateAfterGetData()
         loader.visibility = View.GONE
+        recyclerviewScrollListener.updateStateAfterGetData()
         val adIds: MutableList<String> = mutableListOf()
         response.data.forEach {
             adIds.add(it.adId.toString())

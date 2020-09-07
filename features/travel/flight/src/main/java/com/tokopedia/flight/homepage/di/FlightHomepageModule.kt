@@ -2,10 +2,10 @@ package com.tokopedia.flight.homepage.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.flight.R
 import com.tokopedia.flight.homepage.data.cache.FlightDashboardCache
+import com.tokopedia.flight.searchV4.data.FlightSearchGQLQuery
 import com.tokopedia.flight.searchV4.data.cloud.FlightSearchDataCloudSource
+import com.tokopedia.travelcalendar.data.TravelCalendarGQLQuery
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -23,22 +23,17 @@ class FlightHomepageModule {
 
     @Provides
     @Named("travel_calendar_holiday_query")
-    fun provideTravelCalendarHolidayQuery(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.travelcalendar.R.raw.query_get_travel_calendar_holiday)
-    }
+    fun provideTravelCalendarHolidayQuery(): String =
+            TravelCalendarGQLQuery.GET_TRAVEL_CALENDAR_HOLIDAY
 
     @FlightHomepageScope
     @Provides
     @Named(FlightSearchDataCloudSource.NAMED_FLIGHT_SEARCH_SINGLE_QUERY)
-    fun provideFlightSearchSingleQuery(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.flight_search_single)
-    }
+    fun provideFlightSearchSingleQuery(): String = FlightSearchGQLQuery.SEARCH_SINGLE
 
     @Provides
     @FlightHomepageScope
     @Named(FlightSearchDataCloudSource.NAMED_FLIGHT_SEARCH_COMBINE_QUERY)
-    fun provideFlightSearchCombineQuery(@ApplicationContext context: Context) =
-            GraphqlHelper.loadRawString(context.resources, R.raw.flight_search_combine)
-
+    fun provideFlightSearchCombineQuery() = FlightSearchGQLQuery.SEARCH_COMBINE
 
 }

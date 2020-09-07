@@ -5,6 +5,7 @@ import android.view.View
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.home_wishlist.R
@@ -35,6 +36,7 @@ class BannerTopAdsViewHolder (view: View) : SmartAbstractViewHolder<BannerTopAds
                 .override(itemView.context.resources.displayMetrics.widthPixels,
                         getHeight(bannerTopAdsDataModel.topAdsDataModel.imageWidth, bannerTopAdsDataModel.topAdsDataModel.imageHeight))
                 .fitCenter()
+                .transform(RoundedCorners(24))
                 .addListener(object : RequestListener<Drawable> {
                     override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
                         itemView.wishlist_topads_image_view.hide()
@@ -46,7 +48,6 @@ class BannerTopAdsViewHolder (view: View) : SmartAbstractViewHolder<BannerTopAds
                         itemView.wishlist_topads_image_view.show()
                         itemView.wishlist_topads_loader_image.hide()
                         return false
-
                     }
                 })
                 .into(itemView.wishlist_topads_image_view)

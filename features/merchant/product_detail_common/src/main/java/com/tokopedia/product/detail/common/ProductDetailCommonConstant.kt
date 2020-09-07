@@ -46,4 +46,5 @@ object ProductDetailCommonConstant{
 
     const val PARAM_APPLINK_SHOP_ID = "shop_id"
     const val PARAM_APPLINK_IS_VARIANT_SELECTED = "is_variant_selected"
+    const val PARAM_APPLINK_AVAILABLE_VARIANT = "available variants"
 }

@@ -22,27 +22,25 @@ public class StorageProvider implements InterfaceDataStore {
     }
 
     @Override
-    public void putDataToStore(final CMInApp value) {
-        Completable.fromAction(new Action0() {
+    public Completable putDataToStore(final CMInApp value) {
+        return Completable.fromAction(new Action0() {
             @Override
             public void call() {
                 List<CMInApp> dataFromParentID = inAppDataDao.getDataFromParentIdForPerstOff(value.parentId);
                 if (dataFromParentID == null || dataFromParentID.isEmpty())
                     inAppDataDao.insert(value);
             }
-        }).subscribeOn(Schedulers.io())
-                .subscribe();
+        }).subscribeOn(Schedulers.io());
     }
 
     @Override
-    public void putDataToStore(final List<CMInApp> inAppDataRecords) {
-        Completable.fromAction(new Action0() {
+    public Completable putDataToStore(final List<CMInApp> inAppDataRecords) {
+        return Completable.fromAction(new Action0() {
             @Override
             public void call() {
                 inAppDataDao.insert(inAppDataRecords);
             }
-        }).subscribeOn(Schedulers.io())
-                .subscribe();
+        }).subscribeOn(Schedulers.io());
     }
 
     @Override
@@ -51,14 +49,13 @@ public class StorageProvider implements InterfaceDataStore {
     }
 
     @Override
-    public void putElapsedTimeToStore(final ElapsedTime elapsedTime) {
-        Completable.fromAction(new Action0() {
+    public Completable putElapsedTimeToStore(final ElapsedTime elapsedTime) {
+        return Completable.fromAction(new Action0() {
             @Override
             public void call() {
                 elapsedTimeDao.insert(elapsedTime);
             }
-        }).subscribeOn(Schedulers.io())
-                .subscribe();
+        }).subscribeOn(Schedulers.io());
     }
 
     @Override
@@ -67,14 +64,13 @@ public class StorageProvider implements InterfaceDataStore {
     }
 
     @Override
-    public void deleteRecord(final long id) {
-        Completable.fromAction(new Action0() {
+    public Completable deleteRecord(final long id) {
+        return Completable.fromAction(new Action0() {
             @Override
             public void call() {
                 inAppDataDao.deleteRecord(id);
             }
-        }).subscribeOn(Schedulers.io())
-                .subscribe();
+        }).subscribeOn(Schedulers.io());
     }
 
     @Override
@@ -83,46 +79,42 @@ public class StorageProvider implements InterfaceDataStore {
     }
 
     @Override
-    public void updateInAppDataFreq(final long id) {
-        Completable.fromAction(new Action0() {
+    public Completable updateInAppDataFreq(final long id) {
+        return Completable.fromAction(new Action0() {
             @Override
             public void call() {
                 inAppDataDao.updateFrequency(id);
             }
-        }).subscribeOn(Schedulers.io())
-                .subscribe();
+        }).subscribeOn(Schedulers.io());
     }
 
     @Override
-    public void updateInAppDataFreq(final long id, final long newSt) {
-        Completable.fromAction(new Action0() {
+    public Completable updateInAppDataFreq(final long id, final long newSt) {
+        return Completable.fromAction(new Action0() {
             @Override
             public void call() {
                 inAppDataDao.updateFrequency(id, newSt);
             }
-        }).subscribeOn(Schedulers.io())
-                .subscribe();
+        }).subscribeOn(Schedulers.io());
     }
 
     @Override
-    public void viewDismissed(final long id) {
-        Completable.fromAction(new Action0() {
+    public Completable viewDismissed(final long id) {
+        return Completable.fromAction(new Action0() {
             @Override
             public void call() {
                 inAppDataDao.updateVisibleState(id);
             }
-        }).subscribeOn(Schedulers.io())
-                .subscribe();
+        }).subscribeOn(Schedulers.io());
     }
 
     @Override
-    public void interactedWithView(final long id) {
-        Completable.fromAction(new Action0() {
+    public Completable interactedWithView(final long id) {
+        return Completable.fromAction(new Action0() {
             @Override
             public void call() {
                 inAppDataDao.updateFreqWithPerst(id);
             }
-        }).subscribeOn(Schedulers.io())
-                .subscribe();
+        }).subscribeOn(Schedulers.io());
     }
 }

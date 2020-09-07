@@ -1,0 +1,110 @@
+[
+  {
+    "data": {
+      "rechargeCatalogMenuDetail": {
+        "catalog": {
+          "id": 1,
+          "name": "telco",
+          "label": "Telco",
+          "icon": ""
+        },
+        "recommendations": [],
+        "promos": [
+          {
+            "id": 2312,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2020/8/24/41966928/41966928_92c36a38-a9f6-4a87-9cc0-56aa1aae767a.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-payday",
+            "status": 1,
+            "title": "[GAJIANSERU] Bayar Tagihan sampai Beli Pulsa, Cashback hingga 500rb.",
+            "subtitle": "Kode Promo: {GAJIANSERU}",
+            "promo_code": "GAJIANSERU"
+          },
+          {
+            "id": 2430,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2020/8/24/41966928/41966928_46cc6908-5736-458b-a50c-789069244ee7.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-cashback-3/",
+            "status": 1,
+            "title": "[Flash Sale] Bayar Pasca Bayar cashback s.d Rp50rb. Kuota Terbatas.",
+            "subtitle": "Kode Promo: {PBSERU}",
+            "promo_code": "PBSERU"
+          },
+          {
+            "id": 2397,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2020/7/31/42484317/42484317_a917be56-8f7e-490a-be79-767d8f8130ed.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-cashback-5/",
+            "status": 1,
+            "title": "[TOPED] Cashback hingga Rp350.000. S&K klik disini",
+            "subtitle": "kode promo : {TOPED}",
+            "promo_code": "TOPED"
+          },
+          {
+            "id": 2252,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2020/7/31/42484317/42484317_c806c50c-e1c8-42c8-bca6-9ca0ed2453a4.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-cashback-7/",
+            "status": 1,
+            "title": "[Tagihan] Cashback hingga Rp100.000. Klik di sini.",
+            "subtitle": "Kode Promo: {COBABAYAR}",
+            "promo_code": "COBABAYAR"
+          },
+          {
+            "id": 2424,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2020/8/14/42484317/42484317_d4337082-a443-4881-9440-cd814c530196.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-cashback-10/",
+            "status": 1,
+            "title": "[DGELECTRO]. Top-up & Bayar Tagihan, Bonus Kupon Belanja Elektronik hingga 25rb",
+            "subtitle": "Kode Promo: {DGELECTRO}",
+            "promo_code": "DGELECTRO"
+          },
+          {
+            "id": 1573,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2020/8/9/42484317/42484317_e1fee503-1aab-49e1-97a3-77cc5112870e.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-cashback-17/",
+            "status": 1,
+            "title": "[Tagihan]. Cashback terus-terusan. S&K lengkap klik di sini. ",
+            "subtitle": "kode promo : {BAYARTERUS}",
+            "promo_code": "BAYARTERUS"
+          },
+          {
+            "id": 2053,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2020/4/2/50732530/50732530_048258b0-fc1c-46a8-8eb4-b6935eaeb61d.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-telkomsel-2",
+            "status": 1,
+            "title": "[HALOTOPED]. Bayar Tagihan Kartu Halo di Tokopedia, Dapatkan Cashback hingga 75rb dan Ekstra Kuota 1GB",
+            "subtitle": "Kode Promo: {HALOTOPED}",
+            "promo_code": "HALOTOPED"
+          },
+          {
+            "id": 2529,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2020/8/27/42484317/42484317_848eb75b-36c9-4bef-a254-115418ae5638.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-bca/",
+            "status": 1,
+            "title": "[BCADG] Spesial hari Jumat, bayar kebutuhan top up, tagihan, dan hiburan dengan kartu kredit BCA, diskon Rp50rb. Klik di sini.",
+            "subtitle": "Kode Promo: {BCADG}",
+            "promo_code": "BCADG"
+          },
+          {
+            "id": 1751,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2020/6/2/50732530/50732530_08625252-c6ad-4f5f-80a4-10e1266dacc8.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-telkomsel",
+            "status": 1,
+            "title": "[Pascabayar]. Bayar Tagihan Kartu Halo dengan Fitur Langganan Dapat Ekstra Kuota 5GB",
+            "subtitle": "",
+            "promo_code": ""
+          }
+        ],
+        "tickers": [],
+        "banners": [],
+        "express_checkout": false
+      }
+    }
+  }
+]
