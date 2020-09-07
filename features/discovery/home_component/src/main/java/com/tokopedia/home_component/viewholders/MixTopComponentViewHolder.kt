@@ -67,6 +67,7 @@ class MixTopComponentViewHolder(
         private const val CTA_TYPE_FILLED = "filled"
         private const val CTA_TYPE_GHOST = "ghost"
         private const val CTA_TYPE_TEXT = "text_only"
+        private const val HOME_MIX_TOP = "home_mix_top"
     }
 
 
@@ -267,7 +268,8 @@ class MixTopComponentViewHolder(
                     blankSpaceConfig = BlankSpaceConfig(),
                     grid = element,
                     applink = element.applink,
-                    listener = this
+                    listener = this,
+                    componentName = HOME_MIX_TOP
             ))
         }
         return list

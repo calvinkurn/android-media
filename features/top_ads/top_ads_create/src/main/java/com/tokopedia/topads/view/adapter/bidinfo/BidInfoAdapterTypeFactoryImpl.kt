@@ -7,7 +7,7 @@ import com.tokopedia.topads.view.adapter.bidinfo.viewholder.BidInfoEmptyViewHold
 import com.tokopedia.topads.view.adapter.bidinfo.viewholder.BidInfoItemViewHolder
 import com.tokopedia.topads.view.adapter.bidinfo.viewholder.BidInfoViewHolder
 
-class BidInfoAdapterTypeFactoryImpl(private var selectedKeywords: MutableList<String>, private var selectedSuggestBid: MutableList<Int>,  private var suggestBidInitial: List<Int>,private var actionClose: (pos: Int) -> Unit, private var actionClick: () -> MutableMap<String, Int>, var actionEnable: () -> Unit) : BindInfoAdapterTypeFactory {
+class BidInfoAdapterTypeFactoryImpl(private var selectedKeywords: MutableList<String>?, private var selectedSuggestBid: MutableList<Int>?,private var actionClick: (pos: Int) -> Unit) : BindInfoAdapterTypeFactory {
 
     override fun type(model: BidInfoEmptyViewModel): Int {
         return BidInfoEmptyViewHolder.LAYOUT
@@ -20,7 +20,7 @@ class BidInfoAdapterTypeFactoryImpl(private var selectedKeywords: MutableList<St
     override fun holder(type: Int, view: View): BidInfoViewHolder<*> {
         return when (type) {
             BidInfoEmptyViewHolder.LAYOUT -> BidInfoEmptyViewHolder(view)
-            BidInfoItemViewHolder.LAYOUT -> BidInfoItemViewHolder(view, selectedKeywords, selectedSuggestBid, suggestBidInitial, actionClose, actionClick, actionEnable)
+            BidInfoItemViewHolder.LAYOUT -> BidInfoItemViewHolder(view, selectedKeywords, selectedSuggestBid, actionClick)
             else -> throw RuntimeException("Illegal view type")
 
         }

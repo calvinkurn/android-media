@@ -25,11 +25,11 @@ import java.net.URLDecoder
 
 open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
-    private lateinit var url: String
+    protected lateinit var url: String
     var showTitleBar = true
     private set
-    private var allowOverride = true
-    private var needLogin = false
+    protected var allowOverride = true
+    protected var needLogin = false
     var webViewTitle = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -96,11 +96,15 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
     override fun getNewFragment(): Fragment {
         if (::url.isInitialized) {
-            return BaseSessionWebViewFragment.newInstance(url, needLogin, allowOverride)
+            return createFragmentInstance()
         } else {
             this.finish()
             return Fragment()
         }
+    }
+
+    protected open fun createFragmentInstance(): Fragment {
+        return BaseSessionWebViewFragment.newInstance(url, needLogin, allowOverride)
     }
 
     override fun onResume() {

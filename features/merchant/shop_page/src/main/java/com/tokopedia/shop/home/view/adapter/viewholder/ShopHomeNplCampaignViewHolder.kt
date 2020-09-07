@@ -1,5 +1,6 @@
 package com.tokopedia.shop.home.view.adapter.viewholder
 
+import android.content.res.Resources
 import android.view.View
 import android.view.ViewGroup
 
@@ -50,6 +51,7 @@ class ShopHomeNplCampaignViewHolder(
         val LAYOUT = R.layout.item_shop_home_new_product_launch_campaign
         private const val TITLE_MARGIN_FIRST_ITEM = 16
         private const val DURATION_TO_HIDE_REMIND_ME_WORDING = 5000L
+        private const val PADDING_LEFT_PERCENTAGE = 0.47f
     }
 
     private var productListCampaignAdapter: ShopCampaignCarouselProductAdapter? = null
@@ -87,6 +89,8 @@ class ShopHomeNplCampaignViewHolder(
                 )
         )
         itemView.rv_product_carousel?.apply {
+            val paddingLeftBasedOnScreen = (getScreenWidth() *  PADDING_LEFT_PERCENTAGE).toInt()
+            setPadding(paddingLeftBasedOnScreen, paddingTop, paddingRight, paddingBottom)
             launch {
                 try {
                     val rvState = model.data?.firstOrNull()?.rvState
@@ -136,14 +140,7 @@ class ShopHomeNplCampaignViewHolder(
             it.bannerType.equals(selectedBannerType, true)
         }?.imageUrl.orEmpty()
         itemView.banner_background?.apply {
-            layoutParams.height = if (isStatusCampaignFinished(statusCampaign)) {
-                adjustViewBounds = true
-                ConstraintLayout.LayoutParams.WRAP_CONTENT
-            } else {
-                adjustViewBounds = false
-                0
-            }
-            setImageUrl(bannerUrl)
+            setImageUrl(bannerUrl, heightRatio = 1f)
         }
     }
 

@@ -23,6 +23,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.baseList)
     implementation project(rootProject.ext.features.topAdsSdk)
+    implementation rootProject.ext.miscDependencies.viewModelKtx
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
@@ -43,6 +44,11 @@ dependencies {
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.networkDependencies.glide
+
+    testImplementation rootProject.ext.testDependencies.assertJ
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+
 }
 
 project.ext {
