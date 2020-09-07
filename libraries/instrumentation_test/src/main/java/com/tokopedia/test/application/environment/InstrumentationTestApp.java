@@ -307,7 +307,7 @@ public class InstrumentationTestApp extends BaseMainApplication
     }
 
     @Override
-    public void sendForceLogoutAnalytics(String url, boolean isInvalidToken, boolean isRequestDenied, String type) {
+    public void sendForceLogoutAnalytics(String url, boolean isInvalidToken, boolean isRequestDenied) {
 
     }
 

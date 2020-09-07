@@ -372,10 +372,6 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             } else {
                 newestRequest = recreateRequestWithNewAccessTokenAccountsAuth(chain);
             }
-            if (isUnauthorized(newestRequest, response) || isNeedGcmUpdate(response)){
-                networkRouter.sendForceLogoutAnalytics(path, isUnauthorized(newestRequest,
-                        response), isNeedGcmUpdate(response), "Refresh Token and GCM Update");
-            }
 
             return chain.proceed(newestRequest);
         } catch (IOException e) {
@@ -396,11 +392,6 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
 
             Request newest = recreateRequestWithNewAccessToken(chain);
 
-            if (isUnauthorized(newest, response) || isNeedGcmUpdate(response)){
-                networkRouter.sendForceLogoutAnalytics(path, isUnauthorized(newest,
-                        response), isNeedGcmUpdate(response), "Refresh Token Only");
-            }
-
             return chain.proceed(newest);
         } catch (IOException e) {
             e.printStackTrace();
@@ -411,9 +402,12 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     protected Response checkForceLogout(Chain chain, Response response, Request finalRequest) throws
             IOException {
         try {
+            String path = getRefreshQueryPath(finalRequest, response);
             if (isNeedGcmUpdate(response)) {
+                networkRouter.sendForceLogoutAnalytics(path, false, true);
                 return refreshTokenAndGcmUpdate(chain, response, finalRequest);
             } else if (isUnauthorized(finalRequest, response)) {
+                networkRouter.sendForceLogoutAnalytics(path, true, false);
                 return refreshToken(chain, response, finalRequest);
             } else if (isInvalidGrantWhenRefreshToken(finalRequest, response)) {
                 networkRouter.logInvalidGrant(response);

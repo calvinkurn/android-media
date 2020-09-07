@@ -19,7 +19,7 @@ public interface NetworkRouter {
     void showMaintenancePage();
 
     void sendForceLogoutAnalytics(String url, boolean isInvalidToken,
-                                  boolean isRequestDenied, String type);
+                                  boolean isRequestDenied);
 
     void showForceLogoutTokenDialog(String path);
 
