@@ -118,6 +118,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener?) : Abstr
             }
             tvTitleTokocash.setText(R.string.home_header_tokocash_unable_to_load_label)
             tvActionTokocash.setText(R.string.home_header_tokocash_refresh_label)
+            tvTitleTokocash.visibility = View.VISIBLE
             tvActionTokocash.visibility = View.VISIBLE
             tvBalanceTokocash.visibility = View.GONE
             tokocashProgressBar.visibility = View.GONE
