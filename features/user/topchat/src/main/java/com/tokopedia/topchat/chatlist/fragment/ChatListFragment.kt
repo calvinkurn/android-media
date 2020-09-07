@@ -362,45 +362,8 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
                     increaseNotificationCounter()
                 }
                 //found on list, not the first
-                index > 0 -> {
-                    val newChatIndex = chatItemListViewModel.pinnedMsgId.size
-                    updateChatPojo(index, newChat, readStatus)
-                    if (index != newChatIndex) {
-                        adapter.list.moveTo(index, newChatIndex)
-                        adapter.notifyItemMoved(index, newChatIndex)
-                    }
-                    adapter.notifyItemChanged(newChatIndex, PAYLOAD_NEW_INCOMING_CHAT)
-                }
-                //found on list, and the first item
-                else -> {
-                    updateChatPojo(index, newChat, readStatus)
-                    adapter.notifyItemChanged(0, PAYLOAD_NEW_INCOMING_CHAT)
-                }
-            }
-        }
-    }
-
-    private fun updateChatPojo(
-            index: Int,
-            newChat: IncomingChatWebSocketModel,
-            readStatus: Int
-    ) {
-        adapter?.let { adapter ->
-            if (index >= adapter.list.size) return
-            adapter.list[index].apply {
-                if (this is ItemChatListPojo) {
-                    if (
-                            attributes?.readStatus == ChatItemListViewHolder.STATE_CHAT_READ &&
-                            readStatus == ChatItemListViewHolder.STATE_CHAT_UNREAD
-                    ) {
-                        increaseNotificationCounter()
-                    }
-                    attributes?.lastReplyMessage = newChat.message
-                    attributes?.unreads = attributes?.unreads.toZeroIfNull() + 1
-                    attributes?.unreadReply = attributes?.unreadReply.toZeroIfNull() + 1
-                    attributes?.readStatus = readStatus
-                    attributes?.lastReplyTimeStr = newChat.time
-                    attributes?.isReplyByTopbot = newChat.contact?.isAutoReply ?: false
+                index >= 0 -> {
+                    adapter.onNewIncomingChatMessage(index, newChat, readStatus, chatItemListViewModel.pinnedMsgId)
                 }
             }
         }
@@ -474,7 +437,7 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory> {
-        return ChatListAdapter(adapterTypeFactory)
+        return ChatListAdapter(this, adapterTypeFactory)
     }
 
     override fun getAdapter(): ChatListAdapter? {

@@ -7,8 +7,11 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.kotlin.extensions.view.goToFirst
 import com.tokopedia.kotlin.extensions.view.moveTo
+import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.topchat.chatlist.adapter.typefactory.ChatListTypeFactoryImpl
+import com.tokopedia.topchat.chatlist.adapter.viewholder.ChatItemListViewHolder
 import com.tokopedia.topchat.chatlist.adapter.viewholder.ChatItemListViewHolder.Companion.PAYLOAD_UPDATE_PIN_STATUS
+import com.tokopedia.topchat.chatlist.listener.ChatListItemListener
 import com.tokopedia.topchat.chatlist.model.EmptyChatModel
 import com.tokopedia.topchat.chatlist.model.IncomingChatWebSocketModel
 import com.tokopedia.topchat.chatlist.pojo.ItemChatAttributesPojo
@@ -17,8 +20,10 @@ import com.tokopedia.topchat.chatlist.pojo.ItemChatListPojo
 /**
  * @author : Steven 2019-08-09
  */
-class ChatListAdapter(adapterTypeFactory: ChatListTypeFactoryImpl) :
-        BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory>(adapterTypeFactory) {
+class ChatListAdapter constructor(
+        private val listener: ChatListItemListener,
+        adapterTypeFactory: ChatListTypeFactoryImpl
+) : BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory>(adapterTypeFactory) {
 
     override fun isContainData(): Boolean {
         return visitables.size > 0 && !hasEmptyModel()
@@ -114,6 +119,22 @@ class ChatListAdapter(adapterTypeFactory: ChatListTypeFactoryImpl) :
         notifyItemInserted(newChatIndex)
     }
 
+    fun onNewIncomingChatMessage(
+            index: Int,
+            newChat: IncomingChatWebSocketModel,
+            readStatus: Int,
+            pinnedMsgId: Set<String>
+    ) {
+
+        val newChatIndex = pinnedMsgId.size
+        updateChatPojo(index, newChat, readStatus)
+        if (index != newChatIndex) {
+            visitables.moveTo(index, newChatIndex)
+            notifyItemMoved(index, newChatIndex)
+        }
+        notifyItemChanged(newChatIndex, ChatItemListViewHolder.PAYLOAD_NEW_INCOMING_CHAT)
+    }
+
     private fun findElementFinalIndex(element: ItemChatListPojo, offset: Int): Int {
         if (offset < 0 || offset >= visitables.size) return RecyclerView.NO_POSITION
         var finalIndex = RecyclerView.NO_POSITION
@@ -137,6 +158,30 @@ class ChatListAdapter(adapterTypeFactory: ChatListTypeFactoryImpl) :
             previouslyKnownPosition
         } else {
             visitables.indexOf(element)
+        }
+    }
+
+    private fun updateChatPojo(
+            index: Int,
+            newChat: IncomingChatWebSocketModel,
+            readStatus: Int
+    ) {
+        if (index >= visitables.size) return
+        visitables[index].apply {
+            if (this is ItemChatListPojo) {
+                if (
+                        attributes?.readStatus == ChatItemListViewHolder.STATE_CHAT_READ &&
+                        readStatus == ChatItemListViewHolder.STATE_CHAT_UNREAD
+                ) {
+                    listener.increaseNotificationCounter()
+                }
+                attributes?.lastReplyMessage = newChat.message
+                attributes?.unreads = attributes?.unreads.toZeroIfNull() + 1
+                attributes?.unreadReply = attributes?.unreadReply.toZeroIfNull() + 1
+                attributes?.readStatus = readStatus
+                attributes?.lastReplyTimeStr = newChat.time
+                attributes?.isReplyByTopbot = newChat.contact?.isAutoReply ?: false
+            }
         }
     }
 
