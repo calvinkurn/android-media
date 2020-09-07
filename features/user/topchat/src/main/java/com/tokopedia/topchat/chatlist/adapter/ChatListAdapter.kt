@@ -125,8 +125,12 @@ class ChatListAdapter constructor(
             readStatus: Int,
             pinnedMsgId: Set<String>
     ) {
-
-        val newChatIndex = pinnedMsgId.size
+        val isChatPinned = pinnedMsgId.contains(newChat.msgId)
+        val newChatIndex = if (isChatPinned) {
+            index
+        } else {
+            pinnedMsgId.size
+        }
         updateChatPojo(index, newChat, readStatus)
         if (index != newChatIndex) {
             visitables.moveTo(index, newChatIndex)
