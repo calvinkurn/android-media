@@ -3,6 +3,10 @@ package com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.diffc
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingPaymentOrder
 
+/**
+ * Created by yusuf.hendrawan on 2020-09-07.
+ */
+
 class WaitingPaymentOrderProductDiffCallback(
         private val oldList: List<WaitingPaymentOrder.Product>,
         private val newList: List<WaitingPaymentOrder.Product>

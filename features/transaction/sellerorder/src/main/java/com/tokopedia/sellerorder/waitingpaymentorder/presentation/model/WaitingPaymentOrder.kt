@@ -5,6 +5,10 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.typefactory.WaitingPaymentOrderAdapterTypeFactory
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.typefactory.WaitingPaymentOrderProductsAdapterTypeFactory
 
+/**
+ * Created by yusuf.hendrawan on 2020-09-07.
+ */
+
 data class WaitingPaymentOrder(
         val orderId: String,
         val paymentDeadline: String,

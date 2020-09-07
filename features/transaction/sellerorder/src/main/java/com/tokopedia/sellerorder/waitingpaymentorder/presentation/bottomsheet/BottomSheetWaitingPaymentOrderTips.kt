@@ -21,6 +21,10 @@ import com.tokopedia.sellerorder.waitingpaymentorder.presentation.provider.Waiti
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
 
+/**
+ * Created by yusuf.hendrawan on 2020-09-07.
+ */
+
 class BottomSheetWaitingPaymentOrderTips : BottomSheetUnify() {
     private val adapter by lazy {
         BaseAdapter(WaitingPaymentOrderTipsTypeFactory())

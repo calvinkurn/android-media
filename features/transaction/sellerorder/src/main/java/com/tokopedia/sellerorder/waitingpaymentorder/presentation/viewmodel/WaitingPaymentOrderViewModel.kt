@@ -14,6 +14,10 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
+/**
+ * Created by yusuf.hendrawan on 2020-09-07.
+ */
+
 class WaitingPaymentOrderViewModel @Inject constructor(
         dispatcher: SomDispatcherProvider,
         private val getWaitingPaymentOrderUseCase: GetWaitingPaymentOrderUseCase

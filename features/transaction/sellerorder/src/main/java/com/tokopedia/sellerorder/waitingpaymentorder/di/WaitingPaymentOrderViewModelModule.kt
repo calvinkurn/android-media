@@ -10,7 +10,7 @@ import dagger.Module
 import dagger.multibindings.IntoMap
 
 /**
- * Created by fwidjaja on 2019-08-28.
+ * Created by yusuf.hendrawan on 2020-09-07.
  */
 
 @Module

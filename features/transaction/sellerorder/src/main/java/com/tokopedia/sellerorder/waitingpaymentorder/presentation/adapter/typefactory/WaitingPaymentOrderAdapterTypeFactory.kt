@@ -11,6 +11,10 @@ import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.viewho
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.viewholder.WaitingPaymentOrdersViewHolder
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingPaymentOrder
 
+/**
+ * Created by yusuf.hendrawan on 2020-09-07.
+ */
+
 class WaitingPaymentOrderAdapterTypeFactory : BaseAdapterTypeFactory() {
     fun type(waitingPaymentOrder: WaitingPaymentOrder): Int {
         return WaitingPaymentOrdersViewHolder.LAYOUT

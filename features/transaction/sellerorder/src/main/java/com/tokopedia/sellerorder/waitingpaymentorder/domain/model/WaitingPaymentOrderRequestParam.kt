@@ -5,6 +5,10 @@ import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
+/**
+ * Created by yusuf.hendrawan on 2020-09-07.
+ */
+
 data class WaitingPaymentOrderRequestParam(
         @SerializedName("is_mobile")
         @Expose

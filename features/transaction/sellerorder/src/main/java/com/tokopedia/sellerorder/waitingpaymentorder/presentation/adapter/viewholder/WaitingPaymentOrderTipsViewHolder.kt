@@ -8,11 +8,16 @@ import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingP
 import com.tokopedia.unifycomponents.setImage
 import kotlinx.android.synthetic.main.bottomsheet_waiting_payment_order_tips_item.view.*
 
+/**
+ * Created by yusuf.hendrawan on 2020-09-07.
+ */
+
 class WaitingPaymentOrderTipsViewHolder(itemView: View?) : AbstractViewHolder<WaitingPaymentOrderTipsUiModel>(itemView) {
     companion object {
         val LAYOUT = R.layout.bottomsheet_waiting_payment_order_tips_item
     }
 
+    @Suppress("NAME_SHADOWING")
     override fun bind(element: WaitingPaymentOrderTipsUiModel?) {
         element?.let { element ->
             with(itemView) {

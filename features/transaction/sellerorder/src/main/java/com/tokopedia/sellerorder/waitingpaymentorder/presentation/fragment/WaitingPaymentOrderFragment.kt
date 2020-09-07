@@ -29,6 +29,10 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
+/**
+ * Created by yusuf.hendrawan on 2020-09-07.
+ */
+
 class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, WaitingPaymentOrderAdapterTypeFactory>() {
 
     companion object {

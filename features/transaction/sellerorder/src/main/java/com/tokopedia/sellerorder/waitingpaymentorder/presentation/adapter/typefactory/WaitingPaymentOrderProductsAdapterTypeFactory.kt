@@ -7,6 +7,10 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.viewholder.WaitingPaymentOrderProductViewHolder
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingPaymentOrder
 
+/**
+ * Created by yusuf.hendrawan on 2020-09-07.
+ */
+
 class WaitingPaymentOrderProductsAdapterTypeFactory : BaseAdapterTypeFactory() {
     fun type(product: WaitingPaymentOrder.Product): Int {
         return WaitingPaymentOrderProductViewHolder.LAYOUT

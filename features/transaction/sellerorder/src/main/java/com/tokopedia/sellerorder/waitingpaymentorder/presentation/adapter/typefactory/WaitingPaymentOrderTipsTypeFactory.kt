@@ -7,6 +7,10 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.viewholder.WaitingPaymentOrderTipsViewHolder
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingPaymentOrderTipsUiModel
 
+/**
+ * Created by yusuf.hendrawan on 2020-09-07.
+ */
+
 class WaitingPaymentOrderTipsTypeFactory : BaseAdapterTypeFactory() {
     fun type(waitingPaymentOrderTipsUiModel: WaitingPaymentOrderTipsUiModel): Int {
         return WaitingPaymentOrderTipsViewHolder.LAYOUT

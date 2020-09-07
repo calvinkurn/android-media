@@ -8,6 +8,10 @@ import com.tokopedia.sellerorder.waitingpaymentorder.domain.model.WaitingPayment
 import javax.inject.Inject
 import kotlin.random.Random
 
+/**
+ * Created by yusuf.hendrawan on 2020-09-07.
+ */
+
 class GetWaitingPaymentOrderUseCase @Inject constructor(
         private val useCase: GraphqlUseCase<WaitingPaymentOrderResponse.Data>,
         private val mapper: WaitingPaymentOrderResultMapper
@@ -24,13 +28,10 @@ class GetWaitingPaymentOrderUseCase @Inject constructor(
 //    }
 
     suspend fun execute(param: WaitingPaymentOrderRequestParam): Map<String, Any> {
-        val randomSuccess = Random.nextInt(1, 3)
-        return if (randomSuccess == 1) {
-            mapper.mapDomainToModelData(generateDummyData(param))
-        } else if (randomSuccess == 2) {
-            throw Exception("Wkwk iseng aja si")
-        } else {
-            mapper.mapDomainToModelData(generateEmptyData(param))
+        return when (Random.nextInt(1, 3)) {
+            1 -> mapper.mapDomainToModelData(generateDummyData(param))
+            2 -> throw Exception("Wkwk iseng aja si")
+            else -> mapper.mapDomainToModelData(generateEmptyData(param))
         }
     }
 

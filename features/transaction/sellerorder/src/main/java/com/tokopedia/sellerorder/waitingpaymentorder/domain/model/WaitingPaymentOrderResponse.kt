@@ -3,6 +3,10 @@ package com.tokopedia.sellerorder.waitingpaymentorder.domain.model
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
+/**
+ * Created by yusuf.hendrawan on 2020-09-07.
+ */
+
 data class WaitingPaymentOrderResponse(
         @SerializedName("data")
         @Expose

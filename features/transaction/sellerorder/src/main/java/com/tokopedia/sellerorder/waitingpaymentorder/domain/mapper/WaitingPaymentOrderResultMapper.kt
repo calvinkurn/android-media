@@ -5,6 +5,10 @@ import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.Paging
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingPaymentOrder
 import javax.inject.Inject
 
+/**
+ * Created by yusuf.hendrawan on 2020-09-07.
+ */
+
 class WaitingPaymentOrderResultMapper @Inject constructor() {
     fun mapDomainToModelData(result: WaitingPaymentOrderResponse.Data.WaitingPaymentOrder): Map<String, Any> {
         return mapOf(

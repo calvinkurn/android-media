@@ -6,6 +6,10 @@ import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.diffca
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.typefactory.WaitingPaymentOrderProductsAdapterTypeFactory
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingPaymentOrder
 
+/**
+ * Created by yusuf.hendrawan on 2020-09-07.
+ */
+
 class WaitingPaymentOrderProductsAdapter(
         adapterTypeFactory: WaitingPaymentOrderProductsAdapterTypeFactory
 ) : BaseListAdapter<WaitingPaymentOrder.Product, WaitingPaymentOrderProductsAdapterTypeFactory>(adapterTypeFactory) {

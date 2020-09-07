@@ -10,10 +10,17 @@ import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.typefa
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingPaymentOrder
 import kotlinx.android.synthetic.main.item_waiting_payment_orders.view.*
 
+/**
+ * Created by yusuf.hendrawan on 2020-09-07.
+ */
+
 class WaitingPaymentOrdersViewHolder(itemView: View?) : AbstractViewHolder<WaitingPaymentOrder>(itemView) {
 
     companion object {
         val LAYOUT = R.layout.item_waiting_payment_orders
+        const val MAX_ORDER_WHEN_COLLAPSED = 5
+        const val COLLAPSE_EXPAND_DURATION = 500L
+        const val FRAME_TIME = 17L
     }
 
     private val adapter: WaitingPaymentOrderProductsAdapter by lazy {
@@ -22,6 +29,7 @@ class WaitingPaymentOrdersViewHolder(itemView: View?) : AbstractViewHolder<Waiti
 
     private var products: List<WaitingPaymentOrder.Product> = emptyList()
 
+    @Suppress("NAME_SHADOWING")
     override fun bind(element: WaitingPaymentOrder?) {
         element?.let { element ->
             products = element.products
@@ -29,7 +37,7 @@ class WaitingPaymentOrdersViewHolder(itemView: View?) : AbstractViewHolder<Waiti
                 tvValuePaymentDeadline.text = element.paymentDeadline
                 tvValueBuyerNameAndPlace.text = element.buyerNameAndPlace
                 tvToggleCollapseMoreProducts.apply {
-                    showWithCondition(element.products.size > 5)
+                    showWithCondition(element.products.size > MAX_ORDER_WHEN_COLLAPSED)
                     updateToggleCollapseText(element.isExpanded)
                     setOnClickListener {
                         itemView.tvToggleCollapseMoreProducts.isClickable = false
@@ -55,9 +63,9 @@ class WaitingPaymentOrdersViewHolder(itemView: View?) : AbstractViewHolder<Waiti
 
     private fun updateToggleCollapseText(expanded: Boolean) {
         itemView.tvToggleCollapseMoreProducts.text = if (expanded) {
-            "Lebih Sedikit"
+            itemView.context.getString(R.string.waiting_payment_orders_less_product)
         } else {
-            "Tampilkan Lebih Banyak"
+            itemView.context.getString(R.string.waiting_payment_orders_more_products)
         }
     }
 
@@ -65,17 +73,17 @@ class WaitingPaymentOrdersViewHolder(itemView: View?) : AbstractViewHolder<Waiti
         return if (element.isExpanded) {
             products
         } else {
-            products.take(5)
+            products.take(MAX_ORDER_WHEN_COLLAPSED)
         }
     }
 
     private fun collapseMoreProducts() {
-        val diff = adapter.dataSize - 5
-        val delay = (500 / diff).toLong().coerceAtMost(33)
-        for (i in 1..adapter.dataSize - 5) {
+        val diff = adapter.dataSize - MAX_ORDER_WHEN_COLLAPSED
+        val delay = (COLLAPSE_EXPAND_DURATION / diff).coerceAtMost(FRAME_TIME)
+        for (i in 1..adapter.dataSize - MAX_ORDER_WHEN_COLLAPSED) {
             Handler().postDelayed({
                 adapter.updateProducts(products.take(products.size - i))
-                if (i == adapter.dataSize - 5) {
+                if (i == MAX_ORDER_WHEN_COLLAPSED) {
                     itemView.tvToggleCollapseMoreProducts.isClickable = true
                 }
             }, (delay * i))
@@ -84,9 +92,9 @@ class WaitingPaymentOrdersViewHolder(itemView: View?) : AbstractViewHolder<Waiti
     }
 
     private fun showMoreProducts() {
-        val diff = products.size - 5
-        val delay = (500 / diff).toLong().coerceAtMost(33)
-        for (i in 6..products.size) {
+        val diff = products.size - MAX_ORDER_WHEN_COLLAPSED
+        val delay = (COLLAPSE_EXPAND_DURATION / diff).coerceAtMost(FRAME_TIME)
+        for (i in (MAX_ORDER_WHEN_COLLAPSED + 1)..products.size) {
             Handler().postDelayed({
                 adapter.updateProducts(products.take(i))
                 if (i == products.size) {
