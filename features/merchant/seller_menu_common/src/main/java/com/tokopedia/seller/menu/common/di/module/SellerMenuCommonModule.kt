@@ -24,11 +24,4 @@ class SellerMenuCommonModule {
         val analytics = TrackApp.getInstance().gtm
         return SettingFreeShippingTracker(analytics, userSession)
     }
-
-    @SellerMenuCommonScope
-    @Provides
-    fun provideSellerMenuTracker(userSession: UserSessionInterface): SellerMenuTracker {
-        val analytics = TrackApp.getInstance().gtm
-        return SellerMenuTracker(analytics, userSession)
-    }
 }

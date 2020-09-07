@@ -28,7 +28,7 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 04/09/20
  */
 
-class SellerMenuTracker @Inject constructor(
+class SellerMenuTracker(
         private val analytics: Analytics,
         private val userSession: UserSessionInterface
 ) {

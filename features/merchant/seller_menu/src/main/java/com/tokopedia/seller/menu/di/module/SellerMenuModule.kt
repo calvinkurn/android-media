@@ -13,6 +13,7 @@ import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.seller.menu.coroutine.CoroutineDispatchers
 import com.tokopedia.seller.menu.coroutine.CoroutineDispatchersProvider
 import com.tokopedia.seller.menu.di.scope.SellerMenuScope
@@ -55,10 +56,6 @@ class SellerMenuModule {
 
     @SellerMenuScope
     @Provides
-    fun provideAnalytics(): Analytics = TrackApp.getInstance().gtm
-
-    @SellerMenuScope
-    @Provides
     fun provideNetworkRouter(@ApplicationContext context: Context): NetworkRouter {
         return context as NetworkRouter
     }
@@ -73,6 +70,12 @@ class SellerMenuModule {
         return TkpdAuthInterceptor(context, networkRouter, userSession)
     }
 
+    @SellerMenuScope
+    @Provides
+    fun provideSellerMenuTracker(userSession: UserSessionInterface): SellerMenuTracker {
+        val analytics = TrackApp.getInstance().gtm
+        return SellerMenuTracker(analytics, userSession)
+    }
 
     @SellerMenuScope
     @Provides
