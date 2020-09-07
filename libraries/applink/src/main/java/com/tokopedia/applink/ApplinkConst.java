@@ -102,9 +102,9 @@ public interface ApplinkConst {
             "={customMessage}&source={source}&opponent_name={opponent_name}&avatar={avatar}";
     String TOPCHAT_ASKBUYER = "tokopedia://topchat/askbuyer/{toUserId}?customMessage" +
             "={customMessage}&source={source}&opponent_name={opponent_name}&avatar={avatar}";
-    String TOPCHAT_QUICKEDIT_STOCK = "tokopedia://topchat/quickedit/stock?shop_id={shop_id}&product_id={product_id}" +
+    String TOPCHAT_QUICKEDIT_STOCK = "tokopedia://topchat/stock/{message_id}?shop_id={shop_id}&product_id={product_id}" +
             "&product_name={product_name}&product_status={product_status}&stock={stock}&has_reserved={has_reserved}";
-    String TOPCHAT_QUICKEDIT_VARIANT = "tokopedia://topchat/quickedit/variant?product_id={product_id}&has_reserved={has_reserved}";
+    String TOPCHAT_QUICKEDIT_VARIANT = "tokopedia://topchat/variant/{message_id}?product_id={product_id}&has_reserved={has_reserved}";
     String CHATBOT = "tokopedia://chatbot/{message_id}";
     String CHAT_BOT = "tokopedia://chatbot";
     String GROUPCHAT_LIST = "tokopedia://groupchat";
@@ -446,7 +446,6 @@ public interface ApplinkConst {
 
         String PATH_ASK_SELLER = "askseller";
         String PATH_ASK_BUYER = "askbuyer";
-        String PATH_QUICKEDIT = "quickedit";
         String PATH_STOCK = "stock";
         String PATH_VARIANT = "variant";
 

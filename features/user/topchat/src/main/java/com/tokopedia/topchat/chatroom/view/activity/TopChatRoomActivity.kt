@@ -206,8 +206,6 @@ class TopChatRoomActivity : BaseChatToolbarActivity(), ProductManageQuickEditSto
                     intent.putExtra(ApplinkConst.Chat.TO_USER_ID, toUserId)
                     intent.putExtra(ApplinkConst.Chat.OPPONENT_ID, toUserId)
                 }
-                pathSegments.contains(ApplinkConst.Chat.PATH_STOCK) -> {}
-                pathSegments.contains(ApplinkConst.Chat.PATH_VARIANT) -> {}
                 else -> {
                     val messageId = intent?.data?.lastPathSegment.toZeroStringIfNull()
                     intent.putExtra(ApplinkConst.Chat.MESSAGE_ID, messageId)
