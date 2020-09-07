@@ -10,12 +10,14 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.TalkInstance
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.talk.feature.inbox.analytics.TalkInboxTracking
 import com.tokopedia.talk.feature.inbox.data.TalkInboxTab
 import com.tokopedia.talk.feature.inbox.di.DaggerTalkInboxContainerComponent
 import com.tokopedia.talk.feature.inbox.di.TalkInboxContainerComponent
 import com.tokopedia.talk.feature.inbox.presentation.adapter.TalkInboxContainerAdapter
 import com.tokopedia.talk.feature.inbox.presentation.listener.TalkInboxListener
 import com.tokopedia.talk_old.R
+import com.tokopedia.unifycomponents.setCustomText
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_talk_inbox_container.*
 import javax.inject.Inject
@@ -23,6 +25,8 @@ import javax.inject.Inject
 class TalkInboxContainerFragment : BaseDaggerFragment(), HasComponent<TalkInboxContainerComponent>, TalkInboxListener {
 
     companion object {
+        const val SELLER_TAB_INDEX = 0
+        const val BUYER_TAB_INDEX = 1
         fun createNewInstance(): TalkInboxContainerFragment {
             return TalkInboxContainerFragment()
         }
@@ -30,6 +34,9 @@ class TalkInboxContainerFragment : BaseDaggerFragment(), HasComponent<TalkInboxC
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    private var sellerUnreadCount = 0
+    private var buyerUnreadCount = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
@@ -62,10 +69,12 @@ class TalkInboxContainerFragment : BaseDaggerFragment(), HasComponent<TalkInboxC
 
     override fun updateUnreadCounter(sellerUnread: Int, buyerUnread: Int) {
         if(sellerUnread != 0) {
-            talkInboxTabs.tabLayout.getTabAt(0)?.text = "${userSession.shopName} $sellerUnread"
+            sellerUnreadCount = sellerUnread
+            talkInboxTabs.tabLayout.getTabAt(SELLER_TAB_INDEX)?.setCustomText("${userSession.shopName} $sellerUnread")
         }
         if(buyerUnread != 0) {
-            talkInboxTabs.tabLayout.getTabAt(1)?.text = "${userSession.name} $buyerUnread"
+            buyerUnreadCount = buyerUnread
+            talkInboxTabs.tabLayout.getTabAt(BUYER_TAB_INDEX)?.setCustomText("${userSession.name} $buyerUnread")
         }
     }
 
@@ -76,6 +85,7 @@ class TalkInboxContainerFragment : BaseDaggerFragment(), HasComponent<TalkInboxC
         }
         talkInboxViewPager.registerOnPageChangeCallback(object: ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
+                trackTabChange(position)
                 talkInboxTabs.getUnifyTabLayout().getTabAt(position)?.select()
             }
         })
@@ -92,6 +102,7 @@ class TalkInboxContainerFragment : BaseDaggerFragment(), HasComponent<TalkInboxC
             }
 
             override fun onTabSelected(tab: TabLayout.Tab) {
+                trackTabChange(tab.position)
                 talkInboxViewPager.setCurrentItem(tab.position, true)
             }
 
@@ -112,6 +123,14 @@ class TalkInboxContainerFragment : BaseDaggerFragment(), HasComponent<TalkInboxC
     private fun getTabTitles(): List<String> {
         return with(userSession) {
             listOf(shopName, name)
+        }
+    }
+
+    private fun trackTabChange(position: Int) {
+        if(position == SELLER_TAB_INDEX) {
+            TalkInboxTracking.eventClickTab(TalkInboxTab.SHOP_TAB, userSession.userId, userSession.shopId, sellerUnreadCount)
+        } else {
+            TalkInboxTracking.eventClickTab(TalkInboxTab.BUYER_TAB, userSession.userId, userSession.shopId, buyerUnreadCount)
         }
     }
 

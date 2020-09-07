@@ -26,6 +26,7 @@ import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
 import com.tokopedia.talk.common.constants.TalkConstants
 import com.tokopedia.talk.feature.inbox.analytics.TalkInboxTracking
+import com.tokopedia.talk.feature.inbox.analytics.TalkInboxTrackingConstants
 import com.tokopedia.talk.feature.inbox.data.TalkInboxFilter
 import com.tokopedia.talk.feature.inbox.data.TalkInboxTab
 import com.tokopedia.talk.feature.inbox.di.DaggerTalkInboxComponent
@@ -81,7 +82,7 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
     }
 
     override fun getScreenName(): String {
-        return ""
+        return TalkInboxTrackingConstants.SCREEN_NAME
     }
 
     override fun initInjector() {
@@ -89,8 +90,10 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
     }
 
     override fun onItemClicked(talkUiModel: TalkInboxUiModel?) {
-        talkUiModel?.let {
-            goToReply(it.inboxDetail.questionID)
+        talkUiModel?.inboxDetail?.let {
+            TalkInboxTracking.eventClickThread(viewModel.getType(), it.questionID, it.productID,
+                    viewModel.getActiveFilter(), !it.isUnread, viewModel.getShopId(), viewModel.getUnreadCount(), viewModel.getUserId())
+            goToReply(it.questionID)
         }
     }
 
@@ -185,27 +188,31 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
         viewModel.inboxList.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is TalkInboxViewState.Success -> {
-                    hideFullPageError()
-                    hideFullPageLoading()
-                    if(it.page == TalkConstants.DEFAULT_INITIAL_PAGE) {
-                        talkInboxListener?.updateUnreadCounter(it.data.sellerUnread, it.data.buyerUnread)
-                        hideLoading()
-                        if(it.data.inbox.isEmpty()) {
-                            when(it.filter) {
-                                is TalkInboxFilter.TalkInboxNoFilter -> {
-                                    showEmptyInbox()
+                    with(it.data) {
+                        TalkInboxTracking.eventLazyLoad(viewModel.getType(), it.page, inbox.count { inbox -> inbox.isUnread }, inbox.count { inbox -> !inbox.isUnread }, shopID, viewModel.getUserId())
+                        hideFullPageError()
+                        hideFullPageLoading()
+                        if(it.page == TalkConstants.DEFAULT_INITIAL_PAGE) {
+                            talkInboxListener?.updateUnreadCounter(it.data.sellerUnread, it.data.buyerUnread)
+                            hideLoading()
+                            if(it.data.inbox.isEmpty()) {
+                                when(it.filter) {
+                                    is TalkInboxFilter.TalkInboxNoFilter -> {
+                                        showEmptyInbox()
+                                    }
+                                    is TalkInboxFilter.TalkInboxUnreadFilter -> {
+                                        showEmptyUnread()
+                                    }
+                                    is TalkInboxFilter.TalkInboxReadFilter -> {
+                                        showEmptyRead()
+                                    }
                                 }
-                                is TalkInboxFilter.TalkInboxUnreadFilter -> {
-                                    showEmptyUnread()
-                                }
-                                is TalkInboxFilter.TalkInboxReadFilter -> {
-                                    showEmptyRead()
-                                }
+                                return@Observer
                             }
-                            return@Observer
                         }
+                        renderData(inbox.map { inbox -> TalkInboxUiModel(inbox) }, it.data.hasNext)
                     }
-                    renderData(it.data.inbox.map { inbox -> TalkInboxUiModel(inbox) }, it.data.hasNext)
+
                 }
                 is TalkInboxViewState.Fail -> {
                     hideFullPageLoading()

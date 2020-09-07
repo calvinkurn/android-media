@@ -14,6 +14,8 @@ import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringConstants
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
 import com.tokopedia.talk.common.di.DaggerTalkComponent
 import com.tokopedia.talk.common.di.TalkComponent
+import com.tokopedia.talk.feature.inbox.analytics.TalkInboxTracking
+import com.tokopedia.talk.feature.inbox.analytics.TalkInboxTrackingConstants
 import com.tokopedia.talk.feature.inbox.data.TalkInboxTab
 import com.tokopedia.talk.feature.inbox.presentation.fragment.TalkInboxContainerFragment
 import com.tokopedia.talk.feature.inbox.presentation.fragment.TalkInboxFragment
@@ -37,6 +39,7 @@ class TalkInboxActivity : BaseSimpleActivity(), TalkPerformanceMonitoringListene
     override fun onCreate(savedInstanceState: Bundle?) {
         component.inject(this)
         super.onCreate(savedInstanceState)
+        TalkInboxTracking.openScreen(screenName)
     }
 
     override fun getNewFragment(): Fragment? {
@@ -110,5 +113,9 @@ class TalkInboxActivity : BaseSimpleActivity(), TalkPerformanceMonitoringListene
         pageLoadTimePerformanceMonitoring?.let {
             it.stopRenderPerformanceMonitoring()
         }
+    }
+
+    override fun getScreenName(): String {
+        return TalkInboxTrackingConstants.SCREEN_NAME
     }
 }

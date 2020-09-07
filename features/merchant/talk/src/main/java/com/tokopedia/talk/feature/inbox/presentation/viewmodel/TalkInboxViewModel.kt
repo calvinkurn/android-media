@@ -10,14 +10,16 @@ import com.tokopedia.talk.common.coroutine.CoroutineDispatchers
 import com.tokopedia.talk.feature.inbox.analytics.TalkInboxTracking
 import com.tokopedia.talk.feature.inbox.data.DiscussionInbox
 import com.tokopedia.talk.feature.inbox.data.TalkInboxFilter
-import com.tokopedia.talk.feature.inbox.domain.usecase.TalkInboxListUseCase
-import com.tokopedia.talk.feature.inbox.presentation.adapter.uimodel.TalkInboxUiModel
+import com.tokopedia.talk.feature.inbox.data.TalkInboxTab
 import com.tokopedia.talk.feature.inbox.data.TalkInboxViewState
+import com.tokopedia.talk.feature.inbox.domain.usecase.TalkInboxListUseCase
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class TalkInboxViewModel @Inject constructor(
         dispatcher: CoroutineDispatchers,
-        private val talkInboxListUseCase: TalkInboxListUseCase
+        private val talkInboxListUseCase: TalkInboxListUseCase,
+        private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatcher.io) {
 
     private val _inboxList: MediatorLiveData<TalkInboxViewState<DiscussionInbox>> = MediatorLiveData()
@@ -25,13 +27,9 @@ class TalkInboxViewModel @Inject constructor(
         get() = _inboxList
 
     private var shopId: String = ""
+    private var unreadCount: Int = 0
     private var type: String = ""
     private var filter: TalkInboxFilter = TalkInboxFilter.TalkInboxNoFilter()
-
-    fun getShopId(): String {
-        return shopId
-    }
-
     private val page = MutableLiveData<Int>()
 
     init {
@@ -40,6 +38,27 @@ class TalkInboxViewModel @Inject constructor(
         }
     }
 
+    fun getShopId(): String {
+        return shopId
+    }
+
+    fun getUnreadCount(): Int {
+        return unreadCount
+    }
+
+    fun getActiveFilter(): String {
+        return filter.filterParam
+    }
+
+    fun getType(): String {
+        return type
+    }
+
+    fun getUserId(): String {
+        return userSession.userId
+    }
+
+
     fun setInboxType(inboxType: String) {
         this.type = inboxType
         resetPage()
@@ -47,9 +66,11 @@ class TalkInboxViewModel @Inject constructor(
 
     fun setFilter(selectedFilter: TalkInboxFilter) {
         if(this.filter == selectedFilter) {
+            TalkInboxTracking.eventClickFilter(selectedFilter.filterParam, getType(), getUnreadCount(), false, getShopId(), getUserId())
             resetFilter()
             return
         }
+        TalkInboxTracking.eventClickFilter(selectedFilter.filterParam, getType(), getUnreadCount(), true, getShopId(), getUserId())
         this.filter = selectedFilter
         resetPage()
     }
@@ -73,6 +94,11 @@ class TalkInboxViewModel @Inject constructor(
             talkInboxListUseCase.setRequestParam(type, filter.filterParam, page)
             val response = talkInboxListUseCase.executeOnBackground()
             shopId = response.discussionInbox.shopID
+            unreadCount = if(type == TalkInboxTab.SHOP_TAB) {
+                response.discussionInbox.sellerUnread
+            } else {
+                response.discussionInbox.buyerUnread
+            }
             _inboxList.postValue(TalkInboxViewState.Success(response.discussionInbox, page, filter))
         }) {
             _inboxList.postValue(TalkInboxViewState.Fail(it, page))
