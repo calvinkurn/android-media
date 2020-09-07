@@ -38,6 +38,9 @@ class SellerHomeNavigator(
               fm: FragmentManager) {
         val transaction = fm.beginTransaction()
         val fragment = getPageFragment(page)
+        fm.fragments.forEach {
+            transaction.remove(it)
+        }
         addAllPages(fragment, transaction)
 
         fragment?.let {
@@ -141,7 +144,7 @@ class SellerHomeNavigator(
         return currentSelectedPage == FragmentType.HOME
     }
 
-    fun getCurrentSelectedPage(): Int = currentSelectedPage ?: FragmentType.HOME
+    fun getCurrentSelectedPage() = currentSelectedPage ?: FragmentType.HOME
 
     private fun initFragments() {
         homeFragment = SellerHomeFragment.newInstance()
