@@ -196,7 +196,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     private var shopSortSharedViewModel: ShopSortSharedViewModel? = null
     private var shopChangeProductGridSharedViewModel: ShopChangeProductGridSharedViewModel? = null
     private var threeDotsClickShopTrackingType = -1
-    private var initialProductListData : Pair<Boolean, List<ShopProductViewModel>>? = null
+    private var initialProductListData : GetShopProductUiModel? = null
     private var staggeredGridLayoutManager: StaggeredGridLayoutManager? = null
     private val shopProductAdapter: ShopProductAdapter
         get() = adapter as ShopProductAdapter
@@ -515,7 +515,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                     shopProductAdapter.changeSelectedSortFilter(sortId, sortName)
                     shopProductAdapter.refreshSticky()
                     updateInitialProductListSortId(sortId)
-                    scrollToProductEtalaseSegment()
+                    scrollToChangeProductGridSegment()
                     loadNewProductData()
                 }
             }
@@ -541,11 +541,11 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    private fun scrollToProductEtalaseSegment() {
+    private fun scrollToChangeProductGridSegment() {
         //multiply with 2 to make first dy value on onScroll function greater than rv top padding
         getRecyclerView(view).smoothScrollBy(0, recyclerViewTopPadding * 2)
         staggeredGridLayoutManager?.scrollToPositionWithOffset(
-                shopProductAdapter.shopProductEtalaseTitlePosition,
+                shopProductAdapter.shopChangeProductGridSegment,
                 shopSortFilterHeight + recyclerViewTopPadding
         )
     }
@@ -942,8 +942,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     private fun observeShopChangeProductGridSharedViewModel() {
         shopChangeProductGridSharedViewModel?.sharedProductGridType?.observe(viewLifecycleOwner, Observer {
             if (!shopProductAdapter.isLoading) {
-                shopProductAdapter.updateShopPageProductChangeGridSection(it)
-                shopProductAdapter.changeProductCardGridType(it)
+                changeProductListGridView(it)
             }
         })
     }
@@ -975,8 +974,10 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         viewModel.claimMembershipResp.removeObservers(this)
         viewModel.newMembershipData.removeObservers(this)
         viewModel.newMerchantVoucherData.removeObservers(this)
+        viewModel.shopProductChangeProductGridSectionData.removeObservers(this)
         viewModel.flush()
         shopSortSharedViewModel?.sharedSortData?.removeObservers(this)
+        shopChangeProductGridSharedViewModel?.sharedProductGridType?.removeObservers(this)
         super.onDestroy()
     }
 
@@ -1024,10 +1025,10 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             }
         })
 
-        viewModel.shopProductEtalaseTitleData.observe(viewLifecycleOwner, Observer {
+        viewModel.shopProductChangeProductGridSectionData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    onSuccessGetShopProductEtalaseTitleData(it.data)
+                    addShopPageProductChangeGridSection(it.data)
                 }
             }
         })
@@ -1036,7 +1037,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             startMonitoringPltRenderPage()
             when (it) {
                 is Success -> {
-                    onSuccessGetProductListData(it.data.first, it.data.second)
+                    onSuccessGetProductListData(it.data.hasNextPage, it.data.listShopProductUiModel)
                 }
                 is Fail -> {
                     showErrorToasterWithRetry(it.throwable)
@@ -1117,15 +1118,9 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         }
     }
 
-    private fun addShopPageProductChangeGridSection() {
-        //todo Change this data into data from getShopProductUseCase
-        val data = ShopProductChangeGridSectionUiModel(2000)
+    private fun addShopPageProductChangeGridSection(totalProductData: Int) {
+        val data = ShopProductChangeGridSectionUiModel(totalProductData)
         shopProductAdapter.addShopPageProductChangeGridSection(data)
-    }
-
-    private fun onSuccessGetShopProductEtalaseTitleData(data: ShopProductEtalaseTitleViewModel) {
-        shopProductAdapter.setShopProductEtalaseTitleData(data)
-        addShopPageProductChangeGridSection()
     }
 
     private fun onSuccessGetShopProductEtalaseHighlightData(data: ShopProductEtalaseHighlightViewModel) {
@@ -1281,7 +1276,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         //multiply with 2 to make first dy value on onScroll function greater than rv top padding
         getRecyclerView(view).smoothScrollBy(0, recyclerViewTopPadding * 2)
         staggeredGridLayoutManager?.scrollToPositionWithOffset(
-                shopProductAdapter.shopProductEtalaseTitlePosition,
+                shopProductAdapter.shopChangeProductGridSegment,
                 shopSortFilterHeight + recyclerViewTopPadding
         )
         updateInitialProductListSortId(sortId)
@@ -1292,7 +1287,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         shopSortFilterHeight = measureHeight
     }
 
-    fun setInitialProductListData(initialProductListData: Pair<Boolean, List<ShopProductViewModel>>) {
+    fun setInitialProductListData(initialProductListData: GetShopProductUiModel) {
         this.initialProductListData = initialProductListData
     }
 
@@ -1300,10 +1295,18 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         (parentFragment as? ShopPageFragment)?.updateSortId(sortId)
     }
 
-    override fun onChangeProductGridClicked(gridType: ShopProductViewGridType) {
+    private fun changeProductListGridView(gridType: ShopProductViewGridType){
         shopProductAdapter.updateShopPageProductChangeGridSection(gridType)
         shopProductAdapter.changeProductCardGridType(gridType)
-        scrollToProductEtalaseSegment()
+    }
+
+    override fun onChangeProductGridClicked(gridType: ShopProductViewGridType) {
+        val productListName =  shopProductAdapter.shopProductViewModelList.joinToString(","){
+            it.name.orEmpty()
+        }
+        shopPageTracking?.clickProductListToggle(productListName, isOwner, customDimensionShopPage)
+        changeProductListGridView(gridType)
+        scrollToChangeProductGridSegment()
         shopChangeProductGridSharedViewModel?.changeSharedProductGridType(gridType)
     }
 

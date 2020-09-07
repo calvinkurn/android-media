@@ -29,10 +29,6 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
     val shopProductViewModelList: MutableList<ShopProductViewModel> = mutableListOf()
     val shopProductSortFilterUiViewModel: ShopProductSortFilterUiModel?
         get() = mapOfDataModel[KEY_SORT_FILTER_DATA_MODEL] as? ShopProductSortFilterUiModel
-    val shopProductEtalaseTitlePosition: Int
-        get() = shopProductEtalaseTitleViewModel?.let {
-            visitables.indexOf(it)
-        } ?: 0
     val shopProductSortFilterPosition: Int
         get() = shopProductSortFilterUiViewModel?.let {
             visitables.indexOf(it)
@@ -41,11 +37,13 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         get() = shopProductFirstViewModel?.let {
             visitables.indexOf(it)
         } ?: 0
+    val shopChangeProductGridSegment: Int
+        get() = visitables.indexOfFirst {
+            it.javaClass == ShopProductChangeGridSectionUiModel::class.java
+        }.takeIf { it != -1 } ?: 0
     private var onStickySingleHeaderViewListener: OnStickySingleHeaderListener? = null
     private var recyclerView: RecyclerView? = null
     private var mapOfDataModel = mutableMapOf<String, Visitable<*>>()
-    private val shopProductEtalaseTitleViewModel: ShopProductEtalaseTitleViewModel?
-        get() = mapOfDataModel[KEY_ETALASE_TITLE_DATA_MODEL] as? ShopProductEtalaseTitleViewModel
     private val shopProductEtalaseHighlightViewModel: ShopProductEtalaseHighlightViewModel?
         get() = mapOfDataModel[KEY_ETALASE_HIGHLIGHT_DATA_MODEL] as? ShopProductEtalaseHighlightViewModel
     private val membershipStampViewModel: MembershipStampProgressViewModel?
@@ -381,18 +379,6 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         mapDataModel()
     }
 
-    fun setShopProductEtalaseTitleData(data: ShopProductEtalaseTitleViewModel) {
-        if (!mapOfDataModel.containsKey(KEY_ETALASE_TITLE_DATA_MODEL)) {
-            val listWithoutProductListData = getListWithoutProductCardDataAndLoadingMoreModel()
-            visitables.add(listWithoutProductListData.size, data)
-            notifyDataSetChanged()
-        } else {
-            val indexObject = visitables.indexOf(mapOfDataModel[KEY_ETALASE_TITLE_DATA_MODEL])
-            visitables[indexObject] = data
-        }
-        mapDataModel()
-    }
-
     fun setProductListDataModel(productList: List<ShopProductViewModel>) {
         visitables.addAll(productList)
         shopProductViewModelList.addAll(productList)
@@ -571,10 +557,8 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
     }
 
     fun addShopPageProductChangeGridSection(data: ShopProductChangeGridSectionUiModel) {
-        if(shopProductEtalaseTitlePosition >= 0){
-            visitables.add(getListWithoutProductCardDataAndLoadingMoreModel().size, data)
-            notifyChangedDataSet()
-        }
+        visitables.add(getListWithoutProductCardDataAndLoadingMoreModel().size, data)
+        notifyChangedDataSet()
     }
 
     fun updateShopPageProductChangeGridSection(gridType: ShopProductViewGridType) {

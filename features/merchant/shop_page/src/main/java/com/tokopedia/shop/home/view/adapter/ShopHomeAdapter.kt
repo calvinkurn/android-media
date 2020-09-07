@@ -41,7 +41,7 @@ class ShopHomeAdapter(
     private var onStickySingleHeaderViewListener: OnStickySingleHeaderListener? = null
     var isOwner: Boolean = false
     private var recyclerView: RecyclerView? = null
-    private var productListViewModel: MutableList<ShopHomeProductViewModel> = mutableListOf()
+    var productListViewModel: MutableList<ShopHomeProductViewModel> = mutableListOf()
     val shopHomeEtalaseTitlePosition: Int
         get() = visitables.indexOfFirst {
             it.javaClass == ShopHomeProductEtalaseTitleUiModel::class.java

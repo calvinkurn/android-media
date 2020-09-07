@@ -887,9 +887,16 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         )
     }
 
-
-    override fun onChangeProductGridClicked(gridType: ShopProductViewGridType) {
+    private fun changeProductListGridView(gridType: ShopProductViewGridType){
         shopProductAdapter.updateShopPageProductChangeGridSection(gridType)
         shopProductAdapter.changeProductCardGridType(gridType)
+    }
+
+    override fun onChangeProductGridClicked(gridType: ShopProductViewGridType) {
+        val productListName =  shopProductAdapter.shopProductViewModelList.joinToString(","){
+            it.name.orEmpty()
+        }
+        shopPageTracking?.clickProductListToggle(productListName, isMyShop, customDimensionShopPage)
+        changeProductListGridView(gridType)
     }
 }

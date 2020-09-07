@@ -6,6 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
+    android:paddingTop="@dimen/dp_18"
+    android:paddingBottom="@dimen/dp_8"
     android:orientation="horizontal">
 
     <com.tokopedia.unifyprinciples.Typography
@@ -14,9 +16,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_4"
-        android:layout_marginTop="@dimen/dp_8"
         android:layout_marginRight="@dimen/dp_4"
-        android:layout_marginBottom="@dimen/dp_8"
         android:textColor="@color/clr_5231353B"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -30,7 +30,8 @@
         style="@style/TextView.Title.Bold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_8"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"

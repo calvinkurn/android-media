@@ -244,8 +244,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private fun observeShopChangeProductGridSharedViewModel() {
         shopChangeProductGridSharedViewModel?.sharedProductGridType?.observe(viewLifecycleOwner, Observer {
             if (!shopHomeAdapter.isLoading) {
-                shopHomeAdapter.updateShopPageProductChangeGridSection(it)
-                shopHomeAdapter.changeProductCardGridType(it)
+                changeProductListGridView(it)
             }
         })
     }
@@ -730,7 +729,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         recycler_view?.smoothScrollBy(0, recyclerViewTopPadding * 2)
         staggeredGridLayoutManager?.scrollToPositionWithOffset(
                 shopHomeAdapter.shopHomeEtalaseTitlePosition,
-                stickySingleHeaderView.containerHeight
+                0
         )
     }
 
@@ -1444,9 +1443,17 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         return PersistentCacheManager.instance.get(NPL_REMIND_ME_CAMPAIGN_ID, String::class.java, "").orEmpty()
     }
 
-    override fun onChangeProductGridClicked(gridType: ShopProductViewGridType) {
+    private fun changeProductListGridView(gridType: ShopProductViewGridType){
         shopHomeAdapter.updateShopPageProductChangeGridSection(gridType)
         shopHomeAdapter.changeProductCardGridType(gridType)
+    }
+
+    override fun onChangeProductGridClicked(gridType: ShopProductViewGridType) {
+        val productListName = shopHomeAdapter.productListViewModel.joinToString(","){
+            it.name.orEmpty()
+        }
+        shopPageHomeTracking.clickProductListToggle(productListName, isOwner, customDimensionShopPage)
+        changeProductListGridView(gridType)
         scrollToEtalaseTitlePosition()
         shopChangeProductGridSharedViewModel?.changeSharedProductGridType(gridType)
     }

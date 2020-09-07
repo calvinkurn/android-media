@@ -783,6 +783,7 @@ class ShopPageFragment :
     private fun setupTabs() {
         listShopPageTabModel = createListShopPageTabModel()
         viewPagerAdapter.setTabData(listShopPageTabModel)
+        viewPagerAdapter.count
         viewPagerAdapter.notifyDataSetChanged()
         var selectedPosition = getSelectedTabPosition()
         if (shouldOverrideTabToHome) {
