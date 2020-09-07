@@ -62,7 +62,7 @@ class BuyerAccountMapper @Inject constructor(
             userId = accountDataModel.profile.userId.toEmptyStringIfNull()
             name = accountDataModel.profile.fullName.toEmptyStringIfNull()
 
-            shopName = userSession.shopName
+            shopName = userSession.shopName.toEmptyStringIfNull()
             isHasShop = userSession.hasShop()
 
             setShortcutResponse(accountDataModel, this)
