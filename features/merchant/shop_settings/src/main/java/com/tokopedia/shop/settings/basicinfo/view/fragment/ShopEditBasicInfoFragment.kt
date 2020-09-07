@@ -263,21 +263,25 @@ class ShopEditBasicInfoFragment: Fragment() {
     private fun showShopNameInputError(message: String) {
         shopNameTextField.setError(true)
         shopNameTextField.setMessage(message)
+        tvSave.isEnabled = false
     }
 
     private fun showShopDomainInputError(message: String) {
         shopDomainTextField.setError(true)
         shopDomainTextField.setMessage(message)
+        tvSave.isEnabled = false
     }
 
     private fun resetShopNameInput() {
         shopNameTextField.setError(false)
         shopNameTextField.setMessage("")
+        tvSave.isEnabled = true
     }
 
     private fun resetShopDomainInput() {
         shopDomainTextField.setError(false)
         shopDomainTextField.setMessage("")
+        tvSave.isEnabled = true
     }
 
     private fun observeLiveData() {
