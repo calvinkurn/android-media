@@ -30,6 +30,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.drawable.CountDrawable
 import com.tokopedia.feedcomponent.util.util.ClipboardHandler
@@ -51,7 +52,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
-import com.tokopedia.seller_migration_common.presentation.util.goToSellerApp
+import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import com.tokopedia.seller_migration_common.presentation.util.setOnClickLinkSpannable
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
@@ -267,7 +268,7 @@ class ShopPageFragment :
                     )
                 }
                 if (isSellerMigrationEnabled(context)) {
-                    val tabFeedPosition = (if (shopPageHeaderDataModel?.isOfficial == true) TAB_POSITION_FEED + 1 else TAB_POSITION_FEED) + 1
+                    val tabFeedPosition = viewPagerAdapter.getFragmentPosition(FeedShopFragment::class.java)
                     if (tab.position == tabFeedPosition) {
                         (activity as? ShopPageActivity)?.bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_EXPANDED
                     } else {
@@ -302,7 +303,16 @@ class ShopPageFragment :
             tvTitleTabFeedHasPost.movementMethod = LinkMovementMethod.getInstance()
             ivTabFeedHasPost.setImageDrawable(context?.let { ContextCompat.getDrawable(it, R.drawable.ic_tab_feed_has_post_seller_migration) })
             tvTitleTabFeedHasPost.setOnClickLinkSpannable(getString(R.string.seller_migration_tab_feed_bottom_sheet_content), ::trackContentFeedBottomSheet) {
-                goToSellerApp()
+                //nunggu calvyn & Andrew
+//                val appLink = String.format(ApplinkConstInternalFeed.)
+                val intent = context?.let { context ->
+                    SellerMigrationActivity.createIntent(
+                            context = context,
+                            featureName = SellerMigrationFeatureName.FEATURE_POST_FEED,
+                            screenName = FeedShopFragment::class.simpleName.orEmpty(),
+                            appLinks = arrayListOf(),
+                            isStackBuilder = false)
+                }
             }
         }
     }
