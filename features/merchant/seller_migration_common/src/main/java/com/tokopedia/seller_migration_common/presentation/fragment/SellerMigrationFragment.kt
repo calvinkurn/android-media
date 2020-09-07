@@ -164,7 +164,7 @@ class SellerMigrationFragment : Fragment(), SellerFeatureCarousel.RecyclerViewLi
                 FINANCIAL_SERVICES_TAB
             }
             else -> {
-                0
+                PRODUCT_TAB
             }
         }
         viewPagerOnTabSelectedListener.onPageSelected(position)

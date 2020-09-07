@@ -373,19 +373,13 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         when {
             isSellerMigrationEnabled(context) -> {
                 fab_feed.setOnClickListener {
-                    for (author in whitelistDomain.authors) {
-                        val intent = context?.let { context ->
-                            SellerMigrationActivity.createIntent(
-                                    context = context,
-                                    featureName = SellerMigrationFeatureName.FEATURE_POST_FEED,
-                                    screenName = FeedPlusContainerFragment::class.simpleName.orEmpty(),
-                                    appLinks = arrayListOf(ApplinkConstInternalSellerapp.SELLER_HOME, getSellerApplink(whitelistDomain)),
-                                    isStackBuilder = false)
-                        }
-                        if (intent != null) {
-                            setupBottomSheetFeedSellerMigration(::goToCreateAffiliate, intent)
-                        }
-                    }
+                    val intent = SellerMigrationActivity.createIntent(
+                            context = requireContext(),
+                            featureName = SellerMigrationFeatureName.FEATURE_POST_FEED,
+                            screenName = FeedPlusContainerFragment::class.simpleName.orEmpty(),
+                            appLinks = arrayListOf(ApplinkConstInternalSellerapp.SELLER_HOME, getSellerApplink(whitelistDomain)),
+                            isStackBuilder = false)
+                    setupBottomSheetFeedSellerMigration(::goToCreateAffiliate, intent)
                 }
             }
             else -> {

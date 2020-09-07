@@ -6,7 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Parcelable
 import android.view.View
-import androidx.constraintlayout.widget.Group
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -105,7 +105,7 @@ fun Typography.setOnClickLinkSpannable(htmlString: String,
 fun Fragment.setupBottomSheetFeedSellerMigration(goToCreateAffiliate: () -> Unit = {},
                                                  onGoToLink: Intent) {
     val viewBottomSheet = View.inflate(context, R.layout.bottom_sheet_feed_content_seller_migration, null)
-    val postInSeller: Group = viewBottomSheet.findViewById(R.id.groupPostShopSeller)
+    val postInSeller: LinearLayout = viewBottomSheet.findViewById(R.id.groupPostShopSeller)
     val postFavorite: Typography = viewBottomSheet.findViewById(R.id.tvPostFavorite)
     val bottomSheet = BottomSheetUnify()
     bottomSheet.setChild(viewBottomSheet)
@@ -115,10 +115,10 @@ fun Fragment.setupBottomSheetFeedSellerMigration(goToCreateAffiliate: () -> Unit
         bottomSheet.dismiss()
     }
 
-    postInSeller.setAllOnClickListener(View.OnClickListener {
+    postInSeller.setOnClickListener {
         startActivity(onGoToLink)
         bottomSheet.dismiss()
-    })
+    }
 
     bottomSheet.apply {
         showCloseIcon = true
@@ -129,11 +129,5 @@ fun Fragment.setupBottomSheetFeedSellerMigration(goToCreateAffiliate: () -> Unit
 
     fragmentManager?.let {
         bottomSheet.show(it, "")
-    }
-}
-
-fun Group.setAllOnClickListener(listener: View.OnClickListener?) {
-    referencedIds.forEach { id ->
-        rootView.findViewById<View>(id).setOnClickListener(listener)
     }
 }
