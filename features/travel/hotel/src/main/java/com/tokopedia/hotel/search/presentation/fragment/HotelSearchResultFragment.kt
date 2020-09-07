@@ -176,9 +176,13 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         generateSortMenu(data.displayInfo.sort)
 
         if (isFirstInitializeFilter) {
+            isFirstInitializeFilter = false
             initializeFilterV2BottomSheet(data.filters.toMutableList())
             initializeQuickFilter(data.quickFilter, data.filters, data.displayInfo.sort)
-            isFirstInitializeFilter = false
+
+            quick_filter_sort_filter.chipItems.filter { it.type == ChipsUnify.TYPE_SELECTED }.forEach { _ ->
+                quick_filter_sort_filter.indicatorCounter-=1
+            }
         }
     }
 
