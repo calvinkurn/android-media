@@ -25,6 +25,18 @@ class UpdateCartOccUseCase @Inject constructor(private val graphqlUseCase: Graph
         })
     }
 
+    suspend fun executeSuspend(param: UpdateCartOccRequest): UpdateCartOccGqlResponse {
+        graphqlUseCase.setGraphqlQuery(QUERY)
+        graphqlUseCase.setRequestParams(generateParam(param))
+        graphqlUseCase.setTypeClass(UpdateCartOccGqlResponse::class.java)
+        val response = graphqlUseCase.executeOnBackground()
+        if (response.response.status.equals(STATUS_OK, true) && response.response.data.success == 1) {
+            return response
+        } else {
+            throw MessageErrorException(response.getErrorMessage() ?: DEFAULT_ERROR_MESSAGE)
+        }
+    }
+
     private fun generateParam(param: UpdateCartOccRequest): Map<String, Any?> {
         return mapOf(PARAM_KEY to param)
     }

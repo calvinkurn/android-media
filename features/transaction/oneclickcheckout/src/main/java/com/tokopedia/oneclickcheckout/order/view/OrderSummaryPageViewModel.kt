@@ -2,7 +2,6 @@ package com.tokopedia.oneclickcheckout.order.view
 
 import com.google.gson.JsonParser
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartOccExternalUseCase
 import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
@@ -34,7 +33,6 @@ import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccProfileRequ
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest
 import com.tokopedia.oneclickcheckout.order.domain.UpdateCartOccUseCase
 import com.tokopedia.oneclickcheckout.order.view.model.*
-import com.tokopedia.oneclickcheckout.order.view.processor.CartReaction
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageCartProcessor
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageCheckoutProcessor
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
@@ -132,45 +130,48 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     fun atcOcc(productId: String) {
-        globalEvent.value = OccGlobalEvent.Loading
-        compositeSubscription.add(
-                atcOccExternalUseCase.createObservable(
-                        RequestParams().apply {
-                            putString(AddToCartOccExternalUseCase.REQUEST_PARAM_KEY_PRODUCT_ID, productId)
-                        })
-                        .subscribeOn(executorSchedulers.io)
-                        .observeOn(executorSchedulers.main)
-                        .subscribe(object : Observer<AddToCartDataModel> {
-                            override fun onError(e: Throwable) {
-                                globalEvent.value = OccGlobalEvent.AtcError(e)
-                            }
-
-                            override fun onNext(result: AddToCartDataModel) {
-                                if (result.isDataError()) {
-                                    globalEvent.value = OccGlobalEvent.AtcError(errorMessage = result.getAtcErrorMessage()
-                                            ?: "")
-                                } else {
-                                    globalEvent.value = OccGlobalEvent.AtcSuccess(result.data.message.firstOrNull()
-                                            ?: "")
-                                }
-                            }
-
-                            override fun onCompleted() {
-                                // do nothing
-                            }
-                        })
-        )
+        launch(executorDispatchers.main) {
+            globalEvent.value = OccGlobalEvent.Loading
+            globalEvent.value = cartProcessor.atcOcc(productId)
+        }
+//        compositeSubscription.add(
+//                atcOccExternalUseCase.createObservable(
+//                        RequestParams().apply {
+//                            putString(AddToCartOccExternalUseCase.REQUEST_PARAM_KEY_PRODUCT_ID, productId)
+//                        })
+//                        .subscribeOn(executorSchedulers.io)
+//                        .observeOn(executorSchedulers.main)
+//                        .subscribe(object : Observer<AddToCartDataModel> {
+//                            override fun onError(e: Throwable) {
+//                                globalEvent.value = OccGlobalEvent.AtcError(e)
+//                            }
+//
+//                            override fun onNext(result: AddToCartDataModel) {
+//                                if (result.isDataError()) {
+//                                    globalEvent.value = OccGlobalEvent.AtcError(errorMessage = result.getAtcErrorMessage()
+//                                            ?: "")
+//                                } else {
+//                                    globalEvent.value = OccGlobalEvent.AtcSuccess(result.data.message.firstOrNull()
+//                                            ?: "")
+//                                }
+//                            }
+//
+//                            override fun onCompleted() {
+//                                // do nothing
+//                            }
+//                        })
+//        )
     }
 
     fun getOccCart(isFullRefresh: Boolean, source: String) {
         launch(executorDispatchers.main) {
             globalEvent.value = OccGlobalEvent.Normal
-            val result = cartProcessor.getOccCart(isFullRefresh, source, orderTotal.value)
+            val result = cartProcessor.getOccCart(source)
             orderCart = result.orderCart
             _orderPreference = result.orderPreference
             orderPreference.value = if (result.throwable == null) OccState.FirstLoad(_orderPreference) else OccState.Failed(Failure(result.throwable))
-            result.orderShipment?.also {
-                _orderShipment = it
+            if (isFullRefresh) {
+                _orderShipment = OrderShipment()
                 orderShipment.value = _orderShipment
             }
             _orderPayment = result.orderPayment
@@ -181,13 +182,12 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             result.globalEvent?.also {
                 globalEvent.value = it
             }
-            orderTotal.value = result.orderTotal
-            when (result.reaction) {
-                CartReaction.GET_RATES -> getRates()
-                CartReaction.SEND_VIEW_OSP -> sendViewOspEe()
-                else -> {
-                    // no op
-                }
+            if (orderProduct.productId > 0 && _orderPreference.preference.shipment.serviceId > 0) {
+                orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
+                getRates()
+            } else if (result.throwable == null) {
+                orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
+                sendViewOspEe()
             }
         }
 //        getOccCartUseCase.execute({ orderData: OrderData ->
@@ -852,14 +852,17 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     fun updateCart() {
-        val param = generateUpdateCartParam()
-        if (param != null) {
-            updateCartOccUseCase.execute(param, {
-                //do nothing
-            }, {
-                //do nothing
-            })
+        launch(executorDispatchers.main) {
+            cartProcessor.updateCart(orderCart, _orderPreference, _orderShipment, _orderPayment)
         }
+//        val param = generateUpdateCartParam()
+//        if (param != null) {
+//            updateCartOccUseCase.execute(param, {
+//                //do nothing
+//            }, {
+//                //do nothing
+//            })
+//        }
     }
 
     fun generateUpdateCartParam(): UpdateCartOccRequest? {
