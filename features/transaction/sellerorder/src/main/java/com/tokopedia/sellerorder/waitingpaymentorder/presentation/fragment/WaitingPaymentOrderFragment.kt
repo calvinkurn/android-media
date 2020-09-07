@@ -85,7 +85,7 @@ class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, Waitin
                             nextPaymentDeadline = waitingPaymentOrderViewModel.paging.nextPaymentDeadline
                     )
             )
-        }, 5000)
+        }, 2000)
     }
 
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {

@@ -1,5 +1,6 @@
 package com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.viewholder
 
+import android.os.Handler
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -31,6 +32,7 @@ class WaitingPaymentOrdersViewHolder(itemView: View?) : AbstractViewHolder<Waiti
                     showWithCondition(element.products.size > 5)
                     updateToggleCollapseText(element.isExpanded)
                     setOnClickListener {
+                        itemView.tvToggleCollapseMoreProducts.isClickable = false
                         if (!element.isExpanded) {
                             showMoreProducts()
                             element.isExpanded = true
@@ -41,9 +43,11 @@ class WaitingPaymentOrdersViewHolder(itemView: View?) : AbstractViewHolder<Waiti
                     }
                 }
                 rvWaitingPaymentOrderProducts.apply {
-                    isNestedScrollingEnabled = false
+                    if (adapter == null) {
+                        isNestedScrollingEnabled = false
+                        adapter = this@WaitingPaymentOrdersViewHolder.adapter
+                    }
                     this@WaitingPaymentOrdersViewHolder.adapter.updateProducts(getShownProducts(element))
-                    adapter = this@WaitingPaymentOrdersViewHolder.adapter
                 }
             }
         }
@@ -53,7 +57,7 @@ class WaitingPaymentOrdersViewHolder(itemView: View?) : AbstractViewHolder<Waiti
         itemView.tvToggleCollapseMoreProducts.text = if (expanded) {
             "Lebih Sedikit"
         } else {
-            "Lihat Lebih Banyak"
+            "Tampilkan Lebih Banyak"
         }
     }
 
@@ -66,12 +70,30 @@ class WaitingPaymentOrdersViewHolder(itemView: View?) : AbstractViewHolder<Waiti
     }
 
     private fun collapseMoreProducts() {
-        adapter.updateProducts(products.take(5))
+        val diff = adapter.dataSize - 5
+        val delay = (500 / diff).toLong().coerceAtMost(33)
+        for (i in 1..adapter.dataSize - 5) {
+            Handler().postDelayed({
+                adapter.updateProducts(products.take(products.size - i))
+                if (i == adapter.dataSize - 5) {
+                    itemView.tvToggleCollapseMoreProducts.isClickable = true
+                }
+            }, (delay * i))
+        }
         updateToggleCollapseText(false)
     }
 
     private fun showMoreProducts() {
-        adapter.updateProducts(products)
+        val diff = products.size - 5
+        val delay = (500 / diff).toLong().coerceAtMost(33)
+        for (i in 6..products.size) {
+            Handler().postDelayed({
+                adapter.updateProducts(products.take(i))
+                if (i == products.size) {
+                    itemView.tvToggleCollapseMoreProducts.isClickable = true
+                }
+            }, (delay * (i - diff)))
+        }
         updateToggleCollapseText(true)
     }
 }
