@@ -28,6 +28,7 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 04/09/20
  */
 
+//data layer : https://docs.google.com/spreadsheets/d/1AZjuQ_dg25EvEEWmE8MPMo0f1_DT4IyZPaNpt4cxidA/edit#gid=412390831
 class SellerMenuTracker(
         private val analytics: Analytics,
         private val userSession: UserSessionInterface
