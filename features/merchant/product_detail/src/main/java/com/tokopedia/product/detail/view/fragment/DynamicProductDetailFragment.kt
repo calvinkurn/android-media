@@ -2320,6 +2320,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             }
         }
 
+
         actionButtonView.buttonCartTypeClick = { cartType, buttonText, isAtcButton ->
             viewModel.buttonActionText = buttonText
             val isLeasing = viewModel.getDynamicProductInfoP1?.basic?.isLeasing ?: false
