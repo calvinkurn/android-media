@@ -16,7 +16,17 @@ class NotificationChannelManagerImpl(
     }
 
     override fun hasNotificationChannel(): Boolean {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
+    }
+
+    override fun isImportanceChannel(): Boolean {
+        val importance = getNotificationChannel()
+        return if (hasNotificationChannel()) {
+            importance == NotificationManager.IMPORTANCE_HIGH
+                    || importance == NotificationManager.IMPORTANCE_DEFAULT
+        } else {
+            false
+        }
     }
 
     companion object {

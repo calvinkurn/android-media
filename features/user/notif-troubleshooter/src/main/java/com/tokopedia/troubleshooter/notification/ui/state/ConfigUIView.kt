@@ -1,19 +1,11 @@
 package com.tokopedia.troubleshooter.notification.ui.state
 
-import android.app.NotificationManager
 import android.net.Uri
-import android.os.Build
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.troubleshooter.notification.R
 import com.tokopedia.troubleshooter.notification.ui.adapter.factory.TroubleshooterTypeFactory
-import com.tokopedia.troubleshooter.notification.ui.state.ConfigState.Device as Device
-import com.tokopedia.troubleshooter.notification.ui.state.ConfigState.PushNotification as PushNotification
-import com.tokopedia.troubleshooter.notification.ui.state.ConfigState.Notification as Notification
-import com.tokopedia.troubleshooter.notification.ui.state.ConfigState.Ringtone as Ringtone
-import com.tokopedia.troubleshooter.notification.ui.state.ConfigState.Undefined as Undefined
-import com.tokopedia.troubleshooter.notification.ui.state.StatusState.Loading as Loading
-import com.tokopedia.troubleshooter.notification.ui.state.StatusState.Success as Success
-import com.tokopedia.troubleshooter.notification.ui.state.StatusState.Warning as Warning
+import com.tokopedia.troubleshooter.notification.ui.state.ConfigState.*
+import com.tokopedia.troubleshooter.notification.ui.state.StatusState.*
 
 data class ConfigUIView(
         val state: ConfigState = PushNotification,
@@ -67,15 +59,6 @@ data class ConfigUIView(
                     }
                 }
                 is Undefined -> 0
-            }
-        }
-
-        fun importantNotification(importance: Int?): Boolean {
-            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                importance == NotificationManager.IMPORTANCE_HIGH
-                    || importance == NotificationManager.IMPORTANCE_DEFAULT
-            } else {
-                false
             }
         }
     }
