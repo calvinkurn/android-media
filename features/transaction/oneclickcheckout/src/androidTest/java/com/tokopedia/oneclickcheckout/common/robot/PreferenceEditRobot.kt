@@ -1,6 +1,8 @@
 package com.tokopedia.oneclickcheckout.common.robot
 
+import android.app.Activity
 import android.view.View
+import android.webkit.WebView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
@@ -30,6 +32,10 @@ class AddressListRobot {
     fun clickSimpan() {
         onView(withId(R.id.btn_save_address)).perform(click())
     }
+
+    fun clickBack() {
+        onView(withId(R.id.btn_back)).perform(click())
+    }
 }
 
 fun shippingDurationPage(func: ShippingDurationRobot.() -> Unit) = ShippingDurationRobot().apply(func)
@@ -50,5 +56,51 @@ class ShippingDurationRobot {
 
     fun clickSimpan() {
         onView(withId(R.id.btn_save_duration)).perform(click())
+    }
+
+    fun clickBack() {
+        onView(withId(R.id.btn_back)).perform(click())
+    }
+}
+
+fun paymentMethodPage(func: PaymentMethodRobot.() -> Unit) = PaymentMethodRobot().apply(func)
+
+class PaymentMethodRobot {
+
+    fun pretendChoosePayment(activity: Activity) {
+        activity.runOnUiThread {
+            activity.findViewById<WebView>(R.id.web_view).loadUrl("https://link.link/link?success=true&gateway_code=gateway1")
+        }
+        //block main thread for webview processing
+        Thread.sleep(1000)
+    }
+
+    fun clickBack() {
+        onView(withId(R.id.btn_back)).perform(click())
+    }
+}
+
+fun preferenceSummaryPage(func: PreferenceSummaryRobot.() -> Unit) = PreferenceSummaryRobot().apply(func)
+
+class PreferenceSummaryRobot {
+
+    fun clickBack() {
+        onView(withId(R.id.btn_back)).perform(click())
+    }
+
+    fun clickEditAddress() {
+        onView(withId(R.id.btn_change_address)).perform(click())
+    }
+
+    fun clickEditShipping() {
+        onView(withId(R.id.btn_change_duration)).perform(click())
+    }
+
+    fun clickEditPayment() {
+        onView(withId(R.id.btn_change_payment)).perform(click())
+    }
+
+    fun clickSave() {
+        onView(withId(R.id.btn_save)).perform(click())
     }
 }
