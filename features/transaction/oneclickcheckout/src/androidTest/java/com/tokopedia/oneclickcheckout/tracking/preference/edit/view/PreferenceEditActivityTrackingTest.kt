@@ -1,0 +1,94 @@
+package com.tokopedia.oneclickcheckout.tracking.preference.edit.view
+
+import android.content.Context
+import androidx.test.espresso.IdlingRegistry
+import androidx.test.espresso.IdlingResource
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.rule.ActivityTestRule
+import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
+import com.tokopedia.analyticsdebugger.validator.core.getAnalyticsWithQuery
+import com.tokopedia.analyticsdebugger.validator.core.hasAllSuccess
+import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
+import com.tokopedia.oneclickcheckout.common.robot.addressListPage
+import com.tokopedia.oneclickcheckout.common.robot.shippingDurationPage
+import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
+import com.tokopedia.oneclickcheckout.common.utils.ResourceUtils
+import com.tokopedia.oneclickcheckout.preference.edit.view.PreferenceEditActivity
+import com.tokopedia.test.application.environment.interceptor.mock.MockInterceptor
+import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
+import org.junit.After
+import org.junit.Assert.assertThat
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
+
+class PreferenceEditActivityTrackingTest {
+
+    companion object {
+        private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME = "tracker/transaction/one_click_checkout_preference_edit.json"
+    }
+
+    @get:Rule
+    val activityRule = ActivityTestRule(PreferenceEditActivity::class.java, true, false)
+
+    @get:Rule
+    val freshIdlingResourceTestRule = FreshIdlingResourceTestRule()
+
+    private var idlingResource: IdlingResource? = null
+
+    private val context = InstrumentationRegistry.getInstrumentation().targetContext
+    private val gtmLogDBSource = GtmLogDBSource(context)
+
+    private fun setupGraphqlMockResponse() {
+        val mockModelConfig = createMockModelConfig()
+        mockModelConfig.createMockModel(context)
+
+        val testInterceptors = listOf(MockInterceptor(mockModelConfig))
+
+        GraphqlClient.reInitRetrofitWithInterceptors(testInterceptors, context)
+    }
+
+    private fun createMockModelConfig(): MockModelConfig {
+        return object : MockModelConfig() {
+            override fun createMockModel(context: Context): MockModelConfig {
+                addMockResponse("keroAddressCorner", ResourceUtils.getJsonFromResource("logistic/get_address_list_default_response.json"), FIND_BY_CONTAINS)
+                addMockResponse("ongkir_shipper_service", ResourceUtils.getJsonFromResource("logistic/get_shipping_duration_list_default_response.json"), FIND_BY_CONTAINS)
+                addMockResponse("getListingParams", ResourceUtils.getJsonFromResource("payment/get_payment_listing_default_response.json"), FIND_BY_CONTAINS)
+                return this
+            }
+        }
+    }
+
+    @Before
+    fun setup() {
+        gtmLogDBSource.deleteAll().subscribe()
+
+        setupGraphqlMockResponse()
+
+        idlingResource = OccIdlingResource.getIdlingResource()
+        IdlingRegistry.getInstance().register(idlingResource)
+        activityRule.launchActivity(null)
+    }
+
+    @After
+    fun cleanup() {
+        gtmLogDBSource.deleteAll().subscribe()
+
+        IdlingRegistry.getInstance().unregister(idlingResource)
+    }
+
+    @Test
+    fun performPreferenceEditTrackingActions() {
+        addressListPage {
+            clickAddress(0)
+            clickSimpan()
+        }
+        shippingDurationPage {
+            clickShippingDuration(0)
+            clickSimpan()
+        }
+
+        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME), hasAllSuccess())
+    }
+}
