@@ -6,11 +6,16 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.seller.menu.common.R
+import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.seller.menu.common.view.uimodel.ShopProductUiModel
 import kotlinx.android.synthetic.main.item_seller_menu_product_section.view.*
 
-class ShopProductViewHolder(itemView: View): AbstractViewHolder<ShopProductUiModel>(itemView) {
+class ShopProductViewHolder(
+        itemView: View,
+        private val tracker: SellerMenuTracker
+): AbstractViewHolder<ShopProductUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -26,6 +31,12 @@ class ShopProductViewHolder(itemView: View): AbstractViewHolder<ShopProductUiMod
 
         itemView.setOnClickListener {
             RouteManager.route(itemView.context, ApplinkConst.PRODUCT_MANAGE)
+            sendProductTracker(product)
         }
+    }
+
+    private fun sendProductTracker(product: ShopProductUiModel) {
+        if (GlobalConfig.isSellerApp()) return
+        tracker.sendEventClickProductList()
     }
 }

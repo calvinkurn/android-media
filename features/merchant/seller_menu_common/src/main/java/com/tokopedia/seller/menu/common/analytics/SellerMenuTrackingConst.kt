@@ -23,5 +23,6 @@ object SellerMenuTrackingConst {
 
     //action
     const val ADD_PRODUCT = "$PRODUCT - tambah $PRODUCT"
+    const val PRODUCT_LIST = "$PRODUCT - daftar $PRODUCT"
 
 }

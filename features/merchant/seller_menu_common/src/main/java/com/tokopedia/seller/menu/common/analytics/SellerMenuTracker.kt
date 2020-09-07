@@ -7,6 +7,7 @@ import com.tokopedia.seller.menu.common.analytics.SellerMenuTrackingConst.KEY_CU
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTrackingConst.KEY_USER_ID
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTrackingConst.MA_SHOP_ACCOUNT
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTrackingConst.PHYSICAL_GOODS
+import com.tokopedia.seller.menu.common.analytics.SellerMenuTrackingConst.PRODUCT_LIST
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTrackingConst.TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.interfaces.Analytics
@@ -27,6 +28,20 @@ class SellerMenuTracker @Inject constructor(
                 CLICK_SHOP_ACCOUNT,
                 MA_SHOP_ACCOUNT,
                 ADD_PRODUCT,
+                ""
+        )
+        event[KEY_CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
+        event[KEY_USER_ID] = userSession.userId
+        event[KEY_BUSINESS_UNIT] = PHYSICAL_GOODS
+
+        analytics.sendGeneralEvent(event)
+    }
+
+    fun sendEventClickProductList() {
+        val event = TrackAppUtils.gtmData(
+                CLICK_SHOP_ACCOUNT,
+                MA_SHOP_ACCOUNT,
+                PRODUCT_LIST,
                 ""
         )
         event[KEY_CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
