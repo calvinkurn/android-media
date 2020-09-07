@@ -184,13 +184,13 @@ class DealsCategoryFragment : DealsBaseFragment(),
 
                 if (position != RecyclerView.NO_POSITION) {
                     when (position) {
-                        1 -> outRect.top = TWENTY_FOUR_DP.toPx()
-                        2 -> outRect.top = TWENTY_FOUR_DP.toPx()
+                        1 -> outRect.top = resources.getInteger(R.integer.twenty_four).toPx()
+                        2 -> outRect.top = resources.getInteger(R.integer.twenty_four).toPx()
                         else -> outRect.top = 0
                     }
-                    outRect.bottom = if (isInTheFirstRow(position + 2, totalSpanCount)) TWENTY_FOUR_DP.toPx() else FOUR_DP.toPx()
-                    outRect.left = if (isFirstInRow(position + 2, totalSpanCount)) TWO_DP.toPx() else SIXTEEN_DP.toPx()
-                    outRect.right = if (isFirstInRow(position + 2, totalSpanCount)) SIXTEEN_DP.toPx() else TWO_DP.toPx()
+                    outRect.bottom = if (isInTheFirstRow(position + 2, totalSpanCount)) resources.getInteger(R.integer.twenty_four).toPx() else resources.getInteger(R.integer.four).toPx()
+                    outRect.left = if (isFirstInRow(position + 2, totalSpanCount)) resources.getInteger(R.integer.two).toPx() else resources.getInteger(R.integer.twenty_four).toPx()
+                    outRect.right = if (isFirstInRow(position + 2, totalSpanCount))resources.getInteger(R.integer.sixteen).toPx() else resources.getInteger(R.integer.two).toPx()
                 }
             }
         }
@@ -441,10 +441,6 @@ class DealsCategoryFragment : DealsBaseFragment(),
         const val DEFAULT_MIN_ITEMS_PRODUCT = 20
         const val DEFAULT_MIN_ITEMS = 21
         const val INITIAL_SIZE_BASE_ITEM_VIEW = 2
-        const val TWENTY_FOUR_DP = 24
-        const val TWO_DP = 2
-        const val FOUR_DP = 4
-        const val SIXTEEN_DP = 16
 
         fun getInstance(categoryId: String?): DealsCategoryFragment = DealsCategoryFragment().also {
             it.arguments = Bundle().apply {
