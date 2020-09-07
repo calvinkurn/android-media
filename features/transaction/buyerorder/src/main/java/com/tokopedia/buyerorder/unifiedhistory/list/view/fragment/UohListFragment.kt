@@ -658,8 +658,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 val adapter = TickerPagerAdapter(it, listTickerData)
                 adapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
                     override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
-                        // TODO : cek lagi url applink nya, make sure lagi nanti
-                        RouteManager.route(context, linkUrl.toString())
+                        RouteManager.route(context, URLDecoder.decode(linkUrl.toString(), UohConsts.UTF_8))
                     }
                 })
                 ticker_info?.setDescriptionClickEvent(object: TickerCallback {
@@ -677,14 +676,14 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 var desc = it.text
                 if (it.action.appUrl.isNotEmpty() && it.action.label.isNotEmpty()) {
                     desc += " ${getString(R.string.buyer_ticker_info_selengkapnya)
-                            .replace(TICKER_URL, URLDecoder.decode(it.action.appUrl, "UTF-8"))
+                            .replace(TICKER_URL, URLDecoder.decode(it.action.appUrl, UohConsts.UTF_8))
                             .replace(TICKER_LABEL, it.action.label)}"
                 }
                 ticker_info?.setHtmlDescription(desc)
                 ticker_info?.tickerType = UohUtils.getTickerType(it.type)
                 ticker_info?.setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
+                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(linkUrl.toString(), UohConsts.UTF_8)))
                     }
 
                     override fun onDismiss() {
@@ -1106,7 +1105,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             } else {
                 dotMenu.appURL
             }
-            RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
+            RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(linkUrl, UohConsts.UTF_8)))
         } else {
             when {
                 dotMenu.actionType.equals(GQL_FLIGHT_EMAIL, true) -> {
@@ -1116,7 +1115,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     showBottomSheetSendEmail(GQL_TRAIN_EMAIL, index)
                 }
                 dotMenu.actionType.equals(GQL_MP_CHAT, true) -> {
-                    RouteManager.route(context, dotMenu.appURL)
+                    RouteManager.route(context, URLDecoder.decode(dotMenu.appURL, UohConsts.UTF_8))
                 }
                 dotMenu.actionType.equals(GQL_ATC, true) -> {
                     val listOfStrings = Gson().fromJson(orderData.metadata.listProducts, mutableListOf<String>().javaClass)
@@ -1133,16 +1132,16 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
     override fun onListItemClicked(detailUrl: UohListOrder.Data.UohOrders.Order.Metadata.DetailUrl) {
         if (detailUrl.appTypeLink == WEB_LINK_TYPE) {
-            RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, detailUrl.webURL))
+            RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(detailUrl.webURL, UohConsts.UTF_8)))
         } else if (detailUrl.appTypeLink == APP_LINK_TYPE) {
-            RouteManager.route(context, detailUrl.appURL)
+            RouteManager.route(context, URLDecoder.decode(detailUrl.appURL, UohConsts.UTF_8))
         }
     }
 
     override fun onActionButtonClicked(button: UohListOrder.Data.UohOrders.Order.Metadata.Button,
                                        index: Int, orderUUID: String, verticalId: String, listProducts: String) {
         if (button.actionType.equals(TYPE_ACTION_BUTTON_LINK, true)) {
-            RouteManager.route(context, button.appURL)
+            RouteManager.route(context, URLDecoder.decode(button.appURL, UohConsts.UTF_8))
         } else {
             when {
                 button.actionType.equals(GQL_FINISH_ORDER, true) -> {
@@ -1164,7 +1163,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 }
                 button.actionType.equals(GQL_LS_LACAK, true) -> {
                     val linkUrl = LS_LACAK_MWEB.replace(REPLACE_ORDER_ID, verticalId)
-                    RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
+                    RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(linkUrl, UohConsts.UTF_8)))
                 }
                 button.actionType.equals(GQL_RECHARGE_BATALKAN, true) -> {
                     orderIdNeedUpdated = orderUUID

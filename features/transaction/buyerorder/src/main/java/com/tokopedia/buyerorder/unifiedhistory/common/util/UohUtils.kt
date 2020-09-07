@@ -23,6 +23,9 @@ object UohUtils {
             UohConsts.TICKER_TYPE_INFORMATION -> {
                 Ticker.TYPE_INFORMATION
             }
+            UohConsts.TICKER_TYPE_INFO -> {
+                Ticker.TYPE_INFORMATION
+            }
             UohConsts.TICKER_TYPE_WARNING -> {
                 Ticker.TYPE_WARNING
             }

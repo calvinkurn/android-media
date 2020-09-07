@@ -24,6 +24,7 @@ object UohConsts {
     const val TICKER_TYPE_ANNOUNCEMENT = "announcement"
     const val TICKER_TYPE_ERROR = "error"
     const val TICKER_TYPE_INFORMATION = "information"
+    const val TICKER_TYPE_INFO = "info"
     const val TICKER_TYPE_WARNING = "warning"
 
     const val DATE_LIMIT = "#date_limit"
@@ -89,4 +90,5 @@ object UohConsts {
     const val WEB_LINK_TYPE = "WEB_LINK"
     const val APPLINK_RESO = "tokopedia-android-internal://global/webview?url=https://m.tokopedia.com/resolution-center/create/{order_id}/mobile"
     const val WEBVIEW = "webview"
+    const val UTF_8 = "UTF-8"
 }
