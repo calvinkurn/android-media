@@ -1,0 +1,41 @@
+{
+  "mode": "exact",
+  "query": [
+    {
+      "eventCategory": "purchase setting",
+      "event": "clickCheckoutExpress",
+      "eventAction": "click available address option",
+      "sessionIris": "{{.*}}",
+      "eventLabel": ""
+    },
+    {
+      "eventCategory": "purchase setting",
+      "event": "clickCheckoutExpress",
+      "eventAction": "click simpan alamat on pilih alamat pengiriman",
+      "sessionIris": "{{.*}}",
+      "eventLabel": ""
+    },
+    {
+      "eventCategory": "purchase setting",
+      "event": "clickCheckoutExpress",
+      "eventAction": "click duration option in duration step",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{.*}}"
+    },
+    {
+      "eventCategory": "purchase setting",
+      "event": "clickCheckoutExpress",
+      "eventAction": "click pilih metode pembayaran in duration step",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{.*}}"
+    },
+    {
+      "eventCategory": "purchase setting",
+      "event": "clickCheckoutExpress",
+      "eventAction": "click payment method option in payment method step",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{.*}}"
+    }
+  ],
+  "readme": "OCC Preference Edit Tracking"
+}
