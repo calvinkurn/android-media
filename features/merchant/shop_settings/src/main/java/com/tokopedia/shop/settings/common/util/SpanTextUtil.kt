@@ -37,6 +37,7 @@ fun getSpandableColorText(strToPut: String, stringToBold: String, color: Int): C
     val spannableStringBuilder = SpannableStringBuilder(stringToBold)
     val indexStart = 0
     val indexEnd = indexStart + stringToBold.length
+    val boldColor = ForegroundColorSpan(color)
 
     spannableStringBuilder.setSpan(
             android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
@@ -46,11 +47,11 @@ fun getSpandableColorText(strToPut: String, stringToBold: String, color: Int): C
     )
 
     spannableStringBuilder.setSpan(
-            color,
+            boldColor,
             indexStart,
             indexEnd,
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
     )
-    return SpannableStringBuilder(strToPut).append(" ").append(stringToBold).append(".")
+    return SpannableStringBuilder(strToPut).append(" ").append(spannableStringBuilder).append(".")
 }
 
