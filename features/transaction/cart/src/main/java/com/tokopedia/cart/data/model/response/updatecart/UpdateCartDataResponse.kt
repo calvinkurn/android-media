@@ -12,5 +12,5 @@ data class UpdateCartDataResponse(
     @SerializedName("status")
     val status: String = "",
     @SerializedName("data")
-    val data: Data?
+    val data: Data = Data()
 )

@@ -9,7 +9,7 @@ import com.tokopedia.cart.domain.model.updatecart.UpdateCartData
 
 fun mapUpdateCartData(updateCartGqlResponse: UpdateCartGqlResponse, data: Data): UpdateCartData {
     val updateCartData = UpdateCartData()
-    updateCartGqlResponse.updateCartDataResponse.data?.let {
+    updateCartGqlResponse.updateCartDataResponse.data.let {
         updateCartData.isSuccess = updateCartGqlResponse.updateCartDataResponse.status.equals("OK", true) && it.status
         updateCartData.message = it.error
         updateCartData.promptPageData = PromptPageData().apply {

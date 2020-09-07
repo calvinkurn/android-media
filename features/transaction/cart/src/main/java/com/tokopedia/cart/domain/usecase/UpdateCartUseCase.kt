@@ -43,10 +43,8 @@ class UpdateCartUseCase @Inject constructor(private val graphqlUseCase: GraphqlU
                 .map {
                     val updateCartGqlResponse = it.getData<UpdateCartGqlResponse>(UpdateCartGqlResponse::class.java)
                     var updateCartData = UpdateCartData()
-                    if (updateCartGqlResponse != null) {
-                        updateCartGqlResponse.updateCartDataResponse.data?.let {
-                            updateCartData = mapUpdateCartData(updateCartGqlResponse, it)
-                        }
+                    updateCartGqlResponse?.updateCartDataResponse?.data?.let {
+                        updateCartData = mapUpdateCartData(updateCartGqlResponse, it)
                     }
                     updateCartData
                 }
