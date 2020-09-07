@@ -117,11 +117,13 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccExtern
         return null
     }
 
-    suspend fun updateCart(orderCart: OrderCart, orderPreference: OrderPreference, orderShipment: OrderShipment, orderPayment: OrderPayment) {
-        val param = generateUpdateCartParam(orderCart, orderPreference, orderShipment, orderPayment)
-        if (param != null) {
-            // ignore result
-            updateCartOccUseCase.executeSuspend(param)
+    suspend fun updateCartIgnoreResult(orderCart: OrderCart, orderPreference: OrderPreference, orderShipment: OrderShipment, orderPayment: OrderPayment) {
+        withContext(executorDispatchers.io) {
+            val param = generateUpdateCartParam(orderCart, orderPreference, orderShipment, orderPayment)
+            if (param != null) {
+                // ignore result
+                updateCartOccUseCase.executeSuspend(param)
+            }
         }
     }
 }

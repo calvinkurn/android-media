@@ -853,7 +853,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     fun updateCart() {
         launch(executorDispatchers.main) {
-            cartProcessor.updateCart(orderCart, _orderPreference, _orderShipment, _orderPayment)
+            cartProcessor.updateCartIgnoreResult(orderCart, _orderPreference, _orderShipment, _orderPayment)
         }
 //        val param = generateUpdateCartParam()
 //        if (param != null) {
