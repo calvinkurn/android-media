@@ -15,17 +15,17 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class TwoFactorViewModel @Inject constructor (@Named(SessionModule.SESSION_MODULE)
-                                                     private val userSession: UserSessionInterface,
-                                              private val additionalCheckPreference: AdditionalCheckPreference,
-                                              private val additionalCheckUseCase: AdditionalCheckUseCase,
+                                                     private val userSession: dagger.Lazy<UserSessionInterface>,
+                                              private val additionalCheckPreference: dagger.Lazy<AdditionalCheckPreference>,
+                                              private val additionalCheckUseCase: dagger.Lazy<AdditionalCheckUseCase>,
                                               dispatcher: CoroutineDispatcher): BaseViewModel(dispatcher) {
 
     private val mutableGetDataResponse = MutableLiveData<Result<GetObjectPojo>>()
 
     fun check(onSuccess: (TwoFactorResult) -> Unit, onError: (Throwable) -> Unit) {
-        if(additionalCheckPreference.isNeedCheck() && userSession.isLoggedIn) {
-            additionalCheckUseCase.getBottomSheetData(onSuccess = {
-                additionalCheckPreference.setInterval(it.twoFactorResult?.interval ?: 0)
+        if(additionalCheckPreference.get().isNeedCheck() && userSession.get().isLoggedIn) {
+            additionalCheckUseCase.get().getBottomSheetData(onSuccess = {
+                additionalCheckPreference.get().setInterval(it.twoFactorResult?.interval ?: 0)
                 onSuccess(it.twoFactorResult!!)
             }, onError = {
                 onError(it)
