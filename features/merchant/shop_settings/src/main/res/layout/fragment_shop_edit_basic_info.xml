@@ -36,6 +36,8 @@
                     android:id="@+id/imageAvatar"
                     android:layout_width="@dimen/shop_edit_image_size"
                     android:layout_height="@dimen/shop_edit_image_size"
+                    android:src="@color/white"
+                    android:elevation="@dimen/dp_6"
                     app:unify_image_type="circle" />
 
                 <com.tokopedia.unifyprinciples.Typography

@@ -511,7 +511,7 @@ class ShopEditBasicInfoFragment: Fragment() {
         val desc = shopDescriptionTextField.textFieldInput.text.toString()
 
         if (!savedLocalImageUrl.isNullOrEmpty()) {
-            viewModel.uploadShopImage(savedLocalImageUrl!!, name, domain, tagLine, desc)
+            viewModel.uploadShopImage(savedLocalImageUrl ?: "", name, domain, tagLine, desc)
         } else {
             viewModel.updateShopBasicData(name, domain, tagLine, desc)
         }
