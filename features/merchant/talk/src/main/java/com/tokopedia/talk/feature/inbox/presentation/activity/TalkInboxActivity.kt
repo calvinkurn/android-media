@@ -124,6 +124,10 @@ class TalkInboxActivity : BaseSimpleActivity(), TalkPerformanceMonitoringListene
         return TalkInboxTrackingConstants.SCREEN_NAME
     }
 
+    override fun sendScreenAnalytics() {
+        talkInboxTracking.openScreen(screenName)
+    }
+
     private fun setUpToolBar() {
         supportActionBar?.elevation = TalkConstants.NO_SHADOW_ELEVATION
     }

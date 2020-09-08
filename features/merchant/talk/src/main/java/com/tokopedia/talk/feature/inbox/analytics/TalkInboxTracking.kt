@@ -1,6 +1,7 @@
 package com.tokopedia.talk.feature.inbox.analytics
 
 import com.tokopedia.talk.common.analytics.TalkEventTracking
+import com.tokopedia.talk.common.analytics.TalkTrackingConstants
 import com.tokopedia.talk.feature.inbox.data.TalkInboxTab
 import com.tokopedia.track.TrackApp
 import javax.inject.Inject
@@ -78,7 +79,10 @@ class TalkInboxTracking @Inject constructor() {
     }
 
     fun openScreen(screenName: String) {
-        tracker.sendScreenAuthenticated(screenName)
+        tracker.sendScreenAuthenticated(screenName, mapOf(
+                TalkTrackingConstants.TRACKING_CURRENT_SITE to TalkTrackingConstants.CURRENT_SITE_TALK,
+                TalkTrackingConstants.TRACKING_BUSINESS_UNIT to TalkTrackingConstants.BUSINESS_UNIT_TALK
+        ))
     }
 
     private fun getEventCategoryInbox(tab: String): String {
