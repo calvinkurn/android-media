@@ -56,7 +56,7 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
             when (it.itemName) {
                 PaymentDeductionKey.TOTAL_SHIPPING_DISCOUNT -> totalShippingDiscountStr = it.amountStr
                 PaymentDeductionKey.TOTAL_DISCOUNT -> totalDiscountStr = it.amountStr
-                PaymentDeductionKey.REWARDS_POINT -> paymentModeMapList.add(PaymentModeMap(it.itemDesc, it.amountStr))
+                PaymentDeductionKey.REWARDS_POINT -> paymentModeMapList.add(PaymentModeMap(it.itemDesc, it.amountStr, null))
                 PaymentDeductionKey.CASH_BACK_OVO_POINT -> benefitMapList.add(BenefitMap(it.itemDesc, it.amountStr))
                 PaymentDeductionKey.POTENTIAL_CASH_BACK -> benefitMapList.add(BenefitMap(it.itemDesc, it.amountStr, true))
             }
@@ -80,7 +80,7 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
         }
 
         thanksPageData.paymentDetails?.forEach { paymentDetail ->
-            paymentModeMapList.add(PaymentModeMap(paymentDetail.gatewayName, paymentDetail.amountStr))
+            paymentModeMapList.add(PaymentModeMap(paymentDetail.gatewayName, paymentDetail.amountStr, paymentDetail.gatewayCode))
         }
 
         val paymentInfo = PaymentInfo(thanksPageData.amountStr, paymentModeList = paymentModeMapList)

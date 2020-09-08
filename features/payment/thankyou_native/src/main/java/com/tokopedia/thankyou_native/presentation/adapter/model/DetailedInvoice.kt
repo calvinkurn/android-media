@@ -54,7 +54,8 @@ data class BenefitMap(
 
 data class PaymentModeMap(
         val paymentModeStr: String,
-        val paidAmountStr: String
+        val paidAmountStr: String,
+        val gatewayCode: String?
 )
 
 
