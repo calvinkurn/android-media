@@ -195,7 +195,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 currFilterStatusLabel = status
             }
         }
-        loadOrderHistoryList()
+        loadOrderHistoryList("")
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -215,7 +215,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         currPage = 1
         currRecommendationListPage = 1
         uohItemAdapter.showLoader()
-        loadOrderHistoryList()
+        loadOrderHistoryList("")
     }
 
     private fun setInitialValue() {
@@ -307,7 +307,8 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         rv_order_list?.addOnScrollListener(scrollRecommendationListener)
     }
 
-    private fun loadOrderHistoryList() {
+    private fun loadOrderHistoryList(uuid: String) {
+        if (uuid.isNotEmpty()) paramUohOrder.uUID = uuid
         paramUohOrder.page = currPage
         uohListViewModel.loadOrderList(GraphqlHelper.loadRawString(resources, R.raw.uoh_get_order_history), paramUohOrder)
     }
@@ -384,7 +385,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             showToaster(responseFinishOrder.message.first(), Toaster.TYPE_NORMAL)
                         }
                         currPage -= 1
-                        loadOrderHistoryList()
+                        loadOrderHistoryList(orderIdNeedUpdated)
                     } else {
                         if (responseFinishOrder.message.isNotEmpty()) {
                             showToaster(responseFinishOrder.message.first(), Toaster.TYPE_ERROR)
@@ -429,7 +430,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             showToaster(responseLsPrintFinishOrder.data.message, Toaster.TYPE_NORMAL)
                         }
                         currPage -= 1
-                        loadOrderHistoryList()
+                        loadOrderHistoryList(orderIdNeedUpdated)
                     } else {
                         if (responseLsPrintFinishOrder.data.message.isNotEmpty()) {
                             showToaster(responseLsPrintFinishOrder.data.message, Toaster.TYPE_ERROR)
@@ -501,7 +502,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     val isSuccess = it.data.rechargeSetOrderToFail.attributes.isSuccess
                     if (isSuccess) {
                         currPage -= 1
-                        loadOrderHistoryList()
+                        loadOrderHistoryList(orderIdNeedUpdated)
                     } else {
                         showToaster(it.data.rechargeSetOrderToFail.attributes.errorMessage, Toaster.TYPE_ERROR)
                     }
