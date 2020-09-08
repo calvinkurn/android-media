@@ -42,10 +42,6 @@ class InvoiceTypeFactory : BaseAdapterTypeFactory() {
         return ObtainedBenefitViewHolder.LAYOUT_ID
     }
 
-   /* fun type(paymentMethodModel: PaymentMethodModel): Int {
-        return PaymentMethodViewHolder.LAYOUT_ID
-    }*/
-
     fun type(purchasedProductTag: PurchasedProductTag): Int {
         return PurchasedProductTagViewHolder.LAYOUT_ID
     }
