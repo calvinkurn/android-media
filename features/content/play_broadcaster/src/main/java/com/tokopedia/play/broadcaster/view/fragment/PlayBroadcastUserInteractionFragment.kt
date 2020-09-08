@@ -63,6 +63,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private lateinit var productLiveBottomSheet: PlayProductLiveBottomSheet
 
     private lateinit var exitDialog: DialogUnify
+    private lateinit var timeoutDialog: DialogUnify
 
     private var toasterBottomMargin = 0
 
@@ -249,16 +250,19 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun showDialogWhenTimeout() {
-        requireContext().getDialog(
-                title = getString(R.string.play_live_broadcast_dialog_end_timeout_title),
-                desc = getString(R.string.play_live_broadcast_dialog_end_timeout_desc),
-                primaryCta = getString(R.string.play_live_broadcast_dialog_end_timeout_primary),
-                primaryListener = { dialog ->
-                    dialog.dismiss()
-                    navigateToSummary()
-                    analytic.clickDialogSeeReportOnLivePage(parentViewModel.channelId, parentViewModel.title)
-                }
-        ).show()
+        if (!::timeoutDialog.isInitialized) {
+            timeoutDialog = requireContext().getDialog(
+                    title = getString(R.string.play_live_broadcast_dialog_end_timeout_title),
+                    desc = getString(R.string.play_live_broadcast_dialog_end_timeout_desc),
+                    primaryCta = getString(R.string.play_live_broadcast_dialog_end_timeout_primary),
+                    primaryListener = { dialog ->
+                        dialog.dismiss()
+                        navigateToSummary()
+                        analytic.clickDialogSeeReportOnLivePage(parentViewModel.channelId, parentViewModel.title)
+                    }
+            )
+            timeoutDialog.show()
+        }
     }
 
     private fun showToaster(
