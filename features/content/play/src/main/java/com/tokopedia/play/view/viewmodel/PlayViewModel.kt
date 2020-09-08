@@ -416,10 +416,10 @@ class PlayViewModel @Inject constructor(
                 _observablePartnerInfo.value = getPartnerInfo(completeInfoUiModel.channelInfo)
 
             }) {
+                _observableStateChannelInfo.value = Event(true)
                 if (retryCount++ < MAX_RETRY_CHANNEL_INFO) getChannelInfoResponse(channelId)
                 else if (it !is CancellationException) {
                     if (_observableCompleteInfo.value == null) doOnForbidden()
-                    _observableStateChannelInfo.value = Event(true)
                     _observableGetChannelInfo.value = NetworkResult.Fail(it)
                 }
             }

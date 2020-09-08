@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
@@ -30,16 +29,16 @@ import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.DistinctEventObserver
 import com.tokopedia.play.util.event.EventObserver
-import com.tokopedia.play.view.measurement.ScreenOrientationDataSource
-import com.tokopedia.play.view.measurement.bounds.provider.PlayVideoBoundsProvider
-import com.tokopedia.play.view.measurement.bounds.provider.VideoBoundsProvider
-import com.tokopedia.play.view.measurement.layout.DynamicLayoutManager
-import com.tokopedia.play.view.measurement.layout.PlayDynamicLayoutManager
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.view.bottomsheet.PlayMoreActionBottomSheet
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayNavigation
 import com.tokopedia.play.view.contract.PlayOrientationListener
+import com.tokopedia.play.view.measurement.ScreenOrientationDataSource
+import com.tokopedia.play.view.measurement.bounds.provider.PlayVideoBoundsProvider
+import com.tokopedia.play.view.measurement.bounds.provider.VideoBoundsProvider
+import com.tokopedia.play.view.measurement.layout.DynamicLayoutManager
+import com.tokopedia.play.view.measurement.layout.PlayDynamicLayoutManager
 import com.tokopedia.play.view.measurement.scaling.PlayVideoScalingManager
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
@@ -407,7 +406,6 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun setupObserve() {
         observeVideoMeta()
         observeVideoProperty()
-        observeChannelInfo()
         observeQuickReply()
         observeToolbarInfo()
         observeTotalLikes()
@@ -477,12 +475,6 @@ class PlayUserInteractionFragment @Inject constructor(
             if (it.state == PlayVideoState.Ended) showInteractionIfWatchMode()
 
             playButtonViewOnStateChanged(state = it.state)
-        })
-    }
-
-    private fun observeChannelInfo() {
-        playViewModel.observableStateChannelInfo.observe(viewLifecycleOwner, EventObserver {
-            triggerStartMonitoring()
         })
     }
 
@@ -651,22 +643,6 @@ class PlayUserInteractionFragment @Inject constructor(
                         else PlayFullScreenHelper.getShowSystemUiVisibility()
                 triggerFullImmersive(shouldImmersive, false)
             }
-        }
-    }
-
-    private lateinit var onStatsInfoGlobalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener
-
-    private fun triggerStartMonitoring() {
-        playFragment.startRenderMonitoring()
-
-        if (!this::onStatsInfoGlobalLayoutListener.isInitialized) {
-            onStatsInfoGlobalLayoutListener = object : ViewTreeObserver.OnGlobalLayoutListener{
-                override fun onGlobalLayout() {
-                    playFragment.stopRenderMonitoring()
-                    statsInfoView.rootView.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                }
-            }
-            statsInfoView.rootView.viewTreeObserver.addOnGlobalLayoutListener(onStatsInfoGlobalLayoutListener)
         }
     }
 

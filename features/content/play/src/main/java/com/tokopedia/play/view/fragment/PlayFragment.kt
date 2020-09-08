@@ -31,6 +31,7 @@ import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.extensions.isAnyBottomSheetsShown
 import com.tokopedia.play.extensions.isKeyboardShown
 import com.tokopedia.play.util.PlaySensorOrientationManager
+import com.tokopedia.play.util.event.EventObserver
 import com.tokopedia.play.util.keyboard.KeyboardWatcher
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.view.activity.PlayActivity
@@ -43,7 +44,10 @@ import com.tokopedia.play.view.measurement.bounds.manager.PlayVideoBoundsManager
 import com.tokopedia.play.view.measurement.bounds.manager.VideoBoundsManager
 import com.tokopedia.play.view.measurement.scaling.PlayVideoScalingManager
 import com.tokopedia.play.view.measurement.scaling.VideoScalingManager
-import com.tokopedia.play.view.type.*
+import com.tokopedia.play.view.type.BottomInsetsState
+import com.tokopedia.play.view.type.BottomInsetsType
+import com.tokopedia.play.view.type.ScreenOrientation
+import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
 import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.viewmodel.PlayViewModel
@@ -332,6 +336,7 @@ class PlayFragment @Inject constructor(
 
     private fun setupObserve() {
         observeGetChannelInfo()
+        observeStateChannelInfo()
         observeSocketInfo()
         observeEventUserInfo()
         observeVideoMeta()
@@ -352,16 +357,24 @@ class PlayFragment @Inject constructor(
                     fragmentErrorViewOnStateChanged(shouldShow = false)
                 }
                 is NetworkResult.Success -> {
+                    stopRenderMonitoring()
                     hasFetchedChannelInfo = true
                     loaderPage.hide()
                     fragmentErrorViewOnStateChanged(shouldShow = false)
                     PlayAnalytics.sendScreen(channelId, playViewModel.channelType)
                 }
                 is NetworkResult.Fail -> {
+                    stopRenderMonitoring()
                     loaderPage.hide()
                     if (!hasFetchedChannelInfo) fragmentErrorViewOnStateChanged(shouldShow = true)
                 }
             }
+        })
+    }
+
+    private fun observeStateChannelInfo() {
+        playViewModel.observableStateChannelInfo.observe(viewLifecycleOwner, EventObserver {
+            startRenderMonitoring()
         })
     }
 
@@ -449,12 +462,12 @@ class PlayFragment @Inject constructor(
         pageMonitoring.stopNetworkRequestPerformanceMonitoring()
     }
 
-    fun startRenderMonitoring() {
+    private fun startRenderMonitoring() {
         stopNetworkMonitoring()
         pageMonitoring.startRenderPerformanceMonitoring()
     }
 
-    fun stopRenderMonitoring() {
+    private fun stopRenderMonitoring() {
         pageMonitoring.stopRenderPerformanceMonitoring()
         stopPageMonitoring()
     }
