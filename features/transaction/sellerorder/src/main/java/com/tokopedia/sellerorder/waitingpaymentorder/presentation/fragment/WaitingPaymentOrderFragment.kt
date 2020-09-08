@@ -135,7 +135,7 @@ class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, Waitin
         val errorType = if (throwable is UnknownHostException || throwable is SocketTimeoutException) 0 else 1
         (adapter as WaitingPaymentOrderAdapter).setErrorNetworkModel(errorType, this)
 
-        if (adapter.itemCount > 0) {
+        if (adapter.itemCount > 0 && !isLoadingInitialData) {
             onGetListErrorWithExistingData(throwable)
             disableLoadMore()
         } else {
