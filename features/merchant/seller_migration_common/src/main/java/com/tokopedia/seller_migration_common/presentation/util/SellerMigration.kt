@@ -1,6 +1,5 @@
 package com.tokopedia.seller_migration_common.presentation.util
 
-import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
@@ -17,31 +16,12 @@ import com.tokopedia.seller_migration_common.R
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.model.AccountSettingData
-import com.tokopedia.seller_migration_common.presentation.util.touchlistener.SellerMigrationTouchListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
-import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.parcel.Parcelize
-
-@SuppressLint("ClickableViewAccessibility")
-internal fun Fragment.setupMigrationFooter(view: View?,
-                                           trackGoToSellerApp: () -> Unit = {},
-                                           trackGoToPlayStore: () -> Unit = {},
-                                           trackLearnMore: () -> Unit = {},
-                                           goToSellerAppFeature: () -> Unit = { goToSellerApp(trackGoToSellerApp, trackGoToPlayStore) }) {
-    val sellerMigrationBottomSheetButton: UnifyButton? = view?.findViewById(R.id.sellerMigrationBottomSheetButton)
-    sellerMigrationBottomSheetButton?.setOnClickListener {
-        goToSellerAppFeature()
-    }
-    val sellerMigrationBottomSheetLink: Typography? = view?.findViewById(R.id.sellerMigrationBottomSheetLink)
-    sellerMigrationBottomSheetLink?.text = context?.let { HtmlLinkHelper(it, getString(R.string.seller_migration_bottom_sheet_footer)).spannedString }
-    sellerMigrationBottomSheetLink?.setOnTouchListener(SellerMigrationTouchListener {
-        goToInformationWebview(it, trackLearnMore)
-    })
-}
 
 fun Fragment.goToSellerApp(trackGoToSellerApp: () -> Unit = {},
                            trackGoToPlayStore: () -> Unit = {}) {
