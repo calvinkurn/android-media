@@ -5,7 +5,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.seller.menu.common.R
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopInfoErrorUiModel
-import kotlinx.android.synthetic.main.setting_partial_shop_info_error.view.*
+import kotlinx.android.synthetic.main.layout_seller_menu_shop_info_error.view.*
 
 class ShopInfoErrorViewHolder(
     itemView: View,
@@ -14,7 +14,7 @@ class ShopInfoErrorViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.setting_partial_shop_info_error
+        val LAYOUT = R.layout.layout_seller_menu_shop_info_error
     }
 
     override fun bind(element: ShopInfoErrorUiModel) {
