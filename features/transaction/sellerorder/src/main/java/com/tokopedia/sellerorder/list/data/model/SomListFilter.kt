@@ -2,7 +2,6 @@ package com.tokopedia.sellerorder.list.data.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import kotlin.random.Random
 
 /**
  * Created by fwidjaja on 2019-08-29.
@@ -73,11 +72,11 @@ data class SomListFilter(
             data class WaitingPaymentCounter(
                     @SerializedName("text")
                     @Expose
-                    val text: String = "Menunggu Pembayaran",
+                    val text: String = "",
 
-                    @SerializedName("counter")
+                    @SerializedName("amount")
                     @Expose
-                    val amount: Int = Random.nextInt(0, 150)
+                    val amount: Int = 0
             )
         }
     }
