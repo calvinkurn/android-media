@@ -336,7 +336,7 @@ class PlayFragment @Inject constructor(
 
     private fun setupObserve() {
         observeGetChannelInfo()
-        observeStateChannel()
+        observeChannelErrorEvent()
         observeSocketInfo()
         observeEventUserInfo()
         observeVideoMeta()
@@ -370,7 +370,7 @@ class PlayFragment @Inject constructor(
         })
     }
 
-    private fun observeStateChannel() {
+    private fun observeChannelErrorEvent() {
         playViewModel.observableChannelErrorEvent.observe(viewLifecycleOwner, EventObserver {
             startRenderMonitoring()
             stopRenderMonitoring()
