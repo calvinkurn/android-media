@@ -2263,6 +2263,18 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         )
     }
 
+    private fun goToPdpSellerApp(){
+        val appLink = UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
+        val parameterizedAppLink = Uri.parse(appLink).buildUpon()
+                .appendQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, SellerMigrationFeatureName.FEATURE_ADS_DETAIL)
+                .build()
+                .toString()
+        goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_ADS_DETAIL, arrayListOf(
+                ApplinkConst.PRODUCT_MANAGE,
+                parameterizedAppLink
+        ))
+    }
+
     private fun initBtnAction() {
         if (!::actionButtonView.isInitialized) {
             actionButtonView = PartialButtonActionView.build(base_btn_action, onViewClickListener)
@@ -2272,15 +2284,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             if (GlobalConfig.isSellerApp()) {
                 showTopAdsBottomSheet()
             } else {
-                val appLink = UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
-                val parameterizedAppLink = Uri.parse(appLink).buildUpon()
-                        .appendQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, SellerMigrationFeatureName.FEATURE_ADS_DETAIL)
-                        .build()
-                        .toString()
-                goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_ADS_DETAIL, arrayListOf(
-                        ApplinkConst.PRODUCT_MANAGE,
-                        parameterizedAppLink
-                ))
+                goToPdpSellerApp()
             }
         }
 
@@ -2305,11 +2309,15 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     RouteManager.route(context, secondAppLink)
                 }
             } else {
-                goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_ADS, arrayListOf(
-                        ApplinkConst.PRODUCT_MANAGE,
-                        firstAppLink,
-                        secondAppLink
-                ))
+                if (secondAppLink.isEmpty()) {
+                    goToPdpSellerApp()
+                } else {
+                    goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_ADS, arrayListOf(
+                            ApplinkConst.PRODUCT_MANAGE,
+                            firstAppLink,
+                            secondAppLink
+                    ))
+                }
             }
         }
 
