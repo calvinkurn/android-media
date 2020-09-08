@@ -8,9 +8,6 @@ apply plugin: 'io.hansel.preprocessor'
 
 apply from: '../tools/dynamic_feature_inclusion.gradle'
 apply from: '../tools/set_debug_tools.gradle'
-if (!rootProject.ext.debugToolsEnabled) {
-    apply plugin: 'com.bugsnag.android.gradle'
-}
 
 def allowDistribution() {
     if (project.hasProperty('tkpdBuildType') && tkpdBuildType == "hockeyapp") {
@@ -100,7 +97,6 @@ android {
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
             proguardFiles 'proguard-rules.txt'
             ext.enableHansel = project.hasProperty('hanselEnableDebug')
-            ext.enableBugsnag = false
         }
         release {
             if (devMode()) {
@@ -390,7 +386,6 @@ dependencies {
     implementation('de.hdodenhof:circleimageview:2.1.0') {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
-    implementation rootProject.ext.monitoringDependencies.bugSnag
 
     if (rootProject.ext.debugToolsEnabled) {
         implementation project(rootProject.ext.libraries.blockCanary)

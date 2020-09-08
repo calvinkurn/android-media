@@ -13,9 +13,6 @@ import android.webkit.URLUtil;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 
-import com.bugsnag.android.BeforeNotify;
-import com.bugsnag.android.Bugsnag;
-import com.bugsnag.android.Error;
 import com.github.moduth.blockcanary.BlockCanary;
 import com.github.moduth.blockcanary.BlockCanaryContext;
 import com.google.android.play.core.splitcompat.SplitCompat;
@@ -124,7 +121,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
     @Override
     public void onCreate() {
-        initBugsnag();
         GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION;
         GlobalConfig.PACKAGE_APPLICATION = GlobalConfig.PACKAGE_SELLER_APP;
         setVersionCode();
@@ -172,31 +168,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         registerActivityLifecycleCallbacks();
         initBlockCanary();
         TokoPatch.init(this);
-    }
-
-    private void initBugsnag() {
-        Bugsnag.init(this);
-        Bugsnag.beforeNotify(new BeforeNotify() {
-            @Override
-            public boolean run(Error error) {
-                UserSessionInterface userSession = new UserSession(SellerMainApplication.this);
-                error.setUser(userSession.getUserId(), userSession.getEmail(), userSession.getName());
-                error.addToTab("squad", "package", getPackageName(error));
-                return true;
-            }
-
-            private String getPackageName(Error error) {
-                String packageName = "";
-                String errorText = error.getException().getMessage();
-                String startText = "/com.tokopedia.";
-                int startIndex = errorText.indexOf(startText);
-                if (startIndex > 0) {
-                    int endIndex = errorText.indexOf(".", startIndex + startText.length());
-                    packageName = errorText.substring(startIndex + 1, endIndex);
-                }
-                return packageName;
-            }
-        });
     }
 
     public void initBlockCanary(){

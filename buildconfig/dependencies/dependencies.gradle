@@ -116,10 +116,6 @@ ext {
             googleServices: "com.google.gms:google-services:${googleServiceGradleVersion}"
     ]
 
-    monitoringDependencies = [
-            bugSnag       : "com.bugsnag:bugsnag-android:4.22.3"
-    ]
-
     networkDependencies = [
             retrofit                : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
             converterGson           : "com.squareup.retrofit2:converter-gson:${retrofitVersion}",

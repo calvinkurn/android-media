@@ -39,7 +39,6 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath 'com.meituan.robust:gradle-plugin:0.4.99'
         classpath 'com.meituan.robust:auto-patch-plugin:0.4.99'
-        classpath 'com.bugsnag:bugsnag-android-gradle-plugin:4.7.3'
         classpath "androidx.benchmark:benchmark-gradle-plugin:1.0.0"
         classpath "android.arch.navigation:navigation-safe-args-gradle-plugin:1.0.0"
     }
