@@ -1,7 +1,9 @@
 package com.tokopedia.play.broadcaster.view.activity
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.SurfaceHolder
 import android.view.SurfaceView
@@ -16,12 +18,16 @@ import com.alivc.live.pusher.SurfaceStatus
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
+import com.tokopedia.analytics.performance.util.PltPerformanceData
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
+import com.tokopedia.play.broadcaster.analytic.*
 import com.tokopedia.play.broadcaster.di.broadcast.DaggerPlayBroadcastComponent
 import com.tokopedia.play.broadcaster.di.broadcast.PlayBroadcastComponent
 import com.tokopedia.play.broadcaster.di.broadcast.PlayBroadcastModule
@@ -49,6 +55,7 @@ import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updatePadding
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
+import org.jetbrains.annotations.TestOnly
 import javax.inject.Inject
 
 /**
@@ -93,11 +100,14 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
             Manifest.permission.RECORD_AUDIO)
     private val permissionHelper by lazy { PermissionHelperImpl(this) }
 
+    private lateinit var pageMonitoring: PageLoadTimePerformanceInterface
+
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
         initViewModel()
         setFragmentFactory()
-
+        startPageMonitoring()
+        starPrepareMonitoring()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_play_broadcast)
         isRecreated = (savedInstanceState != null)
@@ -279,6 +289,8 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
     }
 
     private fun getConfiguration() {
+        stopPrepareMonitoring()
+        startNetworkMonitoring()
         viewModel.getConfiguration()
     }
 
@@ -317,6 +329,8 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
      */
     private fun observeConfiguration() {
         viewModel.observableConfigInfo.observe(this, Observer { result ->
+            stopNetworkMonitoring()
+            startRenderMonitoring()
             when(result) {
                 is NetworkResult.Loading -> loaderView.show()
                 is NetworkResult.Success -> {
@@ -332,6 +346,8 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
                     )
                 }
             }
+            stopRenderMonitoring()
+            stopPageMonitoring()
         })
     }
     //endregion
@@ -490,10 +506,57 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
         }
     }
 
+    private fun startPageMonitoring() {
+        pageMonitoring = PageLoadTimePerformanceCallback(
+                PLAY_BROADCASTER_TRACE_PREPARE_PAGE,
+                PLAY_BROADCASTER_TRACE_REQUEST_NETWORK,
+                PLAY_BROADCASTER_TRACE_RENDER_PAGE
+        )
+        pageMonitoring.startMonitoring(PLAY_BROADCASTER_TRACE_PAGE)
+    }
+
+    private fun starPrepareMonitoring() {
+        pageMonitoring.startPreparePagePerformanceMonitoring()
+    }
+
+    private fun stopPrepareMonitoring() {
+        pageMonitoring.stopPreparePagePerformanceMonitoring()
+    }
+
+    private fun startNetworkMonitoring() {
+        pageMonitoring.startNetworkRequestPerformanceMonitoring()
+    }
+
+    private fun stopNetworkMonitoring() {
+        pageMonitoring.stopNetworkRequestPerformanceMonitoring()
+    }
+
+    private fun startRenderMonitoring() {
+        pageMonitoring.startRenderPerformanceMonitoring()
+    }
+
+    private fun stopRenderMonitoring() {
+        pageMonitoring.stopRenderPerformanceMonitoring()
+    }
+
+    private fun stopPageMonitoring() {
+        pageMonitoring.stopMonitoring()
+    }
+
+    fun getPltPerformanceResultData(): PltPerformanceData? {
+        return pageMonitoring.getPltPerformanceData()
+    }
+
     companion object {
         private const val CHANNEL_ID = "channel_id"
         private const val CHANNEL_TYPE = "channel_type"
         private const val REQUEST_PERMISSION_CODE = 3298
         const val RESULT_PERMISSION_CODE = 3297
+
+        @TestOnly
+        fun createIntent(context: Context) =
+                Intent(context, PlayBroadcastActivity::class.java).apply {
+                    data = Uri.parse(ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER)
+                }
     }
 }
