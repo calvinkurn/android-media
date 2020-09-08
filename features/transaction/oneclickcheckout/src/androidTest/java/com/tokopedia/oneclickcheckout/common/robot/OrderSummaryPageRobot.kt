@@ -103,10 +103,10 @@ class OrderSummaryPageRobot {
     }
 
     fun assertProfileAddress(headerMessage: String,
-                      addressName: String,
-                      addressReceiver: String,
-                      addressDetail: String,
-                      isMainPreference: Boolean) {
+                             addressName: String,
+                             addressReceiver: String,
+                             addressDetail: String,
+                             isMainPreference: Boolean) {
         onView(withId(R.id.tv_card_header)).perform(scrollTo()).check(matches(withText(headerMessage)))
         onView(withId(R.id.tv_address_name)).check(matches(withText(addressName)))
         onView(withId(R.id.tv_address_receiver)).check(matches(withText(addressReceiver)))
@@ -167,7 +167,7 @@ class OrderSummaryPageRobot {
     }
 }
 
-class OrderSummaryPageResultRobot() {
+class OrderSummaryPageResultRobot {
 
     fun assertGoToPayment(redirectUrl: String, queryString: String, method: String) {
         val paymentPassData = Intents.getIntents().first().getParcelableExtra<PaymentPassData>(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA)!!

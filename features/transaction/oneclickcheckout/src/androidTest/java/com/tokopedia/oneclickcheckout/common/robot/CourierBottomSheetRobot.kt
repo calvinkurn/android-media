@@ -7,6 +7,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 class CourierBottomSheetRobot {
 
     fun chooseCourierWithText(text: String) {
-        onView(withText("AnterAja")).perform(click())
+        onView(withText(text)).perform(click())
     }
 }
