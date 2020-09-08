@@ -16,7 +16,7 @@ class GetInboxReviewUseCase @Inject constructor(
         private const val FILTER_BY = "filterBy"
         private const val PAGE = "page"
         private const val LIMIT = "limit"
-        private const val MAX_LIMIT = 10
+        private const val MAX_LIMIT = 15
 
         private val gqlQuery = """
             query productrevGetInboxReviewByShop(${'$'}page: Int!, ${'$'}limit: Int!, ${'$'}filterBy: String!) {
