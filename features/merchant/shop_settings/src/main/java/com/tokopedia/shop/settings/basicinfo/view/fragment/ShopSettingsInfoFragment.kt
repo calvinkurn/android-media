@@ -361,6 +361,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                 tvShopSlogan.visibility = View.GONE
             } else {
                 tvShopSloganTitle.visibility = View.VISIBLE
+                tvShopSlogan.visibility = View.VISIBLE
                 tvShopSlogan.text = shopBasicData.tagline
             }
 
@@ -369,6 +370,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                 tvShopDescription.visibility = View.GONE
             } else {
                 tvShopDescriptionTitle.visibility = View.VISIBLE
+                tvShopDescription.visibility = View.VISIBLE
                 tvShopDescription.text = shopBasicData.description
             }
 
