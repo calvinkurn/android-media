@@ -4,7 +4,6 @@ import android.animation.Animator
 import android.animation.LayoutTransition
 import android.animation.ValueAnimator
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -106,7 +105,7 @@ class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, Waitin
         if (page == defaultInitialPage) {
             animateCheckAndSetStockButtonLeave()
         }
-        Handler().postDelayed({
+//        Handler().postDelayed({
             waitingPaymentOrderViewModel.loadWaitingPaymentOrder(
                     WaitingPaymentOrderRequestParam(
                             page = page,
@@ -115,12 +114,13 @@ class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, Waitin
                             showPage = page
                     )
             )
-        }, 2000)
+//        }, 2000)
     }
 
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(rvWaitingPaymentOrder.layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                scrollToBottomAfterLoadMoreViewInflated()
                 showLoading()
                 loadData(page)
             }
@@ -229,15 +229,37 @@ class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, Waitin
         waitingPaymentOrderViewModel.waitingPaymentOrderResult.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Success -> {
-                    val newItems = result.data
+                    val newItems = if (swipeRefreshLayoutWaitingPaymentOrder.isRefreshing) {
+                        val list = ArrayList<WaitingPaymentOrder>()
+                        list.add(
+                                WaitingPaymentOrder(
+                                        "123456",
+                                        "32 Sep, 2020",
+                                        "Y*******n (Jakarta Selatan)",
+                                        listOf(
+                                                WaitingPaymentOrder.Product(
+                                                        "654321",
+                                                        "Trip package to kuvukiland",
+                                                        "https://i.pinimg.com/originals/0c/1c/a1/0c1ca1955e2b0c5469ba17da2b1b9b96.jpg",
+                                                        99,
+                                                        "Rp. 1.000.000"
+                                                )
+                                        ),
+                                        false
+                                )
+                        )
+                        list.addAll(result.data)
+                        list
+                    } else {
+                        ArrayList(result.data)
+                    }
                     if (isLoadingInitialData) {
-                        (adapter as WaitingPaymentOrderAdapter).updateProducts(newItems)
+                        (adapter as WaitingPaymentOrderAdapter).updateProducts(newItems.toList())
                         animateTickerEnter()
                         animateCheckAndSetStockButtonEnter()
-                        isLoadingInitialData = false
                     } else {
                         hideLoading()
-                        adapter.addMoreData(newItems)
+                        adapter.addMoreData(newItems.toList())
                     }
                     updateScrollListenerState(hasNextPage(newItems.size))
                     swipeRefreshLayoutWaitingPaymentOrder.isEnabled = true
@@ -252,6 +274,18 @@ class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, Waitin
             }
             swipeRefreshLayoutWaitingPaymentOrder.isRefreshing = false
         })
+    }
+
+    private fun scrollToTopAfterRecyclerViewInflated() {
+        rvWaitingPaymentOrder.addOneTimeGlobalLayoutListener {
+            (rvWaitingPaymentOrder).smoothScrollToPosition(0)
+        }
+    }
+
+    private fun scrollToBottomAfterLoadMoreViewInflated() {
+        rvWaitingPaymentOrder.addOneTimeGlobalLayoutListener {
+            (rvWaitingPaymentOrder).smoothScrollToPosition(adapter.dataSize - 1)
+        }
     }
 
     private fun animateTicker(from: Float, to: Float): ValueAnimator {
@@ -298,7 +332,20 @@ class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, Waitin
 
     private fun animateCheckAndSetStockButtonEnter() {
         cardCheckAndSetStock.visible()
-        animateCheckAndSetStockButton(cardCheckAndSetStock.height.toFloat(), 0f)
+        animateCheckAndSetStockButton(cardCheckAndSetStock.height.toFloat(), 0f).addListener(object: Animator.AnimatorListener {
+            override fun onAnimationRepeat(animation: Animator?) {}
+
+            override fun onAnimationEnd(animation: Animator?) {
+                if (isLoadingInitialData) {
+                    scrollToTopAfterRecyclerViewInflated()
+                    isLoadingInitialData = false
+                }
+            }
+
+            override fun onAnimationCancel(animation: Animator?) {}
+
+            override fun onAnimationStart(animation: Animator?) {}
+        })
     }
 
     private fun animateCheckAndSetStockButtonLeave() {

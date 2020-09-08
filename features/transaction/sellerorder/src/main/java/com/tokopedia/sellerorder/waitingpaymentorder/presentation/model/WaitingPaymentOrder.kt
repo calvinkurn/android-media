@@ -14,8 +14,7 @@ data class WaitingPaymentOrder(
         val paymentDeadline: String,
         val buyerNameAndPlace: String,
         val products: List<Product>,
-        var isExpanded: Boolean,
-        var maxHeight: Int = 0
+        var isExpanded: Boolean
 ) : Visitable<WaitingPaymentOrderAdapterTypeFactory> {
 
     override fun type(typeFactory: WaitingPaymentOrderAdapterTypeFactory?): Int {
