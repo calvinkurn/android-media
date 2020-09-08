@@ -88,7 +88,6 @@ class TalkInboxContainerFragment : BaseDaggerFragment(), HasComponent<TalkInboxC
         }
         talkInboxViewPager.registerOnPageChangeCallback(object: ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
-                trackTabChange(position)
                 talkInboxTabs.getUnifyTabLayout().getTabAt(position)?.select()
             }
         })
