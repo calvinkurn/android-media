@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.seller.menu.R
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
-import com.tokopedia.seller.menu.common.analytics.sendShopInfoImpressionData
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingShopInfoImpressionTrackable
 import com.tokopedia.seller.menu.presentation.adapter.SellerMenuAdapter
@@ -26,9 +25,7 @@ class SellerSettingsFragment: Fragment(), SettingTrackingListener {
         setupSettingsList()
     }
 
-    override fun sendImpressionDataIris(settingShopInfoImpressionTrackable: SettingShopInfoImpressionTrackable) {
-        settingShopInfoImpressionTrackable.sendShopInfoImpressionData()
-    }
+    override fun sendImpressionDataIris(settingShopInfoImpressionTrackable: SettingShopInfoImpressionTrackable) {}
 
     private fun setupSettingsList() {
         context?.let { context ->

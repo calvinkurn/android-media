@@ -27,15 +27,15 @@ class SellerMenuTitleViewHolder(
         menu.onClickApplink?.let { appLink ->
             itemView.setOnClickListener {
                 RouteManager.route(itemView.context, appLink)
-                sendTracker(menu)
+                trackClickSection(menu)
             }
         }
     }
 
-    private fun sendTracker(menu: SectionTitleUiModel) {
+    private fun trackClickSection(menu: SectionTitleUiModel) {
         when(menu.type) {
             PRODUCT_SECTION_TITLE -> tracker?.sendEventAddProductClick()
-            ORDER_SECTION_TITLE -> {}
+            ORDER_SECTION_TITLE -> tracker?.sendEventClickOrderHistory()
         }
     }
 }

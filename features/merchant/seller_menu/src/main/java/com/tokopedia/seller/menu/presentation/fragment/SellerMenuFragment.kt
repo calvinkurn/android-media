@@ -20,7 +20,6 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller.menu.R
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
-import com.tokopedia.seller.menu.common.analytics.sendShopInfoImpressionData
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState.SettingError
@@ -43,6 +42,10 @@ import javax.inject.Inject
 
 class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHolder.ShopInfoListener,
     ShopInfoErrorViewHolder.ShopInfoErrorListener {
+
+    companion object {
+        private const val SCREEN_NAME = "MA - Akun Toko"
+    }
 
     @Inject
     lateinit var viewModel: SellerMenuViewModel
@@ -68,6 +71,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
         setHasOptionsMenu(true)
+
         super.onCreate(savedInstanceState)
     }
 
@@ -87,17 +91,26 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
         super.onCreateOptionsMenu(menu, inflater)
     }
 
+    override fun onResume() {
+        super.onResume()
+        sellerMenuTracker.sendEventOpenScreen(SCREEN_NAME)
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.action_inbox -> RouteManager.route(context, ApplinkConst.INBOX)
-            R.id.action_notification -> RouteManager.route(context, ApplinkConst.NOTIFICATION)
+            R.id.action_inbox -> {
+                RouteManager.route(context, ApplinkConst.INBOX)
+                sellerMenuTracker.sendEventClickInbox()
+            }
+            R.id.action_notification -> {
+                RouteManager.route(context, ApplinkConst.NOTIFICATION)
+                sellerMenuTracker.sendEventClickNotification()
+            }
         }
         return super.onOptionsItemSelected(item)
     }
 
-    override fun sendImpressionDataIris(settingShopInfoImpressionTrackable: SettingShopInfoImpressionTrackable) {
-        settingShopInfoImpressionTrackable.sendShopInfoImpressionData()
-    }
+    override fun sendImpressionDataIris(settingShopInfoImpressionTrackable: SettingShopInfoImpressionTrackable) {}
 
     override fun onSaldoClicked() {
         if (remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_SALDO_SPLIT_FOR_SELLER_APP, false))
@@ -177,6 +190,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
             is SettingSuccess -> {
                 if (settingResponseState is SettingShopInfoUiModel) {
                     adapter.showShopInfo(settingResponseState, shopScore)
+                    sellerMenuTracker.sendEventViewShopAccount(settingResponseState)
                 }
             }
             is SettingLoading -> {
