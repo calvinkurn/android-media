@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
@@ -49,7 +48,6 @@ import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
-import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.play_common.util.extension.awaitMeasured
@@ -61,7 +59,6 @@ import com.tokopedia.play_common.view.updatePadding
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.play_common.viewcomponent.viewComponentOrNull
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.usecase.coroutines.Fail
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
@@ -484,7 +481,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun observeChannelInfo() {
-        playViewModel.observableCompleteInfo.observe(viewLifecycleOwner, DistinctObserver {
+        playViewModel.observableStateChannelInfo.observe(viewLifecycleOwner, DistinctObserver {
             triggerStartMonitoring()
         })
     }
