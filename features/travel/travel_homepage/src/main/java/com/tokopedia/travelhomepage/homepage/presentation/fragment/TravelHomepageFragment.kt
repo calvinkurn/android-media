@@ -157,6 +157,7 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel,
             job = launch {
                 isLoadingInitialData = true
                 renderList(it, false)
+                delay(750L)
             }
         })
 
