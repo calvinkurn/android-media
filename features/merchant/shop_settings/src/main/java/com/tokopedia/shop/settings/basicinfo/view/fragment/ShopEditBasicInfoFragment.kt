@@ -76,7 +76,6 @@ class ShopEditBasicInfoFragment: Fragment() {
     private var shopBasicDataModel: ShopBasicDataModel? = null
     private var savedLocalImageUrl: String? = null
     private var needUpdatePhotoUI: Boolean = false
-    private var isDialogShown: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
@@ -198,6 +197,7 @@ class ShopEditBasicInfoFragment: Fragment() {
 
     private fun setupSaveBtn() {
         tvSave.setOnClickListener {
+            val isDialogShown = !isNameStillSame() || !isDomainStillSame()
             if (isDialogShown) {
                 createSaveDialog()
             } else {
@@ -318,6 +318,14 @@ class ShopEditBasicInfoFragment: Fragment() {
         return shopDomainTextField.isTextFieldError
     }
 
+    private fun isNameStillSame(): Boolean {
+        return shopBasicDataModel?.name == shopNameTextField.textFieldInput.text.toString()
+    }
+
+    private fun isDomainStillSame(): Boolean {
+        return shopBasicDataModel?.domain == shopDomainTextField.textFieldInput.text.toString()
+    }
+
     private fun observeLiveData() {
         observeGetShopBasicData()
         observeUploadShopImage()
@@ -364,7 +372,6 @@ class ShopEditBasicInfoFragment: Fragment() {
                     val data = it.data
                     showShopEditShopInfoTicker(data)
                     showShopNameDomainTextField(data)
-                    isDialogShown = data.isDomainAllowed || data.isNameAllowed
                 }
                 is Fail -> {
                     val throwable = it.throwable
