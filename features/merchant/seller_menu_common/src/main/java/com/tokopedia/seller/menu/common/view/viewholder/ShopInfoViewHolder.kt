@@ -29,7 +29,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.setting_balance.view.*
 import kotlinx.android.synthetic.main.layout_seller_menu_shop_info_success.view.*
 import kotlinx.android.synthetic.main.setting_partial_others_local_load.view.*
-import kotlinx.android.synthetic.main.setting_partial_shop_info_success.view.*
+import kotlinx.android.synthetic.main.layout_seller_menu_shop_info.view.*
 import kotlinx.android.synthetic.main.setting_shop_status_pm.view.*
 import kotlinx.android.synthetic.main.setting_shop_status_regular.view.*
 
@@ -71,7 +71,6 @@ class ShopInfoViewHolder(
                         localLoadOthers?.gone()
                         shopStatus?.visible()
                         saldoBalance?.visible()
-                        topAdsBalance?.visible()
                     }
                     partialResponseStatus.first -> {
                         showNameAndAvatar()
@@ -87,7 +86,6 @@ class ShopInfoViewHolder(
                             visible()
                         }
                         saldoBalance?.gone()
-                        topAdsBalance?.gone()
                     }
                     partialResponseStatus.second -> {
                         showNameAndAvatar()
@@ -101,7 +99,6 @@ class ShopInfoViewHolder(
                             visible()
                         }
                         saldoBalance?.visible()
-                        topAdsBalance?.visible()
                     }
                 }
                 showShopScore(uiModel)

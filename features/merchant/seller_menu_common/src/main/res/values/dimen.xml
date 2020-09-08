@@ -39,15 +39,10 @@
     <dimen name="setting_shop_badge_border_pm_margin">3dp</dimen>
     <dimen name="setting_shop_error_background_height">150dp</dimen>
     <dimen name="setting_local_load_margin">16dp</dimen>
-    <dimen name="setting_balance_padding">3dp</dimen>
-    <dimen name="setting_topads_icon_margin">5dp</dimen>
+    <dimen name="setting_balance_padding">3dp</dimen>   `
     <dimen name="setting_shop_name_shimmer_height">20dp</dimen>
     <dimen name="setting_status_loading_padding_top">20dp</dimen>
     <dimen name="setting_status_loading_padding_bottom">17dp</dimen>
-    <dimen name="setting_topads_bottomsheet_padding">16dp</dimen>
-    <dimen name="setting_topads_description_padding_horizontal">3dp</dimen>
-    <dimen name="setting_topads_button_margin">20dp</dimen>
-    <dimen name="setting_topads_padding_bottom">30dp</dimen>
     <dimen category="font-size" name="line_spacing_6">6sp</dimen>
     <dimen category="font-size" name="top_ads_description_size">14sp</dimen>
 </resources>
