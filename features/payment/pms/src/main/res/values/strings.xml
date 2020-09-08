@@ -14,7 +14,6 @@
     <string name="payment_label_close">Tutup</string>
     <string name="payment_title_yes">Ya</string>
     <string name="payment_label_no">Tidak</string>
-    <string name="payment_title_payment_status">Menunggu Pembayaran</string>
     <string name="payment_label_helper_change_click_bca">User ID KlikBCA Anda saat ini adalah %1$s</string>
     <string name="payment_label_hint_click_bca_user_id">KlikBCA User ID</string>
     <string name="payment_label_use">Terapkan</string>
@@ -34,7 +33,6 @@
     <string name="payment_label_acc_sender">Rekening Pengirim</string>
     <string name="payment_label_acc_dest">Rekening Tujuan</string>
     <string name="payment_label_name_acc_formated">a.n %1$s</string>
-    <string name="payment_title_activity_howtopay">Cara Pembayaran</string>
     <string name="payment_label_help_proof">Pastikan bukti pembayaran menampilkan</string>
     <string name="payment_label_help_proof_date">Tanggal/Waktu Transfer</string>
     <string name="payment_label_help_proof_example_date">contoh : tgl. 04/06/19 jam 07:24:06</string>

@@ -310,6 +310,8 @@ object DeeplinkDFMapper : CoroutineScope {
 
             // Payment
             add(DFP({ it.startsWith(PAYMENT_SETTING) }, DF_BASE, R.string.payment_settings_title))
+            add(DFP({it.startsWith(ApplinkConstInternalPayment.PMS_PAYMENT_LIST) }, DF_BASE,R.string.payment_title_payment_status))
+            add(DFP({it.startsWith(ApplinkConstInternalPayment.INTERNAL_HOW_TO_PAY) }, DF_BASE, R.string.payment_title_activity_howtopay))
             add(DFP({ it.startsWith(INSTANT_DEBIT_BCA_ENTRY_PATTERN) || it.startsWith(EDIT_BCA_ONE_KLICK_ENTRY_PATTERN)}, DF_BASE, R.string.payment_instant_debit_bca_title))
 
             // Promo

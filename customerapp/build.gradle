@@ -349,7 +349,6 @@ dependencies {
     implementation project(rootProject.ext.features.loginphone)
     implementation project(rootProject.ext.features.sessioncommon)
     implementation project(rootProject.ext.features.commonDigital)
-    implementation project(rootProject.ext.features.pms)
     implementation project(rootProject.ext.features.promoCheckout)
     implementation project(rootProject.ext.features.loyaltyCommon)
     implementation project(rootProject.ext.features.promoCheckoutCommon)

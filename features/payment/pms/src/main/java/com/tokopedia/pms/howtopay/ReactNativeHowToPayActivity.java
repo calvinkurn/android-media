@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
@@ -24,19 +23,10 @@ public class ReactNativeHowToPayActivity extends BaseSimpleActivity {
 
     private static final String MP_PAYMENT_MANAGEMENT_SYSTEM = "mp_payment_management_system";
 
-    @DeepLink(ApplinkConst.HOWTOPAY)
-    public static Intent getHowToPayApplinkCallingIntent(Context context, Bundle bundle){
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         ReactUtils.startTracing(MP_PAYMENT_MANAGEMENT_SYSTEM);
-        return ReactNativeHowToPayActivity.createApplinkCallingIntent(context, ReactConst.Screen.HOW_TO_PAY, "Cara Pembayaran", bundle);
-    }
-
-    public static Intent createApplinkCallingIntent(Context context, String reactScreenName, String pageTitle, Bundle bundle){
-        Intent intent = new Intent(context, ReactNativeHowToPayActivity.class);
-        bundle.putString(ReactConst.KEY_SCREEN, reactScreenName);
-        bundle.putString(EXTRA_TITLE, pageTitle);
-        intent.putExtras(bundle);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        return intent;
     }
 
     @Override
@@ -45,7 +35,9 @@ public class ReactNativeHowToPayActivity extends BaseSimpleActivity {
     }
 
     protected Bundle getReactNativeProps() {
-        Bundle bundle = getIntent().getExtras();
+        Bundle bundle = new Bundle();
+        bundle.putString(ReactConst.KEY_SCREEN, ReactConst.Screen.HOW_TO_PAY);
+        bundle.putString(EXTRA_TITLE, "Cara Pembayaran");
         Bundle newBundle = new Bundle();
 
         // clear bundle from deeplinks default value

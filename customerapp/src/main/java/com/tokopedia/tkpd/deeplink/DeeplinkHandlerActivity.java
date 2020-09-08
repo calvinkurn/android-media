@@ -49,8 +49,6 @@ import com.tokopedia.officialstore.applink.OfficialStoreApplinkModule;
 import com.tokopedia.officialstore.applink.OfficialStoreApplinkModuleLoader;
 import com.tokopedia.phoneverification.applink.PhoneVerificationApplinkModule;
 import com.tokopedia.phoneverification.applink.PhoneVerificationApplinkModuleLoader;
-import com.tokopedia.pms.howtopay.HowtopayApplinkModule;
-import com.tokopedia.pms.howtopay.HowtopayApplinkModuleLoader;
 import com.tokopedia.product.detail.applink.ProductDetailApplinkModule;
 import com.tokopedia.product.detail.applink.ProductDetailApplinkModuleLoader;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
@@ -95,7 +93,6 @@ import timber.log.Timber;
         OvoUpgradeDeeplinkModule.class,
         LoyaltyAppLinkModule.class,
         ExploreApplinkModule.class,
-        HowtopayApplinkModule.class,
         LoginRegisterApplinkModule.class,
         ChangeInactivePhoneApplinkModule.class,
         PhoneVerificationApplinkModule.class,
@@ -123,7 +120,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new DigitalBrowseApplinkModuleLoader(),
                     new LoyaltyAppLinkModuleLoader(),
                     new ExploreApplinkModuleLoader(),
-                    new HowtopayApplinkModuleLoader(),
                     new LoginRegisterApplinkModuleLoader(),
                     new ChangeInactivePhoneApplinkModuleLoader(),
                     new PhoneVerificationApplinkModuleLoader(),

@@ -101,7 +101,7 @@ public class UploadProofPaymentFragment extends BaseDaggerFragment implements Up
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_upload_proof_payment, container, false);
         progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage(getString(R.string.title_loading));
+        progressDialog.setMessage(getString(com.tokopedia.abstraction.R.string.title_loading));
         containerHelpUploadProof = view.findViewById(R.id.container_helper);
         containerImageUpload = view.findViewById(R.id.container_image_helper);
         buttonActionCloseImage = view.findViewById(R.id.iv_action_image);
@@ -153,7 +153,7 @@ public class UploadProofPaymentFragment extends BaseDaggerFragment implements Up
                 buttonChooseAnotherImage.setVisibility(View.VISIBLE);
                 titleUploadImage.setText(R.string.payment_label_succes_upload_proof);
             } else {
-                buttonActionCloseImage.setImageDrawable(MethodChecker.getDrawable(getActivity(), R.drawable.ic_close_default));
+                buttonActionCloseImage.setImageDrawable(MethodChecker.getDrawable(getActivity(), com.tokopedia.design.R.drawable.ic_close_default));
                 buttonSave.setText(R.string.payment_label_save_image);
                 buttonChooseAnotherImage.setVisibility(View.GONE);
                 titleUploadImage.setText(R.string.payment_label_confirmation_upload_image);
@@ -177,7 +177,7 @@ public class UploadProofPaymentFragment extends BaseDaggerFragment implements Up
     }
 
     private void openImagePicker() {
-        ImagePickerBuilder builder = new ImagePickerBuilder(getString(R.string.choose_image),
+        ImagePickerBuilder builder = new ImagePickerBuilder(getString(com.tokopedia.imagepicker.R.string.choose_image),
                 new int[]{TYPE_GALLERY, TYPE_CAMERA}, GalleryType.IMAGE_ONLY, MAX_FILE_SIZE_IN_KB,
                 DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.ORIGINAL, true,
                 null
