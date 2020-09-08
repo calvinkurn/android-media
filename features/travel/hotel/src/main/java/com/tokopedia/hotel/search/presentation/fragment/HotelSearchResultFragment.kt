@@ -214,15 +214,6 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
             searchResultviewModel.addFilter(quickFilters, quick_filter_sort_filter.chipItems)
         }
 
-        if (variant == ADVANCE_FILTER_VARIANT_NEW_FILTER) {
-            val param: CoordinatorLayout.LayoutParams = bottom_action_view.layoutParams as CoordinatorLayout.LayoutParams
-            param.behavior = null
-            bottom_action_view.hide()
-
-            quick_filter_sort_filter.filterType = SortFilter.TYPE_ADVANCED
-            quick_filter_sort_filter.parentListener = { initiateAdvancedFilter(filters.toMutableList(), sort) }
-        } else quick_filter_sort_filter.parentListener = { }
-
         val sortFilterItem = quickFilters.map {
             val item = SortFilterItem(title = it.displayName,
                     type = if (it.selected) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL)
@@ -241,6 +232,14 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
                 searchResultviewModel.addFilter(quickFilters, quick_filter_sort_filter.chipItems)
             }
         }
+
+        if (variant == ADVANCE_FILTER_VARIANT_NEW_FILTER) {
+            val param: CoordinatorLayout.LayoutParams = bottom_action_view.layoutParams as CoordinatorLayout.LayoutParams
+            param.behavior = null
+            bottom_action_view.hide()
+
+            quick_filter_sort_filter.parentListener = { initiateAdvancedFilter(filters.toMutableList(), sort) }
+        } else quick_filter_sort_filter.parentListener = { }
 
         quick_filter_sort_filter.show()
     }
