@@ -114,10 +114,14 @@ class DealsCategoryFragment : DealsBaseFragment(),
     private fun handleRanderList(list: List<DealsBaseItemDataView>) {
         val nextPage = list.size >= DEFAULT_MIN_ITEMS
         if (list.size == INITIAL_SIZE_BASE_ITEM_VIEW) {
+            var isNotEmpty = false
             list.map {
                 if (it.isLoaded) {
-                    renderList(list, nextPage)
+                    isNotEmpty = true
                 }
+            }
+            if (isNotEmpty == true) {
+                renderList(list, nextPage)
             }
         } else {
             renderList(list, nextPage)
