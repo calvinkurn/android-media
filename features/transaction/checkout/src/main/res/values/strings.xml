@@ -143,4 +143,5 @@
     <string name="content_desc_img_insurance_info">image info asuransi</string>
     <string name="content_desc_cb_insurance">checkbox asuransi</string>
     <string name="content_desc_cb_insurance_disabled">checkbox asuransi disabled</string>
+    <string name="content_desc_tv_change_address_top">text pilih alamat lain</string>
 </resources>
