@@ -260,7 +260,8 @@ public class BuyerAccountMapper implements Func1<AccountDataModel, BuyerViewMode
     }
 
     private Boolean useUoh() {
-        String remoteConfigValue = getABTestRemoteConfig().getString(UOH_AB_TEST_KEY);
-        return !remoteConfigValue.isEmpty();
+        /*String remoteConfigValue = getABTestRemoteConfig().getString(UOH_AB_TEST_KEY);
+        return !remoteConfigValue.isEmpty();*/
+        return true;
     }
 }

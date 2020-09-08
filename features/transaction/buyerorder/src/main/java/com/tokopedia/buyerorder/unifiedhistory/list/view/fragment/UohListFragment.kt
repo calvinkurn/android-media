@@ -1167,6 +1167,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(linkUrl, UohConsts.UTF_8)))
                 }
                 button.actionType.equals(GQL_RECHARGE_BATALKAN, true) -> {
+                    currIndexNeedUpdate = index
                     orderIdNeedUpdated = orderUUID
                     uohListViewModel.doRechargeSetFail(GraphqlHelper.loadRawString(resources, R.raw.recharge_set_fail), verticalId.toInt())
                 }
