@@ -51,6 +51,8 @@ class ShopInfoViewHolder(
         private val RED_TEXT_COLOR = R.color.setting_red_text
         private val GREY_POWER_MERCHANT_ICON = R.drawable.ic_power_merchant_inactive
         private val GREEN_POWER_MERCHANT_ICON = R.drawable.ic_power_merchant
+
+        private const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
     }
 
     private val context by lazy { itemView.context }
@@ -120,7 +122,7 @@ class ShopInfoViewHolder(
     private fun showShopScore(uiModel: ShopInfoUiModel) {
         itemView.shopScore.text = uiModel.shopScore.toString()
         itemView.shopScoreChevronRight.setOnClickListener {
-            listener?.onShopInfoClicked()
+            RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_SCORE_DETAIL, userSession?.shopId)
         }
     }
 
@@ -130,7 +132,7 @@ class ShopInfoViewHolder(
             text = "${shopTotalFollowersUiModel.shopFollowers} ${context.resources.getString(R.string.setting_followers)}"
             setOnClickListener {
                 shopTotalFollowersUiModel.sendSettingShopInfoClickTracking()
-                listener?.onFollowersCountClicked()
+                goToShopFavouriteList()
             }
         }
     }
@@ -140,7 +142,7 @@ class ShopInfoViewHolder(
             successShopInfoLayout.shopName?.run {
                 text = MethodChecker.fromHtml(shopName)
                 setOnClickListener {
-                    listener?.onShopInfoClicked()
+                    goToShopPage()
                     sendClickShopNameTracking()
                 }
             }
@@ -152,7 +154,7 @@ class ShopInfoViewHolder(
             urlSrc = shopAvatarUiModel.shopAvatarUrl
             sendSettingShopInfoImpressionTracking(shopAvatarUiModel, trackingListener::sendImpressionDataIris)
             setOnClickListener {
-                listener?.onShopInfoClicked()
+                goToShopPage()
                 shopAvatarUiModel.sendSettingShopInfoClickTracking()
             }
         }
@@ -265,9 +267,17 @@ class ShopInfoViewHolder(
         }
     }
 
+    private fun goToShopFavouriteList() {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.SHOP_FAVOURITE_LIST)
+        intent.putExtra(EXTRA_SHOP_ID, userSession?.shopId)
+        context.startActivity(intent)
+    }
+    
+    private fun goToShopPage() {
+        RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_PAGE, userSession?.shopId)
+    }
+
     interface ShopInfoListener {
-        fun onShopInfoClicked()
-        fun onFollowersCountClicked()
         fun onSaldoClicked()
         fun onRefreshShopInfo()
     }

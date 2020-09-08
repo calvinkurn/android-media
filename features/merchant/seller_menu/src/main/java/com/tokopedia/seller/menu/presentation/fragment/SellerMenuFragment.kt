@@ -14,7 +14,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -44,10 +43,6 @@ import javax.inject.Inject
 
 class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHolder.ShopInfoListener,
     ShopInfoErrorViewHolder.ShopInfoErrorListener {
-
-    companion object {
-        private const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
-    }
 
     @Inject
     lateinit var viewModel: SellerMenuViewModel
@@ -102,14 +97,6 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
 
     override fun sendImpressionDataIris(settingShopInfoImpressionTrackable: SettingShopInfoImpressionTrackable) {
         settingShopInfoImpressionTrackable.sendShopInfoImpressionData()
-    }
-
-    override fun onShopInfoClicked() {
-        RouteManager.route(context, ApplinkConst.SHOP_SCORE_DETAIL, userSession.shopId)
-    }
-
-    override fun onFollowersCountClicked() {
-        goToShopFavouriteList()
     }
 
     override fun onSaldoClicked() {
@@ -242,12 +229,5 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
 
     private fun showShopInfoLoading() {
         adapter.showShopInfoLoading()
-    }
-
-    private fun goToShopFavouriteList() {
-        val shopFavouriteListIntent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.SHOP_FAVOURITE_LIST).apply {
-            putExtra(EXTRA_SHOP_ID, userSession.shopId)
-        }
-        startActivity(shopFavouriteListIntent)
     }
 }
