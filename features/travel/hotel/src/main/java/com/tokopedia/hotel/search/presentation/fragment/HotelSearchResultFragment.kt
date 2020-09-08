@@ -359,12 +359,17 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     override fun onSubmitFilter(selectedFilter: MutableList<ParamFilterV2>) {
         bottom_action_view.visibility = View.GONE
         if (variant == ADVANCE_FILTER_VARIANT_NEW_FILTER) {
+            var sortIndex: Int? = null
             selectedFilter.forEachIndexed { index, it ->
                 if (it.name == FILTER_TYPE_SORT) {
-                    val sort = findSortValue(it)
-                    sort?.let { searchResultviewModel.addSort(it) }
-                    selectedFilter.removeAt(index)
+                    sortIndex = index
                 }
+            }
+
+            sortIndex?.let { index ->
+                val sort = findSortValue(selectedFilter[index])
+                sort?.let { searchResultviewModel.addSort(it) }
+                selectedFilter.removeAt(index)
             }
         }
         trackingHotelUtil.clickSubmitFilterOnBottomSheet(context, SEARCH_SCREEN_NAME, selectedFilter)
