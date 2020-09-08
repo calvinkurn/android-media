@@ -63,8 +63,8 @@
         android:layout_height="@dimen/dp_1"
         android:layout_marginTop="@dimen/dp_12"
         android:background="@color/Neutral_N75"
-        android:paddingStart="@dimen/layout_lvl2"
-        android:paddingEnd="@dimen/layout_lvl2"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl2"
         app:layout_constraintTop_toBottomOf="@id/tvLabelBuyerNameAndPlace" />
 
     <androidx.recyclerview.widget.RecyclerView
