@@ -11,5 +11,8 @@
     <dimen name="video_highlight_title_margin_bottom">3dp</dimen>
     <dimen name="video_highlight_desc_margin_bottom">12dp</dimen>
     <dimen name="video_highlight_play_icon_size">34dp</dimen>
+    <dimen name="single_banner_margin">12dp</dimen>
+    <dimen name="dual_banners_shimmering_height">320dp</dimen>
+    <dimen name="product_card_title_min_height">36dp</dimen>
     <dimen name="card_image_margin">12dp</dimen>
 </resources>

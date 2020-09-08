@@ -6,22 +6,21 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <include layout="@layout/view_recharge_home_card_image"
+    <include
         android:id="@+id/category_frame_image"
+        layout="@layout/view_recharge_home_card_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_margin="@dimen/card_image_margin" />
+        android:layout_marginBottom="@dimen/spacing_lvl3" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/category_frame_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:ellipsize="end"
         android:gravity="center"
-        android:paddingStart="@dimen/dp_2"
-        android:paddingLeft="@dimen/dp_2"
-        android:paddingEnd="@dimen/dp_2"
-        android:paddingRight="@dimen/dp_2"
+        android:maxLines="2"
         app:typographyType="small"
         tools:text="Digital Home" />
 </LinearLayout>

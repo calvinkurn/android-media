@@ -8,6 +8,8 @@ import com.tokopedia.digital.home.model.RechargeHomepageCategoryModel
 import com.tokopedia.digital.home.presentation.adapter.adapter.RechargeItemCategoryAdapter
 import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.view_recharge_home_category.view.*
 
 /**
@@ -21,6 +23,8 @@ class RechargeHomepageCategoryViewHolder(itemView: View, val listener: OnItemBin
         val section = element.section
         with(itemView) {
             if (section.items.isNotEmpty()) {
+                view_recharge_home_category_shimmering.hide()
+
                 val layoutManager = GridLayoutManager(itemView.context, CATEGORY_SPAN_COUNT)
                 rv_recharge_home_category.layoutManager = layoutManager
                 rv_recharge_home_category.adapter = RechargeItemCategoryAdapter(section.items, listener)
@@ -29,7 +33,8 @@ class RechargeHomepageCategoryViewHolder(itemView: View, val listener: OnItemBin
                     listener.onRechargeSectionItemImpression(section)
                 }
             } else {
-                listener.onRechargeSectionEmpty(element.visitableId())
+                view_recharge_home_category_shimmering.show()
+                listener.loadRechargeSectionData(element.visitableId())
             }
         }
     }

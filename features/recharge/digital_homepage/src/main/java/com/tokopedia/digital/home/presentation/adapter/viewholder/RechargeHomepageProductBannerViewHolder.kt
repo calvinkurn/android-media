@@ -1,9 +1,9 @@
 package com.tokopedia.digital.home.presentation.adapter.viewholder
 
-import android.graphics.Paint
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.model.RechargeHomepageProductBannerModel
 import com.tokopedia.digital.home.model.RechargeHomepageSections
@@ -33,11 +33,15 @@ class RechargeHomepageProductBannerViewHolder(
     override fun bind(element: RechargeHomepageProductBannerModel) {
         val section = element.section
         if (section.items.isNotEmpty()) {
+            itemView.view_recharge_home_product_banner_shimmering.hide()
+
             setBackground(section)
             setHeader(section)
             setProduct(section)
         } else {
-            listener.onRechargeSectionEmpty(element.visitableId())
+            itemView.view_recharge_home_product_banner_shimmering.show()
+
+            listener.loadRechargeSectionData(element.visitableId())
         }
     }
 
@@ -72,8 +76,7 @@ class RechargeHomepageProductBannerViewHolder(
                 listener.onRechargeSectionItemImpression(section)
             }
             iv_recharge_home_product_banner_close_button.setOnClickListener {
-                view_recharge_home_product_banner_container.hide()
-                listener.onRechargeProductBannerClosed(section, adapterPosition)
+                listener.onRechargeProductBannerClosed(section)
             }
         }
     }
@@ -92,9 +95,12 @@ class RechargeHomepageProductBannerViewHolder(
 
     private fun setProductSlashedPrice(slashedPrice: String) {
         with (itemView) {
-            tv_recharge_home_product_banner_slashed_price.displayTextOrHide(slashedPrice)
-            tv_recharge_home_product_banner_slashed_price.paintFlags =
-                    tv_recharge_home_product_banner_slashed_price.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+            if (slashedPrice.isEmpty()) {
+                tv_recharge_home_product_banner_slashed_price.hide()
+            } else {
+                tv_recharge_home_product_banner_slashed_price.text = MethodChecker.fromHtml(slashedPrice)
+                tv_recharge_home_product_banner_slashed_price.show()
+            }
         }
     }
 

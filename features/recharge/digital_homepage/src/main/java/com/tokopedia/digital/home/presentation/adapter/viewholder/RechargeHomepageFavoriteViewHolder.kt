@@ -8,6 +8,7 @@ import com.tokopedia.digital.home.model.RechargeHomepageFavoriteModel
 import com.tokopedia.digital.home.presentation.adapter.adapter.RechargeItemFavoriteAdapter
 import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.view_recharge_home_favorites.view.*
 
@@ -23,19 +24,19 @@ class RechargeHomepageFavoriteViewHolder(itemView: View?, val listener: OnItemBi
         val section = element.section
         with(itemView) {
             if (section.items.isNotEmpty()) {
+                view_recharge_home_favorites_shimmering.hide()
+
                 val layoutManager = GridLayoutManager(context, FAVORITES_SPAN_COUNT)
                 rv_recharge_home_favorites.layoutManager = layoutManager
                 recharge_home_favorites_container.show()
                 tv_recharge_home_favorites_title.text = section.title
-                tv_recharge_home_favorites_see_all.setOnClickListener {
-                    listener.onRechargeFavoriteAllItemClicked(section)
-                }
                 rv_recharge_home_favorites.adapter = RechargeItemFavoriteAdapter(section.items, listener)
                 addOnImpressionListener(section) {
                     listener.onRechargeSectionItemImpression(section)
                 }
             } else {
-                listener.onRechargeSectionEmpty(element.visitableId())
+                view_recharge_home_favorites_shimmering.show()
+                listener.loadRechargeSectionData(element.visitableId())
             }
         }
     }

@@ -14,7 +14,7 @@ import com.tokopedia.home_component.viewholders.DynamicLegoBannerViewHolder
 import com.tokopedia.home_component.viewholders.ReminderWidgetViewHolder
 import com.tokopedia.home_component.visitable.*
 
-class DigitalHomePageTypeFactory(
+class DigitalHomePageAdapterFactory(
         val listener: OnItemBindListener,
         private val reminderWidgetCallback: RechargeHomepageReminderWidgetCallback,
         private val dynamicLegoBannerCallback: RechargeHomepageDynamicLegoBannerCallback,
@@ -99,6 +99,10 @@ class DigitalHomePageTypeFactory(
 
     override fun type(dynamicLegoBannerDataModel: DynamicLegoBannerDataModel): Int {
         return DynamicLegoBannerViewHolder.LAYOUT
+    }
+
+    override fun type(lego4AutoDataModel: Lego4AutoDataModel): Int {
+        return 0
     }
 
     override fun type(recommendationListCarouselDataModel: RecommendationListCarouselDataModel): Int {

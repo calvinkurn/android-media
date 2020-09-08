@@ -9,6 +9,7 @@ import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.model.RechargeHomepageTrustMarkModel
 import com.tokopedia.digital.home.presentation.adapter.adapter.RechargeItemTrustMarkAdapter
 import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.view_recharge_home_trustmark.view.*
 
@@ -24,6 +25,7 @@ class RechargeHomepageTrustMarkViewHolder(itemView: View?, val listener: OnItemB
         with(itemView) {
             if (section.items.isNotEmpty()) {
                 view_recharge_home_trust_mark_container.show()
+                view_recharge_home_trust_mark_shimmering.hide()
 
                 while (rv_recharge_home_trust_mark.itemDecorationCount > 0) {
                     rv_recharge_home_trust_mark.removeItemDecorationAt(0)
@@ -43,7 +45,10 @@ class RechargeHomepageTrustMarkViewHolder(itemView: View?, val listener: OnItemB
                         RechargeItemTrustMarkAdapter(trustMarkItems)
 
             } else {
-                listener.onRechargeSectionEmpty(element.visitableId())
+                view_recharge_home_trust_mark_container.hide()
+                view_recharge_home_trust_mark_shimmering.show()
+
+                listener.loadRechargeSectionData(element.visitableId())
             }
         }
     }

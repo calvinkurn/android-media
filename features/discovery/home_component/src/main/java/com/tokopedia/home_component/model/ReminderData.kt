@@ -7,6 +7,7 @@ import com.tokopedia.unifycomponents.UnifyButton
  */
 
 data class ReminderWidget(
+        val id: String = "",
         val reminders : List<ReminderData> = emptyList()
 )
 

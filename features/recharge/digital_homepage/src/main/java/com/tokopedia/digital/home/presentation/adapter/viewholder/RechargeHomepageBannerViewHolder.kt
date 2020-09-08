@@ -32,7 +32,7 @@ class RechargeHomepageBannerViewHolder(itemView: View,
             initSeeAllPromo(element.section)
             initBanner(element.section)
         } else {
-            listener.onRechargeSectionEmpty(element.visitableId())
+            listener.loadRechargeSectionData(element.visitableId())
         }
     }
 

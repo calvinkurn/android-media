@@ -23,6 +23,7 @@ interface OnItemBindListener {
     fun onRecommendationImpression(elements: List<RecommendationItemEntity>)
 
     // Dynamic Subhomepage
+    fun loadRechargeSectionData(sectionID: Int)
     fun onRechargeSectionEmpty(sectionID: Int)
 
     fun onRechargeSectionItemClicked(element: RechargeHomepageSections.Item)
@@ -30,8 +31,8 @@ interface OnItemBindListener {
     fun onRechargeReminderWidgetClicked(sectionID: Int)
     fun onRechargeReminderWidgetClosed(sectionID: Int)
     fun onRechargeFavoriteAllItemClicked(section: RechargeHomepageSections.Section)
-    fun onRechargeLegoBannerItemClicked(sectionID: Int, itemPosition: Int)
-    fun onRechargeProductBannerClosed(section: RechargeHomepageSections.Section, position: Int)
+    fun onRechargeLegoBannerItemClicked(sectionID: Int, itemID: Int, itemPosition: Int)
+    fun onRechargeProductBannerClosed(section: RechargeHomepageSections.Section)
 
     fun onRechargeSectionItemImpression(element: RechargeHomepageSections.Section)
     fun onRechargeBannerImpression(element: RechargeHomepageSections.Section)

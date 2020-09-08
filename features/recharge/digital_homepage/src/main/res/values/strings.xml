@@ -5,6 +5,7 @@
     <string name="digital_home_label_order_list">Daftar Transaksi</string>
     <string name="digital_home_label_help">Bantuan</string>
     <string name="digital_home_label_mybills">Langganan</string>
+    <string name="digital_home_empty_list_label">Sedang ada kendala, mohon coba kembali sesaat lagi</string>
 
     <string name="digital_home_search_view_hint"><![CDATA[Cari di Topup & Tagihan]]></string>
 

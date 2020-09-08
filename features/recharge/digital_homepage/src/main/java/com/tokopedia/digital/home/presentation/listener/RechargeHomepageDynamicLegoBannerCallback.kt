@@ -22,7 +22,7 @@ class RechargeHomepageDynamicLegoBannerCallback(val listener: OnItemBindListener
     }
 
     override fun onClickGridSixImage(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
-        listener.onRechargeLegoBannerItemClicked(channelModel.id.toIntOrNull() ?: -1, position)
+        listener.onRechargeLegoBannerItemClicked(channelModel.id.toIntOrNull() ?: -1, channelGrid.id.toIntOrNull() ?: -1, position)
     }
 
     override fun onClickGridFourImage(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
@@ -59,5 +59,9 @@ class RechargeHomepageDynamicLegoBannerCallback(val listener: OnItemBindListener
 
     override fun onChannelExpired(channelModel: ChannelModel, channelPosition: Int, visitable: Visitable<*>) {
         // Do nothing
-     }
+    }
+
+    override fun getDynamicLegoBannerData(channelModel: ChannelModel) {
+        listener.loadRechargeSectionData(channelModel.id.toIntOrNull() ?: -1)
+    }
 }

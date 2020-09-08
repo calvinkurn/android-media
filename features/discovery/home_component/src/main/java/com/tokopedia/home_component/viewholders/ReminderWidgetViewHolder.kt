@@ -1,6 +1,5 @@
 package com.tokopedia.home_component.viewholders
 
-import android.graphics.Color
 import android.text.Html
 import android.view.View
 import androidx.annotation.LayoutRes
@@ -50,7 +49,7 @@ class ReminderWidgetViewHolder(
             if(element.data.reminders.isEmpty()){
                 home_reminder_recommendation_loading.show()
                 if (!disableNetwork){
-                    reminderWidgetListener?.getReminderWidget(element.source)
+                    reminderWidgetListener?.getReminderWidgetData(element)
                     performanceMonitoring?.stopTrace()
                 }
                 performanceMonitoring = null

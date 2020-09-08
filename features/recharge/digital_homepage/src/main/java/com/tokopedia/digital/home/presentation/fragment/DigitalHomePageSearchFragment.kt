@@ -87,7 +87,7 @@ class DigitalHomePageSearchFragment: BaseSearchListFragment<DigitalHomePageSearc
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        viewModel.searchCategoryList.observe(this, Observer {
+        viewModel.searchCategoryList.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Success -> {
                     clearAllData()

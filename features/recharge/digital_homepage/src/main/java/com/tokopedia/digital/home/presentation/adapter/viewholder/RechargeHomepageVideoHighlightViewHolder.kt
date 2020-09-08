@@ -39,7 +39,8 @@ class RechargeHomepageVideoHighlightViewHolder(
             initView(element.section)
             container.show()
         } else {
-            listener.onRechargeSectionEmpty(element.visitableId())
+            // TODO: Show shimmering
+            listener.loadRechargeSectionData(element.visitableId())
         }
     }
 
