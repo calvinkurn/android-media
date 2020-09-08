@@ -261,8 +261,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                         analytic.clickDialogSeeReportOnLivePage(parentViewModel.channelId, parentViewModel.title)
                     }
             )
-            timeoutDialog.show()
         }
+        timeoutDialog.show()
     }
 
     private fun showToaster(
