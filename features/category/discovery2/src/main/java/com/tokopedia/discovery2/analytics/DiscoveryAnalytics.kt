@@ -76,7 +76,7 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
 
     fun trackBannerClick(banner: DataItem, bannerPosition: Int) {
         val componentName = banner.parentComponentName ?: EMPTY_STRING
-        val map = createGeneralEvent(eventName = EVENT_PROMO_CLICK, eventAction = CLICK_DYNAMIC_BANNER, eventLabel = "${componentName}${if (banner.action == ACTION_NOTIFIER) "-$NOTIFIER" else if(banner.action == ACTION_APPLINK) " - ${banner.applinks}" else ""}${if (!banner.name.isNullOrEmpty()) "-${banner.name}" else ""}")
+        val map = createGeneralEvent(eventName = EVENT_PROMO_CLICK, eventAction = CLICK_DYNAMIC_BANNER, eventLabel = "${componentName}${if (banner.action == ACTION_NOTIFIER) "-$NOTIFIER" else ""}${if (!banner.name.isNullOrEmpty()) " - ${banner.name}" else " - "}${if (!banner.applinks.isNullOrEmpty()) " - ${banner.applinks}" else " - "}")
         val list = ArrayList<Map<String, Any>>()
         banner.let {
             list.add(mapOf(
