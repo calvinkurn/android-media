@@ -19,6 +19,7 @@ public class CartItemModel implements Parcelable {
     private double price;
     private double originalPrice;
     private int currency;
+    private String variant;
 
     private int weightUnit;
     private double weight;
@@ -410,6 +411,14 @@ public class CartItemModel implements Parcelable {
         this.tickerMessage = tickerMessage;
     }
 
+    public String getVariant() {
+        return variant;
+    }
+
+    public void setVariant(String variant) {
+        this.variant = variant;
+    }
+
     public CartItemModel() {
     }
 
@@ -427,6 +436,7 @@ public class CartItemModel implements Parcelable {
                 .append(getPrice(), that.getPrice())
                 .append(getOriginalPrice(), that.getOriginalPrice())
                 .append(getCurrency(), that.getCurrency())
+                .append(getVariant(), that.getVariant())
                 .append(getWeightUnit(), that.getWeightUnit())
                 .append(getWeight(), that.getWeight())
                 .append(getQuantity(), that.getQuantity())
@@ -463,6 +473,7 @@ public class CartItemModel implements Parcelable {
                 .append(getPrice())
                 .append(getOriginalPrice())
                 .append(getCurrency())
+                .append(getVariant())
                 .append(getWeightUnit())
                 .append(getWeight())
                 .append(getWeightFmt())
@@ -500,6 +511,7 @@ public class CartItemModel implements Parcelable {
         dest.writeDouble(this.price);
         dest.writeDouble(this.originalPrice);
         dest.writeInt(this.currency);
+        dest.writeString(this.variant);
         dest.writeInt(this.weightUnit);
         dest.writeDouble(this.weight);
         dest.writeString(this.weightFmt);
@@ -538,6 +550,7 @@ public class CartItemModel implements Parcelable {
         this.price = in.readDouble();
         this.originalPrice = in.readDouble();
         this.currency = in.readInt();
+        this.variant = in.readString();
         this.weightUnit = in.readInt();
         this.weight = in.readDouble();
         this.weightFmt = in.readString();

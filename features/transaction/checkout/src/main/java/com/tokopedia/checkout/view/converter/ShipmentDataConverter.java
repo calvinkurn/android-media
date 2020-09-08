@@ -165,8 +165,13 @@ public class ShipmentDataConverter {
                                                         boolean hasTradeInDropOffAddress) {
         List<ShipmentCartItemModel> shipmentCartItemModels = new ArrayList<>();
 
+        if (cartShipmentAddressFormData.getGroupAddress().isEmpty() || cartShipmentAddressFormData.getGroupAddress().get(0) == null) {
+            return shipmentCartItemModels;
+        }
+
         UserAddress userAddress = cartShipmentAddressFormData.getGroupAddress().get(0).getUserAddress();
-        for (GroupShop groupShop : cartShipmentAddressFormData.getGroupAddress().get(0).getGroupShop()) {
+        List<GroupShop> groupShopList = cartShipmentAddressFormData.getGroupAddress().get(0).getGroupShop();
+        for (GroupShop groupShop : groupShopList) {
             ShipmentCartItemModel shipmentCartItemModel = new ShipmentCartItemModel();
             shipmentCartItemModel.setDropshipperDisable(cartShipmentAddressFormData.isDropshipperDisable());
             shipmentCartItemModel.setOrderPrioritasDisable(cartShipmentAddressFormData.isOrderPrioritasDisable());
@@ -177,7 +182,7 @@ public class ShipmentDataConverter {
                     .get(0).getUserAddress().getAddressId());
 
             getShipmentItem(shipmentCartItemModel, userAddress, groupShop, cartShipmentAddressFormData.getKeroToken(),
-                    String.valueOf(cartShipmentAddressFormData.getKeroUnixTime()), hasTradeInDropOffAddress);
+                    String.valueOf(cartShipmentAddressFormData.getKeroUnixTime()), hasTradeInDropOffAddress, groupShopList.indexOf(groupShop) + 1);
             shipmentCartItemModel.setFulfillment(groupShop.isFulfillment());
             shipmentCartItemModel.setFulfillmentId(groupShop.getFulfillmentId());
             shipmentCartItemModel.setFulfillmentName(groupShop.getFulfillmentName());
@@ -201,13 +206,14 @@ public class ShipmentDataConverter {
     private void getShipmentItem(ShipmentCartItemModel shipmentCartItemModel,
                                  UserAddress userAddress, GroupShop groupShop,
                                  String keroToken, String keroUnixTime,
-                                 boolean hasTradeInDropOffAddress) {
+                                 boolean hasTradeInDropOffAddress, int orderIndex) {
         shipmentCartItemModel.setShopShipmentList(groupShop.getShopShipments());
         shipmentCartItemModel.setError(groupShop.isError());
         if (shipmentCartItemModel.isError()) {
             shipmentCartItemModel.setAllItemError(true);
         }
         shipmentCartItemModel.setErrorTitle(groupShop.getErrorMessage());
+        shipmentCartItemModel.setOrderNumber(orderIndex);
 
         Shop shop = groupShop.getShop();
         shipmentCartItemModel.setShopId(shop.getShopId());

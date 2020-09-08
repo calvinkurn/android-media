@@ -145,13 +145,14 @@
                     android:textColor="@color/light_N700_68"
                     app:typographyType="small" />
 
-                <ImageView
+                <com.tokopedia.unifycomponents.ImageUnify
                     android:id="@+id/img_free_shipping"
-                    android:layout_width="@dimen/dp_120"
+                    android:layout_width="@dimen/dp_100"
                     android:layout_height="@dimen/dp_20"
                     android:gravity="center_vertical"
                     android:scaleType="fitStart"
-                    tools:src="@color/unify_G500" />
+                    tools:src="@color/unify_G500"
+                    app:unify_image_type="rect" />
 
             </com.google.android.flexbox.FlexboxLayout>
 

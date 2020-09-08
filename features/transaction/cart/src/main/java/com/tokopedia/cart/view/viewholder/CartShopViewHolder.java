@@ -20,6 +20,7 @@ import com.tokopedia.cart.view.ActionListener;
 import com.tokopedia.cart.view.adapter.CartItemAdapter;
 import com.tokopedia.cart.view.uimodel.CartItemHolderData;
 import com.tokopedia.cart.view.uimodel.CartShopHolderData;
+import com.tokopedia.unifycomponents.ImageUnify;
 import com.tokopedia.unifycomponents.Label;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifyprinciples.Typography;

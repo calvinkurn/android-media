@@ -5,7 +5,6 @@
     android:id="@+id/ll_item_product_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/dp_5"
     android:orientation="vertical"
     android:paddingLeft="@dimen/dp_16"
     android:paddingRight="@dimen/dp_16"
@@ -62,9 +61,7 @@
         android:id="@+id/rl_product_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
-        android:layout_marginBottom="@dimen/dp_8"
-        android:background="@color/white">
+        android:layout_marginBottom="@dimen/dp_8">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/iv_product_card"
@@ -95,69 +92,58 @@
             android:layout_toRightOf="@id/iv_product_card"
             android:ellipsize="end"
             android:maxLines="2"
-            app:typographyType="body_2"
+            android:textColor="@color/Neutral_N700_96"
+            app:typographyType="heading_6"
             app:typographyWeight="bold"
             tools:text="Kaos Adidas Camo Tongue Tee... White  gsf fsu gfsah hjsfj gsfugshj sjbfj hsjfh hsfjh vhsfh bjsf bjsfbjRed, XS" />
 
-        <include
-            android:id="@+id/layout_policy"
-            layout="@layout/layout_cart_item_policy"
-            android:layout_width="wrap_content"
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_variant"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_product_name"
             android:layout_marginStart="@dimen/dp_10"
             android:layout_marginLeft="@dimen/dp_10"
             android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginEnd="@dimen/dp_4"
+            android:layout_marginRight="@dimen/dp_4"
             android:layout_toEndOf="@id/iv_product_card"
-            android:layout_toRightOf="@id/iv_product_card" />
+            android:layout_toRightOf="@id/iv_product_card"
+            android:textColor="@color/Neutral_N700_68"
+            app:typographyType="small"
+            app:typographyWeight="reguler"
+            tools:text="Biru, XXL" />
 
-        <com.google.android.flexbox.FlexboxLayout
-            android:id="@+id/fl_shipping_properties_container"
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_item_count_and_weight"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/layout_policy"
+            android:layout_below="@+id/text_variant"
             android:layout_marginStart="@dimen/dp_10"
             android:layout_marginLeft="@dimen/dp_10"
             android:layout_marginTop="@dimen/dp_4"
-            android:layout_marginBottom="@dimen/dp_4"
+            android:layout_marginEnd="@dimen/dp_4"
+            android:layout_marginRight="@dimen/dp_4"
             android:layout_toEndOf="@id/iv_product_card"
             android:layout_toRightOf="@id/iv_product_card"
-            app:flexWrap="wrap">
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_item_count_and_weight"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/layout_policy"
-                android:layout_marginEnd="@dimen/dp_4"
-                android:layout_marginRight="@dimen/dp_4"
-                android:layout_toEndOf="@id/iv_product_card"
-                android:layout_toRightOf="@id/iv_product_card"
-                app:typographyType="body_2"
-                app:typographyWeight="reguler"
-                tools:text="10000 barang (1000 kg)" />
-
-            <ImageView
-                android:id="@+id/img_free_shipping"
-                android:layout_width="@dimen/dp_120"
-                android:layout_height="@dimen/dp_20"
-                android:layout_below="@+id/layout_policy"
-                android:layout_toRightOf="@+id/tv_item_count_and_weight"
-                android:scaleType="fitStart"
-                tools:src="@color/unify_G500" />
-
-        </com.google.android.flexbox.FlexboxLayout>
+            android:textColor="@color/Neutral_N700_68"
+            app:typographyType="small"
+            app:typographyWeight="reguler"
+            tools:text="10000 barang (1000 kg)" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_product_original_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/fl_shipping_properties_container"
+            android:layout_below="@id/tv_item_count_and_weight"
             android:layout_marginStart="@dimen/dp_10"
             android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_4"
             android:layout_toEndOf="@id/iv_product_card"
             android:layout_toRightOf="@id/iv_product_card"
-            app:typographyType="body_2"
+            android:gravity="center_vertical"
+            android:textColor="@color/Neutral_N700_68"
+            app:typographyType="small"
             app:typographyWeight="reguler"
             tools:text="Rp500.000" />
 
@@ -165,42 +151,29 @@
             android:id="@+id/tv_product_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tv_product_original_price"
+            android:layout_below="@+id/tv_item_count_and_weight"
             android:layout_marginStart="@dimen/dp_10"
             android:layout_marginLeft="@dimen/dp_10"
-            android:layout_toEndOf="@id/iv_product_card"
-            android:layout_toRightOf="@id/iv_product_card"
-            android:textColor="@color/price_label"
-            app:typographyType="body_2"
+            android:layout_marginTop="@dimen/dp_4"
+            android:layout_toEndOf="@+id/tv_product_original_price"
+            android:layout_toRightOf="@+id/tv_product_original_price"
+            android:gravity="center_vertical"
+            android:textColor="@color/Neutral_N700_96"
+            app:typographyType="heading_6"
             app:typographyWeight="bold"
             tools:text="Rp200.000" />
 
     </RelativeLayout>
 
-    <LinearLayout
-        android:id="@+id/ll_optional_note_to_seller_layout"
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_optional_note_to_seller"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/tv_note_to_seller_label"
-            style="@style/TextSmallNormalBlack38"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_16"
-            android:text="@string/label_note_for_seller" />
-
-        <TextView
-            android:id="@+id/tv_optional_note_to_seller"
-            style="@style/TextSmallMediumBlack38"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_8"
-            android:layout_marginBottom="@dimen/dp_8"
-            tools:text="Saya pesan warna merah yah min.. jangan sampai salah kirim barangnya gan!" />
-
-    </LinearLayout>
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:textColor="@color/Neutral_N700_96"
+        app:typographyType="body_3"
+        tools:text="Saya pesan warna merah yah min.. jangan sampai salah kirim barangnya gan!" />
 
     <com.tokopedia.unifycomponents.ticker.Ticker
         android:id="@+id/product_ticker"

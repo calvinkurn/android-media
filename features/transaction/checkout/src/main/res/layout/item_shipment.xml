@@ -14,7 +14,7 @@
 
     <include
         layout="@layout/item_shipment_seller_info"
-        tools:visibility="gone" />
+        tools:visibility="visible" />
 
     <FrameLayout
         android:id="@+id/fl_disable_container"
