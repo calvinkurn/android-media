@@ -28,4 +28,5 @@
     <string name="with_other_method">gunakan metode verifikasi lain.</string>
     <string name="resend_otp">Kirim ulang</string>
     <string name="verification_coundown_text"><![CDATA[Mohon tunggu dalam %d detik untuk kirim ulang.]]></string>
+    <string name="forgot_pin">Lupa PIN Tokopedia</string>
 </resources>
