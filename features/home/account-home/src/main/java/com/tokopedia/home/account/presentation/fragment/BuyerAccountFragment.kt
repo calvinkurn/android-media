@@ -492,8 +492,7 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
 
     private fun useUoh(): Boolean? {
         val remoteConfigValue = getABTestRemoteConfig()?.getString(UOH_AB_TEST_KEY)
-        // return remoteConfigValue?.isNotEmpty()
-        return true
+        return remoteConfigValue?.isNotEmpty()
     }
 
     companion object {

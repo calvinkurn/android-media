@@ -244,8 +244,7 @@ class BuyerAccountMapper @Inject constructor(
 
     private fun useUoh(): Boolean? {
         val remoteConfigValue = getABTestRemoteConfig().getString(UOH_AB_TEST_KEY)
-        // return !remoteConfigValue.isEmpty();
-        return true
+        return remoteConfigValue.isNotEmpty()
     }
 
     private fun getABTestRemoteConfig(): RemoteConfig {
