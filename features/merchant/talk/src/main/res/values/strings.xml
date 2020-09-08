@@ -144,8 +144,8 @@
     <string name="inbox_total_count_and_date">%s jawaban • %s</string>
     <string name="inbox_no_answer">Belum ada</string>
     <string name="inbox_empty_title">Lagi nggak ada diskusi</string>
-    <string name="inbox_empty_read_discussion">Semua diskusi yang belum dibaca akan tampil di sini</string>
-    <string name="inbox_empty_unread_discussion">Semua diskusi yang sudah dibaca akan tampil di sini</string>
+    <string name="inbox_empty_read_discussion">Semua diskusi yang sudah dibaca akan tampil di sini</string>
+    <string name="inbox_empty_unread_discussion">Semua diskusi yang belum dibaca akan tampil di sini</string>
     <string name="inbox_all_empty">Belum ada diskusi, nih.</string>
     <string name="inbox_toaster_connection_error">Oops, ada kendala dengan koneksi internetmu. Coba lagi, ya!</string>
 

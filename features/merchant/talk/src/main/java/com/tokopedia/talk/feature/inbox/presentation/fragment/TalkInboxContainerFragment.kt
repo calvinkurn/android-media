@@ -17,6 +17,8 @@ import com.tokopedia.talk.feature.inbox.di.TalkInboxContainerComponent
 import com.tokopedia.talk.feature.inbox.presentation.adapter.TalkInboxContainerAdapter
 import com.tokopedia.talk.feature.inbox.presentation.listener.TalkInboxListener
 import com.tokopedia.talk_old.R
+import com.tokopedia.unifycomponents.TabsUnify
+import com.tokopedia.unifycomponents.setCounter
 import com.tokopedia.unifycomponents.setCustomText
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_talk_inbox_container.*
@@ -73,11 +75,11 @@ class TalkInboxContainerFragment : BaseDaggerFragment(), HasComponent<TalkInboxC
     override fun updateUnreadCounter(sellerUnread: Int, buyerUnread: Int) {
         if(sellerUnread != 0) {
             sellerUnreadCount = sellerUnread
-            talkInboxTabs.tabLayout.getTabAt(SELLER_TAB_INDEX)?.setCustomText("${userSession.shopName} $sellerUnread")
+            talkInboxTabs.tabLayout.getTabAt(SELLER_TAB_INDEX)?.setCounter(sellerUnread)
         }
         if(buyerUnread != 0) {
             buyerUnreadCount = buyerUnread
-            talkInboxTabs.tabLayout.getTabAt(BUYER_TAB_INDEX)?.setCustomText("${userSession.name} $buyerUnread")
+            talkInboxTabs.tabLayout.getTabAt(BUYER_TAB_INDEX)?.setCounter(buyerUnread)
         }
     }
 
@@ -94,6 +96,7 @@ class TalkInboxContainerFragment : BaseDaggerFragment(), HasComponent<TalkInboxC
     }
 
     private fun setupTabLayout() {
+        talkInboxTabs.customTabMode = TabLayout.MODE_FIXED
         talkInboxTabs.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabReselected(tab: TabLayout.Tab) {
                 //No Op
