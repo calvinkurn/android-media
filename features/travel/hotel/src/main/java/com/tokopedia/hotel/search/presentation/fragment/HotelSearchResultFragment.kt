@@ -238,6 +238,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
             param.behavior = null
             bottom_action_view.hide()
 
+            quick_filter_sort_filter.filterType = SortFilter.TYPE_ADVANCED
             quick_filter_sort_filter.parentListener = { initiateAdvancedFilter(filters.toMutableList(), sort) }
         } else quick_filter_sort_filter.parentListener = { }
 
