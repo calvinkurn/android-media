@@ -27,6 +27,7 @@ class SellerMenuTracker(
 
         // category
         private const val CATEGORY_MA_SHOP_ACCOUNT = "ma - shop account"
+        private const val CATEGORY_SETTINGS = "settings"
         private const val CATEGORY_TOP_NAV = "top nav"
 
         // action
@@ -55,6 +56,13 @@ class SellerMenuTracker(
         private const val ACTION_SA_CLICK_ADS_AND_PROMO = "sa - click ads and promos"
         private const val ACTION_SA_CLICK_POST_FEED = "sa - click post feed"
         private const val ACTION_SA_CLICK_FINANCIAL_SERVICES = "sa - click financial services"
+        private const val ACTION_CLICK_BACK_ARROW = "click back arrow"
+        private const val ACTION_CLICK_BASIC_INFO = "click shop settings - informasi dasar"
+        private const val ACTION_CLICK_SHOP_NOTE = "click shop settings - catatan toko"
+        private const val ACTION_CLICK_SHOP_SCHEDULE = "click shop settings - jam buka tutup toko"
+        private const val ACTION_CLICK_SHOP_LOCATION = "click shop settings - tambah dan ubah lokasi toko"
+        private const val ACTION_CLICK_SHIPPING = "click shop settings - atur layanan pengiriman"
+        private const val ACTION_CLICK_NOTIFICATION_SETTINGS = "click shop settings - atur notifikasi penjual"
 
         // label
         private const val LABEL_CREATE_SHOP = "create shop"
@@ -283,6 +291,41 @@ class SellerMenuTracker(
         analytics.sendGeneralEvent(event)
     }
 
+    fun sendEventClickBackArrow() {
+        val event = createSettingsItemEvent(ACTION_CLICK_BACK_ARROW)
+        analytics.sendGeneralEvent(event)
+    }
+
+    fun sendEventClickBasicInformation() {
+        val event = createSettingsItemEvent(ACTION_CLICK_BASIC_INFO)
+        analytics.sendGeneralEvent(event)
+    }
+
+    fun sendEventClickShopNotes() {
+        val event = createSettingsItemEvent(ACTION_CLICK_SHOP_NOTE)
+        analytics.sendGeneralEvent(event)
+    }
+
+    fun sendEventClickSchedule() {
+        val event = createSettingsItemEvent(ACTION_CLICK_SHOP_SCHEDULE)
+        analytics.sendGeneralEvent(event)
+    }
+
+    fun sendEventClickLocation() {
+        val event = createSettingsItemEvent(ACTION_CLICK_SHOP_LOCATION)
+        analytics.sendGeneralEvent(event)
+    }
+
+    fun sendEventClickShipping() {
+        val event = createSettingsItemEvent(ACTION_CLICK_SHIPPING)
+        analytics.sendGeneralEvent(event)
+    }
+
+    fun sendEventClickNotificationSettings() {
+        val event = createSettingsItemEvent(ACTION_CLICK_NOTIFICATION_SETTINGS)
+        analytics.sendGeneralEvent(event)
+    }
+
     fun sendEventOpenScreen(screeName: String) {
         analytics.sendScreenAuthenticated(screeName)
     }
@@ -293,6 +336,19 @@ class SellerMenuTracker(
                 CATEGORY_MA_SHOP_ACCOUNT,
                 actionName,
                 ""
+        )
+        event[KEY_CURRENT_SITE] = TOKOPEDIA_MARKET_PALCE
+        event[KEY_USER_ID] = userSession.userId
+        event[KEY_BUSINESS_UNIT] = PHYSICAL_GOODS
+        return event
+    }
+
+    private fun createSettingsItemEvent(actionName: String): Map<String, Any> {
+        val event = TrackAppUtils.gtmData(
+            EVENT_CLICK_SHOP_ACCOUNT,
+            CATEGORY_SETTINGS,
+            actionName,
+            ""
         )
         event[KEY_CURRENT_SITE] = TOKOPEDIA_MARKET_PALCE
         event[KEY_USER_ID] = userSession.userId
