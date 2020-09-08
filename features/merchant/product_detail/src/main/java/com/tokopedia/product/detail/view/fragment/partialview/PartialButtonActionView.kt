@@ -10,7 +10,6 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.product.PreOrder
-import com.tokopedia.product.detail.data.model.topads.TopAdsShopData
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.partial_layout_button_action.view.*
@@ -19,7 +18,7 @@ import kotlinx.android.synthetic.main.partial_layout_button_action.view.*
 class PartialButtonActionView private constructor(val view: View,
                                                   private val listener: View.OnClickListener)
     : View.OnClickListener by listener {
-    var tingkatkanPenjualanClicked: (() -> Unit)? = null
+    var advertiseProductClick: (() -> Unit)? = null
     var rincianTopAdsClick: (() -> Unit)? = null
     var buyNowClick: ((String) -> Unit)? = null
     var addToCartClick: ((String) -> Unit)? = null
@@ -43,8 +42,6 @@ class PartialButtonActionView private constructor(val view: View,
     var onSuccessGetCartType = false
     var cartTypeData: CartTypeData? = null
 
-    private var topAdsShopData: TopAdsShopData = TopAdsShopData()
-
     companion object {
         fun build(_view: View, _listener: View.OnClickListener) = PartialButtonActionView(_view, _listener)
     }
@@ -56,7 +53,6 @@ class PartialButtonActionView private constructor(val view: View,
 
     fun setTopAdsButton(hasTopAdsActive: Boolean) {
         this.hasTopAdsActive = hasTopAdsActive
-        this.topAdsShopData = topAdsShopData
         updateTopAdsButton()
     }
 
@@ -229,7 +225,7 @@ class PartialButtonActionView private constructor(val view: View,
                 btn_top_ads.setOnClickListener { rincianTopAdsClick?.invoke() }
                 btn_top_ads.text = context.getString(R.string.rincian_topads)
             } else {
-                btn_top_ads.setOnClickListener { tingkatkanPenjualanClicked?.invoke() }
+                btn_top_ads.setOnClickListener { advertiseProductClick?.invoke() }
                 btn_top_ads.text = context.getString(R.string.promote_topads)
             }
             btn_edit_product.setOnClickListener(this@PartialButtonActionView)

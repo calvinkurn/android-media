@@ -2284,13 +2284,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             }
         }
 
-        actionButtonView.tingkatkanPenjualanClicked = {
+        actionButtonView.advertiseProductClick = {
             val firstAppLink = UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
             val secondAppLink = when (viewModel.p2Login.value?.topAdsGetShopInfo?.category) {
                 TopAdsShopCategoryTypeDef.MANUAL_USER -> {
                     ApplinkConst.SellerApp.TOPADS_CREATE_ADS
                 }
-                TopAdsShopCategoryTypeDef.NO_ADS -> {
+                TopAdsShopCategoryTypeDef.NO_ADS, TopAdsShopCategoryTypeDef.NO_PRODUCT -> {
                     ApplinkConst.SellerApp.TOPADS_CREATE_ONBOARDING
                 }
                 else -> {
