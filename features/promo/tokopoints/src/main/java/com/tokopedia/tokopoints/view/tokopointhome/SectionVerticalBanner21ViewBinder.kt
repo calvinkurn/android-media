@@ -5,12 +5,12 @@ import android.view.ViewGroup
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.model.section.SectionContent
 
-class SectionVerticalBanner21ViewBinder(val block: SectionContent)
+class SectionVerticalBanner21ViewBinder()
     : SectionItemViewBinder<SectionContent, SectionVerticalBanner21VH>(
         SectionContent::class.java) {
     override fun createViewHolder(parent: ViewGroup): SectionVerticalBanner21VH {
         return (
-                SectionVerticalBanner21VH(LayoutInflater.from(parent.context).inflate(getSectionItemType(), parent, false), block))
+                SectionVerticalBanner21VH(LayoutInflater.from(parent.context).inflate(getSectionItemType(), parent, false)))
     }
 
     override fun bindViewHolder(model: SectionContent, viewHolder: SectionVerticalBanner21VH) {

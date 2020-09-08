@@ -17,7 +17,7 @@ import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.tokopoints.view.util.CommonConstant
 
-class SectionVerticalCarousel31ViewBinder(val block: SectionContent)
+class SectionVerticalCarousel31ViewBinder()
     : SectionItemViewBinder<SectionContent, SectionHorizontalCarousel31VH>(
         SectionContent::class.java) {
     override fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
@@ -35,8 +35,7 @@ class SectionVerticalCarousel31ViewBinder(val block: SectionContent)
 class SectionHorizontalCarousel31VH(val view: View) : RecyclerView.ViewHolder(view) {
     fun bind(content: SectionContent) {
 
-
-        if (content == null || content.sectionTitle == null || content.layoutBannerAttr == null) {
+        if (content?.sectionTitle == null || content.layoutBannerAttr == null) {
             view.visibility = View.GONE
             return
         }
@@ -59,13 +58,10 @@ class SectionHorizontalCarousel31VH(val view: View) : RecyclerView.ViewHolder(vi
             (view.findViewById<View>(R.id.text_sub_title_carousel) as TextView).text = content.sectionSubTitle
         }
 
-        itemView.apply {
+        val rvCarousel: RecyclerView = view.findViewById(R.id.rv_carousel_31)
+        rvCarousel.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
+        rvCarousel.adapter = SectionCarouselAdapter(content.layoutBannerAttr.imageList, CommonConstant.BannerType.CAROUSEL_3_1)
 
-            val rvCarousel: RecyclerView = view.findViewById(R.id.rv_carousel_31)
-            rvCarousel.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
-            rvCarousel.adapter = SectionCarouselAdapter(content.layoutBannerAttr.imageList, CommonConstant.BannerType.CAROUSEL_3_1)
-
-        }
     }
 
     fun handledClick(appLink: String?, webLink: String?, action: String?, label: String?) {

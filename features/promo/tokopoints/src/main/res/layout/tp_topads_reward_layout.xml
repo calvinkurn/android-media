@@ -10,6 +10,7 @@
         android:id="@+id/tv_topad_title"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginLeft="@dimen/dp_16"
         android:lineSpacingExtra="6sp"
         android:textColor="#f531353b"
         android:textSize="16sp"
@@ -25,6 +26,7 @@
         android:id="@+id/tv_topads_see_all"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginRight="@dimen/dp_16"
         android:text="Lihat Semua"
         android:textColor="@color/medium_green"
         android:textSize="@dimen/sp_13"
@@ -39,6 +41,7 @@
         android:id="@+id/tv_topads_sub_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_4"
         android:lineSpacingExtra="6sp"
         android:textColor="#8f000000"
@@ -48,16 +51,30 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_topad_title"
         tools:text="Cari tahu sekarang juga" />
 
-    <com.tokopedia.topads.sdk.widget.TopAdsImageView
-        android:id="@+id/topads_reward"
-        android:layout_width="wrap_content"
+    <ViewFlipper
+        android:id="@+id/container_topads"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="8dp"
         android:layout_marginRight="@dimen/dp_16"
-        android:background="@drawable/bg_tierinfo"
-        app:layout_constraintDimensionRatio="H,3:1"
+        android:measureAllChildren="false"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_topads_sub_title" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_topads_sub_title">
 
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/loaderUnify"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_marginTop="@dimen/dp_8"
+            app:loader_corner_radius="8dp"
+            app:loader_type="rect" />
+
+        <com.tokopedia.topads.sdk.widget.TopAdsImageView
+            android:id="@+id/topads_reward"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_tierinfo"
+            app:layout_constraintDimensionRatio="H,3:1" />
+    </ViewFlipper>
 </androidx.constraintlayout.widget.ConstraintLayout>

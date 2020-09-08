@@ -27,20 +27,21 @@ class SectionTickerViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         var link = ""
         var desc = ""
         var linkDesc = ""
-        for (tickerItem in content.layoutTickerAttr.tickerList[0].metadata) {
-            link = if (tickerItem.link[CommonConstant.TickerMapKeys.APP_LINK]?.length != 0) {
-                tickerItem.link[CommonConstant.TickerMapKeys.APP_LINK].toString()
-            } else {
-                tickerItem.link[CommonConstant.TickerMapKeys.URL].toString()
-            }
+        if (content.layoutTickerAttr.tickerList.isNotEmpty()) {
+            for (tickerItem in content.layoutTickerAttr.tickerList[0].metadata) {
+                link = if (tickerItem.link[CommonConstant.TickerMapKeys.APP_LINK]?.length != 0) {
+                    tickerItem.link[CommonConstant.TickerMapKeys.APP_LINK].toString()
+                } else {
+                    tickerItem.link[CommonConstant.TickerMapKeys.URL].toString()
+                }
 
-            if (link.isNotEmpty()) {
-                linkDesc = tickerItem.text[CommonConstant.TickerMapKeys.CONTENT].toString()
-            } else {
-                desc = tickerItem.text[CommonConstant.TickerMapKeys.CONTENT].toString()
+                if (link.isNotEmpty()) {
+                    linkDesc = tickerItem.text[CommonConstant.TickerMapKeys.CONTENT].toString()
+                } else {
+                    desc = tickerItem.text[CommonConstant.TickerMapKeys.CONTENT].toString()
+                }
             }
         }
-
         val descriptionText = desc + "<a href=\"${link}\">" + ". " + linkDesc + "</a>"
         pager?.setHtmlDescription(descriptionText)
         pager?.findViewById<TextView>(com.tokopedia.unifycomponents.R.id.ticker_description)?.setMargin(16, 8, 22, 8)
@@ -49,7 +50,7 @@ class SectionTickerViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
                 if (link.startsWith(CommonConstant.TickerMapKeys.TOKOPEDIA)) {
                     RouteManager.route(view.context, link)
                 } else {
-                    RouteManager.route(view.context, String.format("%s?url=%", ApplinkConst.WEBVIEW, link))
+                    RouteManager.route(view.context, String.format(view.context.resources.getString(R.string.tp_webview_format), ApplinkConst.WEBVIEW, link))
                 }
                 AnalyticsTrackerUtil.sendEvent(view.context,
                         AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,

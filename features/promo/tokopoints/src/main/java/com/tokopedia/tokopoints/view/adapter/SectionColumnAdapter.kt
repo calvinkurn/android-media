@@ -5,7 +5,6 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewGroup.MarginLayoutParams
 import android.webkit.URLUtil
 import android.widget.ImageView
 import android.widget.TextView
@@ -13,11 +12,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.model.section.ImageList
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.tokopoints.view.util.CommonConstant
-import com.tokopedia.tokopoints.view.util.convertDpToPixel
 
 class SectionColumnAdapter(private val mItems: List<ImageList>?, private val mType: String) : RecyclerView.Adapter<SectionColumnAdapter.ViewHolder?>() {
     private var context: Context? = null
@@ -33,17 +33,7 @@ class SectionColumnAdapter(private val mItems: List<ImageList>?, private val mTy
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val params = holder.itemView.layoutParams as MarginLayoutParams
-        if (position == 0) {
-            params.setMargins(convertDpToPixel(10, holder.itemView.context), 0, 0, 0)
-        } else if (position == mItems?.size) {
-            params.setMargins(0, 0, convertDpToPixel(16, holder.itemView.context), 0)
-
-        } else {
-            params.setMargins(convertDpToPixel(16, holder.itemView.context), 0, 0, 0)
-        }
-        holder.itemView.layoutParams = params
-        holder.bindData(mItems!![position])
+        holder.bindData(mItems?.get(position))
     }
 
     override fun getItemCount(): Int {
@@ -68,15 +58,15 @@ class SectionColumnAdapter(private val mItems: List<ImageList>?, private val mTy
             bnrSubTitle.text = item.inBannerSubTitle
             itemView.setOnClickListener { view: View? -> handledClick(item.redirectAppLink, item.redirectURL) }
             if (TextUtils.isEmpty(item.title)) {
-                titleBottom.visibility = View.GONE
+                titleBottom.hide()
             } else {
-                titleBottom.visibility = View.VISIBLE
+                titleBottom.show()
                 titleBottom.text = item.title
             }
             if (TextUtils.isEmpty(item.subTitle)) {
-                subTitleBottom.visibility = View.GONE
+                subTitleBottom.hide()
             } else {
-                subTitleBottom.visibility = View.VISIBLE
+                subTitleBottom.show()
                 subTitleBottom.text = item.subTitle
             }
         }
@@ -93,7 +83,7 @@ class SectionColumnAdapter(private val mItems: List<ImageList>?, private val mTy
     override fun onViewAttachedToWindow(holder: ViewHolder) {
         super.onViewAttachedToWindow(holder)
         try {
-            val data = mItems!![holder.adapterPosition]
+            val data = mItems?.get(holder.adapterPosition)
             if (data == null || holder.itemView == null) {
                 return
             }
@@ -111,7 +101,7 @@ class SectionColumnAdapter(private val mItems: List<ImageList>?, private val mTy
 
     fun handledClick(appLink: String?, webLink: String?) {
         if (TextUtils.isEmpty(appLink)) {
-            RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, webLink))
+            RouteManager.route(context, context?.resources?.getString(R.string.tp_webview_format)?.let { String.format(it, ApplinkConst.WEBVIEW, webLink) })
         } else {
             RouteManager.route(context, appLink)
         }

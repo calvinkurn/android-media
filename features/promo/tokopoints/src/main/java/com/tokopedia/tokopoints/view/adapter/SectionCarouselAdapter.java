@@ -59,9 +59,9 @@ public class SectionCarouselAdapter extends RecyclerView.Adapter<SectionCarousel
 
         MarginLayoutParams params = (MarginLayoutParams) holder.itemView.getLayoutParams();
         if (position == 0) {
-            params.setMargins(CommanUtilsKt.convertDpToPixel(16,holder.itemView.getContext()),0,0,0);
+            params.setMargins(holder.itemView.getContext().getResources().getDimensionPixelSize(R.dimen.tp_margin_medium),0,0,0);
         } else {
-            params.setMargins(CommanUtilsKt.convertDpToPixel(16,holder.itemView.getContext()),0,0,0);
+            params.setMargins(holder.itemView.getContext().getResources().getDimensionPixelSize(R.dimen.tp_margin_medium),0,0,0);
         }
         holder.itemView.setLayoutParams(params);
 

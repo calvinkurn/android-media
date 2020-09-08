@@ -18,18 +18,14 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.customview.DynamicItemActionView
-import com.tokopedia.tokopoints.view.customview.TokoPointToolbar
 import com.tokopedia.tokopoints.view.model.rewardtopsection.DynamicActionListItem
 import com.tokopedia.tokopoints.view.model.rewardtopsection.TokopediaRewardTopSection
-import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.tokopoints.view.util.CommonConstant
 import com.tokopedia.unifycomponents.NotificationUnify
-import kotlinx.android.synthetic.main.tp_item_dynamic_action.view.*
 
-class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHeightListener, val tokoPointToolbar: TokoPointToolbar?, val toolbarItemList: Any? , val indexToHide : Int) : RecyclerView.ViewHolder(itemView) {
+class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHeightListener, val toolbarItemList: Any?, val adapter: SectionAdapter?) : RecyclerView.ViewHolder(itemView) {
 
     lateinit var cardTierInfo: ConstraintLayout
-    private val dynamicItem = "dynamicItem"
     private var dynamicAction: DynamicItemActionView? = null
     private var mTextMembershipLabel: TextView? = null
     private var mTargetText: TextView? = null
@@ -56,7 +52,6 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
         cardTierInfo.doOnLayout {
             cardRuntimeHeightListener.setCardLayoutHeight(it.height)
         }
-        //addDynamicToolbar(data?.dynamicActionList)
         mTextMembershipLabel?.text = data?.introductionText
 
         data?.target?.let {
@@ -91,18 +86,25 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
             if (dataList[0]?.counter?.isShowCounter!! && dataList[0]?.counter?.counterStr != "0") {
                 dataList[0]?.counter?.counterStr?.let { dynamicAction?.setFirstLayoutNotification(it) }
             }
+            else{
+                dynamicAction?.notifFirstLayout?.hide()
+            }
             dynamicAction?.findViewById<LinearLayout>(R.id.holder_tokopoint)?.setOnClickListener {
                 dataList[0]?.cta?.let {
                     hideNotification(0)
                     dynamicAction?.setLayoutClickListener(it.appLink, it.text)
                 }
             }
+
             if (dataList.size > 1) {
                 dynamicAction?.setCenterLayoutVisibility(View.VISIBLE)
                 dataList[1]?.cta?.text?.let { dynamicAction?.setCenterLayoutText(it) }
                 dataList[1]?.iconImageURL?.let { dynamicAction?.setCenterLayoutIcon(it) }
                 if (dataList[1]?.counter?.isShowCounter!! && dataList[1]?.counter?.counterStr != "0") {
                     dataList[1]?.counter?.counterStr?.let { dynamicAction?.setCenterLayoutNotification(it) }
+                }
+                else{
+                    dynamicAction?.notifCenterLayout?.hide()
                 }
                 dynamicAction?.findViewById<LinearLayout>(R.id.holder_coupon)?.setOnClickListener {
                     dataList[1]?.cta?.let {
@@ -118,6 +120,9 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
                 dataList[2]?.iconImageURL?.let { dynamicAction?.setRightLayoutIcon(it) }
                 if (dataList[2]?.counter?.isShowCounter!! && dataList[2]?.counter?.counterStr != "0") {
                     dataList[2]?.counter?.counterStr?.let { dynamicAction?.setRightLayoutNotification(it) }
+                }
+                else{
+                    dynamicAction?.notifRightLayout?.hide()
                 }
                 dynamicAction?.findViewById<LinearLayout>(R.id.holder_tokomember)?.setOnClickListener {
                     dataList[2]?.cta?.let {
@@ -162,11 +167,6 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
     fun hideNotification(index: Int) {
         toolbarItemList as ArrayList<NotificationUnify>
         toolbarItemList[index].hide()
-        when (index) {
-            0 -> dynamicAction?.notifFirstLayout?.hide()
-            1 -> dynamicAction?.notifCenterLayout?.hide()
-            2 -> dynamicAction?.notifRightLayout?.hide()
-        }
     }
 
     interface CardRuntimeHeightListener {

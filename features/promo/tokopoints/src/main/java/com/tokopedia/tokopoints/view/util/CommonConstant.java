@@ -45,6 +45,7 @@ public interface CommonConstant {
     String ARGS_POINTS_AVAILABILITY = "points_availability";
     String BUNDLE_ARGS_USER_IS_LOGGED_IN = "USER_IS_LOGGEDIN";
     String APIVERSION = "2.0.0";
+    String IMPRESSION_LIST="/tokopoints - p{x} - promo lis";
 
     interface CouponRedemptionCode {
         int LOW_POINT = 42020;

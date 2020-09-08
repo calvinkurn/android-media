@@ -14,7 +14,7 @@ import com.tokopedia.tokopoints.view.adapter.SectionCategoryAdapter
 import com.tokopedia.tokopoints.view.model.section.SectionContent
 import kotlinx.android.synthetic.main.tp_layout_section_category_parent.view.*
 
-class SectionVerticalCategoryViewBinder(val block: SectionContent)
+class SectionVerticalCategoryViewBinder()
     : SectionItemViewBinder<SectionContent, SectionVerticalCategoryVH>(
         SectionContent::class.java) {
 
@@ -75,12 +75,10 @@ class SectionVerticalCategoryVH(val viewCategory: View) : RecyclerView.ViewHolde
                 }
             }
         }
+        val manager = LinearLayoutManager(viewCategory.context, LinearLayoutManager.HORIZONTAL, false)
+        mRvDynamicLinks?.layoutManager = manager
+        mRvDynamicLinks?.adapter = SectionCategoryAdapter(viewCategory.context, content.layoutCategoryAttr.categoryTokopointsList)
 
-        itemView.apply {
-            val manager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            rv_dynamic_link?.layoutManager = manager
-            rv_dynamic_link?.adapter = SectionCategoryAdapter(viewCategory.context, content.layoutCategoryAttr.categoryTokopointsList)
-        }
     }
 
     fun openWebView(url: String) {

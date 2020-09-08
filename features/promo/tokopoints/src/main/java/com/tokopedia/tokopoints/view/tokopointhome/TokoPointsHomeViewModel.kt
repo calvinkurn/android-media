@@ -21,16 +21,10 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 @TokoPointScope
-class TokoPointsHomeViewModel @Inject constructor(private val repository: TokopointsHomeRepository, private val topAdsImageViewUseCase: TopAdsImageViewUseCase) : CatalogPurchaseRedeemptionViewModel(repository), TokoPointsHomeContract.Presenter {
+class TokoPointsHomeViewModel @Inject constructor(private val repository: TokopointsHomeRepository) : CatalogPurchaseRedeemptionViewModel(repository), TokoPointsHomeContract.Presenter {
 
     val tokopointDetailLiveData = MutableLiveData<Resources<TokopointSuccess>>()
     val rewardIntroData = MutableLiveData<Resources<IntroResponse>>()
-    val topAdsBannerData = MutableLiveData<TopAdsImageViewModel?>()
-
-    companion object {
-        const val ITEM = "item"
-        const val INVENTORY_ID = "inventory_id"
-    }
 
     override fun getTokoPointDetail() {
         launchCatchError(block = {
@@ -41,27 +35,9 @@ class TokoPointsHomeViewModel @Inject constructor(private val repository: Tokopo
                 if (data.tokopediaRewardTopSection?.isShowIntroActivity == true) getRewardIntroData()
             }
             val dataSection = graphqlResponse.getData<TokopointsSectionOuter>(TokopointsSectionOuter::class.java)
-            var queryString = ""
-            for (item in dataSection.sectionContent.sectionContent) {
-                if (item.layoutTopAdsAttr != null && item.layoutTopAdsAttr.jsonTopAdsDisplayParam.isNotEmpty()) {
-                    queryString = item.layoutTopAdsAttr.jsonTopAdsDisplayParam
-                    break
-                }
-            }
-
-            if (queryString.isNotEmpty()) {
-                val result = getTopadsBanner(queryString).await()
-
-                if (result.isNotEmpty()) {
-                    val stack: Stack<TopAdsImageViewModel> = Stack()
-                    stack.addAll(result.toMutableList())
-                    stack.reverse()
-                    topAdsBannerData.value = stack.pop()
-                }
-            }
 
             if (data != null && dataSection != null && dataSection.sectionContent != null) {
-                tokopointDetailLiveData.value = Success(TokopointSuccess(data.tokopediaRewardTopSection, dataSection.sectionContent.sectionContent, topAdsBannerData.value))
+                tokopointDetailLiveData.value = Success(TokopointSuccess(data.tokopediaRewardTopSection, dataSection.sectionContent.sectionContent))
             } else {
                 throw NullPointerException("error in data")
             }
@@ -78,23 +54,6 @@ class TokoPointsHomeViewModel @Inject constructor(private val repository: Tokopo
         }) {
         }
     }
-
-    fun getTopadsBanner(topadsMap: String): Deferred<ArrayList<TopAdsImageViewModel>> {
-        return async {
-            val jObject = JSONObject(topadsMap)
-            topAdsImageViewUseCase.getImageData(
-                    topAdsImageViewUseCase.getQueryMap(
-                            "",
-                            jObject.getString(INVENTORY_ID),
-                            "",
-                            jObject.getInt(ITEM),
-                            3,
-                            ""
-                    )
-            )
-
-        }
-    }
 }
 
-data class TokopointSuccess(val tokoPointEntity: TokopediaRewardTopSection?, val sectionList: MutableList<SectionContent>, val topAdsImageViewModel: TopAdsImageViewModel?)
+data class TokopointSuccess(val tokoPointEntity: TokopediaRewardTopSection?, val sectionList: MutableList<SectionContent>)

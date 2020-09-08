@@ -12,9 +12,10 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
+import com.tokopedia.tokopoints.view.util.CommonConstant
 import java.util.HashMap
 
-class SectionVerticalBanner31VH(val view: View, val data: SectionContent) : RecyclerView.ViewHolder(view) {
+class SectionVerticalBanner31VH(val view: View) : RecyclerView.ViewHolder(view) {
     fun bind(content: SectionContent) {
         if (content.sectionTitle == null || content.layoutBannerAttr == null) {
             view.visibility = View.GONE
@@ -84,7 +85,7 @@ class SectionVerticalBanner31VH(val view: View, val data: SectionContent) : Recy
 
     private fun sendBannerImpression(bannerName: String) {
         val promotionItem = HashMap<String, Any>()
-        promotionItem[AnalyticsTrackerUtil.EcommerceKeys.NAME] = "/tokopoints - p{x} - promo lis"
+        promotionItem[AnalyticsTrackerUtil.EcommerceKeys.NAME] = CommonConstant.IMPRESSION_LIST
         promotionItem[AnalyticsTrackerUtil.EcommerceKeys.POSITION] = -1
         promotionItem[AnalyticsTrackerUtil.EcommerceKeys.CREATIVE] = bannerName
         val promotionMap = HashMap<String, Any>()
@@ -97,7 +98,7 @@ class SectionVerticalBanner31VH(val view: View, val data: SectionContent) : Recy
 
     private fun sendBannerClick(bannerName: String) {
         val promotionItem = HashMap<String, Any>()
-        promotionItem[AnalyticsTrackerUtil.EcommerceKeys.NAME] = "/tokopoints - p{x} - promo lis"
+        promotionItem[AnalyticsTrackerUtil.EcommerceKeys.NAME] = CommonConstant.IMPRESSION_LIST
         promotionItem[AnalyticsTrackerUtil.EcommerceKeys.POSITION] = -1
         promotionItem[AnalyticsTrackerUtil.EcommerceKeys.CREATIVE] = bannerName
         val promotionMap = HashMap<String, Any>()

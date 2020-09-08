@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.model.section.SectionContent
 
-class SectionVerticalColumn311ViewBinder(val block: SectionContent)
+class SectionVerticalColumn311ViewBinder()
     : SectionItemViewBinder<SectionContent, SectionVerticalColumn31VH>(
         SectionContent::class.java) {
     override fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {

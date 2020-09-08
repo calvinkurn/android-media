@@ -7,10 +7,8 @@ import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.util.CommonConstant
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 
-class SectionAdapter(
-        private val viewBinders: Map<String, SectionItemBinder>,
-        val sectionList: ArrayList<Any>
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class SectionAdapter(private val viewBinders: Map<String, SectionItemBinder>,
+                     val sectionList: ArrayList<Any>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val viewTypeToBinders = viewBinders.mapKeys { it.value.getSectionItemType() }
 
@@ -20,9 +18,6 @@ class SectionAdapter(
         when {
             position == 0 -> {
                 return viewBinders.getValue(CommonConstant.SectionLayoutType.TOPHEADER).getSectionItemType()
-            }
-            sectionList[position] is TopAdsImageViewModel -> {
-                return viewBinders.getValue(CommonConstant.SectionLayoutType.TOPADS).getSectionItemType()
             }
             (sectionList[position] as SectionContent).layoutType == CommonConstant.SectionLayoutType.BANNER -> {
                 when ((sectionList[position] as SectionContent).layoutBannerAttr.bannerType) {

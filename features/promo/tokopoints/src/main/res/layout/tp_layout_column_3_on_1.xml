@@ -2,18 +2,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ll_inner"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/dp_8">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="@dimen/dp_250"
-        android:layout_height="320dp">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iv_col_1"
-            android:layout_width="@dimen/dp_250"
-            android:layout_height="320dp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:background="@drawable/bg_tp_section_border"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="h,3:4"
@@ -70,20 +70,20 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/iv_col_1"
-            tools:text="Subtitle in banner Subtitle in banner Subtit  ubtitle in banner Subtitle i"
+            tools:text="Subtitle in banxdcf vgb cvb hbnfd fghjner Subtitle in banner Subtit  ubtitle in banner Subtitle i"
             tools:visibility="visible" />
 
         <TextView
             android:id="@+id/text_sub_title_bottom_1"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_2"
             android:ellipsize="end"
             android:maxLines="2"
             android:textColor="#8f000000"
             android:textSize="@dimen/sp_10"
             android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="@id/iv_col_1"
+            app:layout_constraintEnd_toEndOf="@id/text_title_bottom_1"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/text_title_bottom_1"

@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.view.*
 import android.widget.*
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
@@ -17,7 +16,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
-import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -44,7 +42,6 @@ import com.tokopedia.tokopoints.view.model.rewardtopsection.DynamicActionListIte
 import com.tokopedia.tokopoints.view.model.rewardtopsection.TokopediaRewardTopSection
 import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.util.*
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.NotificationUnify
 import kotlinx.android.synthetic.main.tp_item_dynamic_action.view.*
@@ -60,8 +57,6 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     private var mContainerMain: ViewFlipper? = null
     private var mTextMembershipValue: TextView? = null
     private var mTargetText: TextView? = null
-    private var mTextMembershipValueBottom: TextView? = null
-    private var mTextPoints: TextView? = null
     private var mTextPointsBottom: TextView? = null
     private var mTextMembershipLabel: TextView? = null
     private var mImgEgg: ImageView? = null
@@ -73,8 +68,6 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     lateinit var viewFactory: ViewModelFactory
     private val mPresenter: TokoPointsHomeViewModel by lazy { ViewModelProviders.of(this, viewFactory).get(TokoPointsHomeViewModel::class.java) }
     private var mValueMembershipDescription: String? = null
-    lateinit var tickerContainer: View
-    lateinit var dynamicLinksContainer: View
     private var appBarCollapseListener: onAppBarCollapseListener? = null
     private var collapsingToolbarLayout: CollapsingToolbarLayout? = null
     private var coordinatorLayout: CoordinatorLayout? = null
@@ -84,24 +77,31 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     private var rewardsPointLayout: CardUnify? = null
     private var ivPointStack: AppCompatImageView? = null
     private var dynamicAction: DynamicItemActionView? = null
-    lateinit var tvSectionTitleCategory: TextView
-    lateinit var tvSectionSubtitleCateory: TextView
     lateinit var appBarHeader: AppBarLayout
-    lateinit var categorySeeAll: TextView
-    lateinit var cardTierInfo: ConstraintLayout
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
     private val dynamicItem = "dynamicItem"
     private val toolbarItemList = mutableListOf<NotificationUnify>()
     private var adapter: SectionAdapter? = null
-    private var visibilityFlag = true
-    private val topAdsPosition = 1
-    var topAdsImageViewModel = TopAdsImageViewModel()
     val viewBinders = mutableMapOf<String, SectionItemBinder>()
     val sectionList: ArrayList<Any> = ArrayList()
+    lateinit var sectionListViewBinder: SectionHorizontalViewBinder
 
     override fun onCreate(savedInstanceState: Bundle?) {
         startPerformanceMonitoring()
         super.onCreate(savedInstanceState)
+
+        sectionListViewBinder = SectionHorizontalViewBinder(savedInstanceState?.getParcelable(
+                BUNDLE_KEY_LAYOUT_HORIZONTAL_LIST_STATE))
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        if (::sectionListViewBinder.isInitialized) {
+            outState.putParcelable(
+                    BUNDLE_KEY_LAYOUT_HORIZONTAL_LIST_STATE,
+                    sectionListViewBinder.recyclerViewManagerState
+            )
+        }
+        super.onSaveInstanceState(outState)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -228,7 +228,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                     stopNetworkRequestPerformanceMonitoring()
                     startRenderPerformanceMonitoring()
                     setOnRecyclerViewLayoutReady()
-                    onSuccessResponse(it.data.tokoPointEntity, it.data.sectionList, it.data.topAdsImageViewModel)
+                    onSuccessResponse(it.data.tokoPointEntity, it.data.sectionList)
                 }
             }
         }
@@ -238,11 +238,11 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         it?.let { RouteManager.route(context, it) }
     })
 
-    override fun onSuccessResponse(data: TokopediaRewardTopSection?, sections: List<SectionContent>, topAdsImageViewModel: TopAdsImageViewModel?) {
+    override fun onSuccessResponse(data: TokopediaRewardTopSection?, sections: List<SectionContent>) {
         mContainerMain?.displayedChild = CONTAINER_DATA
         addDynamicToolbar(data?.dynamicActionList)
         // renderToolbarWithHeader(data)
-        renderSections(sections, data, topAdsImageViewModel)
+        renderSections(sections, data)
     }
 
     override fun onError(error: String, hasInternet: Boolean) {
@@ -306,7 +306,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                     toolbarItemList.add(this.notif_dynamic)
                     setOnClickListener {
                         RouteManager.route(context, item.cta?.appLink)
-                        hideNotification(index)
+                        hideNotification(index,dynamicActionList)
 
                         AnalyticsTrackerUtil.sendEvent(context,
                                 AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
@@ -319,18 +319,14 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         }
     }
 
-    fun hideNotification(index: Int) {
+    private fun hideNotification(index: Int ,dynamicActionList: List<DynamicActionListItem?>?) {
         toolbarItemList[index].hide()
-        when (index) {
-            0 -> {
-                //     TopSectionVH().hideNotification(0)
-            }
-            1 -> dynamicAction?.notifCenterLayout?.hide()
-            2 -> dynamicAction?.notifRightLayout?.hide()
-        }
+        dynamicActionList?.get(index)?.counter?.isShowCounter=false
+        adapter?.notifyItemChanged(0)
     }
 
-    override fun renderSections(sections: List<SectionContent>, data: TokopediaRewardTopSection?, topAdsImageViewModel: TopAdsImageViewModel?) {
+
+    override fun renderSections(sections: List<SectionContent>, data: TokopediaRewardTopSection?) {
         if (sections == null) { //TODO hide all section container
             return
         }
@@ -344,16 +340,16 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                 }
             }
         }
-        renderExploreSectionTab(exploreSectionItem, data, topAdsImageViewModel)
+        renderExploreSectionTab(exploreSectionItem, data)
     }
 
-    override fun renderExploreSectionTab(sections: List<SectionContent>, data: TokopediaRewardTopSection?, topAdsImageViewModel: TopAdsImageViewModel?) {
+    override fun renderExploreSectionTab(sections: List<SectionContent>, data: TokopediaRewardTopSection?) {
         if (sections.isEmpty()) {
             return
         }
         if (adapter == null) {
 
-            val topSectionViewBinder = TopSectionViewBinder(data, this, tokoPointToolbar, toolbarItemList, -1)
+            val topSectionViewBinder = TopSectionViewBinder(data, this, toolbarItemList,adapter)
 
             @Suppress("UNCHECKED_CAST")
             viewBinders.put(
@@ -363,7 +359,6 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
 
             for (sectionContent in sections) {
                 if (sectionContent.layoutCouponAttr != null && sectionContent.layoutCouponAttr.couponList != null && !sectionContent.layoutCouponAttr.couponList.isEmpty()) {
-                    val sectionListViewBinder = SectionHorizontalViewBinder(sectionContent)
 
                     @Suppress("UNCHECKED_CAST")
                     viewBinders.put(
@@ -371,9 +366,8 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                             sectionListViewBinder as SectionItemBinder)
                     sectionList.add(sectionContent)
                 }
-
                 if (sectionContent.layoutTickerAttr != null && sectionContent.layoutTickerAttr.tickerList != null && !sectionContent.layoutTickerAttr.tickerList.isEmpty()) {
-                    val sectionTickerViewBinder = SectionTickerViewBinder(sectionContent)
+                    val sectionTickerViewBinder = SectionTickerViewBinder()
                     @Suppress("UNCHECKED_CAST")
                     viewBinders.put(
                             sectionContent.layoutType,
@@ -383,7 +377,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
 
                 if (sectionContent.layoutCategoryAttr != null && sectionContent.layoutCategoryAttr.categoryTokopointsList != null
                         && !sectionContent.layoutCategoryAttr.categoryTokopointsList.isEmpty()) {
-                    val sectionCategoryViewBinder = SectionVerticalCategoryViewBinder(sectionContent)
+                    val sectionCategoryViewBinder = SectionVerticalCategoryViewBinder()
                     @Suppress("UNCHECKED_CAST")
                     viewBinders.put(
                             sectionContent.layoutType,
@@ -392,7 +386,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                 }
 
                 if (sectionContent.layoutCatalogAttr != null && sectionContent.layoutCatalogAttr.catalogList != null && !sectionContent.layoutCatalogAttr.catalogList.isEmpty()) {
-                    val sectionCatalogListViewBinder = SectionHoriZontalCatalogViewBinder(sectionContent, mPresenter)
+                    val sectionCatalogListViewBinder = SectionHoriZontalCatalogViewBinder(mPresenter)
                     @Suppress("UNCHECKED_CAST")
                     viewBinders.put(
                             sectionContent.layoutType,
@@ -402,18 +396,21 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
 
                 if (sectionContent.layoutTopAdsAttr != null && sectionContent.layoutTopAdsAttr.jsonTopAdsDisplayParam.isNotEmpty()) {
 
-                    if (topAdsImageViewModel != null) {
-                        val sectionTopAdsViewBinder = SectionTopadsViewBinder(topAdsImageViewModel)
-                        @Suppress("UNCHECKED_CAST")
-                        viewBinders.put(
-                                sectionContent.layoutType,
-                                sectionTopAdsViewBinder as SectionItemBinder)
-                        sectionList.add(topAdsImageViewModel)
-                    }
+                    val sectionTopAdsViewBinder = SectionTopadsViewBinder()
+                    @Suppress("UNCHECKED_CAST")
+                    viewBinders.put(
+                            sectionContent.layoutType,
+                            sectionTopAdsViewBinder as SectionItemBinder)
+                    sectionList.add(sectionContent)
+
+                }
+                if (sectionContent.layoutBannerAttr == null
+                        || sectionContent.layoutBannerAttr.bannerType == null) {
+                    continue
                 }
                 when (sectionContent.layoutBannerAttr.bannerType) {
                     CommonConstant.BannerType.BANNER_2_1 -> {
-                        val verticalImagesViewBinder = SectionVerticalBanner21ViewBinder(sectionContent)
+                        val verticalImagesViewBinder = SectionVerticalBanner21ViewBinder()
                         @Suppress("UNCHECKED_CAST")
                         viewBinders.put(
                                 sectionContent.layoutBannerAttr.bannerType,
@@ -422,7 +419,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
 
                     }
                     CommonConstant.BannerType.BANNER_3_1 -> {
-                        val verticalBanner31ViewBinder = SectionVerticalBanner31ViewBinder(sectionContent)
+                        val verticalBanner31ViewBinder = SectionVerticalBanner31ViewBinder()
                         @Suppress("UNCHECKED_CAST")
                         viewBinders.put(
                                 sectionContent.layoutBannerAttr.bannerType,
@@ -431,7 +428,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                     }
 
                     CommonConstant.BannerType.BANNER_1_1 -> {
-                        val verticalBanner11ViewBinder = SectionVerticalBanner11ViewBinder(sectionContent)
+                        val verticalBanner11ViewBinder = SectionVerticalBanner11ViewBinder()
                         @Suppress("UNCHECKED_CAST")
                         viewBinders.put(
                                 sectionContent.layoutBannerAttr.bannerType,
@@ -440,7 +437,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                     }
 
                     CommonConstant.BannerType.COLUMN_2_1_BY_1 -> {
-                        val verticalColumn21ViewBinder = SectionVerticalColumn211ViewBinder(sectionContent)
+                        val verticalColumn21ViewBinder = SectionVerticalColumn211ViewBinder()
                         @Suppress("UNCHECKED_CAST")
                         viewBinders.put(
                                 sectionContent.layoutBannerAttr.bannerType,
@@ -449,7 +446,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                     }
 
                     CommonConstant.BannerType.COLUMN_3_1_BY_1 -> {
-                        val verticalColumn31ViewBinder = SectionVerticalColumn311ViewBinder(sectionContent)
+                        val verticalColumn31ViewBinder = SectionVerticalColumn311ViewBinder()
                         @Suppress("UNCHECKED_CAST")
                         viewBinders.put(
                                 sectionContent.layoutBannerAttr.bannerType,
@@ -458,7 +455,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                     }
 
                     CommonConstant.BannerType.COLUMN_2_3_BY_4 -> {
-                        val verticalColumn234ViewBinder = SectionVerticalColumn234ViewBinder(sectionContent)
+                        val verticalColumn234ViewBinder = SectionVerticalColumn234ViewBinder()
                         @Suppress("UNCHECKED_CAST")
                         viewBinders.put(
                                 sectionContent.layoutBannerAttr.bannerType,
@@ -467,7 +464,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                     }
 
                     CommonConstant.BannerType.CAROUSEL_1_1 -> {
-                        val verticalCarousel11ViewBinder = SectionHorizontalCarousel11ViewBinder(sectionContent)
+                        val verticalCarousel11ViewBinder = SectionHorizontalCarousel11ViewBinder()
                         @Suppress("UNCHECKED_CAST")
                         viewBinders.put(
                                 sectionContent.layoutBannerAttr.bannerType,
@@ -475,7 +472,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                         sectionList.add(sectionContent)
                     }
                     CommonConstant.BannerType.CAROUSEL_2_1 -> {
-                        val verticalCarousel21ViewBinder = SectionHorizontalCarousel21ViewBinder(sectionContent)
+                        val verticalCarousel21ViewBinder = SectionHorizontalCarousel21ViewBinder()
                         @Suppress("UNCHECKED_CAST")
                         viewBinders.put(
                                 sectionContent.layoutBannerAttr.bannerType,
@@ -484,7 +481,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                     }
                     CommonConstant.BannerType.CAROUSEL_3_1 -> {
 
-                        val verticalCarousel31ViewBinder = SectionVerticalCarousel31ViewBinder(sectionContent)
+                        val verticalCarousel31ViewBinder = SectionVerticalCarousel31ViewBinder()
                         @Suppress("UNCHECKED_CAST")
                         viewBinders.put(
                                 sectionContent.layoutBannerAttr.bannerType,
@@ -498,14 +495,15 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
 
             adapter = SectionAdapter(viewBinders, sectionList)
 
+            mPagerPromos?.apply {
+                layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
+            }
+            if (mPagerPromos?.adapter == null) {
+                mPagerPromos?.adapter = adapter
+            }
+            (mPagerPromos?.adapter as SectionAdapter)
+
         }
-        mPagerPromos?.apply {
-            layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
-        }
-        if (mPagerPromos?.adapter == null) {
-            mPagerPromos?.adapter = adapter
-        }
-        (mPagerPromos?.adapter as SectionAdapter)
     }
 
     override fun onResume() {
@@ -590,6 +588,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         private const val CONTAINER_LOADER = 0
         private const val CONTAINER_DATA = 1
         private const val CONTAINER_ERROR = 2
+        private const val BUNDLE_KEY_LAYOUT_HORIZONTAL_LIST_STATE = "horizontal_list_layout_manager"
 
         fun newInstance(): TokoPointsHomeFragmentNew {
             return TokoPointsHomeFragmentNew()

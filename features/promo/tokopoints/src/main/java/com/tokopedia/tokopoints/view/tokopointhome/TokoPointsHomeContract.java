@@ -24,11 +24,11 @@ public interface TokoPointsHomeContract {
 
         void showLoading();
 
-        void renderSections(List<SectionContent> sections , TokopediaRewardTopSection tokopediaRewardTopSection, TopAdsImageViewModel topAdsImageViewModel);
+        void renderSections(List<SectionContent> sections , TokopediaRewardTopSection tokopediaRewardTopSection);
 
-        void renderExploreSectionTab(List<SectionContent> sections , TokopediaRewardTopSection tokopediaRewardTopSection , TopAdsImageViewModel topAdsImageViewModel);
+        void renderExploreSectionTab(List<SectionContent> sections , TokopediaRewardTopSection tokopediaRewardTopSection);
 
-        void onSuccessResponse(TokopediaRewardTopSection data, List<SectionContent> sections , TopAdsImageViewModel topAdsImageViewModel);
+        void onSuccessResponse(TokopediaRewardTopSection data, List<SectionContent> sections );
 
     }
 

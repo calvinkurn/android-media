@@ -50,12 +50,10 @@ class SectionHorizontalCatalogVH(val view: View, val mPresenter: TokoPointsHomeV
             view.findViewById<View>(R.id.text_sub_title_column).visibility = View.VISIBLE
             (view.findViewById<View>(R.id.text_sub_title_column) as TextView).text = content.sectionSubTitle
         }
-        itemView.apply {
+        val rvCarousel: RecyclerView = view.findViewById(R.id.rv_column)
+        rvCarousel.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
+        rvCarousel.adapter = CatalogListCarouselAdapter(mPresenter, content.layoutCatalogAttr.catalogList, rvCarousel)
 
-            val rvCarousel: RecyclerView = view.findViewById(R.id.rv_column)
-            rvCarousel.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
-            rvCarousel.adapter = CatalogListCarouselAdapter(mPresenter, content.layoutCatalogAttr.catalogList, rvCarousel)
-        }
     }
 
     fun handledClick(appLink: String?, webLink: String?, action: String?, label: String?) {

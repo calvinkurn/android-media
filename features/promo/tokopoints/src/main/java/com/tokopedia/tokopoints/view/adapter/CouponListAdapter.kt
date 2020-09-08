@@ -84,11 +84,11 @@ class CouponListAdapter(private val mItems: MutableList<CouponValueEntity>) : Re
 
         val params = pHolder.itemView.getLayoutParams() as ViewGroup.MarginLayoutParams
         if (position == 0) {
-            params.setMargins(convertDpToPixel(10, pHolder.itemView.getContext()), 0, 0, 0)
+            params.setMargins(pHolder.itemView.context.resources.getDimensionPixelSize(R.dimen.tp_margin_normal), 0, 0, 0)
         } else if (position == mItems.size + 1) {
-            params.setMargins( 0, 0, convertDpToPixel(10, pHolder.itemView.getContext()), 0)
+            params.setMargins(0, 0, pHolder.itemView.context.resources.getDimensionPixelSize(R.dimen.tp_margin_normal), 0)
         } else {
-            params.setMargins(convertDpToPixel(10, pHolder.itemView.getContext()), 0, 0, 0)
+            params.setMargins(pHolder.itemView.context.resources.getDimensionPixelSize(R.dimen.tp_margin_normal), 0, 0, 0)
         }
 
         val item = mItems!![position]
