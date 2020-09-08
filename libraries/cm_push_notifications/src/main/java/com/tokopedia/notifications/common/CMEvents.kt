@@ -39,6 +39,7 @@ object IrisAnalyticsEvents {
     const val INAPP_CANCELLED = "inappCancelled"
     const val INAPP_DELIVERED = "inappDelivered"
     const val INAPP_PREREAD = "inappPreread"
+    const val INAPP_READ = "inappRead"
 
     private const val EVENT_NAME = "event"
     private const val EVENT_TIME = "event_time"
@@ -51,6 +52,9 @@ object IrisAnalyticsEvents {
     private const val IS_SILENT = "is_silent"
     private const val CLICKED_ELEMENT_ID = "clicked_element_id"
     private const val INAPP_TYPE = "inapp_type"
+    private const val LABEL = "label"
+
+    private const val AMPLIFICATION = "amplification"
 
     fun sendPushEvent(context: Context, eventName: String, baseNotificationModel: BaseNotificationModel) {
         if (baseNotificationModel.isTest)
@@ -123,6 +127,14 @@ object IrisAnalyticsEvents {
             trackEvent(context, irisAnalytics, values)
         }
 
+    }
+
+    fun sendAmplificationInAppEvent(context: Context, eventName: String, cmInApp: CMInApp) {
+        if (cmInApp.isTest) return
+        val irisAnalytics = IrisAnalytics(context)
+        trackEvent(context, irisAnalytics, addBaseValues(context, eventName, cmInApp).apply {
+            put(LABEL, AMPLIFICATION)
+        })
     }
 
     private fun trackEvent(context: Context, irisAnalytics: IrisAnalytics, values: HashMap<String, Any>) {
