@@ -95,9 +95,11 @@ class ChatListAdapter constructor(
             toPosition = visitables.lastIndex
         }
         if (fromPosition != RecyclerView.NO_POSITION && toPosition != RecyclerView.NO_POSITION) {
-            visitables.moveTo(fromPosition, toPosition)
-            notifyItemRemoved(fromPosition)
-            notifyItemInserted(toPosition)
+            if (fromPosition != toPosition) {
+                visitables.moveTo(fromPosition, toPosition)
+                notifyItemRemoved(fromPosition)
+                notifyItemInserted(toPosition)
+            }
             notifyItemChanged(toPosition, PAYLOAD_UPDATE_PIN_STATUS)
             unpinnedMsgId.add(element.msgId)
         } else if (fromPosition != RecyclerView.NO_POSITION) {
