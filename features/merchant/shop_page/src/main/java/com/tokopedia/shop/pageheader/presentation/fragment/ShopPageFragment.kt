@@ -311,12 +311,13 @@ class ShopPageFragment :
             tvTitleTabFeedHasPost.movementMethod = LinkMovementMethod.getInstance()
             ivTabFeedHasPost.setImageDrawable(context?.let { ContextCompat.getDrawable(it, ic_tab_feed_has_post_seller_migration) })
             tvTitleTabFeedHasPost.setOnClickLinkSpannable(getString(seller_migration_tab_feed_bottom_sheet_content), ::trackContentFeedBottomSheet) {
-                val appLinkShopPageFeed = UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_FEED, shopId)
+                val shopAppLink = UriUtil.buildUri(ApplinkConst.SHOP, shopId).orEmpty()
+                val appLinkShopPageFeed = UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_FEED, shopId).orEmpty()
                 val intent = SellerMigrationActivity.createIntent(
                                 context = requireContext(),
                                 featureName = SellerMigrationFeatureName.FEATURE_POST_FEED,
                                 screenName = FeedShopFragment::class.simpleName.orEmpty(),
-                                appLinks = arrayListOf(ApplinkConstInternalSellerapp.SELLER_HOME, appLinkShopPageFeed),
+                                appLinks = arrayListOf(ApplinkConstInternalSellerapp.SELLER_HOME, shopAppLink, appLinkShopPageFeed),
                                 isStackBuilder = false)
                 startActivity(intent)
             }
