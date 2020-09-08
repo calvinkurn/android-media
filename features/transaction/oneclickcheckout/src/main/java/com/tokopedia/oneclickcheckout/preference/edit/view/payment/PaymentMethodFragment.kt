@@ -34,7 +34,6 @@ import com.tokopedia.oneclickcheckout.preference.edit.view.PreferenceEditParent
 import com.tokopedia.oneclickcheckout.preference.edit.view.summary.PreferenceSummaryFragment
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -49,8 +48,6 @@ class PaymentMethodFragment : BaseDaggerFragment() {
 
         private const val MERCHANT_CODE = "tokopedia"
         private const val PROFILE_CODE = "EXPRESS_SAVE"
-
-        private val URL = "${TokopediaUrl.getInstance().PAY}/v2/payment/register/listing"
 
         fun newInstance(isEdit: Boolean = false): PaymentMethodFragment {
             val paymentMethodFragment = PaymentMethodFragment()
@@ -69,6 +66,9 @@ class PaymentMethodFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var paymentListingUrl: String
 
     private val viewModel: PaymentMethodViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[PaymentMethodViewModel::class.java]
@@ -155,7 +155,7 @@ class PaymentMethodFragment : BaseDaggerFragment() {
     }
 
     private fun loadWebView(param: String) {
-        webView?.postUrl(URL, param.toByteArray())
+        webView?.postUrl(paymentListingUrl, param.toByteArray())
         webView?.visible()
         globalError?.gone()
     }
@@ -164,7 +164,7 @@ class PaymentMethodFragment : BaseDaggerFragment() {
         val profileCode = (activity as? PreferenceEditParent)?.getPaymentProfile() ?: PROFILE_CODE
         return PaymentListingParamRequest(MERCHANT_CODE,
                 profileCode,
-                URL,
+                paymentListingUrl,
                 getAddressId(),
                 "android-${GlobalConfig.VERSION_NAME}")
     }
