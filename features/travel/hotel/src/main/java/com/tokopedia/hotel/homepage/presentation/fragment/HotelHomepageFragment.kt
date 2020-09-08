@@ -442,12 +442,11 @@ class HotelHomepageFragment : HotelBaseFragment(),
     private fun renderHotelPromo(promoDataList: List<TravelCollectiveBannerModel.Banner>) {
         showPromoContainer()
 
-        for ((index, promo) in promoDataList.withIndex()) {
-            trackingHotelUtil.hotelBannerImpression(context, promo, index, HOMEPAGE_SCREEN_NAME)
-        }
         banner_hotel_homepage_promo.setBannerIndicator(Indicator.GREEN)
 
-        banner_hotel_homepage_promo.setOnPromoScrolledListener { }
+        banner_hotel_homepage_promo.setOnPromoScrolledListener {
+            trackingHotelUtil.hotelBannerImpression(context, promoDataList[it], it, HOMEPAGE_SCREEN_NAME)
+        }
 
         banner_hotel_homepage_promo.setOnPromoClickListener { position ->
             onPromoClicked(promoDataList.getOrNull(position)

@@ -275,31 +275,25 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         hideLoadingLayout()
         (activity as HotelDetailActivity).setSupportActionBar(detail_toolbar)
         (activity as HotelDetailActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        detail_toolbar.navigationIcon?.setColorFilter(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Neutral_N0), PorterDuff.Mode.SRC_ATOP)
 
-        val navIcon = detail_toolbar.navigationIcon
-        navIcon?.setColorFilter(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Neutral_N0), PorterDuff.Mode.SRC_ATOP)
-        (activity as HotelDetailActivity).supportActionBar?.setHomeAsUpIndicator(navIcon)
+        collapsing_toolbar.setExpandedTitleTextAppearance(R.style.expandedToolbarLayoutTitleColor)
+        collapsing_toolbar.setCollapsedTitleTextAppearance(R.style.collapsingToolbarLayoutTitleColor)
+        collapsing_toolbar.title = data.property.name
 
-        collapsing_toolbar.title = ""
         app_bar_layout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
             var isShow = false
-            var scrollRange = -1
 
             override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
-                if (scrollRange == -1) {
-                    scrollRange = appBarLayout.totalScrollRange
-                }
-                if (scrollRange + verticalOffset == 0) {
-                    collapsing_toolbar.title = data.property.name
-                    navIcon?.setColorFilter(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Neutral_N700_96), PorterDuff.Mode.SRC_ATOP)
+                if (verticalOffset < -200) {
+                    detail_toolbar.navigationIcon?.setColorFilter(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Neutral_N700_96), PorterDuff.Mode.SRC_ATOP)
+                    (activity as HotelDetailActivity).optionMenu?.setIcon(R.drawable.ic_toolbar_overflow_level_two_black)
                     isShow = true
                 } else if (isShow) {
-                    collapsing_toolbar.title = " "
-                    navIcon?.setColorFilter(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Neutral_N0), PorterDuff.Mode.SRC_ATOP)
+                    detail_toolbar.navigationIcon?.setColorFilter(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Neutral_N0), PorterDuff.Mode.SRC_ATOP)
+                    (activity as HotelDetailActivity).optionMenu?.setIcon(R.drawable.ic_toolbar_overflow_level_two_white)
                     isShow = false
                 }
-
-                (activity as HotelDetailActivity).supportActionBar?.setHomeAsUpIndicator(navIcon)
             }
         })
 
