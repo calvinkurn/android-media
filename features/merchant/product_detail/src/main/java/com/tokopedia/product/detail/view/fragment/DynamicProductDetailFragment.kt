@@ -1132,10 +1132,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun observeP2Other() {
         viewLifecycleOwner.observe(viewModel.p2Other) {
-            if (it.latestTalk.id.isEmpty()) {
-                dynamicAdapter.removeComponentSection(pdpUiUpdater?.productDiscussionMostHelpfulMap)
-            }
-
             if (it.helpfulReviews.isEmpty() && viewModel.getDynamicProductInfoP1?.basic?.stats?.countReview.orZero() == 0) {
                 dynamicAdapter.removeComponentSection(pdpUiUpdater?.productReviewMap)
             }
