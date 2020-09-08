@@ -218,8 +218,11 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 topupAnalytics.eventClickTelcoPrepaidCategory(tabs[position].title)
                 sharedModelPrepaid.setVisibilityTotalPrice(false)
                 sharedModelPrepaid.setProductCatalogSelected(getEmptyProduct())
+                sharedModelPrepaid.setSelectedCategoryViewPager(getLabelActiveCategory())
             } else {
                 setTrackingOnTabMenu(tabs[position].title)
+                if (tabs[position].title == TelcoComponentName.PROMO) sendImpressionPromo()
+                else sendImpressionRecents()
             }
         }
     }
@@ -268,6 +271,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 separator.hide()
                 tabLayout.hide()
             }
+            //initiate impression promo
+            sendImpressionPromo()
         }
     }
     // endregion Promo and Recommendation

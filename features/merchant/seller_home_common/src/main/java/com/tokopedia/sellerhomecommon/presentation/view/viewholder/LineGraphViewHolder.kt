@@ -7,10 +7,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.charts.common.ChartTooltip
 import com.tokopedia.charts.config.LineChartConfig
-import com.tokopedia.charts.model.AxisLabel
-import com.tokopedia.charts.model.LineChartConfigModel
-import com.tokopedia.charts.model.LineChartData
-import com.tokopedia.charts.model.LineChartEntry
+import com.tokopedia.charts.model.*
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphDataUiModel
@@ -145,7 +142,7 @@ class LineGraphViewHolder(
     private fun showLineGraph(element: LineGraphWidgetUiModel) {
         with(itemView.lineGraphView) {
             init(getLineChartConfig(element))
-            setData(getLineChartData(element))
+            setDataSets(getLineChartData(element))
             invalidateChart()
         }
     }
@@ -159,7 +156,10 @@ class LineGraphViewHolder(
 
         return LineChartData(
                 chartEntry = chartEntry,
-                yAxisLabel = yAxisLabel
+                yAxisLabel = yAxisLabel,
+                config = LineChartEntryConfigModel(
+                        lineWidth = 1.8f
+                )
         )
     }
 
@@ -194,8 +194,6 @@ class LineGraphViewHolder(
                 }
                 labelCount { yAxisLabels.size }
             }
-
-            chartLineWidth { 1.8f }
         }
     }
 

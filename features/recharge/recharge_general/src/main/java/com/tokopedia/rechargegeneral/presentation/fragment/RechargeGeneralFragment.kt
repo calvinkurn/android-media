@@ -846,7 +846,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         with (data.catalog) {
             (activity as? BaseSimpleActivity)?.updateTitle(label)
             rechargeAnalytics.eventOpenScreen(
-                    userSession.isLoggedIn,
+                    userSession.userId,
                     categoryName,
                     categoryId.toString())
         }

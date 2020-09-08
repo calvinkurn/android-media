@@ -4,6 +4,7 @@
 
     <item
         android:id="@+id/add_product_menu"
+        android:contentDescription="@string/content_desc_add_product_menu"
         android:icon="@drawable/ic_pml_plus_dark"
         android:title="@string/title_add_product"
         app:showAsAction="always">

@@ -16,10 +16,11 @@
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="21dp"
         android:text="@string/topads_edit_kata_kunci_negative_count"
+        android:textColor="@color/topads_common_select_color_unchecked"
         app:layout_constraintBottom_toTopOf="@+id/keyword_list"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_6"
+        app:typographyType="heading_5"
         tools:visibility="visible" />
 
     <ImageView
