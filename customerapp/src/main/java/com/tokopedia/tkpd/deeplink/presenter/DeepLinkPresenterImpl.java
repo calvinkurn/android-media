@@ -187,7 +187,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 case DeepLinkChecker.PRODUCT:
                     keepActivityOn = true;
                     if (linkSegment.size() >= 2
-                            && (linkSegment.get(1).equals("info") || isEtalase(linkSegment) || isShopHome(linkSegment) || isShopReview(linkSegment))) {
+                            && (linkSegment.get(1).equals("info") || isEtalase(linkSegment) || isShopHome(linkSegment) || isShopReview(linkSegment) || isShopProduct(linkSegment) || isShopFeed(linkSegment))) {
                         openShopInfo(linkSegment, uriData, defaultBundle);
                         screenName = AppScreen.SCREEN_SHOP_INFO;
                     } else {
@@ -524,6 +524,16 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                                     bundle,
                                     ApplinkConst.SHOP_REVIEW,
                                     shopId);
+                        }else if (isShopProduct(linkSegment)) {
+                            RouteManager.route(context,
+                                    bundle,
+                                    ApplinkConst.SHOP_PRODUCT,
+                                    shopId);
+                        }else if (isShopFeed(linkSegment)) {
+                            RouteManager.route(context,
+                                    bundle,
+                                    ApplinkConst.SHOP_FEED,
+                                    shopId);
                         } else {
                             Intent intent = RouteManager.getIntent(context, ApplinkConst.SHOP, shopId);
                             intent.putExtras(bundle);
@@ -559,6 +569,16 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private boolean isShopReview(List<String> linkSegment) {
         String lastSegment = linkSegment.get(linkSegment.size() - 1);
         return lastSegment.equalsIgnoreCase("review");
+    }
+
+    private boolean isShopProduct(List<String> linkSegment) {
+        String lastSegment = linkSegment.get(linkSegment.size() - 1);
+        return lastSegment.equalsIgnoreCase("product");
+    }
+
+    private boolean isShopFeed(List<String> linkSegment) {
+        String lastSegment = linkSegment.get(linkSegment.size() - 1);
+        return lastSegment.equalsIgnoreCase("feed");
     }
 
     private void openHomeRecommendation(final List<String> linkSegment, final Uri uriData, Bundle bundle) {

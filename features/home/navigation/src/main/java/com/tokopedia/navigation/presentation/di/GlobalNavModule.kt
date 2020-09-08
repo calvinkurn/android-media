@@ -11,7 +11,6 @@ import com.tokopedia.navigation.data.mapper.NotificationRequestMapper
 import com.tokopedia.navigation.domain.GetBottomNavNotificationUseCase
 import com.tokopedia.navigation.domain.GetDrawerNotificationUseCase
 import com.tokopedia.navigation.domain.GetNewFeedCheckerUseCase
-import com.tokopedia.navigation.listener.CartListener
 import com.tokopedia.navigation.presentation.presenter.MainParentPresenter
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -51,8 +50,8 @@ class GlobalNavModule {
     }
 
     @Provides
-    fun provideGetDrawerNotificationUseCase(graphqlUseCase: GraphqlUseCase, cartListener: CartListener): GetDrawerNotificationUseCase {
-        return GetDrawerNotificationUseCase(graphqlUseCase, NotificationRequestMapper(), cartListener)
+    fun provideGetDrawerNotificationUseCase(@ApplicationContext context: Context, graphqlUseCase: GraphqlUseCase): GetDrawerNotificationUseCase {
+        return GetDrawerNotificationUseCase(context, graphqlUseCase, NotificationRequestMapper())
     }
 
     @Provides
@@ -77,19 +76,6 @@ class GlobalNavModule {
     @Provides
     fun provideAppUpdate(@ApplicationContext context: Context): ApplicationUpdate {
         return (context as GlobalNavRouter).getAppUpdate(context)
-    }
-
-    @Provides
-    fun provideCartListener(@ApplicationContext context: Context): CartListener {
-        return object : CartListener {
-            override fun setCartCount(count: Int) {
-                (context as GlobalNavRouter).setCartCount(context, count)
-            }
-
-            override fun getCartCount(): Int {
-                return (context as GlobalNavRouter).getCartCount(context)
-            }
-        }
     }
 
     @Provides

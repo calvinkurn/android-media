@@ -433,22 +433,19 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 data.action,
                 customDimensionShopPage
         )
-        if (isRegisterCampaign) {
-            view?.let {
-                Toaster.make(
-                        it,
-                        data.message,
-                        Snackbar.LENGTH_LONG,
-                        Toaster.TYPE_NORMAL,
-                        getString(R.string.shop_string_ok),
-                        View.OnClickListener {
-                            shopPageHomeTracking.toasterActivationClickOk(isOwner, customDimensionShopPage)
-                        }
-                )
-                shopPageHomeTracking.impressionToasterActivation(isOwner, customDimensionShopPage)
-            }
+        view?.let {
+            Toaster.make(
+                    it,
+                    data.message,
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL,
+                    getString(R.string.shop_string_ok),
+                    View.OnClickListener {
+                        shopPageHomeTracking.toasterActivationClickOk(isOwner, customDimensionShopPage)
+                    }
+            )
+            shopPageHomeTracking.impressionToasterActivation(isOwner, customDimensionShopPage)
         }
-
     }
 
     private fun onSuccessGetCampaignNplRemindMeStatusData(data: GetCampaignNotifyMeUiModel) {

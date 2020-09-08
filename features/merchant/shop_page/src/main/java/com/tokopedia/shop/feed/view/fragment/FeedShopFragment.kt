@@ -590,7 +590,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     override fun userImagePostImpression(positionInFeed: Int, contentPosition: Int) {
-        if (adapter.data[positionInFeed] is DynamicPostViewModel) {
+        if (positionInFeed < adapter.dataSize && adapter.data[positionInFeed] is DynamicPostViewModel) {
             val (_, _, _, _, _, _, _, _, trackingPostModel) = adapter.data[positionInFeed] as DynamicPostViewModel
             feedAnalytics.eventImageImpressionPost(
                     FeedAnalyticTracker.Screen.FEED_SHOP,
