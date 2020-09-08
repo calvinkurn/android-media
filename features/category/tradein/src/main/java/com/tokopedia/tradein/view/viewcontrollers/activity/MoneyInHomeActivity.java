@@ -383,7 +383,7 @@ public class MoneyInHomeActivity extends BaseTradeInActivity<MoneyInHomeViewMode
 
     @Override
     protected int getLayoutRes() {
-        return R.layout.layout_activity_tradeinhome;
+        return R.layout.money_in_home_activity;
     }
 
     @Override

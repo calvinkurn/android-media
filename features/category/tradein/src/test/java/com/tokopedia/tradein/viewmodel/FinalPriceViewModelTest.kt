@@ -81,7 +81,7 @@ class FinalPriceViewModelTest {
         val addressData: MoneyInKeroGetAddressResponse.ResponseData.KeroGetAddress.Data? = null
         val token: Token? = null
         val addressResult = AddressResult(addressData, token)
-        coEvery { getAddressUseCase.getAddress(any()) } returns addressResult
+        coEvery { getAddressUseCase.getAddress() } returns addressResult
 
         finalPriceViewModel.getAddress()
 
@@ -92,7 +92,7 @@ class FinalPriceViewModelTest {
 
     @Test
     fun getAddressException() {
-        coEvery { getAddressUseCase.getAddress(any()) } throws Exception("AddressResult Exception")
+        coEvery { getAddressUseCase.getAddress() } throws Exception("AddressResult Exception")
 
         finalPriceViewModel.getAddress()
 

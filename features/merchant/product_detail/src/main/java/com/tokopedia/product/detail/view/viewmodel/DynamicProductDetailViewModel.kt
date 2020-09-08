@@ -427,10 +427,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             val p2DataDeffered: Deferred<ProductInfoP2UiData> = getProductInfoP2DataAsync(it.basic.productID, it.pdpSession)
             val p2OtherDeffered: Deferred<ProductInfoP2Other> = getProductInfoP2OtherAsync(it.basic.getProductId(), it.basic.getShopId())
 
-            _p2Data.value = p2DataDeffered.await().also { value ->
-                updateTradeinParams(value.validateTradeIn)
-            }
-
+            _p2Data.value = p2DataDeffered.await()
+            updateTradeinParams(_p2Data.value?.validateTradeIn ?: ValidateTradeIn())
             p2LoginDeferred?.let {
                 _p2Login.value = it.await()
             }
@@ -696,6 +694,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             tradeInParams.productName = it.getProductName
             tradeInParams.isPreorder = it.data.preOrder.isPreOrderActive()
             tradeInParams.isOnCampaign = it.data.campaign.isActive
+            tradeInParams.weight = it.basic.weight
+            tradeInParams.productImage = it.data.getFirstProductImage()
         }
     }
 
@@ -705,6 +705,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         tradeInParams.remainingPrice = validateTradeIn.remainingPrice.toIntOrZero()
         tradeInParams.isUseKyc = if (validateTradeIn.useKyc) 1 else 0
         tradeInParams.widgetString = validateTradeIn.widgetString
+        tradeInParams.origin = getMultiOriginByProductId().getOrigin()
     }
 
     private fun getProductInfoP2OtherAsync(productId: Int, shopId: Int): Deferred<ProductInfoP2Other> {

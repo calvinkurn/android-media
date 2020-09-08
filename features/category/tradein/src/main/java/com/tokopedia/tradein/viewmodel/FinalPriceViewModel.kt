@@ -36,7 +36,7 @@ class FinalPriceViewModel@Inject constructor(
         progBarVisibility.value = true
         launchCatchError(block = {
             progBarVisibility.value = false
-            addressLiveData.value = getAddressUseCase.getAddress(getResource())
+            addressLiveData.value = getAddressUseCase.getAddress()
         }, onError = {
             it.printStackTrace()
             progBarVisibility.value = false

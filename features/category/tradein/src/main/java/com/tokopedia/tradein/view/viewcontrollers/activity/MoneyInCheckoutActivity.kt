@@ -33,6 +33,9 @@ import com.tokopedia.tradein.viewmodel.*
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.tradein.view.viewcontrollers.bottomsheet.MoneyInCourierBottomSheet
 import com.tokopedia.tradein.view.viewcontrollers.bottomsheet.MoneyInScheduledTimeBottomSheet
+import com.tokopedia.tradein.viewmodel.liveState.CourierPriceError
+import com.tokopedia.tradein.viewmodel.liveState.MutationCheckoutError
+import com.tokopedia.tradein.viewmodel.liveState.ScheduleTimeError
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Success
 

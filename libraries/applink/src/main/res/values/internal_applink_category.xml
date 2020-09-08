@@ -7,7 +7,6 @@
     <string name="path_final_price" translatable="false">/host_final_price</string>
     <string name="path_age_restriction" translatable="false">/age_restriction</string>
     <string name="path_tradein" translatable="false">/tradein</string>
-    <string name="path_tradein_initial_price" translatable="false">/tradein_initial_price</string>
     <string name="path_device_validation" translatable="false">/device_validation</string>
     <string name="applink_title_age_restriction" >Konten Dewasa</string>
     <string name="applink_title_tradein" >Tukar Tambah</string>

@@ -5,6 +5,8 @@ import com.tokopedia.tradein.view.viewcontrollers.activity.FinalPriceActivity
 import com.tokopedia.tradein.view.viewcontrollers.activity.MoneyInCheckoutActivity
 import com.tokopedia.tradein.view.viewcontrollers.activity.MoneyInHomeActivity
 import com.tokopedia.tradein.view.viewcontrollers.activity.TradeInHomeActivity
+import com.tokopedia.tradein.view.viewcontrollers.fragment.TradeInAddressFragment
+import com.tokopedia.tradein.view.viewcontrollers.fragment.TradeInInitialPriceFragment
 import dagger.Component
 
 @TradeInScope
@@ -16,4 +18,6 @@ interface TradeInComponent {
     fun inject(moneyInHomeActivity: MoneyInHomeActivity)
     fun inject(finalPriceActivity: FinalPriceActivity)
     fun inject(moneyInCheckoutActivity: MoneyInCheckoutActivity)
+    fun inject(tradeInAddressFragment: TradeInAddressFragment)
+    fun inject(tradeInInitialPriceFragment: TradeInInitialPriceFragment)
 }

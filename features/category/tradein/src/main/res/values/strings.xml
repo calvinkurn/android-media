@@ -74,4 +74,20 @@
     <string name="tradein_imei_txt_4"><![CDATA[Tempel ke halaman Cek IMEI. Lalu klik <b>Cek Fungsi IMEI</b>]]></string>
     <string name="tradein_terms_and_conditions">Syarat dan Ketentuan</string>
     <string name="tradein_check_imei">Cara Cek IMEI HP-mu</string>
+    <string name="tradein_label_change_address_new">Pilih Alamat Lain</string>
+    <string name="tradein_check_store_range">Cek Jangkauan Toko</string>
+    <string name="tradein_step1_of_4">Langkah 1 dari 4</string>
+    <string name="tradein_step2_of_4">Langkah 2 dari 4</string>
+    <string name="tradein_lanjut">Lanjut</string>
+    <string name="tradein_ticker_continue">Yay, toko menjangkau lokasimu. Lanjut Tukar Tambah sekarang!</string>
+    <string name="tradein_similar_items">Cari Barang Serupa</string>
+    <string name="tradein_outside_coverage_heading">Toko ini belum menjangkau wilayahmu</string>
+    <string name="tradein_outside_coverage_description">Cari barang serupa di toko lain atau cek lokasi lainnya.</string>
+    <string name="tradein_price_range">Kisaran Harga</string>
+    <string name="tradein_cellphone_details">Rincian HP kamu</string>
+    <string name="tradein_model">Model</string>
+    <string name="tradein_max_price">Harga Maks</string>
+    <string name="tradein_read_guide">Baca panduan</string>
+    <string name="tradein_new_gadget_price">Harga gadget barumu</string>
+    <string name="tradein_tools_text">*Lakukan Tes Fungsi dan Foto HP untuk dapat harga final.</string>
 </resources>
