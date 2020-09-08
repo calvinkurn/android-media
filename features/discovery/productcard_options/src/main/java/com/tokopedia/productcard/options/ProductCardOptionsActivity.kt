@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTIONS_MODEL
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
+import com.tokopedia.productcard.options.di.ProductCardOptionsContextModule
 import kotlinx.android.synthetic.main.product_card_options_activity_layout.*
 import javax.inject.Inject
 import javax.inject.Named
@@ -62,6 +63,7 @@ internal class ProductCardOptionsActivity : BaseSimpleActivity() {
         DaggerProductCardOptionsComponent
                 .builder()
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                .productCardOptionsContextModule(ProductCardOptionsContextModule(this))
                 .productCardOptionsViewModelFactoryModule(createProductCardOptionsViewModelFactoryModule())
                 .build()
                 .inject(this)

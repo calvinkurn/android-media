@@ -22,10 +22,12 @@ data class ProductCardOptionsModel(
         var shopId: String = "",
         var productName: String = "",
         var categoryName: String = "",
-        var price: String = ""
+        var formattedPrice: String = ""
 ): Parcelable {
 
     var wishlistResult: WishlistResult = WishlistResult()
+
+    var addToCartResult: AddToCartResult = AddToCartResult()
 
     fun canAddToCart(): Boolean {
         return hasAddToCart
@@ -33,7 +35,7 @@ data class ProductCardOptionsModel(
                 && productName.isNotEmpty()
                 && shopId.isNotEmpty()
                 && categoryName.isNotEmpty()
-                && price.isNotEmpty()
+                && formattedPrice.isNotEmpty()
                 && addToCartParams?.quantity ?: 0 > 0
     }
 
@@ -78,8 +80,9 @@ data class ProductCardOptionsModel(
         parcel.writeString(shopId)
         parcel.writeString(productName)
         parcel.writeString(categoryName)
-        parcel.writeString(price)
+        parcel.writeString(formattedPrice)
         parcel.writeParcelable(wishlistResult, flags)
+        parcel.writeParcelable(addToCartResult, flags)
     }
 
     override fun describeContents(): Int {
@@ -90,6 +93,7 @@ data class ProductCardOptionsModel(
         override fun createFromParcel(parcel: Parcel): ProductCardOptionsModel {
             return ProductCardOptionsModel(parcel).also {
                 it.wishlistResult = parcel.readParcelable(WishlistResult::class.java.classLoader) ?: WishlistResult()
+                it.addToCartResult = parcel.readParcelable(AddToCartResult::class.java.classLoader) ?: AddToCartResult()
             }
         }
 
@@ -149,6 +153,35 @@ data class ProductCardOptionsModel(
             }
 
             override fun newArray(size: Int): Array<AddToCartParams?> {
+                return arrayOfNulls(size)
+            }
+        }
+    }
+
+    data class AddToCartResult(
+            var isSuccess: Boolean = false,
+            var message: String = ""
+    ): Parcelable {
+
+        constructor(parcel: Parcel) : this(
+                parcel.readByte() != 0.toByte(),
+                parcel.readString() ?: "")
+
+        override fun writeToParcel(parcel: Parcel, flags: Int) {
+            parcel.writeByte(if (isSuccess) 1 else 0)
+            parcel.writeString(message)
+        }
+
+        override fun describeContents(): Int {
+            return 0
+        }
+
+        companion object CREATOR : Parcelable.Creator<AddToCartResult> {
+            override fun createFromParcel(parcel: Parcel): AddToCartResult {
+                return AddToCartResult(parcel)
+            }
+
+            override fun newArray(size: Int): Array<AddToCartResult?> {
                 return arrayOfNulls(size)
             }
         }

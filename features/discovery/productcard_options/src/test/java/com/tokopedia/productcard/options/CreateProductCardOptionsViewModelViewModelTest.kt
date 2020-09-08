@@ -141,7 +141,7 @@ internal class CreateProductCardOptionsViewModelViewModelTest: ProductCardOption
                 productName = "Product Name",
                 shopId = "123456",
                 categoryName = "Handphone",
-                price = "Rp32.900",
+                formattedPrice = "Rp32.900",
                 addToCartParams = ProductCardOptionsModel.AddToCartParams(quantity = 1)
         ))
 

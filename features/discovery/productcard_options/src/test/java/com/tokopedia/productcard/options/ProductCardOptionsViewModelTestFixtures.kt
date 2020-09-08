@@ -1,6 +1,7 @@
 package com.tokopedia.productcard.options
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.productcard.options.testutils.TestDispatcherProvider
 import com.tokopedia.usecase.UseCase
@@ -18,6 +19,7 @@ internal open class ProductCardOptionsViewModelTestFixtures {
     protected val addWishListUseCase = mockk<AddWishListUseCase>(relaxed = true)
     protected val removeWishListUseCase = mockk<RemoveWishListUseCase>(relaxed = true)
     protected val topAdsWishlistUseCase = mockk<UseCase<Boolean>>(relaxed = true)
+    protected val addToCartUseCase = mockk<UseCase<AddToCartDataModel>>(relaxed = true)
     protected val userSession = mockk<UserSessionInterface>(relaxed = true)
     protected lateinit var productCardOptionsViewModel: ProductCardOptionsViewModel
 
@@ -28,6 +30,7 @@ internal open class ProductCardOptionsViewModelTestFixtures {
                 addWishListUseCase,
                 removeWishListUseCase,
                 topAdsWishlistUseCase,
+                addToCartUseCase,
                 userSession
         )
     }

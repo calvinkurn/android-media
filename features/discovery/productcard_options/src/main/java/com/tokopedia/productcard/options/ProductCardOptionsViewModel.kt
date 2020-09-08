@@ -3,11 +3,15 @@ package com.tokopedia.productcard.options
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase.Companion.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST
 import com.tokopedia.discovery.common.DispatcherProvider
 import com.tokopedia.discovery.common.Event
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel.WishlistResult
-import com.tokopedia.discovery.common.model.WishlistTrackingModel
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.productcard.options.item.ProductCardOptionsItemModel
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.usecase.RequestParams
@@ -24,6 +28,7 @@ internal class ProductCardOptionsViewModel(
         private val addWishListUseCase: AddWishListUseCase,
         private val removeWishListUseCase: RemoveWishListUseCase,
         private val topAdsWishlistUseCase: UseCase<Boolean>,
+        private val addToCartUseCase: UseCase<AddToCartDataModel>,
         private val userSession: UserSessionInterface
 ): BaseViewModel(dispatcherProvider.ui()) {
 
@@ -34,6 +39,7 @@ internal class ProductCardOptionsViewModel(
     private val wishlistEventLiveData = MutableLiveData<Event<Boolean>>()
     private val trackingSeeSimilarProductEventLiveData = MutableLiveData<Event<Boolean>>()
     private val routeToLoginPageEventLiveData = MutableLiveData<Event<Boolean>>()
+    private val addToCartEventLiveData = MutableLiveData<Event<Boolean>>()
 
     init {
         initSeeSimilarProductsOption()
@@ -199,9 +205,53 @@ internal class ProductCardOptionsViewModel(
     private fun initAddToCartOption() {
         if (productCardOptionsModel?.canAddToCart() == true) {
             productCardOptionsItemList.addOption(ADD_TO_CART) {
-                routeToLoginPageEventLiveData.postValue(Event(true))
+                executeAddToCart()
+
             }
             productCardOptionsItemList.addDivider()
+        }
+    }
+
+    private fun executeAddToCart() {
+        if (userSession.isLoggedIn)
+            addToCartUseCase.execute(createAddToCartRequestParams(), createAddToCartSubscriber())
+        else
+            routeToLoginPageEventLiveData.postValue(Event(true))
+    }
+
+    private fun createAddToCartRequestParams(): RequestParams {
+        val requestParams = RequestParams.create()
+
+        productCardOptionsModel?.let { productCardOptionsModel ->
+            requestParams.putObject(
+                    REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST,
+                    AddToCartRequestParams(
+                            productId = productCardOptionsModel.productId.toLongOrZero(),
+                            shopId = productCardOptionsModel.shopId.toIntOrZero(),
+                            quantity = productCardOptionsModel.addToCartParams?.quantity ?: 0,
+                            productName = productCardOptionsModel.productName,
+                            category = productCardOptionsModel.categoryName,
+                            price = productCardOptionsModel.formattedPrice
+                    )
+            )
+        }
+
+        return requestParams
+    }
+
+    private fun createAddToCartSubscriber(): Subscriber<AddToCartDataModel> {
+        return object : Subscriber<AddToCartDataModel>() {
+            override fun onNext(addToCartDataModel: AddToCartDataModel?) {
+                addToCartEventLiveData.postValue(Event(true))
+            }
+
+            override fun onCompleted() {
+
+            }
+
+            override fun onError(e: Throwable?) {
+
+            }
         }
     }
 
@@ -219,7 +269,7 @@ internal class ProductCardOptionsViewModel(
 
     fun getTrackingSeeSimilarProductEventLiveData(): LiveData<Event<Boolean>> = trackingSeeSimilarProductEventLiveData
 
-    fun routeToLoginPageEventLiveData(): LiveData<Event<Boolean>> {
-        return routeToLoginPageEventLiveData
-    }
+    fun routeToLoginPageEventLiveData(): LiveData<Event<Boolean>> = routeToLoginPageEventLiveData
+
+    fun getAddToCartEventLiveData(): LiveData<Event<Boolean>> = addToCartEventLiveData
 }
