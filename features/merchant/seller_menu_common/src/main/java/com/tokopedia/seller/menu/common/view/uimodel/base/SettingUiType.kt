@@ -1,12 +1,13 @@
 package com.tokopedia.seller.menu.common.view.uimodel.base
 
-sealed class SettingUiType {
-    object DIVIDER : SettingUiType()
-    object MENU_ITEM : SettingUiType()
-    object SETTING_TITLE : SettingUiType()
-    object INDENTED_SETTING_TITLE : SettingUiType()
-    object SETTING_TITLE_MENU : SettingUiType()
-    object SHOP_INFO : SettingUiType()
-    object SHOP_ORDER : SettingUiType()
-    object SHOP_PRODUCT : SettingUiType()
+enum class SettingUiType {
+    DIVIDER,
+    MENU_ITEM,
+    SETTING_TITLE,
+    INDENTED_SETTING_TITLE,
+    SETTING_TITLE_MENU,
+    SHOP_INFO,
+    SHOP_ORDER,
+    SHOP_PRODUCT,
+    SECTION_TITLE
 }
