@@ -1,6 +1,7 @@
 package com.tokopedia.home_component.visitable
 
 import android.os.Bundle
+import android.util.Log
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.model.ChannelModel
 
@@ -13,6 +14,7 @@ data class DynamicLegoBannerDataModel(
 
     override fun equalsWith(b: Any?): Boolean {
         return if (b is DynamicLegoBannerDataModel) {
+            Log.d("DevaraFikryChannel", "msg"+(channelModel.channelConfig.createdTimeMillis == b.channelModel.channelConfig.createdTimeMillis))
             channelModel.channelConfig.createdTimeMillis == b.channelModel.channelConfig.createdTimeMillis
         } else false
     }

@@ -56,6 +56,9 @@ class HomeRepositoryImpl @Inject constructor(
 
                 homeDataResponseValue.dynamicHomeChannel = extractPair.second.dynamicHomeChannel
                 homeDataResponseValue.token = extractPair.first
+                homeDataResponseValue.dynamicHomeChannel.channels.forEach {
+                    it.timestamp = currentTimeMillisString
+                }
                 currentToken = homeDataResponseValue.token
 
                 if (homeDataResponse == null) {
