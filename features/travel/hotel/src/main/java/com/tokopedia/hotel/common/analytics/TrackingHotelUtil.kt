@@ -14,6 +14,7 @@ import com.tokopedia.hotel.roomlist.data.model.HotelAddCartParam
 import com.tokopedia.hotel.roomlist.data.model.HotelRoom
 import com.tokopedia.hotel.roomlist.data.model.HotelRoomListPageModel
 import com.tokopedia.hotel.search.data.model.Property
+import com.tokopedia.hotel.search.data.model.params.ParamFilterV2
 import com.tokopedia.hotel.search.data.model.params.SearchParam
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.track.TrackApp
@@ -500,6 +501,22 @@ class TrackingHotelUtil {
         val eventLabel = "$HOTEL_LABEL - $buttonLabel"
         map.addGeneralEvent(CLICK_HOTEL, CLICK_ON_CANCELLATION_RESULT_PAGE, eventLabel)
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
+    }
+
+    fun clickOnQuickFilter(context: Context?, screenName: String, filterName: String, position: Int) {
+        val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
+        val eventLabel = "$HOTEL_LABEL - $filterName - $position"
+        map.addGeneralEvent(CLICK_HOTEL, CLICK_QUICK_FILTER_ON_SRP, eventLabel)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
+    }
+
+    fun clickSubmitFilterOnBottomSheet(context: Context?, screenName: String, selectedFilter: List<ParamFilterV2>) {
+        for (filter in selectedFilter) {
+            val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
+            val eventLabel = "$HOTEL_LABEL - ${filter.name} - ${filter.values.joinToString()}"
+            map.addGeneralEvent(CLICK_HOTEL, CLICK_USER_CLICK_FILTER, eventLabel)
+            TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
+        }
     }
 
     private fun convertDate(date: String): String =

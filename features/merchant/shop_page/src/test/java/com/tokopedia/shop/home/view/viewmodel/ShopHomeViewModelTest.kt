@@ -23,6 +23,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.util.TestCoroutineDispatcherProviderImpl
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.youtube_common.domain.usecase.GetYoutubeVideoDetailUseCase
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -56,6 +57,8 @@ class ShopHomeViewModelTest {
     private val userSessionInterface: UserSessionInterface = mockk(relaxed = true)
     private val getPlayWidgetUseCase: GetPlayWidgetUseCase = mockk(relaxed = true)
     private val playToggleChannelReminderUseCase: PlayToggleChannelReminderUseCase = mockk(relaxed = true)
+    private val getYoutubeVideoUseCase: GetYoutubeVideoDetailUseCase = mockk(relaxed = true)
+
     @RelaxedMockK
     lateinit var gqlCheckWishlistUseCaseProvider: Provider<GQLCheckWishlistUseCase>
 
@@ -75,9 +78,8 @@ class ShopHomeViewModelTest {
                 addToCartUseCase,
                 getPlayWidgetUseCase,
                 playToggleChannelReminderUseCase,
-                addWishListUseCase,
-                removeWishListUseCase,
                 gqlCheckWishlistUseCaseProvider,
+                getYoutubeVideoUseCase,
                 getCampaignNotifyMeUseCase,
                 checkCampaignNotifyMeUseCase
         )
@@ -147,6 +149,7 @@ class ShopHomeViewModelTest {
     @Test
     fun `check get data from play usecase`() {
         val mockShopId = "1234"
+        val mockSortId = 2
 
         coEvery { getPlayWidgetUseCase.executeOnBackground() } returns PlayBannerCarouselDataModel(
                 channelList = listOf(
@@ -164,7 +167,7 @@ class ShopHomeViewModelTest {
         )
         coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct()
 
-        viewModel.getShopPageHomeData(mockShopId)
+        viewModel.getShopPageHomeData(mockShopId, mockSortId, true)
 
         coVerify {
             getShopPageHomeLayoutUseCase.executeOnBackground()

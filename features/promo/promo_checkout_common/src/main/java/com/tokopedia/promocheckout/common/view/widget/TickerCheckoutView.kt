@@ -56,7 +56,6 @@ class TickerCheckoutView @JvmOverloads constructor(
         descCoupon?.text = desc
         titleCoupon?.text = title
         imageClose?.setOnClickListener {
-            resetView()
             actionListener?.onDisablePromoDiscount()
         }
         layoutUsePromo?.setOnClickListener {
