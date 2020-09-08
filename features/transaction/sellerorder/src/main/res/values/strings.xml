@@ -311,4 +311,8 @@
     <string name="content_desc_btn_cancel_order_confirmed">button ubah</string>
     <string name="content_desc_btn_primary">button utama</string>
     <string name="content_desc_btn_secondary">button three dots</string>
+    <string name="filter_action_button">button filter</string>
+    <string name="btn_terapkan">button terapkan</string>
+    <string name="label_radio">text status</string>
+    <string name="btn_simpan">button simpan</string>
 </resources>
