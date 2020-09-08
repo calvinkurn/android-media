@@ -12,16 +12,13 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/dp_16"
         android:background="@drawable/bg_header_shop_info">
 
         <com.tokopedia.unifycomponents.CardUnify
             android:id="@+id/cu_income_overview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_14"
-            android:layout_marginTop="@dimen/dp_16"
-            android:layout_marginEnd="@dimen/dp_14">
+            android:layout_margin="@dimen/spacing_lvl3">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -123,9 +120,7 @@
         app:unifyButtonVariant="ghost"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_48"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_margin="@dimen/spacing_lvl4"
         android:text="@string/text_ubah_button" />
 
 </LinearLayout>
