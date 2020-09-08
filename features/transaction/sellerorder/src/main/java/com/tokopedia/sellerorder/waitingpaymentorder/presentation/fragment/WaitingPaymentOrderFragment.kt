@@ -64,6 +64,9 @@ class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, Waitin
     }
 
     private val userSession by lazy { UserSession(context) }
+    private var buttonEnterAnimation: ValueAnimator? = null
+    private var buttonLeaveAnimation: ValueAnimator? = null
+    private var shouldScrollToTop: Boolean = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_waiting_payment_order, container, false)
@@ -108,24 +111,23 @@ class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, Waitin
         if (page == defaultInitialPage) {
             animateCheckAndSetStockButtonLeave()
         }
-//        Handler().postDelayed({
-            waitingPaymentOrderViewModel.loadWaitingPaymentOrder(
-                    WaitingPaymentOrderRequestParam(
-                            page = page,
-                            batchPage = page,
-                            nextPaymentDeadline = waitingPaymentOrderViewModel.paging.nextPaymentDeadline,
-                            showPage = page
-                    )
-            )
-//        }, 2000)
+        waitingPaymentOrderViewModel.loadWaitingPaymentOrder(
+                WaitingPaymentOrderRequestParam(
+                        page = page,
+                        batchPage = page,
+                        nextPaymentDeadline = waitingPaymentOrderViewModel.paging.nextPaymentDeadline,
+                        showPage = page
+                )
+        )
     }
 
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(rvWaitingPaymentOrder.layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                scrollToBottomAfterLoadMoreViewInflated()
-                showLoading()
-                loadData(page)
+                if (!isLoadingInitialData) {
+                    showLoading()
+                    loadData(page)
+                }
             }
         }
     }
@@ -151,9 +153,7 @@ class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, Waitin
         view?.run {
             Toaster.make(this, getString(R.string.global_error), Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR, getString(R.string.btn_reload), View.OnClickListener {
                 enableLoadMore()
-                rvWaitingPaymentOrder.addOneTimeGlobalLayoutListener {
-                    rvWaitingPaymentOrder.smoothScrollToPosition(adapter.dataSize - 1)
-                }
+                scrollToBottomAfterLoadMoreViewInflated()
                 endlessRecyclerViewScrollListener.loadMoreNextPage()
             })
         }
@@ -191,6 +191,7 @@ class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, Waitin
 
     private fun setupSwipeRefreshLayout() {
         swipeRefreshLayoutWaitingPaymentOrder.setOnRefreshListener {
+            shouldScrollToTop = true
             waitingPaymentOrderViewModel.resetPaging()
             isLoadingInitialData = true
             loadData(defaultInitialPage)
@@ -205,6 +206,12 @@ class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, Waitin
                 itemAnimator?.removeDuration = RECYCLER_VIEW_ANIMATION_DURATION
                 itemAnimator?.changeDuration = RECYCLER_VIEW_ANIMATION_DURATION
                 itemAnimator?.moveDuration = RECYCLER_VIEW_ANIMATION_DURATION
+                addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                    override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                        super.onScrolled(recyclerView, dx, dy)
+                        if (isLoadingInitialData) shouldScrollToTop = false
+                    }
+                })
             }
         }
     }
@@ -311,13 +318,18 @@ class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, Waitin
     }
 
     private fun animateCheckAndSetStockButtonEnter() {
+        if (buttonLeaveAnimation?.isRunning == true) buttonLeaveAnimation?.end()
         cardCheckAndSetStock.visible()
-        animateCheckAndSetStockButton(cardCheckAndSetStock.height.toFloat(), 0f).addListener(object: Animator.AnimatorListener {
+        buttonEnterAnimation = animateCheckAndSetStockButton(cardCheckAndSetStock.height.toFloat(), 0f)
+        buttonEnterAnimation?.addListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(animation: Animator?) {}
 
             override fun onAnimationEnd(animation: Animator?) {
                 if (isLoadingInitialData) {
-                    scrollToTopAfterRecyclerViewInflated()
+                    if (shouldScrollToTop) {
+                        scrollToTopAfterRecyclerViewInflated()
+                        shouldScrollToTop = false
+                    }
                     isLoadingInitialData = false
                 }
             }
@@ -329,7 +341,9 @@ class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, Waitin
     }
 
     private fun animateCheckAndSetStockButtonLeave() {
-        animateCheckAndSetStockButton(0f, cardCheckAndSetStock.height.toFloat()).addListener(object : Animator.AnimatorListener {
+        if (buttonEnterAnimation?.isRunning == true) buttonEnterAnimation?.end()
+        buttonLeaveAnimation = animateCheckAndSetStockButton(0f, cardCheckAndSetStock.height.toFloat())
+        buttonLeaveAnimation?.addListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(animation: Animator?) {}
 
             override fun onAnimationEnd(animation: Animator?) {
