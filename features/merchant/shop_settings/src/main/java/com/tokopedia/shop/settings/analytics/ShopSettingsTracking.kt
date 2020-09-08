@@ -1,11 +1,10 @@
 package com.tokopedia.shop.settings.analytics
 
-import android.content.Context
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.ContextAnalytics
 
-class ShopSettingsTracking(context: Context) {
+object ShopSettingsTracking {
 
     private val tracker: ContextAnalytics by lazy { TrackApp.getInstance().gtm }
 
@@ -130,86 +129,6 @@ class ShopSettingsTracking(context: Context) {
                         EVENT_VALUE,
                         EVENT_CATEGORY_VALUE,
                         "click change domain - yes",
-                        "",
-                        shopId,
-                        shopType,
-                        PAGE_TYPE_VALUE
-                )
-        )
-    }
-
-
-    // No. 46
-    fun clickChangeShopNoteButton(shopId: String, shopType: String) {
-        tracker.sendEnhanceEcommerceEvent(
-                getDataLayer(
-                        EVENT_VALUE,
-                        EVENT_CATEGORY_VALUE,
-                        "click change shop note",
-                        "",
-                        shopId,
-                        shopType,
-                        PAGE_TYPE_VALUE
-                )
-        )
-    }
-
-
-    // No. 47
-    fun clickSetScheduleOpenShop(shopId: String, shopType: String){
-        tracker.sendEnhanceEcommerceEvent(
-                getDataLayer(
-                        EVENT_VALUE,
-                        EVENT_CATEGORY_VALUE,
-                        "click set open shop time",
-                        "",
-                        shopId,
-                        shopType,
-                        PAGE_TYPE_VALUE
-                )
-        )
-    }
-
-
-    // No. 48
-    fun clickLihatDaftarProductMenu(shopId: String, shopType: String) {
-        tracker.sendEnhanceEcommerceEvent(
-                getDataLayer(
-                        EVENT_VALUE,
-                        EVENT_CATEGORY_VALUE,
-                        "click see product",
-                        "",
-                        shopId,
-                        shopType,
-                        PAGE_TYPE_VALUE
-                )
-        )
-    }
-
-
-    // No. 49
-    fun clickAddEditCollectionMenu(shopId: String, shopType: String) {
-        tracker.sendEnhanceEcommerceEvent(
-                getDataLayer(
-                        EVENT_VALUE,
-                        EVENT_CATEGORY_VALUE,
-                        "click add and edit etalase",
-                        "",
-                        shopId,
-                        shopType,
-                        PAGE_TYPE_VALUE
-                )
-        )
-    }
-
-
-    // No. 50
-    fun clickPusatBantuanMenu(shopId: String, shopType: String) {
-        tracker.sendEnhanceEcommerceEvent(
-                getDataLayer(
-                        EVENT_VALUE,
-                        EVENT_CATEGORY_VALUE,
-                        "click pusat bantuan",
                         "",
                         shopId,
                         shopType,

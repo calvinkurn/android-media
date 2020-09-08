@@ -151,6 +151,7 @@
     <string name="shop_settings_information_edit">Ubah Informasi</string>
     <string name="shop_settings_set_shop_status">Atur Status Toko</string>
     <string name="ticker_warning_can_only_change_shopname_once">Nama dan domain toko hanya bisa diubah 1 kali.\nPastikan semua sudah benar.</string>
+    <string name="ticker_warning_read_more">Selengkapnya</string>
     <string name="text_ubah_button">Ubah</string>
     <string name="shop_edit_name_too_short">Nama Toko terlalu pendek, minimum 3 karakter</string>
     <string name="shop_edit_domain_too_short">Domain Toko terlalu pendek, minimum 3 karakter</string>
@@ -160,9 +161,12 @@
     <string name="shop_edit_change_avatar">Ganti Gambar</string>
     <string name="shop_edit_name_input_label">Nama Toko</string>
     <string name="shop_edit_domain_input_label">Domain Toko</string>
+    <string name="shop_edit_dialog_title">Yakin ubah info toko?</string>
+    <string name="shop_edit_dialog_description">Perubahan nama dan domain akan mempengaruhi tingkat pencarian tokomu.</string>
+    <string name="shop_edit_dialog_primary_cta">Ya, Ubah</string>
+    <string name="shop_edit_dialog_secondary_cta">Batal</string>
 
     <string name="error_get_os_merchant">Error getting OS merchant type. Please retry</string>
     <string name="error_get_shop_status">Error getting shop status. Please retry</string>
     <string name="shop_settings_basic_info_title">Informasi Toko</string>
-
 </resources>

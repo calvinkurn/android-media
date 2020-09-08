@@ -12,7 +12,6 @@ import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopBas
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.UpdateShopBasicDataUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.GetShopDomainNameSuggestionUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.ValidateDomainShopNameUseCase
-import com.tokopedia.shop.settings.basicinfo.data.AllowShopNameDomainChanges.*
 import com.tokopedia.shop.settings.basicinfo.data.AllowShopNameDomainChangesData
 import com.tokopedia.shop.settings.basicinfo.data.UploadShopEditImageModel
 import com.tokopedia.shop.settings.basicinfo.domain.GetAllowShopNameDomainChanges
@@ -92,7 +91,6 @@ class ShopEditBasicInfoViewModel @Inject constructor(
         _validateShopNameJob?.cancel()
 
         launchCatchError(block = {
-            val allowChangeDomain = isDomainChangeAllowed()
             val data = withContext(dispatchers.io) {
                 delay(INPUT_DELAY)
 
@@ -100,11 +98,6 @@ class ShopEditBasicInfoViewModel @Inject constructor(
                 validateDomainShopNameUseCase.params = requestParams
                 validateDomainShopNameUseCase.executeOnBackground()
             }
-
-            if(data.validateDomainShopName.isValid && allowChangeDomain) {
-                getShopDomainSuggestion(shopName)
-            }
-
             _validateShopName.value = Success(data)
         }) {
             _validateShopName.value = Fail(it)
@@ -240,11 +233,6 @@ class ShopEditBasicInfoViewModel @Inject constructor(
         }) {
             _updateShopBasicData.value = Fail(it)
         }
-    }
-
-    private fun isDomainChangeAllowed(): Boolean {
-        return (_allowShopNameDomainChanges.value as? Success<AllowShopNameDomainChangesData>)
-            ?.data?.isDomainAllowed ?: false
     }
 
     private fun String.nullIfNotChanged(previousValue: String?): String? {
