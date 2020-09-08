@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -609,7 +610,7 @@ public class ProductListFragment
 
         if (getActivity() != null) {
             AdultManager.handleActivityResult(getActivity(), requestCode, resultCode, data);
-            ProductCardOptionsManager.handleProductCardOptionsActivityResult(requestCode, resultCode, data, this::handleWishlistAction);
+            ProductCardOptionsManager.handleProductCardOptionsActivityResult(requestCode, resultCode, data, this::handleWishlistAction, this::handleAddToCartAction);
         }
     }
 
@@ -621,6 +622,10 @@ public class ProductListFragment
 
     private void handleWishlistAction(ProductCardOptionsModel productCardOptionsModel) {
         presenter.handleWishlistAction(productCardOptionsModel);
+    }
+
+    private void handleAddToCartAction(ProductCardOptionsModel productCardOptionsModel) {
+        Toast.makeText(getActivity(), String.valueOf(productCardOptionsModel.getAddToCartResult().isSuccess()), Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -817,6 +822,13 @@ public class ProductListFragment
         productCardOptionsModel.setRecommendation(false);
         productCardOptionsModel.setScreenName(SearchEventTracking.Category.SEARCH_RESULT);
         productCardOptionsModel.setSeeSimilarProductEvent(SearchTracking.EVENT_CLICK_SEARCH_RESULT);
+
+        productCardOptionsModel.setHasAddToCart(true);
+        productCardOptionsModel.setAddToCartParams(new ProductCardOptionsModel.AddToCartParams(1));
+        productCardOptionsModel.setCategoryName(item.getCategoryName());
+        productCardOptionsModel.setProductName(item.getProductName());
+        productCardOptionsModel.setFormattedPrice(item.getPrice());
+        productCardOptionsModel.setShopId(item.getShopID());
 
         return productCardOptionsModel;
     }

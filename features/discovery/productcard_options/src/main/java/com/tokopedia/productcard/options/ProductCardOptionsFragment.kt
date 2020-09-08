@@ -1,6 +1,5 @@
 package com.tokopedia.productcard.options
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -9,11 +8,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery.common.EventObserver
+import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTIONS_RESULT_CODE_ATC
+import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTIONS_RESULT_CODE_WISHLIST
 import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTION_RESULT_PRODUCT
 import com.tokopedia.discovery.common.manager.startSimilarSearch
 import com.tokopedia.productcard.options.item.ProductCardOptionsItemModel
@@ -41,7 +40,7 @@ internal class ProductCardOptionsFragment: TkpdBaseV4Fragment() {
 
     private fun initViewModel() {
         activity?.let {
-            productCardOptionsViewModel = ViewModelProviders.of(it).get(ProductCardOptionsViewModel::class.java)
+            productCardOptionsViewModel = ViewModelProvider(it).get(ProductCardOptionsViewModel::class.java)
         }
     }
 
@@ -51,6 +50,11 @@ internal class ProductCardOptionsFragment: TkpdBaseV4Fragment() {
         observeCloseProductCardOptionsEventLiveData()
         observeAddWishlistEventLiveData()
         observeTrackingSeeSimilarProductsEventLiveData()
+
+        productCardOptionsViewModel?.getAddToCartEventLiveData()?.observe(viewLifecycleOwner, Observer {
+            activity?.setResult(PRODUCT_CARD_OPTIONS_RESULT_CODE_ATC, createWishlistResultIntent())
+            activity?.finish()
+        })
     }
 
     private fun observeOptionListLiveData() {
@@ -112,13 +116,13 @@ internal class ProductCardOptionsFragment: TkpdBaseV4Fragment() {
     }
 
     private fun observeAddWishlistEventLiveData() {
-        productCardOptionsViewModel?.getWishlistEventLiveData()?.observe(viewLifecycleOwner, EventObserver { _ ->
+        productCardOptionsViewModel?.getWishlistEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
             setResultWishlistEvent()
         })
     }
 
     private fun setResultWishlistEvent() {
-        activity?.setResult(Activity.RESULT_OK, createWishlistResultIntent())
+        activity?.setResult(PRODUCT_CARD_OPTIONS_RESULT_CODE_WISHLIST, createWishlistResultIntent())
         activity?.finish()
     }
 
