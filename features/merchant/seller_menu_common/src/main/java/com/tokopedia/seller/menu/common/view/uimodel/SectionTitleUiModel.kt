@@ -7,15 +7,21 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiType
 
 open class SectionTitleUiModel(
     @StringRes val title: Int,
-    @StringRes val ctaText: Int
+    @StringRes val ctaText: Int,
+    val type: SectionTitleType
 ): SettingUiModel {
 
     override fun type(typeFactory: OtherMenuTypeFactory): Int =
         typeFactory.type(this)
 
     override val settingUiType: SettingUiType
-        get() = SettingUiType.SHOP_ORDER
+        get() = SettingUiType.SECTION_TITLE
 
     override val onClickApplink: String?
         get() = null
+
+    enum class SectionTitleType {
+        ORDER_SECTION_TITLE,
+        PRODUCT_SECTION_TITLE
+    }
 }
