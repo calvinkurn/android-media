@@ -194,7 +194,7 @@ class DealsCategoryFragment : DealsBaseFragment(),
                         else -> outRect.top = 0
                     }
                     outRect.bottom = if (isInTheFirstRow(position + 2, totalSpanCount)) resources.getInteger(R.integer.twenty_four).toPx() else resources.getInteger(R.integer.four).toPx()
-                    outRect.left = if (isFirstInRow(position + 2, totalSpanCount)) resources.getInteger(R.integer.two).toPx() else resources.getInteger(R.integer.twenty_four).toPx()
+                    outRect.left = if (isFirstInRow(position + 2, totalSpanCount)) resources.getInteger(R.integer.two).toPx() else resources.getInteger(R.integer.sixteen).toPx()
                     outRect.right = if (isFirstInRow(position + 2, totalSpanCount))resources.getInteger(R.integer.sixteen).toPx() else resources.getInteger(R.integer.two).toPx()
                 }
             }
