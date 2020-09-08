@@ -9,6 +9,8 @@ query get_accounts_list($validate_token: String!, $phone: String!, $login_type: 
       email
       msisdn_verified
       image
+      challenge_2fa
+      user_id_enc
       shop_detail {
         id
         name
