@@ -51,7 +51,14 @@ afterEvaluate {
     }
 }
 
-project.configurations.all {
+subprojects {
+    tasks.withType(Test) {
+        if (project.hasProperty("SPEK_TIMEOUT")) {
+            systemProperty "SPEK_TIMEOUT", project.getProperty("SPEK_TIMEOUT")
+            maxParallelForks = Runtime.runtime.availableProcessors()
+        }
+    }
+    project.configurations.all {
     resolutionStrategy {
         dependencySubstitution {
             force "androidx.appcompat:appcompat:${supportLibraryVersion}"
@@ -88,14 +95,6 @@ project.configurations.all {
         }
     }
 }
-
-subprojects {
-    tasks.withType(Test) {
-        if (project.hasProperty("SPEK_TIMEOUT")) {
-            systemProperty "SPEK_TIMEOUT", project.getProperty("SPEK_TIMEOUT")
-            maxParallelForks = Runtime.runtime.availableProcessors()
-        }
-    }
 }
 
 gradle.buildFinished {
