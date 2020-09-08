@@ -98,11 +98,6 @@ class ShopEditBasicInfoViewModel @Inject constructor(
                 validateDomainShopNameUseCase.params = requestParams
                 validateDomainShopNameUseCase.executeOnBackground()
             }
-
-            if(!data.validateDomainShopName.isValid) {
-                getShopDomainSuggestion(shopName)
-            }
-
             _validateShopName.value = Success(data)
         }) {
             _validateShopName.value = Fail(it)
