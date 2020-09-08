@@ -84,7 +84,6 @@ import com.tokopedia.sellerorder.list.presentation.viewmodel.SomListViewModel
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.activity.WaitingPaymentOrderActivity
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.*
 import com.tokopedia.usecase.coroutines.Fail
@@ -193,6 +192,9 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         private const val ERROR_GET_STATUS_LIST = "Error when get order status list in seller order list page."
         private const val ERROR_GET_ORDER_LIST = "Error when get list of order in seller order list page."
         private const val PAGE_NAME = "seller order list page."
+
+        private const val MAX_WAITING_PAYMENT_ORDER_COUNTER = 99
+        private const val WAITING_PAYMENT_ORDER_COUNTER_ANIMATION_DURATION = 1000L
 
         private val allowedRoles = listOf(Roles.MANAGE_SHOPSTATS, Roles.MANAGE_INBOX, Roles.MANAGE_TA, Roles.MANAGE_TX)
 
@@ -759,7 +761,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         val regex = Regex("\\d+")
         val start = regex.find(tvTitle.text)?.value.toIntOrZero()
         val end = filterResult.data.waitingPaymentCounter.amount
-        val maxValue = 99
+        val maxValue = MAX_WAITING_PAYMENT_ORDER_COUNTER
         val checkedStart = if (start > maxValue) maxValue + 1 else start
         val checkedEnd = if (end > maxValue) maxValue + 1 else end
         if (checkedStart == checkedEnd || (checkedStart > maxValue && checkedEnd > maxValue)) return
@@ -773,7 +775,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                         filterResult.data.waitingPaymentCounter.text,
                         newValueString)
             }
-            duration = 1000
+            duration = WAITING_PAYMENT_ORDER_COUNTER_ANIMATION_DURATION
             start()
         }
     }

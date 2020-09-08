@@ -10,16 +10,16 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/loader1"
-        android:layout_width="194dp"
-        android:layout_height="10dp"
+        android:layout_width="@dimen/dp_194"
+        android:layout_height="@dimen/dp_10"
         app:corners="5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/loader2"
-        android:layout_width="194dp"
-        android:layout_height="10dp"
+        android:layout_width="@dimen/dp_194"
+        android:layout_height="@dimen/dp_10"
         android:layout_marginTop="@dimen/dp_12"
         app:corners="5"
         app:layout_constraintStart_toStartOf="parent"
@@ -36,10 +36,10 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/loader4"
-        android:layout_width="208dp"
-        android:layout_height="10dp"
+        android:layout_width="@dimen/dp_208"
+        android:layout_height="@dimen/dp_10"
         android:layout_marginStart="@dimen/dp_13"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="@dimen/layout_lvl4"
         app:corners="5"
         app:layout_constraintBottom_toTopOf="@id/loader5"
         app:layout_constraintStart_toEndOf="@id/loader3"
@@ -47,8 +47,8 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/loader5"
-        android:layout_width="72dp"
-        android:layout_height="10dp"
+        android:layout_width="@dimen/layout_lvl8"
+        android:layout_height="@dimen/dp_10"
         android:layout_marginTop="@dimen/dp_12"
         app:corners="5"
         app:layout_constraintBottom_toTopOf="@id/loader6"
@@ -57,8 +57,8 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/loader6"
-        android:layout_width="72dp"
-        android:layout_height="10dp"
+        android:layout_width="@dimen/dp_72"
+        android:layout_height="@dimen/dp_10"
         android:layout_marginTop="@dimen/dp_12"
         app:corners="5"
         app:layout_constraintBottom_toBottomOf="parent"

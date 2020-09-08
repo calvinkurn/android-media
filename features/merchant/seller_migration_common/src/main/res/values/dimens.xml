@@ -7,4 +7,7 @@
     <dimen name="dp_12">12dp</dimen>
     <dimen name="dp_20">20dp</dimen>
     <dimen name="dp_28">28dp</dimen>
+    <dimen name="dp_72">72dp</dimen>
+    <dimen name="dp_194">194dp</dimen>
+    <dimen name="dp_208">208dp</dimen>
 </resources>

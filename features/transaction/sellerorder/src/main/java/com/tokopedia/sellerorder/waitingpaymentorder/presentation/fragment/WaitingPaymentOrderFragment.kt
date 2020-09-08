@@ -47,6 +47,9 @@ class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, Waitin
 
     companion object {
         const val TAG_BOTTOM_SHEET = "bottom_sheet"
+        const val RECYCLER_VIEW_ANIMATION_DURATION = 500L
+        const val BUTTON_ENTER_LEAVE_ANIMATION_DURATION = 250L
+        const val TICKER_ENTER_LEAVE_ANIMATION_DURATION = 250L
     }
 
     @Inject
@@ -198,10 +201,10 @@ class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, Waitin
         context?.run {
             with(rvWaitingPaymentOrder) {
                 isNestedScrollingEnabled = true
-                itemAnimator?.addDuration = 500
-                itemAnimator?.removeDuration = 500
-                itemAnimator?.changeDuration = 500
-                itemAnimator?.moveDuration = 500
+                itemAnimator?.addDuration = RECYCLER_VIEW_ANIMATION_DURATION
+                itemAnimator?.removeDuration = RECYCLER_VIEW_ANIMATION_DURATION
+                itemAnimator?.changeDuration = RECYCLER_VIEW_ANIMATION_DURATION
+                itemAnimator?.moveDuration = RECYCLER_VIEW_ANIMATION_DURATION
             }
         }
     }
@@ -229,37 +232,14 @@ class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, Waitin
         waitingPaymentOrderViewModel.waitingPaymentOrderResult.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Success -> {
-                    val newItems = if (swipeRefreshLayoutWaitingPaymentOrder.isRefreshing) {
-                        val list = ArrayList<WaitingPaymentOrder>()
-                        list.add(
-                                WaitingPaymentOrder(
-                                        "123456",
-                                        "32 Sep, 2020",
-                                        "Y*******n (Jakarta Selatan)",
-                                        listOf(
-                                                WaitingPaymentOrder.Product(
-                                                        "654321",
-                                                        "Trip package to kuvukiland",
-                                                        "https://i.pinimg.com/originals/0c/1c/a1/0c1ca1955e2b0c5469ba17da2b1b9b96.jpg",
-                                                        99,
-                                                        "Rp. 1.000.000"
-                                                )
-                                        ),
-                                        false
-                                )
-                        )
-                        list.addAll(result.data)
-                        list
-                    } else {
-                        ArrayList(result.data)
-                    }
+                    val newItems = result.data
                     if (isLoadingInitialData) {
-                        (adapter as WaitingPaymentOrderAdapter).updateProducts(newItems.toList())
+                        (adapter as WaitingPaymentOrderAdapter).updateProducts(newItems)
                         animateTickerEnter()
                         animateCheckAndSetStockButtonEnter()
                     } else {
                         hideLoading()
-                        adapter.addMoreData(newItems.toList())
+                        adapter.addMoreData(newItems)
                     }
                     updateScrollListenerState(hasNextPage(newItems.size))
                     swipeRefreshLayoutWaitingPaymentOrder.isEnabled = true
@@ -290,7 +270,7 @@ class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, Waitin
 
     private fun animateTicker(from: Float, to: Float): ValueAnimator {
         val animator = ValueAnimator.ofFloat(from, to)
-        animator.duration = 250
+        animator.duration = TICKER_ENTER_LEAVE_ANIMATION_DURATION
         animator.addUpdateListener { valueAnimator ->
             tickerWaitingPaymentOrder.translationY = valueAnimator.animatedValue as Float
         }
@@ -322,7 +302,7 @@ class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, Waitin
 
     private fun animateCheckAndSetStockButton(from: Float, to: Float): ValueAnimator {
         val animator = ValueAnimator.ofFloat(from, to)
-        animator.duration = 250
+        animator.duration = BUTTON_ENTER_LEAVE_ANIMATION_DURATION
         animator.addUpdateListener { valueAnimator ->
             cardCheckAndSetStock.translationY = valueAnimator.animatedValue as Float
         }

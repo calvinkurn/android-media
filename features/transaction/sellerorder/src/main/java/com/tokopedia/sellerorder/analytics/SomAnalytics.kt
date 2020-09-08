@@ -40,9 +40,14 @@ object SomAnalytics {
     private const val CLICK_SEARCH_RECENT_SEARCH = "top nav - click search - search box"
     private const val CLICK_BUTTON_DOWNLOAD_INVOICE = "click button download invoice"
     private const val CLICK_WAITING_FOR_PAYMENT = "click waiting for payment"
+    private const val CLICK_CHECK_MANAGE_STOCK = "click check and manage stock"
     private const val TO_APP_ORDER = "To App - Order"
     private const val SELLER_WIDGET = "sellerWidget"
     private const val SELLER_APP_WIDGET = "Seller App Widget"
+    private const val CUSTOM_DIMENSION_USER_ID = "userId"
+    private const val CUSTOM_DIMENSION_SHOP_ID = "shopId"
+    private const val AWAITING_PAYMENT = "awaiting payment"
+    private const val WAITING_FOR_PAYMENT = "awaiting payment"
 
     @JvmStatic
     fun sendScreenName(activity: Activity, screenName: String) {
@@ -177,9 +182,9 @@ object SomAnalytics {
                 TrackAppUtils.EVENT to CLICK_SOM,
                 TrackAppUtils.EVENT_CATEGORY to CATEGORY_SOM,
                 TrackAppUtils.EVENT_ACTION to CLICK_WAITING_FOR_PAYMENT,
-                TrackAppUtils.EVENT_LABEL to "$statusOrder - awaiting payment:$counter",
-                "userId" to userId,
-                "shopId" to shopId
+                TrackAppUtils.EVENT_LABEL to "$statusOrder - $AWAITING_PAYMENT:$counter",
+                CUSTOM_DIMENSION_USER_ID to userId,
+                CUSTOM_DIMENSION_SHOP_ID to shopId
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
@@ -188,10 +193,10 @@ object SomAnalytics {
         val data = mapOf(
                 TrackAppUtils.EVENT to CLICK_SOM,
                 TrackAppUtils.EVENT_CATEGORY to CATEGORY_SOM,
-                TrackAppUtils.EVENT_ACTION to "click check and manage stock",
-                TrackAppUtils.EVENT_LABEL to "waiting for payment - awaiting payment:$counter",
-                "userId" to userId,
-                "shopId" to shopId
+                TrackAppUtils.EVENT_ACTION to CLICK_CHECK_MANAGE_STOCK,
+                TrackAppUtils.EVENT_LABEL to "$WAITING_FOR_PAYMENT - $AWAITING_PAYMENT:$counter",
+                CUSTOM_DIMENSION_USER_ID to userId,
+                CUSTOM_DIMENSION_SHOP_ID to shopId
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
