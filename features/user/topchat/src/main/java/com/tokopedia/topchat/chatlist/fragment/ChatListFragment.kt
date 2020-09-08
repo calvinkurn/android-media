@@ -683,9 +683,9 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
                     element.updatePinStatus(isPinChat)
                     if (isPinChat) {
                         // chat pinned
-                        chatItemListViewModel.pinnedMsgId.add(element.msgId)
                         adapter?.pinChatItem(element, position)
                         rv?.scrollToPosition(0)
+                        chatItemListViewModel.pinnedMsgId.add(element.msgId)
                         showToaster(R.string.title_success_pin_chat)
                     } else if (!isPinChat && chatItemListViewModel.unpinnedMsgId.contains(element.msgId)) {
                         // chat unpinned and can be restored to current list
