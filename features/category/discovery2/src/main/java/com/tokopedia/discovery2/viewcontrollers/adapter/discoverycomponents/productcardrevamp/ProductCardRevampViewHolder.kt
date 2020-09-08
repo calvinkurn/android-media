@@ -43,14 +43,10 @@ class ProductCardRevampViewHolder(itemView: View, private val fragment: Fragment
         componentsItem.lihatSemua?.run {
             mCardTitle.setTextAndCheckShow(header)
             mCardSubHeader.setTextAndCheckShow(subheader)
-            mLihatSemuaButton.visibility = if (applink.isNotEmpty()) {
-                mLihatSemuaButton.setOnClickListener {
-                    sendOnClickSeeAllGtm(componentsItem)
-                    RouteManager.route(fragment.context, applink)
-                }
-                View.VISIBLE
-            } else {
-                View.GONE
+            mLihatSemuaButton.setTextAndCheckShow(applink)
+            mLihatSemuaButton.setOnClickListener {
+                sendOnClickSeeAllGtm(componentsItem)
+                RouteManager.route(fragment.context, applink)
             }
         }
     }

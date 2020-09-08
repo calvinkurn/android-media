@@ -18,7 +18,7 @@ import kotlin.collections.set
 class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
                          val pagePath: String = EMPTY_STRING,
                          val pageIdentifier: String = EMPTY_STRING,
-                         val campaignCode : String = EMPTY_STRING,
+                         val campaignCode: String = EMPTY_STRING,
                          val sourceIdentifier: String = EMPTY_STRING,
                          val trackingQueue: TrackingQueue) {
 
@@ -243,7 +243,8 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
     }
 
     fun trackClickDetailedFilter(componentName: String?) {
-        val map = createGeneralEvent(eventAction = DETAILED_FILTER_CLICK, eventLabel = componentName ?: "")
+        val map = createGeneralEvent(eventAction = DETAILED_FILTER_CLICK, eventLabel = componentName
+                ?: "")
         getTracker().sendGeneralEvent(map)
     }
 
@@ -588,12 +589,12 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
             val list = ArrayList<Map<String, Any>>()
             for ((index, banner) in banners.withIndex()) {
                 val hashMap = HashMap<String, Any>()
-                    hashMap[KEY_ID] = if (banner.id == null) DEFAULT_ID else if (banner.id!!.isNotEmpty()) banner.id!! else DEFAULT_ID
-                    hashMap[KEY_NAME] = "/${removeDashPageIdentifier(pagePath)} - $pageType - ${banner.positionForParentItem + 1} - - $componentName"
-                    hashMap[KEY_CREATIVE] = banner.name ?: EMPTY_STRING
-                    hashMap[KEY_POSITION] = index + 1
-                    hashMap[KEY_PROMO_ID] = banner.trackingFields?.promoId ?: EMPTY_STRING
-                    hashMap[PROMO_CODE] = banner.trackingFields?.promoCode ?: EMPTY_STRING
+                hashMap[KEY_ID] = if (banner.id == null) DEFAULT_ID else if (banner.id!!.isNotEmpty()) banner.id!! else DEFAULT_ID
+                hashMap[KEY_NAME] = "/${removeDashPageIdentifier(pagePath)} - $pageType - ${banner.positionForParentItem + 1} - - $componentName"
+                hashMap[KEY_CREATIVE] = banner.name ?: EMPTY_STRING
+                hashMap[KEY_POSITION] = index + 1
+                hashMap[KEY_PROMO_ID] = banner.trackingFields?.promoId ?: EMPTY_STRING
+                hashMap[PROMO_CODE] = banner.trackingFields?.promoCode ?: EMPTY_STRING
                 list.add(hashMap)
             }
             val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
@@ -608,14 +609,14 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
         val componentName = banner.parentComponentName ?: EMPTY_STRING
         val map = createGeneralEvent(eventName = EVENT_PROMO_CLICK, eventAction = CLICK_DYNAMIC_BANNER, eventLabel = "$componentName - ${banner.name} - ${banner.imageClickUrl}")
         val list = ArrayList<Map<String, Any>>()
-            list.add(mapOf(
-                    KEY_ID to if (banner.id == null) DEFAULT_ID else if (banner.id!!.isNotEmpty()) banner.id!! else DEFAULT_ID,
-                    KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${banner.positionForParentItem + 1} - - $componentName",
-                    KEY_CREATIVE to (banner.name ?: EMPTY_STRING),
-                    KEY_POSITION to bannerPosition + 1,
-                    KEY_PROMO_ID to (banner.trackingFields?.promoId ?: EMPTY_STRING),
-                    PROMO_CODE to (banner.trackingFields?.promoCode ?: EMPTY_STRING)
-            ))
+        list.add(mapOf(
+                KEY_ID to if (banner.id == null) DEFAULT_ID else if (banner.id!!.isNotEmpty()) banner.id!! else DEFAULT_ID,
+                KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${banner.positionForParentItem + 1} - - $componentName",
+                KEY_CREATIVE to (banner.name ?: EMPTY_STRING),
+                KEY_POSITION to bannerPosition + 1,
+                KEY_PROMO_ID to (banner.trackingFields?.promoId ?: EMPTY_STRING),
+                PROMO_CODE to (banner.trackingFields?.promoCode ?: EMPTY_STRING)
+        ))
         val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
                 EVENT_PROMO_CLICK to mapOf(
                         KEY_PROMOTIONS to list))
@@ -631,6 +632,7 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
         val map = createGeneralEvent(eventAction = CLICK_VIEW_ALL_BANNER_CAROUSEL, eventLabel = EMPTY_STRING)
         getTracker().sendGeneralEvent(map)
     }
+
     private fun addSourceData(productMap: HashMap<String, Any>): HashMap<String, Any> {
         if (sourceIdentifier.isEmpty()) return productMap
 
@@ -742,10 +744,11 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
 
     fun trackHeaderSeeAllClick(isLogin: Boolean, componentsItems: ComponentsItem) {
         val loginValue = if (isLogin) LOGIN else NON_LOGIN
-        val tabValue = getTabValue(componentsItems)
+        val creativeName = componentsItems.data?.firstOrNull()?.creativeName ?: ""
+        val headerValue = componentsItems.lihatSemua?.header ?: ""
         val map = createGeneralEvent(eventName = EVENT_CLICK_DISCOVERY,
                 eventAction = CLICK_VIEW_ALL_HEADER,
-                eventLabel = "$loginValue - ${componentsItems.name} - ${componentsItems.title} - $tabValue")
+                eventLabel = "$loginValue - ${componentsItems.name} - $headerValue - $creativeName")
         getTracker().sendGeneralEvent(map)
     }
 }
