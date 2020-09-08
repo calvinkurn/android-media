@@ -9,18 +9,18 @@
     android:background="?attr/selectableItemBackground"
     android:gravity="center_vertical">
 
-    <com.tokopedia.design.component.TextViewCompat
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_16"
-        app:fontSize="small"
-        app:textViewTheme="lightPrimary"
+        app:typographyType="heading_5"
+        android:textColor="@color/light_secondary"
         tools:text="Rp10000"/>
 
-    <RadioButton
+    <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
         android:id="@+id/radio_button"
         android:layout_width="@dimen/dp_24"
         android:layout_height="@dimen/dp_24"
