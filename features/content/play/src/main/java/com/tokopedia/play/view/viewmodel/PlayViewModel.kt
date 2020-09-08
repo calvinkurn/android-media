@@ -20,7 +20,7 @@ import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.Event
 import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.util.video.state.PlayViewerVideoStateListener
-import com.tokopedia.play.util.video.state.PlayViewerVideoStateProcessorImpl
+import com.tokopedia.play.util.video.state.PlayViewerVideoStateProcessor
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.mapper.PlayUiMapper
@@ -38,7 +38,7 @@ import javax.inject.Inject
  */
 class PlayViewModel @Inject constructor(
         private val playVideoManager: PlayVideoManager,
-        private val videoStateProcessorFactory: PlayViewerVideoStateProcessorImpl.Factory,
+        private val videoStateProcessorFactory: PlayViewerVideoStateProcessor.Factory,
         private val getChannelInfoUseCase: GetChannelDetailUseCase,
         private val getSocketCredentialUseCase: GetSocketCredentialUseCase,
         private val getPartnerInfoUseCase: GetPartnerInfoUseCase,

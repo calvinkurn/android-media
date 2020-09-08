@@ -13,8 +13,6 @@ import com.tokopedia.play.util.coroutine.DefaultCoroutineDispatcherProvider
 import com.tokopedia.play.util.observer.PlayVideoUtilObserver
 import com.tokopedia.play.util.video.PlayVideoUtil
 import com.tokopedia.play.util.video.PlayVideoUtilImpl
-import com.tokopedia.play.util.video.state.PlayViewerVideoStateProcessor
-import com.tokopedia.play.util.video.state.PlayViewerVideoStateProcessorImpl
 import com.tokopedia.play_common.player.PlayVideoManager
 import com.tokopedia.play_common.util.ExoPlaybackExceptionParser
 import com.tokopedia.play_common.util.PlayVideoPlayerObserver
