@@ -21,8 +21,8 @@ import java.util.*
 class CustomDatePicker : BottomSheetUnify() {
 
     lateinit var minDate: Date
-    lateinit var maxDate: Date
-    lateinit var selectedDate: Date
+    private lateinit var maxDate: Date
+    private lateinit var selectedDate: Date
     var dateFlag = 0
     private lateinit var minDateOriginal: Date
     private lateinit var selectedDateOriginal: Date
@@ -39,7 +39,7 @@ class CustomDatePicker : BottomSheetUnify() {
         setChild(childView)
     }
 
-    fun getBundleData() {
+    private fun getBundleData() {
         arguments?.run {
             this.getString(MIN_DATE)?.let {
                 minDate = it.stringToDate(TRAVEL_CAL_YYYY_MM_DD)
@@ -62,8 +62,8 @@ class CustomDatePicker : BottomSheetUnify() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         renderSinglePickCalendar(arrayListOf())
-
-        dateStart.setOnFocusChangeListener { v, hasFocus ->
+        setFieldEnable(false)
+        dateStart?.setOnFocusChangeListener { v, hasFocus ->
             if (hasFocus) {
                 dateFlag = 0
                 selectedDate = selectedStartDate
@@ -71,18 +71,27 @@ class CustomDatePicker : BottomSheetUnify() {
                 renderSinglePickCalendar(arrayListOf())
             }
         }
-        dateEnd.setOnFocusChangeListener { v, hasFocus ->
+        dateEnd?.setOnFocusChangeListener { v, hasFocus ->
             if (hasFocus) {
+                if(dateStart.textFieldInput.text.isNullOrEmpty()){
+                    return@setOnFocusChangeListener
+                }
                 selectedDate = selectedDateOriginal
                 dateFlag = 1
                 renderSinglePickCalendar(arrayListOf())
             }
         }
+        dateStart?.textFieldInput?.keyListener = null
+        dateEnd?.textFieldInput?.keyListener = null
+    }
+
+    private fun setFieldEnable(enable: Boolean) {
+        dateEnd?.isEnabled = enable
+        dateStart?.isEnabled = enable
     }
 
     private fun renderSinglePickCalendar(holidayArrayList: ArrayList<Legend>) {
         val calendar = calendarUnify.calendarPickerView
-
         calendar?.init(minDate, maxDate, holidayArrayList)
                 ?.inMode(CalendarPickerView.SelectionMode.SINGLE)
                 ?.withSelectedDate(selectedDate)
@@ -90,12 +99,13 @@ class CustomDatePicker : BottomSheetUnify() {
         calendar?.setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
             override fun onDateSelected(date: Date) {
                 if (dateFlag == 0) {
-                    dateStart.setText(outputFormat.format(date))
+                    dateStart?.textFieldInput?.setText(outputFormat.format(date))
                     selectedStartDate = date
                     minDate = date
-                    dateEnd.requestFocus()
+                    setFieldEnable(true)
+                    dateEnd?.requestFocus()
                 } else if (dateFlag == 1) {
-                    dateEnd.setText(outputFormat.format(date))
+                    dateEnd?.textFieldInput?.setText(outputFormat.format(date))
                     listenerCalendar.onCustomDateSelected(minDate,date)
                     GlobalScope.launch {
                         delay(300)

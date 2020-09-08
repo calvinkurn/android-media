@@ -49,7 +49,7 @@
     <string name="title_liveness_detection">Liveness Detection</string>
 
     <!-- Dynamic feature for Groupchat-->
-    <string name="groupchat_app_name">Play</string>
+    <string name="title_groupchat_df">Play</string>
 
     <!--    Change Phone Number-->
     <string name="change_phone_number_app_module_name">changephonenumber</string>
@@ -150,7 +150,7 @@
     <string name="submit_ticket_title">Form Bantuan</string>
     <string name="survey_layanan">Survey Layanan</string>
     <string name="detail_kendala">Detail Kendala</string>
-    <string name="inbox">Inbox</string>
+    <string name="contact_us_inbox">Pesan Bantuan</string>
 
     <string name="instant_loan_app_name">Dana Instan</string>
 
@@ -182,6 +182,9 @@
 
     <string name="label_manage_address">Daftar Alamat</string>
 
+    <string name="title_activity_add_address">Tambah Alamat</string>
+    <string name="title_activity_search_address">Tulis Kota/Kecamatan</string>
+
     <!-- Dynamic feature for Setting Bank-->
     <string name="onboarding_app_name">OnBoarding</string>
 
@@ -205,6 +208,7 @@
 
 
     <!--Dynamic feature for affiliate-->
+    <string name="title_affiliate_df">Affiliate</string>
     <string name="title_af_affiliate">Affiliate</string>
     <string name="title_affiliate">Affiliate</string>
     <string name="title_af_dashboard">Pencapaian Saya</string>
@@ -287,6 +291,7 @@
     <string name="checkout_module_title_activity_multiple_address">Kirim ke Banyak Alamat</string>
     <string name="title_one_click_checkout">Beli Langsung</string>
     <string name="title_one_click_checkout_preference">Pengaturan Beli Langsung</string>
+    <string name="title_one_click_checkout_credit_card_and_debit">Kartu Kredit</string>
     <string name="promo_checkout_marketplace_module_title_activity_promo_list">Pakai Promo</string>
 
     <!-- Content -->
@@ -304,4 +309,15 @@
 
     <!-- Merchant Login -->
     <string name="title_module_merchant_login">Fitur Toko</string>
+
+    <!-- Shop Page -->
+    <string name="shop_info_title">Shop Info</string>
+    <string name="shop_info_label_physical_shop">Toko Fisik</string>
+    <string name="note_title">Catatan</string>
+    <string name="shop_sort_title">Urutkan</string>
+    <string name="shop_product_title">Produk</string>
+    <string name="favorited_shop_title">Followers Toko</string>
+    <string name="shop_search_product">Search Shop Product</string>
+    <string name="shop_page_setting_title">Toko Kamu</string>
+
 </resources>

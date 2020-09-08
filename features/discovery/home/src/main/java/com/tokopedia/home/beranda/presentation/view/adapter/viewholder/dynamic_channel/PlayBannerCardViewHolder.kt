@@ -73,7 +73,8 @@ class PlayBannerCardViewHolder(
                         creativeName = dataModel.coverUrl,
                         bannerId = playCarouselCardDataModel?.channel?.id ?: "",
                         userId = listener.userId,
-                        position = playCarouselCardDataModel?.channel?.brandId ?: "1"
+                        position = playCarouselCardDataModel?.channel?.brandId ?: "1",
+                        positionFold = if((playCarouselCardDataModel?.position ?: -1) <= 2) "0" else "1"
                 )
         )
         listener.onPlayV2Click(dataModel)
@@ -90,13 +91,14 @@ class PlayBannerCardViewHolder(
                 creativeName = dataModel.coverUrl,
                 bannerId = playCarouselCardDataModel?.channel?.id ?: "",
                 userId = listener.userId,
-                position = playCarouselCardDataModel?.channel?.brandId ?: "1"
+                position = (position+1).toString(),
+                positionFold = if((playCarouselCardDataModel?.position ?: -1) <= 2) "0" else "1"
         ))
     }
 
     override fun onReminderClick(dataModel: PlayBannerCarouselItemDataModel, position: Int) {
         listener.sendEETracking(
-                if(dataModel.remindMe) {
+                if(!dataModel.remindMe) {
                     PlayWidgetCarouselTracking.getClickRemoveRemind(
                             channelId = dataModel.channelId,
                             userId = listener.userId,
@@ -114,12 +116,12 @@ class PlayBannerCardViewHolder(
     }
 
     override fun onSeeMoreBannerClick(dataModel: PlayBannerCarouselBannerDataModel, position: Int) {
-        listener.sendEETracking(PlayWidgetCarouselTracking.getClickSeeAll(dataModel.imageUrl, listener.userId))
+        listener.sendEETracking(PlayWidgetCarouselTracking.getClickSeeOtherContent(dataModel.imageUrl, listener.userId))
         RouteManager.route(itemView.context, dataModel.applink)
     }
 
     override fun onSeeMoreClick(dataModel: PlayBannerCarouselDataModel) {
-        listener.sendEETracking(PlayWidgetCarouselTracking.getClickSeeAll(dataModel.imageUrl, listener.userId))
+        listener.sendEETracking(PlayWidgetCarouselTracking.getClickSeeAll(listener.userId))
         RouteManager.route(itemView.context, dataModel.seeMoreApplink)
     }
 
@@ -130,10 +132,12 @@ class PlayBannerCardViewHolder(
                 creativeName = dataModel.imageUrl,
                 bannerId = playCarouselCardDataModel?.channel?.id ?: "",
                 userId = listener.userId,
-                position = playCarouselCardDataModel?.channel?.brandId ?: "1",
+                position = adapterPosition.toString(),
                 shopName = playCarouselCardDataModel?.playBannerCarouselDataModel?.title ?: "",
-                promoCode = ""
+                promoCode = "",
+                positionFold = if((playCarouselCardDataModel?.position ?: -1) <= 2) "0" else "1"
         ))
+        RouteManager.route(itemView.context, dataModel.applink)
     }
 
     override fun onOverlayImageBannerImpress(dataModel: PlayBannerCarouselOverlayImageDataModel) {
@@ -143,9 +147,10 @@ class PlayBannerCardViewHolder(
                 creativeName = dataModel.imageUrl,
                 bannerId = playCarouselCardDataModel?.channel?.id ?: "",
                 userId = listener.userId,
-                position = playCarouselCardDataModel?.channel?.brandId ?: "1",
+                position = adapterPosition.toString(),
                 shopName = playCarouselCardDataModel?.playBannerCarouselDataModel?.title ?: "",
-                promoCode = ""
+                promoCode = "",
+                positionFold = if((playCarouselCardDataModel?.position ?: -1) <= 2) "0" else "1"
         ))
     }
 

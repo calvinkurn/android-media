@@ -21,7 +21,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
-import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.crashlytics.android.Crashlytics
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -83,7 +83,6 @@ import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifications.CMPushNotificationManager
-import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.sessioncommon.ErrorHandlerSession
@@ -721,18 +720,20 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         saveFirstInstallTime()
     }
 
-    private fun setLoginSuccessSellerApp() = view?.run {
-        if (context.applicationContext is LoginRouter) {
-            (context.applicationContext as LoginRouter).setOnboardingStatus(true)
+    override fun setLoginSuccessSellerApp() {
+        view?.run {
+            if (context.applicationContext is LoginRouter) {
+                (context.applicationContext as LoginRouter).setOnboardingStatus(true)
+            }
+            val intent = if (userSession.hasShop()) {
+                RouteManager.getIntent(context, ApplinkConstInternalSellerapp.SELLER_HOME)
+            } else {
+                RouteManager.getIntent(context, ApplinkConstInternalMarketplace.OPEN_SHOP)
+            }
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            startActivity(intent)
+            activity?.finish()
         }
-        val intent = if (userSession.hasShop()) {
-            RouteManager.getIntent(context, ApplinkConstInternalSellerapp.SELLER_HOME)
-        } else {
-            RouteManager.getIntent(context, ApplinkConstInternalMarketplace.OPEN_SHOP)
-        }
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-        startActivity(intent)
-        activity?.finish()
     }
 
     private fun setFCM() {
@@ -744,9 +745,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         try {
             TkpdAppsFlyerMapper.getInstance(activity?.applicationContext).mapAnalytics()
             TrackApp.getInstance().gtm.pushUserId(userId)
-            val crashlytics: FirebaseCrashlytics = FirebaseCrashlytics.getInstance()
-            if (!GlobalConfig.DEBUG && crashlytics != null)
-                crashlytics.setUserId(userId)
+            if (!GlobalConfig.DEBUG && Crashlytics.getInstance() != null)
+                Crashlytics.setUserIdentifier(userId)
 
             if (userSession.isLoggedIn) {
                 val userData = UserData()
@@ -878,11 +878,12 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             dialog.setOnOkClickListener { v ->
                 analytics.eventClickYesSmartLoginDialogButton()
                 dialog.dismiss()
-                val intent = RouteManager.getIntent(context, ApplinkConst.REGISTER)
+                val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.INIT_REGISTER)
                 intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
                 intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
                 intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SMART_LOGIN, true)
                 intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_PENDING, isPending)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 it.startActivity(intent)
                 it.finish()
             }

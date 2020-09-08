@@ -4,9 +4,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.INDEX_4
 import com.tokopedia.topads.dashboard.data.model.insightkey.KeywordInsightDataMain
+import com.tokopedia.topads.dashboard.data.utils.Utils
 import kotlinx.android.synthetic.main.topads_dash_keyword_insight_item_layout.view.*
 
 /**
@@ -38,16 +40,17 @@ class TopAdsKeywordInsightAdapter(private var onCheck: ((pos:Int) -> Unit)) : Re
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.view.img.setImageDrawable(holder.view.context.getResDrawable(R.drawable.topads_dashboard_folder))
         holder.view.keywordName.text = items[position].name
         holder.view.insightCount.text = items[position].count.toString()
-        holder.view.txtPotential.text = String.format(holder.view.resources.getString(R.string.topads_dash_insight_key_item_tampil_potensi),setPotentialValue(position))
-        holder.view.txtSavings.text = String.format(holder.view.resources.getString(R.string.topads_dash_insight_key_item_hemat_potensi),setSavingsValue(position))
+        holder.view.txtPotential.text = String.format(holder.view.resources.getString(R.string.topads_dash_insight_key_item_tampil_potensi), Utils.convertToCurrencyString(setPotentialValue(position).toLong()))
+        holder.view.txtSavings.text = String.format(holder.view.resources.getString(R.string.topads_dash_insight_key_item_hemat_potensi),Utils.convertToCurrencyString(setSavingsValue(position).toLong()))
         holder.view.setOnClickListener {
             onCheck.invoke(position)
         }
     }
 
-    private fun setPotentialValue(pos:Int): String {
+    private fun setPotentialValue(pos:Int): Double {
         var totalPotential = 0.0
         items[pos].keyword.forEach {key->
                 totalPotential += (key.data?.get(INDEX_4)?.value) as Double
@@ -55,14 +58,14 @@ class TopAdsKeywordInsightAdapter(private var onCheck: ((pos:Int) -> Unit)) : Re
         items[pos].bid.forEach {key->
                 totalPotential += (key.data?.get(INDEX_4)?.value) as Double
             }
-        return totalPotential.toString()
+        return totalPotential
     }
 
-    private fun setSavingsValue(pos:Int):String {
+    private fun setSavingsValue(pos:Int): Double {
         var totalSaving = 0.0
         items[pos].negative.forEach { key ->
                 totalSaving += (key.data?.get(INDEX_4)?.value) as Double
             }
-        return totalSaving.toString()
+        return totalSaving
     }
 }

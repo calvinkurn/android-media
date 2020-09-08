@@ -23,7 +23,7 @@ public class RuleInterpreterImpl implements InterfaceRuleInterpreter {
     private ElapsedTime elapsedTimeObj;
 
     @Override
-    public void checkForValidity(String entity, int state, long currentTime,
+    public void checkForValidity(String entity, long currentTime,
                                  DataProvider dataProvider) {
         makeRequestForData(entity, currentTime, dataProvider);
     }
@@ -141,12 +141,11 @@ public class RuleInterpreterImpl implements InterfaceRuleInterpreter {
     }
 
     private boolean performDeletion(CMInApp inAppData){
-        if((inAppData.startTime != 0L && inAppData.endTime != 0L) || (!inAppData.isShown && (inAppData.freq == 0 || inAppData.freq < RulesUtil.Constants.DEFAULT_FREQ))){
-            return true;
-        }
-        else {
+        boolean perstOn = inAppData.isPersistentToggle();
+        if (!perstOn && checkIfActiveInTimeFrame(inAppData, System.currentTimeMillis()))
             return false;
-        }
+        else return inAppData.endTime < System.currentTimeMillis() ||
+                (!inAppData.isShown && (inAppData.freq == 0 || inAppData.freq < RulesUtil.Constants.DEFAULT_FREQ));
     }
 
     private boolean checkIfBehaviourRulesAreValid(CMInApp inAppData){

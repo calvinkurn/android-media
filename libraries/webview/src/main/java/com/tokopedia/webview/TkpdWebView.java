@@ -7,9 +7,11 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import com.google.firebase.crashlytics.FirebaseCrashlytics;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.crashlytics.android.Crashlytics;
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
@@ -215,8 +217,8 @@ public class TkpdWebView extends WebView {
             super.loadUrl(url, additionalHttpHeaders);
         } else {
             if (!GlobalConfig.DEBUG)
-                FirebaseCrashlytics.getInstance().log(
-                        getContext().getString(R.string.error_message_url_invalid_crashlytics) + url);
+                Crashlytics.log(
+                        getContext().getString(com.tokopedia.webview.R.string.error_message_url_invalid_crashlytics) + url);
 
             super.loadUrl(url);
         }

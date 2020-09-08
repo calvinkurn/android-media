@@ -55,6 +55,7 @@ dependencies {
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation project(rootProject.ext.features.review)
 
     implementation rootProject.ext.supportLibDependencies.supportV4
     kapt rootProject.ext.miscDependencies.daggerCompiler
@@ -65,7 +66,7 @@ dependencies {
     implementation(rootProject.ext.tkpdLibDependencies.expandableOption) {
         exclude group: "com.android.support"
     }
-    api (rootProject.ext.firebase.crashlytics) {
+    api (rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
     }
 }

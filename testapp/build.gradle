@@ -26,7 +26,7 @@ def getTkpdVersionName() {
 }
 buildscript {
     repositories {
-        google()
+        maven { url 'https://maven.fabric.io/public' }
         maven { url "https://maven.google.com" }
         maven { url 'https://hansel.io/maven' }
         mavenCentral()
@@ -130,12 +130,17 @@ dependencies {
     implementation project(rootProject.ext.libraries.applink)
     implementation (project(rootProject.ext.features.sessioncommon))
     implementation (project(rootProject.ext.libraries.remoteConfig))
+    implementation (project(rootProject.ext.libraries.remoteResourceRequest))
 
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation project(rootProject.ext.libraries.track)
-    implementation project(rootProject.ext.libraries.analyticsDebuggerNoop)
+    if (rootProject.ext.debugToolsEnabled) {
+        implementation project(rootProject.ext.libraries.analyticsDebugger)
+    } else {
+        implementation project(rootProject.ext.libraries.analyticsDebuggerNoop)
+    }
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor

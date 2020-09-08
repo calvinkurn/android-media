@@ -3,6 +3,7 @@ package com.tokopedia.common.topupbills.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -10,7 +11,6 @@ import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsRecentNumbersAdapter
 import com.tokopedia.common.topupbills.view.model.TopupBillsTrackRecentTransaction
-import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import org.jetbrains.annotations.NotNull
@@ -19,18 +19,17 @@ import org.jetbrains.annotations.NotNull
  * Created by nabillasabbaha on 25/04/19.
  */
 open class TopupBillsRecentTransactionWidget @JvmOverloads constructor(@NotNull context: Context, attrs: AttributeSet? = null,
-                                                                  defStyleAttr: Int = 0)
-    : BaseCustomView(context, attrs, defStyleAttr), TopupBillsWidgetInterface {
+                                                                       defStyleAttr: Int = 0)
+    : FrameLayout(context, attrs, defStyleAttr), TopupBillsWidgetInterface {
 
     protected val recyclerView: RecyclerView
     protected val titleWidget: TextView
-    protected val digitalTrackRecentPrev = mutableListOf<TopupBillsTrackRecentTransaction>()
 
     private lateinit var listener: TopupBillsRecentNumberListener
 
     init {
         val view = View.inflate(context, R.layout.view_digital_component_list, this)
-        recyclerView = view.findViewById(R.id.recycler_view)
+        recyclerView = view.findViewById(R.id.recycler_view_menu_component)
         titleWidget = view.findViewById(R.id.title_component)
     }
 
@@ -66,7 +65,7 @@ open class TopupBillsRecentTransactionWidget @JvmOverloads constructor(@NotNull 
         })
     }
 
-    private fun getVisibleRecentItemsToUsersTracking(recentNumbers: List<TopupBillsRecommendation>) {
+    fun getVisibleRecentItemsToUsersTracking(recentNumbers: List<TopupBillsRecommendation>) {
         val firstPos = (recyclerView.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
         val lastPos = (recyclerView.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
 
@@ -78,13 +77,8 @@ open class TopupBillsRecentTransactionWidget @JvmOverloads constructor(@NotNull 
                         recentNumbers[i].categoryId, i))
             }
         }
-        if (digitalTrackRecentList.size > 0 &&
-                digitalTrackRecentList.size != digitalTrackRecentPrev.size &&
-                digitalTrackRecentList != digitalTrackRecentPrev) {
+        if (digitalTrackRecentList.size > 0) {
             listener.onTrackImpressionRecentList(digitalTrackRecentList)
-
-            digitalTrackRecentPrev.clear()
-            digitalTrackRecentPrev.addAll(digitalTrackRecentList)
         }
     }
 

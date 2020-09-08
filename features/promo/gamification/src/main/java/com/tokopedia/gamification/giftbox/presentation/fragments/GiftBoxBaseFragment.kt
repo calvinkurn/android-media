@@ -60,6 +60,7 @@ open class GiftBoxBaseFragment : Fragment() {
     var screenWidth = 0
 
     val FADE_IN_DURATION = 500L
+    val LARGE_PHONE_HEIGHT = 1900
 
     val giftBoxTapTapAudio = GiftBoxTapTapAudio()
     var bgSoundManager: AudioManager? = null
@@ -229,6 +230,11 @@ open class GiftBoxBaseFragment : Fragment() {
         params.gravity = Gravity.BOTTOM
         params.width = FrameLayout.LayoutParams.MATCH_PARENT
         snackbar.view.layoutParams = params
+
+        when (this) {
+            is GiftBoxTapTapFragment -> GtmGiftTapTap.viewToastError(userSession?.userId, message)
+            is GiftBoxDailyFragment -> GtmEvents.viewToastError(userSession?.userId, message)
+        }
     }
 
     fun showNoInterNetDialog(method: (() -> Unit), context: Context) {
@@ -241,7 +247,11 @@ open class GiftBoxBaseFragment : Fragment() {
                 is GiftBoxTapTapFragment -> GtmGiftTapTap.clickTryAgain(userSession?.userId)
                 is GiftBoxDailyFragment -> GtmEvents.clickTryAgainButton(userSession?.userId)
             }
+        }
 
+        when (this) {
+            is GiftBoxTapTapFragment -> GtmGiftTapTap.viewNoInternetError(userSession?.userId)
+            is GiftBoxDailyFragment -> GtmEvents.viewNoInternetError(userSession?.userId)
         }
     }
 

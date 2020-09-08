@@ -34,14 +34,14 @@ def main():
         'customerapp/build/reports/base_branch-results-liveDevDebug.xml')
     for dIssue in derivedLintTree.getroot().findall("issue"):
         isToBeRemoved = False
-    dIssueLocation = dIssue.find('location')
-    for pIssue in baseLintTree.getroot().findall("issue"):
-        pIssueLocation = pIssue.find('location')
-        if isSameLocation(dIssueLocation, pIssueLocation):
-            isToBeRemoved = True
-            break
-    if isToBeRemoved:
-        derivedLintTree.getroot().remove(dIssue)
+        dIssueLocation = dIssue.find('location')
+        for pIssue in baseLintTree.getroot().findall("issue"):
+            pIssueLocation = pIssue.find('location')
+            if isSameLocation(dIssueLocation, pIssueLocation):
+                isToBeRemoved = True
+                break
+        if isToBeRemoved:
+            derivedLintTree.getroot().remove(dIssue)
 
     derivedLintTree.write("customerapp/build/reports/test_result.xml")
 

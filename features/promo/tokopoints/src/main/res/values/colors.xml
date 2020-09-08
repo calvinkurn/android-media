@@ -38,4 +38,6 @@
     <color name="tp_coupon_stack_new_badge_color">#ef144a</color>
     <color name="tp_red_d43000">#d43000</color>
     <color name="tp_black_38">#60000000</color>
+    <color name="tp_subtitle_color_topads">#8f000000</color>
+    <color name="tp_green_btn">#239229</color>
 </resources>

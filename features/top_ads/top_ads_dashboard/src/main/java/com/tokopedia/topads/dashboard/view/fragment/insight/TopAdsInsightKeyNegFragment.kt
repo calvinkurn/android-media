@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATA_INSIGHT
@@ -16,8 +17,11 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.KEY_
 import com.tokopedia.topads.dashboard.data.model.insightkey.Header
 import com.tokopedia.topads.dashboard.data.model.insightkey.KeywordInsightDataMain
 import com.tokopedia.topads.dashboard.data.model.insightkey.MutationData
+import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.adapter.insight.TopAdsInsightNegKeyAdapter
+import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsInsightKeyBidFragment.Companion.COUNT
+import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsInsightKeyBidFragment.Companion.VALUE
 import com.tokopedia.topads.dashboard.view.sheet.InsightKeyBottomSheet
 import kotlinx.android.synthetic.main.topads_dash_fragment_pos_key_insight.*
 
@@ -56,6 +60,7 @@ class TopAdsInsightKeyNegFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         adapter = TopAdsInsightNegKeyAdapter(this::butttonClicked)
         setView()
+        toolTip.setImageDrawable(context?.getResDrawable(R.drawable.topads_dash_info_tooltip))
         toolTip.setOnClickListener {
             val sheet = InsightKeyBottomSheet.createInstance(1)
             sheet.show(fragmentManager!!, "")
@@ -66,7 +71,7 @@ class TopAdsInsightKeyNegFragment : BaseDaggerFragment() {
 
     private fun butttonClicked(position: Int) {
         itemCountCallBack?.onButtonClickedNeg(listOf(adapter.items[position].mutationData), key
-                ?: "", 1)
+                ?: "", 1, false)
     }
 
     private fun getfromArguments() {
@@ -87,7 +92,7 @@ class TopAdsInsightKeyNegFragment : BaseDaggerFragment() {
         setHeader(totalPotential)
         btnTambah.setOnClickListener {
             itemCountCallBack?.onButtonClickedNeg(mutationList, key
-                    ?: "", dataInsight?.get(key)?.negative?.size ?: 0)
+                    ?: "", dataInsight?.get(key)?.negative?.size ?: 0, true)
         }
         adapter.notifyDataSetChanged()
     }
@@ -95,9 +100,9 @@ class TopAdsInsightKeyNegFragment : BaseDaggerFragment() {
     private fun setHeader(totalPotential: Double) {
         insight_title.text = data?.negative?.box?.title
         val text = data?.negative?.box?.desc
-        val withValue = text?.replace("$" + "count", dataInsight?.get(key)?.negative?.size.toString())?.replace("$" + "value", totalPotential.toString())
+        val withValue = text?.replace(COUNT, dataInsight?.get(key)?.negative?.size.toString())?.replace(VALUE, "Rp"+Utils.convertToCurrencyString(totalPotential.toLong()))
         insight_desc.text = Html.fromHtml(withValue)
-        btnTambah.text = data?.negative?.box?.button?.title?.replace("$" + "count", dataInsight?.get(key)?.negative?.size.toString())
+        btnTambah.text = data?.negative?.box?.button?.title?.replace(COUNT, dataInsight?.get(key)?.negative?.size.toString())
     }
 
     override fun onAttach(context: Context) {
@@ -113,7 +118,7 @@ class TopAdsInsightKeyNegFragment : BaseDaggerFragment() {
     }
 
     interface OnKeywordAdded {
-        fun onButtonClickedNeg(data: List<MutationData>, groupId: String, countToAdd: Int)
+        fun onButtonClickedNeg(data: List<MutationData>, groupId: String, countToAdd: Int, forAllButton: Boolean)
     }
 
 }

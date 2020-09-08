@@ -3,11 +3,11 @@ package com.tokopedia.topupbills.telco.prepaid.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import android.widget.FrameLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.telco.data.TelcoCatalogDataCollection
 import com.tokopedia.topupbills.telco.data.TelcoProduct
@@ -24,13 +24,12 @@ import com.tokopedia.topupbills.telco.prepaid.model.DigitalTrackProductTelco
  */
 class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null,
                                                           defStyleAttr: Int = 0)
-    : BaseCustomView(context, attrs, defStyleAttr) {
+    : FrameLayout(context, attrs, defStyleAttr) {
 
     private val recyclerView: RecyclerView
 
     private lateinit var adapter: TelcoProductAdapter
     private lateinit var listener: ActionListener
-    private val digitalTrackTelcoPrev = mutableListOf<DigitalTrackProductTelco>()
 
     init {
         val view = View.inflate(context, R.layout.view_telco_product_list, this)
@@ -78,7 +77,6 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
         }
         adapter.renderList(dataCollection)
 
-        getVisibleProductItemsToUsersTracking(dataTracking)
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
@@ -100,20 +98,14 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
             lastPos = (recyclerView.layoutManager as GridLayoutManager).findLastCompletelyVisibleItemPosition()
         }
 
-
         val digitalTrackProductTelcoList = mutableListOf<DigitalTrackProductTelco>()
         for (i in firstPos..lastPos) {
             if (firstPos >= 0 && lastPos <= productList.size - 1) {
                 digitalTrackProductTelcoList.add(DigitalTrackProductTelco(productList[i], i))
             }
         }
-        if (digitalTrackProductTelcoList.size > 0 &&
-                digitalTrackProductTelcoList.size != digitalTrackTelcoPrev.size &&
-                digitalTrackProductTelcoList != digitalTrackTelcoPrev) {
+        if (digitalTrackProductTelcoList.size > 0) {
             listener.onTrackImpressionProductsList(digitalTrackProductTelcoList)
-
-            digitalTrackTelcoPrev.clear()
-            digitalTrackTelcoPrev.addAll(digitalTrackProductTelcoList)
         }
     }
 

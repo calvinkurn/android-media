@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.utils.network.TextApiUtils
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -27,7 +28,6 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import kotlinx.android.synthetic.main.partial_new_shop_page_header.view.*
-import kotlinx.android.synthetic.main.partial_new_shop_page_seller_play_widget.view.*
 
 class ShopPageFragmentHeaderViewHolder(private val view: View, private val listener: ShopPageFragmentViewHolderListener,
                                        private val shopPageTracking: ShopPageTrackingBuyer?,
@@ -42,7 +42,16 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
     fun bind(shopPageHeaderDataModel: ShopPageHeaderDataModel, isMyShop: Boolean, remoteConfig: RemoteConfig) {
         view.shop_page_main_profile_name.text = MethodChecker.fromHtml(shopPageHeaderDataModel.shopName).toString()
         view.shop_page_main_profile_follower.setOnClickListener { listener.onFollowerTextClicked(isShopFavorite) }
-        view.shop_page_main_profile_location.text = shopPageHeaderDataModel.location
+        val shopLocation = shopPageHeaderDataModel.location
+        if(shopLocation.isNotEmpty()){
+            view.shop_page_main_profile_location_icon.show()
+            view.shop_page_main_profile_location.show()
+            view.shop_page_main_profile_location.text = shopLocation
+        }else{
+            view.shop_page_main_profile_location_icon.hide()
+            view.shop_page_main_profile_location.hide()
+            view.shop_page_main_profile_location.text = shopLocation
+        }
         ImageHandler.loadImageCircle2(view.context, view.shop_page_main_profile_image, shopPageHeaderDataModel.avatar)
         if (isMyShop) {
             view.shop_page_main_profile_background.setOnClickListener {
@@ -79,10 +88,10 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
     }
 
     private fun setupSgcPlayWidget(shopPageHeaderDataModel: ShopPageHeaderDataModel){
-        view.play_seller_widget_container.visibility = if(shopPageHeaderDataModel.broadcaster.streamAllowed) View.VISIBLE else View.GONE
+        view.play_seller_widget_container.visibility = if(shopPageHeaderDataModel.broadcaster.streamAllowed && GlobalConfig.isSellerApp()) View.VISIBLE else View.GONE
         setupTextContentSgcWidget()
         setLottieAnimationFromUrl(context.getString(R.string.shop_page_lottie_sgc_url))
-        shopPageTrackingSGCPlayWidget?.onImpressionSGCContent(shopId = shopPageHeaderDataModel.shopId)
+        if(shopPageHeaderDataModel.broadcaster.streamAllowed) shopPageTrackingSGCPlayWidget?.onImpressionSGCContent(shopId = shopPageHeaderDataModel.shopId)
         view.container_lottie?.setOnClickListener {
             shopPageTrackingSGCPlayWidget?.onClickSGCContent(shopId = shopPageHeaderDataModel.shopId)
             RouteManager.route(view.context, ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER)
@@ -128,6 +137,8 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
 
     fun updateFavoriteData(favoriteData: ShopInfo.FavoriteData) {
         isShopFavorite = TextApiUtils.isValueTrue(favoriteData.alreadyFavorited.toString())
+        view.shop_page_main_profile_follower_icon.show()
+        view.shop_page_main_profile_follower.show()
         if (favoriteData.totalFavorite > 1) {
             view.shop_page_main_profile_follower.text = MethodChecker.fromHtml(view.context.getString(R.string.shop_page_header_total_followers,
                     favoriteData.totalFavorite.toDouble().formatToSimpleNumber()))
@@ -253,7 +264,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
 
     private fun displayOfficial() {
         view.shop_page_main_profile_badge.visibility = View.VISIBLE
-        view.shop_page_main_profile_badge.setImageResource(R.drawable.ic_badge_shop_official)
+        view.shop_page_main_profile_badge.setImageResource(com.tokopedia.design.R.drawable.ic_badge_shop_official)
     }
 
     /**

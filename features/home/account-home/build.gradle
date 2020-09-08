@@ -10,6 +10,7 @@ buildscript {
             url "https://maven.google.com"
         }
         google()
+        maven { url 'https://maven.fabric.io/public' }
         mavenCentral()
         jcenter()
         maven { url 'https://hansel.io/maven' }
@@ -113,7 +114,9 @@ dependencies {
         exclude group: 'com.android.support'
     }
     implementation rootProject.ext.networkDependencies.glide
-    implementation rootProject.ext.firebase.crashlytics
+    implementation(rootProject.ext.serviceDependencies.crashlytics) {
+        transitive = true
+    }
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
@@ -128,7 +131,7 @@ dependencies {
     }
 
     androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
-    androidTestImplementation project(rootProject.ext.libraries.playCore)
+    androidTestImplementation rootProject.ext.playServicesDependencies.core
     androidTestImplementation rootProject.ext.firebase.core
 
     testImplementation rootProject.ext.testDependencies.junitJupiterApi

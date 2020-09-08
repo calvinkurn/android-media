@@ -3,8 +3,8 @@ package com.tokopedia.topupbills.telco.postpaid.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.TextView
-import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.topupbills.R
 import org.jetbrains.annotations.NotNull
 
@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull
 class DigitalTelcoBillsResultWidget @JvmOverloads constructor(@NotNull context: Context,
                                                               attrs: AttributeSet? = null,
                                                               defStyleAttr: Int = 0)
-    : BaseCustomView(context, attrs, defStyleAttr) {
+    : FrameLayout(context, attrs, defStyleAttr) {
 
     private val label: TextView
     private val value: TextView

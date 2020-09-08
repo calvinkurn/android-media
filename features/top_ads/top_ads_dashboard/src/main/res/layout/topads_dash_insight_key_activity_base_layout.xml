@@ -80,13 +80,15 @@
                         android:layout_marginBottom="@dimen/dp_4"
                         app:layout_constraintTop_toBottomOf="@id/selectGroup" />
 
-                    <ImageButton
+                    <com.tokopedia.unifycomponents.UnifyImageButton
                         android:id="@+id/selectGroupInsight"
                         android:layout_width="wrap_content"
                         android:clickable="false"
                         android:layout_height="wrap_content"
                         android:background="@color/transparent"
                         app:layout_constraintEnd_toEndOf="parent"
+                        app:unifyImageButtonType="main"
+                        app:unifyImageButtonVariant="image"
                         app:layout_constraintTop_toTopOf="@id/selectGroup"
                         app:srcCompat="@drawable/topads_arrow_down" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -95,26 +97,9 @@
 
             <com.tokopedia.unifycomponents.TabsUnify
                 android:id="@+id/tabUnify"
-                app:tabTextAppearance="@style/TabLayout.Style"
-                android:layout_width="match_parent"
-                app:tabSelectedTextColor="@color/tkpd_main_green"
-                app:tabTextColor="@color/font_black_disabled_38"
+                app:tabMode="fixed"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
-
-                <com.google.android.material.tabs.TabItem
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/topads_insight_pos_key_ini" />
-
-                <com.google.android.material.tabs.TabItem
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/topads_insight_neg_key_ini"  />
-
-                <com.google.android.material.tabs.TabItem
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/topads_insight_bid_ini"  />
 
             </com.tokopedia.unifycomponents.TabsUnify>
         </com.google.android.material.appbar.AppBarLayout>
