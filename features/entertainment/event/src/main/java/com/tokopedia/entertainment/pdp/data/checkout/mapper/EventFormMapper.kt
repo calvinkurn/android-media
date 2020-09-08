@@ -37,8 +37,8 @@ object EventFormMapper {
         return formData
     }
 
-    fun setListBottomSheetForm(list : List<String>, positionActive:Int):ArrayList<ListItemUnify>{
-        var array = arrayListOf<ListItemUnify>()
+    fun setListBottomSheetForm(list : List<String>):ArrayList<ListItemUnify>{
+        val array = arrayListOf<ListItemUnify>()
         list.mapIndexed { index, s ->
             val itemUnify = ListItemUnify(s, "")
             itemUnify.setVariant(null,ListItemUnify.RADIO_BUTTON)
@@ -47,9 +47,12 @@ object EventFormMapper {
         return array
     }
 
-    fun isRadioActive(listItemUnify : ArrayList<ListItemUnify>, positionActive: Int){
-        listItemUnify.forEachIndexed{ index, listItemUnify ->
-            listItemUnify.listRightRadiobtn?.isChecked = (index==positionActive)
+    fun clearRadioState(listItemUnify: ArrayList<ListItemUnify>, index:Int) {
+        val removedList = arrayListOf<ListItemUnify>()
+        removedList.addAll(listItemUnify)
+        removedList.removeAt(index)
+        removedList.forEach {
+            it.listRightRadiobtn?.isChecked = false
         }
     }
 }

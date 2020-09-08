@@ -11,8 +11,9 @@ import timber.log.Timber
 import java.lang.RuntimeException
 import java.util.regex.Pattern
 
-class EventPDPFormAdapter(val userSession: UserSessionInterface
-                          , val onClickFormListener: OnClickFormListener): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class EventPDPFormAdapter(val userSession: UserSessionInterface,
+                          val onClickFormListener: OnClickFormListener,
+                          val textFormListener: EventPDPTextFieldViewHolder.TextFormListener): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var formData: MutableList<Form> = mutableListOf()
 
@@ -23,7 +24,7 @@ class EventPDPFormAdapter(val userSession: UserSessionInterface
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return EventPDPTextFieldViewHolder(LayoutInflater.from(parent.context).inflate(EventPDPTextFieldViewHolder.LAYOUT_TEXT, parent, false),
-                ::addOrRemoveData, userSession, onClickFormListener)
+                ::addOrRemoveData, userSession, onClickFormListener, textFormListener)
     }
 
     override fun getItemCount(): Int = formData.size

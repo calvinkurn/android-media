@@ -28,10 +28,15 @@ import java.util.regex.Pattern
 class EventPDPTextFieldViewHolder(val view: View,
                                   val addOrRemoveData: (Int, String) -> Unit,
                                   val userSession: UserSessionInterface,
-                                  val formListener: OnClickFormListener) : RecyclerView.ViewHolder(view) {
+                                  val formListener: OnClickFormListener,
+                                  val textFormListener: TextFormListener) : RecyclerView.ViewHolder(view) {
+    var positionActiveForm = 0
+    var positionActiveBottomSheet = 0
 
     fun bind(element: Form, position: Int) {
         with(itemView) {
+            positionActiveBottomSheet = textFormListener.getPositionActive()
+            positionActiveForm = position
             if (position > 0) txtValue.setMargin(0, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3), context.resources.displayMetrics).toInt(), 0, 0)
 
             txtValue.setPlaceholder(element.helpText)
@@ -63,15 +68,16 @@ class EventPDPTextFieldViewHolder(val view: View,
             }
 
             if (element.value.isNotBlank()) {
+                element.valuePosition = positionActiveBottomSheet.toString()
                 if (element.elementType.equals(ELEMENT_TEXT)) txtValue.textFieldInput.setText(element.value)
                 if (element.elementType.equals(ELEMENT_LIST)) {
                     val list = getList(element.value)
                     if (list.isNotEmpty()) {
                         txtValue.textFieldInput.apply {
                             keyListener = null
-                            setText(list.get(0))
+                            setText(list.get(positionActiveBottomSheet))
                             setOnClickListener {
-                                formListener.clickBottomSheet(list,element.title, 0)
+                                formListener.clickBottomSheet(list,element.title,positionActiveForm, positionActiveBottomSheet)
                             }
                         }
                     }
@@ -99,6 +105,10 @@ class EventPDPTextFieldViewHolder(val view: View,
             listValue.add(jsonArray.getJSONObject(i).getString("${i - 1}"))
         }
         return listValue
+    }
+
+    interface TextFormListener{
+       fun getPositionActive():Int
     }
 
     companion object {

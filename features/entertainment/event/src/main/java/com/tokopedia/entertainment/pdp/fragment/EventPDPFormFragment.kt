@@ -1,6 +1,5 @@
 package com.tokopedia.entertainment.pdp.fragment
 
-import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.os.Bundle
@@ -11,9 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
-import com.meituan.robust.patch.annotaion.Add
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.common.util.EventQuery
 import com.tokopedia.entertainment.common.util.EventQuery.eventContentById
@@ -25,37 +22,41 @@ import com.tokopedia.entertainment.pdp.activity.EventPDPFormActivity.Companion.E
 import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter
 import com.tokopedia.entertainment.pdp.data.Form
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.ent_pdp_form_fragment.*
 import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.EMPTY_TYPE
 import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.REGEX_TYPE
+import com.tokopedia.entertainment.pdp.adapter.viewholder.EventPDPTextFieldViewHolder
 import com.tokopedia.entertainment.pdp.data.checkout.AdditionalType
 import com.tokopedia.entertainment.pdp.data.checkout.EventCheckoutAdditionalData
-import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventFormMapper.isRadioActive
 import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventFormMapper.setListBottomSheetForm
+import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventFormMapper.clearRadioState
 import com.tokopedia.entertainment.pdp.listener.OnClickFormListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.bottom_sheet_event_checkout.view.*
-import kotlinx.android.synthetic.main.bottom_sheet_event_list_form.*
 import kotlinx.android.synthetic.main.bottom_sheet_event_list_form.view.*
-import timber.log.Timber
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.io.Serializable
 
-class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener{
+class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener, EventPDPTextFieldViewHolder.TextFormListener {
 
     private var urlPDP = ""
+    private var positionActiveData = 0
 
     @Inject
     lateinit var viewModel: EventPDPFormViewModel
     @Inject
-    lateinit var userSession:UserSessionInterface
+    lateinit var userSession: UserSessionInterface
 
     lateinit var formAdapter: EventPDPFormAdapter
 
     override fun getScreenName(): String = String.format(resources.getString(R.string.ent_pdp_title_form))
 
-    override fun initInjector() { getComponent(EventPDPComponent::class.java).inject(this) }
+    override fun initInjector() {
+        getComponent(EventPDPComponent::class.java).inject(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         urlPDP = arguments?.getString(EXTRA_URL_PDP, "") ?: ""
@@ -74,21 +75,21 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener{
         super.onViewCreated(view, savedInstanceState)
     }
 
-    private fun setupAdapter(){
-        formAdapter = EventPDPFormAdapter(userSession, this)
+    private fun setupAdapter() {
+        formAdapter = EventPDPFormAdapter(userSession, this, this)
     }
 
-    private fun setupView(){
+    private fun setupView() {
         setupTicker()
         setupRecycler()
         setupSimpanButton()
     }
 
-    private fun setupTicker(){
+    private fun setupTicker() {
         tickerText.setTextDescription(String.format(resources.getString(R.string.ent_pdp_form_ticker_warn_text)))
     }
 
-    private fun setupRecycler(){
+    private fun setupRecycler() {
         recycler_view.apply {
             setHasFixedSize(true)
             isNestedScrollingEnabled = false
@@ -97,9 +98,9 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener{
         }
     }
 
-    private fun setupSimpanButton(){
+    private fun setupSimpanButton() {
         simpanBtn.setOnClickListener {
-            if(formAdapter.getError().first.isNotBlank()) {
+            if (formAdapter.getError().first.isNotBlank()) {
                 view?.let {
                     if (formAdapter.getError().second == EMPTY_TYPE) {
                         Toaster.make(it, String.format(resources.getString(R.string.ent_pdp_form_error_empty_value_msg), formAdapter.getError().first), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, String.format(resources.getString(R.string.ent_pdp_form_toaster_click_msg)))
@@ -108,7 +109,7 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener{
                     }
                 }
             } else {
-                activity?.run{
+                activity?.run {
                     val intent = Intent()
                     intent.putExtra(EXTRA_DATA_PESSANGER, formAdapter.formData as Serializable)
                     this.setResult(RESULT_OK, intent)
@@ -118,7 +119,7 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener{
         }
     }
 
-    private fun observeViewModel(){
+    private fun observeViewModel() {
         viewModel.mFormData.observe(viewLifecycleOwner, Observer {
             hideProgressBar()
             renderList(it)
@@ -126,11 +127,11 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener{
         })
     }
 
-    private fun hideProgressBar(){
+    private fun hideProgressBar() {
         progressBar.visibility = View.GONE
     }
 
-    private fun showData(){
+    private fun showData() {
         recycler_view.visibility = View.VISIBLE
         tickerText.visibility = View.VISIBLE
         simpanBtn.visibility = View.VISIBLE
@@ -138,8 +139,8 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener{
 
     private fun setupData() {
         val listForm = activity?.intent?.getSerializableExtra(EXTRA_DATA_PESSANGER)
-        val eventCheckoutAdditionalData = activity?.intent?.extras?.getParcelable(EXTRA_ADDITIONAL_DATA) ?:
-        EventCheckoutAdditionalData(additionalType = AdditionalType.NULL_DATA)
+        val eventCheckoutAdditionalData = activity?.intent?.extras?.getParcelable(EXTRA_ADDITIONAL_DATA)
+                ?: EventCheckoutAdditionalData(additionalType = AdditionalType.NULL_DATA)
 
         if (listForm != null) {
             val listFormPemesan = listForm as List<Form>
@@ -152,7 +153,7 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener{
             }
         }
 
-        if(eventCheckoutAdditionalData.additionalType!=AdditionalType.NULL_DATA){
+        if (eventCheckoutAdditionalData.additionalType != AdditionalType.NULL_DATA) {
             hideProgressBar()
             requestData(eventCheckoutAdditionalData)
             showData()
@@ -160,17 +161,17 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener{
 
     }
 
-    private fun requestData(eventCheckoutAdditionalData: EventCheckoutAdditionalData){
+    private fun requestData(eventCheckoutAdditionalData: EventCheckoutAdditionalData) {
         viewModel.getData(urlPDP, EventQuery.eventPDPV3(),
                 eventContentById(), eventCheckoutAdditionalData)
     }
 
-    private fun renderList(formData: MutableList<Form>){
+    private fun renderList(formData: MutableList<Form>) {
         formAdapter.setList(formData)
     }
 
-    override fun clickBottomSheet(list: List<String>, title: String, positionActive:Int) {
-        if (list.size > SEARCH_PAGE_LIMIT){
+    override fun clickBottomSheet(list: List<String>, title: String, positionForm: Int, positionActiveBottomSheet: Int) {
+        if (list.size > SEARCH_PAGE_LIMIT) {
 
         } else {
             val view = LayoutInflater.from(context).inflate(R.layout.bottom_sheet_event_list_form, null)
@@ -180,11 +181,24 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener{
                 setTitle(title)
                 setCloseClickListener { bottomSheets.dismiss() }
             }
-            val arrayList = setListBottomSheetForm(list,positionActive)
+            val arrayList = setListBottomSheetForm(list)
             view.listForm.apply {
                 setData(arrayList)
                 onLoadFinish {
-                    isRadioActive(arrayList, positionActive)
+                    arrayList.forEachIndexed { index, it ->
+                        it.listRightRadiobtn?.isChecked = (positionActiveBottomSheet == index)
+                        it.listRightRadiobtn?.setOnCheckedChangeListener { buttonView, isChecked ->
+                            if (isChecked) {
+                                positionActiveData = index
+                                formAdapter.notifyItemChanged(positionForm)
+                                clearRadioState(arrayList, index)
+                                CoroutineScope(Dispatchers.Main).launch {
+                                    delay(250)
+                                    bottomSheets.dismiss()
+                                }
+                            }
+                        }
+                    }
                 }
             }
 
@@ -194,7 +208,12 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener{
         }
     }
 
-    companion object{
+    override fun getPositionActive(): Int {
+        return positionActiveData
+    }
+
+
+    companion object {
         fun newInstance(url: String) = EventPDPFormFragment().also {
             it.arguments = Bundle().apply {
                 putString(EXTRA_URL_PDP, url)

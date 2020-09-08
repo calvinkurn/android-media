@@ -440,7 +440,8 @@ data class Form(
         val validatorRegex: String = "",
         @SerializedName("value")
         @Expose
-        var value: String = ""
+        var value: String = "",
+        var valuePosition: String = ""
 ): Serializable
 
 data class Group(
