@@ -30,7 +30,7 @@ class PltPlayPerformanceTest {
     @Test
     fun testPageLoadTimePerformance() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
-        val intent = PlayActivity.createIntent(context, "10708")
+        val intent = PlayActivity.createIntent(context, "0")
         activityRule.launchActivity(intent)
         Thread.sleep(10000)
         activityRule.activity.getPltPerformanceResultData()?.let { data->
