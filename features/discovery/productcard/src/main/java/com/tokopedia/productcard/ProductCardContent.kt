@@ -1,6 +1,7 @@
 package com.tokopedia.productcard
 
 import android.graphics.Paint
+import android.text.method.LinkMovementMethod
 import android.view.View
 import androidx.annotation.DrawableRes
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -8,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.productcard.utils.initLabelGroup
 import com.tokopedia.productcard.utils.loadIcon
 import com.tokopedia.productcard.utils.shouldShowWithAction
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
 
 internal fun View.renderProductCardContent(productCardModel: ProductCardModel) {
@@ -151,7 +153,8 @@ private fun View.renderShopRating(productCardModel: ProductCardModel) {
         imageShopRating?.visible()
         imageShopRating.setImageResource(getShopRatingDrawable(productCardModel))
         textViewShopRating?.shouldShowWithAction(productCardModel.isShowShopRating()) {
-            it.text = MethodChecker.fromHtml(productCardModel.shopRating)
+            val htmlLinkHelper = HtmlLinkHelper(this.context, productCardModel.shopRating)
+            it.text = htmlLinkHelper.spannedString ?: ""
         }
     }
     else {
