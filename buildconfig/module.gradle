@@ -1,6 +1,14 @@
 apply from: "$rootProject.projectDir/buildconfig/jacoco.gradle"
 apply from: "$rootProject.projectDir/tools/set_debug_tools.gradle"
 
+
+ext.lintchecks = [
+        'SetColourUsageError',
+        'CoreResourcesUsageError',
+        'VectorDrawableCompat',
+        'TypographyOverTextViewUsage'
+] as String[]
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
 
@@ -18,6 +26,15 @@ android {
         main.java.srcDirs += 'src/main/kotlin'
         test.java.srcDirs += 'src/test/kotlin'
         androidTest.java.srcDirs += 'src/androidTest/kotlin'
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        checkDependencies true
+        htmlReport false
+        warningsAsErrors false
+        abortOnError false
+        check lintchecks
     }
 
     buildTypes {
