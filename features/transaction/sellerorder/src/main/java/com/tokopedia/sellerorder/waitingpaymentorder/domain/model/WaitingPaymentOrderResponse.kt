@@ -26,19 +26,10 @@ data class WaitingPaymentOrderResponse(
                 @Expose
                 val cursorPaymentDeadline: Long = 0L,
 
-                @SerializedName("paging")
-                @Expose
-                val paging: Paging = Paging(),
-
                 @SerializedName("list")
                 @Expose
                 val orders: List<Order> = listOf()
         ) {
-            data class Paging(
-                    @SerializedName("current_page")
-                    @Expose
-                    val currentPage: Int = 0
-            )
 
             data class Order(
                     @SerializedName("order_id")
