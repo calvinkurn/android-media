@@ -1115,7 +1115,13 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         })
     }
 
-    private fun getChatReportUrl() = "${TkpdBaseURL.CHAT_REPORT_URL}$messageId"
+    private fun getChatReportUrl(): String {
+        var url = "${TkpdBaseURL.CHAT_REPORT_URL}$messageId"
+        if (isSeller()) {
+            url += "?isSeller=1"
+        }
+        return url
+    }
 
     override fun onDualAnnouncementClicked(redirectUrl: String, attachmentId: String, blastId: Int) {
         analytics.trackClickImageAnnouncement(blastId.toString(), attachmentId)
