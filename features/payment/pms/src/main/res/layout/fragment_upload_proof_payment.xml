@@ -222,7 +222,7 @@
                     android:layout_width="@dimen/dp_24"
                     android:layout_height="@dimen/dp_24"
                     android:layout_gravity="top|end"
-                    android:background="@drawable/circle_white"
+                    android:background="@drawable/pm_circle_white"
                     android:padding="@dimen/dp_5"
                     app:srcCompat="@drawable/ic_check_green_payment" />
             </FrameLayout>
