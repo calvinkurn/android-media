@@ -32,13 +32,14 @@ class OtherMenuAdapterTypeFactory(
             MenuItemsViewHolder.LAYOUT -> MenuItemsViewHolder(parent, trackingListener, sellerMenuTracker)
             MenuItemsViewHolder.LAYOUT_NO_ICON -> MenuItemsViewHolder(parent, trackingListener, sellerMenuTracker)
             SettingTitleMenuViewHolder.LAYOUT -> SettingTitleMenuViewHolder(parent)
-            ShopInfoViewHolder.LAYOUT -> ShopInfoViewHolder(parent, shopInfoListener, trackingListener, userSession)
+            ShopInfoViewHolder.LAYOUT -> ShopInfoViewHolder(parent, shopInfoListener, trackingListener, userSession, sellerMenuTracker)
             ShopInfoLoadingViewHolder.LAYOUT -> ShopInfoLoadingViewHolder(parent)
             ShopInfoErrorViewHolder.LAYOUT -> ShopInfoErrorViewHolder(parent, shopInfoErrorListener)
-            ShopOrderViewHolder.LAYOUT -> ShopOrderViewHolder(parent)
+            ShopOrderViewHolder.LAYOUT -> ShopOrderViewHolder(parent, sellerMenuTracker)
             SellerMenuTitleViewHolder.LAYOUT -> SellerMenuTitleViewHolder(parent, sellerMenuTracker)
             ShopProductViewHolder.LAYOUT -> ShopProductViewHolder(parent, sellerMenuTracker)
             SellerFeatureViewHolder.LAYOUT -> SellerFeatureViewHolder(parent, sellerMenuTracker)
+            SellerSettingsTitleViewHolder.LAYOUT -> SellerSettingsTitleViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
@@ -77,6 +78,10 @@ class OtherMenuAdapterTypeFactory(
 
     override fun type(settingTitleUiModel: SettingTitleUiModel): Int {
         return SettingTitleViewHolder.LAYOUT
+    }
+
+    override fun type(sellerSettingsTitleUiModel: SellerSettingsTitleUiModel): Int {
+        return SellerSettingsTitleViewHolder.LAYOUT
     }
 
     override fun type(menuItemUiModel: MenuItemUiModel): Int {

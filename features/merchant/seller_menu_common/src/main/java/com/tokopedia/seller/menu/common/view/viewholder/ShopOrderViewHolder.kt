@@ -8,10 +8,14 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.seller.menu.common.R
+import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.seller.menu.common.view.uimodel.ShopOrderUiModel
 import kotlinx.android.synthetic.main.item_seller_menu_order_section.view.*
 
-class ShopOrderViewHolder(itemView: View): AbstractViewHolder<ShopOrderUiModel>(itemView) {
+class ShopOrderViewHolder(
+    itemView: View,
+    private val sellerMenuTracker: SellerMenuTracker?
+): AbstractViewHolder<ShopOrderUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -45,10 +49,12 @@ class ShopOrderViewHolder(itemView: View): AbstractViewHolder<ShopOrderUiModel>(
     private fun setClickListeners() {
         itemView.cardNewOrder.setOnClickListener {
             RouteManager.route(context, ApplinkConst.SELLER_NEW_ORDER)
+            sellerMenuTracker?.sendEventClickOrderNew()
         }
 
         itemView.cardReadyToShip.setOnClickListener {
             RouteManager.route(context, ApplinkConst.SELLER_PURCHASE_READY_TO_SHIP)
+            sellerMenuTracker?.sendEventClickOrderReadyToShip()
         }
     }
 }

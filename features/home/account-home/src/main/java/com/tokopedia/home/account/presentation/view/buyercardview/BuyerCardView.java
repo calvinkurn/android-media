@@ -22,8 +22,11 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.home.account.R;
+import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.unifycomponents.CardUnify;
 import com.tokopedia.unifyprinciples.Typography;
+import com.tokopedia.user.session.UserSession;
 
 /**
  * @author okasurya on 7/17/18.
@@ -55,6 +58,7 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
     private CardView widget;
     private CardUnify sellerAccountCard;
     private CardUnify sellerOpenShopCard;
+    private SellerMenuTracker sellerMenuTracker;
 
     public BuyerCardView(@NonNull Context context) {
         super(context);
@@ -96,6 +100,7 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
         widget = view.findViewById(R.id.cardView);
         sellerAccountCard = view.findViewById(R.id.sellerAccountCard);
         sellerOpenShopCard = view.findViewById(R.id.sellerOpenShopCard);
+        sellerMenuTracker = new SellerMenuTracker(TrackApp.getInstance().getGTM(), new UserSession(getContext()));
         buyerCardPresenter = new BuyerCardPresenter();
         buyerCardPresenter.attachView(this);
     }
@@ -258,9 +263,10 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
         shopNameTxt.setCompoundDrawablesWithIntrinsicBounds(icon, null, null,  null);
         shopNameTxt.setText(MethodChecker.fromHtml(getContext().getString(R.string.account_home_shop_name_card, shopName)));
 
-        sellerAccountCard.setOnClickListener(v ->
-            RouteManager.route(getContext(), ApplinkConstInternalSellerapp.SELLER_MENU)
-        );
+        sellerAccountCard.setOnClickListener(v -> {
+            RouteManager.route(getContext(), ApplinkConstInternalSellerapp.SELLER_MENU);
+            sellerMenuTracker.sendEventClickMyShop();
+        });
 
         sellerAccountCard.setVisibility(View.VISIBLE);
         sellerOpenShopCard.setVisibility(View.GONE);
@@ -268,9 +274,10 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
 
     @Override
     public void showShopOpenCard() {
-        sellerOpenShopCard.setOnClickListener(v ->
-            RouteManager.route(getContext(), ApplinkConstInternalMarketplace.OPEN_SHOP)
-        );
+        sellerOpenShopCard.setOnClickListener(v -> {
+            RouteManager.route(getContext(), ApplinkConstInternalMarketplace.OPEN_SHOP);
+            sellerMenuTracker.sendEventCreateShop();
+        });
 
         sellerAccountCard.setVisibility(View.GONE);
         sellerOpenShopCard.setVisibility(View.VISIBLE);

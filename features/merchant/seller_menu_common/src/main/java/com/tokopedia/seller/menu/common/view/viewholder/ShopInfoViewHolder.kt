@@ -16,8 +16,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller.menu.common.R
+import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
-import com.tokopedia.seller.menu.common.analytics.sendClickShopNameTracking
 import com.tokopedia.seller.menu.common.analytics.sendSettingShopInfoClickTracking
 import com.tokopedia.seller.menu.common.analytics.sendSettingShopInfoImpressionTracking
 import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantStatus
@@ -37,7 +37,8 @@ class ShopInfoViewHolder(
     itemView: View,
     private val listener: ShopInfoListener?,
     private val trackingListener: SettingTrackingListener,
-    private val userSession: UserSessionInterface?
+    private val userSession: UserSessionInterface?,
+    private val sellerMenuTracker: SellerMenuTracker?
 ): AbstractViewHolder<ShopInfoUiModel>(itemView) {
 
     companion object {
@@ -123,6 +124,7 @@ class ShopInfoViewHolder(
         itemView.shopScore.text = uiModel.shopScore.toString()
         itemView.shopScoreChevronRight.setOnClickListener {
             RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_SCORE_DETAIL, userSession?.shopId)
+            sellerMenuTracker?.sendEventClickShopScore()
         }
     }
 
@@ -143,7 +145,7 @@ class ShopInfoViewHolder(
                 text = MethodChecker.fromHtml(shopName)
                 setOnClickListener {
                     goToShopPage()
-                    sendClickShopNameTracking()
+                    sellerMenuTracker?.sendEventClickShopName()
                 }
             }
         }
@@ -155,7 +157,7 @@ class ShopInfoViewHolder(
             sendSettingShopInfoImpressionTracking(shopAvatarUiModel, trackingListener::sendImpressionDataIris)
             setOnClickListener {
                 goToShopPage()
-                shopAvatarUiModel.sendSettingShopInfoClickTracking()
+                sellerMenuTracker?.sendEventClickShopPicture()
             }
         }
     }
@@ -165,9 +167,11 @@ class ShopInfoViewHolder(
             balanceTitle?.text = context.resources.getString(R.string.setting_balance)
             balanceValue?.text = saldoBalanceUiModel.balanceValue
             sendSettingShopInfoImpressionTracking(saldoBalanceUiModel, trackingListener::sendImpressionDataIris)
-            balanceValue.setOnClickListener {
-                listener?.onSaldoClicked()
-                saldoBalanceUiModel.sendSettingShopInfoClickTracking()
+            listOf(balanceTitle, balanceValue).forEach {
+                it.setOnClickListener {
+                    listener?.onSaldoClicked()
+                    sellerMenuTracker?.sendEventClickSaldoBalance()
+                }
             }
         }
     }
@@ -182,7 +186,7 @@ class ShopInfoViewHolder(
                     sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
                     rightRectangle.setOnClickListener {
                         RouteManager.route(context, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE)
-                        shopStatusUiModel.sendSettingShopInfoClickTracking()
+                        sellerMenuTracker?.sendEventClickShopType()
                     }
                 }
             }
@@ -192,7 +196,7 @@ class ShopInfoViewHolder(
                     sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
                     setOnClickListener {
                         RouteManager.route(context, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE)
-                        shopStatusUiModel.sendSettingShopInfoClickTracking()
+                        sellerMenuTracker?.sendEventClickShopType()
                     }
                 }
             }
@@ -272,7 +276,7 @@ class ShopInfoViewHolder(
         intent.putExtra(EXTRA_SHOP_ID, userSession?.shopId)
         context.startActivity(intent)
     }
-    
+
     private fun goToShopPage() {
         RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_PAGE, userSession?.shopId)
     }

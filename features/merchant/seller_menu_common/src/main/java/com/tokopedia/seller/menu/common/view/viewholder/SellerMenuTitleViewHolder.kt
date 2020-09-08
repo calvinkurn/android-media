@@ -6,8 +6,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.seller.menu.common.R
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
-import com.tokopedia.seller.menu.common.view.uimodel.BaseProductSectionTitleUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.SectionTitleUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.SectionTitleUiModel.SectionTitleType.*
 import kotlinx.android.synthetic.main.item_seller_menu_title_section.view.*
 
 class SellerMenuTitleViewHolder(
@@ -27,14 +27,15 @@ class SellerMenuTitleViewHolder(
         menu.onClickApplink?.let { appLink ->
             itemView.setOnClickListener {
                 RouteManager.route(itemView.context, appLink)
-                sendTracker(menu)
+                trackClickSection(menu)
             }
         }
     }
 
-    private fun sendTracker(menu: SectionTitleUiModel) {
-        when(menu) {
-            is BaseProductSectionTitleUiModel -> tracker?.sendEventAddProductClick()
+    private fun trackClickSection(menu: SectionTitleUiModel) {
+        when(menu.type) {
+            PRODUCT_SECTION_TITLE -> tracker?.sendEventAddProductClick()
+            ORDER_SECTION_TITLE -> tracker?.sendEventClickOrderHistory()
         }
     }
 }

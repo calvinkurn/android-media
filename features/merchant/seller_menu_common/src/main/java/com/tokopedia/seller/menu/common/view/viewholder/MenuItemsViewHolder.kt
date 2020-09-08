@@ -57,19 +57,24 @@ class MenuItemsViewHolder(
 
     private fun sendTracker(menuItem: MenuItemUiModel) {
         when(menuItem) {
-            is SellerMenuItemUiModel -> sendTrackerForMainApp(menuItem)
+            is SellerMenuItemUiModel -> sendClickSellerMenuEvent(menuItem)
             else -> menuItem.sendSettingShopInfoClickTracking()
         }
     }
 
-    private fun sendTrackerForMainApp(menuItem: SellerMenuItemUiModel) {
+    private fun sendClickSellerMenuEvent(menuItem: SellerMenuItemUiModel) {
         when (menuItem.type) {
             MenuItemType.REVIEW -> sellerMenuTracker?.sendEventClickReview()
             MenuItemType.DISCUSSION -> sellerMenuTracker?.sendEventClickDiscussion()
             MenuItemType.COMPLAIN -> sellerMenuTracker?.sendEventClickComplain()
             MenuItemType.SELLER_EDU -> sellerMenuTracker?.sendEventClickSellerEdu()
             MenuItemType.TOKOPEDIA_CARE -> sellerMenuTracker?.sendEventClickTokopediaCare()
-            MenuItemType.SHOP_SETTINGS -> sellerMenuTracker?.sendEventClickShopSettings()
+            MenuItemType.BASIC_INFO -> sellerMenuTracker?.sendEventClickBasicInformation()
+            MenuItemType.NOTES -> sellerMenuTracker?.sendEventClickShopNotes()
+            MenuItemType.SCHEDULE -> sellerMenuTracker?.sendEventClickSchedule()
+            MenuItemType.LOCATION -> sellerMenuTracker?.sendEventClickLocation()
+            MenuItemType.SHIPPING -> sellerMenuTracker?.sendEventClickShipping()
+            MenuItemType.NOTIFICATION -> sellerMenuTracker?.sendEventClickNotificationSettings()
         }
     }
 }
