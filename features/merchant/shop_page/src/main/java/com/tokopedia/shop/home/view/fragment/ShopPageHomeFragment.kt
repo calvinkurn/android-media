@@ -1285,9 +1285,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         refreshProductList()
     }
 
-    override fun setSortFilterMeasureHeight(measureHeight: Int) {
-        val asd = measureHeight
-    }
+    override fun setSortFilterMeasureHeight(measureHeight: Int) {}
 
     private fun refreshProductList() {
         shopHomeAdapter.removeProductList()
