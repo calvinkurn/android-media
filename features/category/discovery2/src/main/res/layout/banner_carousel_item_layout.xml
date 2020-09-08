@@ -1,20 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/parent_layout"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/parent_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <TextView
-        android:id="@+id/back_button"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/grey_300"
-        android:gravity="center"
-        android:textColor="@color/grey_700"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toLeftOf="parent" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/banner_image"
@@ -29,17 +19,17 @@
         android:id="@+id/subTitle_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
-        android:ellipsize="end"
         android:maxLines="2"
-        android:paddingHorizontal="@dimen/dp_4"
+        android:ellipsize="end"
+        app:typographyType="body_2"
         android:textColor="@color/clr_f231353b"
+        app:typographyWeight="bold"
+        android:paddingHorizontal="@dimen/dp_4"
+        android:layout_marginTop="@dimen/dp_8"
+        app:layout_constraintTop_toBottomOf="@id/banner_image"
         app:layout_constraintLeft_toLeftOf="@id/banner_image"
         app:layout_constraintRight_toRightOf="@id/banner_image"
-        app:layout_constraintTop_toBottomOf="@id/banner_image"
-        app:typographyType="body_2"
-        app:typographyWeight="bold"
-        tools:text="Tips adn fknk ofkfne kjfdkjf kncdknf kfdknffefefefefeefeffefefe" />
+        tools:text="Tips adn fknk ofkfne kjfdkjf kncdknf kfdknffefefefefeefeffefefe"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
