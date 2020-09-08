@@ -26,6 +26,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.google.android.gms.auth.api.phone.SmsRetrieverClient
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
@@ -176,7 +177,9 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
                 msisdn = otpData.msisdn,
                 email = otpData.email,
                 mode = modeListData.modeText,
-                userId = otpData.userId.toIntOrZero()
+                userId = otpData.userId.toIntOrZero(),
+                userIdEnc = otpData.userIdEnc,
+                validateToken = otpData.accessToken
         )
     }
 
@@ -267,14 +270,23 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
 
                     activity?.let { activity ->
                         val bundle = Bundle().apply {
-                            putString(ApplinkConstInternalGlobal.PARAM_UUID, otpValidateData.validateToken)
                             putString(ApplinkConstInternalGlobal.PARAM_TOKEN, otpValidateData.validateToken)
                             putString(ApplinkConstInternalGlobal.PARAM_MSISDN, otpData.msisdn)
                             putString(ApplinkConstInternalGlobal.PARAM_EMAIL, otpData.email)
                             putString(ApplinkConstInternalGlobal.PARAM_SOURCE, otpData.source)
                             putString(ApplinkConstInternalGlobal.PARAM_OTP_CODE, viewBound.pin?.value.toString())
                         }
-                        activity.setResult(Activity.RESULT_OK, Intent().putExtras(bundle))
+                        if((activity as VerificationActivity).isResetPin2FA){
+                            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.CHANGE_PIN).apply {
+                                bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA, true)
+                                bundle.putString(ApplinkConstInternalGlobal.PARAM_UUID, otpData.userId)
+                                putExtras(bundle)
+                            }
+                            activity.startActivity(intent)
+                        }else {
+                            bundle.putString(ApplinkConstInternalGlobal.PARAM_UUID, otpValidateData.validateToken)
+                            activity.setResult(Activity.RESULT_OK, Intent().putExtras(bundle))
+                        }
                         activity.finish()
                     }
                 }
@@ -426,7 +438,12 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
 
     private fun setFooterText() {
         val spannable: Spannable
-        if (modeListData.modeText == OtpConstant.OtpMode.PIN ||
+        if(otpData.otpType == 148){
+            val message = getString(R.string.forgot_pin)
+            spannable = SpannableString(message)
+            setForgotPinFooterSpan(message, spannable)
+        }
+        else if (modeListData.modeText == OtpConstant.OtpMode.PIN ||
                 modeListData.modeText == OtpConstant.OtpMode.GOOGLE_AUTH) {
             val message = getString(R.string.login_with_other_method)
             spannable = SpannableString(message)
@@ -482,6 +499,28 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
                 },
                 start,
                 end,
+                0
+        )
+    }
+
+    private fun setForgotPinFooterSpan(message: String, spannable: Spannable) {
+        spannable.setSpan(
+                object : ClickableSpan() {
+                    override fun onClick(view: View) {
+                        val data = otpData
+                        data.otpType = 149
+                        data.otpMode = ""
+//                        data.msisdn =
+                        (activity as VerificationActivity).goToMethodPageResetPin(data)
+                    }
+
+                    override fun updateDrawState(ds: TextPaint) {
+                        ds.color = MethodChecker.getColor(context, R.color.Green_G500)
+                        ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+                    }
+                },
+                message.indexOf(getString(R.string.forgot_pin)),
+                message.indexOf(getString(R.string.forgot_pin)) + getString(R.string.forgot_pin).length,
                 0
         )
     }

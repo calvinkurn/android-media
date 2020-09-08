@@ -49,6 +49,7 @@ class VerificationActivity : BaseSimpleActivity(), HasComponent<VerificationComp
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    var isResetPin2FA = false
     private var otpData = OtpData()
 
     override fun getNewFragment(): Fragment? = null
@@ -134,10 +135,10 @@ class VerificationActivity : BaseSimpleActivity(), HasComponent<VerificationComp
                 ?: ""
         otpData.source = intent?.extras?.getString(ApplinkConstInternalGlobal.PARAM_SOURCE, "")
                 ?: ""
-        otpData.canUseOtherMethod = intent?.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, false)
-                ?: false
-        otpData.isShowChooseMethod = intent?.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
-                ?: true
+        otpData.userIdEnc = intent?.extras?.getString(ApplinkConstInternalGlobal.PARAM_USER_ID_ENC, "")
+                ?: ""
+        otpData.accessToken = intent?.extras?.getString(ApplinkConstInternalGlobal.PARAM_USER_ACCESS_TOKEN, "")
+                ?: ""
     }
 
     private fun createBundle(modeListData: ModeListData? = null): Bundle {
@@ -174,6 +175,15 @@ class VerificationActivity : BaseSimpleActivity(), HasComponent<VerificationComp
     fun goToOnboardingMiscallPage(modeListData: ModeListData) {
         val fragment = OnboardingMiscallFragment.createInstance(createBundle(modeListData))
         doFragmentTransaction(fragment, TAG_OTP_MISCALL, false)
+    }
+
+    fun goToMethodPageResetPin(otpData: OtpData) {
+        isResetPin2FA = true
+        val bundle = Bundle().apply {
+            putParcelable(OtpConstant.OTP_DATA_EXTRA, otpData)
+        }
+        val fragment = VerificationMethodFragment.createInstance(bundle)
+        doFragmentTransaction(fragment, TAG_OTP_VALIDATOR, false)
     }
 
     companion object {

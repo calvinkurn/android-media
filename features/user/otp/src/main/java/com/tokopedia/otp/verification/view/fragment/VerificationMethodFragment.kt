@@ -119,7 +119,9 @@ class VerificationMethodFragment : BaseVerificationFragment(), IOnBackPressed {
                 otpType = otpData.otpType.toString(),
                 userId = otpData.userId,
                 msisdn = otpData.msisdn,
-                email = otpData.email
+                email = otpData.email,
+                userIdEnc = otpData.userIdEnc,
+                accessToken = otpData.accessToken
         )
     }
 
@@ -136,19 +138,20 @@ class VerificationMethodFragment : BaseVerificationFragment(), IOnBackPressed {
         return { otpModeListData ->
             if (otpModeListData.success && otpModeListData.modeList.isNotEmpty()) {
                 hideLoading()
-                if(!otpData.isShowChooseMethod) {
-                    val modeList = otpModeListData.modeList.singleOrNull {
-                        it.modeText == otpData.otpMode
-                    }
 
-                    if(modeList != null) {
-                        skipView(modeList)
+                    if (!otpData.isShowChooseMethod) {
+                        val modeList = otpModeListData.modeList.singleOrNull {
+                            it.modeText == otpData.otpMode
+                        }
+
+                        if (modeList != null) {
+                            skipView(modeList)
+                        } else {
+                            showListView(otpModeListData)
+                        }
                     } else {
                         showListView(otpModeListData)
                     }
-                } else {
-                    showListView(otpModeListData)
-                }
 
             } else if (otpModeListData.errorMessage.isEmpty()) {
                 onFailedGetVerificationMethod().invoke(MessageErrorException(otpModeListData.errorMessage))

@@ -10,9 +10,7 @@ import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.otp.verification.domain.data.OtpModeListData
 import com.tokopedia.otp.verification.domain.data.OtpRequestData
 import com.tokopedia.otp.verification.domain.data.OtpValidateData
-import com.tokopedia.otp.verification.domain.usecase.GetVerificationMethodUseCase
-import com.tokopedia.otp.verification.domain.usecase.OtpValidateUseCase
-import com.tokopedia.otp.verification.domain.usecase.SendOtpUseCase
+import com.tokopedia.otp.verification.domain.usecase.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -24,7 +22,9 @@ import javax.inject.Inject
 
 class VerificationViewModel @Inject constructor(
         private val getVerificationMethodUseCase: GetVerificationMethodUseCase,
+        private val getVerificationMethodUseCase2FA: GetVerificationMethodUseCase2FA,
         private val otpValidateUseCase: OtpValidateUseCase,
+        private val otpValidateUseCase2FA: OtpValidateUseCase2FA,
         private val sendOtpUseCase: SendOtpUseCase,
         dispatcherProvider: DispatcherProvider
 ) : BaseViewModel(dispatcherProvider.ui()) {
@@ -41,16 +41,16 @@ class VerificationViewModel @Inject constructor(
     val otpValidateResult: LiveData<Result<OtpValidateData>>
         get() = _otpValidateResult
 
-    @JvmOverloads
-    fun getVerificationMethod(
+
+    private fun getVerificationMethod2FA(
             otpType: String,
-            userId: String,
-            msisdn: String = "",
-            email: String = ""
+            ValidateToken: String,
+            UserIDEnc: String
     ) {
         launchCatchError(coroutineContext, {
-            val params = getVerificationMethodUseCase.getParams(otpType, userId, msisdn, email)
-            val data = getVerificationMethodUseCase.getData(params).data
+            val params = getVerificationMethodUseCase2FA.getParams2FA(otpType, ValidateToken, UserIDEnc)
+
+            val data = getVerificationMethodUseCase2FA.getData(params).data
             when {
                 data.success -> {
                     _getVerificationMethodResult.value = Success(data)
@@ -65,6 +65,39 @@ class VerificationViewModel @Inject constructor(
         }, {
             _getVerificationMethodResult.postValue(Fail(it))
         })
+    }
+
+    @JvmOverloads
+    fun getVerificationMethod(
+            otpType: String,
+            userId: String,
+            msisdn: String = "",
+            email: String = "",
+            userIdEnc: String = "",
+            accessToken: String = ""
+    ) {
+        if((otpType == "148" || otpType == "149") && userIdEnc.isNotEmpty()){
+            getVerificationMethod2FA(otpType, accessToken, userIdEnc)
+        }else {
+            launchCatchError(coroutineContext, {
+                val params = getVerificationMethodUseCase.getParams(otpType, userId, msisdn, email)
+
+                val data = getVerificationMethodUseCase.getData(params).data
+                when {
+                    data.success -> {
+                        _getVerificationMethodResult.value = Success(data)
+                    }
+                    data.errorMessage.isNotEmpty() -> {
+                        _getVerificationMethodResult.postValue(Fail(MessageErrorException(data.errorMessage)))
+                    }
+                    else -> {
+                        _getVerificationMethodResult.postValue(Fail(Throwable()))
+                    }
+                }
+            }, {
+                _getVerificationMethodResult.postValue(Fail(it))
+            })
+        }
     }
 
     @JvmOverloads
@@ -94,26 +127,16 @@ class VerificationViewModel @Inject constructor(
         })
     }
 
-    @JvmOverloads
-    fun otpValidate(
-            code: String,
+    private fun otpValidate2FA(
             otpType: String,
-            msisdn: String = "",
-            fpData: String = "",
-            getSL: String = "",
-            email: String = "",
+            validateToken: String,
+            userIdEnc: String,
             mode: String = "",
-            signature: String = "",
-            timeUnix: String = "",
-            userId: Int
+            code: String
     ) {
         launchCatchError(coroutineContext, {
-            val params = if(mode == OtpConstant.OtpMode.PIN && otpType == "148"){
-                otpValidateUseCase.getParams2FA(otpType = otpType, validateToken = msisdn, userIdEnc = email, mode = mode, code = code)
-            }else {
-                otpValidateUseCase.getParams(code, otpType, msisdn, fpData, getSL, email, mode, signature, timeUnix, userId)
-            }
-            val data = otpValidateUseCase.getData(params).data
+            val params = otpValidateUseCase2FA.getParams(otpType = otpType, validateToken = validateToken, userIdEnc = userIdEnc, mode = mode, code = code)
+            val data = otpValidateUseCase2FA.getData(params).data
             when {
                 data.success -> {
                     _otpValidateResult.value = Success(data)
@@ -128,5 +151,43 @@ class VerificationViewModel @Inject constructor(
         }, {
             _otpValidateResult.postValue(Fail(it))
         })
+    }
+
+    @JvmOverloads
+    fun otpValidate(
+            code: String,
+            otpType: String,
+            msisdn: String = "",
+            fpData: String = "",
+            getSL: String = "",
+            email: String = "",
+            mode: String = "",
+            signature: String = "",
+            timeUnix: String = "",
+            userId: Int,
+            validateToken: String = "",
+            userIdEnc: String = ""
+    ) {
+        if(otpType == "148" && userIdEnc.isNotEmpty()){
+            otpValidate2FA(otpType, validateToken, userIdEnc, mode, code)
+        }else {
+            launchCatchError(coroutineContext, {
+                val params = otpValidateUseCase.getParams(code, otpType, msisdn, fpData, getSL, email, mode, signature, timeUnix, userId)
+                val data = otpValidateUseCase.getData(params).data
+                when {
+                    data.success -> {
+                        _otpValidateResult.value = Success(data)
+                    }
+                    data.errorMessage.isNotEmpty() -> {
+                        _otpValidateResult.postValue(Fail(MessageErrorException(data.errorMessage)))
+                    }
+                    else -> {
+                        _otpValidateResult.postValue(Fail(Throwable()))
+                    }
+                }
+            }, {
+                _otpValidateResult.postValue(Fail(it))
+            })
+        }
     }
 }
