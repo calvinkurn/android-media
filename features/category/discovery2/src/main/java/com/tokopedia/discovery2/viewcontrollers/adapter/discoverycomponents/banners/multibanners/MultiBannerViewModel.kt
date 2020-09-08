@@ -4,22 +4,19 @@ import android.app.Application
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import android.view.View
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.BannerAction
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
+import com.tokopedia.discovery2.discoveryext.checkForNullAndSize
 import com.tokopedia.discovery2.usecase.CheckPushStatusUseCase
 import com.tokopedia.discovery2.usecase.SubScribeToUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -34,6 +31,8 @@ class MultiBannerViewModel(val application: Application, var components: Compone
     private val pushBannerStatus: MutableLiveData<Int> = MutableLiveData()
     private val pushBannerSubscription: MutableLiveData<Int> = MutableLiveData()
     private val showLogin: MutableLiveData<Boolean> = MutableLiveData()
+    private val applinkCheck: MutableLiveData<String> = MutableLiveData()
+    private val refreshPage: MutableLiveData<Boolean> = MutableLiveData()
 
     @Inject
     lateinit var checkPushStatusUseCase: CheckPushStatusUseCase
@@ -51,7 +50,6 @@ class MultiBannerViewModel(val application: Application, var components: Compone
         initDaggerInject()
     }
 
-
     override fun initDaggerInject() {
         DaggerDiscoveryComponent.builder()
                 .baseAppComponent((application.applicationContext as BaseMainApplication).baseAppComponent)
@@ -65,32 +63,40 @@ class MultiBannerViewModel(val application: Application, var components: Compone
     fun getPushBannerSubscriptionData(): LiveData<Int> = pushBannerSubscription
     fun getBannerUrlHeight() = Utils.extractDimension(bannerData.value?.data?.firstOrNull()?.imageUrlDynamicMobile)
     fun getBannerUrlWidth() = Utils.extractDimension(bannerData.value?.data?.firstOrNull()?.imageUrlDynamicMobile, "width")
+    fun checkApplink(): LiveData<String> = applinkCheck
+    fun isPageRefresh(): LiveData<Boolean> = refreshPage
 
-    fun onBannerClicked(position: Int, view: View) {
-        when (bannerData.value?.data?.get(position)?.action) {
-            BannerAction.APPLINK.name -> navigation(position, view.context)
-            BannerAction.CODE.name -> copyCodeToClipboard(position, view)
-            BannerAction.PUSH_NOTIFIER.name -> subscribeUserForPushNotification(position)
-            else -> navigation(position, view.context)
+    fun onBannerClicked(position: Int) {
+        bannerData.value?.data.checkForNullAndSize(position)?.let { listItem ->
+            when (listItem[position].action) {
+                BannerAction.APPLINK.name -> navigation(position, application.applicationContext)
+                BannerAction.CODE.name -> copyCodeToClipboard(position)
+                BannerAction.PUSH_NOTIFIER.name -> subscribeUserForPushNotification(position)
+                BannerAction.LOGIN.name -> loginUser(position)
+                else -> navigation(position, application.applicationContext)
+            }
         }
     }
 
-    private fun copyCodeToClipboard(position: Int, view: View) {
-        (application.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?)
-                ?.setPrimaryClip(ClipData.newPlainText(PROMO_CODE, bannerData.value?.data?.get(position)?.code))
-        if (bannerData.value?.data?.get(position)?.applinks?.isNotEmpty() == true) {
-            Toaster.make(view, view.context.getString(R.string.coupon_code_successfully_copied), Toast.LENGTH_SHORT, Toaster.TYPE_NORMAL,
-                    view.context.getString(R.string.coupon_code_btn_text), View.OnClickListener {
-                navigate(view.context, bannerData.value?.data?.get(position)?.applinks)
-            })
-        } else {
-            Toaster.make(view, view.context.getString(R.string.coupon_code_successfully_copied), Toast.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+    private fun loginUser(position: Int) {
+        if (isUserLoggedIn()) navigation(position, application.applicationContext) else refreshPage.value = true
+    }
+
+    private fun copyCodeToClipboard(position: Int) {
+        bannerData.value?.data.checkForNullAndSize(position)?.let { listItem ->
+            val item = listItem[position]
+            (application.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?)
+                    ?.setPrimaryClip(ClipData.newPlainText(PROMO_CODE, item.code))
+            if (!item.applinks.isNullOrEmpty()) applinkCheck.value = item.applinks else applinkCheck.value = ""
         }
     }
 
     private fun navigation(position: Int, context: Context) {
-        if (!bannerData.value?.data?.get(position)?.applinks.isNullOrEmpty()) {
-            navigate(context, bannerData.value?.data?.get(position)?.applinks)
+        bannerData.value?.data.checkForNullAndSize(position)?.let { listItem ->
+            val item = listItem[position]
+            if (!item.applinks.isNullOrEmpty()) {
+                navigate(context, item.applinks)
+            }
         }
     }
 
@@ -114,12 +120,13 @@ class MultiBannerViewModel(val application: Application, var components: Compone
     }
 
     fun campaignSubscribedStatus(position: Int) {
-        when (bannerData.value?.data?.get(position)?.action) {
-            BannerAction.PUSH_NOTIFIER.name -> checkUserPushStatus(position)
-            BannerAction.LOCAL_CALENDAR.name -> checkUserLocalPushStatus(position)
+        bannerData.value?.data.checkForNullAndSize(position)?.let { listItem ->
+            when (listItem[position].action) {
+                BannerAction.PUSH_NOTIFIER.name -> checkUserPushStatus(position)
+                BannerAction.LOCAL_CALENDAR.name -> checkUserLocalPushStatus(position)
+            }
         }
     }
-
 
     private fun checkUserPushStatus(position: Int) {
         launchCatchError(block = {
@@ -133,9 +140,11 @@ class MultiBannerViewModel(val application: Application, var components: Compone
     }
 
     private fun getCampaignId(position: Int): Int {
-        val parameterList: List<String>? = bannerData.value?.data?.get(position)?.paramsMobile?.split("=")
-        if (parameterList != null && parameterList.size >= 2) {
-            return parameterList[1].toIntOrZero()
+        bannerData.value?.data.checkForNullAndSize(position)?.let { listItem ->
+            val parameterList: List<String>? = listItem[position].paramsMobile?.split("=")
+            if (parameterList != null && parameterList.size >= 2) {
+                return parameterList[1].toIntOrZero()
+            }
         }
         return 0
     }

@@ -1,10 +1,9 @@
 package com.tokopedia.review.feature.historydetails.presentation.widget
 
 import android.content.Context
-import android.text.method.LinkMovementMethod
 import android.util.AttributeSet
 import android.view.View
-import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
+import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
 import com.tokopedia.review.common.data.ProductrevGetReviewDetailResponse
@@ -30,6 +29,7 @@ class ReviewDetailResponseWidget : BaseCustomView {
     }
 
     fun setContent(response: ProductrevGetReviewDetailResponse) {
+        review_detail_response_tab?.background = ContextCompat.getDrawable(context, R.drawable.rectangle_8)
         with(response) {
             if(shopName.isNotEmpty()) {
                 reviewDetailResponderName.apply {

@@ -69,7 +69,7 @@ public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistory
             )));
         } else {
             holder.title.setTextColor(
-                    holder.context.getResources().getColor(R.color.black_70));
+                    holder.context.getResources().getColor(com.tokopedia.design.R.color.black_70));
         }
     }
 
