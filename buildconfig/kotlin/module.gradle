@@ -8,6 +8,13 @@ kapt {
     useBuildCache = true
 }
 
+ext.lintchecks = [
+        'SetColourUsageError',
+        'CoreResourcesUsageError',
+        'VectorDrawableCompat',
+        'TypographyOverTextViewUsage'
+] as String[]
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
 
@@ -19,6 +26,15 @@ android {
         versionName "1.0"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         multiDexEnabled (project.hasProperty('coverage'))
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        checkDependencies true
+        htmlReport false
+        warningsAsErrors false
+        abortOnError false
+        check lintchecks
     }
     buildTypes {
         debug{
