@@ -9,11 +9,11 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
-import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -82,30 +82,9 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
     private var linearLayoutManager: LinearLayoutManager? = null
     private val reviewSellerDetailAdapter by lazy { SellerReviewDetailAdapter(sellerReviewDetailTypeFactory) }
 
-    private var swipeToRefreshReviewDetail: SwipeToRefresh? = null
-
     private val sellerReviewDetailTypeFactory by lazy {
         SellerReviewDetailAdapterTypeFactory(this, this, this, this)
     }
-
-    private var chipFilterBundle = ""
-
-    var productID: Int = 0
-    var productName = ""
-    var variantName = ""
-    var productImageUrl = ""
-    var filterBy: String = "time=all"
-    var toolbarTitle = ""
-
-    var positionFilterPeriod = 1
-
-    private var filterPeriodDetailUnify: ListUnify? = null
-    private var optionFeedbackDetailUnify: ListUnify? = null
-    private var optionMenuDetailUnify: ListUnify? = null
-
-    private var bottomSheetPeriodDetail: BottomSheetUnify? = null
-    private var bottomSheetOptionFeedback: BottomSheetUnify? = null
-    private var bottomSheetMenuDetail: BottomSheetUnify? = null
 
     private val coachMark: CoachMark by lazy {
         initCoachMark()
@@ -117,14 +96,32 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
                 getString(R.string.change_product_desc))
     }
 
+    private var chipFilterBundle = ""
+
+    private var productID: Int = 0
+    private var productName = ""
+    private var variantName = ""
+    private var productImageUrl = ""
+    private var toolbarTitle = ""
+
+    private var positionFilterPeriod = 1
+
+    private var filterPeriodDetailUnify: ListUnify? = null
+    private var optionFeedbackDetailUnify: ListUnify? = null
+    private var optionMenuDetailUnify: ListUnify? = null
+
+    private var bottomSheetPeriodDetail: BottomSheetUnify? = null
+    private var bottomSheetOptionFeedback: BottomSheetUnify? = null
+    private var bottomSheetMenuDetail: BottomSheetUnify? = null
+
     override fun getScreenName(): String = context?.getString(R.string.title_review_detail_page).orEmpty()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         context?.let {
             activity?.intent?.run {
                 productID = getIntExtra(PRODUCT_ID, 0)
-                chipFilterBundle = getStringExtra(CHIP_FILTER)
-                productImageUrl = getStringExtra(PRODUCT_IMAGE)
+                chipFilterBundle = getStringExtra(CHIP_FILTER) ?: ""
+                productImageUrl = getStringExtra(PRODUCT_IMAGE) ?: ""
             }
         }
         super.onCreate(savedInstanceState)
@@ -149,7 +146,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         viewModelProductReviewDetail?.setChipFilterDateText(chipFilterBundle)
         initToolbar()
         initRecyclerView(view)
-        initSwipeToRefRefresh(view)
+        observeLiveData()
         initViewBottomSheet()
     }
 
@@ -295,23 +292,22 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
                 page = page)
     }
 
-    private fun initSwipeToRefRefresh(view: View) {
-        swipeToRefreshReviewDetail = view.findViewById(R.id.swipeToRefreshLayoutDetail)
+    override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? {
+        return swipeToRefreshLayoutDetail
+    }
 
-        swipeToRefreshReviewDetail?.setOnRefreshListener {
-            swipeToRefreshReviewDetail?.isRefreshing = true
-            loadInitialData()
-        }
-
-        observeLiveData()
+    override fun onSwipeRefresh() {
+        swipeToRefresh?.isRefreshing = false
+        clearAllData()
+        loadInitialData()
     }
 
     private fun observeLiveData() {
-        viewModelProductReviewDetail?.reviewInitialData?.observe(this, Observer {
+        viewModelProductReviewDetail?.reviewInitialData?.observe(viewLifecycleOwner, Observer {
             hideLoading()
             when (it) {
                 is Success -> {
-                    swipeToRefreshReviewDetail?.isRefreshing = false
+                    swipeToRefresh?.isRefreshing = false
                     productName = it.data.first.filterIsInstance<OverallRatingDetailUiModel>().firstOrNull()?.productName.orEmpty()
                     viewModelProductReviewDetail?.updateRatingFilterData(it.data.first.filterIsInstance<ProductReviewFilterUiModel>().firstOrNull()?.ratingBarList
                             ?: listOf())
@@ -330,7 +326,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
             }
         })
 
-        viewModelProductReviewDetail?.productFeedbackDetail?.observe(this, Observer {
+        viewModelProductReviewDetail?.productFeedbackDetail?.observe(viewLifecycleOwner, Observer {
             reviewSellerDetailAdapter.hideLoading()
             when (it) {
                 is Success -> {
@@ -355,7 +351,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
     }
 
     private fun onErrorGetReviewDetailData() {
-        swipeToRefreshReviewDetail?.isRefreshing = false
+        swipeToRefresh?.isRefreshing = false
         val feedbackReviewCount = reviewSellerDetailAdapter.list.count { it is FeedbackUiModel }
         if (feedbackReviewCount == 0) {
             globalError_reviewDetail?.setType(GlobalError.SERVER_ERROR)

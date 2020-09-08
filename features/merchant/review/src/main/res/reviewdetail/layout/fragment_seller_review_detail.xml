@@ -13,7 +13,7 @@
         app:unify_header_is_show_back_button="true"
         app:unify_header_is_show_shadow="false" />
 
-    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeToRefreshLayoutDetail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -48,6 +48,6 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </LinearLayout>
