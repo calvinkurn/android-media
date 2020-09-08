@@ -222,7 +222,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         } else if (viewType == ShipmentItemViewHolder.ITEM_VIEW_SHIPMENT_ITEM) {
             ((ShipmentItemViewHolder) holder).bindViewHolder(
                     (ShipmentCartItemModel) data, shipmentDataList, recipientAddressModel,
-                    ratesDataConverter, showCaseObjectList);
+                    ratesDataConverter);
             setShowCase(holder.itemView.getContext());
         } else if (viewType == PromoCheckoutViewHolder.getITEM_VIEW_PROMO_CHECKOUT()) {
             ((PromoCheckoutViewHolder) holder).bindViewHolder(lastApplyUiModel);

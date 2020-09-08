@@ -39,16 +39,6 @@
                 layout="@layout/item_shipment_trade_in_pickup"
                 tools:visibility="visible" />
 
-            <!--Shipping: Robinhood v2.1-->
-            <include
-                layout="@layout/item_shipment_courier_recommendation"
-                tools:visibility="visible" />
-
-            <!--Shipping: Robinhood v3-->
-            <include
-                layout="@layout/item_shipment_courier_blackbox"
-                tools:visibility="visible" />
-
             <!--Shipping: Shipping Experience-->
             <include
                 layout="@layout/item_shipment_shipping_experience"
