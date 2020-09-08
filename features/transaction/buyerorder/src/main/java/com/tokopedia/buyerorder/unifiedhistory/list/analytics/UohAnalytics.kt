@@ -54,10 +54,12 @@ object UohAnalytics {
     private const val PRODUCT_CLICK = "productClick"
     private const val ADD_TO_CART = "addToCart"
     private const val VIEW_ORDER_CARD = "view order card {business_unit}"
+    private const val VIEW_RECOMMENDATION = "impression - product recommendation"
     private const val CLICK_ORDER_CARD = "click order card {business_unit}"
     private const val CLICK_BELI_LAGI = "click beli lagi on order card marketplace"
     private const val ACTION_FIELD_CLICK_ECOMMERCE = "/order list - {business_unit}"
     private const val ORDER_LIST_EVENT_CATEGORY = "order list"
+    private const val PURCHASE_LIST_EVENT_CATEGORY = "my purchase list - mp"
     private const val SUBMIT_SEARCH = "submit search from cari transaksi"
     private const val CLICK_DATE_FILTER_CHIPS = "click date filter chips"
     private const val CLICK_TERAPKAN_ON_DATE_FILTER_CHIPS = "click terapkan on date filter chips"
@@ -318,5 +320,21 @@ object UohAnalytics {
                 CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
                 USER_ID to userId,
                 BUSINESS_UNIT to ORDER_MANAGEMENT))
+    }
+
+    private fun productViewRecommandation(impressions: ECommerceImpressions.Impressions) {
+        val arrayListImpressions: ArrayList<ECommerceImpressions.Impressions> = arrayListOf()
+        arrayListImpressions.add(impressions)
+        val eCommerce = ECommerceImpressions(
+                impressions = arrayListImpressions
+        )
+        val bundle = Bundle().apply {
+            putString(EVENT, PRODUCT_VIEW)
+            putString(EVENT_CATEGORY, PURCHASE_LIST_EVENT_CATEGORY)
+            putString(EVENT_ACTION, VIEW_RECOMMENDATION)
+            putString(EVENT_LABEL, "")
+            putParcelable(ECOMMERCE, eCommerce)
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(PRODUCT_VIEW, bundle)
     }
 }
