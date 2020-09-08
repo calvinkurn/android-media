@@ -68,20 +68,12 @@ class ChatListAdapter constructor(
         notifyItemRemoved(position)
     }
 
-    fun pinChatItem(
-            element: ItemChatListPojo,
-            previouslyKnownPosition: Int,
-            currentPinnedChat: Set<String>
-    ) {
-        val chatItemPosition = getItemPosition(element, previouslyKnownPosition)
-        var finalPosition = currentPinnedChat.size
-        if (finalPosition > visitables.size) {
-            finalPosition = visitables.size
-        }
+    fun pinChatItem(element: ItemChatListPojo, position: Int) {
+        val chatItemPosition = getItemPosition(element, position)
         if (chatItemPosition != RecyclerView.NO_POSITION) {
-            visitables.moveTo(chatItemPosition, finalPosition)
-            notifyItemMoved(chatItemPosition, finalPosition)
-            notifyItemChanged(finalPosition, PAYLOAD_UPDATE_PIN_STATUS)
+            visitables.goToFirst(chatItemPosition)
+            notifyItemMoved(chatItemPosition, 0)
+            notifyItemChanged(0, PAYLOAD_UPDATE_PIN_STATUS)
         }
     }
 
