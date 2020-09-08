@@ -89,6 +89,7 @@ import com.tokopedia.sellerorder.list.presentation.viewmodel.SomListViewModel
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.activity.WaitingPaymentOrderActivity
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.*
 import com.tokopedia.usecase.coroutines.Fail
@@ -156,12 +157,12 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     CoachMarkItem(
                             somWaitingPaymentButton,
                             getString(R.string.som_list_coachmark_waiting_payment_order_title),
-                            spannedHeader.toString()
+                            HtmlLinkHelper(context, getString(R.string.som_list_coachmark_waiting_payment_order_description)).spannedString.toString()
                     ),
                     CoachMarkItem(
                             somWaitingPaymentButton,
                             getString(R.string.som_list_coachmark_check_and_mange_product_stock_title),
-                            getString(R.string.som_list_coachmark_check_and_mange_product_stock_description).parseAsHtml().toString()
+                            HtmlLinkHelper(context, getString(R.string.som_list_coachmark_check_and_mange_product_stock_description)).spannedString.toString()
                     )
             )
         }.orEmpty()

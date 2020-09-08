@@ -25,6 +25,7 @@ import com.tokopedia.sellerorder.waitingpaymentorder.di.DaggerWaitingPaymentOrde
 import com.tokopedia.sellerorder.waitingpaymentorder.domain.model.WaitingPaymentOrderRequestParam
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.WaitingPaymentOrderAdapter
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.typefactory.WaitingPaymentOrderAdapterTypeFactory
+import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.viewholder.WaitingPaymentOrdersViewHolder
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.bottomsheet.BottomSheetWaitingPaymentOrderTips
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingPaymentOrder
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.viewmodel.WaitingPaymentOrderViewModel
@@ -42,7 +43,7 @@ import javax.inject.Inject
  * Created by yusuf.hendrawan on 2020-09-07.
  */
 
-class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, WaitingPaymentOrderAdapterTypeFactory>() {
+class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, WaitingPaymentOrderAdapterTypeFactory>(), WaitingPaymentOrdersViewHolder.LoadUnloadMoreProductClickListener {
 
     companion object {
         const val TAG_BOTTOM_SHEET = "bottom_sheet"
@@ -81,7 +82,7 @@ class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, Waitin
     }
 
     override fun getAdapterTypeFactory(): WaitingPaymentOrderAdapterTypeFactory {
-        return WaitingPaymentOrderAdapterTypeFactory()
+        return WaitingPaymentOrderAdapterTypeFactory(this)
     }
 
     override fun onItemClicked(t: WaitingPaymentOrder?) {
@@ -152,6 +153,10 @@ class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, Waitin
         }
     }
 
+    override fun toggleCollapse(waitingPaymentOrder: WaitingPaymentOrder) {
+        (adapter as WaitingPaymentOrderAdapter).toggleCollapse(waitingPaymentOrder)
+    }
+
     private fun setupViews() {
         setupTicker()
         setupRecyclerView()
@@ -187,7 +192,6 @@ class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, Waitin
     private fun setupRecyclerView() {
         context?.run {
             with(rvWaitingPaymentOrder) {
-                addItemDecoration(WaitingPaymentOrderAdapter.ItemDivider(this@run))
                 isNestedScrollingEnabled = true
                 itemAnimator?.addDuration = 500
                 itemAnimator?.removeDuration = 500

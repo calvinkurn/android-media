@@ -15,7 +15,9 @@ import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingP
  * Created by yusuf.hendrawan on 2020-09-07.
  */
 
-class WaitingPaymentOrderAdapterTypeFactory : BaseAdapterTypeFactory() {
+class WaitingPaymentOrderAdapterTypeFactory(
+        private val loadUnloadMoreProductClickListener: WaitingPaymentOrdersViewHolder.LoadUnloadMoreProductClickListener
+) : BaseAdapterTypeFactory() {
     fun type(waitingPaymentOrder: WaitingPaymentOrder): Int {
         return WaitingPaymentOrdersViewHolder.LAYOUT
     }
@@ -30,7 +32,7 @@ class WaitingPaymentOrderAdapterTypeFactory : BaseAdapterTypeFactory() {
 
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            WaitingPaymentOrdersViewHolder.LAYOUT -> WaitingPaymentOrdersViewHolder(parent)
+            WaitingPaymentOrdersViewHolder.LAYOUT -> WaitingPaymentOrdersViewHolder(parent, loadUnloadMoreProductClickListener)
             WaitingPaymentOrdersErrorViewHolder.LAYOUT -> WaitingPaymentOrdersErrorViewHolder(parent)
             WaitingPaymentOrderLoadingViewHolder.LAYOUT -> WaitingPaymentOrderLoadingViewHolder(parent)
             else -> super.createViewHolder(parent, type)

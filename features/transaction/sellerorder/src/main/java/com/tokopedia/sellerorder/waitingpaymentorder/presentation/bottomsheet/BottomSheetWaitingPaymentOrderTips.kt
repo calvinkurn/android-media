@@ -3,21 +3,19 @@ package com.tokopedia.sellerorder.waitingpaymentorder.presentation.bottomsheet
 import android.content.Context
 import android.graphics.Canvas
 import android.os.Bundle
-import android.text.Spannable
-import android.text.SpannableStringBuilder
-import android.text.style.ForegroundColorSpan
-import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.typefactory.WaitingPaymentOrderTipsTypeFactory
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.provider.WaitingPaymentOrderTipsDataProvider
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
 
 /**
@@ -31,6 +29,11 @@ class BottomSheetWaitingPaymentOrderTips : BottomSheetUnify() {
 
     private var tvHeader: Typography? = null
     private var rvTips: RecyclerView? = null
+    private val headerTitle by lazy {
+        context?.let { context ->
+            HtmlLinkHelper(context, getString(R.string.bottomsheet_waiting_payment_order_header))
+        }
+    }
 
     private val items by lazy {
         context?.run {
@@ -55,25 +58,13 @@ class BottomSheetWaitingPaymentOrderTips : BottomSheetUnify() {
     }
 
     private fun setupHeader() {
-        context?.let { context ->
-            val headerText = getString(R.string.bottomsheet_waiting_payment_order_header)
-            val ctaText = getString(R.string.bottomsheet_waiting_payment_order_header_cta)
-            val spannedHeader = SpannableStringBuilder()
-                    .append(headerText)
-                    .append(" $ctaText")
-            spannedHeader.setSpan(
-                    ForegroundColorSpan(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Green_G500)),
-                    headerText.length + 1,
-                    headerText.length + ctaText.length + 1,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-            spannedHeader.setSpan(
-                    StyleSpan(android.graphics.Typeface.BOLD),
-                    headerText.length + 1,
-                    headerText.length + ctaText.length + 1,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-            tvHeader?.text = spannedHeader
+        tvHeader?.text = headerTitle?.spannedString
+        tvHeader?.setOnClickListener {
+            val link = headerTitle?.urlList?.firstOrNull()?.linkUrl.orEmpty()
+            if (link.isNotEmpty()) {
+                val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, link)
+                context?.startActivity(intent)
+            }
         }
     }
 
