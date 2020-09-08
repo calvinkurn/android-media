@@ -40,8 +40,8 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
     private int position;
     private String originalPrice;
     private int discountPercentage;
-    private int categoryID;
-    private String categoryName;
+    private int categoryID = 0;
+    private String categoryName = "";
     private String categoryBreadcrumb;
     private boolean isTopAds;
     private boolean isOrganicAds;
