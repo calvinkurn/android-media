@@ -5,6 +5,9 @@ import com.tokopedia.entertainment.pdp.data.ProductDetailData
 import com.tokopedia.entertainment.pdp.data.checkout.AdditionalType
 import com.tokopedia.entertainment.pdp.data.checkout.EventCheckoutAdditionalData
 import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventPackageMapper.getPackage
+import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventPackageMapper.getPackageItem
+import com.tokopedia.unifycomponents.list.ListItemUnify
+import com.tokopedia.unifycomponents.list.ListUnify
 
 object EventFormMapper {
     fun eventFormMapper(productDetailData: ProductDetailData, eventCheckoutAdditionalData: EventCheckoutAdditionalData):MutableList<Form>{
@@ -18,7 +21,11 @@ object EventFormMapper {
              }
 
             AdditionalType.ITEM_UNFILL -> {
-                
+                val packagePdp = getPackage(productDetailData, eventCheckoutAdditionalData.idPackage)
+                val packageItem = getPackageItem(packagePdp, eventCheckoutAdditionalData.idItem)
+                packageItem.formsItems.map {
+                    formData.add(it)
+                }
             }
             
             AdditionalType.NULL_DATA -> {
@@ -28,5 +35,21 @@ object EventFormMapper {
             }
         }
         return formData
+    }
+
+    fun setListBottomSheetForm(list : List<String>, positionActive:Int):ArrayList<ListItemUnify>{
+        var array = arrayListOf<ListItemUnify>()
+        list.mapIndexed { index, s ->
+            val itemUnify = ListItemUnify(s, "")
+            itemUnify.setVariant(null,ListItemUnify.RADIO_BUTTON)
+            array.add(itemUnify)
+        }
+        return array
+    }
+
+    fun isRadioActive(listItemUnify : ArrayList<ListItemUnify>, positionActive: Int){
+        listItemUnify.forEachIndexed{ index, listItemUnify ->
+            listItemUnify.listRightRadiobtn?.isChecked = (index==positionActive)
+        }
     }
 }

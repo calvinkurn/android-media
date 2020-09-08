@@ -5,12 +5,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.entertainment.pdp.adapter.viewholder.EventPDPTextFieldViewHolder
 import com.tokopedia.entertainment.pdp.data.Form
+import com.tokopedia.entertainment.pdp.listener.OnClickFormListener
 import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
 import java.lang.RuntimeException
 import java.util.regex.Pattern
 
-class EventPDPFormAdapter(val userSession: UserSessionInterface): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class EventPDPFormAdapter(val userSession: UserSessionInterface
+                          , val onClickFormListener: OnClickFormListener): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var formData: MutableList<Form> = mutableListOf()
 
@@ -21,7 +23,7 @@ class EventPDPFormAdapter(val userSession: UserSessionInterface): RecyclerView.A
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return EventPDPTextFieldViewHolder(LayoutInflater.from(parent.context).inflate(EventPDPTextFieldViewHolder.LAYOUT_TEXT, parent, false),
-                ::addOrRemoveData, userSession)
+                ::addOrRemoveData, userSession, onClickFormListener)
     }
 
     override fun getItemCount(): Int = formData.size

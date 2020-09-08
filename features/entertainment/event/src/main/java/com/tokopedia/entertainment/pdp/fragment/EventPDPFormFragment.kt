@@ -32,10 +32,17 @@ import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.EMP
 import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.REGEX_TYPE
 import com.tokopedia.entertainment.pdp.data.checkout.AdditionalType
 import com.tokopedia.entertainment.pdp.data.checkout.EventCheckoutAdditionalData
+import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventFormMapper.isRadioActive
+import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventFormMapper.setListBottomSheetForm
+import com.tokopedia.entertainment.pdp.listener.OnClickFormListener
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import kotlinx.android.synthetic.main.bottom_sheet_event_checkout.view.*
+import kotlinx.android.synthetic.main.bottom_sheet_event_list_form.*
+import kotlinx.android.synthetic.main.bottom_sheet_event_list_form.view.*
 import timber.log.Timber
 import java.io.Serializable
 
-class EventPDPFormFragment : BaseDaggerFragment(){
+class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener{
 
     private var urlPDP = ""
 
@@ -68,7 +75,7 @@ class EventPDPFormFragment : BaseDaggerFragment(){
     }
 
     private fun setupAdapter(){
-        formAdapter = EventPDPFormAdapter(userSession)
+        formAdapter = EventPDPFormAdapter(userSession, this)
     }
 
     private fun setupView(){
@@ -162,6 +169,31 @@ class EventPDPFormFragment : BaseDaggerFragment(){
         formAdapter.setList(formData)
     }
 
+    override fun clickBottomSheet(list: List<String>, title: String, positionActive:Int) {
+        if (list.size > SEARCH_PAGE_LIMIT){
+
+        } else {
+            val view = LayoutInflater.from(context).inflate(R.layout.bottom_sheet_event_list_form, null)
+            val bottomSheets = BottomSheetUnify()
+            bottomSheets.apply {
+                setChild(view)
+                setTitle(title)
+                setCloseClickListener { bottomSheets.dismiss() }
+            }
+            val arrayList = setListBottomSheetForm(list,positionActive)
+            view.listForm.apply {
+                setData(arrayList)
+                onLoadFinish {
+                    isRadioActive(arrayList, positionActive)
+                }
+            }
+
+            fragmentManager?.let {
+                bottomSheets.show(it, "")
+            }
+        }
+    }
+
     companion object{
         fun newInstance(url: String) = EventPDPFormFragment().also {
             it.arguments = Bundle().apply {
@@ -171,5 +203,6 @@ class EventPDPFormFragment : BaseDaggerFragment(){
 
         const val EXTRA_DATA_PESSANGER = "EXTRA_DATA_PESSANGER"
         val REQUEST_CODE = 100
+        const val SEARCH_PAGE_LIMIT = 10
     }
 }

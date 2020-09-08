@@ -1,6 +1,7 @@
 package com.tokopedia.entertainment.pdp.adapter.viewholder
 
 import android.text.Editable
+import android.text.InputType
 import android.text.TextWatcher
 import android.util.DisplayMetrics
 import android.util.TypedValue
@@ -17,6 +18,7 @@ import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.FUL
 import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.EMAIL_TYPE
 import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.PHONE_TYPE
 import com.tokopedia.entertainment.pdp.data.checkout.EventCheckoutForm
+import com.tokopedia.entertainment.pdp.listener.OnClickFormListener
 import com.tokopedia.user.session.UserSessionInterface
 import org.json.JSONArray
 import timber.log.Timber
@@ -25,7 +27,8 @@ import java.util.regex.Pattern
 
 class EventPDPTextFieldViewHolder(val view: View,
                                   val addOrRemoveData: (Int, String) -> Unit,
-                                  val userSession: UserSessionInterface) : RecyclerView.ViewHolder(view) {
+                                  val userSession: UserSessionInterface,
+                                  val formListener: OnClickFormListener) : RecyclerView.ViewHolder(view) {
 
     fun bind(element: Form, position: Int) {
         with(itemView) {
@@ -63,7 +66,15 @@ class EventPDPTextFieldViewHolder(val view: View,
                 if (element.elementType.equals(ELEMENT_TEXT)) txtValue.textFieldInput.setText(element.value)
                 if (element.elementType.equals(ELEMENT_LIST)) {
                     val list = getList(element.value)
-                    if (list.isNotEmpty()) txtValue.textFieldInput.setText(list.get(0))
+                    if (list.isNotEmpty()) {
+                        txtValue.textFieldInput.apply {
+                            keyListener = null
+                            setText(list.get(0))
+                            setOnClickListener {
+                                formListener.clickBottomSheet(list,element.title, 0)
+                            }
+                        }
+                    }
                 }
             }
 
