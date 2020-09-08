@@ -2,6 +2,7 @@ package com.tokopedia.review.feature.reviewdetail.view.fragment
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
@@ -143,6 +144,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
         viewModelProductReviewDetail?.setChipFilterDateText(chipFilterBundle)
         initToolbar()
         initRecyclerView(view)
