@@ -13,7 +13,6 @@ interface FeedbackApi {
     @POST
     @Headers("Authorization: Basic YW5kcm9pZC1hcHBzQHRva29wZWRpYS5jb206YjU1QWNBbjJBZFpjcEVpR200MHMzQjkx",
             "Accept: application/json",
-            "X-Atlassian-Token: no-check",
-            "Content-Type: multipart/form-data" )
-    fun getImageResponse(@Url url: String, @Part file: MultipartBody.Part) : Observable<ImageResponse>
+            "X-Atlassian-Token: no-check" )
+    fun getImageResponse(@Url url: String, @Part file: MultipartBody.Part) : Observable<List<ImageResponse>>
 }

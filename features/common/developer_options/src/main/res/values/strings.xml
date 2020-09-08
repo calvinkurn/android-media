@@ -22,7 +22,9 @@
 
     <string-array name="bug_type_array">
         <item>Crash</item>
-        <item>UI</item>
-        <item>Tracker</item>
+        <item>Design</item>
+        <item>Functionality</item>
+        <item>Tracking</item>
+        <item>Other</item>
     </string-array>
 </resources>

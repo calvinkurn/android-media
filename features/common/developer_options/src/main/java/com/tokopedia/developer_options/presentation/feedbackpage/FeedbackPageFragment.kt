@@ -192,7 +192,7 @@ class FeedbackPageFragment: Fragment() {
         screenshot.unregister()
     }
 
-    /*private fun submitFeedback(email: String, page: String, desc: String, issueType: String, actualResult: String, expectedResult: String) {
+    private fun submitFeedback(email: String, page: String, desc: String, issueType: String, actualResult: String, expectedResult: String) {
         loadingDialog?.show()
         compositeSubscription.add(
                 feedbackApi.getResponse(requestMapper(email, page, desc, issueType, actualResult, expectedResult))
@@ -200,42 +200,8 @@ class FeedbackPageFragment: Fragment() {
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(object : Subscriber<FeedbackResponse>() {
                             override fun onNext(t: FeedbackResponse) {
-//                                loadingDialog?.dismiss()
-//                                Toast.makeText(activity, t.key, Toast.LENGTH_SHORT).show()
                                 myPreferences.setSubmitFlag(email, userSession?.userId.toString())
                                 sendUriImage(t.key)
-//                                activity?.finish()
-                            }
-
-                            override fun onCompleted() {
-                                //no-op
-                            }
-
-                            override fun onError(e: Throwable?) {
-                                loadingDialog?.dismiss()
-                                Toast.makeText(activity, e.toString(), Toast.LENGTH_SHORT).show()
-                            }
-
-                        })
-        )
-    }*/
-
-    /*for testing purpose*/
-    private fun submitFeedback(email: String, page: String, desc: String, issueType: String, actualResult: String, expectedResult: String) {
-        loadingDialog?.show()
-//        Log.d("URI_Image", uriImage?.toString())
-        val file = File(uriImage?.path)
-        val requestFile: RequestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file)
-        val fileData = MultipartBody.Part.createFormData("file", file.name, requestFile)
-        compositeSubscription.add(
-                feedbackApi.getImageResponse("issue/AN-20145/attachments/", fileData)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(object : Subscriber<ImageResponse>(){
-                            override fun onNext(t: ImageResponse?) {
-                                loadingDialog?.dismiss()
-                                Toast.makeText(activity, "AN-20145", Toast.LENGTH_SHORT).show()
-                                activity?.finish()
                             }
 
                             override fun onCompleted() {
@@ -251,12 +217,16 @@ class FeedbackPageFragment: Fragment() {
         )
     }
 
-/*    private fun sendUriImage(issueKey: String) {
-        feedbackApi.getImageResponse("issue/$issueKey/attachments/", uriImage)
+    private fun sendUriImage(issueKey: String) {
+        val file = File(uriImage?.path)
+        val requestFile: RequestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file)
+        val fileData = MultipartBody.Part.createFormData("file", file.name, requestFile)
+
+        feedbackApi.getImageResponse("issue/$issueKey/attachments/", fileData)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Subscriber<ImageResponse>(){
-                    override fun onNext(t: ImageResponse?) {
+                .subscribe(object : Subscriber<List<ImageResponse>>(){
+                    override fun onNext(t: List<ImageResponse>?) {
                         loadingDialog?.dismiss()
                         Toast.makeText(activity, issueKey, Toast.LENGTH_SHORT).show()
                         activity?.finish()
@@ -270,9 +240,8 @@ class FeedbackPageFragment: Fragment() {
                         loadingDialog?.dismiss()
                         Toast.makeText(activity, e.toString(), Toast.LENGTH_SHORT).show()
                     }
-
                 })
-    }*/
+    }
 
     private fun requestMapper(email: String, page: String, desc: String, issueType: String, actualResult: String, expectedResult: String): FeedbackRequest {
         val affectedVersion = if (GlobalConfig.isSellerApp()) "SA-$appVersion" else "MA-$appVersion"
