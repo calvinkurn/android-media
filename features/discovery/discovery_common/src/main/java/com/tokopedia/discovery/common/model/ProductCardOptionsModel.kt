@@ -160,7 +160,7 @@ data class ProductCardOptionsModel(
 
     data class AddToCartResult(
             var isSuccess: Boolean = false,
-            var message: String = ""
+            var errorMessage: String = ""
     ): Parcelable {
 
         constructor(parcel: Parcel) : this(
@@ -169,7 +169,7 @@ data class ProductCardOptionsModel(
 
         override fun writeToParcel(parcel: Parcel, flags: Int) {
             parcel.writeByte(if (isSuccess) 1 else 0)
-            parcel.writeString(message)
+            parcel.writeString(errorMessage)
         }
 
         override fun describeContents(): Int {

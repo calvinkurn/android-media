@@ -242,7 +242,7 @@ internal class ProductCardOptionsViewModel(
     private fun createAddToCartSubscriber(): Subscriber<AddToCartDataModel> {
         return object : Subscriber<AddToCartDataModel>() {
             override fun onNext(addToCartDataModel: AddToCartDataModel?) {
-                addToCartEventLiveData.postValue(Event(true))
+                processAddToCartUseCaseSuccess(addToCartDataModel)
             }
 
             override fun onCompleted() {
@@ -250,9 +250,34 @@ internal class ProductCardOptionsViewModel(
             }
 
             override fun onError(e: Throwable?) {
-
+                processAddToCartUseCaseFailed()
             }
         }
+    }
+
+    private fun processAddToCartUseCaseSuccess(addToCartDataModel: AddToCartDataModel?) {
+        addToCartEventLiveData.postValue(Event(true))
+
+        if (isAddToCartStatusOK(addToCartDataModel)) {
+            productCardOptionsModel?.addToCartResult = ProductCardOptionsModel.AddToCartResult(isSuccess = true)
+        } else {
+            val errorMessage = addToCartDataModel?.getAtcErrorMessage()
+            productCardOptionsModel?.addToCartResult = ProductCardOptionsModel.AddToCartResult(
+                    isSuccess = false, errorMessage = errorMessage ?: ""
+            )
+        }
+    }
+
+    private fun isAddToCartStatusOK(addToCartDataModel: AddToCartDataModel?): Boolean {
+        return addToCartDataModel?.status == AddToCartDataModel.STATUS_OK
+                && addToCartDataModel.data.success == 1
+    }
+
+    private fun processAddToCartUseCaseFailed() {
+        addToCartEventLiveData.postValue(Event(true))
+        productCardOptionsModel?.addToCartResult = ProductCardOptionsModel.AddToCartResult(
+                isSuccess = false, errorMessage = ATC_DEFAULT_ERROR_MESSAGE
+        )
     }
 
     private fun postOptionListLiveData() {

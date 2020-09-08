@@ -6,12 +6,14 @@ import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase.Companion.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.productcard.options.testutils.complete
+import com.tokopedia.productcard.options.testutils.error
 import com.tokopedia.usecase.RequestParams
 import io.mockk.every
 import io.mockk.slot
 import io.mockk.verify
 import org.junit.Test
 import rx.Subscriber
+import java.lang.Exception
 
 internal class ClickAddToCartOptionsTest: ProductCardOptionsViewModelTestFixtures() {
 
@@ -80,7 +82,7 @@ internal class ClickAddToCartOptionsTest: ProductCardOptionsViewModelTestFixture
     }
 
     @Test
-    fun `Click add to cart success should call add to cart API and show success message`() {
+    fun `Click add to cart success should return success result`() {
         `Given Product Card Options View Model with ATC enabled`()
         `Given user is logged in`()
         `Given add to cart API will successs`()
@@ -89,7 +91,8 @@ internal class ClickAddToCartOptionsTest: ProductCardOptionsViewModelTestFixture
 
         `Then should not redirect to login page`()
         `Then verify add to cart use case is executed with correct input`()
-        `Then verify add to cart event result is success`()
+        `Then should post add to cart event`()
+        `Then verify add to cart result success`()
     }
 
     private fun `Given user is logged in`() {
@@ -119,9 +122,63 @@ internal class ClickAddToCartOptionsTest: ProductCardOptionsViewModelTestFixture
         addToCartRequestParams.price shouldBe productCardOptionsModelATC.formattedPrice
     }
 
-    private fun `Then verify add to cart event result is success`() {
+    private fun `Then should post add to cart event`() {
         val addToCartEvent = productCardOptionsViewModel.getAddToCartEventLiveData().value
 
         addToCartEvent?.getContentIfNotHandled() shouldBe true
+    }
+
+    private fun `Then verify add to cart result success`() {
+        val addToCartResult = productCardOptionsViewModel.productCardOptionsModel!!.addToCartResult
+
+        addToCartResult.isSuccess shouldBe true
+        addToCartResult.errorMessage shouldBe ""
+    }
+
+    @Test
+    fun `Click add to cart with status fail should return error result with given error message`() {
+        `Given Product Card Options View Model with ATC enabled`()
+        `Given user is logged in`()
+        `Given add to cart API will return failed status`()
+
+        `When click add to cart`()
+
+        `Then should not redirect to login page`()
+        `Then verify add to cart use case is executed with correct input`()
+        `Then should post add to cart event`()
+        `Then verify add to cart result failed with error message`(addToCartFailedModel.getAtcErrorMessage())
+    }
+
+    private fun `Given add to cart API will return failed status`() {
+        every { addToCartUseCase.execute(capture(addToCartRequestParamsSlot), any()) } answers {
+            secondArg<Subscriber<AddToCartDataModel>>().complete(addToCartFailedModel)
+        }
+    }
+
+    private fun `Then verify add to cart result failed with error message`(errorMessage: String?) {
+        val addToCartResult = productCardOptionsViewModel.productCardOptionsModel!!.addToCartResult
+
+        addToCartResult.isSuccess shouldBe false
+        addToCartResult.errorMessage shouldBe (errorMessage ?: "")
+    }
+
+    @Test
+    fun `Click add to cart error should return error result with default error message`() {
+        `Given Product Card Options View Model with ATC enabled`()
+        `Given user is logged in`()
+        `Given add to cart API will give error`()
+
+        `When click add to cart`()
+
+        `Then should not redirect to login page`()
+        `Then verify add to cart use case is executed with correct input`()
+        `Then should post add to cart event`()
+        `Then verify add to cart result failed with error message`(ATC_DEFAULT_ERROR_MESSAGE)
+    }
+
+    private fun `Given add to cart API will give error`() {
+        every { addToCartUseCase.execute(capture(addToCartRequestParamsSlot), any()) } answers {
+            secondArg<Subscriber<AddToCartDataModel>>().error(Exception("ATC Error"))
+        }
     }
 }
