@@ -16,8 +16,10 @@ import com.tokopedia.travelhomepage.homepage.data.TravelLayoutSubhomepage
 import com.tokopedia.travelhomepage.homepage.data.TravelUnifiedSubhomepageData
 import com.tokopedia.travelhomepage.homepage.data.mapper.TravelHomepageMapper
 import com.tokopedia.travelhomepage.homepage.usecase.GetEmptyModelsUseCase
+import com.tokopedia.travelhomepage.homepage.usecase.GetSubhomepageUnifiedDataUseCase
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.*
+import java.lang.reflect.Type
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -26,9 +28,9 @@ import kotlin.coroutines.CoroutineContext
  */
 
 class TravelHomepageViewModel @Inject constructor(
-        private val graphqlRepository: GraphqlRepository,
         private val getEmptyModelsUseCase: GetEmptyModelsUseCase,
-        private val dispatcherProvider: TravelDispatcherProvider)
+        dispatcherProvider: TravelDispatcherProvider,
+        private val getSubhomepageUnifiedDataUseCase: GetSubhomepageUnifiedDataUseCase)
     : BaseViewModel(dispatcherProvider.io()) {
 
     var travelItemList = mutableListOf<TravelHomepageItemModel>()
@@ -51,7 +53,8 @@ class TravelHomepageViewModel @Inject constructor(
         }
     }
 
-    fun getTravelUnifiedData(rawQuery: String, layoutData: TravelLayoutSubhomepage.Data, isFromCloud: Boolean) {
+    fun getTravelUnifiedData(rawQuery: String, layoutData: TravelLayoutSubhomepage.Data, isFromCloud: Boolean,
+    type: Type) {
         launch {
             delay(200)
             if (!calledApiList.containsKey(layoutData.position.toString())) {
@@ -61,7 +64,7 @@ class TravelHomepageViewModel @Inject constructor(
                         WIDGET_TYPE_PARAM to layoutData.widgetType, "data" to ParamData())
 
                 try {
-                    getSubhomepageData(rawQuery, param, isFromCloud).let {
+                    getSubhomepageUnifiedDataUseCase.execute(rawQuery, param, isFromCloud, type).let {
                         val item = mapper.mapToViewModel(layoutData, it)
                         item.isLoaded = true
                         item.isSuccess = true
@@ -77,22 +80,6 @@ class TravelHomepageViewModel @Inject constructor(
                     else travelItemListLiveData.postValue(travelItemList)
                 }
             }
-        }
-    }
-
-    private suspend fun getSubhomepageData(rawQuery: String, param: Map<String, Any>, isFromCloud: Boolean): List<TravelUnifiedSubhomepageData> {
-
-        delay(300)
-        val graphQlCacheStrategy = if (isFromCloud) GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
-        else GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
-
-        return withContext(dispatcherProvider.ui()) {
-            val response = withContext(dispatcherProvider.ui()) {
-                val graphqlRequest = GraphqlRequest(rawQuery, TravelUnifiedSubhomepageData.Response::class.java, param)
-                graphqlRepository.getReseponse(listOf(graphqlRequest), graphQlCacheStrategy)
-                        .getSuccessData<TravelUnifiedSubhomepageData.Response>()
-            }
-            response.response
         }
     }
 
