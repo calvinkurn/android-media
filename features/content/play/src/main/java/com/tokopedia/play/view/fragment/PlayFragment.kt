@@ -371,7 +371,7 @@ class PlayFragment @Inject constructor(
     }
 
     private fun observeStateChannel() {
-        playViewModel.observableStateChannelInfo.observe(viewLifecycleOwner, EventObserver {
+        playViewModel.observableChannelErrorEvent.observe(viewLifecycleOwner, EventObserver {
             startRenderMonitoring()
             stopRenderMonitoring()
         })

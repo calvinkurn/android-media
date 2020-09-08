@@ -52,7 +52,7 @@ class PlayViewModel @Inject constructor(
     val observableGetChannelInfo: LiveData<NetworkResult<ChannelInfoUiModel>>
         get() = _observableGetChannelInfo
 
-    val observableStateChannelInfo: LiveData<Event<Boolean>>
+    val observableChannelErrorEvent: LiveData<Event<Boolean>>
         get() = _observableChannelErrorEvent
     val observableCompleteChannelInfo: LiveData<PlayCompleteInfoUiModel>
         get() = _observableCompleteInfo
