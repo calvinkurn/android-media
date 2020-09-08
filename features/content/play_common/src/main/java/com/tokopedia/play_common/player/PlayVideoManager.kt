@@ -19,6 +19,7 @@ import com.google.android.exoplayer2.upstream.Loader.UnexpectedLoaderException
 import com.google.android.exoplayer2.util.Util
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.PlayPlayerModel
+import com.tokopedia.play_common.player.errorhandlingpolicy.PlayLoadErrorHandlingPolicy
 import com.tokopedia.play_common.player.state.ExoPlayerStateProcessorImpl
 import com.tokopedia.play_common.state.PlayVideoPrepareState
 import com.tokopedia.play_common.state.PlayVideoState
@@ -307,24 +308,7 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
     }
 
     private fun getErrorHandlingPolicy(): LoadErrorHandlingPolicy {
-        return object : DefaultLoadErrorHandlingPolicy() {
-            override fun getRetryDelayMsFor(dataType: Int, loadDurationMs: Long, exception: IOException?, errorCount: Int): Long {
-                return if (exception is ParserException || exception is FileNotFoundException || exception is UnexpectedLoaderException) C.TIME_UNSET
-                else errorCount * RETRY_DELAY
-            }
-
-            override fun getMinimumLoadableRetryCount(dataType: Int): Int {
-                return when (dataType) {
-                    C.DATA_TYPE_MANIFEST -> 0
-                    C.DATA_TYPE_MEDIA_PROGRESSIVE_LIVE -> RETRY_COUNT_LIVE
-                    else -> RETRY_COUNT_DEFAULT
-                }
-            }
-
-            override fun getBlacklistDurationMsFor(dataType: Int, loadDurationMs: Long, exception: IOException?, errorCount: Int): Long {
-                return C.TIME_UNSET
-            }
-        }
+        return PlayLoadErrorHandlingPolicy()
     }
 
     private fun initVideoPlayer(playerModel: PlayPlayerModel?, bufferControl: PlayBufferControl): PlayPlayerModel {
@@ -384,11 +368,6 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
     }
 
     companion object {
-        private const val RETRY_COUNT_LIVE = 1
-        private const val RETRY_COUNT_DEFAULT = 2
-        private const val RETRY_DELAY = 2000L
-        private const val BLACKLIST_MS = 10000L
-
         private const val VIDEO_MAX_SOUND = 1f
         private const val VIDEO_MIN_SOUND = 0f
 

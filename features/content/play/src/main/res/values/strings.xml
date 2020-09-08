@@ -39,7 +39,7 @@
 
     <string name="play_error_image_edit_text">Gambar/GIF tidak diperbolehkan</string>
 
-    <string name="play_buffer_reason_seller_side">Please Wait&#8230;\nThe video will resume automatically when the connection improves</string>
+    <string name="play_buffer_reason_seller_side">Siarannya sedang berkendala, nih.\nTunggu sebentar, ya!</string>
     <string name="play_buffer_reason_waiting">Live streaming akan segera mulai sesaat lagi, ya!</string>
 
 </resources>
