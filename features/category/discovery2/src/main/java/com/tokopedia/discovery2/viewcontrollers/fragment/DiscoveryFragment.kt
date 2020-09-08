@@ -60,6 +60,7 @@ import javax.inject.Inject
 
 private const val LOGIN_REQUEST_CODE = 35769
 private const val MOBILE_VERIFICATION_REQUEST_CODE = 35770
+const val PAGE_REFRESH_LOGIN = 35771
 private const val SCROLL_TOP_DIRECTION = -1
 private const val DEFAULT_SCROLL_POSITION = 0
 
@@ -86,15 +87,13 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     private var openScreenStatus = false
     private var pinnedAlreadyScrolled = false
 
-    @JvmField
-    @Inject
     var pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface? = null
 
     @Inject
     lateinit var trackingQueue: TrackingQueue
 
     companion object {
-        fun getInstance(endPoint: String?, queryParameterMap: Map<String, String?>?): Fragment {
+        fun getInstance(endPoint: String?, queryParameterMap: Map<String, String?>?): DiscoveryFragment {
             val bundle = Bundle()
             val fragment = DiscoveryFragment()
             if (!endPoint.isNullOrEmpty()) {
@@ -331,6 +330,10 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     }
 
     override fun onRefresh() {
+        refreshPage()
+    }
+
+    private fun refreshPage() {
         trackingQueue.sendAll()
         getDiscoveryAnalytics().clearProductViewIds()
         discoveryViewModel.clearPageData()
@@ -365,6 +368,11 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                     discoveryBaseViewModel?.isPhoneVerificationSuccess(true)
                 } else {
                     discoveryBaseViewModel?.isPhoneVerificationSuccess(false)
+                }
+            }
+            PAGE_REFRESH_LOGIN -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    refreshPage()
                 }
             }
         }
