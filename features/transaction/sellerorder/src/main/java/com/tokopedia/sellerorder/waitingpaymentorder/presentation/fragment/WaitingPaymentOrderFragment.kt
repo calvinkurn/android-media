@@ -3,6 +3,8 @@ package com.tokopedia.sellerorder.waitingpaymentorder.presentation.fragment
 import android.animation.Animator
 import android.animation.LayoutTransition
 import android.animation.ValueAnimator
+import android.app.ActivityOptions
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -124,7 +126,7 @@ class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, Waitin
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(rvWaitingPaymentOrder.layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                if (!isLoadingInitialData) {
+                if (!swipeRefreshLayoutWaitingPaymentOrder.isRefreshing) {
                     showLoading()
                     loadData(page)
                 }
@@ -179,7 +181,13 @@ class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, Waitin
 
     private fun goToProductManageSeller() {
         context?.let { context ->
-            if (RouteManager.route(context, ApplinkConstInternalSellerapp.SELLER_HOME_PRODUCT_MANAGE_LIST)) {
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalSellerapp.SELLER_HOME_PRODUCT_MANAGE_LIST)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(activity).toBundle())
+            } else {
+                startActivity(intent)
+            }
+            if (intent != null) {
                 eventClickCheckAndSetStockButton(
                         adapter.itemCount,
                         userSession.userId,

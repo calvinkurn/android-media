@@ -19,69 +19,69 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:scheme="@string/internal_scheme"
                     android:host="@string/host_seller"
-                    android:path="@string/path_new_order"/>
+                    android:path="@string/path_new_order"
+                    android:scheme="@string/internal_scheme" />
 
                 <data
-                    android:scheme="@string/internal_scheme"
                     android:host="@string/host_seller"
-                    android:path="@string/path_ready_to_ship"/>
+                    android:path="@string/path_ready_to_ship"
+                    android:scheme="@string/internal_scheme" />
 
                 <data
-                    android:scheme="@string/internal_scheme"
                     android:host="@string/host_seller"
-                    android:path="@string/path_shipped"/>
+                    android:path="@string/path_shipped"
+                    android:scheme="@string/internal_scheme" />
 
                 <data
-                    android:scheme="@string/internal_scheme"
                     android:host="@string/host_seller"
-                    android:path="@string/path_delivered"/>
+                    android:path="@string/path_delivered"
+                    android:scheme="@string/internal_scheme" />
 
                 <data
-                    android:scheme="@string/internal_scheme"
                     android:host="@string/host_seller"
-                    android:path="@string/path_history"/>
+                    android:path="@string/path_history"
+                    android:scheme="@string/internal_scheme" />
 
                 <data
-                    android:scheme="@string/internal_scheme"
                     android:host="@string/host_seller"
-                    android:path="@string/path_cancelled"/>
+                    android:path="@string/path_cancelled"
+                    android:scheme="@string/internal_scheme" />
 
                 <data
-                    android:scheme="@string/internal_scheme"
                     android:host="@string/host_seller"
-                    android:path="@string/path_waiting_pickup"/>
+                    android:path="@string/path_waiting_pickup"
+                    android:scheme="@string/internal_scheme" />
 
                 <data
-                    android:scheme="@string/internal_scheme"
                     android:host="@string/host_seller"
-                    android:path="@string/path_waiting_awb"/>
+                    android:path="@string/path_waiting_awb"
+                    android:scheme="@string/internal_scheme" />
 
                 <data
-                    android:scheme="@string/internal_scheme"
                     android:host="@string/host_seller"
-                    android:path="@string/path_awb_invalid"/>
+                    android:path="@string/path_awb_invalid"
+                    android:scheme="@string/internal_scheme" />
 
                 <data
-                    android:scheme="@string/internal_scheme"
                     android:host="@string/host_seller"
-                    android:path="@string/path_awb_change"/>
+                    android:path="@string/path_awb_change"
+                    android:scheme="@string/internal_scheme" />
 
                 <data
-                    android:scheme="@string/internal_scheme"
                     android:host="@string/host_seller"
-                    android:path="@string/path_retur"/>
+                    android:path="@string/path_retur"
+                    android:scheme="@string/internal_scheme" />
 
                 <data
-                    android:scheme="@string/internal_scheme"
                     android:host="@string/host_seller"
-                    android:path="@string/path_complaint"/>
+                    android:path="@string/path_complaint"
+                    android:scheme="@string/internal_scheme" />
 
                 <data
-                    android:scheme="@string/internal_scheme"
                     android:host="@string/host_seller"
-                    android:path="@string/path_finished"/>
+                    android:path="@string/path_finished"
+                    android:scheme="@string/internal_scheme" />
 
             </intent-filter>
         </activity>
@@ -111,9 +111,9 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:scheme="@string/internal_scheme"
                     android:host="@string/host_seller"
-                    android:pathPattern="@string/path_order"/>
+                    android:pathPattern="@string/path_order"
+                    android:scheme="@string/internal_scheme" />
 
             </intent-filter>
 
@@ -121,9 +121,9 @@
 
         <activity
             android:name=".detail.presentation.activity.SomSeeInvoiceActivity"
-            android:screenOrientation="portrait"
             android:configChanges="uiMode"
-            android:theme="@style/Theme.White"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
 
         <activity
             android:name=".requestpickup.presentation.activity.SomConfirmReqPickupActivity"
@@ -151,9 +151,9 @@
 
         <activity
             android:name=".waitingpaymentorder.presentation.activity.WaitingPaymentOrderActivity"
-            android:label="Menunggu Pembayaran"
+            android:label="@string/title_waiting_payment"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
+            android:theme="@style/WaitingPaymentOrderTheme" />
 
     </application>
 </manifest>
