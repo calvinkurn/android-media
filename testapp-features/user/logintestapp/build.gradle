@@ -1,50 +1,5 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
-apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: "de.mannodermaus.android-junit5"
-
-android{
-    sourceSets.each {
-        it.java.srcDirs += "src/$it.name/kotlin"
-    }
-
-    testOptions {
-        unitTests {
-            includeAndroidResources = true
-        }
-        junitPlatform {
-            filters {
-                engines {
-                    include 'spek2'
-                }
-            }
-            jacocoOptions {
-                html.enabled = true
-                xml.enabled = false
-                csv.enabled = false
-            }
-        }
-        unitTests.all {
-            testLogging.events = ["passed", "skipped", "failed"]
-        }
-    }
-}
-repositories {
-    maven { url 'https://hansel.io/maven' }
-    jcenter()
-    mavenCentral()
-}
-buildscript {
-    repositories {
-        mavenCentral()
-        maven { url 'https://hansel.io/maven' }
-        jcenter()
-    }
-    dependencies {
-        classpath rootProject.ext.miscDependencies.hansel
-        classpath rootProject.ext.miscDependencies.androidjunit5
-    }
-}
 
 dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
