@@ -6,7 +6,10 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.profilecompletion.addpin.data.*
+import com.tokopedia.profilecompletion.changepin.data.ChangePin2FAData
+import com.tokopedia.profilecompletion.changepin.data.ResetPin2FaPojo
 import com.tokopedia.profilecompletion.changepin.data.ResetPinResponse
+import com.tokopedia.profilecompletion.changepin.query.OtpValidateQuery2FA
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -22,6 +25,7 @@ class ChangePinViewModel @Inject constructor(
         private val validatePinUseCase: GraphqlUseCase<ValidatePinPojo>,
         private val checkPinUseCase: GraphqlUseCase<CheckPinPojo>,
         private val resetPinUseCase: GraphqlUseCase<ResetPinResponse>,
+        private val resetPin2FAUseCase: GraphqlUseCase<ResetPin2FaPojo>,
         private val changePinUseCase: GraphqlUseCase<ChangePinPojo>,
         private val rawQueries: Map<String, String>,
         dispatcher: CoroutineDispatcher
@@ -30,6 +34,10 @@ class ChangePinViewModel @Inject constructor(
     private val mutableResetPinResponse = MutableLiveData<Result<AddChangePinData>>()
     val resetPinResponse: LiveData<Result<AddChangePinData>>
         get() = mutableResetPinResponse
+
+    private val mutableResetPin2FAResponse = MutableLiveData<Result<ChangePin2FAData>>()
+    val resetPin2FAResponse: LiveData<Result<ChangePin2FAData>>
+        get() = mutableResetPin2FAResponse
 
     private val mutableValidatePinResponse = MutableLiveData<Result<ValidatePinData>>()
     val validatePinResponse: LiveData<Result<ValidatePinData>>
@@ -103,6 +111,32 @@ class ChangePinViewModel @Inject constructor(
                 it.data.errorMessage.isNotEmpty() ->
                     mutableCheckPinResponse.value = Success(it.data)
                 else -> mutableCheckPinResponse.value = Fail(RuntimeException())
+            }
+        }
+    }
+
+    fun resetPin2FA(userId: String, validateToken: String){
+        val params = mapOf(
+                ProfileCompletionQueryConstant.PARAM_USER_ID to userId,
+                ProfileCompletionQueryConstant.PARAM_VALIDATE_TOKEN to validateToken,
+                ProfileCompletionQueryConstant.PARAM_GRANT_TYPE to "extension"
+        )
+        resetPin2FAUseCase.setTypeClass(ResetPin2FaPojo::class.java)
+        resetPin2FAUseCase.setRequestParams(params)
+        resetPin2FAUseCase.setGraphqlQuery(OtpValidateQuery2FA.query)
+        resetPin2FAUseCase.execute(
+                onSuccessResetPin2FA(),
+                onErrorResetPin()
+        )
+    }
+
+    private fun onSuccessResetPin2FA(): (ResetPin2FaPojo) -> Unit {
+        return {
+            when {
+                it.data.is_success == 1 -> mutableResetPin2FAResponse.value = Success(it.data)
+                it.data.error.isNotEmpty() ->
+                    mutableResetPin2FAResponse.value = Fail(MessageErrorException(it.data.error))
+                else -> mutableResetPin2FAResponse.value = Fail(RuntimeException())
             }
         }
     }

@@ -63,6 +63,7 @@ class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
     private var isValidated = false
     private var isForgotPin = false
     private var inputNewPin = false
+    private var isFrom2FA = false
     private val job = Job()
 
     private var pin = ""
@@ -85,6 +86,11 @@ class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
         getComponent(ProfileCompletionSettingComponent::class.java).inject(this)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        isFrom2FA = arguments?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA) ?: false
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_change_pin, container, false)
@@ -97,6 +103,7 @@ class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViews()
+        if(isFrom2FA) forgotPinState()
         initObserver()
     }
 
@@ -151,9 +158,12 @@ class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
 
     private fun handleConfirmState(input: String) {
         if (pin == input) {
-            if (isForgotPin) {
+            if (isForgotPin && !isFrom2FA) {
                 goToVerificationActivity()
-            } else {
+            }else if(isFrom2FA) {
+                changePinViewModel.resetPin2FA(arguments?.getString(ApplinkConstInternalGlobal.PARAM_UUID) ?: "", arguments?.getString(ApplinkConstInternalGlobal.PARAM_TOKEN) ?: "")
+            }
+            else {
                 showLoading()
                 changePinViewModel.changePin(pin, input, oldPin)
             }
@@ -326,6 +336,17 @@ class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
         changePinViewModel.resetPinResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessResetPin(it.data)
+                is Fail -> onError(it.throwable)
+            }
+        })
+
+        changePinViewModel.resetPin2FAResponse.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    dismissLoading()
+                    if (it.data.is_success == 1) goToSuccessPage()
+                    else onError(Throwable())
+                }
                 is Fail -> onError(it.throwable)
             }
         })
