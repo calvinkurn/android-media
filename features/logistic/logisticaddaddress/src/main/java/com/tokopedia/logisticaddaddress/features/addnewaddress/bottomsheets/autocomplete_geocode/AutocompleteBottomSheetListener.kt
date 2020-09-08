@@ -11,4 +11,5 @@ interface AutocompleteBottomSheetListener : CustomerView {
     fun hideListPointOfInterest()
     fun onSuccessGetAutocompleteGeocode(dataUiModel: AutocompleteGeocodeDataUiModel)
     fun onSuccessGetAutocomplete(suggestedPlaces: List<SuggestedPlace>)
+    fun goToAddNewAddressNegative()
 }

@@ -11,11 +11,13 @@ class AutoCompleteMapper @Inject constructor() {
 
     fun mapAutoComplete(response: AutocompleteResponse): List<SuggestedPlace> {
         val dataResponse = response.keroMapsAutocomplete.data.predictions
+        val errorCode = response.keroMapsAutocomplete.errorCode
         return dataResponse.map {
             SuggestedPlace(
                     it.structuredFormatting.mainText,
                     it.structuredFormatting.secondaryText,
-                    it.placeId
+                    it.placeId,
+                    errorCode
             )
         }
     }

@@ -5,7 +5,8 @@ sealed class AutoCompleteVisitable
 data class SuggestedPlace(
         val mainText: String = "",
         val secondaryText: String = "",
-        val placeId: String = "") : AutoCompleteVisitable()
+        val placeId: String = "",
+        val errorCode: Int = 0) : AutoCompleteVisitable()
 
 data class SavedAddress(
         var addrId: Int = 0,
