@@ -33,13 +33,13 @@
     </style>
 
 
-    <style name="collapsingToolbarLayoutTitleColor" parent="@android:style/TextAppearance.Medium">
+    <style name="hotelPdpCollapsingToolbarLayoutTitleColor" parent="@android:style/TextAppearance.Medium">
         <item name="android:textSize">18sp</item>
         <item name="android:fontFamily">sans-serif</item>
         <item name="android:textColor">@color/Neutral_N700_96</item>
     </style>
 
-    <style name="expandedToolbarLayoutTitleColor" parent="@android:style/TextAppearance.Medium">
+    <style name="hotelPdpExpandedToolbarLayoutTitleColor" parent="@android:style/TextAppearance.Medium">
         <item name="android:textSize">0sp</item>
         <item name="android:textColor">@android:color/transparent</item>
     </style>

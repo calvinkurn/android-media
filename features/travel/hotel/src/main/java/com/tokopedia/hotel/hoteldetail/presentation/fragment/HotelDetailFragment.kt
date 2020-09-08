@@ -277,8 +277,8 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         (activity as HotelDetailActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
         detail_toolbar.navigationIcon?.setColorFilter(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Neutral_N0), PorterDuff.Mode.SRC_ATOP)
 
-        collapsing_toolbar.setExpandedTitleTextAppearance(R.style.expandedToolbarLayoutTitleColor)
-        collapsing_toolbar.setCollapsedTitleTextAppearance(R.style.collapsingToolbarLayoutTitleColor)
+        collapsing_toolbar.setExpandedTitleTextAppearance(R.style.hotelPdpExpandedToolbarLayoutTitleColor)
+        collapsing_toolbar.setCollapsedTitleTextAppearance(R.style.hotelPdpCollapsingToolbarLayoutTitleColor)
         collapsing_toolbar.title = data.property.name
 
         app_bar_layout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
