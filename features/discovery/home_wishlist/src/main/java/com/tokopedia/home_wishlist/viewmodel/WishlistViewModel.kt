@@ -159,7 +159,7 @@ open class WishlistViewModel @Inject constructor(
             }
         }){
             isWishlistErrorInFirstPage.value = true
-            wishlistData.value = listOf(ErrorWishlistDataModel(it.message))
+            wishlistData.value = listOf(ErrorWishlistDataModel())
             currentPage--
         }
     }

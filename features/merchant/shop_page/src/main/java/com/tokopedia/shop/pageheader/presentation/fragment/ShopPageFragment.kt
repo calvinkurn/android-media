@@ -129,6 +129,8 @@ class ShopPageFragment :
         private const val TOTAL_CART_CACHE_KEY = "CACHE_TOTAL_CART"
         private const val PATH_HOME = "home"
         private const val PATH_REVIEW = "review"
+        private const val PATH_PRODUCT = "product"
+        private const val PATH_FEED = "feed"
         private const val QUERY_SHOP_REF = "shop_ref"
         private const val QUERY_SHOP_ATTRIBUTION = "tracker_attribution"
         private const val START_PAGE = 1
@@ -171,6 +173,9 @@ class ShopPageFragment :
     private var shouldOverrideTabToHome: Boolean = false
     private var isRefresh: Boolean = false
     private var shouldOverrideTabToReview: Boolean = false
+    private var shouldOverrideTabToProduct: Boolean = false
+    private var shouldOverrideTabToFeed: Boolean = false
+
     private var listShopPageTabModel = listOf<ShopPageTabModel>()
     private val customDimensionShopPage: CustomDimensionShopPage by lazy {
         CustomDimensionShopPage.create(
@@ -397,6 +402,12 @@ class ShopPageFragment :
                     }
                     if (lastPathSegment.orEmpty() == PATH_REVIEW) {
                         shouldOverrideTabToReview = true
+                    }
+                    if (lastPathSegment.orEmpty() == PATH_PRODUCT) {
+                        shouldOverrideTabToProduct = true
+                    }
+                    if (lastPathSegment.orEmpty() == PATH_FEED) {
+                        shouldOverrideTabToFeed = true
                     }
                     shopRef = getQueryParameter(QUERY_SHOP_REF) ?: ""
                     shopAttribution = getQueryParameter(QUERY_SHOP_ATTRIBUTION) ?: ""
@@ -795,6 +806,20 @@ class ShopPageFragment :
         if(shouldOverrideTabToReview){
             selectedPosition = if(viewPagerAdapter.isFragmentObjectExists(ReviewShopFragment::class.java)){
                 viewPagerAdapter.getFragmentPosition(ReviewShopFragment::class.java)
+            } else {
+                selectedPosition
+            }
+        }
+        if(shouldOverrideTabToProduct){
+            selectedPosition = if(viewPagerAdapter.isFragmentObjectExists(ShopPageProductListFragment::class.java)){
+                viewPagerAdapter.getFragmentPosition(ShopPageProductListFragment::class.java)
+            } else {
+                selectedPosition
+            }
+        }
+        if(shouldOverrideTabToFeed){
+            selectedPosition = if(viewPagerAdapter.isFragmentObjectExists(FeedShopFragment::class.java)){
+                viewPagerAdapter.getFragmentPosition(FeedShopFragment::class.java)
             } else {
                 selectedPosition
             }

@@ -129,7 +129,9 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
         return DiscoveryFragment.getInstance(intentData?.lastPathSegment,
                 intentData?.let { it ->
                     discoveryViewModel.getMapOfQueryParameter(it)
-                })
+                }).apply {
+            this.pageLoadTimePerformanceInterface = this@DiscoveryActivity.pageLoadTimePerformanceInterface
+        }
     }
 
     override fun getViewModelType(): Class<DiscoveryViewModel> {
