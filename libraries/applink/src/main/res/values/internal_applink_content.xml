@@ -19,10 +19,6 @@
 
     <string name="applink_title_profile">Profile</string>
     <string name="applink_title_affiliate">Affiliate</string>
-    <string name="applink_title_affiliate_explore">Affiliate Explore</string>
-    <string name="applink_title_affiliate_dashboard">Affiliate Dashboard</string>
-    <string name="applink_title_affiliate_education">Affiliate Education</string>
-    <string name="applink_title_affiliate_byme_tracking">Affiliate ByMe Tracking</string>
 
     <string name="host_affiliate" translatable="false">affiliate</string>
     <string name="path_af_dashboard" translatable="false">/dashboard</string>
