@@ -39,6 +39,7 @@ object SomAnalytics {
     private const val CLICK_BUTTON_CHAT_PEMBELI_POPUP = "click button chat pembeli - popup"
     private const val CLICK_SEARCH_RECENT_SEARCH = "top nav - click search - search box"
     private const val CLICK_BUTTON_DOWNLOAD_INVOICE = "click button download invoice"
+    private const val CLICK_WAITING_FOR_PAYMENT = "click waiting for payment"
     private const val TO_APP_ORDER = "To App - Order"
     private const val SELLER_WIDGET = "sellerWidget"
     private const val SELLER_APP_WIDGET = "Seller App Widget"
@@ -168,6 +169,30 @@ object SomAnalytics {
     }
 
     fun eventClickWidgetNewOrder() {
-        sendEventCategoryActionLabel(SELLER_WIDGET, SELLER_APP_WIDGET,  CLICK, TO_APP_ORDER)
+        sendEventCategoryActionLabel(SELLER_WIDGET, SELLER_APP_WIDGET, CLICK, TO_APP_ORDER)
+    }
+
+    fun eventClickWaitingPaymentOrderCard(statusOrder: String, counter: Int, userId: String, shopId: String) {
+        val data = mapOf(
+                TrackAppUtils.EVENT to CLICK_SOM,
+                TrackAppUtils.EVENT_CATEGORY to CATEGORY_SOM,
+                TrackAppUtils.EVENT_ACTION to CLICK_WAITING_FOR_PAYMENT,
+                TrackAppUtils.EVENT_LABEL to "$statusOrder - awaiting payment:$counter",
+                "userId" to userId,
+                "shopId" to shopId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    fun eventClickCheckAndSetStockButton(counter: Int, userId: String, shopId: String) {
+        val data = mapOf(
+                TrackAppUtils.EVENT to CLICK_SOM,
+                TrackAppUtils.EVENT_CATEGORY to CATEGORY_SOM,
+                TrackAppUtils.EVENT_ACTION to "click check and manage stock",
+                TrackAppUtils.EVENT_LABEL to "waiting for payment - awaiting payment:$counter",
+                "userId" to userId,
+                "shopId" to shopId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 }

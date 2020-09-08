@@ -1,8 +1,9 @@
 package com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.viewholder
 
-import android.os.Handler
+import android.animation.LayoutTransition
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.WaitingPaymentOrderProductsAdapter
@@ -19,8 +20,6 @@ class WaitingPaymentOrdersViewHolder(itemView: View?) : AbstractViewHolder<Waiti
     companion object {
         val LAYOUT = R.layout.item_waiting_payment_orders
         const val MAX_ORDER_WHEN_COLLAPSED = 5
-        const val COLLAPSE_EXPAND_DURATION = 500L
-        const val FRAME_TIME = 17L
     }
 
     private val adapter: WaitingPaymentOrderProductsAdapter by lazy {
@@ -40,13 +39,16 @@ class WaitingPaymentOrdersViewHolder(itemView: View?) : AbstractViewHolder<Waiti
                     showWithCondition(element.products.size > MAX_ORDER_WHEN_COLLAPSED)
                     updateToggleCollapseText(element.isExpanded)
                     setOnClickListener {
-                        itemView.tvToggleCollapseMoreProducts.isClickable = false
+                        itemView.waitingPaymentOrderContainer.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
                         if (!element.isExpanded) {
                             showMoreProducts()
                             element.isExpanded = true
                         } else {
                             collapseMoreProducts()
                             element.isExpanded = false
+                        }
+                        itemView.waitingPaymentOrderContainer.addOneTimeGlobalLayoutListener {
+                            itemView.waitingPaymentOrderContainer.layoutTransition.disableTransitionType(LayoutTransition.CHANGING)
                         }
                     }
                 }
@@ -56,6 +58,10 @@ class WaitingPaymentOrdersViewHolder(itemView: View?) : AbstractViewHolder<Waiti
                         adapter = this@WaitingPaymentOrdersViewHolder.adapter
                     }
                     this@WaitingPaymentOrdersViewHolder.adapter.updateProducts(getShownProducts(element))
+                    itemAnimator?.addDuration = 500
+                    itemAnimator?.removeDuration = 500
+                    itemAnimator?.changeDuration = 500
+                    itemAnimator?.moveDuration = 500
                 }
             }
         }
@@ -78,30 +84,32 @@ class WaitingPaymentOrdersViewHolder(itemView: View?) : AbstractViewHolder<Waiti
     }
 
     private fun collapseMoreProducts() {
-        val diff = adapter.dataSize - MAX_ORDER_WHEN_COLLAPSED
-        val delay = (COLLAPSE_EXPAND_DURATION / diff).coerceAtMost(FRAME_TIME)
-        for (i in 1..adapter.dataSize - MAX_ORDER_WHEN_COLLAPSED) {
-            Handler().postDelayed({
-                adapter.updateProducts(products.take(products.size - i))
-                if (i == MAX_ORDER_WHEN_COLLAPSED) {
-                    itemView.tvToggleCollapseMoreProducts.isClickable = true
-                }
-            }, (delay * i))
-        }
+//        val diff = adapter.dataSize - MAX_ORDER_WHEN_COLLAPSED
+//        val delay = (COLLAPSE_EXPAND_DURATION / diff).coerceAtMost(FRAME_TIME)
+//        for (i in 1..adapter.dataSize - MAX_ORDER_WHEN_COLLAPSED) {
+//            Handler().postDelayed({
+//                adapter.updateProducts(products.take(products.size - i))
+//                if (i == MAX_ORDER_WHEN_COLLAPSED) {
+//                    itemView.tvToggleCollapseMoreProducts.isClickable = true
+//                }
+//            }, (delay * i))
+//        }
+        adapter.updateProducts(products.take(MAX_ORDER_WHEN_COLLAPSED))
         updateToggleCollapseText(false)
     }
 
     private fun showMoreProducts() {
-        val diff = products.size - MAX_ORDER_WHEN_COLLAPSED
-        val delay = (COLLAPSE_EXPAND_DURATION / diff).coerceAtMost(FRAME_TIME)
-        for (i in (MAX_ORDER_WHEN_COLLAPSED + 1)..products.size) {
-            Handler().postDelayed({
-                adapter.updateProducts(products.take(i))
-                if (i == products.size) {
-                    itemView.tvToggleCollapseMoreProducts.isClickable = true
-                }
-            }, (delay * (i - diff)))
-        }
+//        val diff = products.size - MAX_ORDER_WHEN_COLLAPSED
+//        val delay = (COLLAPSE_EXPAND_DURATION / diff).coerceAtMost(FRAME_TIME)
+//        for (i in (MAX_ORDER_WHEN_COLLAPSED + 1)..products.size) {
+//            Handler().postDelayed({
+//                adapter.updateProducts(products.take(i))
+//                if (i == products.size) {
+//                    itemView.tvToggleCollapseMoreProducts.isClickable = true
+//                }
+//            }, (delay * (i - diff)))
+//        }
+        adapter.updateProducts(products)
         updateToggleCollapseText(true)
     }
 }

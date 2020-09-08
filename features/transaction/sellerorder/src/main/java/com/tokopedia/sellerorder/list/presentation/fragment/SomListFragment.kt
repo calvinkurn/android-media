@@ -6,11 +6,17 @@ import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Typeface
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -41,6 +47,7 @@ import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.SomComponentInstance
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickOrder
+import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickWaitingPaymentOrderCard
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventSubmitSearch
 import com.tokopedia.sellerorder.common.errorhandler.SomErrorHandler
 import com.tokopedia.sellerorder.common.presenter.model.Roles
@@ -125,19 +132,39 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         CoachMarkItem(filter_action_button, getString(R.string.coachmark_filter), getString(R.string.coachmark_filter_info))
     }
 
-    private val coachMarkWaitingPaymentButton: ArrayList<CoachMarkItem> by lazy {
-        arrayListOf(
-                CoachMarkItem(
-                        somWaitingPaymentButton,
-                        getString(R.string.som_list_coachmark_waiting_payment_order_title),
-                        getString(R.string.som_list_coachmark_waiting_payment_order_description).parseAsHtml().toString()
-                ),
-                CoachMarkItem(
-                        somWaitingPaymentButton,
-                        getString(R.string.som_list_coachmark_check_and_mange_product_stock_title),
-                        getString(R.string.som_list_coachmark_check_and_mange_product_stock_description).parseAsHtml().toString()
-                )
-        )
+
+    private val coachMarkWaitingPaymentButton: List<CoachMarkItem> by lazy {
+        context?.let { context ->
+            val headerText = "Di sini kamu bisa cek pesanan yang dibayar oleh pembeli. Pesanan gagal bayar atau terbayar saat stok habis tidak akan ditampilkan."
+            val ctaText = "Selengkapnya"
+            val spannedHeader = SpannableStringBuilder()
+                    .append(headerText)
+                    .append(" $ctaText")
+            spannedHeader.setSpan(
+                    ForegroundColorSpan(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Green_G500)),
+                    headerText.length + 1,
+                    headerText.length + ctaText.length + 1,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            spannedHeader.setSpan(
+                    StyleSpan(Typeface.BOLD),
+                    headerText.length + 1,
+                    headerText.length + ctaText.length + 1,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            arrayListOf(
+                    CoachMarkItem(
+                            somWaitingPaymentButton,
+                            getString(R.string.som_list_coachmark_waiting_payment_order_title),
+                            spannedHeader.toString()
+                    ),
+                    CoachMarkItem(
+                            somWaitingPaymentButton,
+                            getString(R.string.som_list_coachmark_check_and_mange_product_stock_title),
+                            getString(R.string.som_list_coachmark_check_and_mange_product_stock_description).parseAsHtml().toString()
+                    )
+            )
+        }.orEmpty()
     }
 
     private val FLAG_DETAIL = 3333
@@ -733,6 +760,11 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                         Intent(this, WaitingPaymentOrderActivity::class.java).apply {
                             startActivity(this)
                         }
+                        eventClickWaitingPaymentOrderCard(
+                                tabActive,
+                                filterResult.data.waitingPaymentCounter.amount,
+                                userSession.userId,
+                                userSession.shopId)
                     }
                 }
                 showCoachMarkWaitingPayment()
@@ -779,7 +811,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     private fun showCoachMarkWaitingPayment() {
         if (!coachMark.hasShown(activity, TAG_COACHMARK) && GlobalConfig.isSellerApp()) {
-            coachMark.show(activity, TAG_COACHMARK, coachMarkWaitingPaymentButton)
+            coachMark.show(activity, TAG_COACHMARK, ArrayList(coachMarkWaitingPaymentButton))
         }
     }
 

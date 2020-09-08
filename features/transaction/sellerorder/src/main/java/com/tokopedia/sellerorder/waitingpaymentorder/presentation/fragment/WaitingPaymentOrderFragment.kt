@@ -1,6 +1,10 @@
 package com.tokopedia.sellerorder.waitingpaymentorder.presentation.fragment
 
+import android.animation.Animator
+import android.animation.LayoutTransition
+import android.animation.ValueAnimator
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,8 +16,11 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.SomComponentInstance
+import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickCheckAndSetStockButton
 import com.tokopedia.sellerorder.waitingpaymentorder.di.DaggerWaitingPaymentOrderComponent
 import com.tokopedia.sellerorder.waitingpaymentorder.domain.model.WaitingPaymentOrderRequestParam
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.WaitingPaymentOrderAdapter
@@ -25,6 +32,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_waiting_payment_order.*
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -50,6 +58,8 @@ class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, Waitin
     private val bottomSheetTips by lazy {
         BottomSheetWaitingPaymentOrderTips()
     }
+
+    private val userSession by lazy { UserSession(context) }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_waiting_payment_order, container, false)
@@ -92,14 +102,19 @@ class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, Waitin
     }
 
     override fun loadData(page: Int) {
-        waitingPaymentOrderViewModel.loadWaitingPaymentOrder(
-                WaitingPaymentOrderRequestParam(
-                        page = waitingPaymentOrderViewModel.paging.currentPage + 1,
-                        batchPage = waitingPaymentOrderViewModel.paging.currentPage + 1,
-                        nextPaymentDeadline = waitingPaymentOrderViewModel.paging.nextPaymentDeadline,
-                        showPage = waitingPaymentOrderViewModel.paging.currentPage + 1
-                )
-        )
+        if (page == defaultInitialPage) {
+            animateCheckAndSetStockButtonLeave()
+        }
+        Handler().postDelayed({
+            waitingPaymentOrderViewModel.loadWaitingPaymentOrder(
+                    WaitingPaymentOrderRequestParam(
+                            page = page,
+                            batchPage = page,
+                            nextPaymentDeadline = waitingPaymentOrderViewModel.paging.nextPaymentDeadline,
+                            showPage = page
+                    )
+            )
+        }, 2000)
     }
 
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
@@ -142,6 +157,7 @@ class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, Waitin
         setupRecyclerView()
         setupSwipeRefreshLayout()
         setupCheckAndSetStockButton()
+        waitingPaymentOrderContainer.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
     }
 
     private fun setupCheckAndSetStockButton() {
@@ -152,7 +168,13 @@ class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, Waitin
 
     private fun goToProductManageSeller() {
         context?.let { context ->
-            RouteManager.route(context, ApplinkConstInternalSellerapp.SELLER_HOME_PRODUCT_MANAGE_LIST)
+            if (RouteManager.route(context, ApplinkConstInternalSellerapp.SELLER_HOME_PRODUCT_MANAGE_LIST)) {
+                eventClickCheckAndSetStockButton(
+                        adapter.itemCount,
+                        userSession.userId,
+                        userSession.shopId
+                )
+            }
         }
     }
 
@@ -166,7 +188,7 @@ class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, Waitin
         context?.run {
             with(rvWaitingPaymentOrder) {
                 addItemDecoration(WaitingPaymentOrderAdapter.ItemDivider(this@run))
-                isNestedScrollingEnabled = false
+                isNestedScrollingEnabled = true
                 itemAnimator?.addDuration = 500
                 itemAnimator?.removeDuration = 500
                 itemAnimator?.changeDuration = 500
@@ -208,8 +230,11 @@ class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, Waitin
             when (result) {
                 is Success -> {
                     val newItems = result.data
-                    if (currentPage == 0) {
+                    if (isLoadingInitialData) {
                         (adapter as WaitingPaymentOrderAdapter).updateProducts(newItems)
+                        animateTickerEnter()
+                        animateCheckAndSetStockButtonEnter()
+                        isLoadingInitialData = false
                     } else {
                         hideLoading()
                         adapter.addMoreData(newItems)
@@ -219,9 +244,71 @@ class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, Waitin
                 }
                 is Fail -> {
                     showGetListError(result.throwable)
+                    if (isLoadingInitialData) {
+                        animateTickerLeave()
+                        animateCheckAndSetStockButtonLeave()
+                    }
                 }
             }
             swipeRefreshLayoutWaitingPaymentOrder.isRefreshing = false
+        })
+    }
+
+    private fun animateTicker(from: Float, to: Float): ValueAnimator {
+        val animator = ValueAnimator.ofFloat(from, to)
+        animator.duration = 250
+        animator.addUpdateListener { valueAnimator ->
+            tickerWaitingPaymentOrder.translationY = valueAnimator.animatedValue as Float
+        }
+        animator.start()
+        return animator
+    }
+
+    private fun animateTickerEnter() {
+        tickerWaitingPaymentOrder.visible()
+        animateTicker(-tickerWaitingPaymentOrder.height.toFloat(), 0f)
+    }
+
+    private fun animateTickerLeave() {
+        animateTicker(0f, -tickerWaitingPaymentOrder.height.toFloat()).addListener(object : Animator.AnimatorListener {
+            override fun onAnimationRepeat(animation: Animator?) {}
+
+            override fun onAnimationEnd(animation: Animator?) {
+                tickerWaitingPaymentOrder.gone()
+            }
+
+            override fun onAnimationCancel(animation: Animator?) {}
+
+            override fun onAnimationStart(animation: Animator?) {}
+        })
+    }
+
+    private fun animateCheckAndSetStockButton(from: Float, to: Float): ValueAnimator {
+        val animator = ValueAnimator.ofFloat(from, to)
+        animator.duration = 250
+        animator.addUpdateListener { valueAnimator ->
+            cardCheckAndSetStock.translationY = valueAnimator.animatedValue as Float
+        }
+        animator.start()
+        return animator
+    }
+
+    private fun animateCheckAndSetStockButtonEnter() {
+        cardCheckAndSetStock.visible()
+        animateCheckAndSetStockButton(cardCheckAndSetStock.height.toFloat(), 0f)
+    }
+
+    private fun animateCheckAndSetStockButtonLeave() {
+        animateCheckAndSetStockButton(cardCheckAndSetStock.height.toFloat(), 0f).addListener(object : Animator.AnimatorListener {
+            override fun onAnimationRepeat(animation: Animator?) {}
+
+            override fun onAnimationEnd(animation: Animator?) {
+                cardCheckAndSetStock.gone()
+            }
+
+            override fun onAnimationCancel(animation: Animator?) {}
+
+            override fun onAnimationStart(animation: Animator?) {}
         })
     }
 

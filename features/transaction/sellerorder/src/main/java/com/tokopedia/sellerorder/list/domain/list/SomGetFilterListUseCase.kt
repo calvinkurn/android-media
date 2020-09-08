@@ -45,10 +45,6 @@ class SomGetFilterListUseCase @Inject constructor(private val useCase: GraphqlUs
                     is_checked
                   }
                 }
-                waiting_payment_counter{
-                  text
-                  counter
-                }
                 shipping_list{
                   shipping_id
                   shipping_code
