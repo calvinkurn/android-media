@@ -1,6 +1,9 @@
 package com.tokopedia.productcard
 
 import android.graphics.Paint
+import android.graphics.Typeface
+import android.text.Spannable
+import android.text.SpannableString
 import android.view.View
 import androidx.annotation.DrawableRes
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -8,11 +11,15 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.productcard.utils.*
+import com.tokopedia.productcard.utils.ROBOTO_BOLD
 import com.tokopedia.productcard.utils.initLabelGroup
 import com.tokopedia.productcard.utils.loadIcon
 import com.tokopedia.productcard.utils.shouldShowWithAction
-import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifyprinciples.getTypeface
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
+
 
 internal fun View.renderProductCardContent(productCardModel: ProductCardModel) {
     renderTextGimmick(productCardModel)
@@ -155,13 +162,51 @@ private fun View.renderShopRating(productCardModel: ProductCardModel) {
         imageShopRating?.visible()
         imageShopRating.setImageResource(getShopRatingDrawable(productCardModel))
         textViewShopRating?.shouldShowWithAction(productCardModel.isShowShopRating()) {
-            val htmlLinkHelper = HtmlLinkHelper(this.context, productCardModel.shopRating)
-            it.text = htmlLinkHelper.spannedString ?: ""
+            it.setShopRatingText(productCardModel.shopRating)
         }
     }
     else {
         imageShopRating?.gone()
         textViewShopRating?.gone()
+    }
+}
+
+private fun Typography.setShopRatingText(shopRating: String) {
+    val boldTypeface = getTypeface(this.context, ROBOTO_BOLD)
+    val regularTypeface = getTypeface(this.context, ROBOTO_REGULAR)
+
+    if (boldTypeface != null && regularTypeface != null) {
+        setShopRatingTextWithMultipleTypeface(shopRating, regularTypeface, boldTypeface)
+    }
+    else {
+        text = MethodChecker.fromHtml(shopRating)
+    }
+}
+
+private fun Typography.setShopRatingTextWithMultipleTypeface(shopRating: String, regularTypeface: Typeface, boldTypeface: Typeface) {
+    val startBold = shopRating.indexOf(OPEN_BOLD_TAG)
+    val endBold = shopRating.indexOf(CLOSE_BOLD_TAG)
+
+    if (startBold in 0 until endBold) {
+        val beforeBoldTag = shopRating.substring(0, startBold)
+        val inBoldTag = shopRating.substring(startBold + OPEN_BOLD_TAG.length, endBold)
+        val afterBoldTag = shopRating.substring(endBold + CLOSE_BOLD_TAG.length, shopRating.length)
+
+        val spannableShopRating = SpannableString(beforeBoldTag + inBoldTag + afterBoldTag)
+
+        val beforeBoldTagStart = 0
+        val beforeBoldTagEnd = beforeBoldTag.length
+        val inBoldTagEnd = beforeBoldTagEnd + inBoldTag.length
+        val afterBoldTagEnd = inBoldTagEnd + afterBoldTag.length
+
+        spannableShopRating.setSpan(CustomTypefaceSpan("", regularTypeface), beforeBoldTagStart, beforeBoldTagEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spannableShopRating.setSpan(CustomTypefaceSpan("", boldTypeface), beforeBoldTagEnd, inBoldTagEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spannableShopRating.setSpan(CustomTypefaceSpan("", regularTypeface), inBoldTagEnd, afterBoldTagEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+        text = spannableShopRating
+    }
+    else {
+        text = MethodChecker.fromHtml(shopRating)
     }
 }
 
