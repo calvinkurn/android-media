@@ -481,7 +481,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun observeChannelInfo() {
-        playViewModel.observableStateChannelInfo.observe(viewLifecycleOwner, DistinctObserver {
+        playViewModel.observableStateChannelInfo.observe(viewLifecycleOwner, EventObserver {
             triggerStartMonitoring()
         })
     }
