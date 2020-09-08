@@ -10,7 +10,7 @@ import com.tokopedia.seller.menu.common.constant.MenuItemType
 import com.tokopedia.seller.menu.common.view.uimodel.DividerUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.IndentedSettingTitleUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.SellerMenuItemUiModel
-import com.tokopedia.seller.menu.common.view.uimodel.SettingTitleMenuUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.SellerSettingsTitleUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.base.DividerType
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
 
@@ -25,7 +25,7 @@ object SellerSettingsList {
         val trackingAliasMap = trackingAliasMap(context)
 
         return listOf(
-            SettingTitleMenuUiModel(context.getString(R.string.setting_menu_shop_profile), R.drawable.ic_pengaturan_toko),
+            SellerSettingsTitleUiModel(context.getString(R.string.setting_menu_shop_profile), R.drawable.ic_pengaturan_toko),
             SellerMenuItemUiModel(
                 context.getString(R.string.setting_menu_basic_info),
                 clickApplink = ApplinkConstInternalMarketplace.SHOP_SETTINGS_INFO,

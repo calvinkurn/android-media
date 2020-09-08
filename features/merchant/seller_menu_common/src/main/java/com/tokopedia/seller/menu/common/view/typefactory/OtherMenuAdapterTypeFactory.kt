@@ -39,6 +39,7 @@ class OtherMenuAdapterTypeFactory(
             SellerMenuTitleViewHolder.LAYOUT -> SellerMenuTitleViewHolder(parent, sellerMenuTracker)
             ShopProductViewHolder.LAYOUT -> ShopProductViewHolder(parent, sellerMenuTracker)
             SellerFeatureViewHolder.LAYOUT -> SellerFeatureViewHolder(parent, sellerMenuTracker)
+            SellerSettingsTitleViewHolder.LAYOUT -> SellerSettingsTitleViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
@@ -77,6 +78,10 @@ class OtherMenuAdapterTypeFactory(
 
     override fun type(settingTitleUiModel: SettingTitleUiModel): Int {
         return SettingTitleViewHolder.LAYOUT
+    }
+
+    override fun type(sellerSettingsTitleUiModel: SellerSettingsTitleUiModel): Int {
+        return SellerSettingsTitleViewHolder.LAYOUT
     }
 
     override fun type(menuItemUiModel: MenuItemUiModel): Int {
