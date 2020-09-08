@@ -54,7 +54,7 @@ class OfficialStoreLegoBannerComponentCallback(private val dcEventHandler: Dynam
         dcEventHandler.legoImpression(channelModel)
     }
 
-    override fun getDynamicLegoBanner(channelModel: ChannelModel) {
+    override fun getDynamicLegoBannerData(channelModel: ChannelModel) {
 
     }
 

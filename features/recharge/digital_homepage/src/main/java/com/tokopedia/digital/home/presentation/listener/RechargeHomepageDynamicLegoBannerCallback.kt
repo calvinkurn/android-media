@@ -61,7 +61,7 @@ class RechargeHomepageDynamicLegoBannerCallback(val listener: OnItemBindListener
         // Do nothing
     }
 
-    override fun getDynamicLegoBanner(channelModel: ChannelModel) {
+    override fun getDynamicLegoBannerData(channelModel: ChannelModel) {
         listener.loadRechargeSectionData(channelModel.id.toIntOrNull() ?: -1)
     }
 }

@@ -90,7 +90,7 @@ class DynamicLegoBannerComponentCallback(val context: Context?, val homeCategory
         )
     }
 
-    override fun getDynamicLegoBanner(channelModel: ChannelModel) {
+    override fun getDynamicLegoBannerData(channelModel: ChannelModel) {
 
     }
 }

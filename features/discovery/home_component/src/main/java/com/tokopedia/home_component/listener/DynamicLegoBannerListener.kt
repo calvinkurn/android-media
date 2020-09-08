@@ -20,5 +20,5 @@ interface DynamicLegoBannerListener {
     fun onChannelImpressionFourImage(channelModel: ChannelModel, parentPosition: Int)
     fun onChannelImpressionThreeImage(channelModel: ChannelModel, parentPosition: Int)
 
-    fun getDynamicLegoBanner(channelModel: ChannelModel)
+    fun getDynamicLegoBannerData(channelModel: ChannelModel)
 }
