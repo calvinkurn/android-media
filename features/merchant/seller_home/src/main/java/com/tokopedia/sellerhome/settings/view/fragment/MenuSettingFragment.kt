@@ -149,6 +149,11 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
                         clickApplink = ApplinkConst.SELLER_SHIPPING_EDITOR,
                         settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
                         trackingAlias = trackingAliasHashMap[resources.getString(R.string.setting_menu_set_shipment_method)]),
+                DividerUiModel(DividerType.THIN_INDENTED),
+                MenuItemUiModel(
+                        resources.getString(R.string.setting_menu_set_activation_page_cod),
+                        clickApplink = ApplinkConst.SELLER_COD_ACTIVATION,
+                        settingTypeInfix = SettingTrackingConstant.COD_ACTIVATION_SETTING),
                 DividerUiModel(DividerType.THICK),
                 SettingTitleMenuUiModel(resources.getString(R.string.setting_menu_account_setting), R.drawable.ic_account),
                 MenuItemUiModel(

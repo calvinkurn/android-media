@@ -77,6 +77,7 @@
     <string name="path_shop_settings_etalase_add" translatable="false">/shop-settings-etalase/add</string>
     <string name="path_shop_settings_notes" translatable="false">/shop-settings-notes</string>
     <string name="path_shop_setting_shipping" translatable="false">/shop-settings-shipping</string>
+    <string name="path_shop_setting_cod_activation" translatable="false">/shop-settings-cod</string>
     <string name="path_shop_score_detail" translatable="false">/shop-score-detail</string>
     <string name="path_shop_edit_schedule" translatable="false">/shop-settings-edit-schedule</string>
     <string name="path_shop_page_setting" translatable="false">/shop-page-setting</string>
