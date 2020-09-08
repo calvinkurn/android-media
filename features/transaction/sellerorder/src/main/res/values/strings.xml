@@ -300,15 +300,15 @@
     <!--  waiting payment orders  -->
     <string name="som_list_coachmark_waiting_payment_order_title">Menunggu pembayaran pembeli</string>
     <string name="som_list_coachmark_check_and_mange_product_stock_title">Cek dan atur stok produkmu</string>
-    <string name="som_list_coachmark_waiting_payment_order_description">Di sini kamu bisa cek pesanan yang dibayar oleh pembeli. Pesanan gagal bayar atau terbayar saat stok habis tidak akan ditampilkan. &lt;a href="#"&gt;Selengkapnya&lt;/a&gt;</string>
-    <string name="som_list_coachmark_check_and_mange_product_stock_description">Sembari menunggu, kamu juga bisa atur ketersediaan stok produk untuk memenuhi pesanan yang masuk. &lt;a href="#"&gt;Pelajari Selengkapnya&lt;/a&gt;</string>
+    <string name="som_list_coachmark_waiting_payment_order_description">Di sini kamu bisa cek pesanan yang dibayar oleh pembeli. Pesanan gagal bayar atau terbayar saat stok habis tidak akan ditampilkan.</string>
+    <string name="som_list_coachmark_check_and_mange_product_stock_description">Sembari menunggu, kamu bisa atur ketersediaan stok produk untuk memenuhi pesanan yang masuk.</string>
 
     <string name="som_list_order_waiting_payment_button_text">%1$s (%2$s)</string>
     <string name="som_list_waiting_payment_order_max_counter">99+</string>
 
     <string name="som_waiting_payment_orders_ticker_description">Atur ketersediaan stok produkmu sembari menunggu pembayaran. Pesanan yang gagal bayar atau terbayar saat stok habis tidak akan ditampilkan. &lt;a href="#"&gt;Pelajari Lebih Lanjut&lt;/a&gt;</string>
 
-    <string name="bottomsheet_waiting_payment_order_header">Sembari menunggu pembayaran dari pembeli, kamu bisa cek ketersediaan dan isi kembali stok produkmu. &lt;a href=""&gt;Selengkapnya&lt;/a&gt;</string>
+    <string name="bottomsheet_waiting_payment_order_header">Sembari menunggu pembayaran dari pembeli, kamu bisa cek ketersediaan dan isi kembali stok produkmu. &lt;a href="https://seller.tokopedia.com/edu/articles/"&gt;Selengkapnya&lt;/a&gt;</string>
     <string name="bottomsheet_waiting_payment_order_tips_title">Tips</string>
     <string name="bottomsheet_waiting_payment_tips_best_selling_description">Barang yang sering dicari pembeli cenderung cepat laku dan akan hilang dari daftar tunggu saat pembayaran terverifikasi.</string>
     <string name="bottomsheet_waiting_payment_tips_empty_stock_description">Jika pembayaran terverifikasi saat stok habis, pesanan akan otomatis dibatalkan.</string>
@@ -319,4 +319,5 @@
     <string name="waiting_payment_orders_product_quantity_and_price">%1$d x %2$s</string>
 
     <string name="btn_waiting_payment_check_and_set_Stock"><![CDATA[Cek & Atur Stok]]></string>
+    <string name="btn_reload">Muat Ulang</string>
 </resources>

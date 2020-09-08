@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerorder.R
@@ -70,7 +71,6 @@ class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, Waitin
         super.onViewCreated(view, savedInstanceState)
         setupViews()
         observeWaitingPaymentOrderResult()
-        fakeRefresh()
     }
 
     override fun createAdapterInstance(): BaseListAdapter<WaitingPaymentOrder, WaitingPaymentOrderAdapterTypeFactory> {
@@ -86,7 +86,7 @@ class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, Waitin
     }
 
     override fun onItemClicked(t: WaitingPaymentOrder?) {
-        // still noop
+        // noop
     }
 
     override fun getScreenName(): String {
@@ -137,6 +137,7 @@ class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, Waitin
 
         if (adapter.itemCount > 0) {
             onGetListErrorWithExistingData(throwable)
+            disableLoadMore()
         } else {
             onGetListErrorWithEmptyData(throwable)
             swipeRefreshLayoutWaitingPaymentOrder.isEnabled = false
@@ -145,10 +146,12 @@ class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, Waitin
 
     override fun onGetListErrorWithExistingData(throwable: Throwable?) {
         view?.run {
-            Toaster.make(this, "Unable to load more orders!", Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR, "Muat Ulang", View.OnClickListener {
+            Toaster.make(this, getString(R.string.global_error), Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR, getString(R.string.btn_reload), View.OnClickListener {
                 enableLoadMore()
+                rvWaitingPaymentOrder.addOneTimeGlobalLayoutListener {
+                    rvWaitingPaymentOrder.smoothScrollToPosition(adapter.dataSize - 1)
+                }
                 endlessRecyclerViewScrollListener.loadMoreNextPage()
-                rvWaitingPaymentOrder.smoothScrollToPosition(adapter.dataSize - 1)
             })
         }
     }
@@ -185,7 +188,8 @@ class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, Waitin
 
     private fun setupSwipeRefreshLayout() {
         swipeRefreshLayoutWaitingPaymentOrder.setOnRefreshListener {
-            loadInitialData()
+            isLoadingInitialData = true
+            loadData(defaultInitialPage)
         }
     }
 
@@ -218,15 +222,6 @@ class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, Waitin
 
     private fun showTipsBottomSheet() {
         bottomSheetTips.show(childFragmentManager, TAG_BOTTOM_SHEET)
-    }
-
-    private fun fakeRefresh() {
-//        Handler().postDelayed({
-//            if (adapter.dataSize != 0) {
-//                (adapter as WaitingPaymentOrderAdapter).updateProducts(adapter.data.takeLast(adapter.dataSize - 1))
-//                fakeRefresh()
-//            }
-//        }, 10000)
     }
 
     private fun observeWaitingPaymentOrderResult() {
@@ -269,8 +264,11 @@ class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, Waitin
     }
 
     private fun animateTickerEnter() {
-        tickerWaitingPaymentOrder.visible()
-        animateTicker(-tickerWaitingPaymentOrder.height.toFloat(), 0f)
+        if (tickerWaitingPaymentOrder.visibility != View.VISIBLE ||
+                tickerWaitingPaymentOrder.translationY != 0f) {
+            tickerWaitingPaymentOrder.visible()
+            animateTicker(-tickerWaitingPaymentOrder.height.toFloat(), 0f)
+        }
     }
 
     private fun animateTickerLeave() {
@@ -303,7 +301,7 @@ class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, Waitin
     }
 
     private fun animateCheckAndSetStockButtonLeave() {
-        animateCheckAndSetStockButton(cardCheckAndSetStock.height.toFloat(), 0f).addListener(object : Animator.AnimatorListener {
+        animateCheckAndSetStockButton(0f, cardCheckAndSetStock.height.toFloat()).addListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(animation: Animator?) {}
 
             override fun onAnimationEnd(animation: Animator?) {

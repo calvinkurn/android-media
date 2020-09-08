@@ -6,17 +6,12 @@ import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Typeface
 import android.os.Bundle
-import android.text.Spannable
-import android.text.SpannableStringBuilder
-import android.text.style.ForegroundColorSpan
-import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.cardview.widget.CardView
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -135,37 +130,22 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
 
     private val coachMarkWaitingPaymentButton: List<CoachMarkItem> by lazy {
-        context?.let { context ->
-            val headerText = "Di sini kamu bisa cek pesanan yang dibayar oleh pembeli. Pesanan gagal bayar atau terbayar saat stok habis tidak akan ditampilkan."
-            val ctaText = "Selengkapnya"
-            val spannedHeader = SpannableStringBuilder()
-                    .append(headerText)
-                    .append(" $ctaText")
-            spannedHeader.setSpan(
-                    ForegroundColorSpan(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Green_G500)),
-                    headerText.length + 1,
-                    headerText.length + ctaText.length + 1,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-            spannedHeader.setSpan(
-                    StyleSpan(Typeface.BOLD),
-                    headerText.length + 1,
-                    headerText.length + ctaText.length + 1,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-            arrayListOf(
-                    CoachMarkItem(
-                            somWaitingPaymentButton,
-                            getString(R.string.som_list_coachmark_waiting_payment_order_title),
-                            HtmlLinkHelper(context, getString(R.string.som_list_coachmark_waiting_payment_order_description)).spannedString.toString()
-                    ),
-                    CoachMarkItem(
-                            somWaitingPaymentButton,
-                            getString(R.string.som_list_coachmark_check_and_mange_product_stock_title),
-                            HtmlLinkHelper(context, getString(R.string.som_list_coachmark_check_and_mange_product_stock_description)).spannedString.toString()
-                    )
-            )
-        }.orEmpty()
+        arrayListOf(
+                CoachMarkItem(
+                        somWaitingPaymentButton,
+                        getString(R.string.som_list_coachmark_waiting_payment_order_title),
+                        getString(R.string.som_list_coachmark_waiting_payment_order_description)
+                ),
+                CoachMarkItem(
+                        somWaitingPaymentButton,
+                        getString(R.string.som_list_coachmark_check_and_mange_product_stock_title),
+                        getString(R.string.som_list_coachmark_check_and_mange_product_stock_description)
+                )
+        )
+    }
+
+    private val coachMarkDescription: TextView? by lazy {
+        coachMark.view.findViewById<TextView>(com.tokopedia.coachmark.R.id.text_description)
     }
 
     private val FLAG_DETAIL = 3333
@@ -813,6 +793,20 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private fun showCoachMarkWaitingPayment() {
         if (!coachMark.hasShown(activity, TAG_COACHMARK) && GlobalConfig.isSellerApp()) {
             coachMark.show(activity, TAG_COACHMARK, ArrayList(coachMarkWaitingPaymentButton))
+            coachMark.setShowCaseStepListener(object: CoachMark.OnShowCaseStepListener {
+                override fun onShowCaseGoTo(previousStep: Int, nextStep: Int, coachMarkItem: CoachMarkItem): Boolean {
+                    coachMarkDescription?.setOnClickListener {
+                        context?.let { context ->
+                            val link = HtmlLinkHelper(context, coachMarkItem.description)
+                                    .urlList.firstOrNull()?.linkUrl.orEmpty()
+                            if (link.isNotEmpty()) {
+                                RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, link))
+                            }
+                        }
+                    }
+                    return true
+                }
+            })
         }
     }
 

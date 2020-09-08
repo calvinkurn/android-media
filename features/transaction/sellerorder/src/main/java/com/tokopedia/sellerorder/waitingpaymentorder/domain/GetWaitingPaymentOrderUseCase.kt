@@ -64,7 +64,7 @@ class GetWaitingPaymentOrderUseCase @Inject constructor(
             orders.add(
                     WaitingPaymentOrderResponse.Data.WaitingPaymentOrder.Order(
                             orderId = Random.nextInt().toString(),
-                            paymentDeadline = "${(Math.random() * 30.0).toInt() + 1}, Sep, 2020",
+                            paymentDeadline = "${(Math.random() * 30.0).toInt() + 1} Sep, 2020",
                             buyerNameAndPlace = "Y******n (Jakarta Selatan)",
                             products = createDummyProducts(randomProductCount)
                     )
