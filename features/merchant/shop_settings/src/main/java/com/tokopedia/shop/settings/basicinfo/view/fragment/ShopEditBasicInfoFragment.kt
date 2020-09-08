@@ -256,6 +256,7 @@ class ShopEditBasicInfoFragment: Fragment() {
                 if (input.length < MIN_INPUT_LENGTH) {
                     val message = context?.getString(R.string.shop_edit_domain_too_short).orEmpty()
                     showShopDomainInputError(message)
+                    disableSaveBtn()
                     viewModel.cancelValidateShopDomain()
                 } else {
                     resetShopDomainInput()
@@ -270,29 +271,51 @@ class ShopEditBasicInfoFragment: Fragment() {
     private fun showShopNameInputError(message: String) {
         shopNameTextField.setError(true)
         shopNameTextField.setMessage(message)
-        tvSave.isEnabled = false
-        tvSave.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey))
+        disableSaveBtn()
     }
 
     private fun showShopDomainInputError(message: String) {
         shopDomainTextField.setError(true)
         shopDomainTextField.setMessage(message)
-        tvSave.isEnabled = false
-        tvSave.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey))
+        disableSaveBtn()
     }
 
     private fun resetShopNameInput() {
         shopNameTextField.setError(false)
         shopNameTextField.setMessage("")
-        tvSave.isEnabled = true
-        tvSave.setTextColor(ContextCompat.getColor(requireContext(), R.color.merchant_green))
+        if (isShopDomainTextFieldError()) {
+            disableSaveBtn()
+        } else {
+            enableSaveBtn()
+        }
     }
 
     private fun resetShopDomainInput() {
         shopDomainTextField.setError(false)
         shopDomainTextField.setMessage("")
+        if (isShopNameTextFieldError()) {
+            disableSaveBtn()
+        } else {
+            enableSaveBtn()
+        }
+    }
+
+    private fun disableSaveBtn() {
+        tvSave.isEnabled = false
+        tvSave.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey))
+    }
+
+    private fun enableSaveBtn() {
         tvSave.isEnabled = true
         tvSave.setTextColor(ContextCompat.getColor(requireContext(), R.color.merchant_green))
+    }
+
+    private fun isShopNameTextFieldError(): Boolean {
+        return shopNameTextField.isTextFieldError
+    }
+
+    private fun isShopDomainTextFieldError(): Boolean {
+        return shopDomainTextField.isTextFieldError
     }
 
     private fun observeLiveData() {
