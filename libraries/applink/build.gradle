@@ -29,6 +29,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.devMonitoringTools)
 
+    testImplementation rootProject.ext.testDependencies.mockk
+
     implementation (rootProject.ext.serviceDependencies.crashlytics)
 }
 
