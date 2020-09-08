@@ -41,18 +41,9 @@ object EventFormMapper {
         val array = arrayListOf<ListItemUnify>()
         list.mapIndexed { index, s ->
             val itemUnify = ListItemUnify(s, "")
-            itemUnify.setVariant(null,ListItemUnify.RADIO_BUTTON)
+            itemUnify.isBold = false
             array.add(itemUnify)
         }
         return array
-    }
-
-    fun clearRadioState(listItemUnify: ArrayList<ListItemUnify>, index:Int) {
-        val removedList = arrayListOf<ListItemUnify>()
-        removedList.addAll(listItemUnify)
-        removedList.removeAt(index)
-        removedList.forEach {
-            it.listRightRadiobtn?.isChecked = false
-        }
     }
 }

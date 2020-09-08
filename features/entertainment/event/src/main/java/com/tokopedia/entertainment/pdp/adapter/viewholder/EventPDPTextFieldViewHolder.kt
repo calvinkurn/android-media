@@ -102,7 +102,8 @@ class EventPDPTextFieldViewHolder(val view: View,
         val listValue = mutableListOf<String>()
         val jsonArray = JSONArray(value)
         for (i in 0..jsonArray.length() - 1) {
-            listValue.add(jsonArray.getJSONObject(i).getString("${i - 1}"))
+            val key = (jsonArray.getJSONObject(i) as JSONObject).names()?.get(0)?.toString()
+            listValue.add(jsonArray.getJSONObject(i).getString(key))
         }
         return listValue
     }

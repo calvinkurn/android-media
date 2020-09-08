@@ -30,7 +30,6 @@ import com.tokopedia.entertainment.pdp.adapter.viewholder.EventPDPTextFieldViewH
 import com.tokopedia.entertainment.pdp.data.checkout.AdditionalType
 import com.tokopedia.entertainment.pdp.data.checkout.EventCheckoutAdditionalData
 import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventFormMapper.setListBottomSheetForm
-import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventFormMapper.clearRadioState
 import com.tokopedia.entertainment.pdp.listener.OnClickFormListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottom_sheet_event_list_form.view.*
@@ -177,27 +176,24 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener, EventPDP
             val view = LayoutInflater.from(context).inflate(R.layout.bottom_sheet_event_list_form, null)
             val bottomSheets = BottomSheetUnify()
             bottomSheets.apply {
+                isFullpage = true
                 setChild(view)
-                setTitle(title)
+                setTitle("Pilih "+title)
                 setCloseClickListener { bottomSheets.dismiss() }
             }
             val arrayList = setListBottomSheetForm(list)
-            view.listForm.apply {
+            view.list_form.apply {
                 setData(arrayList)
                 onLoadFinish {
                     arrayList.forEachIndexed { index, it ->
-                        it.listRightRadiobtn?.isChecked = (positionActiveBottomSheet == index)
-                        it.listRightRadiobtn?.setOnCheckedChangeListener { buttonView, isChecked ->
-                            if (isChecked) {
+                        it.listTitle?.setOnClickListener {
                                 positionActiveData = index
                                 formAdapter.notifyItemChanged(positionForm)
-                                clearRadioState(arrayList, index)
                                 CoroutineScope(Dispatchers.Main).launch {
                                     delay(250)
                                     bottomSheets.dismiss()
                                 }
                             }
-                        }
                     }
                 }
             }
