@@ -12,7 +12,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -166,7 +165,7 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
         editShippingPresenter?.onViewDestroyed()
     }
 
-    override val mainContext: FragmentActivity?
+    override val mainContext: Context?
         get() = activity
 
     override fun addCourier(courier: Courier?, courierIndex: Int) {

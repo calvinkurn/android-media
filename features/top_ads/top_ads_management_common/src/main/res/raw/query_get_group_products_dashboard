@@ -18,6 +18,7 @@ query topadsDashboardGroupProducts($queryInput: topadsDashboardGroupProductsInpu
       ad_price_daily
       ad_price_daily_fmt
       stat_total_gross_profit
+      ad_price_daily_spent_fmt
       ad_price_daily_bar
       product_name
       product_image_uri
