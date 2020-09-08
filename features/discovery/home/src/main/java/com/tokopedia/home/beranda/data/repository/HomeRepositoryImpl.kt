@@ -45,7 +45,8 @@ class HomeRepositoryImpl @Inject constructor(
 
             val homeDataResponse = async { homeRemoteDataSource.getHomeData() }
             var dynamicChannelResponse = async { homeRemoteDataSource.getDynamicChannelData(numOfChannel = 2) }
-            var homeChannelCombined = HomeChannelData()
+
+            var homeDataCombined = HomeData()
 
             val dynamicChannnelResponseValue = dynamicChannelResponse.await()
             val homeDataResponseValue = homeDataResponse.await()
@@ -66,14 +67,13 @@ class HomeRepositoryImpl @Inject constructor(
 
             if ((!isCacheExistForProcess && currentToken.isNotEmpty()) ||
                     isCacheExistForProcess) {
-                homeChannelCombined = processFullPageDynamicChannel(dynamicChannnelResponseValue, homeDataResponseValue)
+                homeDataCombined = processFullPageDynamicChannel(homeDataResponseValue)
             }
 
-            homeChannelCombined.dynamicHomeChannel.channels.forEach {
+            homeDataCombined.dynamicHomeChannel.channels.forEach {
                 it.timestamp = currentTimeMillisString
             }
-            homeDataResponseValue.let {
-                it.dynamicHomeChannel = homeChannelCombined.dynamicHomeChannel
+            homeDataCombined.let {
                 emit(Result.success(null))
                 homeCachedDataSource.saveToDatabase(it)
             }
@@ -88,16 +88,14 @@ class HomeRepositoryImpl @Inject constructor(
         return homeDynamicChannelDataMapper.mapToDynamicChannelDataModel(homeChannelData, isCache = false, addLoadingMore = false)
     }
 
-    private suspend fun processFullPageDynamicChannel(dynamicChannelResponse: HomeChannelData, homeDataResponse: HomeData): HomeChannelData {
-        var dynamicChannelResponse1 = dynamicChannelResponse
-        dynamicChannelResponse1 = homeRemoteDataSource.getDynamicChannelData(numOfChannel = 0, token = homeDataResponse.token)
+    private suspend fun processFullPageDynamicChannel(homeDataResponse: HomeData): HomeData {
+        var dynamicChannelCompleteResponse = homeRemoteDataSource.getDynamicChannelData(numOfChannel = 0, token = homeDataResponse.token)
         val currentChannelList = homeDataResponse.dynamicHomeChannel.channels.toMutableList()
-        currentChannelList.addAll(dynamicChannelResponse1.dynamicHomeChannel.channels)
+        currentChannelList.addAll(dynamicChannelCompleteResponse.dynamicHomeChannel.channels)
 
         homeDataResponse.token = ""
-        homeDataResponse.dynamicHomeChannel.channels = currentChannelList?.toList()
-                ?: listOf<DynamicHomeChannel.Channels>()
-        return dynamicChannelResponse1
+        homeDataResponse.dynamicHomeChannel.channels = currentChannelList.toList()
+        return homeDataResponse
     }
 
     private suspend fun processFirstPageDynamicChannel(dynamicChannelResponse: Deferred<HomeChannelData>, homeDataResponse: Deferred<HomeData>, currentToken: String): String {
