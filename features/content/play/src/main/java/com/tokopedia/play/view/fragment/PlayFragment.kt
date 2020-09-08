@@ -336,7 +336,7 @@ class PlayFragment @Inject constructor(
 
     private fun setupObserve() {
         observeGetChannelInfo()
-        observeStateChannelInfo()
+        observeStateChannel()
         observeSocketInfo()
         observeEventUserInfo()
         observeVideoMeta()
@@ -357,14 +357,12 @@ class PlayFragment @Inject constructor(
                     fragmentErrorViewOnStateChanged(shouldShow = false)
                 }
                 is NetworkResult.Success -> {
-                    stopRenderMonitoring()
                     hasFetchedChannelInfo = true
                     loaderPage.hide()
                     fragmentErrorViewOnStateChanged(shouldShow = false)
                     PlayAnalytics.sendScreen(channelId, playViewModel.channelType)
                 }
                 is NetworkResult.Fail -> {
-                    stopRenderMonitoring()
                     loaderPage.hide()
                     if (!hasFetchedChannelInfo) fragmentErrorViewOnStateChanged(shouldShow = true)
                 }
@@ -372,9 +370,10 @@ class PlayFragment @Inject constructor(
         })
     }
 
-    private fun observeStateChannelInfo() {
+    private fun observeStateChannel() {
         playViewModel.observableStateChannelInfo.observe(viewLifecycleOwner, EventObserver {
             startRenderMonitoring()
+            stopRenderMonitoring()
         })
     }
 
@@ -462,12 +461,12 @@ class PlayFragment @Inject constructor(
         pageMonitoring.stopNetworkRequestPerformanceMonitoring()
     }
 
-    private fun startRenderMonitoring() {
+    fun startRenderMonitoring() {
         stopNetworkMonitoring()
         pageMonitoring.startRenderPerformanceMonitoring()
     }
 
-    private fun stopRenderMonitoring() {
+    fun stopRenderMonitoring() {
         pageMonitoring.stopRenderPerformanceMonitoring()
         stopPageMonitoring()
     }

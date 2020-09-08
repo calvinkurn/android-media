@@ -54,6 +54,8 @@ class PlayViewModel @Inject constructor(
 
     val observableStateChannelInfo: LiveData<Event<Boolean>>
         get() = _observableStateChannelInfo
+    val observableCompleteChannelInfo: LiveData<PlayCompleteInfoUiModel>
+        get() = _observableCompleteInfo
     val observableVideoMeta: LiveData<VideoMetaUiModel>
         get() = _observableVideoMeta
     val observableSocketInfo: LiveData<PlaySocketInfo>
@@ -391,7 +393,6 @@ class PlayViewModel @Inject constructor(
                         exoPlayer = playVideoManager.videoPlayer
                 )
                 _observableCompleteInfo.value = completeInfoUiModel
-                _observableStateChannelInfo.value = Event(true)
 
                 _observableGetChannelInfo.value = NetworkResult.Success(completeInfoUiModel.channelInfo)
                 _observableTotalViews.value = completeInfoUiModel.totalView
@@ -416,7 +417,7 @@ class PlayViewModel @Inject constructor(
                 _observablePartnerInfo.value = getPartnerInfo(completeInfoUiModel.channelInfo)
 
             }) {
-                _observableStateChannelInfo.value = Event(true)
+                if (retryCount == 0) _observableStateChannelInfo.value = Event(false)
                 if (retryCount++ < MAX_RETRY_CHANNEL_INFO) getChannelInfoResponse(channelId)
                 else if (it !is CancellationException) {
                     if (_observableCompleteInfo.value == null) doOnForbidden()

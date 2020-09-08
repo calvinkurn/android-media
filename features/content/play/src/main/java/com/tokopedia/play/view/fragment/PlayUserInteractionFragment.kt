@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
@@ -406,6 +407,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun setupObserve() {
         observeVideoMeta()
         observeVideoProperty()
+        observeChannelInfo()
         observeQuickReply()
         observeToolbarInfo()
         observeTotalLikes()
@@ -475,6 +477,12 @@ class PlayUserInteractionFragment @Inject constructor(
             if (it.state == PlayVideoState.Ended) showInteractionIfWatchMode()
 
             playButtonViewOnStateChanged(state = it.state)
+        })
+    }
+
+    private fun observeChannelInfo() {
+        playViewModel.observableCompleteChannelInfo.observe(viewLifecycleOwner, DistinctObserver {
+            triggerStartMonitoring()
         })
     }
 
@@ -643,6 +651,22 @@ class PlayUserInteractionFragment @Inject constructor(
                         else PlayFullScreenHelper.getShowSystemUiVisibility()
                 triggerFullImmersive(shouldImmersive, false)
             }
+        }
+    }
+
+    private lateinit var onStatsInfoGlobalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener
+
+    private fun triggerStartMonitoring() {
+        playFragment.startRenderMonitoring()
+
+        if (!this::onStatsInfoGlobalLayoutListener.isInitialized) {
+            onStatsInfoGlobalLayoutListener = object : ViewTreeObserver.OnGlobalLayoutListener{
+                override fun onGlobalLayout() {
+                    playFragment.stopRenderMonitoring()
+                    statsInfoView.rootView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                }
+            }
+            statsInfoView.rootView.viewTreeObserver.addOnGlobalLayoutListener(onStatsInfoGlobalLayoutListener)
         }
     }
 
