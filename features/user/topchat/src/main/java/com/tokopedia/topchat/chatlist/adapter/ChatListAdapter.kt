@@ -79,8 +79,10 @@ class ChatListAdapter constructor(
             finalPosition = visitables.size
         }
         if (chatItemPosition != RecyclerView.NO_POSITION) {
-            visitables.moveTo(chatItemPosition, finalPosition)
-            notifyItemMoved(chatItemPosition, finalPosition)
+            if (chatItemPosition != finalPosition) {
+                visitables.moveTo(chatItemPosition, finalPosition)
+                notifyItemMoved(chatItemPosition, finalPosition)
+            }
             notifyItemChanged(finalPosition, PAYLOAD_UPDATE_PIN_STATUS)
         }
     }
@@ -103,9 +105,11 @@ class ChatListAdapter constructor(
             toPosition = visitables.lastIndex
         }
         if (fromPosition != RecyclerView.NO_POSITION && toPosition != RecyclerView.NO_POSITION) {
-            visitables.moveTo(fromPosition, toPosition)
-            notifyItemRemoved(fromPosition)
-            notifyItemInserted(toPosition)
+            if (fromPosition != toPosition) {
+                visitables.moveTo(fromPosition, toPosition)
+                notifyItemRemoved(fromPosition)
+                notifyItemInserted(toPosition)
+            }
             notifyItemChanged(toPosition, PAYLOAD_UPDATE_PIN_STATUS)
             unpinnedMsgId.add(element.msgId)
         } else if (fromPosition != RecyclerView.NO_POSITION) {
