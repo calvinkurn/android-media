@@ -10,7 +10,7 @@ class ShopOrderUiModel(val newOrderCount: Int = 0, val readyToShip: Int = 0): Se
         typeFactory.type(this)
 
     override val settingUiType: SettingUiType
-        get() = SettingUiType.SETTING_TITLE
+        get() = SettingUiType.SHOP_ORDER
 
     override val onClickApplink: String?
         get() = null
