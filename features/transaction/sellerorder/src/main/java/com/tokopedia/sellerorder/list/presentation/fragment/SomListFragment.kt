@@ -793,20 +793,6 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private fun showCoachMarkWaitingPayment() {
         if (!coachMark.hasShown(activity, TAG_COACHMARK) && GlobalConfig.isSellerApp()) {
             coachMark.show(activity, TAG_COACHMARK, ArrayList(coachMarkWaitingPaymentButton))
-            coachMark.setShowCaseStepListener(object: CoachMark.OnShowCaseStepListener {
-                override fun onShowCaseGoTo(previousStep: Int, nextStep: Int, coachMarkItem: CoachMarkItem): Boolean {
-                    coachMarkDescription?.setOnClickListener {
-                        context?.let { context ->
-                            val link = HtmlLinkHelper(context, coachMarkItem.description)
-                                    .urlList.firstOrNull()?.linkUrl.orEmpty()
-                            if (link.isNotEmpty()) {
-                                RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, link))
-                            }
-                        }
-                    }
-                    return true
-                }
-            })
         }
     }
 
