@@ -1118,6 +1118,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     RouteManager.route(context, URLDecoder.decode(dotMenu.appURL, UohConsts.UTF_8))
                 }
                 dotMenu.actionType.equals(GQL_ATC, true) -> {
+                    bottomSheetKebabMenu?.dismiss()
                     val listOfStrings = Gson().fromJson(orderData.metadata.listProducts, mutableListOf<String>().javaClass)
                     val jsonArray: JsonArray = Gson().toJsonTree(listOfStrings).asJsonArray
                     uohListViewModel.doAtc(GraphqlHelper.loadRawString(resources, R.raw.buy_again), jsonArray)

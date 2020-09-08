@@ -255,13 +255,13 @@ public class BuyerAccountMapper implements Func1<AccountDataModel, BuyerViewMode
         return buyerCardViewModel;
     }
 
-    private Boolean useUoh() {
-        String remoteConfigValue = getABTestRemoteConfig().getString(UOH_AB_TEST_KEY);
-        // return !remoteConfigValue.isEmpty();
-        return true;
-    }
-
     private RemoteConfig getABTestRemoteConfig() {
         return RemoteConfigInstance.getInstance().getABTestPlatform();
+    }
+
+    private Boolean useUoh() {
+        /*String remoteConfigValue = getABTestRemoteConfig().getString(UOH_AB_TEST_KEY);
+        return !remoteConfigValue.isEmpty();*/
+        return true;
     }
 }
