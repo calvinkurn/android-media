@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" android:compileSdkVersion="28" android:compileSdkVersionCodename="9" package="com.tokopedia.home.account.test">
-    <uses-sdk android:minSdkVersion="16" android:targetSdkVersion="28"/>
     <instrumentation android:label="Tests for com.tokopedia.home.account.test" android:name="com.tokopedia.home.application.MyRunner" android:targetPackage="com.tokopedia.home.account.test" android:handleProfiling="false" android:functionalTest="false"/>
     <permission android:name="android.permission.INTERACT_ACROSS_USERS_FULL" android:protectionLevel="signature"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
