@@ -103,7 +103,7 @@ class MoneyInHomeViewModel @Inject constructor(
                     setHomeResultData(jsonObject)
                 } else {
                     val result = HomeResult()
-                    result.run {
+                    result.apply {
                         isSuccess = true
                         priceStatus = HomeResult.PriceState.MONEYIN_ERROR
                         displayMessage = validateResponse.message
