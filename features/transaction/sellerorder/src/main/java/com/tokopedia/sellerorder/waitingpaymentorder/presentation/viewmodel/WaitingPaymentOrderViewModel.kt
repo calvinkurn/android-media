@@ -41,4 +41,8 @@ class WaitingPaymentOrderViewModel @Inject constructor(
             _waitingPaymentOrderResult.postValue(Fail(it))
         })
     }
+
+    fun resetPaging() {
+        paging = Paging()
+    }
 }

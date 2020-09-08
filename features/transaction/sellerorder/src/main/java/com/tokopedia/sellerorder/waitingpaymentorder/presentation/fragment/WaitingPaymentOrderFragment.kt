@@ -188,6 +188,7 @@ class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, Waitin
 
     private fun setupSwipeRefreshLayout() {
         swipeRefreshLayoutWaitingPaymentOrder.setOnRefreshListener {
+            waitingPaymentOrderViewModel.resetPaging()
             isLoadingInitialData = true
             loadData(defaultInitialPage)
         }
