@@ -179,7 +179,7 @@ ext {
             messaging  : "com.google.firebase:firebase-messaging:${playServiceFirebaseMessaging}",
             config     : "com.google.firebase:firebase-config:${playServiceFirebaseRemoteConfig}",
             performance: "com.google.firebase:firebase-perf:${playServiceFirebasePerfMon}",
-            fireStore  : "com.google.firebase:firebase-firestore:21.4.3"
+            fireStore  : "com.google.firebase:firebase-firestore:17.1.2"
     ]
 
     viewDependencies = [
