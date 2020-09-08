@@ -36,7 +36,6 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
@@ -53,6 +52,7 @@ import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDet
 import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.Product;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
@@ -480,8 +480,13 @@ public class DigitalProductFragment extends BaseDaggerFragment
 
     @Override
     public void sendOpenScreenEventTracking(CategoryData categoryData) {
-        rechargeAnalytics.eventOpenScreen(userSession.isLoggedIn(), categoryData.name,
-                categoryData.categoryId);
+        if (categoryData.name != null && categoryData.categoryId != null) {
+            rechargeAnalytics.eventOpenScreen(
+                    userSession.getUserId(),
+                    categoryData.name,
+                    categoryData.categoryId
+            );
+        }
     }
 
     @Override

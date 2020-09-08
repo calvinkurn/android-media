@@ -148,6 +148,12 @@ sealed class SellerFeatureUiModel(
             descriptionId = R.string.seller_migration_fragment_financial_service_tab_priority_balance_description
     )
 
+    class BroadcastChatUiModel: SellerFeatureUiModel(
+            imageId = R.drawable.ic_seller_migration_template_chat,
+            titleId = R.string.seller_migration_tab_ads_broadcast_chat_title,
+            descriptionId = R.string.seller_migration_tab_ads_broadcast_chat_description
+    )
+
     override fun type(typeFactory: SellerFeatureAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }

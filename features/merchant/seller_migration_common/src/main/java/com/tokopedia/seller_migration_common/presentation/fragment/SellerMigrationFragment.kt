@@ -157,14 +157,14 @@ class SellerMigrationFragment : Fragment(), SellerFeatureCarousel.RecyclerViewLi
             SellerMigrationFeatureName.FEATURE_SHOP_INSIGHT, SellerMigrationFeatureName.FEATURE_MARKET_INSIGHT -> {
                 STATISTIC_TAB
             }
-            SellerMigrationFeatureName.FEATURE_PLAY_FEED -> {
+            SellerMigrationFeatureName.FEATURE_PLAY_FEED , SellerMigrationFeatureName.FEATURE_POST_FEED-> {
                 FEED_PLAY_TAB
             }
             SellerMigrationFeatureName.FEATURE_FINANCIAL_SERVICES -> {
                 FINANCIAL_SERVICES_TAB
             }
             else -> {
-                0
+                PRODUCT_TAB
             }
         }
         viewPagerOnTabSelectedListener.onPageSelected(position)

@@ -4,6 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
 import com.tokopedia.seller.menu.common.view.uimodel.*
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopInfoErrorUiModel
@@ -16,6 +17,7 @@ class OtherMenuAdapterTypeFactory(
     private val trackingListener: SettingTrackingListener,
     private val shopInfoListener: ShopInfoViewHolder.ShopInfoListener? = null,
     private val shopInfoErrorListener: ShopInfoErrorViewHolder.ShopInfoErrorListener? = null,
+    private val sellerMenuTracker: SellerMenuTracker? = null,
     private val userSession: UserSessionInterface? = null
 ) : BaseAdapterTypeFactory(), OtherMenuTypeFactory {
 
@@ -27,16 +29,16 @@ class OtherMenuAdapterTypeFactory(
             DividerViewHolder.THIN_LAYOUT_INDENTED -> DividerViewHolder(parent)
             SettingTitleViewHolder.LAYOUT -> SettingTitleViewHolder(parent)
             IndentedSettingTitleViewHolder.LAYOUT -> IndentedSettingTitleViewHolder(parent)
-            MenuItemsViewHolder.LAYOUT -> MenuItemsViewHolder(parent, trackingListener)
-            MenuItemsViewHolder.LAYOUT_NO_ICON -> MenuItemsViewHolder(parent, trackingListener)
+            MenuItemsViewHolder.LAYOUT -> MenuItemsViewHolder(parent, trackingListener, sellerMenuTracker)
+            MenuItemsViewHolder.LAYOUT_NO_ICON -> MenuItemsViewHolder(parent, trackingListener, sellerMenuTracker)
             SettingTitleMenuViewHolder.LAYOUT -> SettingTitleMenuViewHolder(parent)
             ShopInfoViewHolder.LAYOUT -> ShopInfoViewHolder(parent, shopInfoListener, trackingListener, userSession)
             ShopInfoLoadingViewHolder.LAYOUT -> ShopInfoLoadingViewHolder(parent)
             ShopInfoErrorViewHolder.LAYOUT -> ShopInfoErrorViewHolder(parent, shopInfoErrorListener)
             ShopOrderViewHolder.LAYOUT -> ShopOrderViewHolder(parent)
-            SellerMenuTitleViewHolder.LAYOUT -> SellerMenuTitleViewHolder(parent)
-            ShopProductViewHolder.LAYOUT -> ShopProductViewHolder(parent)
-            SellerFeatureViewHolder.LAYOUT -> SellerFeatureViewHolder(parent)
+            SellerMenuTitleViewHolder.LAYOUT -> SellerMenuTitleViewHolder(parent, sellerMenuTracker)
+            ShopProductViewHolder.LAYOUT -> ShopProductViewHolder(parent, sellerMenuTracker)
+            SellerFeatureViewHolder.LAYOUT -> SellerFeatureViewHolder(parent, sellerMenuTracker)
             else -> super.createViewHolder(parent, type)
         }
     }

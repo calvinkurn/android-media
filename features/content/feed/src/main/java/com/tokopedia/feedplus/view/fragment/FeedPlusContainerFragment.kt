@@ -25,6 +25,8 @@ import com.tokopedia.affiliatecommon.DISCOVERY_BY_ME
 import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
@@ -371,20 +373,16 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         isFabExpanded = true
         when {
             isSellerMigrationEnabled(context) -> {
+                val shopAppLink = UriUtil.buildUri(ApplinkConst.SHOP, userSession.shopId)
+                val createPostAppLink = ApplinkConst.CONTENT_CREATE_POST
                 fab_feed.setOnClickListener {
-                    for (author in whitelistDomain.authors) {
-                        val intent = context?.let { context ->
-                            SellerMigrationActivity.createIntent(
-                                    context = context,
-                                    featureName = SellerMigrationFeatureName.FEATURE_POST_FEED,
-                                    screenName = FeedPlusContainerFragment::class.simpleName.orEmpty(),
-                                    appLinks = arrayListOf(author.link),
-                                    isStackBuilder = false)
-                        }
-                        if (intent != null) {
-                            setupBottomSheetFeedSellerMigration(::goToCreateAffiliate, intent)
-                        }
-                    }
+                    val intent = SellerMigrationActivity.createIntent(
+                            context = requireContext(),
+                            featureName = SellerMigrationFeatureName.FEATURE_POST_FEED,
+                            screenName = FeedPlusContainerFragment::class.simpleName.orEmpty(),
+                            appLinks = arrayListOf(ApplinkConstInternalSellerapp.SELLER_HOME, shopAppLink, createPostAppLink),
+                            isStackBuilder = false)
+                    setupBottomSheetFeedSellerMigration(::goToCreateAffiliate, intent)
                 }
             }
             else -> {

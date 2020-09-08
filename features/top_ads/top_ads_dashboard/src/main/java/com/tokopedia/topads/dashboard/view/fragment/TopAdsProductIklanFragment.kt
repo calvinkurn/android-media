@@ -177,7 +177,6 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
         val view = inflater.inflate(R.layout.topads_dash_fragment_product_iklan, container, false)
         recyclerView = view.findViewById(R.id.auto_ads_list)
         imgBg = view.findViewById(R.id.progressImg)
-        setAutoAdsAdapter()
         return view
     }
 
@@ -247,7 +246,8 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
         Utils.setSearchListener(context, view, ::fetchData)
     }
 
-    private fun renderViewPager() {
+    private fun renderManualViewPager() {
+        tab_layout.visibility = View.VISIBLE
         view_pager_frag?.adapter = getViewPagerAdapter()
         view_pager_frag.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tab_layout))
         tab_layout.setupWithViewPager(view_pager_frag)
@@ -336,7 +336,7 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
             app_bar_layout_2.visibility = View.VISIBLE
             autoads_layout.visibility = View.VISIBLE
         } else {
-
+            manualAds()
         }
     }
 
@@ -374,8 +374,8 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
         } else {
             autoadsDeactivationProgress?.visibility = View.GONE
             autoadsOnboarding.visibility = View.VISIBLE
+            renderManualViewPager()
         }
-        renderViewPager()
     }
 
 

@@ -2,6 +2,7 @@ package com.tokopedia.seller.menu.common.di.module
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.seller.menu.common.analytics.SettingFreeShippingTracker
 import com.tokopedia.seller.menu.common.di.scope.SellerMenuCommonScope
 import com.tokopedia.track.TrackApp

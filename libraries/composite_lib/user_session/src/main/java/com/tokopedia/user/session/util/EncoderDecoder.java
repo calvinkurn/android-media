@@ -5,7 +5,7 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 public class EncoderDecoder {
-	
+
 	public static String Encrypt(String text, String initialVector) {
 		byte[] raw = new byte[] {'g','g','g','g','t','t','t','t','t','u','j','k','r','r','r','r'};   
         SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
@@ -50,7 +50,7 @@ public class EncoderDecoder {
     		byte[] data = Base64_.decode(text, Base64_.DEFAULT);
 	    	Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
 	    	cipher.init(Cipher.DECRYPT_MODE, skeySpec, ivs);
-	    	byte[] decryptedData = cipher.doFinal(data);     
+	    	byte[] decryptedData = cipher.doFinal(data);
 	    	decode_result = new String(decryptedData);
     	}
     	catch (Exception e) {
@@ -74,6 +74,7 @@ public class EncoderDecoder {
 		}
 		catch (Exception e) {
 			e.printStackTrace();
+			return text;
 		}
 		return decode_result;
 	}

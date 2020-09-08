@@ -199,4 +199,9 @@
     <string name="seller_migration_bottom_sheet_feed_post_shop">Post toko</string>
     <string name="seller_migration_bottom_sheet_feed_in_tokopedia_seller">Di Tokopedia Seller</string>
 
+    <!-- Broadcast chat -->
+    <string name="seller_migration_tab_ads_broadcast_chat_title">BROADCAST CHAT</string>
+    <string name="seller_migration_tab_ads_broadcast_chat_description">Kirim pesan promosi langsung ke banyak calon pembeli.</string>
+
+
 </resources>
