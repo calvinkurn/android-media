@@ -13,6 +13,7 @@ import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
@@ -61,7 +62,7 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet?) : CardUnify(context,
 
     @Inject
     lateinit var factory: AutoAdsWidgetViewModelFactory
-    private var baseLayout: ConstraintLayout? = null
+    private var baseLayout: FrameLayout? = null
     private var entryPoint: Int = 0
     private var currentBudget = 0
     val requestType = "auto_ads"

@@ -239,6 +239,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         setupTradeinDialog()
     }
 
+    private val topAdsDetailSheet: TopAdsDetailSheet? by lazy {
+            TopAdsDetailSheet.newInstance()
+    }
+
     private val recommendationCarouselPositionSavedState = SparseIntArray()
 
     private val irisSessionId by lazy {
@@ -2332,9 +2336,12 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun showTopAdsBottomSheet() {
         context?.let {
-            val topAdsDetailSheet = TopAdsDetailSheet.newInstance(topAdsGetProductManage.data.adType, topAdsGetProductManage.data.adId, viewModel.p2Login.value?.topAdsGetShopInfo?.category
-                    ?: 0)
-            topAdsDetailSheet.show(childFragmentManager, "")
+            context?.let {
+                topAdsDetailSheet?.show(childFragmentManager,
+                topAdsGetProductManage.data.adType,
+                topAdsGetProductManage.data.adId,
+                        viewModel.p2Login.value?.topAdsGetShopInfo?.category ?: 0)
+            }
         }
     }
 

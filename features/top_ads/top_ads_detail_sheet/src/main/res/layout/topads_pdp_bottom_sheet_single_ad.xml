@@ -49,22 +49,22 @@
         android:id="@+id/tickerInfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:visibility="visible"
         android:visibility="gone"
+        app:closeButtonVisibility="gone"
         app:descriptionText="@string/topads_detail_sheet_ticker"
         app:layout_constraintTop_toBottomOf="@id/imgProduct"
-        app:closeButtonVisibility="gone"
+        app:tickerShapeType="full"
         app:tickerType="announcement"
-        app:tickerShapeType="full" />
+        tools:visibility="visible" />
 
     <com.tokopedia.topads.auto.view.widget.AutoAdsWidget
         android:id="@+id/autoads_widget"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/adInfo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tickerInfo"
-        tools:layout_height="@dimen/dp_100" />
+        app:layout_constraintTop_toBottomOf="@id/tickerInfo" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/adInfo"
@@ -232,6 +232,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <ImageView
+                android:id="@+id/imgFolder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_12"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/topads_single_ad_folder" />
+
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/desc"
                 android:layout_width="0dp"
@@ -243,7 +253,7 @@
                 android:paddingBottom="@dimen/dp_9"
                 android:text="@string/topads_detail_sheet_single_ad_promotion"
                 app:layout_constraintEnd_toStartOf="@id/createGroup"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toEndOf="@id/imgFolder"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
