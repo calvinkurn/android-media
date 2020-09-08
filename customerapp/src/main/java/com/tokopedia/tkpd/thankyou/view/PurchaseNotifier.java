@@ -6,7 +6,6 @@ import android.os.Bundle;
 import com.tokopedia.applink.internal.ApplinkConstInternalFintech;
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.pms.common.Constant;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.fcm.applink.ApplinkBuildAndShowNotification;
 

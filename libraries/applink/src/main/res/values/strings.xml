@@ -96,5 +96,10 @@
 <!--    pms-->
     <string name="payment_title_payment_status">Menunggu Pembayaran</string>
     <string name="payment_title_activity_howtopay">Cara Pembayaran</string>
+    <string name="payment_title_activity_change_clik_bca">Ubah KlikBCA User ID</string>
+    <string name="payment_title_activity_change_detail_account">Ubah Detail Rekening</string>
+    <string name="payment_title_activity_dest_bank">Pilih Bank Tujuan</string>
+    <string name="payment_title_upload_proof">Unggah Bukti Pembayaran</string>
+
 
 </resources>
