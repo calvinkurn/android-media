@@ -214,8 +214,11 @@ class ChooseAccountFragment : BaseDaggerFragment(),
             selectedPhoneNo = phone
             val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, 148)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, viewModel.accessToken)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, account.user_id_enc)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phone)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, account.email)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_USER_ID_ENC, account.user_id_enc)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_USER_ACCESS_TOKEN, viewModel.accessToken)
+
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, false)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, false)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_REQUEST_OTP_MODE, OtpConstant.OtpMode.PIN);
