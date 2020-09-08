@@ -64,8 +64,6 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         viewModelProvider.get(ThanksPageDataViewModel::class.java)
     }
 
-    private var topAdsTrackingQueue: TrackingQueue? = null
-    private var nonTopAdsTrackingQueue: TrackingQueue? = null
     private var digitalRecomTrackingQueue: TrackingQueue? = null
 
     lateinit var thanksPageData: ThanksPageData
@@ -82,8 +80,6 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
             }
         }
         activity?.apply {
-            nonTopAdsTrackingQueue = TrackingQueue(this)
-            topAdsTrackingQueue = TrackingQueue(this)
             digitalRecomTrackingQueue = TrackingQueue(this)
         }
 
@@ -91,8 +87,6 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
 
     override fun onPause() {
         super.onPause()
-        nonTopAdsTrackingQueue?.sendAll()
-        topAdsTrackingQueue?.sendAll()
         digitalRecomTrackingQueue?.sendAll()
     }
 
@@ -129,8 +123,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
             view.findViewById<MarketPlaceRecommendation>(R.id.marketPlaceRecommendationView)
         }
         if (::thanksPageData.isInitialized)
-            iRecommendationView?.loadRecommendation(thanksPageData.paymentID.toString(),
-                    this, topAdsTrackingQueue, nonTopAdsTrackingQueue)
+            iRecommendationView?.loadRecommendation(thanksPageData.paymentID.toString(), this)
     }
 
     private fun addDigitalRecommendation() {
@@ -201,6 +194,13 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
 
     fun setUpHomeButton(homeButton: TextView?) {
         homeButton?.let {
+            thanksPageData.thanksCustomization?.let {
+                it.customHomeButtonTitle?.apply {
+                    if (isNotBlank())
+                        homeButton.text = this
+                }
+            }
+
             homeButton.setOnClickListener {
                 thanksPageData.thanksCustomization?.let {
                     if (it.customHomeUrlApp.isNullOrBlank())

@@ -44,9 +44,9 @@ class ProductItemViewHolder(val view: View,
                 view.klik_count.text = statsData[adapterPosition].statTotalClick
                 view.persentase_klik_count.text = statsData[adapterPosition].statTotalCtr
                 view.pengeluaran_count.text = statsData[adapterPosition].statTotalSpent
-                view.pendapatan_count.text = statsData[adapterPosition].statTotalConversion
-                view.produk_terjual_count.text = statsData[adapterPosition].statTotalSold
+                view.produk_terjual_count.text = statsData[adapterPosition].statTotalConversion
             }
+            view.pendapatan_count.text = it.data.statTotalGrossProfit
             view.label.visibility = View.INVISIBLE
             view.img_menu.visibility = View.INVISIBLE
             view.progress_layout.visibility = View.GONE
