@@ -8,7 +8,6 @@ import java.io.IOException
 class CheckoutTestInterceptor : BaseOccInterceptor() {
 
     var customCheckoutResponsePath: String? = null
-
     var customCheckoutThrowable: IOException? = null
 
     override fun intercept(chain: Interceptor.Chain): Response {
@@ -24,6 +23,11 @@ class CheckoutTestInterceptor : BaseOccInterceptor() {
             return mockResponse(copy, getJsonFromResource(CHECKOUT_DEFAULT_RESPONSE_PATH))
         }
         return chain.proceed(chain.request())
+    }
+
+    override fun resetInterceptor() {
+        customCheckoutResponsePath = null
+        customCheckoutThrowable = null
     }
 }
 
