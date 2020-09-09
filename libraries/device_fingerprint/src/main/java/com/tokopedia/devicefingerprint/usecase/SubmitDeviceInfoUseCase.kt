@@ -2,12 +2,14 @@ package com.tokopedia.devicefingerprint.usecase
 
 import com.tokopedia.devicefingerprint.payload.InsertDeviceInfoPayload
 import com.tokopedia.devicefingerprint.response.SubmitDeviceInfoResponse
+import com.tokopedia.devicefingerprint.utils.InsertDeviceInfoPayloadCreator
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import javax.inject.Inject
 
 class SubmitDeviceInfoUseCase @Inject constructor(
-    repository: GraphqlRepository
+    repository: GraphqlRepository,
+    private val  insertDeviceInfoPayloadCreator: InsertDeviceInfoPayloadCreator
 ): GraphqlUseCase<SubmitDeviceInfoResponse>(repository) {
 
     companion object {
@@ -35,6 +37,11 @@ class SubmitDeviceInfoUseCase @Inject constructor(
                 PARAM_INPUT to payload
         )
         setRequestParams(params)
+    }
+
+    override suspend fun executeOnBackground(): SubmitDeviceInfoResponse {
+        setParams(insertDeviceInfoPayloadCreator.create())
+        return super.executeOnBackground()
     }
 
 }

@@ -18,12 +18,14 @@ import android.view.WindowManager
 import androidx.core.content.ContextCompat
 import com.google.android.gms.ads.identifier.AdvertisingIdClient
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.device.info.DeviceInfo
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.devicefingerprint.payload.DeviceInfoPayload
 import com.tokopedia.devicefingerprint.model.Screen
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
 import java.io.File
 import java.lang.reflect.Field
@@ -42,7 +44,7 @@ import kotlin.math.sqrt
 
 class DeviceInfoPayloadCreator @Inject constructor(
         val context: Context,
-        val userSession: UserSession,
+        val userSession: UserSessionInterface,
         val fusedLocationClient: FusedLocationProviderClient
 ) {
 
