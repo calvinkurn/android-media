@@ -12,6 +12,7 @@ import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.pojo.ChatListPojo
 import com.tokopedia.topchat.matchers.RecyclerViewItemCountAssertion
+import com.tokopedia.topchat.matchers.withIndex
 import com.tokopedia.topchat.stub.chatlist.activity.ChatListActivityStub
 import com.tokopedia.topchat.stub.chatlist.usecase.ChatListGraphqlUseCase
 import com.tokopedia.topchat.stub.common.UserSessionStub
@@ -68,9 +69,9 @@ class ChatListActivityTest {
         activity.setupTestFragment(chatListUseCase)
 
         // Then
-        onView(withId(R.id.thumbnail))
+        onView(withId(R.id.thumbnail_empty_chat_list))
                 .check(matches(isDisplayed()))
-        onView(withId(R.id.title))
+        onView(withId(R.id.title_empty_chat_list))
                 .check(matches(withText("Belum ada chat, nih")))
         onView(withId(R.id.subtitle))
                 .check(matches(withText("Coba ngobrol dengan teman penjual, yuk!")))
@@ -102,7 +103,18 @@ class ChatListActivityTest {
 
         // When
         activity.setupTestFragment(chatListUseCase)
-        Thread.sleep(2500)
+
+        // Then
+        onView(withId(R.id.thumbnail_empty_chat_list))
+                .check(matches(isDisplayed()))
+        onView(withId(R.id.title_empty_chat_list))
+                .check(matches(withText("Belum ada chat, nih")))
+        onView(withId(R.id.subtitle))
+                .check(matches(withText("Yuk, bikin tokomu ramai pengunjung dengan beriklan dan promosikan produk-produkmu.")))
+        onView(withId(R.id.btnCta))
+                .check(matches(isDisplayed()))
+        onView(withId(R.id.btnCta))
+                .check(matches(withText("Coba Iklan dan Promosi")))
     }
 
     @Test
@@ -115,7 +127,10 @@ class ChatListActivityTest {
 
         // When
         activity.setupTestFragment(chatListUseCase)
-        Thread.sleep(2500)
+
+        // Then
+        onView(withIndex(withId(R.id.recycler_view), 0))
+                .check(RecyclerViewItemCountAssertion(5))
     }
 
 }
