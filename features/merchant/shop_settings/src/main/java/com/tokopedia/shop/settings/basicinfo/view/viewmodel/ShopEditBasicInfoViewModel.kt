@@ -179,7 +179,7 @@ class ShopEditBasicInfoViewModel @Inject constructor(
         val shopDomain = domain.nullIfNotChanged(currentShop?.domain)
 
         val requestParams = UpdateShopBasicDataUseCase.createRequestParam(
-            shopName, shopDomain, currentShop?.tagline, currentShop?.description, logoCode)
+            shopName, shopDomain, tagLine, description, logoCode)
 
         updateShopBasicData(requestParams)
     }
