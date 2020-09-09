@@ -3,6 +3,7 @@ package com.tokopedia.product.manage.feature.campaignstock.ui.adapter.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.StockTickerInfoUiModel
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -18,6 +19,7 @@ class StockTickerInfoViewHolder(itemView: View?): AbstractViewHolder<StockTicker
     override fun bind(element: StockTickerInfoUiModel) {
         with(itemView) {
             ticker_campaign_stock?.run {
+                showWithCondition(element.hasEmptyVariantStock)
                 tickerType =
                         if (element.isReserved) {
                             Ticker.TYPE_ANNOUNCEMENT

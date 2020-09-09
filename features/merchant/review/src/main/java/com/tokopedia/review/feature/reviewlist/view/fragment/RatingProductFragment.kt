@@ -17,11 +17,11 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
-import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
@@ -101,8 +101,6 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     private var prefs: SharedPreferences? = null
 
-    private var swipeToRefreshReviewSeller: SwipeToRefresh? = null
-
     private val coachMarkItems: ArrayList<CoachMarkItem> = arrayListOf()
 
     private var chipsSort: ChipsUnify? = null
@@ -173,7 +171,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         super.onViewCreated(view, savedInstanceState)
         activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
         initRecyclerView(view)
-        initSwipeToRefRefresh(view)
+        observeLiveData()
         initSearchBar()
         initViewBottomSheet()
         initChipsSort(view)
@@ -272,6 +270,16 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     override fun loadData(page: Int) {}
 
+    override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? {
+        return swipeToRefreshRatingProduct
+    }
+
+    override fun onSwipeRefresh() {
+        swipeToRefresh?.isRefreshing = false
+        clearAllData()
+        loadInitialData()
+    }
+
     override fun getRecyclerView(view: View): RecyclerView {
         return view.findViewById(R.id.rvRatingProduct)
     }
@@ -285,16 +293,6 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         }
     }
 
-    private fun initSwipeToRefRefresh(view: View) {
-        swipeToRefreshReviewSeller = view.findViewById(R.id.swipeToRefreshLayout)
-
-        swipeToRefreshReviewSeller?.setOnRefreshListener {
-            swipeToRefreshReviewSeller?.isRefreshing = true
-            loadInitialData()
-        }
-
-        observeLiveData()
-    }
 
     private fun initSearchBar() {
         searchBarRatingProduct?.apply {
@@ -372,14 +370,14 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     private fun onSuccessGetProductRatingOverallData(data: ProductRatingOverallUiModel) {
         reviewSellerAdapter.hideLoading()
         search_bar_layout?.show()
+        swipeToRefresh?.isRefreshing = false
         filter_and_sort_layout?.show()
-        swipeToRefreshReviewSeller?.isRefreshing = false
         reviewSellerAdapter.setProductRatingOverallData(data)
     }
 
     private fun onErrorGetReviewSellerData(throwable: Throwable) {
         tracking.eventViewErrorIris(throwable.message.orEmpty())
-        swipeToRefreshReviewSeller?.isRefreshing = false
+        swipeToRefresh?.isRefreshing = false
         if (reviewSellerAdapter.itemCount.isZero()) {
             if (throwable.message?.isNotEmpty() == true) {
                 globalError_reviewSeller?.setType(GlobalError.SERVER_ERROR)
@@ -409,7 +407,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     private fun onSuccessGetReviewProductListData(hasNextPage: Boolean, reviewProductList: List<ProductReviewUiModel>) {
         reviewSellerAdapter.hideLoading()
-        swipeToRefreshReviewSeller?.isRefreshing = false
+        swipeToRefresh?.isRefreshing = false
         if ((reviewProductList.isEmpty() && reviewSellerAdapter.itemCount.isZero()) && isEmptyFilter) {
             showEmptyState()
             tvContentNoReviewsYet?.text = getString(R.string.empty_state_message_wrong_filter)

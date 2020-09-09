@@ -321,65 +321,67 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     override fun onProductClicked(shopProductViewModel: ShopProductViewModel, shopTrackType: Int, productPosition: Int) {
-        when (shopTrackType) {
-            ShopTrackProductTypeDef.FEATURED -> shopPageTracking?.clickProduct(
-                    isOwner,
-                    isLogin,
-                    getSelectedEtalaseChip(),
-                    if (isOwner) "" else FEATURED_PRODUCT,
-                    CustomDimensionShopPageAttribution.create(
-                            shopId,
-                            isOfficialStore,
-                            isGoldMerchant,
-                            shopProductViewModel.id,
-                            attribution,
-                            shopRef
-                    ),
-                    shopProductViewModel,
-                    productPosition + 1,
-                    shopId,
-                    shopProductViewModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
-                    false,
-                    shopProductViewModel.isUpcoming
-            )
-            ShopTrackProductTypeDef.PRODUCT -> shopPageTracking?.clickProduct(isOwner,
-                    isLogin,
-                    getSelectedEtalaseChip(),
-                    if (isOwner) "" else getSelectedEtalaseChip(),
-                    CustomDimensionShopPageAttribution.create(
-                            shopId,
-                            isOfficialStore,
-                            isGoldMerchant,
-                            shopProductViewModel.id,
-                            attribution,
-                            shopRef
-                    ),
-                    shopProductViewModel,
-                    productPosition + 1 - shopProductAdapter.shopProductFirstViewModelPosition,
-                    shopId,
-                    shopProductViewModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
-                    shopProductViewModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
-                    shopProductViewModel.isUpcoming
-            )
-            ShopTrackProductTypeDef.ETALASE_HIGHLIGHT -> shopPageTracking?.clickProduct(isOwner,
-                    isLogin,
-                    getSelectedEtalaseChip(),
-                    if (isOwner) "" else shopProductAdapter.getEtalaseNameHighLight(shopProductViewModel),
-                    CustomDimensionShopPageAttribution.create(
-                            shopId,
-                            isOfficialStore,
-                            isGoldMerchant,
-                            shopProductViewModel.id,
-                            attribution,
-                            shopRef
-                    ),
-                    shopProductViewModel,
-                    productPosition + 1,
-                    shopId,
-                    shopProductViewModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
-                    shopProductAdapter.getEtalaseNameHighLightType(shopProductViewModel) == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
-                    shopProductViewModel.isUpcoming
-            )
+        if(defaultEtalaseName.isNotEmpty()) {
+            when (shopTrackType) {
+                ShopTrackProductTypeDef.FEATURED -> shopPageTracking?.clickProduct(
+                        isOwner,
+                        isLogin,
+                        getSelectedEtalaseChip(),
+                        if (isOwner) "" else FEATURED_PRODUCT,
+                        CustomDimensionShopPageAttribution.create(
+                                shopId,
+                                isOfficialStore,
+                                isGoldMerchant,
+                                shopProductViewModel.id,
+                                attribution,
+                                shopRef
+                        ),
+                        shopProductViewModel,
+                        productPosition + 1,
+                        shopId,
+                        shopProductViewModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
+                        false,
+                        shopProductViewModel.isUpcoming
+                )
+                ShopTrackProductTypeDef.PRODUCT -> shopPageTracking?.clickProduct(isOwner,
+                        isLogin,
+                        getSelectedEtalaseChip(),
+                        if (isOwner) "" else getSelectedEtalaseChip(),
+                        CustomDimensionShopPageAttribution.create(
+                                shopId,
+                                isOfficialStore,
+                                isGoldMerchant,
+                                shopProductViewModel.id,
+                                attribution,
+                                shopRef
+                        ),
+                        shopProductViewModel,
+                        productPosition + 1 - shopProductAdapter.shopProductFirstViewModelPosition,
+                        shopId,
+                        shopProductViewModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
+                        shopProductViewModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
+                        shopProductViewModel.isUpcoming
+                )
+                ShopTrackProductTypeDef.ETALASE_HIGHLIGHT -> shopPageTracking?.clickProduct(isOwner,
+                        isLogin,
+                        getSelectedEtalaseChip(),
+                        if (isOwner) "" else shopProductAdapter.getEtalaseNameHighLight(shopProductViewModel),
+                        CustomDimensionShopPageAttribution.create(
+                                shopId,
+                                isOfficialStore,
+                                isGoldMerchant,
+                                shopProductViewModel.id,
+                                attribution,
+                                shopRef
+                        ),
+                        shopProductViewModel,
+                        productPosition + 1,
+                        shopId,
+                        shopProductViewModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
+                        shopProductAdapter.getEtalaseNameHighLightType(shopProductViewModel) == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
+                        shopProductViewModel.isUpcoming
+                )
+            }
         }
         goToPDP(
                 shopProductViewModel.id ?: "",
@@ -450,6 +452,10 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                     shopProductViewModel.isUpcoming
             )
         }
+    }
+
+    override fun getSelectedEtalaseName(): String {
+        return getSelectedEtalaseChip()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
