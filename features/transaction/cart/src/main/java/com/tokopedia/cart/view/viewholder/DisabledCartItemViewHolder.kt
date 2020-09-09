@@ -60,7 +60,6 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
                 itemView.text_slash_price.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(data.data?.originData?.priceOriginal
                         ?: 0, false).removeDecimalSuffix()
                 itemView.label_slash_price_percentage.text = data.data?.originData?.slashPriceLabel
-
                 hasSlashPrice = true
             }
 
