@@ -106,7 +106,6 @@
     <string name="topads_common_create_tool_tip">Info tips kata kunci</string>
     <string name="topads_common_search_hint">Cari Kata Kunci</string>
     <string name="topads_common_search_hint_activity">Cari kata kunci di sini</string>
-    <string name="topads_common_new_manual_key">Kata kunci &lt;b>%s&lt;/b> tidak tersedia. </string>
-    <string name="topads_common_tambah_button">Tambahkan</string>
+
 
 </resources>

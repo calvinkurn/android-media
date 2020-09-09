@@ -166,20 +166,6 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setEmptyLayout(empty: Boolean) {
-        if (empty) {
-            tip_btn.visibility = View.GONE
-            headlineList.visibility = View.GONE
-            emptyLayout.visibility = View.VISIBLE
-
-        } else {
-            tip_btn.visibility = View.VISIBLE
-            headlineList.visibility = View.VISIBLE
-            emptyLayout.visibility = View.GONE
-        }
-
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_SEARCH) {
@@ -189,8 +175,6 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
                 for (item in dataFromSearch!!) {
                     selectedKeyFromSearch?.add(item)
                 }
-                if (selectedKeyFromSearch?.isNotEmpty() != false)
-                    setEmptyLayout(false)
                 checkifExist()
                 if (STAGE == 0)
                     gotoNextStage()
@@ -220,8 +204,6 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
             keywordSelectedAdapter.items.addAll(list)
             sortListSelected()
         }
-        emptyLayout?.visibility = View.GONE
-        showSelectMessage()
     }
 
     private fun showSelectMessage() {
@@ -255,11 +237,11 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
     }
 
     private fun setEmptyView() {
-        startLoading(false)
         STAGE = 1
-        if (selected?.isEmpty() != false && selectedKeyFromSearch?.isEmpty() != false) {
-            setEmptyLayout(true)
-        }
+        setStepLayout(View.GONE)
+        tip_btn.visibility = View.GONE
+        headlineList.visibility = View.GONE
+        emptyLayout.visibility = View.VISIBLE
         setBtnText()
     }
 
@@ -279,7 +261,6 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         userID = UserSession(view.context).userId
         startLoading(true)
-        setStepLayout(View.GONE)
         selected = arguments?.getParcelableArrayList(SELECTED_DATA)
         btn_next.setOnClickListener {
             if (btn_next.text == resources.getString(R.string.topads_common_keyword_list_step)) {
@@ -399,7 +380,7 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
             val intent = Intent(context, KeywordSearchActivity::class.java).apply {
                 putExtra(PRODUCT_IDS_SELECTED, arguments?.getString(PRODUCT_ID) ?: "")
                 putExtra(SEARCH_QUERY, searchBar.searchBarTextField.text.toString())
-                putExtra(GROUP_ID, groupId.toString())
+                putExtra(GROUP_ID,groupId.toString())
             }
             startActivityForResult(intent, REQUEST_CODE_SEARCH)
         }
