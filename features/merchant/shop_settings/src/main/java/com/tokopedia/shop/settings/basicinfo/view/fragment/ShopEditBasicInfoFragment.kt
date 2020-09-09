@@ -452,8 +452,8 @@ class ShopEditBasicInfoFragment: Fragment() {
 
         when {
             isNameAllowed && isDomainAllowed -> showWarningTicker()
-            isNameAllowed && !isDomainAllowed -> showDomainNotAllowedTicker(data)
-            isDomainAllowed && !isNameAllowed -> showNameNotAllowedTicker(data)
+            isNameAllowed && !isDomainAllowed -> showDomainNotAllowedTicker()
+            isDomainAllowed && !isNameAllowed -> showNameNotAllowedTicker()
             else -> showNameAndDomainNotAllowedTicker()
         }
         shopEditTicker.show()
@@ -478,18 +478,18 @@ class ShopEditBasicInfoFragment: Fragment() {
         showInfoTicker(message)
     }
 
-    private fun showDomainNotAllowedTicker(data: AllowShopNameDomainChangesData) {
-        val message = data.reasonDomainNotAllowed
+    private fun showDomainNotAllowedTicker() {
+        val message = getString(R.string.ticker_info_show_domain_not_allowed)
         showInfoTicker(message)
     }
 
-    private fun showNameNotAllowedTicker(data: AllowShopNameDomainChangesData) {
-        val message = data.reasonNameNotAllowed
+    private fun showNameNotAllowedTicker() {
+        val message = getString(R.string.ticker_info_show_name_not_allowed)
         showInfoTicker(message)
     }
 
     private fun showNameAndDomainNotAllowedTicker() {
-        val message = getString(R.string.shop_edit_change_name_and_domain_not_allowed)
+        val message = getString(R.string.ticker_info_shop_name_and_domain_not_allowed)
         showInfoTicker(message)
     }
 

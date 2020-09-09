@@ -152,10 +152,12 @@
     <string name="shop_settings_set_shop_status">Atur Status Toko</string>
     <string name="ticker_warning_can_only_change_shopname_once">Nama dan domain toko hanya bisa diubah 1 kali.\nPastikan semua sudah benar.</string>
     <string name="ticker_warning_read_more">Selengkapnya</string>
+    <string name="ticker_info_show_name_not_allowed">Kamu sudah pernah mengubah nama toko sebelumnya.</string>
+    <string name="ticker_info_show_domain_not_allowed">Kamu sudah pernah mengubah domain toko sebelumnya.</string>
+    <string name="ticker_info_shop_name_and_domain_not_allowed">Kamu sudah pernah mengubah nama dan domain toko sebelumnya.</string>
     <string name="text_ubah_button">Ubah</string>
     <string name="shop_edit_name_too_short">Nama Toko terlalu pendek, minimum 3 karakter</string>
     <string name="shop_edit_domain_too_short">Domain Toko terlalu pendek, minimum 3 karakter</string>
-    <string name="shop_edit_change_name_and_domain_not_allowed">Kamu sudah pernah mengubah nama dan domain toko sebelumnya.</string>
     <string name="shop_edit_avatar_label">Gambar Profil</string>
     <string name="shop_edit_avatar_description">Besar file maks. 10MB dengan format .JPG, JPEG dan PNG.</string>
     <string name="shop_edit_change_avatar">Ganti Gambar</string>
