@@ -30,18 +30,6 @@
         app:layout_constraintStart_toEndOf="@+id/imgStatus"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/btnInfo"
-        android:layout_width="@dimen/dp_16"
-        android:layout_height="@dimen/dp_16"
-        android:layout_gravity="center_vertical"
-        app:srcCompat="@drawable/ic_ts_notif_info"
-        android:layout_marginStart="@dimen/dp_4"
-        app:layout_constraintBottom_toBottomOf="@+id/txtTitle"
-        app:layout_constraintStart_toEndOf="@+id/txtTitle"
-        app:layout_constraintTop_toTopOf="@+id/txtTitle"
-        tools:visibility="visible" />
-
     <TextView
         android:id="@+id/txtStatus"
         android:layout_width="0dp"
