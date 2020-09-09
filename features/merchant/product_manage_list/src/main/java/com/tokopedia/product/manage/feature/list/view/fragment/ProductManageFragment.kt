@@ -1207,7 +1207,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 ProductManageTracking.eventSettingsDelete(productId)
             }
             is SetTopAds -> {
-                onPromoTopAdsClicked()
+                onPromoTopAdsClicked(product.id)
                 ProductManageTracking.eventSettingsTopads(productId)
             }
             is SeeTopAds -> {
@@ -1317,8 +1317,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         startActivityForResult(intent, REQUEST_CODE_STOCK_REMINDER)
     }
 
-    private fun onPromoTopAdsClicked() {
-        viewModel.onPromoTopAdsClicked()
+    private fun onPromoTopAdsClicked(productId: String) {
+        viewModel.onPromoTopAdsClicked(productId)
     }
 
     private fun onSeeTopAdsClicked(productId: String) {
@@ -1899,7 +1899,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             when(it) {
                 is OnBoarding -> goToTopAdsOnBoarding()
                 is ManualAds -> goToCreateTopAdsChooser()
-                is AutoAds -> goToCreateTopAdsAutoAds()
+                is AutoAds -> goToPDP(it.productId, showTopAdsSheet = true)
             }
         }
     }
@@ -1911,10 +1911,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     private fun goToCreateTopAdsChooser() {
         RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_CREATE_CHOOSER)
-    }
-
-    private fun goToCreateTopAdsAutoAds() {
-        RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE)
     }
 
     private fun updateVariantStock(data: EditVariantResult) {
