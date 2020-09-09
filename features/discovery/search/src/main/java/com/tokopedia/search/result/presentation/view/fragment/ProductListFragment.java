@@ -102,6 +102,7 @@ import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.domain.model.FreeOngkir;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
+import com.tokopedia.unifycomponents.Toaster;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -625,7 +626,22 @@ public class ProductListFragment
     }
 
     private void handleAddToCartAction(ProductCardOptionsModel productCardOptionsModel) {
-        Toast.makeText(getActivity(), String.valueOf(productCardOptionsModel.getAddToCartResult().isSuccess()), Toast.LENGTH_LONG).show();
+        if (getView() == null) return;
+
+        ProductCardOptionsModel.AddToCartResult addToCartResult = productCardOptionsModel.getAddToCartResult();
+
+        String message;
+        int toasterType;
+
+        if (addToCartResult.isSuccess()) {
+            message = getString(R.string.search_add_to_cart_success);
+            toasterType = Toaster.TYPE_NORMAL;
+        } else {
+            message = addToCartResult.getErrorMessage();
+            toasterType = Toaster.TYPE_ERROR;
+        }
+
+        Toaster.make(getView(), message, Toaster.LENGTH_SHORT, toasterType);
     }
 
     @Override

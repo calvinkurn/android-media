@@ -50,11 +50,7 @@ internal class ProductCardOptionsFragment: TkpdBaseV4Fragment() {
         observeCloseProductCardOptionsEventLiveData()
         observeAddWishlistEventLiveData()
         observeTrackingSeeSimilarProductsEventLiveData()
-
-        productCardOptionsViewModel?.getAddToCartEventLiveData()?.observe(viewLifecycleOwner, Observer {
-            activity?.setResult(PRODUCT_CARD_OPTIONS_RESULT_CODE_ATC, createWishlistResultIntent())
-            activity?.finish()
-        })
+        observeAddToCartEventLiveData()
     }
 
     private fun observeOptionListLiveData() {
@@ -117,19 +113,25 @@ internal class ProductCardOptionsFragment: TkpdBaseV4Fragment() {
 
     private fun observeAddWishlistEventLiveData() {
         productCardOptionsViewModel?.getWishlistEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
-            setResultWishlistEvent()
+            sendProductCardOptionsResult(PRODUCT_CARD_OPTIONS_RESULT_CODE_WISHLIST)
         })
     }
 
-    private fun setResultWishlistEvent() {
-        activity?.setResult(PRODUCT_CARD_OPTIONS_RESULT_CODE_WISHLIST, createWishlistResultIntent())
+    private fun sendProductCardOptionsResult(resultCode: Int) {
+        activity?.setResult(resultCode, createProductCardOptionsResult())
         activity?.finish()
     }
 
-    private fun createWishlistResultIntent(): Intent {
+    private fun createProductCardOptionsResult(): Intent {
         return Intent().also {
             it.putExtra(PRODUCT_CARD_OPTION_RESULT_PRODUCT, productCardOptionsViewModel?.productCardOptionsModel)
         }
+    }
+
+    private fun observeAddToCartEventLiveData() {
+        productCardOptionsViewModel?.getAddToCartEventLiveData()?.observe(viewLifecycleOwner, Observer {
+            sendProductCardOptionsResult(PRODUCT_CARD_OPTIONS_RESULT_CODE_ATC)
+        })
     }
 
     private fun observeTrackingSeeSimilarProductsEventLiveData() {

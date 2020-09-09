@@ -83,4 +83,6 @@
 
     <string name="search_inspiration_card_title">Mungkin maksud kamu ini?</string>
     <string name="search_inspiration_card_option">putih</string>
+
+    <string name="search_add_to_cart_success">Sukses menambah ke keranjang</string>
 </resources>
