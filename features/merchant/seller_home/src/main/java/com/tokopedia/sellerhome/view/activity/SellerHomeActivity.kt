@@ -63,6 +63,8 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         private const val DOUBLE_TAB_EXIT_DELAY = 2000L
 
         private const val SHOP_PAGE_PREFIX = "tokopedia://shop/"
+
+        private const val LAST_FRAGMENT_TYPE_KEY = "last_fragment"
     }
 
     @Inject lateinit var userSession: UserSessionInterface
@@ -119,7 +121,10 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         setupToolbar()
         setupStatusBar()
         setupNavigator()
-        setupDefaultPage(savedInstanceState != null)
+
+        val initialPage = savedInstanceState?.getInt(LAST_FRAGMENT_TYPE_KEY) ?: FragmentType.HOME
+        setupDefaultPage(initialPage)
+
         setupBottomNav()
         UpdateCheckerHelper.checkAppUpdate(this, isRedirectedFromSellerMigration)
         observeNotificationsLiveData()
@@ -178,6 +183,13 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         homeViewModel.getShopInfo()
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        navigator?.getCurrentSelectedPage()?.let { page ->
+            outState.putInt(LAST_FRAGMENT_TYPE_KEY, page)
+        }
+        super.onSaveInstanceState(outState)
+    }
+
     fun attachCallback(callback: StatusBarCallback) {
         statusBarCallback = callback
     }
@@ -218,22 +230,19 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         }
     }
 
-    private fun setupDefaultPage(isSavedInstanceStateExist: Boolean) {
+    private fun setupDefaultPage(@FragmentType initialPageType: Int) {
         if(intent?.data == null) {
-            showToolbar()
-            showSellerHome(isSavedInstanceStateExist)
+            showToolbar(initialPageType)
+            showInitialPage(initialPageType)
         } else {
             handleAppLink(intent)
         }
     }
 
-    private fun showSellerHome(isSavedInstanceStateExist: Boolean) {
-        val home = FragmentType.HOME
-        setCurrentFragmentType(home)
-        sahBottomNav.currentItem = home
-        if (!isSavedInstanceStateExist) {
-            navigator?.start(home)
-        }
+    private fun showInitialPage(pageType: Int) {
+        setCurrentFragmentType(pageType)
+        sahBottomNav.currentItem = pageType
+        navigator?.start(pageType, supportFragmentManager)
     }
 
     private fun handleAppLink(intent: Intent?) {
@@ -248,7 +257,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
             showToolbar(pageType)
             setCurrentFragmentType(pageType)
             sahBottomNav.currentItem = pageType
-            navigator?.navigateFromAppLink(page)
+            navigator?.navigateFromAppLink(page, supportFragmentManager)
         }
     }
 
@@ -272,7 +281,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
     }
 
     private fun setupNavigator() {
-        navigator = SellerHomeNavigator(this, supportFragmentManager, sellerHomeRouter)
+        navigator = SellerHomeNavigator(this, sellerHomeRouter)
     }
 
     private fun setupBottomNav() {
@@ -321,14 +330,18 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         setCurrentFragmentType(pageType)
         resetPages(page)
 
-        navigator?.showPage(pageType)
+        navigator?.showPage(pageType, supportFragmentManager)
         trackClickBottomNavigation(trackingAction)
     }
 
     private fun showToolbar(@FragmentType pageType: Int = FragmentType.HOME) {
         val pageTitle = navigator?.getPageTitle(pageType)
         supportActionBar?.title = pageTitle
-        sahToolbar?.show()
+        if (pageType != FragmentType.OTHER) {
+            sahToolbar?.show()
+        } else {
+            sahToolbar?.hide()
+        }
     }
 
     private fun trackClickBottomNavigation(trackingAction: String) {
@@ -358,7 +371,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
 
         val type = FragmentType.OTHER
         setCurrentFragmentType(type)
-        navigator?.showPage(type)
+        navigator?.showPage(type, supportFragmentManager)
 
         trackClickBottomNavigation(TrackingConstant.CLICK_OTHERS)
     }

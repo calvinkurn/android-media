@@ -17,7 +17,6 @@ import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOpti
 
 class SellerHomeNavigator(
     private val context: Context,
-    private val fm: FragmentManager,
     private val sellerHomeRouter: SellerHomeRouter?
 ) {
 
@@ -35,27 +34,29 @@ class SellerHomeNavigator(
         initFragments()
     }
 
-    fun start(@FragmentType page: Int) {
+    fun start(@FragmentType page: Int,
+              fm: FragmentManager) {
         val transaction = fm.beginTransaction()
         val fragment = getPageFragment(page)
         addAllPages(fragment, transaction)
 
         fragment?.let {
-            showFragment(it, transaction)
+            showFragment(it, fm, transaction, true)
             setSelectedPage(page)
         }
 
         updateFragmentVisibilityHint(fragment)
     }
 
-    fun showPage(@FragmentType page: Int) {
+    fun showPage(@FragmentType page: Int,
+                 fm: FragmentManager) {
         if(isActivityResumed()) {
             val transaction = fm.beginTransaction()
             val fragment = getPageFragment(page)
 
             fragment?.let {
                 hideCurrentPage(transaction)
-                showFragment(it, transaction)
+                showFragment(it, fm, transaction)
                 setSelectedPage(page)
             }
 
@@ -63,7 +64,8 @@ class SellerHomeNavigator(
         }
     }
 
-    fun navigateFromAppLink(page: PageFragment) {
+    fun navigateFromAppLink(page: PageFragment,
+                            fm: FragmentManager) {
         val type = page.type
 
         getPageFragment(type)?.let { currentPage ->
@@ -77,7 +79,7 @@ class SellerHomeNavigator(
                 when {
                     fragments.isEmpty() -> {
                         addAllPages(selectedPage, transaction)
-                        showFragment(selectedPage, transaction)
+                        showFragment(selectedPage, fm, transaction, true)
                     }
                     currentPage != selectedPage -> {
                         transaction
@@ -87,7 +89,7 @@ class SellerHomeNavigator(
                     }
                     else -> {
                         hideCurrentPage(transaction)
-                        showFragment(fragment, transaction)
+                        showFragment(fragment, fm, transaction)
                     }
                 }
 
@@ -139,6 +141,8 @@ class SellerHomeNavigator(
         return currentSelectedPage == FragmentType.HOME
     }
 
+    fun getCurrentSelectedPage(): Int = currentSelectedPage ?: FragmentType.HOME
+
     private fun initFragments() {
         homeFragment = SellerHomeFragment.newInstance()
         productManageFragment = sellerHomeRouter?.getProductManageFragment(arrayListOf(), "")
@@ -168,13 +172,14 @@ class SellerHomeNavigator(
         }
     }
 
-    private fun showFragment(fragment: Fragment, transaction: FragmentTransaction) {
-        val tag = fragment::class.java.simpleName
-        val isAttached = fm.findFragmentByTag(tag) != null
+    private fun showFragment(fragment: Fragment,
+                             fm: FragmentManager,
+                             transaction: FragmentTransaction,
+                             isFromStart: Boolean = false) {
         val currentState = fragment.lifecycle.currentState
         val isFragmentNotResumed = !currentState.isAtLeast(Lifecycle.State.RESUMED)
 
-        if(isFragmentNotResumed && isAttached && fragment.isAdded) {
+        if(isFragmentNotResumed && fragment.fragmentManager == fm) {
             try {
                 transaction.setMaxLifecycle(fragment, Lifecycle.State.RESUMED)
             } catch (e: Exception) {
@@ -182,9 +187,29 @@ class SellerHomeNavigator(
             }
         }
 
-        transaction
-            .show(fragment)
-            .commit()
+        transaction.showDesignatedFragment(fragment, fm, isFromStart)
+    }
+
+    private fun FragmentTransaction.showDesignatedFragment(fragment: Fragment, fm: FragmentManager, isFromStart: Boolean) {
+        if (isFromStart) {
+            show(fragment)
+        } else {
+            if (fragment.isAdded) {
+                show(fragment)
+            } else {
+                add(R.id.sahContainer, fragment)
+            }
+        }
+
+        if (!isFromStart) {
+            fm.fragments.forEach {
+                if (it != fragment && it.isAdded) {
+                    hide(it)
+                }
+            }
+        }
+
+        commit()
     }
 
     private fun getPageFragment(@FragmentType type: Int): Fragment? {
