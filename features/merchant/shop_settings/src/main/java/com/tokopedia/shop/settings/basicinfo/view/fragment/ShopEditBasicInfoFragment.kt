@@ -427,8 +427,7 @@ class ShopEditBasicInfoFragment: Fragment() {
                 is Success -> {
                     val result = it.data.shopDomainSuggestion.result
                     val shopDomains = result.shopDomains
-                    val onlyTwoSuggestions = shopDomains.filterIndexed { index, _ -> index < 2 }
-                    shopDomainSuggestions.show(onlyTwoSuggestions)
+                    shopDomainSuggestions.show(shopDomains)
                 }
             }
         }
