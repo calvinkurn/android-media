@@ -309,6 +309,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
+    public void onStop() {
+        super.onStop();
+        hideLoading();
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         if (delayScrollToFirstShopSubscription != null) {
@@ -1653,6 +1659,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 }
 
                 if (hasRedStatePromo) {
+                    hideLoading();
                     showToastError(errorMessage);
                     sendAnalyticsPromoRedState();
                 } else {
@@ -1660,6 +1667,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 }
             }
         } else if (shipmentData != null && !result) {
+            hideLoading();
             sendAnalyticsDropshipperNotComplete();
             if (requestCode == REQUEST_CODE_COD) {
                 mTrackerCod.eventClickBayarDiTempatShipmentNotSuccessIncomplete();
@@ -1674,6 +1682,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 onNeedUpdateViewItem(errorPosition);
             }
         } else if (shipmentData == null) {
+            hideLoading();
             if (isTradeIn()) {
                 checkoutAnalyticsCourierSelection.eventClickBayarCourierNotComplete();
             }
@@ -2220,6 +2229,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onProcessToPayment() {
+        showLoading();
         shipmentAdapter.checkDropshipperValidation(REQUEST_CODE_NORMAL_CHECKOUT);
     }
 

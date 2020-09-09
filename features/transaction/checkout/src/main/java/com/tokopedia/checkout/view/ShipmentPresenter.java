@@ -726,7 +726,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 String deviceId,
                                 String cornerId,
                                 String leasingId) {
-        getView().showLoading();
         removeErrorShopProduct();
         CheckoutRequest checkoutRequest = generateCheckoutRequest(null, hasInsurance,
                 shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0, leasingId
@@ -955,6 +954,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     errorMessage = com.tokopedia.network.utils.ErrorHandler.getErrorMessage(getView().getActivityContext(), e);
                 }
                 analyticsActionListener.sendAnalyticsChoosePaymentMethodFailed(errorMessage);
+                getView().hideLoading();
                 getView().showToastError(errorMessage);
                 processInitialLoadCheckoutPage(true, isOneClickShipment, isTradeIn, true, false, cornerId, deviceId, leasingId);
             }
@@ -962,7 +962,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             @Override
             public void onNext(CheckoutData checkoutData) {
                 ShipmentPresenter.this.checkoutData = checkoutData;
-                getView().hideLoading();
                 if (!checkoutData.isError()) {
                     getView().triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(checkoutData.getTransactionId());
                     if (isPurchaseProtectionPage) {
@@ -973,12 +972,15 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     }
                     getView().renderCheckoutCartSuccess(checkoutData);
                 } else if (checkoutData.getErrorReporter() != null && checkoutData.getErrorReporter().getEligible()) {
+                    getView().hideLoading();
                     getView().renderCheckoutCartErrorReporter(checkoutData);
                 } else if (checkoutData.getPriceValidationData() != null && checkoutData.getPriceValidationData().isUpdated() &&
                         checkoutData.getPriceValidationData().getMessage() != null) {
+                    getView().hideLoading();
                     getView().renderCheckoutPriceUpdated(checkoutData.getPriceValidationData());
                 } else {
                     analyticsActionListener.sendAnalyticsChoosePaymentMethodFailed(checkoutData.getErrorMessage());
+                    getView().hideLoading();
                     if (checkoutData.getErrorMessage() != null && !checkoutData.getErrorMessage().isEmpty()) {
                         getView().renderCheckoutCartError(checkoutData.getErrorMessage());
                     } else {
@@ -1931,7 +1933,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         CheckoutRequest checkoutRequest = generateCheckoutRequest(null, hasInsurance,
                 shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0, leasingId
         );
-        getView().showLoading();
         codCheckoutUseCase.clearRequest();
         codCheckoutUseCase.addRequest(codCheckoutUseCase.getRequest(checkoutRequest, isOneClickShipment));
         codCheckoutUseCase.execute(new Subscriber<GraphqlResponse>() {
@@ -1949,9 +1950,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
             @Override
             public void onNext(GraphqlResponse graphqlResponse) {
-                getView().hideLoading();
                 CodResponse response = graphqlResponse.getData(CodResponse.class);
                 if (getView() == null || !response.getValidateCheckoutCod().getHeader().getErrorCode().equals("200")) {
+                    getView().hideLoading();
                     mTrackerCod.eventClickBayarDiTempatShipmentNotSuccessIncomplete();
                     processInitialLoadCheckoutPage(true, isOneClickShipment, isTradeIn, true, false, null, deviceId, leasingId);
                     getView().showToastError("");
@@ -1965,6 +1966,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         getView().navigateToCodConfirmationPage(data, checkoutRequest);
                     } else {
                         // show bottomsheet error indicating cod ineligibility
+                        getView().hideLoading();
                         mTrackerCod.eventClickBayarDiTempatShipmentNotSuccessIneligible();
                         getView().showBottomSheetError(data.getErrorMessage());
                     }
