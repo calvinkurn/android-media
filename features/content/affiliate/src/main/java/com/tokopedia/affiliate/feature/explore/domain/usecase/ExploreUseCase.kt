@@ -5,8 +5,6 @@ import android.text.TextUtils
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.common.viewmodel.ExploreCardViewModel
 import com.tokopedia.affiliate.feature.explore.data.pojo.ExploreData
@@ -23,15 +21,31 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
 import java.util.*
-import javax.inject.Inject
 
 /**
  * @author by yfsx on 08/10/18.
  */
-class ExploreUseCase @Inject constructor(
-        @ApplicationContext private val context: Context,
+class ExploreUseCase constructor(
+        private val context: Context,
         private val graphqlUseCase: GraphqlUseCase
 ) : UseCase<ExploreViewModel>() {
+
+    private val query = """
+        query getExploreAffiliate(${'$'}keyword: String, ${'$'}nextCursor: String,${'$'}filter: [TopadsExploreAffiliateFilter],${'$'}sort: TopadsExploreAffiliateSort) {
+          topadsExploreAffiliateProduct(keyword: ${'$'}keyword, nextCursor: ${'$'}nextCursor, filter: ${'$'}filter, sort: ${'$'}sort){
+            products {
+              adId
+              productId
+              image
+              name
+              commission
+            }
+            pagination{
+              nextCursor
+            }
+          }
+        }
+    """
 
     var exploreParams: ExploreParams = ExploreParams()
 
@@ -44,10 +58,6 @@ class ExploreUseCase @Inject constructor(
     }
 
     override fun createObservable(requestParams: RequestParams?): Observable<ExploreViewModel> {
-        val query = GraphqlHelper.loadRawString(
-                context.resources,
-                R.raw.query_explore
-        )
         val graphqlRequest = GraphqlRequest(
                 query,
                 ExploreData::class.java,

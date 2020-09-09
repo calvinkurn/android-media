@@ -1,5 +1,6 @@
 package com.tokopedia.filter.bottomsheet.pricefilter
 
+import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +13,8 @@ import com.tokopedia.filter.common.helper.addItemDecorationIfNotExists
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
+import com.tokopedia.utils.text.currency.AfterTextWatcher
+import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import kotlinx.android.synthetic.main.sort_filter_bottom_sheet_chips_layout.view.*
 import kotlinx.android.synthetic.main.sort_filter_bottom_sheet_price_filter_view_holder.view.*
 
@@ -33,10 +36,22 @@ internal class PriceFilterViewHolder(itemView: View, private val priceFilterView
     )
 
     init {
+        itemView.priceFilterMinValue?.addNumberTextChangedListener()
+        itemView.priceFilterMaxValue?.addNumberTextChangedListener()
         itemView.priceRangeFilterRecyclerView?.let {
             it.layoutManager = layoutManager
             it.isNestedScrollingEnabled = false
             it.addItemDecorationIfNotExists(spacingItemDecoration)
+        }
+    }
+
+    private fun TextFieldUnify.addNumberTextChangedListener() {
+        textFieldInput.run {
+            addTextChangedListener(object: AfterTextWatcher() {
+                override fun afterTextChanged(s: Editable) {
+                    CurrencyFormatHelper.setToRupiahCheckPrefix(textFieldInput)
+                }
+            })
         }
     }
 
@@ -52,12 +67,18 @@ internal class PriceFilterViewHolder(itemView: View, private val priceFilterView
 
     private fun bindMinMaxPriceValue(priceFilterViewModel: PriceFilterViewModel) {
         itemView.priceFilterMinValue?.bindPriceFilterValue(priceFilterViewModel.minPriceFilterTitle, priceFilterViewModel.minPriceFilterValue) {
-            priceFilterViewListener.onMinPriceEditedFromTextInput(priceFilterViewModel, it.toIntOrZero())
+            priceFilterViewListener.onMinPriceEditedFromTextInput(priceFilterViewModel, it.currencyToInt())
         }
 
         itemView.priceFilterMaxValue?.bindPriceFilterValue(priceFilterViewModel.maxPriceFilterTitle, priceFilterViewModel.maxPriceFilterValue) {
-            priceFilterViewListener.onMaxPriceEditedFromTextInput(priceFilterViewModel, it.toIntOrZero())
+            priceFilterViewListener.onMaxPriceEditedFromTextInput(priceFilterViewModel, it.currencyToInt())
         }
+    }
+
+    private fun String.currencyToInt(): Int {
+        return replace(".", "")
+                .replace(",", "")
+                .toIntOrZero()
     }
 
     private fun TextFieldUnify.bindPriceFilterValue(title: String, value: String, onFocusChange: (String) -> Unit) {

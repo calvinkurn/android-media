@@ -16,6 +16,7 @@ internal class SearchProductTopAdsVerficationTestRobot {
     @Test
     fun testTopAdsUrlTracking() {
         prepare {
+            usingRule(activityRule)
             disableOnBoarding()
         } search {
             withKeyword("samsung")
