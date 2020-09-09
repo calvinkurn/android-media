@@ -3,12 +3,12 @@ package com.tokopedia.oneclickcheckout.order.view
 import com.google.gson.JsonParser
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.authentication.AuthHelper
-import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
-import com.tokopedia.logisticcart.shipping.model.*
+import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
+import com.tokopedia.logisticcart.shipping.model.ShippingParam
+import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData.ERROR_DISTANCE_LIMIT_EXCEEDED
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData.ERROR_WEIGHT_LIMIT_EXCEEDED
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.TKPDMapParam
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
@@ -469,85 +469,86 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 //        )
 //    }
 
-    private fun generateRatesParam(): RatesParam {
-        return RatesParam.Builder(generateListShopShipment(), generateShippingParam()).build().apply {
-            occ = "1"
-        }
-    }
+//    private fun generateRatesParam(): RatesParam {
+//        return RatesParam.Builder(generateListShopShipment(), generateShippingParam()).build().apply {
+//            occ = "1"
+//        }
+//    }
 
     fun generateShippingParam(): ShippingParam {
-        return ShippingParam().apply {
-            val address = _orderPreference.preference.address
-
-            originDistrictId = orderShop.districtId.toString()
-            originPostalCode = orderShop.postalCode
-            originLatitude = orderShop.latitude
-            originLongitude = orderShop.longitude
-            destinationDistrictId = address.districtId.toString()
-            destinationPostalCode = address.postalCode
-            destinationLatitude = address.latitude
-            destinationLongitude = address.longitude
-            shopId = orderShop.shopId.toString()
-            token = orderKero.keroToken
-            ut = orderKero.keroUT
-            insurance = 1
-            isPreorder = orderProduct.isPreorder != 0
-            categoryIds = orderProduct.categoryId.toString()
-            uniqueId = orderCart.cartString
-            addressId = address.addressId
-            products = listOf(Product(orderProduct.productId.toLong(), orderProduct.isFreeOngkir))
-            weightInKilograms = orderProduct.quantity.orderQuantity * orderProduct.weight / 1000.0
-            productInsurance = orderProduct.productFinsurance
-            orderValue = orderProduct.quantity.orderQuantity * orderProduct.getPrice()
-        }
+        return logisticProcessor.generateShippingParam(orderCart, _orderPreference)
+//        return ShippingParam().apply {
+//            val address = _orderPreference.preference.address
+//
+//            originDistrictId = orderShop.districtId.toString()
+//            originPostalCode = orderShop.postalCode
+//            originLatitude = orderShop.latitude
+//            originLongitude = orderShop.longitude
+//            destinationDistrictId = address.districtId.toString()
+//            destinationPostalCode = address.postalCode
+//            destinationLatitude = address.latitude
+//            destinationLongitude = address.longitude
+//            shopId = orderShop.shopId.toString()
+//            token = orderKero.keroToken
+//            ut = orderKero.keroUT
+//            insurance = 1
+//            isPreorder = orderProduct.isPreorder != 0
+//            categoryIds = orderProduct.categoryId.toString()
+//            uniqueId = orderCart.cartString
+//            addressId = address.addressId
+//            products = listOf(Product(orderProduct.productId.toLong(), orderProduct.isFreeOngkir))
+//            weightInKilograms = orderProduct.quantity.orderQuantity * orderProduct.weight / 1000.0
+//            productInsurance = orderProduct.productFinsurance
+//            orderValue = orderProduct.quantity.orderQuantity * orderProduct.getPrice()
+//        }
     }
 
     fun generateListShopShipment(): List<ShopShipment> {
         return orderShop.shopShipment
     }
 
-    private fun mapShippingRecommendationData(shippingRecommendationData: ShippingRecommendationData): ShippingRecommendationData {
-        val data = ratesResponseStateConverter.fillState(shippingRecommendationData, generateListShopShipment(), _orderShipment.shipperProductId.toZeroIfNull(), _orderShipment.serviceId.toZeroIfNull())
-        if (data.shippingDurationViewModels != null) {
-            val logisticPromo = data.logisticPromo
-            if (logisticPromo != null) {
-                // validate army courier
-                val serviceData: ShippingDurationUiModel? = getRatesDataFromLogisticPromo(logisticPromo.serviceId, data.shippingDurationViewModels)
-                if (serviceData == null) {
-                    data.logisticPromo = null
-                } else if (getCourierDataBySpId(logisticPromo.shipperProductId, serviceData.shippingCourierViewModelList) == null) {
-                    data.logisticPromo = null
-                }
-            }
-        }
-        return data
-    }
+//    private fun mapShippingRecommendationData(shippingRecommendationData: ShippingRecommendationData): ShippingRecommendationData {
+//        val data = ratesResponseStateConverter.fillState(shippingRecommendationData, generateListShopShipment(), _orderShipment.shipperProductId.toZeroIfNull(), _orderShipment.serviceId.toZeroIfNull())
+//        if (data.shippingDurationViewModels != null) {
+//            val logisticPromo = data.logisticPromo
+//            if (logisticPromo != null) {
+//                // validate army courier
+//                val serviceData: ShippingDurationUiModel? = getRatesDataFromLogisticPromo(logisticPromo.serviceId, data.shippingDurationViewModels)
+//                if (serviceData == null) {
+//                    data.logisticPromo = null
+//                } else if (getCourierDataBySpId(logisticPromo.shipperProductId, serviceData.shippingCourierViewModelList) == null) {
+//                    data.logisticPromo = null
+//                }
+//            }
+//        }
+//        return data
+//    }
 
-    private fun getCourierDataBySpId(spId: Int, shippingCourierViewModels: List<ShippingCourierUiModel>): ShippingCourierUiModel? {
-        return shippingCourierViewModels.firstOrNull { it.productData.shipperProductId == spId }
-    }
+//    private fun getCourierDataBySpId(spId: Int, shippingCourierViewModels: List<ShippingCourierUiModel>): ShippingCourierUiModel? {
+//        return shippingCourierViewModels.firstOrNull { it.productData.shipperProductId == spId }
+//    }
 
-    private fun getRatesDataFromLogisticPromo(serviceId: Int, list: List<ShippingDurationUiModel>): ShippingDurationUiModel? {
-        return list.firstOrNull { it.serviceData.serviceId == serviceId }
-    }
+//    private fun getRatesDataFromLogisticPromo(serviceId: Int, list: List<ShippingDurationUiModel>): ShippingDurationUiModel? {
+//        return list.firstOrNull { it.serviceData.serviceId == serviceId }
+//    }
 
-    private fun setupShippingError(selectedShippingDurationViewModel: ShippingDurationUiModel?, shippingRecommendationData: ShippingRecommendationData, shipping: OrderShipment, curShip: OrderProfileShipment): OrderShipment {
-        if (selectedShippingDurationViewModel == null && shippingRecommendationData.shippingDurationViewModels.isNotEmpty()) {
-            orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_DURATION_UNAVAILABLE)
-            return OrderShipment(serviceName = curShip.serviceName, serviceDuration = curShip.serviceDuration, serviceErrorMessage = NO_DURATION_AVAILABLE, shippingRecommendationData = shippingRecommendationData)
-        } else if (shippingRecommendationData.shippingDurationViewModels.isEmpty()) {
-            return OrderShipment(serviceName = curShip.serviceName, serviceDuration = curShip.serviceDuration, serviceErrorMessage = NO_COURIER_SUPPORTED_ERROR_MESSAGE, shippingRecommendationData = null)
-        }
-        return shipping
-    }
+//    private fun setupShippingError(selectedShippingDurationViewModel: ShippingDurationUiModel?, shippingRecommendationData: ShippingRecommendationData, shipping: OrderShipment, curShip: OrderProfileShipment): OrderShipment {
+//        if (selectedShippingDurationViewModel == null && shippingRecommendationData.shippingDurationViewModels.isNotEmpty()) {
+//            orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_DURATION_UNAVAILABLE)
+//            return OrderShipment(serviceName = curShip.serviceName, serviceDuration = curShip.serviceDuration, serviceErrorMessage = NO_DURATION_AVAILABLE, shippingRecommendationData = shippingRecommendationData)
+//        } else if (shippingRecommendationData.shippingDurationViewModels.isEmpty()) {
+//            return OrderShipment(serviceName = curShip.serviceName, serviceDuration = curShip.serviceDuration, serviceErrorMessage = NO_COURIER_SUPPORTED_ERROR_MESSAGE, shippingRecommendationData = null)
+//        }
+//        return shipping
+//    }
 
-    private fun sendViewShippingErrorMessage(shippingErrorId: String?) {
-        if (shippingErrorId == ERROR_DISTANCE_LIMIT_EXCEEDED) {
-            orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_DISTANCE_EXCEED)
-        } else if (shippingErrorId == ERROR_WEIGHT_LIMIT_EXCEEDED) {
-            orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_WEIGHT_EXCEED)
-        }
-    }
+//    private fun sendViewShippingErrorMessage(shippingErrorId: String?) {
+//        if (shippingErrorId == ERROR_DISTANCE_LIMIT_EXCEEDED) {
+//            orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_DISTANCE_EXCEED)
+//        } else if (shippingErrorId == ERROR_WEIGHT_LIMIT_EXCEEDED) {
+//            orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_WEIGHT_EXCEED)
+//        }
+//    }
 
     private fun sendPreselectedCourierOption(preselectedSpId: String?) {
         if (preselectedSpId != null) {
