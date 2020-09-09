@@ -281,10 +281,7 @@ class RechargeHomepageAnalytics {
                     NAME, item.name,
                     CREATIVE, item.name,
                     CREATIVE_URL, item.icon,
-                    POSITION, position,
-                    CATEGORY, "",
-                    PROMO_ID, "",
-                    PROMO_CODE, ""
+                    POSITION, position
             ))
         }
 
@@ -306,10 +303,7 @@ class RechargeHomepageAnalytics {
                 NAME, item.name,
                 CREATIVE, item.name,
                 CREATIVE_URL, item.icon,
-                POSITION, position,
-                CATEGORY, "",
-                PROMO_ID, "",
-                PROMO_CODE, ""
+                POSITION, position
         ))
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
@@ -317,7 +311,7 @@ class RechargeHomepageAnalytics {
                         TrackAppUtils.EVENT, PROMO_CLICK,
                         TrackAppUtils.EVENT_CATEGORY, DIGITAL_HOMEPAGE_CATEGORY,
                         TrackAppUtils.EVENT_ACTION, SEARCH_RESULT_PAGE_ICON_CLICK,
-                        TrackAppUtils.EVENT_LABEL, item.name,
+                        TrackAppUtils.EVENT_LABEL, "${item.name} - $position",
                         ECOMMERCE, DataLayer.mapOf(PROMO_CLICK, DataLayer.mapOf(PROMOTIONS, categories))
                 ))
 
