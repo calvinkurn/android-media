@@ -62,8 +62,6 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
     : BaseDaggerPresenter<LoginEmailPhoneContract.View>(),
         LoginEmailPhoneContract.Presenter {
 
-    private var submitDeviceInfoJob: Job? = null
-
     private lateinit var viewEmailPhone: LoginEmailPhoneContract.View
 
     fun attachView(view: LoginEmailPhoneContract.View, viewEmailPhone: LoginEmailPhoneContract.View) {
@@ -339,11 +337,10 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
         loginTokenUseCase.unsubscribe()
         getProfileUseCase.unsubscribe()
         tickerInfoUseCase.unsubscribe()
-        submitDeviceInfoJob?.cancel()
     }
 
     fun submitDeviceInfo() {
-        submitDeviceInfoJob = GlobalScope.launch {
+        GlobalScope.launch {
             submitDeviceInfoUseCase.executeOnBackground()
         }
     }
