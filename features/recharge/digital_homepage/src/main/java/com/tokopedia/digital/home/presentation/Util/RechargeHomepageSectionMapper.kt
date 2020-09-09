@@ -97,10 +97,10 @@ object RechargeHomepageSectionMapper {
 
     private fun getReminderWidgetModel(section: RechargeHomepageSections.Section): ReminderWidgetModel? {
         section.items.firstOrNull()?.run {
-            return ReminderWidgetModel(ReminderWidget(id.toString(),
+            return ReminderWidgetModel(ReminderWidget(section.id.toString(),
                     listOf(ReminderData(
                             applink,
-                            id = id.toString(),
+                            id = section.id.toString(),
                             iconURL = mediaUrl,
                             title = section.title,
                             mainText = title,
