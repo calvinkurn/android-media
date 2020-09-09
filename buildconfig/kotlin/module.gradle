@@ -8,12 +8,6 @@ kapt {
     useBuildCache = true
 }
 
-ext.lintchecks = [
-        'SetColourUsageError',
-        'CoreResourcesUsageError',
-        'VectorDrawableCompat',
-        'TypographyOverTextViewUsage'
-] as String[]
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -34,7 +28,6 @@ android {
         htmlReport false
         warningsAsErrors false
         abortOnError false
-        check lintchecks
     }
     buildTypes {
         debug{
