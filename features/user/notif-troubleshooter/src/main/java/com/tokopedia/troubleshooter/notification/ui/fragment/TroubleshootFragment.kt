@@ -106,6 +106,7 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
         viewModel.token.observe(viewLifecycleOwner, Observer { newToken ->
             setUpdateTokenStatus(newToken)
             TroubleshooterTimber.token(newToken)
+            saveLastCheckedDate(requireContext())
         })
 
         viewModel.notificationSetting.observe(viewLifecycleOwner, Observer {
@@ -231,7 +232,6 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
             is Success -> {
                 val isSuccess = StatusState(result.data.isTroubleshootSuccess())
                 adapter.updateStatus(PushNotification, isSuccess)
-                saveLastCheckedDate(requireContext())
             }
             is Error -> {
                 showToastError(result.cause)
