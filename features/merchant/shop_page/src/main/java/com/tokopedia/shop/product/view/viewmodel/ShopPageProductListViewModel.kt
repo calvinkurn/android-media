@@ -65,6 +65,7 @@ class ShopPageProductListViewModel @Inject constructor(
     val newMerchantVoucherData = MutableLiveData<Result<ShopMerchantVoucherViewModel>>()
     val shopProductFeaturedData = MutableLiveData<Result<ShopProductFeaturedViewModel>>()
     val shopProductEtalaseHighlightData = MutableLiveData<Result<ShopProductEtalaseHighlightViewModel>>()
+    val shopProductEtalaseTitleData = MutableLiveData<Result<ShopProductEtalaseTitleViewModel>>()
     val shopProductChangeProductGridSectionData = MutableLiveData<Result<Int>>()
     val productListData = MutableLiveData<Result<GetShopProductUiModel>>()
     val claimMembershipResp = MutableLiveData<Result<MembershipClaimBenefitResponse>>()
@@ -143,6 +144,10 @@ class ShopPageProductListViewModel @Inject constructor(
                     } ?: false
                 }
                 if (isProductListNotEmpty) {
+                    shopProductEtalaseTitleData.postValue(Success(ShopProductEtalaseTitleViewModel(
+                            shopEtalaseItemDataModel.etalaseName,
+                            shopEtalaseItemDataModel.etalaseBadge
+                    )))
                     shopProductChangeProductGridSectionData.postValue(Success(totalProductData))
                 }
             }

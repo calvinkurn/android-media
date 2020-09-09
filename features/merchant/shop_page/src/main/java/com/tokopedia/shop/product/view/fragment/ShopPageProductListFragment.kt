@@ -37,6 +37,8 @@ import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidge
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
@@ -51,6 +53,7 @@ import com.tokopedia.shop.common.constant.ShopHomeType
 import com.tokopedia.shop.common.constant.ShopPageConstant.GO_TO_MEMBERSHIP_DETAIL
 import com.tokopedia.shop.common.constant.ShopParamConstant
 import com.tokopedia.shop.common.graphql.data.membershipclaimbenefit.MembershipClaimBenefitResponse
+import com.tokopedia.shop.common.util.ShopPageProductChangeGridRemoteConfig
 import com.tokopedia.shop.common.view.adapter.MembershipStampAdapter
 import com.tokopedia.shop.common.widget.MembershipBottomSheetSuccess
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
@@ -198,6 +201,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     private var threeDotsClickShopTrackingType = -1
     private var initialProductListData : GetShopProductUiModel? = null
     private var staggeredGridLayoutManager: StaggeredGridLayoutManager? = null
+    private var remoteConfig: RemoteConfig? = null
     private val shopProductAdapter: ShopProductAdapter
         get() = adapter as ShopProductAdapter
     private var selectedEtalaseType: Int = SELECTED_ETALASE_TYPE_DEFAULT_VALUE
@@ -852,6 +856,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         initPltMonitoring()
         super.onCreate(savedInstanceState)
         context?.let { shopPageTracking = ShopPageTrackingBuyer(TrackingQueue(it)) }
+        remoteConfig = FirebaseRemoteConfigImpl(context)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopPageProductListViewModel::class.java)
         shopSortSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopSortSharedViewModel::class.java)
         shopChangeProductGridSharedViewModel = ViewModelProvider(requireActivity()).get(ShopChangeProductGridSharedViewModel::class.java)
@@ -974,6 +979,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         viewModel.claimMembershipResp.removeObservers(this)
         viewModel.newMembershipData.removeObservers(this)
         viewModel.newMerchantVoucherData.removeObservers(this)
+        viewModel.shopProductEtalaseTitleData.removeObservers(this)
         viewModel.shopProductChangeProductGridSectionData.removeObservers(this)
         viewModel.flush()
         shopSortSharedViewModel?.sharedSortData?.removeObservers(this)
@@ -1021,6 +1027,14 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             when (it) {
                 is Success -> {
                     onSuccessGetShopProductEtalaseHighlightData(it.data)
+                }
+            }
+        })
+
+        viewModel.shopProductEtalaseTitleData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    onSuccessGetShopProductEtalaseTitleData(it.data)
                 }
             }
         })
@@ -1118,9 +1132,17 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         }
     }
 
+    private fun onSuccessGetShopProductEtalaseTitleData(data: ShopProductEtalaseTitleViewModel) {
+        if(!ShopPageProductChangeGridRemoteConfig.isFeatureEnabled(remoteConfig)) {
+            shopProductAdapter.setShopProductEtalaseTitleData(data)
+        }
+    }
+
     private fun addShopPageProductChangeGridSection(totalProductData: Int) {
-        val data = ShopProductChangeGridSectionUiModel(totalProductData)
-        shopProductAdapter.addShopPageProductChangeGridSection(data)
+        if(ShopPageProductChangeGridRemoteConfig.isFeatureEnabled(remoteConfig)) {
+            val data = ShopProductChangeGridSectionUiModel(totalProductData)
+            shopProductAdapter.addShopPageProductChangeGridSection(data)
+        }
     }
 
     private fun onSuccessGetShopProductEtalaseHighlightData(data: ShopProductEtalaseHighlightViewModel) {

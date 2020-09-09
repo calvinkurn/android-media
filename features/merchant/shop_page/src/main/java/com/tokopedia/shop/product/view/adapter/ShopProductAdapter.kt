@@ -379,6 +379,18 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         mapDataModel()
     }
 
+    fun setShopProductEtalaseTitleData(data: ShopProductEtalaseTitleViewModel) {
+        if (!mapOfDataModel.containsKey(KEY_ETALASE_TITLE_DATA_MODEL)) {
+            val listWithoutProductListData = getListWithoutProductCardDataAndLoadingMoreModel()
+            visitables.add(listWithoutProductListData.size, data)
+            notifyDataSetChanged()
+        } else {
+            val indexObject = visitables.indexOf(mapOfDataModel[KEY_ETALASE_TITLE_DATA_MODEL])
+            visitables[indexObject] = data
+        }
+        mapDataModel()
+    }
+
     fun setProductListDataModel(productList: List<ShopProductViewModel>) {
         visitables.addAll(productList)
         shopProductViewModelList.addAll(productList)
@@ -557,8 +569,13 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
     }
 
     fun addShopPageProductChangeGridSection(data: ShopProductChangeGridSectionUiModel) {
-        visitables.add(getListWithoutProductCardDataAndLoadingMoreModel().size, data)
-        notifyChangedDataSet()
+        val isProductChangeGridSectionExists = visitables.any {
+            it::class.java == ShopProductChangeGridSectionUiModel::class.java
+        }
+        if (!isProductChangeGridSectionExists) {
+            visitables.add(getListWithoutProductCardDataAndLoadingMoreModel().size, data)
+            notifyChangedDataSet()
+        }
     }
 
     fun updateShopPageProductChangeGridSection(gridType: ShopProductViewGridType) {

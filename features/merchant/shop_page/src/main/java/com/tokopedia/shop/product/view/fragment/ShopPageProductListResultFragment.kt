@@ -35,6 +35,9 @@ import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.UserNotLoginException
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.OldShopPageTrackingConstant
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
@@ -48,6 +51,7 @@ import com.tokopedia.shop.common.constant.ShopPageConstant.EMPTY_PRODUCT_SEARCH_
 import com.tokopedia.shop.common.constant.ShopParamConstant
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.shop.common.util.ShopPageProductChangeGridRemoteConfig
 import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListener
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
 import com.tokopedia.shop.product.di.module.ShopProductModule
@@ -111,6 +115,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     private var shopProductSortFilterUiModel: ShopProductSortFilterUiModel? = null
     private var keywordEmptyState = ""
     private var isEmptyState = false
+    private var remoteConfig: RemoteConfig? = null
 
     private val staggeredGridLayoutManager: StaggeredGridLayoutManager by lazy {
         StaggeredGridLayoutManager(GRID_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
@@ -167,6 +172,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        remoteConfig = FirebaseRemoteConfigImpl(context)
         arguments?.let { attribution = it.getString(ShopParamConstant.EXTRA_ATTRIBUTION, "") }
         if (savedInstanceState == null) {
             selectedEtalaseList = ArrayList()
@@ -340,9 +346,12 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
             if (productList.isNotEmpty()) {
                 shopProductSortFilterUiModel?.let { shopProductAdapter.setSortFilterData(it) }
-                shopProductAdapter.addShopPageProductChangeGridSection(ShopProductChangeGridSectionUiModel(
-                        totalProductData
-                ))
+                if(ShopPageProductChangeGridRemoteConfig.isFeatureEnabled(remoteConfig)) {
+                    shopProductAdapter.addShopPageProductChangeGridSection(ShopProductChangeGridSectionUiModel(
+                            totalProductData
+                    ))
+                    changeProductListGridView(ShopProductViewGridType.SMALL_GRID)
+                }
             }
         }
 

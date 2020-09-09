@@ -39,6 +39,9 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselItemDataModel
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselOverlayImageDataModel
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_SHOP_PAGE_CHANGE_PRODUCT_GRID_LAYOUT_FEATURE
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
@@ -49,6 +52,7 @@ import com.tokopedia.shop.common.constant.ShopParamConstant
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler.ERROR_WHEN_GET_YOUTUBE_DATA
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler.logExceptionToCrashlytics
+import com.tokopedia.shop.common.util.ShopPageProductChangeGridRemoteConfig
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListener
 import com.tokopedia.shop.common.view.viewmodel.ShopChangeProductGridSharedViewModel
@@ -156,6 +160,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private var recyclerViewTopPadding = 0
     private var shopSortSharedViewModel: ShopSortSharedViewModel? = null
     private var shopChangeProductGridSharedViewModel: ShopChangeProductGridSharedViewModel? = null
+    private var remoteConfig: RemoteConfig? = null
 
     val isLogin: Boolean
         get() = viewModel?.isLogin ?: false
@@ -182,6 +187,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             sortId = it.getString(SAVED_SHOP_SORT_ID, "")
             sortName = it.getString(SAVED_SHOP_SORT_NAME, "")
         }
+        remoteConfig = FirebaseRemoteConfigImpl(context)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopHomeViewModel::class.java)
         shopSortSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopSortSharedViewModel::class.java)
         shopChangeProductGridSharedViewModel = ViewModelProvider(requireActivity()).get(ShopChangeProductGridSharedViewModel::class.java)
@@ -343,7 +349,9 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             when (it) {
                 is Success -> {
                     addProductListHeader()
-                    addChangeProductGridSection(it.data.totalProductData)
+                    if(ShopPageProductChangeGridRemoteConfig.isFeatureEnabled(remoteConfig)) {
+                        addChangeProductGridSection(it.data.totalProductData)
+                    }
                     updateProductListData(it.data.hasNextPage, it.data.listShopProductUiModel, true)
                 }
             }
