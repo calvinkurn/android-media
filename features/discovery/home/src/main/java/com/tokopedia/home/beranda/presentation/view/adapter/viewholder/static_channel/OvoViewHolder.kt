@@ -231,6 +231,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener?) : Abstr
             mTextCouponCount.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
             mTextCouponCount.visibility = View.VISIBLE
             mTextCouponCount.setText(R.string.home_header_tokopoint_unable_to_load_label)
+            mTextCouponCount.setTypeface(mTextCouponCount.typeface, Typeface.BOLD)
             mTextCouponCount.setTextColor(ContextCompat.getColor(itemView.context, R.color.font_black_primary_70))
             tvActionTokopoint.setText(R.string.home_header_tokopoint_refresh_label)
             tvActionTokopoint.visibility = View.VISIBLE
@@ -238,6 +239,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener?) : Abstr
             tokopointActionContainer.visibility = View.VISIBLE
             ivLogoTokoPoint.setImageResource(R.drawable.ic_product_fintech_tokopoint_normal_24)
             tvBalanceTokoPoint.visibility = View.GONE
+            ivLogoTokoPoint.setImageResource(R.drawable.ic_product_fintech_tokopoint_gold_24)
         } else if (element.tokopointsDrawerHomeData == null && !element.isTokoPointDataError) {
             tokoPointHolder.setOnClickListener(null)
             tokopointProgressBarLayout.visibility = View.VISIBLE
