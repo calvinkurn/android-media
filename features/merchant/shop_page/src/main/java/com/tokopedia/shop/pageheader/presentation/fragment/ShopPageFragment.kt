@@ -54,6 +54,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller_migration_common.R.drawable.ic_tab_feed_has_post_seller_migration
 import com.tokopedia.seller_migration_common.R.string.seller_migration_tab_feed_bottom_sheet_content
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
+import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import com.tokopedia.seller_migration_common.presentation.util.setOnClickLinkSpannable
@@ -309,7 +310,7 @@ class ShopPageFragment :
             val ivTabFeedHasPost: ImageUnify = sellerMigrationLayout.findViewById(R.id.ivTabFeedHasPost)
             val tvTitleTabFeedHasPost: Typography = sellerMigrationLayout.findViewById(R.id.tvTitleTabFeedHasPost)
             tvTitleTabFeedHasPost.movementMethod = LinkMovementMethod.getInstance()
-            ivTabFeedHasPost.setImageDrawable(context?.let { ContextCompat.getDrawable(it, ic_tab_feed_has_post_seller_migration) })
+            ivTabFeedHasPost.setImageUrl(SellerMigrationConstants.SELLER_MIGRATION_SHOP_PAGE_TAB_FEED_LINK)
             tvTitleTabFeedHasPost.setOnClickLinkSpannable(getString(seller_migration_tab_feed_bottom_sheet_content), ::trackContentFeedBottomSheet) {
                 val shopAppLink = UriUtil.buildUri(ApplinkConst.SHOP, shopId).orEmpty()
                 val appLinkShopPageFeed = UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_FEED, shopId).orEmpty()
