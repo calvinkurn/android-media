@@ -1,7 +1,7 @@
 package com.tokopedia.activation.domain
 
-import com.tokopedia.activation.model.GetShopFeatureResponse
 import com.tokopedia.activation.model.ShopFeatureModel
+import com.tokopedia.activation.model.response.GetShopFeatureResponse
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject

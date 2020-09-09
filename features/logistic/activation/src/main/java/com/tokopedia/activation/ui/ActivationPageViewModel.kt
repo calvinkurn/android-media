@@ -4,12 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.tokopedia.activation.domain.GetShopFeatureUseCase
+import com.tokopedia.activation.domain.UpdateShopFeatureUseCase
 import com.tokopedia.activation.model.ActivationPageState
 import com.tokopedia.activation.model.ShopFeatureModel
 import javax.inject.Inject
 
 class ActivationPageViewModel @Inject constructor(
-        private val getShopFeatureUseCase: GetShopFeatureUseCase) : ViewModel() {
+        private val getShopFeatureUseCase: GetShopFeatureUseCase,
+        private val updateShopFeatureUseCase: UpdateShopFeatureUseCase) : ViewModel() {
 
     private val _shopFeature = MutableLiveData<ActivationPageState<ShopFeatureModel>>()
     val shopFeature: LiveData<ActivationPageState<ShopFeatureModel>>
@@ -27,4 +29,10 @@ class ActivationPageViewModel @Inject constructor(
                 }
         )
     }
+
+   /* fun updateShopFeature(value: Boolean) {
+        updateShopFeatureUseCase.execute(value, {
+            _shopFeature.value = ActivationPageState.Success("Success")
+        })
+    }*/
 }

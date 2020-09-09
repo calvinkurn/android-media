@@ -1,7 +1,7 @@
 package com.tokopedia.activation.domain
 
-import com.tokopedia.activation.model.ShopData
 import com.tokopedia.activation.model.ShopFeatureModel
+import com.tokopedia.activation.model.response.ShopData
 
 object GetShopFeatureMapper {
 
