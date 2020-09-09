@@ -2044,7 +2044,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun renderTickerError(cartListData: CartListData) {
-        if (cartListData.isError) {
+        if (cartListData.isError && cartListData.shopGroupAvailableDataList.isNotEmpty()) {
             val cartItemTickerErrorHolderData = CartItemTickerErrorHolderData()
             cartItemTickerErrorHolderData.cartTickerErrorData = cartListData.cartTickerErrorData
             cartAdapter.addCartTickerError(cartItemTickerErrorHolderData)
