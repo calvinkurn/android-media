@@ -65,11 +65,11 @@ abstract class HotelBaseActivity: BaseSimpleActivity(), HotelMenuBottomSheets.Ho
         if (shouldShowOptionMenu()) {
             if (shouldShowMenuWhite()) {
                 menuInflater.inflate(R.menu.hotel_base_menu_white, menu)
-                optionMenu = menu?.findItem(R.id.action_overflow_menu)
+                optionMenu = menu?.findItem(R.id.action_overflow_menu_white)
             }
             else {
                 menuInflater.inflate(R.menu.hotel_base_menu, menu)
-                optionMenu = menu?.findItem(R.id.action_overflow_menu_white)
+                optionMenu = menu?.findItem(R.id.action_overflow_menu)
             }
 
         }
