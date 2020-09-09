@@ -38,7 +38,9 @@ import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -161,7 +163,7 @@ class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
             if (isForgotPin && !isFrom2FA) {
                 goToVerificationActivity()
             }else if(isFrom2FA) {
-                changePinViewModel.resetPin2FA(arguments?.getString(ApplinkConstInternalGlobal.PARAM_UUID) ?: "", arguments?.getString(ApplinkConstInternalGlobal.PARAM_TOKEN) ?: "")
+                changePinViewModel.resetPin2FA(arguments?.getString(ApplinkConstInternalGlobal.PARAM_USER_ID) ?: "", arguments?.getString(ApplinkConstInternalGlobal.PARAM_TOKEN) ?: "")
             }
             else {
                 showLoading()
@@ -173,7 +175,9 @@ class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun handleInputNewPinState(input: String) {
-        changePinViewModel.checkPin(input)
+        if(isFrom2FA){
+            changePinViewModel.checkPin2FA(input, validateToken = arguments?.getString(ApplinkConstInternalGlobal.PARAM_TOKEN) ?: "", userId = arguments?.getString(ApplinkConstInternalGlobal.PARAM_USER_ID) ?: "")
+        } else changePinViewModel.checkPin(input)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -314,7 +318,7 @@ class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
     private fun goToSuccessPage() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN_COMPLETE).apply {
             flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
-            putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, if (isForgotPin) PinCompleteFragment.SOURCE_FORGOT_PIN else PinCompleteFragment.SOURCE_CHANGE_PIN)
+            putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, if(isFrom2FA) PinCompleteFragment.SOURCE_FORGOT_PIN_2FA else if (isForgotPin) PinCompleteFragment.SOURCE_FORGOT_PIN else PinCompleteFragment.SOURCE_CHANGE_PIN)
         }
         startActivity(intent)
         activity?.finish()
