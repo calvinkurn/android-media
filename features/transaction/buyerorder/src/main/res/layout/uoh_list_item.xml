@@ -4,8 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="@dimen/dp_16"
-    android:layout_marginRight="@dimen/dp_16"
+    android:layout_marginLeft="@dimen/dp_4"
+    android:layout_marginRight="@dimen/dp_4"
     android:layout_marginTop="@dimen/dp_8"
     android:layout_marginBottom="@dimen/dp_8"
     app:cardCornerRadius="@dimen/dp_8">
@@ -22,6 +22,7 @@
             android:layout_height="@dimen/dp_24"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/divider_uoh_order_1"
             android:contentDescription="@string/icon_placeholder" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -29,9 +30,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toEndOf="@id/ic_uoh_vertical"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginLeft="@dimen/dp_15"
-            android:layout_marginStart="@dimen/dp_15"
+            app:layout_constraintTop_toTopOf="@id/ic_uoh_vertical"
+            android:layout_marginStart="@dimen/dp_8"
             app:typographyWeight="bold"
             app:typographyType="small"
             tools:text="Belanja"
@@ -43,6 +43,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="@id/tv_uoh_categories"
             app:layout_constraintTop_toBottomOf="@id/tv_uoh_categories"
+            app:layout_constraintBottom_toBottomOf="@id/ic_uoh_vertical"
             tools:text="6 Mei 2020"
             app:typographyType="small"
             app:typographyWeight="reguler"
@@ -55,6 +56,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/divider_uoh_order_1"
             app:srcCompat="@drawable/ic_kebab"
             android:contentDescription="@string/icon_placeholder" />
 

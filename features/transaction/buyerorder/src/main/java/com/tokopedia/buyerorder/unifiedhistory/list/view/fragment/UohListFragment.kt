@@ -113,7 +113,6 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private lateinit var uohItemAdapter: UohItemAdapter
-    private lateinit var scrollListener: EndlessRecyclerViewScrollListener
     private lateinit var scrollRecommendationListener: EndlessRecyclerViewScrollListener
     private var refreshHandler: RefreshHandler? = null
     private var paramUohOrder = UohListParam()
@@ -152,6 +151,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private var arrayFilterDate = arrayOf<String>()
     private var onLoadMore = false
     private var onLoadMoreRecommendation = false
+    private var isFetchRecommendation = false
     private var currPage = 1
     private var currRecommendationListPage = 0
     private var textChangedJob: Job? = null
@@ -308,9 +308,14 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
         scrollRecommendationListener = object : EndlessRecyclerViewScrollListener(glm) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                onLoadMoreRecommendation = true
                 currentPage += 1
-                // loadRecommendationList()
+                if (isFetchRecommendation) {
+                    onLoadMoreRecommendation = true
+                    loadRecommendationList()
+                } else {
+                    onLoadMore = true
+                    loadOrderHistoryList("")
+                }
             }
         }
 
@@ -326,6 +331,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     private fun loadRecommendationList() {
+        isFetchRecommendation = true
         uohListViewModel.loadRecommendationList(currRecommendationListPage)
     }
 
@@ -336,7 +342,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 is Success -> {
                     orderList = it.data
 
-                    if (!isFilterClicked) renderChipsFilter()
+                    if (!isFilterClicked && currPage == 1) renderChipsFilter()
 
                     if (orderList.orders.isNotEmpty()) {
                         if (orderIdNeedUpdated.isEmpty()) {
@@ -531,7 +537,8 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private fun renderChipsFilter() {
         val chips = arrayListOf<SortFilterItem>()
 
-        val typeDate = if (isReset || (paramUohOrder.createTimeStart.isEmpty() && paramUohOrder.createTimeEnd.isEmpty())) {
+        val typeDate = if (isReset || (paramUohOrder.createTimeStart.isEmpty() && paramUohOrder.createTimeEnd.isEmpty()
+                        || filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true))) {
             ChipsUnify.TYPE_NORMAL
         } else {
             ChipsUnify.TYPE_SELECTED
@@ -721,7 +728,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             uohItemAdapter.addList(listOrder)
         } else {
             uohItemAdapter.appendList(listOrder)
-            scrollListener.updateStateAfterGetData()
+            scrollRecommendationListener.updateStateAfterGetData()
         }
     }
 

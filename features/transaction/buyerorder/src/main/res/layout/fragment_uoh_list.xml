@@ -28,8 +28,7 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         android:layout_marginTop="@dimen/dp_12"
         android:layout_marginStart="@dimen/dp_12"
-        android:layout_marginLeft="@dimen/dp_12"
-        android:layout_marginBottom="@dimen/dp_16"/>
+        android:paddingBottom="@dimen/dp_16"/>
 
     <com.tokopedia.unifycomponents.ticker.Ticker
         android:id="@+id/ticker_info"
