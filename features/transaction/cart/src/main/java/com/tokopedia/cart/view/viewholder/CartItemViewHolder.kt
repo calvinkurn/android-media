@@ -661,7 +661,7 @@ class CartItemViewHolder constructor(itemView: View,
             data: CartItemHolderData): View.OnClickListener {
         return View.OnClickListener {
             if (position != RecyclerView.NO_POSITION) {
-                actionListener?.onCartItemProductClicked(data, position, parentPosition)
+                actionListener?.onCartItemProductClicked(data.cartItemData)
             }
         }
     }

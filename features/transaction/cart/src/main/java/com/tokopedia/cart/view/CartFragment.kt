@@ -931,10 +931,14 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartAdapter.resetQuantity(position, parentPosition)
     }
 
-    override fun onCartItemProductClicked(cartItemHolderData: CartItemHolderData, position: Int, parentPosition: Int) {
-        sendAnalyticsOnClickProductNameCartItem(cartItemHolderData.cartItemData?.originData?.productName
-                ?: "")
-        startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, cartItemHolderData.cartItemData?.originData?.productId), NAVIGATION_PDP)
+    override fun onCartItemProductClicked(cartItemData: CartItemData) {
+        sendAnalyticsOnClickProductNameCartItem(cartItemData.originData?.productName ?: "")
+        startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, cartItemData.originData?.productId), NAVIGATION_PDP)
+    }
+
+    override fun onDisabledCartItemProductClicked(cartItemData: CartItemData) {
+        sendAnalyticsOnClickProductNameCartItem(cartItemData.originData?.productName ?: "")
+        startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, cartItemData.originData?.productId), NAVIGATION_PDP)
     }
 
     override fun onClickShopNow() {

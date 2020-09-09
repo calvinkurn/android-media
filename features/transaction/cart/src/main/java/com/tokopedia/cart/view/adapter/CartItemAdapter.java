@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.cart.domain.model.cartlist.CartItemData;
 import com.tokopedia.cart.view.viewholder.CartItemViewHolder;
 import com.tokopedia.cart.view.uimodel.CartItemHolderData;
 
@@ -101,7 +102,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         void onCartItemQuantityReseted(int position, int parentPosition, boolean needRefreshItemView);
 
-        void onCartItemProductClicked(CartItemHolderData cartItemHolderData, int position, int parentPosition);
+        void onCartItemProductClicked(CartItemData cartItemData);
 
         void onCartItemAfterErrorChecked();
 

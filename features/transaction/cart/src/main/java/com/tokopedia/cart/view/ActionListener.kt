@@ -78,4 +78,6 @@ interface ActionListener {
     fun onCartShopNameChecked(isAllChecked: Boolean)
 
     fun onAccordionClicked(data: DisabledAccordionHolderData, buttonWording: String)
+
+    fun onDisabledCartItemProductClicked(cartItemData: CartItemData)
 }

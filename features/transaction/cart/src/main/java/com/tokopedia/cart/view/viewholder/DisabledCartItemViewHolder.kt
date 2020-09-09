@@ -46,6 +46,11 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
             itemView.text_product_variant.gone()
         }
         renderSlashPrice(data)
+
+        data.data?.let { cartItemData ->
+            itemView.tv_product_name.setOnClickListener { actionListener?.onDisabledCartItemProductClicked(cartItemData) }
+            itemView.iv_image_product.setOnClickListener { actionListener?.onDisabledCartItemProductClicked(cartItemData) }
+        }
     }
 
     private fun renderSlashPrice(data: DisabledCartItemHolderData) {
@@ -140,7 +145,7 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
         if (data.isWishlisted) {
             itemView.text_move_to_wishlist.text = "Sudah ada di Wishlist"
             itemView.text_move_to_wishlist.setTextColor(ContextCompat.getColor(itemView.context, R.color.Neutral_N700_32))
-            itemView.text_move_to_wishlist.setOnClickListener {  }
+            itemView.text_move_to_wishlist.setOnClickListener { }
         } else {
             itemView.text_move_to_wishlist.text = it.message
             itemView.text_move_to_wishlist.setTextColor(ContextCompat.getColor(itemView.context, R.color.Neutral_N700_68))
