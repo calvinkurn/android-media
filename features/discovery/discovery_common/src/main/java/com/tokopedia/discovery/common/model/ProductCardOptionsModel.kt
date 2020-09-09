@@ -158,6 +158,7 @@ data class ProductCardOptionsModel(
     }
 
     data class AddToCartResult(
+            var isUserLoggedIn: Boolean = false,
             var isSuccess: Boolean = false,
             var cartId: String = "",
             var errorMessage: String = ""
@@ -165,10 +166,12 @@ data class ProductCardOptionsModel(
 
         constructor(parcel: Parcel) : this(
                 parcel.readByte() != 0.toByte(),
+                parcel.readByte() != 0.toByte(),
                 parcel.readString() ?: "",
                 parcel.readString() ?: "")
 
         override fun writeToParcel(parcel: Parcel, flags: Int) {
+            parcel.writeByte(if (isUserLoggedIn) 1 else 0)
             parcel.writeByte(if (isSuccess) 1 else 0)
             parcel.writeString(cartId)
             parcel.writeString(errorMessage)

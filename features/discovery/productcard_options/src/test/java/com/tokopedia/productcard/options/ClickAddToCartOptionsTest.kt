@@ -13,7 +13,6 @@ import io.mockk.slot
 import io.mockk.verify
 import org.junit.Test
 import rx.Subscriber
-import java.lang.Exception
 
 internal class ClickAddToCartOptionsTest: ProductCardOptionsViewModelTestFixtures() {
 
@@ -49,13 +48,14 @@ internal class ClickAddToCartOptionsTest: ProductCardOptionsViewModelTestFixture
     private val addToCartRequestParamsSlot = slot<RequestParams>()
 
     @Test
-    fun `Click add to cart for non login user should redirect to login page`() {
+    fun `Click add to cart for non login user should reject ATC and return result with isUserLoggedIn false`() {
         `Given Product Card Options View Model with ATC enabled`()
         `Given User is not logged in`()
 
         `When click add to cart`()
 
-        `Then should redirect to login page`()
+        `Then should post add to cart event`()
+        `Then verify add to cart result with isUserLoggedIn false`()
         `Then should not execute add to cart use case`()
     }
 
@@ -71,10 +71,14 @@ internal class ClickAddToCartOptionsTest: ProductCardOptionsViewModelTestFixture
         productCardOptionsViewModel.getOption(ADD_TO_CART).onClick()
     }
 
-    private fun `Then should redirect to login page`() {
-        val isRouteToLoginPage = productCardOptionsViewModel.routeToLoginPageEventLiveData().value?.getContentIfNotHandled()
+    private fun `Then should post add to cart event`() {
+        val addToCartEvent = productCardOptionsViewModel.getAddToCartEventLiveData().value
 
-        isRouteToLoginPage.shouldBe(true, "Should route to login page.")
+        addToCartEvent?.getContentIfNotHandled() shouldBe true
+    }
+
+    private fun `Then verify add to cart result with isUserLoggedIn false`() {
+        productCardOptionsViewModel.productCardOptionsModel?.addToCartResult?.isUserLoggedIn shouldBe false
     }
 
     private fun `Then should not execute add to cart use case`() {
@@ -89,7 +93,6 @@ internal class ClickAddToCartOptionsTest: ProductCardOptionsViewModelTestFixture
 
         `When click add to cart`()
 
-        `Then should not redirect to login page`()
         `Then verify add to cart use case is executed with correct input`()
         `Then should post add to cart event`()
         `Then verify add to cart result success`()
@@ -106,10 +109,6 @@ internal class ClickAddToCartOptionsTest: ProductCardOptionsViewModelTestFixture
         }
     }
 
-    private fun `Then should not redirect to login page`() {
-        productCardOptionsViewModel.routeToLoginPageEventLiveData().value shouldBe null
-    }
-
     private fun `Then verify add to cart use case is executed with correct input`() {
         val requestParams = addToCartRequestParamsSlot.captured
         val addToCartRequestParams = requestParams.parameters[REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST] as AddToCartRequestParams
@@ -120,12 +119,6 @@ internal class ClickAddToCartOptionsTest: ProductCardOptionsViewModelTestFixture
         addToCartRequestParams.productName shouldBe productCardOptionsModelATC.productName
         addToCartRequestParams.category shouldBe productCardOptionsModelATC.categoryName
         addToCartRequestParams.price shouldBe productCardOptionsModelATC.formattedPrice
-    }
-
-    private fun `Then should post add to cart event`() {
-        val addToCartEvent = productCardOptionsViewModel.getAddToCartEventLiveData().value
-
-        addToCartEvent?.getContentIfNotHandled() shouldBe true
     }
 
     private fun `Then verify add to cart result success`() {
@@ -144,7 +137,6 @@ internal class ClickAddToCartOptionsTest: ProductCardOptionsViewModelTestFixture
 
         `When click add to cart`()
 
-        `Then should not redirect to login page`()
         `Then verify add to cart use case is executed with correct input`()
         `Then should post add to cart event`()
         `Then verify add to cart result failed with error message`(addToCartFailedModel.getAtcErrorMessage())
@@ -171,7 +163,6 @@ internal class ClickAddToCartOptionsTest: ProductCardOptionsViewModelTestFixture
 
         `When click add to cart`()
 
-        `Then should not redirect to login page`()
         `Then verify add to cart use case is executed with correct input`()
         `Then should post add to cart event`()
         `Then verify add to cart result failed with error message`(ATC_DEFAULT_ERROR_MESSAGE)

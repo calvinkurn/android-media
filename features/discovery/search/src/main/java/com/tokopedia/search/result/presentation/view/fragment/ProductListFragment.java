@@ -631,8 +631,14 @@ public class ProductListFragment
     private void handleAddToCartAction(ProductCardOptionsModel productCardOptionsModel) {
         ProductCardOptionsModel.AddToCartResult addToCartResult = productCardOptionsModel.getAddToCartResult();
 
-        trackAddToCartSuccess(addToCartResult);
-        showAddToCartMessage(addToCartResult);
+        if (addToCartResult.isUserLoggedIn()) {
+            trackAddToCartSuccess(addToCartResult);
+            showAddToCartMessage(addToCartResult);
+        }
+        else {
+            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.LOGIN);
+            startActivityForResult(intent, REQUEST_CODE_LOGIN);
+        }
     }
 
     private void trackAddToCartSuccess(ProductCardOptionsModel.AddToCartResult addToCartResult) {
