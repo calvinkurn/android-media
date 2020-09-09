@@ -63,7 +63,7 @@ class FlightSearchReturnViewModelTest {
     fun setUp() {
         MockKAnnotations.init(this)
         flightSearchReturnViewModel = FlightSearchReturnViewModel(flightSearchJourneyByIdUseCase,
-                flightComboKeyUseCase, flightAnalytics, testDispatcherProvider)
+                flightComboKeyUseCase, flightAnalytics, mockk(), testDispatcherProvider)
         flightSearchReturnViewModel.priceModel = defaultPriceModel
         flightSearchReturnViewModel.isBestPairing = true
         flightSearchReturnViewModel.isViewOnlyBestPairing = true
@@ -407,7 +407,8 @@ class FlightSearchReturnViewModelTest {
         flightSearchReturnViewModel.onFlightSearchSelected(defaultSearchPassData)
 
         // then
-        every { flightAnalytics.eventSearchProductClickFromList(defaultSearchPassData, any<FlightJourneyModel>()) }
+        every { flightAnalytics.eventSearchProductClickFromList(defaultSearchPassData, any<FlightJourneyModel>(),
+                FlightAnalytics.Screen.SEARCH, any()) }
     }
 
     @Test
@@ -424,7 +425,8 @@ class FlightSearchReturnViewModelTest {
 
         // then
         verify {
-            flightAnalytics.eventSearchProductClickFromList(flightSearchPassDataModel, VALID_RETURN_JOURNEY, adapterPosition)
+            flightAnalytics.eventSearchProductClickFromList(flightSearchPassDataModel, VALID_RETURN_JOURNEY,
+                    adapterPosition, FlightAnalytics.Screen.SEARCH, any())
         }
         val returnJourney = flightSearchReturnViewModel.selectedReturnJourney!!
         returnJourney.duration shouldBe VALID_RETURN_JOURNEY.duration

@@ -351,7 +351,9 @@ public class FlightAnalytics {
     }
 
     public void eventProductViewEnchanceEcommerce(FlightSearchPassDataModel searchPassDataViewModel,
-                                                  List<FlightJourneyModel> listJourneyViewModel) {
+                                                  List<FlightJourneyModel> listJourneyViewModel,
+                                                  String screenName,
+                                                  String userId) {
 
         List<Object> products = new ArrayList<>();
         int position = 0;
@@ -364,6 +366,12 @@ public class FlightAnalytics {
                 DataLayer.mapOf(EVENT, PRODUCT_VIEW_EVENT,
                         EVENT_CATEGORY, Category.DIGITAL_FLIGHT,
                         EVENT_ACTION, Action.PRODUCT_VIEW_ACTION,
+                        SCREEN_NAME, screenName,
+                        CURRENT_SITE, FLIGHT_CURRENT_SITE,
+                        CLIENT_ID, TrackApp.getInstance().getGTM().getClientIDString(),
+                        BUSSINESS_UNIT, FLIGHT_BU,
+                        CATEGORY, Label.FLIGHT_SMALL,
+                        USER_ID, userId,
                         EVENT_LABEL, String.format(Label.PRODUCT_VIEW,
                                 (searchPassDataViewModel.getDepartureAirport().getAirportCode() == null || searchPassDataViewModel.getDepartureAirport().getAirportCode().isEmpty()) ?
                                         searchPassDataViewModel.getDepartureAirport().getCityCode() :
@@ -376,7 +384,10 @@ public class FlightAnalytics {
         );
     }
 
-    public void eventSearchProductClickFromList(FlightSearchPassDataModel flightSearchPassData, FlightJourneyModel viewModel) {
+    public void eventSearchProductClickFromList(FlightSearchPassDataModel flightSearchPassData,
+                                                FlightJourneyModel viewModel,
+                                                String screenName,
+                                                String userId) {
         List<Object> products = new ArrayList<>();
         products.add(transformSearchProductClick(flightSearchPassData, viewModel, 0));
 
@@ -384,6 +395,12 @@ public class FlightAnalytics {
                 DataLayer.mapOf(EVENT, PRODUCT_CLICK_EVENT,
                         EVENT_CATEGORY, GENERIC_CATEGORY,
                         EVENT_ACTION, Action.PRODUCT_CLICK_SEARCH_LIST,
+                        SCREEN_NAME, screenName,
+                        CURRENT_SITE, FLIGHT_CURRENT_SITE,
+                        CLIENT_ID, TrackApp.getInstance().getGTM().getClientIDString(),
+                        BUSSINESS_UNIT, FLIGHT_BU,
+                        CATEGORY, Label.FLIGHT_SMALL,
+                        USER_ID, userId,
                         EVENT_LABEL, String.format(Label.PRODUCT_VIEW,
                                 viewModel.getDepartureAirport(),
                                 viewModel.getArrivalAirport()),
@@ -398,7 +415,11 @@ public class FlightAnalytics {
 
     }
 
-    public void eventSearchProductClickFromList(FlightSearchPassDataModel flightSearchPassData, FlightJourneyModel viewModel, int adapterPosition) {
+    public void eventSearchProductClickFromList(FlightSearchPassDataModel flightSearchPassData,
+                                                FlightJourneyModel viewModel,
+                                                int adapterPosition,
+                                                String screenName,
+                                                String userId) {
         List<Object> products = new ArrayList<>();
         products.add(transformSearchProductClick(flightSearchPassData, viewModel, adapterPosition));
 
@@ -406,6 +427,12 @@ public class FlightAnalytics {
                 DataLayer.mapOf(EVENT, PRODUCT_CLICK_EVENT,
                         EVENT_CATEGORY, GENERIC_CATEGORY,
                         EVENT_ACTION, Action.PRODUCT_CLICK_SEARCH_LIST,
+                        SCREEN_NAME, screenName,
+                        CURRENT_SITE, FLIGHT_CURRENT_SITE,
+                        CLIENT_ID, TrackApp.getInstance().getGTM().getClientIDString(),
+                        BUSSINESS_UNIT, FLIGHT_BU,
+                        CATEGORY, Label.FLIGHT_SMALL,
+                        USER_ID, userId,
                         EVENT_LABEL, String.format(Label.PRODUCT_VIEW,
                                 viewModel.getDepartureAirport(),
                                 viewModel.getArrivalAirport()),

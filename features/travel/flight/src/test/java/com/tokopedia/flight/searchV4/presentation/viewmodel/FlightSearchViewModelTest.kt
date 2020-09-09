@@ -96,6 +96,7 @@ class FlightSearchViewModelTest {
                 flightSearchStatisticUseCase,
                 flightAnalytics,
                 flightSearchCache,
+                mockk(),
                 testDispatcherProvider)
         flightSearchViewModel.flightSearchPassData = defaultSearchData
         flightSearchViewModel.filterModel = defaultFilterModel
@@ -119,6 +120,7 @@ class FlightSearchViewModelTest {
                 flightSearchStatisticUseCase,
                 flightAnalytics,
                 flightSearchCache,
+                mockk(),
                 testDispatcherProvider)
         newFlightSearchViewModel.selectedSortOption = TravelSortOption.CHEAPEST
 
@@ -638,7 +640,8 @@ class FlightSearchViewModelTest {
 
         // then
         coVerifySequence {
-            flightAnalytics.eventSearchProductClickFromList(flightSearchViewModel.flightSearchPassData, journeyModel)
+            flightAnalytics.eventSearchProductClickFromList(flightSearchViewModel.flightSearchPassData, journeyModel,
+                    FlightAnalytics.Screen.SEARCH, any())
         }
     }
 
@@ -652,7 +655,8 @@ class FlightSearchViewModelTest {
 
         // then
         coVerifySequence {
-            flightAnalytics.eventSearchProductClickFromList(flightSearchViewModel.flightSearchPassData, journeyModel)
+            flightAnalytics.eventSearchProductClickFromList(flightSearchViewModel.flightSearchPassData, journeyModel,
+                    FlightAnalytics.Screen.SEARCH, any())
             flightSearchDeleteReturnDataUseCase.execute()
         }
         val selectedJourney = flightSearchViewModel.selectedJourney.value as FlightSearchSelectedModel
@@ -681,7 +685,8 @@ class FlightSearchViewModelTest {
 
         // then
         coVerifySequence {
-            flightAnalytics.eventSearchProductClickFromList(flightSearchViewModel.flightSearchPassData, journeyModel)
+            flightAnalytics.eventSearchProductClickFromList(flightSearchViewModel.flightSearchPassData,
+                    journeyModel, FlightAnalytics.Screen.SEARCH, any())
             flightSearchDeleteReturnDataUseCase.execute()
         }
         val selectedJourney = flightSearchViewModel.selectedJourney.value as FlightSearchSelectedModel
@@ -710,7 +715,8 @@ class FlightSearchViewModelTest {
 
         // then
         coVerifySequence {
-            flightAnalytics.eventSearchProductClickFromList(flightSearchViewModel.flightSearchPassData, journeyModel, adapterPosition)
+            flightAnalytics.eventSearchProductClickFromList(flightSearchViewModel.flightSearchPassData, journeyModel,
+                    adapterPosition, FlightAnalytics.Screen.SEARCH, any())
             flightSearchDeleteReturnDataUseCase.execute()
         }
         val selectedJourney = flightSearchViewModel.selectedJourney.value as FlightSearchSelectedModel
@@ -829,6 +835,7 @@ class FlightSearchViewModelTest {
                 flightSearchStatisticUseCase,
                 flightAnalytics,
                 flightSearchCache,
+		mockk(),
                 testDispatcherProvider)
 
         // when
