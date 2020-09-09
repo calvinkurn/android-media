@@ -1,0 +1,13 @@
+package com.tokopedia.product.addedit.analytics
+
+object AddEditProductPerformanceMonitoringConstants {
+    const val ADD_EDIT_PRODUCT_SHIPMENT_TRACE = "add_edit_product_shipment_trace"
+    const val ADD_EDIT_PRODUCT_SHIPMENT_PLT_PREPARE_METRICS = "add_edit_product_shipment_plt_prepare_metrics"
+    const val ADD_EDIT_PRODUCT_SHIPMENT_PLT_NETWORK_METRICS = "add_edit_product_shipment_plt_network_metrics"
+    const val ADD_EDIT_PRODUCT_SHIPMENT_PLT_RENDER_METRICS = "add_edit_product_shipment_plt_render_metrics"
+
+    const val ADD_EDIT_PRODUCT_DESCRIPTION_TRACE = "add_edit_product_description_trace"
+    const val ADD_EDIT_PRODUCT_DESCRIPTION_PLT_PREPARE_METRICS = "add_edit_product_description_plt_prepare_metrics"
+    const val ADD_EDIT_PRODUCT_DESCRIPTION_PLT_NETWORK_METRICS = "add_edit_product_description_plt_network_metrics"
+    const val ADD_EDIT_PRODUCT_DESCRIPTION_PLT_RENDER_METRICS = "add_edit_product_description_plt_render_metrics"
+}

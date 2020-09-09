@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.view.inputmethod.EditorInfo
 import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.Observer
@@ -17,6 +18,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
@@ -25,6 +28,8 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants
+import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringListener
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.util.*
 import com.tokopedia.product.addedit.description.di.AddEditProductDescriptionModule
@@ -69,7 +74,8 @@ import javax.inject.Inject
 
 class AddEditProductDescriptionFragment:
         BaseListFragment<VideoLinkModel, VideoLinkTypeFactory>(),
-        VideoLinkTypeFactory.VideoLinkListener {
+        VideoLinkTypeFactory.VideoLinkListener,
+        AddEditProductPerformanceMonitoringListener {
 
     companion object {
         const val MAX_VIDEOS = 3
@@ -77,6 +83,7 @@ class AddEditProductDescriptionFragment:
         const val VIDEO_REQUEST_DELAY = 250L
     }
 
+    private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
     private lateinit var userSession: UserSessionInterface
     private lateinit var shopId: String
 
@@ -156,6 +163,8 @@ class AddEditProductDescriptionFragment:
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        startPerformanceMonitoring()
+
         userSession = UserSession(requireContext())
         shopId = userSession.shopId
         super.onCreate(savedInstanceState)
@@ -197,7 +206,7 @@ class AddEditProductDescriptionFragment:
 
         textFieldDescription.setCounter(MAX_DESCRIPTION_CHAR)
         textFieldDescription.textFieldInput.apply {
-            setSingleLine(false)
+            isSingleLine = false
             imeOptions = EditorInfo.IME_FLAG_NO_ENTER_ACTION
             afterTextChanged {
                 if (it.length >= MAX_DESCRIPTION_CHAR) {
@@ -271,17 +280,68 @@ class AddEditProductDescriptionFragment:
             containerAddEditDescriptionFragmentInputVariant.showWithCondition(this)
             tvNoVariantDescription.text = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_add_edit_no_variant_description).parseAsHtml()
         }
+
         onFragmentResult()
         setupOnBackPressed()
-
         hideKeyboardWhenTouchOutside()
+
         observeProductInputModel()
         observeProductVideo()
+
+        stopPreparePagePerformanceMonitoring()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         removeObservers()
+    }
+
+    override fun startPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
+                AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_DESCRIPTION_PLT_PREPARE_METRICS,
+                AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_DESCRIPTION_PLT_NETWORK_METRICS,
+                AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_DESCRIPTION_PLT_RENDER_METRICS,
+                0,
+                0,
+                0,
+                0,
+                null
+        )
+
+        pageLoadTimePerformanceMonitoring?.startMonitoring(AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_DESCRIPTION_TRACE)
+        pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
+    }
+
+    override fun stopPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopMonitoring()
+        pageLoadTimePerformanceMonitoring = null
+    }
+
+    override fun stopPreparePagePerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopPreparePagePerformanceMonitoring()
+    }
+
+    override fun startNetworkRequestPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.startNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun stopNetworkRequestPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun startRenderPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.startRenderPerformanceMonitoring()
+        getRecyclerView(view).viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                stopRenderPerformanceMonitoring()
+                stopPerformanceMonitoring()
+                getRecyclerView(view).viewTreeObserver.removeOnGlobalLayoutListener(this)
+            }
+        })
+    }
+
+    override fun stopRenderPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopRenderPerformanceMonitoring()
     }
 
     private fun removeObservers() {
@@ -342,14 +402,6 @@ class AddEditProductDescriptionFragment:
         }
     }
 
-    fun onBackPressed() {
-        if (descriptionViewModel.isEditMode) {
-            ProductEditDescriptionTracking.clickBack(shopId)
-        } else {
-            ProductAddDescriptionTracking.clickBack(shopId)
-        }
-    }
-
     private fun inputAllDataInInputDraftModel() {
         descriptionViewModel.productInputModel.value?.descriptionInputModel = DescriptionInputModel(
                 textFieldDescription.getText(),
@@ -395,6 +447,8 @@ class AddEditProductDescriptionFragment:
                     if (id == null) {
                         displayErrorOnSelectedVideo(position)
                     } else {
+                        stopNetworkRequestPerformanceMonitoring()
+                        startRenderPerformanceMonitoring()
                         setDataOnSelectedVideo(requestResult.data, position)
                     }
                 }
@@ -460,6 +514,10 @@ class AddEditProductDescriptionFragment:
         if (videoLinks.isNotEmpty()) {
             super.clearAllData()
             super.renderList(videoLinks)
+            startNetworkRequestPerformanceMonitoring()
+        } else {
+            stopPreparePagePerformanceMonitoring()
+            stopPerformanceMonitoring()
         }
 
         updateVariantLayout()
