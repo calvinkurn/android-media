@@ -1,0 +1,24 @@
+[
+  {
+    "data": {
+      "rechargeGetDynamicPage": {
+        "sections": [
+          {
+            "id": 5,
+            "title": "Yuk, segera bayar tagihanmu!",
+            "sub_title": "",
+            "template": "URGENCY_WIDGET",
+            "app_link": "tokopedia://",
+            "tracking": [
+              {
+                "action": "impression",
+                "data": "{\"event\":\"view_item\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"impression urgency widget\",\"eventLabel\":\"\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"0\",\"promotions\":[]}"
+              }
+            ],
+            "items": []
+          }
+        ]
+      }
+    }
+  }
+]
