@@ -2,6 +2,7 @@ package com.tokopedia.talk.feature.inbox.presentation.adapter.viewholder
 
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.core.text.HtmlCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -44,7 +45,7 @@ class TalkInboxViewHolder(view: View) : AbstractViewHolder<TalkInboxUiModel>(vie
 
     private fun setQuestion(question: String, isMasked: Boolean) {
         itemView.talkInboxMessage.apply {
-            text = question
+            text = HtmlCompat.fromHtml(question, HtmlCompat.FROM_HTML_MODE_LEGACY).toString().replace("\n", " ")
             if(isMasked) {
                 setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_32))
                 setWeight(Typography.REGULAR)
