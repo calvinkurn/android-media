@@ -2,7 +2,6 @@ package com.tokopedia.profilecompletion.changepin.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.profilecompletion.addpin.data.AddChangePinData
 
 /**
  * Created by Yoris Prayogo on 23/07/20.
@@ -10,7 +9,7 @@ import com.tokopedia.profilecompletion.addpin.data.AddChangePinData
  */
 
 data class ResetPin2FaPojo(
-        @SerializedName("reset_pin")
+        @SerializedName("resetUserPin")
         @Expose
         var data: ChangePin2FAData = ChangePin2FAData()
 )
