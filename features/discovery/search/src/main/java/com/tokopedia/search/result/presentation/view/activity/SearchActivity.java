@@ -1,26 +1,22 @@
 package com.tokopedia.search.result.presentation.view.activity;
 
-import android.animation.Animator;
-import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.motion.widget.MotionLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -40,7 +36,6 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.model.SearchParameter;
@@ -49,7 +44,7 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.search.R;
 import com.tokopedia.search.analytics.SearchTracking;
 import com.tokopedia.search.result.presentation.view.adapter.SearchSectionPagerAdapter;
-import com.tokopedia.search.result.presentation.view.fragment.ProfileListFragment;
+import com.tokopedia.search.result.presentation.view.listener.QuickFilterElevation;
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceMonitoringListener;
@@ -58,6 +53,7 @@ import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewMod
 import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewModelFactoryModule;
 import com.tokopedia.search.utils.CountDrawable;
 import com.tokopedia.search.utils.UrlParamUtils;
+import com.tokopedia.unifycomponents.LoaderUnify;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.Nullable;
@@ -78,7 +74,6 @@ import static com.tokopedia.discovery.common.constants.SearchConstant.SEARCH_RES
 import static com.tokopedia.discovery.common.constants.SearchConstant.SEARCH_RESULT_TRACE;
 import static com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition.TAB_FIRST_POSITION;
 import static com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition.TAB_SECOND_POSITION;
-import static com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition.TAB_THIRD_POSITION;
 
 public class SearchActivity extends BaseActivity
         implements
@@ -88,8 +83,8 @@ public class SearchActivity extends BaseActivity
         HasComponent<BaseAppComponent> {
 
     private Toolbar toolbar;
-    private LinearLayout container;
-    private ProgressBar loadingView;
+    private MotionLayout container;
+    private LoaderUnify loadingView;
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private SearchSectionPagerAdapter searchSectionPagerAdapter;
@@ -98,12 +93,10 @@ public class SearchActivity extends BaseActivity
     private ImageView buttonChangeGrid;
     private ImageView buttonCart;
     private ImageView buttonHome;
-    private View topBarShadow;
     private SearchNavigationListener.ClickListener searchNavigationClickListener;
 
     private String productTabTitle;
     private String shopTabTitle;
-    private String profileTabTitle;
     private String autocompleteApplink;
 
     @Inject UserSessionInterface userSession;
@@ -199,12 +192,49 @@ public class SearchActivity extends BaseActivity
         buttonChangeGrid = findViewById(R.id.search_change_grid_button);
         buttonCart = findViewById(R.id.search_cart_button);
         buttonHome = findViewById(R.id.search_home_button);
-        topBarShadow = findViewById(R.id.search_top_bar_shadow);
     }
 
     protected void prepareView() {
         initToolbar();
         initViewPager();
+        configureTabLayout();
+    }
+
+    private void configureTabLayout() {
+        if (container == null) return;
+
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) return;
+
+        container.loadLayoutDescription(R.xml.tab_layout_scene);
+        container.setTransition(R.id.searchMotionTabStart, R.id.searchMotionTabEnd);
+        container.setTransitionListener(getContainerTransitionListener());
+    }
+
+    private MotionLayout.TransitionListener getContainerTransitionListener() {
+        return new MotionLayout.TransitionListener() {
+            @Override
+            public void onTransitionStarted(MotionLayout motionLayout, int i, int i1) { }
+
+            @Override
+            public void onTransitionChange(MotionLayout motionLayout, int i, int i1, float v) { }
+
+            @Override
+            public void onTransitionTrigger(MotionLayout motionLayout, int i, boolean b, float v) { }
+
+            @Override
+            public void onTransitionCompleted(MotionLayout motionLayout, int i) { onContainerTransitionCompleted(i); }
+        };
+    }
+
+    private void onContainerTransitionCompleted(int id) {
+        Fragment fragmentItem = searchSectionPagerAdapter.getRegisteredFragmentAtPosition(viewPager.getCurrentItem());
+        if (!(fragmentItem instanceof QuickFilterElevation)) return;
+
+        if (id == R.id.searchMotionTabStart) {
+            ((QuickFilterElevation) fragmentItem).configure(true);
+        } else if (id == R.id.searchMotionTabEnd){
+            ((QuickFilterElevation) fragmentItem).configure(false);
+        }
     }
 
     private void initToolbar() {
@@ -302,8 +332,6 @@ public class SearchActivity extends BaseActivity
     }
 
     private void onPageSelected(int position) {
-        new Handler().postDelayed(() -> animateTab(true), 300);
-
         switch (position) {
             case TAB_FIRST_POSITION:
                 SearchTracking.eventSearchResultTabClick(this, productTabTitle);
@@ -325,7 +353,6 @@ public class SearchActivity extends BaseActivity
     private void initResources() {
         productTabTitle = getString(R.string.product_tab_title);
         shopTabTitle = getString(R.string.shop_tab_title);
-        profileTabTitle = getString(R.string.title_profile);
     }
 
     private void initViewModel() {
@@ -397,7 +424,6 @@ public class SearchActivity extends BaseActivity
         List<String> availableSearchTabs = new ArrayList<>();
         availableSearchTabs.add(SearchConstant.ActiveTab.PRODUCT);
         availableSearchTabs.add(SearchConstant.ActiveTab.SHOP);
-        availableSearchTabs.add(SearchConstant.ActiveTab.PROFILE);
 
         return !availableSearchTabs.contains(activeTab);
     }
@@ -446,7 +472,6 @@ public class SearchActivity extends BaseActivity
 
         if (!isLandingPage()) {
             searchSectionItemList.add(shopTabTitle);
-            searchSectionItemList.add(profileTabTitle);
         }
     }
 
@@ -469,9 +494,6 @@ public class SearchActivity extends BaseActivity
                 case TAB_SECOND_POSITION:
                     shopListFragmentExecuteBackToTop();
                     break;
-                case TAB_THIRD_POSITION:
-                    profileListFragmentExecuteBackToTop();
-                    break;
             }
         }
     }
@@ -485,12 +507,6 @@ public class SearchActivity extends BaseActivity
     private void shopListFragmentExecuteBackToTop() {
         if (searchSectionPagerAdapter.getShopListFragment() != null) {
             searchSectionPagerAdapter.getShopListFragment().backToTop();
-        }
-    }
-
-    private void profileListFragmentExecuteBackToTop() {
-        if (searchSectionPagerAdapter.getProfileListFragment() != null) {
-            searchSectionPagerAdapter.getProfileListFragment().backToTop();
         }
     }
 
@@ -510,8 +526,6 @@ public class SearchActivity extends BaseActivity
         switch (activeTab) {
             case SearchConstant.ActiveTab.SHOP:
                 return TAB_SECOND_POSITION;
-            case SearchConstant.ActiveTab.PROFILE:
-                return TAB_THIRD_POSITION;
             default:
                 return TAB_FIRST_POSITION;
         }
@@ -664,68 +678,5 @@ public class SearchActivity extends BaseActivity
             return pageLoadTimePerformanceMonitoring.getPltPerformanceData();
         }
         return null;
-    }
-
-    @Override
-    public void configureTabLayout(boolean isVisible) {
-        Fragment fragmentItem = searchSectionPagerAdapter.getRegisteredFragmentAtPosition(viewPager.getCurrentItem());
-        if (fragmentItem instanceof ProfileListFragment) return;
-
-        animateTab(isVisible);
-    }
-
-    private void animateTab(boolean isVisible) {
-        int targetHeight = isVisible ? getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_40) : 0;
-
-        if (tabLayout == null || tabLayout.getLayoutParams().height == targetHeight) return;
-
-        ValueAnimator anim = ValueAnimator.ofInt(tabLayout.getMeasuredHeight(), targetHeight);
-        anim.addUpdateListener(this::changeTabHeightByAnimator);
-        anim.addListener(createTabAnimatorListener(isVisible));
-        anim.setDuration(200);
-        anim.start();
-    }
-
-    private void changeTabHeightByAnimator(ValueAnimator valueAnimator) {
-        int height = (Integer) valueAnimator.getAnimatedValue();
-
-        changeTabHeight(height);
-    }
-
-    private void changeTabHeight(int height) {
-        ViewGroup.LayoutParams layoutParams = tabLayout.getLayoutParams();
-        layoutParams.height = height;
-        tabLayout.setLayoutParams(layoutParams);
-    }
-
-    private Animator.AnimatorListener createTabAnimatorListener(boolean isVisible) {
-        return new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                onTabAnimationEnd(isVisible);
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-
-            }
-        };
-    }
-
-    private void onTabAnimationEnd(boolean isVisible) {
-        if (topBarShadow == null) return;
-
-        if (isVisible) topBarShadow.setVisibility(View.VISIBLE);
-        else topBarShadow.setVisibility(View.GONE);
     }
 }

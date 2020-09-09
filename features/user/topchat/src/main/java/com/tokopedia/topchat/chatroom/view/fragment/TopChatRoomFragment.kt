@@ -15,6 +15,7 @@ import androidx.annotation.StringRes
 import androidx.collection.ArrayMap
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder
@@ -28,6 +29,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
 import com.tokopedia.attachproduct.view.activity.AttachProductActivity
 import com.tokopedia.chat_common.BaseChatFragment
@@ -46,9 +48,7 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerMultipleSelectio
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.imagepreview.ImagePreviewActivity
-import com.tokopedia.kotlin.extensions.view.hideLoadingTransparent
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.showLoadingTransparent
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
@@ -62,9 +62,12 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
+import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
+import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity.Companion.REQUEST_CODE_CHAT_IMAGE
+import com.tokopedia.topchat.chatroom.view.activity.TopchatReportWebViewActivity
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactoryImpl
@@ -72,6 +75,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.util.LoadMoreTopBottomScrollL
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.AttachedInvoiceViewHolder.InvoiceThumbnailListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.BroadcastSpamHandlerViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.QuotationViewHolder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.RoomSettingFraudAlertViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.StickerViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
@@ -91,11 +95,11 @@ import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.EXTRA_SHOP_S
 import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.topchat.common.custom.ToolTipStickerPopupWindow
+import com.tokopedia.topchat.common.util.Utils
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.webview.BaseSimpleWebViewActivity
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import javax.inject.Inject
 import kotlin.math.abs
@@ -110,7 +114,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         InvoiceThumbnailListener, QuotationViewHolder.QuotationListener,
         TransactionOrderProgressLayout.Listener, ChatMenuStickerView.StickerMenuListener,
         StickerViewHolder.Listener, DeferredViewHolderAttachment, CommonViewHolderListener, SearchListener,
-        BroadcastSpamHandlerViewHolder.Listener {
+        BroadcastSpamHandlerViewHolder.Listener, RoomSettingFraudAlertViewHolder.Listener {
 
     @Inject
     lateinit var presenter: TopChatRoomPresenter
@@ -144,10 +148,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     private val REQUEST_GO_TO_SHOP = 111
     private val TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE = 112
     private val REQUEST_GO_TO_SETTING_TEMPLATE = 113
-    private val REQUEST_GO_TO_SETTING_CHAT = 114
     private val REQUEST_GO_TO_NORMAL_CHECKOUT = 115
     private val REQUEST_ATTACH_INVOICE = 116
     private val REQUEST_ATTACH_VOUCHER = 117
+    private val REQUEST_REPORT_USER = 118
 
     private var seenAttachedProduct = HashSet<Int>()
     private var seenAttachedBannedProduct = HashSet<Int>()
@@ -208,6 +212,35 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         setupBeforeReplyTime()
         loadInitialData()
         initLoadMoreListener()
+    }
+
+    override fun onClickOccFromProductAttachment(product: ProductAttachmentViewModel, position: Int) {
+        val addToCartOccRequestParams = AddToCartOccRequestParams(
+                productId = product.productId.toString(),
+                shopId = product.shopId.toString(),
+                quantity = product.minOrder.toString(),
+                productName = product.productName,
+                category = product.category,
+                price = product.priceInt.toString()
+        )
+        presenter.addToCart(addToCartOccRequestParams, {
+            analytics.trackClickOccProduct(
+                    product,
+                    getViewState().chatRoomViewModel.shopType,
+                    getViewState().chatRoomViewModel.shopName,
+                    it.data.cartId
+            )
+            finishOccLoading(product, position)
+            RouteManager.route(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
+        }, {
+            finishOccLoading(product, position)
+            showSnackbarError(it)
+        })
+    }
+
+    private fun finishOccLoading(product: ProductAttachmentViewModel, position: Int) {
+        product.isLoadingOcc = false
+        adapter.updateOccLoadingStatus(product, position)
     }
 
     private fun setupBeforeReplyTime() {
@@ -381,23 +414,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         hideLoading()
     }
 
-    private fun onUnblockChatClicked(): () -> Unit {
-        return {
-            analytics.trackClickUnblockChat(shopId)
-            presenter.unblockChat(messageId, opponentRole, onError(), onSuccessUnblockChat())
-        }
-    }
-
-    private fun onSuccessUnblockChat(): (BlockedStatus) -> Unit {
-        return {
-            view?.let {
-                Toaster.make(it, String.format(getString(com.tokopedia.chat_common.R.string.chat_unblocked_text),
-                        opponentName), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
-            }
-            getViewState().removeChatBlocked(it)
-        }
-    }
-
     private fun onSuccessGetMessageId(): (String) -> Unit {
         return {
             this.messageId = it
@@ -412,12 +428,11 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     }
 
     private fun setupFirstTimeOnly(chatRoom: ChatroomViewModel, chat: ChatReplies) {
-        getViewState().isPromoBlocked = chatRoom.blockedStatus.isPromoBlocked
         updateViewData(chatRoom)
         checkCanAttachVoucher()
         presenter.getShopFollowingStatus(shopId, ::onErrorGetShopFollowingStatus, ::onSuccessGetShopFollowingStatus)
         orderProgress?.renderIfExist()
-        getViewState().onSuccessLoadFirstTime(chatRoom, onToolbarClicked(), this, alertDialog, onUnblockChatClicked())
+        getViewState().onSuccessLoadFirstTime(chatRoom, onToolbarClicked(), this, alertDialog)
         getViewState().onSetCustomMessage(customMessage)
         presenter.getTemplate(chatRoom.isSeller())
         presenter.getStickerGroupList(chatRoom)
@@ -450,7 +465,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     }
 
     private fun showStickerOnBoardingTooltip() {
-        if (!presenter.isStickerTooltipAlreadyShow()) {
+        if (
+                !presenter.isStickerTooltipAlreadyShow() &&
+                activity?.lifecycle?.currentState?.isAtLeast(Lifecycle.State.STARTED) == true
+        ) {
             toolTip.showAtTop(getViewState().chatStickerMenuButton)
         }
     }
@@ -471,7 +489,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     }
 
     private fun addBroadCastSpamHandler(isFollow: Boolean) {
-        if (getViewState().isPromoBlocked || isFollow || presenter.isInTheMiddleOfThePage()) return
+        if (getViewState().blockStatus.isPromoBlocked || isFollow || presenter.isInTheMiddleOfThePage()) return
         val broadCastHandlerPosition = adapter.addBroadcastSpamHandler()
         if (broadCastHandlerPosition != RecyclerView.NO_POSITION) {
             val firstVisible = rvLayoutManager?.findFirstCompletelyVisibleItemPosition() ?: return
@@ -608,7 +626,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         return TopChatTypeFactoryImpl(
                 this, this, this, this,
                 this, this, this, this,
-                this, this, this, this
+                this, this, this, this,
+                this
         )
     }
 
@@ -822,6 +841,13 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         }
     }
 
+    private fun showSnackbarError(throwable: Throwable) {
+        view?.let {
+            val errorMsg = ErrorHandler.getErrorMessage(it.context, throwable)
+            Toaster.make(it, errorMsg, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+        }
+    }
+
     override fun onStartTyping() {
         presenter.startTyping()
     }
@@ -865,29 +891,46 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
-            REQUEST_GO_TO_SETTING_TEMPLATE -> {
-                presenter.getTemplate(getUserSession().shopId == shopId.toString())
-            }
-            TopChatRoomActivity.REQUEST_CODE_CHAT_IMAGE -> {
-                if (resultCode != RESULT_OK || data == null) {
-                    return
-                }
-                processImagePathToUpload(data)?.let { model ->
-                    remoteConfig?.getBoolean(RemoteConfigKey.TOPCHAT_COMPRESS).let {
-                        if (it == null || it == false) {
-                            presenter.startUploadImages(model)
-                        } else {
-                            presenter.startCompressImages(model)
-                        }
-                    }
-                }
-            }
+            REQUEST_GO_TO_SETTING_TEMPLATE -> onReturnFromSettingTemplate()
+            REQUEST_CODE_CHAT_IMAGE -> onReturnFromChooseImage(resultCode, data)
             TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE -> onProductAttachmentSelected(data)
             REQUEST_GO_TO_SHOP -> onReturnFromShopPage(resultCode, data)
-            REQUEST_GO_TO_SETTING_CHAT -> onReturnFromChatSetting(resultCode, data)
             REQUEST_GO_TO_NORMAL_CHECKOUT -> onReturnFromNormalCheckout(resultCode, data)
             REQUEST_ATTACH_INVOICE -> onAttachInvoiceSelected(data, resultCode)
             REQUEST_ATTACH_VOUCHER -> onAttachVoucherSelected(data, resultCode)
+            REQUEST_REPORT_USER -> onReturnFromReportUser(data, resultCode)
+        }
+    }
+
+    private fun onReturnFromChooseImage(resultCode: Int, data: Intent?) {
+        if (resultCode != RESULT_OK || data == null) {
+            return
+        }
+        processImagePathToUpload(data)?.let { model ->
+            remoteConfig?.getBoolean(RemoteConfigKey.TOPCHAT_COMPRESS).let {
+                if (it == null || it == false) {
+                    presenter.startUploadImages(model)
+                } else {
+                    presenter.startCompressImages(model)
+                }
+            }
+        }
+    }
+
+    private fun onReturnFromSettingTemplate() {
+        presenter.getTemplate(getUserSession().shopId == shopId.toString())
+    }
+
+    private fun onReturnFromReportUser(data: Intent?, resultCode: Int) {
+        if (data == null || resultCode != RESULT_OK) return
+        val result = data.getStringExtra(TopChatInternalRouter.Companion.RESULT_KEY_REPORT_USER)
+        val payload = data.getStringExtra(TopChatInternalRouter.Companion.RESULT_KEY_PAYLOAD_REPORT_USER)
+        if (result == TopChatInternalRouter.Companion.RESULT_REPORT_BLOCK_PROMO) {
+            onClickBlockPromo()
+        } else if (result == TopChatInternalRouter.Companion.RESULT_REPORT_BLOCK_USER) {
+            blockChat()
+        } else if (result == TopChatInternalRouter.Companion.RESULT_REPORT_TOASTER && payload != null) {
+            showToasterConfirmation(payload)
         }
     }
 
@@ -924,23 +967,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
             analytics.eventClickSeeButtonOnAtcSuccessToaster()
             RouteManager.route(context, ApplinkConstInternalMarketplace.CART)
         }
-    }
-
-    private fun onReturnFromChatSetting(resultCode: Int, data: Intent?) {
-        data?.let {
-            val blockedStatus = BlockedStatus(
-                    it.getBooleanExtra(TopChatInternalRouter.Companion.RESULT_CHAT_SETTING_IS_BLOCKED, false),
-                    it.getBooleanExtra(TopChatInternalRouter.Companion.RESULT_CHAT_SETTING_IS_PROMO_BLOCKED, false),
-                    it.getStringExtra(TopChatInternalRouter.Companion.RESULT_CHAT_SETTING_BLOCKED_UNTIL)
-            )
-
-            if (resultCode == RESULT_OK) {
-                getViewState().onCheckChatBlocked(opponentRole, opponentName,
-                        blockedStatus, onUnblockChatClicked())
-            }
-
-        }
-
     }
 
     private fun onReturnFromShopPage(resultCode: Int, data: Intent?) {
@@ -1015,12 +1041,12 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     override fun followUnfollowShop(actionFollow: Boolean) {
         analytics.eventFollowUnfollowShop(actionFollow, shopId.toString())
-        presenter.followUnfollowShop(shopId.toString(), onErrorFollowUnfollowShop(), onSuccessFollowUnfollowShop())
+        presenter.followUnfollowShop(shopId.toString(), ::onErrorFollowUnfollowShop, onSuccessFollowUnfollowShop())
     }
 
-    private fun onErrorFollowUnfollowShop(): (Throwable) -> Unit {
-        return {
-            showSnackbarError(ErrorHandler.getErrorMessage(view!!.context, it))
+    private fun onErrorFollowUnfollowShop(throwable: Throwable) {
+        context?.let {
+            showSnackbarError(ErrorHandler.getErrorMessage(it, throwable))
         }
     }
 
@@ -1059,29 +1085,12 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         }
     }
 
-    override fun onGoToChatSetting(blockedStatus: BlockedStatus) {
-        (activity as Activity).let {
-            val intent = TopChatInternalRouter.Companion.getChatSettingIntent(it,
-                    messageId,
-                    opponentRole,
-                    opponentName,
-                    blockedStatus.isBlocked,
-                    getViewState().isPromoBlocked,
-                    blockedStatus.blockedUntil,
-                    shopId)
-            startActivityForResult(intent, REQUEST_GO_TO_SETTING_CHAT)
-        }
-
-        analytics.trackOpenChatSetting()
-
-    }
-
     override fun onGoToReportUser() {
         context?.let {
             analytics.eventClickReportUser(opponentId)
             val reportUrl = getChatReportUrl()
-            val intent = BaseSimpleWebViewActivity.getStartIntent(it, reportUrl)
-            startActivity(intent)
+            val intent = TopchatReportWebViewActivity.getStartIntent(it, reportUrl)
+            startActivityForResult(intent, REQUEST_REPORT_USER)
         }
     }
 
@@ -1092,6 +1101,37 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     override fun onClickAllowPromo() {
         requestAllowPromo()
+    }
+
+    override fun onClickBlockChatFraudAlert() {
+        getViewState().showConfirmationBlockChat()
+    }
+
+    override fun blockChat() {
+        presenter.blockChat(messageId, {
+            getViewState().setChatBlockStatus(true)
+            getViewState().onCheckChatBlocked(opponentRole, opponentName, getViewState().blockStatus)
+            context?.let {
+                showToasterConfirmation(it.getString(R.string.title_success_block_chat))
+            }
+        }, {
+            val errorMessage = ErrorHandler.getErrorMessage(context, it)
+            showToasterError(errorMessage)
+        })
+    }
+
+    override fun unBlockChat() {
+        analytics.trackClickUnblockChat(shopId)
+        presenter.unBlockChat(messageId, {
+            getViewState().setChatBlockStatus(false)
+            getViewState().onCheckChatBlocked(opponentRole, opponentName, getViewState().blockStatus)
+            context?.let {
+                showToasterConfirmation(it.getString(R.string.title_success_unblock_chat))
+            }
+        }, {
+            val errorMessage = ErrorHandler.getErrorMessage(context, it)
+            showToasterError(errorMessage)
+        })
     }
 
     private fun getChatReportUrl() = "${TkpdBaseURL.CHAT_REPORT_URL}$messageId"
@@ -1360,14 +1400,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         analytics.eventClickProductThumbnail(product)
     }
 
-    companion object {
-        fun createInstance(bundle: Bundle): BaseChatFragment {
-            return TopChatRoomFragment().apply {
-                arguments = bundle
-            }
-        }
-    }
-
     override fun onStickerOpened() {
         getViewState().onStickerOpened()
         toolTip.dismissOnBoarding()
@@ -1406,10 +1438,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     }
 
     override fun requestBlockPromo(element: BroadcastSpamHandlerUiModel?) {
-        presenter.requestBlockPromo(messageId, { until ->
-            getViewState().isPromoBlocked = true
+        presenter.requestBlockPromo(messageId, { response ->
+            getViewState().setChatPromoBlockStatus(true, response.chatBlockResponse.chatBlockStatus.validDate)
             element?.stopBlockPromo()
-            onSuccessBlockPromoFromBcHandler(until)
+            onSuccessBlockPromoFromBcHandler(response)
             element?.let {
                 adapter.removeBroadcastHandler(it)
             }
@@ -1424,7 +1456,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     private fun requestAllowPromo() {
         presenter.requestAllowPromo(messageId, {
-            getViewState().isPromoBlocked = false
+            getViewState().setChatPromoBlockStatus(false)
             addBroadCastSpamHandler(getViewState().isShopFollowed)
             onSuccessAllowPromoFromBcHandler()
         }, {
@@ -1443,8 +1475,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         showToasterError(errorMessage)
     }
 
-    private fun onSuccessBlockPromoFromBcHandler(until: String) {
+    private fun onSuccessBlockPromoFromBcHandler(response: ChatSettingsResponse) {
         context?.let {
+            val until = Utils.getDateTime(response.chatBlockResponse.chatBlockStatus.validDate)
             showToasterConfirmation(it.getString(R.string.title_success_block_promo, until))
         }
     }
@@ -1483,6 +1516,14 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     private fun showToasterError(message: String) {
         view?.let {
             Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+        }
+    }
+
+    companion object {
+        fun createInstance(bundle: Bundle): BaseChatFragment {
+            return TopChatRoomFragment().apply {
+                arguments = bundle
+            }
         }
     }
 }

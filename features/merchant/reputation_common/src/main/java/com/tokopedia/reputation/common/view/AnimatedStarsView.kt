@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.reputation.common.R
 
 class AnimatedStarsView @JvmOverloads constructor(
@@ -20,14 +21,14 @@ class AnimatedStarsView @JvmOverloads constructor(
 
     fun init() {
         showingNormalAnim = true
-        normalAnimation = AnimatedVectorDrawableCompat.create(context, R.drawable.animated_stars)
-        reverseAnimation = AnimatedVectorDrawableCompat.create(context, R.drawable.animated_reverse)
+        normalAnimation = AnimatedVectorDrawableCompat.create(context, R.drawable.animate_star)
+        reverseAnimation = AnimatedVectorDrawableCompat.create(context, R.drawable.animate_star_reverse)
         setImageDrawable(normalAnimation)
     }
 
     fun resetStars() {
         showingNormalAnim = true
-        setImageDrawable(AnimatedVectorDrawableCompat.create(context, R.drawable.empty_star))
+        setImageDrawable(MethodChecker.getDrawable(context, R.drawable.empty_star))
     }
 
     fun morph() {

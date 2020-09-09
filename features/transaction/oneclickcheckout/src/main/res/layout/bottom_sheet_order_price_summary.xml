@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingBottom="@dimen/dp_16">
@@ -10,10 +9,8 @@
         android:id="@+id/tv_order_summary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_12"
-        android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:text="@string/lbl_order_summary"
         android:textColor="@color/Neutral_N700_96"
@@ -41,10 +38,8 @@
         android:id="@+id/tv_total_product_price_value"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_12"
-        android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:gravity="end"
         android:textColor="@color/Neutral_N700_96"
@@ -52,8 +47,7 @@
         app:layout_constraintStart_toEndOf="@+id/tv_total_product_price_label"
         app:layout_constraintTop_toBottomOf="@+id/tv_order_summary"
         app:typographyType="body_3"
-        app:typographyWeight="bold"
-        tools:text="Rp 100.000.000" />
+        app:typographyWeight="bold" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_total_product_discount_label"
@@ -73,10 +67,8 @@
         android:id="@+id/tv_total_product_discount_value"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_4"
-        android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:gravity="end"
         android:textColor="@color/Neutral_N700_96"
@@ -84,8 +76,7 @@
         app:layout_constraintStart_toEndOf="@+id/tv_total_product_discount_label"
         app:layout_constraintTop_toBottomOf="@+id/tv_total_product_price_value"
         app:typographyType="body_3"
-        app:typographyWeight="bold"
-        tools:text="Rp 100.000.000" />
+        app:typographyWeight="bold" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_total_shipping_price_label"
@@ -105,10 +96,8 @@
         android:id="@+id/tv_total_shipping_price_value"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_4"
-        android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:gravity="end"
         android:textColor="@color/Neutral_N700_96"
@@ -116,8 +105,7 @@
         app:layout_constraintStart_toEndOf="@+id/tv_total_shipping_price_label"
         app:layout_constraintTop_toBottomOf="@+id/tv_total_product_discount_value"
         app:typographyType="body_3"
-        app:typographyWeight="bold"
-        tools:text="Rp 100.000.001" />
+        app:typographyWeight="bold" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_total_shipping_discount_label"
@@ -137,10 +125,8 @@
         android:id="@+id/tv_total_shipping_discount_value"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_4"
-        android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:gravity="end"
         android:textColor="@color/Neutral_N700_96"
@@ -148,8 +134,7 @@
         app:layout_constraintStart_toEndOf="@+id/tv_total_shipping_discount_label"
         app:layout_constraintTop_toBottomOf="@+id/tv_total_shipping_price_value"
         app:typographyType="body_3"
-        app:typographyWeight="bold"
-        tools:text="Rp 100.000.002" />
+        app:typographyWeight="bold" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_total_insurance_price_label"
@@ -169,10 +154,8 @@
         android:id="@+id/tv_total_insurance_price_value"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_4"
-        android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:gravity="end"
         android:textColor="@color/Neutral_N700_96"
@@ -180,8 +163,7 @@
         app:layout_constraintStart_toEndOf="@+id/tv_total_insurance_price_label"
         app:layout_constraintTop_toBottomOf="@+id/tv_total_shipping_discount_value"
         app:typographyType="body_3"
-        app:typographyWeight="bold"
-        tools:text="Rp 100.000.003" />
+        app:typographyWeight="bold" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_total_payment_fee_price_label"
@@ -194,17 +176,14 @@
         android:textColor="@color/Neutral_N700_96"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_total_insurance_price_value"
-        app:typographyType="body_3"
-        app:typographyWeight="reguler" />
+        app:typographyType="body_3" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_total_payment_fee_price_value"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_4"
-        android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:gravity="end"
         android:textColor="@color/Neutral_N700_96"
@@ -212,17 +191,14 @@
         app:layout_constraintStart_toEndOf="@+id/tv_total_payment_fee_price_label"
         app:layout_constraintTop_toBottomOf="@+id/tv_total_insurance_price_value"
         app:typographyType="body_3"
-        app:typographyWeight="bold"
-        tools:text="Rp 100.000.004" />
+        app:typographyWeight="bold" />
 
     <View
         android:id="@+id/divider"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_1"
-        android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:background="@color/Neutral_N75"
         app:layout_constraintEnd_toEndOf="parent"
@@ -247,10 +223,8 @@
         android:id="@+id/tv_total_payment_price_value"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:gravity="end"
         android:textColor="@color/Neutral_N700_96"
@@ -258,17 +232,14 @@
         app:layout_constraintStart_toEndOf="@+id/tv_total_payment_price_label"
         app:layout_constraintTop_toBottomOf="@+id/divider"
         app:typographyType="body_3"
-        app:typographyWeight="bold"
-        tools:text="Rp 100.000.000" />
+        app:typographyWeight="bold" />
 
     <View
         android:id="@+id/divider2"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_1"
-        android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:background="@color/Neutral_N75"
         app:layout_constraintEnd_toEndOf="parent"

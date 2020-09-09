@@ -19,8 +19,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toTopOf="parent"
-                android:visibility="gone"
-                app:tickerType="announcement"/>
+                app:tickerType="announcement"
+                app:closeButtonVisibility="gone"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_seller"

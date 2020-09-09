@@ -3,11 +3,6 @@ query get_occ_cart_page($source: String) {
     error_message
     status
     data {
-      tickers {
-        id
-        page
-        message
-      }
       max_quantity
       max_char_note
       messages {
@@ -18,6 +13,12 @@ query get_occ_cart_page($source: String) {
         ErrorProductAvailableStockDetail
         ErrorProductMaxQuantity
         ErrorProductMinQuantity
+      }
+      tickers {
+        id
+        message
+        page
+        title
       }
       ticker_message {
         message
@@ -130,26 +131,12 @@ query get_occ_cart_page($source: String) {
           product_weight_unit_text
           last_update_price
           is_update_price
-          product_preorder {
-            duration_text
-            duration_day
-            duration_unit_code
-            duration_unit_text
-            duration_value
-          }
-          product_showcase {
-            name
-            id
-          }
           product_alias
           sku
           campaign_id
           product_original_price
           product_price_original_fmt
           is_slash_price
-          free_returns {
-            free_returns_logo
-          }
           product_finsurance
           is_wishlisted
           is_ppp
@@ -163,54 +150,6 @@ query get_occ_cart_page($source: String) {
             badge_url
           }
           booking_stock
-          product_variant {
-            parent_id
-            default_child
-            variant {
-              product_variant_id
-              variant_id
-              variant_unit_id
-              name
-              identifier
-              unit_name
-              position
-              option {
-                product_variant_option_id
-                variant_unit_value_id
-                value
-                picture {
-                  url
-                  url200
-                  picture_detail {
-                    file_name
-                    file_path
-                    width
-                    height
-                  }
-                }
-              }
-            }
-            children {
-              enabled
-              product_id
-              price
-              stock
-              sku
-              option_id
-              product_name
-              product_url
-              is_buyable
-              picture {
-                url
-                url200
-              }
-              price_fmt
-              stock_wording
-              minimum_order
-              stock_wording_html
-              other_variant_stock
-            }
-          }
         }
         cart_string
         shop {
@@ -265,34 +204,13 @@ query get_occ_cart_page($source: String) {
             }
           }
         }
-        warehouse {
-          warehouse_id
-          partner_id
-          shop_id
-          warehouse_name
-          district_id
-          district_name
-          city_id
-          city_name
-          province_id
-          province_name
-          status
-          postal_code
-          is_default
-          latlon
-          latitude
-          longitude
-          email
-          address_detail
-          country_name
-          is_fulfillment
-        }
       }
       profile_index_wording
       profile_recommendation_wording
       profile {
         has_preference
         is_changed_profile
+        message
         onboarding_header_message
         onboarding_component {
           header_title
@@ -338,6 +256,32 @@ query get_occ_cart_page($source: String) {
           }
           wallet_amount
           metadata
+          mdr
+          credit_card {
+            number_of_cards {
+                available
+                unavailable
+                total
+            }
+            available_terms {
+                term
+                mdr
+                mdr_subsidized
+                min_amount
+                is_selected
+            }
+            bank_code
+            card_type
+            is_expired
+            tnc_info
+          }
+          error_message {
+            message
+            button {
+                text
+                link
+            }
+          }
         }
         shipment {
           service_id
@@ -499,6 +443,20 @@ query get_occ_cart_page($source: String) {
           description
         }
       }
+      customer_data {
+        id
+        name
+        email
+        msisdn
+      }
+      payment_additional_data {
+        merchant_code
+        profile_code
+        signature
+        change_cc_link
+        callback_url
+      }
+      error_ticker
     }
   }
 }

@@ -57,7 +57,11 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-
+        <activity
+            android:name=".preference.edit.view.payment.creditcard.CreditCardPickerActivity"
+            android:label="@string/title_one_click_checkout_credit_card_and_debit"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
     </application>
 
 </manifest>

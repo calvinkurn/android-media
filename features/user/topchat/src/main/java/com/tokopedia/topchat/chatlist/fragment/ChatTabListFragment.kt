@@ -1,7 +1,7 @@
 package com.tokopedia.topchat.chatlist.fragment
 
-import android.graphics.Color
 import android.content.Context
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -14,6 +14,7 @@ import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -29,7 +30,6 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
-import com.tokopedia.topchat.BuildConfig
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.activity.ChatListActivity.Companion.BUYER_ANALYTICS_LABEL
 import com.tokopedia.topchat.chatlist.activity.ChatListActivity.Companion.SELLER_ANALYTICS_LABEL
@@ -70,7 +70,7 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
     private lateinit var viewModelProvider: ViewModelProvider
     private lateinit var webSocketViewModel: WebSocketViewModel
     private lateinit var chatNotifCounterViewModel: ChatTabCounterViewModel
-    private lateinit var searchToolTip: ToolTipSearchPopupWindow
+    private var searchToolTip: ToolTipSearchPopupWindow? = null
 
     private var coachMarkOnBoarding = CoachMarkBuilder().build()
     private var fragmentViewCreated = false
@@ -132,8 +132,7 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
     override fun onDestroy() {
         super.onDestroy()
         stopLiveDataObserver()
-        flushAllViewModel()
-        searchToolTip.dismiss()
+        searchToolTip?.dismiss()
     }
 
     private fun initToolTip() {
@@ -463,16 +462,20 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
     }
 
     override fun showSearchOnBoardingTooltip() {
-        if (chatNotifCounterViewModel.isSearchOnBoardingTooltipHasShown() || !isFinishShowingCoachMarkOnBoarding) return
+        if (
+                chatNotifCounterViewModel.isSearchOnBoardingTooltipHasShown() ||
+                !isFinishShowingCoachMarkOnBoarding ||
+                activity?.lifecycle?.currentState?.isAtLeast(Lifecycle.State.STARTED) == false
+        ) return
         val toolbar = chatTabListListener?.getActivityToolbar()
         toolbar?.post {
             val searchView = toolbar.findViewById<View>(R.id.menu_chat_search)
-            searchToolTip.showAtBottom(searchView)
+            searchToolTip?.showAtBottom(searchView)
         }
     }
 
     override fun closeSearchTooltip() {
-        searchToolTip.dismissOnBoarding()
+        searchToolTip?.dismissOnBoarding()
     }
 
     private fun decreaseNotificationCounter(iconId: Int) {
@@ -552,7 +555,9 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
 
 
     private fun stopLiveDataObserver() {
-        chatNotifCounterViewModel.chatNotifCounter.removeObservers(this)
+        if(::chatNotifCounterViewModel.isInitialized) {
+            chatNotifCounterViewModel.chatNotifCounter.removeObservers(this)
+        }
     }
 
     private fun stopWebsocketLiveDataObserver() {
@@ -561,11 +566,6 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
 
     private fun clearLiveDataValue() {
         webSocketViewModel.clearItemChatValue()
-    }
-
-    private fun flushAllViewModel() {
-        webSocketViewModel.flush()
-        chatNotifCounterViewModel.flush()
     }
 
     companion object {

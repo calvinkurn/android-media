@@ -45,7 +45,6 @@
     <string name="title_liveness_detection">Liveness Detection</string>
 
     <!-- Dynamic feature for Groupchat-->
-    <string name="groupchat_app_name">Play</string>
     <string name="play_broadcaster_app_name">Play Broadcaster</string>
 
     <!--    Change Phone Number-->
@@ -253,5 +252,8 @@
     <string name="favorited_shop_title">Followers Toko</string>
     <string name="shop_search_product">Search Shop Product</string>
     <string name="shop_page_setting_title">Toko Kamu</string>
+
+    <!-- Dynamic feature Statistic -->
+    <string name="title_statistic">Statistic</string>
 
 </resources>

@@ -2,7 +2,7 @@ package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSnapshotDataModel
@@ -31,8 +31,7 @@ class ProductSnapshotViewHolder(private val view: View,
                 addOnImpressionListener(element.impressHolder) {
                     listener.onImpressComponent(getComponentTrackData(element))
                 }
-                header?.renderData(it, element.nearestWarehouseDataModel?.nearestWarehouseStockWording
-                        ?: "")
+                header?.renderData(it, element.isUpcomingNplType(), element.upcomingNplData)
                 header?.showOfficialStore(it.data.isPowerMerchant, it.data.isOS)
             }
             header?.updateWishlist(element.isWishlisted, listener.shouldShowWishlist())
