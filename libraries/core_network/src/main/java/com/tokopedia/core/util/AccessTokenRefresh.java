@@ -111,7 +111,7 @@ public class AccessTokenRefresh {
 
     private void checkShowForceLogout(String response) throws IOException {
         if (isRequestDenied(response)) {
-            ServerErrorHandler.showForceLogoutDialog();
+            ServerErrorHandler.showForceLogoutDialog("");
             ServerErrorHandler.sendForceLogoutTokenAnalytics(response);
         }
     }

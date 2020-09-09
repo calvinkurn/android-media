@@ -23,6 +23,7 @@ public class ServerErrorHandler {
     public static final String STATUS_REQUEST_DENIED = "REQUEST_DENIED";
     public static final String STATUS_FORBIDDEN = "FORBIDDEN";
     private static final String ACCESS_TOKEN = "accessToken";
+    private static final String PATH = "path";
     private static final int THRESHOLD_DIGITS = 10;
     
     public static void showMaintenancePage() {
@@ -30,7 +31,7 @@ public class ServerErrorHandler {
                 CoreNetworkApplication.getCoreNetworkRouter().getMaintenancePageIntent());
     }
 
-    public static void showForceLogoutDialog() {
+    public static void showForceLogoutDialog(String path) {
         Intent intent = new Intent();
         intent.setAction(ACTION_FORCE_LOGOUT);
         UserSession userSession = new UserSession(CoreNetworkApplication.getAppContext());
@@ -39,6 +40,7 @@ public class ServerErrorHandler {
         } else {
             intent.putExtra(ACCESS_TOKEN, userSession.getAccessToken());
         }
+        intent.putExtra(PATH, path);
         LocalBroadcastManager.getInstance(CoreNetworkApplication.getAppContext()).sendBroadcast(intent);
     }
 

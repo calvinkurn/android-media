@@ -484,7 +484,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void showForceLogoutTokenDialog(String path) {
-        ServerErrorHandler.showForceLogoutDialog();
+        ServerErrorHandler.showForceLogoutDialog(path);
         ServerErrorHandler.sendForceLogoutTokenAnalytics(path);
     }
 
