@@ -146,6 +146,11 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             StatisticTracker.sendScreen(screenName)
     }
 
+    override fun onPause() {
+        super.onPause()
+        hideTooltipIfExist()
+    }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         if (!getRegularMerchantStatus()) {
