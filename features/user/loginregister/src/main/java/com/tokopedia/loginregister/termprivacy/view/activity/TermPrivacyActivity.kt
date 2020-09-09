@@ -37,9 +37,9 @@ class TermPrivacyActivity: BaseSimpleActivity() {
 
             intent?.extras != null -> {
                 intent?.extras?.let {
-                    if (it.getString(PARAM).equals(MODE_TERM)) {
+                    if (it.getString(PAGE_MODE).equals(MODE_TERM)) {
                         openTermPage()
-                    } else if (it.getString(PARAM).equals(MODE_PRIVACY)) {
+                    } else if (it.getString(PAGE_MODE).equals(MODE_PRIVACY)) {
                         openPrivacyPage()
                     }
                 }
