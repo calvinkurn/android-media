@@ -151,7 +151,7 @@
 
         <activity
             android:name=".waitingpaymentorder.presentation.activity.WaitingPaymentOrderActivity"
-            android:label="@string/title_waiting_payment"
+            android:label="@string/title_som_waiting_payment"
             android:screenOrientation="portrait"
             android:theme="@style/WaitingPaymentOrderTheme" />
 
