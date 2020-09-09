@@ -1902,7 +1902,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         observe(viewModel.onClickPromoTopAds) {
             when(it) {
                 is OnBoarding -> goToTopAdsOnBoarding()
-                is ManualAds -> goToCreateTopAdsChooser()
+                is ManualAds -> goToCreateTopAds()
                 is AutoAds -> goToPDP(it.productId, showTopAdsSheet = true)
             }
         }
@@ -1910,11 +1910,11 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     // endregion
 
     private fun goToTopAdsOnBoarding() {
-        RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_CREATE_ADS)
+        RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_CREATION_ONBOARD)
     }
 
-    private fun goToCreateTopAdsChooser() {
-        RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_CREATE_CHOOSER)
+    private fun goToCreateTopAds() {
+        RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_CREATE_ADS)
     }
 
     private fun updateVariantStock(data: EditVariantResult) {
