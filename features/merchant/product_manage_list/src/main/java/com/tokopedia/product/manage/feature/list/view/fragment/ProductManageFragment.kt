@@ -1538,10 +1538,10 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 REQUEST_CODE_CAMPAIGN_STOCK ->
                     when(resultCode) {
                         Activity.RESULT_OK -> {
-                            val productId = it.getStringExtra(EXTRA_PRODUCT_ID)
+                            val productId = it.getStringExtra(EXTRA_PRODUCT_ID).orEmpty()
                             val productName = it.getStringExtra(EXTRA_PRODUCT_NAME)
                             val stock = it.getIntExtra(EXTRA_UPDATED_STOCK, 0)
-                            val status = valueOf(it.getStringExtra(EXTRA_UPDATED_STATUS))
+                            val status = valueOf(it.getStringExtra(EXTRA_UPDATED_STATUS).orEmpty())
 
                             productManageListAdapter.updateStock(productId, stock, status)
 
