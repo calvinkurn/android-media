@@ -1996,7 +1996,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         private const val DESC_IMAGE_LIST = "desc_img_list"
 
         private const val BOTTOM_SHEET_TAG = "BottomSheetTag"
-        private const val ARG_SHOW_TOP_ADS_SHEET = "ARG_SHOW_TOP_ADS_SHEET"
 
         private const val MIN_FEATURED_PRODUCT = 0
         private const val MAX_FEATURED_PRODUCT = 5
