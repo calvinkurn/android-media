@@ -287,11 +287,11 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
             override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
                 if (verticalOffset < -200) {
                     detail_toolbar.navigationIcon?.setColorFilter(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Neutral_N700_96), PorterDuff.Mode.SRC_ATOP)
-                    (activity as HotelDetailActivity).optionMenu?.setIcon(R.drawable.ic_toolbar_overflow_level_two_black)
+                    (activity as HotelDetailActivity).optionMenu?.setIcon(com.tokopedia.abstraction.R.drawable.ic_toolbar_overflow_level_two_black)
                     isShow = true
                 } else if (isShow) {
                     detail_toolbar.navigationIcon?.setColorFilter(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Neutral_N0), PorterDuff.Mode.SRC_ATOP)
-                    (activity as HotelDetailActivity).optionMenu?.setIcon(R.drawable.ic_toolbar_overflow_level_two_white)
+                    (activity as HotelDetailActivity).optionMenu?.setIcon(com.tokopedia.abstraction.R.drawable.ic_toolbar_overflow_level_two_white)
                     isShow = false
                 }
             }
