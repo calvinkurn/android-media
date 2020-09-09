@@ -95,6 +95,11 @@ public class PaymentListFragment extends BaseListFragment<PaymentListModel, Paym
     }
 
     @Override
+    public int getRecyclerViewResourceId() {
+        return R.id.recycler_view;
+    }
+
+    @Override
     public void showCancelationMessage(String refundMessage, String transactionID, String merchantCode) {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
         alertDialog.setTitle(getString(R.string.payment_label_cancel_transaction));
