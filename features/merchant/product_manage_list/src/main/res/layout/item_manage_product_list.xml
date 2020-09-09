@@ -8,6 +8,7 @@
 
     <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
         android:id="@+id/checkBoxSelect"
+        android:contentDescription="@string/content_desc_checkBoxSelect"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/product_manage_checkbox_select_horizontal_spacing"
