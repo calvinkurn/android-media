@@ -13,6 +13,17 @@
           "list": "/broadcast"
         }
       ]
+    },
+    {
+      "event": "select_content",
+      "eventCategory": "chat detail",
+      "item_list": "/broadcast",
+      "eventAction": "click on product thumbnail",
+      "items": [
+        {
+          "dimension40": "/broadcast"
+        }
+      ]
     }
   ]
 }
