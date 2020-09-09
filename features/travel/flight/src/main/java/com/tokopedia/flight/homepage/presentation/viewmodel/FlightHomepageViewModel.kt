@@ -25,7 +25,6 @@ import com.tokopedia.flight.searchV4.presentation.model.FlightSearchPassDataMode
 import com.tokopedia.flight.search_universal.presentation.viewmodel.FlightSearchUniversalViewModel
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -40,7 +39,6 @@ class FlightHomepageViewModel @Inject constructor(
         private val dashboardCache: FlightDashboardCache,
         private val deleteAllFlightSearchDataUseCase: FlightSearchDeleteAllDataUseCase,
         private val passengerValidator: FlightSelectPassengerValidator,
-        private val userSessionInterface: UserSessionInterface,
         private val dispatcherProvider: TravelDispatcherProvider)
     : BaseViewModel(dispatcherProvider.io()) {
 
