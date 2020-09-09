@@ -23,6 +23,7 @@
 
         <com.tokopedia.design.component.EditTextCompat
             android:id="@+id/searchTextView"
+            android:contentDescription="@string/content_desc_searchTextView"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -59,6 +60,7 @@
 
         <ImageView
             android:id="@+id/actionEmptyButton"
+            android:contentDescription="@string/content_desc_actionEmptyButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"

@@ -13,11 +13,20 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataMo
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ReviewDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home.ext.observeOnce
+import com.tokopedia.home.rules.TestDispatcherProvider
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.setMain
+import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -34,7 +43,19 @@ class HomeViewModelReviewUnitTest {
     private val getHomeReviewSuggestedUseCase = mockk<GetHomeReviewSuggestedUseCase>(relaxed = true)
     private val userSessionInterface = mockk<UserSessionInterface>(relaxed = true)
     private val dismissHomeReviewUseCase: DismissHomeReviewUseCase = mockk(relaxed = true)
+    private val testDispatcher = TestCoroutineDispatcher()
     private lateinit var homeViewModel: HomeViewModel
+
+    @Before
+    fun setup(){
+        Dispatchers.setMain(testDispatcher)
+    }
+
+    @After
+    fun tearDown(){
+        Dispatchers.resetMain()
+        testDispatcher.cleanupTestCoroutines()
+    }
 
     @Test
     fun `Test Review is visible`(){
@@ -72,32 +93,38 @@ class HomeViewModelReviewUnitTest {
     }
 
     @Test
-    fun `Test Review is not visible when geolocation show`(){
-        val review = ReviewDataModel(channel = DynamicHomeChannel.Channels())
-        val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
-
-        // Populate data view model
-        coEvery { getHomeUseCase.getHomeData() } returns flow{
-            emit(HomeDataModel(
+    fun `Test Review is not visible when geolocation show`() =
+        runBlockingTest {
+            val review = ReviewDataModel(channel = DynamicHomeChannel.Channels())
+            val channel: Channel<HomeDataModel> = Channel()
+            val homeData1 = HomeDataModel(
                     isCache = true,
                     list = listOf(review)
-            ))
-            delay(100)
-            emit(HomeDataModel(
+            )
+            val homeData2 = HomeDataModel(
                     list = listOf(review)
-            ))
-        }
+            )
+            // Populate data view model
+            coEvery { getHomeUseCase.getHomeData() } returns flow {
+                channel.consumeAsFlow().collect {
+                    emit(it)
+                }
+            }
+            launch {
+                channel.send(homeData1)
+            }
 
-        // home viewModel
-        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase).also {
-            it.setNeedToShowGeolocationComponent(true)
+            // home viewModel
+            homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase).also {
+                it.setNeedToShowGeolocationComponent(true)
+                launch {
+                    channel.send(homeData2)
+                }
+            }
+            // Expect Review widget will hide on user screen
+            homeViewModel.homeLiveData.observeOnce { homeDataModel -> assert(homeDataModel.list.find { it is ReviewDataModel } == null) }
+            channel.close()
         }
-        homeViewModel.homeLiveData.observeForever(observerHome)
-
-        Thread.sleep(100)
-        // Expect Review widget will show on user screen
-        homeViewModel.homeLiveData.observeOnce { homeDataModel -> assert(homeDataModel.list.find { it is ReviewDataModel } == null) }
-    }
 
     @Test
     fun `Test Review is visible trying to dismiss`(){
@@ -228,47 +255,61 @@ class HomeViewModelReviewUnitTest {
     }
 
     @Test
-    fun `Test Review with data product and try remove when geolocation on`(){
-        val review = ReviewDataModel(channel = DynamicHomeChannel.Channels())
-        val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
+    fun `Test Review with data product and try remove when geolocation on`() =
+        runBlockingTest {
 
-        // Populate data viewmodel
-        coEvery { getHomeUseCase.getHomeData() } returns flow{
-            emit(HomeDataModel(
+            val review = ReviewDataModel(channel = DynamicHomeChannel.Channels())
+            val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
+            val channel: Channel<HomeDataModel> = Channel()
+
+            // Populate data viewmodel
+            val homeData1 = HomeDataModel(
                     isCache = false,
                     list = listOf(review)
-            ))
-            delay(300)
-            emit(HomeDataModel(
+            )
+            val homeData2 = HomeDataModel(
                     isCache = true,
                     list = listOf(review)
-            ))
-        }
+            )
 
-        // Review data
-        coEvery { getHomeReviewSuggestedUseCase.executeOnBackground() } returns SuggestedProductReview(
-                suggestedProductReview = SuggestedProductReviewResponse(
-                        title = "Suggested Title"
-                )
-        )
+            launch {
+                channel.send(homeData1)
+            }
+            // Populate data view model
+            coEvery { getHomeUseCase.getHomeData() } returns flow{
+                channel.consumeAsFlow().collect{
+                    emit(it)
+                }
+            }
 
-        // home viewModel
-        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getHomeReviewSuggestedUseCase = getHomeReviewSuggestedUseCase).also {
-            it.setNeedToShowGeolocationComponent(true)
-        }
-        homeViewModel.homeLiveData.observeForever(observerHome)
+            // Review data
+            coEvery { getHomeReviewSuggestedUseCase.executeOnBackground() } returns SuggestedProductReview(
+                    suggestedProductReview = SuggestedProductReviewResponse(
+                            title = "Suggested Title"
+                    )
+            )
+            // home viewModel
+            homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getHomeReviewSuggestedUseCase = getHomeReviewSuggestedUseCase).also {
+                it.setNeedToShowGeolocationComponent(true)
+            }
 
-        Thread.sleep(300)
-        // Expect Review widget will show on user screen
-        verifyOrder {
-            // check on home data initial first channel is dynamic channel
-            observerHome.onChanged(match { homeDataModel ->
-                homeDataModel.list.find { it is ReviewDataModel } != null
-            })
-            observerHome.onChanged(match { homeDataModel ->
-                homeDataModel.list.find { it is ReviewDataModel } == null
-            })
+
+            homeViewModel.homeLiveData.observeForever(observerHome)
+
+            launch {
+                channel.send(homeData2)
+            }
+            // Expect Review widget will show on user screen
+            verifyOrder {
+                // check on home data initial first channel is dynamic channel
+                observerHome.onChanged(match { homeDataModel ->
+                    homeDataModel.list.find { it is ReviewDataModel } != null
+                })
+                observerHome.onChanged(match { homeDataModel ->
+                    homeDataModel.list.find { it is ReviewDataModel } == null
+                })
+            }
+            confirmVerified(observerHome)
+            channel.close()
         }
-        confirmVerified(observerHome)
-    }
 }
