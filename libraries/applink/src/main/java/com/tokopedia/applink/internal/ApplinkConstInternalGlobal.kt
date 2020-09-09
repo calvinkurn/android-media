@@ -58,6 +58,8 @@ object ApplinkConstInternalGlobal {
     val PARAM_USER_ID_ENC = "userIdEncrypted"
     @JvmField
     val PARAM_USER_ACCESS_TOKEN = "accessToken"
+    @JvmField
+    val PARAM_USER_ID = "userId"
 
     //VerificationActivity Param
     @JvmField
