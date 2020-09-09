@@ -29,23 +29,31 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_header_shop_info"
-                android:padding="@dimen/spacing_lvl4">
+                android:background="@drawable/bg_header_shop_info">
 
-                <com.tokopedia.unifycomponents.ImageUnify
-                    android:id="@+id/imageAvatar"
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardView"
+                    app:cardCornerRadius="@dimen/dp_60"
+                    app:cardElevation="@dimen/dp_4"
+                    android:layout_marginTop="@dimen/spacing_lvl4"
+                    android:layout_marginStart="@dimen/spacing_lvl4"
                     android:layout_width="@dimen/shop_edit_image_size"
-                    android:layout_height="@dimen/shop_edit_image_size"
-                    android:src="@color/white"
-                    android:elevation="@dimen/dp_6"
-                    app:unify_image_type="circle" />
+                    android:layout_height="@dimen/shop_edit_image_size">
+
+                    <com.tokopedia.unifycomponents.ImageUnify
+                        android:id="@+id/imageAvatar"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"/>
+
+                </androidx.cardview.widget.CardView>
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/labelAvatar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/spacing_lvl4"
-                    android:layout_toEndOf="@id/imageAvatar"
+                    android:layout_marginTop="@dimen/spacing_lvl4"
+                    android:layout_toEndOf="@id/cardView"
                     android:text="@string/shop_edit_avatar_label"
                     android:textColor="@color/Neutral_N700_96" />
 
@@ -56,7 +64,8 @@
                     android:layout_below="@id/labelAvatar"
                     android:layout_marginStart="@dimen/spacing_lvl4"
                     android:layout_marginTop="@dimen/spacing_lvl2"
-                    android:layout_toEndOf="@id/imageAvatar"
+                    android:layout_marginEnd="@dimen/spacing_lvl4"
+                    android:layout_toEndOf="@id/cardView"
                     android:text="@string/shop_edit_avatar_description"
                     android:textColor="@color/Neutral_N700_68"
                     app:typographyType="body_3" />
@@ -68,7 +77,8 @@
                     android:layout_below="@id/labelAvatarDesc"
                     android:layout_marginStart="@dimen/spacing_lvl4"
                     android:layout_marginTop="@dimen/spacing_lvl3"
-                    android:layout_toEndOf="@id/imageAvatar"
+                    android:layout_marginBottom="@dimen/spacing_lvl4"
+                    android:layout_toEndOf="@id/cardView"
                     android:text="@string/shop_edit_change_avatar"
                     android:textColor="@color/g_500"
                     app:typographyType="body_3"
