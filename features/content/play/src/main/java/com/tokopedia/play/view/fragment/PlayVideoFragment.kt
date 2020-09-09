@@ -13,6 +13,7 @@ import com.tokopedia.play.R
 import com.tokopedia.play.analytic.VideoAnalyticHelper
 import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.util.blur.ImageBlurUtil
+import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.DistinctEventObserver
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.video.state.BufferSource
@@ -31,21 +32,29 @@ import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.dpToPx
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
  * Created by jegul on 29/11/19
  */
 class PlayVideoFragment @Inject constructor(
-        private val viewModelFactory: ViewModelProvider.Factory
-): TkpdBaseV4Fragment(), PlayFragmentContract {
+        private val viewModelFactory: ViewModelProvider.Factory,
+        dispatchers: CoroutineDispatcherProvider
+) : TkpdBaseV4Fragment(), PlayFragmentContract {
 
-    private val videoView by viewComponent { VideoViewComponent(it, R.id.view_video, blurUtil) }
+    private val job = SupervisorJob()
+    private val scope = CoroutineScope(dispatchers.immediate + job)
+
+    private val videoView by viewComponent { VideoViewComponent(it, R.id.view_video) }
     private val videoLoadingView by viewComponent { VideoLoadingComponent(it, R.id.view_video_loading) }
     private val oneTapView by viewComponent { OneTapViewComponent(it, R.id.iv_one_tap_finger) }
     private val overlayVideoView by viewComponent { EmptyViewComponent(it, R.id.v_play_overlay_video) }
 
-    private val blurUtil: ImageBlurUtil by lifecycleBound(
+    private val blurUtil: ImageBlurUtil by lifecycleBound (
             creator = { ImageBlurUtil(it.requireContext()) },
             onDestroy = { blurUtil.close() }
     )
@@ -88,6 +97,11 @@ class PlayVideoFragment @Inject constructor(
         setupObserve()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        job.cancelChildren()
+    }
+
     override fun onPause() {
         super.onPause()
         if (!isYouTube) videoAnalyticHelper.onPause()
@@ -128,6 +142,17 @@ class PlayVideoFragment @Inject constructor(
         observeOneTapOnboarding()
         observeBottomInsetsState()
         observeEventUserInfo()
+    }
+
+    private fun showVideoThumbnail() {
+        val currentThumbnail = videoView.getCurrentBitmap()
+        currentThumbnail?.let {
+            scope.launch {
+                videoView.showThumbnail(
+                        blurUtil.blurImage(it, radius = BLUR_RADIUS)
+                )
+            }
+        }
     }
 
     //region observe
@@ -196,14 +221,14 @@ class PlayVideoFragment @Inject constructor(
     private fun handleVideoStateChanged(state: PlayViewerVideoState) {
         when (state) {
             is PlayViewerVideoState.Buffer -> {
-                if (state.bufferSource == BufferSource.Broadcaster) videoView.showBlurredThumbnail()
-                else videoView.hideBlurredThumbnail()
+                if (state.bufferSource == BufferSource.Broadcaster) showVideoThumbnail()
+                else videoView.hideThumbnail()
             }
             PlayViewerVideoState.Play,
             PlayViewerVideoState.Pause,
             PlayViewerVideoState.Waiting,
             PlayViewerVideoState.End -> {
-                videoView.hideBlurredThumbnail()
+                videoView.hideThumbnail()
             }
         }
     }
@@ -219,4 +244,8 @@ class PlayVideoFragment @Inject constructor(
         } else if (videoPlayer is General) videoView.setPlayer(videoPlayer.exoPlayer)
     }
     //endregion
+
+    companion object {
+        private const val BLUR_RADIUS = 25f
+    }
 }

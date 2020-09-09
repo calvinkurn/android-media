@@ -18,7 +18,6 @@ import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
-import com.tokopedia.play.util.blur.ImageBlurUtil
 import com.tokopedia.play.util.changeConstraint
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.type.VideoOrientation
@@ -29,8 +28,7 @@ import com.tokopedia.play_common.viewcomponent.ViewComponent
  */
 class VideoViewComponent(
         container: ViewGroup,
-        @IdRes idRes: Int,
-        private val blurUtil: ImageBlurUtil
+        @IdRes idRes: Int
 ) : ViewComponent(container, idRes) {
 
     private val pvVideo = findViewById<PlayerView>(R.id.pv_video)
@@ -47,31 +45,22 @@ class VideoViewComponent(
         configureThumbnailLayout(screenOrientation, videoOrientation)
     }
 
-    fun showBlurredThumbnail() {
-        val currentThumbnail = getCurrentBitmap()
-        showThumbnail(
-                currentThumbnail?.let {
-                    blurUtil.blurImage(it, radius = BLUR_RADIUS)
-                }
-        )
-    }
-
-    fun hideBlurredThumbnail() {
-        showThumbnail(null)
-    }
-
-    private fun getCurrentBitmap(): Bitmap? {
+    fun getCurrentBitmap(): Bitmap? {
         val textureView = pvVideo.videoSurfaceView as? TextureView
         return textureView?.bitmap
     }
 
-    private fun showThumbnail(bitmap: Bitmap?) {
+    fun showThumbnail(bitmap: Bitmap?) {
         if (bitmap != null) {
             ivThumbnail.setImageBitmap(bitmap)
             ivThumbnail.show()
         } else {
             ivThumbnail.hide()
         }
+    }
+
+    fun hideThumbnail() {
+        ivThumbnail.hide()
     }
 
     private fun configureVideoLayout(screenOrientation: ScreenOrientation, videoOrientation: VideoOrientation) {
@@ -148,9 +137,5 @@ class VideoViewComponent(
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
         setPlayer(null)
-    }
-
-    companion object {
-        private const val BLUR_RADIUS = 25f
     }
 }
