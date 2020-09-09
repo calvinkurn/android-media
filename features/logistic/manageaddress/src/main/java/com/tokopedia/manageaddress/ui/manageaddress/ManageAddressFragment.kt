@@ -157,6 +157,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                 is ManageAddressState.Success -> {
                     swipeRefreshLayout?.isRefreshing = false
                     globalErrorLayout?.gone()
+                    if (viewModel.isClearData) clearData()
                     updateData(it.data.listAddress)
                     setEmptyState()
                     isLoading = false
