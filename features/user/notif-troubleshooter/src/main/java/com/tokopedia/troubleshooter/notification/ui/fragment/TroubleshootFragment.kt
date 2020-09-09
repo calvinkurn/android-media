@@ -10,10 +10,12 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.fcmcommon.FirebaseMessagingManager
 import com.tokopedia.fcmcommon.di.DaggerFcmComponent
 import com.tokopedia.fcmcommon.di.FcmModule
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.settingnotif.usersetting.util.CacheManager.saveLastCheckedDate
 import com.tokopedia.troubleshooter.notification.R
 import com.tokopedia.troubleshooter.notification.analytics.TroubleshooterTimber
@@ -34,6 +36,7 @@ import com.tokopedia.troubleshooter.notification.ui.uiview.TickerItemUIView.Comp
 import com.tokopedia.troubleshooter.notification.ui.viewmodel.TroubleshootViewModel
 import com.tokopedia.troubleshooter.notification.util.*
 import com.tokopedia.troubleshooter.notification.util.TroubleshooterDialog.showInformationDialog
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_notif_troubleshooter.*
@@ -185,7 +188,7 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
                             type = Notification,
                             status = StatusState.Error,
                             message = getString(R.string.notif_us_ticker_error),
-                            buttonText = R.string.btn_notif_try_again
+                            buttonText = R.string.btn_notif_activation
                     )
                 }
             }
@@ -203,7 +206,7 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
                             type = Device,
                             status = StatusState.Warning,
                             message = getString(R.string.notif_dv_ticker_warning),
-                            buttonText = R.string.btn_notif_repair
+                            buttonText = R.string.btn_notif_activation
                     )
                 }
             }
@@ -231,6 +234,7 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
                 saveLastCheckedDate(requireContext())
             }
             is Error -> {
+                showToastError(result.cause)
                 updateConfigStatus(
                         type = PushNotification,
                         status = StatusState.Error,
@@ -266,6 +270,13 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
             getString(R.string.notif_token_update, currentToken, newToken)
         } else {
             getString(R.string.notif_token_update_no_prev, newToken)
+        }
+    }
+
+    private fun showToastError(e: Throwable?) {
+        view?.let {
+            val errorMessage = ErrorHandler.getErrorMessage(it.context, e)
+            Toaster.showError(it, errorMessage, Snackbar.LENGTH_LONG)
         }
     }
 
