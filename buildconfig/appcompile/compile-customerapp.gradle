@@ -143,6 +143,7 @@ include "features:merchant:atc_variant"
 include "features:merchant:variant_common"
 include "features:merchant:favorite"
 include "features:merchant:product_add_edit"
+include "features:merchant:shop_score"
 include "features:merchant:shop_showcase"
 include "features:merchant:youtube_common"
 
