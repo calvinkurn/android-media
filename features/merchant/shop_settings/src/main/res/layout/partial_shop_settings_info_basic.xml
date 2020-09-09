@@ -17,9 +17,9 @@
             android:id="@+id/cu_income_overview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl3"
-            android:layout_marginLeft="@dimen/spacing_lvl3"
-            android:layout_marginRight="@dimen/spacing_lvl3">
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginRight="@dimen/dp_12">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -76,7 +76,7 @@
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16"
-        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/dp_12"
         android:text="@string/shop_slogan_label"
         android:textColor="@color/title_information"
         android:textSize="@dimen/sp_14"
@@ -112,7 +112,7 @@
         android:layout_marginTop="@dimen/dp_2"
         android:paddingLeft="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:layout_marginBottom="@dimen/spacing_lvl2"
         android:textColor="@color/title_subinformation"
         android:textSize="@dimen/sp_12"
         tools:text="Toko saya bagus banget, menjual kebutuhan Anda dari rumah, kantor, hingga entertainment" />
@@ -123,7 +123,7 @@
         app:unifyButtonVariant="ghost"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_48"
-        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/dp_12"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginRight="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl4"
