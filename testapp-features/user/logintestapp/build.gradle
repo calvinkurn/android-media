@@ -32,26 +32,5 @@ dependencies {
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.playServicesDependencies.auth
-    implementation rootProject.ext.miscDependencies.dagger
-    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.debugToolsDependencies.chuck
-    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
-    testImplementation rootProject.ext.testDependencies.archCoreTesting
-    testImplementation rootProject.ext.testDependencies.mockk
-    testImplementation rootProject.ext.miscDependencies.coroutineCore
-    testImplementation rootProject.ext.testDependencies.spek2Api
-    testImplementation rootProject.ext.testDependencies.spek2Dsl
-    testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
-    testImplementation rootProject.ext.testDependencies.platformEngine
-    testImplementation rootProject.ext.testDependencies.junitJupiterApi
-    testImplementation rootProject.ext.testDependencies.junitPlatformRunner
 }
-
-project.ext {
-    artifactId = 'login-register'
-    groupId = 'com.tokopedia.user'
-    versionName = "0.0.2"
-    artifactName = "loginregister-release"
-}
-
-apply from: '../../../publish_local.gradle'
