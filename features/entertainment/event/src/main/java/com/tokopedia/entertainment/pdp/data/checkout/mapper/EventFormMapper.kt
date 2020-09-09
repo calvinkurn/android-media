@@ -46,4 +46,17 @@ object EventFormMapper {
         }
         return array
     }
+
+    fun getSearchableList(keyword: String, list: List<String>):ArrayList<ListItemUnify>{
+        val array = arrayListOf<ListItemUnify>()
+        val listSearched = list.filter {
+            it.contains(keyword, true)
+        }
+        listSearched.mapIndexed { index, s ->
+            val itemUnify = ListItemUnify(s, "")
+            itemUnify.isBold = false
+            array.add(itemUnify)
+        }
+        return array
+    }
 }

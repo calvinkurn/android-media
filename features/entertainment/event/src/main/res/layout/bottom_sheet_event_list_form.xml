@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -10,16 +9,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
-        app:search_bar_show_icon="false"
-        />
+        app:search_bar_show_icon="false" />
 
-    <com.tokopedia.unifycomponents.list.ListUnify
-        android:id="@+id/list_form"
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedListUnify"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/event_search_list_form"
-        android:choiceMode="singleChoice"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/event_search_list_form">
 
+        <com.tokopedia.unifycomponents.list.ListUnify
+            android:id="@+id/list_form"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:choiceMode="singleChoice" />
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

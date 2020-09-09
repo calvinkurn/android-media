@@ -1,29 +1,26 @@
 package com.tokopedia.entertainment.pdp.adapter.viewholder
 
 import android.text.Editable
-import android.text.InputType
 import android.text.TextWatcher
-import android.util.DisplayMetrics
 import android.util.TypedValue
+import android.view.MotionEvent
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.Gson
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.ELEMENT_LIST
 import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.ELEMENT_TEXT
-import com.tokopedia.entertainment.pdp.data.Form
-import com.tokopedia.kotlin.extensions.view.setMargin
-import kotlinx.android.synthetic.main.ent_pdp_form_edittext_item.view.*
-import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.FULLNAME_TYPE
 import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.EMAIL_TYPE
+import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.FULLNAME_TYPE
 import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.PHONE_TYPE
-import com.tokopedia.entertainment.pdp.data.checkout.EventCheckoutForm
+import com.tokopedia.entertainment.pdp.data.Form
 import com.tokopedia.entertainment.pdp.listener.OnClickFormListener
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.ent_pdp_form_edittext_item.view.*
 import org.json.JSONArray
-import timber.log.Timber
-import java.lang.RuntimeException
+import org.json.JSONObject
 import java.util.regex.Pattern
+
 
 class EventPDPTextFieldViewHolder(val view: View,
                                   val addOrRemoveData: (Int, String) -> Unit,
@@ -76,9 +73,17 @@ class EventPDPTextFieldViewHolder(val view: View,
                         txtValue.textFieldInput.apply {
                             keyListener = null
                             setText(list.get(positionActiveBottomSheet))
-                            setOnClickListener {
-                                formListener.clickBottomSheet(list,element.title,positionActiveForm, positionActiveBottomSheet)
-                            }
+                            setOnTouchListener(object : View.OnTouchListener {
+                                override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+                                    when (event?.action) {
+                                        MotionEvent.ACTION_DOWN -> {
+                                            formListener.clickBottomSheet(list,element.title,positionActiveForm, positionActiveBottomSheet)
+                                        }
+                                    }
+
+                                    return v?.onTouchEvent(event) ?: true
+                                }
+                            })
                         }
                     }
                 }

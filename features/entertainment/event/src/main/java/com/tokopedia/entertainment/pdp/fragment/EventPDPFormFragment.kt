@@ -3,9 +3,14 @@ package com.tokopedia.entertainment.pdp.fragment
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -29,10 +34,12 @@ import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.REG
 import com.tokopedia.entertainment.pdp.adapter.viewholder.EventPDPTextFieldViewHolder
 import com.tokopedia.entertainment.pdp.data.checkout.AdditionalType
 import com.tokopedia.entertainment.pdp.data.checkout.EventCheckoutAdditionalData
+import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventFormMapper.getSearchableList
 import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventFormMapper.setListBottomSheetForm
 import com.tokopedia.entertainment.pdp.listener.OnClickFormListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottom_sheet_event_list_form.view.*
+import kotlinx.android.synthetic.main.ent_layout_viewholder_category.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -170,37 +177,64 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener, EventPDP
     }
 
     override fun clickBottomSheet(list: List<String>, title: String, positionForm: Int, positionActiveBottomSheet: Int) {
-        if (list.size > SEARCH_PAGE_LIMIT) {
+        val view = LayoutInflater.from(context).inflate(R.layout.bottom_sheet_event_list_form, null)
+        val bottomSheets = BottomSheetUnify()
+        bottomSheets.apply {
+            isFullpage = true
+            setChild(view)
+            setTitle("Pilih "+title)
+            setCloseClickListener { bottomSheets.dismiss() }
+        }
 
-        } else {
-            val view = LayoutInflater.from(context).inflate(R.layout.bottom_sheet_event_list_form, null)
-            val bottomSheets = BottomSheetUnify()
-            bottomSheets.apply {
-                isFullpage = true
-                setChild(view)
-                setTitle("Pilih "+title)
-                setCloseClickListener { bottomSheets.dismiss() }
+        var listBottomSheet = setListBottomSheetForm(list)
+
+        if (list.size > SEARCH_PAGE_LIMIT) {
+            val searchTextField = view.event_search_list_form?.searchBarTextField
+            val searchClearButton = view.event_search_list_form?.searchBarIcon
+
+            searchTextField?.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(p0: Editable?) {}
+
+                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+                override fun onTextChanged(keyword: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                    if(keyword.toString().isEmpty()) {
+                        listBottomSheet = setListBottomSheetForm(list)
+                        view.list_form.setData(listBottomSheet)
+                    } else {
+                        listBottomSheet = getSearchableList(keyword.toString(), list)
+                        view.list_form.setData(listBottomSheet)
+                    }
+                }
+            })
+            searchClearButton?.setOnClickListener {
+                searchTextField?.text?.clear()
+                listBottomSheet = setListBottomSheetForm(list)
+                view.list_form.setData(listBottomSheet)
             }
-            val arrayList = setListBottomSheetForm(list)
-            view.list_form.apply {
-                setData(arrayList)
-                onLoadFinish {
-                    arrayList.forEachIndexed { index, it ->
-                        it.listTitle?.setOnClickListener {
-                                positionActiveData = index
-                                formAdapter.notifyItemChanged(positionForm)
-                                CoroutineScope(Dispatchers.Main).launch {
-                                    delay(250)
-                                    bottomSheets.dismiss()
-                                }
-                            }
+        } else {
+            view.event_search_list_form.visibility = View.GONE
+        }
+
+
+        view.list_form.apply {
+            setData(listBottomSheet)
+            onLoadFinish {
+                listBottomSheet.forEachIndexed { index, it ->
+                    it.listTitle?.setOnClickListener {
+                        positionActiveData = index
+                        formAdapter.notifyItemChanged(positionForm)
+                        CoroutineScope(Dispatchers.Main).launch {
+                            delay(DELAY_CONST)
+                            bottomSheets.dismiss()
+                        }
                     }
                 }
             }
+        }
 
-            fragmentManager?.let {
-                bottomSheets.show(it, "")
-            }
+        fragmentManager?.let {
+            bottomSheets.show(it, "")
         }
     }
 
@@ -219,5 +253,6 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener, EventPDP
         const val EXTRA_DATA_PESSANGER = "EXTRA_DATA_PESSANGER"
         val REQUEST_CODE = 100
         const val SEARCH_PAGE_LIMIT = 10
+        const val DELAY_CONST : Long = 250
     }
 }
