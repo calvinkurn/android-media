@@ -34,15 +34,6 @@ fun sendTrack(coroutineScope: CoroutineScope, trackingRepository: TrackingReposi
               onFinished: (() -> Unit)) {
     atomicInteger.getAndIncrement()
     coroutineScope.launch {
-        val eeFullModelList = trackingRepository.getAllEEFull()
-        val deleteEEFullJob = launch(Dispatchers.IO + TrackingExecutors.handler) {
-            trackingRepository.deleteEEFull()
-        }
-        eeFullModelList?.run {
-            map {
-                sendTrack(it)
-            }
-        }
         val eeModelList = trackingRepository.getAllEE()
         val deleteEEJob = launch(Dispatchers.IO + TrackingExecutors.handler) {
             trackingRepository.deleteEE()
@@ -53,7 +44,6 @@ fun sendTrack(coroutineScope: CoroutineScope, trackingRepository: TrackingReposi
             }
         }
 
-        deleteEEFullJob.join()
         deleteEEJob.join()
         decreaseCounter()
         onFinished.invoke()
