@@ -88,7 +88,6 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.seller_menu_options, menu)
-        inflater.inflate(R.menu.seller_menu_options, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
