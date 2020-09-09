@@ -1,4 +1,4 @@
-package com.tokopedia.shop.product.view.viewmodel
+package com.tokopedia.shop.common.view.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

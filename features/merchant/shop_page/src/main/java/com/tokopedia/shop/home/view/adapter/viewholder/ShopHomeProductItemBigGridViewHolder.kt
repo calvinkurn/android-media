@@ -16,7 +16,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
  * @author by alvarisi on 12/12/17.
  */
 
-open class ShopHomeProductViewHolder(
+open class ShopHomeProductItemBigGridViewHolder(
         itemView: View,
         private val shopHomeEndlessProductListener: ShopHomeEndlessProductListener?
 ) : AbstractViewHolder<ShopHomeProductViewModel>(itemView) {
@@ -29,7 +29,7 @@ open class ShopHomeProductViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_shop_home_product_card_small_grid
+        val LAYOUT = R.layout.item_shop_home_product_card_big_grid
     }
 
     private fun findViews(view: View) {
