@@ -207,7 +207,7 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
 
     private fun setupChatSellerBannedStatus() {
         if (!isTabSeller()) return
-        chatItemListViewModel.chatBannedSellerStatus.observe(this, Observer {
+        chatItemListViewModel.chatBannedSellerStatus.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> updateChatBannedSellerStatus(it.data)
             }
