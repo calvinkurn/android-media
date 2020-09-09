@@ -21,9 +21,9 @@ class FooterViewHolder(
 ): AbstractViewHolder<FooterUIView>(view) {
 
     private val btnAction = view.findViewById<UnifyButton>(R.id.btnAction)
+    private val txtTitle = view.findViewById<TextView>(R.id.txtTitle)
     private val txtMessage = view.findViewById<TextView>(R.id.txtMessage)
     private val txtStatus = view.findViewById<TextView>(R.id.txtStatus)
-    private val btnInfo = view.findViewById<ImageView>(R.id.btnInfo)
 
     private val context by lazy { itemView.context }
 
@@ -41,7 +41,14 @@ class FooterViewHolder(
         }
 
         btnAction?.setOnClickListener { onActionClicked(element.isDndMode) }
-        btnInfo?.setOnClickListener { listener.onInfoClicked() }
+        txtTitle?.setOnClickListener { listener.onInfoClicked() }
+
+        txtTitle?.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                EMPTY_DRAWABLE,
+                EMPTY_DRAWABLE,
+                R.drawable.ic_ts_notif_info,
+                EMPTY_DRAWABLE
+        )
     }
 
     private fun onActionClicked(isDndMode: Boolean) {
@@ -54,6 +61,8 @@ class FooterViewHolder(
 
     companion object {
         @LayoutRes val LAYOUT = R.layout.item_footer_message
+
+        private const val EMPTY_DRAWABLE = 0
     }
 
 }
