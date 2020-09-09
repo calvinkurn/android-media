@@ -28,11 +28,11 @@ class EventPDPTextFieldViewHolder(val view: View,
                                   val formListener: OnClickFormListener,
                                   val textFormListener: TextFormListener) : RecyclerView.ViewHolder(view) {
     var positionActiveForm = 0
-    var positionActiveBottomSheet = 0
+    var keyActiveBottomSheet = ""
 
     fun bind(element: Form, position: Int) {
         with(itemView) {
-            positionActiveBottomSheet = textFormListener.getPositionActive()
+            keyActiveBottomSheet = textFormListener.getKeyActive()
             positionActiveForm = position
             if (position > 0) txtValue.setMargin(0, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3), context.resources.displayMetrics).toInt(), 0, 0)
 
@@ -65,19 +65,21 @@ class EventPDPTextFieldViewHolder(val view: View,
             }
 
             if (element.value.isNotBlank()) {
-                element.valuePosition = positionActiveBottomSheet.toString()
+                element.valuePosition = getList(element.value).get(keyActiveBottomSheet) ?: ""
                 if (element.elementType.equals(ELEMENT_TEXT)) txtValue.textFieldInput.setText(element.value)
                 if (element.elementType.equals(ELEMENT_LIST)) {
                     val list = getList(element.value)
                     if (list.isNotEmpty()) {
                         txtValue.textFieldInput.apply {
                             keyListener = null
-                            setText(list.get(positionActiveBottomSheet))
+                            if (keyActiveBottomSheet.isNullOrEmpty()){
+                                setText(list.getValueByPosition(0))
+                            } else setText(list.get(keyActiveBottomSheet))
                             setOnTouchListener(object : View.OnTouchListener {
                                 override fun onTouch(v: View?, event: MotionEvent?): Boolean {
                                     when (event?.action) {
                                         MotionEvent.ACTION_DOWN -> {
-                                            formListener.clickBottomSheet(list,element.title,positionActiveForm, positionActiveBottomSheet)
+                                            formListener.clickBottomSheet(list,element.title,positionActiveForm, keyActiveBottomSheet)
                                         }
                                     }
 
@@ -103,18 +105,27 @@ class EventPDPTextFieldViewHolder(val view: View,
         }
     }
 
-    fun getList(value: String): List<String> {
-        val listValue = mutableListOf<String>()
+    fun getList(value: String): LinkedHashMap<String, String>{
+        val listValue : LinkedHashMap<String,String> = LinkedHashMap()
         val jsonArray = JSONArray(value)
         for (i in 0..jsonArray.length() - 1) {
             val key = (jsonArray.getJSONObject(i) as JSONObject).names()?.get(0)?.toString()
-            listValue.add(jsonArray.getJSONObject(i).getString(key))
+            key?.let {
+                listValue.put(key,jsonArray.getJSONObject(i).getString(key))
+            }
         }
         return listValue
     }
 
+    fun LinkedHashMap<String, String>.getKeyByPosition(position: Int) =
+            this.keys.toTypedArray()[position]
+
+
+    fun LinkedHashMap<String, String>.getValueByPosition(position: Int) =
+            this.values.toTypedArray()[position]
+
     interface TextFormListener{
-       fun getPositionActive():Int
+       fun getKeyActive():String
     }
 
     companion object {

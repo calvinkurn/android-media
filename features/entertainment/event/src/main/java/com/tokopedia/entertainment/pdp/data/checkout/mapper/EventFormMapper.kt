@@ -37,23 +37,26 @@ object EventFormMapper {
         return formData
     }
 
-    fun setListBottomSheetForm(list : List<String>):ArrayList<ListItemUnify>{
+    fun setListBottomSheetForm(mapData : LinkedHashMap<String, String>):ArrayList<ListItemUnify>{
         val array = arrayListOf<ListItemUnify>()
-        list.mapIndexed { index, s ->
-            val itemUnify = ListItemUnify(s, "")
+        mapData.map {
+            val itemUnify = ListItemUnify(it.value, "")
             itemUnify.isBold = false
             array.add(itemUnify)
         }
         return array
     }
 
-    fun getSearchableList(keyword: String, list: List<String>):ArrayList<ListItemUnify>{
+    fun searchHashMap(keyword: String, mapData: LinkedHashMap<String, String>):LinkedHashMap<String,String>{
+        return mapData.filter {
+            it.value.contains(keyword, true)
+        } as LinkedHashMap<String,String>
+    }
+
+    fun getSearchableList(keyword: String, mapData: LinkedHashMap<String, String>):ArrayList<ListItemUnify>{
         val array = arrayListOf<ListItemUnify>()
-        val listSearched = list.filter {
-            it.contains(keyword, true)
-        }
-        listSearched.mapIndexed { index, s ->
-            val itemUnify = ListItemUnify(s, "")
+        mapData.map {
+            val itemUnify = ListItemUnify(it.value, "")
             itemUnify.isBold = false
             array.add(itemUnify)
         }

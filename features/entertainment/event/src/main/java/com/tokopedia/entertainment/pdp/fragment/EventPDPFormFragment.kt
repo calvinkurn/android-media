@@ -35,6 +35,7 @@ import com.tokopedia.entertainment.pdp.adapter.viewholder.EventPDPTextFieldViewH
 import com.tokopedia.entertainment.pdp.data.checkout.AdditionalType
 import com.tokopedia.entertainment.pdp.data.checkout.EventCheckoutAdditionalData
 import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventFormMapper.getSearchableList
+import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventFormMapper.searchHashMap
 import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventFormMapper.setListBottomSheetForm
 import com.tokopedia.entertainment.pdp.listener.OnClickFormListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -49,7 +50,7 @@ import java.io.Serializable
 class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener, EventPDPTextFieldViewHolder.TextFormListener {
 
     private var urlPDP = ""
-    private var positionActiveData = 0
+    private var keyActiveData = ""
 
     @Inject
     lateinit var viewModel: EventPDPFormViewModel
@@ -176,17 +177,18 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener, EventPDP
         formAdapter.setList(formData)
     }
 
-    override fun clickBottomSheet(list: List<String>, title: String, positionForm: Int, positionActiveBottomSheet: Int) {
+    override fun clickBottomSheet(list: LinkedHashMap<String, String>, title: String, positionForm: Int, positionActiveBottomSheet: String) {
         val view = LayoutInflater.from(context).inflate(R.layout.bottom_sheet_event_list_form, null)
+        var listTemp = list
         val bottomSheets = BottomSheetUnify()
         bottomSheets.apply {
             isFullpage = true
             setChild(view)
-            setTitle("Pilih "+title)
+            setTitle("Pilih " + title)
             setCloseClickListener { bottomSheets.dismiss() }
         }
 
-        var listBottomSheet = setListBottomSheetForm(list)
+        val listBottomSheet = setListBottomSheetForm(list)
 
         if (list.size > SEARCH_PAGE_LIMIT) {
             val searchTextField = view.event_search_list_form?.searchBarTextField
@@ -198,19 +200,19 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener, EventPDP
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
                 override fun onTextChanged(keyword: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                    if(keyword.toString().isEmpty()) {
-                        listBottomSheet = setListBottomSheetForm(list)
-                        view.list_form.setData(listBottomSheet)
+                    if (keyword.toString().isEmpty()) {
+                        listTemp = list
+                        view.list_form.setData(setListBottomSheetForm(list))
                     } else {
-                        listBottomSheet = getSearchableList(keyword.toString(), list)
-                        view.list_form.setData(listBottomSheet)
+                        listTemp = searchHashMap(keyword.toString(), list)
+                        view.list_form.setData(getSearchableList(keyword.toString(), listTemp))
                     }
                 }
             })
             searchClearButton?.setOnClickListener {
                 searchTextField?.text?.clear()
-                listBottomSheet = setListBottomSheetForm(list)
-                view.list_form.setData(listBottomSheet)
+                listTemp = list
+                view.list_form.setData(setListBottomSheetForm(list))
             }
         } else {
             view.event_search_list_form.visibility = View.GONE
@@ -220,14 +222,12 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener, EventPDP
         view.list_form.apply {
             setData(listBottomSheet)
             onLoadFinish {
-                listBottomSheet.forEachIndexed { index, it ->
-                    it.listTitle?.setOnClickListener {
-                        positionActiveData = index
-                        formAdapter.notifyItemChanged(positionForm)
-                        CoroutineScope(Dispatchers.Main).launch {
-                            delay(DELAY_CONST)
-                            bottomSheets.dismiss()
-                        }
+                this.setOnItemClickListener { _, _, position, _ ->
+                    keyActiveData = listTemp.getKeyByPosition(position)
+                    formAdapter.notifyItemChanged(positionForm)
+                    CoroutineScope(Dispatchers.Main).launch {
+                        delay(DELAY_CONST)
+                        bottomSheets.dismiss()
                     }
                 }
             }
@@ -238,8 +238,8 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener, EventPDP
         }
     }
 
-    override fun getPositionActive(): Int {
-        return positionActiveData
+    override fun getKeyActive(): String {
+        return keyActiveData
     }
 
 
@@ -253,6 +253,13 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener, EventPDP
         const val EXTRA_DATA_PESSANGER = "EXTRA_DATA_PESSANGER"
         val REQUEST_CODE = 100
         const val SEARCH_PAGE_LIMIT = 10
-        const val DELAY_CONST : Long = 250
+        const val DELAY_CONST: Long = 250
     }
+
+    fun LinkedHashMap<String, String>.getKeyByPosition(position: Int) =
+            this.keys.toTypedArray()[position]
+
+
+    fun LinkedHashMap<String, String>.getValueByPosition(position: Int) =
+            this.values.toTypedArray()[position]
 }
