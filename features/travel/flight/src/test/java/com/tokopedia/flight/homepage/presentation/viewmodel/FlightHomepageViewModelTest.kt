@@ -466,7 +466,10 @@ class FlightHomepageViewModelTest {
 
         // then
         verify {
-            flightAnalytics.eventPromotionClick(position + 1, bannerData)
+            flightAnalytics.eventPromotionClick(position + 1,
+                    bannerData,
+                    FlightAnalytics.Screen.HOMEPAGE,
+                    any())
         }
     }
 
@@ -879,7 +882,10 @@ class FlightHomepageViewModelTest {
 
         // then
         verify {
-            flightAnalytics.eventPromoImpression(selectedBannerData, BANNER_DATA.banners[selectedBannerData])
+            flightAnalytics.eventPromoImpression(selectedBannerData,
+                    BANNER_DATA.banners[selectedBannerData],
+                    FlightAnalytics.Screen.HOMEPAGE,
+                    any())
         }
     }
 

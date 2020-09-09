@@ -25,6 +25,7 @@ import com.tokopedia.flight.searchV4.presentation.model.FlightSearchPassDataMode
 import com.tokopedia.flight.search_universal.presentation.viewmodel.FlightSearchUniversalViewModel
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -39,6 +40,7 @@ class FlightHomepageViewModel @Inject constructor(
         private val dashboardCache: FlightDashboardCache,
         private val deleteAllFlightSearchDataUseCase: FlightSearchDeleteAllDataUseCase,
         private val passengerValidator: FlightSelectPassengerValidator,
+        private val userSessionInterface: UserSessionInterface,
         private val dispatcherProvider: TravelDispatcherProvider)
     : BaseViewModel(dispatcherProvider.io()) {
 
@@ -140,7 +142,9 @@ class FlightHomepageViewModel @Inject constructor(
     }
 
     fun onBannerClicked(position: Int, banner: TravelCollectiveBannerModel.Banner) {
-        flightAnalytics.eventPromotionClick(position + 1, banner)
+        flightAnalytics.eventPromotionClick(position + 1, banner,
+                FlightAnalytics.Screen.HOMEPAGE,
+                if (userSessionInterface.isLoggedIn) userSessionInterface.userId else "")
     }
 
     fun onDepartureAirportChanged(departureAirport: FlightAirportModel) {
@@ -255,7 +259,8 @@ class FlightHomepageViewModel @Inject constructor(
 
     fun sendTrackingPromoScrolled(position: Int) {
         getBannerData(position)?.let {
-            flightAnalytics.eventPromoImpression(position, it)
+            flightAnalytics.eventPromoImpression(position, it, FlightAnalytics.Screen.HOMEPAGE,
+                    if (userSessionInterface.isLoggedIn) userSessionInterface.userId else "")
         }
     }
 

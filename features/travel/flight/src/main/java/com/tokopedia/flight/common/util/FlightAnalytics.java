@@ -57,9 +57,12 @@ public class FlightAnalytics {
     private String DEFAULT_CURRENCY_CODE = "IDR";
     private String OPEN_SCREEN_EVENT = "openScreen";
     private String EVENT_NAME = "eventName";
+    private String SCREEN_NAME = "screenName";
+    private String CLIENT_ID = "clientId";
     private String CURRENT_SITE = "currentSite";
     private String BUSSINESS_UNIT = "businessUnit";
     private String CATEGORY = "category";
+    private String USER_ID = "userId";
 
     private String FLIGHT_CURRENT_SITE = "tokopediadigitalflight";
     private String FLIGHT_BU = "travel & entertainment";
@@ -87,7 +90,10 @@ public class FlightAnalytics {
         ));
     }
 
-    public void eventPromotionClick(int position, TravelCollectiveBannerModel.Banner banner) {
+    public void eventPromotionClick(int position,
+                                    TravelCollectiveBannerModel.Banner banner,
+                                    String screenName,
+                                    String userId) {
         List<Object> promos = new ArrayList<>();
         promos.add(DataLayer.mapOf(
                 EnhanceEccomerce.ID, banner.getId(),
@@ -101,6 +107,12 @@ public class FlightAnalytics {
                 DataLayer.mapOf(EVENT, PROMO_CLICK_EVENT,
                         EVENT_CATEGORY, GENERIC_CATEGORY,
                         EVENT_ACTION, Action.PROMOTION_CLICK,
+                        SCREEN_NAME, screenName,
+                        CURRENT_SITE, FLIGHT_CURRENT_SITE,
+                        CLIENT_ID, TrackApp.getInstance().getGTM().getClientIDString(),
+                        BUSSINESS_UNIT, FLIGHT_BU,
+                        CATEGORY, Label.FLIGHT_SMALL,
+                        USER_ID, userId,
                         EVENT_LABEL, String.format(getDefaultLocale(), "%s - %d - %s",
                                 Label.FLIGHT_SMALL,
                                 position,
@@ -710,7 +722,10 @@ public class FlightAnalytics {
         return products;
     }
 
-    public void eventPromoImpression(int position, TravelCollectiveBannerModel.Banner banner) {
+    public void eventPromoImpression(int position,
+                                     TravelCollectiveBannerModel.Banner banner,
+                                     String screenName,
+                                     String userId) {
         List<Object> promos = new ArrayList<>();
         promos.add(DataLayer.mapOf(
                 EnhanceEccomerce.ID, banner.getId(),
@@ -724,6 +739,12 @@ public class FlightAnalytics {
                 DataLayer.mapOf(EVENT, PROMO_VIEW_EVENT,
                         EVENT_CATEGORY, GENERIC_CATEGORY,
                         EVENT_ACTION, Action.PROMOTION_VIEW,
+                        SCREEN_NAME, screenName,
+                        CURRENT_SITE, FLIGHT_CURRENT_SITE,
+                        CLIENT_ID, TrackApp.getInstance().getGTM().getClientIDString(),
+                        BUSSINESS_UNIT, FLIGHT_BU,
+                        CATEGORY, Label.FLIGHT_SMALL,
+                        USER_ID, userId,
                         EVENT_LABEL, String.format(getDefaultLocale(), "%s - %d - %s",
                                 Label.FLIGHT_SMALL,
                                 position + 1,
