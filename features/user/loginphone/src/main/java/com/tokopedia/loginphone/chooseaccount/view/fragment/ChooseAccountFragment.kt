@@ -22,13 +22,11 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_IS_SQ_CHECK
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iris.Iris
-import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
@@ -218,10 +216,11 @@ class ChooseAccountFragment : BaseDaggerFragment(),
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, account.email)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_USER_ID_ENC, account.user_id_enc)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_USER_ACCESS_TOKEN, viewModel.accessToken)
-
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_USER_ID, account.userId)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, false)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, false)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_REQUEST_OTP_MODE, OtpConstant.OtpMode.PIN);
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA, true);
             startActivityForResult(intent, REQUEST_CODE_PIN_CHALLENGE)
         }else loginToken(account, phone)
     }
