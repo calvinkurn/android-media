@@ -28,6 +28,19 @@ class RSA {
         return encoder(encryptedBytes)
     }
 
+    fun encrypt(message: ByteArray, key: PublicKey,
+                encoder: ((ByteArray) -> (String))): String {
+        val cipher: Cipher = Cipher.getInstance(Constants.RSA_ALGORITHM)
+        cipher.init(Cipher.ENCRYPT_MODE, key)
+        val encryptedBytes = cipher.doFinal(message)
+        return encoder(encryptedBytes)
+    }
+
+    fun encrypt(message: ByteArray, key: String,
+                encoder: ((ByteArray) -> (String))): String? {
+        return encrypt(message, stringToPublicKey(key), encoder)
+    }
+
     fun encrypt(message: String, key: String,
                 encoder: ((ByteArray) -> (String))): String? {
         return encrypt(message, stringToPublicKey(key), encoder)

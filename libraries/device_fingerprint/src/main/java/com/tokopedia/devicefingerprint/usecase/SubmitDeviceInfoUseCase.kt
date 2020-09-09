@@ -15,14 +15,10 @@ class SubmitDeviceInfoUseCase @Inject constructor(
     companion object {
         const val PARAM_INPUT = "input"
         private val query = """
-            mutation {
-                subUDinf(${'$'}input: {
-                    content: "",
-                    identifier: "",
-                    version: ""
-                }) {
-                    is_error
-                }
+            mutation submitDeviceInfo(${'$'}input: SubUDInfRequest!){
+              subUDinf(input: ${'$'}input) {
+                is_error
+              }
             }
         """.trimIndent()
     }
