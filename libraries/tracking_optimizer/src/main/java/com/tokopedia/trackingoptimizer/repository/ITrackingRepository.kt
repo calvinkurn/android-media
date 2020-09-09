@@ -20,13 +20,9 @@ interface ITrackingRepository<T, U, V, W> {
     fun putEE(map: HashMap<String, Any>?,
               inputEnhanceECommerceMap: HashMap<String, Any>?)
 
-    fun getAllRegular(): Array<T>?
     fun getAllEE(): Array<U>?
     fun getAllEEFull(): Array<V>?
-    fun getAllScreenName(): Array<W>?
 
-    fun deleteRegular()
     fun deleteEE()
     fun deleteEEFull()
-    fun deleteScreenName()
 }

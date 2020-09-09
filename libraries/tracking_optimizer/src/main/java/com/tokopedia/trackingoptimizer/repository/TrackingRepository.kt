@@ -3,14 +3,13 @@ package com.tokopedia.trackingoptimizer.repository
 import android.content.Context
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.constant.Constant
 import com.tokopedia.trackingoptimizer.constant.Constant.Companion.ECOMMERCE
 import com.tokopedia.trackingoptimizer.constant.Constant.Companion.TRACKING_QUEUE_SIZE_LIMIT_VALUE_REMOTECONFIGKEY
 import com.tokopedia.trackingoptimizer.constant.Constant.Companion.impressionEventList
 import com.tokopedia.trackingoptimizer.datasource.TrackingEEDataSource
 import com.tokopedia.trackingoptimizer.datasource.TrackingEEFullDataSource
-import com.tokopedia.trackingoptimizer.datasource.TrackingRegularDataSource
-import com.tokopedia.trackingoptimizer.datasource.TrackingScreenNameDataSource
 import com.tokopedia.trackingoptimizer.db.model.TrackingEEDbModel
 import com.tokopedia.trackingoptimizer.db.model.TrackingEEFullDbModel
 import com.tokopedia.trackingoptimizer.db.model.TrackingRegularDbModel
@@ -30,43 +29,21 @@ class TrackingRepository(val context: Context, val remoteConfig: RemoteConfig = 
         TrackingEEFullDataSource(context)
     }
 
-    val trackingRegularDataSource by lazy {
-        TrackingRegularDataSource(context)
-    }
-
-    val trackingScreenNameDataSource by lazy {
-        TrackingScreenNameDataSource(context)
-    }
-
     override fun putScreenName(screenName: String?) {
         if (screenName.isNullOrEmpty()) {
             return
         }
-        deleteDbIfHasScreenName(screenName)
-        trackingScreenNameDataSource.put(screenName!!)
     }
 
     override fun putScreenName(screenName: String?, customModel: ScreenCustomModel) {
         if (screenName.isNullOrEmpty()) {
             return
         }
-        deleteDbIfHasScreenName(screenName)
-        trackingScreenNameDataSource.put(screenName!!, customModel)
     }
 
-    private fun deleteDbIfHasScreenName(screenName: String?) {
-        val dbModelList = trackingScreenNameDataSource.getAll() ?: arrayOf()
-        if (dbModelList.isNotEmpty() && (!dbModelList[0].screenName.equals(screenName, true)
-                        || dbModelList.size > 1)) {
-            trackingEEDataSource.delete()
-            trackingEEFullDataSource.delete()
-            trackingRegularDataSource.delete()
-            trackingScreenNameDataSource.delete()
-        }
-    }
 
     override fun putRegular(event: EventModel, customDimension: HashMap<String, Any>?) {
-        trackingRegularDataSource.put(event, customDimension, null)
+        TrackApp.getInstance().gtm.sendEvent(event.event, customDimension)
     }
 
     override fun put(map: HashMap<String, Any>?) {
@@ -203,12 +180,6 @@ class TrackingRepository(val context: Context, val remoteConfig: RemoteConfig = 
 
     override fun getAllEE() = trackingEEDataSource.getAll()
     override fun getAllEEFull() = trackingEEFullDataSource.getAll()
-    override fun getAllRegular() = trackingRegularDataSource.getAll()
-    override fun getAllScreenName() = trackingScreenNameDataSource.getAll()
-
-    override fun deleteRegular() {
-        trackingRegularDataSource.delete()
-    }
 
     override fun deleteEE() {
         trackingEEDataSource.delete()
@@ -216,10 +187,6 @@ class TrackingRepository(val context: Context, val remoteConfig: RemoteConfig = 
 
     override fun deleteEEFull() {
         trackingEEFullDataSource.delete()
-    }
-
-    override fun deleteScreenName() {
-        trackingScreenNameDataSource.delete()
     }
 
     companion object {
