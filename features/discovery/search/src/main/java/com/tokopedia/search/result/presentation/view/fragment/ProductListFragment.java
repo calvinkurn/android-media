@@ -611,7 +611,10 @@ public class ProductListFragment
 
         if (getActivity() != null) {
             AdultManager.handleActivityResult(getActivity(), requestCode, resultCode, data);
-            ProductCardOptionsManager.handleProductCardOptionsActivityResult(requestCode, resultCode, data, this::handleWishlistAction, this::handleAddToCartAction);
+            ProductCardOptionsManager.handleProductCardOptionsActivityResult(
+                    requestCode, resultCode, data,
+                    this::handleWishlistAction, this::handleAddToCartAction
+            );
         }
     }
 
@@ -626,9 +629,26 @@ public class ProductListFragment
     }
 
     private void handleAddToCartAction(ProductCardOptionsModel productCardOptionsModel) {
-        if (getView() == null) return;
-
         ProductCardOptionsModel.AddToCartResult addToCartResult = productCardOptionsModel.getAddToCartResult();
+
+        trackAddToCartSuccess(addToCartResult);
+        showAddToCartMessage(addToCartResult);
+    }
+
+    private void trackAddToCartSuccess(ProductCardOptionsModel.AddToCartResult addToCartResult) {
+        if (presenter == null) return;
+
+        ProductItemViewModel productItemViewModel = presenter.getThreeDotsProduct();
+
+        if (productItemViewModel == null) return;
+
+        Object productItemViewModelAsATCDataLayer = productItemViewModel.getProductAsATCObjectDataLayer(addToCartResult.getCartId());
+
+        SearchTracking.trackEventAddToCart(getQueryKey(), productItemViewModel.isAds(), productItemViewModelAsATCDataLayer);
+    }
+
+    private void showAddToCartMessage(ProductCardOptionsModel.AddToCartResult addToCartResult) {
+        if (getView() == null) return;
 
         String message;
         int toasterType;
@@ -819,8 +839,9 @@ public class ProductListFragment
 
     @Override
     public void onThreeDotsClick(ProductItemViewModel item, int adapterPosition) {
-        if (getSearchParameter() == null || getActivity() == null) return;
+        if (getSearchParameter() == null || getActivity() == null || presenter == null) return;
 
+        presenter.setThreeDotsProduct(item);
         SearchTracking.trackEventProductLongPress(getSearchParameter().getSearchQuery(), item.getProductID());
         ProductCardOptionsManager.showProductCardOptions(this, createProductCardOptionsModel(item));
     }
@@ -840,8 +861,8 @@ public class ProductListFragment
         productCardOptionsModel.setSeeSimilarProductEvent(SearchTracking.EVENT_CLICK_SEARCH_RESULT);
 
         productCardOptionsModel.setHasAddToCart(true);
-        productCardOptionsModel.setAddToCartParams(new ProductCardOptionsModel.AddToCartParams(1));
-        productCardOptionsModel.setCategoryName(item.getCategoryName());
+        productCardOptionsModel.setAddToCartParams(new ProductCardOptionsModel.AddToCartParams(item.getMinOrder()));
+        productCardOptionsModel.setCategoryName(item.getCategoryString());
         productCardOptionsModel.setProductName(item.getProductName());
         productCardOptionsModel.setFormattedPrice(item.getPrice());
         productCardOptionsModel.setShopId(item.getShopID());

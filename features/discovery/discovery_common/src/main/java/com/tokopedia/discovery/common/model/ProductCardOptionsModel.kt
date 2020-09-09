@@ -34,7 +34,6 @@ data class ProductCardOptionsModel(
                 && productId.isNotEmpty()
                 && productName.isNotEmpty()
                 && shopId.isNotEmpty()
-                && categoryName.isNotEmpty()
                 && formattedPrice.isNotEmpty()
                 && addToCartParams?.quantity ?: 0 > 0
     }
@@ -160,15 +159,18 @@ data class ProductCardOptionsModel(
 
     data class AddToCartResult(
             var isSuccess: Boolean = false,
+            var cartId: String = "",
             var errorMessage: String = ""
     ): Parcelable {
 
         constructor(parcel: Parcel) : this(
                 parcel.readByte() != 0.toByte(),
+                parcel.readString() ?: "",
                 parcel.readString() ?: "")
 
         override fun writeToParcel(parcel: Parcel, flags: Int) {
             parcel.writeByte(if (isSuccess) 1 else 0)
+            parcel.writeString(cartId)
             parcel.writeString(errorMessage)
         }
 

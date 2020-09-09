@@ -215,5 +215,10 @@ public interface ProductListSectionContract {
         void onFreeOngkirOnBoardingShown();
 
         void openFilterPage(Map<String, Object> searchParameter);
+
+        void setThreeDotsProduct(ProductItemViewModel item);
+
+        @Nullable
+        ProductItemViewModel getThreeDotsProduct();
     }
 }

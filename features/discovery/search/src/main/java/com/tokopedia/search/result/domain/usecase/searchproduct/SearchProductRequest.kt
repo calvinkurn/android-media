@@ -92,6 +92,8 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                         id
                         name
                         city
+                        isOfficial
+                        isPowerBadge
                     }
                     freeOngkir {
                         isActive
@@ -115,6 +117,7 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                     warehouseIdDefault
                     boosterList
                     source_engine
+                    minOrder
                     labelGroups {
                         title
                         position

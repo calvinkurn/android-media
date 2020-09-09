@@ -204,19 +204,19 @@ internal class ProductCardOptionsViewModel(
 
     private fun initAddToCartOption() {
         if (productCardOptionsModel?.canAddToCart() == true) {
-            productCardOptionsItemList.addOption(ADD_TO_CART) {
-                executeAddToCart()
-
-            }
+            productCardOptionsItemList.addOption(ADD_TO_CART) { executeAddToCart() }
             productCardOptionsItemList.addDivider()
         }
     }
 
     private fun executeAddToCart() {
-        if (userSession.isLoggedIn)
+        if (userSession.isLoggedIn) {
+            addToCartUseCase.unsubscribe()
             addToCartUseCase.execute(createAddToCartRequestParams(), createAddToCartSubscriber())
-        else
+        }
+        else {
             routeToLoginPageEventLiveData.postValue(Event(true))
+        }
     }
 
     private fun createAddToCartRequestParams(): RequestParams {
@@ -259,7 +259,9 @@ internal class ProductCardOptionsViewModel(
         addToCartEventLiveData.postValue(Event(true))
 
         if (isAddToCartStatusOK(addToCartDataModel)) {
-            productCardOptionsModel?.addToCartResult = ProductCardOptionsModel.AddToCartResult(isSuccess = true)
+            productCardOptionsModel?.addToCartResult = ProductCardOptionsModel.AddToCartResult(
+                    isSuccess = true, cartId = addToCartDataModel?.data?.cartId ?: ""
+            )
         } else {
             val errorMessage = addToCartDataModel?.getAtcErrorMessage()
             productCardOptionsModel?.addToCartResult = ProductCardOptionsModel.AddToCartResult(

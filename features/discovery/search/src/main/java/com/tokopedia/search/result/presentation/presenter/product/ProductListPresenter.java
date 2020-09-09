@@ -134,6 +134,7 @@ final class ProductListPresenter
     private RelatedViewModel relatedViewModel = null;
     private List<Option> quickFilterOptionList = new ArrayList<>();
     private DynamicFilterModel dynamicFilterModel;
+    @Nullable private ProductItemViewModel threeDotsProductItem = null;
 
     @Inject
     ProductListPresenter(
@@ -487,12 +488,16 @@ final class ProductListPresenter
                     item.setCountReview(convertCountReviewFormatToInt(topAds.getProduct().getCountReviewFormat()));
                     item.setBadgesList(mapBadges(topAds.getShop().getBadges()));
                     item.setNew(topAds.getProduct().isProductNewLabel());
+                    item.setShopID(topAds.getShop().getId());
                     item.setShopName(topAds.getShop().getName());
+                    item.setShopOfficialStore(topAds.getShop().isShop_is_official());
+                    item.setShopPowerMerchant(topAds.getShop().isGoldShop());
                     item.setOriginalPrice(topAds.getProduct().getCampaign().getOriginalPrice());
                     item.setDiscountPercentage(topAds.getProduct().getCampaign().getDiscountPercentage());
                     item.setLabelGroupList(mapLabelGroupList(topAds.getProduct().getLabelGroupList()));
                     item.setFreeOngkirViewModel(mapFreeOngkir(topAds.getProduct().getFreeOngkir()));
                     item.setPosition(topAdsCount);
+                    item.setCategoryID(topAds.getProduct().getCategory().getId());
                     item.setCategoryBreadcrumb(topAds.getProduct().getCategoryBreadcrumb());
                     list.add(i, item);
                     j++;
@@ -1625,6 +1630,17 @@ final class ProductListPresenter
 
     private void handleGetDynamicFilterFailed() {
         getViewToSetDynamicFilterModel(SearchFilterUtilsKt.createSearchProductDefaultFilter());
+    }
+
+    @Override
+    public void setThreeDotsProduct(ProductItemViewModel item) {
+        this.threeDotsProductItem = item;
+    }
+
+    @Nullable
+    @Override
+    public ProductItemViewModel getThreeDotsProduct() {
+        return this.threeDotsProductItem;
     }
 
     @Override

@@ -9,6 +9,9 @@ import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.kotlin.model.ImpressHolder;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
+import com.tokopedia.search.utils.SearchKotlinExtKt;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +45,7 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
     private int discountPercentage;
     private int categoryID = 0;
     private String categoryName = "";
-    private String categoryBreadcrumb;
+    private String categoryBreadcrumb = "";
     private boolean isTopAds;
     private boolean isOrganicAds;
     private String topadsImpressionUrl;
@@ -53,6 +56,9 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
     private FreeOngkirViewModel freeOngkirViewModel = new FreeOngkirViewModel();
     private String boosterList = "";
     private String sourceEngine = "";
+    private int minOrder = 1;
+    private boolean isShopOfficialStore = false;
+    private boolean isShopPowerMerchant = false;
 
     public boolean isTopAds() {
         return isTopAds;
@@ -68,6 +74,10 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
 
     public void setOrganicAds(boolean isOrganicAds) {
         this.isOrganicAds = isOrganicAds;
+    }
+
+    public boolean isAds() {
+        return isTopAds() || isOrganicAds();
     }
 
     public String getTopadsImpressionUrl() {
@@ -330,6 +340,34 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         return this.sourceEngine;
     }
 
+    public String getCategoryString() {
+        return StringUtils.isEmpty(categoryName) ? categoryBreadcrumb : categoryName;
+    }
+
+    public void setMinOrder(int minOrder) {
+        this.minOrder = minOrder;
+    }
+
+    public int getMinOrder() {
+        return this.minOrder;
+    }
+
+    public void setShopOfficialStore(boolean isShopOfficialStore) {
+        this.isShopOfficialStore = isShopOfficialStore;
+    }
+
+    public boolean isShopOfficialStore() {
+        return this.isShopOfficialStore;
+    }
+
+    public void setShopPowerMerchant(boolean isShopPowerMerchant) {
+        this.isShopPowerMerchant = isShopPowerMerchant;
+    }
+
+    public boolean isShopPowerMerchant() {
+        return this.isShopPowerMerchant;
+    }
+
     public ProductItemViewModel() {
     }
 
@@ -369,6 +407,29 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         String organicStatus = isOrganicAds() ? ORGANIC_ADS : ORGANIC;
 
         return String.format(ACTION_FIELD, organicStatus);
+    }
+
+    public Object getProductAsATCObjectDataLayer(String cartId) {
+        return DataLayer.mapOf(
+                "name", productName,
+                "id", productID,
+                "price", String.valueOf(SearchKotlinExtKt.safeCastRupiahToInt(getPrice())),
+                "brand", "none / other",
+                "category", getCategoryBreadcrumb(),
+                "variant", "none / other",
+                "quantity", getMinOrder(),
+                "shop_id", getShopID(),
+                "shop_type", getShopType(),
+                "shop_name", getShopName(),
+                "category_id", getCategoryID(),
+                "dimension82", cartId
+        );
+    }
+
+    private String getShopType() {
+        if (isShopOfficialStore) return "official_store";
+        else if (isShopPowerMerchant) return "gold_merchant";
+        else return "reguler";
     }
 
     @Override

@@ -133,6 +133,7 @@ internal class ClickAddToCartOptionsTest: ProductCardOptionsViewModelTestFixture
 
         addToCartResult.isSuccess shouldBe true
         addToCartResult.errorMessage shouldBe ""
+        addToCartResult.cartId shouldBe addToCartSuccessModel.data.cartId
     }
 
     @Test
