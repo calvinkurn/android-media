@@ -10,9 +10,6 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.play.KEY_GROUPCHAT_PREFERENCES
 import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.coroutine.DefaultCoroutineDispatcherProvider
-import com.tokopedia.play.util.observer.PlayVideoUtilObserver
-import com.tokopedia.play.util.video.PlayVideoUtil
-import com.tokopedia.play.util.video.PlayVideoUtilImpl
 import com.tokopedia.play_common.player.PlayVideoManager
 import com.tokopedia.play_common.util.ExoPlaybackExceptionParser
 import com.tokopedia.play_common.util.PlayVideoPlayerObserver
@@ -37,10 +34,6 @@ class PlayModule(val mContext: Context) {
     @PlayScope
     @Provides
     fun providePlayVideoPlayerLifecycleObserver(): PlayVideoPlayerObserver = PlayVideoPlayerObserver(mContext)
-
-    @PlayScope
-    @Provides
-    fun providePlayVideoUtilLifecycleObserver(playVideoUtil: PlayVideoUtil): PlayVideoUtilObserver = PlayVideoUtilObserver(mContext, playVideoUtil)
 
     @PlayScope
     @Provides
@@ -89,12 +82,6 @@ class PlayModule(val mContext: Context) {
     @PlayScope
     fun provideTrackingQueue(): TrackingQueue {
         return TrackingQueue(mContext)
-    }
-
-    @Provides
-    @PlayScope
-    fun providePlayVideoUtil(): PlayVideoUtil {
-        return PlayVideoUtilImpl(mContext)
     }
 
     @Provides

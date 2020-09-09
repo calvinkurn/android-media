@@ -1,7 +1,6 @@
 package com.tokopedia.play.view.viewcomponent
 
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.annotation.IdRes
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible

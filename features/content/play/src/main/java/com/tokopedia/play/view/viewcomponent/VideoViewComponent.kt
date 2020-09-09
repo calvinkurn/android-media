@@ -18,6 +18,7 @@ import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
+import com.tokopedia.play.util.blur.ImageBlurUtil
 import com.tokopedia.play.util.changeConstraint
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.type.VideoOrientation
@@ -36,6 +37,8 @@ class VideoViewComponent(
 
     private var mExoPlayer: ExoPlayer? = null
 
+    private lateinit var blurUtil: ImageBlurUtil
+
     fun setPlayer(exoPlayer: ExoPlayer?) {
         pvVideo.player = exoPlayer
     }
@@ -50,7 +53,20 @@ class VideoViewComponent(
         return textureView?.bitmap
     }
 
-    fun showThumbnail(bitmap: Bitmap?) {
+    fun showBlurredThumbnail() {
+        val currentThumbnail = getCurrentBitmap()
+        showThumbnail(
+                currentThumbnail?.let {
+                    getBlurUtil().blurImage(it, radius = 25f)
+                }
+        )
+    }
+
+    fun hideBlurredThumbnail() {
+        showThumbnail(null)
+    }
+
+    private fun showThumbnail(bitmap: Bitmap?) {
         if (bitmap != null) {
             ivThumbnail.setImageBitmap(bitmap)
             ivThumbnail.show()
@@ -116,6 +132,13 @@ class VideoViewComponent(
         }
     }
 
+    private fun getBlurUtil(): ImageBlurUtil {
+        if (!::blurUtil.isInitialized) {
+            blurUtil = ImageBlurUtil(ivThumbnail.context)
+        }
+        return blurUtil
+    }
+
     /**
      * Lifecycle Function
      */
@@ -133,5 +156,6 @@ class VideoViewComponent(
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
         setPlayer(null)
+        if (::blurUtil.isInitialized) blurUtil.close()
     }
 }

@@ -1,7 +1,6 @@
 package com.tokopedia.play.view.fragment
 
 import android.content.res.Configuration
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,9 +12,9 @@ import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.VideoAnalyticHelper
 import com.tokopedia.play.extensions.isAnyShown
+import com.tokopedia.play.util.blur.ImageBlurUtil
 import com.tokopedia.play.util.event.DistinctEventObserver
 import com.tokopedia.play.util.observer.DistinctObserver
-import com.tokopedia.play.util.video.PlayVideoUtil
 import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.custom.RoundedConstraintLayout
@@ -28,7 +27,6 @@ import com.tokopedia.play.view.viewcomponent.VideoLoadingComponent
 import com.tokopedia.play.view.viewcomponent.VideoViewComponent
 import com.tokopedia.play.view.viewmodel.PlayVideoViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
-import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.dpToPx
 import javax.inject.Inject
@@ -37,8 +35,7 @@ import javax.inject.Inject
  * Created by jegul on 29/11/19
  */
 class PlayVideoFragment @Inject constructor(
-        private val viewModelFactory: ViewModelProvider.Factory,
-        private val playVideoUtil: PlayVideoUtil
+        private val viewModelFactory: ViewModelProvider.Factory
 ): TkpdBaseV4Fragment(), PlayFragmentContract {
 
     private val videoView by viewComponent { VideoViewComponent(it, R.id.view_video) }
@@ -54,6 +51,8 @@ class PlayVideoFragment @Inject constructor(
     private lateinit var videoAnalyticHelper: VideoAnalyticHelper
 
     private lateinit var containerVideo: RoundedConstraintLayout
+
+    private lateinit var blurUtil: ImageBlurUtil
 
     private val orientation: ScreenOrientation
         get() = ScreenOrientation.getByInt(resources.configuration.orientation)
@@ -126,6 +125,13 @@ class PlayVideoFragment @Inject constructor(
         observeEventUserInfo()
     }
 
+    private fun getBlurUtil(): ImageBlurUtil {
+        if (!::blurUtil.isInitialized) {
+            blurUtil = ImageBlurUtil(requireContext())
+        }
+        return blurUtil
+    }
+
     //region observe
     private fun observeVideoMeta() {
         playViewModel.observableVideoMeta.observe(viewLifecycleOwner, Observer { meta ->
@@ -191,17 +197,16 @@ class PlayVideoFragment @Inject constructor(
 
     private fun handleVideoStateChanged(state: PlayViewerVideoState) {
         when (state) {
-            PlayViewerVideoState.Play, PlayViewerVideoState.Pause -> {
-                videoView.showThumbnail(null)
+            is PlayViewerVideoState.Buffer -> {
+                videoView.showBlurredThumbnail()
             }
+            PlayViewerVideoState.Play,
+            PlayViewerVideoState.Pause,
+            PlayViewerVideoState.Waiting,
             PlayViewerVideoState.End -> {
-                videoView.getCurrentBitmap()?.let { saveEndImage(it) }
+                videoView.hideBlurredThumbnail()
             }
         }
-    }
-
-    private fun saveEndImage(bitmap: Bitmap) {
-        playVideoUtil.saveEndImage(bitmap)
     }
 
     //region OnStateChanged
