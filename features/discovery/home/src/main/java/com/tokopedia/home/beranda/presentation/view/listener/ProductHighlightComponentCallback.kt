@@ -26,7 +26,9 @@ class ProductHighlightComponentCallback(val homeCategoryListener: HomeCategoryLi
 
     override fun onProductCardImpressed(channel: ChannelModel, channelGrid: ChannelGrid, adapterPosition: Int) {
         //GA
-
+        homeCategoryListener.getTrackingQueueObj()?.putEETracking(
+                ProductHighlightTracking.getProductHighlightImpression(channel,  userId = homeCategoryListener.userId) as HashMap<String, Any>
+        )
         //iris
         homeCategoryListener.putEEToIris(ProductHighlightTracking.getProductHighlightImpression(
                 channel, homeCategoryListener.userId, true
