@@ -1,5 +1,6 @@
 package com.tokopedia.loginregister.login.di;
 
+import com.tokopedia.devicefingerprint.di.DeviceFingerprintModule;
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;
 import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment;
@@ -16,7 +17,8 @@ import dagger.Component;
         LoginModule.class,
         LoginQueryModule.class,
         LoginUseCaseModule.class,
-        SeamlessSellerViewModelModule.class
+        SeamlessSellerViewModelModule.class,
+        DeviceFingerprintModule.class
 }, dependencies = LoginRegisterComponent.class)
 public interface LoginComponent {
 

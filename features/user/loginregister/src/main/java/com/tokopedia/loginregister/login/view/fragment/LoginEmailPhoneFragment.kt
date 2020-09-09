@@ -719,6 +719,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
 
         saveFirstInstallTime()
+
+        presenter.submitDeviceInfo()
     }
 
     override fun setLoginSuccessSellerApp() {

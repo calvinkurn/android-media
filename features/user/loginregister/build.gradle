@@ -63,6 +63,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.permissionchecker)
     implementation project(rootProject.ext.libraries.utils)
+    implementation project(rootProject.ext.libraries.deviceFingerprint)
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.features.sessioncommon)
     implementation project(rootProject.ext.features.profileCommon)

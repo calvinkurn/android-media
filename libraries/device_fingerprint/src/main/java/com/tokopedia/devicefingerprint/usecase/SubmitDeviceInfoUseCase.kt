@@ -28,7 +28,7 @@ class SubmitDeviceInfoUseCase @Inject constructor(
         setTypeClass(SubmitDeviceInfoResponse::class.java)
     }
 
-    fun setParams(payload: InsertDeviceInfoPayload) {
+    private fun setParams(payload: InsertDeviceInfoPayload) {
         val params: Map<String, Any?> = mutableMapOf(
                 PARAM_INPUT to payload
         )

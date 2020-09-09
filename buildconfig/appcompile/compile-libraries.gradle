@@ -19,6 +19,7 @@ include "libraries:common_network"
 include "libraries:core_legacy"
 include "libraries:core_network"
 include 'libraries:date_picker_range'
+include 'libraries:device_fingerprint'
 include 'libraries:device_info'
 include 'libraries:dev_monitoring_tools'
 include 'libraries:dynamic_features'
