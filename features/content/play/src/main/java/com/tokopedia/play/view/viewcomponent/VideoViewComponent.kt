@@ -48,11 +48,6 @@ class VideoViewComponent(
         configureThumbnailLayout(screenOrientation, videoOrientation)
     }
 
-    fun getCurrentBitmap(): Bitmap? {
-        val textureView = pvVideo.videoSurfaceView as? TextureView
-        return textureView?.bitmap
-    }
-
     fun showBlurredThumbnail() {
         val currentThumbnail = getCurrentBitmap()
         showThumbnail(
@@ -64,6 +59,11 @@ class VideoViewComponent(
 
     fun hideBlurredThumbnail() {
         showThumbnail(null)
+    }
+
+    private fun getCurrentBitmap(): Bitmap? {
+        val textureView = pvVideo.videoSurfaceView as? TextureView
+        return textureView?.bitmap
     }
 
     private fun showThumbnail(bitmap: Bitmap?) {

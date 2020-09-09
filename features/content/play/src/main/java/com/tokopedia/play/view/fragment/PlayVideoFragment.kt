@@ -12,9 +12,9 @@ import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.VideoAnalyticHelper
 import com.tokopedia.play.extensions.isAnyShown
-import com.tokopedia.play.util.blur.ImageBlurUtil
 import com.tokopedia.play.util.event.DistinctEventObserver
 import com.tokopedia.play.util.observer.DistinctObserver
+import com.tokopedia.play.util.video.state.BufferSource
 import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.custom.RoundedConstraintLayout
@@ -51,8 +51,6 @@ class PlayVideoFragment @Inject constructor(
     private lateinit var videoAnalyticHelper: VideoAnalyticHelper
 
     private lateinit var containerVideo: RoundedConstraintLayout
-
-    private lateinit var blurUtil: ImageBlurUtil
 
     private val orientation: ScreenOrientation
         get() = ScreenOrientation.getByInt(resources.configuration.orientation)
@@ -125,13 +123,6 @@ class PlayVideoFragment @Inject constructor(
         observeEventUserInfo()
     }
 
-    private fun getBlurUtil(): ImageBlurUtil {
-        if (!::blurUtil.isInitialized) {
-            blurUtil = ImageBlurUtil(requireContext())
-        }
-        return blurUtil
-    }
-
     //region observe
     private fun observeVideoMeta() {
         playViewModel.observableVideoMeta.observe(viewLifecycleOwner, Observer { meta ->
@@ -198,7 +189,9 @@ class PlayVideoFragment @Inject constructor(
     private fun handleVideoStateChanged(state: PlayViewerVideoState) {
         when (state) {
             is PlayViewerVideoState.Buffer -> {
-                videoView.showBlurredThumbnail()
+                if (state.bufferSource == BufferSource.Broadcaster)
+                    videoView.showBlurredThumbnail()
+                else videoView.hideBlurredThumbnail()
             }
             PlayViewerVideoState.Play,
             PlayViewerVideoState.Pause,
