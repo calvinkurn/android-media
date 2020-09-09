@@ -37,7 +37,7 @@ class RechargeHomepageAdapterTypeFactory(
     }
 
     fun type(trustMarkModel: RechargeHomepageTrustMarkModel): Int {
-        return RechargeHomepageTrustMarkViewHolder.LAYOUT
+        return RechargeHomepageDualIconsViewHolder.LAYOUT
     }
 
     fun type(videoHighlightModel: RechargeHomepageVideoHighlightModel): Int {
@@ -92,9 +92,9 @@ class RechargeHomepageAdapterTypeFactory(
         return when (type) {
             RechargeHomepageFavoriteViewHolder.LAYOUT -> RechargeHomepageFavoriteViewHolder(parent, listener)
             RechargeHomepageCategoryViewHolder.LAYOUT -> RechargeHomepageCategoryViewHolder(parent, listener)
-            RechargeHomepageTrustMarkViewHolder.LAYOUT -> RechargeHomepageTrustMarkViewHolder(parent, listener)
+            RechargeHomepageDualIconsViewHolder.LAYOUT -> RechargeHomepageDualIconsViewHolder(parent, listener)
             RechargeHomepageBannerViewHolder.LAYOUT -> RechargeHomepageBannerViewHolder(parent, listener)
-            RechargeHomepageBannerEmptyViewHolder.LAYOUT -> RechargeHomepageBannerEmptyViewHolder(parent)
+            RechargeHomepageBannerEmptyViewHolder.LAYOUT -> RechargeHomepageBannerEmptyViewHolder(parent, listener)
             ReminderWidgetViewHolder.LAYOUT -> ReminderWidgetViewHolder(parent, reminderWidgetCallback)
             RechargeHomepageVideoHighlightViewHolder.LAYOUT -> RechargeHomepageVideoHighlightViewHolder(parent, listener)
             RechargeHomepageSingleBannerViewHolder.LAYOUT -> RechargeHomepageSingleBannerViewHolder(parent, listener)

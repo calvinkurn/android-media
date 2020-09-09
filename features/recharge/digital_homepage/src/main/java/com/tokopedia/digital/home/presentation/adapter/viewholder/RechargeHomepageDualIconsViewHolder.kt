@@ -7,30 +7,31 @@ import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.model.RechargeHomepageTrustMarkModel
-import com.tokopedia.digital.home.presentation.adapter.RechargeItemTrustMarkAdapter
+import com.tokopedia.digital.home.presentation.adapter.RechargeItemDualIconsAdapter
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import kotlinx.android.synthetic.main.view_recharge_home_trustmark.view.*
+import kotlinx.android.synthetic.main.view_recharge_home_dual_icons.view.*
 
 /**
  * @author by resakemal on 09/06/20.
  */
 
-class RechargeHomepageTrustMarkViewHolder(itemView: View?, val listener: RechargeHomepageItemListener) :
+class RechargeHomepageDualIconsViewHolder(itemView: View?, val listener: RechargeHomepageItemListener) :
         AbstractViewHolder<RechargeHomepageTrustMarkModel>(itemView) {
 
     override fun bind(element: RechargeHomepageTrustMarkModel) {
         val section = element.section
         with(itemView) {
             if (section.items.isNotEmpty()) {
-                view_recharge_home_trust_mark_container.show()
-                view_recharge_home_trust_mark_shimmering.hide()
+                view_recharge_home_dual_icons_container.show()
+                view_recharge_home_dual_icons_shimmering.hide()
 
-                while (rv_recharge_home_trust_mark.itemDecorationCount > 0) {
-                    rv_recharge_home_trust_mark.removeItemDecorationAt(0)
+                while (rv_recharge_home_dual_icons.itemDecorationCount > 0) {
+                    rv_recharge_home_dual_icons.removeItemDecorationAt(0)
                 }
-                rv_recharge_home_trust_mark.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.HORIZONTAL))
+                rv_recharge_home_dual_icons.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.HORIZONTAL))
 
                 // Only use first 3 items or less
                 val trustMarkItems: List<RechargeHomepageSections.Item> = when (section.items.size) {
@@ -39,14 +40,17 @@ class RechargeHomepageTrustMarkViewHolder(itemView: View?, val listener: Recharg
                 }
 
                 val layoutManager = GridLayoutManager(context, trustMarkItems.size)
-                rv_recharge_home_trust_mark.layoutManager = layoutManager
+                rv_recharge_home_dual_icons.layoutManager = layoutManager
 
-                rv_recharge_home_trust_mark.adapter =
-                        RechargeItemTrustMarkAdapter(trustMarkItems)
+                rv_recharge_home_dual_icons.adapter =
+                        RechargeItemDualIconsAdapter(trustMarkItems, listener)
 
+                addOnImpressionListener(section) {
+                    listener.onRechargeSectionItemImpression(section)
+                }
             } else {
-                view_recharge_home_trust_mark_container.hide()
-                view_recharge_home_trust_mark_shimmering.show()
+                view_recharge_home_dual_icons_container.hide()
+                view_recharge_home_dual_icons_shimmering.show()
 
                 listener.loadRechargeSectionData(element.visitableId())
             }
@@ -54,7 +58,7 @@ class RechargeHomepageTrustMarkViewHolder(itemView: View?, val listener: Recharg
     }
 
     companion object {
-        val LAYOUT = R.layout.view_recharge_home_trustmark
+        val LAYOUT = R.layout.view_recharge_home_dual_icons
         const val TRUST_MARK_MAX_SPAN_COUNT = 3
     }
 }
