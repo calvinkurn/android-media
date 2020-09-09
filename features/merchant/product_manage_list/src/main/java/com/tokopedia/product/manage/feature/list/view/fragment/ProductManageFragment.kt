@@ -1400,11 +1400,15 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
      */
     private fun goToPDP(productId: String?, showTopAdsSheet: Boolean = false) {
         if (productId != null) {
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
+            val uri = Uri.parse(ApplinkConstInternalMarketplace.PRODUCT_DETAIL).buildUpon()
 
             if(showTopAdsSheet) {
-                intent.putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, SellerMigrationFeatureName.FEATURE_ADS)
+                uri.appendQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME,
+                    SellerMigrationFeatureName.FEATURE_ADS)
             }
+
+            val uriString = uri.build().toString()
+            val intent = RouteManager.getIntent(context, uriString, productId)
 
             startActivity(intent)
         }
@@ -1990,6 +1994,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     companion object {
         private const val LOCAL_PATH_IMAGE_LIST = "loca_img_list"
         private const val DESC_IMAGE_LIST = "desc_img_list"
+        private const val QUERY_PARAM_ID = "id"
 
         private const val BOTTOM_SHEET_TAG = "BottomSheetTag"
 
