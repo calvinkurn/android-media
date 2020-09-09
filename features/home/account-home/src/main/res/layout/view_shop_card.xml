@@ -16,6 +16,7 @@
 
         <ImageView
             android:id="@+id/image_shop"
+            android:contentDescription="@string/content_desc_image_shop"
             android:layout_width="@dimen/dp_50"
             android:layout_height="@dimen/dp_50"
             android:minHeight="@dimen/dp_50"
@@ -26,6 +27,7 @@
 
         <ImageView
             android:id="@+id/image_badge"
+            android:contentDescription="@string/content_desc_image_badge"
             android:layout_width="@dimen/dp_16"
             android:layout_height="@dimen/dp_16"
             android:visibility="gone"
@@ -35,6 +37,7 @@
 
         <TextView
             android:id="@+id/text_shop_name"
+            android:contentDescription="@string/content_desc_text_shop_name"
             style="@style/TextView.TitleMedium.Bold"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

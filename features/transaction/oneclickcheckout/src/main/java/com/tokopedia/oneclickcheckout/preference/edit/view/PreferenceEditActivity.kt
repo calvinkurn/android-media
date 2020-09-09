@@ -26,7 +26,7 @@ import com.tokopedia.oneclickcheckout.preference.edit.view.summary.PreferenceSum
 import kotlinx.android.synthetic.main.activity_preference_edit.*
 import javax.inject.Inject
 
-class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditComponent>, PreferenceEditParent {
+open class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditComponent>, PreferenceEditParent {
 
     @Inject
     lateinit var preferenceListAnalytics: PreferenceListAnalytics

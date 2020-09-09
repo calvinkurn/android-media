@@ -313,7 +313,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             orderInsuranceCard.setupInsurance(it?.insuranceData, viewModel.orderProduct.productId.toString())
             if (it?.needPinpoint == true && orderPreference?.preference?.address != null) {
                 goToPinpoint(orderPreference?.preference?.address)
-            } else if (orderPreference != null) {
+            } else if (orderPreference != null && viewModel.globalEvent.value !is OccGlobalEvent.Prompt) {
                 forceShowOnboarding(orderPreference?.onboarding)
             }
         })
@@ -572,7 +572,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     }
 
     private fun forceShowOnboarding(onboarding: OccMainOnboarding?) {
-        if (onboarding?.isForceShowCoachMark == true) {
+        if (onboarding?.isForceShowCoachMark == true || onboarding != null) {
             showOnboarding(onboarding)
             viewModel.consumeForceShowOnboarding()
         }
