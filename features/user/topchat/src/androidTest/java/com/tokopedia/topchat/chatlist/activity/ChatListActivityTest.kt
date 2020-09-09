@@ -8,6 +8,7 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.filters.LargeTest
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.rule.ActivityTestRule
+import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.pojo.ChatListPojo
@@ -16,6 +17,9 @@ import com.tokopedia.topchat.matchers.withIndex
 import com.tokopedia.topchat.stub.chatlist.activity.ChatListActivityStub
 import com.tokopedia.topchat.stub.chatlist.usecase.ChatListGraphqlUseCase
 import com.tokopedia.topchat.stub.common.UserSessionStub
+import com.tokopedia.websocket.RxWebSocketUtil
+import io.mockk.every
+import io.mockk.mockkObject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -100,6 +104,7 @@ class ChatListActivityTest {
         userSession.shopNameStub = "Toko Rifqi"
         userSession.nameStub = "Rifqi MF"
         chatListUseCase.response = exEmptyChatListPojo
+        disableCoachMarkOnBoarding()
 
         // When
         activity.setupTestFragment(chatListUseCase)
@@ -124,6 +129,7 @@ class ChatListActivityTest {
         userSession.shopNameStub = "Toko Rifqi 123"
         userSession.nameStub = "Rifqi MF 123"
         chatListUseCase.response = exSize5ChatListPojo
+        disableCoachMarkOnBoarding()
 
         // When
         activity.setupTestFragment(chatListUseCase)
@@ -133,4 +139,8 @@ class ChatListActivityTest {
                 .check(RecyclerViewItemCountAssertion(5))
     }
 
+    private fun disableCoachMarkOnBoarding() {
+        mockkObject(CoachMarkPreference)
+        every { CoachMarkPreference.hasShown(any(), any()) } returns true
+    }
 }
