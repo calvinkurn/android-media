@@ -2,15 +2,12 @@ package com.tokopedia.digital.home.domain
 
 import com.tokopedia.digital.home.model.DigitalHomePageCategoryModel
 import com.tokopedia.digital.home.model.DigitalHomePageSearchCategoryModel
-import com.tokopedia.digital.home.presentation.Util.DigitalHomePageCategoryDataMapper
+import com.tokopedia.digital.home.presentation.util.DigitalHomePageCategoryDataMapper
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 
 class SearchCategoryHomePageUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCase<DigitalHomePageCategoryModel>(graphqlRepository) {
 

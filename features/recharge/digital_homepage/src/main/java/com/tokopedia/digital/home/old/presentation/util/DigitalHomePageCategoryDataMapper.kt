@@ -1,4 +1,4 @@
-package com.tokopedia.digital.home.presentation.Util
+package com.tokopedia.digital.home.presentation.util
 
 import com.tokopedia.digital.home.model.DigitalHomePageCategoryModel
 import com.tokopedia.digital.home.model.DigitalHomePageItemModel

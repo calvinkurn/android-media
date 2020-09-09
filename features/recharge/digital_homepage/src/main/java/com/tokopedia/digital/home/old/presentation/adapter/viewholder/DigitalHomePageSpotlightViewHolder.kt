@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.common_digital.common.util.AnalyticUtils
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.model.DigitalHomePageSpotlightModel
-import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.SPOTLIGHT_IMPRESSION
+import com.tokopedia.digital.home.presentation.util.DigitalHomepageTrackingActionConstant.SPOTLIGHT_IMPRESSION
 import com.tokopedia.digital.home.presentation.adapter.adapter.DigitalItemSpotlightAdapter
 import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
 import com.tokopedia.kotlin.extensions.view.hide

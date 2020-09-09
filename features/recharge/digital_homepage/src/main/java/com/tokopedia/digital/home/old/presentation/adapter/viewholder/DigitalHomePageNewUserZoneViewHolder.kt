@@ -5,8 +5,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.model.DigitalHomePageNewUserZoneModel
-import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.NEW_USER_BANNER_CLICK
-import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.NEW_USER_IMPRESSION
+import com.tokopedia.digital.home.presentation.util.DigitalHomepageTrackingActionConstant.NEW_USER_BANNER_CLICK
+import com.tokopedia.digital.home.presentation.util.DigitalHomepageTrackingActionConstant.NEW_USER_IMPRESSION
 import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show

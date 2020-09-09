@@ -10,18 +10,15 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.analyticsdebugger.validator.core.getAnalyticsWithQuery
-import com.tokopedia.analyticsdebugger.validator.core.hasAllSuccess
-import com.tokopedia.digital.home.presentation.activity.DigitalHomePageActivity
-import com.tokopedia.digital.home.presentation.adapter.adapter.RechargeItemCategoryAdapter
-import com.tokopedia.digital.home.presentation.adapter.adapter.RechargeItemFavoriteAdapter
+import com.tokopedia.digital.home.presentation.activity.RechargeHomepageActivity
+import com.tokopedia.digital.home.presentation.adapter.RechargeItemCategoryAdapter
+import com.tokopedia.digital.home.presentation.adapter.RechargeItemFavoriteAdapter
 import com.tokopedia.digital.home.presentation.adapter.viewholder.*
 import com.tokopedia.home_component.viewholders.DynamicLegoBannerViewHolder
 import com.tokopedia.home_component.viewholders.ReminderWidgetViewHolder
@@ -35,14 +32,14 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 @LargeTest
-class DigitalHomepageInstrumentTest {
+class RechargeHomepageInstrumentTest {
 
     @get:Rule
-    var activityRule: IntentsTestRule<DigitalHomePageActivity> = object : IntentsTestRule<DigitalHomePageActivity>(DigitalHomePageActivity::class.java) {
+    var activityRule: IntentsTestRule<RechargeHomepageActivity> = object : IntentsTestRule<RechargeHomepageActivity>(RechargeHomepageActivity::class.java) {
         override fun getActivityIntent(): Intent {
             val context = InstrumentationRegistry.getInstrumentation().targetContext
-            return Intent(context, DigitalHomePageActivity::class.java).apply {
-                putExtra(DigitalHomePageActivity.PARAM_PLATFORM_ID, PARAM_PLATFORM_ID_DEFAULT)
+            return Intent(context, RechargeHomepageActivity::class.java).apply {
+                putExtra(RechargeHomepageActivity.PARAM_PLATFORM_ID, PARAM_PLATFORM_ID_DEFAULT)
             }
         }
 
@@ -59,7 +56,7 @@ class DigitalHomepageInstrumentTest {
     fun setUp() {
         gtmLogDBSource.deleteAll().subscribe()
 
-//        setupGraphqlMockResponse(DigitalHomepageMockResponseConfig())
+//        setupGraphqlMockResponse(RechargeHomepageMockResponseConfig())
 
         Intents.intending(IntentMatchers.isInternal()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
@@ -86,9 +83,9 @@ class DigitalHomepageInstrumentTest {
 
     private fun show_contents_digital_homepage() {
 //        val context = InstrumentationRegistry.getInstrumentation().targetContext
-//        activityRule.launchActivity(DigitalHomePageActivity.getCallingIntent(context, PARAM_PLATFORM_ID_DEFAULT))
-//        val intent = Intent(context, DigitalHomePageActivity::class.java).apply {
-//            putExtra(DigitalHomePageActivity.PARAM_PLATFORM_ID, PARAM_PLATFORM_ID_DEFAULT)
+//        activityRule.launchActivity(RechargeHomepageActivity.getCallingIntent(context, PARAM_PLATFORM_ID_DEFAULT))
+//        val intent = Intent(context, RechargeHomepageActivity::class.java).apply {
+//            putExtra(RechargeHomepageActivity.PARAM_PLATFORM_ID, PARAM_PLATFORM_ID_DEFAULT)
 //        }
 //        activityRule.launchActivity(intent)
         onView(withId(R.id.recycler_view)).check(matches(isDisplayed()))
@@ -126,10 +123,10 @@ class DigitalHomepageInstrumentTest {
 
     private fun check_trustmark_section() {
         onView(withId(R.id.recycler_view)).perform(
-                RecyclerViewActions.scrollToPosition<RechargeHomepageTrustMarkViewHolder>(3)
+                RecyclerViewActions.scrollToPosition<RechargeHomepageDualIconsViewHolder>(3)
         )
         Thread.sleep(1000)
-        onView(withId(R.id.rv_recharge_home_trust_mark)).check(matches(isDisplayed()))
+        onView(withId(R.id.rv_recharge_home_dual_icons)).check(matches(isDisplayed()))
     }
 
     private fun check_reminder_section() {
