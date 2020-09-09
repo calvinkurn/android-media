@@ -253,7 +253,7 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener, EventPDP
         const val EXTRA_DATA_PESSANGER = "EXTRA_DATA_PESSANGER"
         val REQUEST_CODE = 100
         const val SEARCH_PAGE_LIMIT = 10
-        const val DELAY_CONST: Long = 250
+        const val DELAY_CONST: Long = 100
     }
 
     fun LinkedHashMap<String, String>.getKeyByPosition(position: Int) =

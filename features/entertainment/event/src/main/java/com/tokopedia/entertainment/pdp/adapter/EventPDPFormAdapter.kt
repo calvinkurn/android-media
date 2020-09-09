@@ -36,16 +36,20 @@ class EventPDPFormAdapter(val userSession: UserSessionInterface,
     }
 
     private fun addOrRemoveData(index:Int, value: String){
-        formData.get(index).value = value
+        if(formData.get(index).elementType.equals(ELEMENT_LIST)){
+            formData.get(index).valuePosition = value
+        }else {
+            formData.get(index).value = value
+        }
     }
 
     fun getError(): Pair<String, Int>{
         formData.forEach {
             if(it.required == 1) {
-                if(it.value.isBlank()) {
+                if((it.value.isBlank() && it.elementType.equals(ELEMENT_TEXT)) ||
+                        (it.valuePosition.equals(BLANK_LIST) && it.elementType.equals(ELEMENT_LIST))) {
                     return Pair(it.title, EMPTY_TYPE)
-                }
-                else {
+                } else {
                     if(!validateRegex(it.value, it.validatorRegex)) return Pair(it.title, REGEX_TYPE)
                 }
             }
@@ -56,9 +60,11 @@ class EventPDPFormAdapter(val userSession: UserSessionInterface,
 
     private fun validateRegex(string: String, pattern: String): Boolean{
         try {
-            val mPattern = Pattern.compile(pattern)
-            val matcher = mPattern.matcher(string)
-            return matcher.matches()
+            if (!pattern.isNullOrEmpty()) {
+                val mPattern = Pattern.compile(pattern)
+                val matcher = mPattern.matcher(string)
+                return matcher.matches()
+            } else return true
         }catch (e: RuntimeException){
             return false
         }
@@ -75,5 +81,7 @@ class EventPDPFormAdapter(val userSession: UserSessionInterface,
         const val ELEMENT_LIST = "list"
         const val TEXT_TYPE = 1
         const val LIST_TYPE = 2
+
+        const val BLANK_LIST = "-1"
     }
 }

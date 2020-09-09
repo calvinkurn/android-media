@@ -72,14 +72,22 @@ class EventPDPTextFieldViewHolder(val view: View,
                     if (list.isNotEmpty()) {
                         txtValue.textFieldInput.apply {
                             keyListener = null
-                            if (keyActiveBottomSheet.isNullOrEmpty()){
-                                setText(list.getValueByPosition(0))
-                            } else setText(list.get(keyActiveBottomSheet))
+
+                            val value = if (keyActiveBottomSheet.isNullOrEmpty()) {
+                               list.getValueByPosition(0)
+                            } else list.get(keyActiveBottomSheet)
+
+                            val key = if (keyActiveBottomSheet.isNullOrEmpty()) {
+                                list.getKeyByPosition(0)
+                            } else keyActiveBottomSheet
+
+                            setText(value)
+                            addOrRemoveData(position, key)
                             setOnTouchListener(object : View.OnTouchListener {
                                 override fun onTouch(v: View?, event: MotionEvent?): Boolean {
                                     when (event?.action) {
                                         MotionEvent.ACTION_DOWN -> {
-                                            formListener.clickBottomSheet(list,element.title,positionActiveForm, keyActiveBottomSheet)
+                                            formListener.clickBottomSheet(list, element.title, positionActiveForm, keyActiveBottomSheet)
                                         }
                                     }
 
@@ -97,21 +105,23 @@ class EventPDPTextFieldViewHolder(val view: View,
 
     private fun validateRegex(string: String, pattern: String): Boolean {
         try {
-            val mPattern = Pattern.compile(pattern)
-            val matcher = mPattern.matcher(string)
-            return matcher.matches()
+            if (!pattern.isNullOrEmpty()) {
+                val mPattern = Pattern.compile(pattern)
+                val matcher = mPattern.matcher(string)
+                return matcher.matches()
+            } else return true
         } catch (e: RuntimeException) {
             return false
         }
     }
 
-    fun getList(value: String): LinkedHashMap<String, String>{
-        val listValue : LinkedHashMap<String,String> = LinkedHashMap()
+    fun getList(value: String): LinkedHashMap<String, String> {
+        val listValue: LinkedHashMap<String, String> = LinkedHashMap()
         val jsonArray = JSONArray(value)
         for (i in 0..jsonArray.length() - 1) {
             val key = (jsonArray.getJSONObject(i) as JSONObject).names()?.get(0)?.toString()
             key?.let {
-                listValue.put(key,jsonArray.getJSONObject(i).getString(key))
+                listValue.put(key, jsonArray.getJSONObject(i).getString(key))
             }
         }
         return listValue
@@ -124,8 +134,8 @@ class EventPDPTextFieldViewHolder(val view: View,
     fun LinkedHashMap<String, String>.getValueByPosition(position: Int) =
             this.values.toTypedArray()[position]
 
-    interface TextFormListener{
-       fun getKeyActive():String
+    interface TextFormListener {
+        fun getKeyActive(): String
     }
 
     companion object {
