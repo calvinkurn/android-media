@@ -1,0 +1,313 @@
+{
+  "readme": "Play Broadcaster - All Analytic",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "openScreen",
+      "networkSpeed": "{{.*}}",
+      "clientId": "{{.*}}",
+      "isLoggedInStatus": "{{true|false}}",
+      "appsflyerId": "{{.*}}",
+      "shopId": "{{.*}}",
+      "screenName": "{{/seller broadcast - permission page - \\d+}}",
+      "userId": "{{.+}}",
+      "sessionIris": "{{.*}}",
+      "currentSite": "tokopediaseller",
+      "businessUnit": "play"
+    },
+    {
+      "event": "openScreen",
+      "networkSpeed": "{{.*}}",
+      "clientId": "{{.*}}",
+      "isLoggedInStatus": "{{true|false}}",
+      "appsflyerId": "{{.*}}",
+      "shopId": "{{.*}}",
+      "screenName": "{{/seller broadcast - onboarding page - \\d+}}",
+      "userId": "{{.+}}",
+      "sessionIris": "{{.*}}",
+      "currentSite": "tokopediaseller",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "click watch area",
+      "event": "clickSellerBroadcast",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+ - (vod|live) - (portrait|landscape)}}",
+      "sessionIris": "{{.*}}",
+      "screenName": "{{/group-chat-room/\\d+/(vod|live)}}",
+      "currentSite": "{{.*}}",
+      "clientId": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "click on admin pinned message",
+      "event": "clickSellerBroadcast",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+ - .+ - .+ - (live|vod)}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "eventAction": "click like",
+      "event": "clickSellerBroadcast",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+ - (live|vod)}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "eventAction": "click unlike",
+      "event": "clickSellerBroadcast",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+ - (live|vod)}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "eventAction": "error state",
+      "event": "viewGroupChat",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+ - .+ - (live|vod)}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "eventAction": "click on quick reply component",
+      "event": "clickSellerBroadcast",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "eventAction": "click on button send",
+      "event": "clickSellerBroadcast",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "eventAction": "click watch mode option",
+      "event": "clickSellerBroadcast",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+ - (live|vod)}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "eventAction": "click on play button video",
+      "event": "clickSellerBroadcast",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+ - (live|vod)}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "eventAction": "click cart icon",
+      "event": "clickSellerBroadcast",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+ - (live|vod)}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "eventAction": "scroll merchant voucher",
+      "event": "clickSellerBroadcast",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+ - \\d+}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "eventAction": "click buy in bottom sheet with varian",
+      "event": "clickSellerBroadcast",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+ - \\d+ - (live|vod)}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "eventAction": "click buy in bottom sheet",
+      "event": "add_to_cart",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+ - \\d+ - (live|vod)}}",
+      "sessionIris": "{{.*}}",
+      "items": [
+        {
+          "quantity": "{{\\d+(.\\d+)?}}",
+          "item_id": "{{\\d+}}",
+          "item_name": "{{.*}}",
+          "dimension81": "{{.*}}",
+          "dimension80": "{{.*}}",
+          "item_brand": "{{.*}}",
+          "item_category": "{{.*}}",
+          "dimension45": "{{\\d+}}",
+          "dimension82": "{{.*}}",
+          "price": "{{\\d+.\\d+}}",
+          "dimension40": "/groupchat - bottom sheet",
+          "dimension79": "{{.*}}",
+          "item_variant": "{{.*}}"
+        }
+      ]
+    },
+    {
+      "eventAction": "click atc in bottom sheet with varian",
+      "event": "clickSellerBroadcast",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+ - \\d+ - (live|vod)}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "eventAction": "click atc in bottom sheet",
+      "event": "add_to_cart",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+ - \\d+ - (live|vod)}}",
+      "sessionIris": "{{.*}}",
+      "items": [
+        {
+          "quantity": "{{\\d+(.\\d+)?}}",
+          "item_id": "{{\\d+}}",
+          "item_name": "{{.*}}",
+          "dimension81": "{{.*}}",
+          "dimension80": "{{.*}}",
+          "item_brand": "{{.*}}",
+          "item_category": "{{.*}}",
+          "dimension45": "{{\\d+}}",
+          "dimension82": "{{.*}}",
+          "price": "{{\\d+.\\d+}}",
+          "dimension40": "/groupchat - bottom sheet",
+          "dimension79": "{{.*}}",
+          "item_variant": "{{.*}}"
+        }
+      ]
+    },
+    {
+      "eventAction": "view product",
+      "event": "view_item_list",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+ - \\d+ - (live|vod) - product in bottom sheet}}",
+      "sessionIris": "{{.*}}",
+      "items": [
+        {
+          "item_id": "{{\\d+}}",
+          "item_name": "{{.*}}",
+          "item_brand": "{{.*}}",
+          "item_category": "{{.*}}",
+          "price": "{{\\d+.\\d+}}",
+          "item_variant": "{{.*}}",
+          "index": "{{\\d+(.\\d+)?}}"
+        }
+      ],
+      "item_list": "/groupchat - bottom sheet"
+    },
+    {
+      "eventAction": "click",
+      "event": "select_content",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+ - \\d+ - (live|vod) - product in bottom sheet}}",
+      "sessionIris": "{{.*}}",
+      "items": [
+        {
+          "item_id": "{{\\d+}}",
+          "item_name": "{{.*}}",
+          "item_brand": "{{.*}}",
+          "item_category": "{{.*}}",
+          "price": "{{\\d+.\\d+}}",
+          "item_variant": "{{.*}}",
+          "dimension40": "/groupchat - bottom sheet",
+          "index": "{{\\d+(.\\d+)?}}"
+        }
+      ],
+      "item_list": "/groupchat - bottom sheet"
+    },
+    {
+      "eventAction": "click atc in varian page",
+      "event": "add_to_cart",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+ - \\d+ - (live|vod)}}",
+      "sessionIris": "{{.*}}",
+      "items": [
+        {
+          "quantity": "{{\\d+(.\\d+)?}}",
+          "item_id": "{{\\d+}}",
+          "item_name": "{{.*}}",
+          "dimension81": "{{.*}}",
+          "dimension80": "{{.*}}",
+          "item_brand": "{{.*}}",
+          "item_category": "{{.*}}",
+          "dimension45": "{{\\d+}}",
+          "dimension82": "{{.*}}",
+          "price": "{{\\d+.\\d+}}",
+          "dimension40": "/groupchat - varian page",
+          "dimension79": "{{.*}}",
+          "item_variant": "{{.*}}"
+        }
+      ]
+    },
+    {
+      "eventAction": "click beli in varian page",
+      "event": "add_to_cart",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+ - \\d+ - (live|vod)}}",
+      "sessionIris": "{{.*}}",
+      "items": [
+        {
+          "quantity": "{{\\d+(.\\d+)?}}",
+          "item_id": "{{\\d+}}",
+          "item_name": "{{.*}}",
+          "dimension81": "{{.*}}",
+          "dimension80": "{{.*}}",
+          "item_brand": "{{.*}}",
+          "item_category": "{{.*}}",
+          "dimension45": "{{\\d+}}",
+          "dimension82": "{{.*}}",
+          "price": "{{\\d+.\\d+}}",
+          "dimension40": "/groupchat - varian page",
+          "dimension79": "{{.*}}",
+          "item_variant": "{{.*}}"
+        }
+      ]
+    },
+    {
+      "eventAction": "click lihat in message ticker",
+      "event": "clickSellerBroadcast",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+ - (live|vod)}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "eventAction": "click product pinned message",
+      "event": "clickSellerBroadcast",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "eventAction": "buffer",
+      "event": "viewGroupChat",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+ - \\d+ - \\d+ - (live|vod)}}",
+      "sessionIris": "{{.*}}",
+      "screenName": "{{/group-chat-room/\\d+/(vod|live)}}",
+      "currentSite": "{{.*}}",
+      "clientId": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "click full screen to landscape",
+      "event": "clickSellerBroadcast",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+ - (live|vod)}}",
+      "sessionIris": "{{.*}}",
+      "screenName": "{{/group-chat-room/\\d+/(vod|live)}}",
+      "currentSite": "{{.*}}",
+      "clientId": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "rotate phone to full screen",
+      "event": "clickSellerBroadcast",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+ - (live|vod)}}",
+      "sessionIris": "{{.*}}",
+      "screenName": "{{/group-chat-room/\\d+/(vod|live)}}",
+      "currentSite": "{{.*}}",
+      "clientId": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "play"
+    }
+  ]
+}
