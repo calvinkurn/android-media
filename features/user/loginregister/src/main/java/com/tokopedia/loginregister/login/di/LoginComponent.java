@@ -1,6 +1,5 @@
 package com.tokopedia.loginregister.login.di;
 
-import com.tokopedia.devicefingerprint.di.DeviceFingerprintModule;
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;
 import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment;
