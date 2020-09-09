@@ -46,8 +46,6 @@ android {
 }
 
 dependencies {
-    def newExoPlayerVersion = '2.11.1'
-
     // Feature
     implementation project(rootProject.ext.features.atc_common)
     implementation project(rootProject.ext.features.commonDigital)
@@ -154,7 +152,7 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.location
     implementation project(rootProject.ext.libraries.weaver)
 
-    implementation "com.google.android.exoplayer:exoplayer:$newExoPlayerVersion"
+    implementation rootProject.ext.miscDependencies.exoPlayer
 
     // UI Test
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner

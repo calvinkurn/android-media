@@ -11,6 +11,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.flight.bookingV3.di.DaggerFlightBookingComponent
 import com.tokopedia.flight.bookingV3.di.FlightBookingComponent
 import com.tokopedia.flight.bookingV3.presentation.fragment.FlightBookingFragment
+import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.view.BaseFlightActivity
 import com.tokopedia.flight.searchV4.presentation.model.FlightPriceModel
 import com.tokopedia.flight.searchV4.presentation.model.FlightSearchPassDataModel
@@ -21,7 +22,7 @@ import javax.inject.Inject
  * @author by jessica on 2019-10-23
  */
 
-class FlightBookingActivity: BaseFlightActivity(), HasComponent<FlightBookingComponent> {
+class FlightBookingActivity : BaseFlightActivity(), HasComponent<FlightBookingComponent> {
 
     lateinit var userSession: UserSessionInterface
         @Inject set
@@ -64,6 +65,8 @@ class FlightBookingActivity: BaseFlightActivity(), HasComponent<FlightBookingCom
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean = true
+
+    override fun getScreenName(): String = FlightAnalytics.Screen.BOOKING
 
     companion object {
         private const val REQUEST_CODE_LOGIN = 6

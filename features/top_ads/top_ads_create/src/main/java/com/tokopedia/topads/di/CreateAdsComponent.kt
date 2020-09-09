@@ -1,6 +1,7 @@
 package com.tokopedia.topads.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.topads.view.activity.KeywordSearchActivity
 import com.tokopedia.topads.view.fragment.*
 import dagger.Component
 
@@ -18,5 +19,6 @@ interface CreateAdsComponent {
     fun inject(budgetingAdsFragment: BudgetingAdsFragment)
     fun inject(summaryAdsFragment: SummaryAdsFragment)
     fun inject(adCreationChooserFragment: AdCreationChooserFragment)
+    fun inject(keywordSearchActivity: KeywordSearchActivity)
 
 }

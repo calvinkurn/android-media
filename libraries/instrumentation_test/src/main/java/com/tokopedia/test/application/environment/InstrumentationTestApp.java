@@ -20,6 +20,7 @@ import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.TkpdCoreRouter;
@@ -70,7 +71,7 @@ public class InstrumentationTestApp extends BaseMainApplication
         TopAdsVerificatorInterface {
     public static final String MOCK_ADS_ID = "2df9e57a-849d-4259-99ea-673107469eef";
     public static final String MOCK_FINGERPRINT_HASH = "eyJjYXJyaWVyIjoiQW5kcm9pZCIsImN1cnJlbnRfb3MiOiI4LjAuMCIsImRldmljZV9tYW51ZmFjdHVyZXIiOiJHb29nbGUiLCJkZXZpY2VfbW9kZWwiOiJBbmRyb2lkIFNESyBidWlsdCBmb3IgeDg2IiwiZGV2aWNlX25hbWUiOiJBbmRyb2lkIFNESyBidWlsdCBmb3IgeDg2IiwiZGV2aWNlX3N5c3RlbSI6ImFuZHJvaWQiLCJpc19lbXVsYXRvciI6dHJ1ZSwiaXNfamFpbGJyb2tlbl9yb290ZWQiOmZhbHNlLCJpc190YWJsZXQiOmZhbHNlLCJsYW5ndWFnZSI6ImVuX1VTIiwibG9jYXRpb25fbGF0aXR1ZGUiOiItNi4xNzU3OTQiLCJsb2NhdGlvbl9sb25naXR1ZGUiOiIxMDYuODI2NDU3Iiwic2NyZWVuX3Jlc29sdXRpb24iOiIxMDgwLDE3OTQiLCJzc2lkIjoiXCJBbmRyb2lkV2lmaVwiIiwidGltZXpvbmUiOiJHTVQrNyIsInVzZXJfYWdlbnQiOiJEYWx2aWsvMi4xLjAgKExpbnV4OyBVOyBBbmRyb2lkIDguMC4wOyBBbmRyb2lkIFNESyBidWlsdCBmb3IgeDg2IEJ1aWxkL09TUjEuMTcwOTAxLjA0MykifQ==";
-    public static final String MOCK_DEVICE_ID="cx68b1CtPII:APA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR";
+    public static final String MOCK_DEVICE_ID = "cx68b1CtPII:APA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR";
     private int topAdsProductCount = 0;
     private Long totalSizeInBytes = 0L;
     private Map<String, Interceptor> testInterceptors = new HashMap<>();
@@ -93,6 +94,8 @@ public class InstrumentationTestApp extends BaseMainApplication
         GraphqlClient.init(this);
         com.tokopedia.config.GlobalConfig.DEBUG = true;
         RemoteConfigInstance.initAbTestPlatform(this);
+        PersistentCacheManager.init(this);
+
         super.onCreate();
 
         ResourceDownloadManager
@@ -116,7 +119,7 @@ public class InstrumentationTestApp extends BaseMainApplication
             addInterceptor(new TopAdsDetectorInterceptor(new Function1<Integer, Unit>() {
                 @Override
                 public Unit invoke(Integer newCount) {
-                    topAdsProductCount+=newCount;
+                    topAdsProductCount += newCount;
                     return null;
                 }
             }));
@@ -346,19 +349,19 @@ public class InstrumentationTestApp extends BaseMainApplication
     }
 
     public String getFingerprintHash() throws UnsupportedEncodingException {
-        String deviceName   = DeviceInfo.getModelName();
+        String deviceName = DeviceInfo.getModelName();
         String deviceFabrik = DeviceInfo.getManufacturerName();
-        String deviceOS     = DeviceInfo.getOSName();
+        String deviceOS = DeviceInfo.getOSName();
         String deviceSystem = "android";
-        boolean isRooted    = DeviceInfo.isRooted();
-        String timezone     = DeviceInfo.getTimeZoneOffset();
-        String userAgent    = DeviceConnectionInfo.getHttpAgent();
-        boolean isEmulator  = DeviceInfo.isEmulated();
-        boolean isTablet    = DeviceScreenInfo.isTablet(this);
-        String screenReso     = DeviceScreenInfo.getScreenResolution(this);
+        boolean isRooted = DeviceInfo.isRooted();
+        String timezone = DeviceInfo.getTimeZoneOffset();
+        String userAgent = DeviceConnectionInfo.getHttpAgent();
+        boolean isEmulator = DeviceInfo.isEmulated();
+        boolean isTablet = DeviceScreenInfo.isTablet(this);
+        String screenReso = DeviceScreenInfo.getScreenResolution(this);
         String deviceLanguage = DeviceInfo.getLanguage();
-        String ssid         = DeviceConnectionInfo.getSSID(this);
-        String carrier      = DeviceConnectionInfo.getCarrierName(this);
+        String ssid = DeviceConnectionInfo.getSSID(this);
+        String carrier = DeviceConnectionInfo.getCarrierName(this);
         String adsId = getAdsId();
         String androidId = DeviceInfo.getAndroidId(this);
         boolean isx86 = DeviceInfo.isx86();
@@ -440,6 +443,7 @@ public class InstrumentationTestApp extends BaseMainApplication
     public void onNewIntent(Context context, Intent intent) {
 
     }
+
     @Override
     public void sendAnalyticsAnomalyResponse(String s, String s1, String s2, String s3, String s4) {
 
