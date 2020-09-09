@@ -33,7 +33,7 @@ class RechargeHomepageActivity : BaseSimpleActivity(), HasComponent<RechargeHome
     override fun getNewFragment(): Fragment {
         val bundle = intent.extras
         val platformId = bundle?.getString(PARAM_PLATFORM_ID)?.toIntOrNull() ?: 0
-        val enablePersonalize = (bundle?.getString(PARAM_ENABLE_PERSONALIZE) ?: "false").toBoolean()
+        val enablePersonalize = (bundle?.getString(PARAM_ENABLE_PERSONALIZE) ?: "true").toBoolean()
         return RechargeHomepageFragment.newInstance(platformId, enablePersonalize)
     }
 
@@ -61,7 +61,7 @@ class RechargeHomepageActivity : BaseSimpleActivity(), HasComponent<RechargeHome
         const val RECHARGE_HOME_PAGE_EXTRA = "RECHARGE_HOME_PAGE_EXTRA"
 
         fun getCallingIntent(context: Context, platformID: String,
-                             enablePersonalize: Boolean = false): Intent {
+                             enablePersonalize: Boolean = true): Intent {
             val intent = Intent(context, RechargeHomepageActivity::class.java)
             intent.putExtra(PARAM_PLATFORM_ID, platformID)
             intent.putExtra(PARAM_ENABLE_PERSONALIZE, enablePersonalize)

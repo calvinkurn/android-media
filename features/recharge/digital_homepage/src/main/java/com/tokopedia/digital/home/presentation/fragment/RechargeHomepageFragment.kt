@@ -78,7 +78,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
 
         arguments?.let {
             platformId = it.getInt(EXTRA_PLATFORM_ID, 0)
-            enablePersonalize = it.getBoolean(EXTRA_ENABLE_PERSONALIZE, false)
+            enablePersonalize = it.getBoolean(EXTRA_ENABLE_PERSONALIZE, true)
         }
 
         searchBarTransitionRange = TOOLBAR_TRANSITION_RANGE_DP.dpToPx(resources.displayMetrics)
@@ -184,7 +184,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        viewModel.rechargeHomepageSectionSkeleton.observe(this, Observer {
+        viewModel.rechargeHomepageSectionSkeleton.observe(viewLifecycleOwner, Observer {
             if (it is Fail) adapter.showGetListError(it.throwable)
         })
 
