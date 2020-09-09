@@ -1,0 +1,18 @@
+{
+  "readme": "#EE3 - View on product thumbnail from search products",
+  "mode": "subset",
+  "query": [
+    {
+      "item_list": "/chat - search chat",
+      "eventAction": "view on product thumbnail",
+      "eventCategory": "chat detail",
+      "event": "view_item_list",
+      "items": [
+        {
+          "dimension40": "/chat - search chat",
+          "list": "/chat - search chat"
+        }
+      ]
+    }
+  ]
+}
