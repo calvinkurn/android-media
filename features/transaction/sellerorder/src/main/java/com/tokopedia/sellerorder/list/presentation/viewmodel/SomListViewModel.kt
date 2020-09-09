@@ -55,10 +55,10 @@ class SomListViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
     private var getUserRolesJob: Job? = null
     private var getTopAdsGetShopInfoJob: Job? = null
 
-    fun loadTickerList(tickerQuery: String) {
+    fun loadTickerList(userId: String) {
         launchCatchError(block = {
-            val requestTickerParams = SomListTickerParam(requestBy = PARAM_SELLER, client = PARAM_CLIENT)
-            _tickerListResult.postValue(getTickerListUseCase.execute(requestTickerParams, tickerQuery))
+            val requestTickerParams = SomListTickerParam(requestBy = PARAM_SELLER, client = PARAM_CLIENT, userId = userId)
+            _tickerListResult.postValue(getTickerListUseCase.execute(requestTickerParams))
         }, onError = {
             _tickerListResult.postValue(Fail(it))
         })

@@ -5,8 +5,8 @@ import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_INPUT
 import com.tokopedia.sellerorder.list.data.model.SomListTicker
 import com.tokopedia.sellerorder.list.data.model.SomListTickerParam
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 /**
@@ -15,8 +15,11 @@ import javax.inject.Inject
 
 class SomGetTickerListUseCase @Inject constructor(private val useCase: GraphqlUseCase<SomListTicker.Data>) {
 
-    suspend fun execute(param: SomListTickerParam, query: String): Result<MutableList<SomListTicker.Data.OrderTickers.Tickers>> {
-        useCase.setGraphqlQuery(query)
+    init {
+        useCase.setGraphqlQuery(QUERY)
+    }
+
+    suspend fun execute(param: SomListTickerParam): Result<MutableList<SomListTicker.Data.OrderTickers.Tickers>> {
         useCase.setTypeClass(SomListTicker.Data::class.java)
         useCase.setRequestParams(generateParam(param))
 
@@ -30,5 +33,24 @@ class SomGetTickerListUseCase @Inject constructor(private val useCase: GraphqlUs
 
     private fun generateParam(param: SomListTickerParam): Map<String, Any?> {
         return mapOf(PARAM_INPUT to param)
+    }
+
+    companion object {
+        val QUERY = """
+            query OrderTickers(${'$'}input:OrderTickersArgs!) {
+             orderTickers(input:${'$'}input) {
+                user_id
+                    request_by
+                    client
+                    total
+                    tickers {
+                  id
+                  body
+                  short_desc
+                  is_active
+                }
+              }
+            }
+        """.trimIndent()
     }
 }

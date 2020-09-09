@@ -440,7 +440,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     private fun loadTicker() {
         activity?.resources?.let {
-            somListViewModel.loadTickerList(GraphqlHelper.loadRawString(it, R.raw.gql_som_ticker))
+            somListViewModel.loadTickerList(userSession.userId.toString())
         }
     }
 
