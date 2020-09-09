@@ -12,6 +12,7 @@ import com.tokopedia.trackingoptimizer.db.model.TrackingEEFullDbModel
 import com.tokopedia.trackingoptimizer.gson.GsonSingleton
 import com.tokopedia.trackingoptimizer.gson.HashMapJsonUtil
 import com.tokopedia.trackingoptimizer.model.EventModel
+import com.tokopedia.trackingoptimizer.repository.NewTrackingRepository
 import com.tokopedia.trackingoptimizer.repository.TrackingRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -34,6 +35,15 @@ fun sendTrack(coroutineScope: CoroutineScope, trackingRepository: TrackingReposi
               onFinished: (() -> Unit)) {
     atomicInteger.getAndIncrement()
     coroutineScope.launch {
+        val eeFullModelList = trackingRepository.getAllEEFull()
+        val deleteEEFullJob = launch(Dispatchers.IO + TrackingExecutors.handler) {
+            trackingRepository.deleteEEFull()
+        }
+        eeFullModelList?.run {
+            map {
+                sendTrack(it)
+            }
+        }
         val eeModelList = trackingRepository.getAllEE()
         val deleteEEJob = launch(Dispatchers.IO + TrackingExecutors.handler) {
             trackingRepository.deleteEE()
@@ -44,6 +54,7 @@ fun sendTrack(coroutineScope: CoroutineScope, trackingRepository: TrackingReposi
             }
         }
 
+        deleteEEFullJob.join()
         deleteEEJob.join()
         decreaseCounter()
         onFinished.invoke()
@@ -79,5 +90,25 @@ fun sendTrack(it: TrackingDbModel) {
     }
     if (!hasSent) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
+    }
+}
+
+fun sendTrackNew(coroutineScope: CoroutineScope, trackingRepository: NewTrackingRepository,
+              onFinished: (() -> Unit)) {
+    atomicInteger.getAndIncrement()
+    coroutineScope.launch {
+        val eeModelList = trackingRepository.getAllEE()
+        val deleteEEJob = launch(Dispatchers.IO + TrackingExecutors.handler) {
+            trackingRepository.deleteEE()
+        }
+        eeModelList?.run {
+            map {
+                sendTrack(it)
+            }
+        }
+
+        deleteEEJob.join()
+        decreaseCounter()
+        onFinished.invoke()
     }
 }
