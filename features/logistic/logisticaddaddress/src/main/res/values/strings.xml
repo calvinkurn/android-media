@@ -133,7 +133,7 @@
     <string name="content_desc_btn_save_address">button simpan alamat</string>
     <string name="content_desc_receiver_name">input nama penerima</string>
     <string name="content_desc_address">input alamat</string>
-    <string name="content_desc_address">input kota atau kecamatan</string>
+    <string name="content_desc_district">input kota atau kecamatan</string>
     <string name="content_desc_autocomplete_postal_code">input kode pos</string>
     <string name="content_desc_receiver_phone">input nomor telepon</string>
     <string name="content_desc_value_location">input lokasi pickup</string>
