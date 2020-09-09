@@ -14,9 +14,9 @@ class ProductMenuAdapterFactoryImpl(
     private val listener: ProductMenuListener
 ) : BaseAdapterTypeFactory(), ProductMenuAdapterFactory {
 
-    override fun type(menuViewModel: ProductMenuViewModel): Int = ProductMenuViewHolder.LAYOUT
+    override fun type(item: ProductMenuViewModel): Int = ProductMenuViewHolder.LAYOUT
 
-    override fun type(divider: ProductItemDivider): Int = DividerViewHolder.LAYOUT
+    override fun type(item: ProductItemDivider): Int = DividerViewHolder.LAYOUT
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {

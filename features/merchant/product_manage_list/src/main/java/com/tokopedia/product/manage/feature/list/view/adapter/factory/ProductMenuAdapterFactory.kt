@@ -5,6 +5,6 @@ import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel
 
 interface ProductMenuAdapterFactory {
 
-    fun type(menuViewModel: ProductMenuViewModel): Int
-    fun type(divider: ProductItemDivider): Int
+    fun type(item: ProductMenuViewModel): Int
+    fun type(item: ProductItemDivider): Int
 }
