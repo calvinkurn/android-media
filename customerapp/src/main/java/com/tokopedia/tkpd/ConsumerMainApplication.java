@@ -14,7 +14,6 @@ import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import kotlin.Pair;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -33,8 +32,10 @@ import com.moengage.push.PushManager;
 import com.moengage.pushbase.push.MoEPushCallBacks;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.cachemanager.PersistentCacheManager;
@@ -49,11 +50,8 @@ import com.tokopedia.dev_monitoring_tools.DevMonitoring;
 import com.tokopedia.dev_monitoring_tools.beta.BetaSignActivityLifecycleCallbacks;
 import com.tokopedia.dev_monitoring_tools.session.SessionActivityLifecycleCallbacks;
 import com.tokopedia.dev_monitoring_tools.ui.JankyFrameActivityLifecycleCallbacks;
-import com.tokopedia.dev_monitoring_tools.beta.BetaSignActivityLifecycleCallbacks;
-import com.tokopedia.dev_monitoring_tools.session.SessionActivityLifecycleCallbacks;
 import com.tokopedia.developer_options.stetho.StethoUtil;
 import com.tokopedia.device.info.DeviceInfo;
-import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.intl.BuildConfig;
 import com.tokopedia.intl.R;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
@@ -63,7 +61,8 @@ import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubsc
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
-import com.tokopedia.authentication.AuthHelper;
+import com.tokopedia.screenshot_observer.Screenshot;
+import com.tokopedia.screenshot_observer.ScreenshotData;
 import com.tokopedia.shakedetect.ShakeDetectManager;
 import com.tokopedia.shakedetect.ShakeSubscriber;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
@@ -91,6 +90,7 @@ import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import kotlin.Pair;
 import timber.log.Timber;
 
 import static com.tokopedia.unifyprinciples.GetTypefaceKt.getTypeface;
@@ -150,6 +150,13 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             @Override
             public void onShakeDetected(boolean isLongShake) {
                 openShakeDetectCampaignPage(isLongShake);
+            }
+        }));
+
+        registerActivityLifecycleCallbacks(new Screenshot(getApplicationContext().getContentResolver(), new Screenshot.Listener() {
+            @Override
+            public void onScreenShotTaken(ScreenshotData screenshotData) {
+                openFeedbackForm(screenshotData);
             }
         }));
 
@@ -306,6 +313,13 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     private void openShakeDetectCampaignPage(boolean isLongShake) {
         Intent intent = RouteManager.getIntent(getApplicationContext(), ApplinkConstInternalPromo.PROMO_CAMPAIGN_SHAKE_LANDING, Boolean.toString(isLongShake));
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        getApplicationContext().startActivity(intent);
+    }
+
+    private void openFeedbackForm(ScreenshotData screenshotData) {
+        Intent intent = RouteManager.getIntent(getApplicationContext(), ApplinkConst.FEEDBACK_FORM);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra("EXTRA_URI_IMAGE", screenshotData.getPath());
         getApplicationContext().startActivity(intent);
     }
 

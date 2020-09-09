@@ -415,6 +415,7 @@ dependencies {
     implementation project(rootProject.ext.features.promotionsTarget)
     implementation project(rootProject.ext.features.promoGamificationCommon)
     implementation project(rootProject.ext.libraries.shakeDetect)
+    implementation project(rootProject.ext.libraries.screenshot_observer)
     implementation project(rootProject.ext.libraries.mapviewer)
     if (rootProject.ext.debugToolsEnabled) {
         implementation project(rootProject.ext.libraries.preReleaseInspector)

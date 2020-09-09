@@ -15,6 +15,13 @@ buildscript {
     }
 }
 
+dependencies {
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
+}
+
 project.ext {
     artifactId = 'screnshoot_observer'
     groupId = 'com.tokopedia.library'
