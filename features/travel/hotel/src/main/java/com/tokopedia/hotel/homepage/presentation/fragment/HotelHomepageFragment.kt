@@ -150,11 +150,11 @@ class HotelHomepageFragment : HotelBaseFragment(),
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        homepageViewModel.homepageDefaultParam.observe(this, Observer {
+        homepageViewModel.homepageDefaultParam.observe(viewLifecycleOwner, Observer {
             renderHotelParam(it)
         })
 
-        homepageViewModel.promoData.observe(this, Observer {
+        homepageViewModel.promoData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     if (remoteConfig.getBoolean(RemoteConfigKey.CUSTOMER_HOTEL_SHOW_PROMO) && it.data.banners.isNotEmpty()) {
@@ -167,7 +167,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
             stopTrace()
         })
 
-        homepageViewModel.recentSearch.observe(this, Observer {
+        homepageViewModel.recentSearch.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     renderHotelLastSearch(it.data)
@@ -175,7 +175,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
             }
         })
 
-        homepageViewModel.deleteRecentSearch.observe(this, Observer {
+        homepageViewModel.deleteRecentSearch.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     if (it.data) {
@@ -193,7 +193,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
         hotelHomepageModel.roomCount = hotelPropertyDefaultHome.totalRoom
         hotelHomepageModel.adultCount = hotelPropertyDefaultHome.totalGuest
         onDestinationChanged(hotelPropertyDefaultHome.label, searchId = hotelPropertyDefaultHome.searchId,
-                searchType = hotelPropertyDefaultHome.searchType)
+                searchType = hotelPropertyDefaultHome.searchType, shouldTrackChanges = false)
     }
 
     override fun onErrorRetryClicked() {
@@ -356,9 +356,12 @@ class HotelHomepageFragment : HotelBaseFragment(),
         renderView()
     }
 
-    private fun onDestinationChanged(name: String, id: Long = 0, type: String = "", searchType: String = "", searchId: String = "") {
-        val tempType = if (searchType.isNotEmpty()) searchType else type
-        trackingHotelUtil.hotelSelectDestination(context, tempType, name, HOMEPAGE_SCREEN_NAME)
+    private fun onDestinationChanged(name: String, id: Long = 0, type: String = "", searchType: String = "",
+                                     searchId: String = "", shouldTrackChanges: Boolean = true) {
+        if (shouldTrackChanges)  {
+            val tempType = if (searchType.isNotEmpty()) searchType else type
+            trackingHotelUtil.hotelSelectDestination(context, tempType, name, HOMEPAGE_SCREEN_NAME)
+        }
 
         hotelHomepageModel.locName = name
         hotelHomepageModel.locId = id
@@ -443,7 +446,6 @@ class HotelHomepageFragment : HotelBaseFragment(),
         showPromoContainer()
 
         banner_hotel_homepage_promo.setBannerIndicator(Indicator.GREEN)
-
         banner_hotel_homepage_promo.setOnPromoScrolledListener {
             trackingHotelUtil.hotelBannerImpression(context, promoDataList[it], it, HOMEPAGE_SCREEN_NAME)
         }
@@ -469,7 +471,6 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     private fun renderBannerView(bannerList: List<TravelCollectiveBannerModel.Banner>) {
-        showPromoContainer()
         val promoUrls = ArrayList<String>()
         for ((_, _, attribute) in bannerList) {
             promoUrls.add(attribute.imageUrl)
@@ -479,13 +480,6 @@ class HotelHomepageFragment : HotelBaseFragment(),
         banner_hotel_homepage_promo.customHeight = resources.getDimensionPixelSize(R.dimen.hotel_banner_height)
         banner_hotel_homepage_promo.setPromoList(promoUrls)
         banner_hotel_homepage_promo.buildView()
-        banner_hotel_homepage_promo.bannerSeeAll.hide()
-        banner_hotel_homepage_promo.bannerIndicator.hide()
-        if (bannerList.size > 1) {
-            banner_hotel_homepage_promo.bannerIndicator.show()
-        } else {
-            banner_hotel_homepage_promo.bannerIndicator.hide()
-        }
     }
 
     private fun renderHotelLastSearch(data: HotelRecentSearchModel) {
