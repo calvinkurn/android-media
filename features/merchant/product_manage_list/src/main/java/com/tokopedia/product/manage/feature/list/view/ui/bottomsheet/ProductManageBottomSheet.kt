@@ -6,12 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.list.view.adapter.ProductMenuAdapter
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductMenuViewHolder.ProductMenuListener
-import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel
+import com.tokopedia.product.manage.feature.list.view.model.ProductItemDivider
 import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.*
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
 import com.tokopedia.seller_migration_common.presentation.model.SellerFeatureUiModel
@@ -37,7 +38,7 @@ class ProductManageBottomSheet(
 
     init {
         if (container != null && listener != null && fm != null) {
-            val itemView = LayoutInflater.from(container?.context)
+            val itemView = LayoutInflater.from(container.context)
                     .inflate(LAYOUT, (container as ViewGroup), false)
 
             val menuList = itemView.menuList
@@ -46,6 +47,10 @@ class ProductManageBottomSheet(
 
             menuAdapter = ProductMenuAdapter(listener)
             menuList.adapter = menuAdapter
+
+            if(GlobalConfig.isSellerApp()) {
+                menuList.clearItemDecoration()
+            }
 
             setTitle(menuTitle)
             setChild(itemView)
@@ -71,8 +76,8 @@ class ProductManageBottomSheet(
         }
     }
 
-    private fun createProductManageMenu(product: ProductViewModel, isPowerMerchantOrOfficialStore: Boolean): List<ProductMenuViewModel> {
-        return mutableListOf<ProductMenuViewModel>().apply {
+    private fun createProductManageMenu(product: ProductViewModel, isPowerMerchantOrOfficialStore: Boolean): List<Visitable<*>> {
+        return mutableListOf<Visitable<*>>().apply {
             add(Preview(product))
             add(Duplicate(product))
             if (GlobalConfig.isSellerApp()) {
@@ -80,6 +85,8 @@ class ProductManageBottomSheet(
             }
             add(Delete(product))
             if (GlobalConfig.isSellerApp()) {
+                add(ProductItemDivider)
+
                 when {
                     product.isTopAds() -> add(SeeTopAds(product))
                     !product.isEmpty() -> add(SetTopAds(product))
