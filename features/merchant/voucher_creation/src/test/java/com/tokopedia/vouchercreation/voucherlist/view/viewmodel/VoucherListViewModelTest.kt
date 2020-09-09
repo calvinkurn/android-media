@@ -215,7 +215,10 @@ class VoucherListViewModelTest {
 
             coVerify {
                 shopBasicDataUseCase wasNot Called
+            }
+            coVerify {
                 getVoucherListUseCase.executeOnBackground()
+                getNotStartedVoucherListUseCase.executeOnBackground()
             }
             assert(voucherList.value is Fail)
         }
