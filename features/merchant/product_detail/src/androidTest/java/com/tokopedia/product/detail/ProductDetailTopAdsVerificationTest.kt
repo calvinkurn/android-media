@@ -19,8 +19,6 @@ import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.product.detail.view.viewholder.ProductRecommendationViewHolder
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
-import com.tokopedia.test.application.espresso_component.CommonActions
-import com.tokopedia.test.application.espresso_component.CommonMatcher
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupTopAdsDetector
 import org.hamcrest.Matchers.allOf
@@ -88,7 +86,7 @@ class ProductDetailTopAdsVerificationTest {
     }
 
     private fun waitForData() {
-        Thread.sleep(20000)
+        Thread.sleep(7000)
     }
 
     private fun login() {
