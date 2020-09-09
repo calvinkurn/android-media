@@ -163,6 +163,7 @@
                 }
               },
               "cart_string": "480176-0-2034-4678943",
+              "payment_profile": "",
               "shop": {
                 "shop_id": 480176,
                 "user_id": 5513284,
@@ -498,7 +499,8 @@
                   "text": "",
                   "link": ""
                 }
-              }
+              },
+              "ticker_message": ""
             },
             "shipment": {
               "service_id": 1104,
@@ -588,6 +590,14 @@
             "profile_code": "TKPD_DEFAULT",
             "signature": "f80ab707425ad0a0ca67d58a62f47ef5470d2ff1",
             "change_cc_link": ""
+          },
+          "error_ticker": "",
+          "prompt": {
+            "type": "",
+            "title": "",
+            "description": "",
+            "image_url": "",
+            "buttons": []
           }
         }
       }

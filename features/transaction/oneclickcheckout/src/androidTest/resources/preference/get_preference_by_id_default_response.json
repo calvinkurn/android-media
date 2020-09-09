@@ -41,7 +41,8 @@
               "flags": {
                 "pin": false
               },
-              "metadata": "{}"
+              "metadata": "{}",
+              "ticker_message": ""
             },
             "shipment": {
               "service_id": 1,
