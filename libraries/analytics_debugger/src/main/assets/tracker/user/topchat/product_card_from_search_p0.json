@@ -13,6 +13,17 @@
           "list": "/chat - search chat"
         }
       ]
+    },
+    {
+      "event": "select_content",
+      "eventCategory": "chat detail",
+      "item_list": "/chat - search chat",
+      "eventAction": "click on product thumbnail",
+      "items": [
+        {
+          "dimension40": "/chat - search chat"
+        }
+      ]
     }
   ]
 }
