@@ -24,21 +24,29 @@ class TermPrivacyActivity: BaseSimpleActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        intent?.data?.let {
-            if (it.getQueryParameter(PARAM).equals(MODE_TERM)) {
-                openTermPage()
-                return
-            } else if (it.getQueryParameter(PARAM).equals(MODE_PRIVACY)) {
-                openPrivacyPage()
-                return
+        when {
+            intent?.data != null -> {
+                intent?.data?.let {
+                    if (it.getQueryParameter(PARAM).equals(MODE_TERM)) {
+                        openTermPage()
+                    } else if (it.getQueryParameter(PARAM).equals(MODE_PRIVACY)) {
+                        openPrivacyPage()
+                    }
+                }
             }
-        }
 
-        intent?.extras?.let {
-            if (it.getString(PARAM).equals(MODE_TERM)) {
-                openTermPage()
-            } else if (it.getString(PARAM).equals(MODE_PRIVACY)) {
-                openPrivacyPage()
+            intent?.extras != null -> {
+                intent?.extras?.let {
+                    if (it.getString(PARAM).equals(MODE_TERM)) {
+                        openTermPage()
+                    } else if (it.getString(PARAM).equals(MODE_PRIVACY)) {
+                        openPrivacyPage()
+                    }
+                }
+            }
+
+            else -> {
+                finish()
             }
         }
     }
