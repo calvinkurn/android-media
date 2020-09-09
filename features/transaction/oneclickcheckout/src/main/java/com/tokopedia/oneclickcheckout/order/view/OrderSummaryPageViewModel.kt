@@ -267,13 +267,13 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 }
             }
             sendViewOspEe()
-            sendViewShippingErrorMessage(result.shippingErrorId)
-            sendPreselectedCourierOption(result.preselectedSpId)
             if (result.orderShipment.serviceErrorMessage.isNullOrEmpty()) {
                 validateUsePromo()
             } else {
                 orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
+                sendViewShippingErrorMessage(result.shippingErrorId)
             }
+            sendPreselectedCourierOption(result.preselectedSpId)
             calculateTotal()
         }
     }
