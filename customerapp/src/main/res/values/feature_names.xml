@@ -208,6 +208,7 @@
 
 
     <!--Dynamic feature for affiliate-->
+    <string name="title_affiliate_df">Affiliate</string>
     <string name="title_af_affiliate">Affiliate</string>
     <string name="title_affiliate">Affiliate</string>
     <string name="title_af_dashboard">Pencapaian Saya</string>

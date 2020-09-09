@@ -38,6 +38,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFIL
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFILIATE_DRAFT_POST
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_CONTENT_POST_DETAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.MEDIA_PREVIEW
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.TOKOPEDIA_BYME_HTTP
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.TOKOPEDIA_BYME_HTTPS
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.VIDEO_DETAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalDeals.DEALS_BRAND_PAGE
 import com.tokopedia.applink.internal.ApplinkConstInternalDeals.DEALS_HOMEPAGE
@@ -163,6 +165,7 @@ object DeeplinkDFMapper : CoroutineScope {
     private const val DF_BASE_SELLER_APP = "df_base_sellerapp"
     private const val DF_RECHARGE_BRIZZI = "df_recharge_brizzi"
     private const val DF_CATEGORY_TRADE_IN = "df_category_trade_in"
+    private const val DF_CONTENT_AFFILIATE = "df_content_affiliate"
     const val DF_MERCHANT_SELLER = "df_merchant_seller"
     const val DF_OPERATIONAL_CONTACT_US = "df_operational_contact_us"
     const val DF_SALAM_UMRAH = "df_salam_umrah"
@@ -200,7 +203,10 @@ object DeeplinkDFMapper : CoroutineScope {
 
             // Content
             add(DFP({ it.startsWithPattern(PROFILE) }, DF_BASE, R.string.applink_title_profile))
-            add(DFP({ it.startsWithPattern(INTERNAL_AFFILIATE) }, DF_BASE, R.string.applink_title_affiliate))
+            add(DFP({ it.startsWithPattern(ApplinkConstInternalContent.AFFILIATE_EXPLORE) }, DF_CONTENT_AFFILIATE, R.string.applink_title_affiliate))
+            add(DFP({ it.startsWithPattern(ApplinkConstInternalContent.AFFILIATE_DASHBOARD) }, DF_CONTENT_AFFILIATE, R.string.applink_title_affiliate))
+            add(DFP({ it.startsWithPattern(ApplinkConstInternalContent.AFFILIATE_EDUCATION) }, DF_CONTENT_AFFILIATE, R.string.applink_title_affiliate))
+            add(DFP({ it.startsWithPattern(ApplinkConstInternalContent.AFFILIATE_BYME_TRACKING) }, DF_CONTENT_AFFILIATE, R.string.applink_title_affiliate))
             add(DFP({ it.startsWithPattern(PLAY_DETAIL) }, DF_BASE, R.string.applink_title_play))
             add(DFP({ it.startsWithPattern(COMMENT) }, DF_BASE, R.string.applink_kol_title_comment))
             add(DFP({ it.startsWithPattern(INTERNAL_CONTENT_POST_DETAIL) }, DF_BASE, R.string.applink_kol_title_post_detail))
