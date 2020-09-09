@@ -31,19 +31,20 @@ open class ConfigViewHolder(
         if (element == null) return
         txtTitle?.text = context?.getString(element.title)
         pgLoader?.show()
+
         viewState(element)
     }
 
     private fun viewState(element: ConfigUIView) {
         troubleshootStatus(element)
 
-        when (element.state) {
-            is ConfigState.Ringtone -> {
-                btnAction?.show()
-                btnAction?.setOnClickListener {
-                    element.ringtone?.let { listener.onRingtoneTest(it) }
-                }
+        if (element.state == ConfigState.Ringtone) {
+            btnAction?.show()
+            btnAction?.setOnClickListener {
+                element.ringtone?.let { listener.onRingtoneTest(it) }
             }
+        } else {
+            btnAction?.hide()
         }
     }
 
