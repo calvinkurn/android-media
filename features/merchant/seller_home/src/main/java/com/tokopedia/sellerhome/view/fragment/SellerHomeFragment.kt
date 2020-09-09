@@ -353,8 +353,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun onTooltipClicked(tooltip: TooltipUiModel) {
         if (!isAdded || context == null) return
-        TooltipBottomSheet(requireContext(), tooltip)
-                .show(childFragmentManager, TAG_TOOLTIP)
+        val tooltipBottomSheet = (childFragmentManager.findFragmentByTag(TAG_TOOLTIP) as? TooltipBottomSheet) ?: TooltipBottomSheet.createInstance()
+        tooltipBottomSheet.init(requireContext(), tooltip)
+        tooltipBottomSheet.show(childFragmentManager, TAG_TOOLTIP)
     }
 
     override fun removeWidget(position: Int, widget: BaseWidgetUiModel<*>) {
