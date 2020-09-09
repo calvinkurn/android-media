@@ -3,19 +3,27 @@ package com.tokopedia.product.detail
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
+import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.espresso.Espresso
+import androidx.test.espresso.PerformException
+import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.product.detail.view.viewholder.ProductRecommendationViewHolder
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
 import com.tokopedia.test.application.espresso_component.CommonActions
+import com.tokopedia.test.application.espresso_component.CommonMatcher
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupTopAdsDetector
+import org.hamcrest.Matchers.allOf
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -70,7 +78,7 @@ class ProductDetailTopAdsVerificationTest {
         val viewHolder = recyclerView.findViewHolderForAdapterPosition(i)
         if(viewHolder is ProductRecommendationViewHolder) {
             waitForData()
-            CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.carouselProductCardRecyclerView, 0)
+            clickOnEachItemRecyclerView(viewHolder.itemView, R.id.carouselProductCardRecyclerView, 0)
         }
     }
 
@@ -85,5 +93,21 @@ class ProductDetailTopAdsVerificationTest {
 
     private fun login() {
         InstrumentationAuthHelper.loginToAnUser(activityRule.activity.application)
+    }
+
+    private fun clickOnEachItemRecyclerView(view: View, recyclerViewId: Int, fixedItemPositionLimit: Int) {
+        val childRecyclerView: RecyclerView = view.findViewById(recyclerViewId)
+        var childItemCount = childRecyclerView.adapter!!.itemCount
+        if (fixedItemPositionLimit > 0) {
+            childItemCount = fixedItemPositionLimit
+        }
+        for (i in 0 until childItemCount) {
+            try {
+                Espresso.onView(allOf(ViewMatchers.withId(recyclerViewId), ViewMatchers.isDisplayingAtLeast(70)))
+                        .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(i, ViewActions.click()))
+            } catch (e: PerformException) {
+                e.printStackTrace()
+            }
+        }
     }
 }
