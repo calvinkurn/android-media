@@ -3,7 +3,7 @@ package com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.viewh
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.sellerorder.R
-import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingPaymentOrder
+import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingPaymentOrderUiModel
 import kotlinx.android.synthetic.main.item_waiting_payment_order.view.*
 
 /**
@@ -12,14 +12,14 @@ import kotlinx.android.synthetic.main.item_waiting_payment_order.view.*
 
 class WaitingPaymentOrderProductViewHolder(
         itemView: View?
-) : AbstractViewHolder<WaitingPaymentOrder.Product>(itemView) {
+) : AbstractViewHolder<WaitingPaymentOrderUiModel.ProductUiModel>(itemView) {
 
     companion object {
         val LAYOUT = R.layout.item_waiting_payment_order
     }
 
     @Suppress("NAME_SHADOWING")
-    override fun bind(element: WaitingPaymentOrder.Product?) {
+    override fun bind(element: WaitingPaymentOrderUiModel.ProductUiModel?) {
         element?.let { element ->
             with(itemView) {
                 ivProduct.urlSrc = element.picture

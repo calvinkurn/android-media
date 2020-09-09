@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
@@ -29,9 +30,11 @@ import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.Waitin
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.typefactory.WaitingPaymentOrderAdapterTypeFactory
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.viewholder.WaitingPaymentOrdersViewHolder
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.bottomsheet.BottomSheetWaitingPaymentOrderTips
-import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingPaymentOrder
+import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingPaymentOrderUiModel
+import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingPaymentTickerUiModel
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.viewmodel.WaitingPaymentOrderViewModel
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -45,7 +48,7 @@ import javax.inject.Inject
  * Created by yusuf.hendrawan on 2020-09-07.
  */
 
-class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, WaitingPaymentOrderAdapterTypeFactory>(), WaitingPaymentOrdersViewHolder.LoadUnloadMoreProductClickListener {
+class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrderAdapterTypeFactory>, WaitingPaymentOrderAdapterTypeFactory>(), WaitingPaymentOrdersViewHolder.LoadUnloadMoreProductClickListener {
 
     companion object {
         const val TAG_BOTTOM_SHEET = "bottom_sheet"
@@ -80,7 +83,7 @@ class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, Waitin
         observeWaitingPaymentOrderResult()
     }
 
-    override fun createAdapterInstance(): BaseListAdapter<WaitingPaymentOrder, WaitingPaymentOrderAdapterTypeFactory> {
+    override fun createAdapterInstance(): BaseListAdapter<Visitable<WaitingPaymentOrderAdapterTypeFactory>, WaitingPaymentOrderAdapterTypeFactory> {
         return WaitingPaymentOrderAdapter(adapterTypeFactory)
     }
 
@@ -89,11 +92,15 @@ class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, Waitin
     }
 
     override fun getAdapterTypeFactory(): WaitingPaymentOrderAdapterTypeFactory {
-        return WaitingPaymentOrderAdapterTypeFactory(this)
+        return WaitingPaymentOrderAdapterTypeFactory(this, this)
     }
 
-    override fun onItemClicked(t: WaitingPaymentOrder?) {
-        // noop
+    override fun onItemClicked(t: Visitable<WaitingPaymentOrderAdapterTypeFactory>?) {
+        t?.let { item ->
+            when (item) {
+                is WaitingPaymentTickerUiModel -> showTipsBottomSheet()
+            }
+        }
     }
 
     override fun getScreenName(): String {
@@ -161,8 +168,8 @@ class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, Waitin
         }
     }
 
-    override fun toggleCollapse(waitingPaymentOrder: WaitingPaymentOrder) {
-        (adapter as WaitingPaymentOrderAdapter).toggleCollapse(waitingPaymentOrder)
+    override fun toggleCollapse(waitingPaymentOrderUiModel: WaitingPaymentOrderUiModel) {
+        (adapter as WaitingPaymentOrderAdapter).toggleCollapse(waitingPaymentOrderUiModel)
     }
 
     private fun setupViews() {
@@ -244,13 +251,15 @@ class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, Waitin
     }
 
     private fun observeWaitingPaymentOrderResult() {
-        waitingPaymentOrderViewModel.waitingPaymentOrderResult.observe(viewLifecycleOwner, Observer { result ->
+        waitingPaymentOrderViewModel.waitingPaymentOrderUiModelResult.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Success -> {
-                    val newItems = result.data
+                    val newItems = ArrayList<Visitable<WaitingPaymentOrderAdapterTypeFactory>>(result.data)
                     if (isLoadingInitialData) {
+                        // add ticker
+                        newItems.add(0, createTicker())
                         (adapter as WaitingPaymentOrderAdapter).updateProducts(newItems)
-                        animateTickerEnter()
+//                        animateTickerEnter()
                         animateCheckAndSetStockButtonEnter()
                     } else {
                         hideLoading()
@@ -262,13 +271,22 @@ class WaitingPaymentOrderFragment : BaseListFragment<WaitingPaymentOrder, Waitin
                 is Fail -> {
                     showGetListError(result.throwable)
                     if (isLoadingInitialData) {
-                        animateTickerLeave()
+//                        animateTickerLeave()
                         animateCheckAndSetStockButtonLeave()
                     }
                 }
             }
             swipeRefreshLayoutWaitingPaymentOrder.isRefreshing = false
         })
+    }
+
+    private fun createTicker(): WaitingPaymentTickerUiModel {
+        return WaitingPaymentTickerUiModel(
+                title = "",
+                description = getString(R.string.som_waiting_payment_orders_ticker_description),
+                type = Ticker.TYPE_INFORMATION,
+                showCloseIcon = false
+        )
     }
 
     private fun scrollToTopAfterRecyclerViewInflated() {

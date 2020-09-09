@@ -34,38 +34,38 @@ class GetWaitingPaymentOrderUseCase @Inject constructor(
 //        }
 //    }
 //
-//    private fun generateEmptyData(param: WaitingPaymentOrderRequestParam): WaitingPaymentOrderResponse.Data.WaitingPaymentOrder {
-//        return WaitingPaymentOrderResponse.Data.WaitingPaymentOrder(
+//    private fun generateEmptyData(param: WaitingPaymentOrderRequestParam): WaitingPaymentOrderResponse.Data.WaitingPaymentOrderUiModel {
+//        return WaitingPaymentOrderResponse.Data.WaitingPaymentOrderUiModel(
 //                totalDataPerBatch = 5,
 //                cursorPaymentDeadline = 0L,
-//                paging = WaitingPaymentOrderResponse.Data.WaitingPaymentOrder.Paging(
+//                paging = WaitingPaymentOrderResponse.Data.WaitingPaymentOrderUiModel.Paging(
 //                        currentPage = param.page
 //                ),
 //                orders = emptyList()
 //        )
 //    }
 //
-//    private fun generateDummyData(param: WaitingPaymentOrderRequestParam): WaitingPaymentOrderResponse.Data.WaitingPaymentOrder {
+//    private fun generateDummyData(param: WaitingPaymentOrderRequestParam): WaitingPaymentOrderResponse.Data.WaitingPaymentOrderUiModel {
 //        val randomProductCount = (Math.random() * 15).toInt() + 1
-//        return WaitingPaymentOrderResponse.Data.WaitingPaymentOrder(
+//        return WaitingPaymentOrderResponse.Data.WaitingPaymentOrderUiModel(
 //                totalDataPerBatch = 5,
 //                cursorPaymentDeadline = Random.nextLong(),
-//                paging = WaitingPaymentOrderResponse.Data.WaitingPaymentOrder.Paging(
+//                paging = WaitingPaymentOrderResponse.Data.WaitingPaymentOrderUiModel.Paging(
 //                        currentPage = param.page + 1
 //                ),
 //                orders = createDummyOrders(5, randomProductCount)
 //        )
 //    }
 //
-//    private fun createDummyOrders(numOfOrder: Int, randomProductCount: Int): List<WaitingPaymentOrderResponse.Data.WaitingPaymentOrder.Order> {
-//        val orders = arrayListOf<WaitingPaymentOrderResponse.Data.WaitingPaymentOrder.Order>()
+//    private fun createDummyOrders(numOfOrder: Int, randomProductCount: Int): List<WaitingPaymentOrderResponse.Data.WaitingPaymentOrderUiModel.Order> {
+//        val orders = arrayListOf<WaitingPaymentOrderResponse.Data.WaitingPaymentOrderUiModel.Order>()
 //        for (i in 0 until numOfOrder) {
 //            orders.add(
-//                    WaitingPaymentOrderResponse.Data.WaitingPaymentOrder.Order(
+//                    WaitingPaymentOrderResponse.Data.WaitingPaymentOrderUiModel.Order(
 //                            orderId = Random.nextInt().toString(),
 //                            paymentDeadline = "${(Math.random() * 30.0).toInt() + 1} Sep, 2020",
 //                            buyerNameAndPlace = "Y******n (Jakarta Selatan)",
-//                            products = createDummyProducts(randomProductCount)
+//                            productUiModels = createDummyProducts(randomProductCount)
 //                    )
 //            )
 //        }
@@ -73,13 +73,13 @@ class GetWaitingPaymentOrderUseCase @Inject constructor(
 //        return orders
 //    }
 //
-//    private fun createDummyProducts(randomProductCount: Int): List<WaitingPaymentOrderResponse.Data.WaitingPaymentOrder.Order.Product> {
-//        val products = arrayListOf<WaitingPaymentOrderResponse.Data.WaitingPaymentOrder.Order.Product>()
+//    private fun createDummyProducts(randomProductCount: Int): List<WaitingPaymentOrderResponse.Data.WaitingPaymentOrderUiModel.Order.ProductUiModel> {
+//        val productUiModels = arrayListOf<WaitingPaymentOrderResponse.Data.WaitingPaymentOrderUiModel.Order.ProductUiModel>()
 //        for (i in 0 until randomProductCount) {
-//            products.add(
-//                    WaitingPaymentOrderResponse.Data.WaitingPaymentOrder.Order.Product(
+//            productUiModels.add(
+//                    WaitingPaymentOrderResponse.Data.WaitingPaymentOrderUiModel.Order.ProductUiModel(
 //                            id = Random.nextInt().toString(),
-//                            name = "Product ${Random.nextInt(1, 100)}",
+//                            name = "ProductUiModel ${Random.nextInt(1, 100)}",
 //                            picture = "https://ichef.bbci.co.uk/news/976/cpsprodpb/12A9B/production/_111434467_gettyimages-1143489763.jpg",
 //                            quantity = Random.nextInt(1, 20),
 //                            price = "Rp. ${Random.nextInt(1, 10)}.${Random.nextInt(100, 999)}"
@@ -87,7 +87,7 @@ class GetWaitingPaymentOrderUseCase @Inject constructor(
 //            )
 //        }
 //
-//        return products
+//        return productUiModels
 //    }
 
     private fun generateParam(param: WaitingPaymentOrderRequestParam): Map<String, Any?> {

@@ -2,12 +2,13 @@ package com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter
 
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.diffcallback.WaitingPaymentOrderDiffCallback
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.typefactory.WaitingPaymentOrderAdapterTypeFactory
-import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingPaymentOrder
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingPaymentOrderErrorNetworkUiModel
+import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingPaymentOrderUiModel
 
 /**
  * Created by yusuf.hendrawan on 2020-09-07.
@@ -15,7 +16,7 @@ import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingP
 
 class WaitingPaymentOrderAdapter(
         adapterTypeFactory: WaitingPaymentOrderAdapterTypeFactory
-) : BaseListAdapter<WaitingPaymentOrder, WaitingPaymentOrderAdapterTypeFactory>(adapterTypeFactory) {
+) : BaseListAdapter<Visitable<WaitingPaymentOrderAdapterTypeFactory>, WaitingPaymentOrderAdapterTypeFactory>(adapterTypeFactory) {
 
     private var recyclerView: RecyclerView? = null
 
@@ -30,7 +31,7 @@ class WaitingPaymentOrderAdapter(
         })
     }
 
-    fun updateProducts(items: List<WaitingPaymentOrder>) {
+    fun updateProducts(items: List<Visitable<WaitingPaymentOrderAdapterTypeFactory>>) {
         val diffCallback = WaitingPaymentOrderDiffCallback(visitables, items)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
         visitables.clear()
@@ -38,8 +39,8 @@ class WaitingPaymentOrderAdapter(
         diffResult.dispatchUpdatesTo(this)
     }
 
-    fun toggleCollapse(waitingPaymentOrder: WaitingPaymentOrder) {
-        val itemIndex = visitables.indexOf(waitingPaymentOrder)
+    fun toggleCollapse(waitingPaymentOrderUiModel: WaitingPaymentOrderUiModel) {
+        val itemIndex = visitables.indexOf(waitingPaymentOrderUiModel)
         if (itemIndex != -1) {
             notifyItemChanged(itemIndex)
         }

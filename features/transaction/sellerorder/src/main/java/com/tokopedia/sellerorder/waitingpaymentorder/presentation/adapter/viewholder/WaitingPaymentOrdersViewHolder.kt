@@ -6,7 +6,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.WaitingPaymentOrderProductsAdapter
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.typefactory.WaitingPaymentOrderProductsAdapterTypeFactory
-import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingPaymentOrder
+import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingPaymentOrderUiModel
 import kotlinx.android.synthetic.main.item_waiting_payment_orders.view.*
 
 /**
@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.item_waiting_payment_orders.view.*
 class WaitingPaymentOrdersViewHolder(
         itemView: View?,
         private val listener: LoadUnloadMoreProductClickListener
-) : AbstractViewHolder<WaitingPaymentOrder>(itemView) {
+) : AbstractViewHolder<WaitingPaymentOrderUiModel>(itemView) {
 
     companion object {
         val LAYOUT = R.layout.item_waiting_payment_orders
@@ -28,13 +28,13 @@ class WaitingPaymentOrdersViewHolder(
     }
 
     @Suppress("NAME_SHADOWING")
-    override fun bind(element: WaitingPaymentOrder?) {
+    override fun bind(element: WaitingPaymentOrderUiModel?) {
         element?.let { element ->
             with(itemView) {
                 tvValuePaymentDeadline.text = element.paymentDeadline
                 tvValueBuyerNameAndPlace.text = element.buyerNameAndPlace
                 tvToggleCollapseMoreProducts.apply {
-                    showWithCondition(element.products.size > MAX_ORDER_WHEN_COLLAPSED)
+                    showWithCondition(element.productUiModels.size > MAX_ORDER_WHEN_COLLAPSED)
                     updateToggleCollapseText(element.isExpanded)
                     setOnClickListener {
                         element.isExpanded = !element.isExpanded
@@ -46,17 +46,17 @@ class WaitingPaymentOrdersViewHolder(
                         isNestedScrollingEnabled = false
                         adapter = this@WaitingPaymentOrdersViewHolder.adapter
                     }
-                    this@WaitingPaymentOrdersViewHolder.adapter.updateProducts(getShownProducts(element.isExpanded, element.products))
+                    this@WaitingPaymentOrdersViewHolder.adapter.updateProducts(getShownProducts(element.isExpanded, element.productUiModels))
                 }
             }
         }
     }
 
-    private fun getShownProducts(isExpanded: Boolean, products: List<WaitingPaymentOrder.Product>): List<WaitingPaymentOrder.Product> {
+    private fun getShownProducts(isExpanded: Boolean, productUiModels: List<WaitingPaymentOrderUiModel.ProductUiModel>): List<WaitingPaymentOrderUiModel.ProductUiModel> {
         return if (isExpanded) {
-            products
+            productUiModels
         } else {
-            products.take(MAX_ORDER_WHEN_COLLAPSED)
+            productUiModels.take(MAX_ORDER_WHEN_COLLAPSED)
         }
     }
 
@@ -69,6 +69,6 @@ class WaitingPaymentOrdersViewHolder(
     }
 
     interface LoadUnloadMoreProductClickListener {
-        fun toggleCollapse(waitingPaymentOrder: WaitingPaymentOrder)
+        fun toggleCollapse(waitingPaymentOrderUiModel: WaitingPaymentOrderUiModel)
     }
 }

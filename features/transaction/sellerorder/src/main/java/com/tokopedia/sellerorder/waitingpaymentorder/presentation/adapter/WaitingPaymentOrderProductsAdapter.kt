@@ -4,7 +4,7 @@ import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.diffcallback.WaitingPaymentOrderProductDiffCallback
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.typefactory.WaitingPaymentOrderProductsAdapterTypeFactory
-import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingPaymentOrder
+import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingPaymentOrderUiModel
 
 /**
  * Created by yusuf.hendrawan on 2020-09-07.
@@ -12,9 +12,9 @@ import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingP
 
 class WaitingPaymentOrderProductsAdapter(
         adapterTypeFactory: WaitingPaymentOrderProductsAdapterTypeFactory
-) : BaseListAdapter<WaitingPaymentOrder.Product, WaitingPaymentOrderProductsAdapterTypeFactory>(adapterTypeFactory) {
+) : BaseListAdapter<WaitingPaymentOrderUiModel.ProductUiModel, WaitingPaymentOrderProductsAdapterTypeFactory>(adapterTypeFactory) {
 
-    fun updateProducts(items: List<WaitingPaymentOrder.Product>) {
+    fun updateProducts(items: List<WaitingPaymentOrderUiModel.ProductUiModel>) {
         val diffCallback = WaitingPaymentOrderProductDiffCallback(data, items)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
         visitables.clear()

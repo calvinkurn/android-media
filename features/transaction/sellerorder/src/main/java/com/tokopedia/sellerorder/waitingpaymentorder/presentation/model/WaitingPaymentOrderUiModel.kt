@@ -9,11 +9,11 @@ import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.typefa
  * Created by yusuf.hendrawan on 2020-09-07.
  */
 
-data class WaitingPaymentOrder(
+data class WaitingPaymentOrderUiModel(
         val orderId: String,
         val paymentDeadline: String,
         val buyerNameAndPlace: String,
-        val products: List<Product>,
+        val productUiModels: List<ProductUiModel>,
         var isExpanded: Boolean
 ) : Visitable<WaitingPaymentOrderAdapterTypeFactory> {
 
@@ -21,7 +21,7 @@ data class WaitingPaymentOrder(
         return typeFactory?.type(this).orZero()
     }
 
-    data class Product(
+    data class ProductUiModel(
             val id: String,
             val name: String,
             val picture: String,
