@@ -17,4 +17,5 @@ class HomeActivity : BaseSimpleActivity(), MainParentStatusBarListener {
     override fun requestStatusBarDark() {
 
     }
+    
 }
