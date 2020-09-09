@@ -8,7 +8,8 @@
     <com.tokopedia.banner.dynamic.BannerViewDynamicBackground
         android:id="@+id/banner"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_lvl4" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/banner_shimmering"

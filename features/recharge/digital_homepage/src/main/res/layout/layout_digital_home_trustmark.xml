@@ -11,6 +11,9 @@
         android:id="@+id/view_digital_homepage_trust_mark_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/spacing_lvl1"
+        android:layout_marginTop="@dimen/spacing_lvl1"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
         app:cardCornerRadius="@dimen/spacing_lvl3"
         app:cardElevation="@dimen/spacing_lvl1">
 
