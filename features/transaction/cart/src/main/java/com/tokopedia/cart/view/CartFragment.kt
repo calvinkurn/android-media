@@ -207,7 +207,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private var isKeyboardOpened = false
     private var initialPromoButtonPosition = 0f
     private var recommendationPage = 1
-    private var accordionCollapseState = false
+    private var accordionCollapseState = true
 
     companion object {
 
@@ -1492,7 +1492,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 return@let
             }
 
-            accordionCollapseState = false
             sendAnalyticsScreenName(screenName)
 
             endlessRecyclerViewScrollListener.resetState()
@@ -2087,8 +2086,14 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             }
 
             if (showAccordion) {
-                val accordionHolderData = viewHolderDataMapper.mapDisabledAccordionHolderData(cartListData, accordionCollapseState)
+                val accordionHolderData = viewHolderDataMapper.mapDisabledAccordionHolderData(cartListData)
                 cartAdapter.addNotAvailableAccordion(accordionHolderData)
+                collapseOrExpandDisabledItem(accordionHolderData)
+
+                if (!accordionCollapseState) {
+                    accordionHolderData.isCollapsed = false
+                    collapseOrExpandDisabledItem(accordionHolderData)
+                }
             }
         }
     }
@@ -3154,8 +3159,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onAccordionClicked(data: DisabledAccordionHolderData, buttonWording: String) {
         cartPageAnalytics.eventClickAccordionButtonOnUnavailableProduct(userSession.userId, buttonWording)
-        cartAdapter.collapseOrExpandDisabledItemAccordion(data)
+        data.isCollapsed = !data.isCollapsed
         accordionCollapseState = data.isCollapsed
+        collapseOrExpandDisabledItem(data)
+    }
+
+    private fun collapseOrExpandDisabledItem(data: DisabledAccordionHolderData) {
+        cartAdapter.collapseOrExpandDisabledItemAccordion(data)
         if (data.isCollapsed) {
             cartAdapter.collapseDisabledItems()
         } else {

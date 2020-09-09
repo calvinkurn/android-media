@@ -1178,7 +1178,6 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
     }
 
     fun collapseOrExpandDisabledItemAccordion(data: DisabledAccordionHolderData) {
-        data.isCollapsed = !data.isCollapsed
         val index = cartDataList.indexOf(data)
         if (index > 0) {
             notifyItemChanged(index)

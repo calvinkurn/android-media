@@ -52,9 +52,9 @@ class ViewHolderDataMapper @Inject constructor() {
         )
     }
 
-    fun mapDisabledAccordionHolderData(cartListData: CartListData, isCollapsed: Boolean): DisabledAccordionHolderData {
+    fun mapDisabledAccordionHolderData(cartListData: CartListData): DisabledAccordionHolderData {
         return DisabledAccordionHolderData(
-                isCollapsed = isCollapsed,
+                isCollapsed = true,
                 showMoreWording = cartListData.showMoreUnavailableDataWording,
                 showLessWording = cartListData.showLessUnavailableDataWording
         )
