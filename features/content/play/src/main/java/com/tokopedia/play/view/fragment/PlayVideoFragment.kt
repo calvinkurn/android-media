@@ -189,8 +189,7 @@ class PlayVideoFragment @Inject constructor(
     private fun handleVideoStateChanged(state: PlayViewerVideoState) {
         when (state) {
             is PlayViewerVideoState.Buffer -> {
-                if (state.bufferSource == BufferSource.Broadcaster)
-                    videoView.showBlurredThumbnail()
+                if (state.bufferSource == BufferSource.Broadcaster) videoView.showBlurredThumbnail()
                 else videoView.hideBlurredThumbnail()
             }
             PlayViewerVideoState.Play,

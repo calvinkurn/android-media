@@ -17,5 +17,6 @@ sealed class PlayViewerVideoState {
 enum class BufferSource {
 
     Viewer,
-    Broadcaster
+    Broadcaster,
+    Unknown
 }

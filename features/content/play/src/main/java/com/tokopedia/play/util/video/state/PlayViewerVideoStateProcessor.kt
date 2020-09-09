@@ -82,7 +82,7 @@ class PlayViewerVideoStateProcessor(
     }
 
     private fun getBufferSourceFromError(error: Throwable?): BufferSource {
-        if (error == null || error !is ExoPlaybackException) return BufferSource.Viewer
+        if (error == null || error !is ExoPlaybackException) return BufferSource.Unknown
         val parsedException = exoPlaybackExceptionParser.parse(error)
 
         return if (parsedException.isInvalidResponseCodeException) BufferSource.Broadcaster

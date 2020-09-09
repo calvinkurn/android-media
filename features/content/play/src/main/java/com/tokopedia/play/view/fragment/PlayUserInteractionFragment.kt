@@ -30,17 +30,18 @@ import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.DistinctEventObserver
 import com.tokopedia.play.util.event.EventObserver
-import com.tokopedia.play.view.measurement.ScreenOrientationDataSource
-import com.tokopedia.play.view.measurement.bounds.provider.PlayVideoBoundsProvider
-import com.tokopedia.play.view.measurement.bounds.provider.VideoBoundsProvider
-import com.tokopedia.play.view.measurement.layout.DynamicLayoutManager
-import com.tokopedia.play.view.measurement.layout.PlayDynamicLayoutManager
 import com.tokopedia.play.util.observer.DistinctObserver
+import com.tokopedia.play.util.video.state.BufferSource
 import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.view.bottomsheet.PlayMoreActionBottomSheet
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayNavigation
 import com.tokopedia.play.view.contract.PlayOrientationListener
+import com.tokopedia.play.view.measurement.ScreenOrientationDataSource
+import com.tokopedia.play.view.measurement.bounds.provider.PlayVideoBoundsProvider
+import com.tokopedia.play.view.measurement.bounds.provider.VideoBoundsProvider
+import com.tokopedia.play.view.measurement.layout.DynamicLayoutManager
+import com.tokopedia.play.view.measurement.layout.PlayDynamicLayoutManager
 import com.tokopedia.play.view.measurement.scaling.PlayVideoScalingManager
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
@@ -50,7 +51,6 @@ import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
-import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.play_common.util.extension.awaitMeasured
 import com.tokopedia.play_common.util.extension.recreateView
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
@@ -472,7 +472,8 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun observeVideoProperty() {
         playViewModel.observableVideoProperty.observe(viewLifecycleOwner, DistinctObserver {
-            if (it.state == PlayViewerVideoState.Waiting || it.state is PlayViewerVideoState.Buffer) {
+            if (it.state == PlayViewerVideoState.Waiting ||
+                    (it.state is PlayViewerVideoState.Buffer && it.state.bufferSource == BufferSource.Broadcaster)) {
                 triggerImmersive(false)
             } else if (it.state == PlayViewerVideoState.Play) {
                 PlayAnalytics.clickPlayVideo(channelId, playViewModel.channelType)
@@ -640,13 +641,14 @@ class PlayUserInteractionFragment @Inject constructor(
             animation.start(container)
         }
 
-        fun isLoadingState(): Boolean {
+        fun isBroadcasterLoading(): Boolean {
             val videoState = playViewModel.viewerVideoState
-            return (videoState == PlayViewerVideoState.Waiting || videoState is PlayViewerVideoState.Buffer)
+            return (videoState == PlayViewerVideoState.Waiting ||
+                    (videoState is PlayViewerVideoState.Buffer && videoState.bufferSource == BufferSource.Broadcaster))
         }
 
         when {
-            playViewModel.isFreezeOrBanned || isLoadingState() -> {
+            playViewModel.isFreezeOrBanned || isBroadcasterLoading() -> {
                 container.alpha = VISIBLE_ALPHA
                 systemUiVisibility = PlayFullScreenHelper.getShowSystemUiVisibility()
             }

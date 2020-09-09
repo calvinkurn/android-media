@@ -26,7 +26,7 @@ class VideoLoadingComponent(
     }
 
     fun show(source: BufferSource) {
-        if (source == BufferSource.Viewer) showLoadingOnly()
+        if (source != BufferSource.Broadcaster) showLoadingOnly()
         else showLoadingForSellerBuffer()
 
         show()
@@ -43,14 +43,12 @@ class VideoLoadingComponent(
     }
 
     private fun showLoadingForWaiting() {
-        ivLoadingText.setType(Typography.HEADING_2)
         ivLoadingText.setText(R.string.play_buffer_reason_waiting)
 
         showLoadingWithText()
     }
 
     private fun showLoadingForSellerBuffer() {
-        ivLoadingText.setType(Typography.BODY_2)
         ivLoadingText.setText(R.string.play_buffer_reason_seller_side)
 
         showLoadingWithText()
