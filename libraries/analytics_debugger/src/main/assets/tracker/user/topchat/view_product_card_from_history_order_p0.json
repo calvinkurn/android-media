@@ -1,0 +1,18 @@
+{
+  "readme": "#EE4 - View on product history order",
+  "mode": "subset",
+  "query": [
+    {
+      "event": "view_item_list",
+      "eventCategory": "chat detail",
+      "item_list": "/chat",
+      "eventAction": "view on product history order",
+      "items": [
+        {
+          "dimension40": "/chat",
+          "list": "/chat"
+        }
+      ]
+    }
+  ]
+}
