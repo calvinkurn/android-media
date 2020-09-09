@@ -834,7 +834,7 @@ class FlightHomepageViewModelTest {
 
         // then
         coVerifySequence {
-            flightAnalytics.eventSearchClick(any())
+            flightAnalytics.eventSearchClick(any(), FlightAnalytics.Screen.HOMEPAGE, any())
             deleteAllFlightSearch.execute()
         }
     }

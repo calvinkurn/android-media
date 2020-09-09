@@ -244,7 +244,9 @@ class FlightHomepageViewModel @Inject constructor(
 
     fun onSearchTicket(flightSearchData: FlightSearchPassDataModel) {
         launch(dispatcherProvider.ui()) {
-            flightAnalytics.eventSearchClick(mapSearchPassDataToDashboardModel(flightSearchData))
+            flightAnalytics.eventSearchClick(mapSearchPassDataToDashboardModel(flightSearchData),
+                    FlightAnalytics.Screen.HOMEPAGE,
+                    if (userSessionInterface.isLoggedIn) userSessionInterface.userId else "")
             deleteAllFlightSearchDataUseCase.execute()
         }
     }

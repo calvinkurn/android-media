@@ -167,8 +167,10 @@ public class FlightAnalytics {
         ));
     }
 
-    public void eventSearchClick(FlightHomepageModel dashboardViewModel) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(CLICK_SEARCH_EVENT,
+    public void eventSearchClick(FlightHomepageModel dashboardViewModel,
+                                 String screenName,
+                                 String userId) {
+        Map<String, Object> params = TrackAppUtils.gtmData(CLICK_SEARCH_EVENT,
                 GENERIC_CATEGORY,
                 Category.CLICK_SEARCH,
                 String.format("%s - %s-%s - %s - %s-%s-%s - %s - %s%s",
@@ -184,7 +186,15 @@ public class FlightAnalytics {
                         dashboardViewModel.getFlightClass().getTitle(),
                         FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.YYYYMMDD, dashboardViewModel.getDepartureDate()),
                         dashboardViewModel.isOneWay() ? "" : String.format(" - %s", FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.YYYYMMDD, dashboardViewModel.getReturnDate()))
-                )));
+                ));
+        params.put(SCREEN_NAME, screenName);
+        params.put(CURRENT_SITE, FLIGHT_CURRENT_SITE);
+        params.put(CLIENT_ID, TrackApp.getInstance().getGTM().getClientIDString());
+        params.put(BUSSINESS_UNIT, FLIGHT_BU);
+        params.put(CATEGORY, Label.FLIGHT_SMALL);
+        params.put(USER_ID, userId);
+
+        TrackApp.getInstance().getGTM().sendGeneralEvent(params);
     }
 
     public void eventQuickFilterClick(String filterName) {
