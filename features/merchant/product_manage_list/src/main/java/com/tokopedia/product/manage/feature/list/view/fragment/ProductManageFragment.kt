@@ -115,7 +115,6 @@ import com.tokopedia.product.manage.feature.quickedit.variant.presentation.data.
 import com.tokopedia.product.manage.feature.quickedit.variant.presentation.ui.QuickEditVariantPriceBottomSheet
 import com.tokopedia.product.manage.feature.quickedit.variant.presentation.ui.QuickEditVariantStockBottomSheet
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
-import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import com.tokopedia.seller_migration_common.presentation.model.SellerFeatureUiModel
 import com.tokopedia.seller_migration_common.presentation.widget.SellerFeatureCarousel
