@@ -13,4 +13,5 @@ object SellerMigrationConstants {
     const val APP_ENABLE_SELLER_MIGRATION = "android_mainapp_enable_seller_migration"
     const val APP_DATE_SELLER_MIGRATION = "android_mainapp_seller_migration_date"
     const val SELLER_MIGRATION_KEY_AUTO_LOGIN = "is_auto_login"
+    const val SELLER_MIGRATION_KEY_AUTO_ANCHOR_ACCOUNT_SHOP = "is_auto_anchor"
 }
