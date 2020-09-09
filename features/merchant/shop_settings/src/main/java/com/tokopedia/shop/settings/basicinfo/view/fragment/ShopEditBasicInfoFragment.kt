@@ -161,6 +161,7 @@ class ShopEditBasicInfoFragment: Fragment() {
             override fun afterTextChanged(s: Editable) {
                 shopTagLineTextField.setMessage("")
                 shopTagLineTextField.setError(false)
+                determineSubmitButton()
             }
         })
     }
@@ -170,6 +171,7 @@ class ShopEditBasicInfoFragment: Fragment() {
             override fun afterTextChanged(s: Editable) {
                 shopDescriptionTextField.setMessage("")
                 shopDescriptionTextField.setError(false)
+                determineSubmitButton()
             }
         })
     }
@@ -256,7 +258,6 @@ class ShopEditBasicInfoFragment: Fragment() {
                 if (input.length < MIN_INPUT_LENGTH) {
                     val message = context?.getString(R.string.shop_edit_domain_too_short).orEmpty()
                     showShopDomainInputError(message)
-                    disableSaveBtn()
                     viewModel.cancelValidateShopDomain()
                 } else {
                     resetShopDomainInput()
@@ -271,33 +272,25 @@ class ShopEditBasicInfoFragment: Fragment() {
     private fun showShopNameInputError(message: String) {
         shopNameTextField.setError(true)
         shopNameTextField.setMessage(message)
-        disableSaveBtn()
+        determineSubmitButton()
     }
 
     private fun showShopDomainInputError(message: String) {
         shopDomainTextField.setError(true)
         shopDomainTextField.setMessage(message)
-        disableSaveBtn()
+        determineSubmitButton()
     }
 
     private fun resetShopNameInput() {
         shopNameTextField.setError(false)
         shopNameTextField.setMessage("")
-        if (isShopDomainTextFieldError()) {
-            disableSaveBtn()
-        } else {
-            enableSaveBtn()
-        }
+        determineSubmitButton()
     }
 
     private fun resetShopDomainInput() {
         shopDomainTextField.setError(false)
         shopDomainTextField.setMessage("")
-        if (isShopNameTextFieldError()) {
-            disableSaveBtn()
-        } else {
-            enableSaveBtn()
-        }
+        determineSubmitButton()
     }
 
     private fun disableSaveBtn() {
@@ -324,6 +317,26 @@ class ShopEditBasicInfoFragment: Fragment() {
 
     private fun isDomainStillSame(): Boolean {
         return shopBasicDataModel?.domain == shopDomainTextField.textFieldInput.text.toString()
+    }
+
+    private fun isTagLineStillSame(): Boolean {
+        return shopBasicDataModel?.tagline == shopTagLineTextField.textFieldInput.text.toString()
+    }
+
+    private fun isDescriptionStillSame(): Boolean {
+        return shopBasicDataModel?.description == shopDescriptionTextField.textFieldInput.text.toString()
+    }
+
+    private fun isEverythingStillSame(): Boolean {
+        return isNameStillSame() && isDomainStillSame() && isTagLineStillSame() && isDescriptionStillSame()
+    }
+
+    private fun determineSubmitButton() {
+        if (isEverythingStillSame() || isShopDomainTextFieldError() || isShopNameTextFieldError()) {
+            disableSaveBtn()
+        } else {
+            enableSaveBtn()
+        }
     }
 
     private fun observeLiveData() {
