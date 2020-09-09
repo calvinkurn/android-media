@@ -9,7 +9,6 @@ import com.tokopedia.trackingoptimizer.db.model.TrackingEEFullDbModel
 import com.tokopedia.trackingoptimizer.gson.GsonSingleton
 import com.tokopedia.trackingoptimizer.gson.HashMapJsonUtil
 import com.tokopedia.trackingoptimizer.model.EventModel
-import com.tokopedia.trackingoptimizer.sendTrack
 
 class TrackingEEFullDataSource(context: Context) :
         TrackingDataSource<TrackingEEFullDbModel, TrackingEEFullDatabaseDao>(context) {
@@ -19,7 +18,7 @@ class TrackingEEFullDataSource(context: Context) :
 
     override fun put(event: EventModel, customDimension: HashMap<String, Any>?,
                      enhanceECommerceMap: HashMap<String, Any>?) {
-        sendTrack(
+        trackingDatabaseDao.insertSingle(
                 TrackingEEFullDbModel().apply {
                     this.event = GsonSingleton.instance.toJson(event)
                     this.customDimension = HashMapJsonUtil.mapToJson(customDimension).toString()

@@ -1,13 +1,13 @@
 package com.tokopedia.trackingoptimizer.datasource
 
 import android.content.Context
+import android.util.Log
 import com.tokopedia.trackingoptimizer.db.TrackingDatabase
 import com.tokopedia.trackingoptimizer.db.dao.TrackingEEDatabaseDao
 import com.tokopedia.trackingoptimizer.db.model.TrackingEEDbModel
 import com.tokopedia.trackingoptimizer.gson.GsonSingleton
 import com.tokopedia.trackingoptimizer.gson.HashMapJsonUtil
 import com.tokopedia.trackingoptimizer.model.EventModel
-import com.tokopedia.trackingoptimizer.sendTrack
 
 class TrackingEEDataSource(context: Context) :
         TrackingDataSource<TrackingEEDbModel, TrackingEEDatabaseDao>(context) {
@@ -17,7 +17,7 @@ class TrackingEEDataSource(context: Context) :
 
     override fun put(event: EventModel, customDimension: HashMap<String, Any>?,
                      enhanceECommerceMap: HashMap<String, Any>?) {
-        sendTrack(
+        trackingDatabaseDao.insertSingle(
                 TrackingEEDbModel().apply {
                     this.key = event.key
                     this.event = GsonSingleton.instance.toJson(event)

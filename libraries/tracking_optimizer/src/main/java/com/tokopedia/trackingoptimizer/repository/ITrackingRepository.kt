@@ -21,8 +21,5 @@ interface ITrackingRepository<T, U, V, W> {
               inputEnhanceECommerceMap: HashMap<String, Any>?)
 
     fun getAllEE(): Array<U>?
-    fun getAllEEFull(): Array<V>?
-
     fun deleteEE()
-    fun deleteEEFull()
 }
