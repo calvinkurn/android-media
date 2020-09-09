@@ -150,7 +150,9 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
                     mode = modeListData.modeText,
                     msisdn = otpData.msisdn,
                     email = otpData.email,
-                    otpDigit = modeListData.otpDigit
+                    otpDigit = modeListData.otpDigit,
+                    validateToken = otpData.accessToken,
+                    userIdEnc = otpData.userIdEnc
             )
         } else {
             setFooterText()
@@ -270,7 +272,7 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
 
                     activity?.let { activity ->
                         val bundle = Bundle().apply {
-                            putString(ApplinkConstInternalGlobal.PARAM_TOKEN, otpValidateData.validateToken)
+                            putString(ApplinkConstInternalGlobal.PARAM_UUID, otpValidateData.validateToken)
                             putString(ApplinkConstInternalGlobal.PARAM_MSISDN, otpData.msisdn)
                             putString(ApplinkConstInternalGlobal.PARAM_EMAIL, otpData.email)
                             putString(ApplinkConstInternalGlobal.PARAM_SOURCE, otpData.source)
@@ -279,12 +281,13 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
                         if((activity as VerificationActivity).isResetPin2FA){
                             val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.CHANGE_PIN).apply {
                                 bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA, true)
-                                bundle.putString(ApplinkConstInternalGlobal.PARAM_UUID, otpData.userId)
+                                bundle.putString(ApplinkConstInternalGlobal.PARAM_TOKEN, otpValidateData.validateToken)
+                                bundle.putString(ApplinkConstInternalGlobal.PARAM_USER_ID, otpData.userId)
                                 putExtras(bundle)
                             }
+                            intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
                             activity.startActivity(intent)
                         }else {
-                            bundle.putString(ApplinkConstInternalGlobal.PARAM_UUID, otpValidateData.validateToken)
                             activity.setResult(Activity.RESULT_OK, Intent().putExtras(bundle))
                         }
                         activity.finish()

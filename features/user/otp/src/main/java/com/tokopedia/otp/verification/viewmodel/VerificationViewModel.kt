@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.otp.verification.common.DispatcherProvider
-import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.otp.verification.domain.data.OtpModeListData
 import com.tokopedia.otp.verification.domain.data.OtpRequestData
 import com.tokopedia.otp.verification.domain.data.OtpValidateData
@@ -26,6 +25,7 @@ class VerificationViewModel @Inject constructor(
         private val otpValidateUseCase: OtpValidateUseCase,
         private val otpValidateUseCase2FA: OtpValidateUseCase2FA,
         private val sendOtpUseCase: SendOtpUseCase,
+        private val sendOtpUseCase2FA: SendOtp2FAUseCase,
         dispatcherProvider: DispatcherProvider
 ) : BaseViewModel(dispatcherProvider.ui()) {
 
@@ -101,16 +101,18 @@ class VerificationViewModel @Inject constructor(
     }
 
     @JvmOverloads
-    fun sendOtp(
+    fun sendOtp2FA(
             otpType: String,
             mode: String,
             msisdn: String = "",
             email: String = "",
-            otpDigit: Int = 6
+            otpDigit: Int = 6,
+            validateToken: String,
+            userIdEnc: String
     ) {
         launchCatchError(coroutineContext, {
-            val params = sendOtpUseCase.getParams(otpType, mode, msisdn, email, otpDigit)
-            val data = sendOtpUseCase.getData(params).data
+            val params = sendOtpUseCase2FA.getParams(otpType, mode, msisdn, email, otpDigit, userIdEnc = userIdEnc, validateToken = validateToken)
+            val data = sendOtpUseCase2FA.getData(params).data
             when {
                 data.success -> {
                     _sendOtpResult.value = Success(data)
@@ -125,6 +127,39 @@ class VerificationViewModel @Inject constructor(
         }, {
             _sendOtpResult.postValue(Fail(it))
         })
+    }
+
+    @JvmOverloads
+    fun sendOtp(
+            otpType: String,
+            mode: String,
+            msisdn: String = "",
+            email: String = "",
+            otpDigit: Int = 6,
+            validateToken: String = "",
+            userIdEnc: String = ""
+    ) {
+        if(validateToken.isNotEmpty() && userIdEnc.isNotEmpty()){
+            sendOtp2FA(otpType, mode, msisdn, email, otpDigit, validateToken, userIdEnc)
+        }else {
+            launchCatchError(coroutineContext, {
+                val params = sendOtpUseCase.getParams(otpType, mode, msisdn, email, otpDigit)
+                val data = sendOtpUseCase.getData(params).data
+                when {
+                    data.success -> {
+                        _sendOtpResult.value = Success(data)
+                    }
+                    data.errorMessage.isNotEmpty() -> {
+                        _sendOtpResult.postValue(Fail(MessageErrorException(data.errorMessage)))
+                    }
+                    else -> {
+                        _sendOtpResult.postValue(Fail(Throwable()))
+                    }
+                }
+            }, {
+                _sendOtpResult.postValue(Fail(it))
+            })
+        }
     }
 
     private fun otpValidate2FA(
@@ -168,7 +203,7 @@ class VerificationViewModel @Inject constructor(
             validateToken: String = "",
             userIdEnc: String = ""
     ) {
-        if(otpType == "148" && userIdEnc.isNotEmpty()){
+        if((otpType == "148" || otpType == "149") && userIdEnc.isNotEmpty()){
             otpValidate2FA(otpType, validateToken, userIdEnc, mode, code)
         }else {
             launchCatchError(coroutineContext, {
