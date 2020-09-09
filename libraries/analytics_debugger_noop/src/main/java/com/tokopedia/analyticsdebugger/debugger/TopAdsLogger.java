@@ -16,7 +16,8 @@ public class TopAdsLogger {
                 }
 
                 @Override
-                public void save(String url, String eventType, String sourceName, String productId, String productName, String imageUrl, String componentName) {
+                public void save(String url, String eventType, String sourceName, String productId,
+                                 String productName, String imageUrl, String componentName) {
 
                 }
 
