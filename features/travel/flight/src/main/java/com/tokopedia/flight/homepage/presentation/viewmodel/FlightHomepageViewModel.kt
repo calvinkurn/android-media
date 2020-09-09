@@ -248,7 +248,7 @@ class FlightHomepageViewModel @Inject constructor(
     }
 
     fun sendTrackingOpenScreen(screenName: String) {
-        flightAnalytics.eventOpenScreen(screenName, userSessionInterface.isLoggedIn)
+        flightAnalytics.eventOpenScreen(screenName)
     }
 
     fun sendTrackingRoundTripSwitchChanged(tripType: String) {

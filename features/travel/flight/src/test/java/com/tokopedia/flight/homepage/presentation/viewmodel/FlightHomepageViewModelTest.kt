@@ -847,7 +847,7 @@ class FlightHomepageViewModelTest {
 
         // then
         verify {
-            flightAnalytics.eventOpenScreen(screenName, false)
+            flightAnalytics.eventOpenScreen(screenName)
         }
     }
 

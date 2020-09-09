@@ -57,17 +57,24 @@ public class FlightAnalytics {
     private String DEFAULT_CURRENCY_CODE = "IDR";
     private String OPEN_SCREEN_EVENT = "openScreen";
     private String EVENT_NAME = "eventName";
-    private String IS_LOGIN_STATUS = "isLoggedInStatus";
+    private String CURRENT_SITE = "currentSite";
+    private String BUSSINESS_UNIT = "businessUnit";
+    private String CATEGORY = "category";
+
+    private String FLIGHT_CURRENT_SITE = "tokopediadigitalflight";
+    private String FLIGHT_BU = "travel & entertainment";
 
     @Inject
     public FlightAnalytics(FlightDateUtil flightDateUtil) {
         this.flightDateUtil = flightDateUtil;
     }
 
-    public void eventOpenScreen(String screenName, boolean isLoginStatus) {
+    public void eventOpenScreen(String screenName) {
         Map<String, String> mapOpenScreen = new HashMap<>();
         mapOpenScreen.put(EVENT_NAME, OPEN_SCREEN_EVENT);
-        mapOpenScreen.put(IS_LOGIN_STATUS, isLoginStatus ? "true" : "false");
+        mapOpenScreen.put(CURRENT_SITE, FLIGHT_CURRENT_SITE);
+        mapOpenScreen.put(BUSSINESS_UNIT, FLIGHT_BU);
+        mapOpenScreen.put(CATEGORY, Label.FLIGHT_SMALL);
         TrackApp.getInstance().getGTM().sendScreenAuthenticated(
                 screenName, mapOpenScreen);
     }
