@@ -8,7 +8,6 @@ import java.io.IOException
 class PromoTestInterceptor : BaseOccInterceptor() {
 
     var customValidateUseResponsePath: String? = null
-
     var customValidateUseThrowable: IOException? = null
 
     override fun intercept(chain: Interceptor.Chain): Response {
@@ -24,6 +23,11 @@ class PromoTestInterceptor : BaseOccInterceptor() {
             return mockResponse(copy, getJsonFromResource(VALIDATE_USE_PROMO_REVAMP_DEFAULT_RESPONSE))
         }
         return chain.proceed(chain.request())
+    }
+
+    override fun resetInterceptor() {
+        customValidateUseResponsePath = null
+        customValidateUseThrowable = null
     }
 }
 

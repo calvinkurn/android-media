@@ -11,8 +11,7 @@ import com.tokopedia.analyticsdebugger.validator.core.getAnalyticsWithQuery
 import com.tokopedia.analyticsdebugger.validator.core.hasAllSuccess
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
-import com.tokopedia.oneclickcheckout.common.interceptor.GET_PREFERENCE_LIST_DEFAULT_RESPONSE_PATH
-import com.tokopedia.oneclickcheckout.common.interceptor.GET_PREFERENCE_LIST_QUERY
+import com.tokopedia.oneclickcheckout.common.interceptor.*
 import com.tokopedia.oneclickcheckout.common.robot.addressListPage
 import com.tokopedia.oneclickcheckout.common.robot.paymentMethodPage
 import com.tokopedia.oneclickcheckout.common.robot.preferenceSummaryPage
@@ -59,11 +58,11 @@ class PreferenceEditActivityTrackingTest {
         return object : MockModelConfig() {
             override fun createMockModel(context: Context): MockModelConfig {
                 addMockResponse(GET_PREFERENCE_LIST_QUERY, ResourceUtils.getJsonFromResource(GET_PREFERENCE_LIST_DEFAULT_RESPONSE_PATH), FIND_BY_CONTAINS)
-                addMockResponse("keroAddressCorner", ResourceUtils.getJsonFromResource("logistic/get_address_list_default_response.json"), FIND_BY_CONTAINS)
-                addMockResponse("ongkir_shipper_service", ResourceUtils.getJsonFromResource("logistic/get_shipping_duration_list_default_response.json"), FIND_BY_CONTAINS)
-                addMockResponse("getListingParams", ResourceUtils.getJsonFromResource("payment/get_payment_listing_default_response.json"), FIND_BY_CONTAINS)
-                addMockResponse("get_profile_by_id_occ", ResourceUtils.getJsonFromResource("preference/get_preference_by_id_default_response.json"), FIND_BY_CONTAINS)
-                addMockResponse("insert_profile_occ", ResourceUtils.getJsonFromResource("preference/insert_profile_success_response.json"), FIND_BY_CONTAINS)
+                addMockResponse(GET_ADDRESS_LIST_QUERY, ResourceUtils.getJsonFromResource(GET_ADDRESS_LIST_DEFAULT_RESPONSE_PATH), FIND_BY_CONTAINS)
+                addMockResponse(GET_SHIPPING_DURATION_QUERY, ResourceUtils.getJsonFromResource(GET_SHIPPING_DURATION_DEFAULT_RESPONSE_PATH), FIND_BY_CONTAINS)
+                addMockResponse(GET_LISTING_PARAM_QUERY, ResourceUtils.getJsonFromResource(GET_LISTING_PARAM_DEFAULT_RESPONSE_PATH), FIND_BY_CONTAINS)
+                addMockResponse(GET_PREFERENCE_BY_ID_QUERY, ResourceUtils.getJsonFromResource(GET_PREFERENCE_BY_ID_DEFAULT_RESPONSE_PATH), FIND_BY_CONTAINS)
+                addMockResponse(CREATE_PREFERENCE_QUERY, ResourceUtils.getJsonFromResource(CREATE_PREFERENCE_SUCCESS_RESPONSE_PATH), FIND_BY_CONTAINS)
                 return this
             }
         }

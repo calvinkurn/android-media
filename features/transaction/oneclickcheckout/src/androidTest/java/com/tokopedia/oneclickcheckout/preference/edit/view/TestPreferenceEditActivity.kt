@@ -5,6 +5,7 @@ import com.tokopedia.oneclickcheckout.preference.edit.di.DaggerPreferenceEditCom
 import com.tokopedia.oneclickcheckout.preference.edit.di.PreferenceEditComponent
 import com.tokopedia.oneclickcheckout.preference.edit.di.TestPreferenceEditModule
 
+// For running PreferenceEditActivity with TestPreferenceEditModule
 class TestPreferenceEditActivity : PreferenceEditActivity() {
 
     override fun getComponent(): PreferenceEditComponent {

@@ -8,9 +8,9 @@ import java.io.IOException
 class CartTestInterceptor : BaseOccInterceptor() {
 
     var customGetOccCartResponsePath: String? = null
-    var customUpdateCartOccResponsePath: String? = null
-
     var customGetOccCartThrowable: IOException? = null
+
+    var customUpdateCartOccResponsePath: String? = null
     var customUpdateCartOccThrowable: IOException? = null
 
     override fun intercept(chain: Interceptor.Chain): Response {
@@ -34,6 +34,13 @@ class CartTestInterceptor : BaseOccInterceptor() {
             return mockResponse(copy, getJsonFromResource(UPDATE_CART_OCC_SUCCESS_RESPONSE_PATH))
         }
         return chain.proceed(chain.request())
+    }
+
+    override fun resetInterceptor() {
+        customGetOccCartResponsePath = null
+        customGetOccCartThrowable = null
+        customUpdateCartOccResponsePath = null
+        customUpdateCartOccThrowable = null
     }
 }
 
