@@ -3,10 +3,10 @@
   "mode": "subset",
   "query": [
     {
+      "event": "view_item_list",
+      "eventCategory": "chat detail",
       "item_list": "/chat",
       "eventAction": "view on product thumbnail",
-      "eventCategory": "chat detail",
-      "event": "view_item_list",
       "items": [
         {
           "dimension40": "/chat",
