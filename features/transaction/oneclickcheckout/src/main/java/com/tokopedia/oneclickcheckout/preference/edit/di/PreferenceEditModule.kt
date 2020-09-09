@@ -30,6 +30,7 @@ import com.tokopedia.oneclickcheckout.preference.edit.domain.shipping.GetShippin
 import com.tokopedia.oneclickcheckout.preference.edit.domain.shipping.mapper.ShippingDurationModelMapper
 import com.tokopedia.oneclickcheckout.preference.edit.domain.update.UpdatePreferenceUseCase
 import com.tokopedia.oneclickcheckout.preference.edit.domain.update.model.UpdatePreferenceGqlResponse
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -38,7 +39,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
 @Module
-class PreferenceEditModule(private val activity: Activity) {
+open class PreferenceEditModule(private val activity: Activity) {
 
     @PreferenceEditScope
     @Provides
@@ -157,5 +158,11 @@ class PreferenceEditModule(private val activity: Activity) {
     @Provides
     fun provideGetPaymentListingParamUseCase(graphqlUseCase: GraphqlUseCase<PaymentListingParamGqlResponse>): GetPaymentListingParamUseCase {
         return GetPaymentListingParamUseCaseImpl(graphqlUseCase)
+    }
+
+    @PreferenceEditScope
+    @Provides
+    open fun providePaymentListingUrl(): String {
+        return "${TokopediaUrl.getInstance().PAY}/v2/payment/register/listing"
     }
 }

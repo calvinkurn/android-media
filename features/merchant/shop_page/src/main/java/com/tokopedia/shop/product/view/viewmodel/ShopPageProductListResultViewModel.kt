@@ -13,6 +13,7 @@ import com.tokopedia.shop.home.util.CoroutineDispatcherProvider
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
+import com.tokopedia.shop.product.view.datamodel.GetShopProductUiModel
 import com.tokopedia.shop.product.view.datamodel.ShopEtalaseItemDataModel
 import com.tokopedia.shop.product.view.datamodel.ShopProductViewModel
 import com.tokopedia.shop.product.view.datamodel.ShopStickySortFilter
@@ -44,7 +45,7 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
         get() = userSession.isLoggedIn
 
     val shopInfoResp = MutableLiveData<Result<ShopInfo>>()
-    val productData = MutableLiveData<Result<Pair<Boolean, List<ShopProductViewModel>>>>()
+    val productData = MutableLiveData<Result<GetShopProductUiModel>>()
     val shopSortFilterData = MutableLiveData<Result<ShopStickySortFilter>>()
 
     private val _productDataEmpty = MutableLiveData<Result<List<ShopProductViewModel>>>()
@@ -186,14 +187,16 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
             productFilter: ShopProductFilterInput,
             isForceRefresh: Boolean = false,
             etalaseType: Int
-    ): Pair<Boolean, List<ShopProductViewModel>> {
+    ): GetShopProductUiModel {
         getShopProductUseCase.params = GqlGetShopProductUseCase.createParams(shopId, productFilter)
         getShopProductUseCase.isFromCacheFirst = !isForceRefresh
         val productListResponse = getShopProductUseCase.executeOnBackground()
         val isHasNextPage = isHasNextPage(productFilter.page, productFilter.perPage, productListResponse.totalData)
-        return Pair(
+        val totalProductData  = productListResponse.totalData
+        return GetShopProductUiModel(
                 isHasNextPage,
-                productListResponse.data.map { ShopPageProductListMapper.mapShopProductToProductViewModel(it, isMyShop(shopId), productFilter.etalaseMenu, etalaseType) }
+                productListResponse.data.map { ShopPageProductListMapper.mapShopProductToProductViewModel(it, isMyShop(shopId), productFilter.etalaseMenu, etalaseType) },
+                totalProductData
         )
     }
     private fun isHasNextPage(page: Int, perPage: Int, totalData: Int): Boolean = page * perPage < totalData
