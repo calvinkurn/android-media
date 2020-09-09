@@ -71,7 +71,7 @@ class ChatListActivityTest {
         onView(withId(R.id.thumbnail))
                 .check(matches(isDisplayed()))
         onView(withId(R.id.title))
-                .check(matches(withText("Belum ada chat")))
+                .check(matches(withText("Belum ada chat, nih")))
         onView(withId(R.id.subtitle))
                 .check(matches(withText("Coba ngobrol dengan teman penjual, yuk!")))
         onView(withId(R.id.btnCta))
