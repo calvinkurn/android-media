@@ -29,15 +29,14 @@ import com.tokopedia.play_common.viewcomponent.ViewComponent
  */
 class VideoViewComponent(
         container: ViewGroup,
-        @IdRes idRes: Int
+        @IdRes idRes: Int,
+        private val blurUtil: ImageBlurUtil
 ) : ViewComponent(container, idRes) {
 
     private val pvVideo = findViewById<PlayerView>(R.id.pv_video)
     private val ivThumbnail = findViewById<ImageView>(R.id.iv_thumbnail)
 
     private var mExoPlayer: ExoPlayer? = null
-
-    private lateinit var blurUtil: ImageBlurUtil
 
     fun setPlayer(exoPlayer: ExoPlayer?) {
         pvVideo.player = exoPlayer
@@ -52,7 +51,7 @@ class VideoViewComponent(
         val currentThumbnail = getCurrentBitmap()
         showThumbnail(
                 currentThumbnail?.let {
-                    getBlurUtil().blurImage(it, radius = 25f)
+                    blurUtil.blurImage(it, radius = BLUR_RADIUS)
                 }
         )
     }
@@ -132,13 +131,6 @@ class VideoViewComponent(
         }
     }
 
-    private fun getBlurUtil(): ImageBlurUtil {
-        if (!::blurUtil.isInitialized) {
-            blurUtil = ImageBlurUtil(ivThumbnail.context)
-        }
-        return blurUtil
-    }
-
     /**
      * Lifecycle Function
      */
@@ -156,6 +148,9 @@ class VideoViewComponent(
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
         setPlayer(null)
-        if (::blurUtil.isInitialized) blurUtil.close()
+    }
+
+    companion object {
+        private const val BLUR_RADIUS = 25f
     }
 }

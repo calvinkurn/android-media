@@ -24,7 +24,7 @@ class LifecycleBoundDelegate<LO: LifecycleOwner, T: Any>(
 
             @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
             fun onDestroy(owner: LifecycleOwner) {
-                onDestroy(mInstance!!)
+                mInstance?.let { onDestroy(it) }
                 mInstance = null
             }
         })

@@ -12,6 +12,7 @@ import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.VideoAnalyticHelper
 import com.tokopedia.play.extensions.isAnyShown
+import com.tokopedia.play.util.blur.ImageBlurUtil
 import com.tokopedia.play.util.event.DistinctEventObserver
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.video.state.BufferSource
@@ -27,6 +28,7 @@ import com.tokopedia.play.view.viewcomponent.VideoLoadingComponent
 import com.tokopedia.play.view.viewcomponent.VideoViewComponent
 import com.tokopedia.play.view.viewmodel.PlayVideoViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
+import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.dpToPx
 import javax.inject.Inject
@@ -38,10 +40,15 @@ class PlayVideoFragment @Inject constructor(
         private val viewModelFactory: ViewModelProvider.Factory
 ): TkpdBaseV4Fragment(), PlayFragmentContract {
 
-    private val videoView by viewComponent { VideoViewComponent(it, R.id.view_video) }
+    private val videoView by viewComponent { VideoViewComponent(it, R.id.view_video, blurUtil) }
     private val videoLoadingView by viewComponent { VideoLoadingComponent(it, R.id.view_video_loading) }
     private val oneTapView by viewComponent { OneTapViewComponent(it, R.id.iv_one_tap_finger) }
     private val overlayVideoView by viewComponent { EmptyViewComponent(it, R.id.v_play_overlay_video) }
+
+    private val blurUtil: ImageBlurUtil by lifecycleBound(
+            creator = { ImageBlurUtil(it.requireContext()) },
+            onDestroy = { blurUtil.close() }
+    )
 
     private val cornerRadius = 16f.dpToPx()
 
