@@ -9,6 +9,8 @@ import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingParam
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData.ERROR_DISTANCE_LIMIT_EXCEEDED
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData.ERROR_WEIGHT_LIMIT_EXCEEDED
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.TKPDMapParam
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
@@ -265,6 +267,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 }
             }
             sendViewOspEe()
+            sendViewShippingErrorMessage(result.shippingErrorId)
+            sendPreselectedCourierOption(result.preselectedSpId)
             if (result.orderShipment.serviceErrorMessage.isNullOrEmpty()) {
                 validateUsePromo()
             } else {
@@ -542,13 +546,13 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 //        return shipping
 //    }
 
-//    private fun sendViewShippingErrorMessage(shippingErrorId: String?) {
-//        if (shippingErrorId == ERROR_DISTANCE_LIMIT_EXCEEDED) {
-//            orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_DISTANCE_EXCEED)
-//        } else if (shippingErrorId == ERROR_WEIGHT_LIMIT_EXCEEDED) {
-//            orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_WEIGHT_EXCEED)
-//        }
-//    }
+    private fun sendViewShippingErrorMessage(shippingErrorId: String?) {
+        if (shippingErrorId == ERROR_DISTANCE_LIMIT_EXCEEDED) {
+            orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_DISTANCE_EXCEED)
+        } else if (shippingErrorId == ERROR_WEIGHT_LIMIT_EXCEEDED) {
+            orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_WEIGHT_EXCEED)
+        }
+    }
 
     private fun sendPreselectedCourierOption(preselectedSpId: String?) {
         if (preselectedSpId != null) {
