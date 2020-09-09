@@ -502,7 +502,7 @@ class ProductManageViewModel @Inject constructor(
         _toggleMultiSelect.value = !multiSelectEnabled
     }
 
-    fun onPromoTopAdsClicked() {
+    fun onPromoTopAdsClicked(productId: String) {
         val topAdsInfo = _topAdsInfo.value
 
         if(topAdsInfo != null) {
@@ -510,12 +510,12 @@ class ProductManageViewModel @Inject constructor(
             val shopHasAutoAds = topAdsInfo.isAutoAds
 
             _onClickPromoTopAds.value = when {
-                shopHasAutoAds -> TopAdsPage.AutoAds
-                shopHasTopAds -> TopAdsPage.ManualAds
-                else -> TopAdsPage.OnBoarding
+                shopHasAutoAds -> TopAdsPage.AutoAds(productId)
+                shopHasTopAds -> TopAdsPage.ManualAds(productId)
+                else -> TopAdsPage.OnBoarding(productId)
             }
         } else {
-            _onClickPromoTopAds.value = TopAdsPage.OnBoarding
+            _onClickPromoTopAds.value = TopAdsPage.OnBoarding(productId)
         }
     }
 
