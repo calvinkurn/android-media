@@ -14,6 +14,7 @@ import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohListOrder
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohTypeData
 import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.viewholder.*
 import com.tokopedia.buyerorder.unifiedhistory.list.view.fragment.UohListFragment
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
 /**
  * Created by fwidjaja on 22/07/20.
@@ -32,13 +33,14 @@ class UohItemAdapter : RecyclerView.Adapter<UohItemAdapter.BaseViewHolder<*>>() 
 
     interface ActionListener {
         fun onKebabMenuClicked(order: UohListOrder.Data.UohOrders.Order)
-        fun onListItemClicked(detailUrl: UohListOrder.Data.UohOrders.Order.Metadata.DetailUrl)
-        fun onActionButtonClicked(button: UohListOrder.Data.UohOrders.Order.Metadata.Button,
-                                  index: Int,
-                                  orderUUID: String,
-                                  verticalId: String,
-                                  listProducts: String)
+        fun onListItemClicked(order: UohListOrder.Data.UohOrders.Order, index: Int)
+        fun onActionButtonClicked(order: UohListOrder.Data.UohOrders.Order, index: Int)
         fun onEmptyResultResetBtnClicked()
+        fun trackViewOrderCard(order: UohListOrder.Data.UohOrders.Order, index: Int)
+        fun trackMulaiBelanjaOnEmptyList()
+        fun trackProductViewRecommendation(recommendationItem: RecommendationItem, index: Int)
+        fun trackProductClickRecommendation(recommendationItem: RecommendationItem, index: Int)
+        fun trackAddToCartRecommendation(recommendationItem: RecommendationItem)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<*> {
@@ -61,7 +63,7 @@ class UohItemAdapter : RecyclerView.Adapter<UohItemAdapter.BaseViewHolder<*>>() 
             }
             LAYOUT_RECOMMENDATION_LIST -> {
                 val view = LayoutInflater.from(parent.context).inflate(R.layout.uoh_recommendation_item, parent, false)
-                UohRecommendationItemViewHolder(view)
+                UohRecommendationItemViewHolder(view, actionListener)
             }
             else -> throw IllegalArgumentException("Invalid view type")
         }

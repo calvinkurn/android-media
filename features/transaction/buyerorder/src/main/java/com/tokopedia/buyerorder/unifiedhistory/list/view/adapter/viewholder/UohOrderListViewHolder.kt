@@ -8,6 +8,8 @@ import com.tokopedia.buyerorder.common.util.BuyerConsts.TICKER_LABEL
 import com.tokopedia.buyerorder.common.util.BuyerConsts.TICKER_URL
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohUtils
+import com.tokopedia.buyerorder.unifiedhistory.list.analytics.UohAnalytics
+import com.tokopedia.buyerorder.unifiedhistory.list.analytics.data.model.ECommerceImpressions
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohListOrder
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohTypeData
 import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.UohItemAdapter
@@ -127,19 +129,16 @@ class UohOrderListViewHolder(itemView: View, private val actionListener: UohItem
             }
 
             itemView.cl_data_product?.setOnClickListener {
-                actionListener?.onListItemClicked(item.dataObject.metadata.detailURL)
+                actionListener?.onListItemClicked(item.dataObject, position)
             }
 
             itemView.uoh_btn_action?.setOnClickListener {
                 if (item.dataObject.metadata.buttons.isNotEmpty()) {
-                    actionListener?.onActionButtonClicked(
-                            item.dataObject.metadata.buttons.first(),
-                            position,
-                            item.dataObject.orderUUID,
-                            item.dataObject.verticalID,
-                            item.dataObject.metadata.listProducts)
+                    actionListener?.onActionButtonClicked(item.dataObject, position)
                 }
             }
+
+            actionListener?.trackViewOrderCard(item.dataObject, position)
         }
     }
 }

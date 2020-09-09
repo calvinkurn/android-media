@@ -24,6 +24,10 @@ class UohEmptyStateViewHolder(itemView: View, private val actionListener: UohIte
                         setPrimaryCTAClickListener {
                             actionListener?.onEmptyResultResetBtnClicked()
                         }
+                    } else if (item.dataObject.btnStr == resources.getString(R.string.uoh_no_order_btn)) {
+                        setPrimaryCTAClickListener {
+                            actionListener?.trackMulaiBelanjaOnEmptyList()
+                        }
                     }
                 }
             }

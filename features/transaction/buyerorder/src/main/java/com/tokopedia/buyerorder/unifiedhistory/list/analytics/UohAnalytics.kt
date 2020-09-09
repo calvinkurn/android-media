@@ -4,7 +4,10 @@ import android.app.Activity
 import android.os.Bundle
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.BUSINESS_UNIT_REPLACEE
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.RECOMMENDATION_LIST_TOPADS_TRACK
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.RECOMMENDATION_LIST_TRACK
 import com.tokopedia.buyerorder.unifiedhistory.list.analytics.data.model.ECommerceAdd
+import com.tokopedia.buyerorder.unifiedhistory.list.analytics.data.model.ECommerceAddRecommendation
 import com.tokopedia.buyerorder.unifiedhistory.list.analytics.data.model.ECommerceClick
 import com.tokopedia.buyerorder.unifiedhistory.list.analytics.data.model.ECommerceImpressions
 import com.tokopedia.track.TrackApp
@@ -55,6 +58,8 @@ object UohAnalytics {
     private const val ADD_TO_CART = "addToCart"
     private const val VIEW_ORDER_CARD = "view order card {business_unit}"
     private const val VIEW_RECOMMENDATION = "impression - product recommendation"
+    private const val CLICK_RECOMMENDATION = "click - product recommendation"
+    private const val CLICK_ATC_RECOMMENDATION = "click add to cart on my purchase list page"
     private const val CLICK_ORDER_CARD = "click order card {business_unit}"
     private const val CLICK_BELI_LAGI = "click beli lagi on order card marketplace"
     private const val ACTION_FIELD_CLICK_ECOMMERCE = "/order list - {business_unit}"
@@ -92,7 +97,7 @@ object UohAnalytics {
                 event, eventCategory, eventAction, eventLabel))
     }
 
-    private fun viewOrderListPage(isLoggedInStatus: Boolean, userId: String) {
+    fun viewOrderListPage(isLoggedInStatus: Boolean, userId: String) {
         TrackApp.getInstance().gtm.sendTrackEvent(OPEN_SCREEN, mapOf(
                 EVENT to OPEN_SCREEN,
                 SCREEN_NAME to ORDER_LIST_SCREEN_NAME,
@@ -102,7 +107,7 @@ object UohAnalytics {
                 BUSINESS_UNIT to ORDER_MANAGEMENT))
     }
 
-    private fun submitSearch(keyword: String, userId: String) {
+    fun submitSearch(keyword: String, userId: String) {
         TrackApp.getInstance().gtm.sendTrackEvent(CLICK_ORDER_LIST, mapOf(
                 EVENT to CLICK_ORDER_LIST,
                 EVENT_CATEGORY to ORDER_LIST_EVENT_CATEGORY,
@@ -113,7 +118,7 @@ object UohAnalytics {
                 BUSINESS_UNIT to ORDER_MANAGEMENT))
     }
 
-    private fun clickDateFilterChips(userId: String) {
+    fun clickDateFilterChips(userId: String) {
         TrackApp.getInstance().gtm.sendTrackEvent(CLICK_ORDER_LIST, mapOf(
                 EVENT to CLICK_ORDER_LIST,
                 EVENT_CATEGORY to ORDER_LIST_EVENT_CATEGORY,
@@ -124,7 +129,7 @@ object UohAnalytics {
                 BUSINESS_UNIT to ORDER_MANAGEMENT))
     }
 
-    private fun clickTerapkanOnDateFilterChips(dateOption: String, userId: String) {
+    fun clickTerapkanOnDateFilterChips(dateOption: String, userId: String) {
         TrackApp.getInstance().gtm.sendTrackEvent(CLICK_ORDER_LIST, mapOf(
                 EVENT to CLICK_ORDER_LIST,
                 EVENT_CATEGORY to ORDER_LIST_EVENT_CATEGORY,
@@ -135,7 +140,7 @@ object UohAnalytics {
                 BUSINESS_UNIT to ORDER_MANAGEMENT))
     }
 
-    private fun clickStatusFilterChips(userId: String) {
+    fun clickStatusFilterChips(userId: String) {
         TrackApp.getInstance().gtm.sendTrackEvent(CLICK_ORDER_LIST, mapOf(
                 EVENT to CLICK_ORDER_LIST,
                 EVENT_CATEGORY to ORDER_LIST_EVENT_CATEGORY,
@@ -146,7 +151,7 @@ object UohAnalytics {
                 BUSINESS_UNIT to ORDER_MANAGEMENT))
     }
 
-    private fun clickTerapkanOnStatusFilterChips(statusOption: String, userId: String) {
+    fun clickTerapkanOnStatusFilterChips(statusOption: String, userId: String) {
         TrackApp.getInstance().gtm.sendTrackEvent(CLICK_ORDER_LIST, mapOf(
                 EVENT to CLICK_ORDER_LIST,
                 EVENT_CATEGORY to ORDER_LIST_EVENT_CATEGORY,
@@ -157,7 +162,7 @@ object UohAnalytics {
                 BUSINESS_UNIT to ORDER_MANAGEMENT))
     }
 
-    private fun clickCategoryFilterChips(userId: String) {
+    fun clickCategoryFilterChips(userId: String) {
         TrackApp.getInstance().gtm.sendTrackEvent(CLICK_ORDER_LIST, mapOf(
                 EVENT to CLICK_ORDER_LIST,
                 EVENT_CATEGORY to ORDER_LIST_EVENT_CATEGORY,
@@ -168,7 +173,7 @@ object UohAnalytics {
                 BUSINESS_UNIT to ORDER_MANAGEMENT))
     }
 
-    private fun clickTerapkanOnCategoryFilterChips(categoryOption: String, userId: String) {
+    fun clickTerapkanOnCategoryFilterChips(categoryOption: String, userId: String) {
         TrackApp.getInstance().gtm.sendTrackEvent(CLICK_ORDER_LIST, mapOf(
                 EVENT to CLICK_ORDER_LIST,
                 EVENT_CATEGORY to ORDER_LIST_EVENT_CATEGORY,
@@ -179,7 +184,7 @@ object UohAnalytics {
                 BUSINESS_UNIT to ORDER_MANAGEMENT))
     }
 
-    private fun clickXChipsToClearFilter(userId: String) {
+    fun clickXChipsToClearFilter(userId: String) {
         TrackApp.getInstance().gtm.sendTrackEvent(CLICK_ORDER_LIST, mapOf(
                 EVENT to CLICK_ORDER_LIST,
                 EVENT_CATEGORY to ORDER_LIST_EVENT_CATEGORY,
@@ -190,11 +195,9 @@ object UohAnalytics {
                 BUSINESS_UNIT to ORDER_MANAGEMENT))
     }
 
-    private fun viewOrderCard(verticalLabel: String, userId: String, impressions: ECommerceImpressions.Impressions) {
-        val arrayListImpressions: ArrayList<ECommerceImpressions.Impressions> = arrayListOf()
-        arrayListImpressions.add(impressions)
+    fun viewOrderCard(verticalLabel: String, userId: String, arrayImpressions: ArrayList<ECommerceImpressions.Impressions>) {
         val eCommerce = ECommerceImpressions(
-                impressions = arrayListImpressions
+                impressions = arrayImpressions
         )
         val bundle = Bundle().apply {
             putString(EVENT, PRODUCT_VIEW)
@@ -209,7 +212,7 @@ object UohAnalytics {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(PRODUCT_VIEW, bundle)
     }
 
-    private fun clickOrderCard(verticalLabel: String, userId: String, arrayListProducts: ArrayList<ECommerceClick.Products>) {
+    fun clickOrderCard(verticalLabel: String, userId: String, arrayListProducts: ArrayList<ECommerceClick.Products>) {
         val eCommerceClick = ECommerceClick(actionField = ECommerceClick.ActionField(
                                             list = ACTION_FIELD_CLICK_ECOMMERCE.replace(BUSINESS_UNIT_REPLACEE, verticalLabel)
         ),
@@ -227,7 +230,7 @@ object UohAnalytics {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(PRODUCT_CLICK, bundle)
     }
 
-    private fun clickPrimaryButtonOnOrderCard(verticalLabel: String, primaryButton:String, userId: String) {
+    fun clickPrimaryButtonOnOrderCard(verticalLabel: String, primaryButton:String, userId: String) {
         TrackApp.getInstance().gtm.sendTrackEvent(CLICK_ORDER_LIST, mapOf(
                 EVENT to CLICK_ORDER_LIST,
                 EVENT_CATEGORY to ORDER_LIST_EVENT_CATEGORY,
@@ -238,7 +241,7 @@ object UohAnalytics {
                 BUSINESS_UNIT to ORDER_MANAGEMENT))
     }
 
-    private fun clickThreeDotsMenu(verticalLabel: String, userId: String) {
+    fun clickThreeDotsMenu(verticalLabel: String, userId: String) {
         TrackApp.getInstance().gtm.sendTrackEvent(CLICK_ORDER_LIST, mapOf(
                 EVENT to CLICK_ORDER_LIST,
                 EVENT_CATEGORY to ORDER_LIST_EVENT_CATEGORY,
@@ -249,7 +252,7 @@ object UohAnalytics {
                 BUSINESS_UNIT to ORDER_MANAGEMENT))
     }
 
-    private fun clickSecondaryOptionOnThreeDotsMenu(verticalLabel: String, secondaryOption: String, userId: String) {
+    fun clickSecondaryOptionOnThreeDotsMenu(verticalLabel: String, secondaryOption: String, userId: String) {
         TrackApp.getInstance().gtm.sendTrackEvent(CLICK_ORDER_LIST, mapOf(
                 EVENT to CLICK_ORDER_LIST,
                 EVENT_CATEGORY to ORDER_LIST_EVENT_CATEGORY,
@@ -260,7 +263,7 @@ object UohAnalytics {
                 BUSINESS_UNIT to ORDER_MANAGEMENT))
     }
 
-    private fun clickMulaiBelanjaOnEmptyOrderList(userId: String) {
+    fun clickMulaiBelanjaOnEmptyOrderList(userId: String) {
         TrackApp.getInstance().gtm.sendTrackEvent(CLICK_ORDER_LIST, mapOf(
                 EVENT to CLICK_ORDER_LIST,
                 EVENT_CATEGORY to ORDER_LIST_EVENT_CATEGORY,
@@ -271,7 +274,7 @@ object UohAnalytics {
                 BUSINESS_UNIT to ORDER_MANAGEMENT))
     }
 
-    private fun clickResetFilterOnEmptyFilterResult(userId: String) {
+    fun clickResetFilterOnEmptyFilterResult(userId: String) {
         TrackApp.getInstance().gtm.sendTrackEvent(CLICK_ORDER_LIST, mapOf(
                 EVENT to CLICK_ORDER_LIST,
                 EVENT_CATEGORY to ORDER_LIST_EVENT_CATEGORY,
@@ -282,7 +285,7 @@ object UohAnalytics {
                 BUSINESS_UNIT to ORDER_MANAGEMENT))
     }
 
-    private fun clickLihatButtonOnAtcSuccessToaster(userId: String) {
+    fun clickLihatButtonOnAtcSuccessToaster(userId: String) {
         TrackApp.getInstance().gtm.sendTrackEvent(CLICK_ORDER_LIST, mapOf(
                 EVENT to CLICK_ORDER_LIST,
                 EVENT_CATEGORY to ORDER_LIST_EVENT_CATEGORY,
@@ -293,7 +296,7 @@ object UohAnalytics {
                 BUSINESS_UNIT to ORDER_MANAGEMENT))
     }
 
-    private fun clickBeliLagiOnOrderCardMP(screenName: String, userId: String, arrayListProducts: ArrayList<ECommerceAdd.Add.Products>) {
+    fun clickBeliLagiOnOrderCardMP(screenName: String, userId: String, arrayListProducts: ArrayList<ECommerceAdd.Add.Products>) {
         val eCommerceAdd = ECommerceAdd(
                 add = ECommerceAdd.Add(products = arrayListProducts)
         )
@@ -311,7 +314,7 @@ object UohAnalytics {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(PRODUCT_CLICK, bundle)
     }
 
-    private fun clickSelesaiOnBottomSheetFinishTransaction(userId: String) {
+    fun clickSelesaiOnBottomSheetFinishTransaction(userId: String) {
         TrackApp.getInstance().gtm.sendTrackEvent(CLICK_ORDER_LIST, mapOf(
                 EVENT to CLICK_ORDER_LIST,
                 EVENT_CATEGORY to ORDER_LIST_EVENT_CATEGORY,
@@ -322,7 +325,7 @@ object UohAnalytics {
                 BUSINESS_UNIT to ORDER_MANAGEMENT))
     }
 
-    private fun productViewRecommandation(impressions: ECommerceImpressions.Impressions) {
+    fun productViewRecommendation(impressions: ECommerceImpressions.Impressions) {
         val arrayListImpressions: ArrayList<ECommerceImpressions.Impressions> = arrayListOf()
         arrayListImpressions.add(impressions)
         val eCommerce = ECommerceImpressions(
@@ -336,5 +339,44 @@ object UohAnalytics {
             putParcelable(ECOMMERCE, eCommerce)
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(PRODUCT_VIEW, bundle)
+    }
+
+    fun productClickRecommendation(click: ECommerceClick.Products, isTopads: Boolean) {
+        val arrayListClick: ArrayList<ECommerceClick.Products> = arrayListOf()
+        arrayListClick.add(click)
+
+        var list = RECOMMENDATION_LIST_TRACK
+        if (isTopads) list += RECOMMENDATION_LIST_TOPADS_TRACK
+
+        val eCommerce = ECommerceClick(
+                actionField = ECommerceClick.ActionField(list = list),
+                products = arrayListClick
+        )
+        val bundle = Bundle().apply {
+            putString(EVENT, PRODUCT_CLICK)
+            putString(EVENT_CATEGORY, PURCHASE_LIST_EVENT_CATEGORY)
+            putString(EVENT_ACTION, CLICK_RECOMMENDATION)
+            putString(EVENT_LABEL, "")
+            putParcelable(ECOMMERCE, eCommerce)
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(PRODUCT_CLICK, bundle)
+    }
+
+    fun productAtcRecommendation(listProduct: ArrayList<ECommerceAddRecommendation.Add.ActionField.Product>, isTopads: Boolean) {
+        var list = RECOMMENDATION_LIST_TRACK
+        if (isTopads) list += RECOMMENDATION_LIST_TOPADS_TRACK
+
+        val eCommerce = ECommerceAddRecommendation.Add(actionField = ECommerceAddRecommendation.Add.ActionField(
+                        list = list,
+                        products = listProduct
+        ))
+        val bundle = Bundle().apply {
+            putString(EVENT, ADD_TO_CART)
+            putString(EVENT_CATEGORY, PURCHASE_LIST_EVENT_CATEGORY)
+            putString(EVENT_ACTION, CLICK_ATC_RECOMMENDATION)
+            putString(EVENT_LABEL, "")
+            putParcelable(ECOMMERCE, eCommerce)
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(ADD_TO_CART, bundle)
     }
 }

@@ -2,9 +2,9 @@ package com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.viewholder
 
 import android.view.View
 import com.tokopedia.buyerorder.R
-import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohEmptyState
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohTypeData
 import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.UohItemAdapter
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -12,7 +12,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 /**
  * Created by fwidjaja on 22/07/20.
  */
-class UohRecommendationItemViewHolder(itemView: View) : UohItemAdapter.BaseViewHolder<UohTypeData>(itemView) {
+class UohRecommendationItemViewHolder(itemView: View, private val actionListener: UohItemAdapter.ActionListener?) : UohItemAdapter.BaseViewHolder<UohTypeData>(itemView) {
     private val productCardView: ProductCardGridView by lazy { itemView.findViewById<ProductCardGridView>(R.id.uoh_product_item) }
 
     override fun bind(item: UohTypeData, position: Int) {
@@ -43,8 +43,28 @@ class UohRecommendationItemViewHolder(itemView: View) : UohItemAdapter.BaseViewH
                                             position = it.position,
                                             type = it.type
                                     )
-                                }
+                                },
+                                hasAddToCartButton = true
                         )
+                )
+
+                setAddToCartOnClickListener {
+                    actionListener?.trackAddToCartRecommendation(item.dataObject)
+                }
+
+                setOnClickListener {
+                    actionListener?.trackProductClickRecommendation(item.dataObject, position)
+                }
+
+                setImageProductViewHintListener(
+                        item.dataObject,
+                        object : ViewHintListener {
+                            override fun onViewHint() {
+                                actionListener?.trackProductViewRecommendation(
+                                        item.dataObject, position
+                                )
+                            }
+                        }
                 )
             }
         }

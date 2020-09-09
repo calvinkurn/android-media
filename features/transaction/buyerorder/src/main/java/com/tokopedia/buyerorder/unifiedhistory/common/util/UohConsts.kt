@@ -91,4 +91,13 @@ object UohConsts {
     const val APPLINK_RESO = "tokopedia-android-internal://global/webview?url=https://m.tokopedia.com/resolution-center/create/{order_id}/mobile"
     const val WEBVIEW = "webview"
     const val UTF_8 = "UTF-8"
+
+    const val EE_PRODUCT_ID = "product_id"
+    const val EE_PRODUCT_PRICE = "product_price"
+    const val EE_QUANTITY = "quantity"
+    const val EE_SHOP_ID = "shop_id"
+    const val EE_SHOP_TYPE = "shop_type"
+    const val EE_SHOP_NAME = "shop_name"
+    const val RECOMMENDATION_LIST_TRACK = "/my_purchase_list - rekomendasi untuk anda"
+    const val RECOMMENDATION_LIST_TOPADS_TRACK = " - product topads"
 }

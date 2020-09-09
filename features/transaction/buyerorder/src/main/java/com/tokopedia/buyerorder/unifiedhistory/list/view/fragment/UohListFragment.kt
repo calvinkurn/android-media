@@ -28,6 +28,10 @@ import com.tokopedia.buyerorder.unifiedhistory.common.di.UohComponentInstance
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.APPLINK_RESO
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.APP_LINK_TYPE
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.EE_PRODUCT_ID
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.EE_PRODUCT_PRICE
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.EE_QUANTITY
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.EE_SHOP_ID
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.EMAIL_MUST_NOT_BE_EMPTY
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.END_DATE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.FINISH_ORDER_BOTTOMSHEET_TITLE
@@ -50,6 +54,11 @@ import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TYPE_ACTION
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.WEB_LINK_TYPE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.WRONG_FORMAT_EMAIL
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohUtils
+import com.tokopedia.buyerorder.unifiedhistory.list.analytics.UohAnalytics
+import com.tokopedia.buyerorder.unifiedhistory.list.analytics.data.model.ECommerceAdd
+import com.tokopedia.buyerorder.unifiedhistory.list.analytics.data.model.ECommerceAddRecommendation
+import com.tokopedia.buyerorder.unifiedhistory.list.analytics.data.model.ECommerceClick
+import com.tokopedia.buyerorder.unifiedhistory.list.analytics.data.model.ECommerceImpressions
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.*
 import com.tokopedia.buyerorder.unifiedhistory.list.di.DaggerUohListComponent
 import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.UohBottomSheetKebabMenuAdapter
@@ -63,8 +72,10 @@ import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -269,6 +280,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
                     paramUohOrder.searchableText = s.toString()
                     refreshHandler?.startRefresh()
+                    userSession?.userId?.let { UohAnalytics.submitSearch(s.toString(), it) }
                 }
             }
 
@@ -338,6 +350,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                                 }
                             }
                         }
+                        userSession?.isLoggedIn?.let { it1 -> userSession?.userId?.let { it2 -> UohAnalytics.viewOrderListPage(it1, it2) } }
                     } else {
                         if (currPage == 1) {
                             loadRecommendationList()
@@ -606,6 +619,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             showToaster(resetMsg, Toaster.TYPE_NORMAL)
             resetFilter()
             refreshHandler?.startRefresh()
+            userSession?.userId?.let { it1 -> UohAnalytics.clickXChipsToClearFilter(it1) }
         }
 
         filter1?.refChipUnify?.setChevronClickListener {  }
@@ -795,27 +809,33 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                         currFilterDateKey = tempFilterDateKey
                         currFilterDateLabel = tempFilterDateLabel
                         filter1?.type = ChipsUnify.TYPE_SELECTED
+                        var dateOption = ""
                         if (currFilterDateKey.toInt() == 3) {
                             if (paramUohOrder.createTimeStart.isNotEmpty() && paramUohOrder.createTimeEnd.isNotEmpty()) {
                                 val splitStartDate = paramUohOrder.createTimeStart.split('-')
                                 val splitEndDate = paramUohOrder.createTimeEnd.split('-')
-                                filter1?.title = "${splitStartDate[2]}/${splitStartDate[1]}/${splitStartDate[0]} - ${splitEndDate[2]}/${splitEndDate[1]}/${splitEndDate[0]}"
+                                dateOption = "${splitStartDate[2]}/${splitStartDate[1]}/${splitStartDate[0]} - ${splitEndDate[2]}/${splitEndDate[1]}/${splitEndDate[0]}"
+                                filter1?.title = dateOption
                             }
                         } else {
+                            dateOption = currFilterDateLabel
                             filter1?.title = currFilterDateLabel
                         }
+                        userSession?.userId?.let { it1 -> UohAnalytics.clickTerapkanOnDateFilterChips(dateOption, it1) }
                     }
                     UohConsts.TYPE_FILTER_STATUS -> {
                         currFilterStatusKey = tempFilterStatusKey
                         currFilterStatusLabel = tempFilterStatusLabel
                         filter2?.type = ChipsUnify.TYPE_SELECTED
                         filter2?.title = currFilterStatusLabel
+                        userSession?.userId?.let { it1 -> UohAnalytics.clickTerapkanOnStatusFilterChips(currFilterStatusLabel, it1) }
                     }
                     UohConsts.TYPE_FILTER_CATEGORY -> {
                         currFilterCategoryKey = tempFilterCategoryKey
                         currFilterCategoryLabel = tempFilterCategoryLabel
                         filter3?.type = ChipsUnify.TYPE_SELECTED
                         filter3?.title = currFilterCategoryLabel
+                        userSession?.userId?.let { it1 -> UohAnalytics.clickTerapkanOnCategoryFilterChips(currFilterCategoryLabel, it1) }
                     }
                 }
                 bottomSheetOption?.dismiss()
@@ -860,6 +880,8 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 if (paramFinishOrder != null) {
                     uohListViewModel.doFinishOrder(GraphqlHelper.loadRawString(resources, R.raw.uoh_finish_order), paramFinishOrder)
                 }
+
+                userSession?.userId?.let { it1 -> UohAnalytics.clickSelesaiOnBottomSheetFinishTransaction(it1) }
             }
 
             btn_ajukan_komplain?.setOnClickListener {
@@ -1009,16 +1031,19 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                         }
                     }
                 }
+                userSession?.userId?.let { UohAnalytics.clickDateFilterChips(it) }
             }
             UohConsts.TYPE_FILTER_STATUS -> {
                 tempFilterStatusKey = option
                 tempFilterStatusLabel = label
                 paramUohOrder.status = option
+                userSession?.userId?.let { UohAnalytics.clickStatusFilterChips(it) }
             }
             UohConsts.TYPE_FILTER_CATEGORY -> {
                 tempFilterCategoryKey = option
                 tempFilterCategoryLabel = label
                 paramUohOrder.verticalCategory = option
+                userSession?.userId?.let { UohAnalytics.clickCategoryFilterChips(it) }
             }
         }
     }
@@ -1096,6 +1121,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     override fun onKebabMenuClicked(order: UohListOrder.Data.UohOrders.Order) {
         showBottomSheetKebabMenu()
         uohBottomSheetKebabMenuAdapter.addList(order)
+        userSession?.userId?.let { UohAnalytics.clickThreeDotsMenu(order.verticalCategory, it) }
     }
 
     override fun onKebabItemClick(index: Int, orderData: UohListOrder.Data.UohOrders.Order) {
@@ -1123,6 +1149,22 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     val listOfStrings = Gson().fromJson(orderData.metadata.listProducts, mutableListOf<String>().javaClass)
                     val jsonArray: JsonArray = Gson().toJsonTree(listOfStrings).asJsonArray
                     uohListViewModel.doAtc(GraphqlHelper.loadRawString(resources, R.raw.buy_again), jsonArray)
+
+                    // analytics
+                    val arrayListProducts = arrayListOf<ECommerceAdd.Add.Products>()
+                    var i = 0
+                    orderData.metadata.products.forEach {
+                        val objProduct = jsonArray.get(i).asJsonObject
+                        arrayListProducts.add(ECommerceAdd.Add.Products(
+                                name = it.title,
+                                id = objProduct.get(EE_PRODUCT_ID).asString,
+                                price = objProduct.get(EE_PRODUCT_PRICE).asString,
+                                quantity = objProduct.get(EE_QUANTITY).asString,
+                                dimension79 = objProduct.get(EE_SHOP_ID).asString
+                        ))
+                        i++
+                    }
+                    userSession?.userId?.let { UohAnalytics.clickBeliLagiOnOrderCardMP("", it, arrayListProducts) }
                 }
                 dotMenu.actionType.equals(GQL_MP_FINISH, true) -> {
                     orderIdNeedUpdated = orderData.orderUUID
@@ -1130,54 +1172,164 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 }
             }
         }
+        userSession?.userId?.let { UohAnalytics.clickSecondaryOptionOnThreeDotsMenu(orderData.verticalCategory, dotMenu.label, it) }
     }
 
-    override fun onListItemClicked(detailUrl: UohListOrder.Data.UohOrders.Order.Metadata.DetailUrl) {
+    override fun onListItemClicked(order: UohListOrder.Data.UohOrders.Order, index: Int) {
+        val detailUrl = order.metadata.detailURL
         if (detailUrl.appTypeLink == WEB_LINK_TYPE) {
             RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(detailUrl.webURL, UohConsts.UTF_8)))
         } else if (detailUrl.appTypeLink == APP_LINK_TYPE) {
             RouteManager.route(context, URLDecoder.decode(detailUrl.appURL, UohConsts.UTF_8))
         }
+
+        // analytics
+        val listOfStrings = Gson().fromJson(order.metadata.listProducts, mutableListOf<String>().javaClass)
+        val jsonArray: JsonArray = Gson().toJsonTree(listOfStrings).asJsonArray
+        val arrayListProducts = arrayListOf<ECommerceClick.Products>()
+        var i = 0
+        order.metadata.products.forEach {
+            val objProduct = jsonArray.get(i).asJsonObject
+            arrayListProducts.add(ECommerceClick.Products(
+                    name = it.title,
+                    id = objProduct.get(EE_PRODUCT_ID).asString,
+                    price = objProduct.get(EE_PRODUCT_PRICE).asString,
+                    list = "/order list - ${order.verticalCategory}",
+                    position = index.toString()
+            ))
+            i++
+        }
+        userSession?.userId?.let { UohAnalytics.clickOrderCard(order.verticalCategory, it, arrayListProducts) }
     }
 
-    override fun onActionButtonClicked(button: UohListOrder.Data.UohOrders.Order.Metadata.Button,
-                                       index: Int, orderUUID: String, verticalId: String, listProducts: String) {
+    override fun onActionButtonClicked(order: UohListOrder.Data.UohOrders.Order, index: Int) {
+        val button = order.metadata.buttons.first()
         if (button.actionType.equals(TYPE_ACTION_BUTTON_LINK, true)) {
             RouteManager.route(context, URLDecoder.decode(button.appURL, UohConsts.UTF_8))
         } else {
             when {
                 button.actionType.equals(GQL_FINISH_ORDER, true) -> {
-                    orderIdNeedUpdated = orderUUID
-                    showBottomSheetFinishOrder(index, verticalId, false)
+                    orderIdNeedUpdated = order.orderUUID
+                    showBottomSheetFinishOrder(index, order.verticalID, false)
                 }
                 button.actionType.equals(GQL_ATC, true) -> {
-                    val listOfStrings = Gson().fromJson(listProducts, mutableListOf<String>().javaClass)
+                    val listOfStrings = Gson().fromJson(order.metadata.listProducts, mutableListOf<String>().javaClass)
                     val jsonArray: JsonArray = Gson().toJsonTree(listOfStrings).asJsonArray
                     uohListViewModel.doAtc(GraphqlHelper.loadRawString(resources, R.raw.buy_again), jsonArray)
                 }
                 button.actionType.equals(GQL_TRACK, true) -> {
-                    val applinkTrack = ApplinkConst.ORDER_TRACKING.replace(REPLACE_ORDER_ID, verticalId)
+                    val applinkTrack = ApplinkConst.ORDER_TRACKING.replace(REPLACE_ORDER_ID, order.verticalID)
                     RouteManager.route(context, applinkTrack)
                 }
                 button.actionType.equals(GQL_LS_FINISH, true) -> {
-                    orderIdNeedUpdated = orderUUID
-                    showBottomSheetLsFinishOrder(index, verticalId)
+                    orderIdNeedUpdated = order.orderUUID
+                    showBottomSheetLsFinishOrder(index, order.verticalID)
                 }
                 button.actionType.equals(GQL_LS_LACAK, true) -> {
-                    val linkUrl = LS_LACAK_MWEB.replace(REPLACE_ORDER_ID, verticalId)
+                    val linkUrl = LS_LACAK_MWEB.replace(REPLACE_ORDER_ID, order.verticalID)
                     RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(linkUrl, UohConsts.UTF_8)))
                 }
                 button.actionType.equals(GQL_RECHARGE_BATALKAN, true) -> {
                     currIndexNeedUpdate = index
-                    orderIdNeedUpdated = orderUUID
-                    uohListViewModel.doRechargeSetFail(GraphqlHelper.loadRawString(resources, R.raw.recharge_set_fail), verticalId.toInt())
+                    orderIdNeedUpdated = order.orderUUID
+                    uohListViewModel.doRechargeSetFail(GraphqlHelper.loadRawString(resources, R.raw.recharge_set_fail), order.verticalID.toInt())
                 }
             }
         }
+
+        userSession?.userId?.let { UohAnalytics.clickPrimaryButtonOnOrderCard(order.verticalCategory, button.label, it) }
     }
 
     override fun onEmptyResultResetBtnClicked() {
         resetFilter()
         refreshHandler?.startRefresh()
+        userSession?.userId?.let { UohAnalytics.clickResetFilterOnEmptyFilterResult(it) }
+    }
+
+    override fun trackViewOrderCard(order: UohListOrder.Data.UohOrders.Order, index: Int) {
+        val listOfStrings = Gson().fromJson(order.metadata.listProducts, mutableListOf<String>().javaClass)
+        val jsonArray: JsonArray = Gson().toJsonTree(listOfStrings).asJsonArray
+        val arrayListProducts = arrayListOf<ECommerceImpressions.Impressions>()
+        var i = 0
+        order.metadata.products.forEach {
+            val objProduct = jsonArray.get(i).asJsonObject
+            arrayListProducts.add(ECommerceImpressions.Impressions(
+                    name = it.title,
+                    id = objProduct.get(EE_PRODUCT_ID).asString,
+                    price = objProduct.get(EE_PRODUCT_PRICE).asString,
+                    list = "/order list - ${order.verticalCategory}",
+                    position = index.toString()
+            ))
+            i++
+        }
+        UohAnalytics.viewOrderCard(order.verticalCategory, order.userID, arrayListProducts)
+    }
+
+    override fun trackMulaiBelanjaOnEmptyList() {
+        userSession?.userId?.let { UohAnalytics.clickMulaiBelanjaOnEmptyOrderList(it) }
+    }
+
+    override fun trackProductViewRecommendation(recommendationItem: RecommendationItem, index: Int) {
+        val productId = recommendationItem.productId.toString()
+        val topAds = recommendationItem.isTopAds
+        val url = recommendationItem.trackerImageUrl
+        val productName = recommendationItem.name
+        val imageUrl = recommendationItem.imageUrl
+
+        var list = UohConsts.RECOMMENDATION_LIST_TRACK
+        if (topAds) {
+            list += UohConsts.RECOMMENDATION_LIST_TOPADS_TRACK
+            activity?.let { TopAdsUrlHitter(it).hitImpressionUrl(UohListFragment::class.qualifiedName, url, productId, productName, imageUrl) }
+        }
+
+        UohAnalytics.productViewRecommendation(ECommerceImpressions.Impressions(
+                name = productName,
+                id = recommendationItem.productId.toString(),
+                price = recommendationItem.price,
+                category = recommendationItem.categoryBreadcrumbs,
+                position = index.toString(),
+                list = list
+        ))
+    }
+
+    override fun trackProductClickRecommendation(recommendationItem: RecommendationItem, index: Int) {
+        val productId = recommendationItem.productId.toString()
+        val topAds = recommendationItem.isTopAds
+        val clickUrl = recommendationItem.clickUrl
+        val productName = recommendationItem.name
+        val imageUrl = recommendationItem.imageUrl
+
+        UohAnalytics.productClickRecommendation(ECommerceClick.Products(
+                name = productName,
+                id = recommendationItem.productId.toString(),
+                price = recommendationItem.price,
+                category = recommendationItem.categoryBreadcrumbs,
+                position = index.toString()), topAds)
+
+        if (topAds) activity?.let { TopAdsUrlHitter(it).hitClickUrl(UohListFragment::class.qualifiedName, clickUrl, productId, productName, imageUrl) }
+        onProductClicked(productId)
+    }
+
+    private fun onProductClicked(productId: String) {
+        activity?.let {
+            val intent = RouteManager.getIntent(it, ApplinkConst.PRODUCT_INFO, productId)
+            startActivity(intent)
+        }
+    }
+
+    override fun trackAddToCartRecommendation(recommendationItem: RecommendationItem) {
+        val product = ECommerceAddRecommendation.Add.ActionField.Product(
+                name = recommendationItem.name,
+                id = recommendationItem.productId.toString(),
+                price = recommendationItem.price,
+                category = recommendationItem.categoryBreadcrumbs,
+                quantity = recommendationItem.quantity.toString(),
+                dimension45 = recommendationItem.cartId
+
+        )
+        val arrayListProduct = arrayListOf<ECommerceAddRecommendation.Add.ActionField.Product>()
+        arrayListProduct.add(product)
+
+        UohAnalytics.productAtcRecommendation(listProduct = arrayListProduct, isTopads = recommendationItem.isTopAds)
     }
 }
