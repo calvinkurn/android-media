@@ -45,7 +45,11 @@ class ChatTabListFragmentStub : ChatTabListFragment() {
     }
 
     override fun initToolTip() {
-        // Dont initialize tool-tip
+        // Don't initialize tool-tip
+    }
+
+    override fun isOnBoardingAlreadyShown(): Boolean {
+        return true // Don't show onBoarding
     }
 
     companion object {

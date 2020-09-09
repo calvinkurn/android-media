@@ -142,6 +142,10 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
         searchToolTip = ToolTipSearchPopupWindow(context, chatNotifCounterViewModel)
     }
 
+    protected open fun isOnBoardingAlreadyShown(): Boolean {
+        return context?.let { CoachMarkPreference.hasShown(it, TAG_ONBOARDING) } ?: true
+    }
+
     override fun initInjector() {
         DaggerChatListComponent.builder()
                 .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
@@ -508,7 +512,7 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
     }
 
     private fun initOnBoarding() {
-        if (!userSession.hasShop()){
+        if (!userSession.hasShop()) {
             isFinishShowingCoachMarkOnBoarding = true
             return
         }
@@ -522,10 +526,6 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
                 }
             }
         })
-    }
-
-    private fun isOnBoardingAlreadyShown(): Boolean {
-        return context?.let { CoachMarkPreference.hasShown(it, TAG_ONBOARDING) } ?: true
     }
 
     private fun showOnBoarding() {
@@ -558,7 +558,7 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
 
 
     private fun stopLiveDataObserver() {
-        if(::chatNotifCounterViewModel.isInitialized) {
+        if (::chatNotifCounterViewModel.isInitialized) {
             chatNotifCounterViewModel.chatNotifCounter.removeObservers(this)
         }
     }
