@@ -24,9 +24,6 @@ class WaitingPaymentOrderProductDiffCallback(
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        val (oldId, oldName, oldPicture, oldQuantity, oldPrice) = oldList[oldItemPosition]
-        val (newId, newName, newPicture, newQuantity, newPrice) = newList[newItemPosition]
-        return oldId == newId && oldName == newName && oldPicture == newPicture &&
-                oldQuantity == newQuantity && oldPrice == newPrice
+        return oldList[oldItemPosition] == newList[newItemPosition]
     }
 }

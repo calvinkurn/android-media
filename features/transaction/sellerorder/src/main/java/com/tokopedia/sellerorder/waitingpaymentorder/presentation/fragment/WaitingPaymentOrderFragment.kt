@@ -52,9 +52,9 @@ class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrd
 
     companion object {
         const val TAG_BOTTOM_SHEET = "bottom_sheet"
-        const val RECYCLER_VIEW_ANIMATION_DURATION = 500L
-        const val BUTTON_ENTER_LEAVE_ANIMATION_DURATION = 250L
-        const val TICKER_ENTER_LEAVE_ANIMATION_DURATION = 250L
+        const val RECYCLER_VIEW_ANIMATION_DURATION = 300L
+        const val BUTTON_ENTER_LEAVE_ANIMATION_DURATION = 300L
+        const val TICKER_ENTER_LEAVE_ANIMATION_DURATION = 300L
     }
 
     @Inject

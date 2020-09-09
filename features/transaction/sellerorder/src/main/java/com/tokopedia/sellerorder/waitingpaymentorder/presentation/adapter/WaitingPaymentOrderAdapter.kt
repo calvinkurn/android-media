@@ -42,7 +42,7 @@ class WaitingPaymentOrderAdapter(
     fun toggleCollapse(waitingPaymentOrderUiModel: WaitingPaymentOrderUiModel) {
         val itemIndex = visitables.indexOf(waitingPaymentOrderUiModel)
         if (itemIndex != -1) {
-            notifyItemChanged(itemIndex)
+            notifyItemChanged(itemIndex, waitingPaymentOrderUiModel.isExpanded)
         }
     }
 }
