@@ -135,7 +135,10 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
         searchToolTip?.dismiss()
     }
 
-    private fun initToolTip() {
+    /**
+     * set to `protected open` so that it can be disabled on UI test
+     */
+    protected open fun initToolTip() {
         searchToolTip = ToolTipSearchPopupWindow(context, chatNotifCounterViewModel)
     }
 

@@ -44,6 +44,10 @@ class ChatTabListFragmentStub : ChatTabListFragment() {
         )
     }
 
+    override fun initToolTip() {
+        // Dont initialize tool-tip
+    }
+
     companion object {
         fun create(
                 userSessionInterface: UserSessionInterface,
