@@ -9,31 +9,20 @@ object OneClickCheckoutInterceptor {
     val logisticInterceptor = LogisticTestInterceptor()
     val promoInterceptor = PromoTestInterceptor()
     val checkoutInterceptor = CheckoutTestInterceptor()
+    val paymentInterceptor = PaymentTestInterceptor()
 
     fun setupGraphqlMockResponse(context: Context) {
         GraphqlClient.reInitRetrofitWithInterceptors(
-                listOf(cartInterceptor, preferenceInterceptor, logisticInterceptor, promoInterceptor, checkoutInterceptor),
+                listOf(cartInterceptor, preferenceInterceptor, logisticInterceptor, promoInterceptor, checkoutInterceptor, paymentInterceptor),
                 context)
     }
 
     fun resetAllCustomResponse() {
-        cartInterceptor.customGetOccCartThrowable = null
-        cartInterceptor.customGetOccCartResponsePath = null
-        cartInterceptor.customUpdateCartOccThrowable = null
-        cartInterceptor.customUpdateCartOccResponsePath = null
-
-        preferenceInterceptor.customGetPreferenceListThrowable = null
-        preferenceInterceptor.customGetPreferenceListResponsePath = null
-        preferenceInterceptor.customSetDefaultPreferenceThrowable = null
-        preferenceInterceptor.customSetDefaultPreferenceResponsePath = null
-
-        logisticInterceptor.customRatesThrowable = null
-        logisticInterceptor.customRatesResponsePath = null
-
-        promoInterceptor.customValidateUseThrowable = null
-        promoInterceptor.customValidateUseResponsePath = null
-
-        checkoutInterceptor.customCheckoutThrowable = null
-        checkoutInterceptor.customCheckoutResponsePath = null
+        cartInterceptor.resetInterceptor()
+        preferenceInterceptor.resetInterceptor()
+        logisticInterceptor.resetInterceptor()
+        promoInterceptor.resetInterceptor()
+        checkoutInterceptor.resetInterceptor()
+        paymentInterceptor.resetInterceptor()
     }
 }

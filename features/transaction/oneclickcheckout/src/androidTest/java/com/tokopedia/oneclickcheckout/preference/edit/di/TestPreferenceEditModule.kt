@@ -10,6 +10,7 @@ class TestPreferenceEditModule(activity: Activity) : PreferenceEditModule(activi
     @PreferenceEditScope
     @Provides
     override fun providePaymentListingUrl(): String {
+        // override payment listing url to prevent loading prod url
         return ""
     }
 }

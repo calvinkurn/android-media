@@ -264,16 +264,16 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
                 address.latitude, address.postalCode)
     }
 
+    private fun mapTicker(tickers: List<Ticker>): TickerData? {
+        val ticker = tickers.firstOrNull() ?: return null
+        return TickerData(ticker.id, ticker.message, ticker.page, ticker.title)
+    }
+
     private fun mapPrompt(promptResponse: OccPromptResponse): OccPrompt {
         return OccPrompt(OccPrompt.FROM_CART, promptResponse.type.toLowerCase(Locale.ROOT), promptResponse.title,
                 promptResponse.description, promptResponse.imageUrl, promptResponse.buttons.map {
             OccPromptButton(it.text, it.link, it.action.toLowerCase(Locale.ROOT), it.color.toLowerCase(Locale.ROOT)) }
         )
-    }
-
-    private fun mapTicker(tickers: List<Ticker>): TickerData? {
-        val ticker = tickers.firstOrNull() ?: return null
-        return TickerData(ticker.id, ticker.message, ticker.page, ticker.title)
     }
 
     companion object {

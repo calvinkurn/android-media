@@ -102,14 +102,14 @@ class PreferenceListRobot {
     }
 
     fun assertPreferenceView(position: Int,
-                             addressName: String = "",
-                             addressReceiver: String = "",
-                             addressStreet: String = "",
-                             shippingName: String = "",
-                             shippingDuration: String = "",
-                             paymentName: String = "",
-                             paymentDetail: String? = "",
-                             isDefaultPreference: Boolean = false) {
+                             addressName: String,
+                             addressReceiver: String,
+                             addressStreet: String,
+                             shippingName: String,
+                             shippingDuration: String,
+                             paymentName: String,
+                             paymentDetail: String?,
+                             isDefaultPreference: Boolean) {
         onView(withId(R.id.rv_preference_list)).perform(actionOnItemAtPosition<PreferenceListViewHolder>(position, object : ViewAction {
             override fun getDescription(): String = "assert preference view"
 

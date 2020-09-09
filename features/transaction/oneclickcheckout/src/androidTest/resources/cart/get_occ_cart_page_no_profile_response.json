@@ -8,8 +8,9 @@
           "tickers": [
             {
               "id": 0,
-              "page": "cart",
-              "message": "Bonus 10 kuota Bebas Ongkir hingga 31 Juli 2020. Sisa kuotamu: 1x (untuk 1 pesanan/transaksi)."
+              "page": "occ",
+              "message": "Bonus 10 kuota Bebas Ongkir hingga 31 Juli 2020. Sisa kuotamu: 1x (untuk 1 pesanan/transaksi).",
+              "title": "ticker title"
             }
           ],
           "max_quantity": 32767,
