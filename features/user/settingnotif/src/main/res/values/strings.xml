@@ -11,7 +11,8 @@
 
     <string name="settingnotif_title_troubleshooter">Cek push notification di HP-mu</string>
     <string name="settingnotif_desc_troubleshooter">Lacak masalah seputar push notification di sini.</string>
-    <string name="settingnotif_timestamp_troubleshooter">Terakhir diperiksa %s hari lalu (%s)</string>
+    <string name="settingnotif_timestamp_ts">Terakhir diperiksa %d hari lalu (%s)</string>
+    <string name="settingnotif_timestamp_today_ts">Terakhir diperiksa hari ini (%s)</string>
 
     <string name="settingnotif_title_activation">Aktifkan Push Notification</string>
     <string name="settingnotif_desc_activation">Kamu belum mengaktifkan push notification di HP. Aktifkan sekarang untuk dapat info terbaru!</string>

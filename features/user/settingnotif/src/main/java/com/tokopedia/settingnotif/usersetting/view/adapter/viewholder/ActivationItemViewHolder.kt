@@ -20,8 +20,10 @@ import com.tokopedia.settingnotif.usersetting.util.notificationSetting
 import com.tokopedia.settingnotif.usersetting.util.toLastCheckFormat
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
-import java.util.concurrent.TimeUnit
 import com.tokopedia.settingnotif.usersetting.state.NotificationItemState.Troubleshooter as Troubleshooter
+import java.lang.System.currentTimeMillis as currentTimeMillis
+import java.util.concurrent.TimeUnit.DAYS as DAYS
+import java.util.concurrent.TimeUnit.MILLISECONDS as MILLISECONDS
 
 class ActivationItemViewHolder(
         itemView: View?
@@ -81,9 +83,12 @@ class ActivationItemViewHolder(
         if(lastChecked != 0L) {
             txtLastChecked?.show()
             val formattedDate = lastChecked.toLastCheckFormat()
-            txtLastChecked?.text = String.format(itemView.context.getString(R.string.settingnotif_timestamp_troubleshooter),
-                    TimeUnit.DAYS.convert((System.currentTimeMillis() - lastChecked), TimeUnit.MILLISECONDS),
-                    formattedDate)
+            val amountDays = DAYS.convert((currentTimeMillis() - lastChecked), MILLISECONDS)
+            txtLastChecked?.text = if (amountDays == 0L) {
+                context?.getString(R.string.settingnotif_timestamp_today_ts, formattedDate)
+            } else {
+                context?.getString(R.string.settingnotif_timestamp_ts, amountDays, formattedDate)
+            }
         } else {
             txtLastChecked?.hide()
             txtTitle?.text = context?.getString(R.string.settingnotif_title_troubleshooter)
