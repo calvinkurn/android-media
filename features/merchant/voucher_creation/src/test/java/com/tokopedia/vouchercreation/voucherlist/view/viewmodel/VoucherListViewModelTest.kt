@@ -217,7 +217,6 @@ class VoucherListViewModelTest {
                 shopBasicDataUseCase wasNot Called
                 getVoucherListUseCase.executeOnBackground()
             }
-
             assert(voucherList.value is Fail)
         }
     }
