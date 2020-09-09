@@ -10,8 +10,8 @@ import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.model.RechargeHomepageBannerModel
 import com.tokopedia.digital.home.model.RechargeHomepageSections
-import com.tokopedia.digital.home.presentation.adapter.adapter.RechargeItemBannerAdapter
-import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
+import com.tokopedia.digital.home.presentation.adapter.RechargeItemBannerAdapter
+import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import kotlinx.android.synthetic.main.view_recharge_home_banner.view.*
 
@@ -20,7 +20,7 @@ import kotlinx.android.synthetic.main.view_recharge_home_banner.view.*
  */
 
 class RechargeHomepageBannerViewHolder(itemView: View,
-                                       val listener: OnItemBindListener)
+                                       val listener: RechargeHomepageItemListener)
     : AbstractViewHolder<RechargeHomepageBannerModel>(itemView),
         CircularListener {
     private lateinit var slidesList: List<RechargeHomepageSections.Item>

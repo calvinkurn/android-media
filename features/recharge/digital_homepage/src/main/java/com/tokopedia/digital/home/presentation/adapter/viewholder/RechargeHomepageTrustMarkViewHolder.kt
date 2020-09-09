@@ -7,8 +7,8 @@ import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.model.RechargeHomepageTrustMarkModel
-import com.tokopedia.digital.home.presentation.adapter.adapter.RechargeItemTrustMarkAdapter
-import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
+import com.tokopedia.digital.home.presentation.adapter.RechargeItemTrustMarkAdapter
+import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.view_recharge_home_trustmark.view.*
@@ -17,7 +17,7 @@ import kotlinx.android.synthetic.main.view_recharge_home_trustmark.view.*
  * @author by resakemal on 09/06/20.
  */
 
-class RechargeHomepageTrustMarkViewHolder(itemView: View?, val listener: OnItemBindListener) :
+class RechargeHomepageTrustMarkViewHolder(itemView: View?, val listener: RechargeHomepageItemListener) :
         AbstractViewHolder<RechargeHomepageTrustMarkModel>(itemView) {
 
     override fun bind(element: RechargeHomepageTrustMarkModel) {

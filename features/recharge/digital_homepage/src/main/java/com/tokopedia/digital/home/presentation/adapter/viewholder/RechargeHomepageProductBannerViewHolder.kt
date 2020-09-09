@@ -7,8 +7,8 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.model.RechargeHomepageProductBannerModel
 import com.tokopedia.digital.home.model.RechargeHomepageSections
-import com.tokopedia.digital.home.presentation.Util.RechargeHomepageSectionMapper
-import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
+import com.tokopedia.digital.home.presentation.util.RechargeHomepageSectionMapper
+import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.kotlin.extensions.view.*
 import kotlinx.android.synthetic.main.view_recharge_home_card_image.view.*
@@ -20,7 +20,7 @@ import kotlinx.android.synthetic.main.view_recharge_home_product_banner.view.*
 
 class RechargeHomepageProductBannerViewHolder(
         val view: View,
-        val listener: OnItemBindListener
+        val listener: RechargeHomepageItemListener
 ): AbstractViewHolder<RechargeHomepageProductBannerModel>(view) {
 
     companion object {

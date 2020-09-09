@@ -1,15 +1,14 @@
-package com.tokopedia.digital.home.presentation.Util
+package com.tokopedia.digital.home.presentation.util
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.digital.home.model.*
-import com.tokopedia.digital.home.presentation.viewmodel.DigitalHomePageViewModel
+import com.tokopedia.digital.home.presentation.viewmodel.RechargeHomepageViewModel
 import com.tokopedia.home_component.customview.DynamicChannelHeaderView
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.model.*
 import com.tokopedia.home_component.util.DateHelper
 import com.tokopedia.home_component.util.ServerTimeOffsetUtil
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
-import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.unifycomponents.UnifyButton
 import java.util.*
@@ -61,7 +60,7 @@ object RechargeHomepageSectionMapper {
     fun mapHomepageSections(sections: List<RechargeHomepageSections.Section>): List<Visitable<*>> {
         return sections.mapNotNull {
             val id = it.id.toString()
-            with(DigitalHomePageViewModel.Companion) {
+            with(RechargeHomepageViewModel.Companion) {
                 when (it.template) {
                     SECTION_TOP_BANNER -> RechargeHomepageBannerModel(it)
                     SECTION_TOP_BANNER_EMPTY -> RechargeHomepageBannerEmptyModel(it)

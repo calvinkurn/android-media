@@ -1,10 +1,9 @@
 package com.tokopedia.digital.home.presentation.listener
 
 import com.tokopedia.home_component.listener.ReminderWidgetListener
-import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 
-class RechargeHomepageReminderWidgetCallback(val listener: OnItemBindListener): ReminderWidgetListener {
+class RechargeHomepageReminderWidgetCallback(val listener: RechargeHomepageItemListener): ReminderWidgetListener {
     override fun onReminderWidgetClickListener(reminderData: ReminderWidgetModel) {
         listener.onRechargeReminderWidgetClicked(reminderData.visitableId()?.toIntOrNull() ?: -1)
     }

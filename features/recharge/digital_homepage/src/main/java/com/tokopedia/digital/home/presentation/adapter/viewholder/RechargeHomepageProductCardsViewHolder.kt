@@ -6,9 +6,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.model.RechargeHomepageProductCardsModel
-import com.tokopedia.digital.home.presentation.adapter.adapter.RechargeItemProductCardsAdapter
-import com.tokopedia.digital.home.presentation.adapter.adapter.RechargeItemProductCardsDecorator
-import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
+import com.tokopedia.digital.home.presentation.adapter.RechargeItemProductCardsAdapter
+import com.tokopedia.digital.home.presentation.adapter.RechargeItemProductCardsDecorator
+import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.hide
@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.view_recharge_home_product_cards.view.*
  * @author by resakemal on 22/06/20.
  */
 
-class RechargeHomepageProductCardsViewHolder(itemView: View, val listener: OnItemBindListener) :
+class RechargeHomepageProductCardsViewHolder(itemView: View, val listener: RechargeHomepageItemListener) :
         AbstractViewHolder<RechargeHomepageProductCardsModel>(itemView) {
 
     override fun bind(element: RechargeHomepageProductCardsModel) {

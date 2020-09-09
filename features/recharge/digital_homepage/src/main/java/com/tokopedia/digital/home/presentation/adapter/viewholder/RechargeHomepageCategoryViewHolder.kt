@@ -5,8 +5,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.model.RechargeHomepageCategoryModel
-import com.tokopedia.digital.home.presentation.adapter.adapter.RechargeItemCategoryAdapter
-import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
+import com.tokopedia.digital.home.presentation.adapter.RechargeItemCategoryAdapter
+import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.view_recharge_home_category.view.*
  * @author by resakemal on 05/06/20.
  */
 
-class RechargeHomepageCategoryViewHolder(itemView: View, val listener: OnItemBindListener) :
+class RechargeHomepageCategoryViewHolder(itemView: View, val listener: RechargeHomepageItemListener) :
         AbstractViewHolder<RechargeHomepageCategoryModel>(itemView) {
 
     override fun bind(element: RechargeHomepageCategoryModel) {
