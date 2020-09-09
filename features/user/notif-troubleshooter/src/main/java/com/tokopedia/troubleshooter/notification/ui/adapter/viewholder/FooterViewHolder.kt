@@ -1,7 +1,6 @@
 package com.tokopedia.troubleshooter.notification.ui.adapter.viewholder
 
 import android.view.View
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -10,9 +9,8 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.troubleshooter.notification.R
 import com.tokopedia.troubleshooter.notification.ui.listener.FooterListener
 import com.tokopedia.troubleshooter.notification.ui.uiview.FooterUIView
-import com.tokopedia.troubleshooter.notification.util.ClearCacheUtil
 import com.tokopedia.troubleshooter.notification.util.ClearCacheUtil.showClearCache
-import com.tokopedia.troubleshooter.notification.util.gotoAudioSetting
+import com.tokopedia.troubleshooter.notification.util.gotoDeviceSettings
 import com.tokopedia.unifycomponents.UnifyButton
 
 class FooterViewHolder(
@@ -56,7 +54,7 @@ class FooterViewHolder(
     }
 
     private fun dndMode() {
-        context?.gotoAudioSetting()
+        context?.gotoDeviceSettings()
     }
 
     companion object {

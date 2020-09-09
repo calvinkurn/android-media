@@ -23,7 +23,7 @@
     <string name="notif_loading_menu_ringtone">Memeriksa bunyi notifikasi…</string>
     <string name="notif_loading_menu_push">Mengirim push notification…</string>
 
-    <string name="notif_ticker_title">Rekomendasi lebih optimal</string>
+    <string name="notif_ticker_title">Terima info yang lebih lengkap</string>
 
     <string name="notif_success_update_token">Berhasil perbaharui token</string>
     <string name="notif_ticker_resolve">Aktifkan Notifikasi</string>

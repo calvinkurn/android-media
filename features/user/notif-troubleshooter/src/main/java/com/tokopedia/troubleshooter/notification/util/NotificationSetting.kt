@@ -32,6 +32,10 @@ fun Context?.gotoNotificationSetting() {
     })
 }
 
+fun Context?.gotoDeviceSettings() {
+    this?.startActivity(Intent(Settings.ACTION_SETTINGS))
+}
+
 fun Context?.gotoAudioSetting() {
     this?.startActivity(Intent(ACTION_SOUND_SETTINGS))
 }
