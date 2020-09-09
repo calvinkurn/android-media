@@ -71,7 +71,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_8"
                     android:layout_marginLeft="@dimen/dp_8"
-                    android:text="Dilayani Tokopedia"
+                    android:text="@string/label_fulfilment_wording"
                     app:labelType="general_light_green" />
             </LinearLayout>
 

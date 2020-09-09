@@ -28,7 +28,9 @@ class ViewHolderDataMapper @Inject constructor() {
     fun mapDisabledShopHolderData(shopGroupWithErrorData: ShopGroupWithErrorData): DisabledShopHolderData {
         return DisabledShopHolderData(
                 shopId = shopGroupWithErrorData.shopId,
-                shopName = shopGroupWithErrorData.shopName
+                shopName = shopGroupWithErrorData.shopName,
+                shopBadgeUrl = shopGroupWithErrorData.shopBadge,
+                isFulfillment = shopGroupWithErrorData.isFulfillment
         )
     }
 

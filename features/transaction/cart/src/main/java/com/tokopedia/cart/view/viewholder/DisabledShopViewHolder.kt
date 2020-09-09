@@ -2,6 +2,7 @@ package com.tokopedia.cart.view.viewholder
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.cart.R
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.uimodel.DisabledShopHolderData
@@ -20,12 +21,39 @@ class DisabledShopViewHolder(itemView: View, val actionListener: ActionListener?
     }
 
     fun bind(data: DisabledShopHolderData) {
+        renderShopName(data)
+        renderDivider(data)
+        renderShopBadge(data)
+        renderFulfillment(data)
+    }
+
+    private fun renderShopName(data: DisabledShopHolderData) {
         itemView.text_shop_name.text = data.shopName
         itemView.text_shop_name.setOnClickListener { actionListener?.onCartShopNameClicked(data.shopId, data.shopName) }
+    }
+
+    private fun renderShopBadge(data: DisabledShopHolderData) {
+        if (data.shopBadgeUrl.isNotBlank()) {
+            ImageHandler.loadImageWithoutPlaceholder(itemView.img_shop_badge, data.shopBadgeUrl)
+            itemView.img_shop_badge.show()
+        } else {
+            itemView.img_shop_badge.gone()
+        }
+    }
+
+    private fun renderDivider(data: DisabledShopHolderData) {
         if (data.showDivider) {
             itemView.v_divider_item_cart_error.show()
         } else {
             itemView.v_divider_item_cart_error.gone()
+        }
+    }
+
+    private fun renderFulfillment(data: DisabledShopHolderData) {
+        if (data.isFulfillment) {
+            itemView.label_fulfillment.show()
+        } else {
+            itemView.label_fulfillment.gone()
         }
     }
 
