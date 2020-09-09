@@ -164,6 +164,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             reloadPage()
     }
 
+    override fun onPause() {
+        super.onPause()
+        hideTooltipIfExist()
+    }
+
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
 
