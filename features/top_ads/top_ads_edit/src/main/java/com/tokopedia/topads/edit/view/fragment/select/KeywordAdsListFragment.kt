@@ -128,7 +128,10 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
 
     private fun onItemUnchecked(pos: Int) {
         if (!keywordSelectedAdapter.items[pos].fromSearch) {
-            keywordListAdapter.items.add(KeywordItemViewModel(KeywordDataItem(keywordSelectedAdapter.items[pos].bidSuggest, keywordSelectedAdapter.items[pos].totalSearch, keywordSelectedAdapter.items[pos].keyword, keywordSelectedAdapter.items[pos].competition, keywordSelectedAdapter.items[pos].source)))
+            keywordListAdapter.items.add(KeywordItemViewModel(
+            KeywordDataItem(keywordSelectedAdapter.items[pos].bidSuggest, keywordSelectedAdapter.items[pos].totalSearch,
+             keywordSelectedAdapter.items[pos].keyword,
+              keywordSelectedAdapter.items[pos].source,keywordSelectedAdapter.items[pos].competition)))
 
         } else {
             removeSearchedItem(pos)
