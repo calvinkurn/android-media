@@ -1,6 +1,5 @@
 package com.tokopedia.topads.detail_sheet
 
-import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.view.View
@@ -12,7 +11,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.topads.auto.view.widget.AutoAdsWidget
@@ -31,9 +29,8 @@ import javax.inject.Inject
  */
 class TopAdsDetailSheet : BottomSheetUnify() {
 
-    private var dialog: BottomSheetDialog? = null
     private var groupId: String = "0"
-    val autoAdsWidget: AutoAdsWidget?
+    private val autoAdsWidget: AutoAdsWidget?
         get() = autoads_widget
     private var adId: String = "0"
     private var category: Int = 0
@@ -50,12 +47,6 @@ class TopAdsDetailSheet : BottomSheetUnify() {
     private fun getComponent(context: Context): TopAdsSheetComponent = DaggerTopAdsSheetComponent.builder()
             .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent).build()
 
-
-    private fun onErrorGetAds(throwable: Throwable) {
-        dialog?.let {
-            NetworkErrorHelper.showSnackbar(it.context as Activity, throwable.localizedMessage)
-        }
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -179,16 +170,16 @@ class TopAdsDetailSheet : BottomSheetUnify() {
     }
 
     companion object {
-        const val ACTION_ACTIVATE = "toggle_on"
-        const val ACTION_DEACTIVATE = "toggle_off"
-        const val GROUPID = "groupId"
-        const val STATUS_ACTIVE = "1"
-        const val STATUS_TIDAK_TAMPIL = "2"
-        const val AD_TYPE_PRODUCT = "1"
-        const val LOAD_DATA_SHEET = 2
-        const val SINGE_AD = "0"
-        const val TYPE_MANUAL = 3
-        const val TYPE_AUTO = 4
+        private const val ACTION_ACTIVATE = "toggle_on"
+        private const val ACTION_DEACTIVATE = "toggle_off"
+        private const val GROUPID = "groupId"
+        private const val STATUS_ACTIVE = "1"
+        private const val STATUS_TIDAK_TAMPIL = "2"
+        private const val AD_TYPE_PRODUCT = "1"
+        private const val LOAD_DATA_SHEET = 2
+        private const val SINGE_AD = "0"
+        private const val TYPE_MANUAL = 3
+        private const val TYPE_AUTO = 4
         private const val TOPADS_BOTTOM_SHEET_TAG = "SORT_FILTER_BOTTOM_SHEET_TAG"
         fun newInstance(): TopAdsDetailSheet = TopAdsDetailSheet()
 
