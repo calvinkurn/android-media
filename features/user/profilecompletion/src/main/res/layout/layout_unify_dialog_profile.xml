@@ -101,6 +101,7 @@
             tools:text="Dengan klik “Lapor”, saya menyatakan bahwa segala informasi yang dilaporkan memang benar"/>
 
         <Button android:id="@+id/dialog_btn_secondary"
+            android:contentDescription="@string/content_desc_dialog_btn_secondary"
             android:layout_width="0dp"
             android:layout_height="@dimen/layout_lvl5"
             android:background="@drawable/profile_bg_button_white_greenborder"
@@ -119,6 +120,7 @@
             app:layout_constraintHorizontal_chainStyle="spread"/>
 
         <Button android:id="@+id/dialog_btn_primary"
+            android:contentDescription="@string/content_desc_dialog_btn_primary"
             android:layout_width="0dp"
             android:layout_height="@dimen/layout_lvl5"
             android:background="@drawable/bg_button_green"

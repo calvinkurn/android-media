@@ -17,6 +17,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/linkAddVariantValueLevel2"
+        android:contentDescription="@string/content_desc_linkAddVariantValueLevel2"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_marginEnd="@dimen/spacing_lvl4"

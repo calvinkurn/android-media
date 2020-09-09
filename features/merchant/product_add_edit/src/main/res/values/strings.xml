@@ -294,5 +294,14 @@
     <string name="content_desc_tv_done">button selesai</string>
     <string name="content_desc_tv_start_add_edit_product_detail">button ubah detail produk</string>
     <string name="content_desc_tv_start_add_edit_product_description">button ubah deskripsi produk</string>
-    <string name="content_desc_btn_submit">button lanjut</string>
+    <string name="content_desc_switch_preorder">button switch preorder</string>
+    <string name="content_desc_tvEditVariant">text ubah varian</string>
+    <string name="content_desc_tvAddVariant">text tambah varian</string>
+    <string name="content_desc_chipsVariantTypeName">text tipe varian</string>
+    <string name="content_desc_linkAddVariantValueLevel1">text tambah tipe varian 1</string>
+    <string name="content_desc_linkAddVariantValueLevel2">text tambah tipe varian 2</string>
+    <string name="content_desc_tv_start_add_edit_product_variant">text tambah varian</string>
+    <string name="content_desc_buttonSave">button simpan</string>
+
+
 </resources>

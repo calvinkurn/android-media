@@ -176,4 +176,9 @@
     <string name="add_pin_success_heading">PIN Tokopedia kamu berhasil disimpan</string>
     <string name="add_pin_success_body">Jangan bagikan PIN Tokopedia kamu kepada pihak mana pun.</string>
     <string name="add_pin_success_button_title">Selesai</string>
+
+
+    <!--CONTENT DESC-->
+    <string name="content_desc_dialog_btn_primary">button hijau</string>
+    <string name="content_desc_dialog_btn_secondary">button putih</string>
 </resources>
