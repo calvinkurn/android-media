@@ -37,4 +37,5 @@ object ProfileCompletionQueryConstant {
     const val PARAM_PIN_CONFIRM = "pinConfirm"
     const val PARAM_PIN_OLD = "pinOld"
     const val PARAM_OTP_TYPE = "otpType"
+    const val PARAM_ACTION = "action"
 }
