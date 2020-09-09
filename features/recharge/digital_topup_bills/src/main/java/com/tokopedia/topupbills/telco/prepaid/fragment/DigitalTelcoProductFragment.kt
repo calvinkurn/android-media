@@ -140,7 +140,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
                     productList.map { list ->
                         if (list.label == titleProduct && it == titleProduct &&
                                 list.product.dataCollections.isNotEmpty()) {
-                            telcoTelcoProductView.getVisibleProductItemsToUsersTracking(list.product.dataCollections[0].products)
+                            telcoTelcoProductView.calculateProductItemVisibleItemTracking(list.product.dataCollections[0].products)
 
                             if (list.filterTagComponents.isNotEmpty()) {
                                 topupAnalytics.impressionFilterCluster(categoryId, userSession.userId)
@@ -221,6 +221,8 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
                 sharedModelPrepaid.setSelectedFilter(telcoFilterData.getAllFilter())
                 topupAnalytics.eventClickResetFilterCluster(categoryId, userSession.userId)
             }
+
+            topupAnalytics.impressionFilterCluster(categoryId, userSession.userId)
         }
     }
 
@@ -271,7 +273,6 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
 
                     renderSortFilter(it.product.id, it.filterTagComponents)
                     telcoTelcoProductView.renderProductList(productType, showTitle, it.product.dataCollections)
-
                 } else {
                     onErrorProductList()
                 }
