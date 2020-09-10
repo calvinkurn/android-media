@@ -658,10 +658,8 @@ final class ProductListPresenter
     }
 
     private void getViewToRedirectSearch(SearchProductModel searchProductModel) {
-        if (searchProductModel.getSearchProduct().getHeader().getResponseCode().equals("9")) {
-            ProductViewModel productViewModel = createProductViewModelWithPosition(searchProductModel);
-            getViewToSendTrackingSearchAttempt(productViewModel);
-        }
+        ProductViewModel productViewModel = createProductViewModelWithPosition(searchProductModel);
+        getViewToSendTrackingSearchAttempt(productViewModel);
 
         String applink = searchProductModel.getSearchProduct().getData().getRedirection().getRedirectApplink();
         getView().redirectSearchToAnotherPage(applink);
