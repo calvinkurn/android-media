@@ -2,7 +2,6 @@ package com.tokopedia.oneclickcheckout.order.view
 
 import com.google.gson.JsonParser
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingParam
@@ -11,7 +10,6 @@ import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorPr
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData.ERROR_DISTANCE_LIMIT_EXCEEDED
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData.ERROR_WEIGHT_LIMIT_EXCEEDED
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.network.utils.TKPDMapParam
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.STATUS_OK
@@ -40,7 +38,6 @@ import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiMode
 import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.PARAM_CHECKOUT
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.PARAM_OCC
-import com.tokopedia.purchase_platform.common.feature.editaddress.domain.param.EditAddressParam
 import com.tokopedia.purchase_platform.common.feature.editaddress.domain.usecase.EditAddressUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.Order
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.ProductDetail
@@ -65,7 +62,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import org.json.JSONException
 import rx.Observer
 import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
@@ -745,65 +741,74 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     fun savePinpoint(longitude: String, latitude: String) {
-        val params = AuthHelper.generateParamsNetwork(userSessionInterface.userId, userSessionInterface.deviceId, TKPDMapParam())
         val op = _orderPreference
-        if (op.isValid) {
-            params[EditAddressParam.ADDRESS_ID] = op.preference.address.addressId.toString()
-            params[EditAddressParam.ADDRESS_NAME] = op.preference.address.addressName
-            params[EditAddressParam.ADDRESS_STREET] = op.preference.address.addressStreet
-            params[EditAddressParam.POSTAL_CODE] = op.preference.address.postalCode
-            params[EditAddressParam.DISTRICT_ID] = op.preference.address.districtId.toString()
-            params[EditAddressParam.CITY_ID] = op.preference.address.cityId.toString()
-            params[EditAddressParam.PROVINCE_ID] = op.preference.address.provinceId.toString()
-            params[EditAddressParam.LATITUDE] = latitude
-            params[EditAddressParam.LONGITUDE] = longitude
-            params[EditAddressParam.RECEIVER_NAME] = op.preference.address.receiverName
-            params[EditAddressParam.RECEIVER_PHONE] = op.preference.address.phone
-
-            val requestParams = RequestParams.create()
-            requestParams.putAllString(params)
-
-            globalEvent.value = OccGlobalEvent.Loading
-            compositeSubscription.add(
-                    editAddressUseCase.createObservable(requestParams)
-                            .subscribeOn(executorSchedulers.io)
-                            .observeOn(executorSchedulers.main)
-                            .subscribe(object : Observer<String> {
-                                override fun onError(e: Throwable) {
-                                    globalEvent.value = OccGlobalEvent.Error(e)
-                                }
-
-                                override fun onNext(stringResponse: String) {
-                                    var messageError: String? = null
-                                    var statusSuccess: Boolean
-                                    try {
-                                        val response = JsonParser().parse(stringResponse).asJsonObject
-                                        val statusCode = response.getAsJsonObject(EditAddressUseCase.RESPONSE_DATA)
-                                                .get(EditAddressUseCase.RESPONSE_IS_SUCCESS).asInt
-                                        statusSuccess = statusCode == 1
-                                        if (!statusSuccess) {
-                                            messageError = response.getAsJsonArray("message_error").get(0).asString
-                                        }
-                                    } catch (e: JSONException) {
-                                        statusSuccess = false
-                                    }
-
-                                    if (statusSuccess) {
-                                        globalEvent.value = OccGlobalEvent.TriggerRefresh(false)
-                                    } else {
-                                        if (messageError.isNullOrBlank()) {
-                                            messageError = DEFAULT_ERROR_MESSAGE
-                                        }
-                                        globalEvent.value = OccGlobalEvent.Error(errorMessage = messageError)
-                                    }
-                                }
-
-                                override fun onCompleted() {
-                                    // do nothing
-                                }
-                            })
-            )
+        if (!op.isValid) {
+            globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
+            return
         }
+        launch {
+            val result = logisticProcessor.savePinpoint(op.preference.address, longitude, latitude)
+            globalEvent.value = result
+        }
+//        val params = AuthHelper.generateParamsNetwork(userSessionInterface.userId, userSessionInterface.deviceId, TKPDMapParam())
+//        val op = _orderPreference
+//        if (op.isValid) {
+//            params[EditAddressParam.ADDRESS_ID] = op.preference.address.addressId.toString()
+//            params[EditAddressParam.ADDRESS_NAME] = op.preference.address.addressName
+//            params[EditAddressParam.ADDRESS_STREET] = op.preference.address.addressStreet
+//            params[EditAddressParam.POSTAL_CODE] = op.preference.address.postalCode
+//            params[EditAddressParam.DISTRICT_ID] = op.preference.address.districtId.toString()
+//            params[EditAddressParam.CITY_ID] = op.preference.address.cityId.toString()
+//            params[EditAddressParam.PROVINCE_ID] = op.preference.address.provinceId.toString()
+//            params[EditAddressParam.LATITUDE] = latitude
+//            params[EditAddressParam.LONGITUDE] = longitude
+//            params[EditAddressParam.RECEIVER_NAME] = op.preference.address.receiverName
+//            params[EditAddressParam.RECEIVER_PHONE] = op.preference.address.phone
+//
+//            val requestParams = RequestParams.create()
+//            requestParams.putAllString(params)
+//
+//            globalEvent.value = OccGlobalEvent.Loading
+//            compositeSubscription.add(
+//                    editAddressUseCase.createObservable(requestParams)
+//                            .subscribeOn(executorSchedulers.io)
+//                            .observeOn(executorSchedulers.main)
+//                            .subscribe(object : Observer<String> {
+//                                override fun onError(e: Throwable) {
+//                                    globalEvent.value = OccGlobalEvent.Error(e)
+//                                }
+//
+//                                override fun onNext(stringResponse: String) {
+//                                    var messageError: String? = null
+//                                    var statusSuccess: Boolean
+//                                    try {
+//                                        val response = JsonParser().parse(stringResponse).asJsonObject
+//                                        val statusCode = response.getAsJsonObject(EditAddressUseCase.RESPONSE_DATA)
+//                                                .get(EditAddressUseCase.RESPONSE_IS_SUCCESS).asInt
+//                                        statusSuccess = statusCode == 1
+//                                        if (!statusSuccess) {
+//                                            messageError = response.getAsJsonArray("message_error").get(0).asString
+//                                        }
+//                                    } catch (e: JSONException) {
+//                                        statusSuccess = false
+//                                    }
+//
+//                                    if (statusSuccess) {
+//                                        globalEvent.value = OccGlobalEvent.TriggerRefresh(false)
+//                                    } else {
+//                                        if (messageError.isNullOrBlank()) {
+//                                            messageError = DEFAULT_ERROR_MESSAGE
+//                                        }
+//                                        globalEvent.value = OccGlobalEvent.Error(errorMessage = messageError)
+//                                    }
+//                                }
+//
+//                                override fun onCompleted() {
+//                                    // do nothing
+//                                }
+//                            })
+//            )
+//        }
     }
 
     fun chooseLogisticPromo(logisticPromoUiModel: LogisticPromoUiModel) {

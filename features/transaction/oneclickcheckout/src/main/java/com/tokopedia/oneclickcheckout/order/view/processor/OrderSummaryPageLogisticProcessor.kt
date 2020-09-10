@@ -1,24 +1,35 @@
 package com.tokopedia.oneclickcheckout.order.view.processor
 
+import com.google.gson.JsonParser
+import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.model.*
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorServiceData
+import com.tokopedia.network.utils.TKPDMapParam
+import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.dispatchers.ExecutorDispatchers
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
+import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPreference
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileAddress
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
+import com.tokopedia.purchase_platform.common.feature.editaddress.domain.param.EditAddressParam
+import com.tokopedia.purchase_platform.common.feature.editaddress.domain.usecase.EditAddressUseCase
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
+import org.json.JSONException
 import javax.inject.Inject
 
 class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUseCase: GetRatesUseCase,
                                                             private val ratesResponseStateConverter: RatesResponseStateConverter,
+                                                            private val editAddressUseCase: EditAddressUseCase,
                                                             private val userSessionInterface: UserSessionInterface,
                                                             private val orderSummaryAnalytics: OrderSummaryAnalytics,
                                                             private val executorDispatchers: ExecutorDispatchers) {
@@ -267,6 +278,56 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                         null,
                         null
                 )
+            }
+        }
+        OccIdlingResource.decrement()
+        return result
+    }
+
+    suspend fun savePinpoint(address: OrderProfileAddress, longitude: String, latitude: String): OccGlobalEvent {
+        OccIdlingResource.increment()
+        val result = withContext(executorDispatchers.io) {
+            try {
+                val params = AuthHelper.generateParamsNetwork(userSessionInterface.userId, userSessionInterface.deviceId, TKPDMapParam())
+                params[EditAddressParam.ADDRESS_ID] = address.addressId.toString()
+                params[EditAddressParam.ADDRESS_NAME] = address.addressName
+                params[EditAddressParam.ADDRESS_STREET] = address.addressStreet
+                params[EditAddressParam.POSTAL_CODE] = address.postalCode
+                params[EditAddressParam.DISTRICT_ID] = address.districtId.toString()
+                params[EditAddressParam.CITY_ID] = address.cityId.toString()
+                params[EditAddressParam.PROVINCE_ID] = address.provinceId.toString()
+                params[EditAddressParam.LATITUDE] = latitude
+                params[EditAddressParam.LONGITUDE] = longitude
+                params[EditAddressParam.RECEIVER_NAME] = address.receiverName
+                params[EditAddressParam.RECEIVER_PHONE] = address.phone
+
+                val stringResponse = editAddressUseCase.createObservable(RequestParams.create().apply {
+                    putAllString(params)
+                }).toBlocking().single()
+                var messageError: String? = null
+                var statusSuccess: Boolean
+                try {
+                    val response = JsonParser().parse(stringResponse).asJsonObject
+                    val statusCode = response.getAsJsonObject(EditAddressUseCase.RESPONSE_DATA)
+                            .get(EditAddressUseCase.RESPONSE_IS_SUCCESS).asInt
+                    statusSuccess = statusCode == 1
+                    if (!statusSuccess) {
+                        messageError = response.getAsJsonArray("message_error").get(0).asString
+                    }
+                } catch (e: JSONException) {
+                    statusSuccess = false
+                }
+
+                if (statusSuccess) {
+                    return@withContext OccGlobalEvent.TriggerRefresh(false)
+                }
+
+                if (messageError.isNullOrBlank()) {
+                    messageError = DEFAULT_ERROR_MESSAGE
+                }
+                return@withContext OccGlobalEvent.Error(errorMessage = messageError)
+            } catch (t: Throwable) {
+                return@withContext OccGlobalEvent.Error(t)
             }
         }
         OccIdlingResource.decrement()
