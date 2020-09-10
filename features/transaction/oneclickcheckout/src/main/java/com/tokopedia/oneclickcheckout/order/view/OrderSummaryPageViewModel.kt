@@ -12,7 +12,6 @@ import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorPr
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
-import com.tokopedia.oneclickcheckout.common.STATUS_OK
 import com.tokopedia.oneclickcheckout.common.dispatchers.ExecutorDispatchers
 import com.tokopedia.oneclickcheckout.common.domain.GetPreferenceListUseCase
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
@@ -585,40 +584,61 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     private fun autoApplyLogisticPromo(logisticPromoUiModel: LogisticPromoUiModel, oldCode: String, shipping: OrderShipment) {
-        orderPromo.value = orderPromo.value.copy(state = OccButtonState.LOADING)
-        val requestParams = RequestParams.create()
-        requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, generateValidateUsePromoRequestWithBbo(logisticPromoUiModel, oldCode))
-        OccIdlingResource.increment()
-        compositeSubscription.add(
-                validateUsePromoRevampUseCase.createObservable(requestParams)
-                        .subscribeOn(executorSchedulers.io)
-                        .observeOn(executorSchedulers.main)
-                        .subscribe(object : Observer<ValidateUsePromoRevampUiModel> {
-                            override fun onError(e: Throwable) {
-                                orderPromo.value = orderPromo.value.copy(state = OccButtonState.DISABLE)
-                                globalEvent.value = OccGlobalEvent.Error(e)
-                                _orderShipment = shipping.copy(logisticPromoTickerMessage = if (shipping.serviceErrorMessage.isNullOrEmpty()) "Tersedia ${logisticPromoUiModel.title}" else null, isApplyLogisticPromo = false, logisticPromoShipping = null)
-                                orderShipment.value = _orderShipment
-                                orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
-                                calculateTotal()
-                                OccIdlingResource.decrement()
-                            }
-
-                            override fun onNext(response: ValidateUsePromoRevampUiModel) {
-                                validateUsePromoRevampUiModel = response
-                                if (!onApplyBbo(shipping, logisticPromoUiModel, response)) {
-                                    _orderShipment = shipping.copy(logisticPromoTickerMessage = if (shipping.serviceErrorMessage.isNullOrEmpty()) "Tersedia ${logisticPromoUiModel.title}" else null, isApplyLogisticPromo = false, logisticPromoShipping = null)
-                                    orderShipment.value = _orderShipment
-                                    globalEvent.value = OccGlobalEvent.Normal
-                                    updatePromoState(response.promoUiModel)
-                                }
-                            }
-
-                            override fun onCompleted() {
-                                OccIdlingResource.decrement()
-                            }
-                        })
-        )
+        launch(executorDispatchers.main) {
+            orderPromo.value = orderPromo.value.copy(state = OccButtonState.LOADING)
+            val (isApplied, resultValidateUse, newGlobalEvent) = promoProcessor.validateUseLogisticPromo(generateValidateUsePromoRequestWithBbo(logisticPromoUiModel, oldCode), logisticPromoUiModel.promoCode)
+            if (isApplied && resultValidateUse != null) {
+                onApplyBbo(shipping, logisticPromoUiModel, resultValidateUse)
+                return@launch
+            }
+            if (resultValidateUse != null) {
+                validateUsePromoRevampUiModel = resultValidateUse
+                _orderShipment = shipping.copy(logisticPromoTickerMessage = if (shipping.serviceErrorMessage.isNullOrEmpty()) "Tersedia ${logisticPromoUiModel.title}" else null, isApplyLogisticPromo = false, logisticPromoShipping = null)
+                orderShipment.value = _orderShipment
+                globalEvent.value = OccGlobalEvent.Normal
+                updatePromoState(resultValidateUse.promoUiModel)
+                return@launch
+            }
+            orderPromo.value = orderPromo.value.copy(state = OccButtonState.DISABLE)
+            globalEvent.value = newGlobalEvent
+            _orderShipment = shipping.copy(logisticPromoTickerMessage = if (shipping.serviceErrorMessage.isNullOrEmpty()) "Tersedia ${logisticPromoUiModel.title}" else null, isApplyLogisticPromo = false, logisticPromoShipping = null)
+            orderShipment.value = _orderShipment
+            orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
+            calculateTotal()
+//            val requestParams = RequestParams.create()
+//            requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, generateValidateUsePromoRequestWithBbo(logisticPromoUiModel, oldCode))
+//            OccIdlingResource.increment()
+//            compositeSubscription.add(
+//                    validateUsePromoRevampUseCase.createObservable(requestParams)
+//                            .subscribeOn(executorSchedulers.io)
+//                            .observeOn(executorSchedulers.main)
+//                            .subscribe(object : Observer<ValidateUsePromoRevampUiModel> {
+//                                override fun onError(e: Throwable) {
+//                                    orderPromo.value = orderPromo.value.copy(state = OccButtonState.DISABLE)
+//                                    globalEvent.value = OccGlobalEvent.Error(e)
+//                                    _orderShipment = shipping.copy(logisticPromoTickerMessage = if (shipping.serviceErrorMessage.isNullOrEmpty()) "Tersedia ${logisticPromoUiModel.title}" else null, isApplyLogisticPromo = false, logisticPromoShipping = null)
+//                                    orderShipment.value = _orderShipment
+//                                    orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
+//                                    calculateTotal()
+//                                    OccIdlingResource.decrement()
+//                                }
+//
+//                                override fun onNext(response: ValidateUsePromoRevampUiModel) {
+//                                    validateUsePromoRevampUiModel = response
+//                                    if (!onApplyBbo(shipping, logisticPromoUiModel, response)) {
+//                                        _orderShipment = shipping.copy(logisticPromoTickerMessage = if (shipping.serviceErrorMessage.isNullOrEmpty()) "Tersedia ${logisticPromoUiModel.title}" else null, isApplyLogisticPromo = false, logisticPromoShipping = null)
+//                                        orderShipment.value = _orderShipment
+//                                        globalEvent.value = OccGlobalEvent.Normal
+//                                        updatePromoState(response.promoUiModel)
+//                                    }
+//                                }
+//
+//                                override fun onCompleted() {
+//                                    OccIdlingResource.decrement()
+//                                }
+//                            })
+//            )
+        }
     }
 
     fun clearBboIfExist() {
@@ -856,39 +876,40 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     private fun onApplyBbo(shipping: OrderShipment, logisticPromoUiModel: LogisticPromoUiModel, response: ValidateUsePromoRevampUiModel): Boolean {
-        if (response.status.equals(STATUS_OK, true)) {
-            val voucherOrderUiModel = response.promoUiModel.voucherOrderUiModels.firstOrNull { it?.code == logisticPromoUiModel.promoCode }
-            if (voucherOrderUiModel != null && voucherOrderUiModel.messageUiModel.state != "red") {
-                val shippingRecommendationData = shipping.shippingRecommendationData
-                if (shippingRecommendationData != null) {
-                    var logisticPromoShipping: ShippingCourierUiModel? = null
-                    val shouldEnableServicePicker = shipping.isServicePickerEnable || !shipping.serviceErrorMessage.isNullOrEmpty()
-                    for (shippingDurationViewModel in shippingRecommendationData.shippingDurationViewModels) {
-                        if (shippingDurationViewModel.isSelected) {
-                            for (shippingCourierUiModel in shippingDurationViewModel.shippingCourierViewModelList) {
-                                shippingCourierUiModel.isSelected = false
-                            }
-                        }
-                        if (shippingDurationViewModel.serviceData.serviceId == logisticPromoUiModel.serviceId) {
-                            logisticPromoShipping = shippingDurationViewModel.shippingCourierViewModelList.firstOrNull { it.productData.shipperProductId == logisticPromoUiModel.shipperProductId }
-                        }
-                        if (shouldEnableServicePicker) {
-                            shippingDurationViewModel.isSelected = false
-                        }
-                    }
-                    if (logisticPromoShipping != null) {
-                        shippingRecommendationData.logisticPromo = shippingRecommendationData.logisticPromo.copy(isApplied = true)
-                        val needPinpoint = logisticPromoShipping.productData?.error?.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED
-                        _orderShipment = shipping.copy(shippingRecommendationData = shippingRecommendationData, isServicePickerEnable = shouldEnableServicePicker,
-                                insuranceData = logisticPromoShipping.productData?.insurance, serviceErrorMessage = if (needPinpoint) NEED_PINPOINT_ERROR_MESSAGE else logisticPromoShipping.productData?.error?.errorMessage,
-                                needPinpoint = needPinpoint, logisticPromoTickerMessage = null, isApplyLogisticPromo = true, logisticPromoShipping = logisticPromoShipping)
-                        orderShipment.value = _orderShipment
-                        globalEvent.value = OccGlobalEvent.Normal
-                        updatePromoState(response.promoUiModel)
-                        return true
+//        if (response.status.equals(STATUS_OK, true)) {
+//            val voucherOrderUiModel = response.promoUiModel.voucherOrderUiModels.firstOrNull { it?.code == logisticPromoUiModel.promoCode }
+//            if (voucherOrderUiModel != null && voucherOrderUiModel.messageUiModel.state != "red") {
+        val shippingRecommendationData = shipping.shippingRecommendationData
+        if (shippingRecommendationData != null) {
+            var logisticPromoShipping: ShippingCourierUiModel? = null
+            val shouldEnableServicePicker = shipping.isServicePickerEnable || !shipping.serviceErrorMessage.isNullOrEmpty()
+            for (shippingDurationViewModel in shippingRecommendationData.shippingDurationViewModels) {
+                if (shippingDurationViewModel.isSelected) {
+                    for (shippingCourierUiModel in shippingDurationViewModel.shippingCourierViewModelList) {
+                        shippingCourierUiModel.isSelected = false
                     }
                 }
+                if (shippingDurationViewModel.serviceData.serviceId == logisticPromoUiModel.serviceId) {
+                    logisticPromoShipping = shippingDurationViewModel.shippingCourierViewModelList.firstOrNull { it.productData.shipperProductId == logisticPromoUiModel.shipperProductId }
+                }
+                if (shouldEnableServicePicker) {
+                    shippingDurationViewModel.isSelected = false
+                }
             }
+            if (logisticPromoShipping != null) {
+                shippingRecommendationData.logisticPromo = shippingRecommendationData.logisticPromo.copy(isApplied = true)
+                val needPinpoint = logisticPromoShipping.productData?.error?.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED
+                _orderShipment = shipping.copy(shippingRecommendationData = shippingRecommendationData, isServicePickerEnable = shouldEnableServicePicker,
+                        insuranceData = logisticPromoShipping.productData?.insurance, serviceErrorMessage = if (needPinpoint) NEED_PINPOINT_ERROR_MESSAGE else logisticPromoShipping.productData?.error?.errorMessage,
+                        needPinpoint = needPinpoint, logisticPromoTickerMessage = null, isApplyLogisticPromo = true, logisticPromoShipping = logisticPromoShipping)
+                orderShipment.value = _orderShipment
+                globalEvent.value = OccGlobalEvent.Normal
+                validateUsePromoRevampUiModel = response
+                updatePromoState(response.promoUiModel)
+                return true
+            }
+//                }
+//            }
         }
         return false
     }

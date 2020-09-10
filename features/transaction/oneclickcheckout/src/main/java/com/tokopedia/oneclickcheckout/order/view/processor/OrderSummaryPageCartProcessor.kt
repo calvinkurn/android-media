@@ -134,7 +134,8 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccExtern
     }
 
     suspend fun updatePreference(param: UpdateCartOccRequest): Pair<Boolean, OccGlobalEvent> {
-        return withContext(executorDispatchers.io) {
+        OccIdlingResource.increment()
+        val result = withContext(executorDispatchers.io) {
             try {
                 updateCartOccUseCase.executeSuspend(param)
                 return@withContext true to OccGlobalEvent.TriggerRefresh()
@@ -146,10 +147,13 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccExtern
                 return@withContext false to OccGlobalEvent.Error(t)
             }
         }
+        OccIdlingResource.decrement()
+        return result
     }
 
     suspend fun updateCartPromo(param: UpdateCartOccRequest): Pair<Boolean, OccGlobalEvent> {
-        return withContext(executorDispatchers.io) {
+        OccIdlingResource.increment()
+        val result = withContext(executorDispatchers.io) {
             try {
                 updateCartOccUseCase.executeSuspend(param)
                 return@withContext true to OccGlobalEvent.Normal
@@ -161,6 +165,8 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccExtern
                 return@withContext false to OccGlobalEvent.Error(t)
             }
         }
+        OccIdlingResource.decrement()
+        return result
     }
 }
 
