@@ -112,6 +112,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/dp_16"
+                        android:layout_marginBottom="@dimen/dp_14"
                         android:background="@color/white"
                         android:orientation="horizontal">
 
@@ -123,55 +124,55 @@
                             android:paddingStart="@dimen/dp_16"
                             android:paddingLeft="@dimen/dp_16"
                             android:paddingEnd="@dimen/dp_16"
-                            android:paddingRight="@dimen/dp_16"
-                            android:paddingBottom="@dimen/dp_16">
+                            android:paddingRight="@dimen/dp_16">
+
+                            <com.tokopedia.unifyprinciples.Typography
+                                android:id="@+id/text_total_payment_label"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:lineSpacingExtra="4sp"
+                                android:text="@string/label_price_total"
+                                android:textColor="@color/text_black"
+                                app:typographyType="body_2" />
 
                             <LinearLayout
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/dp_4"
                                 android:gravity="center_vertical">
 
                                 <com.tokopedia.unifyprinciples.Typography
-                                    android:id="@+id/text_total_payment_label"
+                                    android:id="@+id/tv_total_prices"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:lineSpacingExtra="4sp"
-                                    android:text="@string/label_price_total"
-                                    android:textColor="@color/text_black"
-                                    app:typographyType="body_2" />
+                                    android:gravity="end"
+                                    android:textColor="@color/Neutral_N700_96"
+                                    app:typographyType="heading_4"
+                                    tools:text="Rp600.000" />
 
                                 <com.tokopedia.unifycomponents.UnifyImageButton
                                     android:id="@+id/img_chevron_summary"
                                     android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
+                                    android:layout_height="@dimen/dp_20"
                                     android:rotation="180"
-                                    app:unifyImageButtonVariant="image"
-                                    app:srcCompat="@drawable/unify_chips_ic_chevron_normal" />
+                                    app:srcCompat="@drawable/unify_chips_ic_chevron_normal"
+                                    app:unifyImageButtonVariant="image" />
 
                             </LinearLayout>
-
-                            <com.tokopedia.unifyprinciples.Typography
-                                android:id="@+id/tv_total_prices"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:gravity="end"
-                                android:textColor="@color/price_label"
-                                app:typographyType="heading_4"
-                                app:typographyWeight="bold"
-                                tools:text="Rp600.000" />
 
                         </LinearLayout>
 
                         <com.tokopedia.unifycomponents.UnifyButton
                             android:id="@+id/go_to_courier_page_button"
-                            android:contentDescription="@string/content_desc_go_to_courier_page_button"
                             android:layout_width="@dimen/dp_150"
                             android:layout_height="@dimen/dp_40"
+                            android:layout_gravity="center_vertical"
                             android:layout_marginStart="@dimen/dp_10"
                             android:layout_marginLeft="@dimen/dp_10"
                             android:layout_marginEnd="@dimen/dp_16"
                             android:layout_marginRight="@dimen/dp_16"
-                            android:layout_marginBottom="@dimen/dp_10"
+                            android:contentDescription="@string/content_desc_go_to_courier_page_button"
+                            android:gravity="center_vertical"
                             app:unifyButtonSize="medium"
                             app:unifyButtonType="transaction"
                             app:unifyButtonVariant="filled"
