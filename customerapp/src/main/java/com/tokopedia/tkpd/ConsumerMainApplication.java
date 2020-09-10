@@ -322,7 +322,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     private void openFeedbackForm(ScreenshotData screenshotData) {
         Intent intent = RouteManager.getIntent(getApplicationContext(), ApplinkConst.FEEDBACK_FORM);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra("EXTRA_URI_IMAGE", screenshotData.getPath());
+        intent.putExtra("EXTRA_URI_IMAGE", Uri.parse(screenshotData.getPath()));
         getApplicationContext().startActivity(intent);
     }
 
