@@ -1,7 +1,6 @@
 package com.tokopedia.productcard.options.di
 
 import android.content.Context
-import com.tokopedia.productcard.options.ProductCardOptionsScope
 import dagger.Module
 import dagger.Provides
 

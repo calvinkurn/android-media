@@ -19,6 +19,7 @@ const val PRODUCT_CARD_OPTION_RESULT_PRODUCT = "product_card_option_result_produ
 const val PRODUCT_CARD_OPTIONS_RESULT_CODE_WISHLIST = 12855
 const val PRODUCT_CARD_OPTIONS_RESULT_CODE_ATC = 12856
 const val PRODUCT_CARD_OPTIONS_RESULT_CODE_VISIT_SHOP = 123857
+const val PRODUCT_CARD_OPTIONS_RESULT_CODE_SHARE_PRODUCT = 123858
 
 fun showProductCardOptions(activity: Activity, productCardOptionsModel: ProductCardOptionsModel) {
     val intent = getProductCardOptionsIntent(activity, productCardOptionsModel)
@@ -49,10 +50,14 @@ fun handleProductCardOptionsActivityResult(
         data: Intent?,
         wishlistCallback: ProductCardOptionsWishlistCallback? = null,
         addToCartCallback: ProductCardOptionsResult? = null,
-        visitShopCallback: ProductCardOptionsResult? = null
+        visitShopCallback: ProductCardOptionsResult? = null,
+        shareProductCallback: ProductCardOptionsResult? = null
 ) {
     if (requestCode == PRODUCT_CARD_OPTIONS_REQUEST_CODE) {
-        handleRequestFromProductCardOptions(resultCode, data, wishlistCallback, addToCartCallback, visitShopCallback)
+        handleRequestFromProductCardOptions(
+                resultCode, data,
+                wishlistCallback, addToCartCallback, visitShopCallback, shareProductCallback
+        )
     }
 }
 
@@ -61,7 +66,8 @@ private fun handleRequestFromProductCardOptions(
         data: Intent?,
         wishlistCallback: ProductCardOptionsWishlistCallback?,
         addToCartCallback: ProductCardOptionsResult?,
-        visitShopCallback: ProductCardOptionsResult?
+        visitShopCallback: ProductCardOptionsResult?,
+        shareProductCallback: ProductCardOptionsResult?
 ) {
     if (data == null) return
 
@@ -71,6 +77,7 @@ private fun handleRequestFromProductCardOptions(
         PRODUCT_CARD_OPTIONS_RESULT_CODE_WISHLIST -> wishlistCallback?.onReceiveWishlistResult(productCardOptionsModel)
         PRODUCT_CARD_OPTIONS_RESULT_CODE_ATC -> addToCartCallback?.onReceiveResult(productCardOptionsModel)
         PRODUCT_CARD_OPTIONS_RESULT_CODE_VISIT_SHOP -> visitShopCallback?.onReceiveResult(productCardOptionsModel)
+        PRODUCT_CARD_OPTIONS_RESULT_CODE_SHARE_PRODUCT -> shareProductCallback?.onReceiveResult(productCardOptionsModel)
     }
 }
 

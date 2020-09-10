@@ -5,6 +5,7 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.discovery.common.coroutines.ProductionDispatcherProvider
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.productcard.options.di.AddToCartUseCaseModule
+import com.tokopedia.productcard.options.di.ProductCardOptionsScope
 import com.tokopedia.productcard.options.di.TopAdsWishlistUseCaseModule
 import com.tokopedia.productcard.options.di.UserSessionModule
 import com.tokopedia.productcard.options.di.WishlistUseCaseModule

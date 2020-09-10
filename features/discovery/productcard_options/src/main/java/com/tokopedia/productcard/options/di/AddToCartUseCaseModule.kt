@@ -3,7 +3,6 @@ package com.tokopedia.productcard.options.di
 import android.content.Context
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.productcard.options.ATC_MUTATION
-import com.tokopedia.productcard.options.ProductCardOptionsScope
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named

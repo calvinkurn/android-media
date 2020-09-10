@@ -1,14 +1,17 @@
 package com.tokopedia.productcard.options
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.exception.TypeNotSupportedException
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -16,7 +19,7 @@ import com.tokopedia.discovery.common.EventObserver
 import com.tokopedia.discovery.common.manager.*
 import com.tokopedia.product.share.ProductShare
 import com.tokopedia.productcard.options.item.ProductCardOptionsItemModel
-import com.tokopedia.productcard.options.item.ProductCardOptionsItemView
+import com.tokopedia.productcard.options.item.ProductCardOptionsItemViewHolder
 import com.tokopedia.productcard.options.tracking.ProductCardOptionsTracking
 import kotlinx.android.synthetic.main.product_card_options_fragment_layout.*
 
@@ -52,12 +55,7 @@ internal class ProductCardOptionsFragment: TkpdBaseV4Fragment() {
         observeTrackingSeeSimilarProductsEventLiveData()
         observeAddToCartEventLiveData()
         observeRouteToShopPageEvent()
-
-        productCardOptionsViewModel?.getShareProductEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
-            activity?.let { activity ->
-                ProductShare(activity).share(it, {}, {})
-            }
-        })
+        observeShareProductEvent()
     }
 
     private fun observeOptionListLiveData() {
@@ -66,12 +64,12 @@ internal class ProductCardOptionsFragment: TkpdBaseV4Fragment() {
         })
     }
 
-    private fun loadOptions(optionList: List<Any>) {
-        activity?.let { activity ->
-            optionList.forEach {
-                renderViewToBottomSheet(activity, it)
-            }
+    private fun loadOptions(optionList: List<Visitable<*>>) {
+        productCardOptionsRecyclerView?.adapter = ProductCardOptionsAdapter(ProductCardOptionsTypeFactoryImpl()).also {
+            it.setList(optionList)
         }
+
+        productCardOptionsRecyclerView?.layoutManager = LinearLayoutManager(context)
     }
 
     /**
@@ -80,22 +78,22 @@ internal class ProductCardOptionsFragment: TkpdBaseV4Fragment() {
      *
      * If the number of view types increases, consider using RecyclerView with Visitable + Type Factory or Adapter Delegate pattern.
     * */
-    private fun renderViewToBottomSheet(context: Context, itemView: Any) {
-        if (itemView is ProductCardOptionsItemModel) {
-            productCardOptionsBottomSheet?.addOptionView(context, itemView)
-        }
-        else if (itemView is ProductCardOptionsItemDivider){
-            productCardOptionsBottomSheet?.addDividerView(context)
-        }
-    }
-
-    private fun LinearLayout?.addOptionView(context: Context, optionItemModel: ProductCardOptionsItemModel) {
-        this?.addView(ProductCardOptionsItemView(context, optionItemModel))
-    }
-
-    private fun LinearLayout?.addDividerView(context: Context) {
-        View.inflate(context, R.layout.product_card_options_item_divider, this)
-    }
+//    private fun renderViewToBottomSheet(context: Context, itemView: Any) {
+//        if (itemView is ProductCardOptionsItemModel) {
+//            productCardOptionsBottomSheet?.addOptionView(context, itemView)
+//        }
+//        else if (itemView is ProductCardOptionsItemDivider){
+//            productCardOptionsBottomSheet?.addDividerView(context)
+//        }
+//    }
+//
+//    private fun ConstraintLayout?.addOptionView(context: Context, optionItemModel: ProductCardOptionsItemModel) {
+//        this?.addView(ProductCardOptionsItemView(context, optionItemModel))
+//    }
+//
+//    private fun LinearLayout?.addDividerView(context: Context) {
+//        View.inflate(context, R.layout.product_card_options_item_divider, this)
+//    }
 
     private fun observeRouteToSimilarSearchEventLiveData() {
         productCardOptionsViewModel?.getRouteToSimilarSearchEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
@@ -166,5 +164,15 @@ internal class ProductCardOptionsFragment: TkpdBaseV4Fragment() {
             if (shopId.isNotEmpty())
                 RouteManager.route(context, ApplinkConst.SHOP, shopId)
         }
+    }
+
+    private fun observeShareProductEvent() {
+        productCardOptionsViewModel?.getShareProductEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
+            activity?.let { activity ->
+                ProductShare(activity).share(it, {}, {
+                    sendProductCardOptionsResult(PRODUCT_CARD_OPTIONS_RESULT_CODE_SHARE_PRODUCT)
+                })
+            }
+        })
     }
 }

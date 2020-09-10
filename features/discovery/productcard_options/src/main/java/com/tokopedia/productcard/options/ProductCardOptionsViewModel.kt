@@ -2,6 +2,7 @@ package com.tokopedia.productcard.options
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
@@ -13,6 +14,7 @@ import com.tokopedia.discovery.common.model.ProductCardOptionsModel.WishlistResu
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.share.ProductData
+import com.tokopedia.productcard.options.divider.ProductCardOptionsItemDivider
 import com.tokopedia.productcard.options.item.ProductCardOptionsItemModel
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.usecase.RequestParams
@@ -33,8 +35,8 @@ internal class ProductCardOptionsViewModel(
         private val userSession: UserSessionInterface
 ): BaseViewModel(dispatcherProvider.ui()) {
 
-    private val productCardOptionsItemListLiveData = MutableLiveData<List<Any>>()
-    private val productCardOptionsItemList = mutableListOf<Any>()
+    private val productCardOptionsItemListLiveData = MutableLiveData<List<Visitable<*>>>()
+    private val productCardOptionsItemList = mutableListOf<Visitable<*>>()
     private val routeToSimilarProductsEventLiveData = MutableLiveData<Event<Boolean>>()
     private val closeProductCardOptionsEventLiveData = MutableLiveData<Event<Boolean>>()
     private val wishlistEventLiveData = MutableLiveData<Event<Boolean>>()
@@ -66,11 +68,11 @@ internal class ProductCardOptionsViewModel(
         closeProductCardOptionsEventLiveData.postValue(Event(true))
     }
 
-    private fun MutableList<Any>.addOption(title: String, onClick: () -> Unit) {
+    private fun MutableList<Visitable<*>>.addOption(title: String, onClick: () -> Unit) {
         this.add(ProductCardOptionsItemModel(title, onClick))
     }
 
-    private fun MutableList<Any>.addDivider() {
+    private fun MutableList<Visitable<*>>.addDivider() {
         this.add(ProductCardOptionsItemDivider())
     }
 
@@ -81,7 +83,7 @@ internal class ProductCardOptionsViewModel(
         }
     }
 
-    private fun MutableList<Any>.addWishlistOptions(isWishlisted: Boolean) {
+    private fun MutableList<Visitable<*>>.addWishlistOptions(isWishlisted: Boolean) {
         if (!isWishlisted) {
             this.addOption(SAVE_TO_WISHLIST) { tryToggleWishlist(true) }
         } else {
@@ -318,7 +320,7 @@ internal class ProductCardOptionsViewModel(
         productCardOptionsItemListLiveData.postValue(productCardOptionsItemList)
     }
 
-    fun getOptionsListLiveData(): LiveData<List<Any>> = productCardOptionsItemListLiveData
+    fun getOptionsListLiveData(): LiveData<List<Visitable<*>>> = productCardOptionsItemListLiveData
 
     fun getRouteToSimilarSearchEventLiveData(): LiveData<Event<Boolean>> = routeToSimilarProductsEventLiveData
 
