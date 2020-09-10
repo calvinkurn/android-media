@@ -39,9 +39,9 @@ import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditBasicInfoActi
 import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopEditBasicInfoViewModel
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.util.ShopTypeDef
-import com.tokopedia.shop.settings.common.util.getSpandableColorText
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -477,11 +477,14 @@ class ShopEditBasicInfoFragment: Fragment() {
     private fun showTicker(message: String, type: Int) {
         shopEditTicker.tickerType = type
         shopEditTicker.setHtmlDescription(message)
-        shopEditTicker.setOnClickListener {
-            if (type == Ticker.TYPE_WARNING) {
-                clickReadMore()
+        shopEditTicker.setDescriptionClickEvent(object : TickerCallback{
+            override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                if (type == Ticker.TYPE_WARNING) {
+                    clickReadMore()
+                }
             }
-        }
+            override fun onDismiss() {}
+        })
         shopEditTicker.show()
     }
 

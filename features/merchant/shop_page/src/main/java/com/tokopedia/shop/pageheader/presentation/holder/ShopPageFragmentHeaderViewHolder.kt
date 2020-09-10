@@ -114,9 +114,10 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
     }
 
     fun setShopName(shopName: String) {
+        val name = MethodChecker.fromHtml(shopName)
         val shopNameTv = view.shop_page_main_profile_name
-        if (shopNameTv.text != shopName) {
-            shopNameTv.text = shopName
+        if (shopNameTv.text != name) {
+            shopNameTv.text = name
         }
     }
 
