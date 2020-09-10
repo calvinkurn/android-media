@@ -1131,14 +1131,21 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             cartDataList.remove(cartShopHolderData)
         }
 
+        if (deletedDisabledItemCount > 0) {
+            tmpCollapsedItem.clear()
+        }
+
         if (cartItemTickerErrorHolderData != null || disabledItemHeaderHolderData != null) {
             var errorItemCount = 0
+            var normalItemCount = 0
             loop@ for (any in cartDataList) {
                 when (any) {
                     is CartShopHolderData -> any.shopGroupAvailableData.cartItemDataList?.let {
                         for (cartItemHolderData in it) {
                             if (cartItemHolderData.cartItemData?.isError == true) {
                                 errorItemCount++
+                            } else {
+                                normalItemCount++
                             }
                         }
                     }
@@ -1147,10 +1154,18 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                 }
             }
 
+            errorItemCount += collapsedCartItemData.size
+
             if (errorItemCount > 0) {
                 if (context != null) {
-                    cartItemTickerErrorHolderData?.let {
-                        it.cartTickerErrorData?.errorInfo = String.format(context.getString(R.string.cart_error_message), errorItemCount)
+                    if (normalItemCount == 0) {
+                        cartItemTickerErrorHolderData?.let {
+                            cartDataList.remove(it)
+                        }
+                    } else {
+                        cartItemTickerErrorHolderData?.let {
+                            it.cartTickerErrorData?.errorInfo = String.format(context.getString(R.string.cart_error_message), errorItemCount)
+                        }
                     }
                     disabledItemHeaderHolderData?.let {
                         it.disabledItemCount = errorItemCount
