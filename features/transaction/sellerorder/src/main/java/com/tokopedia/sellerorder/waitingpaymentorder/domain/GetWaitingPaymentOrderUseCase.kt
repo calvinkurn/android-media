@@ -104,14 +104,6 @@ class GetWaitingPaymentOrderUseCase @Inject constructor(
                     product_price
                   }
                 }
-                paging {
-                  ShowBackButton
-                  ShowNextButton
-                  CurrentBatchPage
-                  CurrentPage
-                  NextChangerValue
-                  PrevChangerValue
-                }
                 cursor_payment_deadline
                 total_data_per_batch
               }
