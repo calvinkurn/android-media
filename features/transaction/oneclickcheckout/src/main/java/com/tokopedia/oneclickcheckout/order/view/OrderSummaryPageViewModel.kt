@@ -930,30 +930,37 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     fun updatePreference(preference: ProfilesItemModel) {
-        var param = generateUpdateCartParam()
-        if (param == null) {
-            globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
-            return
-        }
-        param = param.copy(profile = UpdateCartOccProfileRequest(
-                profileId = preference.profileId.toString(),
-                addressId = preference.addressModel.addressId.toString(),
-                serviceId = preference.shipmentModel.serviceId,
-                gatewayCode = preference.paymentModel.gatewayCode,
-                metadata = preference.paymentModel.metadata
-        ))
-        globalEvent.value = OccGlobalEvent.Loading
-        updateCartOccUseCase.execute(param, {
-            clearBboIfExist()
-            globalEvent.value = OccGlobalEvent.TriggerRefresh()
-        }, { throwable: Throwable ->
-            if (throwable is MessageErrorException) {
-                globalEvent.value = OccGlobalEvent.Error(errorMessage = throwable.message
-                        ?: DEFAULT_ERROR_MESSAGE)
-            } else {
-                globalEvent.value = OccGlobalEvent.Error(throwable)
+        launch {
+            var param = generateUpdateCartParam()
+            if (param == null) {
+                globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
+                return@launch
             }
-        })
+            param = param.copy(profile = UpdateCartOccProfileRequest(
+                    profileId = preference.profileId.toString(),
+                    addressId = preference.addressModel.addressId.toString(),
+                    serviceId = preference.shipmentModel.serviceId,
+                    gatewayCode = preference.paymentModel.gatewayCode,
+                    metadata = preference.paymentModel.metadata
+            ))
+            globalEvent.value = OccGlobalEvent.Loading
+            val (isSuccess, newGlobalEvent) = cartProcessor.updatePreference(param)
+            if (isSuccess) {
+                clearBboIfExist()
+            }
+            globalEvent.value = newGlobalEvent
+//        updateCartOccUseCase.execute(param, {
+//            clearBboIfExist()
+//            globalEvent.value = OccGlobalEvent.TriggerRefresh()
+//        }, { throwable: Throwable ->
+//            if (throwable is MessageErrorException) {
+//                globalEvent.value = OccGlobalEvent.Error(errorMessage = throwable.message
+//                        ?: DEFAULT_ERROR_MESSAGE)
+//            } else {
+//                globalEvent.value = OccGlobalEvent.Error(throwable)
+//            }
+//        })
+        }
     }
 
     fun finalUpdate(onSuccessCheckout: (CheckoutOccResult) -> Unit, skipCheckIneligiblePromo: Boolean) {
@@ -1352,45 +1359,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 validateUsePromoRevampUiModel = resultValidateUse
                 updatePromoState(resultValidateUse.promoUiModel)
             }
-//            val requestParams = RequestParams.create()
-//            requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, validateUsePromoRequest)
-//            OccIdlingResource.increment()
-//            compositeSubscription.add(
-//                    validateUsePromoRevampUseCase.createObservable(requestParams)
-//                            .subscribeOn(executorSchedulers.io)
-//                            .observeOn(executorSchedulers.main)
-//                            .subscribe(object : Observer<ValidateUsePromoRevampUiModel> {
-//                                override fun onError(e: Throwable) {
-//                                    orderPromo.value = orderPromo.value.copy(state = OccButtonState.DISABLE)
-//                                    orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
-//                                    OccIdlingResource.decrement()
-//                                }
-//
-//                                override fun onNext(result: ValidateUsePromoRevampUiModel) {
-//                                    var isPromoReleased = false
-//                                    val lastResult = validateUsePromoRevampUiModel
-//                                    if (!lastResult?.promoUiModel?.codes.isNullOrEmpty() && result.promoUiModel.codes.isNotEmpty() && result.promoUiModel.messageUiModel.state == "red") {
-//                                        isPromoReleased = true
-//                                    } else {
-//                                        result.promoUiModel.voucherOrderUiModels.firstOrNull { it?.messageUiModel?.state == "red" }?.let {
-//                                            isPromoReleased = true
-//                                        }
-//                                    }
-//                                    if (isPromoReleased) {
-//                                        orderSummaryAnalytics.eventViewPromoDecreasedOrReleased(true)
-//                                    } else if (lastResult != null && result.promoUiModel.benefitSummaryInfoUiModel.finalBenefitAmount < lastResult.promoUiModel.benefitSummaryInfoUiModel.finalBenefitAmount) {
-//                                        orderSummaryAnalytics.eventViewPromoDecreasedOrReleased(false)
-//                                    }
-//
-//                                    validateUsePromoRevampUiModel = result
-//                                    updatePromoState(result.promoUiModel)
-//                                }
-//
-//                                override fun onCompleted() {
-//                                    OccIdlingResource.decrement()
-//                                }
-//                            })
-//            )
         }
     }
 

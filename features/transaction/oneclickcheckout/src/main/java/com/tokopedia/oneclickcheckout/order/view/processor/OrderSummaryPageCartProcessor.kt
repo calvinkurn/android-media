@@ -2,6 +2,8 @@ package com.tokopedia.oneclickcheckout.order.view.processor
 
 import com.google.gson.JsonParser
 import com.tokopedia.atc_common.domain.usecase.AddToCartOccExternalUseCase
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.dispatchers.ExecutorDispatchers
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
@@ -119,10 +121,29 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccExtern
 
     suspend fun updateCartIgnoreResult(orderCart: OrderCart, orderPreference: OrderPreference, orderShipment: OrderShipment, orderPayment: OrderPayment) {
         withContext(executorDispatchers.io) {
-            val param = generateUpdateCartParam(orderCart, orderPreference, orderShipment, orderPayment)
-            if (param != null) {
-                // ignore result
+            try {
+                val param = generateUpdateCartParam(orderCart, orderPreference, orderShipment, orderPayment)
+                if (param != null) {
+                    // ignore result
+                    updateCartOccUseCase.executeSuspend(param)
+                }
+            } catch (t: Throwable) {
+                //ignore throwable
+            }
+        }
+    }
+
+    suspend fun updatePreference(param: UpdateCartOccRequest): Pair<Boolean, OccGlobalEvent> {
+        return withContext(executorDispatchers.io) {
+            try {
                 updateCartOccUseCase.executeSuspend(param)
+                return@withContext true to OccGlobalEvent.TriggerRefresh()
+            } catch (t: Throwable) {
+                if (t is MessageErrorException) {
+                    return@withContext false to OccGlobalEvent.Error(errorMessage = t.message
+                            ?: DEFAULT_ERROR_MESSAGE)
+                }
+                return@withContext false to OccGlobalEvent.Error(t)
             }
         }
     }
