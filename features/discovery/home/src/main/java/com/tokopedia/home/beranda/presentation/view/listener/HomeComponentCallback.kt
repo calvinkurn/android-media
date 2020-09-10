@@ -9,6 +9,10 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 class HomeComponentCallback(val homeViewModel: HomeViewModel): HomeComponentListener {
     @ExperimentalCoroutinesApi
     override fun onChannelExpired(channelModel: ChannelModel, channelPosition: Int, visitable: Visitable<*>) {
-        homeViewModel.getDynamicChannelData(visitable, channelModel, channelPosition)
+        if (channelModel.channelConfig.isAutoRefreshAfterExpired) {
+            homeViewModel.getDynamicChannelData(visitable, channelModel, channelPosition)
+        } else {
+            homeViewModel.removeViewHolderAtPosition(channelPosition)
+        }
     }
 }
