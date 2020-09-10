@@ -20,6 +20,7 @@ import com.tokopedia.recharge_credit_card.analytics.CreditCardAnalytics
 import com.tokopedia.recharge_credit_card.data.RechargeCCApi
 import com.tokopedia.recharge_credit_card.data.RechargeCCRepository
 import com.tokopedia.recharge_credit_card.data.RechargeCCRepositoryImpl
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -108,7 +109,7 @@ class RechargeCCModule {
     @RechargeCCScope
     fun provideGqlApiService(gson: Gson, client: OkHttpClient): RechargeCCApi {
         val retrofitBuilder = Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(TokopediaUrl.getInstance().PCIDSS_CREDIT_CARD)
                 .addConverterFactory(StringResponseConverter())
                 .addConverterFactory(GsonConverterFactory.create(gson))
         retrofitBuilder.client(client)
@@ -132,10 +133,5 @@ class RechargeCCModule {
     @RechargeCCScope
     fun provideAnalytics(iris: Iris): CreditCardAnalytics {
         return CreditCardAnalytics(iris)
-    }
-
-    companion object {
-          const val BASE_URL = "https://pay.tokopedia.id/"
-//        const val BASE_URL = "https://pulsa-staging.tokopedia.id/"
     }
 }
