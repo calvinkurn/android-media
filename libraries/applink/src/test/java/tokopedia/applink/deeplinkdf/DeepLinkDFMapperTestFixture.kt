@@ -2,7 +2,6 @@ package tokopedia.applink.deeplinkdf
 
 import com.tokopedia.applink.DFP
 import com.tokopedia.applink.DeeplinkDFMapper
-import io.mockk.MockKAnnotations
 import io.mockk.mockkObject
 import io.mockk.unmockkAll
 import org.junit.After
@@ -16,7 +15,6 @@ abstract class DeepLinkDFMapperTestFixture {
 
     @Before
     fun setup() {
-        MockKAnnotations.init(this)
         mockkObject(DeeplinkDFMapper)
     }
 
