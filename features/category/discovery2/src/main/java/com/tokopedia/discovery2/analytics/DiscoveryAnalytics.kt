@@ -743,11 +743,12 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
 
     fun trackHeaderSeeAllClick(isLogin: Boolean, componentsItems: ComponentsItem) {
         val loginValue = if (isLogin) LOGIN else NON_LOGIN
-        val creativeName = componentsItems.data?.firstOrNull()?.creativeName ?: ""
-        val headerValue = componentsItems.lihatSemua?.header ?: ""
+        val unifyTabValue = getTabValue(componentsItems)
+        val creativeName = componentsItems.creativeName
+        val headerValue = componentsItems.data?.firstOrNull()?.title ?: ""
         val map = createGeneralEvent(eventName = EVENT_CLICK_DISCOVERY,
                 eventAction = CLICK_VIEW_ALL_HEADER,
-                eventLabel = "$loginValue - ${componentsItems.name} - $headerValue - $creativeName")
+                eventLabel = "$loginValue - ${componentsItems.name} - $headerValue - $creativeName - $unifyTabValue")
         getTracker().sendGeneralEvent(map)
     }
 }

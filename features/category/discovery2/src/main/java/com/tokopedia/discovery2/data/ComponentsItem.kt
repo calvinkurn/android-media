@@ -35,6 +35,9 @@ data class ComponentsItem(
         @SerializedName("properties")
         var properties: Properties? = null,
 
+        @SerializedName("creative_name")
+        var creativeName: String? = "",
+
         var isApplicable: Boolean = true,
 
         var topAdsTrackingStatus: Boolean = false,
