@@ -116,7 +116,7 @@ private fun renderDiscount(cartListData: CartListData, view: View) {
 private fun renderPriceTotal(view: View, cartListData: CartListData) {
     view.text_price_total_title?.apply {
         cartListData.shoppingSummaryData.totalWording.let {
-            text = it.replace("x", cartListData.shoppingSummaryData.qty)
+            text = it.replace("[0-9]".toRegex(), cartListData.shoppingSummaryData.qty)
         }
     }
     view.text_price_total_value?.apply {
