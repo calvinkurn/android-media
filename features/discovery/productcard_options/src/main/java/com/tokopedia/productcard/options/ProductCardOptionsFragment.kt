@@ -17,6 +17,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery.common.EventObserver
 import com.tokopedia.discovery.common.manager.*
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.share.ProductShare
 import com.tokopedia.productcard.options.item.ProductCardOptionsItemModel
 import com.tokopedia.productcard.options.item.ProductCardOptionsItemViewHolder
@@ -145,8 +146,12 @@ internal class ProductCardOptionsFragment: TkpdBaseV4Fragment() {
 
     private fun observeShareProductEvent() {
         productCardOptionsViewModel?.getShareProductEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
+            productCardOptionsRecyclerView?.visibility = View.INVISIBLE
+            productCardOptionsLoading?.visible()
+
             activity?.let { activity ->
-                ProductShare(activity).share(it, {}, {
+                ProductShare(activity).share(it, {
+                }, {
                     sendProductCardOptionsResult(PRODUCT_CARD_OPTIONS_RESULT_CODE_SHARE_PRODUCT)
                 })
             }

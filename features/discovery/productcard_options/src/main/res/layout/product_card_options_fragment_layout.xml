@@ -29,6 +29,7 @@
         app:layout_constraintTop_toBottomOf="@id/productCardOptionsKnob" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/productCardOptionsLoading"
         android:layout_width="@dimen/dp_50"
         android:layout_height="@dimen/dp_50"
         android:layout_gravity="center"
