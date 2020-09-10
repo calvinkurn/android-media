@@ -278,6 +278,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                         resetFilter()
                     }
 
+                    view?.let { context?.let { it1 -> UohUtils.hideKeyBoard(it1, it) } }
                     paramUohOrder.searchableText = s.toString()
                     refreshHandler?.startRefresh()
                     userSession?.userId?.let { UohAnalytics.submitSearch(s.toString(), it) }
@@ -1176,6 +1177,14 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 dotMenu.actionType.equals(GQL_MP_FINISH, true) -> {
                     orderIdNeedUpdated = orderData.orderUUID
                     showBottomSheetFinishOrder(index, orderData.verticalID, true)
+                }
+                dotMenu.actionType.equals(GQL_TRACK, true) -> {
+                    val applinkTrack = ApplinkConst.ORDER_TRACKING.replace(REPLACE_ORDER_ID, orderData.verticalID)
+                    RouteManager.route(context, applinkTrack)
+                }
+                dotMenu.actionType.equals(GQL_LS_LACAK, true) -> {
+                    val linkUrl = LS_LACAK_MWEB.replace(REPLACE_ORDER_ID, orderData.verticalID)
+                    RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(linkUrl, UohConsts.UTF_8)))
                 }
             }
         }
