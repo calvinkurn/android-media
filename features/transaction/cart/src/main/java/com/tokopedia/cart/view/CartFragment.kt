@@ -2087,6 +2087,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 it.shopGroupWithErrorDataList.forEach {
                     val cartItemHolderDataList = it.cartItemHolderDataList
                     if (cartItemHolderDataList.isNotEmpty()) {
+                        if (!showAccordion && cartItemHolderDataList.size > 1) {
+                            showAccordion = true
+                        }
                         cartAdapter.addNotAvailableShop(viewHolderDataMapper.mapDisabledShopHolderData(it))
                         for ((index, value) in cartItemHolderDataList.withIndex()) {
                             cartAdapter.addNotAvailableProduct(viewHolderDataMapper.mapDisabledItemHolderData(value, index != cartItemHolderDataList.size - 1))
