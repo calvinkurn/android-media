@@ -236,7 +236,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                     if (currPromo.isNotEmpty()) {
                         return@withContext ResultRates(
                                 shipping,
-                                if (logisticPromo.promoCode != currPromo) currPromo else null,
+                                if (logisticPromo.promoCode != currPromo) currPromo else "",
                                 logisticPromo,
                                 null,
                                 null
@@ -249,7 +249,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                 }
                 return@withContext ResultRates(
                         shipping,
-                        if (currPromo.isNotEmpty()) currPromo else null,
+                        currPromo,
                         null,
                         shippingErrorId,
                         preselectedSpId
@@ -262,7 +262,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                                 serviceErrorMessage = OrderSummaryPageViewModel.NO_COURIER_SUPPORTED_ERROR_MESSAGE,
                                 shippingRecommendationData = null
                         ),
-                        null,
+                        "",
                         null,
                         null,
                         null
@@ -276,7 +276,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
 
 class ResultRates(
         val orderShipment: OrderShipment,
-        val clearOldPromoCode: String?,
+        val clearOldPromoCode: String,
         val autoApplyPromo: LogisticPromoUiModel?,
         val shippingErrorId: String?,
         val preselectedSpId: String?

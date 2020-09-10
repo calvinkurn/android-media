@@ -3,7 +3,6 @@ package com.tokopedia.oneclickcheckout.order.view
 import com.google.gson.JsonParser
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.authentication.AuthHelper
-import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingParam
@@ -26,7 +25,6 @@ import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.common.view.model.preference.ProfilesItemModel
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryPageEnhanceECommerce
-import com.tokopedia.oneclickcheckout.order.data.checkout.*
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccCartRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccProfileRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest
@@ -35,6 +33,7 @@ import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageCartProcessor
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageCheckoutProcessor
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageLogisticProcessor
+import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePromoProcessor
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase.Companion.PARAM_VALUE_MARKETPLACE
 import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
@@ -78,10 +77,11 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                                                     private val logisticProcessor: OrderSummaryPageLogisticProcessor,
                                                     val getPreferenceListUseCase: GetPreferenceListUseCase,
                                                     private val updateCartOccUseCase: UpdateCartOccUseCase,
-                                                    private val ratesResponseStateConverter: RatesResponseStateConverter,
+//                                                    private val ratesResponseStateConverter: RatesResponseStateConverter,
                                                     private val editAddressUseCase: EditAddressUseCase,
                                                     private val checkoutProcessor: OrderSummaryPageCheckoutProcessor,
                                                     private val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
+                                                    private val promoProcessor: OrderSummaryPagePromoProcessor,
                                                     private val validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase,
                                                     private val userSessionInterface: UserSessionInterface,
                                                     private val orderSummaryAnalytics: OrderSummaryAnalytics) : BaseViewModel(executorDispatchers.main) {
@@ -259,12 +259,12 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             val result = logisticProcessor.getRates(orderCart, _orderPreference, _orderShipment, generateListShopShipment())
             _orderShipment = result.orderShipment
             orderShipment.value = _orderShipment
-            if (result.clearOldPromoCode != null) {
+            if (result.clearOldPromoCode.isNotEmpty()) {
                 clearOldLogisticPromo(result.clearOldPromoCode)
-                if (result.autoApplyPromo != null) {
-                    autoApplyLogisticPromo(result.autoApplyPromo, result.clearOldPromoCode, result.orderShipment)
-                    return@launch
-                }
+            }
+            if (result.autoApplyPromo != null) {
+                autoApplyLogisticPromo(result.autoApplyPromo, result.clearOldPromoCode, result.orderShipment)
+                return@launch
             }
             sendViewOspEe()
             if (result.orderShipment.serviceErrorMessage.isNullOrEmpty()) {
@@ -1090,31 +1090,31 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 //        })
     }
 
-    private fun generateShopPromos(): List<com.tokopedia.oneclickcheckout.order.data.checkout.PromoRequest> {
-        val finalPromo = validateUsePromoRevampUiModel
-        if (finalPromo != null) {
-            val list: ArrayList<com.tokopedia.oneclickcheckout.order.data.checkout.PromoRequest> = ArrayList()
-            for (voucherOrder in finalPromo.promoUiModel.voucherOrderUiModels) {
-                if (orderCart.cartString == voucherOrder?.uniqueId && voucherOrder.messageUiModel.state != "red" &&
-                        voucherOrder.code.isNotEmpty() && voucherOrder.type.isNotEmpty()) {
-                    list.add(PromoRequest(voucherOrder.type, voucherOrder.code))
-                }
-            }
-            return list
-        }
-        return emptyList()
-    }
+//    private fun generateShopPromos(): List<com.tokopedia.oneclickcheckout.order.data.checkout.PromoRequest> {
+//        val finalPromo = validateUsePromoRevampUiModel
+//        if (finalPromo != null) {
+//            val list: ArrayList<com.tokopedia.oneclickcheckout.order.data.checkout.PromoRequest> = ArrayList()
+//            for (voucherOrder in finalPromo.promoUiModel.voucherOrderUiModels) {
+//                if (orderCart.cartString == voucherOrder?.uniqueId && voucherOrder.messageUiModel.state != "red" &&
+//                        voucherOrder.code.isNotEmpty() && voucherOrder.type.isNotEmpty()) {
+//                    list.add(PromoRequest(voucherOrder.type, voucherOrder.code))
+//                }
+//            }
+//            return list
+//        }
+//        return emptyList()
+//    }
 
-    private fun generateCheckoutPromos(): List<com.tokopedia.oneclickcheckout.order.data.checkout.PromoRequest> {
-        val list = ArrayList<com.tokopedia.oneclickcheckout.order.data.checkout.PromoRequest>()
-        val finalPromo = validateUsePromoRevampUiModel
-        if (finalPromo != null && finalPromo.promoUiModel.codes.isNotEmpty() && finalPromo.promoUiModel.messageUiModel.state != "red") {
-            for (code in finalPromo.promoUiModel.codes) {
-                list.add(PromoRequest("global", code))
-            }
-        }
-        return list
-    }
+//    private fun generateCheckoutPromos(): List<com.tokopedia.oneclickcheckout.order.data.checkout.PromoRequest> {
+//        val list = ArrayList<com.tokopedia.oneclickcheckout.order.data.checkout.PromoRequest>()
+//        val finalPromo = validateUsePromoRevampUiModel
+//        if (finalPromo != null && finalPromo.promoUiModel.codes.isNotEmpty() && finalPromo.promoUiModel.messageUiModel.state != "red") {
+//            for (code in finalPromo.promoUiModel.codes) {
+//                list.add(PromoRequest("global", code))
+//            }
+//        }
+//        return list
+//    }
 
     private fun checkIneligiblePromo(): Boolean {
         var notEligiblePromoHolderdataList = ArrayList<NotEligiblePromoHolderdata>()
@@ -1341,49 +1341,103 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     fun validateUsePromo() {
-        orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
-        orderPromo.value = orderPromo.value.copy(state = OccButtonState.LOADING)
-        val validateUsePromoRequest = generateValidateUsePromoRequest()
-        val requestParams = RequestParams.create()
-        requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, validateUsePromoRequest)
-        OccIdlingResource.increment()
-        compositeSubscription.add(
-                validateUsePromoRevampUseCase.createObservable(requestParams)
-                        .subscribeOn(executorSchedulers.io)
-                        .observeOn(executorSchedulers.main)
-                        .subscribe(object : Observer<ValidateUsePromoRevampUiModel> {
-                            override fun onError(e: Throwable) {
-                                orderPromo.value = orderPromo.value.copy(state = OccButtonState.DISABLE)
-                                orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
-                                OccIdlingResource.decrement()
-                            }
-
-                            override fun onNext(result: ValidateUsePromoRevampUiModel) {
-                                var isPromoReleased = false
-                                val lastResult = validateUsePromoRevampUiModel
-                                if (!lastResult?.promoUiModel?.codes.isNullOrEmpty() && result.promoUiModel.codes.isNotEmpty() && result.promoUiModel.messageUiModel.state == "red") {
-                                    isPromoReleased = true
-                                } else {
-                                    result.promoUiModel.voucherOrderUiModels.firstOrNull { it?.messageUiModel?.state == "red" }?.let {
-                                        isPromoReleased = true
-                                    }
-                                }
-                                if (isPromoReleased) {
-                                    orderSummaryAnalytics.eventViewPromoDecreasedOrReleased(true)
-                                } else if (lastResult != null && result.promoUiModel.benefitSummaryInfoUiModel.finalBenefitAmount < lastResult.promoUiModel.benefitSummaryInfoUiModel.finalBenefitAmount) {
-                                    orderSummaryAnalytics.eventViewPromoDecreasedOrReleased(false)
-                                }
-
-                                validateUsePromoRevampUiModel = result
-                                updatePromoState(result.promoUiModel)
-                            }
-
-                            override fun onCompleted() {
-                                OccIdlingResource.decrement()
-                            }
-                        })
-        )
+        launch(executorDispatchers.main) {
+            orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
+            orderPromo.value = orderPromo.value.copy(state = OccButtonState.LOADING)
+            val resultValidateUse = promoProcessor.validateUsePromo(generateValidateUsePromoRequest(), validateUsePromoRevampUiModel)
+            if (resultValidateUse == null) {
+                orderPromo.value = orderPromo.value.copy(state = OccButtonState.DISABLE)
+                orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
+            } else {
+                validateUsePromoRevampUiModel = resultValidateUse
+                updatePromoState(resultValidateUse.promoUiModel)
+            }
+//            val requestParams = RequestParams.create()
+//            requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, validateUsePromoRequest)
+//            OccIdlingResource.increment()
+//            compositeSubscription.add(
+//                    validateUsePromoRevampUseCase.createObservable(requestParams)
+//                            .subscribeOn(executorSchedulers.io)
+//                            .observeOn(executorSchedulers.main)
+//                            .subscribe(object : Observer<ValidateUsePromoRevampUiModel> {
+//                                override fun onError(e: Throwable) {
+//                                    orderPromo.value = orderPromo.value.copy(state = OccButtonState.DISABLE)
+//                                    orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
+//                                    OccIdlingResource.decrement()
+//                                }
+//
+//                                override fun onNext(result: ValidateUsePromoRevampUiModel) {
+//                                    var isPromoReleased = false
+//                                    val lastResult = validateUsePromoRevampUiModel
+//                                    if (!lastResult?.promoUiModel?.codes.isNullOrEmpty() && result.promoUiModel.codes.isNotEmpty() && result.promoUiModel.messageUiModel.state == "red") {
+//                                        isPromoReleased = true
+//                                    } else {
+//                                        result.promoUiModel.voucherOrderUiModels.firstOrNull { it?.messageUiModel?.state == "red" }?.let {
+//                                            isPromoReleased = true
+//                                        }
+//                                    }
+//                                    if (isPromoReleased) {
+//                                        orderSummaryAnalytics.eventViewPromoDecreasedOrReleased(true)
+//                                    } else if (lastResult != null && result.promoUiModel.benefitSummaryInfoUiModel.finalBenefitAmount < lastResult.promoUiModel.benefitSummaryInfoUiModel.finalBenefitAmount) {
+//                                        orderSummaryAnalytics.eventViewPromoDecreasedOrReleased(false)
+//                                    }
+//
+//                                    validateUsePromoRevampUiModel = result
+//                                    updatePromoState(result.promoUiModel)
+//                                }
+//
+//                                override fun onCompleted() {
+//                                    OccIdlingResource.decrement()
+//                                }
+//                            })
+//            )
+        }
     }
+
+//    fun validateUsePromo() {
+//        orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
+//        orderPromo.value = orderPromo.value.copy(state = OccButtonState.LOADING)
+//        val validateUsePromoRequest = generateValidateUsePromoRequest()
+//        val requestParams = RequestParams.create()
+//        requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, validateUsePromoRequest)
+//        OccIdlingResource.increment()
+//        compositeSubscription.add(
+//                validateUsePromoRevampUseCase.createObservable(requestParams)
+//                        .subscribeOn(executorSchedulers.io)
+//                        .observeOn(executorSchedulers.main)
+//                        .subscribe(object : Observer<ValidateUsePromoRevampUiModel> {
+//                            override fun onError(e: Throwable) {
+//                                orderPromo.value = orderPromo.value.copy(state = OccButtonState.DISABLE)
+//                                orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
+//                                OccIdlingResource.decrement()
+//                            }
+//
+//                            override fun onNext(result: ValidateUsePromoRevampUiModel) {
+//                                var isPromoReleased = false
+//                                val lastResult = validateUsePromoRevampUiModel
+//                                if (!lastResult?.promoUiModel?.codes.isNullOrEmpty() && result.promoUiModel.codes.isNotEmpty() && result.promoUiModel.messageUiModel.state == "red") {
+//                                    isPromoReleased = true
+//                                } else {
+//                                    result.promoUiModel.voucherOrderUiModels.firstOrNull { it?.messageUiModel?.state == "red" }?.let {
+//                                        isPromoReleased = true
+//                                    }
+//                                }
+//                                if (isPromoReleased) {
+//                                    orderSummaryAnalytics.eventViewPromoDecreasedOrReleased(true)
+//                                } else if (lastResult != null && result.promoUiModel.benefitSummaryInfoUiModel.finalBenefitAmount < lastResult.promoUiModel.benefitSummaryInfoUiModel.finalBenefitAmount) {
+//                                    orderSummaryAnalytics.eventViewPromoDecreasedOrReleased(false)
+//                                }
+//
+//                                validateUsePromoRevampUiModel = result
+//                                updatePromoState(result.promoUiModel)
+//                            }
+//
+//                            override fun onCompleted() {
+//                                OccIdlingResource.decrement()
+//                            }
+//                        })
+//        )
+//    }
 
     private fun shouldButtonStateEnable(orderShipment: OrderShipment): Boolean {
         return (orderShipment.isValid() && orderShipment.serviceErrorMessage.isNullOrEmpty() && orderShop.errors.isEmpty() && !orderProduct.quantity.isStateError)
@@ -1660,20 +1714,20 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
     }
 
-    private fun getTransactionId(query: String): String {
-        val keyLength = TRANSACTION_ID_KEY.length
-        val keyIndex = query.indexOf(TRANSACTION_ID_KEY)
-        if (keyIndex > -1 && query[keyIndex + keyLength] == '=') {
-            val nextAmpersand = query.indexOf('&', keyIndex)
-            val end = if (nextAmpersand > -1) nextAmpersand else query.length
-            val start = keyIndex + keyLength + 1
-
-            if (end > start) {
-                return query.substring(start, end)
-            }
-        }
-        return ""
-    }
+//    private fun getTransactionId(query: String): String {
+//        val keyLength = TRANSACTION_ID_KEY.length
+//        val keyIndex = query.indexOf(TRANSACTION_ID_KEY)
+//        if (keyIndex > -1 && query[keyIndex + keyLength] == '=') {
+//            val nextAmpersand = query.indexOf('&', keyIndex)
+//            val end = if (nextAmpersand > -1) nextAmpersand else query.length
+//            val start = keyIndex + keyLength + 1
+//
+//            if (end > start) {
+//                return query.substring(start, end)
+//            }
+//        }
+//        return ""
+//    }
 
     fun consumeForceShowOnboarding() {
         val onboarding = _orderPreference.onboarding
