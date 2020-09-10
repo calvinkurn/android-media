@@ -172,6 +172,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     var buttonActionType: Int = 0
     var buttonActionText: String = ""
     var tradeinDeviceId: String = ""
+    // used only for bringing product id to edit product
+    var parentProductId: String? = null
     var shippingMinimumPrice: Int = getDynamicProductInfoP1?.basic?.getDefaultOngkirInt() ?: 30000
     var talkLastAction: DynamicProductDetailTalkLastAction? = null
     private var forceRefresh: Boolean = false
@@ -188,8 +190,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     val userId: String
         get() = userSessionInterface.userId
 
-    var deviceId: String = ""
-        get() = userSessionInterface.deviceId
+    var deviceId: String = userSessionInterface.deviceId ?: ""
 
     init {
         _productInfoP3.addSource(_p2Data) { p2Data ->
@@ -225,6 +226,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         addToCartOcsUseCase.unsubscribe()
         toggleNotifyMeUseCase.cancelJobs()
         discussionMostHelpfulUseCase.cancelJobs()
+    }
+
+    fun clearCacheP2Data() {
+        getProductInfoP2DataUseCase.clearCache()
     }
 
     fun getShopInfo(): ShopInfo {
@@ -325,19 +330,20 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    fun getProductP1(productParams: ProductParams, refreshPage: Boolean = false, isAffiliate: Boolean = false) {
+    fun getProductP1(productParams: ProductParams, refreshPage: Boolean = false, isAffiliate: Boolean = false, layoutId: String = "") {
         launchCatchError(block = {
             shopDomain = productParams.shopDomain
             forceRefresh = refreshPage
 
             getPdpLayout(productParams.productId ?: "", productParams.shopDomain
-                    ?: "", productParams.productName ?: "", productParams.warehouseId ?: "").also {
+                    ?: "", productParams.productName ?: "", productParams.warehouseId ?: "", layoutId).also {
                 addStaticComponent(it)
                 getDynamicProductInfoP1 = it.layoutData.also {
                     listOfParentMedia = it.data.media.toMutableList()
                 }
 
                 variantData = if (getDynamicProductInfoP1?.isProductVariant() == false) null else it.variantData
+                parentProductId = it.layoutData.parentProductId
 
                 //Create tradein params
                 assignTradeinParams()
@@ -688,7 +694,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     private fun assignTradeinParams() {
         getDynamicProductInfoP1?.let {
             tradeInParams.categoryId = it.basic.category.id.toIntOrZero()
-            tradeInParams.deviceId = deviceId ?: ""
+            tradeInParams.deviceId = deviceId
             tradeInParams.userId = userId.toIntOrZero()
             tradeInParams.setPrice(it.data.price.value)
             tradeInParams.productId = it.basic.getProductId()
@@ -722,7 +728,15 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     private fun getProductInfoP2DataAsync(productId: String, pdpSession: String): Deferred<ProductInfoP2UiData> {
         return async {
-            getProductInfoP2DataUseCase.executeOnBackground(GetProductInfoP2DataUseCase.createParams(productId, pdpSession), forceRefresh)
+            getProductInfoP2DataUseCase.executeOnBackground(GetProductInfoP2DataUseCase.createParams(productId, generatePdpSessionWithDeviceId(pdpSession)), forceRefresh)
+        }
+    }
+
+    private fun generatePdpSessionWithDeviceId(pdpSession: String): String {
+        return if (getDynamicProductInfoP1?.data?.isTradeIn == false) {
+            pdpSession
+        } else {
+            pdpSession + ProductDetailConstant.DELIMITER_DEVICE_ID + deviceId
         }
     }
 
@@ -733,8 +747,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 isUserSessionActive)
     }
 
-    private suspend fun getPdpLayout(productId: String, shopDomain: String, productKey: String, whId: String): ProductDetailDataModel {
-        getPdpLayoutUseCase.requestParams = GetPdpLayoutUseCase.createParams(productId, shopDomain, productKey, whId)
+    private suspend fun getPdpLayout(productId: String, shopDomain: String, productKey: String, whId: String, layoutId: String): ProductDetailDataModel {
+        getPdpLayoutUseCase.requestParams = GetPdpLayoutUseCase.createParams(productId, shopDomain, productKey, whId, layoutId)
         getPdpLayoutUseCase.forceRefresh = forceRefresh
         getPdpLayoutUseCase.enableCaching = enableCaching
         return getPdpLayoutUseCase.executeOnBackground()

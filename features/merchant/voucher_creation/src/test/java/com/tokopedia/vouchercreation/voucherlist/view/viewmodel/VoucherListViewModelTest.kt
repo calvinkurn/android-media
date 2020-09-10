@@ -60,13 +60,15 @@ class VoucherListViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    @RelaxedMockK
-    lateinit var mViewModel: VoucherListViewModel
+    private lateinit var mViewModel: VoucherListViewModel
+    private lateinit var testCoroutineDispatcher: TestCoroutineDispatcher
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        mViewModel = VoucherListViewModel(getVoucherListUseCase, getNotStartedVoucherListUseCase, cancelVoucherUseCase, shopBasicDataUseCase, voucherDetailUseCase, testDispatcher)
+        testCoroutineDispatcher = TestCoroutineDispatcher()
+
+        mViewModel = VoucherListViewModel(getVoucherListUseCase, getNotStartedVoucherListUseCase, cancelVoucherUseCase, shopBasicDataUseCase, voucherDetailUseCase, testCoroutineDispatcher)
 
         with(mViewModel) {
             successVoucherLiveData.observeForever(successVoucherObserver)
@@ -78,17 +80,13 @@ class VoucherListViewModelTest {
 
     @After
     fun cleanup() {
-        testDispatcher.cleanupTestCoroutines()
+        testCoroutineDispatcher.cleanupTestCoroutines()
         with(mViewModel) {
             successVoucherLiveData.removeObserver(successVoucherObserver)
             stopVoucherResponseLiveData.removeObserver(stopVoucherResponseObserver)
             cancelVoucherResponseLiveData.observeForever(cancelVoucherResponseObserver)
             localVoucherListLiveData.removeObserver(localVoucherListObserver)
         }
-    }
-
-    private val testDispatcher by lazy {
-        TestCoroutineDispatcher()
     }
 
     @Test
@@ -217,9 +215,11 @@ class VoucherListViewModelTest {
 
             coVerify {
                 shopBasicDataUseCase wasNot Called
-                getVoucherListUseCase.executeOnBackground()
             }
-
+            coVerify {
+                getVoucherListUseCase.executeOnBackground()
+                getNotStartedVoucherListUseCase.executeOnBackground()
+            }
             assert(voucherList.value is Fail)
         }
     }

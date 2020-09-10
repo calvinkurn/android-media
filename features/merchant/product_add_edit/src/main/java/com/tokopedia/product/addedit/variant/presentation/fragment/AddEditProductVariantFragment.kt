@@ -230,7 +230,6 @@ class AddEditProductVariantFragment :
         buttonSave.setOnClickListener {
             // perform the save button function
             val variantPhotos = variantPhotoAdapter?.getData().orEmpty()
-            val selectedVariantDetails = variantTypeAdapter?.getSelectedItems().orEmpty()
             viewModel.updateVariantInputModel(variantPhotos)
             startAddEditProductVariantDetailActivity()
         }
@@ -717,7 +716,7 @@ class AddEditProductVariantFragment :
     }
 
     private fun onSizechartClicked() {
-        if (viewModel.variantSizechart.value?.filePath.isNullOrEmpty()) {
+        if (viewModel.variantSizechart.value?.urlOriginal.isNullOrEmpty()) {
             showSizechartPicker()
         } else {
             val fm = this@AddEditProductVariantFragment.childFragmentManager
@@ -777,7 +776,7 @@ class AddEditProductVariantFragment :
 
     private fun observeSizechartUrl() {
         viewModel.variantSizechart.observe(this, Observer {
-            if (it.filePath.isEmpty()) {
+            if (it.urlOriginal.isEmpty()) {
                 ivSizechartAddSign.visible()
                 ivSizechartEditSign.gone()
                 ivSizechart.gone()
@@ -790,11 +789,7 @@ class AddEditProductVariantFragment :
             }
 
             // display sizechart image (use server image if exist)
-            if (it.urlThumbnail.isNotEmpty()) {
-                ivSizechart.setImage(it.urlThumbnail, 0F)
-            } else {
-                ivSizechart.setImage(it.filePath, 0F)
-            }
+            ivSizechart.setImage(it.urlOriginal, 0F)
         })
     }
 
@@ -838,10 +833,18 @@ class AddEditProductVariantFragment :
         variantTypeAdapter?.setMaxSelectedItems(MAX_SELECTED_VARIANT_TYPE)
         // set selected variant types
         variantTypeAdapter?.setSelectedItems(selectedVariantDetails)
+        // if editing old variant data (given data is reversed) then you should reverse
+        // selectedVariantDetails data first
+        viewModel.updateIsOldVariantData(variantTypeAdapter?.getSelectedItems().orEmpty(), selectedVariantDetails)
+        val displayedVariantDetail = if (viewModel.isOldVariantData) {
+            selectedVariantDetails.reversed()
+        } else {
+            selectedVariantDetails
+        }
         // update variant selection state
         if (selectedVariantDetails.size == 1) viewModel.isSingleVariantTypeIsSelected = true
         // set selected variant unit and values
-        selectedVariantDetails.forEachIndexed { index, variantDetail ->
+        displayedVariantDetail.forEachIndexed { index, variantDetail ->
 
             val selectedVariantUnit = variantDetail.units.firstOrNull()
                     ?: Unit()
@@ -997,7 +1000,7 @@ class AddEditProductVariantFragment :
     }
 
     private fun removeSizechart() {
-        val url = viewModel.variantSizechart.value?.filePath.orEmpty()
+        val url = viewModel.variantSizechart.value?.urlOriginal.orEmpty()
         viewModel.updateSizechart("")
         FileUtils.deleteFileInTokopediaFolder(url)
     }
@@ -1011,15 +1014,7 @@ class AddEditProductVariantFragment :
     }
 
     private fun showEditorSizechartPicker() {
-        val urlOrPath = viewModel.variantSizechart.value?.run {
-            if (urlOriginal.isNotEmpty()) {
-                // if sizechart image is from server, then use image url
-                urlOriginal
-            } else {
-                // if sizechart image is from device, then use file path
-                filePath
-            }
-        }.orEmpty()
+        val urlOrPath = viewModel.variantSizechart.value?.urlOriginal
 
         context?.apply {
             val isEditMode = viewModel.isEditMode.value ?: false

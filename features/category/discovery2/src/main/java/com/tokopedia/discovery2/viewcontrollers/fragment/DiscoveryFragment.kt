@@ -86,15 +86,13 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     private var openScreenStatus = false
     private var pinnedAlreadyScrolled = false
 
-    @JvmField
-    @Inject
     var pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface? = null
 
     @Inject
     lateinit var trackingQueue: TrackingQueue
 
     companion object {
-        fun getInstance(endPoint: String?, queryParameterMap: Map<String, String?>?): Fragment {
+        fun getInstance(endPoint: String?, queryParameterMap: Map<String, String?>?): DiscoveryFragment {
             val bundle = Bundle()
             val fragment = DiscoveryFragment()
             if (!endPoint.isNullOrEmpty()) {
@@ -135,7 +133,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     }
 
     private fun initView(view: View) {
-        mDiscoveryFab = view.findViewById(R.id.fab)
+//        mDiscoveryFab = view.findViewById(R.id.fab)
         typographyHeader = view.findViewById(R.id.typography_header)
         ivShare = view.findViewById(R.id.iv_share)
         ivSearch = view.findViewById(R.id.iv_search)

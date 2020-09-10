@@ -50,4 +50,8 @@ class FakeResponseActivity : BaseActivity() {
         }
     }
 
+    override fun finish() {
+        super.finish()
+    }
+
 }

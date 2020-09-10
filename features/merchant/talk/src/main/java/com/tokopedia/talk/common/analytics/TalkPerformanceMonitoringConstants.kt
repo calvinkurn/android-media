@@ -9,4 +9,8 @@ object TalkPerformanceMonitoringConstants {
     const val TALK_REPLY_PLT_PREPARE_METRICS = "talk_reply_plt_prepare_metrics"
     const val TALK_REPLY_PLT_NETWORK_METRICS = "talk_reply_plt_network_metrics"
     const val TALK_REPLY_PLT_RENDER_METRICS = "talk_reply_plt_render_metrics"
+    const val TALK_WRITE_TRACE = "talk_write_trace"
+    const val TALK_WRITE_PLT_PREPARE_METRICS = "talk_write_plt_prepare_metrics"
+    const val TALK_WRITE_PLT_NETWORK_METRICS = "talk_write_plt_network_metrics"
+    const val TALK_WRITE_PLT_RENDER_METRICS = "talk_write_plt_render_metrics"
 }

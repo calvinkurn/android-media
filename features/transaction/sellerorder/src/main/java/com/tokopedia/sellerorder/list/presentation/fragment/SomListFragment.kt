@@ -21,6 +21,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
@@ -58,11 +59,11 @@ import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_SET_DELIVERED
 import com.tokopedia.sellerorder.common.util.SomConsts.SORT_ASCENDING
 import com.tokopedia.sellerorder.common.util.SomConsts.SORT_DESCENDING
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ALL_ORDER
+import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_CODE_ORDER_DELIVERED
+import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_CODE_ORDER_DELIVERED_DUE_LIMIT
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_DELIVERED
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_DONE
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ORDER_CANCELLED
-import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ORDER_DELIVERED
-import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ORDER_DELIVERED_DUE_LIMIT
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_ACTIVE
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_STATUS
 import com.tokopedia.sellerorder.common.util.Utils
@@ -284,7 +285,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 override fun onLoadMore(page: Int, totalItemsCount: Int) {
                     onLoadMore = true
                     if (nextOrderId != 0) {
-                        loadOrderList(nextOrderId)
+                        loadOrderList(nextOrderId, false)
                     }
                 }
             }
@@ -410,7 +411,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         }
     }
 
-    private fun observingTicker() = somListViewModel.tickerListResult.observe(this, Observer {
+    private fun observingTicker() = somListViewModel.tickerListResult.observe(viewLifecycleOwner, Observer {
         when (it) {
             is Success -> {
                 renderInfoTicker(it.data)
@@ -423,7 +424,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     })
 
     private fun observingFilter() {
-        somListViewModel.filterListResult.observe(this, Observer {
+        somListViewModel.filterListResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     filterList = it.data
@@ -432,7 +433,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                         loadStatusOrderList()
                     } else {
                         nextOrderId = 0
-                        loadOrderList(nextOrderId)
+                        loadOrderList(nextOrderId, GlobalConfig.isSellerApp())
                     }
                 }
                 is Fail -> {
@@ -443,7 +444,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         })
     }
 
-    private fun observingStatusList() = somListViewModel.statusOrderListResult.observe(this, Observer {
+    private fun observingStatusList() = somListViewModel.statusOrderListResult.observe(viewLifecycleOwner, Observer {
         when (it) {
             is Success -> {
                 it.data.forEach { statusList ->
@@ -452,11 +453,11 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                         return@forEach
                     }
                 }
-                loadOrderList(nextOrderId)
+                loadOrderList(nextOrderId, GlobalConfig.isSellerApp())
             }
             is Fail -> {
                 SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_STATUS_LIST)
-                loadOrderList(nextOrderId)
+                loadOrderList(nextOrderId, GlobalConfig.isSellerApp())
             }
         }
     })
@@ -493,6 +494,9 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     private fun onUserAllowedToViewSOM() {
         toggleSomLayout(false)
+        if (GlobalConfig.isSellerApp() && isNewOrderChipSelected()) {
+            somListViewModel.loadTopAdsShopInfo(userSession.shopId.toIntOrZero())
+        }
         loadTicker()
         loadFilterList()
         rl_search_filter.show()
@@ -514,10 +518,10 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         }
     }
 
-    private fun loadOrderList(nextOrderId: Int) {
+    private fun loadOrderList(nextOrderId: Int, shouldWaitForTopAdsGetInfo: Boolean) {
         paramOrder.nextOrderId = nextOrderId
         activity?.resources?.let {
-            somListViewModel.loadOrderList(GraphqlHelper.loadRawString(it, R.raw.gql_som_order), paramOrder)
+            somListViewModel.loadOrderList(paramOrder, shouldWaitForTopAdsGetInfo)
         }
     }
 
@@ -610,8 +614,8 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 if (paramOrder.statusList.isEmpty()) {
                     if (tabStatus.equals(STATUS_DELIVERED, true)) {
                         val listPesananTiba = ArrayList<Int>()
-                        if (it.orderStatusIdList.contains(STATUS_ORDER_DELIVERED)) listPesananTiba.add(STATUS_ORDER_DELIVERED)
-                        if (it.orderStatusIdList.contains(STATUS_ORDER_DELIVERED_DUE_LIMIT)) listPesananTiba.add(STATUS_ORDER_DELIVERED_DUE_LIMIT)
+                        if (it.orderStatusIdList.contains(STATUS_CODE_ORDER_DELIVERED)) listPesananTiba.add(STATUS_CODE_ORDER_DELIVERED)
+                        if (it.orderStatusIdList.contains(STATUS_CODE_ORDER_DELIVERED_DUE_LIMIT)) listPesananTiba.add(STATUS_CODE_ORDER_DELIVERED_DUE_LIMIT)
                         paramOrder.statusList = listPesananTiba
                     } else {
                         paramOrder.statusList = it.orderStatusIdList
@@ -648,7 +652,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     @SuppressLint("SimpleDateFormat")
     private fun observingOrders() {
-        somListViewModel.orderListResult.observe(this, androidx.lifecycle.Observer {
+        somListViewModel.orderListResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> {
                     orderList = it.data
@@ -751,12 +755,25 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         order_list_rv?.visibility = View.GONE
         quick_filter?.visibility = View.VISIBLE
         empty_state_order_list?.visibility = View.VISIBLE
-        title_empty?.text = getString(R.string.empty_peluang_title)
 
-        // Peluang Feature has been removed, thus we set text to empty and button is gone
-        desc_empty?.text = ""
-        btn_cek_peluang?.visibility = View.GONE
-        SomAnalytics.eventViewEmptyState(tabActive)
+        title_empty?.text = getString(R.string.empty_peluang_title)
+        if (somListViewModel.isTopAdsActive()) {
+            desc_empty?.text = getString(R.string.empty_peluang_desc_non_topads_with_filter)
+            btn_cek_peluang?.gone()
+            SomAnalytics.eventViewEmptyState(tabActive)
+        } else if (GlobalConfig.isSellerApp() && !isFilterApplied && isNewOrderChipSelected()) {
+            desc_empty?.text = getString(R.string.empty_peluang_desc_non_topads_no_filter)
+            btn_cek_peluang?.apply {
+                text = getString(R.string.btn_cek_peluang_non_topads)
+                setOnClickListener {
+                    goToTopAds()
+                }
+                visible()
+            }
+        } else {
+            desc_empty?.text = getString(R.string.empty_peluang_desc_non_topads_with_filter)
+            btn_cek_peluang?.gone()
+        }
     }
 
     override fun onSearchReset() {}
@@ -782,9 +799,13 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     override fun onRefresh(view: View?) {
         addEndlessScrollListener()
+        val shouldWaitForTopAdsGetInfo = GlobalConfig.isSellerApp() && isNewOrderChipSelected()
+        if (shouldWaitForTopAdsGetInfo) {
+            somListViewModel.loadTopAdsShopInfo(userSession.shopId.toIntOrZero())
+        }
         onLoadMore = false
         nextOrderId = 0
-        loadOrderList(nextOrderId)
+        loadOrderList(nextOrderId, shouldWaitForTopAdsGetInfo)
         loadFilterList()
         if (isFilterApplied) {
             if (paramOrder.startDate.equals(defaultStartDate, true) && paramOrder.endDate.equals(defaultEndDate, true)) {
@@ -878,5 +899,15 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         var orderStatusName = tabActive
         if (orderStatusName.isEmpty()) orderStatusName = STATUS_ALL_ORDER
         SomAnalytics.eventClickChatIconOnOrderList(orderStatusName)
+    }
+
+    private fun goToTopAds() {
+        if (RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_CREATE_ADS)) {
+            SomAnalytics.eventClickStartAds(tabActive)
+        }
+    }
+
+    private fun isNewOrderChipSelected(): Boolean {
+        return tabActive == SomConsts.STATUS_NEW_ORDER
     }
 }

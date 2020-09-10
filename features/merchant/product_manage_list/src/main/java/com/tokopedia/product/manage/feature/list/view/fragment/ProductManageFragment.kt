@@ -275,6 +275,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         } else {
             R.menu.menu_product_manage_dark
         }
+        menu.clear()
         inflater.inflate(menuViewId, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
@@ -527,7 +528,9 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     private fun setupBottomSheet() {
-        productManageBottomSheet = ProductManageBottomSheet(view, this, sellerFeatureCarouselClickListener, fragmentManager)
+        productManageBottomSheet = ProductManageBottomSheet.createInstance().apply {
+            init(this@ProductManageFragment, sellerFeatureCarouselClickListener)
+        }
         multiEditBottomSheet = ProductMultiEditBottomSheet(view, this, fragmentManager)
         productManageMoreMenuBottomSheet = ProductManageMoreMenuBottomSheet(context, this, fragmentManager)
     }
@@ -1169,7 +1172,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             NetworkErrorHelper.showSnackbar(activity, errorMessage)
         } else {
             val isPowerMerchantOrOfficialStore = viewModel.isPowerMerchant() || isOfficialStore
-            productManageBottomSheet?.show(product, isPowerMerchantOrOfficialStore)
+            productManageBottomSheet?.show(childFragmentManager, product, isPowerMerchantOrOfficialStore)
         }
     }
 
