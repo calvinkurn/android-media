@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -178,7 +177,7 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
     }
 
     private fun initChatCounterObserver() {
-        chatNotifCounterViewModel.chatNotifCounter.observe(this,
+        chatNotifCounterViewModel.chatNotifCounter.observe(viewLifecycleOwner,
                 Observer { result ->
                     when (result) {
                         is Success -> {
@@ -199,7 +198,6 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
     }
 
     private fun initTabList() {
-        Log.d("TEST_LOG", userSession.hasShop().toString())
         if (userSession.hasShop()) {
             addSellerTabFragment()
         }
@@ -343,7 +341,7 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
         tabList.add(sellerTabFragment)
     }
 
-    open protected fun createSellerTabFragment(): ChatListFragment {
+    protected open fun createSellerTabFragment(): ChatListFragment {
         return ChatListFragment.createFragment(ChatListQueriesConstant.PARAM_TAB_SELLER)
     }
 
