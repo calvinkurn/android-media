@@ -2,7 +2,6 @@ package com.tokopedia.notifications.receiver
 
 import android.app.Activity
 import android.content.*
-import android.text.TextUtils
 import android.widget.Toast
 import androidx.core.app.NotificationManagerCompat
 import com.tokopedia.applink.ApplinkConst
@@ -16,6 +15,8 @@ import com.tokopedia.notifications.common.CMConstant.PayloadKeys.ADD_TO_CART
 import com.tokopedia.notifications.common.CMConstant.PreDefineActionType.ATC
 import com.tokopedia.notifications.common.CMConstant.PreDefineActionType.OCC
 import com.tokopedia.notifications.common.CMConstant.ReceiverExtraData.ACTION_BUTTON_EXTRA
+import com.tokopedia.notifications.common.IrisAnalyticsEvents.sendAmplificationPushEvent
+import com.tokopedia.notifications.common.IrisAnalyticsEvents.sendPushEvent
 import com.tokopedia.notifications.data.DataManager
 import com.tokopedia.notifications.di.DaggerCMNotificationComponent
 import com.tokopedia.notifications.di.module.NotificationModule
@@ -57,6 +58,8 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
             val notificationId = intent.getIntExtra(CMConstant.EXTRA_NOTIFICATION_ID, 0)
             val baseNotificationModel: BaseNotificationModel? = intent.getParcelableExtra(CMConstant.EXTRA_BASE_MODEL)
             if (action != null) {
+                sendAmplificationPushEvent(context, baseNotificationModel)
+
                 when (action) {
                     CMConstant.ReceiverAction.ACTION_ON_NOTIFICATION_DISMISS -> {
                         NotificationManagerCompat.from(context).cancel(notificationId)
@@ -416,15 +419,23 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
         }
     }
 
+    private fun sendAmplificationPushEvent(context: Context, baseNotificationModel: BaseNotificationModel?) {
+        baseNotificationModel?.let {
+            if (it.isAmplification == true) {
+                sendAmplificationPushEvent(context, IrisAnalyticsEvents.PUSH_RECEIVED, it)
+            }
+        }
+    }
+
     private fun sendClickPushEvent(context: Context, eventName: String, baseNotificationModel: BaseNotificationModel?, pushType: String) {
         baseNotificationModel?.let {
-            IrisAnalyticsEvents.sendPushEvent(context, eventName, baseNotificationModel)
+            sendPushEvent(context, eventName, baseNotificationModel)
         }
     }
 
     private fun sendElementClickPushEvent(context: Context, eventName: String, baseNotificationModel: BaseNotificationModel, pushType: String, elementId: String?) {
         baseNotificationModel?.let {
-            IrisAnalyticsEvents.sendPushEvent(context, eventName, baseNotificationModel,elementId)
+            sendPushEvent(context, eventName, baseNotificationModel,elementId)
         }
     }
 
