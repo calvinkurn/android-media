@@ -82,6 +82,14 @@ object IrisAnalyticsEvents {
 
     }
 
+    fun sendAmplificationPushEvent(context: Context, eventName: String, model: BaseNotificationModel) {
+        if (model.isTest) return
+        val irisAnalytics = IrisAnalytics(context)
+        trackEvent(context, irisAnalytics, addBaseValues(context, eventName, model).apply {
+            put(LABEL, AMPLIFICATION)
+        })
+    }
+
     private fun addBaseValues(context: Context, eventName: String, baseNotificationModel: BaseNotificationModel): HashMap<String, Any> {
         val values = HashMap<String, Any>()
 
