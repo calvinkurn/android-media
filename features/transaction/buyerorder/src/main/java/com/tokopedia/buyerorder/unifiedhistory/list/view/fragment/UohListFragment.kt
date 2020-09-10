@@ -232,7 +232,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     private fun setInitialValue() {
-        if (filterStatus.isEmpty()) {
+        if (filterStatus.isEmpty() || filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true)) {
             setDefaultDate()
         }
         paramUohOrder.page = 1
