@@ -103,6 +103,10 @@ open class PageLoadTimePerformanceCallback(
         }
     }
 
+    override fun invalidate() {
+        performanceMonitoring = null
+    }
+
     private fun beginSystraceSection(sectionName: String) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             Trace.beginSection(sectionName)
