@@ -53,11 +53,13 @@ class PushController(val context: Context) : CoroutineScope {
     fun handleNotificationAmplification(payloadJson: String) {
         try {
             launchCatchError(block = {
-                val toModel = Gson().fromJson(
+                val model = Gson().fromJson(
                         payloadJson,
                         BaseNotificationModel::class.java
-                )
-                if (!isOfflineNotificationActive(toModel.notificationId)) {
+                ).apply {
+                    isAmplification = true
+                }
+                if (!isOfflineNotificationActive(model.notificationId)) {
                     val bundle = jsonToBundle(payloadJson)
                     handleNotificationBundle(bundle)
                 }
