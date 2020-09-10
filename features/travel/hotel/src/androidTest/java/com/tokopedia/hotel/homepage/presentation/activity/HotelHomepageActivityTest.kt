@@ -8,6 +8,7 @@ import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.Intents.intending
+import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
@@ -40,17 +41,22 @@ class HotelHomepageActivityTest {
     private val gtmLogDBSource = GtmLogDBSource(context)
 
     @get:Rule
-    var activityRule: ActivityTestRule<HotelHomepageActivity> = object : IntentsTestRule<HotelHomepageActivity>(HotelHomepageActivity::class.java) {
+    var activityRule: IntentsTestRule<HotelHomepageActivity> = object : IntentsTestRule<HotelHomepageActivity>(HotelHomepageActivity::class.java) {
+
+        override fun beforeActivityLaunched() {
+            super.beforeActivityLaunched()
+            setupGraphqlMockResponse(HotelMockResponseConfig())
+        }
+
         override fun getActivityIntent(): Intent {
-            val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
-            return Intent(targetContext, HotelHomepageActivity::class.java)
+            return Intent(context, HotelHomepageActivity::class.java)
         }
     }
 
     @Before
     fun setUp() {
         gtmLogDBSource.deleteAll().subscribe()
-        setupGraphqlMockResponse(HotelMockResponseConfig())
+        intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
     private fun createDummyDestination(): Instrumentation.ActivityResult {
@@ -88,7 +94,7 @@ class HotelHomepageActivityTest {
     }
 
     private fun clickOnChangeDestination() {
-        Thread.sleep(2000)
+        Thread.sleep(4000)
         intending(hasComponent(HotelDestinationActivity::class.java.name)).respondWith(createDummyDestination())
         onView(withId(R.id.tv_hotel_homepage_destination)).perform(ViewActions.click())
         intended(AllOf.allOf(hasComponent(HotelDestinationActivity::class.java.name)))

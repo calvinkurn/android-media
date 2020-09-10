@@ -1,24 +1,37 @@
-{
-  "data": {
-    "travelBanner": [
-      {
-        "id": "466",
-        "attributes": {
-          "description": "COBATRAVEL",
-          "linkURL": "https://www.tokopedia.com/promo/digital-flight-9/",
-          "imageURL": "https://ecs7.tokopedia.net/img/attachment/2020/8/3/59253604/59253604_396e1465-a3d2-4cfc-ab83-aac3c19f5b1c.jpg",
-          "promoCode": "COBATRAVEL"
-        }
-      },
-      {
-        "id": "467",
-        "attributes": {
-          "description": "TOPED",
-          "linkURL": "https://www.tokopedia.com/promo/digital-cashback-5/",
-          "imageURL": "https://ecs7.tokopedia.net/img/attachment/2020/8/3/59253604/59253604_8328e27c-d46c-4aa7-81ad-9aafa2f8acf7.jpg",
-          "promoCode": "TOPED"
+[
+  {
+    "data": {
+      "travelCollectiveBanner": {
+        "banners": [
+          {
+            "id": "501",
+            "product": "SUBHOMEPAGE",
+            "attributes": {
+              "description": "DGTOPED Sep",
+              "webURL": "https://www.tokopedia.com/promo/digital-cashback-11/",
+              "appURL": "tokopedia://promo/digital-cashback-11/",
+              "imageURL": "https://ecs7.tokopedia.net/img/attachment/2020/9/7/42484317/42484317_a1c73589-e2be-444a-a55f-cbbc010efeb0.jpg",
+              "promoCode": "DGTOPED"
+            }
+          },
+          {
+            "id": "493",
+            "product": "SUBHOMEPAGE",
+            "attributes": {
+              "description": "TOPED",
+              "webURL": "https://www.tokopedia.com/promo/digital-cashback-1",
+              "appURL": "tokopedia://promo/digital-cashback-1",
+              "imageURL": "https://ecs7.tokopedia.net/img/attachment/2020/9/1/42484317/42484317_608000c2-637c-485e-9678-d8da3b4bfc5d.jpg",
+              "promoCode": "TOPED"
+            }
+          }
+        ],
+        "meta": {
+          "title": "Lihat semua",
+          "webURL": "https://www.tokopedia.com/promo/tiket/?cta_src=4",
+          "appURL": "tokopedia://promo?menuID=4"
         }
       }
-    ]
+    }
   }
-}
+]
