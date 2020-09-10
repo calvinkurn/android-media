@@ -88,7 +88,11 @@ class HomeRepositoryImpl @Inject constructor(
         val dynamicChannelResponse = homeRemoteDataSource.getDynamicChannelData(groupIds = groupId)
         val homeChannelData = HomeChannelData(dynamicChannelResponse.dynamicHomeChannel)
 
-        return homeDynamicChannelDataMapper.mapToDynamicChannelDataModel(homeChannelData, isCache = false, addLoadingMore = false)
+        return homeDynamicChannelDataMapper.mapToDynamicChannelDataModel(
+                homeChannelData,
+                isCache = false,
+                addLoadingMore = false,
+                useDefaultWhenEmpty = false)
     }
 
     private suspend fun processFullPageDynamicChannel(homeDataResponse: HomeData): HomeData {

@@ -14,12 +14,15 @@ class HomeDynamicChannelDataMapper(
         private val homeDynamicChannelVisitableFactory: HomeDynamicChannelVisitableFactory,
         private val trackingQueue: TrackingQueue
 ) {
-    fun mapToDynamicChannelDataModel(homeChannelData: HomeChannelData? = null, isCache: Boolean, addLoadingMore: Boolean): List<Visitable<*>>{
+    fun mapToDynamicChannelDataModel(homeChannelData: HomeChannelData? = null,
+                                     isCache: Boolean,
+                                     addLoadingMore: Boolean,
+                                     useDefaultWhenEmpty: Boolean = true): List<Visitable<*>>{
         BenchmarkHelper.beginSystraceSection(TRACE_MAP_TO_HOME_VIEWMODEL)
         if (homeChannelData == null) return listOf()
         val list: List<Visitable<*>> = homeDynamicChannelVisitableFactory.buildVisitableList(
                 homeChannelData, isCache, trackingQueue, context)
-                .addDynamicChannelVisitable(addLoadingMore)
+                .addDynamicChannelVisitable(addLoadingMore, useDefaultWhenEmpty)
                 .build()
         BenchmarkHelper.endSystraceSection()
         return list

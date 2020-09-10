@@ -64,11 +64,11 @@ class HomeDynamicChannelVisitableFactoryImpl(
         return this
     }
 
-    override fun addDynamicChannelVisitable(addLoadingMore: Boolean): HomeDynamicChannelVisitableFactory {
+    override fun addDynamicChannelVisitable(addLoadingMore: Boolean, useDefaultWhenEmpty: Boolean): HomeDynamicChannelVisitableFactory {
         var dynamicChannelList = mutableListOf<DynamicHomeChannel.Channels>()
-        if (homeChannelData?.dynamicHomeChannel == null
-                || homeChannelData?.dynamicHomeChannel?.channels == null
-                || homeChannelData?.dynamicHomeChannel?.channels?.isEmpty() == true) {
+        if ((homeChannelData?.dynamicHomeChannel == null
+                        || homeChannelData?.dynamicHomeChannel?.channels == null
+                        || homeChannelData?.dynamicHomeChannel?.channels?.isEmpty() == true) && useDefaultWhenEmpty) {
             homeDefaultDataSource
             dynamicChannelList = homeDefaultDataSource.createDefaultHomeDynamicChannel().channels as MutableList<DynamicHomeChannel.Channels>
         } else {
