@@ -245,7 +245,12 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                     userSession.shopName = shopName
                     userSession.shopAvatar = shopAvatar
 
-                    this.shopBasicDataModel = shopBasicData
+                    shopBasicDataModel = shopBasicData.apply {
+                        name = MethodChecker.fromHtml(name).toString()
+                        domain = MethodChecker.fromHtml(domain).toString()
+                        description = MethodChecker.fromHtml(description).toString()
+                        tagline = MethodChecker.fromHtml(tagline).toString()
+                    }
                     setUIShopBasicData(shopBasicData)
                 }
                 is Fail -> {
@@ -340,7 +345,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
 
     private fun setUIShopBasicData(shopBasicDataModel: ShopBasicDataModel) {
         shopBasicDataModel.let { shopBasicData ->
-            tvShopName.text = MethodChecker.fromHtml(shopBasicData.name)
+            tvShopName.text = shopBasicData.name
             tvShopDomain.text = shopBasicData.domain?.let {
                 if (URLUtil.isNetworkUrl(it)) {
                     it

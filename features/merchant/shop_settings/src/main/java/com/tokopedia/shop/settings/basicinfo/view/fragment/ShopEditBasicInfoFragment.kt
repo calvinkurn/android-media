@@ -553,9 +553,16 @@ class ShopEditBasicInfoFragment: Fragment() {
 
     private fun showShopInformation(shopBasicDataModel: ShopBasicDataModel?) {
         shopBasicDataModel?.let {
-            this.shopBasicDataModel = it
-            setUIShopBasicData(it)
-            setShopBasicData(it)
+            this.shopBasicDataModel = it.apply {
+                name = MethodChecker.fromHtml(name).toString()
+                domain = MethodChecker.fromHtml(domain).toString()
+                description = MethodChecker.fromHtml(description).toString()
+                tagline = MethodChecker.fromHtml(tagline).toString()
+            }
+            this.shopBasicDataModel?.let { model ->
+                setUIShopBasicData(model)
+                setShopBasicData(model)
+            }
             tvSave.visible()
         }
     }
