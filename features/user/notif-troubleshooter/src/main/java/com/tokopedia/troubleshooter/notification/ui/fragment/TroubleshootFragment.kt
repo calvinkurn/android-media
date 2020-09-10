@@ -37,6 +37,7 @@ import com.tokopedia.troubleshooter.notification.ui.viewmodel.TroubleshootViewMo
 import com.tokopedia.troubleshooter.notification.util.*
 import com.tokopedia.troubleshooter.notification.util.TroubleshooterDialog.showInformationDialog
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_notif_troubleshooter.*
@@ -159,13 +160,9 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
                 setNotificationSettingStatus(result.data)
                 TroubleshooterTimber.notificationSetting(result.data)
             }
-            is Error -> {
-                updateConfigStatus(
-                        type = Notification,
-                        status = StatusState.Error,
-                        message = getString(R.string.notif_ticker_net_error),
-                        buttonText = R.string.btn_notif_try_again
-                )
+            is Fail -> {
+                showToastError(result.throwable)
+                adapter.updateStatus(Notification, StatusState.Error)
             }
         }
     }
@@ -198,7 +195,7 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
 
     private fun deviceSetting(result: Result<DeviceSettingState>) {
         when (result) {
-            is Error -> activity?.finish()
+            is Fail -> activity?.finish()
             is Success -> {
                 if (result.data == DeviceSettingState.High) {
                     adapter.updateStatus(Device, StatusState.Success)
@@ -233,14 +230,9 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
                 val isSuccess = StatusState(result.data.isTroubleshootSuccess())
                 adapter.updateStatus(PushNotification, isSuccess)
             }
-            is Error -> {
-                showToastError(result.cause)
-                updateConfigStatus(
-                        type = PushNotification,
-                        status = StatusState.Error,
-                        message = getString(R.string.notif_ticker_net_error),
-                        buttonText = R.string.btn_notif_try_again
-                )
+            is Fail -> {
+                showToastError(result.throwable)
+                adapter.updateStatus(PushNotification, StatusState.Error)
             }
         }
     }
