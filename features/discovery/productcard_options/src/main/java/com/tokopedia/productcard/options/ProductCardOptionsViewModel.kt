@@ -39,11 +39,13 @@ internal class ProductCardOptionsViewModel(
     private val wishlistEventLiveData = MutableLiveData<Event<Boolean>>()
     private val trackingSeeSimilarProductEventLiveData = MutableLiveData<Event<Boolean>>()
     private val addToCartEventLiveData = MutableLiveData<Event<Boolean>>()
+    private val routeToShopPageEventLiveData = MutableLiveData<Event<Boolean>>()
 
     init {
         initSeeSimilarProductsOption()
         initWishlistOption()
         initAddToCartOption()
+        initVisitShopOption()
 
         postOptionListLiveData()
     }
@@ -259,12 +261,12 @@ internal class ProductCardOptionsViewModel(
 
         if (isAddToCartStatusOK(addToCartDataModel)) {
             productCardOptionsModel?.addToCartResult = ProductCardOptionsModel.AddToCartResult(
-                    isSuccess = true, cartId = addToCartDataModel?.data?.cartId ?: ""
+                    isUserLoggedIn = true, isSuccess = true, cartId = addToCartDataModel?.data?.cartId ?: ""
             )
         } else {
             val errorMessage = addToCartDataModel?.getAtcErrorMessage()
             productCardOptionsModel?.addToCartResult = ProductCardOptionsModel.AddToCartResult(
-                    isSuccess = false, errorMessage = errorMessage ?: ""
+                    isUserLoggedIn = true, isSuccess = false, errorMessage = errorMessage ?: ""
             )
         }
     }
@@ -277,8 +279,18 @@ internal class ProductCardOptionsViewModel(
     private fun processAddToCartUseCaseFailed() {
         addToCartEventLiveData.postValue(Event(true))
         productCardOptionsModel?.addToCartResult = ProductCardOptionsModel.AddToCartResult(
-                isSuccess = false, errorMessage = ATC_DEFAULT_ERROR_MESSAGE
+                isUserLoggedIn = true, isSuccess = false, errorMessage = ATC_DEFAULT_ERROR_MESSAGE
         )
+    }
+
+    private fun initVisitShopOption() {
+        if (productCardOptionsModel?.canVisitShop() == true) {
+            productCardOptionsItemList.addOption(VISIT_SHOP) {
+                routeToShopPageEventLiveData.postValue(Event(true))
+            }
+
+            productCardOptionsItemList.addDivider()
+        }
     }
 
     private fun postOptionListLiveData() {
@@ -296,4 +308,6 @@ internal class ProductCardOptionsViewModel(
     fun getTrackingSeeSimilarProductEventLiveData(): LiveData<Event<Boolean>> = trackingSeeSimilarProductEventLiveData
 
     fun getAddToCartEventLiveData(): LiveData<Event<Boolean>> = addToCartEventLiveData
+
+    fun getRouteToShopPageEventLiveData(): LiveData<Event<Boolean>> = routeToShopPageEventLiveData
 }

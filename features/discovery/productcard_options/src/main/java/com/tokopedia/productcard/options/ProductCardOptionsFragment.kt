@@ -10,11 +10,10 @@ import android.widget.LinearLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery.common.EventObserver
-import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTIONS_RESULT_CODE_ATC
-import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTIONS_RESULT_CODE_WISHLIST
-import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTION_RESULT_PRODUCT
-import com.tokopedia.discovery.common.manager.startSimilarSearch
+import com.tokopedia.discovery.common.manager.*
 import com.tokopedia.productcard.options.item.ProductCardOptionsItemModel
 import com.tokopedia.productcard.options.item.ProductCardOptionsItemView
 import com.tokopedia.productcard.options.tracking.ProductCardOptionsTracking
@@ -51,6 +50,7 @@ internal class ProductCardOptionsFragment: TkpdBaseV4Fragment() {
         observeAddWishlistEventLiveData()
         observeTrackingSeeSimilarProductsEventLiveData()
         observeAddToCartEventLiveData()
+        observeRouteToShopPageEvent()
     }
 
     private fun observeOptionListLiveData() {
@@ -128,12 +128,6 @@ internal class ProductCardOptionsFragment: TkpdBaseV4Fragment() {
         }
     }
 
-    private fun observeAddToCartEventLiveData() {
-        productCardOptionsViewModel?.getAddToCartEventLiveData()?.observe(viewLifecycleOwner, Observer {
-            sendProductCardOptionsResult(PRODUCT_CARD_OPTIONS_RESULT_CODE_ATC)
-        })
-    }
-
     private fun observeTrackingSeeSimilarProductsEventLiveData() {
         productCardOptionsViewModel?.getTrackingSeeSimilarProductEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
             ProductCardOptionsTracking.eventClickSeeSimilarProduct(
@@ -143,5 +137,27 @@ internal class ProductCardOptionsFragment: TkpdBaseV4Fragment() {
                     productCardOptionsViewModel?.productCardOptionsModel?.productId ?: ""
             )
         })
+    }
+
+    private fun observeAddToCartEventLiveData() {
+        productCardOptionsViewModel?.getAddToCartEventLiveData()?.observe(viewLifecycleOwner, Observer {
+            sendProductCardOptionsResult(PRODUCT_CARD_OPTIONS_RESULT_CODE_ATC)
+        })
+    }
+
+    private fun observeRouteToShopPageEvent() {
+        productCardOptionsViewModel?.getRouteToShopPageEventLiveData()?.observe(viewLifecycleOwner, Observer {
+            routeToShopPage()
+            sendProductCardOptionsResult(PRODUCT_CARD_OPTIONS_RESULT_CODE_VISIT_SHOP)
+        })
+    }
+
+    private fun routeToShopPage() {
+        context?.let { context ->
+            val shopId = productCardOptionsViewModel?.productCardOptionsModel?.shopId ?: ""
+
+            if (shopId.isNotEmpty())
+                RouteManager.route(context, ApplinkConst.SHOP, shopId)
+        }
     }
 }

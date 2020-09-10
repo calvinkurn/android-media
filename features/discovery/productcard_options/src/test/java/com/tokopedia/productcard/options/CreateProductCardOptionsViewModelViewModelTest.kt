@@ -109,28 +109,18 @@ internal class CreateProductCardOptionsViewModelViewModelTest: ProductCardOption
     @Test
     fun `Options has add to cart does not have ATC params`() {
         `When Create Product Card Options View Model`(ProductCardOptionsModel(
-                hasAddToCart = false
-        ))
-
-        `Then Assert product card options item model list does not contain option to Add to Cart`()
-    }
-
-    private fun `Then Assert product card options item model list does not contain option to Add to Cart`() {
-        val productCardOptionsItemModelList = productCardOptionsViewModel.getOptionsListLiveData().value
-
-        productCardOptionsItemModelList.shouldNotContain {
-            it is ProductCardOptionsItemModel
-                    && (it.title == ADD_TO_CART)
-        }
-    }
-
-    @Test
-    fun `Options has add to cart without ATC params`() {
-        `When Create Product Card Options View Model`(ProductCardOptionsModel(
                 hasAddToCart = true
         ))
 
-        `Then Assert product card options item model list does not contain option to Add to Cart`()
+        `Then assert product card options does not contain`(ADD_TO_CART)
+    }
+
+    private fun `Then assert product card options does not contain`(optionName: String) {
+        val productCardOptionsItemModelList = productCardOptionsViewModel.getOptionsListLiveData().value
+
+        productCardOptionsItemModelList.shouldNotContain {
+            it is ProductCardOptionsItemModel && (it.title == optionName)
+        }
     }
 
     @Test
@@ -145,15 +135,34 @@ internal class CreateProductCardOptionsViewModelViewModelTest: ProductCardOption
                 addToCartParams = ProductCardOptionsModel.AddToCartParams(quantity = 1)
         ))
 
-        `Then Assert product card options item model list contains option to Add to Cart`()
+        `Then assert product card options contains`(ADD_TO_CART)
     }
 
-    private fun `Then Assert product card options item model list contains option to Add to Cart`() {
+    private fun `Then assert product card options contains`(optionName: String) {
         val productCardOptionsItemModelList = productCardOptionsViewModel.getOptionsListLiveData().value
 
         productCardOptionsItemModelList.shouldContain {
-            it is ProductCardOptionsItemModel && (it.title == ADD_TO_CART)
+            it is ProductCardOptionsItemModel && (it.title == optionName)
         }
+    }
+
+    @Test
+    fun `Options has visit shop without shop id`() {
+        `When Create Product Card Options View Model`(ProductCardOptionsModel(
+                hasVisitShop = true
+        ))
+
+        `Then assert product card options does not contain`(VISIT_SHOP)
+    }
+
+    @Test
+    fun `Options has visit shop with shop id`() {
+        `When Create Product Card Options View Model`(ProductCardOptionsModel(
+                hasVisitShop = true,
+                shopId = "12345"
+        ))
+
+        `Then assert product card options contains`(VISIT_SHOP)
     }
 
     @Test

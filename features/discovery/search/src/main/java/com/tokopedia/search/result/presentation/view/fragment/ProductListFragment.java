@@ -873,6 +873,8 @@ public class ProductListFragment
         productCardOptionsModel.setFormattedPrice(item.getPrice());
         productCardOptionsModel.setShopId(item.getShopID());
 
+        productCardOptionsModel.setHasVisitShop(true);
+
         return productCardOptionsModel;
     }
 

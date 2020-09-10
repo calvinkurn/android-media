@@ -14,7 +14,7 @@ import io.mockk.verify
 import org.junit.Test
 import rx.Subscriber
 
-internal class ClickAddToCartOptionsTest: ProductCardOptionsViewModelTestFixtures() {
+internal class AddToCartTest: ProductCardOptionsViewModelTestFixtures() {
 
     private val productCardOptionsModelATC = ProductCardOptionsModel(
             hasAddToCart = true,
@@ -124,6 +124,7 @@ internal class ClickAddToCartOptionsTest: ProductCardOptionsViewModelTestFixture
     private fun `Then verify add to cart result success`() {
         val addToCartResult = productCardOptionsViewModel.productCardOptionsModel!!.addToCartResult
 
+        addToCartResult.isUserLoggedIn shouldBe true
         addToCartResult.isSuccess shouldBe true
         addToCartResult.errorMessage shouldBe ""
         addToCartResult.cartId shouldBe addToCartSuccessModel.data.cartId
@@ -151,6 +152,7 @@ internal class ClickAddToCartOptionsTest: ProductCardOptionsViewModelTestFixture
     private fun `Then verify add to cart result failed with error message`(errorMessage: String?) {
         val addToCartResult = productCardOptionsViewModel.productCardOptionsModel!!.addToCartResult
 
+        addToCartResult.isUserLoggedIn shouldBe true
         addToCartResult.isSuccess shouldBe false
         addToCartResult.errorMessage shouldBe (errorMessage ?: "")
     }

@@ -38,6 +38,11 @@ data class ProductCardOptionsModel(
                 && addToCartParams?.quantity ?: 0 > 0
     }
 
+    fun canVisitShop(): Boolean {
+        return hasVisitShop
+                && shopId.isNotEmpty()
+    }
+
     constructor(parcel: Parcel) : this(
             parcel.readByte() != 0.toByte(),
             parcel.readByte() != 0.toByte(),

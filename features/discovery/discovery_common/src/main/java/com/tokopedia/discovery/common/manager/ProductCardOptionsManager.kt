@@ -18,6 +18,7 @@ const val PRODUCT_CARD_OPTION_RESULT_PRODUCT = "product_card_option_result_produ
 
 const val PRODUCT_CARD_OPTIONS_RESULT_CODE_WISHLIST = 12855
 const val PRODUCT_CARD_OPTIONS_RESULT_CODE_ATC = 12856
+const val PRODUCT_CARD_OPTIONS_RESULT_CODE_VISIT_SHOP = 123857
 
 fun showProductCardOptions(activity: Activity, productCardOptionsModel: ProductCardOptionsModel) {
     val intent = getProductCardOptionsIntent(activity, productCardOptionsModel)
@@ -47,10 +48,11 @@ fun handleProductCardOptionsActivityResult(
         resultCode: Int,
         data: Intent?,
         wishlistCallback: ProductCardOptionsWishlistCallback? = null,
-        addToCartCallback: ProductCardOptionsAddToCartCallback? = null
+        addToCartCallback: ProductCardOptionsAddToCartCallback? = null,
+        visitShopCallback: ProductCardOptionsVisitShopCallback? = null
 ) {
     if (requestCode == PRODUCT_CARD_OPTIONS_REQUEST_CODE) {
-        handleRequestFromProductCardOptions(resultCode, data, wishlistCallback, addToCartCallback)
+        handleRequestFromProductCardOptions(resultCode, data, wishlistCallback, addToCartCallback, visitShopCallback)
     }
 }
 
@@ -58,7 +60,8 @@ private fun handleRequestFromProductCardOptions(
         resultCode: Int,
         data: Intent?,
         wishlistCallback: ProductCardOptionsWishlistCallback?,
-        addToCartCallback: ProductCardOptionsAddToCartCallback?
+        addToCartCallback: ProductCardOptionsAddToCartCallback?,
+        visitShopCallback: ProductCardOptionsVisitShopCallback?
 ) {
     if (data == null) return
 
@@ -67,6 +70,7 @@ private fun handleRequestFromProductCardOptions(
     when (resultCode) {
         PRODUCT_CARD_OPTIONS_RESULT_CODE_WISHLIST -> wishlistCallback?.onReceiveWishlistResult(productCardOptionsModel)
         PRODUCT_CARD_OPTIONS_RESULT_CODE_ATC -> addToCartCallback?.onReceiveAddToCartResult(productCardOptionsModel)
+        PRODUCT_CARD_OPTIONS_RESULT_CODE_VISIT_SHOP -> visitShopCallback?.onReceiveVisitShopResult(productCardOptionsModel)
     }
 }
 
@@ -78,4 +82,9 @@ interface ProductCardOptionsWishlistCallback {
 interface ProductCardOptionsAddToCartCallback {
 
     fun onReceiveAddToCartResult(productCardOptionsModel: ProductCardOptionsModel)
+}
+
+interface ProductCardOptionsVisitShopCallback {
+
+    fun onReceiveVisitShopResult(productCardOptionsModel: ProductCardOptionsModel)
 }
