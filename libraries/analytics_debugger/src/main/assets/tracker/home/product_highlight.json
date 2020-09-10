@@ -30,7 +30,7 @@
       "item_list": "{{.*}}",
       "event": "view_item_list",
       "userId" : "{{.*}}",
-      "eventAction": "impression on product dynamic channel left hero",
+      "eventAction": "impression on product dynamic channel hero",
       "sessionIris": "{{.*}}",
       "items": [{
         "dimension83": "{{bebas ongkir|none / other}}",
