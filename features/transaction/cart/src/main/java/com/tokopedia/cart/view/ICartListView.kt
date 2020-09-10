@@ -74,7 +74,7 @@ interface ICartListView : CustomerView {
 
     fun renderLoadGetCartDataFinish()
 
-    fun onDeleteCartDataSuccess(deletedCartIds: List<String>, removeAllItems: Boolean)
+    fun onDeleteCartDataSuccess(deletedCartIds: List<String>, removeAllItems: Boolean, forceExpandCollapsedUnavailableItems: Boolean)
 
     fun onUndoDeleteCartDataSuccess(undoDeleteCartData: UndoDeleteCartData)
 
@@ -139,4 +139,6 @@ interface ICartListView : CustomerView {
     fun resetRecentViewList()
 
     fun sendATCTrackingURL(recommendationItem: RecommendationItem)
+
+    fun reCollapseExpandedDeletedUnavailableItems()
 }

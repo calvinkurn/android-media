@@ -238,7 +238,8 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
     override fun processDeleteCartItem(allCartItemData: List<CartItemData>,
                                        removedCartItems: List<CartItemData>,
                                        addWishList: Boolean,
-                                       removeInsurance: Boolean) {
+                                       removeInsurance: Boolean,
+                                       forceExpandCollapsedUnavailableItems: Boolean) {
         view?.let {
             it.showProgressLoading()
 
@@ -258,7 +259,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
             compositeSubscription.add(deleteCartUseCase?.createObservable(requestParams)
                     ?.subscribe(DeleteCartItemSubscriber(view, this, toBeDeletedCartIds,
-                            removeAllItem, removeInsurance)))
+                            removeAllItem, removeInsurance, forceExpandCollapsedUnavailableItems)))
         }
     }
 

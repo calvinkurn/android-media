@@ -13,13 +13,17 @@ class DeleteCartItemSubscriber(private val view: ICartListView?,
                                private val presenter: ICartListPresenter,
                                private val toBeDeletedCartIds: List<String>,
                                private val removeAllItems: Boolean,
-                               private val removeInsurance: Boolean) : Subscriber<DeleteCartData>() {
+                               private val removeInsurance: Boolean,
+                               private val forceExpandCollapsedUnavailableItems: Boolean) : Subscriber<DeleteCartData>() {
     override fun onCompleted() {
 
     }
 
     override fun onError(e: Throwable) {
         view?.let {
+            if (forceExpandCollapsedUnavailableItems) {
+                it.reCollapseExpandedDeletedUnavailableItems()
+            }
             it.hideProgressLoading()
             e.printStackTrace()
             it.showToastMessageRed(e)
@@ -28,7 +32,6 @@ class DeleteCartItemSubscriber(private val view: ICartListView?,
 
     override fun onNext(deleteCartData: DeleteCartData) {
         view?.let { view ->
-            view.hideProgressLoading()
             view.renderLoadGetCartDataFinish()
 
             if (deleteCartData.isSuccess) {
@@ -38,7 +41,7 @@ class DeleteCartItemSubscriber(private val view: ICartListView?,
                     }
                 }
 
-                view.onDeleteCartDataSuccess(toBeDeletedCartIds, removeAllItems)
+                view.onDeleteCartDataSuccess(toBeDeletedCartIds, removeAllItems, forceExpandCollapsedUnavailableItems)
 
                 val params = view.generateGeneralParamValidateUse()
                 if ((view.checkHitValidateUseIsNeeded(params))) {
@@ -47,6 +50,7 @@ class DeleteCartItemSubscriber(private val view: ICartListView?,
                 }
                 view.updateCartCounter(deleteCartData.cartCounter)
             } else {
+                view.hideProgressLoading()
                 view.showToastMessageRed(deleteCartData.message ?: "")
             }
         }

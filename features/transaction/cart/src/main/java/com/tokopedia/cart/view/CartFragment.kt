@@ -2503,20 +2503,31 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         showMainContainer()
     }
 
-    override fun onDeleteCartDataSuccess(deletedCartIds: List<String>, removeAllItems: Boolean) {
+    override fun onDeleteCartDataSuccess(deletedCartIds: List<String>, removeAllItems: Boolean, forceExpandCollapsedUnavailableItems: Boolean) {
         if (deletedCartIds.size > 1) {
             showToastMessageGreen("${deletedCartIds.size} barang telah dihapus")
         } else {
             showToastMessageGreen("${deletedCartIds.size} barang telah dihapus", "Batalkan", View.OnClickListener { onUndoDeleteClicked(deletedCartIds) })
         }
+
         if (removeAllItems) {
+            hideProgressLoading()
             resetRecentViewList()
             dPresenter.processInitialGetCartData(getCartId(), false, false)
         } else {
             cartAdapter.removeCartItemById(deletedCartIds, context)
+
+            if (forceExpandCollapsedUnavailableItems && cartAdapter.allDisabledCartItemData.size > 1) {
+                collapseOrExpandDisabledItem()
+            } else {
+                cartAdapter.removeAccordionDisabledItem()
+            }
+
             dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList, cartAdapter.insuranceCartShops)
             setToolbarShadowVisibility(cartAdapter.allAvailableCartItemData.isEmpty())
             notifyBottomCartParent()
+
+            hideProgressLoading()
         }
     }
 
@@ -3068,10 +3079,18 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             val cartItemDatas = listOf(it)
             val allCartItemDataList = cartAdapter.allCartItemData
 
-            dPresenter.processDeleteCartItem(allCartItemDataList, cartItemDatas, false, false)
+            // If unavailable item > 1 and state is collapsed, then expand first
+            var forceExpand = false
+            if (cartAdapter.allDisabledCartItemData.size > 1 && accordionCollapseState) {
+                collapseOrExpandDisabledItem()
+                forceExpand = true
+            }
+
+            dPresenter.processDeleteCartItem(allCartItemDataList, cartItemDatas, false, false, forceExpand)
             sendAnalyticsOnClickConfirmationRemoveCartSelectedNoAddToWishList(
                     dPresenter.generateDeleteCartDataAnalytics(cartItemDatas)
             )
+
         }
     }
 
@@ -3211,6 +3230,14 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         collapseOrExpandDisabledItem(data)
     }
 
+    private fun collapseOrExpandDisabledItem() {
+        cartAdapter.getDisabledAccordionHolderData()?.let {
+            it.isCollapsed = !it.isCollapsed
+            accordionCollapseState = it.isCollapsed
+            collapseOrExpandDisabledItem(it)
+        }
+    }
+
     private fun collapseOrExpandDisabledItem(data: DisabledAccordionHolderData) {
         cartAdapter.collapseOrExpandDisabledItemAccordion(data)
         if (data.isCollapsed) {
@@ -3238,5 +3265,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onCartItemShowInformationLabel(productId: String, informationLabel: String) {
         cartPageAnalytics.eventViewInformationLabelInProductCard(userSession.userId, productId, informationLabel)
+    }
+
+    override fun reCollapseExpandedDeletedUnavailableItems() {
+        collapseOrExpandDisabledItem()
     }
 }

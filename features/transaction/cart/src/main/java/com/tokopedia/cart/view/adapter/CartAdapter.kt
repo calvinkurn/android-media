@@ -1047,6 +1047,19 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         }
     }
 
+    fun removeAccordionDisabledItem() {
+        var item: DisabledAccordionHolderData? = null
+        cartDataList.forEach {
+            if (it is DisabledAccordionHolderData) {
+                item = it
+            }
+        }
+
+        item?.let {
+            cartDataList.remove(it)
+        }
+    }
+
     fun removeCartItemById(cartIds: List<String>, context: Context?) {
         // Store item first before remove item to prevent ConcurrentModificationException
         val toBeRemovedData = ArrayList<Any>()
@@ -1286,4 +1299,13 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         }
     }
 
+    fun getDisabledAccordionHolderData(): DisabledAccordionHolderData? {
+        cartDataList.forEach {
+            if (it is DisabledAccordionHolderData) {
+                return it
+            }
+        }
+
+        return null
+    }
 }
