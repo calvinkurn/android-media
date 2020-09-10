@@ -49,4 +49,5 @@
         <item name="android:padding">@dimen/dp_4</item>
     </style>
 
+    <style name="WaitingPaymentOrderTheme" parent="@style/Theme.White" />
 </resources>
