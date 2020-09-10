@@ -15,7 +15,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.brandlist.R
 import com.tokopedia.unifyprinciples.Typography
 
-class BrandlistCategoryTabLayout(context: Context, attrs: AttributeSet?) : TabLayout(context, attrs) {
+class BrandlistCategoryTabLayout(context: Context?, attrs: AttributeSet?) : TabLayout(context, attrs) {
 
     private var tabMaxHeight: Int = 0
     private var tabMinHeight: Int = 0

@@ -66,7 +66,8 @@ class ShopPageProductListViewModel @Inject constructor(
     val shopProductFeaturedData = MutableLiveData<Result<ShopProductFeaturedViewModel>>()
     val shopProductEtalaseHighlightData = MutableLiveData<Result<ShopProductEtalaseHighlightViewModel>>()
     val shopProductEtalaseTitleData = MutableLiveData<Result<ShopProductEtalaseTitleViewModel>>()
-    val productListData = MutableLiveData<Result<Pair<Boolean, List<ShopProductViewModel>>>>()
+    val shopProductChangeProductGridSectionData = MutableLiveData<Result<Int>>()
+    val productListData = MutableLiveData<Result<GetShopProductUiModel>>()
     val claimMembershipResp = MutableLiveData<Result<MembershipClaimBenefitResponse>>()
     val isLogin: Boolean
         get() = userSession.isLoggedIn
@@ -78,8 +79,9 @@ class ShopPageProductListViewModel @Inject constructor(
             shopId: String,
             etalaseList: List<ShopEtalaseItemDataModel>,
             shopEtalaseItemDataModel: ShopEtalaseItemDataModel,
+            sortId: String,
             isShowNewShopHomeTab: Boolean,
-            isInitialProductListEmpty: Boolean
+            initialProductListData: GetShopProductUiModel?
     ) {
         launchCatchError(coroutineContext, {
             coroutineScope {
@@ -102,6 +104,21 @@ class ShopPageProductListViewModel @Inject constructor(
                     if (isShowNewShopHomeTab) null
                     else getShopProductEtalaseHighlightData(shopId, etalaseList)
                 }
+                val productListDataAsync = async(Dispatchers.IO) {
+                    if (initialProductListData  == null) {
+                        getProductList(
+                                getShopProductUseCase,
+                                shopId,
+                                START_PAGE,
+                                ShopPageConstant.DEFAULT_PER_PAGE,
+                                shopEtalaseItemDataModel.etalaseId,
+                                "",
+                                sortId.toIntOrZero()
+                        )
+                    }else{
+                        null
+                    }
+                }
                 membershipStampProgressDataAsync.await()?.let {
                     membershipData.postValue(Success(it))
                 }
@@ -114,11 +131,24 @@ class ShopPageProductListViewModel @Inject constructor(
                 shopProductEtalaseHighlightDataAsync.await()?.let {
                     shopProductEtalaseHighlightData.postValue(Success(it))
                 }
-                if (!isInitialProductListEmpty) {
+                var totalProductData = 0
+                val isProductListNotEmpty = if (null != initialProductListData) {
+                    totalProductData = initialProductListData.totalProductData
+                    initialProductListData.listShopProductUiModel.isNotEmpty()
+                } else {
+                    val productListDataModel = productListDataAsync.await()
+                    productListDataModel?.let {
+                        productListData.postValue(Success(productListDataModel))
+                        totalProductData = productListDataModel.totalProductData
+                        productListDataModel.listShopProductUiModel.isNotEmpty()
+                    } ?: false
+                }
+                if (isProductListNotEmpty) {
                     shopProductEtalaseTitleData.postValue(Success(ShopProductEtalaseTitleViewModel(
                             shopEtalaseItemDataModel.etalaseName,
                             shopEtalaseItemDataModel.etalaseBadge
                     )))
+                    shopProductChangeProductGridSectionData.postValue(Success(totalProductData))
                 }
             }
         },
@@ -146,7 +176,7 @@ class ShopPageProductListViewModel @Inject constructor(
                             it.etalaseId,
                             "",
                             getSort(it.etalaseId)
-                    ).second
+                    ).listShopProductUiModel
                 }
             }.awaitAll()
             val listEtalaseHighlightCarouselViewModel = mutableListOf<EtalaseHighlightCarouselViewModel>()
@@ -227,15 +257,17 @@ class ShopPageProductListViewModel @Inject constructor(
             etalaseId: String,
             keyword: String,
             sortId: Int
-    ): Pair<Boolean, List<ShopProductViewModel>> {
+    ): GetShopProductUiModel {
         useCase.params = GqlGetShopProductUseCase.createParams(shopId, ShopProductFilterInput(
                 page,perPage,keyword,etalaseId,sortId
         ))
         val productListResponse = useCase.executeOnBackground()
         val isHasNextPage = isHasNextPage(page, ShopPageConstant.DEFAULT_PER_PAGE, productListResponse.totalData)
-        return Pair(
+        val totalProductData = productListResponse.totalData
+        return GetShopProductUiModel(
                 isHasNextPage,
-                productListResponse.data.map { ShopPageProductListMapper.mapShopProductToProductViewModel(it, isMyShop(shopId), etalaseId) }
+                productListResponse.data.map { ShopPageProductListMapper.mapShopProductToProductViewModel(it, isMyShop(shopId), etalaseId) },
+                totalProductData
         )
     }
 
@@ -356,7 +388,7 @@ class ShopPageProductListViewModel @Inject constructor(
         getShopProductUseCase.clearCache()
     }
 
-    fun setInitialProductList(qwe: Pair<Boolean, List<ShopProductViewModel>>) {
-        productListData.postValue(Success(qwe))
+    fun setInitialProductList(initialProductListData: GetShopProductUiModel) {
+        productListData.postValue(Success(initialProductListData))
     }
 }

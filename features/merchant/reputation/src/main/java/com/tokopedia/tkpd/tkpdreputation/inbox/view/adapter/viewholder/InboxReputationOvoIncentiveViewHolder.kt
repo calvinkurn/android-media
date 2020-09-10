@@ -15,20 +15,22 @@ class InboxReputationOvoIncentiveViewHolder(view: View, private val viewListener
 
     override fun bind(element: InboxReputationOvoIncentiveViewModel) {
         with(element.productRevIncentiveOvoDomain) {
-            val title = productrevIncentiveOvo.ticker.title
-            itemView.ovoPointsTicker.apply {
-                tickerTitle = title
-                setHtmlDescription(productrevIncentiveOvo.ticker.subtitle)
-                setDescriptionClickEvent(object : TickerCallback {
-                    override fun onDescriptionViewClick(charSequence: CharSequence) {
-                        viewListener.onClickOvoIncentiveTickerDescription(this@with)
-                    }
+            productrevIncentiveOvo?.let {
+                val title = it.ticker.title
+                itemView.ovoPointsTicker.apply {
+                    tickerTitle = title
+                    setHtmlDescription(it.ticker.subtitle)
+                    setDescriptionClickEvent(object : TickerCallback {
+                        override fun onDescriptionViewClick(charSequence: CharSequence) {
+                            viewListener.onClickOvoIncentiveTickerDescription(this@with)
+                        }
 
-                    override fun onDismiss() {
-                        viewListener.onDismissOvoIncentiveTicker(title)
-                    }
-                })
-                show()
+                        override fun onDismiss() {
+                            viewListener.onDismissOvoIncentiveTicker(title)
+                        }
+                    })
+                    show()
+                }
             }
         }
     }

@@ -76,14 +76,14 @@ object TalkReadingTracking {
         }
     }
 
-    fun eventWithoutLabel(userId: String, productId: String, action: String) {
+    fun eventClickWrite(userId: String, productId: String, action: String, isVariantSelected: Boolean, availableVariants: String) {
         with(TalkTrackingConstants) {
             TrackApp.getInstance().gtm.sendGeneralEvent(
                     mapOf(
                             TRACKING_EVENT to EVENT_TALK,
                             TRACKING_EVENT_CATEGORY to EVENT_CATEGORY_TALK,
                             TRACKING_EVENT_ACTION to action,
-                            TRACKING_EVENT_LABEL to "",
+                            TRACKING_EVENT_LABEL to String.format(TalkReadingTrackingConstants.EVENT_LABEL_VARIANT_SELECTED, isVariantSelected.toString(), availableVariants),
                             TRACKING_SCREEN_NAME to SCREEN_NAME_TALK,
                             TRACKING_CURRENT_SITE to CURRENT_SITE_TALK,
                             TRACKING_USER_ID to userId,

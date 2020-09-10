@@ -686,9 +686,9 @@ class ShopPageHomeTracking(
             isOwner: Boolean
     ) {
         val trackerBannerType = getCampaignNplTrackerBannerType(statusCampaign)
-        val eventLabel = joinDash(trackerBannerType, shopId, position.toString())
+        var eventLabel = joinDash(trackerBannerType, shopId, position.toString())
         isSeeCampaign?.let{
-            if(it){
+            eventLabel = if(it){
                 joinDash(eventLabel, VALUE_SEE_CAMPAIGN)
             }else{
                 joinDash(eventLabel, VALUE_NO_SEE_CAMPAIGN)
@@ -902,7 +902,7 @@ class ShopPageHomeTracking(
         val loginNonLoginEventValue = if (isLogin) LOGIN else NON_LOGIN
         val bannerTypeEventValue = getCampaignNplTrackerBannerType(statusCampaign)
         return joinDash(
-                joinSpace(SHOPPAGE, VALUE_HOME, verticalPosition.toString()),
+                joinSpace(SHOPPAGE, VALUE_HOME, String.format(VERTICAL_POSITION, verticalPosition)),
                 bannerTypeEventValue,
                 shopId,
                 loginNonLoginEventValue
@@ -973,5 +973,19 @@ class ShopPageHomeTracking(
                 )
         )
         sendDataLayerEvent(eventMap)
+    }
+
+    fun clickProductListToggle(
+            productListName: String,
+            isMyShop: Boolean,
+            customDimensionShopPage: CustomDimensionShopPage
+    ) {
+        sendGeneralEvent(
+                CLICK_SHOP_PAGE,
+                getShopPageCategory(isMyShop),
+                CLICK_PRODUCT_LIST_TOGGLE,
+                productListName,
+                customDimensionShopPage
+        )
     }
 }

@@ -47,15 +47,19 @@ data class SettingTypeDataView(
         }
 
         fun createPushNotificationType(isSeller: Boolean = false): SettingTypeDataView {
-            return SettingTypeDataView(
-                    icon = R.drawable.ic_notifsetting_notification,
-                    name = R.string.settingnotif_dialog_info_title,
-                    fragment = if (isSeller) {
-                        SellerFieldFragment::class.java
-                    } else {
-                        PushNotifFieldFragment::class.java
-                    }
-            )
+            return if (isSeller) {
+                SettingTypeDataView(
+                        icon = R.drawable.ic_notifsetting_notification,
+                        name = R.string.settingnotif_seller,
+                        fragment = SellerFieldFragment::class.java
+                )
+            } else {
+                SettingTypeDataView(
+                        icon = R.drawable.ic_notifsetting_notification,
+                        name = R.string.settingnotif_dialog_info_title,
+                        fragment = PushNotifFieldFragment::class.java
+                )
+            }
         }
     }
 }

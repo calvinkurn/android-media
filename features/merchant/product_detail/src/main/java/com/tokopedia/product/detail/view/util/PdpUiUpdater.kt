@@ -213,8 +213,8 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
 
     fun updateDataTradein(context: Context?, tradeinResponse: ValidateTradeIn) {
         productTradeinMap?.run {
-            basicContentMap?.shouldShowTradein = true
-            snapShotMap?.shouldShowTradein = true
+            basicContentMap?.shouldShowTradein = tradeinResponse.isEligible
+            snapShotMap?.shouldShowTradein = tradeinResponse.isEligible
 
             data.first().subtitle = if (tradeinResponse.usedPrice.toIntOrZero() > 0) {
                 context?.getString(R.string.text_price_holder, CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeinResponse.usedPrice.toIntOrZero(), true))
@@ -246,11 +246,6 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
     fun updateWishlistData(isWishlisted: Boolean) {
         basicContentMap?.isWishlisted = isWishlisted
         snapShotMap?.isWishlisted = isWishlisted
-    }
-
-    fun updateBasicContentCodData(isCod: Boolean) {
-        snapShotMap?.shouldShowCod = isCod
-        basicContentMap?.shouldShowCod = isCod
     }
 
     fun updateFulfillmentData(context: Context?, isFullfillment: Boolean) {

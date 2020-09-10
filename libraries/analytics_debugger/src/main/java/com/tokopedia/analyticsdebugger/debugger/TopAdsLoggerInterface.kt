@@ -9,7 +9,9 @@ interface TopAdsLoggerInterface {
              sourceName: String,
              productId: String,
              productName: String,
-             imageUrl: String)
+             imageUrl: String,
+             componentName: String
+    )
 
     fun openActivity()
 

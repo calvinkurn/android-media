@@ -184,4 +184,5 @@ yang ditemukan</string>
     <string name="title_success_delete_chat">Chat berhasil dihapus</string>
     <string name="title_topchat_chat_banned_seller">Kamu diblokir dari Chat Tokopedia</string>
     <string name="desc_topchat_chat_banned_seller"><![CDATA[Menurut laporan pengguna, kamu mengirimkan chat ofensif ke penjual. Mohon baca kembali <a href="https://www.tokopedia.com/help/article/toko-saya-dimoderasi">Ketentuan Pengguna Tokopedia.</a>]]></string>
+    <string name="title_buy_occ">Beli Langsung</string>
 </resources>

@@ -3,9 +3,7 @@ package com.tokopedia.product.detail.view.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.kotlin.extensions.view.setMargin
-import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductCustomInfoDataModel
@@ -27,7 +25,7 @@ class ProductCustomInfoViewHolder(val view: View, private val listener: DynamicP
         if (element.title.isEmpty() && element.icon.isEmpty()) {
             view.custom_desc.setMargin(0, 0, 8.toPx(), 0)
         } else {
-            view.custom_desc.setMargin(0, 8.toPx(), 8.toPx(), 0)
+            view.custom_desc.setMargin(0, 4.toPx(), 8.toPx(), 0)
         }
 
         renderSeparator(element.separator)
@@ -42,10 +40,14 @@ class ProductCustomInfoViewHolder(val view: View, private val listener: DynamicP
     }
 
     private fun setupApplink(applink: String, title: String, componentTrackData: ComponentTrackDataModel) = with(view) {
-        custom_arrow.shouldShowWithAction(applink.isNotEmpty()) {
+        if (applink.isNotEmpty()) {
+            custom_arrow?.show()
             this.setOnClickListener {
                 listener.onBbiInfoClick(applink, title, componentTrackData)
             }
+        } else {
+            custom_arrow?.hide()
+            this.setOnClickListener {}
         }
     }
 

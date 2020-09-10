@@ -12,7 +12,5 @@ class BidInfoEmptyViewHolder(view: View):BidInfoViewHolder<BidInfoEmptyViewModel
         var LAYOUT = R.layout.topads_create_layout_no_keyword_selected_bid
     }
 
-    override fun bind(item: BidInfoEmptyViewModel) {
-    }
 
 }

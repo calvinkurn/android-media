@@ -92,7 +92,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
     }
 
     override fun populateView() {
-        if(activity is StepperActivity)
+        if (activity is StepperActivity)
             (activity as StepperActivity).updateToolbarTitle(getString(R.string.summary_page_step))
     }
 
@@ -148,30 +148,16 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         btn_submit.setOnClickListener {
             val map = convertToParam(view)
             viewModel.topAdsCreated(map, this::onSuccessActivation, this::onErrorActivation)
-
-            adsItemsList.forEachIndexed { index, adsItem ->
-                selectedProductIds.add(adsItemsList[index].productID)
-            }
-
-            keywordsList.forEachIndexed { index, keywordsItem ->
-                selectedkeywordIds.add(keywordsList[index].keywordTypeID)
-            }
-
-            keywordsList.forEachIndexed { index, keywordsItem ->
-                selectedkeywordTags.add(keywordsList[index].keywordTag)
-            }
-
-            var eventLabel = PRODUCT_INFO.format(selectedProductIds.joinToString(","), selectedkeywordTags.joinToString("::"), selectedkeywordIds.joinToString(","))
-            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_IKLANKAN_BUTTON, eventLabel)
+            sendAnalyticEvent()
         }
-        suggestion = (stepperModel?.finalBidPerClick!!) * MULTIPLIER
+        suggestion = (stepperModel?.finalBidPerClick ?: 0) * MULTIPLIER
         stepperModel?.dailyBudget = suggestion
-        dailyBudget = stepperModel?.finalBidPerClick!! * 40
+        dailyBudget = (stepperModel?.finalBidPerClick ?: 0) * 40
         daily_budget.textFieldInput.setText(dailyBudget.toString())
         toggle.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 daily_budget.visibility = View.VISIBLE
-                daily_budget_butt.text = getString(R.string.anggaran_dibatasi)
+                dailyBudgetType.text = getString(R.string.anggaran_dibatasi)
                 var budget = 0
                 try {
                     budget = Integer.parseInt(daily_budget.textFieldInput.text.toString().replace(",", ""))
@@ -185,7 +171,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
 
                 }
             } else {
-                daily_budget_butt.text = getString(R.string.tidak_dibatasi)
+                dailyBudgetType.text = getString(R.string.tidak_dibatasi)
                 daily_budget.visibility = View.GONE
                 daily_budget.setError(false)
                 daily_budget.setMessage("")
@@ -193,6 +179,35 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
             }
         }
         daily_budget.textFieldInput.addTextChangedListener(watcher())
+        setLink()
+    }
+
+    private fun sendAnalyticEvent() {
+
+        adsItemsList.forEachIndexed { index, adsItem ->
+            selectedProductIds.add(adsItemsList[index].productID)
+        }
+
+        keywordsList.forEachIndexed { index, keywordsItem ->
+            selectedkeywordIds.add(keywordsList[index].keywordTypeID)
+        }
+
+        keywordsList.forEachIndexed { index, keywordsItem ->
+            selectedkeywordTags.add(keywordsList[index].keywordTag)
+        }
+
+        val eventLabel = PRODUCT_INFO.format(selectedProductIds.joinToString(","), selectedkeywordTags.joinToString("::"), selectedkeywordIds.joinToString(","))
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_IKLANKAN_BUTTON, eventLabel)
+    }
+
+    private fun setCardData() {
+        bid_range?.text = String.format(resources.getString(R.string.bid_range), String.format("%,d", stepperModel?.minBid), String.format("%,d", stepperModel?.maxBid))
+        product_count?.text = stepperModel?.selectedProductIds?.count().toString()
+        keyword_count?.text = stepperModel?.selectedKeywords?.count().toString()
+        group_name?.text = stepperModel?.groupName
+    }
+
+    private fun setLink() {
         val spannableText = SpannableString(MORE_INFO)
         val startIndex = 0
         val endIndex = spannableText.length
@@ -200,21 +215,19 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         val clickableSpan = object : ClickableSpan() {
             override fun onClick(view: View) {
                 RouteManager.route(context, getString(R.string.more_info))
-
             }
         }
         spannableText.setSpan(clickableSpan, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        info_text.movementMethod = LinkMovementMethod.getInstance()
-        info_text.append(spannableText)
-        bid_range.text = String.format(resources.getString(R.string.bid_range), String.format("%,d", stepperModel?.minBid), String.format("%,d", stepperModel?.maxBid))
+        info_text?.movementMethod = LinkMovementMethod.getInstance()
+        info_text?.append(spannableText)
     }
 
     private fun watcher(): NumberTextWatcher? {
         return object : NumberTextWatcher(daily_budget.textFieldInput, "0") {
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
-                var input = number.toInt()
-                if (input < stepperModel?.finalBidPerClick!! * MULTIPLIER
+                val input = number.toInt()
+                if (input < stepperModel?.finalBidPerClick ?: 0 * MULTIPLIER
                         && daily_budget.isVisible) {
                     daily_budget.setError(true)
                     daily_budget.setMessage(String.format(getString(R.string.daily_budget_error), suggestion))
@@ -252,31 +265,40 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         keywordsList.clear()
         adsItemsList.clear()
 
-        if (stepperModel!!.selectedKeywords.count() > 0) {
-            stepperModel!!.selectedKeywords.forEachIndexed { index, _ ->
-                val key = KeywordsItem()
-                key.keywordTag = stepperModel?.selectedKeywords!![index]
-                if (stepperModel?.selectedSuggestBid!![index] > 0) {
-                    key.priceBid = stepperModel?.selectedSuggestBid!![index]
-                } else
-                    key.priceBid = stepperModel?.minSuggestBidKeyword ?: 0
-                keywordsList.add(key)
+        if (stepperModel?.selectedKeywords?.count() ?: 0 > 0) {
+            stepperModel?.selectedKeywords?.forEachIndexed { index, _ ->
+                addKeywords(index)
             }
             input.keywords = keywordsList
-
         }
-        if (stepperModel!!.selectedProductIds.count() > 0) {
-            stepperModel!!.selectedProductIds.forEachIndexed { index, _ ->
-                val add = AdsItem()
-                add.productID = stepperModel!!.selectedProductIds[index].toString()
-                add.ad.adID = stepperModel!!.adIds[index].toString()
-                add.ad.adType = "1"
-                adsItemsList.add(add)
+        if (stepperModel?.selectedProductIds?.count() ?: 0 > 0) {
+            stepperModel?.selectedProductIds?.forEachIndexed { index, _ ->
+                addProducts(index)
             }
             input.group.ads = adsItemsList
         }
+
         map[INPUT] = input
         return map
+    }
+
+    private fun addProducts(index: Int) {
+        val add = AdsItem()
+        add.productID = stepperModel?.selectedProductIds?.get(index).toString()
+        add.ad.adID = stepperModel?.adIds?.get(index).toString()
+        add.ad.adType = "1"
+        adsItemsList.add(add)
+    }
+
+    private fun addKeywords(index: Int) {
+        val key = KeywordsItem()
+        key.keywordTag = stepperModel?.selectedKeywords?.get(index) ?: ""
+        key.keywordTypeID = stepperModel?.selectedKeywordType?.get(index).toString()
+        if (stepperModel?.selectedSuggestBid?.get(index) ?: 0 > 0) {
+            key.priceBid = stepperModel?.selectedSuggestBid?.get(index) ?: 0
+        } else
+            key.priceBid = stepperModel?.minSuggestBidKeyword ?: 0
+        keywordsList.add(key)
     }
 
     private fun onSuccessActivation(data: ResponseCreateGroup) {
@@ -292,8 +314,6 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        product_count.text = stepperModel?.selectedProductIds?.count().toString()
-        keyword_count.text = stepperModel?.selectedKeywords?.count().toString()
-        group_name.text = stepperModel?.groupName
+        setCardData()
     }
 }
