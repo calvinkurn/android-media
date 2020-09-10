@@ -10,8 +10,10 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.adapter.CatalogListCarouselAdapter
+import com.tokopedia.tokopoints.view.adapter.NonCarouselItemDecoration
 import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
+import com.tokopedia.tokopoints.view.util.convertDpToPixel
 import com.tokopedia.unifycomponents.TimerUnify
 
 class SectionHorizontalCatalogVH(val view: View, val mPresenter: TokoPointsHomeViewModel)
@@ -52,6 +54,9 @@ class SectionHorizontalCatalogVH(val view: View, val mPresenter: TokoPointsHomeV
         }
         val rvCarousel: RecyclerView = view.findViewById(R.id.rv_column)
         rvCarousel.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
+        if (rvCarousel.itemDecorationCount == 0) {
+            rvCarousel.addItemDecoration(NonCarouselItemDecoration(convertDpToPixel(16, rvCarousel.context)))
+        }
         rvCarousel.adapter = CatalogListCarouselAdapter(mPresenter, content.layoutCatalogAttr.catalogList, rvCarousel)
 
     }

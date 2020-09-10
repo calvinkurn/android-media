@@ -82,12 +82,12 @@ public class CatalogListCarouselAdapter extends RecyclerView.Adapter<CatalogList
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        MarginLayoutParams params =(MarginLayoutParams) holder.itemView.getLayoutParams();
+    /*    MarginLayoutParams params =(MarginLayoutParams) holder.itemView.getLayoutParams();
         if (position == 0) {
             params.setMargins(convertDpToPixel(10, holder.itemView.getContext()), 0, 0, 0);
         } else {
             params.setMargins(0, 0, 0, 0);
-        }
+        }*/
         CatalogsValueEntity item = mItems.get(position);
         holder.btnContinue.setEnabled(!item.isDisabledButton());
         holder.description.setText(item.getTitle());
@@ -206,7 +206,7 @@ public class CatalogListCarouselAdapter extends RecyclerView.Adapter<CatalogList
         });
 
         holder.btnContinue.setVisibility(item.isShowTukarButton() ? View.VISIBLE : View.GONE);
-      //  setUpHeight(item);
+      //  setUpHeig{"status":{"error_code":0,"message":"OK"},"header":{"total_data":0,"process_time":0.002513375,"meta":{"ab_test":"N","display":"banner"},"pagination":{"kind":"scroll","next_page_token":"8a-pyR-5QchwPsJi6SDiQcVpPVYaQRri6sCYwe"}},"data":[]}ht(item);
     }
 
     @Override

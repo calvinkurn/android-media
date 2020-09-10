@@ -85,13 +85,13 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
             dataList[0]?.iconImageURL?.let { dynamicAction?.setFirstLayoutIcon(it) }
             if (dataList[0]?.counter?.isShowCounter!! && dataList[0]?.counter?.counterStr != "0") {
                 dataList[0]?.counter?.counterStr?.let { dynamicAction?.setFirstLayoutNotification(it) }
-            }
-            else{
+            } else {
                 dynamicAction?.notifFirstLayout?.hide()
+                dataList[0]?.counter?.isShowCounter = false
             }
             dynamicAction?.findViewById<LinearLayout>(R.id.holder_tokopoint)?.setOnClickListener {
                 dataList[0]?.cta?.let {
-                    hideNotification(0)
+                    hideNotification(0, dataList[0])
                     dynamicAction?.setLayoutClickListener(it.appLink, it.text)
                 }
             }
@@ -102,13 +102,13 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
                 dataList[1]?.iconImageURL?.let { dynamicAction?.setCenterLayoutIcon(it) }
                 if (dataList[1]?.counter?.isShowCounter!! && dataList[1]?.counter?.counterStr != "0") {
                     dataList[1]?.counter?.counterStr?.let { dynamicAction?.setCenterLayoutNotification(it) }
-                }
-                else{
+                } else {
                     dynamicAction?.notifCenterLayout?.hide()
+                    dataList[1]?.counter?.isShowCounter = false
                 }
                 dynamicAction?.findViewById<LinearLayout>(R.id.holder_coupon)?.setOnClickListener {
                     dataList[1]?.cta?.let {
-                        hideNotification(1)
+                        hideNotification(1,dataList[1])
                         dynamicAction?.setCenterLayoutClickListener(it.appLink, it.text)
                     }
                 }
@@ -120,13 +120,13 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
                 dataList[2]?.iconImageURL?.let { dynamicAction?.setRightLayoutIcon(it) }
                 if (dataList[2]?.counter?.isShowCounter!! && dataList[2]?.counter?.counterStr != "0") {
                     dataList[2]?.counter?.counterStr?.let { dynamicAction?.setRightLayoutNotification(it) }
-                }
-                else{
+                } else {
                     dynamicAction?.notifRightLayout?.hide()
+                    dataList[2]?.counter?.isShowCounter = false
                 }
                 dynamicAction?.findViewById<LinearLayout>(R.id.holder_tokomember)?.setOnClickListener {
                     dataList[2]?.cta?.let {
-                        hideNotification(2)
+                        hideNotification(2,dataList[2])
                         dynamicAction?.setRightLayoutClickListener(it.appLink, it.text)
                     }
                 }
@@ -164,9 +164,11 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
         })
     }
 
-    fun hideNotification(index: Int) {
+    fun hideNotification(index: Int, dynamicActionListItem: DynamicActionListItem?) {
         toolbarItemList as ArrayList<NotificationUnify>
         toolbarItemList[index].hide()
+        dynamicAction?.notifCenterLayout?.hide()
+        dynamicActionListItem?.counter?.isShowCounter = false
     }
 
     interface CardRuntimeHeightListener {

@@ -10,8 +10,10 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopoints.R
+import com.tokopedia.tokopoints.view.adapter.NonCarouselItemDecoration
 import com.tokopedia.tokopoints.view.adapter.SectionCategoryAdapter
 import com.tokopedia.tokopoints.view.model.section.SectionContent
+import com.tokopedia.tokopoints.view.util.convertDpToPixel
 import kotlinx.android.synthetic.main.tp_layout_section_category_parent.view.*
 
 class SectionVerticalCategoryViewBinder()
@@ -77,6 +79,9 @@ class SectionVerticalCategoryVH(val viewCategory: View) : RecyclerView.ViewHolde
         }
         val manager = LinearLayoutManager(viewCategory.context, LinearLayoutManager.HORIZONTAL, false)
         mRvDynamicLinks?.layoutManager = manager
+        if (mRvDynamicLinks?.itemDecorationCount == 0) {
+            mRvDynamicLinks?.addItemDecoration(NonCarouselItemDecoration(convertDpToPixel(16, viewCategory.context)))
+        }
         mRvDynamicLinks?.adapter = SectionCategoryAdapter(viewCategory.context, content.layoutCategoryAttr.categoryTokopointsList)
 
     }

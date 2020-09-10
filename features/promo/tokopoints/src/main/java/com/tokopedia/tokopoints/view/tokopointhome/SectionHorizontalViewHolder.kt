@@ -10,16 +10,19 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.tokopoints.R
+import com.tokopedia.tokopoints.view.adapter.CarouselItemDecoration
 import com.tokopedia.tokopoints.view.adapter.CouponListAdapter
+import com.tokopedia.tokopoints.view.adapter.NonCarouselItemDecoration
+import com.tokopedia.tokopoints.view.model.CouponValueEntity
 import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
+import com.tokopedia.tokopoints.view.util.convertDpToPixel
 import com.tokopedia.unifycomponents.TimerUnify
 
 class SectionHorizontalViewHolder(val view: View)
     : RecyclerView.ViewHolder(view) {
-    private var layoutManager: RecyclerView.LayoutManager? = null
 
-    fun bind(content: SectionContent, layoutManagerState: Parcelable?) {
+    fun bind(content: SectionContent) {
 
         if (content.sectionTitle == null || content.layoutCatalogAttr == null) {
             view.visibility = View.GONE
@@ -54,14 +57,19 @@ class SectionHorizontalViewHolder(val view: View)
             (view.findViewById<View>(R.id.text_sub_title) as TextView).text = content.sectionSubTitle
         }
         val rvCarousel: RecyclerView = view.findViewById(R.id.rv_carousel)
-        rvCarousel.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
-        layoutManager = rvCarousel.layoutManager
-        rvCarousel.adapter = CouponListAdapter(content.layoutCouponAttr.couponList)
-
-        if (layoutManagerState != null) {
-            // restoring the old instance so that scroll position is synced
-            rvCarousel.layoutManager?.onRestoreInstanceState(layoutManagerState)
+        rvCarousel.apply {
+            layoutManager = LinearLayoutManager(rvCarousel.context, LinearLayoutManager.HORIZONTAL, false)
         }
+        val arrayList = content.layoutCouponAttr.couponList
+        if (rvCarousel.itemDecorationCount == 0) {
+            rvCarousel.addItemDecoration(CarouselItemDecoration(convertDpToPixel(10, rvCarousel.context)))
+        }
+        rvCarousel.adapter = CouponListAdapter(arrayList)
+
+        /* if (layoutManagerState != null) {
+             // restoring the old instance so that scroll position is synced
+             rvCarousel.layoutManager?.onRestoreInstanceState(layoutManagerState)
+         }*/
 
     }
 
@@ -84,8 +92,6 @@ class SectionHorizontalViewHolder(val view: View)
             e.printStackTrace()
         }
     }
-
-    fun getLayoutManagerState(): Parcelable? = layoutManager?.onSaveInstanceState()
 
 }
 

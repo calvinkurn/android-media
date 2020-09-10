@@ -57,13 +57,13 @@ public class SectionCarouselAdapter extends RecyclerView.Adapter<SectionCarousel
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        MarginLayoutParams params = (MarginLayoutParams) holder.itemView.getLayoutParams();
+      /*  MarginLayoutParams params = (MarginLayoutParams) holder.itemView.getLayoutParams();
         if (position == 0) {
             params.setMargins(holder.itemView.getContext().getResources().getDimensionPixelSize(R.dimen.tp_margin_medium),0,0,0);
         } else {
             params.setMargins(holder.itemView.getContext().getResources().getDimensionPixelSize(R.dimen.tp_margin_medium),0,0,0);
         }
-        holder.itemView.setLayoutParams(params);
+        holder.itemView.setLayoutParams(params);*/
 
         holder.bindData(mItems.get(position));
     }

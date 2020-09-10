@@ -15,11 +15,8 @@ public class CarouselItemDecoration extends RecyclerView.ItemDecoration {
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
         super.getItemOffsets(outRect, view, parent, state);
 
-        if (parent.getChildAdapterPosition(view) == 0) {
-            outRect.right += size;
-        } else {
+        if (parent.getChildAdapterPosition(view) != 0) {
             outRect.left += size;
-            outRect.right += size;
         }
     }
 }

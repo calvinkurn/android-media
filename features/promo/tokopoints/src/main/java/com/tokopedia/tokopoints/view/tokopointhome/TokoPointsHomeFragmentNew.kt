@@ -89,12 +89,12 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     override fun onCreate(savedInstanceState: Bundle?) {
         startPerformanceMonitoring()
         super.onCreate(savedInstanceState)
-
+/*
         sectionListViewBinder = SectionHorizontalViewBinder(savedInstanceState?.getParcelable(
-                BUNDLE_KEY_LAYOUT_HORIZONTAL_LIST_STATE))
+                BUNDLE_KEY_LAYOUT_HORIZONTAL_LIST_STATE))*/
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
+/*    override fun onSaveInstanceState(outState: Bundle) {
         if (::sectionListViewBinder.isInitialized) {
             outState.putParcelable(
                     BUNDLE_KEY_LAYOUT_HORIZONTAL_LIST_STATE,
@@ -102,7 +102,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
             )
         }
         super.onSaveInstanceState(outState)
-    }
+    }*/
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.tp_home_layout_container, container, false)
@@ -360,6 +360,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
             for (sectionContent in sections) {
                 if (sectionContent.layoutCouponAttr != null && sectionContent.layoutCouponAttr.couponList != null && !sectionContent.layoutCouponAttr.couponList.isEmpty()) {
 
+                    sectionListViewBinder = SectionHorizontalViewBinder()
                     @Suppress("UNCHECKED_CAST")
                     viewBinders.put(
                             sectionContent.layoutType,

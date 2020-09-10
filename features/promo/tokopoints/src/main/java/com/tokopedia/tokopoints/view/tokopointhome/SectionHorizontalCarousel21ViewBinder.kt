@@ -14,10 +14,13 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.adapter.CarouselItemDecoration
+import com.tokopedia.tokopoints.view.adapter.CarouselItemDecorationNew
+import com.tokopedia.tokopoints.view.adapter.NonCarouselItemDecoration
 import com.tokopedia.tokopoints.view.adapter.SectionCarouselAdapter
 import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.tokopoints.view.util.CommonConstant
+import com.tokopedia.tokopoints.view.util.convertDpToPixel
 
 class SectionHorizontalCarousel21ViewBinder()
     : SectionItemViewBinder<SectionContent, SectionHorizontalCarousel21VH>(
@@ -63,6 +66,9 @@ class SectionHorizontalCarousel21VH(val view: View) : RecyclerView.ViewHolder(vi
 
         val rvCarousel: RecyclerView = view.findViewById(R.id.rv_carousel_21)
         rvCarousel.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
+        if (rvCarousel?.itemDecorationCount == 0) {
+            rvCarousel?.addItemDecoration(CarouselItemDecorationNew(convertDpToPixel(10, rvCarousel.context),convertDpToPixel(20, rvCarousel.context)))
+        }
         rvCarousel.adapter = SectionCarouselAdapter(content.layoutBannerAttr.imageList, CommonConstant.BannerType.CAROUSEL_2_1)
 
     }

@@ -9,9 +9,11 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
+import com.tokopedia.tokopoints.view.util.convertDpToPixel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.listener.TopAdsImageVieWApiResponseListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
@@ -29,9 +31,11 @@ class SectionTopadsVH(val view: View) : RecyclerView.ViewHolder(view) {
             view.visibility = View.GONE
         }
 
+        val title = view.findViewById<View>(R.id.tv_topad_title)
+        val subtitle = view.findViewById<View>(R.id.tv_topads_sub_title)
         ImageHandler.loadBackgroundImage(view, content.backgroundImgURLMobile)
+        val btnSeeAll = view.findViewById<TextView>(R.id.tv_topads_see_all)
         if (!content.cta.isEmpty) {
-            val btnSeeAll = view.findViewById<TextView>(R.id.tv_topads_see_all)
             btnSeeAll.visibility = View.VISIBLE
             btnSeeAll.text = content.cta.text
             btnSeeAll.setOnClickListener { v: View? ->
@@ -40,12 +44,12 @@ class SectionTopadsVH(val view: View) : RecyclerView.ViewHolder(view) {
             }
         }
         if (!TextUtils.isEmpty(content.sectionTitle)) {
-            view.findViewById<View>(R.id.tv_topad_title).visibility = View.VISIBLE
-            (view.findViewById<View>(R.id.tv_topad_title) as TextView).text = content.sectionTitle
+            title.show()
+            (title as TextView).text = content.sectionTitle
         }
         if (!TextUtils.isEmpty(content.sectionSubTitle)) {
-            view.findViewById<View>(R.id.tv_topads_sub_title).visibility = View.VISIBLE
-            (view.findViewById<View>(R.id.tv_topads_sub_title) as TextView).text = content.sectionSubTitle
+            subtitle.show()
+            (subtitle as TextView).text = content.sectionSubTitle
         }
         val containerTopads = view.findViewById<ViewFlipper>(R.id.container_topads)
 
@@ -61,11 +65,11 @@ class SectionTopadsVH(val view: View) : RecyclerView.ViewHolder(view) {
         view.topads_reward.setApiResponseListener(object : TopAdsImageVieWApiResponseListener {
             override fun onImageViewResponse(imageDataList: ArrayList<TopAdsImageViewModel>) {
                 if (imageDataList.isNotEmpty()) {
-                    containerTopads.displayedChild = 1
                     val stack: Stack<TopAdsImageViewModel> = Stack()
                     stack.addAll(imageDataList.toMutableList())
                     stack.reverse()
-                    view.topads_reward.loadImage(stack.pop())
+                    view.topads_reward.loadImage(stack.pop(), convertDpToPixel(10, view.context))
+                    containerTopads.displayedChild = 1
                     view.topads_reward.setTopAdsImageViewImpression(object : TopAdsImageViewImpressionListener {
                         override fun onTopAdsImageViewImpression(viewUrl: String) {
                             sendBannerImpression(content.sectionTitle)
@@ -84,12 +88,20 @@ class SectionTopadsVH(val view: View) : RecyclerView.ViewHolder(view) {
                             RouteManager.route(view.context, applink)
                         }
                     })
-                } else
-                    view.hide()
+                } else {
+                    hideView()
+                }
             }
 
             override fun onError(t: Throwable) {
-                view.hide()
+                hideView()
+            }
+
+            fun hideView() {
+                title.hide()
+                subtitle.hide()
+                btnSeeAll.hide()
+                containerTopads.hide()
             }
         })
     }
