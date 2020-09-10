@@ -330,7 +330,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
         flightAnalytics.eventAddToCart(bookingViewModel.getSearchParam().flightClass,
                 bookingViewModel.getDepartureJourney(),
                 bookingViewModel.getReturnJourney(),
-                bookingViewModel.getFlightPriceModel().comboKey)
+                bookingViewModel.getFlightPriceModel().comboKey,
+                userSession.userId)
     }
 
     private fun sendCheckOutTracking(pid: String) {

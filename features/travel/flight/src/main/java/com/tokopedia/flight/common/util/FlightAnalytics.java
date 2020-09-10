@@ -691,7 +691,8 @@ public class FlightAnalytics {
     public void eventAddToCart(FlightClassModel flightClass,
                                FlightDetailModel departureViewModel,
                                FlightDetailModel returnViewModel,
-                               String comboKey) {
+                               String comboKey,
+                               String userId) {
 
         List<Object> products = new ArrayList<>();
 
@@ -707,6 +708,12 @@ public class FlightAnalytics {
                     DataLayer.mapOf(EVENT, ATC_EVENT,
                             EVENT_CATEGORY, GENERIC_CATEGORY,
                             EVENT_ACTION, Category.ADD_TO_CART,
+                            SCREEN_NAME, Screen.BOOKING,
+                            CURRENT_SITE, FLIGHT_CURRENT_SITE,
+                            CLIENT_ID, TrackApp.getInstance().getGTM().getClientIDString(),
+                            BUSSINESS_UNIT, FLIGHT_BU,
+                            CATEGORY, Label.FLIGHT_SMALL,
+                            USER_ID, userId,
                             EVENT_LABEL, String.format(Label.PRODUCT_VIEW,
                                     departureViewModel.getDepartureAirport(),
                                     departureViewModel.getArrivalAirport()),
