@@ -57,7 +57,11 @@ object AmplificationDataSource {
                     cmInApp.isAmplification = true
 
                     // delivered
-                    RepositoryManager.getInstance().storageProvider.putDataToStore(cmInApp)
+                    RepositoryManager
+                            .getInstance()
+                            .storageProvider
+                            .putDataToStore(cmInApp)
+                            .subscribe()
                     sendAmplificationInAppEvent(application, INAPP_DELIVERED, cmInApp)
                 } catch (e: Exception) {}
             }
