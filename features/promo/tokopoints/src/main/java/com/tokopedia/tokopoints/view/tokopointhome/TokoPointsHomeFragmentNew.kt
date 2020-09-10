@@ -423,6 +423,10 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
             cardTierInfo.background.setColorFilter(Color.parseColor("#" + it.backgroundColor), PorterDuff.Mode.SRC_OVER)
             cardTierInfo.setOnClickListener {
                 RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW_TITLE, getString(R.string.tp_label_membership), CommonConstant.WebLink.MEMBERSHIP)
+                AnalyticsTrackerUtil.sendEvent(context,
+                        AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                        AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                        AnalyticsTrackerUtil.ActionKeys.CLICK_MEMBERSHIP, "")
             }
         }
 
