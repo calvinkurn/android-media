@@ -47,6 +47,11 @@ internal class ProductCardOptionsViewModel(
         initAddToCartOption()
         initVisitShopOption()
 
+        if (productCardOptionsModel?.canShareProduct() == true) {
+            productCardOptionsItemList.addOption(SHARE_PRODUCT) { }
+            productCardOptionsItemList.addDivider()
+        }
+
         postOptionListLiveData()
     }
 
@@ -74,6 +79,7 @@ internal class ProductCardOptionsViewModel(
     private fun initWishlistOption() {
         if (productCardOptionsModel?.hasWishlist == true) {
             productCardOptionsItemList.addWishlistOptions(productCardOptionsModel.isWishlisted)
+            productCardOptionsItemList.addDivider()
         }
     }
 

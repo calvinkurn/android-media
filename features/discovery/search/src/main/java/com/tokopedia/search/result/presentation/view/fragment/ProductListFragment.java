@@ -871,7 +871,12 @@ public class ProductListFragment
         productCardOptionsModel.setCategoryName(item.getCategoryString());
         productCardOptionsModel.setProductName(item.getProductName());
         productCardOptionsModel.setFormattedPrice(item.getPrice());
-        productCardOptionsModel.setShopId(item.getShopID());
+
+        ProductCardOptionsModel.Shop shop = new ProductCardOptionsModel.Shop();
+        shop.setShopId(item.getShopID());
+        shop.setShopName(item.getShopName());
+//        shop.setShopUrl(item.getShopUrl());
+        productCardOptionsModel.setShop(shop);
 
         productCardOptionsModel.setHasVisitShop(true);
 

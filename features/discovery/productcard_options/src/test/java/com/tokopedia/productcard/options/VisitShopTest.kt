@@ -7,7 +7,7 @@ internal class VisitShopTest: ProductCardOptionsViewModelTestFixtures() {
 
     private val productCardOptionModelVisitShop = ProductCardOptionsModel(
             hasVisitShop = true,
-            shopId = "12345"
+            shop = ProductCardOptionsModel.Shop(shopId = "12345")
     )
 
     @Test

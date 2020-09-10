@@ -20,7 +20,7 @@ internal class AddToCartTest: ProductCardOptionsViewModelTestFixtures() {
             hasAddToCart = true,
             productId = "12345",
             productName = "Product Name",
-            shopId = "123456",
+            shop = ProductCardOptionsModel.Shop(shopId = "12345"),
             categoryName = "Handphone",
             formattedPrice = "Rp32.900",
             addToCartParams = ProductCardOptionsModel.AddToCartParams(quantity = 1)

@@ -129,7 +129,7 @@ internal class CreateProductCardOptionsViewModelViewModelTest: ProductCardOption
                 hasAddToCart = true,
                 productId = "12345",
                 productName = "Product Name",
-                shopId = "123456",
+                shop = ProductCardOptionsModel.Shop(shopId = "12345"),
                 categoryName = "Handphone",
                 formattedPrice = "Rp32.900",
                 addToCartParams = ProductCardOptionsModel.AddToCartParams(quantity = 1)
@@ -159,10 +159,34 @@ internal class CreateProductCardOptionsViewModelViewModelTest: ProductCardOption
     fun `Options has visit shop with shop id`() {
         `When Create Product Card Options View Model`(ProductCardOptionsModel(
                 hasVisitShop = true,
-                shopId = "12345"
+                shop = ProductCardOptionsModel.Shop(shopId = "12345")
         ))
 
         `Then assert product card options contains`(VISIT_SHOP)
+    }
+    
+    @Test
+    fun `Option has share product without required parameters`() {
+        `When Create Product Card Options View Model`(ProductCardOptionsModel(
+                hasShareProduct = true
+        ))
+
+        `Then assert product card options does not contain`(SHARE_PRODUCT)
+    }
+
+    @Test
+    fun `Options has share product with required parameters`() {
+        `When Create Product Card Options View Model`(ProductCardOptionsModel(
+                hasShareProduct = true,
+                productId = "12345",
+                productName = "Product name",
+                productImageUrl = "https://imageurl",
+                productUrl = "https://producturl",
+                formattedPrice = "Rp1.000.000",
+                shop = ProductCardOptionsModel.Shop(shopId = "12345", shopName = "Shop Name", shopUrl = "https://shopurl")
+        ))
+
+        `Then assert product card options contains`(SHARE_PRODUCT)
     }
 
     @Test
@@ -174,7 +198,18 @@ internal class CreateProductCardOptionsViewModelViewModelTest: ProductCardOption
     private fun `When Product Card Options View Model with hasSimilarSearch = true, and hasWishlist = true`() {
         createProductCardOptionsViewModel(ProductCardOptionsModel(
                 hasSimilarSearch = true,
-                hasWishlist = true
+                hasWishlist = true,
+                hasAddToCart = true,
+                hasVisitShop = true,
+                hasShareProduct = true,
+                categoryName = "Handphone",
+                addToCartParams = ProductCardOptionsModel.AddToCartParams(quantity = 1),
+                productId = "12345",
+                productName = "Product name",
+                productImageUrl = "https://imageurl",
+                productUrl = "https://producturl",
+                formattedPrice = "Rp1.000.000",
+                shop = ProductCardOptionsModel.Shop(shopId = "12345", shopName = "Shop Name", shopUrl = "https://shopurl")
         ))
     }
 
