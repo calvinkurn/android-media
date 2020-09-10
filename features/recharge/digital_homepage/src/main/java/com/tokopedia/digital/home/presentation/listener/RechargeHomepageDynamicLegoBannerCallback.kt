@@ -6,7 +6,7 @@ import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 
-class RechargeHomepageDynamicLegoBannerCallback(val listener: OnItemBindListener):
+class RechargeHomepageDynamicLegoBannerCallback(val listener: RechargeHomepageItemListener):
         DynamicLegoBannerListener,
         HomeComponentListener {
     override fun onSeeAllSixImage(channelModel: ChannelModel, position: Int) {

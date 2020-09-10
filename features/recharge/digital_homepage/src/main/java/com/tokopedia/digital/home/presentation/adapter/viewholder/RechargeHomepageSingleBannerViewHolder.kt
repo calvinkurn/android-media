@@ -4,8 +4,8 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.model.RechargeHomepageSingleBannerModel
-import com.tokopedia.digital.home.presentation.Util.RechargeHomepageSectionMapper
-import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
+import com.tokopedia.digital.home.presentation.util.RechargeHomepageSectionMapper
+import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.kotlin.extensions.view.*
 import kotlinx.android.synthetic.main.view_recharge_home_single_banner.view.*
 
@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.view_recharge_home_single_banner.view.*
  * @author by resakemal on 21/06/20.
  */
 
-class RechargeHomepageSingleBannerViewHolder(itemView: View?, val listener: OnItemBindListener) :
+class RechargeHomepageSingleBannerViewHolder(itemView: View?, val listener: RechargeHomepageItemListener) :
         AbstractViewHolder<RechargeHomepageSingleBannerModel>(itemView) {
 
     override fun bind(element: RechargeHomepageSingleBannerModel) {

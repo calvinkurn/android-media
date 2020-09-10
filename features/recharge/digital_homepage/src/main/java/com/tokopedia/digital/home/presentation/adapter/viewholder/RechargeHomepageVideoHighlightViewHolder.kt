@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.model.RechargeHomepageVideoHighlightModel
-import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
+import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.kotlin.extensions.view.*
 
 /**
@@ -18,7 +18,7 @@ import com.tokopedia.kotlin.extensions.view.*
 
 class RechargeHomepageVideoHighlightViewHolder(
         val view: View,
-        val listener: OnItemBindListener
+        val listener: RechargeHomepageItemListener
 ): AbstractViewHolder<RechargeHomepageVideoHighlightModel>(view) {
 
     internal val container = view.findViewById<ConstraintLayout>(R.id.bannerPlay)

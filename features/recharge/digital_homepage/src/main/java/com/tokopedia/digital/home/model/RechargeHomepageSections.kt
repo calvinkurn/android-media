@@ -3,7 +3,7 @@ package com.tokopedia.digital.home.model
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.digital.home.presentation.adapter.DigitalHomePageAdapterFactory
+import com.tokopedia.digital.home.presentation.adapter.RechargeHomepageAdapterTypeFactory
 import com.tokopedia.kotlin.model.ImpressHolder
 
 data class RechargeHomepageSections(
@@ -109,7 +109,7 @@ data class RechargeHomepageSections(
     )
 }
 
-interface RechargeHomepageSectionModel : Visitable<DigitalHomePageAdapterFactory> {
+interface RechargeHomepageSectionModel : Visitable<RechargeHomepageAdapterTypeFactory> {
     fun visitableId(): Int
     fun equalsWith(b: Any?): Boolean
 }
@@ -125,14 +125,14 @@ data class RechargeHomepageBannerModel(val section: RechargeHomepageSections.Sec
         } else false
     }
 
-    override fun type(typeFactory: DigitalHomePageAdapterFactory): Int {
+    override fun type(typeFactory: RechargeHomepageAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
 
 }
 
 data class RechargeHomepageBannerEmptyModel(val section: RechargeHomepageSections.Section) : RechargeHomepageSectionModel {
-    override fun type(typeFactory: DigitalHomePageAdapterFactory): Int {
+    override fun type(typeFactory: RechargeHomepageAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
 
@@ -149,7 +149,7 @@ data class RechargeHomepageBannerEmptyModel(val section: RechargeHomepageSection
 }
 
 data class RechargeHomepageFavoriteModel(val section: RechargeHomepageSections.Section) : RechargeHomepageSectionModel {
-    override fun type(typeFactory: DigitalHomePageAdapterFactory): Int {
+    override fun type(typeFactory: RechargeHomepageAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
 
@@ -166,7 +166,7 @@ data class RechargeHomepageFavoriteModel(val section: RechargeHomepageSections.S
 }
 
 data class RechargeHomepageCategoryModel(val section: RechargeHomepageSections.Section) : RechargeHomepageSectionModel {
-    override fun type(typeFactory: DigitalHomePageAdapterFactory): Int {
+    override fun type(typeFactory: RechargeHomepageAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
 
@@ -183,7 +183,7 @@ data class RechargeHomepageCategoryModel(val section: RechargeHomepageSections.S
 }
 
 data class RechargeHomepageTrustMarkModel(val section: RechargeHomepageSections.Section) : RechargeHomepageSectionModel {
-    override fun type(typeFactory: DigitalHomePageAdapterFactory): Int {
+    override fun type(typeFactory: RechargeHomepageAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
 
@@ -200,7 +200,7 @@ data class RechargeHomepageTrustMarkModel(val section: RechargeHomepageSections.
 }
 
 data class RechargeHomepageVideoHighlightModel(val section: RechargeHomepageSections.Section) : RechargeHomepageSectionModel {
-    override fun type(typeFactory: DigitalHomePageAdapterFactory): Int {
+    override fun type(typeFactory: RechargeHomepageAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
 
@@ -217,7 +217,7 @@ data class RechargeHomepageVideoHighlightModel(val section: RechargeHomepageSect
 }
 
 data class RechargeHomepageSingleBannerModel(val section: RechargeHomepageSections.Section) : RechargeHomepageSectionModel {
-    override fun type(typeFactory: DigitalHomePageAdapterFactory): Int {
+    override fun type(typeFactory: RechargeHomepageAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
 
@@ -234,7 +234,7 @@ data class RechargeHomepageSingleBannerModel(val section: RechargeHomepageSectio
 }
 
 data class RechargeHomepageDualBannersModel(val section: RechargeHomepageSections.Section) : RechargeHomepageSectionModel {
-    override fun type(typeFactory: DigitalHomePageAdapterFactory): Int {
+    override fun type(typeFactory: RechargeHomepageAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
 
@@ -251,7 +251,7 @@ data class RechargeHomepageDualBannersModel(val section: RechargeHomepageSection
 }
 
 data class RechargeHomepageProductCardsModel(val section: RechargeHomepageSections.Section) : RechargeHomepageSectionModel {
-    override fun type(typeFactory: DigitalHomePageAdapterFactory): Int {
+    override fun type(typeFactory: RechargeHomepageAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
 
@@ -268,7 +268,7 @@ data class RechargeHomepageProductCardsModel(val section: RechargeHomepageSectio
 }
 
 data class RechargeHomepageProductBannerModel(val section: RechargeHomepageSections.Section) : RechargeHomepageSectionModel {
-    override fun type(typeFactory: DigitalHomePageAdapterFactory): Int {
+    override fun type(typeFactory: RechargeHomepageAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
 

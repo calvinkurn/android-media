@@ -17,15 +17,15 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.digital.home.R
-import com.tokopedia.digital.home.di.DigitalHomePageComponent
+import com.tokopedia.digital.home.di.RechargeHomepageComponent
 import com.tokopedia.digital.home.model.DigitalHomePageSearchCategoryModel
-import com.tokopedia.digital.home.presentation.Util.DigitalHomeTrackingUtil
+import com.tokopedia.digital.home.analytics.RechargeHomepageAnalytics
 import com.tokopedia.digital.home.presentation.adapter.DigitalHomePageSearchTypeFactory
 import com.tokopedia.digital.home.presentation.adapter.viewholder.DigitalHomePageSearchViewHolder
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.digital.home.presentation.viewmodel.DigitalHomePageSearchViewModel
-import kotlinx.android.synthetic.main.layout_digital_home_search.*
+import kotlinx.android.synthetic.main.view_recharge_home_search.*
 import javax.inject.Inject
 
 class DigitalHomePageSearchFragment: BaseSearchListFragment<DigitalHomePageSearchCategoryModel, DigitalHomePageSearchTypeFactory>(),
@@ -33,14 +33,14 @@ class DigitalHomePageSearchFragment: BaseSearchListFragment<DigitalHomePageSearc
         SearchInputView.ResetListener{
 
     @Inject
-    lateinit var trackingUtil: DigitalHomeTrackingUtil
+    lateinit var trackingUtil: RechargeHomepageAnalytics
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject
     lateinit var viewModel: DigitalHomePageSearchViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.layout_digital_home_search, container, false)
+        val view = inflater.inflate(R.layout.view_recharge_home_search, container, false)
         return view
     }
 
@@ -81,7 +81,7 @@ class DigitalHomePageSearchFragment: BaseSearchListFragment<DigitalHomePageSearc
     }
 
     override fun initInjector() {
-        getComponent(DigitalHomePageComponent::class.java).inject(this)
+        getComponent(RechargeHomepageComponent::class.java).inject(this)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

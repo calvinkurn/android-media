@@ -27,6 +27,7 @@ object DeeplinkMapperDigital {
     var whiteList: Whitelist? = null
 
     const val TEMPLATE_PARAM = "template"
+    const val PLATFORM_ID_PARAM = "platform_id"
 
     private fun readWhitelistFromFile(context: Context): List<WhitelistItem> {
         if (whiteList == null) {
@@ -59,7 +60,8 @@ object DeeplinkMapperDigital {
                 ApplinkConsInternalDigital.SMART_BILLS
             }
             deeplink.startsWith(ApplinkConst.DIGITAL_SUBHOMEPAGE_HOME) -> {
-                ApplinkConsInternalDigital.SUBHOMEPAGE
+                if (!uri.getQueryParameter(PLATFORM_ID_PARAM).isNullOrEmpty()) ApplinkConsInternalDigital.DYNAMIC_SUBHOMEPAGE
+                else ApplinkConsInternalDigital.SUBHOMEPAGE
             }
             else -> deeplink
         }
