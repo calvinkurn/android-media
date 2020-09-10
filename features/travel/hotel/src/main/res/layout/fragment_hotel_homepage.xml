@@ -286,9 +286,7 @@
                 android:id="@+id/banner_hotel_homepage_promo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_lvl3"
-                android:layout_marginLeft="@dimen/spacing_lvl3"
-                android:layout_marginStart="@dimen/spacing_lvl3" />
+                android:layout_marginTop="@dimen/spacing_lvl3"/>
 
         </LinearLayout>
 

@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -14,11 +15,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.DeeplinkMapper.getRegisteredNavigation
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel
-import com.tokopedia.banner.Indicator
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.common.travel.data.entity.TravelRecentSearchModel
@@ -43,9 +42,7 @@ import com.tokopedia.hotel.homepage.presentation.widget.HotelRoomAndGuestBottomS
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.search.data.model.HotelSearchModel
 import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivity
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -56,7 +53,6 @@ import kotlinx.android.synthetic.main.fragment_hotel_homepage.*
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
-import kotlin.collections.HashSet
 
 /**
  * @author by furqan on 28/03/19
@@ -450,8 +446,6 @@ class HotelHomepageFragment : HotelBaseFragment(),
     val bannerImpressionIndex: HashSet<Int> = hashSetOf()
 
     private fun renderHotelPromo(promoDataList: List<TravelCollectiveBannerModel.Banner>) {
-        showPromoContainer()
-
         bannerImpressionIndex.add(0)
         trackingHotelUtil.hotelBannerImpression(context, promoDataList.firstOrNull(), 0, HOMEPAGE_SCREEN_NAME)
 
@@ -463,18 +457,27 @@ class HotelHomepageFragment : HotelBaseFragment(),
                 }
             }
         }
+
         banner_hotel_homepage_promo.freeMode = false
-        banner_hotel_homepage_promo.centerMode = false
+        banner_hotel_homepage_promo.centerMode = true
         banner_hotel_homepage_promo.autoplay = true
         banner_hotel_homepage_promo.slideToShow = 1.1f
         banner_hotel_homepage_promo.indicatorPosition = CarouselUnify.INDICATOR_BL
-
         banner_hotel_homepage_promo.infinite = true
+
         val itemParam = { view: View, data: Any ->
             val image = view.findViewById<ImageUnify>(R.id.hotelPromoImageCarousel)
-            image.setImageUrl((data as TravelCollectiveBannerModel.Banner).attribute.imageUrl, 0.3f)
+            image.loadImage((data as TravelCollectiveBannerModel.Banner).attribute.imageUrl)
+            view.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    view.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    image.heightRatio = 0.3f
+                }
+            })
         }
         banner_hotel_homepage_promo.addItems(R.layout.hotel_carousel_item, ArrayList(promoDataList), itemParam)
+
+        showPromoContainer()
     }
 
     private fun renderHotelLastSearch(data: HotelRecentSearchModel) {
