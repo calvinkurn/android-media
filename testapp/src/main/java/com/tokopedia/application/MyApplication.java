@@ -87,9 +87,9 @@ public class MyApplication extends BaseMainApplication
         com.tokopedia.config.GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
 
 //         for staging-only
-        TokopediaUrl.Companion.setEnvironment(this, Env.STAGING);
-        TokopediaUrl.Companion.deleteInstance();
-        TokopediaUrl.Companion.init(this);
+//        TokopediaUrl.Companion.setEnvironment(this, Env.STAGING);
+//        TokopediaUrl.Companion.deleteInstance();
+//        TokopediaUrl.Companion.init(this);
 
         upgradeSecurityProvider();
 
