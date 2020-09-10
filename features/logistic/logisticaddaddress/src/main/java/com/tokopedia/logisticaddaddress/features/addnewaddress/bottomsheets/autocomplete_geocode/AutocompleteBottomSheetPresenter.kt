@@ -1,11 +1,13 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.logisticaddaddress.common.AddressConstants.CIRCUIT_BREAKER_ON_CODE
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressScope
 import com.tokopedia.logisticaddaddress.domain.mapper.AutocompleteGeocodeMapper
 import com.tokopedia.logisticaddaddress.domain.usecase.AutoCompleteUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.AutocompleteGeocodeUseCase
-import com.tokopedia.logisticdata.data.autocomplete.SuggestedPlace
+import com.tokopedia.logisticdata.data.autocomplete.Place
+import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 import timber.log.Timber
@@ -21,6 +23,8 @@ class AutocompleteBottomSheetPresenter @Inject constructor(private val autocompl
                                                            private val autoCompleteUseCase: AutoCompleteUseCase)
     : BaseDaggerPresenter<AutocompleteBottomSheetListener>() {
 
+    private var saveAddressDataModel = SaveAddressDataModel()
+
     fun getAutocompleteGeocode(lat: Double?, long: Double?) {
         autocompleteGeocodeUseCase.setParams(lat, long)
         autocompleteGeocodeUseCase.execute(RequestParams.create(), AutocompleteGeocodeSubscriber(view, autoCompleteGeocodeMapper))
@@ -29,9 +33,13 @@ class AutocompleteBottomSheetPresenter @Inject constructor(private val autocompl
     fun getAutocomplete(input: String) {
         autoCompleteUseCase
                 .execute(input)
-                .subscribe(object : Subscriber<List<SuggestedPlace>>() {
-                    override fun onNext(t: List<SuggestedPlace>) {
-                        view.onSuccessGetAutocomplete(t)
+                .subscribe(object : Subscriber<Place>() {
+                    override fun onNext(t: Place) {
+                        if (t.errorCode == CIRCUIT_BREAKER_ON_CODE) {
+                            view.goToAddNewAddressNegative()
+                        } else {
+                            view.onSuccessGetAutocomplete(t)
+                        }
                     }
 
                     override fun onCompleted() {}
@@ -51,6 +59,11 @@ class AutocompleteBottomSheetPresenter @Inject constructor(private val autocompl
 
     fun clearCacheAutocompleteGeocode() {
         autocompleteGeocodeUseCase.clearCache()
+    }
+
+    fun getUnnamedRoadModelFormat(): SaveAddressDataModel {
+        val fmt = this.saveAddressDataModel.formattedAddress.replace("Unnamed Road, ", "")
+        return this.saveAddressDataModel.copy(formattedAddress = fmt, selectedDistrict = fmt)
     }
 
 }
