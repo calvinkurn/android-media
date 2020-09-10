@@ -1,5 +1,6 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -38,6 +39,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
     private var currentLong: Double = 0.0
     private var currentSearch: String = ""
     private var actionListener: ActionListener? = null
+    private val EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW"
     private val defaultLat: Double by lazy { -6.175794 }
     private val defaultLong: Double by lazy { 106.826457 }
     private lateinit var rlCurrentLocation: RelativeLayout
@@ -94,6 +96,25 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
     override fun onDestroy() {
         super.onDestroy()
         compositeSubs.clear()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if(data != null) {
+            if(data.hasExtra(EXTRA_ADDRESS_NEW)) {
+                val newAddress = data.getParcelableExtra<SaveAddressDataModel>(EXTRA_ADDRESS_NEW)
+                finishActivity(newAddress)
+
+            }
+        }
+    }
+
+    private fun finishActivity(saveAddressDataModel: SaveAddressDataModel) {
+        activity?.run {
+            setResult(Activity.RESULT_OK, Intent().apply {
+                putExtra(EXTRA_ADDRESS_NEW, saveAddressDataModel)
+            })
+            finish()
+        }
     }
 
     private fun prepareLayout(view: View) {

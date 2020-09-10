@@ -596,13 +596,12 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
             ll_mismatch.visibility = View.VISIBLE
 
             when {
-                isMismatch -> {
-                    setMismatchMapHeader()
-                    setMismatchForm()
-
-                }
                 isCircuitBreaker -> {
                     setCircuitBreakerOnHeader()
+                    setMismatchForm()
+                }
+                isMismatch -> {
+                    setMismatchMapHeader()
                     setMismatchForm()
                 }
                 else -> {
