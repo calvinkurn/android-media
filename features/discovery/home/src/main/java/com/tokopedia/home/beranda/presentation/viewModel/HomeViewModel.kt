@@ -911,8 +911,7 @@ open class HomeViewModel @Inject constructor(
                     var homeData: HomeDataModel? = homeDataWithoutExternalComponentPair.first
                     homeData = evaluateGeolocationComponent(homeData)
                     homeData = evaluateAvailableComponent(homeData, false)
-                    _homeLiveData.value = homeData
-
+                    _homeLiveData.postValue(homeData)
                     getPlayBannerCarousel()
                     getHeaderData()
                     getReviewData()
