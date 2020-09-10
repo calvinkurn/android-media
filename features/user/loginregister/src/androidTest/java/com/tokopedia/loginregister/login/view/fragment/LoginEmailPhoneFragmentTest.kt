@@ -24,6 +24,7 @@ import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.TkpdIdlingResource
 import com.tokopedia.loginregister.TkpdIdlingResourceProvider
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
+import com.tokopedia.test.application.annotations.UiAnalyticsTest
 import org.hamcrest.MatcherAssert
 import org.junit.After
 import org.junit.Before
@@ -33,6 +34,7 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 @LargeTest
+@UiAnalyticsTest
 class LoginEmailPhoneFragmentTest {
     @get:Rule
     val activityRule = IntentsTestRule(LoginActivity::class.java, false, false)
