@@ -101,7 +101,7 @@ class SomListViewModelTest {
     fun getTickerData_shouldReturnSuccess() {
         //given
         coEvery {
-            somGetTickerListUseCase.execute(any(), any())
+            somGetTickerListUseCase.execute(any())
         } returns Success(SomListTicker.Data.OrderTickers("", "", "", -1, listTickers).listTicker.toMutableList())
 
         //when
@@ -116,7 +116,7 @@ class SomListViewModelTest {
     fun getTickerData_shouldReturnFail() {
         //given
         coEvery {
-            somGetTickerListUseCase.execute(any(), any())
+            somGetTickerListUseCase.execute(any())
         } returns Fail(Throwable())
 
         //when
@@ -130,7 +130,7 @@ class SomListViewModelTest {
     fun getTickerData_shouldNotReturnEmpty() {
         //given
         coEvery {
-            somGetTickerListUseCase.execute(any(), any())
+            somGetTickerListUseCase.execute(any())
         } returns Success(SomListTicker.Data.OrderTickers("", "", "", -1, listTickers).listTicker.toMutableList())
 
         //when
@@ -189,46 +189,47 @@ class SomListViewModelTest {
     // filter_list
     @Test
     fun getFilterListData_shouldReturnSuccess() {
-        //given
+        val waitingPaymentCounter = SomListFilter.Data.OrderFilterSom.WaitingPaymentCounter("Menunggu Pembayaran", 10)
+
         coEvery {
-            somGetFilterListUseCase.execute(any())
-        } returns Success(SomListFilter.Data.OrderFilterSom(listFilter).statusList.toMutableList())
+            somGetFilterListUseCase.execute()
+        } returns Success(SomListFilter.Data.OrderFilterSom(listFilter, waitingPaymentCounter))
 
-        //when
-        somListViewModel.loadFilter("")
+        somListViewModel.loadFilter()
 
-        //then
         assert(somListViewModel.filterResult.value is Success)
-        assert((somListViewModel.filterResult.value as Success<MutableList<SomListFilter.Data.OrderFilterSom.StatusList>>).data[0].orderStatus == "400")
+        assert((somListViewModel.filterResult.value as Success<SomListFilter.Data.OrderFilterSom>).data.statusList.firstOrNull()?.orderStatus == "400")
+        assert((somListViewModel.filterResult.value as Success<SomListFilter.Data.OrderFilterSom>).data.waitingPaymentCounter.amount > 0)
     }
 
     @Test
     fun getFilterListData_shouldReturnFail() {
         //given
         coEvery {
-            somGetFilterListUseCase.execute(any())
+            somGetFilterListUseCase.execute()
         } returns Fail(Throwable())
 
         //when
-        somListViewModel.loadFilter("")
+        somListViewModel.loadFilter()
 
         //then
         assert(somListViewModel.filterResult.value is Fail)
     }
 
+    @Suppress("UNCHECKED_CAST")
     @Test
     fun getFilterListData_shouldNotReturnEmpty() {
-        //given
+        val waitingPaymentCounter = SomListFilter.Data.OrderFilterSom.WaitingPaymentCounter("Menunggu Pembayaran", 10)
+
         coEvery {
-            somGetFilterListUseCase.execute(any())
-        } returns Success(SomListFilter.Data.OrderFilterSom(listFilter).statusList.toMutableList())
+            somGetFilterListUseCase.execute()
+        } returns Success(SomListFilter.Data.OrderFilterSom(listFilter, waitingPaymentCounter))
 
-        //when
-        somListViewModel.loadFilter("")
+        somListViewModel.loadFilter()
 
-        //then
         assert(somListViewModel.filterResult.value is Success)
-        assert((somListViewModel.filterResult.value as Success<MutableList<SomListFilter.Data.OrderFilterSom.StatusList>>).data.size > 0)
+        assert((somListViewModel.filterResult.value as Success<SomListFilter.Data.OrderFilterSom>).data.statusList.isNotEmpty())
+        assert((somListViewModel.filterResult.value as Success<SomListFilter.Data.OrderFilterSom>).data.waitingPaymentCounter.amount > 0)
     }
 
     // order_list
