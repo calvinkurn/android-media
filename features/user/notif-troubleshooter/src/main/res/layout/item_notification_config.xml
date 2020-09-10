@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/dp_16">
+    android:padding="@dimen/dp_8">
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/pgLoader"
@@ -43,8 +43,8 @@
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnAction"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/dp_88"
+        android:layout_height="@dimen/dp_24"
         android:text="@string/btn_notif_test_play"
         android:layout_marginStart="@dimen/dp_8"
         app:layout_constraintBottom_toBottomOf="parent"

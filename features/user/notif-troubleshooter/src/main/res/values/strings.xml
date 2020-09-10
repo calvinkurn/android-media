@@ -48,7 +48,7 @@
         <![CDATA[Nilai prioritas "Notifikasi": <b>None(%1$d)</b>. Notifikasi muncul, atur ke nilai prioritas lebih tinggi.]]>
     </string>
 
-    <string name="notif_footer_title">Belum terima tes push notification?</string>
+    <string name="notif_footer_title">Belum terima tes push notification? </string>
     <string name="notif_footer_message">Coba bersihkan cache agar kamu bisa tetap terima push notification dari Tokopedia.</string>
     <string name="notif_footer_dnd_message">Matikan mode ini agar kamu bisa tetap terima push notification dari Tokopedia.</string>
 

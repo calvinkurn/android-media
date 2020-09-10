@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         tools:text="@tools:sample/first_names"
         android:textColor="@color/charcoal_grey_96"
-        app:typographyType="heading_4"
+        app:typographyType="heading_5"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
