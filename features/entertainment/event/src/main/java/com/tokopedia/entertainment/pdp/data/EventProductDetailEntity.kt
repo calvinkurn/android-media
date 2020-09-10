@@ -441,7 +441,8 @@ data class Form(
         @SerializedName("value")
         @Expose
         var value: String = "",
-        var valuePosition: String = ""
+        var valuePosition: String = "",
+        var valueList: String = ""
 ): Serializable
 
 data class Group(

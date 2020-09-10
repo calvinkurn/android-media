@@ -53,12 +53,8 @@ object EventPackageMapper {
         else return -1
     }
 
-    fun getAdditionalList(pdp: ProductDetailData, packageID: String, itemMaps: List<ItemMapResponse>):List<EventCheckoutAdditionalData>{
+    fun getAdditionalList(itemMaps: List<ItemMapResponse>):MutableList<EventCheckoutAdditionalData>{
         val additionalList = mutableListOf<EventCheckoutAdditionalData>()
-        if (!getPackage(pdp, packageID).formsPackages.isNullOrEmpty()){
-            additionalList.add(EventCheckoutAdditionalData(idPackage = packageID, additionalType = AdditionalType.PACKAGE_UNFILL))
-        }
-
         if(!itemMaps.isNullOrEmpty()){
             itemMaps.map {
                 for(i in 1..it.quantity) {
@@ -66,7 +62,12 @@ object EventPackageMapper {
                 }
             }
         }
-
         return additionalList
+    }
+
+    fun getAdditionalPackage(pdp:ProductDetailData, packageID: String):EventCheckoutAdditionalData{
+        return if (!getPackage(pdp, packageID).formsPackages.isNullOrEmpty()){
+             EventCheckoutAdditionalData(idPackage = packageID, additionalType = AdditionalType.PACKAGE_UNFILL)
+        } else EventCheckoutAdditionalData()
     }
 }

@@ -35,9 +35,10 @@ class EventPDPFormAdapter(val userSession: UserSessionInterface,
         }
     }
 
-    private fun addOrRemoveData(index:Int, value: String){
+    private fun addOrRemoveData(index:Int, value: String, valueList:String){
         if(formData.get(index).elementType.equals(ELEMENT_LIST)){
             formData.get(index).valuePosition = value
+            formData.get(index).valueList = valueList
         }else {
             formData.get(index).value = value
         }

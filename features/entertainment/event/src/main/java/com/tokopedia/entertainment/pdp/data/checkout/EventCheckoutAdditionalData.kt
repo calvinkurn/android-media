@@ -1,14 +1,17 @@
 package com.tokopedia.entertainment.pdp.data.checkout
 
 import android.os.Parcelable
+import com.tokopedia.entertainment.pdp.data.Form
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class EventCheckoutAdditionalData(
-    val idPackage : String = "",
-    val idItem : String = "",
-    val titleItem : String = "",
-    val additionalType: AdditionalType
+        val idPackage : String = "",
+        val idItem : String = "",
+        val titleItem : String = "",
+        var additionalType: AdditionalType = AdditionalType.NULL_DATA,
+        var listForm : List<Form> = emptyList(),
+        var position : Int = 0
 ): Parcelable
 
 enum class AdditionalType(val type:Int){

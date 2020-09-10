@@ -51,6 +51,7 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener, EventPDP
 
     private var urlPDP = ""
     private var keyActiveData = ""
+    var eventCheckoutAdditionalData = EventCheckoutAdditionalData()
 
     @Inject
     lateinit var viewModel: EventPDPFormViewModel
@@ -118,7 +119,19 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener, EventPDP
             } else {
                 activity?.run {
                     val intent = Intent()
-                    intent.putExtra(EXTRA_DATA_PESSANGER, formAdapter.formData as Serializable)
+                    if(eventCheckoutAdditionalData.additionalType.equals(AdditionalType.NULL_DATA)) {
+                        intent.putExtra(EXTRA_DATA_PESSANGER, formAdapter.formData as Serializable)
+                    } else {
+                        eventCheckoutAdditionalData.listForm = formAdapter.formData
+                        if(eventCheckoutAdditionalData.additionalType.equals(AdditionalType.ITEM_UNFILL) ||
+                                eventCheckoutAdditionalData.additionalType.equals(AdditionalType.ITEM_FILLED)){
+                            eventCheckoutAdditionalData.additionalType = AdditionalType.ITEM_FILLED
+                        } else if(eventCheckoutAdditionalData.additionalType.equals(AdditionalType.PACKAGE_UNFILL) ||
+                                eventCheckoutAdditionalData.additionalType.equals(AdditionalType.PACKAGE_FILLED)){
+                            eventCheckoutAdditionalData.additionalType = AdditionalType.PACKAGE_FILLED
+                        }
+                        intent.putExtra(EXTRA_DATA_PESSANGER, eventCheckoutAdditionalData)
+                    }
                     this.setResult(RESULT_OK, intent)
                     this.finish()
                 }
@@ -146,7 +159,7 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener, EventPDP
 
     private fun setupData() {
         val listForm = activity?.intent?.getSerializableExtra(EXTRA_DATA_PESSANGER)
-        val eventCheckoutAdditionalData = activity?.intent?.extras?.getParcelable(EXTRA_ADDITIONAL_DATA)
+        eventCheckoutAdditionalData = activity?.intent?.extras?.getParcelable(EXTRA_ADDITIONAL_DATA)
                 ?: EventCheckoutAdditionalData(additionalType = AdditionalType.NULL_DATA)
 
         if (listForm != null) {
@@ -205,7 +218,7 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener, EventPDP
                         view.list_form.setData(setListBottomSheetForm(list))
                     } else {
                         listTemp = searchHashMap(keyword.toString(), list)
-                        view.list_form.setData(getSearchableList(keyword.toString(), listTemp))
+                        view.list_form.setData(getSearchableList(listTemp))
                     }
                 }
             })

@@ -23,7 +23,7 @@ import java.util.regex.Pattern
 
 
 class EventPDPTextFieldViewHolder(val view: View,
-                                  val addOrRemoveData: (Int, String) -> Unit,
+                                  val addOrRemoveData: (Int, String, String) -> Unit,
                                   val userSession: UserSessionInterface,
                                   val formListener: OnClickFormListener,
                                   val textFormListener: TextFormListener) : RecyclerView.ViewHolder(view) {
@@ -53,7 +53,7 @@ class EventPDPTextFieldViewHolder(val view: View,
                             txtValue.setError(true)
                         }
 
-                        addOrRemoveData(position, text.toString())
+                        addOrRemoveData(position, text.toString(), "")
                     }
                 })
             }
@@ -65,7 +65,6 @@ class EventPDPTextFieldViewHolder(val view: View,
             }
 
             if (element.value.isNotBlank()) {
-                element.valuePosition = getList(element.value).get(keyActiveBottomSheet) ?: ""
                 if (element.elementType.equals(ELEMENT_TEXT)) txtValue.textFieldInput.setText(element.value)
                 if (element.elementType.equals(ELEMENT_LIST)) {
                     val list = getList(element.value)
@@ -75,14 +74,15 @@ class EventPDPTextFieldViewHolder(val view: View,
 
                             val value = if (keyActiveBottomSheet.isNullOrEmpty()) {
                                list.getValueByPosition(0)
-                            } else list.get(keyActiveBottomSheet)
+                            } else list.get(keyActiveBottomSheet) ?: ""
 
                             val key = if (keyActiveBottomSheet.isNullOrEmpty()) {
                                 list.getKeyByPosition(0)
                             } else keyActiveBottomSheet
 
                             setText(value)
-                            addOrRemoveData(position, key)
+                            addOrRemoveData(position, key, value)
+
                             setOnTouchListener(object : View.OnTouchListener {
                                 override fun onTouch(v: View?, event: MotionEvent?): Boolean {
                                     when (event?.action) {

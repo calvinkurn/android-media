@@ -6,14 +6,14 @@
     android:layout_height="wrap_content">
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tg_event_checkout_additonal_title"
+        android:id="@+id/tg_event_checkout_additonal_item_title"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/ent_checkout_data_tambahan_title"
+        android:text="@string/ent_checkout_data_pengunjung_title"
         app:typographyType="body_1"
         app:typographyWeight="bold"
         android:textColor="@color/Neutral_N700"
@@ -21,7 +21,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_event_checkout_additional"
-        app:layout_constraintTop_toBottomOf="@+id/tg_event_checkout_additonal_title"
+        app:layout_constraintTop_toBottomOf="@+id/tg_event_checkout_additonal_item_title"
         android:layout_marginTop="@dimen/spacing_lvl4"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_width="match_parent"

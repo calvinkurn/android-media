@@ -13,14 +13,14 @@ object EventFormMapper {
     fun eventFormMapper(productDetailData: ProductDetailData, eventCheckoutAdditionalData: EventCheckoutAdditionalData):MutableList<Form>{
         val formData: MutableList<Form> = mutableListOf()
         when(eventCheckoutAdditionalData.additionalType){
-             AdditionalType.PACKAGE_UNFILL -> {
+             AdditionalType.PACKAGE_UNFILL, AdditionalType.PACKAGE_FILLED -> {
                  val packagePdp = getPackage(productDetailData, eventCheckoutAdditionalData.idPackage)
                  packagePdp.formsPackages.map { 
                      formData.add(it) 
                  }
              }
 
-            AdditionalType.ITEM_UNFILL -> {
+            AdditionalType.ITEM_UNFILL, AdditionalType.ITEM_FILLED -> {
                 val packagePdp = getPackage(productDetailData, eventCheckoutAdditionalData.idPackage)
                 val packageItem = getPackageItem(packagePdp, eventCheckoutAdditionalData.idItem)
                 packageItem.formsItems.map {
@@ -53,7 +53,7 @@ object EventFormMapper {
         } as LinkedHashMap<String,String>
     }
 
-    fun getSearchableList(keyword: String, mapData: LinkedHashMap<String, String>):ArrayList<ListItemUnify>{
+    fun getSearchableList(mapData: LinkedHashMap<String, String>):ArrayList<ListItemUnify>{
         val array = arrayListOf<ListItemUnify>()
         mapData.map {
             val itemUnify = ListItemUnify(it.value, "")
@@ -61,5 +61,12 @@ object EventFormMapper {
             array.add(itemUnify)
         }
         return array
+    }
+
+    fun mapFormToString(list : List<Form>): List<String>{
+        return list.map {
+            if(it.elementType.equals("list"))
+            it.valueList else it.value
+        }
     }
 }

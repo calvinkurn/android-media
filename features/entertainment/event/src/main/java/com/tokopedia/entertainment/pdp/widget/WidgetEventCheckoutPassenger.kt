@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.pdp.adapter.EventCheckoutPassengerDataAdapter
 import com.tokopedia.entertainment.pdp.data.Form
+import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventFormMapper.mapFormToString
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -32,9 +33,5 @@ class WidgetEventCheckoutPassenger @JvmOverloads constructor(context: Context, a
             this.adapter = adapter
         }
 
-    }
-
-    fun mapFormToString(list : List<Form>): List<String>{
-        return list.map { it.value }
     }
 }

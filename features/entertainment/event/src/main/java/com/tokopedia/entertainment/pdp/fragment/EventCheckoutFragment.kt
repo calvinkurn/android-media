@@ -17,6 +17,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
+import com.meituan.robust.patch.annotaion.Add
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -36,6 +37,7 @@ import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity.Companion.
 import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity.Companion.EXTRA_PACKAGE_ID
 import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity.Companion.EXTRA_URL_PDP
 import com.tokopedia.entertainment.pdp.adapter.EventCheckoutAdditionalAdapter
+import com.tokopedia.entertainment.pdp.adapter.EventCheckoutPassengerDataAdapter
 import com.tokopedia.entertainment.pdp.adapter.EventCheckoutPriceAdapter
 import com.tokopedia.entertainment.pdp.analytic.EventPDPTracking
 import com.tokopedia.entertainment.pdp.common.util.CurrencyFormatter.getRupiahFormat
@@ -45,9 +47,11 @@ import com.tokopedia.entertainment.pdp.data.Form
 import com.tokopedia.entertainment.pdp.data.ProductDetailData
 import com.tokopedia.entertainment.pdp.data.checkout.AdditionalType
 import com.tokopedia.entertainment.pdp.data.checkout.EventCheckoutAdditionalData
+import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventFormMapper.mapFormToString
 import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventMetaDataMapper.getCheckoutParam
 import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventMetaDataMapper.getPassengerMetaData
 import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventPackageMapper.getAdditionalList
+import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventPackageMapper.getAdditionalPackage
 import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventPackageMapper.getItemMap
 import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventPackageMapper.getPackage
 import com.tokopedia.entertainment.pdp.data.pdp.MetaDataResponse
@@ -64,12 +68,15 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.bottom_sheet_event_checkout.view.*
 import kotlinx.android.synthetic.main.fragment_event_checkout.*
-import kotlinx.android.synthetic.main.partial_event_checkout_additional.*
+import kotlinx.android.synthetic.main.item_checkout_event_data_tambahan_package_filled.*
+import kotlinx.android.synthetic.main.partial_event_checkout_additional_item.*
+import kotlinx.android.synthetic.main.partial_event_checkout_additional_package.*
 import kotlinx.android.synthetic.main.partial_event_checkout_desc.*
 import kotlinx.android.synthetic.main.partial_event_checkout_footer.*
 import kotlinx.android.synthetic.main.partial_event_checkout_passenger.*
 import kotlinx.android.synthetic.main.partial_event_checkout_summary.*
 import kotlinx.android.synthetic.main.widget_event_checkout_passenger.*
+import kotlinx.android.synthetic.main.widget_event_checkout_passenger.view.*
 import okhttp3.Route
 import java.io.Serializable
 import javax.inject.Inject
@@ -80,14 +87,16 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
     private var urlPDP: String = ""
     private var metadata = MetaDataResponse()
     private var amount: Int = 0
-    private var packageID : String = ""
+    private var packageID: String = ""
 
     private var name: String = ""
     private var email: String = ""
     private var promoCode: String = ""
 
     private var forms: List<Form> = emptyList()
-    private var listAdditional : List<EventCheckoutAdditionalData> = emptyList()
+    private var listAdditionalItem: MutableList<EventCheckoutAdditionalData> = mutableListOf()
+    private var eventCheckoutAdditionalDataPackage: EventCheckoutAdditionalData = EventCheckoutAdditionalData()
+    private val adapterAdditional = EventCheckoutAdditionalAdapter(this)
 
     lateinit var performanceMonitoring: PerformanceMonitoring
 
@@ -107,7 +116,7 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
         getComponent(EventPDPComponent::class.java).inject(this)
     }
 
-    private fun initializePerformance(){
+    private fun initializePerformance() {
         performanceMonitoring = PerformanceMonitoring.start(ENT_CHECKOUT_PERFORMANCE)
     }
 
@@ -233,7 +242,8 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
         renderDesc(eventProductDetailEntity.eventProductDetail.productDetailData)
         renderPassenger()
         renderSummary(eventProductDetailEntity.eventProductDetail.productDetailData)
-        renderAdditional(eventProductDetailEntity.eventProductDetail.productDetailData)
+        renderAdditionalItem()
+        renderAdditionalPackage(eventProductDetailEntity.eventProductDetail.productDetailData)
         renderFooter(eventProductDetailEntity.eventProductDetail.productDetailData)
 
     }
@@ -255,7 +265,7 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
         }
     }
 
-    private fun goToPageForm(){
+    private fun goToPageForm() {
         context?.run {
             val intent = RouteManager.getIntent(this, "${ApplinkConstInternalEntertainment.EVENT_FORM}/$urlPDP")
             intent.putExtra(EXTRA_DATA_PESSANGER, forms as Serializable)
@@ -286,18 +296,49 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
         eventPDPTracking.onViewCheckoutPage(getPackage(pdp, packageID), pdp, amount)
     }
 
-    private fun renderAdditional(pdp: ProductDetailData){
-        listAdditional = getAdditionalList(pdp, packageID, metadata.itemMap)
-        if (!listAdditional.isNullOrEmpty()) {
-            val adapterAdditional = EventCheckoutAdditionalAdapter(this)
-            adapterAdditional.setList(listAdditional)
+    private fun renderAdditionalItem() {
+        listAdditionalItem = getAdditionalList(metadata.itemMap)
+        if (!listAdditionalItem.isNullOrEmpty()) {
+            adapterAdditional.setList(listAdditionalItem)
             rv_event_checkout_additional.apply {
                 layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
                 adapter = adapterAdditional
             }
         } else {
-            partial_event_checkout_additional.visibility = View.GONE
+            partial_event_checkout_additional_item.gone()
         }
+    }
+
+    private fun renderAdditionalPackage(pdp: ProductDetailData) {
+        eventCheckoutAdditionalDataPackage = getAdditionalPackage(pdp, packageID)
+        if (eventCheckoutAdditionalDataPackage.additionalType.equals(AdditionalType.NULL_DATA)) {
+            partial_event_checkout_additional_package.gone()
+        } else {
+            item_checkout_event_data_tambahan_package.setOnClickListener {
+                clickAdditional(eventCheckoutAdditionalDataPackage, REQUEST_CODE_ADDITIONAL_PACKAGE)
+            }
+            img_event_package_additional.setOnClickListener {
+                clickAdditional(eventCheckoutAdditionalDataPackage, REQUEST_CODE_ADDITIONAL_PACKAGE)
+            }
+        }
+    }
+
+    private fun updateAdditionalPackage(){
+        if(eventCheckoutAdditionalDataPackage.additionalType.equals(AdditionalType.PACKAGE_FILLED)
+                && eventCheckoutAdditionalDataPackage.listForm.isNotEmpty()){
+            item_checkout_event_data_tambahan_package.gone()
+            item_checkout_event_data_tambahan_package_filled.show()
+            val adapter = EventCheckoutPassengerDataAdapter()
+            adapter.setList(mapFormToString(eventCheckoutAdditionalDataPackage.listForm))
+            rv_event_checkout_additional_package_filled.apply {
+                layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+                this.adapter = adapter
+            }
+            item_checkout_event_additional_package_filled.setOnClickListener {
+                clickAdditional(eventCheckoutAdditionalDataPackage, REQUEST_CODE_ADDITIONAL_PACKAGE)
+            }
+        }
+
     }
 
     private fun renderFooter(productDetailData: ProductDetailData) {
@@ -316,19 +357,19 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
                         Toaster.make(view, it.getString(R.string.ent_event_checkout_submit_name), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error))
                     } else {
                         progressDialog.show()
-                         eventPDPTracking.onClickCheckoutButton(getPackage(productDetailData, packageID), productDetailData, amount)
+                        eventPDPTracking.onClickCheckoutButton(getPackage(productDetailData, packageID), productDetailData, amount)
                         if (name.isEmpty()) name = userSessionInterface.name
                         if (email.isEmpty()) email = userSessionInterface.email
                         metadata = getPassengerMetaData(metadata, forms)
                         eventCheckoutViewModel.checkoutEvent(EventQuery.mutationEventCheckoutV2(),
-                                getCheckoutParam(metadata,productDetailData, getPackage(productDetailData,packageID)))
+                                getCheckoutParam(metadata, productDetailData, getPackage(productDetailData, packageID)))
                     }
                 }
             }
         }
     }
 
-    private fun showBottomSheetTnc(context: Context, tnc:String) {
+    private fun showBottomSheetTnc(context: Context, tnc: String) {
         val view = LayoutInflater.from(context).inflate(R.layout.bottom_sheet_event_checkout, null)
         val bottomSheets = BottomSheetUnify()
         bottomSheets.apply {
@@ -375,8 +416,20 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
                     forms = data.getSerializableExtra(EXTRA_DATA_PESSANGER) as List<Form>
                     setPassengerData(forms)
                 }
+            } else if (requestCode == REQUEST_CODE_ADDITIONAL_ITEM) {
+                data?.let {
+                    val additionalData = data.getParcelableExtra<EventCheckoutAdditionalData>(EXTRA_DATA_PESSANGER)
+                    listAdditionalItem[additionalData.position] = additionalData
+                    adapterAdditional.notifyDataSetChanged()
+                }
+            } else if (requestCode == REQUEST_CODE_ADDITIONAL_PACKAGE) {
+                data?.let {
+                    val additionalData = data.getParcelableExtra<EventCheckoutAdditionalData>(EXTRA_DATA_PESSANGER)
+                    eventCheckoutAdditionalDataPackage = additionalData
+                    updateAdditionalPackage()
+                }
             }
-        } else if(resultCode == PAYMENT_SUCCESS){
+        } else if (resultCode == PAYMENT_SUCCESS) {
             val taskStackBuilder = TaskStackBuilder.create(context)
             val intentHomeEvent = RouteManager.getIntent(context, ApplinkConstInternalEntertainment.EVENT_HOME)
             taskStackBuilder.addNextIntent(intentHomeEvent)
@@ -413,13 +466,16 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
     }
 
     override fun onClickAdditional(additonal: EventCheckoutAdditionalData) {
+        clickAdditional(additonal, REQUEST_CODE_ADDITIONAL_ITEM)
+    }
+
+    private fun clickAdditional(additonal: EventCheckoutAdditionalData, codeAdditional: Int) {
         context?.run {
             val intent = RouteManager.getIntent(this, "${ApplinkConstInternalEntertainment.EVENT_FORM}/$urlPDP")
             intent.putExtra(EXTRA_ADDITIONAL_DATA,additonal)
-            startActivityForResult(intent, REQUEST_CODE_FORM)
+            startActivityForResult(intent, codeAdditional)
         }
     }
-
 
     override fun onDestroyView() {
         performanceMonitoring.stopTrace()
@@ -429,10 +485,11 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
     companion object {
         const val DATE_FORMAT = "EEE, d MMM yyyy"
         const val REQUEST_CODE_FORM = 100
+        const val REQUEST_CODE_ADDITIONAL_ITEM = 101
+        const val REQUEST_CODE_ADDITIONAL_PACKAGE = 102
 
         const val EXTRA_DATA_PESSANGER = "EXTRA_DATA_PESSANGER"
         const val EXTRA_ADDITIONAL_DATA = "EXTRA_ADDITIONAL_DATA"
-
 
         const val PASSENGER_NAME = "fullname"
         const val PASSENGER_EMAIL = "email"
