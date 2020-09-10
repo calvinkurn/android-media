@@ -204,6 +204,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // start PLT monitoring
         startPerformanceMonitoring()
         super.onCreate(savedInstanceState)
 
@@ -580,6 +581,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         subscribeToPreOrderDurationInputStatus()
         subscribeToInputStatus()
 
+        // stop PLT monitoring, because no API hit at load page
         stopPreparePagePerformanceMonitoring()
         stopPerformanceMonitoring()
     }

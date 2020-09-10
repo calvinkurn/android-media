@@ -71,6 +71,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
     lateinit var userSession: UserSessionInterface
 
     private var variantDetailFieldsAdapter: VariantDetailFieldsAdapter? = null
+    // PLT Monitoring
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
     override fun getScreenName(): String {
@@ -82,6 +83,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // start PLT Monitoring
         startPerformanceMonitoring()
         super.onCreate(savedInstanceState)
 
@@ -146,6 +148,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         enableSkuIfExist()
         setupToolbarActions()
 
+        // stop PLT monitoring when all view prepared/ no network call
         stopPreparePagePerformanceMonitoring()
         stopPerformanceMonitoring()
     }

@@ -120,12 +120,12 @@ class AddEditProductVariantFragment :
     private var cancellationDialog: DialogUnify? = null
     private var tvDeleteAll: TextView? = null
 
-    private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
     private var userSession: UserSessionInterface? = null
     private var isLoggedin = ""
     private var userId = ""
     private var shopId = ""
-
+    // start PLT monitoring
+    private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
     override fun getScreenName(): String {
         return ""
@@ -136,6 +136,7 @@ class AddEditProductVariantFragment :
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // start PLT monitoring
         startPerformanceMonitoring()
         super.onCreate(savedInstanceState)
 
@@ -247,6 +248,7 @@ class AddEditProductVariantFragment :
         }
 
         setupToolbarActions()
+        // stop PLT prepare monitoring
         stopPreparePagePerformanceMonitoring()
     }
 
@@ -799,6 +801,7 @@ class AddEditProductVariantFragment :
     }
 
     private fun observeGetCategoryVariantCombinationResult() {
+        // start network PLT monitoring
         startNetworkRequestPerformanceMonitoring()
         viewModel.getCategoryVariantCombinationResult.observe(viewLifecycleOwner, Observer { result ->
             // clear adapter before rendering
@@ -811,10 +814,13 @@ class AddEditProductVariantFragment :
                     val selectedVariantDetails = viewModel.getSelectedVariantDetails()
                     // setup the page
                     setupAddEditVariantPage(variantDataList, selectedVariantDetails)
+
+                    // continue to render PLT monitoring if success
                     stopNetworkRequestPerformanceMonitoring()
                     startRenderPerformanceMonitoring()
                 }
                 is Fail -> {
+                    // end monitoring if failed
                     stopPerformanceMonitoring()
                     context?.let {
                         showGetCategoryVariantCombinationErrorToast(

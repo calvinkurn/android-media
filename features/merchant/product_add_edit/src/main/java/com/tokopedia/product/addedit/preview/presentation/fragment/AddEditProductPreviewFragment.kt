@@ -181,6 +181,7 @@ class AddEditProductPreviewFragment:
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // start PLT monitoring
         startPerformanceMonitoring()
 
         userSession = UserSession(requireContext())
@@ -467,6 +468,7 @@ class AddEditProductPreviewFragment:
         observeIsLoading()
         observeSaveProductDraft()
 
+        // stop prepare page PLT monitoring
         stopPreparePagePerformanceMonitoring()
     }
 
@@ -858,6 +860,7 @@ class AddEditProductPreviewFragment:
     }
 
     private fun observeProductData() {
+        // start PLT monitoring network
         startNetworkRequestPerformanceMonitoring()
         viewModel.getProductResult.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
@@ -878,10 +881,13 @@ class AddEditProductPreviewFragment:
                             }
                         }
                     }
+                    // continue to PLT monitoring render
                     stopNetworkRequestPerformanceMonitoring()
                     startRenderPerformanceMonitoring()
                 }
                 is Fail -> {
+                    // stop PLT if failed getting result
+                    stopPerformanceMonitoring()
                     context?.let {
                         showGetProductErrorToast(ErrorHandler.getErrorMessage(it, result.throwable))
                         AddEditProductErrorHandler.logExceptionToCrashlytics(result.throwable)

@@ -84,9 +84,10 @@ class AddEditProductDescriptionFragment:
         const val VIDEO_REQUEST_DELAY = 250L
     }
 
-    private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
     private lateinit var userSession: UserSessionInterface
     private lateinit var shopId: String
+    // PLT Monitoring
+    private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
     @Inject
     lateinit var descriptionViewModel: AddEditProductDescriptionViewModel
@@ -164,6 +165,7 @@ class AddEditProductDescriptionFragment:
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // PLT Monitoring
         startPerformanceMonitoring()
 
         userSession = UserSession(requireContext())
@@ -289,6 +291,7 @@ class AddEditProductDescriptionFragment:
         observeProductInputModel()
         observeProductVideo()
 
+        // PLT Monitoring
         stopPreparePagePerformanceMonitoring()
     }
 
@@ -515,8 +518,11 @@ class AddEditProductDescriptionFragment:
         if (videoLinks.isNotEmpty()) {
             super.clearAllData()
             super.renderList(videoLinks)
+
+            // start network monitoring when videoLinks is not empty
             startNetworkRequestPerformanceMonitoring()
         } else {
+            // end all monitoring when videoLinks is empty
             stopPreparePagePerformanceMonitoring()
             stopPerformanceMonitoring()
         }
