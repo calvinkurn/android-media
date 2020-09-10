@@ -1154,25 +1154,28 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 }
                 dotMenu.actionType.equals(GQL_ATC, true) -> {
                     bottomSheetKebabMenu?.dismiss()
-                    val listOfStrings = Gson().fromJson(orderData.metadata.listProducts, mutableListOf<String>().javaClass)
-                    val jsonArray: JsonArray = Gson().toJsonTree(listOfStrings).asJsonArray
-                    uohListViewModel.doAtc(GraphqlHelper.loadRawString(resources, R.raw.buy_again), jsonArray)
 
-                    // analytics
-                    val arrayListProducts = arrayListOf<ECommerceAdd.Add.Products>()
-                    var i = 0
-                    orderData.metadata.products.forEach {
-                        val objProduct = jsonArray.get(i).asJsonObject
-                        arrayListProducts.add(ECommerceAdd.Add.Products(
-                                name = it.title,
-                                id = objProduct.get(EE_PRODUCT_ID).asString,
-                                price = objProduct.get(EE_PRODUCT_PRICE).asString,
-                                quantity = objProduct.get(EE_QUANTITY).asString,
-                                dimension79 = objProduct.get(EE_SHOP_ID).asString
-                        ))
-                        i++
+                    if (orderData.metadata.listProducts.isNotEmpty()) {
+                        val listOfStrings = Gson().fromJson(orderData.metadata.listProducts, mutableListOf<String>().javaClass)
+                        val jsonArray: JsonArray = Gson().toJsonTree(listOfStrings).asJsonArray
+                        uohListViewModel.doAtc(GraphqlHelper.loadRawString(resources, R.raw.buy_again), jsonArray)
+
+                        // analytics
+                        val arrayListProducts = arrayListOf<ECommerceAdd.Add.Products>()
+                        var i = 0
+                        orderData.metadata.products.forEach {
+                            val objProduct = jsonArray.get(i).asJsonObject
+                            arrayListProducts.add(ECommerceAdd.Add.Products(
+                                    name = it.title,
+                                    id = objProduct.get(EE_PRODUCT_ID).asString,
+                                    price = objProduct.get(EE_PRODUCT_PRICE).asString,
+                                    quantity = objProduct.get(EE_QUANTITY).asString,
+                                    dimension79 = objProduct.get(EE_SHOP_ID).asString
+                            ))
+                            i++
+                        }
+                        userSession?.userId?.let { UohAnalytics.clickBeliLagiOnOrderCardMP("", it, arrayListProducts) }
                     }
-                    userSession?.userId?.let { UohAnalytics.clickBeliLagiOnOrderCardMP("", it, arrayListProducts) }
                 }
                 dotMenu.actionType.equals(GQL_MP_FINISH, true) -> {
                     orderIdNeedUpdated = orderData.orderUUID
@@ -1200,16 +1203,25 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         }
 
         // analytics
-        val listOfStrings = Gson().fromJson(order.metadata.listProducts, mutableListOf<String>().javaClass)
-        val jsonArray: JsonArray = Gson().toJsonTree(listOfStrings).asJsonArray
+        var jsonArray = JsonArray()
+        if (order.metadata.listProducts.isNotEmpty()) {
+            val listOfStrings = Gson().fromJson(order.metadata.listProducts, mutableListOf<String>().javaClass)
+            jsonArray = Gson().toJsonTree(listOfStrings).asJsonArray
+        }
         val arrayListProducts = arrayListOf<ECommerceClick.Products>()
         var i = 0
         order.metadata.products.forEach {
-            val objProduct = jsonArray.get(i).asJsonObject
+            var eeProductId = ""
+            var eeProductPrice = ""
+            if (order.metadata.listProducts.isNotEmpty()) {
+                val objProduct = jsonArray.get(i).asJsonObject
+                eeProductId = objProduct.get(EE_PRODUCT_ID).asString
+                eeProductPrice = objProduct.get(EE_PRODUCT_PRICE).asString
+            }
             arrayListProducts.add(ECommerceClick.Products(
                     name = it.title,
-                    id = objProduct.get(EE_PRODUCT_ID).asString,
-                    price = objProduct.get(EE_PRODUCT_PRICE).asString,
+                    id = eeProductId,
+                    price = eeProductPrice,
                     list = "/order list - ${order.verticalCategory}",
                     position = index.toString()
             ))
@@ -1229,9 +1241,11 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     showBottomSheetFinishOrder(index, order.verticalID, false)
                 }
                 button.actionType.equals(GQL_ATC, true) -> {
-                    val listOfStrings = Gson().fromJson(order.metadata.listProducts, mutableListOf<String>().javaClass)
-                    val jsonArray: JsonArray = Gson().toJsonTree(listOfStrings).asJsonArray
-                    uohListViewModel.doAtc(GraphqlHelper.loadRawString(resources, R.raw.buy_again), jsonArray)
+                    if (order.metadata.listProducts.isNotEmpty()) {
+                        val listOfStrings = Gson().fromJson(order.metadata.listProducts, mutableListOf<String>().javaClass)
+                        val jsonArray: JsonArray = Gson().toJsonTree(listOfStrings).asJsonArray
+                        uohListViewModel.doAtc(GraphqlHelper.loadRawString(resources, R.raw.buy_again), jsonArray)
+                    }
                 }
                 button.actionType.equals(GQL_TRACK, true) -> {
                     val applinkTrack = ApplinkConst.ORDER_TRACKING.replace(REPLACE_ORDER_ID, order.verticalID)
@@ -1263,16 +1277,26 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     override fun trackViewOrderCard(order: UohListOrder.Data.UohOrders.Order, index: Int) {
-        val listOfStrings = Gson().fromJson(order.metadata.listProducts, mutableListOf<String>().javaClass)
-        val jsonArray: JsonArray = Gson().toJsonTree(listOfStrings).asJsonArray
+        var jsonArray = JsonArray()
+        if (order.metadata.listProducts.isNotEmpty()) {
+            val listOfStrings = Gson().fromJson(order.metadata.listProducts, mutableListOf<String>().javaClass)
+            jsonArray = Gson().toJsonTree(listOfStrings).asJsonArray
+        }
         val arrayListProducts = arrayListOf<ECommerceImpressions.Impressions>()
         var i = 0
         order.metadata.products.forEach {
-            val objProduct = jsonArray.get(i).asJsonObject
+            var eeProductId = ""
+            var eeProductPrice = ""
+            if (order.metadata.listProducts.isNotEmpty()) {
+                val objProduct = jsonArray.get(i).asJsonObject
+                eeProductId = objProduct.get(EE_PRODUCT_ID).asString
+                eeProductPrice = objProduct.get(EE_PRODUCT_PRICE).asString
+            }
+
             arrayListProducts.add(ECommerceImpressions.Impressions(
                     name = it.title,
-                    id = objProduct.get(EE_PRODUCT_ID).asString,
-                    price = objProduct.get(EE_PRODUCT_PRICE).asString,
+                    id = eeProductId,
+                    price = eeProductPrice,
                     list = "/order list - ${order.verticalCategory}",
                     position = index.toString()
             ))
