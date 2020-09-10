@@ -339,7 +339,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
                 bookingViewModel.getDepartureJourney(),
                 bookingViewModel.getReturnJourney(),
                 bookingViewModel.getSearchParam(),
-                bookingViewModel.getFlightPriceModel().comboKey ?: "")
+                bookingViewModel.getFlightPriceModel().comboKey,
+                userSession.userId)
 
         flightAnalytics.eventBranchCheckoutFlight(
                 "${bookingViewModel.getDepartureJourney()?.departureAirportCity}-${bookingViewModel.getDepartureJourney()?.arrivalAirportCity}",
