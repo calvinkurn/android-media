@@ -10,4 +10,9 @@ object AddEditProductPerformanceMonitoringConstants {
     const val ADD_EDIT_PRODUCT_DESCRIPTION_PLT_PREPARE_METRICS = "add_edit_product_description_plt_prepare_metrics"
     const val ADD_EDIT_PRODUCT_DESCRIPTION_PLT_NETWORK_METRICS = "add_edit_product_description_plt_network_metrics"
     const val ADD_EDIT_PRODUCT_DESCRIPTION_PLT_RENDER_METRICS = "add_edit_product_description_plt_render_metrics"
+
+    const val ADD_EDIT_PRODUCT_PREVIEW_TRACE = "add_edit_product_preview_trace"
+    const val ADD_EDIT_PRODUCT_PREVIEW_PLT_PREPARE_METRICS = "add_edit_product_preview_plt_prepare_metrics"
+    const val ADD_EDIT_PRODUCT_PREVIEW_PLT_NETWORK_METRICS = "add_edit_product_preview_plt_network_metrics"
+    const val ADD_EDIT_PRODUCT_PREVIEW_PLT_RENDER_METRICS = "add_edit_product_preview_plt_render_metrics"
 }
