@@ -572,7 +572,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     }
 
     private fun forceShowOnboarding(onboarding: OccMainOnboarding?) {
-        if (onboarding?.isForceShowCoachMark == true || onboarding != null) {
+        if (onboarding?.isForceShowCoachMark == true) {
             showOnboarding(onboarding)
             viewModel.consumeForceShowOnboarding()
         }
