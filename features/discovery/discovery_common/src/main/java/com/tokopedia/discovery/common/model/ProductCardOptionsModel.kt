@@ -105,13 +105,14 @@ data class ProductCardOptionsModel(
         parcel.writeString(screenName)
         parcel.writeString(seeSimilarProductEvent)
         parcel.writeParcelable(addToCartParams, flags)
+        parcel.writeParcelable(shop, flags)
         parcel.writeString(productName)
         parcel.writeString(categoryName)
         parcel.writeString(formattedPrice)
-        parcel.writeParcelable(wishlistResult, flags)
-        parcel.writeParcelable(addToCartResult, flags)
         parcel.writeString(productImageUrl)
         parcel.writeString(productUrl)
+        parcel.writeParcelable(wishlistResult, flags)
+        parcel.writeParcelable(addToCartResult, flags)
     }
 
     override fun describeContents(): Int {

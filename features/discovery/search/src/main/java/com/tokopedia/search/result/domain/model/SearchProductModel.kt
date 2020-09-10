@@ -356,7 +356,11 @@ data class SearchProductModel(
 
             @SerializedName("minOrder")
             @Expose
-            val minOrder: Int = 1
+            val minOrder: Int = 1,
+
+            @SerializedName("url")
+            @Expose
+            val url: String = ""
     ) {
 
         fun isOrganicAds(): Boolean = ads.id.isNotEmpty()
@@ -399,7 +403,11 @@ data class SearchProductModel(
 
             @SerializedName("isPowerBadge")
             @Expose
-            val isPowerBadge: Boolean = false
+            val isPowerBadge: Boolean = false,
+
+            @SerializedName("url")
+            @Expose
+            val url: String = ""
     )
 
     data class ProductFreeOngkir(

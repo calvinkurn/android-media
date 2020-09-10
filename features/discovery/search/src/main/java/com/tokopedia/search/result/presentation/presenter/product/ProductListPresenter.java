@@ -492,6 +492,7 @@ final class ProductListPresenter
                     item.setShopName(topAds.getShop().getName());
                     item.setShopOfficialStore(topAds.getShop().isShop_is_official());
                     item.setShopPowerMerchant(topAds.getShop().isGoldShop());
+                    item.setShopUrl(topAds.getShop().getUri());
                     item.setOriginalPrice(topAds.getProduct().getCampaign().getOriginalPrice());
                     item.setDiscountPercentage(topAds.getProduct().getCampaign().getDiscountPercentage());
                     item.setLabelGroupList(mapLabelGroupList(topAds.getProduct().getLabelGroupList()));
@@ -499,6 +500,7 @@ final class ProductListPresenter
                     item.setPosition(topAdsCount);
                     item.setCategoryID(topAds.getProduct().getCategory().getId());
                     item.setCategoryBreadcrumb(topAds.getProduct().getCategoryBreadcrumb());
+                    item.setProductUrl(topAds.getProduct().getUri());
                     list.add(i, item);
                     j++;
                     topAdsCount++;

@@ -92,6 +92,7 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                         id
                         name
                         city
+                        url
                         isOfficial
                         isPowerBadge
                     }
@@ -118,6 +119,7 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                     boosterList
                     source_engine
                     minOrder
+                    url
                     labelGroups {
                         title
                         position

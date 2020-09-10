@@ -875,10 +875,14 @@ public class ProductListFragment
         ProductCardOptionsModel.Shop shop = new ProductCardOptionsModel.Shop();
         shop.setShopId(item.getShopID());
         shop.setShopName(item.getShopName());
-//        shop.setShopUrl(item.getShopUrl());
+        shop.setShopUrl(item.getShopUrl());
         productCardOptionsModel.setShop(shop);
 
         productCardOptionsModel.setHasVisitShop(true);
+
+        productCardOptionsModel.setHasShareProduct(true);
+        productCardOptionsModel.setProductImageUrl(item.getImageUrl());
+        productCardOptionsModel.setProductUrl(item.getProductUrl());
 
         return productCardOptionsModel;
     }

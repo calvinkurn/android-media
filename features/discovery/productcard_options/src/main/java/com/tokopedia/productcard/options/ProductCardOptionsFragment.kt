@@ -14,6 +14,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery.common.EventObserver
 import com.tokopedia.discovery.common.manager.*
+import com.tokopedia.product.share.ProductShare
 import com.tokopedia.productcard.options.item.ProductCardOptionsItemModel
 import com.tokopedia.productcard.options.item.ProductCardOptionsItemView
 import com.tokopedia.productcard.options.tracking.ProductCardOptionsTracking
@@ -51,6 +52,12 @@ internal class ProductCardOptionsFragment: TkpdBaseV4Fragment() {
         observeTrackingSeeSimilarProductsEventLiveData()
         observeAddToCartEventLiveData()
         observeRouteToShopPageEvent()
+
+        productCardOptionsViewModel?.getShareProductEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
+            activity?.let { activity ->
+                ProductShare(activity).share(it, {}, {})
+            }
+        })
     }
 
     private fun observeOptionListLiveData() {
@@ -140,13 +147,13 @@ internal class ProductCardOptionsFragment: TkpdBaseV4Fragment() {
     }
 
     private fun observeAddToCartEventLiveData() {
-        productCardOptionsViewModel?.getAddToCartEventLiveData()?.observe(viewLifecycleOwner, Observer {
+        productCardOptionsViewModel?.getAddToCartEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
             sendProductCardOptionsResult(PRODUCT_CARD_OPTIONS_RESULT_CODE_ATC)
         })
     }
 
     private fun observeRouteToShopPageEvent() {
-        productCardOptionsViewModel?.getRouteToShopPageEventLiveData()?.observe(viewLifecycleOwner, Observer {
+        productCardOptionsViewModel?.getRouteToShopPageEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
             routeToShopPage()
             sendProductCardOptionsResult(PRODUCT_CARD_OPTIONS_RESULT_CODE_VISIT_SHOP)
         })

@@ -37,6 +37,7 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
     private String shopID;
     private String shopName;
     private String shopCity;
+    private String shopUrl;
     private boolean isWishlisted;
     private boolean isWishlistButtonEnabled = true;
     private List<BadgeItemViewModel> badgesList;
@@ -59,6 +60,7 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
     private int minOrder = 1;
     private boolean isShopOfficialStore = false;
     private boolean isShopPowerMerchant = false;
+    private String productUrl = "";
 
     public boolean isTopAds() {
         return isTopAds;
@@ -206,6 +208,14 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
 
     public String getShopCity() {
         return shopCity;
+    }
+
+    public void setShopUrl(String shopUrl) {
+        this.shopUrl = shopUrl;
+    }
+
+    public String getShopUrl() {
+        return this.shopUrl;
     }
 
     public boolean isWishlisted() {
@@ -366,6 +376,14 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
 
     public boolean isShopPowerMerchant() {
         return this.isShopPowerMerchant;
+    }
+
+    public void setProductUrl(String productUrl) {
+        this.productUrl = productUrl;
+    }
+
+    public String getProductUrl() {
+        return this.productUrl;
     }
 
     public ProductItemViewModel() {

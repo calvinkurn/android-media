@@ -303,7 +303,11 @@ internal class ProductCardOptionsViewModel(
                 shareProductEventLiveData.postValue(Event(ProductData(
                         productId = productCardOptionsModel.productId,
                         productName = productCardOptionsModel.productName,
-                        priceText = productCardOptionsModel.formattedPrice
+                        priceText = productCardOptionsModel.formattedPrice,
+                        productImageUrl = productCardOptionsModel.productImageUrl,
+                        productUrl = productCardOptionsModel.productUrl,
+                        shopName = productCardOptionsModel.shopName,
+                        shopUrl = productCardOptionsModel.shopUrl
                 )))
             }
             productCardOptionsItemList.addDivider()
