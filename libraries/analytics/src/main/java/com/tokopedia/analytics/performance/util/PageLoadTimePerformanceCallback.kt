@@ -105,6 +105,9 @@ open class PageLoadTimePerformanceCallback(
 
     override fun invalidate() {
         performanceMonitoring = null
+        isPrepareDone = true
+        isNetworkDone = true
+        isRenderDone = true
     }
 
     private fun beginSystraceSection(sectionName: String) {
