@@ -4,9 +4,7 @@
     xmlns:tool="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:paddingTop="@dimen/layout_lvl1"
-    android:paddingBottom="@dimen/layout_lvl1">
+    android:orientation="horizontal">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/ivWaitingOrderTips"

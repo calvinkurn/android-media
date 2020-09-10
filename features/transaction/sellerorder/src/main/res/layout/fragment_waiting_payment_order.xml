@@ -29,7 +29,6 @@
             android:id="@+id/rvWaitingPaymentOrder"
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_lvl0"
-            android:layout_marginTop="@dimen/layout_lvl1"
             android:layoutAnimation="@anim/recycler_view_animation_top_to_bottom"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toTopOf="@id/cardCheckAndSetStock"
