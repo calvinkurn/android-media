@@ -130,4 +130,5 @@ const val CPM_PRODUCT_LIST_IMPRESSION = "impression - product cpm"
 const val CPM_SHOP_PAGE_COMPONENT= "cpm_shop_page_component"
 const val CPM_SHOP_CLICK= "click - cpm shop page"
 const val CLICK_VIEW_ALL_HEADER = "click view all on product master card"
+const val NOTIFIER = "notifier"
 

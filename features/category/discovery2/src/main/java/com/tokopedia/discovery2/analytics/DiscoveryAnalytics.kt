@@ -50,39 +50,38 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
         return EMPTY_STRING
     }
 
-    fun trackBannerImpression(banners: List<DataItem>) {
+    fun trackBannerImpression(banners: List<DataItem>, componentPosition: Int) {
         if (banners.isNotEmpty()) {
-            val componentName = banners[0].parentComponentName ?: EMPTY_STRING
-            val map = createGeneralEvent(eventName = EVENT_PROMO_VIEW,
-                    eventAction = IMPRESSION_DYNAMIC_BANNER, eventLabel = componentName)
-            val list = ArrayList<Map<String, Any>>()
-            var index = 0
-            for (banner in banners) {
+            banners.forEach { banner ->
+                val componentName = banner.parentComponentName ?: EMPTY_STRING
+                val map = createGeneralEvent(eventName = EVENT_PROMO_VIEW,
+                        eventAction = IMPRESSION_DYNAMIC_BANNER, eventLabel = "${componentName}${if (banner.action == ACTION_NOTIFIER) "-$NOTIFIER" else ""}")
+                val list = ArrayList<Map<String, Any>>()
                 val hashMap = HashMap<String, Any>()
                 banner.let {
                     hashMap[KEY_ID] = it.id ?: 0
-                    hashMap[KEY_NAME] = "/${removeDashPageIdentifier(pagePath)} - $pageType - ${banner.positionForParentItem + 1} - - $componentName"
+                    hashMap[KEY_NAME] = "/${removeDashPageIdentifier(pagePath)} - $pageType - ${banner.positionForParentItem + 1} - - ${componentName}${if (banner.action == ACTION_NOTIFIER) "-$NOTIFIER" else ""}"
                     hashMap[KEY_CREATIVE] = it.name ?: EMPTY_STRING
-                    hashMap[KEY_POSITION] = ++index
+                    hashMap[KEY_POSITION] = componentPosition+1
                 }
                 list.add(hashMap)
+                val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
+                        EVENT_PROMO_VIEW to mapOf(
+                                KEY_PROMOTIONS to list))
+                map[KEY_E_COMMERCE] = eCommerce
+                trackingQueue.putEETracking(map as HashMap<String, Any>)
             }
-            val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
-                    EVENT_PROMO_VIEW to mapOf(
-                            KEY_PROMOTIONS to list))
-            map[KEY_E_COMMERCE] = eCommerce
-            trackingQueue.putEETracking(map as HashMap<String, Any>)
         }
     }
 
     fun trackBannerClick(banner: DataItem, bannerPosition: Int) {
         val componentName = banner.parentComponentName ?: EMPTY_STRING
-        val map = createGeneralEvent(eventName = EVENT_PROMO_CLICK, eventAction = CLICK_DYNAMIC_BANNER, eventLabel = componentName)
+        val map = createGeneralEvent(eventName = EVENT_PROMO_CLICK, eventAction = CLICK_DYNAMIC_BANNER, eventLabel = "${componentName}${if (banner.action == ACTION_NOTIFIER) "-$NOTIFIER" else ""}${if (!banner.name.isNullOrEmpty()) " - ${banner.name}" else " - "}${if (!banner.applinks.isNullOrEmpty()) " - ${banner.applinks}" else " - "}")
         val list = ArrayList<Map<String, Any>>()
         banner.let {
             list.add(mapOf(
                     KEY_ID to it.id.toString(),
-                    KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${banner.positionForParentItem + 1} - - $componentName",
+                    KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${banner.positionForParentItem + 1} - - ${componentName}${if (banner.action == ACTION_NOTIFIER) "-$NOTIFIER" else ""}",
                     KEY_CREATIVE to it.name.toString(),
                     KEY_POSITION to bannerPosition + 1
             ))

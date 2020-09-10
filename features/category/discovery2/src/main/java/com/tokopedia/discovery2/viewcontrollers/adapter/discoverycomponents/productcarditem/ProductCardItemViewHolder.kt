@@ -11,6 +11,7 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
@@ -24,6 +25,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewH
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
 
 
@@ -56,7 +58,8 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     private var notifyMeView: TextView = itemView.findViewById(R.id.textViewNotifyMe)
     private var linearLayoutImageRating: LinearLayout = itemView.findViewById(R.id.linearLayoutImageRating)
     private var textViewReviewCount: TextView = itemView.findViewById(R.id.textViewReviewCount)
-    private var stockHabisLabel: TextView = itemView.findViewById(R.id.labelStock)
+    private var stockHabisLabel: Label = itemView.findViewById(R.id.labelStock)
+    private var outOfStockOverlay: View = itemView.findViewById(R.id.outOfStockOverlay)
     private var componentPosition: Int? = null
 
     private lateinit var productCardItemViewModel: ProductCardItemViewModel
@@ -159,15 +162,19 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     }
 
     private fun showOutOfStockLabel(productStock: String?, saleStockValidation : Int = 0) {
-        when {
-            productStock.isNullOrEmpty() -> {
-                stockHabisLabel.hide()
-            }
-            productStock.toIntOrNull() == saleStockValidation -> {
-                stockHabisLabel.show()
+        when(saleStockValidation) {
+            productStock?.toIntOrNull()-> {
+                stockHabisLabel.apply {
+                    unlockFeature = true
+                    val colorHexString = "#${Integer.toHexString(ContextCompat.getColor(context, R.color.clr_AD31353B))}"
+                    stockHabisLabel.setLabelType(colorHexString)
+                    show()
+                }
+                outOfStockOverlay.show()
             }
             else -> {
                 stockHabisLabel.hide()
+                outOfStockOverlay.hide()
             }
         }
     }
