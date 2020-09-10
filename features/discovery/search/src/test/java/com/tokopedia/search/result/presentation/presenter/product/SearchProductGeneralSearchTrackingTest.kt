@@ -103,7 +103,7 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         searchProductModel.searchProduct.header.keywordProcess,
                         searchProductModel.searchProduct.header.responseCode
                 ),
-                isResultFound = true,
+                isResultFound = true.toString(),
                 categoryIdMapping = "65",
                 categoryNameMapping = "Handphone & Tablet",
                 relatedKeyword = "none - none"
@@ -123,7 +123,7 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         searchProductModel.searchProduct.header.keywordProcess,
                         searchProductModel.searchProduct.header.responseCode
                 ),
-                isResultFound = true,
+                isResultFound = true.toString(),
                 categoryIdMapping = "1759,1758,65",
                 categoryNameMapping = "Fashion Pria,Handphone & Tablet,Fashion Wanita",
                 relatedKeyword = "none - none"
@@ -143,7 +143,7 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         searchProductModel.searchProduct.header.keywordProcess,
                         searchProductModel.searchProduct.header.responseCode
                 ),
-                isResultFound = false,
+                isResultFound = false.toString(),
                 categoryIdMapping = "",
                 categoryNameMapping = "",
                 relatedKeyword = "none - none"
@@ -163,7 +163,7 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         searchProductModel.searchProduct.header.keywordProcess,
                         searchProductModel.searchProduct.header.responseCode
                 ),
-                isResultFound = true,
+                isResultFound = true.toString(),
                 categoryIdMapping = "65",
                 categoryNameMapping = "Handphone & Tablet",
                 relatedKeyword = "$previousKeyword - none"
@@ -183,7 +183,7 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         searchProductModel.searchProduct.header.keywordProcess,
                         searchProductModel.searchProduct.header.responseCode
                 ),
-                isResultFound = true,
+                isResultFound = true.toString(),
                 categoryIdMapping = "1759,1758",
                 categoryNameMapping = "Fashion Pria,Fashion Wanita",
                 relatedKeyword = "$previousKeyword - ${searchProductModel.searchProduct.data.related.relatedKeyword}"
@@ -203,7 +203,7 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         searchProductModel.searchProduct.header.keywordProcess,
                         searchProductModel.searchProduct.header.responseCode
                 ),
-                isResultFound = true,
+                isResultFound = true.toString(),
                 categoryIdMapping = "1759,1758",
                 categoryNameMapping = "Fashion Pria,Fashion Wanita",
                 relatedKeyword = "$previousKeyword - " +
@@ -225,7 +225,7 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         searchProductModel.searchProduct.header.keywordProcess,
                         searchProductModel.searchProduct.header.responseCode
                 ),
-                isResultFound = true,
+                isResultFound = true.toString(),
                 categoryIdMapping = "1759,1758",
                 categoryNameMapping = "Fashion Pria,Fashion Wanita",
                 relatedKeyword = "$previousKeyword - " +
@@ -246,7 +246,7 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         searchProductModel.searchProduct.header.keywordProcess,
                         searchProductModel.searchProduct.header.responseCode
                 ),
-                isResultFound = true,
+                isResultFound = true.toString(),
                 categoryIdMapping = "1759,1758",
                 categoryNameMapping = "Fashion Pria,Fashion Wanita",
                 relatedKeyword = "$previousKeyword - " +
@@ -268,7 +268,7 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         searchProductModel.searchProduct.header.keywordProcess,
                         searchProductModel.searchProduct.header.responseCode
                 ),
-                isResultFound = true,
+                isResultFound = true.toString(),
                 categoryIdMapping = "1759,1758",
                 categoryNameMapping = "Fashion Pria,Fashion Wanita",
                 relatedKeyword = "$previousKeyword - ${searchProductModel.searchProduct.data.related.relatedKeyword}"
@@ -288,7 +288,7 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         searchProductModel.searchProduct.header.keywordProcess,
                         searchProductModel.searchProduct.header.responseCode
                 ),
-                isResultFound = true,
+                isResultFound = true.toString(),
                 categoryIdMapping = "1759,1758",
                 categoryNameMapping = "Fashion Pria,Fashion Wanita",
                 relatedKeyword = "$previousKeyword - ${searchProductModel.searchProduct.data.suggestion.suggestion}"
@@ -308,19 +308,12 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         searchProductModel.searchProduct.header.keywordProcess,
                         searchProductModel.searchProduct.header.responseCode
                 ),
-                isResultFound = true,
+                isResultFound = true.toString(),
                 categoryIdMapping = "65",
                 categoryNameMapping = "Handphone & Tablet",
                 relatedKeyword = "none - none"
         )
 
         `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)
-        `Then verify redirection is called`(searchProductModel.searchProduct.data.redirection.redirectApplink)
-    }
-
-    private fun `Then verify redirection is called`(redirectApplink: String) {
-        verify{
-            productListView.redirectSearchToAnotherPage(redirectApplink)
-        }
     }
 }
