@@ -531,6 +531,7 @@ class ShopPageFragment :
         super.onResume()
         removeTemporaryShopImage(shopImageFilePath)
         updateStickyState()
+        shopPageFragmentHeaderViewHolder.setShopName(UserSession(context).shopName)
     }
 
     private fun setViewState(viewState: Int) {

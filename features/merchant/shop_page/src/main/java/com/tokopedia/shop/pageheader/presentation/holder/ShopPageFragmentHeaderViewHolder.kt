@@ -113,6 +113,13 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         view.shop_page_header_content.hide()
     }
 
+    fun setShopName(shopName: String) {
+        val shopNameTv = view.shop_page_main_profile_name
+        if (shopNameTv.text != shopName) {
+            shopNameTv.text = shopName
+        }
+    }
+
     private fun showLoaderLoading(){
         view.loader_profile_image.show()
         view.first_rect_loader_view.show()
