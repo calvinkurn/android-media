@@ -41,6 +41,7 @@ import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAc
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.model.ChannelShop
 import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
@@ -900,6 +901,7 @@ open class HomeViewModel @Inject constructor(
                     getReviewData()
                     getPlayBanner()
                     getPopularKeyword()
+                    getDisplayTopAdsHeader()
                     getTopAdsBannerData(homeDataWithoutExternalComponentPair.second)
                     _trackingLiveData.postValue(Event(_homeLiveData.value?.list?.filterIsInstance<HomeVisitable>() ?: listOf()))
                 } else {
@@ -1231,11 +1233,11 @@ open class HomeViewModel @Inject constructor(
         }){}
     }
 
-    private fun getDisplayTopAdsHeader(params: String){
+    private fun getDisplayTopAdsHeader(){
         _homeLiveData.value?.list?.find { it is FeaturedShopDataModel }?.let { visitable ->
             val featuredShopDataModel = visitable as FeaturedShopDataModel
             launchCatchError(coroutineContext, block={
-                getDisplayHeadlineAds.get().createParams(params)
+                getDisplayHeadlineAds.get().createParams(featuredShopDataModel.channelModel.widgetParam)
                 val data = getDisplayHeadlineAds.get().executeOnBackground()
                 updateWidget(UpdateLiveDataModel(ACTION_UPDATE, featuredShopDataModel.copy(
                         channelModel = featuredShopDataModel.channelModel.copy(
@@ -1252,13 +1254,19 @@ open class HomeViewModel @Inject constructor(
             ChannelGrid(
                     id = it.id,
                     applink = it.applink,
-                    shopId = it.headline.shop.id,
-                    shopName = it.headline.shop.name,
-                    shopBadgeUrl = "",
-                    shopLocation = it.headline.shop.location,
-                    countReview = 0,
-                    rating = 0,
-                    impression = it.adRefKey
+                    shop = ChannelShop(
+                            id = it.headline.shop.id,
+                            shopName = it.headline.shop.name,
+                            shopProfileUrl = it.headline.shop.imageShop.cover,
+                            shopLocation = it.headline.shop.location,
+                            shopBadgeUrl = it.headline.badges.firstOrNull()?.imageUrl ?: "",
+                            isGoldMerchant = it.headline.shop.goldShop,
+                            isOfficialStore = it.headline.shop.shopIsOfficialStore
+                    ),
+                    countReviewFormat = it.headline.shop.product.review,
+                    rating = it.headline.shop.product.rating,
+                    impression = it.headline.image.url,
+                    productClickUrl = it.adClickUrl
             )
         }
     }

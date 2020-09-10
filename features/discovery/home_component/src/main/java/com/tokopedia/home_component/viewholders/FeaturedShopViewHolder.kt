@@ -107,16 +107,6 @@ class FeaturedShopViewHolder(
         return list
     }
 
-    private fun copyCoupon(view: View, cta: ChannelCtaData) {
-        val clipboard = view.context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val clipData = ClipData.newPlainText("Coupon Code", cta.couponCode)
-        clipboard.setPrimaryClip(clipData)
-
-        Toaster.make(view.parent as ViewGroup,
-                getString(R.string.discovery_home_toaster_coupon_copied),
-                Snackbar.LENGTH_LONG)
-    }
-
     override fun onProductCardImpressed(channel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
         listener.onFeaturedShopItemImpressed(channel, channelGrid, position, adapterPosition)
     }

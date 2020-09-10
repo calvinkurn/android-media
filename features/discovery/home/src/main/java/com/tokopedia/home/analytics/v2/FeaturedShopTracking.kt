@@ -27,7 +27,7 @@ object FeaturedShopTracking : BaseTracking() {
                 Promotion(
                         id = channelModel.id + "_" + channelGrid.id + "_" + channelModel.trackingAttributionModel.persoType+ "_" + channelModel.trackingAttributionModel.categoryId,
                         name = PROMOTION_NAME_SHOP.format(widgetPosition, DYNAMIC_CHANNEL_SHOP, channelModel.channelHeader.name),
-                        creative = channelGrid.shopId + "-" + channelGrid.shopBadgeUrl,
+                        creative = channelGrid.shop.id + "-" + channelGrid.shopBadgeUrl,
                         position = position.toString()
                 )
             )

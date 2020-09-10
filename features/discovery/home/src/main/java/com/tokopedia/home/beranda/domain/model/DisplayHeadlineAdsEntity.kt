@@ -25,8 +25,15 @@ data class DisplayHeadlineAdsEntity(
                 @SerializedName("template_id") val templateId: String = "",
                 @SerializedName("uri") val uri: String = "",
                 @SerializedName("image") val image: Image = Image(),
-                @SerializedName("shop") val shop: Shop = Shop()
-        )
+                @SerializedName("shop") val shop: Shop = Shop(),
+                @SerializedName("badges") val badges: List<Badges> = listOf()
+        ){
+            data class Badges(
+                    @SerializedName("image_url") val imageUrl: String = "",
+                    @SerializedName("title") val title: String = "",
+                    @SerializedName("show") val show: Boolean = false
+            )
+        }
 
         data class Image(
                 @SerializedName("full_url") val url: String = ""
@@ -59,7 +66,9 @@ data class DisplayHeadlineAdsEntity(
                 @SerializedName("price_format") val priceFormat: String = "",
                 @SerializedName("uri") val uri: String = "",
                 @SerializedName("applink") val applink: String = "",
-                @SerializedName("image_product") val imageProduct: ImageProduct = ImageProduct()
+                @SerializedName("image_product") val imageProduct: ImageProduct = ImageProduct(),
+                @SerializedName("product_rating") val rating: Int = 0,
+                @SerializedName("count_review_format") val review: String = ""
         ){
             data class ImageProduct(
                     @SerializedName("image_url") val imageUrl: String = "",

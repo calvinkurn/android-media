@@ -27,10 +27,9 @@ data class ChannelGrid(
         val hasBuyButton: Boolean = false,
         val rating: Int = 0,
         val countReview: Int = 0,
+        val countReviewFormat: String = "",
         val backColor: String = "",
+        val textColor: String = "",
         val benefit: ChannelBenefit = ChannelBenefit(),
-        val shopName: String = "",
-        val shopBadgeUrl: String = "",
-        val shopProfileUrl: String = "",
-        val shopLocation: String = ""
+        val shop: ChannelShop = ChannelShop()
 )
