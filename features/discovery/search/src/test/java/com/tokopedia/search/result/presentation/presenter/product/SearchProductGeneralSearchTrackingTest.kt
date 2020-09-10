@@ -315,12 +315,5 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
         )
 
         `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)
-        `Then verify redirection is called`(searchProductModel.searchProduct.data.redirection.redirectApplink)
-    }
-
-    private fun `Then verify redirection is called`(redirectApplink: String) {
-        verify{
-            productListView.redirectSearchToAnotherPage(redirectApplink)
-        }
     }
 }
