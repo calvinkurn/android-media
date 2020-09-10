@@ -143,6 +143,8 @@ class ShopPageFragment :
     private var initialFloatingChatButtonMarginBottom: Int = 0
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var userSession: UserSession
     lateinit var shopViewModel: ShopPageViewModel
 
     private lateinit var remoteConfig: RemoteConfig
@@ -531,7 +533,7 @@ class ShopPageFragment :
         super.onResume()
         removeTemporaryShopImage(shopImageFilePath)
         updateStickyState()
-        shopPageFragmentHeaderViewHolder.setShopName(UserSession(context).shopName)
+        shopPageFragmentHeaderViewHolder.setShopName(userSession.shopName)
     }
 
     private fun setViewState(viewState: Int) {
@@ -778,6 +780,7 @@ class ShopPageFragment :
                     shopPageHeaderContentData.shopOperationalHourStatus,
                     isMyShop
             )
+            shopPageFragmentHeaderViewHolder.setShopName(userSession.shopName)
             view?.let { onToasterNoUploadProduct(it, getString(R.string.shop_page_product_no_upload_product), isFirstCreateShop) }
         }
     }
