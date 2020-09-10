@@ -1,8 +1,8 @@
 apply plugin: 'com.android.application'
-//if (project.hasProperty("auto-patch")) {
-//    apply plugin: 'auto-patch-plugin'
-//}
-//apply plugin: 'robust'
+if (project.hasProperty("auto-patch")) {
+    apply plugin: 'auto-patch-plugin'
+}
+apply plugin: 'robust'
 apply plugin: 'io.fabric'
 apply plugin: 'io.hansel.preprocessor'
 apply plugin: 'com.bugsnag.android.gradle'
@@ -212,11 +212,11 @@ dependencies {
     } else {
         implementation project(rootProject.ext.features.developerOptionsNoop)
     }
+    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
     implementation project(rootProject.ext.features.commonDigital)
     implementation project(rootProject.ext.features.tkpdcore)
     implementation project(rootProject.ext.features.sellerorder)
     implementation project(rootProject.ext.features.sellerHome)
-    implementation project(rootProject.ext.features.sellerOnboarding)
     implementation project(rootProject.ext.features.merchantLendingWidget)
     implementation project(rootProject.ext.features.goldMerchantCommon)
     implementation project(rootProject.ext.features.powerMerchantSubscribe)
@@ -230,8 +230,9 @@ dependencies {
     implementation project(rootProject.ext.features.topAdsCreate)
     implementation project(rootProject.ext.features.tkpdseller)
     implementation project(rootProject.ext.features.reputation)
+    implementation project(rootProject.ext.features.inboxReputation)
     implementation project(rootProject.ext.features.reputationCommon)
-    implementation project(rootProject.ext.features.reviewSeller)
+    implementation project(rootProject.ext.features.review)
     implementation project(rootProject.ext.features.sellerActiveCommon)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.payment)

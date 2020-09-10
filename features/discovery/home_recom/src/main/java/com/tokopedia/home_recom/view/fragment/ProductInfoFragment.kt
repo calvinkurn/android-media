@@ -140,13 +140,17 @@ class ProductInfoFragment : BaseDaggerFragment() {
         location?.text = productDataModel.productDetailData.shop.location
         if (productDataModel.productDetailData.badges.isNotEmpty()) {
             badge?.show()
-            ImageHandler.loadImageFitCenter(context, badge, productDataModel.productDetailData.badges[0].imageUrl)
+            context?.let{
+                ImageHandler.loadImageFitCenter(it, badge, productDataModel.productDetailData.badges[0].imageUrl)
+            }
         } else {
             badge?.hide()
         }
         setRatingReviewCount(productDataModel.productDetailData.rating, productDataModel.productDetailData.countReview)
         updateWishlist(productDataModel.productDetailData.isWishlist)
-        ImageHandler.loadImageRounded2(context, product_image, productDataModel.productDetailData.imageUrl)
+        context?.let{
+            ImageHandler.loadImageRounded2(it, product_image, productDataModel.productDetailData.imageUrl)
+        }
         handleDiscount(productDataModel.productDetailData.discountPercentage, productDataModel.productDetailData.slashedPrice)
 
         when(productDataModel.productDetailData.status){

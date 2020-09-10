@@ -9,7 +9,7 @@ import java.io.InputStreamReader
 
 object HomeMockResponseList {
     fun getDynamicHomeChannel(context: Context): String {
-        return getRawString(context, R.raw.home_data_dynamic_home_channel)
+        return getRawString(context, R.raw.home_data_dynamic_home_channel_benchmark)
     }
 
     private fun getRawString(context: Context, res: Int): String {

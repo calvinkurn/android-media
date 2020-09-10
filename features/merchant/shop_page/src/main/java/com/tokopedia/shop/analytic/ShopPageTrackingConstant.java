@@ -11,6 +11,8 @@ public class ShopPageTrackingConstant {
 
     //event
     public static final String CLICK_SHOP_PAGE = "clickShopPage";
+    public static final String CLICK_SHOP_SETTING = "clickShopSetting";
+    public static final String CLICK_PROFILE = "clickProfile";
     public static final String VIEW_SHOP_PAGE = "viewShopPage";
     public static final String PROMO_VIEW = "promoView";
     public static final String PROMO_CLICK = "promoClick";
@@ -22,6 +24,7 @@ public class ShopPageTrackingConstant {
     public static final String ADD_TO_CART = "addToCart";
 
     public static final String CLICK_MEMBERSHIP_EVENT = "clickShopPage";
+    public static final String VIEW_SHOP_PAGE_IRIS = "viewShopPageIris";
 
     //category
     public static final String SHOP_PAGE_SELLER = "shop page - seller";
@@ -54,6 +57,7 @@ public class ShopPageTrackingConstant {
     public static final String SHOP_SEARCH_PRODUCT_CLICK_SHARE_BUTTON = "click share button - search result";
     public static final String CLICK_SEARCH = "click search";
     public static final String SHOP_SEARCH_PRODUCT_CLICK_ETALASE_AUTOCOMPLETE = "click %1s - etalase shop";
+    public static final String SHOP_SEARCH_PRODUCT_CLICK_ETALASE_AUTOCOMPLETE_EMPTY = "click %1s - etalase shop - no result";
     public static final String SHOP_SEARCH_PRODUCT_CLICK_GLOBAL_SEARCH = "click %1s - tokopedia";
     public static final String SHOP_SEARCH_PRODUCT_CLICK_PRODUCT_AUTOCOMPLETE = "click - global autocomplete";
     public static final String CLICK_BACK = "click back";
@@ -78,10 +82,21 @@ public class ShopPageTrackingConstant {
     public static final String VIEW_WIDGET_BROADCAST = "view widget broadcast";
     public static final String CLICK_WIDGET_BROADCAST = "click widget broadcast";
     public static final String CLICK_CLOSE_FILTER = "click close filter";
+    public static final String CLICK_TNC = "click t&c - %1s";
+    public static final String IMPRESSION_TNC = "impression t&c - %1s";
+    public static final String CLICK_CLOSE_TNC = "click close t&c - %1s";
+    public static final String CLICK_ACTIVATE_REMINDER = "click activate reminder";
+    public static final String CLICK_DEACTIVATE_REMINDER = "click deactivate reminder";
+    public static final String IMPRESSION_TOASTER_NOTIFY_ME = "impression toaster notify me";
+    public static final String CLICK_OK_TOASTER_NOTIFY_ME = "click ok on toaster notify me";
+    public static final String CLICK_SEE_ALL_CAMPAIGN_NPL_WIDGET = "click see all - %1s";
+    public static final String CLICK_SHARE_DETAIL = "click share detail";
+    public static final String CLICK_PRODUCT_LIST_TOGGLE = "click product list toggle";
 
     //label
     public static final String CLICK_TAB = "click tab";
     public static final String CLICK_SHARE = "click share";
+    public static final String CLICK_BOTTOMSHEET_DISMISS_BUTTON = "x button";
     public static final String CLICK_CART_BUTTON = "click my cart";
     public static final String CLICK_REQUEST_OPEN_SHOP = "click request open shop";
     public static final String IMPRESSION_OF_REQUEST_OPEN_SHOP = "impression of request open shop";
@@ -144,6 +159,8 @@ public class ShopPageTrackingConstant {
     public static final String PLAY_SGC_NAME = "/shoppage play inside banner - p%s";
     public static final String PLAY_LEFT_BANNER_NAME = "/shoppage play outside banner - p%s";
 
+    public static final String LABEL_ETALASE_UPCOMING_ONGOING_CAMPAIGN = "%1s campaign %2s";
+    public static final String LABEL_ETALASE_CAMPAIGN = "campaign %1s";
 
 
 
@@ -215,6 +232,20 @@ public class ShopPageTrackingConstant {
 
     //value
     public static final String VALUE_PRODUCT = "Product";
+    public static final String VALUE_UPCOMING = "upcoming";
+    public static final String VALUE_ONGOING = "ongoing";
+    public static final String VALUE_UPCOMING_BANNER = "upcoming banner";
+    public static final String VALUE_ONGOING_BANNER = "ongoing banner";
+    public static final String VALUE_FINISHED_BANNER = "finished banner";
+    public static final String VALUE_UPCOMING_CAMPAIGN = "upcoming campaign";
+    public static final String VALUE_ONGOING_CAMPAIGN = "ongoing campaign";
+    public static final String VALUE_FINISHED_CAMPAIGN = "finished campaign";
+    public static final String VALUE_SEE_CAMPAIGN = "see campaign";
+    public static final String VALUE_NO_SEE_CAMPAIGN = "no see campaign";
+    public static final String VALUE_HOME = "home";
+
+
+
 
     //page_url
     public static final String ETALASE_SHOPNAME = "etalase-%s";
@@ -229,5 +260,13 @@ public class ShopPageTrackingConstant {
     public static final String GENERAL = "general";
 
 
+    //empty state
+    public static final String CLICK_SEARCH_PAGE_NO_RESULT = "click search page no result";
+    public static final String TRY_ANOTHER_WORD = "coba kata lain";
+    public static final String SEARCH_ON_TOKOPEDIA = "search on tokopedia";
+    public static final String SEARCH_NO_RESULT_SUGGESTION = "search no result suggestion";
+    public static final String IMPRESSION_PRODUCT_SEARCH_SUGGESTION = "impression product search suggestion";
+    public static final String CLICK_PRODUCT_SEARCH_SUGGESTION = "click product search suggestion";
+    public static final String SEARCH_NO_RESULT = "search - no result";
 
 }

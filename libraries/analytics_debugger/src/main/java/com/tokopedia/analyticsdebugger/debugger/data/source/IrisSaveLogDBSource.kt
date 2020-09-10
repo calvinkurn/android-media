@@ -56,4 +56,8 @@ constructor(context: Context) {
         }
     }
 
+    fun count (): Int {
+        return irisLogSaveDao.count
+    }
+
 }

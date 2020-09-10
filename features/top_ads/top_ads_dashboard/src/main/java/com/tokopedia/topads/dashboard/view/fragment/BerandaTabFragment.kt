@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.data.model.DataDeposit
 import com.tokopedia.topads.credit.history.view.activity.TopAdsCreditHistoryActivity
@@ -45,9 +46,14 @@ import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.topads.dashboard.view.sheet.CustomDatePicker
 import com.tokopedia.topads.dashboard.view.sheet.DatePickerSheet
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
+import com.tokopedia.unifycomponents.setImage
 import kotlinx.android.synthetic.main.partial_top_ads_dashboard_statistics.*
 import kotlinx.android.synthetic.main.topads_dash_fragment_beranda_base.*
+import kotlinx.android.synthetic.main.topads_dash_fragment_beranda_base.hari_ini
+import kotlinx.android.synthetic.main.topads_dash_fragment_beranda_base.swipe_refresh_layout
+import kotlinx.android.synthetic.main.topads_dash_fragment_group_detail_view_layout.*
 import kotlinx.android.synthetic.main.topads_dash_layout_hari_ini.*
+import kotlinx.android.synthetic.main.topads_dash_layout_hari_ini.view.*
 import java.util.*
 import javax.inject.Inject
 
@@ -124,6 +130,8 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
         super.onViewCreated(view, savedInstanceState)
         selectedStatisticType = TopAdsStatisticsType.PRODUCT_ADS
         initStatisticComponent()
+        image.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_wallet))
+        arrow.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_arrow))
         help_section.setOnClickListener {
             RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, SELLER_CENTER_URL)
         }
@@ -142,6 +150,8 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
         endDate = Utils.getEndDate()
         startDate = Utils.getStartDate()
         loadData()
+        hari_ini?.date_image?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_calendar))
+        hari_ini?.next_image?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_arrow))
         hari_ini?.setOnClickListener {
             showBottomSheet()
         }
@@ -268,8 +278,10 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
 
     private fun onSuccessGetAutoTopUpStatus(data: AutoTopUpStatus) {
         val isAutoTopUpActive = (data.status.toIntOrZero()) != TopAdsDashboardConstant.AUTO_TOPUP_INACTIVE
-        if (isAutoTopUpActive)
+        if (isAutoTopUpActive) {
+            img_auto_debit.setImageDrawable(context?.getResDrawable(R.drawable.topads_dash_auto_debit))
             img_auto_debit.visibility = View.VISIBLE
+        }
     }
 
     private fun initInsightTabAdapter(response: InsightKeyData) {

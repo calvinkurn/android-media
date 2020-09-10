@@ -34,12 +34,11 @@ class ProductContentViewHolder(private val view: View,
             view.addOnImpressionListener(element.impressHolder) {
                 listener.onImpressComponent(getComponentTrackData(element))
             }
-            header?.renderData(it, element.nearestWarehouseDataModel?.nearestWarehouseStockWording ?: "")
+            header?.renderData(it, element.isUpcomingNplType(), element.upcomingNplData)
         }
 
         header?.updateWishlist(element.isWishlisted, listener.shouldShowWishlist())
         header?.renderTradein(element.showTradeIn())
-        header?.renderCod(element.showCod())
     }
 
     override fun bind(element: ProductContentDataModel?, payloads: MutableList<Any>) {
@@ -50,7 +49,6 @@ class ProductContentViewHolder(private val view: View,
 
         when (payloads[0] as Int) {
             ProductDetailConstant.PAYLOAD_WISHLIST -> header?.updateWishlist(element.isWishlisted, listener.shouldShowWishlist())
-            ProductDetailConstant.PAYLOAD_P3 -> header?.renderCod(element.showCod())
         }
     }
 

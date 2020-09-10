@@ -11,8 +11,8 @@ import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.tokopedia.topads.Utils
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
 import com.tokopedia.topads.data.response.ResponseGroupValidateName.TopAdsGroupValidateName
@@ -85,15 +85,15 @@ class CreateGroupAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        btn_submit.isEnabled = false
-        btn_submit.setOnClickListener {
+        btn_submit?.isEnabled = false
+        btn_submit?.setOnClickListener {
             validateGroup(group_name_input.text.toString())
         }
-        tip_btn.setOnClickListener {
+        tip_btn?.setOnClickListener {
             InfoSheetGroupList.newInstance(it.context).show()
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_TIPS_GRUP_IKLAN, "")
         }
-        group_name_input.addTextChangedListener(object : TextWatcher {
+        group_name_input?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
             }
 
@@ -101,19 +101,19 @@ class CreateGroupAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                error_text.visibility = View.GONE
-                typography19.visibility = View.VISIBLE
+                error_text?.visibility = View.GONE
+                descTxt?.visibility = View.VISIBLE
                 if (s.toString().trim().isEmpty()) {
-                    title.visibility = View.INVISIBLE
-                    btn_submit.isEnabled = false
+                    title?.visibility = View.INVISIBLE
+                    btn_submit?.isEnabled = false
                 } else {
-                    title.visibility = View.VISIBLE
-                    btn_submit.isEnabled = true
+                    title?.visibility = View.VISIBLE
+                    btn_submit?.isEnabled = true
                 }
             }
 
         })
-        group_name_input.setOnEditorActionListener { v, actionId, _ ->
+        group_name_input?.setOnEditorActionListener { v, actionId, _ ->
             when (actionId) {
                 EditorInfo.IME_ACTION_SEARCH -> validateGroup(v?.text.toString())
             }
@@ -132,9 +132,9 @@ class CreateGroupAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     private fun onError(t: Throwable) {
         errorTextVisibility(true)
         if (t.localizedMessage == resources.getString(R.string.duplicate_group_name_error_wrong))
-            error_text.text = resources.getString(R.string.duplicate_group_name_error)
+            error_text?.text = resources.getString(R.string.duplicate_group_name_error)
         else
-            error_text.text = t.message
+            error_text?.text = t.message
     }
 
     private fun onSuccess(data: TopAdsGroupValidateName.Data) {
@@ -144,13 +144,13 @@ class CreateGroupAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
 
     private fun errorTextVisibility(visible: Boolean) {
         if (visible) {
-            error_text.visibility = View.VISIBLE
-            typography19.visibility = View.GONE
-            btn_submit.isEnabled = false
+            error_text?.visibility = View.VISIBLE
+            descTxt?.visibility = View.GONE
+            btn_submit?.isEnabled = false
         } else {
-            error_text.visibility = View.GONE
-            typography19.visibility = View.VISIBLE
-            btn_submit.isEnabled = true
+            error_text?.visibility = View.GONE
+            descTxt?.visibility = View.VISIBLE
+            btn_submit?.isEnabled = true
         }
     }
 }

@@ -7,13 +7,15 @@ import com.tokopedia.logisticdata.data.entity.address.Token
 import com.tokopedia.logisticdata.domain.model.AddressListModel
 import com.tokopedia.logisticdata.domain.usecase.GetAddressCornerUseCase
 import com.tokopedia.oneclickcheckout.common.dispatchers.ExecutorDispatchers
+import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
+import com.tokopedia.oneclickcheckout.common.view.model.Failure
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
 
-class AddressListViewModel @Inject constructor(val useCase: GetAddressCornerUseCase, private val dispatcher: ExecutorDispatchers) : BaseViewModel(dispatcher.main) {
+class AddressListViewModel @Inject constructor(private val useCase: GetAddressCornerUseCase, private val dispatcher: ExecutorDispatchers) : BaseViewModel(dispatcher.main) {
 
     var savedQuery: String = ""
     var selectedId = "-1"
@@ -24,19 +26,21 @@ class AddressListViewModel @Inject constructor(val useCase: GetAddressCornerUseC
     var token: Token? = null
     private var addressListModel: AddressListModel? = null
 
-    private val _addresslist = MutableLiveData<OccState<AddressListModel>>()
+    private val _addressList = MutableLiveData<OccState<AddressListModel>>()
     val addressList: LiveData<OccState<AddressListModel>>
-        get() = _addresslist
+        get() = _addressList
 
     private val compositeSubscription = CompositeSubscription()
 
     fun searchAddress(query: String) {
-        _addresslist.value = OccState.Loading
+        _addressList.value = OccState.Loading
+        OccIdlingResource.increment()
         compositeSubscription.add(
                 useCase.getAll(query)
                         .subscribe(object : rx.Observer<AddressListModel> {
                             override fun onError(e: Throwable?) {
-                                _addresslist.value = OccState.Fail(false, e, "")
+                                _addressList.value = OccState.Failed(Failure(e))
+                                OccIdlingResource.decrement()
                             }
 
                             override fun onNext(t: AddressListModel) {
@@ -46,21 +50,15 @@ class AddressListViewModel @Inject constructor(val useCase: GetAddressCornerUseC
                             }
 
                             override fun onCompleted() {
-                                //do nothing
+                                OccIdlingResource.decrement()
                             }
                         })
         )
     }
 
-    fun consumeSearchAddressFail() {
-        val value = _addresslist.value
-        if (value is OccState.Fail) {
-            _addresslist.value = value.copy(isConsumed = true)
-        }
-    }
-
     fun logicSelection(addressListModel: AddressListModel) {
         launch {
+            OccIdlingResource.increment()
             withContext(dispatcher.default) {
                 val addressList = addressListModel.listAddress
                 for (item in addressList) {
@@ -75,13 +73,14 @@ class AddressListViewModel @Inject constructor(val useCase: GetAddressCornerUseC
                 addressListModel.listAddress = addressList
             }
             this@AddressListViewModel.addressListModel = addressListModel
-            _addresslist.value = OccState.Success(addressListModel)
+            _addressList.value = OccState.Success(addressListModel)
+            OccIdlingResource.decrement()
         }
     }
 
     fun setSelectedAddress(addressId: String) {
         val addressModel = addressListModel
-        if (addressModel != null && _addresslist.value is OccState.Success) {
+        if (addressModel != null && _addressList.value is OccState.Success) {
             selectedId = addressId
             logicSelection(addressModel)
         }

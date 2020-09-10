@@ -5,27 +5,26 @@ import com.tokopedia.abstraction.base.view.adapter.exception.TypeNotSupportedExc
 import com.tokopedia.entertainment.search.adapter.SearchEventViewHolder
 import com.tokopedia.entertainment.search.adapter.viewholder.*
 import com.tokopedia.entertainment.search.adapter.viewmodel.*
-import kotlin.reflect.KFunction0
 
 class SearchTypeFactoryImp(val onClicked: (() -> Unit) = {}) : SearchTypeFactory {
 
-    override fun type(viewModel: FirstTimeViewModel): Int {
+    override fun type(model: FirstTimeModel): Int {
         return FirstTimeBackgroundItemViewHolder.LAYOUT
     }
 
-    override fun type(viewModel: HistoryViewModel): Int {
+    override fun type(model: HistoryModel): Int {
         return HistoryBackgroundItemViewHolder.LAYOUT
     }
 
-    override fun type(viewModel: SearchLocationViewModel): Int {
+    override fun type(model: SearchLocationModel): Int {
         return SearchLocationListViewHolder.LAYOUT
     }
 
-    override fun type(viewModel: SearchEventViewModel): Int {
+    override fun type(model: SearchEventModel): Int {
         return SearchEventListViewHolder.LAYOUT
     }
 
-    override fun type(viewModel: SearchEmptyStateViewModel): Int {
+    override fun type(model: SearchEmptyStateModel): Int {
         return SearchEmptyStateViewHolder.LAYOUT
     }
 

@@ -28,7 +28,7 @@ class TrackingMapper {
         row.put(DEVICE_ID, deviceId)
         row.put(USER_ID, userId)
         row.put(EVENT_DATA, event)
-        row.put(APP_VERSION, GlobalConfig.VERSION_NAME)
+        row.put(APP_VERSION, "$ANDROID_DASH${GlobalConfig.VERSION_NAME}")
 
         data.put(row)
 
@@ -67,7 +67,7 @@ class TrackingMapper {
                     if (event.length() > 0) {
                         row.put(EVENT_DATA, event)
                         data.put(row)
-                        outputTracking.addAll(tracking.subList(0, i+1))
+                        outputTracking.addAll(tracking.subList(0, i + 1))
                     }
                     event = JSONArray()
                     done = true

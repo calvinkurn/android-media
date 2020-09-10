@@ -114,7 +114,6 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
 
         switchUnifySku.setOnCheckedChangeListener { _, isChecked ->
             viewModel.updateSkuVisibilityStatus(isVisible = isChecked)
-            variantDetailFieldsAdapter?.updateSkuVisibilityStatus(viewModel.getAvailableFields(), isChecked)
             sendTrackerClickSKUToggleData(isChecked)
         }
 
@@ -160,15 +159,6 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
     override fun onCheckedChanged(isChecked: Boolean, adapterPosition: Int) {
         val updatedInputModel = viewModel.updateSwitchStatus(isChecked, adapterPosition)
         viewModel.editVariantDetailInputMap(adapterPosition, updatedInputModel)
-
-        // change primary variant if primary position equals adapter position
-        viewModel.productInputModel.value?.variantInputModel?.products?.let { variants ->
-            variants.getOrNull(adapterPosition)?.let { variant ->
-                if(variant.isPrimary) {
-                    variant.isPrimary = isChecked
-                }
-            }
-        }
 
         // tracking
         sendClickVariantStatusToggleData(isChecked)
