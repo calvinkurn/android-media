@@ -111,13 +111,13 @@ open class PageLoadTimePerformanceCallback(
     }
 
     private fun beginSystraceSection(sectionName: String) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2 && GlobalConfig.DEBUG) {
             Trace.beginSection(sectionName)
         }
     }
 
     private fun endSystraceSection() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2 && GlobalConfig.DEBUG) {
             Trace.endSection()
         }
     }
