@@ -64,3 +64,9 @@ fun <T> MutableList<T>.goToFirst(index: Int) {
     this.removeAt(index)
     this.add(0, tmp)
 }
+
+fun <T> MutableList<T>.moveTo(fromPosition: Int, toPosition: Int) {
+    val tmp = this[fromPosition]
+    this.removeAt(fromPosition)
+    this.add(toPosition, tmp)
+}
