@@ -657,11 +657,6 @@ open class HomeFragment : BaseDaggerFragment(),
         unRegisterBroadcastReceiverTokoCash()
     }
 
-    override fun onStop() {
-        super.onStop()
-//        getHomeViewModel().deleteHomeData()
-    }
-
     private fun initRefreshLayout() {
         refreshLayout.post {
             /*

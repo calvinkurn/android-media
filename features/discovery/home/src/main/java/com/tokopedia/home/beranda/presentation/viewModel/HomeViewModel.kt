@@ -909,11 +909,10 @@ open class HomeViewModel @Inject constructor(
                     _isRequestNetworkLiveData.postValue(Event(false))
                     val homeDataWithoutExternalComponentPair = evaluateInitialTopAdsBannerComponent(homeDataModel)
                     var homeData: HomeDataModel? = homeDataWithoutExternalComponentPair.first
-                    withContext(homeDispatcher.get().ui()){
-                        homeData = evaluateGeolocationComponent(homeData)
-                        homeData = evaluateAvailableComponent(homeData, false)
-                        _homeLiveData.value = homeData
-                    }
+                    homeData = evaluateGeolocationComponent(homeData)
+                    homeData = evaluateAvailableComponent(homeData, false)
+                    _homeLiveData.value = homeData
+
                     getPlayBannerCarousel()
                     getHeaderData()
                     getReviewData()

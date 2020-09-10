@@ -48,11 +48,10 @@ class HomeRepositoryImpl @Inject constructor(
 
             var homeDataCombined = HomeData()
 
-            val dynamicChannnelResponseValue = dynamicChannelResponse.await()
             val homeDataResponseValue = homeDataResponse.await()
 
             if (!isCacheExistForProcess) {
-                val extractPair = extractToken(dynamicChannnelResponseValue)
+                val extractPair = extractToken(dynamicChannelResponse.await())
 
                 homeDataResponseValue.dynamicHomeChannel = extractPair.second.dynamicHomeChannel
                 homeDataResponseValue.token = extractPair.first
