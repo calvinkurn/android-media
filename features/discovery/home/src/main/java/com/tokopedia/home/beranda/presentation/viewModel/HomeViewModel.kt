@@ -21,6 +21,7 @@ import com.tokopedia.home.beranda.data.model.TokopointsDrawer
 import com.tokopedia.home.beranda.data.model.UpdateLiveDataModel
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
+import com.tokopedia.home.beranda.domain.model.DisplayHeadlineAdsEntity
 import com.tokopedia.home.beranda.domain.model.InjectCouponTimeBased
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeRecommendation
@@ -41,6 +42,7 @@ import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendation
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.ReminderEnum
+import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
@@ -85,6 +87,7 @@ open class HomeViewModel @Inject constructor(
         private val getBusinessUnitDataUseCase: Lazy<GetBusinessUnitDataUseCase>,
         private val getBusinessWidgetTab: Lazy<GetBusinessWidgetTab>,
         private val getDynamicChannelsUseCase: Lazy<GetDynamicChannelsUseCase>,
+        private val getDisplayHeadlineAds: Lazy<GetDisplayHeadlineAds>,
         private val getHomeReviewSuggestedUseCase: Lazy<GetHomeReviewSuggestedUseCase>,
         private val getHomeTokopointsDataUseCase: Lazy<GetHomeTokopointsDataUseCase>,
         private val getKeywordSearchUseCase: Lazy<GetKeywordSearchUseCase>,
@@ -1226,6 +1229,38 @@ open class HomeViewModel @Inject constructor(
             val data = getKeywordSearchUseCase.get().executeOnBackground()
             _searchHint.postValue(data.searchData)
         }){}
+    }
+
+    private fun getDisplayTopAdsHeader(params: String){
+        _homeLiveData.value?.list?.find { it is FeaturedShopDataModel }?.let { visitable ->
+            val featuredShopDataModel = visitable as FeaturedShopDataModel
+            launchCatchError(coroutineContext, block={
+                getDisplayHeadlineAds.get().createParams(params)
+                val data = getDisplayHeadlineAds.get().executeOnBackground()
+                updateWidget(UpdateLiveDataModel(ACTION_UPDATE, featuredShopDataModel.copy(
+                        channelModel = featuredShopDataModel.channelModel.copy(
+                                channelGrids = mappingTopAdsHeaderToChannelGrid(data)
+                        )
+                )))
+            }){
+            }
+        }
+    }
+
+    private fun mappingTopAdsHeaderToChannelGrid(data: List<DisplayHeadlineAdsEntity.DisplayHeadlineAds>): List<ChannelGrid>{
+        return data.map {
+            ChannelGrid(
+                    id = it.id,
+                    applink = it.applink,
+                    shopId = it.headline.shop.id,
+                    shopName = it.headline.shop.name,
+                    shopBadgeUrl = "",
+                    shopLocation = it.headline.shop.location,
+                    countReview = 0,
+                    rating = 0,
+                    impression = it.adRefKey
+            )
+        }
     }
 
     fun getStickyContent() {

@@ -51,7 +51,8 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                          private val mixTopComponentListener: MixTopComponentListener,
                          private val reminderWidgetListener: ReminderWidgetListener,
                          private val productHighlightListener: ProductHighlightListener,
-                         private val lego4AutoBannerListener: Lego4AutoBannerListener
+                         private val lego4AutoBannerListener: Lego4AutoBannerListener,
+                         private val featuredShopListener: FeaturedShopListener
 ) :
         BaseAdapterTypeFactory(),
         HomeTypeFactory, HomeComponentTypeFactory{
@@ -181,6 +182,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
     override fun type(lego4AutoDataModel: Lego4AutoDataModel): Int {
         return Lego4AutoBannerViewHolder.LAYOUT
     }
+
+    override fun type(featuredShopDataModel: FeaturedShopDataModel): Int {
+        return FeaturedShopViewHolder.LAYOUT
+    }
     //end of Home-Component section
 
     private fun getDynamicChannelLayoutFromType(layout: String): Int {
@@ -302,6 +307,12 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                             lego4AutoBannerListener,
                             homeComponentListener,
                             parentRecycledViewPool)
+            FeaturedShopViewHolder.LAYOUT -> viewHolder = FeaturedShopViewHolder(
+                    view,
+                    featuredShopListener,
+                    homeComponentListener,
+                    parentRecycledViewPool
+            )
             else -> viewHolder = super.createViewHolder(view, type)
         }
 

@@ -10,6 +10,7 @@ import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.listener.DynamicLegoBannerListener
 import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.viewholders.*
+import com.tokopedia.home_component.viewholders.FeaturedShopViewHolder
 import com.tokopedia.home_component.visitable.*
 import com.tokopedia.officialstore.common.listener.FeaturedShopListener
 import com.tokopedia.officialstore.official.presentation.adapter.viewholder.*
@@ -110,5 +111,9 @@ class OfficialHomeAdapterTypeFactory(
 
     override fun type(lego4AutoDataModel: Lego4AutoDataModel): Int {
         return Lego4AutoBannerViewHolder.LAYOUT
+    }
+
+    override fun type(featuredShopDataModel: FeaturedShopDataModel): Int {
+        return FeaturedShopViewHolder.LAYOUT
     }
 }

@@ -237,6 +237,9 @@ class HomeVisitableFactoryImpl(
                 DynamicHomeChannel.Channels.LAYOUT_LEGO_4_AUTO -> {
                     createLego4AutoComponent(channel, position, isCache)
                 }
+                DynamicHomeChannel.Channels.LAYOUT_FEATURED_SHOP -> {
+                    createFeaturedShopComponent(channel, position, isCache)
+                }
             }
         }
 
@@ -319,6 +322,19 @@ class HomeVisitableFactoryImpl(
 
     private fun createLego4AutoComponent(channel: DynamicHomeChannel.Channels, verticalPosition: Int, isCache: Boolean) {
         visitableList.add(mappingLego4BannerAutoComponent(
+                channel, isCache, verticalPosition
+        ))
+        if (!isCache) {
+            HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(
+                    trackingQueue,
+                    channel.convertPromoEnhanceLegoBannerDataLayerForCombination())
+        }
+        context?.let { HomeTrackingUtils.homeDiscoveryWidgetImpression(it,
+                visitableList.size, channel) }
+    }
+
+    private fun createFeaturedShopComponent(channel: DynamicHomeChannel.Channels, verticalPosition: Int, isCache: Boolean) {
+        visitableList.add(mappingFeaturedShopAutoComponent(
                 channel, isCache, verticalPosition
         ))
         if (!isCache) {
@@ -469,6 +485,14 @@ class HomeVisitableFactoryImpl(
                                         isCache: Boolean,
                                         verticalPosition: Int): Visitable<*> {
         return Lego4AutoDataModel(
+                DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition)
+        )
+    }
+
+    private fun mappingFeaturedShopAutoComponent(channel: DynamicHomeChannel.Channels,
+                                        isCache: Boolean,
+                                        verticalPosition: Int): Visitable<*> {
+        return FeaturedShopDataModel(
                 DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition)
         )
     }

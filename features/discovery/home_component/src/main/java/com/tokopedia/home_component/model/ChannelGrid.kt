@@ -29,6 +29,8 @@ data class ChannelGrid(
         val countReview: Int = 0,
         val backColor: String = "",
         val benefit: ChannelBenefit = ChannelBenefit(),
-        val textColor: String = ""
-
+        val shopName: String = "",
+        val shopBadgeUrl: String = "",
+        val shopProfileUrl: String = "",
+        val shopLocation: String = ""
 )
