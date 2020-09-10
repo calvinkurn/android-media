@@ -200,7 +200,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     }
                     PARAM_SEMUA_TRANSAKSI -> {
                         status = SEMUA_TRANSAKSI
-                        setDefaultDate()
+                        setInitialValue()
                     }
                 }
                 paramUohOrder.status = status
@@ -218,7 +218,6 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setInitialValue()
         prepareLayout()
         observingData()
     }
