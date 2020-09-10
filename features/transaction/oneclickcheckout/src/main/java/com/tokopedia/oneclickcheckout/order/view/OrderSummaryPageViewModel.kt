@@ -257,8 +257,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     fun getRates() {
         launch(executorDispatchers.main) {
             val result = logisticProcessor.getRates(orderCart, _orderPreference, _orderShipment, generateListShopShipment())
-            _orderShipment = result.orderShipment
-            orderShipment.value = _orderShipment
             if (result.clearOldPromoCode.isNotEmpty()) {
                 clearOldLogisticPromo(result.clearOldPromoCode)
             }
@@ -266,6 +264,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 autoApplyLogisticPromo(result.autoApplyPromo, result.clearOldPromoCode, result.orderShipment)
                 return@launch
             }
+            _orderShipment = result.orderShipment
+            orderShipment.value = _orderShipment
             sendViewOspEe()
             if (result.orderShipment.serviceErrorMessage.isNullOrEmpty()) {
                 validateUsePromo()
@@ -561,28 +561,33 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     private fun clearOldLogisticPromo(oldPromoCode: String) {
-        clearCacheAutoApplyStackUseCase.setParams(PARAM_VALUE_MARKETPLACE, arrayListOf(oldPromoCode), true)
-        compositeSubscription.add(
-                clearCacheAutoApplyStackUseCase.createObservable(RequestParams.EMPTY)
-                        .subscribeOn(executorSchedulers.io)
-                        .observeOn(executorSchedulers.main)
-                        .subscribe(object : Observer<ClearPromoUiModel?> {
-                            override fun onError(e: Throwable?) {
-                                // do nothing, promocode directly removed
-                            }
-
-                            override fun onNext(t: ClearPromoUiModel?) {
-                                // do nothing, promocode directly removed
-                            }
-
-                            override fun onCompleted() {
-                                // do nothing, promocode directly removed
-                            }
-                        })
-        )
-        val orders = lastValidateUsePromoRequest?.orders ?: emptyList()
-        if (orders.isNotEmpty()) {
-            orders[0]?.codes?.remove(oldPromoCode)
+        launch(executorDispatchers.main) {
+            launch(executorDispatchers.io) {
+                promoProcessor.clearOldLogisticPromo(oldPromoCode)
+            }
+//        clearCacheAutoApplyStackUseCase.setParams(PARAM_VALUE_MARKETPLACE, arrayListOf(oldPromoCode), true)
+//        compositeSubscription.add(
+//                clearCacheAutoApplyStackUseCase.createObservable(RequestParams.EMPTY)
+//                        .subscribeOn(executorSchedulers.io)
+//                        .observeOn(executorSchedulers.main)
+//                        .subscribe(object : Observer<ClearPromoUiModel?> {
+//                            override fun onError(e: Throwable?) {
+//                                // do nothing, promocode directly removed
+//                            }
+//
+//                            override fun onNext(t: ClearPromoUiModel?) {
+//                                // do nothing, promocode directly removed
+//                            }
+//
+//                            override fun onCompleted() {
+//                                // do nothing, promocode directly removed
+//                            }
+//                        })
+//        )
+            val orders = lastValidateUsePromoRequest?.orders ?: emptyList()
+            if (orders.isNotEmpty()) {
+                orders[0]?.codes?.remove(oldPromoCode)
+            }
         }
     }
 
