@@ -1617,40 +1617,40 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     private fun sendViewOspEe() {
         if (!hasSentViewOspEe) {
-            orderSummaryAnalytics.eventViewOrderSummaryPage(generateOspEe(OrderSummaryPageEnhanceECommerce.STEP_1, OrderSummaryPageEnhanceECommerce.STEP_1_OPTION))
+            orderSummaryAnalytics.eventViewOrderSummaryPage(generateOspEeBody().build(OrderSummaryPageEnhanceECommerce.STEP_1, OrderSummaryPageEnhanceECommerce.STEP_1_OPTION))
             hasSentViewOspEe = true
         }
     }
 
-    private fun generateOspEe(step: Int, option: String, promoCodes: List<String> = emptyList()): Map<String, Any> {
-        return OrderSummaryPageEnhanceECommerce().apply {
-            setName(orderProduct.productName)
-            setId(orderProduct.productId.toString())
-            setPrice(orderProduct.productPrice.toString())
-            setBrand(null)
-            setCategory(orderProduct.category)
-            setVariant(null)
-            setQuantity(orderProduct.quantity.orderQuantity.toString())
-            setListName(orderProduct.productTrackerData.trackerListName)
-            setAttribution(orderProduct.productTrackerData.attribution)
-            setDiscountedPrice(orderProduct.isSlashPrice)
-            setWarehouseId(orderProduct.warehouseId.toString())
-            setProductWeight(orderProduct.weight.toString())
-            setPromoCode(promoCodes)
-            setPromoDetails("")
-            setProductType("")
-            setCartId(orderCart.cartId.toString())
-            setBuyerAddressId(_orderPreference.preference.address.addressId.toString())
-            setSpid(_orderShipment.getRealShipperProductId().toString())
-            setCodFlag(false)
-            setCornerFlag(false)
-            setIsFullfilment(false)
-            setShopId(orderShop.shopId.toString())
-            setShopName(orderShop.shopName)
-            setShopType(orderShop.isOfficial, orderShop.isGold)
-            setCategoryId(orderProduct.categoryId.toString())
-        }.build(step, option)
-    }
+//    private fun generateOspEe(step: Int, option: String, promoCodes: List<String> = emptyList()): Map<String, Any> {
+//        return OrderSummaryPageEnhanceECommerce().apply {
+//            setName(orderProduct.productName)
+//            setId(orderProduct.productId.toString())
+//            setPrice(orderProduct.productPrice.toString())
+//            setBrand(null)
+//            setCategory(orderProduct.category)
+//            setVariant(null)
+//            setQuantity(orderProduct.quantity.orderQuantity.toString())
+//            setListName(orderProduct.productTrackerData.trackerListName)
+//            setAttribution(orderProduct.productTrackerData.attribution)
+//            setDiscountedPrice(orderProduct.isSlashPrice)
+//            setWarehouseId(orderProduct.warehouseId.toString())
+//            setProductWeight(orderProduct.weight.toString())
+//            setPromoCode(promoCodes)
+//            setPromoDetails("")
+//            setProductType("")
+//            setCartId(orderCart.cartId.toString())
+//            setBuyerAddressId(_orderPreference.preference.address.addressId.toString())
+//            setSpid(_orderShipment.getRealShipperProductId().toString())
+//            setCodFlag(false)
+//            setCornerFlag(false)
+//            setIsFullfilment(false)
+//            setShopId(orderShop.shopId.toString())
+//            setShopName(orderShop.shopName)
+//            setShopType(orderShop.isOfficial, orderShop.isGold)
+//            setCategoryId(orderProduct.categoryId.toString())
+//        }.build(step, option)
+//    }
 
     private fun generateOspEeBody(promoCodes: List<String> = emptyList()): OrderSummaryPageEnhanceECommerce {
         return OrderSummaryPageEnhanceECommerce().apply {
