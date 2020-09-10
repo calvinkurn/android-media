@@ -10,7 +10,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -144,9 +143,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         )
     }
 
-    private val coachMarkDescription: TextView? by lazy {
-        coachMark.view.findViewById<TextView>(com.tokopedia.coachmark.R.id.text_description)
-    }
+    private val coachMarkToShow: MutableSet<CoachMarkItem> = mutableSetOf()
 
     private val FLAG_DETAIL = 3333
     private val FLAG_CONFIRM_REQ_PICKUP = 3553
@@ -186,7 +183,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private var userNotAllowedDialog: DialogUnify? = null
 
     companion object {
-        private val TAG_COACHMARK = "coachMark"
+        private const val TAG_COACHMARK = "coachMarks"
         private const val REQUEST_FILTER = 2888
         private const val ERROR_GET_TICKERS = "Error when get tickers in seller order list page."
         private const val ERROR_GET_FILTER = "Error when get filters in seller order list page."
@@ -712,6 +709,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                             showCoachMarkProductsEmpty()
                         }
                     }
+                    renderCoachMark()
                 }
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_ORDER_LIST)
@@ -719,6 +717,10 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 }
             }
         })
+    }
+
+    private fun renderCoachMark() {
+        coachMark.show(activity, TAG_COACHMARK, ArrayList(coachMarkToShow))
     }
 
     private fun renderOrderList() {
@@ -754,7 +756,6 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                                 userSession.shopId)
                     }
                 }
-                showCoachMarkWaitingPayment()
             }
         } else {
             somWaitingPaymentButton.gone()
@@ -786,19 +787,25 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     private fun showCoachMarkProducts() {
         if (!coachMark.hasShown(activity, TAG_COACHMARK) && !GlobalConfig.isSellerApp()) {
-            coachMark.show(activity, TAG_COACHMARK, arrayListOf(coachMarkSearch, coachMarkProduct, coachMarkFilter))
+            coachMarkToShow.add(coachMarkSearch)
+            showCoachMarkWaitingPayment()
+            coachMarkToShow.add(coachMarkProduct)
+            coachMarkToShow.add(coachMarkFilter)
         }
     }
 
     private fun showCoachMarkProductsEmpty() {
         if (!coachMark.hasShown(activity, TAG_COACHMARK) && !GlobalConfig.isSellerApp()) {
-            coachMark.show(activity, TAG_COACHMARK, arrayListOf(coachMarkSearch, coachMarkFilter))
+            coachMarkToShow.add(coachMarkSearch)
+            showCoachMarkWaitingPayment()
+            coachMarkToShow.add(coachMarkFilter)
         }
     }
 
     private fun showCoachMarkWaitingPayment() {
-        if (!coachMark.hasShown(activity, TAG_COACHMARK) && GlobalConfig.isSellerApp()) {
-            coachMark.show(activity, TAG_COACHMARK, ArrayList(coachMarkWaitingPaymentButton))
+        if (!coachMark.hasShown(activity, TAG_COACHMARK) &&
+                somWaitingPaymentButton.visibility == View.VISIBLE) {
+            coachMarkToShow.addAll(coachMarkWaitingPaymentButton)
         }
     }
 
