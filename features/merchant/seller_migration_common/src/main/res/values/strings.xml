@@ -89,6 +89,8 @@
     <string name="seller_migration_fragment_chat_tab_template_chat_description">Atur pesan cepat untuk langsung balas chat dari pembeli.</string>
     <string name="seller_migration_fragment_chat_tab_attach_voucher_title">LAMPIRKAN VOUCHER</string>
     <string name="seller_migration_fragment_chat_tab_attach_voucher_description">Kirim voucher tokomu ke pembeli via pesan chat.</string>
+    <string name="seller_migration_fragment_chat_tab_auto_reply_title">BALASAN OTOMATIS</string>
+    <string name="seller_migration_fragment_chat_tab_auto_reply_description">Balas chat dari pembeli berdasarkan kondisi yang telah kamu tentukan.</string>
 
     <!--    seller migration review seller features-->
     <string name="seller_migration_fragment_review_tab_template_review_title">TEMPLATE ULASAN</string>
