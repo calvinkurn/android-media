@@ -23,7 +23,7 @@ private const val responseCode4NoRelatedKeyword = "${generalSearchTrackingDirect
 private const val responseCode5RelatedSearch = "${generalSearchTrackingDirectory}response-code-5-related-search.json"
 private const val responseCode6RelatedSearch = "${generalSearchTrackingDirectory}response-code-6-related-search.json"
 private const val responseCode7SuggestedSearch = "${generalSearchTrackingDirectory}response-code-7-suggested-search.json"
-private const val responseCode9 = "${generalSearchTrackingDirectory}response-code-9.json"
+private const val withRedirection = "${generalSearchTrackingDirectory}with-redirection.json"
 
 internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestFixtures() {
 
@@ -298,8 +298,8 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
     }
 
     @Test
-    fun `Load Data Success With Redirection Response Code 9`() {
-        val searchProductModel = responseCode9.jsonToObject<SearchProductModel>()
+    fun `General Search Tracking With Redirection`() {
+        val searchProductModel = withRedirection.jsonToObject<SearchProductModel>()
         val previousKeyword = ""
         val expectedGeneralSearchTrackingModel = GeneralSearchTrackingModel(
                 eventLabel = String.format(
@@ -315,5 +315,12 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
         )
 
         `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)
+        `Then verify redirection is called`(searchProductModel.searchProduct.data.redirection.redirectApplink)
+    }
+
+    private fun `Then verify redirection is called`(redirectApplink: String) {
+        verify{
+            productListView.redirectSearchToAnotherPage(redirectApplink)
+        }
     }
 }
