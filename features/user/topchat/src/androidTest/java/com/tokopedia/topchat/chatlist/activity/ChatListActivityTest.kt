@@ -14,7 +14,7 @@ import com.tokopedia.topchat.chatlist.pojo.ChatListPojo
 import com.tokopedia.topchat.matchers.RecyclerViewItemCountAssertion
 import com.tokopedia.topchat.matchers.withIndex
 import com.tokopedia.topchat.stub.chatlist.activity.ChatListActivityStub
-import com.tokopedia.topchat.stub.chatlist.usecase.ChatListGraphqlUseCase
+import com.tokopedia.topchat.stub.chatlist.usecase.GetChatListMessageUseCaseStub
 import com.tokopedia.topchat.stub.chatlist.usecase.GetChatNotificationUseCaseStub
 import com.tokopedia.topchat.stub.common.UserSessionStub
 import kotlinx.coroutines.Dispatchers
@@ -37,7 +37,7 @@ class ChatListActivityTest {
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private lateinit var chatListUseCase: ChatListGraphqlUseCase
+    private lateinit var chatListUseCase: GetChatListMessageUseCaseStub
     private lateinit var chatNotificationUseCase: GetChatNotificationUseCaseStub
     private lateinit var userSession: UserSessionStub
     private lateinit var activity: ChatListActivityStub
@@ -56,7 +56,7 @@ class ChatListActivityTest {
     @Before
     fun setup() {
         Dispatchers.setMain(TestCoroutineDispatcher())
-        chatListUseCase = ChatListGraphqlUseCase()
+        chatListUseCase = GetChatListMessageUseCaseStub()
         chatNotificationUseCase = GetChatNotificationUseCaseStub()
         userSession = mActivityTestRule.activity.userSessionInterface
         activity = mActivityTestRule.activity

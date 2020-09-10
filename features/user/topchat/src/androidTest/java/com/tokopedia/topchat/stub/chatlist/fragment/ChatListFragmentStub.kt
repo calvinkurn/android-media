@@ -2,20 +2,19 @@ package com.tokopedia.topchat.stub.chatlist.fragment
 
 import android.os.Bundle
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.topchat.chatlist.di.ChatListContextModule
 import com.tokopedia.topchat.chatlist.fragment.ChatListFragment
-import com.tokopedia.topchat.chatlist.pojo.ChatListPojo
 import com.tokopedia.topchat.stub.chatlist.di.DaggerChatListComponentStub
 import com.tokopedia.topchat.stub.chatlist.di.module.ChatListNetworkModuleStub
 import com.tokopedia.topchat.stub.chatlist.di.module.ChatListQueryModuleStub
+import com.tokopedia.topchat.stub.chatlist.usecase.GetChatListMessageUseCaseStub
 import com.tokopedia.topchat.stub.chatlist.usecase.GetChatNotificationUseCaseStub
 import com.tokopedia.user.session.UserSessionInterface
 
 class ChatListFragmentStub : ChatListFragment() {
 
     lateinit var stubUserSession: UserSessionInterface
-    lateinit var chatListUseCase: GraphqlUseCase<ChatListPojo>
+    lateinit var chatListUseCase: GetChatListMessageUseCaseStub
     lateinit var chatNotificationUseCase: GetChatNotificationUseCaseStub
 
     override fun initInjector() {
@@ -43,7 +42,7 @@ class ChatListFragmentStub : ChatListFragment() {
         fun createFragment(
                 title: String,
                 userSessionInterface: UserSessionInterface,
-                chatListUseCaseStub: GraphqlUseCase<ChatListPojo>,
+                chatListUseCaseStub: GetChatListMessageUseCaseStub,
                 chatNotificationUseCaseStub: GetChatNotificationUseCaseStub
         ): ChatListFragment {
             val bundle = Bundle().apply {
