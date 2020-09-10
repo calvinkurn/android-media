@@ -119,11 +119,6 @@ class AddEditProductShipmentFragment:
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // PLT monitoring
-        stopPreparePagePerformanceMonitoring()
-        startNetworkRequestPerformanceMonitoring()
-        stopNetworkRequestPerformanceMonitoring()
-
         tfWeightUnit = view.findViewById(R.id.tf_weight_unit)
         tfWeightAmount = view.findViewById(R.id.tf_weight_amount)
         switchInsurance = view.findViewById(R.id.switch_insurance)
@@ -169,6 +164,7 @@ class AddEditProductShipmentFragment:
         setupOnBackPressed()
 
         // PLT monitoring
+        stopNetworkRequestPerformanceMonitoring()
         stopPerformanceMonitoring()
     }
 
@@ -256,8 +252,6 @@ class AddEditProductShipmentFragment:
     }
 
     private fun applyShipmentInputModel() {
-        startRenderPerformanceMonitoring()
-
         val inputModel = shipmentViewModel.shipmentInputModel
         val weightUnitResId = getWeightTypeTitle(inputModel.weightUnit)
         val weightUnit = getString(weightUnitResId)
@@ -269,8 +263,6 @@ class AddEditProductShipmentFragment:
             btnEnd?.visibility = View.GONE
             btnSave?.visibility = View.VISIBLE
         }
-
-        stopRenderPerformanceMonitoring()
     }
 
     private fun showUnitWeightOption() {
