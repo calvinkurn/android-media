@@ -14,12 +14,12 @@ import com.tokopedia.sellerorder.common.util.SomConsts.CATEGORY_COURIER_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.CATEGORY_ORDER_STATUS
 import com.tokopedia.sellerorder.common.util.SomConsts.CATEGORY_ORDER_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_LIST_ORDER
+import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_TAB_ACTIVE
 import com.tokopedia.sellerorder.list.data.model.SomListOrderParam
 import com.tokopedia.sellerorder.list.data.model.SomSubFilter
 import com.tokopedia.sellerorder.list.presentation.adapter.SomSubFilterAdapter
 import kotlinx.android.synthetic.main.activity_filter_sublist.*
 import kotlinx.android.synthetic.main.partial_toolbar_reset_button.*
-import kotlin.collections.ArrayList
 
 /**
  * Created by fwidjaja on 2019-09-13.
@@ -40,6 +40,7 @@ class SomSubFilterActivity : BaseSimpleActivity() {
     interface ActionListener {
         fun onResetClicked()
         fun saveSubFilter(): SomListOrderParam
+        fun saveSubFilterKey(): String
     }
 
     companion object {
@@ -87,8 +88,10 @@ class SomSubFilterActivity : BaseSimpleActivity() {
 
         btn_simpan.setOnClickListener {
             val listOrderParam = actionListener.saveSubFilter()
+            val tabActive = actionListener.saveSubFilterKey()
             setResult(Activity.RESULT_OK, Intent().apply {
                 putExtra(PARAM_LIST_ORDER, listOrderParam)
+                putExtra(PARAM_TAB_ACTIVE, tabActive)
             })
             finish()
         }

@@ -191,4 +191,7 @@ class SomSubFilterAdapter : RecyclerView.Adapter<SomSubFilterAdapter.BaseViewHol
         return currentFilterParam
     }
 
+    override fun saveSubFilterKey(): String {
+        return listSubFilter.find { it.isChecked }?.key.orEmpty()
+    }
 }

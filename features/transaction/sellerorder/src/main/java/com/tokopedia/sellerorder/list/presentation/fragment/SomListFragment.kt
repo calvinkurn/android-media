@@ -929,7 +929,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     filterStatusId = 0
                     paramOrder = data.getParcelableExtra(SomConsts.PARAM_LIST_ORDER)
                     isFilterApplied = checkFilterApplied(paramOrder)
-                    tabActive = ""
+                    tabActive = data.getStringExtra(SomConsts.PARAM_TAB_ACTIVE).orEmpty()
                     renderFilter()
                     refreshHandler?.startRefresh()
                 }
@@ -1002,7 +1002,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     private fun isNewOrderChipSelected(): Boolean {
-        return tabActive == SomConsts.STATUS_NEW_ORDER
+        return tabActive == STATUS_NEW_ORDER
     }
 
     private fun shouldShowWaitingPaymentButton(): Boolean {
