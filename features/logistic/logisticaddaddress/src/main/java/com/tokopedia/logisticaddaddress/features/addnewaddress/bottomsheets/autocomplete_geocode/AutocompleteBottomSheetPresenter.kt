@@ -6,7 +6,7 @@ import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressScope
 import com.tokopedia.logisticaddaddress.domain.mapper.AutocompleteGeocodeMapper
 import com.tokopedia.logisticaddaddress.domain.usecase.AutoCompleteUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.AutocompleteGeocodeUseCase
-import com.tokopedia.logisticdata.data.autocomplete.SuggestedPlace
+import com.tokopedia.logisticdata.data.autocomplete.Place
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
@@ -33,9 +33,9 @@ class AutocompleteBottomSheetPresenter @Inject constructor(private val autocompl
     fun getAutocomplete(input: String) {
         autoCompleteUseCase
                 .execute(input)
-                .subscribe(object : Subscriber<List<SuggestedPlace>>() {
-                    override fun onNext(t: List<SuggestedPlace>) {
-                        if (t[0].errorCode == CIRCUIT_BREAKER_ON_CODE) {
+                .subscribe(object : Subscriber<Place>() {
+                    override fun onNext(t: Place) {
+                        if (t.errorCode == CIRCUIT_BREAKER_ON_CODE) {
                             view.goToAddNewAddressNegative()
                         } else {
                             view.onSuccessGetAutocomplete(t)

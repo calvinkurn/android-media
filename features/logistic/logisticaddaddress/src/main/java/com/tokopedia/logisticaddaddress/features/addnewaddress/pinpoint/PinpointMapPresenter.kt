@@ -43,7 +43,11 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
                 .execute(placeId)
                 .subscribe(object : Subscriber<GetDistrictDataUiModel>() {
                     override fun onNext(model: GetDistrictDataUiModel) {
-                        view.onSuccessPlaceGetDistrict(model)
+                        if (model.errorCode == CIRCUIT_BREAKER_ON_CODE) {
+                            view.goToAddNewAddressNegative()
+                        } else {
+                            view.onSuccessPlaceGetDistrict(model)
+                        }
                     }
 
                     override fun onCompleted() {

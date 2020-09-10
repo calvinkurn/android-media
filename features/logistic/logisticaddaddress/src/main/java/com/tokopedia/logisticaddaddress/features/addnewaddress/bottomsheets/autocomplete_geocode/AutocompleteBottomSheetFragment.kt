@@ -20,7 +20,7 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.addedit.AddEditAd
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.location_info.LocationInfoBottomSheetFragment
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete_geocode.AutocompleteGeocodeDataUiModel
-import com.tokopedia.logisticdata.data.autocomplete.SuggestedPlace
+import com.tokopedia.logisticdata.data.autocomplete.Place
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticdata.data.entity.address.Token
 import com.tokopedia.logisticdata.util.rxEditText
@@ -245,15 +245,15 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
         }
     }
 
-    override fun onSuccessGetAutocomplete(suggestedPlaces: List<SuggestedPlace>) {
+    override fun onSuccessGetAutocomplete(suggestedPlaces: Place) {
         llLoading.visibility = View.GONE
         llSubtitle.visibility = View.GONE
         rvPoiList.visibility = View.VISIBLE
         mDisabledGps.visibility = View.GONE
-        if (suggestedPlaces.isNotEmpty()) {
+        if (suggestedPlaces.data.isNotEmpty()) {
             llPoi.visibility = View.VISIBLE
             adapter.isAutocompleteGeocode = false
-            adapter.addAutoComplete(suggestedPlaces)
+            adapter.addAutoComplete(suggestedPlaces.data)
         }
     }
 

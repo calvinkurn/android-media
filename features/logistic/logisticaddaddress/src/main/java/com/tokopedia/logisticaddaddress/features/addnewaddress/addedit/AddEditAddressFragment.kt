@@ -700,7 +700,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
         disable_map_layout.visibility = View.VISIBLE
         icon_pointer.setImageDrawable(context?.resources?.getDrawable(R.drawable.ic_green_pointer))
         context?.resources?.getColor(R.color.separator_color)?.let { icon_pointer.setColorFilter(it) }
-        btn_map.isEnabled = false
+        btn_map.isClickable = false
     }
 
     private fun setNormalForm() {
