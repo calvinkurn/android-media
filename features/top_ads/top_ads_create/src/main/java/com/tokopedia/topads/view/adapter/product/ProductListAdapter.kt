@@ -15,7 +15,7 @@ import com.tokopedia.topads.view.adapter.product.viewmodel.ProductViewModel
 class ProductListAdapter(val typeFactory: ProductListAdapterTypeFactory) : RecyclerView.Adapter<ProductViewHolder<ProductViewModel>>() {
 
     var items: MutableList<ProductViewModel> = mutableListOf()
-    var shimers: MutableList<ProductViewModel> = mutableListOf(
+    private var shimers: MutableList<ProductViewModel> = mutableListOf(
             ProductShimmerViewModel(),
             ProductShimmerViewModel(),
             ProductShimmerViewModel()
@@ -45,17 +45,18 @@ class ProductListAdapter(val typeFactory: ProductListAdapterTypeFactory) : Recyc
     }
 
     fun getSelectedItems(): List<ResponseProductList.Result.TopadsGetListProduct.Data> {
-        var selected = mutableListOf<ResponseProductList.Result.TopadsGetListProduct.Data>()
+        val selected = mutableListOf<ResponseProductList.Result.TopadsGetListProduct.Data>()
         selected.clear()
-        items.forEachIndexed { index, productViewModel -> if((productViewModel as ProductItemViewModel).isChecked )
+        items.forEach { productViewModel ->
+            if((productViewModel is ProductItemViewModel) && productViewModel.isChecked )
             selected.add(productViewModel.data) }
         return selected
     }
 
     fun setSelectedList(selectedProductIds: MutableList<Int>) {
-        items.forEachIndexed{index,productViewModel->
+        items.forEach{productViewModel->
             selectedProductIds.forEach {
-                if((productViewModel as ProductItemViewModel).data.productID == it){
+                if((productViewModel is ProductItemViewModel) && productViewModel.data.productID == it){
                     productViewModel.isChecked = true
                 }
             }

@@ -47,7 +47,8 @@ class SearchEventListViewHolder(val view: View) : SearchEventViewHolder<SearchEv
             val image_url : String,
             val app_url : String,
             val isLiked: Boolean,
-            val category: String
+            val category: String,
+            val sales_price:String
     ) : ImpressHolder()
 
     class KegiatanAdapter : RecyclerView.Adapter<KegiatanHolder>(){
@@ -72,7 +73,7 @@ class SearchEventListViewHolder(val view: View) : SearchEventViewHolder<SearchEv
             holder.view.txtJudulEvent.text = element.nama_kegiatan
 
             holder.view.addOnImpressionListener(element, {
-                EventSearchPageTracking.getInstance().impressionEventSearchSuggestion(listKegiatan)
+                EventSearchPageTracking.getInstance().impressionEventSearchSuggestion(listKegiatan.get(position), position)
             })
 
             holder.view.setOnClickListener {
