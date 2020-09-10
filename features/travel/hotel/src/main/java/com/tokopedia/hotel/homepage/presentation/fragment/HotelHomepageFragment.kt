@@ -19,6 +19,7 @@ import com.tokopedia.applink.DeeplinkMapper.getRegisteredNavigation
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel
 import com.tokopedia.banner.Indicator
+import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.common.travel.data.entity.TravelRecentSearchModel
 import com.tokopedia.common.travel.utils.TravelDateUtil
@@ -43,15 +44,19 @@ import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.search.data.model.HotelSearchModel
 import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivity
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.travelcalendar.selectionrangecalendar.SelectionRangeCalendarWidget
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_homepage.*
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
+import kotlin.collections.HashSet
 
 /**
  * @author by furqan on 28/03/19
@@ -442,44 +447,34 @@ class HotelHomepageFragment : HotelBaseFragment(),
         homepageViewModel.getRecentSearch(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_recent_search))
     }
 
+    val bannerImpressionIndex: HashSet<Int> = hashSetOf()
+
     private fun renderHotelPromo(promoDataList: List<TravelCollectiveBannerModel.Banner>) {
         showPromoContainer()
 
-        banner_hotel_homepage_promo.setBannerIndicator(Indicator.GREEN)
-        banner_hotel_homepage_promo.setOnPromoScrolledListener {
-            trackingHotelUtil.hotelBannerImpression(context, promoDataList[it], it, HOMEPAGE_SCREEN_NAME)
-        }
+        bannerImpressionIndex.add(0)
+        trackingHotelUtil.hotelBannerImpression(context, promoDataList.firstOrNull(), 0, HOMEPAGE_SCREEN_NAME)
 
-        banner_hotel_homepage_promo.setOnPromoClickListener { position ->
-            onPromoClicked(promoDataList.getOrNull(position)
-                    ?: TravelCollectiveBannerModel.Banner(), position)
-
-            if (RouteManager.isSupportApplink(context, promoDataList.getOrNull(position)?.attribute?.appUrl
-                            ?: "")) {
-                RouteManager.route(context, promoDataList.getOrNull(position)?.attribute?.appUrl
-                        ?: "")
-            } else if (!getRegisteredNavigation(context!!, promoDataList.getOrNull(position)?.attribute?.appUrl
-                            ?: "").isEmpty()) {
-                RouteManager.route(context, getRegisteredNavigation(context!!, promoDataList.getOrNull(position)?.attribute?.appUrl
-                        ?: ""))
-            } else if ((promoDataList.getOrNull(position)?.attribute?.webUrl ?: "").isNotEmpty()) {
-                RouteManager.route(context, promoDataList.getOrNull(position)?.attribute?.webUrl)
+        banner_hotel_homepage_promo.onActiveIndexChangedListener = object: CarouselUnify.OnActiveIndexChangedListener {
+            override fun onActiveIndexChanged(prev: Int, current: Int) {
+                if (!bannerImpressionIndex.contains(current)) {
+                    bannerImpressionIndex.add(current)
+                    trackingHotelUtil.hotelBannerImpression(context, promoDataList.getOrNull(current), current, HOMEPAGE_SCREEN_NAME)
+                }
             }
         }
+        banner_hotel_homepage_promo.freeMode = false
+        banner_hotel_homepage_promo.centerMode = false
+        banner_hotel_homepage_promo.autoplay = true
+        banner_hotel_homepage_promo.slideToShow = 1.1f
+        banner_hotel_homepage_promo.indicatorPosition = CarouselUnify.INDICATOR_BL
 
-        renderBannerView(promoDataList)
-    }
-
-    private fun renderBannerView(bannerList: List<TravelCollectiveBannerModel.Banner>) {
-        val promoUrls = ArrayList<String>()
-        for ((_, _, attribute) in bannerList) {
-            promoUrls.add(attribute.imageUrl)
+        banner_hotel_homepage_promo.infinite = true
+        val itemParam = { view: View, data: Any ->
+            val image = view.findViewById<ImageUnify>(R.id.hotelPromoImageCarousel)
+            image.setImageUrl((data as TravelCollectiveBannerModel.Banner).attribute.imageUrl, 0.3f)
         }
-
-        banner_hotel_homepage_promo.customWidth = resources.getDimensionPixelSize(R.dimen.hotel_banner_width)
-        banner_hotel_homepage_promo.customHeight = resources.getDimensionPixelSize(R.dimen.hotel_banner_height)
-        banner_hotel_homepage_promo.setPromoList(promoUrls)
-        banner_hotel_homepage_promo.buildView()
+        banner_hotel_homepage_promo.addItems(R.layout.hotel_carousel_item, ArrayList(promoDataList), itemParam)
     }
 
     private fun renderHotelLastSearch(data: HotelRecentSearchModel) {
@@ -528,8 +523,22 @@ class HotelHomepageFragment : HotelBaseFragment(),
         hotel_container_promo.visibility = View.GONE
     }
 
-    private fun onPromoClicked(promo: TravelCollectiveBannerModel.Banner, position: Int) {
-        trackingHotelUtil.hotelClickBanner(context, promo, position, HOMEPAGE_SCREEN_NAME)
+    private fun onPromoClicked(promo: TravelCollectiveBannerModel.Banner?, position: Int) {
+        promo?.let {
+            trackingHotelUtil.hotelClickBanner(context, it, position, HOMEPAGE_SCREEN_NAME)
+            when {
+                RouteManager.isSupportApplink(context, it.attribute.appUrl) -> {
+                    RouteManager.route(context, it.attribute.appUrl)
+                }
+                getRegisteredNavigation(context!!, it.attribute.appUrl).isNotEmpty() -> {
+                    RouteManager.route(context, getRegisteredNavigation(context!!, it.attribute.appUrl))
+                }
+                it.attribute.webUrl.isNotEmpty() -> {
+                    RouteManager.route(context, it.attribute.webUrl)
+                }
+                else -> {}
+            }
+        }
     }
 
     private fun showHotelLastSearchContainer() {
