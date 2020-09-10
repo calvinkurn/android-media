@@ -449,14 +449,18 @@ class ShopEditBasicInfoFragment: Fragment() {
     private fun showShopEditShopInfoTicker(data: AllowShopNameDomainChangesData) {
         val isNameAllowed = data.isNameAllowed
         val isDomainAllowed = data.isDomainAllowed
+        val reasonNameNotAllowed = data.reasonNameNotAllowed
+        val reasonDomainNotAllowed = data.reasonDomainNotAllowed
 
-        when {
-            isNameAllowed && isDomainAllowed -> showWarningTicker()
-            isNameAllowed && !isDomainAllowed -> showDomainNotAllowedTicker()
-            isDomainAllowed && !isNameAllowed -> showNameNotAllowedTicker()
-            else -> showNameAndDomainNotAllowedTicker()
+        if (reasonNameNotAllowed.isBlank() && reasonDomainNotAllowed.isBlank()) {
+            return
         }
-        shopEditTicker.show()
+        when {
+            isNameAllowed && isDomainAllowed -> showTicker(reasonNameNotAllowed, Ticker.TYPE_WARNING)
+            isNameAllowed && !isDomainAllowed -> showTicker(reasonDomainNotAllowed, Ticker.TYPE_INFORMATION)
+            isDomainAllowed && !isNameAllowed -> showTicker(reasonNameNotAllowed, Ticker.TYPE_INFORMATION)
+            else -> showTicker(reasonNameNotAllowed, Ticker.TYPE_INFORMATION)
+        }
     }
 
     private fun showShopNameDomainTextField(data: AllowShopNameDomainChangesData) {
@@ -470,40 +474,15 @@ class ShopEditBasicInfoFragment: Fragment() {
         shopDomainInput.isEnabled = isDomainAllowed
     }
 
-    private fun showWarningTicker() {
-        val description = getString(R.string.ticker_warning_can_only_change_shopname_once)
-        val readMore = getString(R.string.ticker_warning_read_more)
-        val color = ContextCompat.getColor(requireContext(), R.color.merchant_green)
-        val message = getSpandableColorText(description, readMore, color)
-        showInfoTicker(message)
-    }
-
-    private fun showDomainNotAllowedTicker() {
-        val message = getString(R.string.ticker_info_show_domain_not_allowed)
-        showInfoTicker(message)
-    }
-
-    private fun showNameNotAllowedTicker() {
-        val message = getString(R.string.ticker_info_show_name_not_allowed)
-        showInfoTicker(message)
-    }
-
-    private fun showNameAndDomainNotAllowedTicker() {
-        val message = getString(R.string.ticker_info_shop_name_and_domain_not_allowed)
-        showInfoTicker(message)
-    }
-
-    private fun showInfoTicker(message: String) {
-        shopEditTicker.tickerType = Ticker.TYPE_INFORMATION
-        shopEditTicker.setTextDescription(message)
-    }
-
-    private fun showInfoTicker(message: CharSequence) {
-        shopEditTicker.tickerType = Ticker.TYPE_WARNING
-        shopEditTicker.setTextDescription(message)
+    private fun showTicker(message: String, type: Int) {
+        shopEditTicker.tickerType = type
+        shopEditTicker.setHtmlDescription(message)
         shopEditTicker.setOnClickListener {
-            clickReadMore()
+            if (type == Ticker.TYPE_WARNING) {
+                clickReadMore()
+            }
         }
+        shopEditTicker.show()
     }
 
     private fun initInjector() {
