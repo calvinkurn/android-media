@@ -17,6 +17,7 @@ import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home.rules.TestDispatcherProvider
 import com.tokopedia.play_common.domain.usecases.GetPlayWidgetUseCase
 import com.tokopedia.play_common.domain.usecases.PlayToggleChannelReminderUseCase
+import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselDataModel
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.user.session.UserSessionInterface
@@ -56,7 +57,8 @@ fun createHomeViewModel(
         getSalamWidgetUseCase: GetSalamWidgetUseCase = mockk(relaxed = true),
         declineSalamWidgetUseCase: DeclineSalamWIdgetUseCase = mockk{ mockk(relaxed = true)},
         declineRechargeRecommendationUseCase: DeclineRechargeRecommendationUseCase = mockk(relaxed = true),
-        topadsImageViewUseCase: TopAdsImageViewUseCase = mockk(relaxed = true)
+        topadsImageViewUseCase: TopAdsImageViewUseCase = mockk(relaxed = true),
+        dispatcher: TestDispatcherProvider = TestDispatcherProvider()
 ): HomeViewModel{
 
 
@@ -72,7 +74,7 @@ fun createHomeViewModel(
             getPlayCardHomeUseCase = Lazy{getPlayLiveDynamicUseCase},
             getRecommendationTabUseCase = Lazy{getRecommendationTabUseCase},
             getWalletBalanceUseCase = Lazy{getCoroutineWalletBalanceUseCase},
-            homeDispatcher = Lazy{TestDispatcherProvider()},
+            homeDispatcher = Lazy{ dispatcher },
             homeUseCase = Lazy{ getHomeUseCase },
             popularKeywordUseCase = Lazy{getPopularKeywordUseCase},
             sendGeolocationInfoUseCase = Lazy{getSendGeolocationInfoUseCase},
@@ -96,6 +98,14 @@ fun GetPlayLiveDynamicUseCase.givenGetPlayLiveDynamicUseCaseReturn(channel: Play
     coEvery { executeOnBackground() } returns PlayData(
             playChannels = listOf(channel)
     )
+}
+
+fun GetPlayWidgetUseCase.givenGetPlayCarouselUseCaseReturn(playBannerCarouselDataModel: PlayBannerCarouselDataModel) {
+    coEvery { executeOnBackground() } returns playBannerCarouselDataModel
+}
+
+fun GetPlayWidgetUseCase.givenGetPlayCarouselUseCaseReturnError() {
+    coEvery { executeOnBackground() } throws TimeoutException()
 }
 
 fun GetBusinessWidgetTab.givenGetBusinessWidgetTabUseCaseReturn(homeWidget: HomeWidget) {
@@ -145,6 +155,7 @@ fun HomeUseCase.givenGetHomeDataReturn(homeDataModel: HomeDataModel) {
         emit(homeDataModel)
     }
 }
+
 fun HomeUseCase.givenGetHomeDataReturn(homeDataModel: HomeDataModel, newHomeDataModel: HomeDataModel) {
     coEvery { getHomeData() } returns flow{
         emit(homeDataModel)

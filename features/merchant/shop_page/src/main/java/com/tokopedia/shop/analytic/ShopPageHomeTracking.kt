@@ -5,6 +5,8 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.*
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
+import com.tokopedia.shop.home.view.model.NotifyMeAction
+import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
 /*
@@ -357,14 +359,14 @@ class ShopPageHomeTracking(
             positionChannel: String,
             userId: String,
             bannerId: String,
-            creativeName: String
-
+            creativeName: String,
+            position: String
     ){
         val eventMap = mapOf(
-                EVENT to VIEW_SHOP_PAGE,
+                EVENT to PROMO_VIEW,
                 EVENT_CATEGORY to SHOP_PAGE_BUYER,
                 EVENT_ACTION to IMPRESSION_SGC_BANNER,
-                EVENT_LABEL to "view on banner play - $shopId",
+                EVENT_LABEL to "view on banner play - $shopId - $position",
                 USER_ID to userId,
                 ECOMMERCE to mapOf(
                         PROMO_VIEW to mapOf(
@@ -387,14 +389,14 @@ class ShopPageHomeTracking(
             positionChannel: String,
             userId: String,
             bannerId: String,
-            creativeName: String
-
+            creativeName: String,
+            position: String
     ){
         val eventMap = mapOf(
-                EVENT to CLICK_SHOP_PAGE,
+                EVENT to PROMO_CLICK,
                 EVENT_CATEGORY to SHOP_PAGE_BUYER,
                 EVENT_ACTION to CLICK,
-                EVENT_LABEL to "click on banner play - $shopId",
+                EVENT_LABEL to "click on banner play - $shopId - $position",
                 USER_ID to userId,
                 ECOMMERCE to mapOf(
                         PROMO_CLICK to mapOf(
@@ -413,20 +415,21 @@ class ShopPageHomeTracking(
     }
 
     fun impressionPlayBanner(
-        shopId: String,
-        channelId: String,
-        positionChannel: String,
-        autoPlay: String,
-        userId: String,
-        bannerId: String,
-        creativeName: String
+            shopId: String,
+            channelId: String,
+            positionWidget: Int,
+            positionChannel: String,
+            autoPlay: String,
+            userId: String,
+            bannerId: String,
+            creativeName: String
 
     ){
         val eventMap = mapOf(
-                EVENT to VIEW_SHOP_PAGE,
+                EVENT to PROMO_VIEW,
                 EVENT_CATEGORY to SHOP_PAGE_BUYER,
                 EVENT_ACTION to IMPRESSION_SGC_CHANNEL,
-                EVENT_LABEL to "view channel - $shopId - $channelId - $positionChannel - $autoPlay",
+                EVENT_LABEL to "view channel - $shopId - $channelId - $positionWidget - $autoPlay",
                 USER_ID to userId,
                 ECOMMERCE to mapOf(
                         PROMO_VIEW to mapOf(
@@ -447,6 +450,7 @@ class ShopPageHomeTracking(
     fun clickPlayBanner(
             shopId: String,
             channelId: String,
+            positionWidget: Int,
             positionChannel: String,
             autoPlay: String,
             userId: String,
@@ -455,10 +459,10 @@ class ShopPageHomeTracking(
 
     ){
         val eventMap = mapOf(
-                EVENT to CLICK_SHOP_PAGE,
+                EVENT to PROMO_CLICK,
                 EVENT_CATEGORY to SHOP_PAGE_BUYER,
                 EVENT_ACTION to CLICK,
-                EVENT_LABEL to "click channel - $shopId - $channelId - $positionChannel - $autoPlay",
+                EVENT_LABEL to "click channel - $shopId - $channelId - $positionWidget - $autoPlay",
                 USER_ID to userId,
                 ECOMMERCE to mapOf(
                         PROMO_CLICK to mapOf(
@@ -473,7 +477,7 @@ class ShopPageHomeTracking(
                         )
                 )
         ) as HashMap<String, Any>
-        trackingQueue.putEETracking(eventMap)
+        sendDataLayerEvent(eventMap)
     }
 
     fun clickSeeMorePlayCarouselBanner(shopId: String, userId: String) {
@@ -667,6 +671,320 @@ class ShopPageHomeTracking(
                 getShopPageCategory(isOwner),
                 CLICK_CLOSE_FILTER,
                 "",
+                customDimensionShopPage
+        )
+    }
+
+    fun impressionCampaignNplWidget(
+            statusCampaign: String,
+            shopId: String,
+            position: Int,
+            isSeeCampaign: Boolean?,
+            imageId: String,
+            imageUrl: String,
+            customDimensionShopPage: CustomDimensionShopPage,
+            isOwner: Boolean
+    ) {
+        val trackerBannerType = getCampaignNplTrackerBannerType(statusCampaign)
+        var eventLabel = joinDash(trackerBannerType, shopId, position.toString())
+        isSeeCampaign?.let{
+            eventLabel = if(it){
+                joinDash(eventLabel, VALUE_SEE_CAMPAIGN)
+            }else{
+                joinDash(eventLabel, VALUE_NO_SEE_CAMPAIGN)
+            }
+        }
+        val eventMap = createMap(
+                PROMO_VIEW,
+                getShopPageCategory(isOwner),
+                IMPRESSION,
+                eventLabel,
+                customDimensionShopPage
+        )
+        eventMap[ECOMMERCE] = mutableMapOf(
+                PROMO_VIEW to mutableMapOf(
+                        PROMOTIONS to mutableListOf(createCampaignNplWidgetItemMap(
+                                imageId,
+                                trackerBannerType,
+                                position,
+                                imageUrl
+                        ))))
+        sendDataLayerEvent(eventMap)
+    }
+
+    private fun createCampaignNplWidgetItemMap(
+            imageId: String,
+            trackerBannerType: String,
+            position: Int,
+            imageUrl: String
+    ): Map<String, Any> {
+        val nameEvent = joinDash(
+                joinSpace(SHOPPAGE, VALUE_HOME, trackerBannerType),
+                position.toString()
+        )
+        return mutableMapOf(
+                ID to imageId,
+                NAME to nameEvent,
+                CREATIVE to "",
+                CREATIVE_URL to imageUrl,
+                POSITION to position
+        )
+    }
+
+    fun clickTncButton(
+            isOwner: Boolean,
+            statusCampaign: String,
+            customDimensionShopPage: CustomDimensionShopPage
+    ) {
+        val trackerCampaignType = getCampaignNplTrackerCampaignType(statusCampaign)
+        sendGeneralEvent(
+                CLICK_SHOP_PAGE,
+                getShopPageCategory(isOwner),
+                String.format(CLICK_TNC, trackerCampaignType),
+                "",
+                customDimensionShopPage
+        )
+    }
+
+    private fun getCampaignNplTrackerBannerType(statusCampaign: String): String{
+        return when(statusCampaign.toLowerCase()){
+            StatusCampaign.UPCOMING.statusCampaign.toLowerCase() -> {
+                VALUE_UPCOMING_BANNER
+            }
+            StatusCampaign.ONGOING.statusCampaign.toLowerCase() -> {
+                VALUE_ONGOING_BANNER
+            }
+            else -> {
+                VALUE_FINISHED_BANNER
+            }
+        }
+    }
+
+    private fun getCampaignNplTrackerCampaignType(statusCampaign: String): String{
+        return when(statusCampaign.toLowerCase()){
+            StatusCampaign.UPCOMING.statusCampaign.toLowerCase() -> {
+                VALUE_UPCOMING_CAMPAIGN
+            }
+            StatusCampaign.ONGOING.statusCampaign.toLowerCase() -> {
+                VALUE_ONGOING_CAMPAIGN
+            }
+            else -> {
+                VALUE_FINISHED_CAMPAIGN
+            }
+        }
+    }
+
+    fun impressionTncPage(
+            isOwner: Boolean,
+            statusCampaign: String,
+            customDimensionShopPage: CustomDimensionShopPage
+    ) {
+        val trackerCampaignType = getCampaignNplTrackerCampaignType(statusCampaign)
+        sendGeneralEvent(
+                VIEW_SHOP_PAGE_IRIS,
+                getShopPageCategory(isOwner),
+                String.format(IMPRESSION_TNC, trackerCampaignType),
+                "",
+                customDimensionShopPage
+        )
+    }
+
+    fun clickCloseTncPage(
+            isOwner: Boolean,
+            statusCampaign: String,
+            customDimensionShopPage: CustomDimensionShopPage
+    ) {
+        val trackerCampaignType = getCampaignNplTrackerCampaignType(statusCampaign)
+        sendGeneralEvent(
+                CLICK_SHOP_PAGE,
+                getShopPageCategory(isOwner),
+                String.format(CLICK_CLOSE_TNC, trackerCampaignType),
+                "",
+                customDimensionShopPage
+        )
+    }
+
+    fun clickNotifyMeButton(
+            isOwner: Boolean,
+            action: String,
+            customDimensionShopPage: CustomDimensionShopPage
+    ) {
+        val eventAction = if(action.toLowerCase() == NotifyMeAction.REGISTER.action.toLowerCase()){
+            CLICK_ACTIVATE_REMINDER
+        }else{
+            CLICK_DEACTIVATE_REMINDER
+        }
+        sendGeneralEvent(
+                CLICK_SHOP_PAGE,
+                getShopPageCategory(isOwner),
+                eventAction,
+                "",
+                customDimensionShopPage
+        )
+    }
+
+    fun impressionToasterActivation(isOwner: Boolean, customDimensionShopPage: CustomDimensionShopPage) {
+        sendGeneralEvent(
+                VIEW_SHOP_PAGE_IRIS,
+                getShopPageCategory(isOwner),
+                IMPRESSION_TOASTER_NOTIFY_ME,
+                "",
+                customDimensionShopPage
+        )
+    }
+
+    fun toasterActivationClickOk(isOwner: Boolean, customDimensionShopPage: CustomDimensionShopPage) {
+        sendGeneralEvent(
+                CLICK_SHOP_PAGE,
+                getShopPageCategory(isOwner),
+                CLICK_OK_TOASTER_NOTIFY_ME,
+                "",
+                customDimensionShopPage
+        )
+    }
+
+    fun clickCtaCampaignNplWidget(
+            isOwner: Boolean,
+            statusCampaign: String,
+            customDimensionShopPage: CustomDimensionShopPage
+    ) {
+        val trackerCampaignType = getCampaignNplTrackerCampaignType(statusCampaign)
+        sendGeneralEvent(
+                CLICK_SHOP_PAGE,
+                getShopPageCategory(isOwner),
+                String.format(CLICK_SEE_ALL_CAMPAIGN_NPL_WIDGET, trackerCampaignType),
+                "",
+                customDimensionShopPage
+        )
+    }
+
+    fun impressionCampaignNplProduct(
+            isOwner: Boolean,
+            statusCampaign: String,
+            productName: String,
+            productId: String,
+            productPrice: String,
+            shopName: String,
+            verticalPosition: Int,
+            horizontalPosition: Int,
+            isLogin: Boolean,
+            customDimensionShopPage: CustomDimensionShopPage
+    ) {
+        val eventAction = joinDash(PRODUCT_LIST_IMPRESSION, HOME_TAB, getCampaignNplTrackerCampaignType(statusCampaign))
+        val eventMap = createMap(
+                PRODUCT_VIEW,
+                getShopPageCategory(isOwner),
+                eventAction,
+                "",
+                customDimensionShopPage
+        )
+        val listEventValue = createCampaignNplProductListValue(
+            verticalPosition,
+                statusCampaign,
+                customDimensionShopPage.shopId,
+                isLogin
+        )
+        eventMap[ECOMMERCE] = mutableMapOf(
+                CURRENCY_CODE to IDR,
+                IMPRESSIONS to mutableListOf(createCampaignNplProductItemMap(
+                        productName,
+                        productId,
+                        productPrice,
+                        shopName,
+                        listEventValue,
+                        horizontalPosition,
+                        customDimensionShopPage
+                )))
+        sendDataLayerEvent(eventMap)
+    }
+
+    private fun createCampaignNplProductListValue(verticalPosition: Int, statusCampaign: String, shopId: String, isLogin: Boolean): String {
+        val loginNonLoginEventValue = if (isLogin) LOGIN else NON_LOGIN
+        val bannerTypeEventValue = getCampaignNplTrackerBannerType(statusCampaign)
+        return joinDash(
+                joinSpace(SHOPPAGE, VALUE_HOME, String.format(VERTICAL_POSITION, verticalPosition)),
+                bannerTypeEventValue,
+                shopId,
+                loginNonLoginEventValue
+        )
+    }
+
+    private fun createCampaignNplProductItemMap(
+            productName: String,
+            productId: String,
+            productPrice: String,
+            shopName: String,
+            listEventValue: String,
+            horizontalPosition: Int,
+            customDimensionShopPage: CustomDimensionShopPage
+    ): Map<String, Any> {
+        return mutableMapOf(
+                NAME to productName,
+                ID to productId,
+                PRICE to formatPrice(productPrice),
+                BRAND to shopName,
+                CATEGORY to NONE,
+                VARIANT to NONE,
+                LIST to listEventValue,
+                POSITION to horizontalPosition,
+                DIMENSION_81 to customDimensionShopPage.shopType,
+                DIMENSION_79 to customDimensionShopPage.shopId,
+                DIMENSION_40 to listEventValue
+        )
+    }
+
+    fun clickCampaignNplProduct(isOwner: Boolean,
+                                statusCampaign: String,
+                                productName: String,
+                                productId: String,
+                                productPrice: String,
+                                shopName: String,
+                                verticalPosition: Int,
+                                horizontalPosition: Int,
+                                isLogin: Boolean,
+                                customDimensionShopPage: CustomDimensionShopPage
+    ){
+        val eventAction = joinDash(CLICK_PRODUCT, HOME_TAB, getCampaignNplTrackerCampaignType(statusCampaign))
+        val eventMap = createMap(
+                PRODUCT_CLICK,
+                getShopPageCategory(isOwner),
+                eventAction,
+                productId,
+                customDimensionShopPage
+        )
+        val listEventValue = createCampaignNplProductListValue(
+                verticalPosition,
+                statusCampaign,
+                customDimensionShopPage.shopId,
+                isLogin
+        )
+        eventMap[ECOMMERCE] = mutableMapOf(
+                CLICK to mutableMapOf(
+                        ACTION_FIELD to mutableMapOf(LIST to listEventValue),
+                        PRODUCTS to mutableListOf(createCampaignNplProductItemMap(
+                                productName,
+                                productId,
+                                productPrice,
+                                shopName,
+                                listEventValue,
+                                horizontalPosition,
+                                customDimensionShopPage
+                        ))
+                )
+        )
+        sendDataLayerEvent(eventMap)
+    }
+
+    fun clickProductListToggle(
+            productListName: String,
+            isMyShop: Boolean,
+            customDimensionShopPage: CustomDimensionShopPage
+    ) {
+        sendGeneralEvent(
+                CLICK_SHOP_PAGE,
+                getShopPageCategory(isMyShop),
+                CLICK_PRODUCT_LIST_TOGGLE,
+                productListName,
                 customDimensionShopPage
         )
     }

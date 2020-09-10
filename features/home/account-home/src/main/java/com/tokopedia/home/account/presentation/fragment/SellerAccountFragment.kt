@@ -15,6 +15,9 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.home.account.AccountConstants
 import com.tokopedia.home.account.R
 import com.tokopedia.home.account.di.component.DaggerSellerAccountComponent
@@ -31,13 +34,11 @@ import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking.eventOnClickAccountTicker
-import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
 import com.tokopedia.seller_migration_common.getSellerMigrationDate
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
-import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationAccountBottomSheet
-import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationVoucherTokoBottomSheet
+import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
+import com.tokopedia.seller_migration_common.presentation.fragment.bottomsheet.SellerMigrationAccountCommBottomSheet
 import com.tokopedia.track.TrackApp
-import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.make
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -56,6 +57,10 @@ class SellerAccountFragment : BaseAccountFragment(), AccountItemListener, Fragme
     private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val viewModel by lazy { viewModelFragmentProvider.get(SellerAccountViewModel::class.java) }
 
+    private val sellerMigrationBottomSheet by lazy {
+        SellerMigrationAccountCommBottomSheet.createInstance(userSession.userId)
+    }
+
     @Inject
     lateinit var sellerAccountMapper: SellerAccountMapper
 
@@ -64,7 +69,6 @@ class SellerAccountFragment : BaseAccountFragment(), AccountItemListener, Fragme
     private lateinit var adapter: SellerAccountAdapter
     private lateinit var fpmSeller: PerformanceMonitoring
     private lateinit var migrationTicker: Ticker
-    private lateinit var sellerMigrationVoucherTokoBottomSheet: SellerMigrationVoucherTokoBottomSheet
 
     private var isLoaded = false
 
@@ -83,12 +87,6 @@ class SellerAccountFragment : BaseAccountFragment(), AccountItemListener, Fragme
         recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         swipeRefreshLayout.setColorSchemeResources(R.color.tkpd_main_green)
         return view
-    }
-
-    override fun onResume() {
-        super.onResume()
-        isLoaded = false
-        getData()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -232,11 +230,13 @@ class SellerAccountFragment : BaseAccountFragment(), AccountItemListener, Fragme
     }
 
     override fun onMenuListClicked(item: MenuListViewModel) {
-        if (item.menu.equals(getString(R.string.title_menu_voucher_toko), ignoreCase = true)) {
-            sendTracking(item.titleTrack, item.sectionTrack, item.menu)
-            showSellerMigrationVoucherTokoBottomSheet()
-        } else {
-            super.onMenuListClicked(item)
+        when {
+            item.menu.equals(getString(R.string.title_menu_voucher_toko), ignoreCase = true) -> {
+                sendTracking(item.titleTrack, item.sectionTrack, item.menu)
+                goToVoucherToko()
+            }
+            item.menu.equals(getString(R.string.title_menu_product_feature), ignoreCase = true) -> goToSellerAppProductManage()
+            else -> super.onMenuListClicked(item)
         }
     }
 
@@ -246,17 +246,17 @@ class SellerAccountFragment : BaseAccountFragment(), AccountItemListener, Fragme
     override fun onProductRecommendationThreeDotsClicked(product: RecommendationItem, adapterPosition: Int) {}
     private fun setupSellerMigrationTicker() {
         if (isSellerMigrationEnabled(this.context)) {
-            migrationTicker.tickerTitle = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_account_home_ticker_title)
+            migrationTicker.tickerTitle = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_ticker_title)
             val remoteConfigDate = getSellerMigrationDate(this.context)
             if (remoteConfigDate.isEmpty()) {
-                migrationTicker.setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_generic_ticker_content))
+                migrationTicker.setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_account_ticker_desc))
             } else {
-                migrationTicker.setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_account_home_ticker_content, remoteConfigDate))
+                migrationTicker.setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_account_ticker_desc_dynamic, remoteConfigDate))
             }
             migrationTicker.setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(charSequence: CharSequence) {
                     eventOnClickAccountTicker(userSession.userId)
-                    openSellerMigrationBottomSheet()
+                    sellerMigrationBottomSheet.show(childFragmentManager, SellerMigrationAccountCommBottomSheet::class.java.name)
                 }
 
                 override fun onDismiss() {
@@ -268,23 +268,40 @@ class SellerAccountFragment : BaseAccountFragment(), AccountItemListener, Fragme
         }
     }
 
-    private fun openSellerMigrationBottomSheet() {
-        context?.let {
-            val sellerMigrationBottomSheet: BottomSheetUnify = SellerMigrationAccountBottomSheet.createNewInstance(it)
-            sellerMigrationBottomSheet.show(childFragmentManager, SellerMigrationConstants.TAG_SELLER_MIGRATION_BOTTOM_SHEET)
-        }
+    private fun goToSellerAppProductManage() {
+        val appLinks = ArrayList<String>()
+        appLinks.add(ApplinkConst.PRODUCT_MANAGE)
+        goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_FEATURED_PRODUCT, appLinks)
     }
 
-    private fun showSellerMigrationVoucherTokoBottomSheet() {
-        context?.let {
-            sellerMigrationVoucherTokoBottomSheet = SellerMigrationVoucherTokoBottomSheet.createNewInstance(it)
-            sellerMigrationVoucherTokoBottomSheet.show(childFragmentManager, SellerMigrationConstants.TAG_SELLER_MIGRATION_BOTTOM_SHEET)
+    private fun goToVoucherToko() {
+        val appLinks = ArrayList<String>()
+        appLinks.add(ApplinkConstInternalSellerapp.SELLER_HOME)
+        appLinks.add(ApplinkConstInternalSellerapp.CENTRALIZED_PROMO)
+        goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_SHOP_CASHBACK_VOUCHER, appLinks)
+    }
+
+    private fun goToSellerMigrationPage(@SellerMigrationFeatureName featureName: String, appLinks: ArrayList<String>) {
+        val context = context
+        if (context != null) {
+            val intent = SellerMigrationActivity.createIntent(context, featureName, screenName, appLinks)
+            startActivity(intent)
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         viewModel.sellerData.removeObservers(viewLifecycleOwner)
+    }
+
+    override fun onPause() {
+        sellerMigrationBottomSheet?.dismiss()
+        super.onPause()
+    }
+
+    override fun onDestroy() {
+        sellerMigrationBottomSheet?.dismiss()
+        super.onDestroy()
     }
 
     companion object {

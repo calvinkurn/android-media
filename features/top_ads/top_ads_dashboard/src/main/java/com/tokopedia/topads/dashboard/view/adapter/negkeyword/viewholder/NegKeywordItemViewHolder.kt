@@ -26,7 +26,7 @@ class NegKeywordItemViewHolder(val view: View,
             if (selectMode) {
                 view.check_box.visibility = View.VISIBLE
             } else {
-                view.card_view?.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_dash_white))
+                view.card_view?.setBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_dash_white))
                 view.check_box.visibility = View.GONE
             }
             view.key_title.text = it.result.keywordTag
@@ -34,24 +34,24 @@ class NegKeywordItemViewHolder(val view: View,
             view.label.setLabelType(Label.GENERAL_LIGHT_GREEN)
             view.check_box.isChecked = item.isChecked
             if (!view.check_box.isChecked) {
-                view.card_view.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_dash_white))
+                view.card_view.setBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_dash_white))
             } else {
-                view.card_view.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_select_color))
+                view.card_view.setBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_select_color))
             }
             view.item_card.setOnClickListener {
                 if (selectMode) {
                     view.check_box.isChecked = !view.check_box.isChecked
                     item.isChecked = view.check_box.isChecked
                     if (view.check_box.isChecked)
-                        view.card_view?.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_select_color))
+                        view.card_view?.setBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_select_color))
                     else
-                        view.card_view?.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_dash_white))
+                        view.card_view?.setBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_dash_white))
                 }
             }
             view.item_card.setOnLongClickListener {
                 item.isChecked = true
                 view.check_box.isChecked = true
-                view.card_view.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_select_color))
+                view.card_view.setBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_select_color))
                 onSelectMode.invoke(true)
                 true
             }

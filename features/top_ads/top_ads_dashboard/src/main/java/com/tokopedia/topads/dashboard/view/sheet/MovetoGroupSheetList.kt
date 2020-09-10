@@ -11,7 +11,9 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.data.model.CountDataItem
 import com.tokopedia.topads.dashboard.view.adapter.movetogroup.MovetoGroupAdapter
 import com.tokopedia.topads.dashboard.view.adapter.movetogroup.MovetoGroupAdapterTypeFactoryImpl
 import com.tokopedia.topads.dashboard.view.adapter.movetogroup.viewmodel.MovetoGroupItemViewModel
@@ -42,6 +44,7 @@ class MovetoGroupSheetList {
                     behavior.isHideable = false
                 }
             }
+            it.btn_close.setImageDrawable(context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_create_ic_group_close))
             it.btn_close.setOnClickListener { dismissDialog() }
             it.submit_butt.setOnClickListener {
                 if (groupId.toString() == "0") {
@@ -95,6 +98,10 @@ class MovetoGroupSheetList {
 
     fun updateData(data: MutableList<MovetoGroupViewModel>) {
         adapter?.updateData(data)
+    }
+
+    fun updateKeyCount(data: List<CountDataItem>) {
+        adapter?.setItemCount(data)
     }
 
     fun getSelectedFilter(): String {

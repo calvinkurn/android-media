@@ -13,8 +13,10 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.attachcommon.data.VoucherPreview
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
@@ -33,6 +35,7 @@ import com.tokopedia.chat_common.network.ChatUrl.Companion.CHAT_WEBSOCKET_DOMAIN
 import com.tokopedia.chat_common.presenter.BaseChatPresenter
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.common.network.util.CommonUtil
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.purchase_platform.common.constant.ATC_AND_BUY
@@ -43,22 +46,18 @@ import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
+import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
-import com.tokopedia.topchat.chatroom.domain.subscriber.ChangeChatBlockSettingSubscriber
 import com.tokopedia.topchat.chatroom.domain.subscriber.DeleteMessageAllSubscriber
 import com.tokopedia.topchat.chatroom.domain.subscriber.GetExistingMessageIdSubscriber
-import com.tokopedia.topchat.chatroom.domain.subscriber.GetShopFollowingStatusSubscriber
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
 import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewUiModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
-import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
-import com.tokopedia.topchat.chatroom.view.viewmodel.SendableVoucherPreview
+import com.tokopedia.topchat.chatroom.view.viewmodel.*
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
@@ -69,12 +68,16 @@ import com.tokopedia.websocket.WebSocketSubscriber
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.withContext
 import okhttp3.Interceptor
 import okhttp3.WebSocket
 import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
 import java.io.File
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 /**
  * @author : Steven 11/12/18
@@ -91,7 +94,6 @@ class TopChatRoomPresenter @Inject constructor(
         private var replyChatUseCase: ReplyChatUseCase,
         private var getExistingMessageIdUseCase: GetExistingMessageIdUseCase,
         private var deleteMessageListUseCase: DeleteMessageListUseCase,
-        private var changeChatBlockSettingUseCase: ChangeChatBlockSettingUseCase,
         private var getShopFollowingUseCase: GetShopFollowingUseCase,
         private var toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase,
         private var addToCartUseCase: AddToCartUseCase,
@@ -104,9 +106,12 @@ class TopChatRoomPresenter @Inject constructor(
         private var orderProgressUseCase: OrderProgressUseCase,
         private val groupStickerUseCase: ChatListGroupStickerUseCase,
         private val chatAttachmentUseCase: ChatAttachmentUseCase,
-        private val sharedPref: SharedPreferences
+        private val chatToggleBlockChat: ChatToggleBlockChatUseCase,
+        private val addToCartOccUseCase: AddToCartOccUseCase,
+        private val sharedPref: SharedPreferences,
+        private val dispatchers: TopchatCoroutineContextProvider
 ) : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper),
-        TopChatContract.Presenter {
+        TopChatContract.Presenter, CoroutineScope {
 
     var autoRetryConnectWs = true
     var newUnreadMessage = 0
@@ -128,6 +133,7 @@ class TopChatRoomPresenter @Inject constructor(
         dummyList = arrayListOf()
     }
 
+    override val coroutineContext: CoroutineContext get() = dispatchers.Main + SupervisorJob()
 
     override fun connectWebSocket(messageId: String) {
         thisMessageId = messageId
@@ -201,6 +207,7 @@ class TopChatRoomPresenter @Inject constructor(
             }
             EVENT_TOPCHAT_REPLY_MESSAGE -> {
                 if (!isInTheMiddleOfThePage()) {
+                    view?.removeBroadcastHandler()
                     onReplyMessage(pojo)
                     newUnreadMessage = 0
                     view?.hideUnreadMessage()
@@ -526,22 +533,12 @@ class TopChatRoomPresenter @Inject constructor(
                 DeleteMessageAllSubscriber(onError, onSuccessDeleteConversation))
     }
 
-    override fun unblockChat(messageId: String,
-                             opponentRole: String,
-                             onError: (Throwable) -> Unit,
-                             onSuccessUnblockChat: (BlockedStatus) -> Unit) {
-        changeChatBlockSettingUseCase.execute(
-                ChangeChatBlockSettingUseCase.generateParam(
-                        messageId,
-                        ChangeChatBlockSettingUseCase.getBlockType(opponentRole),
-                        false
-                ), ChangeChatBlockSettingSubscriber(onError, onSuccessUnblockChat)
-        )
-    }
-
-    override fun getShopFollowingStatus(shopId: Int, onError: (Throwable) -> Unit, onSuccessGetShopFollowingStatus: (Boolean) -> Unit) {
-        getShopFollowingUseCase.execute(GetShopFollowingUseCase.generateParam(shopId),
-                GetShopFollowingStatusSubscriber(onError, onSuccessGetShopFollowingStatus))
+    override fun getShopFollowingStatus(
+            shopId: Int,
+            onError: (Throwable) -> Unit,
+            onSuccessGetShopFollowingStatus: (Boolean) -> Unit
+    ) {
+        getShopFollowingUseCase.getStatus(shopId, onError, onSuccessGetShopFollowingStatus)
     }
 
     override fun detachView() {
@@ -551,8 +548,7 @@ class TopChatRoomPresenter @Inject constructor(
         replyChatUseCase.unsubscribe()
         getExistingMessageIdUseCase.unsubscribe()
         deleteMessageListUseCase.unsubscribe()
-        changeChatBlockSettingUseCase.unsubscribe()
-        getShopFollowingUseCase.unsubscribe()
+        getShopFollowingUseCase.safeCancel()
         addToCartUseCase.unsubscribe()
         if (::addToCardSubscriber.isInitialized) {
             addToCardSubscriber.unsubscribe()
@@ -824,6 +820,71 @@ class TopChatRoomPresenter @Inject constructor(
 
     override fun resetUnreadMessage() {
         newUnreadMessage = 0
+    }
+
+    override fun requestFollowShop(
+            shopId: Int,
+            onSuccess: () -> Unit,
+            onErrorFollowShop: (Throwable) -> Unit
+    ) {
+        val followShopParam = ToggleFavouriteShopUseCase.createRequestParam(
+                shopId.toString(), ToggleFavouriteShopUseCase.Action.FOLLOW
+        )
+        toggleFavouriteShopUseCase.execute(followShopParam, object : Subscriber<Boolean>() {
+            override fun onCompleted() {}
+
+            override fun onError(e: Throwable) {
+                onErrorFollowShop(e)
+            }
+
+            override fun onNext(success: Boolean) {
+                onSuccess()
+            }
+        })
+    }
+
+    override fun requestBlockPromo(messageId: String, onSuccess: (ChatSettingsResponse) -> Unit, onError: (Throwable) -> Unit) {
+        chatToggleBlockChat.blockPromo(messageId, onSuccess, onError)
+    }
+
+    override fun requestAllowPromo(messageId: String, onSuccess: (ChatSettingsResponse) -> Unit, onError: (Throwable) -> Unit) {
+        chatToggleBlockChat.allowPromo(messageId, onSuccess, onError)
+    }
+
+    override fun blockChat(messageId: String, onSuccess: (ChatSettingsResponse) -> Unit, onError: (Throwable) -> Unit) {
+        chatToggleBlockChat.blockChat(messageId, onSuccess, onError)
+    }
+
+    override fun unBlockChat(messageId: String, onSuccess: (ChatSettingsResponse) -> Unit, onError: (Throwable) -> Unit) {
+        chatToggleBlockChat.unBlockChat(messageId, onSuccess, onError)
+    }
+
+    override fun addToCart(
+            addToCartOccRequestParams: AddToCartOccRequestParams,
+            onSuccess: (AddToCartDataModel) -> Unit,
+            onError: (Throwable) -> Unit
+    ) {
+        launchCatchError(dispatchers.IO,
+                {
+                    val requestParams = RequestParams.create().apply {
+                        putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartOccRequestParams)
+                    }
+                    val result = addToCartOccUseCase.createObservable(requestParams).toBlocking().single()
+                    if (result.isDataError()) {
+                        withContext(dispatchers.Main) {
+                            val errorMessage = result.getAtcErrorMessage()
+                            onError(Throwable(errorMessage))
+                        }
+                    } else {
+                        withContext(dispatchers.Main) {
+                            onSuccess(result)
+                        }
+                    }
+                },
+                {
+                    onError(it)
+                }
+        )
     }
 
     private fun onSuccessGetAttachments(attachments: ArrayMap<String, Attachment>) {

@@ -51,8 +51,6 @@ public class RemoteConfigKey {
 
     public static final String IMAGE_HOST = "image_host";
 
-    public static final String ENABLE_BOTTOM_SHEET_FILTER_REVAMP = "android_customer_enable_bottom_sheet_filter_revamp";
-
     public static final String FIREBASE_DIGITAL_OMS_REMOTE_CONFIG_KEY = "app_enable_oms_native";
     public static final String SHOW_INSTANT_LOAN = "app_enable_instant_loan";
     public static final String SHOW_TOKOCARD = "app_enable_toko_card";
@@ -80,6 +78,7 @@ public class RemoteConfigKey {
     public static final String IRIS_GTM_ENABLED_TOGGLE = "app_iris_gtm_enabled";
     public static final String IRIS_LOG_ENABLED_TOGGLE = "android_iris_log_enabled";
     public static final String IRIS_GTM_CONFIG_TOGGLE = "android_customer_iris_config";
+    public static final String IRIS_WORK_MANAGER_ENABLE = "android_iris_work_manager_enabled";
 
     public static final String APP_WEBVIEW_RESO_ENABLED_TOGGLE = "android_webview_resolution_enabled";
 
@@ -176,6 +175,7 @@ public class RemoteConfigKey {
     public static final String MAINAPP_SALAM_UMRAH = "android_main_app_enabled_umrah";
 
     public static final String ENABLE_NEW_SHOP_PAGE = "android_main_app_enable_new_shop_page";
+    public static final String ENABLE_SHOP_PAGE_CHANGE_PRODUCT_GRID_LAYOUT_FEATURE = "android_shop_page_enable_product_change_grid_layout";
 
     public static final String MAINAPP_RECHARGE_OCR = "android_mainapp_enable_ocr_emoney";
     public static final String MAINAPP_RECHARGE_SMARTCARD = "mainapp_digital_smartcard";
@@ -201,6 +201,8 @@ public class RemoteConfigKey {
     public static final String ENABLE_ASYNC_CHECKAPPSIGNATURE = "android_async_checkappsignature";
     public static final String ENABLE_ASYNC_HANSEL_INIT = "android_async_hansel_init";
 
+    public static final String EXECUTE_GQL_CONNECTION_WARM_UP = "android_gql_connection_warm_up";
+
     public static final String WHITELIST_USER_LOG_NOTIFICATION = "key_whitelist_user_log_notification";
     public static final String ENABLE_BRANCH_UTM_SUPPORT = "app_enable_branch_utm_support";
 
@@ -225,6 +227,7 @@ public class RemoteConfigKey {
     public static final String FREE_SHIPPING_FEATURE_DISABLED = "android_free_shipping_feature_disabled";
     public static final String NEW_SELLER_HOME_DISABLED = "android_new_seller_home_disabled";
     public static final String ENABLE_GLOBAL_SEARCH_SELLER = "android_sellerapp_global_search_enabled";
+    public static final String ENABLE_PUSH_NOTIFICATION_CHAT_SELLER = "android_sellerapp_enable_push_notif_reply_chat";
 
     public static final String NOTIFICATION_TRAY_CLEAR = "app_notif_tray_clear";
 

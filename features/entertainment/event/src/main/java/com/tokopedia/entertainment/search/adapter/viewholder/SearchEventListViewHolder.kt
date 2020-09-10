@@ -11,17 +11,14 @@ import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.search.adapter.SearchEventViewHolder
-import com.tokopedia.entertainment.search.adapter.viewmodel.SearchEventViewModel
+import com.tokopedia.entertainment.search.adapter.viewmodel.SearchEventModel
 import com.tokopedia.entertainment.search.analytics.EventSearchPageTracking
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.loadImageRounded
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.model.ImpressHolder
 import kotlinx.android.synthetic.main.ent_search_event_list_item.view.*
 import kotlinx.android.synthetic.main.ent_search_event_suggestion.view.*
-import timber.log.Timber
 
-class SearchEventListViewHolder(val view: View) : SearchEventViewHolder<SearchEventViewModel>(view) {
+class SearchEventListViewHolder(val view: View) : SearchEventViewHolder<SearchEventModel>(view) {
 
     val eventListAdapter = KegiatanAdapter()
 
@@ -35,7 +32,7 @@ class SearchEventListViewHolder(val view: View) : SearchEventViewHolder<SearchEv
         }
     }
 
-    override fun bind(element: SearchEventViewModel) {
+    override fun bind(element: SearchEventModel) {
         eventListAdapter.listKegiatan = element.listEvent
         eventListAdapter.resources = element.resources
         eventListAdapter.notifyDataSetChanged()
@@ -50,7 +47,8 @@ class SearchEventListViewHolder(val view: View) : SearchEventViewHolder<SearchEv
             val image_url : String,
             val app_url : String,
             val isLiked: Boolean,
-            val category: String
+            val category: String,
+            val sales_price:String
     ) : ImpressHolder()
 
     class KegiatanAdapter : RecyclerView.Adapter<KegiatanHolder>(){
@@ -75,7 +73,7 @@ class SearchEventListViewHolder(val view: View) : SearchEventViewHolder<SearchEv
             holder.view.txtJudulEvent.text = element.nama_kegiatan
 
             holder.view.addOnImpressionListener(element, {
-                EventSearchPageTracking.getInstance().impressionEventSearchSuggestion(listKegiatan)
+                EventSearchPageTracking.getInstance().impressionEventSearchSuggestion(listKegiatan.get(position), position)
             })
 
             holder.view.setOnClickListener {

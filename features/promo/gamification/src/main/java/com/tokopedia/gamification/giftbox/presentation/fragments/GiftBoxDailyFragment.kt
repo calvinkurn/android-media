@@ -29,6 +29,7 @@ import com.tokopedia.gamification.di.ActivityContextModule
 import com.tokopedia.gamification.giftbox.analytics.GtmEvents
 import com.tokopedia.gamification.giftbox.data.di.GAMI_GIFT_DAILY_TRACE_PAGE
 import com.tokopedia.gamification.giftbox.data.di.component.DaggerGiftBoxComponent
+import com.tokopedia.gamification.giftbox.data.di.modules.AppModule
 import com.tokopedia.gamification.giftbox.data.di.modules.PltModule
 import com.tokopedia.gamification.giftbox.data.entities.*
 import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserState.Companion.ACTIVE
@@ -76,6 +77,9 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     var tokenUserState: String = TokenUserState.DEFAULT
     var disableGiftBoxTap = false
     var autoApplyMessage = ""
+    var totalPrizeImagesCount = 0
+    var loadedPrizeImagesCount = 0
+    private val HTTP_STATUS_OK = "200"
 
     override fun getLayout() = com.tokopedia.gamification.R.layout.fragment_gift_box_daily
 
@@ -85,6 +89,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         context?.let {
             val component = DaggerGiftBoxComponent.builder()
                     .activityContextModule(ActivityContextModule(it))
+                    .appModule(AppModule((context as AppCompatActivity).application))
                     .build()
             component.inject(this)
 
@@ -247,8 +252,8 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                         val remindMeCheckEntity = it.data.second
 
                         val giftBoxStatusCode = giftBoxEntity.gamiLuckyHome?.resultStatus?.code
-                        val remindMeCheckStatusCode = giftBoxEntity.gamiLuckyHome?.resultStatus?.code
-                        if (giftBoxStatusCode == 200 && remindMeCheckStatusCode == 200) {
+                        val remindMeCheckStatusCode = remindMeCheckEntity?.gameRemindMeCheck?.resultStatus?.code
+                        if (giftBoxStatusCode == HTTP_STATUS_OK && remindMeCheckStatusCode == HTTP_STATUS_OK) {
 
                             tokenUserState = giftBoxEntity.gamiLuckyHome.tokensUser.state
                             reminder = giftBoxEntity.gamiLuckyHome.reminder
@@ -290,7 +295,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                                     hideLoader()
                                     val messageList = giftBoxEntity.gamiLuckyHome.resultStatus.message
                                     if (!messageList.isNullOrEmpty()) {
-                                        renderGiftBoxError(messageList[0], "Oke")
+                                        renderGiftBoxError(messageList[0], getString(R.string.gami_oke))
                                     }
 
                                     tvReminderMessage.text = reminder?.text
@@ -303,17 +308,17 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                         } else {
                             reminderLayout.visibility = View.GONE
 
-                            if (remindMeCheckStatusCode != 200) {
+                            if (remindMeCheckStatusCode != HTTP_STATUS_OK) {
 
                                 val messageList = remindMeCheckEntity?.gameRemindMeCheck?.resultStatus?.message
                                 if (!messageList.isNullOrEmpty()) {
-                                    renderGiftBoxError(messageList[0], "Oke")
+                                    renderGiftBoxError(messageList[0], getString(R.string.gami_oke))
                                 }
 
-                            } else if (giftBoxStatusCode != 200) {
+                            } else if (giftBoxStatusCode != HTTP_STATUS_OK) {
                                 val messageList = giftBoxEntity?.gamiLuckyHome?.resultStatus?.message
                                 if (!messageList.isNullOrEmpty()) {
-                                    renderGiftBoxError(messageList[0], "Oke")
+                                    renderGiftBoxError(messageList[0], getString(R.string.gami_oke))
                                 }
                             }
                         }
@@ -328,7 +333,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                     pltPerf.startRenderPerformanceMonitoring()
                     hideLoader()
                     reminderLayout.visibility = View.GONE
-                    renderGiftBoxError(defaultErrorMessage, "Oke")
+                    renderGiftBoxError(defaultErrorMessage, getString(R.string.gami_oke))
                     pltPerf.stopRenderPerformanceMonitoring()
                 }
             }
@@ -339,10 +344,10 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                 LiveDataResult.STATUS.SUCCESS -> {
 
                     if (it.data == null) {
-                        renderOpenBoxError(defaultErrorMessage, "Oke")
+                        renderOpenBoxError(defaultErrorMessage, getString(R.string.gami_oke))
                     } else {
                         val code = it.data?.gamiCrack.resultStatus.code
-                        if (code == 200) {
+                        if (code == HTTP_STATUS_OK) {
                             //set data in rewards first and then animate
                             disableGiftBoxTap = true
                             giftBoxRewardEntity = it.data
@@ -381,14 +386,16 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                             disableGiftBoxTap = false
                             val messageList = it.data?.gamiCrack?.resultStatus?.message
                             if (!messageList.isNullOrEmpty()) {
-                                renderOpenBoxError(messageList[0], "Oke")
+                                renderOpenBoxError(messageList[0], getString(R.string.gami_oke))
+                            } else{
+                                renderOpenBoxError(defaultErrorMessage, getString(R.string.gami_oke))
                             }
                         }
                     }
                 }
                 LiveDataResult.STATUS.ERROR -> {
                     disableGiftBoxTap = false
-                    renderOpenBoxError(defaultErrorMessage, "Oke")
+                    renderOpenBoxError(defaultErrorMessage, getString(R.string.gami_oke))
                 }
             }
         })
@@ -407,19 +414,19 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                     val code = it.data?.gameRemindMe?.resultStatus?.code
                     val reason = it.data?.gameRemindMe?.resultStatus?.reason
 
-                    if (code == 200) {
+                    if (code == HTTP_STATUS_OK) {
                         renderReminderButton(true)
                     } else {
                         val messageList = it.data?.gameRemindMe?.resultStatus?.message
                         if (!messageList.isNullOrEmpty()) {
-                            showRemindMeError(messageList[0], "Oke")
+                            showRemindMeError(messageList[0], getString(R.string.gami_oke))
                         }
                     }
                 }
                 LiveDataResult.STATUS.ERROR -> {
                     loaderReminder.visibility = View.GONE
                     tvReminderBtn.visibility = View.VISIBLE
-                    showRemindMeError(defaultErrorMessage, "Oke")
+                    showRemindMeError(defaultErrorMessage, getString(R.string.gami_oke))
                 }
             }
         })
@@ -430,7 +437,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                 LiveDataResult.STATUS.SUCCESS -> {
                     val code = it.data?.tokopointsSetAutoApply?.resultStatus?.code
                     val messageList = it.data?.tokopointsSetAutoApply?.resultStatus?.message
-                    if (code == 200) {
+                    if (code == HTTP_STATUS_OK) {
                         if (autoApplyMessage.isNotEmpty() && context != null) {
                             CustomToast.show(context!!, autoApplyMessage)
                         }
@@ -562,8 +569,17 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
             rewardContainer.rvCoupons.translationY = translationY
             val distanceFromLidTop = fmGiftBox.dpToPx(29)
-            val heightOfRewardText = fmGiftBox.dpToPx(31)
             rewardContainer.llRewardTextLayout.translationY = lidTop + distanceFromLidTop
+
+            tvTapHint.doOnLayout { tapHint ->
+                if (giftBoxDailyView.height > LARGE_PHONE_HEIGHT) {
+                    tapHint.translationY = lidTop - fmGiftBox.context.resources.getDimension(R.dimen.gami_tap_hint_margin) - tapHint.height
+                }
+
+                if (isTablet) {
+                    tapHint.translationY = lidTop - fmGiftBox.context.resources.getDimension(R.dimen.gami_tap_hint_margin_tablet) - tapHint.height
+                }
+            }
 
         }
         giftBoxDailyView.imageBoxFront.doOnLayout { imageBoxFront ->
@@ -673,18 +689,18 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     }
 
     fun loadPrizeImagesAsync(entity: GiftBoxEntity, imageCallback: (() -> Unit)) {
-        var totalImagesCount = 0
-        var loadedImagesCount = 0
+        loadedPrizeImagesCount = 0
+        totalPrizeImagesCount = 0
 
         fun checkImageLoadStatus() {
-            loadedImagesCount += 1
-            if (loadedImagesCount == totalImagesCount) {
+            loadedPrizeImagesCount += 1
+            if (loadedPrizeImagesCount == totalPrizeImagesCount) {
                 imageCallback.invoke()
             }
         }
         entity.gamiLuckyHome.prizeList?.forEach {
             if (it.isSpecial) {
-                totalImagesCount += 1
+                totalPrizeImagesCount += 1
                 prizeViewLarge.setData(it.imageURL, it.text) {
                     checkImageLoadStatus()
                 }
@@ -695,17 +711,17 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                         checkImageLoadStatus()
                     }
                     prizeViewSmallFirst.visibility = View.VISIBLE
-                    totalImagesCount += 1
+                    totalPrizeImagesCount += 1
                 } else {
                     prizeViewSmallSecond.setData(it.imageURL, it.text) {
                         checkImageLoadStatus()
                     }
                     prizeViewSmallSecond.visibility = View.VISIBLE
-                    totalImagesCount += 1
+                    totalPrizeImagesCount += 1
                 }
             }
         }
-        if (totalImagesCount == loadedImagesCount) {
+        if (totalPrizeImagesCount == loadedPrizeImagesCount) {
             imageCallback.invoke()
         }
     }
@@ -724,7 +740,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     }
 
     private fun fadeInActiveStateViews(frontImageUrl: String, imageBgUrl: String, lidImages: List<String>) {
-        giftBoxDailyView.loadFiles(tokenUserState, frontImageUrl, imageBgUrl, lidImages, imageCallback = {
+        giftBoxDailyView.loadFiles(tokenUserState, frontImageUrl, imageBgUrl, lidImages,viewLifecycleOwner, imageCallback = {
             giftBoxDailyView.imagesLoaded.lazySet(0)
             if (it) {
                 setPositionOfViewsAtBoxOpen(tokenUserState)
@@ -755,7 +771,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
             } else {
                 //Do nothing
                 hideLoader()
-                renderGiftBoxError(defaultErrorMessage, "Oke")
+                renderGiftBoxError(defaultErrorMessage, getString(R.string.gami_oke))
             }
         })
     }

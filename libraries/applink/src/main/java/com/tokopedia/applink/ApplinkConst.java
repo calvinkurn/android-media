@@ -35,6 +35,9 @@ public interface ApplinkConst {
     String SHOP_NOTE = "tokopedia://shop/{shop_id}/note";
     String SHOP_INFO = "tokopedia://shop/{shop_id}/info";
     String SHOP_HOME = "tokopedia://shop/{shop_id}/home";
+    String SHOP_PRODUCT = "tokopedia://shop/{shop_id}/product";
+    String SHOP_FEED = "tokopedia://shop/{shop_id}/feed";
+
     String SHOP_SETTINGS_NOTE = "tokopedia://setting/shop/note";
     String PRODUCT_INFO = "tokopedia://product/{product_id}";
     String PRODUCT_IMAGE_REVIEW = "tokopedia://product/{product_id}/imagereview";
@@ -248,6 +251,7 @@ public interface ApplinkConst {
     String AFFILIATE_PRODUCT = "tokopedia://affiliate/product/{product_id}";
 
     String PLAY_DETAIL = "tokopedia://play/{channel_id}";
+    String PLAY_BROADCASTER = "tokopedia://play-broadcaster";
 
     String CHALLENGE = "tokopedia://challenges";
     String ADD_NAME_REGISTER = "tokopedia://addnameregister/{phone}";
@@ -310,6 +314,8 @@ public interface ApplinkConst {
     String DFFALLBACKURL_KEY = "dffallbackurl";
 
     String OCC = "tokopedia://occ";
+
+    String SELLER_MIGRATION = "tokopedia://seller/seller-migration";
 
     interface Discovery {
         String CATEGORY = "tokopedia://category";
@@ -384,6 +390,7 @@ public interface ApplinkConst {
         String VOUCHER_DETAIL = "sellerapp://voucher-detail";
         String CREATE_VOUCHER = "sellerapp://create-voucher";
         String SELLER_SEARCH = "sellerapp://seller-search";
+        String PLAY_BROADCASTER = "sellerapp://play-broadcaster";
     }
 
     interface Query {

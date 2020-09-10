@@ -72,7 +72,7 @@ class HomeViewModelPlayTest{
         // Expect the view updated
         homeViewModel.homeLiveData.observeOnce { homeDataModel ->
             assert((homeDataModel.list.find { it::class.java == playDataModel::class.java } as? PlayCardDataModel)?.playCardHome != null
-                    && (homeDataModel.list.find { it::class.java == playDataModel::class.java } as? PlayCardDataModel)?.playCardHome!!.totalView == "0"
+                    && (homeDataModel.list.find { it::class.java == playDataModel::class.java } as? PlayCardDataModel)?.playCardHome!!.totalView == "20 Juta"
             )
         }
     }
@@ -122,7 +122,7 @@ class HomeViewModelPlayTest{
         // Expect the view updated
         homeViewModel.homeLiveData.observeOnce { homeDataModel ->
             assert((homeDataModel.list.find { it::class.java == playDataModel::class.java } as? PlayCardDataModel)?.playCardHome != null
-                    && (homeDataModel.list.find { it::class.java == playDataModel::class.java } as? PlayCardDataModel)?.playCardHome!!.totalView == "0"
+                    && (homeDataModel.list.find { it::class.java == playDataModel::class.java } as? PlayCardDataModel)?.playCardHome!!.totalView == "20"
             )
         }
     }

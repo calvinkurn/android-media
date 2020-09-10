@@ -25,8 +25,10 @@ import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toPx
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.SearchListener
 import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
@@ -41,12 +43,16 @@ open class TopchatProductAttachmentViewHolder constructor(
         itemView: View?,
         private val listener: ProductAttachmentListener,
         private val deferredAttachment: DeferredViewHolderAttachment,
-        private val searchListener: SearchListener
+        private val searchListener: SearchListener,
+        private val commonListener: CommonViewHolderListener
 ) : BaseChatViewHolder<ProductAttachmentViewModel>(itemView) {
 
-    private var wishListBtn: UnifyButton? = itemView?.findViewById(R.id.tv_wishlist)
+    private var btnWishList: UnifyButton? = itemView?.findViewById(R.id.tv_wishlist)
+    private var btnOcc: UnifyButton? = itemView?.findViewById(R.id.tv_occ)
+    private var btnBuy: UnifyButton? = itemView?.findViewById(R.id.tv_buy)
+    private var btnAtc: UnifyButton? = itemView?.findViewById(R.id.tv_atc)
     private var cardContainer: SingleProductAttachmentContainer? = itemView?.findViewById(R.id.containerProductAttachment)
-    private var emptyStock: Label? = itemView?.findViewById(R.id.lb_empty_stock)
+    private var label: Label? = itemView?.findViewById(R.id.lb_product_label)
     private var loadView: LoaderUnify? = itemView?.findViewById(R.id.iv_attachment_shimmer)
     private var freeShippingImage: ImageView? = itemView?.findViewById(R.id.iv_free_shipping)
     private var statusContainer: LinearLayout? = itemView?.findViewById(R.id.ll_status_container)
@@ -57,15 +63,18 @@ open class TopchatProductAttachmentViewHolder constructor(
 
     private val white = "#ffffff"
     private val white2 = "#fff"
-    private val labelEmptyStockColor = "#80000000"
-
-    override fun alwaysShowTime(): Boolean = true
+    private val labelEmptyStockColor = "#AD31353B"
 
     override fun bind(element: ProductAttachmentViewModel, payloads: MutableList<Any>) {
         if (payloads.isEmpty()) return
         when (payloads[0]) {
             DeferredAttachment.PAYLOAD_DEFERRED -> bindDeferredAttachment(element)
+            is OccState -> bindNewOccState(element)
         }
+    }
+
+    private fun bindNewOccState(element: ProductAttachmentViewModel) {
+        bindOcc(element)
     }
 
     private fun bindDeferredAttachment(element: ProductAttachmentViewModel) {
@@ -91,8 +100,8 @@ open class TopchatProductAttachmentViewHolder constructor(
             bindRating(product)
             bindFreeShipping(product)
             bindFooter(product)
+            bindPreOrderLabel(product)
             bindEmptyStockLabel(product)
-            bindChatReadStatus(product)
             listener.trackSeenProduct(product)
         }
     }
@@ -262,7 +271,7 @@ open class TopchatProductAttachmentViewHolder constructor(
 
     @SuppressLint("SetTextI18n")
     private fun bindRating(product: ProductAttachmentViewModel) {
-        if (product.hasReview() && product.fromBroadcast()) {
+        if (product.hasReview() && !commonListener.isSeller()) {
             reviewScore?.text = product.rating.score.toString()
             reviewCount?.text = "(${product.rating.count})"
             reviewStar?.show()
@@ -285,19 +294,63 @@ open class TopchatProductAttachmentViewHolder constructor(
     }
 
     private fun bindFooter(product: ProductAttachmentViewModel) {
+        val abTestVariant = getOccAbTestVariant()
         if (product.canShowFooter && !GlobalConfig.isSellerApp()) {
-            bindBuy(product)
-            bindAtc(product)
+            if (product.isEligibleOcc() && isEligibleOccAbTest(abTestVariant)) {
+                when (abTestVariant) {
+                    VARIANT_A -> {
+                        btnBuy?.hide()
+                        bindOcc(product)
+                        bindAtc(product)
+                    }
+                    VARIANT_B -> {
+                        btnBuy?.hide()
+                        btnAtc?.hide()
+                        bindOcc(product)
+                    }
+                }
+            } else {
+                bindBuy(product)
+                bindAtc(product)
+                btnOcc?.hide()
+            }
             bindWishList(product)
         } else {
             hideFooter()
         }
     }
 
-    private fun bindEmptyStockLabel(product: ProductAttachmentViewModel) {
-        emptyStock?.apply {
+    private fun getOccAbTestVariant(): String {
+        return RemoteConfigInstance.getInstance().abTestPlatform.getString(AB_TEST_KEY, VARIANT_DEFAULT);
+    }
+
+    private fun isEligibleOccAbTest(variant: String): Boolean {
+        return (variant == VARIANT_A || variant == VARIANT_B)
+    }
+
+    private fun bindOcc(product: ProductAttachmentViewModel) {
+        btnOcc?.apply {
             if (product.hasEmptyStock()) {
+                hide()
+            } else {
                 show()
+                isLoading = product.isLoadingOcc
+                setOnClickListener {
+                    if (!product.isLoadingOcc) {
+                        product.isLoadingOcc = true
+                        isLoading = true
+                        listener.onClickOccFromProductAttachment(product, adapterPosition)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun bindPreOrderLabel(product: ProductAttachmentViewModel) {
+        label?.apply {
+            if (product.isPreOrder) {
+                show()
+                setText(R.string.title_topchat_pre_order)
                 unlockFeature = true
                 setLabelType(labelEmptyStockColor)
             } else {
@@ -306,21 +359,40 @@ open class TopchatProductAttachmentViewHolder constructor(
         }
     }
 
+    private fun bindEmptyStockLabel(product: ProductAttachmentViewModel) {
+        label?.apply {
+            if (product.hasEmptyStock()) {
+                show()
+                setText(R.string.title_topchat_empty_stock)
+                unlockFeature = true
+                setLabelType(labelEmptyStockColor)
+            } else {
+                if (!product.isPreOrder) {
+                    hide()
+                }
+            }
+        }
+    }
+
     private fun hideFooter() {
-        itemView.tv_buy?.hide()
-        itemView.tv_atc?.hide()
-        itemView.tv_wishlist?.hide()
+        btnBuy?.hide()
+        btnAtc?.hide()
+        btnWishList?.hide()
+        btnOcc?.hide()
     }
 
     private fun bindBuy(product: ProductAttachmentViewModel) {
-        itemView.tv_buy?.let {
-            it.show()
+        btnBuy?.let {
             if (product.hasEmptyStock()) {
-                it.isEnabled = false
-                it.setText(com.tokopedia.chat_common.R.string.action_empty_stock)
+                it.hide()
             } else {
+                it.show()
                 it.isEnabled = true
-                it.setText(com.tokopedia.chat_common.R.string.action_buy)
+                if (product.isPreOrder) {
+                    it.setText(R.string.title_topchat_pre_order_camel)
+                } else {
+                    it.setText(com.tokopedia.chat_common.R.string.action_buy)
+                }
                 it.setOnClickListener {
                     listener.onClickBuyFromProductAttachment(product)
                 }
@@ -329,7 +401,7 @@ open class TopchatProductAttachmentViewHolder constructor(
     }
 
     private fun bindAtc(product: ProductAttachmentViewModel) {
-        itemView.tv_atc?.let {
+        btnAtc?.let {
             if (product.hasEmptyStock()) {
                 it.hide()
             } else {
@@ -343,14 +415,14 @@ open class TopchatProductAttachmentViewHolder constructor(
 
     private fun bindWishList(product: ProductAttachmentViewModel) {
         if (product.hasEmptyStock()) {
-            wishListBtn?.show()
-            wishListBtn?.setOnClickListener {
+            btnWishList?.show()
+            btnWishList?.setOnClickListener {
                 listener.onClickAddToWishList(product) {
                     product.wishList = true
                 }
             }
         } else {
-            wishListBtn?.hide()
+            btnWishList?.hide()
         }
     }
 
@@ -363,5 +435,15 @@ open class TopchatProductAttachmentViewHolder constructor(
 
     companion object {
         val LAYOUT = R.layout.item_topchat_product_attachment
+
+        const val VARIANT_DEFAULT = "No OCC"
+        const val VARIANT_A = "ATC OCC"
+        const val VARIANT_B = "OCC Only"
+        const val AB_TEST_KEY = "OCC at TopChat"
     }
+
+    data class OccState(
+         val parentPosition: Int,
+         val childPosition: Int = -1 // for carousel
+    )
 }

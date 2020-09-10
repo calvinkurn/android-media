@@ -9,18 +9,25 @@ import java.util.*
 
 class RechargeAnalytics(private val rechargePushEventRecommendationUseCase: RechargePushEventRecommendationUseCase) {
 
-    fun eventOpenScreen(isLoginStatus: Boolean, categoryName: String, categoryId: String) {
+    fun eventOpenScreen(userId: String, categoryName: String, categoryId: String) {
         val stringScreenName = StringBuilder(RECHARGE_SCREEN_NAME)
         stringScreenName.append(categoryName.toLowerCase())
 
+        val categoryMap: Map<String, String> = mapOf(
+                CATEGORY to categoryName,
+                CATEGORY_ID to categoryId
+        )
+
         val mapOpenScreen = HashMap<String, String>()
         mapOpenScreen[EVENT_NAME] = OPEN_SCREEN_EVENT
-        mapOpenScreen[IS_LOGIN_STATUS] = if (isLoginStatus) "true" else "false"
-        mapOpenScreen[CATEGORY] = categoryName
-        mapOpenScreen[CATEGORY_ID] = categoryId
+        mapOpenScreen[USER_ID] = userId
+        mapOpenScreen[IS_LOGIN_STATUS] = if (userId.isNotEmpty()) "true" else "false"
         mapOpenScreen[BUSINESS_UNIT] = BUSINESS_UNIT_RECHARGE
+        mapOpenScreen[CURRENT_SITE] = CURRENT_SITE_RECHARGE
+        mapOpenScreen.putAll(categoryMap)
 
         TrackApp.getInstance().gtm.sendScreenAuthenticated(stringScreenName.toString(), mapOpenScreen)
+        TrackApp.getInstance().gtm.pushEvent(EVENT_DIGITAL_CATEGORY_SCREEN_LAUNCH, categoryMap)
     }
 
     fun trackVisitRechargePushEventRecommendation(categoryId: Int) {
@@ -67,12 +74,16 @@ class RechargeAnalytics(private val rechargePushEventRecommendationUseCase: Rech
 
         const val EVENT_NAME = "eventName"
         const val OPEN_SCREEN_EVENT = "openScreen"
+        const val USER_ID = "userId"
         const val IS_LOGIN_STATUS = "isLoggedInStatus"
         const val CATEGORY = "category"
         const val CATEGORY_ID = "digitalCategoryId"
         const val BUSINESS_UNIT = "businessUnit"
+        const val CURRENT_SITE = "currentSite"
 
         const val RECHARGE_SCREEN_NAME = "/digital/"
         const val BUSINESS_UNIT_RECHARGE = "recharge"
+        const val CURRENT_SITE_RECHARGE = "tokopediadigital"
+        const val EVENT_DIGITAL_CATEGORY_SCREEN_LAUNCH = "Digital_Category_Screen_Launched"
     }
 }

@@ -1,8 +1,13 @@
 package com.tokopedia.discovery2.data
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.discovery2.LABEL_PRICE
+import com.tokopedia.discovery2.LABEL_PRODUCT_STATUS
 import com.tokopedia.discovery2.StockWording
-import com.tokopedia.discovery2.data.productcardcarousel.FreeOngkir
+import com.tokopedia.discovery2.data.productcarditem.FreeOngkir
+import com.tokopedia.discovery2.data.productcarditem.LabelsGroup
+import com.tokopedia.filter.common.data.Filter
+import com.tokopedia.filter.common.data.Sort
 
 
 data class DataItem(
@@ -25,8 +30,11 @@ data class DataItem(
         @SerializedName("background_image")
         val backgroundImage: String? = "",
 
-        @SerializedName("filter")
-        val filter: String? = "",
+        @SerializedName("filters")
+        val filter: ArrayList<Filter>? = null,
+
+        @SerializedName("sort")
+        val sort: ArrayList<Sort>? = null,
 
         @SerializedName("filter_value")
         val filterValue: String? = "",
@@ -340,9 +348,18 @@ data class DataItem(
         @SerializedName("tracking_fields")
         val trackingFields: TrackingFields? = null,
 
-        var shopAdsClickURL : String? = "",
+        @SerializedName("body")
+        val body: String = "",
 
-        var shopAdsViewURL : String? = "",
+        @SerializedName("buttonStr")
+        val claimButtonStr: String? = null,
+
+        @SerializedName("labels")
+        var labelsGroupList: List<LabelsGroup>? = null,
+
+        var shopAdsClickURL: String? = "",
+
+        var shopAdsViewURL: String? = "",
 
         var status: String? = null,
 
@@ -361,4 +378,17 @@ data class DataItem(
         get() {
             return rightMarginMobile?.toIntOrNull() ?: 0
         }
+
+    fun getLabelPrice(): LabelsGroup? {
+        return findLabelGroup(LABEL_PRICE)
+    }
+
+    fun getLabelProductStatus(): LabelsGroup? {
+        return findLabelGroup(LABEL_PRODUCT_STATUS)
+    }
+
+    private fun findLabelGroup(position: String): LabelsGroup? {
+        return labelsGroupList?.find { it.position == position }
+    }
+
 }

@@ -5,20 +5,21 @@ import android.os.Parcelable
 import android.view.ViewGroup
 import androidx.collection.ArrayMap
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.chat_common.BaseChatAdapter
-import com.tokopedia.chat_common.data.BaseChatViewModel
-import com.tokopedia.chat_common.data.ChatroomViewModel
-import com.tokopedia.chat_common.data.DeferredAttachment
-import com.tokopedia.chat_common.data.ImageUploadViewModel
+import com.tokopedia.chat_common.data.*
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.util.ChatRoomDiffUtil
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.BroadcastSpamHandlerViewHolder.Companion.PAYLOAD_UPDATE_STATE
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ProductCarouselListAttachmentViewHolder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatProductAttachmentViewHolder
 import com.tokopedia.topchat.chatroom.view.uimodel.HeaderDateUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.BroadcastSpamHandlerUiModel
 
 /**
  * @author : Steven 02/01/19
@@ -194,5 +195,99 @@ class TopChatRoomAdapter(
         topMostHeaderDate = null
         topMostHeaderDateIndex = null
         notifyDataSetChanged()
+    }
+
+    fun addBroadcastSpamHandler(): Int {
+        var insertedPosition = RecyclerView.NO_POSITION
+        if (visitables.isEmpty()) return insertedPosition
+        val latestMessage = visitables.first()
+        if (latestMessage is MessageViewModel && latestMessage.isFromBroadCast() && !latestMessage.isSender) {
+            val spamHandlerModel = BroadcastSpamHandlerUiModel()
+            insertedPosition = 0
+            visitables.add(insertedPosition, spamHandlerModel)
+            notifyItemInserted(insertedPosition)
+        }
+        return insertedPosition
+    }
+
+    fun removeBroadcastHandler(element: BroadcastSpamHandlerUiModel) {
+        val elementIndex = visitables.indexOf(element)
+        if (elementIndex == RecyclerView.NO_POSITION || elementIndex >= visitables.size) return
+        visitables.removeAt(elementIndex)
+        notifyItemRemoved(elementIndex)
+    }
+
+    fun removeBroadcastHandler() {
+        val bcHandlerPost = findBroadcastHandlerPosition()
+        if (bcHandlerPost != RecyclerView.NO_POSITION) {
+            removeBroadcastHandler(bcHandlerPost)
+        }
+    }
+
+    fun updateBroadcastHandlerState(element: BroadcastSpamHandlerUiModel) {
+        val elementIndex = visitables.indexOf(element)
+        if (elementIndex == RecyclerView.NO_POSITION || elementIndex >= visitables.size) return
+        notifyItemChanged(elementIndex, PAYLOAD_UPDATE_STATE)
+    }
+
+    fun findBroadcastHandler(): BroadcastSpamHandlerUiModel? {
+        val bcHandlerPost = findBroadcastHandlerPosition()
+        if (bcHandlerPost != RecyclerView.NO_POSITION) {
+            return visitables[bcHandlerPost] as BroadcastSpamHandlerUiModel
+        }
+        return null
+    }
+
+    private fun removeBroadcastHandler(index: Int) {
+        if (index >= visitables.size) return
+        val item = visitables[index]
+        if (item is BroadcastSpamHandlerUiModel) {
+            visitables.removeAt(index)
+            notifyItemRemoved(index)
+        }
+    }
+
+    private fun findBroadcastHandlerPosition(): Int {
+        if (!isPossibleBroadcastHandlerExist()) return RecyclerView.NO_POSITION
+        for (index in 0..1) {
+            if (isBroadcastHandlerPosition(index) != RecyclerView.NO_POSITION) return index
+        }
+        return RecyclerView.NO_POSITION
+    }
+
+    private fun isBroadcastHandlerPosition(index: Int): Int {
+        if (index >= visitables.size) return RecyclerView.NO_POSITION
+        val item = visitables[index]
+        if (item is BroadcastSpamHandlerUiModel) {
+            return index
+        }
+        return RecyclerView.NO_POSITION
+    }
+
+    private fun isPossibleBroadcastHandlerExist(): Boolean {
+        return visitables.isNotEmpty() && visitables.size >= 2
+    }
+
+    fun updateOccLoadingStatus(product: ProductAttachmentViewModel, position: Int) {
+        val occState = getItemPosition(product, position)
+        if (occState.parentPosition == RecyclerView.NO_POSITION) return
+        notifyItemChanged(occState.parentPosition, occState)
+    }
+
+    private fun getItemPosition(product: ProductAttachmentViewModel, position: Int): TopchatProductAttachmentViewHolder.OccState {
+        val item = visitables.getOrNull(position)
+        if (item == product) {
+            return TopchatProductAttachmentViewHolder.OccState(position)
+        }
+        for ((parentItemIndex, parentItem) in visitables.withIndex()) {
+            if (parentItem == product) return TopchatProductAttachmentViewHolder.OccState(parentItemIndex)
+            if (parentItem is ProductCarouselUiModel) {
+                val carouselPosition = parentItem.products.indexOf(product)
+                if (carouselPosition != RecyclerView.NO_POSITION) {
+                    return TopchatProductAttachmentViewHolder.OccState(parentItemIndex, carouselPosition)
+                }
+            }
+        }
+        return TopchatProductAttachmentViewHolder.OccState(RecyclerView.NO_POSITION)
     }
 }

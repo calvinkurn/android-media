@@ -8,7 +8,6 @@ import com.tokopedia.search.shouldBe
 import com.tokopedia.usecase.RequestParams
 import io.mockk.every
 import io.mockk.slot
-import io.mockk.verify
 import io.mockk.verifyOrder
 import org.junit.Test
 import rx.Subscriber
@@ -26,7 +25,6 @@ internal class SearchProductRedirectionTest: ProductListPresenterTestFixtures() 
 
         `Then verify use case request params START should be 0`()
         `Then verify view interaction for redirection`(searchProductModel.searchProduct.data.redirection.redirectApplink)
-        `Then verify get dynamic filter use case is not executed`()
         `Then verify start from is incremented`()
     }
 
@@ -59,14 +57,11 @@ internal class SearchProductRedirectionTest: ProductListPresenterTestFixtures() 
 
             verifyShowLoading(productListView)
 
+            productListView.sendTrackingGTMEventSearchAttempt(any())
             productListView.redirectSearchToAnotherPage(redirectApplink)
 
             verifyHideLoading(productListView)
         }
-    }
-
-    private fun `Then verify get dynamic filter use case is not executed`() {
-        verify(exactly = 1) { getDynamicFilterUseCase.execute(any(), any()) }
     }
 
     private fun `Then verify start from is incremented`() {

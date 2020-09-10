@@ -11,6 +11,7 @@ import android.view.animation.LinearInterpolator
 import android.view.animation.ScaleAnimation
 import android.widget.FrameLayout
 import android.widget.ImageButton
+import androidx.appcompat.widget.AppCompatImageButton
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
@@ -26,7 +27,7 @@ class CustomTopChatView @JvmOverloads constructor(context: Context, attrs: Attri
 
     private var topChatBackground: CardView
     private var topChatTextView: Typography
-    private var topChatFabButton: ImageButton
+    private var topChatFabButton: AppCompatImageButton
     private var topChatFabButtonParent: CardView
 
     init {

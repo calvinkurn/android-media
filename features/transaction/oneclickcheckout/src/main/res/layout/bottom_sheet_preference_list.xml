@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nested_bottom_sheet_preference_list"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -16,11 +17,12 @@
             android:gravity="center"
             android:visibility="gone" />
 
-        <ProgressBar
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/progress_bar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center" />
+            android:layout_width="@dimen/dp_64"
+            android:layout_height="@dimen/dp_64"
+            android:layout_gravity="center"
+            app:loader_type="circular" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_preference_list"

@@ -1,19 +1,20 @@
 package com.tokopedia.contactus.inboxticket2.view.contract
 
 import android.text.TextWatcher
+import com.tokopedia.contactus.inboxticket2.data.ImageUpload
 import com.tokopedia.contactus.inboxticket2.data.model.Tickets
 import com.tokopedia.contactus.inboxticket2.domain.AttachmentItem
+import com.tokopedia.contactus.inboxticket2.domain.CommentsItem
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract.InboxBasePresenter
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract.InboxBaseView
 import com.tokopedia.contactus.inboxticket2.view.customview.CustomEditText
 import com.tokopedia.contactus.inboxticket2.view.utils.Utils
-import com.tokopedia.contactus.orderquery.data.ImageUpload
 import java.util.*
 
 interface InboxDetailContract {
     interface InboxDetailView : InboxBaseView {
         fun renderMessageList(ticketDetail: Tickets)
-        fun updateAddComment()
+        fun updateAddComment(newItem: CommentsItem)
         fun addImage(image: ImageUpload)
         fun setSubmitButtonEnabled(enabled: Boolean)
         val imageList: List<ImageUpload>
@@ -28,7 +29,7 @@ interface InboxDetailContract {
         fun exitSearchMode()
         fun showImagePreview(position: Int, imagesURL: ArrayList<String>)
         fun setCurrentRes(currentRes: Int)
-        fun updateClosedStatus(subject: String?)
+        fun updateClosedStatus()
         fun getCommentID(): String
         fun showErrorMessage(error: String?)
         fun onSuccessSubmitOfRating(rating: Int, commentPosition: Int)

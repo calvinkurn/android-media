@@ -477,7 +477,11 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             getView().setDetail(details.detail().get(i));
         }
 
-
+        if (orderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || orderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE)) {
+            if (details.getRequestCancelInfo() != null && details.getRequestCancelInfo().getIsRequestedCancel() != null) {
+                getView().setIsRequestedCancel(details.getRequestCancelInfo().getIsRequestedCancel());
+            }
+        }
         getView().setBoughtDate(details.getBoughtDate());
         if (details.getShopInfo() != null) {
             getView().setShopInfo(details.getShopInfo());
@@ -512,6 +516,10 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                 }
             }
             getView().setAdditionalTickerInfo(details.getAdditionalTickerInfos(), url);
+        }
+
+        if (details.getTickerInfo() != null) {
+            getView().setTickerInfo(details.getTickerInfo());
         }
 
         for (PayMethod payMethod : details.getPayMethods()) {

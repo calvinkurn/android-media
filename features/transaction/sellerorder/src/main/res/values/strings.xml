@@ -23,12 +23,17 @@
     <string name="empty_filter_desc">Ubah filter untuk menemukan pesanan yang sesuai</string>
     <string name="empty_search_title">Hasil pencarian tidak ditemukan untuk tanggal</string>
     <string name="empty_search_desc">Gunakan kata kunci yang relevan (Nama Pembeli, No. Invoice, Tanggal belanja)</string>
-    <string name="empty_peluang_title">Tidak Ada Pesanan</string>
+    <string name="empty_peluang_title">Belum ada pesanan, nih</string>
     <string name="empty_peluang_desc">Cek Peluang dan ambil pesanan yang tidak diproses penjual lain.</string>
     <string name="error_list_title">Sedang Ada Perbaikan Sistem</string>
     <string name="error_list_desc">Mohon maaf, kami sedang ada perbaikan sistem, anda dapat mencobanya beberapa saat lagi</string>
     <string name="btn_cek_peluang">Cek Peluang</string>
     <string name="key_all_order">all_order</string>
+
+    <!--Empty state non topads user-->
+    <string name="empty_peluang_desc_non_topads_no_filter">4 dari 5 seller mendapatkan penjualan pertamanya dengan beriklan menggunakan TopAds</string>
+    <string name="empty_peluang_desc_non_topads_with_filter">Ubah filter untuk menemukan pesanan yang sesuai</string>
+    <string name="btn_cek_peluang_non_topads">Mulai Beriklan</string>
 
     <string name="title_tanggal">Tanggal</string>
     <string name="title_type">Tipe Pesanan</string>
@@ -233,7 +238,7 @@
     </string>
 
     <string name="som_chat_buyer">Chat Pembeli</string>
-    <string name="som_shop_performance_info">Skor performa toko tidak akan dikurangi untuk pembatalan ini</string>
+    <string name="som_shop_performance_info">Skor performa tokomu tidak akan dikurangi untuk pembatalan pesanan ini.</string>
     <string name="som_request_buyer_notes_1">telah mengajukan pembatalan pesanan</string>
     <string name="som_request_buyer_notes_2">dengan alasan : </string>
 
@@ -276,5 +281,25 @@
     <string name="dialog_title_cannot_access_page">Kamu tidak memiliki akses ke halaman ini</string>
     <string name="dialog_description_cannot_access_page">Akses ke halaman penjualan hanya dapat diberikan oleh pemilik toko</string>
     <string name="button_understand">Ya, saya mengerti</string>
+
+    <!--  instant cancel  -->
+    <string name="bottomsheet_buyer_request_cancel">Alasan pembeli mengajukan pembatalan pesanan:</string>
+    <string name="bottomsheet_order_cancellation_response_negative_button_code_220">Terima Pesanan</string>
+    <string name="bottomsheet_order_cancellation_response_positive_button_code_220">Batalkan Pesanan</string>
+    <string name="bottomsheet_order_cancellation_response_negative_button_code_400">Konfirmasi Pengiriman</string>
+    <string name="bottomsheet_order_cancellation_response_positive_button_code_400">Batalkan Pesanan</string>
+    <string name="som_error_message_no_internet_connection">Oops, koneksi internetmu terganggu. Silahkan cek koneksi internet dan coba lagi, ya.</string>
+    <string name="som_error_message_server_fault">Oops, ada gangguan yang perlu kami bereskan. Silahkan coba lagi, ya.</string>
+    <string name="som_buyer_cancellation_confirm_shipping_title">Kirim pesanan ini?</string>
+    <string name="som_buyer_cancellation_confirm_shipping_description">Pastikan kamu sudah berdiskusi dengan pembeli. Pesanan yang diproses secara paksa berpotensi komplain.</string>
+    <string name="som_buyer_cancellation_confirm_shipping_button">Kirim Pesanan</string>
+    <string name="som_buyer_cancellation_confirm_accept_cancellation_title">Batalkan pesanan ini?</string>
+    <string name="som_buyer_cancellation_confirm_accept_cancellation_description">Skor performa tokomu tidak akan dikurangi untuk pembatalan ini.</string>
+    <string name="som_buyer_cancellation_confirm_accept_cancellation_button">Batalkan Pesanan</string>
+    <string name="som_buyer_cancellation_confirm_accept_order_title">Konfirmasi terima pesanan?</string>
+    <string name="som_buyer_cancellation_confirm_accept_order_description">Lanjut memproses pesanan tanpa konfirmasi dari pembeli dapat menyebabkan pengajuan komplain</string>
+    <string name="som_buyer_cancellation_confirm_accept_order_button">Lanjut Terima</string>
+    <string name="som_buyer_cancellation_cancel_button">Kembali</string>
+    <string name="som_header_detail_ticker_cancellation">Dibatalkan karena</string>
 
 </resources>

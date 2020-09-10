@@ -181,13 +181,13 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
     }
 
     private fun initObserver() {
-        viewModel.sendOtpResult.observe(this, Observer {
+        viewModel.sendOtpResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessSendOtp().invoke(it.data)
                 is Fail -> onFailedSendOtp().invoke(it.throwable)
             }
         })
-        viewModel.otpValidateResult.observe(this, Observer {
+        viewModel.otpValidateResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessOtpValidate().invoke(it.data)
                 is Fail -> onFailedOtpValidate().invoke(it.throwable)
@@ -401,8 +401,12 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
         viewBound.pin?.pinTextField?.let { view ->
             view.post {
                 if(view.requestFocus()) {
-                    val inputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                    inputMethodManager.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
+                    context?.getSystemService(Context.INPUT_METHOD_SERVICE)?.let { inputMethodManager ->
+                        when (inputMethodManager) {
+                            is InputMethodManager -> inputMethodManager.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
+                            else -> {}
+                        }
+                    }
                 }
             }
         }
@@ -447,6 +451,15 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
     }
 
     private fun setResendOtpFooterSpan(message: String, spannable: Spannable) {
+
+        val otpMsg = getString(R.string.resend_otp)
+        val start = message.indexOf(otpMsg)
+        val end = start + otpMsg.length
+
+        if(start < 0 || end < 0) {
+            return
+        }
+
         spannable.setSpan(
                 object : ClickableSpan() {
                     override fun onClick(view: View) {
@@ -471,8 +484,8 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
                         ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                     }
                 },
-                message.indexOf(getString(R.string.resend_otp)),
-                message.indexOf(getString(R.string.resend_otp)) + getString(R.string.resend_otp).length,
+                start,
+                end,
                 0
         )
     }

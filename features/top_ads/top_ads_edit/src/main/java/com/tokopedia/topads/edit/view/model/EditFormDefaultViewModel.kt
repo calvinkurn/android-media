@@ -70,7 +70,7 @@ class EditFormDefaultViewModel @Inject constructor(
                 })
     }
 
-    fun getGroupInfo(groupId: String, onSuccess: (GroupInfoResponse.TopAdsGetPromoGroup.Data) -> Unit, onError: ((Throwable) -> Unit)) {
+    fun getGroupInfo(groupId: String, onSuccess: (GroupInfoResponse.TopAdsGetPromoGroup.Data) -> Unit) {
 
         groupInfoUseCase.setParams(groupId)
         groupInfoUseCase.executeQuerySafeMode(
@@ -82,11 +82,11 @@ class EditFormDefaultViewModel @Inject constructor(
                 })
     }
 
-    fun getAdKeyword(groupId: Int, onSuccess: (List<GetKeywordResponse.KeywordsItem>) -> Unit) {
-        getAdKeywordUseCase.setParams(groupId)
+    fun getAdKeyword(groupId: Int,cursor:String, onSuccess: (List<GetKeywordResponse.KeywordsItem>,cursor:String) -> Unit) {
+        getAdKeywordUseCase.setParams(groupId,cursor)
         getAdKeywordUseCase.executeQuerySafeMode(
                 {
-                    onSuccess(it.topAdsListKeyword.data.keywords)
+                    onSuccess(it.topAdsListKeyword.data.keywords,it.topAdsListKeyword.data.pagination.cursor)
                 },
                 { throwable ->
                     throwable.printStackTrace()
@@ -115,7 +115,7 @@ class EditFormDefaultViewModel @Inject constructor(
                 })
     }
 
-    override fun onCleared() {
+    public override fun onCleared() {
         super.onCleared()
         validGroupUseCase.cancelJobs()
         bidInfoUseCase.cancelJobs()

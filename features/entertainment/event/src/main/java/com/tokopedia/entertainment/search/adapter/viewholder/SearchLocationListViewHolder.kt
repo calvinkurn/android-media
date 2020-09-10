@@ -14,7 +14,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.entertainment.search.Link
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.search.adapter.SearchEventViewHolder
-import com.tokopedia.entertainment.search.adapter.viewmodel.SearchLocationViewModel
+import com.tokopedia.entertainment.search.adapter.viewmodel.SearchLocationModel
 import com.tokopedia.entertainment.search.analytics.EventSearchPageTracking
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.model.ImpressHolder
@@ -23,7 +23,7 @@ import kotlinx.android.synthetic.main.ent_search_location_suggestion.view.*
 import timber.log.Timber
 import java.util.*
 
-class SearchLocationListViewHolder(val view: View, val onClicked: (() -> Unit)) : SearchEventViewHolder<SearchLocationViewModel>(view) {
+class SearchLocationListViewHolder(val view: View, val onClicked: (() -> Unit)) : SearchEventViewHolder<SearchLocationModel>(view) {
 
     val locationListAdapter = LocationAdapter()
 
@@ -42,7 +42,7 @@ class SearchLocationListViewHolder(val view: View, val onClicked: (() -> Unit)) 
         }
     }
 
-    override fun bind(element: SearchLocationViewModel) {
+    override fun bind(element: SearchLocationModel) {
         locationListAdapter.listLocation = element.listLocation
         locationListAdapter.searchQuery = element.query
         locationListAdapter.notifyDataSetChanged()
@@ -85,12 +85,12 @@ class SearchLocationListViewHolder(val view: View, val onClicked: (() -> Unit)) 
 
             holder.view.setOnClickListener {
                 EventSearchPageTracking.getInstance().onClickLocationSuggestion(location,
-                        listLocation, position+1)
+                        listLocation.get(position), position)
                 goToDetail(holder, location.city, location.id_city)
             }
 
             holder.view.addOnImpressionListener(location, {
-                EventSearchPageTracking.getInstance().impressionCitySearchSuggestion(listLocation)
+                EventSearchPageTracking.getInstance().impressionCitySearchSuggestion(listLocation.get(position),position)
             })
         }
 

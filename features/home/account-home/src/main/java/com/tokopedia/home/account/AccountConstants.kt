@@ -22,7 +22,6 @@ object AccountConstants {
         const val SEE_ALL = "lihat_semua"
         const val TRAIN_ORDER_LIST = "train_order_list"
         const val TOPADS = "topads"
-        const val FEATURED_PRODUCT = "featured_product"
     }
 
     object Analytics {
@@ -165,6 +164,11 @@ object AccountConstants {
         const val CLICK_NOTIF_CENTER = "clickNotifCenter"
         const val NOTIF_CENTER = "notif center"
         const val NOTIF_CENTER_ACTION = "click on bell on global nav"
+        const val FIELD_USER_ID = "userId"
+        const val FIELD_SHOP_ID = "shopId"
+        const val FIELD_SHOP_TYPE = "shopType"
+        const val SHOP_TYPE_RM = "RM"
+        const val SHOP_TYPE_PM = "PM"
     }
 
     object MOENGAGE {

@@ -13,6 +13,7 @@ import com.tokopedia.shop.open.R
 import com.tokopedia.shop.open.analytic.ShopOpenRevampTracking
 import com.tokopedia.shop.open.common.ImageAssets.IMG_SHOP_OPEN_SPLASH_SCREEN
 import com.tokopedia.shop.open.common.PageNameConstant
+import com.tokopedia.shop.open.common.ScreenNameTracker
 import com.tokopedia.shop.open.listener.FragmentNavigationInterface
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -59,7 +60,7 @@ class ShopOpenRevampSplashScreenFragment : Fragment() {
         val firstName = fullName.split(" ")[0]
         val greetingText = getString(R.string.open_shop_revamp_text_horay_name, firstName)
         txt_greeting.text = greetingText
-        shopOpenRevampTracking?.sendScreenHooray()
+        shopOpenRevampTracking?.sendScreenNameTracker(ScreenNameTracker.SCREEN_HOORAY)
         handler.postDelayed({
             context?.let{
                 fragmentNavigationInterface

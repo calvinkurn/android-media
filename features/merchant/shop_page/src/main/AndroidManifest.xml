@@ -35,15 +35,18 @@
                     android:host="@string/host_marketplace"
                     android:pathPattern="@string/path_shop_page_review"
                     android:scheme="@string/internal_scheme" />
+
+                <data
+                    android:host="@string/host_marketplace"
+                    android:pathPattern="@string/path_shop_page_product"
+                    android:scheme="@string/internal_scheme" />
+
+                <data
+                    android:host="@string/host_marketplace"
+                    android:pathPattern="@string/path_shop_page_feed"
+                    android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name=".address.view.activity.ShopAddressListActivity"
-            android:exported="true"
-            android:label="@string/shop_info_label_physical_shop"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
 
         <activity
             android:name=".note.view.activity.ShopNoteDetailActivity"
@@ -53,7 +56,7 @@
             android:theme="@style/Theme.White" />
 
         <activity
-            android:name="com.tokopedia.shop.product.view.activity.ShopProductListActivity"
+            android:name="com.tokopedia.shop.product.view.activity.ShopProductListResultActivity"
             android:exported="true"
             android:label="@string/shop_product_title"
             android:screenOrientation="portrait"

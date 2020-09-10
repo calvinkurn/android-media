@@ -11,18 +11,20 @@ import com.tokopedia.applink.startsWithPattern
  */
 object DeeplinkMapperContent {
 
+    fun getRegisteredNavigationContentFromHttp(deepLink: String): String {
+        return try {
+            if (deepLink.startsWithPattern(ApplinkConstInternalContent.TOKOPEDIA_BYME_HTTP) ||
+                    deepLink.startsWithPattern(ApplinkConstInternalContent.TOKOPEDIA_BYME_HTTPS)) {
+                val path = Uri.parse(deepLink).path?.removePrefix("/").orEmpty()
+                "${ApplinkConstInternalContent.AFFILIATE_BYME_TRACKING}$path"
+            } else deepLink
+        } catch (e: Throwable) {
+            deepLink
+        }
+    }
+
     fun getRegisteredNavigationContent(deeplink: String): String {
         return if (deeplink.startsWithPattern(ApplinkConst.PROFILE)) getRegisteredNavigation(deeplink)
-        else deeplink
-    }
-
-    fun getRegisteredNavigationPlay(deeplink: String): String {
-        return if (deeplink.startsWithPattern(ApplinkConst.PLAY_DETAIL)) getRegisteredNavigation(deeplink)
-        else deeplink
-    }
-
-    fun getRegisteredNavigationInterestPick(deeplink: String): String {
-        return if (deeplink.startsWithPattern(ApplinkConst.INTEREST_PICK)) getRegisteredNavigation(deeplink)
         else deeplink
     }
 
@@ -32,7 +34,7 @@ object DeeplinkMapperContent {
      * tokopedia://people/{user_id}?after_edit=true
      * tokopedia://people/{user_id}?success_post=true
      */
-    private fun getRegisteredNavigation(deeplink: String): String {
+    fun getRegisteredNavigation(deeplink: String): String {
         return deeplink.replace(DeeplinkConstant.SCHEME_TOKOPEDIA, DeeplinkConstant.SCHEME_INTERNAL)
     }
 

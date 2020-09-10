@@ -25,7 +25,7 @@
 
         <provider
             android:name="com.tokopedia.recharge_slice.ui.provider.MainSliceProvider"
-            android:authorities="com.tokopedia.recharge_slice"
+            android:authorities="com.tokopedia.tkpd.recharge_slice"
             android:exported="true"
             android:grantUriPermissions="true">
             <intent-filter>

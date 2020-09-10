@@ -11,4 +11,5 @@ data class DisplayInfo(
         @SerializedName("sort")
         @Expose
         val sort: List<Sort> = listOf()
+
 )

@@ -25,7 +25,6 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -38,7 +37,6 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
@@ -56,6 +54,9 @@ import com.tokopedia.network.exception.MessageErrorException;
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.sessioncommon.di.SessionModule;
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity;
+import com.tokopedia.unifycomponents.LoaderUnify;
+import com.tokopedia.unifycomponents.UnifyButton;
+import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.usecase.coroutines.Fail;
 import com.tokopedia.usecase.coroutines.Success;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -100,17 +101,16 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
     private static final int STATUS_PENDING = -1;
     private static final int STATUS_INACTIVE = 0;
 
-    View container;
     View redirectView;
     AutoCompleteTextView email;
     TextInputEditText registerPassword;
-    TextView registerButton;
+    UnifyButton registerButton;
     TkpdHintTextInputLayout wrapperName;
     TkpdHintTextInputLayout wrapperEmail;
     TkpdHintTextInputLayout wrapperPassword;
     EditText name;
-    TextView registerNextTAndC;
-    ProgressBar progressBar;
+    Typography registerNextTAndC;
+    LoaderUnify progressBar;
 
     String source = "";
     String token = "";
@@ -175,7 +175,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle
             savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_register_with_email, parent, false);
-        container = view.findViewById(R.id.container);
         redirectView = view.findViewById(R.id.redirect_reset_password);
         email = view.findViewById(R.id.register_email);
         registerPassword = view.findViewById(R.id.register_password);
@@ -470,6 +469,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
     }
 
     private void registerEmail(){
+        showLoadingProgress();
         registerAnalytics.trackClickSignUpButtonEmail();
         registerInitialViewModel.registerRequest(
                 email.getText().toString(),
@@ -517,11 +517,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
 
     private void setRegisterButtonEnabled() {
         if (getActivity() != null) {
-            MethodChecker.setBackground(registerButton, MethodChecker.getDrawable(getActivity().getApplicationContext(), R
-                    .drawable
-                    .green_button_rounded));
-            registerButton.setTextColor(MethodChecker.getColor(getActivity().getApplicationContext(),
-                    R.color.white));
             registerButton.setEnabled(true);
         }
     }
@@ -529,11 +524,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
 
     private void setRegisterButtonDisabled() {
         if (getActivity() != null) {
-            MethodChecker.setBackground(registerButton, MethodChecker.getDrawable(
-                    getActivity().getApplicationContext(), R.drawable.grey_button_rounded));
-            registerButton.setTextColor(MethodChecker.getColor(
-                    getActivity().getApplicationContext(),
-                    R.color.grey_500));
             registerButton.setEnabled(false);
         }
     }
@@ -588,14 +578,12 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
 
     public void showLoadingProgress() {
         setActionsEnabled(false);
-        container.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
     }
 
     public void dismissLoadingProgress() {
         setActionsEnabled(true);
         progressBar.setVisibility(View.GONE);
-        container.setVisibility(View.VISIBLE);
     }
 
     public void goToActivationPage(String email, String password) {
@@ -665,7 +653,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
 
     public void showInfo() {
         dismissLoadingProgress();
-        TextView view = redirectView.findViewById(R.id.body);
+        Typography view = redirectView.findViewById(R.id.body);
         final String emailString = email.getText().toString();
         String text = getString(R.string.account_registered_body, emailString);
         String part = getString(R.string.account_registered_body_part);
@@ -682,7 +670,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
             }
         });
         redirectView.setVisibility(View.VISIBLE);
-        container.setVisibility(View.GONE);
     }
 
     public void onForbidden() {

@@ -4,7 +4,7 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 project.ext {
     artifactId = 'global_config'
     groupId = 'com.tokopedia.config'
-    versionName = "1.0.3"
+    versionName = "1.0.8"
     artifactName = "global_config"
 }
 

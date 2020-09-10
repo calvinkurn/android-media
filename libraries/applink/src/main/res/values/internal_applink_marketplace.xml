@@ -29,7 +29,6 @@
     <string name="path_gold_merchant_statistic_dashboard" translatable="false">/gold-merchant-statistic-dashboard</string>
     <string name="path_gold_merchant_subscribe_dashboard" translatable="false">/gold-merchant-subscribe-dashboard</string>
     <string name="path_gold_merchant_membership" translatable="false">/gold-merchant-membership</string>
-    <string name="path_gold_merchant_featured_product" translatable="false">/gold-merchant-featured-product</string>
     <string name="path_gold_merchant_redirect" translatable="false">/gold-merchant-redirect</string>
     <string name="path_power_merchant_subscribe" translatable="false">/power-merchant-subscribe</string>
 
@@ -43,6 +42,7 @@
     <string name="path_product_manage_list" translatable="false">/product-manage-list</string>
     <string name="path_product_review" translatable="false">/product/.*\\/review</string>
     <string name="path_stock_reminder" translatable="false">/stock-reminder/.*\\/.*\\/.*\\/</string>
+    <string name="path_reserved_stock" translatable="false">/reserved-stock/.*\\/.*\\/</string>
     <string name="path_set_cashback" translatable="false">/set-cashback/.*\\/</string>
     <string name="path_create_review" translatable="false">/product-review/create/.*\\/.*\\/</string>
     <string name="path_product_review_gallery" translatable="false">/product/.*\\/review/gallery</string>
@@ -55,6 +55,8 @@
     <string name="path_shop_page_home" translatable="false">/shop-page/.*\\/home</string>
     <string name="path_shop_page_info" translatable="false">/shop-page/.*\\/info</string>
     <string name="path_shop_page_review" translatable="false">/shop-page/.*\\/review</string>
+    <string name="path_shop_page_product" translatable="false">/shop-page/.*\\/product</string>
+    <string name="path_shop_page_feed" translatable="false">/shop-page/.*\\/feed</string>
     <string name="path_shop_page_product_list_result" translatable="false">/shop-page-product-list/.*\\/etalase/.*\\/</string>
 
     <string name="path_shop_info" translatable="false">/shop-info/.*\\/</string>
@@ -80,6 +82,8 @@
     <string name="path_shop_score_detail" translatable="false">/shop-score-detail</string>
     <string name="path_shop_edit_schedule" translatable="false">/shop-settings-edit-schedule</string>
     <string name="path_shop_page_setting" translatable="false">/shop-page-setting</string>
+
+    <string name="path_seller_review_detail" translatable="false">/seller-review-detail</string>
 
     <string name="path_district_recommendation_shop_settings" translatable="false">/district-recommendation-shop-settings</string>
     <string name="path_geolocation" translatable="false">/geolocation</string>

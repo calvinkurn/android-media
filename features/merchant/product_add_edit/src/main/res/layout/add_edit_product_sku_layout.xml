@@ -7,6 +7,7 @@
 
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/tfu_sku"
+        android:contentDescription="@string/content_desc_tfu_sku"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"

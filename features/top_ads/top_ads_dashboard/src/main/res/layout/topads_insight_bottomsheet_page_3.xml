@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/dp_16">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/img"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/topads_dash_insight_page3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txttitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:text="@string/topads_dash_insight_sheet_info_subtitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/img" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txttitle1"
+        style="@style/BottomSheetInsightTitle"
+        android:text="@string/topads_dash_insight_sheet_page3_title_1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txttitle" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txtDesc1"
+        style="@style/BottomSheetInsight"
+        android:text="@string/topads_dash_insight_sheet_page3_desc_1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txttitle1" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txttitle2"
+        style="@style/BottomSheetInsightTitle"
+        android:text="@string/topads_dash_insight_sheet_page3_title_2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txtDesc1" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txtDesc2"
+        style="@style/BottomSheetInsight"
+        android:text="@string/topads_dash_insight_sheet_page3_desc_2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txttitle2" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txttitle3"
+        style="@style/BottomSheetInsightTitle"
+        android:text="@string/topads_dash_insight_sheet_page3_title_3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txtDesc2" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txtDesc3"
+        style="@style/BottomSheetInsight"
+        android:text="@string/topads_dash_insight_sheet_page3_desc_3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txttitle3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txttitle4"
+        style="@style/BottomSheetInsightTitle"
+        android:text="@string/topads_dash_insight_sheet_page3_title_4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txtDesc3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txtDesc4"
+        style="@style/BottomSheetInsight"
+        android:text="@string/topads_dash_insight_sheet_page3_desc_4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txttitle4" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/step_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/topads_indi_3" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

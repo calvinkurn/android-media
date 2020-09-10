@@ -468,6 +468,81 @@ class PowerMerchantTracking @Inject constructor(
         TrackApp.getInstance().gtm.sendGeneralEvent(event)
     }
 
+    fun eventShowDialogKyc() {
+        val category = getCategory()
+
+        val event = TrackAppUtils.gtmData(
+            GMParamTracker.EVENT_CLICK_POWER_MERCHANT,
+            category,
+            GMParamTracker.Action.POP_UP_DATA_VERIFICATION,
+            ""
+        )
+
+        event[CustomDimension.USER_ID] = user.userId
+        event[CustomDimension.SHOP_ID] = user.shopId
+        event[CustomDimension.SHOP_TYPE] = getShopType()
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(event)
+    }
+
+    fun eventShowDialogScore(shopScore: Int) {
+        val category = getCategory()
+
+        val event = TrackAppUtils.gtmData(
+            GMParamTracker.EVENT_CLICK_POWER_MERCHANT,
+            category,
+            GMParamTracker.Action.POP_UP_SCORE_BELOW,
+            shopScore.toString()
+        )
+
+        event[CustomDimension.USER_ID] = user.userId
+        event[CustomDimension.SHOP_ID] = user.shopId
+        event[CustomDimension.SHOP_TYPE] = getShopType()
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(event)
+    }
+
+    fun eventPowerMerchantSuccessBottomSheet() {
+        val category = getCategory()
+
+        val event = TrackAppUtils.gtmData(
+            GMParamTracker.EVENT_CLICK_POWER_MERCHANT,
+            category,
+            GMParamTracker.Action.POP_UP_SUCCESS_PM,
+            ""
+        )
+
+        event[CustomDimension.USER_ID] = user.userId
+        event[CustomDimension.SHOP_ID] = user.shopId
+        event[CustomDimension.SHOP_TYPE] = getShopType()
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(event)
+    }
+
+    fun eventClickBackCancelMembership() {
+        val category = getCategory()
+
+        val event = TrackAppUtils.gtmData(
+            GMParamTracker.EVENT_CLICK_POWER_MERCHANT,
+            category,
+            GMParamTracker.Action.CLICK_BACK_POP_UP_CANCEL_MEMBERSHIP,
+            ""
+        )
+
+        event[CustomDimension.USER_ID] = user.userId
+        event[CustomDimension.SHOP_ID] = user.shopId
+        event[CustomDimension.SHOP_TYPE] = getShopType()
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(event)
+    }
+
+    fun eventOpenScreen(screeName: String) {
+        val event = mapOf(
+            CustomDimension.SHOP_TYPE to getShopType()
+        )
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(screeName, event)
+    }
+
     private fun getShopType(): String {
         val isPowerMerchant = user.isGoldMerchant
 

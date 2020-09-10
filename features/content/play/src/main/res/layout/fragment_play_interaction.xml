@@ -1,7 +1,201 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.play.view.custom.PlayInteractionConstraintLayout
+<com.tokopedia.play.view.custom.PlayInteractionConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cl_play_interaction"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    />
+    >
+
+    <Space
+        android:id="@+id/space_size"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl0"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <include
+        android:id="@+id/view_gradient_background"
+        layout="@layout/view_gradient_background"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl0"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <View
+        android:id="@+id/v_immersive_box"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl0"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        app:layout_constraintBottom_toTopOf="@id/view_pinned"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/view_stats_info"
+        />
+
+    <include
+        android:id="@+id/view_send_chat"
+        layout="@layout/view_send_chat"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/play_send_chat_height"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
+        android:layout_marginRight="@dimen/spacing_lvl3"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/pcv_video"
+        app:layout_constraintEnd_toStartOf="@id/view_like"
+        app:layout_constraintStart_toStartOf="@id/space_size"
+        tools:visibility="visible"
+        />
+
+    <include
+        android:id="@+id/view_like"
+        layout="@layout/view_like"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/pcv_video"
+        app:layout_constraintEnd_toEndOf="@id/space_size"
+        tools:visibility="visible"
+        />
+
+    <include
+        android:id="@+id/view_pinned"
+        layout="@layout/view_pinned"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
+        android:layout_marginRight="@dimen/spacing_lvl3"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/view_chat_list"
+        app:layout_constraintEnd_toStartOf="@id/view_like"
+        app:layout_constraintStart_toStartOf="@id/space_size"
+        tools:visibility="visible"
+        />
+
+    <include
+        android:id="@+id/view_chat_list"
+        layout="@layout/view_chat_list"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
+        android:layout_marginRight="@dimen/spacing_lvl3"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/rv_quick_reply"
+        app:layout_constraintEnd_toStartOf="@id/view_like"
+        app:layout_constraintStart_toStartOf="@id/space_size"
+        tools:visibility="visible"
+        />
+
+    <com.google.android.exoplayer2.ui.PlayerControlView
+        android:id="@+id/pcv_video"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
+        android:layout_marginRight="@dimen/spacing_lvl3"
+        android:visibility="gone"
+        app:controller_layout_id="@layout/layout_play_player_control"
+        app:layout_constraintBottom_toBottomOf="@id/space_size"
+        app:layout_constraintEnd_toStartOf="@id/view_like"
+        app:layout_constraintStart_toStartOf="@id/space_size"
+        app:show_timeout="-1"
+        tools:visibility="visible"
+        />
+
+    <include
+        android:id="@+id/view_video_settings"
+        layout="@layout/view_video_settings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@id/space_size"
+        app:layout_constraintTop_toBottomOf="@id/view_stats_info"
+        tools:visibility="visible"
+        />
+
+    <include
+        android:id="@+id/view_end_live_info"
+        layout="@layout/view_end_live_info"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl0"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <include
+        android:id="@+id/view_toolbar"
+        layout="@layout/view_toolbar"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        app:layout_constraintEnd_toEndOf="@id/space_size"
+        app:layout_constraintStart_toStartOf="@id/space_size"
+        app:layout_constraintTop_toTopOf="@id/space_size"
+        />
+
+    <include
+        android:id="@+id/view_stats_info"
+        layout="@layout/view_stats_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/play_offset_12"
+        app:layout_constraintStart_toStartOf="@id/space_size"
+        app:layout_constraintTop_toBottomOf="@id/view_toolbar"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_quick_reply"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/view_send_chat"
+        app:layout_constraintEnd_toEndOf="@id/space_size"
+        app:layout_constraintStart_toStartOf="@id/space_size"
+        tools:visibility="visible"
+        />
+
+    <include
+        android:id="@+id/view_play_button"
+        layout="@layout/view_play_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible"
+        />
+
+</com.tokopedia.play.view.custom.PlayInteractionConstraintLayout>
