@@ -237,7 +237,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
 
     override fun onRechargeReminderWidgetClicked(sectionID: Int) {
         if (::homeComponentsData.isInitialized) {
-            homeComponentsData.find { it.id == sectionID }?.tracking?.find {
+            homeComponentsData.find { it.id == sectionID }?.items?.firstOrNull()?.tracking?.find {
                 it.action == RechargeHomepageAnalytics.ACTION_CLICK
             }?.run {
                 trackingUtil.rechargeEnhanceEcommerceEvent(data)
@@ -245,12 +245,12 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onRechargeReminderWidgetClosed(sectionID: Int) {
+    override fun onRechargeReminderWidgetClosed(sectionID: Int, toggleTracking: Boolean) {
         val index = adapter.data.indexOfFirst { it is HomeComponentVisitable && it.visitableId()?.toIntOrNull() == sectionID }
         if (index >= 0 && ::homeComponentsData.isInitialized) {
             // Trigger close reminder widget action
             val section = homeComponentsData.find { it.id == sectionID }
-            if (section != null && section.items.isNotEmpty()) {
+            if (toggleTracking && section != null && section.items.isNotEmpty()) {
                 viewModel.triggerRechargeSectionAction(
                         viewModel.createRechargeHomepageSectionActionParams(sectionID, "ActionClose", section.objectId, section.items.first().objectId)
                 )

@@ -181,7 +181,7 @@
       "event": "view_item",
       "eventCategory": "digital - subhomepage",
       "eventAction": "impression urgency widget",
-      "eventLabel": "{{.* - .*}}",
+      "eventLabel": "{{.*}}",
       "screenName": "/top-up-tagihan",
       "currentSite": "tokopediadigitalRecharge",
       "userId": "{{.*}}",
@@ -198,23 +198,20 @@
       "clientId": "{{.*}}"
     },
     {
-      "event": "add_to_cart",
+      "event": "select_content",
       "eventCategory": "digital - subhomepage",
       "eventAction": "click urgency widget",
-      "eventLabel": "{{.* - .* - .* - .*}}",
+      "eventLabel": "{{.* - .* - .*}}",
       "screenName": "/top-up-tagihan",
       "currentSite": "tokopediadigitalRecharge",
       "userId": "{{.*}}",
       "businessUnit": "recharge",
-      "items": [
+      "promotions": [
         {
-          "item_name": "{{.*}}",
           "item_id": "{{.*}}",
-          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
-          "item_brand": "{{.*}}",
-          "item_category": "{{.*}}",
-          "item_variant": "{{.*}}",
-          "quantity": "{{\\d+}}"
+          "item_name": "{{.*}}",
+          "creative_name": "{{.*}}",
+          "creative_slot": "{{.*}}"
         }
       ],
       "sessionIris": "{{.*}}",
