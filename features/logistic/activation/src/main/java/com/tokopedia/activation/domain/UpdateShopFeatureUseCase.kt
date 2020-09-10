@@ -1,12 +1,14 @@
 package com.tokopedia.activation.domain
 
+import com.tokopedia.activation.model.UpdateFeatureModel
 import com.tokopedia.activation.model.response.UpdateShopFeatureResponse
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class UpdateShopFeatureUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase<UpdateShopFeatureResponse>) {
+class UpdateShopFeatureUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase<UpdateShopFeatureResponse>, private val mapper: UpdateShopFeatureMapper) : UseCase <UpdateFeatureModel>() {
 
-    fun execute(value: Boolean, onSuccess: (String) -> Unit, onError: (Throwable) -> Unit) {
+    /*fun execute(value: Boolean, onSuccess: (String) -> Unit, onError: (Throwable) -> Unit) {
         graphqlUseCase.setGraphqlQuery(QUERY)
         graphqlUseCase.setRequestParams(mapOf(PARAM_TYPE to 1, PARAM_VALUE to value))
         graphqlUseCase.setTypeClass(UpdateShopFeatureResponse::class.java)
@@ -16,7 +18,7 @@ class UpdateShopFeatureUseCase @Inject constructor(private val graphqlUseCase: G
             throwable: Throwable -> onError(throwable)
         })
     }
-
+*/
     companion object {
         const val PARAM_TYPE = "type"
         const val PARAM_VALUE = "value"
@@ -30,5 +32,14 @@ class UpdateShopFeatureUseCase @Inject constructor(private val graphqlUseCase: G
               }
             }
         """.trimIndent()
+    }
+
+    override suspend fun executeOnBackground(): UpdateFeatureModel {
+        graphqlUseCase.setGraphqlQuery(QUERY)
+        graphqlUseCase.setRequestParams(mapOf(PARAM_TYPE to 1, PARAM_VALUE to "value"))
+        graphqlUseCase.setTypeClass(UpdateShopFeatureResponse::class.java)
+        val result = graphqlUseCase.executeOnBackground()
+        return mapper.convertToUIModel(result.data)
+
     }
 }

@@ -109,7 +109,13 @@ class ActivationPageFragment: Fragment() {
     }
 
     private fun getShopFeature() {
+        //ToDo: shopId here
         viewModel.getShopFeature("//ToDO: shopId here")
+    }
+
+    private fun updateShopFeature() {
+        //ToDo: value here
+        viewModel.updateShopFeature(true)
     }
 
 
