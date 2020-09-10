@@ -128,7 +128,6 @@ class AnimatedReputationView @JvmOverloads constructor(
         this.clickAt = reviewClickAt
         handle.post(normalAnimation)
         generateReviewText(reviewClickAt)
-        listener?.onClick(reviewClickAt)
     }
 
 

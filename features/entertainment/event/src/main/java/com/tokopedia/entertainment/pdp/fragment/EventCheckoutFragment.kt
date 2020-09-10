@@ -29,6 +29,9 @@ import com.tokopedia.common.payment.PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA
 import com.tokopedia.common.payment.PaymentConstant.PAYMENT_SUCCESS
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.entertainment.R
+import com.tokopedia.entertainment.common.util.EventQuery
+import com.tokopedia.entertainment.common.util.EventQuery.eventContentById
+import com.tokopedia.entertainment.common.util.EventQuery.eventPDPV3
 import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity.Companion.EXTRA_META_DATA
 import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity.Companion.EXTRA_PACKAGE_ID
 import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity.Companion.EXTRA_URL_PDP
@@ -205,8 +208,8 @@ class EventCheckoutFragment : BaseDaggerFragment() {
 
     private fun requestData() {
         urlPDP.let {
-            eventCheckoutViewModel.getDataProductDetail(GraphqlHelper.loadRawString(resources, R.raw.gql_query_event_product_detail_v3),
-                    GraphqlHelper.loadRawString(resources, R.raw.gql_query_event_content_by_id), it)
+            eventCheckoutViewModel.getDataProductDetail(eventPDPV3(),
+                    eventContentById(), it)
         }
     }
 
@@ -237,11 +240,18 @@ class EventCheckoutFragment : BaseDaggerFragment() {
     private fun renderPassenger() {
         ticker_event_checkout.setTextDescription(resources.getString(R.string.ent_event_checkout_pessanger_ticker))
         btn_event_checkout_passenger.setOnClickListener {
-            context?.run {
-                val intent = RouteManager.getIntent(this, "${ApplinkConstInternalEntertainment.EVENT_FORM}/$urlPDP")
-                intent.putExtra(EXTRA_DATA_PESSANGER, forms as Serializable)
-                startActivityForResult(intent, REQUEST_CODE_FORM)
-            }
+            goToPageForm()
+        }
+        widget_event_checkout_pessangers.setOnClickListener {
+            goToPageForm()
+        }
+    }
+
+    private fun goToPageForm(){
+        context?.run {
+            val intent = RouteManager.getIntent(this, "${ApplinkConstInternalEntertainment.EVENT_FORM}/$urlPDP")
+            intent.putExtra(EXTRA_DATA_PESSANGER, forms as Serializable)
+            startActivityForResult(intent, REQUEST_CODE_FORM)
         }
     }
 
@@ -265,7 +275,7 @@ class EventCheckoutFragment : BaseDaggerFragment() {
             )
         }
 
-        eventPDPTracking.onViewCheckoutPage(getPackage(pdp, packageID), pdp, amount)
+        eventPDPTracking.onViewCheckoutPage(pdp, metadata.itemMap)
     }
 
     private fun renderFooter(productDetailData: ProductDetailData) {
@@ -284,11 +294,11 @@ class EventCheckoutFragment : BaseDaggerFragment() {
                         Toaster.make(view, it.getString(R.string.ent_event_checkout_submit_name), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error))
                     } else {
                         progressDialog.show()
-                         eventPDPTracking.onClickCheckoutButton(getPackage(productDetailData, packageID), productDetailData, amount)
+                        eventPDPTracking.onClickCheckoutButton(productDetailData, metadata.itemMap)
                         if (name.isEmpty()) name = userSessionInterface.name
                         if (email.isEmpty()) email = userSessionInterface.email
                         metadata = getPassengerMetaData(metadata, forms)
-                        eventCheckoutViewModel.checkoutEvent(GraphqlHelper.loadRawString(resources, R.raw.gql_mutation_event_checkout_v2),
+                        eventCheckoutViewModel.checkoutEvent(EventQuery.mutationEventCheckoutV2(),
                                 getCheckoutParam(metadata,productDetailData, getPackage(productDetailData,packageID)))
                     }
                 }

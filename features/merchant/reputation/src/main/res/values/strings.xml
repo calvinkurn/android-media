@@ -164,4 +164,6 @@
         <item>Semua</item>
         <item>Belum Dibaca</item>
     </string-array>
+
+    <string name="title_review_inbox">Inbox Ulasan</string>
 </resources>

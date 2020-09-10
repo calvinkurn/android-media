@@ -8,7 +8,7 @@
     app:layout_constraintTop_toTopOf="parent">
 
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/date_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -18,8 +18,7 @@
         android:layout_marginBottom="@dimen/dp_13"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/topads_ic_calendar" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/current_date"
@@ -35,14 +34,13 @@
         app:layout_constraintTop_toTopOf="@id/date_image"
         app:typographyType="small" />
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/next_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="@dimen/dp_19"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/topads_ic_arrow" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -22,12 +22,22 @@ class AddProductInputMapper @Inject constructor() {
 
     companion object{
         const val PRICE_CURRENCY = "IDR"
-        const val STOCK_STATUS = "LIMITED"
         const val UNIT_GRAM = "GR"
         const val UNIT_KILOGRAM = "KG"
         const val UNIT_DAY = "DAY"
         const val UNIT_WEEK = "WEEK"
         const val UNIT_MONTH = "MONTH"
+        private const val IS_ACTIVE = 1
+        private const val IS_INACTIVE = 0
+        private const val IS_ACTIVE_STRING = "ACTIVE"
+        private const val IS_INACTIVE_STRING = "INACTIVE"
+
+        fun getActiveStatus(status: Int) =
+                when (status) {
+                    IS_INACTIVE -> IS_INACTIVE_STRING
+                    IS_ACTIVE -> IS_ACTIVE_STRING
+                    else -> IS_ACTIVE_STRING
+                }
     }
 
     fun mapInputToParam(shopId: String,
@@ -42,7 +52,7 @@ class AddProductInputMapper @Inject constructor() {
                 detailInputModel.price,
                 PRICE_CURRENCY,
                 detailInputModel.stock,
-                STOCK_STATUS,
+                getActiveStatus(detailInputModel.status),
                 descriptionInputModel.productDescription,
                 detailInputModel.minOrder,
                 mapShipmentUnit(shipmentInputModel.weightUnit),
@@ -53,7 +63,7 @@ class AddProductInputMapper @Inject constructor() {
                 ShopParam(shopId),
                 Catalog(detailInputModel.catalogId),
                 Category(detailInputModel.categoryId),
-                ProductEtalase(),
+                null,
                 mapPictureParam(detailInputModel.imageUrlOrPathList, detailInputModel.pictureList, uploadIdList),
                 mapPreorderParam(detailInputModel.preorder),
                 mapWholesaleParam(detailInputModel.wholesaleList),
@@ -117,7 +127,7 @@ class AddProductInputMapper @Inject constructor() {
     }
 
     private fun mapSizeChart(sizecharts: PictureVariantInputModel): List<Picture>? {
-        return if (sizecharts.filePath.isEmpty()) {
+        return if (sizecharts.urlOriginal.isEmpty() && sizecharts.uploadId.isEmpty()) {
             emptyList()
         } else {
             val sizechart = Picture(

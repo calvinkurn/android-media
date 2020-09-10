@@ -36,17 +36,17 @@ class AddEditProductVariantViewModelTest: AddEditProductVariantViewModelTestFixt
         viewModel.updateSizechart("/url/to/file.jpg")
 
         val variantSizechart = viewModel.variantSizechart.value
-        assert(variantSizechart != null && variantSizechart.filePath.isNotEmpty())
+        assert(variantSizechart != null && variantSizechart.urlOriginal.isNotEmpty())
     }
 
     @Test
     fun `When updateSizechart with object is success Expect update variantSizechart`() {
         val obj = PictureVariantInputModel()
-        obj.filePath = "/url/to/file.jpg"
+        obj.urlOriginal = "/url/to/file.jpg"
         viewModel.updateSizechart(obj)
 
         val variantSizechart = viewModel.variantSizechart.value
-        assert(variantSizechart != null && variantSizechart.filePath.isNotEmpty())
+        assert(variantSizechart != null && variantSizechart.urlOriginal.isNotEmpty())
     }
 
     @Test
@@ -84,10 +84,32 @@ class AddEditProductVariantViewModelTest: AddEditProductVariantViewModelTestFixt
     }
 
     @Test
-    fun `When updateSizechartVisibility Expect change visibility`() {
-        viewModel.updateSizechartFieldVisibility(variantDetailTest2, true)
+    fun `When updateSizechartVisibility Expect change visibility enable visibility`() {
+        val selectedUnitValues = mutableListOf(
+                variantDetailTest1.units[0].unitValues[2],
+                variantDetailTest1.units[0].unitValues[3]
+        )
+
+        viewModel.setSelectedVariantDetails(variantDetailsTest)
+        viewModel.updateSelectedVariantUnitValuesMap(0, selectedUnitValues)
+        viewModel.updateSizechartFieldVisibility()
 
         val isVariantSizechartVisible = viewModel.isVariantSizechartVisible.value
         assert(isVariantSizechartVisible == true)
+    }
+
+    @Test
+    fun `When updateSizechartVisibility Expect change visibility disable visibility`() {
+        val selectedUnitValues = mutableListOf(
+                variantDetailTest1.units[0].unitValues[2],
+                variantDetailTest1.units[0].unitValues[3]
+        )
+
+        viewModel.setSelectedVariantDetails(mutableListOf(variantDetailTest1))
+        viewModel.updateSelectedVariantUnitValuesMap(0, selectedUnitValues)
+        viewModel.updateSizechartFieldVisibility()
+
+        val isVariantSizechartVisible = viewModel.isVariantSizechartVisible.value
+        assert(isVariantSizechartVisible == false)
     }
 }

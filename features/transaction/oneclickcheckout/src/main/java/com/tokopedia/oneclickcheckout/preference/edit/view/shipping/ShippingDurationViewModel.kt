@@ -10,6 +10,8 @@ import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.oneclickcheckout.common.dispatchers.ExecutorDispatchers
+import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
+import com.tokopedia.oneclickcheckout.common.view.model.Failure
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.preference.edit.domain.shipping.GetShippingDurationUseCase
 import com.tokopedia.oneclickcheckout.preference.edit.domain.shipping.mapper.ShippingDurationModelWithPriceMapper
@@ -38,16 +40,20 @@ class ShippingDurationViewModel @Inject constructor(private val useCase: GetShip
 
     fun getShippingDuration() {
         _shippingDuration.value = OccState.Loading
+        OccIdlingResource.increment()
         useCase.execute(onSuccess = {
             logicSelection(it)
+            OccIdlingResource.decrement()
         }, onError = {
-            _shippingDuration.value = OccState.Fail(false, it, "")
+            _shippingDuration.value = OccState.Failed(Failure(it))
+            OccIdlingResource.decrement()
         })
 
     }
 
     private fun logicSelection(shippingDurationModel: ShippingListModel) {
         launch {
+            OccIdlingResource.increment()
             withContext(dispatchers.default) {
                 val shippingList = shippingDurationModel.services
                 for (item in shippingList) {
@@ -61,13 +67,7 @@ class ShippingDurationViewModel @Inject constructor(private val useCase: GetShip
             }
             this@ShippingDurationViewModel.shippingDurationModel = shippingDurationModel
             _shippingDuration.value = OccState.Success(shippingDurationModel)
-        }
-    }
-
-    fun consumeGetShippingDurationFail() {
-        val value = _shippingDuration.value
-        if (value is OccState.Fail) {
-            _shippingDuration.value = value.copy(isConsumed = true)
+            OccIdlingResource.decrement()
         }
     }
 
@@ -83,27 +83,28 @@ class ShippingDurationViewModel @Inject constructor(private val useCase: GetShip
     /*With Price*/
     fun getRates(listShopShipment: ArrayList<ShopShipment>?, shippingParam: ShippingParam?) {
         _shippingDuration.value = OccState.Loading
-        val ratesParamBuilder = shippingParam?.let { listShopShipment?.let { list -> RatesParam.Builder(list, it) } }
-        val ratesParam = ratesParamBuilder?.build()
-        ratesParam?.occ = "1"
+        OccIdlingResource.increment()
+        val ratesParam = shippingParam?.let { listShopShipment?.let { list -> RatesParam.Builder(list, it) } }?.build()
         ratesParam?.let {
+            it.occ = "1"
             compositeSubscription.add(
                     useCaseRates.execute(it)
                             .subscribe(object : Observer<ShippingRecommendationData> {
                                 override fun onError(e: Throwable?) {
-                                    _shippingDuration.value = OccState.Fail(false, e, "")
+                                    _shippingDuration.value = OccState.Failed(Failure(e))
+                                    OccIdlingResource.decrement()
                                 }
 
                                 override fun onNext(shippingRecomendationData: ShippingRecommendationData) {
                                     if (!shippingRecomendationData.errorMessage.isNullOrEmpty()) {
-                                        _shippingDuration.value = OccState.Fail(false, MessageErrorException(shippingRecomendationData.errorMessage), "")
+                                        _shippingDuration.value = OccState.Failed(Failure(MessageErrorException(shippingRecomendationData.errorMessage)))
                                     } else {
                                         logicSelection(mapToModelPrice(shippingRecomendationData))
                                     }
                                 }
 
                                 override fun onCompleted() {
-                                    //do nothing
+                                    OccIdlingResource.decrement()
                                 }
                             })
             )
@@ -119,5 +120,3 @@ class ShippingDurationViewModel @Inject constructor(private val useCase: GetShip
         compositeSubscription.clear()
     }
 }
-
-

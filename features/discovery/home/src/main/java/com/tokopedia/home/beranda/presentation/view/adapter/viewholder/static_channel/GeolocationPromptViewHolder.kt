@@ -13,7 +13,7 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 
-class GeolocationPromptViewHolder(itemView :View, val homeCategoryListener: HomeCategoryListener) :
+class GeolocationPromptViewHolder(itemView :View, val homeCategoryListener: HomeCategoryListener?) :
         AbstractViewHolder<GeoLocationPromptDataModel>(itemView) {
 
     private val remoteConfig = FirebaseRemoteConfigImpl(itemView.context)
@@ -52,12 +52,12 @@ class GeolocationPromptViewHolder(itemView :View, val homeCategoryListener: Home
 
         tvDesc.setOnClickListener {
             HomePageTracking.eventClickGeolocationComponent(itemView.context)
-            homeCategoryListener.launchPermissionChecker()
+            homeCategoryListener?.launchPermissionChecker()
         }
 
         btnClose.setOnClickListener {
             HomePageTracking.eventClickCloseGeolocationComponent(itemView.context)
-            homeCategoryListener.onCloseGeolocationView()
+            homeCategoryListener?.onCloseGeolocationView()
         }
     }
 }

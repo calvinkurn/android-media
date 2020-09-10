@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactoryImpl
+import com.tokopedia.chat_common.view.adapter.viewholder.ImageAnnouncementViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.ProductAttachmentViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
@@ -40,7 +41,7 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
 
 open class TopChatTypeFactoryImpl constructor(
-        imageAnnouncementListener: ImageAnnouncementListener,
+        private val imageAnnouncementListener: ImageAnnouncementListener,
         private val chatLinkHandlerListener: ChatLinkHandlerListener,
         private val imageUploadListener: ImageUploadListener,
         private val productAttachmentListener: ProductAttachmentListener,
@@ -51,7 +52,8 @@ open class TopChatTypeFactoryImpl constructor(
         private val deferredAttachment: DeferredViewHolderAttachment,
         private val commonListener: CommonViewHolderListener,
         private val searchListener: SearchListener,
-        private val broadcastHandlingListener: BroadcastSpamHandlerViewHolder.Listener
+        private val broadcastHandlingListener: BroadcastSpamHandlerViewHolder.Listener,
+        private val fraudAlertListener: RoomSettingFraudAlertViewHolder.Listener
 ) : BaseChatTypeFactoryImpl(
         imageAnnouncementListener,
         chatLinkHandlerListener,
@@ -134,6 +136,10 @@ open class TopChatTypeFactoryImpl constructor(
         return TopchatLoadingModelViewHolder.LAYOUT
     }
 
+    override fun type(imageAnnouncementViewModel: ImageAnnouncementViewModel): Int {
+        return TopchatImageAnnouncementViewHolder.LAYOUT
+    }
+
     // Check if chat bubble first, if not return default ViewHolder
     override fun createViewHolder(parent: ViewGroup, type: Int, productCarouselListListener: ProductCarouselListAttachmentViewHolder.Listener): AbstractViewHolder<*> {
         val layoutRes = when (type) {
@@ -153,24 +159,25 @@ open class TopChatTypeFactoryImpl constructor(
             productCarouselListListener: ProductCarouselListAttachmentViewHolder.Listener
     ): AbstractViewHolder<*> {
         return when (type) {
-            ProductCarouselListAttachmentViewHolder.LAYOUT -> ProductCarouselListAttachmentViewHolder(parent, productAttachmentListener, productCarouselListListener, deferredAttachment, searchListener)
+            ProductCarouselListAttachmentViewHolder.LAYOUT -> ProductCarouselListAttachmentViewHolder(parent, productAttachmentListener, productCarouselListListener, deferredAttachment, searchListener, commonListener)
             else -> createViewHolder(parent, type)
         }
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
+            TopchatImageAnnouncementViewHolder.LAYOUT -> TopchatImageAnnouncementViewHolder(parent, imageAnnouncementListener)
             BroadcastSpamHandlerViewHolder.LAYOUT -> BroadcastSpamHandlerViewHolder(parent, broadcastHandlingListener)
             TopchatLoadingModelViewHolder.LAYOUT -> TopchatLoadingModelViewHolder(parent)
             TopchatLoadingMoreViewHolder.LAYOUT -> TopchatLoadingMoreViewHolder(parent)
             StickerMessageViewHolder.LAYOUT -> StickerMessageViewHolder(parent)
             HeaderDateViewHolder.LAYOUT -> HeaderDateViewHolder(parent)
             ProductAttachmentViewHolder.LAYOUT -> TopchatOldProductAttachmentViewHolder(parent, productAttachmentListener)
-            TopchatProductAttachmentViewHolder.LAYOUT -> TopchatProductAttachmentViewHolder(parent, productAttachmentListener, deferredAttachment, searchListener)
+            TopchatProductAttachmentViewHolder.LAYOUT -> TopchatProductAttachmentViewHolder(parent, productAttachmentListener, deferredAttachment, searchListener, commonListener)
             TopchatEmptyViewHolder.LAYOUT -> TopchatEmptyViewHolder(parent)
             QuotationViewHolder.LAYOUT -> QuotationViewHolder(parent, chatLinkHandlerListener, quotationListener)
             RoomSettingBannerViewHolder.LAYOUT -> RoomSettingBannerViewHolder(parent)
-            RoomSettingFraudAlertViewHolder.LAYOUT -> RoomSettingFraudAlertViewHolder(parent)
+            RoomSettingFraudAlertViewHolder.LAYOUT -> RoomSettingFraudAlertViewHolder(parent, fraudAlertListener)
             TopchatImageUploadViewHolder.LAYOUT -> TopchatImageUploadViewHolder(parent, imageUploadListener)
             LeftFallbackMessageViewHolder.LAYOUT -> LeftFallbackMessageViewHolder(parent, chatLinkHandlerListener)
             RightFallbackMessageViewHolder.LAYOUT -> RightFallbackMessageViewHolder(parent, chatLinkHandlerListener)

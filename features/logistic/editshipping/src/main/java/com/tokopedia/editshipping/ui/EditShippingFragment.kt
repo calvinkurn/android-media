@@ -12,7 +12,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -166,7 +165,7 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
         editShippingPresenter?.onViewDestroyed()
     }
 
-    override val mainContext: FragmentActivity?
+    override val mainContext: Context?
         get() = activity
 
     override fun addCourier(courier: Courier?, courierIndex: Int) {
@@ -280,7 +279,7 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
 
     override fun onFragmentNoConnection() {
         NetworkErrorHelper.showEmptyState(activity, view,
-                getString(R.string.msg_no_connection),
+                getString(com.tokopedia.abstraction.R.string.msg_no_connection),
                 object : NetworkErrorHelper.RetryClickedListener {
                     override fun onRetryClicked() {
                         if (mapMode == CREATE_SHOP_PAGE) editShippingPresenter?.fetchDataOpenShop() else editShippingPresenter?.fetchData()
@@ -389,10 +388,7 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val fragmentHeader = fragmentShippingHeader?.isShown
-        if (item.itemId == R.id.home) {
-            activity?.finish()
-            return true
-        } else if (item.itemId == R.id.action_send) {
+        if (item.itemId == R.id.action_send) {
             if (fragmentHeader != null) {
                 editShippingPresenter?.getShopId()?.let { editShippingPresenter?.validateBo(it, editShippingPresenter?.getCompiledShippingId().toString()) }
             } else showErrorToast(getString(R.string.dialog_on_process))

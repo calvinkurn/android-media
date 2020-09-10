@@ -25,4 +25,18 @@
     <string name="suggestion_top_shop_card_title">Toko 1</string>
     <string name="suggestion_top_shop_card_subtitle">Bandung</string>
     <string name="suggestion_top_shop_card_all">Lihat Toko Lainnya</string>
+    <string name="search_title_popular_search">Pencarian populer</string>
+    <string name="content_desc_searchTextView">input search</string>
+    <string name="content_desc_actionEmptyButton">button hapus search</string>
+    <string name="content_desc_titleTextView">text title autocomplete</string>
+    <string name="content_desc_actionDeleteButton">button hapus semua</string>
+    <string name="content_desc_actionRefreshButton">button refresh</string>
+    <string name="content_desc_singleLineTitle">text single line</string>
+    <string name="content_desc_actionShortcutButton">button shortcut</string>
+    <string name="content_desc_suggestionTitleTextView">text title suggestion</string>
+    <string name="content_desc_dl_iconTitle">image double line title</string>
+    <string name="content_desc_doubleLineTitle">text title double line</string>
+    <string name="content_desc_doubleLineSubtitle">text subtitle double line</string>
+    <string name="content_desc_dl_iconImage">image double line</string>
+
 </resources>
