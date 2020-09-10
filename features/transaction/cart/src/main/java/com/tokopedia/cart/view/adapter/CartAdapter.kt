@@ -133,6 +133,8 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                 }
             }
 
+            cartItemDataList.addAll(collapsedCartItemData)
+
             return cartItemDataList
         }
 
@@ -161,6 +163,25 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         get() {
             val cartItemDataList = ArrayList<CartItemData>()
             loop@ for (data in cartDataList) {
+                when (data) {
+                    is DisabledCartItemHolderData -> {
+                        data.data?.let {
+                            cartItemDataList.add(it)
+                        }
+                    }
+                    is CartWishlistHolderData, is CartRecentViewHolderData, is CartRecommendationItemHolderData -> break@loop
+                }
+            }
+
+            cartItemDataList.addAll(collapsedCartItemData)
+
+            return cartItemDataList
+        }
+
+    val collapsedCartItemData: List<CartItemData>
+        get() {
+            val cartItemDataList = ArrayList<CartItemData>()
+            loop@ for (data in tmpCollapsedItem) {
                 when (data) {
                     is DisabledCartItemHolderData -> {
                         data.data?.let {
@@ -1031,6 +1052,8 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         val toBeRemovedData = ArrayList<Any>()
         var disabledItemHeaderHolderData: DisabledItemHeaderHolderData? = null
         var cartItemTickerErrorHolderData: CartItemTickerErrorHolderData? = null
+
+        var deletedDisabledItemCount = 0
         loop@ for (i in cartDataList.indices) {
             val obj = cartDataList[i]
             when (obj) {
@@ -1079,10 +1102,28 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                             toBeRemovedData.add(twoBefore)
                         }
                     }
+
+                    deletedDisabledItemCount++
                 }
                 is DisabledItemHeaderHolderData -> disabledItemHeaderHolderData = obj
                 is CartItemTickerErrorHolderData -> cartItemTickerErrorHolderData = obj
                 is CartRecentViewHolderData, is CartWishlistHolderData, is CartRecommendationItemHolderData -> break@loop
+            }
+        }
+
+        var currentDisabledItemCount = 0
+        var disabledAccordionHolderData: DisabledAccordionHolderData? = null
+        cartDataList.forEach {
+            when (it) {
+                is DisabledCartItemHolderData -> currentDisabledItemCount++
+                is DisabledAccordionHolderData -> disabledAccordionHolderData = it
+                is CartRecentViewHolderData, is CartWishlistHolderData, is CartRecommendationItemHolderData -> return@forEach
+            }
+        }
+
+        if (currentDisabledItemCount == deletedDisabledItemCount) {
+            disabledAccordionHolderData?.let {
+                toBeRemovedData.add(it)
             }
         }
 

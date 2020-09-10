@@ -714,10 +714,20 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         val allCartItemDataList = cartAdapter.allCartItemData
         if (toBeDeletedCartItemDataList?.isNotEmpty() == true) {
             if (toBeDeletedCartItemDataList.isNotEmpty()) {
-                dPresenter.processDeleteCartItem(allCartItemDataList, toBeDeletedCartItemDataList, false, true)
-                sendAnalyticsOnClickConfirmationRemoveCartSelectedNoAddToWishList(
-                        dPresenter.generateDeleteCartDataAnalytics(toBeDeletedCartItemDataList)
-                )
+                val dialog = getMultipleItemsDialogDeleteConfirmation(toBeDeletedCartItemDataList.size)
+                dialog?.setPrimaryCTAClickListener {
+                    if (toBeDeletedCartItemDataList.isNotEmpty()) {
+                        dPresenter.processDeleteCartItem(allCartItemDataList, toBeDeletedCartItemDataList, false, true)
+                        sendAnalyticsOnClickConfirmationRemoveCartSelectedNoAddToWishList(
+                                dPresenter.generateDeleteCartDataAnalytics(toBeDeletedCartItemDataList)
+                        )
+                    }
+                    dialog.dismiss()
+                }
+                dialog?.setSecondaryCTAClickListener {
+                    dialog.dismiss()
+                }
+                dialog?.show()
             }
         } else {
             showToastMessageRed(getString(R.string.message_delete_empty_selection))
@@ -2486,7 +2496,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onDeleteCartDataSuccess(deletedCartIds: List<String>, removeAllItems: Boolean) {
-        showToastMessageGreen("${deletedCartIds.size} barang telah dihapus", "Batalkan", View.OnClickListener { onUndoDeleteClicked(deletedCartIds) })
+        if (deletedCartIds.size > 1) {
+            showToastMessageGreen("${deletedCartIds.size} barang telah dihapus")
+        } else {
+            showToastMessageGreen("${deletedCartIds.size} barang telah dihapus", "Batalkan", View.OnClickListener { onUndoDeleteClicked(deletedCartIds) })
+        }
         if (removeAllItems) {
             resetRecentViewList()
             dPresenter.processInitialGetCartData(getCartId(), false, false)
@@ -3017,11 +3031,21 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         )
 
         if (allDisabledCartItemDataList.isNotEmpty()) {
-            dPresenter.processDeleteCartItem(allCartItemDataList, allDisabledCartItemDataList, false, false)
-            cartPageAnalytics.eventClickDeleteAllUnavailableProduct(userSession.userId)
-            sendAnalyticsOnClickConfirmationRemoveCartConstrainedProductNoAddToWishList(
-                    dPresenter.generateDeleteCartDataAnalytics(allDisabledCartItemDataList)
-            )
+            val dialog = getMultipleDisabledItemsDialogDeleteConfirmation(allDisabledCartItemDataList.size)
+            dialog?.setPrimaryCTAClickListener {
+                dPresenter.processDeleteCartItem(allCartItemDataList, allDisabledCartItemDataList, false, false)
+                cartPageAnalytics.eventClickDeleteAllUnavailableProduct(userSession.userId)
+                sendAnalyticsOnClickConfirmationRemoveCartConstrainedProductNoAddToWishList(
+                        dPresenter.generateDeleteCartDataAnalytics(allDisabledCartItemDataList)
+                )
+                dialog.dismiss()
+                Unit
+            }
+            dialog?.setSecondaryCTAClickListener {
+                dialog.dismiss()
+                Unit
+            }
+            dialog?.show()
         }
     }
 
