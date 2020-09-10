@@ -184,16 +184,6 @@ class FeedbackPageFragment: Fragment() {
 
     }
 
-    override fun onResume() {
-        super.onResume()
-        screenshot.register()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        screenshot.unregister()
-    }
-
     private fun submitFeedback(email: String, page: String, desc: String, issueType: String, actualResult: String, expectedResult: String) {
         loadingDialog?.show()
         compositeSubscription.add(
