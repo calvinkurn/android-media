@@ -48,8 +48,8 @@ fun handleProductCardOptionsActivityResult(
         resultCode: Int,
         data: Intent?,
         wishlistCallback: ProductCardOptionsWishlistCallback? = null,
-        addToCartCallback: ProductCardOptionsAddToCartCallback? = null,
-        visitShopCallback: ProductCardOptionsVisitShopCallback? = null
+        addToCartCallback: ProductCardOptionsResult? = null,
+        visitShopCallback: ProductCardOptionsResult? = null
 ) {
     if (requestCode == PRODUCT_CARD_OPTIONS_REQUEST_CODE) {
         handleRequestFromProductCardOptions(resultCode, data, wishlistCallback, addToCartCallback, visitShopCallback)
@@ -60,8 +60,8 @@ private fun handleRequestFromProductCardOptions(
         resultCode: Int,
         data: Intent?,
         wishlistCallback: ProductCardOptionsWishlistCallback?,
-        addToCartCallback: ProductCardOptionsAddToCartCallback?,
-        visitShopCallback: ProductCardOptionsVisitShopCallback?
+        addToCartCallback: ProductCardOptionsResult?,
+        visitShopCallback: ProductCardOptionsResult?
 ) {
     if (data == null) return
 
@@ -69,8 +69,8 @@ private fun handleRequestFromProductCardOptions(
 
     when (resultCode) {
         PRODUCT_CARD_OPTIONS_RESULT_CODE_WISHLIST -> wishlistCallback?.onReceiveWishlistResult(productCardOptionsModel)
-        PRODUCT_CARD_OPTIONS_RESULT_CODE_ATC -> addToCartCallback?.onReceiveAddToCartResult(productCardOptionsModel)
-        PRODUCT_CARD_OPTIONS_RESULT_CODE_VISIT_SHOP -> visitShopCallback?.onReceiveVisitShopResult(productCardOptionsModel)
+        PRODUCT_CARD_OPTIONS_RESULT_CODE_ATC -> addToCartCallback?.onReceiveResult(productCardOptionsModel)
+        PRODUCT_CARD_OPTIONS_RESULT_CODE_VISIT_SHOP -> visitShopCallback?.onReceiveResult(productCardOptionsModel)
     }
 }
 
@@ -79,12 +79,7 @@ interface ProductCardOptionsWishlistCallback {
     fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel)
 }
 
-interface ProductCardOptionsAddToCartCallback {
+interface ProductCardOptionsResult {
 
-    fun onReceiveAddToCartResult(productCardOptionsModel: ProductCardOptionsModel)
-}
-
-interface ProductCardOptionsVisitShopCallback {
-
-    fun onReceiveVisitShopResult(productCardOptionsModel: ProductCardOptionsModel)
+    fun onReceiveResult(productCardOptionsModel: ProductCardOptionsModel)
 }
