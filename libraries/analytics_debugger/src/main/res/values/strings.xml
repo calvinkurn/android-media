@@ -5,6 +5,7 @@
     <string name="fpm_file_not_saved">Failed to save file</string>
     <string name="status">status</string>
     <string name="analytics_validator_search_label">Insert test case name</string>
+    <string name="topads_debugger_detail_component_name_label">Component Name</string>
     <string name="topads_debugger_detail_product_id_label">Product Id</string>
     <string name="topads_debugger_detail_product_name_label">Product Name</string>
     <string name="topads_debugger_detail_product_image_url_label">Product Image</string>

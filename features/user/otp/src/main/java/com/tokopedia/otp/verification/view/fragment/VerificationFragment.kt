@@ -181,13 +181,13 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
     }
 
     private fun initObserver() {
-        viewModel.sendOtpResult.observe(this, Observer {
+        viewModel.sendOtpResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessSendOtp().invoke(it.data)
                 is Fail -> onFailedSendOtp().invoke(it.throwable)
             }
         })
-        viewModel.otpValidateResult.observe(this, Observer {
+        viewModel.otpValidateResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessOtpValidate().invoke(it.data)
                 is Fail -> onFailedOtpValidate().invoke(it.throwable)
@@ -401,8 +401,12 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
         viewBound.pin?.pinTextField?.let { view ->
             view.post {
                 if(view.requestFocus()) {
-                    val inputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                    inputMethodManager.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
+                    context?.getSystemService(Context.INPUT_METHOD_SERVICE)?.let { inputMethodManager ->
+                        when (inputMethodManager) {
+                            is InputMethodManager -> inputMethodManager.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
+                            else -> {}
+                        }
+                    }
                 }
             }
         }
