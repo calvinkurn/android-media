@@ -60,8 +60,8 @@ public abstract class RoomNotificationDB extends RoomDatabase {
     private static Migration MIGRATION_2_3 = new Migration(2, 3) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
-            database.execSQL("ALTER TABLE `BaseNotificationModel` ADD COLUMN `is_amplification` INTEGER DEFAULT 0");
-            database.execSQL("ALTER TABLE `inapp_data` ADD COLUMN `is_amplification` INTEGER DEFAULT 0");
+            database.execSQL("ALTER TABLE `BaseNotificationModel` ADD COLUMN `is_amplification` INTEGER NOT NULL DEFAULT 0");
+            database.execSQL("ALTER TABLE `inapp_data` ADD COLUMN `is_amplification` INTEGER NOT NULL DEFAULT 0");
         }
     };
 
