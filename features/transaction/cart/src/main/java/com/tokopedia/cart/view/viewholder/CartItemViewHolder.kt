@@ -347,7 +347,7 @@ class CartItemViewHolder constructor(itemView: View,
     }
 
     private fun renderProductPropertiesWholesalePrice(data: CartItemHolderData) {
-        if (data.cartItemData?.originData?.wholesalePriceData?.isNotEmpty() == true) {
+        if (data.cartItemData?.originData?.wholesalePrice ?: 0 > 0) {
             if (textIncidentLabel.visibility == View.VISIBLE) {
                 textWholesalePrice.text = "Harga Grosir, "
             } else {
@@ -362,7 +362,7 @@ class CartItemViewHolder constructor(itemView: View,
 
     private fun renderProductPropertiesPriceDrop(data: CartItemHolderData) {
         if (data.cartItemData?.originData?.initialPriceBeforeDrop ?: 0 > 0 &&
-                data.cartItemData?.originData?.initialPriceBeforeDrop ?: 0 < data.cartItemData?.originData?.pricePlan?.toInt() ?: 0) {
+                data.cartItemData?.originData?.initialPriceBeforeDrop ?: 0 > data.cartItemData?.originData?.pricePlan?.toInt() ?: 0) {
             if (textIncidentLabel.visibility == View.VISIBLE || textWholesalePrice.visibility == View.VISIBLE) {
                 textPriceDrop.text = "Harga Turun, "
             } else {
@@ -529,7 +529,8 @@ class CartItemViewHolder constructor(itemView: View,
             } else {
                 // Has notes from pdp
                 this.etRemark.visibility = View.GONE
-                this.tvRemark.text = Utils.getHtmlFormat(data.cartItemData?.updatedData?.remark ?: "")
+                this.tvRemark.text = Utils.getHtmlFormat(data.cartItemData?.updatedData?.remark
+                        ?: "")
                 this.tvRemark.visibility = View.VISIBLE
                 this.tvLabelRemarkOption.visibility = View.VISIBLE
                 this.tvNoteCharCounter.visibility = View.GONE
