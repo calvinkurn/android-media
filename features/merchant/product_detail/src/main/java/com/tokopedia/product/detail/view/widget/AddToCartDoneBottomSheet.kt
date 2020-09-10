@@ -99,6 +99,13 @@ class AddToCartDoneBottomSheet :
         this.dismissListener = dismissListener
     }
 
+    fun getRecyclerView(): RecyclerView? {
+        if(::recyclerView.isInitialized) {
+            return recyclerView
+        }
+        return null
+    }
+
     private fun configView(parentView: View) {
         val closeButton = parentView.findViewById<View>(R.id.btn_close)
         closeButton?.setOnClickListener { this@AddToCartDoneBottomSheet.dismiss() }
