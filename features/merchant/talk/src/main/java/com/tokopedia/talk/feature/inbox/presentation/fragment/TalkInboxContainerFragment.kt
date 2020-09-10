@@ -10,6 +10,7 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.TalkInstance
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.talk.feature.inbox.analytics.TalkInboxTracking
 import com.tokopedia.talk.feature.inbox.data.TalkInboxTab
 import com.tokopedia.talk.feature.inbox.di.DaggerTalkInboxContainerComponent
@@ -127,7 +128,7 @@ class TalkInboxContainerFragment : BaseDaggerFragment(), HasComponent<TalkInboxC
 
     private fun getTabTitles(): List<String> {
         return with(userSession) {
-            listOf(shopName, name)
+            listOf(MethodChecker.fromHtml(shopName).toString(), name)
         }
     }
 
