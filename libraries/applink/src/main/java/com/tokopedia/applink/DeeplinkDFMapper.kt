@@ -33,13 +33,10 @@ import com.tokopedia.applink.internal.ApplinkConstInternalCategory.TRADEIN
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.AFFILIATE_EDIT
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.COMMENT
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.CONTENT_REPORT
-import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFILIATE
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFILIATE_CREATE_POST
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFILIATE_DRAFT_POST
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_CONTENT_POST_DETAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.MEDIA_PREVIEW
-import com.tokopedia.applink.internal.ApplinkConstInternalContent.TOKOPEDIA_BYME_HTTP
-import com.tokopedia.applink.internal.ApplinkConstInternalContent.TOKOPEDIA_BYME_HTTPS
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.VIDEO_DETAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalDeals.DEALS_BRAND_PAGE
 import com.tokopedia.applink.internal.ApplinkConstInternalDeals.DEALS_HOMEPAGE

@@ -119,12 +119,39 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
     }
 
     @Test
-    fun `check internal affiliate appLink then should return DF_BASE in customerapp`() {
-        val appLink = ApplinkConstInternalContent.INTERNAL_AFFILIATE
+    fun `check internal affiliate explorer appLink then should return DF_CONTENT_AFFILIATE in customerapp`() {
+        val appLink = ApplinkConstInternalContent.AFFILIATE_EXPLORE
         val expectedResult = getDeepLinkIdFromDeepLink(DeeplinkDFMapper.deeplinkDFPatternListCustomerApp, dfCustomerAppPath)?.firstOrNull {
             it.logic(appLink)
         }
-        assertEquals(expectedResult?.moduleId, DeeplinkDFMapper.DF_BASE)
+        assertEquals(expectedResult?.moduleId, DeeplinkDFMapper.DF_CONTENT_AFFILIATE)
+    }
+
+    @Test
+    fun `check internal affiliate dashboard appLink then should return DF_CONTENT_AFFILIATE in customerapp`() {
+        val appLink = ApplinkConstInternalContent.AFFILIATE_DASHBOARD
+        val expectedResult = getDeepLinkIdFromDeepLink(DeeplinkDFMapper.deeplinkDFPatternListCustomerApp, dfCustomerAppPath)?.firstOrNull {
+            it.logic(appLink)
+        }
+        assertEquals(expectedResult?.moduleId, DeeplinkDFMapper.DF_CONTENT_AFFILIATE)
+    }
+
+    @Test
+    fun `check internal affiliate education appLink then should return DF_CONTENT_AFFILIATE in customerapp`() {
+        val appLink = ApplinkConstInternalContent.AFFILIATE_EDUCATION
+        val expectedResult = getDeepLinkIdFromDeepLink(DeeplinkDFMapper.deeplinkDFPatternListCustomerApp, dfCustomerAppPath)?.firstOrNull {
+            it.logic(appLink)
+        }
+        assertEquals(expectedResult?.moduleId, DeeplinkDFMapper.DF_CONTENT_AFFILIATE)
+    }
+
+    @Test
+    fun `check internal affiliate by me tracking appLink then should return DF_CONTENT_AFFILIATE in customerapp`() {
+        val appLink = ApplinkConstInternalContent.AFFILIATE_BYME_TRACKING
+        val expectedResult = getDeepLinkIdFromDeepLink(DeeplinkDFMapper.deeplinkDFPatternListCustomerApp, dfCustomerAppPath)?.firstOrNull {
+            it.logic(appLink)
+        }
+        assertEquals(expectedResult?.moduleId, DeeplinkDFMapper.DF_CONTENT_AFFILIATE)
     }
 
     @Test
@@ -1082,12 +1109,12 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
     }
 
     @Test
-    fun `check group chat list internal play appLink then should return DF_BASE in customerapp`() {
+    fun `check group chat list internal play appLink then should return DF_USER_GROUPCHAT in customerapp`() {
         val appLink = ApplinkConstInternalPlay.GROUPCHAT_LIST
         val expectedResult = getDeepLinkIdFromDeepLink(DeeplinkDFMapper.deeplinkDFPatternListCustomerApp, dfCustomerAppPath)?.firstOrNull {
             it.logic(appLink)
         }
-        assertEquals(expectedResult?.moduleId, DeeplinkDFMapper.DF_BASE)
+        assertEquals(expectedResult?.moduleId, DeeplinkDFMapper.DF_USER_GROUPCHAT)
     }
 
     @Test
@@ -1096,7 +1123,7 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
         val expectedResult = getDeepLinkIdFromDeepLink(DeeplinkDFMapper.deeplinkDFPatternListCustomerApp, dfCustomerAppPath)?.firstOrNull {
             it.logic(appLink)
         }
-        assertEquals(expectedResult?.moduleId, DeeplinkDFMapper.DF_BASE)
+        assertEquals(expectedResult?.moduleId, DeeplinkDFMapper.DF_USER_GROUPCHAT)
     }
 
     @Test
