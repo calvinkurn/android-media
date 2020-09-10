@@ -849,7 +849,11 @@ class AddEditProductPreviewFragment:
 
     private fun observeIsEditingStatus() {
         viewModel.isEditing.observe(viewLifecycleOwner, Observer {
-            if (it) displayEditMode()
+            if (it) {
+                displayEditMode()
+            } else {
+                stopPerformanceMonitoring()
+            }
         })
     }
 

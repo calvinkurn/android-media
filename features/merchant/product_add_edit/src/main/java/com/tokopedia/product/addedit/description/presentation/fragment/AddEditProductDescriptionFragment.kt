@@ -75,7 +75,8 @@ import javax.inject.Inject
 class AddEditProductDescriptionFragment:
         BaseListFragment<VideoLinkModel, VideoLinkTypeFactory>(),
         VideoLinkTypeFactory.VideoLinkListener,
-        AddEditProductPerformanceMonitoringListener {
+        AddEditProductPerformanceMonitoringListener
+{
 
     companion object {
         const val MAX_VIDEOS = 3
