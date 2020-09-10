@@ -35,7 +35,10 @@ public class ReactNativeHowToPayActivity extends BaseSimpleActivity {
     }
 
     protected Bundle getReactNativeProps() {
-        Bundle bundle = new Bundle();
+        Bundle bundle = getIntent().getExtras();
+        if (bundle == null){
+            bundle = new Bundle();
+        }
         bundle.putString(ReactConst.KEY_SCREEN, ReactConst.Screen.HOW_TO_PAY);
         bundle.putString(EXTRA_TITLE, "Cara Pembayaran");
         Bundle newBundle = new Bundle();
