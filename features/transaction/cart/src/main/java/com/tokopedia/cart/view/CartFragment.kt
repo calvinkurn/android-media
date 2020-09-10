@@ -2386,6 +2386,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             }
             cartAdapter.addCartSelectAll()
         }
+
+        renderTotalPrice(subtotalPrice, qty)
+        updateShoppingSummaryData(qty, subtotalBeforeSlashedPrice, subtotalPrice)
+    }
+
+    private fun renderTotalPrice(subtotalPrice: Double, qty: String) {
         var totalPriceString = "-"
         if (subtotalPrice > 0) {
             totalPriceString = CurrencyFormatUtil.convertPriceValueToIdrFormat(subtotalPrice.toLong(), false).removeDecimalSuffix()
@@ -2393,7 +2399,16 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         tvTotalPrice.text = totalPriceString
         btnToShipment.text = String.format(getString(R.string.cart_item_button_checkout_count_format), qty)
+        if (totalPriceString == "-") {
+            imgChevronSummary.gone()
+            onCartDataDisableToCheckout()
+        } else {
+            imgChevronSummary.show()
+            onCartDataEnableToCheckout()
+        }
+    }
 
+    private fun updateShoppingSummaryData(qty: String, subtotalBeforeSlashedPrice: Double, subtotalPrice: Double) {
         cartListData?.shoppingSummaryData?.qty = qty
         if (subtotalBeforeSlashedPrice == 0.0) {
             cartListData?.shoppingSummaryData?.totalValue = subtotalPrice.toInt()
