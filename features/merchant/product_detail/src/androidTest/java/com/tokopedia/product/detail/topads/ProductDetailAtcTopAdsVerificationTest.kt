@@ -1,7 +1,5 @@
-package com.tokopedia.product.detail
+package com.tokopedia.product.detail.topads
 
-import android.app.Activity
-import android.app.Instrumentation
 import android.content.Intent
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -10,36 +8,37 @@ import androidx.test.espresso.Espresso
 import androidx.test.espresso.PerformException
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions
-import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.product.detail.view.activity.ProductDetailActivity
-import com.tokopedia.product.detail.view.viewholder.ProductRecommendationViewHolder
+import androidx.test.rule.ActivityTestRule
+import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.presentation.InstrumentTestAddToCartBottomSheet
+import com.tokopedia.product.detail.presentation.InstrumentTestProductDetailActivity
+import com.tokopedia.product.detail.view.viewholder.AddToCartDoneRecommendationViewHolder
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupTopAdsDetector
-import org.hamcrest.Matchers.allOf
+import com.tokopedia.unifycomponents.UnifyButton
+import org.hamcrest.Matchers
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class ProductDetailTopAdsVerificationTest {
+class ProductDetailAtcTopAdsVerificationTest {
+
     private var topAdsAssertion: TopAdsAssertion? = null
 
     @get:Rule
-    var activityRule = object: IntentsTestRule<ProductDetailActivity>(ProductDetailActivity::class.java) {
+    var activityRule = object: ActivityTestRule<InstrumentTestProductDetailActivity>(InstrumentTestProductDetailActivity::class.java) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
             setupTopAdsDetector()
         }
 
         override fun getActivityIntent(): Intent {
-            val context = InstrumentationRegistry.getInstrumentation().targetContext
-            return ProductDetailActivity.createIntent(context, "220891000")
+            return Intent(InstrumentationRegistry.getInstrumentation().targetContext, InstrumentTestProductDetailActivity::class.java)
         }
     }
 
@@ -49,7 +48,6 @@ class ProductDetailTopAdsVerificationTest {
                 activityRule.activity,
                 activityRule.activity.application as TopAdsVerificatorInterface
         )
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
     @After
@@ -62,19 +60,19 @@ class ProductDetailTopAdsVerificationTest {
         login()
         waitForData()
 
-        val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.rv_pdp)
-        val itemCount = recyclerView.adapter?.itemCount ?: 0
-
-        for (i in 0 until itemCount) {
-            scrollRecyclerViewToPosition(recyclerView, i)
-            checkTopAdsOnProductRecommendationViewHolder(recyclerView, i)
+        getRecyclerView()?.let {
+            val itemCount = it.adapter?.itemCount ?: 0
+            for (i in 0 until itemCount) {
+                scrollRecyclerViewToPosition(it, i)
+                checkTopAdsOnProductRecommendationViewHolder(it, i)
+            }
+            topAdsAssertion?.assert()
         }
-        topAdsAssertion?.assert()
     }
 
     private fun checkTopAdsOnProductRecommendationViewHolder(recyclerView: RecyclerView, i: Int) {
         val viewHolder = recyclerView.findViewHolderForAdapterPosition(i)
-        if(viewHolder is ProductRecommendationViewHolder) {
+        if(viewHolder is AddToCartDoneRecommendationViewHolder) {
             waitForData()
             clickOnEachItemRecyclerView(viewHolder.itemView, R.id.carouselProductCardRecyclerView, 0)
         }
@@ -86,7 +84,7 @@ class ProductDetailTopAdsVerificationTest {
     }
 
     private fun waitForData() {
-        Thread.sleep(7000)
+        Thread.sleep(10000)
     }
 
     private fun login() {
@@ -101,11 +99,16 @@ class ProductDetailTopAdsVerificationTest {
         }
         for (i in 0 until childItemCount) {
             try {
-                Espresso.onView(allOf(ViewMatchers.withId(recyclerViewId), ViewMatchers.isDisplayingAtLeast(70)))
+                Espresso.onView(Matchers.allOf(ViewMatchers.withId(recyclerViewId), ViewMatchers.isCompletelyDisplayed()))
                         .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(i, ViewActions.click()))
             } catch (e: PerformException) {
                 e.printStackTrace()
             }
         }
+    }
+
+    private fun getRecyclerView(): RecyclerView? {
+        val addToCartBottomSheet = activityRule.activity.supportFragmentManager.findFragmentByTag("ADD_TO_CART") as? InstrumentTestAddToCartBottomSheet
+        return addToCartBottomSheet?.getRecyclerView()
     }
 }

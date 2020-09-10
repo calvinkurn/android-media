@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail
+package com.tokopedia.product.detail.topads
 
 import android.app.Activity
 import android.app.Instrumentation
@@ -15,24 +15,20 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
+import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
-import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment
-import com.tokopedia.product.detail.view.viewholder.AddToCartDoneRecommendationViewHolder
-import com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet
+import com.tokopedia.product.detail.view.viewholder.ProductRecommendationViewHolder
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
-import com.tokopedia.test.application.espresso_component.CommonMatcher
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupTopAdsDetector
-import com.tokopedia.unifycomponents.UnifyButton
-import org.hamcrest.Matchers
+import org.hamcrest.Matchers.allOf
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class ProductDetailAtcTopAdsVerificationTest {
-
+class ProductDetailTopAdsVerificationTest {
     private var topAdsAssertion: TopAdsAssertion? = null
 
     @get:Rule
@@ -44,7 +40,7 @@ class ProductDetailAtcTopAdsVerificationTest {
 
         override fun getActivityIntent(): Intent {
             val context = InstrumentationRegistry.getInstrumentation().targetContext
-            return ProductDetailActivity.createIntent(context, "604161938")
+            return ProductDetailActivity.createIntent(context, "220891000")
         }
     }
 
@@ -67,34 +63,19 @@ class ProductDetailAtcTopAdsVerificationTest {
         login()
         waitForData()
 
-        val addToCartButton = activityRule.activity.findViewById<UnifyButton>(R.id.btn_add_to_cart)
-        try {
-            Espresso.onView(Matchers.allOf(ViewMatchers.withId(addToCartButton.id), ViewMatchers.isDisplayingAtLeast(70)))
-                    .perform(ViewActions.click())
-        } catch (e: PerformException) {
-            e.printStackTrace()
+        val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.rv_pdp)
+        val itemCount = recyclerView.adapter?.itemCount ?: 0
+
+        for (i in 0 until itemCount) {
+            scrollRecyclerViewToPosition(recyclerView, i)
+            checkTopAdsOnProductRecommendationViewHolder(recyclerView, i)
         }
-
-        waitForData()
-
-        val pdpFragment = activityRule.activity.supportFragmentManager.findFragmentByTag("TAG_FRAGMENT") as? DynamicProductDetailFragment
-        val addToCartBottomSheet = pdpFragment?.fragmentManager?.findFragmentByTag("TAG") as? AddToCartDoneBottomSheet
-        val recyclerView = addToCartBottomSheet?.getRecyclerView()
-
-        recyclerView?.let {
-            val itemCount = recyclerView.adapter?.itemCount ?: 0
-
-            for (i in 0 until itemCount) {
-                scrollRecyclerViewToPosition(recyclerView, i)
-                checkTopAdsOnProductRecommendationViewHolder(recyclerView, i)
-            }
-            topAdsAssertion?.assert()
-        }
+        topAdsAssertion?.assert()
     }
 
     private fun checkTopAdsOnProductRecommendationViewHolder(recyclerView: RecyclerView, i: Int) {
         val viewHolder = recyclerView.findViewHolderForAdapterPosition(i)
-        if(viewHolder is AddToCartDoneRecommendationViewHolder) {
+        if(viewHolder is ProductRecommendationViewHolder) {
             waitForData()
             clickOnEachItemRecyclerView(viewHolder.itemView, R.id.carouselProductCardRecyclerView, 0)
         }
@@ -121,7 +102,7 @@ class ProductDetailAtcTopAdsVerificationTest {
         }
         for (i in 0 until childItemCount) {
             try {
-                Espresso.onView(Matchers.allOf(ViewMatchers.withId(recyclerViewId), ViewMatchers.isCompletelyDisplayed()))
+                Espresso.onView(allOf(ViewMatchers.withId(recyclerViewId), ViewMatchers.isDisplayingAtLeast(70)))
                         .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(i, ViewActions.click()))
             } catch (e: PerformException) {
                 e.printStackTrace()
