@@ -311,6 +311,11 @@ class FlightSearchViewModel @Inject constructor(
         flightAnalytics.eventProductDetailImpression(journeyModel, adapterPosition)
     }
 
+    fun sendProductNotFoundTrack() {
+        flightAnalytics.eventProductViewNotFound(flightSearchPassData,
+                if (userSessionInterface.isLoggedIn) userSessionInterface.userId else "")
+    }
+
     private fun deleteAllSearchData() {
         launchCatchError(dispatcherProvider.ui(), block = {
             flightSearchDeleteAllDataUseCase.execute()

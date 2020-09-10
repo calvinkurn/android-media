@@ -113,6 +113,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
                         for (error in errors) {
                             if (error.id == FlightErrorConstant.FLIGHT_ROUTE_NOT_FOUND) {
                                 showNoRouteFlightEmptyState(error.title)
+                                flightSearchViewModel.sendProductNotFoundTrack()
                                 break
                             }
                         }

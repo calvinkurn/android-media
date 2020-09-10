@@ -43,7 +43,7 @@ public class FlightAnalytics {
     private String FLIGHT_CLICK_EVENT = "clickFlight";
     private String PRODUCT_CLICK_EVENT = "productClick";
     private String PRODUCT_VIEW_EVENT = "productView";
-    private String SEARCH_RESULT_EVENT = "searchResult";
+    private String SEARCH_RESULT_EVENT = "viewFlightIris";
     private String VIEW_SEARCH_EVENT = "viewSearchPage";
     private String CLICK_SEARCH_EVENT = "clickSearch";
     private String GENERIC_CATEGORY = "digital - flight";
@@ -227,7 +227,6 @@ public class FlightAnalytics {
         mapModel.put(USER_ID, userId);
 
         TrackApp.getInstance().getGTM().sendGeneralEvent(mapModel);
-        TrackApp.getInstance().getGTM().sendGeneralEvent(mapModel);
     }
 
     public void eventSearchView(FlightSearchPassDataModel passDataViewModel, boolean searchFound) {
@@ -342,27 +341,33 @@ public class FlightAnalytics {
         );
     }
 
-    public void eventProductViewNotFound(FlightSearchPassDataModel searchPassDataViewModel) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(SEARCH_RESULT_EVENT,
-                GENERIC_CATEGORY,
-                Category.CLICK_SEARCH_PRODUCT_NOT_FOUND,
-                String.format("%s - %s-%s - %s - %s-%s-%s - %s - %s%s",
-                        Label.FLIGHT_SMALL,
-                        (searchPassDataViewModel.getDepartureAirport().getAirportCode() == null || searchPassDataViewModel.getDepartureAirport().getAirportCode().isEmpty()) ?
-                                searchPassDataViewModel.getDepartureAirport().getCityCode() : searchPassDataViewModel.getDepartureAirport().getAirportCode(),
-                        (searchPassDataViewModel.getArrivalAirport().getAirportCode() == null || searchPassDataViewModel.getArrivalAirport().getAirportCode().isEmpty()) ?
-                                searchPassDataViewModel.getArrivalAirport().getCityCode() : searchPassDataViewModel.getArrivalAirport().getAirportCode(),
-                        searchPassDataViewModel.isOneWay() ? "oneway" : "roundtrip",
-                        searchPassDataViewModel.getFlightPassengerModel().getAdult(),
-                        searchPassDataViewModel.getFlightPassengerModel().getChildren(),
-                        searchPassDataViewModel.getFlightPassengerModel().getInfant(),
-                        searchPassDataViewModel.getFlightClass().getTitle(),
-                        FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.YYYYMMDD, searchPassDataViewModel.getDepartureDate()),
-                        searchPassDataViewModel.isOneWay() ? "" : String.format(" - %s", FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.YYYYMMDD, searchPassDataViewModel.getReturnDate()))
-                )
-
-
+    public void eventProductViewNotFound(FlightSearchPassDataModel searchPassDataViewModel, String userId) {
+        Map<String, Object> mapModel = new HashMap<>();
+        mapModel.put(EVENT, SEARCH_RESULT_EVENT);
+        mapModel.put(EVENT_CATEGORY, GENERIC_CATEGORY);
+        mapModel.put(EVENT_ACTION, Category.CLICK_SEARCH_PRODUCT_NOT_FOUND);
+        mapModel.put(EVENT_LABEL, String.format("%s - %s-%s - %s - %s-%s-%s - %s - %s%s",
+                Label.FLIGHT_SMALL,
+                (searchPassDataViewModel.getDepartureAirport().getAirportCode() == null || searchPassDataViewModel.getDepartureAirport().getAirportCode().isEmpty()) ?
+                        searchPassDataViewModel.getDepartureAirport().getCityCode() : searchPassDataViewModel.getDepartureAirport().getAirportCode(),
+                (searchPassDataViewModel.getArrivalAirport().getAirportCode() == null || searchPassDataViewModel.getArrivalAirport().getAirportCode().isEmpty()) ?
+                        searchPassDataViewModel.getArrivalAirport().getCityCode() : searchPassDataViewModel.getArrivalAirport().getAirportCode(),
+                searchPassDataViewModel.isOneWay() ? "oneway" : "roundtrip",
+                searchPassDataViewModel.getFlightPassengerModel().getAdult(),
+                searchPassDataViewModel.getFlightPassengerModel().getChildren(),
+                searchPassDataViewModel.getFlightPassengerModel().getInfant(),
+                searchPassDataViewModel.getFlightClass().getTitle(),
+                FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.YYYYMMDD, searchPassDataViewModel.getDepartureDate()),
+                searchPassDataViewModel.isOneWay() ? "" : String.format(" - %s", FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.YYYYMMDD, searchPassDataViewModel.getReturnDate()))
         ));
+        mapModel.put(SCREEN_NAME, Screen.SEARCH);
+        mapModel.put(CURRENT_SITE, FLIGHT_CURRENT_SITE);
+        mapModel.put(CLIENT_ID, TrackApp.getInstance().getGTM().getClientIDString());
+        mapModel.put(BUSSINESS_UNIT, FLIGHT_BU);
+        mapModel.put(CATEGORY, Label.FLIGHT_SMALL);
+        mapModel.put(USER_ID, userId);
+
+        TrackApp.getInstance().getGTM().sendGeneralEvent(mapModel);
     }
 
     public void eventProductViewEnchanceEcommerce(FlightSearchPassDataModel searchPassDataViewModel,
