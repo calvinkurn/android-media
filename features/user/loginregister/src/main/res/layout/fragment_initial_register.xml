@@ -74,7 +74,7 @@
 
             <com.tokopedia.design.component.ButtonCompat
                 android:id="@+id/socmed_btn"
-                android:contentDescription="@string/content_desc_socmed_btn2"
+                android:contentDescription="@string/content_desc_socmed_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

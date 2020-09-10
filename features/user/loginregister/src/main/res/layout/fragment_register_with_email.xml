@@ -96,7 +96,6 @@
       
       <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/register_button"
-        android:contentDescription="@string/content_desc_register_button2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl3"

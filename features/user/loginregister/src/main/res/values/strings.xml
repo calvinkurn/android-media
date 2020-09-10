@@ -368,11 +368,9 @@
     <string name="content_desc_password">input password</string>
     <string name="content_desc_register_btn">button submit</string>
     <string name="content_desc_socmed_btn">button akun media sosial</string>
-    <string name="content_desc_socmed_btn2">button akun media sosial2</string>
     <string name="content_desc_register_button">text daftar</string>
-    <string name="content_desc_register_button2">text daftar2</string>
     <string name="content_desc_login_button">text masuk</string>
     <string name="content_desc_forgot_pass">text lupa password</string>
-    <string name="content_desc_provider_name">button lupa password</string>
+    <string name="content_desc_provider_name">button sosial media</string>
 
 </resources>
