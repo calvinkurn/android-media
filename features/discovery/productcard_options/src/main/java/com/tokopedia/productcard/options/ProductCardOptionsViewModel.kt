@@ -46,11 +46,7 @@ internal class ProductCardOptionsViewModel(
         initWishlistOption()
         initAddToCartOption()
         initVisitShopOption()
-
-        if (productCardOptionsModel?.canShareProduct() == true) {
-            productCardOptionsItemList.addOption(SHARE_PRODUCT) { }
-            productCardOptionsItemList.addDivider()
-        }
+        initShareProductOption()
 
         postOptionListLiveData()
     }
@@ -295,6 +291,13 @@ internal class ProductCardOptionsViewModel(
                 routeToShopPageEventLiveData.postValue(Event(true))
             }
 
+            productCardOptionsItemList.addDivider()
+        }
+    }
+
+    private fun initShareProductOption() {
+        if (productCardOptionsModel?.canShareProduct() == true) {
+            productCardOptionsItemList.addOption(SHARE_PRODUCT) { }
             productCardOptionsItemList.addDivider()
         }
     }
