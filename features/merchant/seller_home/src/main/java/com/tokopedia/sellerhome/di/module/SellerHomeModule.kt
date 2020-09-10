@@ -12,6 +12,8 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.network.exception.HeaderErrorListResponse
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.sellerhome.common.coroutine.SellerHomeCoroutineDispatcher
+import com.tokopedia.sellerhome.common.coroutine.SellerHomeCoroutineDispatcherImpl
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.data.remote.TickerService
 import com.tokopedia.sellerhome.di.scope.SellerHomeScope
@@ -55,8 +57,7 @@ class SellerHomeModule {
 
     @SellerHomeScope
     @Provides
-    @Named("Main")
-    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
+    fun provideCoroutineDispatcher(): SellerHomeCoroutineDispatcher = SellerHomeCoroutineDispatcherImpl
 
     @SellerHomeScope
     @Provides
