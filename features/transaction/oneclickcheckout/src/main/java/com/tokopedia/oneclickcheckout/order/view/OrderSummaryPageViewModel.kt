@@ -561,10 +561,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     private fun clearOldLogisticPromo(oldPromoCode: String) {
-        launch(executorDispatchers.main) {
-            launch(executorDispatchers.io) {
-                promoProcessor.clearOldLogisticPromo(oldPromoCode)
-            }
+        launch(executorDispatchers.io) {
+            promoProcessor.clearOldLogisticPromo(oldPromoCode)
+        }
 //        clearCacheAutoApplyStackUseCase.setParams(PARAM_VALUE_MARKETPLACE, arrayListOf(oldPromoCode), true)
 //        compositeSubscription.add(
 //                clearCacheAutoApplyStackUseCase.createObservable(RequestParams.EMPTY)
@@ -584,10 +583,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 //                            }
 //                        })
 //        )
-            val orders = lastValidateUsePromoRequest?.orders ?: emptyList()
-            if (orders.isNotEmpty()) {
-                orders[0]?.codes?.remove(oldPromoCode)
-            }
+        val orders = lastValidateUsePromoRequest?.orders ?: emptyList()
+        if (orders.isNotEmpty()) {
+            orders[0]?.codes?.remove(oldPromoCode)
         }
     }
 
