@@ -189,6 +189,7 @@ class PlayEtalasePickerFragment @Inject constructor(
         bottomActionView = BottomActionPartialView(view as ViewGroup, object : BottomActionPartialView.Listener {
             override fun onInventoryIconClicked() {
                 showSelectedProductPage()
+                analytic.clickSelectedProductIcon()
             }
 
             override fun onNextButtonClicked() {
@@ -201,10 +202,7 @@ class PlayEtalasePickerFragment @Inject constructor(
         psbSearch.setListener(object : PlaySearchBar.Listener {
 
             override fun onEditStateChanged(view: PlaySearchBar, isEditing: Boolean) {
-                if (isEditing) {
-                    openSearchPage(view.text)
-                    analytic.clickSearchBar(view.text)
-                }
+                if (isEditing) openSearchPage(view.text)
             }
 
             override fun onCanceled(view: PlaySearchBar) {
@@ -213,7 +211,10 @@ class PlayEtalasePickerFragment @Inject constructor(
 
             override fun onNewKeyword(view: PlaySearchBar, keyword: String) {
                 val currFragment = currentFragment
-                if (currFragment is PlaySearchSuggestionsFragment) currFragment.searchKeyword(keyword)
+                if (currFragment is PlaySearchSuggestionsFragment) {
+                    currFragment.searchKeyword(keyword)
+                    analytic.clickSearchBar(keyword)
+                }
             }
 
             override fun onSearchButtonClicked(view: PlaySearchBar, keyword: String) {
