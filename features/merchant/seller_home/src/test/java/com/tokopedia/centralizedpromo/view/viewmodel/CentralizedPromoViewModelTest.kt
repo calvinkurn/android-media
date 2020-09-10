@@ -12,6 +12,8 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhome.common.coroutine.SellerHomeCoroutineDispatcher
+import com.tokopedia.sellerhome.utils.SellerHomeCoroutineDispatcherTest
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -84,7 +86,7 @@ class CentralizedPromoViewModelTest {
         } returns "Tingkatkan penjualan dengan kirim pesan promosi ke pembeli"
     }
 
-    private val testCoroutineDispatcher = TestCoroutineDispatcher()
+    private val testCoroutineDispatcher: SellerHomeCoroutineDispatcher = SellerHomeCoroutineDispatcherTest
 
     private val viewModel : CentralizedPromoViewModel by lazy {
         CentralizedPromoViewModel(
