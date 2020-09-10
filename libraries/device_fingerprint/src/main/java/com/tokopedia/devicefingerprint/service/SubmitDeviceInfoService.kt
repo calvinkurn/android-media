@@ -49,7 +49,8 @@ class SubmitDeviceInfoService: JobIntentService(), CoroutineScope {
 
     override fun onHandleWork(intent: Intent) {
         launchCatchError(block = {
-            useCase.executeOnBackground()
+            val response = useCase.executeOnBackground()
+            print(response)
         }, onError = {
             it.printStackTrace()
         })
