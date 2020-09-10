@@ -72,29 +72,6 @@ internal class ProductCardOptionsFragment: TkpdBaseV4Fragment() {
         productCardOptionsRecyclerView?.layoutManager = LinearLayoutManager(context)
     }
 
-    /**
-     * Currently, it only has 2 types of view, the Option Item View, and the Divider View.
-     * To prevent overkill design, we only use a simple linear layout, and add view inside it.
-     *
-     * If the number of view types increases, consider using RecyclerView with Visitable + Type Factory or Adapter Delegate pattern.
-    * */
-//    private fun renderViewToBottomSheet(context: Context, itemView: Any) {
-//        if (itemView is ProductCardOptionsItemModel) {
-//            productCardOptionsBottomSheet?.addOptionView(context, itemView)
-//        }
-//        else if (itemView is ProductCardOptionsItemDivider){
-//            productCardOptionsBottomSheet?.addDividerView(context)
-//        }
-//    }
-//
-//    private fun ConstraintLayout?.addOptionView(context: Context, optionItemModel: ProductCardOptionsItemModel) {
-//        this?.addView(ProductCardOptionsItemView(context, optionItemModel))
-//    }
-//
-//    private fun LinearLayout?.addDividerView(context: Context) {
-//        View.inflate(context, R.layout.product_card_options_item_divider, this)
-//    }
-
     private fun observeRouteToSimilarSearchEventLiveData() {
         productCardOptionsViewModel?.getRouteToSimilarSearchEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
             routeToSimilarSearch()
