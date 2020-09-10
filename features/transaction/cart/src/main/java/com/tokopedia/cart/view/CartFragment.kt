@@ -2239,11 +2239,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     private fun showSnackbarRetry(message: String) {
         view?.let {
-            Toaster.make(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
-                    activity?.getString(R.string.label_action_snackbar_retry)
-                            ?: "", View.OnClickListener {
+            Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, activity?.getString(R.string.label_action_snackbar_retry)
+                    ?: "", View.OnClickListener {
                 dPresenter.processInitialGetCartData(getCartId(), dPresenter.getCartListData() == null, false)
-            })
+            }).show()
         }
     }
 
@@ -2451,9 +2450,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             }
 
             if (ctaText.isNotBlank()) {
-                Toaster.make(it, tmpMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, ctaText, tmpCtaClickListener)
+                Toaster.build(it, tmpMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, ctaText, tmpCtaClickListener).show()
             } else {
-                Toaster.make(it, tmpMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+                Toaster.build(it, tmpMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
             }
 
         }
@@ -2468,10 +2467,16 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         showToastMessageRed(errorMessage)
     }
 
-    override fun showToastMessageGreen(message: String) {
+    override fun showToastMessageGreen(message: String, showDefaultAction: Boolean) {
         view?.let {
-            Toaster.make(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, activity?.getString(R.string.label_action_snackbar_close)
-                    ?: "", View.OnClickListener { })
+            if (showDefaultAction) {
+                Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, activity?.getString(R.string.label_action_snackbar_close)
+                        ?: "", View.OnClickListener { })
+                        .show()
+            } else {
+                Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL)
+                        .show()
+            }
         }
     }
 
@@ -2525,7 +2530,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onAddCartToWishlistSuccess(message: String, productId: String, cartId: String, isLastItem: Boolean, source: String) {
-        showToastMessageGreen(message)
+        showToastMessageGreen(message, false)
 
         when (source) {
             WISHLIST_SOURCE_AVAILABLE_ITEM -> {
