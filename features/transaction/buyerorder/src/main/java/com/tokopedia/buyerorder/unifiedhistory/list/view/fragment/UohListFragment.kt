@@ -26,8 +26,11 @@ import com.tokopedia.buyerorder.common.util.BuyerConsts.TICKER_LABEL
 import com.tokopedia.buyerorder.common.util.BuyerConsts.TICKER_URL
 import com.tokopedia.buyerorder.unifiedhistory.common.di.UohComponentInstance
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_CATEGORIES
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_TRANSACTIONS
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.APPLINK_RESO
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.APP_LINK_TYPE
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.CATEGORY_BELANJA
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.EE_PRODUCT_ID
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.EE_PRODUCT_PRICE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.EE_QUANTITY
@@ -234,6 +237,11 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             setDefaultDate()
         }
         paramUohOrder.page = 1
+
+        if (filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true) && !isReset) {
+            paramUohOrder.verticalCategory = CATEGORY_BELANJA
+        }
+
         arrayFilterDate = resources.getStringArray(R.array.filter_date)
     }
 
@@ -538,8 +546,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private fun renderChipsFilter() {
         val chips = arrayListOf<SortFilterItem>()
 
-        val typeDate = if (isReset || (paramUohOrder.createTimeStart.isEmpty() && paramUohOrder.createTimeEnd.isEmpty()
-                        || filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true))) {
+        val typeDate = if (isReset || (paramUohOrder.createTimeStart.isEmpty() && paramUohOrder.createTimeEnd.isEmpty())) {
             ChipsUnify.TYPE_NORMAL
         } else {
             ChipsUnify.TYPE_SELECTED
@@ -570,7 +577,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             chips.add(it)
         }
 
-        val typeStatus = if (filterStatus.isEmpty()) {
+        val typeStatus = if (filterStatus.isEmpty() || filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true)) {
             ChipsUnify.TYPE_NORMAL
         } else {
             ChipsUnify.TYPE_SELECTED
@@ -596,7 +603,13 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         }
         filter2?.let { chips.add(it) }
 
-        filter3 = SortFilterItem(UohConsts.ALL_CATEGORIES, ChipsUnify.TYPE_NORMAL, ChipsUnify.SIZE_SMALL)
+        val typeCategory = if (filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true)) {
+            ChipsUnify.TYPE_SELECTED
+        } else {
+            ChipsUnify.TYPE_NORMAL
+        }
+
+        filter3 = SortFilterItem(ALL_CATEGORIES, typeCategory, ChipsUnify.SIZE_SMALL)
         filter3?.listener = {
             uohBottomSheetOptionAdapter = UohBottomSheetOptionAdapter(this)
             showBottomSheetFilterOptions(UohConsts.CHOOSE_CATEGORIES)
@@ -614,6 +627,9 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             uohBottomSheetOptionAdapter.selectedKey = currFilterCategoryKey
             uohBottomSheetOptionAdapter.isReset = isReset
             uohBottomSheetOptionAdapter.notifyDataSetChanged()
+        }
+        if (filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true) && !isReset) {
+            filter3?.title = orderList.categories.first().label
         }
         filter3?.let { chips.add(it) }
 
@@ -816,7 +832,11 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     UohConsts.TYPE_FILTER_DATE -> {
                         currFilterDateKey = tempFilterDateKey
                         currFilterDateLabel = tempFilterDateLabel
-                        filter1?.type = ChipsUnify.TYPE_SELECTED
+                        if (tempFilterDateKey != "0") {
+                            filter1?.type = ChipsUnify.TYPE_SELECTED
+                        } else {
+                            filter1?.type = ChipsUnify.TYPE_NORMAL
+                        }
                         var dateOption = ""
                         if (currFilterDateKey.toInt() == 3) {
                             if (paramUohOrder.createTimeStart.isNotEmpty() && paramUohOrder.createTimeEnd.isNotEmpty()) {
@@ -834,14 +854,22 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     UohConsts.TYPE_FILTER_STATUS -> {
                         currFilterStatusKey = tempFilterStatusKey
                         currFilterStatusLabel = tempFilterStatusLabel
-                        filter2?.type = ChipsUnify.TYPE_SELECTED
+                        if (tempFilterStatusKey != ALL_TRANSACTIONS) {
+                            filter2?.type = ChipsUnify.TYPE_SELECTED
+                        } else {
+                            filter2?.type = ChipsUnify.TYPE_NORMAL
+                        }
                         filter2?.title = currFilterStatusLabel
                         userSession?.userId?.let { it1 -> UohAnalytics.clickTerapkanOnStatusFilterChips(currFilterStatusLabel, it1) }
                     }
                     UohConsts.TYPE_FILTER_CATEGORY -> {
                         currFilterCategoryKey = tempFilterCategoryKey
                         currFilterCategoryLabel = tempFilterCategoryLabel
-                        filter3?.type = ChipsUnify.TYPE_SELECTED
+                        if (tempFilterCategoryKey != ALL_CATEGORIES) {
+                            filter3?.type = ChipsUnify.TYPE_SELECTED
+                        } else {
+                            filter3?.type = ChipsUnify.TYPE_NORMAL
+                        }
                         filter3?.title = currFilterCategoryLabel
                         userSession?.userId?.let { it1 -> UohAnalytics.clickTerapkanOnCategoryFilterChips(currFilterCategoryLabel, it1) }
                     }
@@ -879,7 +907,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
             btn_finish_order?.setOnClickListener {
                 bottomSheetKebabMenu?.dismiss()
-                if (isFromKebabMenu) bottomSheetFinishOrder?.dismiss()
+                bottomSheetFinishOrder?.dismiss()
                 chosenOrder = uohItemAdapter.getDataAtIndex(index)
                 uohItemAdapter.showLoaderAtIndex(index)
                 currIndexNeedUpdate = index
@@ -1197,7 +1225,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     override fun onListItemClicked(order: UohListOrder.Data.UohOrders.Order, index: Int) {
         val detailUrl = order.metadata.detailURL
         if (detailUrl.appTypeLink == WEB_LINK_TYPE) {
-            RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(detailUrl.webURL, UohConsts.UTF_8)))
+            RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(detailUrl.appURL, UohConsts.UTF_8)))
         } else if (detailUrl.appTypeLink == APP_LINK_TYPE) {
             RouteManager.route(context, URLDecoder.decode(detailUrl.appURL, UohConsts.UTF_8))
         }

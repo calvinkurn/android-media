@@ -17,6 +17,7 @@ object UohConsts {
     const val TYPE_FILTER_CATEGORY = 2
     const val START_DATE = "start_date"
     const val END_DATE = "end_date"
+    const val CATEGORY_BELANJA = "marketplace"
 
     const val ALL_STATUS_TRANSACTION = "Semua Status Transaksi"
     const val ALL_CATEGORIES_TRANSACTION = "Semua Kategori Transaksi"

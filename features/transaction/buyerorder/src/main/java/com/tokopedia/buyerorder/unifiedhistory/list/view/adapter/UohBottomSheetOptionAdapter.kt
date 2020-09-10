@@ -49,7 +49,11 @@ class UohBottomSheetOptionAdapter(private var listener: ActionListener): Recycle
             selectItem(position, keyMap, valueMap)
         }
 
-        holder.itemView.rb_option.setOnCheckedChangeListener(null)
+        holder.itemView.rb_option.setOnClickListener {
+            selectItem(position, keyMap, valueMap)
+        }
+
+        // holder.itemView.rb_option.setOnCheckedChangeListener(null)
 
         if (!isReset) {
             if (selectedKey.isEmpty() && selectedRadio == -1) {
@@ -68,7 +72,7 @@ class UohBottomSheetOptionAdapter(private var listener: ActionListener): Recycle
                 }
             }
         } else {
-            if (selectedKey.isEmpty() &&selectedRadio == -1) {
+            if (selectedKey.isEmpty() && selectedRadio == -1) {
                 if (filterType == UohConsts.TYPE_FILTER_DATE) {
                     if (position == 0) {
                         holder.itemView.rb_option.isChecked = true
