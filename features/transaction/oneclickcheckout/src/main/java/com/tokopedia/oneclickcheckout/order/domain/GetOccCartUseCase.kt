@@ -15,6 +15,8 @@ import com.tokopedia.oneclickcheckout.order.view.card.OrderProductCard
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.oneclickcheckout.order.view.model.ProductTrackerData
 import com.tokopedia.oneclickcheckout.order.view.model.WholesalePrice
+import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
+import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -52,7 +54,8 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
                     }
                     kero = OrderKero(response.response.data.keroToken, response.response.data.keroDiscomToken, response.response.data.keroUnixTime)
                 }
-                return OrderData(response.response.data.occMainOnboarding,
+                return OrderData(mapTicker(response.response.data.tickers),
+                        response.response.data.occMainOnboarding,
                         orderCart,
                         response.response.data.profileIndex,
                         response.response.data.profileRecommendation,
@@ -255,6 +258,11 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
         return OrderProfileAddress(address.addressId, address.receiverName, address.addressName, address.addressStreet, address.districtId,
                 address.districtName, address.cityId, address.cityName, address.provinceId, address.provinceName, address.phone, address.longitude,
                 address.latitude, address.postalCode)
+    }
+
+    private fun mapTicker(tickers: List<Ticker>): TickerData? {
+        val ticker = tickers.firstOrNull() ?: return null
+        return TickerData(ticker.id, ticker.message, ticker.page, ticker.title)
     }
 
     companion object {
