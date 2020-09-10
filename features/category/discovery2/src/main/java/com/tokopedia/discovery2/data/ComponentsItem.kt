@@ -6,7 +6,7 @@ import com.tokopedia.discovery2.datamapper.discoveryPageData
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.topads.sdk.domain.model.CpmModel
-import java.util.*
+import java.util.HashMap
 import kotlin.collections.ArrayList
 
 data class ComponentsItem(

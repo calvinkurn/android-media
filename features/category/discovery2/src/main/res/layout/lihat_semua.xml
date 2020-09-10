@@ -9,7 +9,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title_tv"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_20"
         android:layout_marginTop="@dimen/dp_8"
@@ -27,7 +27,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/sub_header_tv"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_20"
         android:layout_marginTop="@dimen/dp_4"

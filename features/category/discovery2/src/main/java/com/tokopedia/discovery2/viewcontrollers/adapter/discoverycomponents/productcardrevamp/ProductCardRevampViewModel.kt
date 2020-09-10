@@ -57,7 +57,4 @@ class ProductCardRevampViewModel(val application: Application, val components: C
 
     fun getProductCarouselHeaderData():LiveData<ComponentsItem> = productCarouselHeaderData
 
-    fun isUserLoggedIn(): Boolean {
-        return UserSession(application).isLoggedIn
-    }
 }
