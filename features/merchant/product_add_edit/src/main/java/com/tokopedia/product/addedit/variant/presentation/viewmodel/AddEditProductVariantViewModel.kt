@@ -95,22 +95,8 @@ class AddEditProductVariantViewModel @Inject constructor(
 
     var isOldVariantData = false
 
-    val isSelectedVariantUnitValuesEmpty = MediatorLiveData<Boolean>().apply {
-        addSource(mSelectedVariantUnitValuesLevel1) {
-            val isVariantUnitValuesLevel1Empty = mSelectedVariantUnitValuesLevel1.value?.isEmpty()
-                    ?: true
-            val isVariantUnitValuesLevel2Empty = mSelectedVariantUnitValuesLevel2.value?.isEmpty()
-                    ?: true
-            this.value = isVariantUnitValuesLevel1Empty && isVariantUnitValuesLevel2Empty
-        }
-        addSource(mSelectedVariantUnitValuesLevel2) {
-            val isVariantUnitValuesLevel1Empty = mSelectedVariantUnitValuesLevel1.value?.isEmpty()
-                    ?: true
-            val isVariantUnitValuesLevel2Empty = mSelectedVariantUnitValuesLevel2.value?.isEmpty()
-                    ?: true
-            this.value = isVariantUnitValuesLevel1Empty && isVariantUnitValuesLevel2Empty
-        }
-    }
+    private var mIsRemovingVariant = MutableLiveData(false)
+    val isRemovingVariant: LiveData<Boolean> get() = mIsRemovingVariant
 
     private fun isInputValid(isVariantUnitValuesLevel1Empty: Boolean, isVariantUnitValuesLevel2Empty: Boolean, isSingleVariantTypeIsSelected: Boolean): Boolean {
         if (isSingleVariantTypeIsSelected && !isVariantUnitValuesLevel1Empty) return true
@@ -269,6 +255,7 @@ class AddEditProductVariantViewModel @Inject constructor(
 
     fun clearProductVariant() {
         productInputModel.value?.variantInputModel?.products = emptyList()
+        productInputModel.value?.variantInputModel?.selections = emptyList()
     }
 
     fun getSelectedVariantUnit(layoutPosition: Int): Unit {
@@ -318,6 +305,7 @@ class AddEditProductVariantViewModel @Inject constructor(
     fun removeVariant() {
         val isRemoteDataHasVariant = productInputModel.value?.variantInputModel?.isRemoteDataHasVariant
                 ?: false // keep isRemoteDataHasVariant old data
+        mIsRemovingVariant.value = true
         productInputModel.value?.variantInputModel = VariantInputModel(
                 isRemoteDataHasVariant = isRemoteDataHasVariant)
         selectedVariantDetails = mutableListOf()
@@ -541,6 +529,13 @@ class AddEditProductVariantViewModel @Inject constructor(
         this.selectedVariantDetails.removeFirst {
             it.variantID == variantDetail.variantID
         }
+
+        // update isRemovingVariant value based on selectedVariantDetails elements
+        mIsRemovingVariant.value = this.selectedVariantDetails.isEmpty()
+    }
+
+    fun disableRemovingVariant(){
+        mIsRemovingVariant.value = false
     }
 
     fun getProductVariantPhotos(productInputModel: ProductInputModel): List<VariantPhoto> {
