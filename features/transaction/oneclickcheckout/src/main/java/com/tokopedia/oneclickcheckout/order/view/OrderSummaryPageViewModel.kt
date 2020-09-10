@@ -38,7 +38,6 @@ import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiMode
 import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.PARAM_CHECKOUT
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.PARAM_OCC
-import com.tokopedia.purchase_platform.common.feature.editaddress.domain.usecase.EditAddressUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.Order
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.ProductDetail
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
@@ -74,7 +73,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                                                     val getPreferenceListUseCase: GetPreferenceListUseCase,
                                                     private val updateCartOccUseCase: UpdateCartOccUseCase,
 //                                                    private val ratesResponseStateConverter: RatesResponseStateConverter,
-                                                    private val editAddressUseCase: EditAddressUseCase,
+//                                                    private val editAddressUseCase: EditAddressUseCase,
                                                     private val checkoutProcessor: OrderSummaryPageCheckoutProcessor,
                                                     private val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
                                                     private val promoProcessor: OrderSummaryPagePromoProcessor,
@@ -812,36 +811,47 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     fun chooseLogisticPromo(logisticPromoUiModel: LogisticPromoUiModel) {
-        val shipping = _orderShipment
-        val shippingRecommendationData = _orderShipment.shippingRecommendationData
-        if (shippingRecommendationData != null) {
-            OccIdlingResource.increment()
-            globalEvent.value = OccGlobalEvent.Loading
-            val requestParams = RequestParams.create()
-            requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, generateValidateUsePromoRequestWithBbo(logisticPromoUiModel))
-            compositeSubscription.add(
-                    validateUsePromoRevampUseCase.createObservable(requestParams)
-                            .subscribeOn(executorSchedulers.io)
-                            .observeOn(executorSchedulers.main)
-                            .subscribe(object : Observer<ValidateUsePromoRevampUiModel> {
-                                override fun onError(e: Throwable) {
-                                    globalEvent.value = OccGlobalEvent.Error(e)
-                                    OccIdlingResource.decrement()
-                                }
-
-                                override fun onNext(response: ValidateUsePromoRevampUiModel) {
-                                    validateUsePromoRevampUiModel = response
-                                    if (!onApplyBbo(shipping, logisticPromoUiModel, response)) {
-                                        updatePromoState(response.promoUiModel)
-                                        globalEvent.value = OccGlobalEvent.Error(errorMessage = FAIL_APPLY_BBO_ERROR_MESSAGE)
-                                    }
-                                }
-
-                                override fun onCompleted() {
-                                    OccIdlingResource.decrement()
-                                }
-                            })
-            )
+        launch(executorDispatchers.main) {
+            val shipping = _orderShipment
+            val shippingRecommendationData = _orderShipment.shippingRecommendationData
+            if (shippingRecommendationData != null) {
+//                OccIdlingResource.increment()
+                globalEvent.value = OccGlobalEvent.Loading
+                val (isApplied, resultValidateUse, newGlobalEvent) = promoProcessor.validateUseLogisticPromo(generateValidateUsePromoRequestWithBbo(logisticPromoUiModel), logisticPromoUiModel.promoCode)
+                if (isApplied && resultValidateUse != null) {
+                    onApplyBbo(shipping, logisticPromoUiModel, resultValidateUse)
+                    return@launch
+                }
+                resultValidateUse?.let {
+                    validateUsePromoRevampUiModel = it
+                }
+                globalEvent.value = newGlobalEvent
+//                val requestParams = RequestParams.create()
+//                requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, generateValidateUsePromoRequestWithBbo(logisticPromoUiModel))
+//                compositeSubscription.add(
+//                        validateUsePromoRevampUseCase.createObservable(requestParams)
+//                                .subscribeOn(executorSchedulers.io)
+//                                .observeOn(executorSchedulers.main)
+//                                .subscribe(object : Observer<ValidateUsePromoRevampUiModel> {
+//                                    override fun onError(e: Throwable) {
+//                                        globalEvent.value = OccGlobalEvent.Error(e)
+//                                        OccIdlingResource.decrement()
+//                                    }
+//
+//                                    override fun onNext(response: ValidateUsePromoRevampUiModel) {
+//                                        validateUsePromoRevampUiModel = response
+//                                        if (!onApplyBbo(shipping, logisticPromoUiModel, response)) {
+//                                            updatePromoState(response.promoUiModel)
+//                                            globalEvent.value = OccGlobalEvent.Error(errorMessage = FAIL_APPLY_BBO_ERROR_MESSAGE)
+//                                        }
+//                                    }
+//
+//                                    override fun onCompleted() {
+//                                        OccIdlingResource.decrement()
+//                                    }
+//                                })
+//                )
+            }
         }
     }
 
@@ -938,7 +948,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     fun updatePreference(preference: ProfilesItemModel) {
-        launch {
+        launch(executorDispatchers.main) {
             var param = generateUpdateCartParam()
             if (param == null) {
                 globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
@@ -1218,23 +1228,30 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     fun updateCartPromo(onSuccess: (ValidateUsePromoRequest, PromoRequest, ArrayList<String>) -> Unit) {
-        val param = generateUpdateCartParam()
-        if (param == null) {
-            globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
-            return
-        }
-        globalEvent.value = OccGlobalEvent.Loading
-        updateCartOccUseCase.execute(param, {
-            globalEvent.value = OccGlobalEvent.Normal
-            onSuccess(generateValidateUsePromoRequest(), generatePromoRequest(), generateBboPromoCodes())
-        }, { throwable: Throwable ->
-            if (throwable is MessageErrorException) {
-                globalEvent.value = OccGlobalEvent.Error(errorMessage = throwable.message
-                        ?: DEFAULT_ERROR_MESSAGE)
-            } else {
-                globalEvent.value = OccGlobalEvent.Error(throwable)
+        launch(executorDispatchers.main) {
+            val param = generateUpdateCartParam()
+            if (param == null) {
+                globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
+                return@launch
             }
-        })
+            globalEvent.value = OccGlobalEvent.Loading
+            val (isSuccess, newGlobalEvent) = cartProcessor.updateCartPromo(param)
+            globalEvent.value = newGlobalEvent
+            if (isSuccess) {
+                onSuccess(generateValidateUsePromoRequest(), generatePromoRequest(), generateBboPromoCodes())
+            }
+//            updateCartOccUseCase.execute(param, {
+//                globalEvent.value = OccGlobalEvent.Normal
+//                onSuccess(generateValidateUsePromoRequest(), generatePromoRequest(), generateBboPromoCodes())
+//            }, { throwable: Throwable ->
+//                if (throwable is MessageErrorException) {
+//                    globalEvent.value = OccGlobalEvent.Error(errorMessage = throwable.message
+//                            ?: DEFAULT_ERROR_MESSAGE)
+//                } else {
+//                    globalEvent.value = OccGlobalEvent.Error(throwable)
+//                }
+//            })
+        }
     }
 
     fun generatePromoRequest(): PromoRequest {

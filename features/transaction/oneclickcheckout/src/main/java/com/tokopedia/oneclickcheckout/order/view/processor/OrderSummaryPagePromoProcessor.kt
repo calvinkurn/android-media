@@ -1,8 +1,11 @@
 package com.tokopedia.oneclickcheckout.order.view.processor
 
+import com.tokopedia.oneclickcheckout.common.STATUS_OK
 import com.tokopedia.oneclickcheckout.common.dispatchers.ExecutorDispatchers
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
+import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
+import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
@@ -54,5 +57,27 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
                 //ignore throwable
             }
         }
+    }
+
+    suspend fun validateUseLogisticPromo(validateUsePromoRequest: ValidateUsePromoRequest, logisticPromoCode: String): Triple<Boolean, ValidateUsePromoRevampUiModel?, OccGlobalEvent> {
+        OccIdlingResource.increment()
+        val resultValidateUse = withContext(executorDispatchers.io) {
+            try {
+                val response = validateUsePromoRevampUseCase.createObservable(RequestParams.create().apply {
+                    putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, validateUsePromoRequest)
+                }).toBlocking().single()
+                if (response.status.equals(STATUS_OK, true)) {
+                    val voucherOrderUiModel = response.promoUiModel.voucherOrderUiModels.firstOrNull { it?.code == logisticPromoCode }
+                    if (voucherOrderUiModel != null && voucherOrderUiModel.messageUiModel.state != "red") {
+                        return@withContext Triple(true, response, OccGlobalEvent.Normal)
+                    }
+                }
+                return@withContext Triple(false, response, OccGlobalEvent.Error(errorMessage = OrderSummaryPageViewModel.FAIL_APPLY_BBO_ERROR_MESSAGE))
+            } catch (t: Throwable) {
+                return@withContext Triple(false, null, OccGlobalEvent.Error(t))
+            }
+        }
+        OccIdlingResource.decrement()
+        return resultValidateUse
     }
 }

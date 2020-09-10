@@ -147,6 +147,21 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccExtern
             }
         }
     }
+
+    suspend fun updateCartPromo(param: UpdateCartOccRequest): Pair<Boolean, OccGlobalEvent> {
+        return withContext(executorDispatchers.io) {
+            try {
+                updateCartOccUseCase.executeSuspend(param)
+                return@withContext true to OccGlobalEvent.Normal
+            } catch (t: Throwable) {
+                if (t is MessageErrorException) {
+                    return@withContext false to OccGlobalEvent.Error(errorMessage = t.message
+                            ?: DEFAULT_ERROR_MESSAGE)
+                }
+                return@withContext false to OccGlobalEvent.Error(t)
+            }
+        }
+    }
 }
 
 class ResultGetOccCart(
