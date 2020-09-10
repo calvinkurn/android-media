@@ -200,14 +200,14 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
         when (result) {
             is Error -> activity?.finish()
             is Success -> {
-                if (isPriorityNormalOrHigh(result.data)) {
+                if (result.data == DeviceSettingState.High) {
                     adapter.updateStatus(Device, StatusState.Success)
                 } else {
                     updateConfigStatus(
                             type = Device,
                             status = StatusState.Warning,
-                            message = getString(R.string.notif_dv_ticker_warning),
-                            buttonText = R.string.btn_notif_activation
+                            message = getString(R.string.notif_dv_low_ticker_warning),
+                            buttonText = R.string.btn_notif_choose
                     )
                 }
             }

@@ -58,6 +58,7 @@
     <string name="btn_notif_turnoff_dnd">Matikan Mode</string>
     <string name="btn_notif_try_again">Coba lagi</string>
     <string name="btn_notif_activation">Aktifkan</string>
+    <string name="btn_notif_choose">Pilih</string>
     <string name="btn_notif_repair">Perbaiki</string>
     <string name="btn_notif_play">Nyalakan Suara</string>
     <string name="btn_notif_test_play">Tes Bunyi</string>
@@ -65,7 +66,8 @@
     <string name="notif_ticker_net_error">Pemeriksaan notifikasi gagal, silahkan coba lagi.</string>
     <string name="notif_us_ticker_error">Belum ada Informasi jenis push yang kamu aktifkan.</string>
     <string name="notif_us_ticker_warning">Kamu belum mengaktifkan push notification untuk %1$s jenis info.</string>
-    <string name="notif_dv_ticker_warning">Ada kategori push notification Tokopedia yang belum aktif di HP.</string>
+    <string name="notif_dv_none_ticker_warning">Ada kategori push notification Tokopedia yang belum aktif di HP.</string>
+    <string name="notif_dv_low_ticker_warning">Pilih \'Suara dan pup-up\' atau \'Kepenting Tinggi\' di pengaturan kategori notifikasi HP-mu.</string>
     <string name="notif_rn_ticker_warning">HP-mu dalam Mode Getar atau Mode Sunyi dan tidak bisa menyetel bunyi notifikasi.</string>
 
     <string name="notif_clear_cache_warning">Peringatan</string>
