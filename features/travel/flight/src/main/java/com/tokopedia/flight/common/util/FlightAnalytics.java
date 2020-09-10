@@ -197,22 +197,37 @@ public class FlightAnalytics {
         TrackApp.getInstance().getGTM().sendGeneralEvent(params);
     }
 
-    public void eventQuickFilterClick(String filterName) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
-                FLIGHT_CLICK_EVENT,
-                GENERIC_CATEGORY,
-                Action.WIDGET_CLICK_FILTER,
-                String.format(Label.WIDGET_FLIGHT_FILTER, filterName)
-        );
+    public void eventQuickFilterClick(String filterName, String userId) {
+        Map<String, Object> mapModel = new HashMap<>();
+        mapModel.put(EVENT, FLIGHT_CLICK_EVENT);
+        mapModel.put(EVENT_CATEGORY, GENERIC_CATEGORY);
+        mapModel.put(EVENT_ACTION, Action.WIDGET_CLICK_FILTER);
+        mapModel.put(EVENT_LABEL, String.format(Label.WIDGET_FLIGHT_FILTER, filterName));
+        mapModel.put(SCREEN_NAME, Screen.SEARCH);
+        mapModel.put(CURRENT_SITE, FLIGHT_CURRENT_SITE);
+        mapModel.put(CLIENT_ID, TrackApp.getInstance().getGTM().getClientIDString());
+        mapModel.put(BUSSINESS_UNIT, FLIGHT_BU);
+        mapModel.put(CATEGORY, Label.FLIGHT_SMALL);
+        mapModel.put(USER_ID, userId);
+
+        TrackApp.getInstance().getGTM().sendGeneralEvent(mapModel);
     }
 
-    public void eventChangeSearchClick() {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
-                FLIGHT_CLICK_EVENT,
-                GENERIC_CATEGORY,
-                Action.CLICK_CHANGE_SEARCH,
-                Label.FLIGHT_CHANGE_SEARCH
-        );
+    public void eventChangeSearchClick(String userId) {
+        Map<String, Object> mapModel = new HashMap<>();
+        mapModel.put(EVENT, FLIGHT_CLICK_EVENT);
+        mapModel.put(EVENT_CATEGORY, GENERIC_CATEGORY);
+        mapModel.put(EVENT_ACTION, Action.CLICK_CHANGE_SEARCH);
+        mapModel.put(EVENT_LABEL, Label.FLIGHT_CHANGE_SEARCH);
+        mapModel.put(SCREEN_NAME, Screen.SEARCH);
+        mapModel.put(CURRENT_SITE, FLIGHT_CURRENT_SITE);
+        mapModel.put(CLIENT_ID, TrackApp.getInstance().getGTM().getClientIDString());
+        mapModel.put(BUSSINESS_UNIT, FLIGHT_BU);
+        mapModel.put(CATEGORY, Label.FLIGHT_SMALL);
+        mapModel.put(USER_ID, userId);
+
+        TrackApp.getInstance().getGTM().sendGeneralEvent(mapModel);
+        TrackApp.getInstance().getGTM().sendGeneralEvent(mapModel);
     }
 
     public void eventSearchView(FlightSearchPassDataModel passDataViewModel, boolean searchFound) {

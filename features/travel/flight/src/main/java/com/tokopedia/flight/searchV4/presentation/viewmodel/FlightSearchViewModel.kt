@@ -302,7 +302,8 @@ class FlightSearchViewModel @Inject constructor(
     }
 
     fun sendQuickFilterTrack(filterName: String) {
-        flightAnalytics.eventQuickFilterClick(filterName)
+        flightAnalytics.eventQuickFilterClick(filterName,
+                if (userSessionInterface.isLoggedIn) userSessionInterface.userId else "")
     }
 
     fun sendDetailClickTrack(journeyModel: FlightJourneyModel, adapterPosition: Int) {

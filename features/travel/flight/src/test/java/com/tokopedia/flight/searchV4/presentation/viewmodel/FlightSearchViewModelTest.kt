@@ -940,7 +940,7 @@ class FlightSearchViewModelTest {
         flightSearchViewModel.sendQuickFilterTrack(filterName)
 
         // then
-        verify { flightAnalytics.eventQuickFilterClick(filterName) }
+        verify { flightAnalytics.eventQuickFilterClick(filterName, any()) }
     }
 
     @Test
