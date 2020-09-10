@@ -20,4 +20,14 @@ object AddEditProductPerformanceMonitoringConstants {
     const val ADD_EDIT_PRODUCT_DETAIL_PLT_PREPARE_METRICS = "add_edit_product_detail_plt_prepare_metrics"
     const val ADD_EDIT_PRODUCT_DETAIL_PLT_NETWORK_METRICS = "add_edit_product_detail_plt_network_metrics"
     const val ADD_EDIT_PRODUCT_DETAIL_PLT_RENDER_METRICS = "add_edit_product_detail_plt_render_metrics"
+
+    const val ADD_EDIT_PRODUCT_VARIANT_TRACE = "add_edit_product_variant_trace"
+    const val ADD_EDIT_PRODUCT_VARIANT_PLT_PREPARE_METRICS = "add_edit_product_variant_plt_prepare_metrics"
+    const val ADD_EDIT_PRODUCT_VARIANT_PLT_NETWORK_METRICS = "add_edit_product_variant_plt_network_metrics"
+    const val ADD_EDIT_PRODUCT_VARIANT_PLT_RENDER_METRICS = "add_edit_product_variant_plt_render_metrics"
+
+    const val ADD_EDIT_PRODUCT_VARIANT_DETAIL_TRACE = "add_edit_product_variant_detail_trace"
+    const val ADD_EDIT_PRODUCT_VARIANT_DETAIL_PLT_PREPARE_METRICS = "add_edit_product_variant_detail_plt_prepare_metrics"
+    const val ADD_EDIT_PRODUCT_VARIANT_DETAIL_PLT_NETWORK_METRICS = "add_edit_product_variant_detail_plt_network_metrics"
+    const val ADD_EDIT_PRODUCT_VARIANT_DETAIL_PLT_RENDER_METRICS = "add_edit_product_variant_detail_plt_render_metrics"
 }
