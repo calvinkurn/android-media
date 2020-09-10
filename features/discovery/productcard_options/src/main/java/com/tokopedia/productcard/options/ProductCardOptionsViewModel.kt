@@ -12,6 +12,7 @@ import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel.WishlistResult
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.product.share.ProductData
 import com.tokopedia.productcard.options.item.ProductCardOptionsItemModel
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.usecase.RequestParams
@@ -40,6 +41,7 @@ internal class ProductCardOptionsViewModel(
     private val trackingSeeSimilarProductEventLiveData = MutableLiveData<Event<Boolean>>()
     private val addToCartEventLiveData = MutableLiveData<Event<Boolean>>()
     private val routeToShopPageEventLiveData = MutableLiveData<Event<Boolean>>()
+    private val shareProductEventLiveData = MutableLiveData<Event<ProductData>>()
 
     init {
         initSeeSimilarProductsOption()
@@ -297,7 +299,13 @@ internal class ProductCardOptionsViewModel(
 
     private fun initShareProductOption() {
         if (productCardOptionsModel?.canShareProduct() == true) {
-            productCardOptionsItemList.addOption(SHARE_PRODUCT) { }
+            productCardOptionsItemList.addOption(SHARE_PRODUCT) {
+                shareProductEventLiveData.postValue(Event(ProductData(
+                        productId = productCardOptionsModel.productId,
+                        productName = productCardOptionsModel.productName,
+                        priceText = productCardOptionsModel.formattedPrice
+                )))
+            }
             productCardOptionsItemList.addDivider()
         }
     }
@@ -319,4 +327,6 @@ internal class ProductCardOptionsViewModel(
     fun getAddToCartEventLiveData(): LiveData<Event<Boolean>> = addToCartEventLiveData
 
     fun getRouteToShopPageEventLiveData(): LiveData<Event<Boolean>> = routeToShopPageEventLiveData
+
+    fun getShareProductEventLiveData(): LiveData<Event<ProductData>> = shareProductEventLiveData
 }

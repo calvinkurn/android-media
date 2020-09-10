@@ -183,7 +183,7 @@ internal class CreateProductCardOptionsViewModelViewModelTest: ProductCardOption
                 productImageUrl = "https://imageurl",
                 productUrl = "https://producturl",
                 formattedPrice = "Rp1.000.000",
-                shop = ProductCardOptionsModel.Shop(shopId = "12345", shopName = "Shop Name", shopUrl = "https://shopurl")
+                shop = ProductCardOptionsModel.Shop(shopName = "Shop Name", shopUrl = "https://shopurl")
         ))
 
         `Then assert product card options contains`(SHARE_PRODUCT)

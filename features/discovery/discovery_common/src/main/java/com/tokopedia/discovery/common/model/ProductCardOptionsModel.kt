@@ -52,7 +52,6 @@ data class ProductCardOptionsModel(
                 && productImageUrl.isNotEmpty()
                 && productUrl.isNotEmpty()
                 && formattedPrice.isNotEmpty()
-                && shopId.isNotEmpty()
                 && shopName.isNotEmpty()
                 && shopUrl.isNotEmpty()
     }
