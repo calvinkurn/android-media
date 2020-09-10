@@ -5,6 +5,7 @@ import android.os.Build
 import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -80,6 +81,7 @@ class FeedbackPageFragment: Fragment() {
         loadingDialog = context?.let { LoadingDialog(it) }
 
         uriImage = arguments?.getParcelable("EXTRA_URI_IMAGE")
+        Log.d("IMAGE_URI", uriImage.toString())
         imageView.setImageURI(uriImage)
 
 
