@@ -1052,7 +1052,9 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         val toBeRemovedData = ArrayList<Any>()
         var disabledItemHeaderHolderData: DisabledItemHeaderHolderData? = null
         var cartItemTickerErrorHolderData: CartItemTickerErrorHolderData? = null
+        var disabledAccordionHolderData: DisabledAccordionHolderData? = null
 
+        // Get to be deleted items
         var deletedDisabledItemCount = 0
         loop@ for (i in cartDataList.indices) {
             val obj = cartDataList[i]
@@ -1075,27 +1077,35 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                         }
                     }
                 }
+
+                // For disabled / unavailable item, also delete other item (shop, unavailable reason, unavailable header, accordion) if needed
                 is DisabledCartItemHolderData -> if (cartIds.contains(obj.cartId.toString())) {
                     val before = cartDataList[i - 1]
                     var after: Any? = null
                     if (i + 1 < cartDataList.size) {
                         after = cartDataList[i + 1]
                     }
+
                     if (before is DisabledShopHolderData) {
+                        // If item before `obj` is shop, then remove it since the shop only has one item
                         if (after !is DisabledCartItemHolderData) {
                             toBeRemovedData.add(before)
+                            // Adjust divider visibility
                             if (after is DisabledShopHolderData) {
                                 after.showDivider = false
                             }
                         }
                         toBeRemovedData.add(obj)
                     } else if (before is DisabledCartItemHolderData) {
+                        // If item before `obj` is cart item, then don't remove it since the shop has more than one item
+                        // Adjust divider visibility
                         if (after !is DisabledCartItemHolderData) {
                             before.showDivider = false
                         }
                         toBeRemovedData.add(obj)
                     }
 
+                    // If two item before `obj` is reason item, then remove it since the reason has only one shop and the shop has only one item
                     val twoBefore = cartDataList[i - 2]
                     if (twoBefore is DisabledReasonHolderData) {
                         if (after !is DisabledCartItemHolderData && after !is DisabledShopHolderData) {
@@ -1107,46 +1117,34 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                 }
                 is DisabledItemHeaderHolderData -> disabledItemHeaderHolderData = obj
                 is CartItemTickerErrorHolderData -> cartItemTickerErrorHolderData = obj
+                is DisabledAccordionHolderData -> disabledAccordionHolderData = obj
                 is CartRecentViewHolderData, is CartWishlistHolderData, is CartRecommendationItemHolderData -> break@loop
             }
         }
 
-        var currentDisabledItemCount = 0
-        var disabledAccordionHolderData: DisabledAccordionHolderData? = null
-        cartDataList.forEach {
-            when (it) {
-                is DisabledCartItemHolderData -> currentDisabledItemCount++
-                is DisabledAccordionHolderData -> disabledAccordionHolderData = it
-                is CartRecentViewHolderData, is CartWishlistHolderData, is CartRecommendationItemHolderData -> return@forEach
-            }
-        }
-
-        if (currentDisabledItemCount == deletedDisabledItemCount) {
-            disabledAccordionHolderData?.let {
-                toBeRemovedData.add(it)
-            }
-        }
-
+        // Remove all collected items from previous loop
         for (cartShopHolderData in toBeRemovedData) {
             cartDataList.remove(cartShopHolderData)
         }
 
-        if (deletedDisabledItemCount > 0) {
+        // Check if delete action is bulk delete on unavailable section. If true, remove accordion
+        if (deletedDisabledItemCount != 0 && cartIds.size > 1) {
+            disabledAccordionHolderData?.let {
+                toBeRemovedData.add(it)
+            }
             tmpCollapsedItem.clear()
         }
 
+        // Determine to remove error ticker and unavailable item header
         if (cartItemTickerErrorHolderData != null || disabledItemHeaderHolderData != null) {
+            // Count available item and unavailable items
             var errorItemCount = 0
             var normalItemCount = 0
             loop@ for (any in cartDataList) {
                 when (any) {
                     is CartShopHolderData -> any.shopGroupAvailableData.cartItemDataList?.let {
                         for (cartItemHolderData in it) {
-                            if (cartItemHolderData.cartItemData?.isError == true) {
-                                errorItemCount++
-                            } else {
-                                normalItemCount++
-                            }
+                            normalItemCount++
                         }
                     }
                     is DisabledCartItemHolderData -> errorItemCount++
@@ -1157,24 +1155,31 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             errorItemCount += collapsedCartItemData.size
 
             if (errorItemCount > 0) {
+                // Goes here if unavailable item still exist
                 if (context != null) {
                     if (normalItemCount == 0) {
+                        // If normal / non error item empty, remove unavailable item error ticker
                         cartItemTickerErrorHolderData?.let {
                             cartDataList.remove(it)
                         }
                     } else {
+                        // If normal / non error item not empty, adjust error ticker item wording count
                         cartItemTickerErrorHolderData?.let {
                             it.cartTickerErrorData?.errorInfo = String.format(context.getString(R.string.cart_error_message), errorItemCount)
                         }
                     }
+                    // Adjust unavailable item header wording
                     disabledItemHeaderHolderData?.let {
                         it.disabledItemCount = errorItemCount
                     }
                 }
             } else {
+                // Goes here if unavailable item is not exist
+                // Remove unavailable item error ticker
                 cartItemTickerErrorHolderData?.let {
                     cartDataList.remove(it)
                 }
+                // Remove unavailable item header
                 disabledItemHeaderHolderData?.let {
                     cartDataList.remove(it)
                 }
