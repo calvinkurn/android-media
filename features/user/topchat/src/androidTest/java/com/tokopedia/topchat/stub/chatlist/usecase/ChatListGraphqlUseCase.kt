@@ -15,5 +15,4 @@ class ChatListGraphqlUseCase(
         return response
     }
 
-
 }

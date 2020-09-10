@@ -10,14 +10,14 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class GetChatNotificationUseCase @Inject constructor(
+open class GetChatNotificationUseCase @Inject constructor(
         private val gqlUseCase: GraphqlUseCase<NotificationsPojo>,
         private var dispatchers: TopchatCoroutineContextProvider
 ) : CoroutineScope {
 
     override val coroutineContext: CoroutineContext get() = dispatchers.Main + SupervisorJob()
 
-    fun getChatNotification(
+    open fun getChatNotification(
             onSuccess: (NotificationsPojo) -> Unit,
             onError: (Throwable) -> Unit
     ) {

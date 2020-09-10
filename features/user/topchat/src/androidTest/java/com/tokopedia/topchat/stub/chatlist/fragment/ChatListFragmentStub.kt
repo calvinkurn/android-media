@@ -9,12 +9,14 @@ import com.tokopedia.topchat.chatlist.pojo.ChatListPojo
 import com.tokopedia.topchat.stub.chatlist.di.DaggerChatListComponentStub
 import com.tokopedia.topchat.stub.chatlist.di.module.ChatListNetworkModuleStub
 import com.tokopedia.topchat.stub.chatlist.di.module.ChatListQueryModuleStub
+import com.tokopedia.topchat.stub.chatlist.usecase.GetChatNotificationUseCaseStub
 import com.tokopedia.user.session.UserSessionInterface
 
-class ChatListFragmentStub: ChatListFragment() {
+class ChatListFragmentStub : ChatListFragment() {
 
     lateinit var stubUserSession: UserSessionInterface
     lateinit var chatListUseCase: GraphqlUseCase<ChatListPojo>
+    lateinit var chatNotificationUseCase: GetChatNotificationUseCaseStub
 
     override fun initInjector() {
         DaggerChatListComponentStub
@@ -22,7 +24,7 @@ class ChatListFragmentStub: ChatListFragment() {
                 .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
                 .chatListContextModule(ChatListContextModule(context!!))
                 .chatListNetworkModuleStub(ChatListNetworkModuleStub(stubUserSession))
-                .chatListQueryModuleStub(ChatListQueryModuleStub(chatListUseCase))
+                .chatListQueryModuleStub(ChatListQueryModuleStub(chatListUseCase, chatNotificationUseCase))
                 .build()
                 .inject(this)
     }
@@ -41,7 +43,8 @@ class ChatListFragmentStub: ChatListFragment() {
         fun createFragment(
                 title: String,
                 userSessionInterface: UserSessionInterface,
-                chatListUseCaseStub: GraphqlUseCase<ChatListPojo>
+                chatListUseCaseStub: GraphqlUseCase<ChatListPojo>,
+                chatNotificationUseCaseStub: GetChatNotificationUseCaseStub
         ): ChatListFragment {
             val bundle = Bundle().apply {
                 putString(CHAT_TAB_TITLE, title)
@@ -50,6 +53,7 @@ class ChatListFragmentStub: ChatListFragment() {
                 arguments = bundle
                 stubUserSession = userSessionInterface
                 chatListUseCase = chatListUseCaseStub
+                chatNotificationUseCase = chatNotificationUseCaseStub
             }
         }
     }

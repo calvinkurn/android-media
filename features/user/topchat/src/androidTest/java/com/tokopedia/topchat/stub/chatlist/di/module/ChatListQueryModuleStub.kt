@@ -8,8 +8,10 @@ import com.tokopedia.topchat.TopchatAndroidTestCoroutineContextDispatcher
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant
 import com.tokopedia.topchat.chatlist.di.ChatListScope
 import com.tokopedia.topchat.chatlist.pojo.ChatListPojo
+import com.tokopedia.topchat.chatlist.usecase.GetChatNotificationUseCase
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
+import com.tokopedia.topchat.stub.chatlist.usecase.GetChatNotificationUseCaseStub
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
@@ -18,7 +20,8 @@ import dagger.multibindings.StringKey
 @ChatListScope
 @Module
 class ChatListQueryModuleStub(
-        private val chatListUseCase: GraphqlUseCase<ChatListPojo>
+        private val chatListUseCase: GraphqlUseCase<ChatListPojo>,
+        private val chatNotificationUseCaseStub: GetChatNotificationUseCaseStub
 ) {
 
     @ChatListScope
@@ -56,4 +59,8 @@ class ChatListQueryModuleStub(
     @Provides
     @ChatListScope
     fun provideGetChatListMessageInfoUseCase(): GraphqlUseCase<ChatListPojo> = chatListUseCase
+
+    @Provides
+    @ChatListScope
+    fun provideGetChatNotificationUseCase(): GetChatNotificationUseCase = chatNotificationUseCaseStub
 }

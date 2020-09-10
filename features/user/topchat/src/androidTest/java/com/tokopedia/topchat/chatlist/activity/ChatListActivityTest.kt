@@ -15,6 +15,7 @@ import com.tokopedia.topchat.matchers.RecyclerViewItemCountAssertion
 import com.tokopedia.topchat.matchers.withIndex
 import com.tokopedia.topchat.stub.chatlist.activity.ChatListActivityStub
 import com.tokopedia.topchat.stub.chatlist.usecase.ChatListGraphqlUseCase
+import com.tokopedia.topchat.stub.chatlist.usecase.GetChatNotificationUseCaseStub
 import com.tokopedia.topchat.stub.common.UserSessionStub
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -37,6 +38,7 @@ class ChatListActivityTest {
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
     private lateinit var chatListUseCase: ChatListGraphqlUseCase
+    private lateinit var chatNotificationUseCase: GetChatNotificationUseCaseStub
     private lateinit var userSession: UserSessionStub
     private lateinit var activity: ChatListActivityStub
 
@@ -55,6 +57,7 @@ class ChatListActivityTest {
     fun setup() {
         Dispatchers.setMain(TestCoroutineDispatcher())
         chatListUseCase = ChatListGraphqlUseCase()
+        chatNotificationUseCase = GetChatNotificationUseCaseStub()
         userSession = mActivityTestRule.activity.userSessionInterface
         activity = mActivityTestRule.activity
     }
@@ -66,7 +69,7 @@ class ChatListActivityTest {
         chatListUseCase.response = exEmptyChatListPojo
 
         // When
-        activity.setupTestFragment(chatListUseCase)
+        activity.setupTestFragment(chatListUseCase, chatNotificationUseCase)
 
         // Then
         onView(withId(R.id.thumbnail_empty_chat_list))
@@ -86,7 +89,7 @@ class ChatListActivityTest {
         chatListUseCase.response = exSize2ChatListPojo
 
         // When
-        activity.setupTestFragment(chatListUseCase)
+        activity.setupTestFragment(chatListUseCase, chatNotificationUseCase)
 
         // Then
         onView(withId(R.id.recycler_view))
@@ -102,7 +105,7 @@ class ChatListActivityTest {
         chatListUseCase.response = exEmptyChatListPojo
 
         // When
-        activity.setupTestFragment(chatListUseCase)
+        activity.setupTestFragment(chatListUseCase, chatNotificationUseCase)
 
         // Then
         onView(withId(R.id.thumbnail_empty_chat_list))
@@ -126,7 +129,7 @@ class ChatListActivityTest {
         chatListUseCase.response = exSize5ChatListPojo
 
         // When
-        activity.setupTestFragment(chatListUseCase)
+        activity.setupTestFragment(chatListUseCase, chatNotificationUseCase)
 
         // Then
         onView(withIndex(withId(R.id.recycler_view), 0))

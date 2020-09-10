@@ -10,12 +10,14 @@ import com.tokopedia.topchat.chatlist.pojo.ChatListPojo
 import com.tokopedia.topchat.stub.chatlist.di.DaggerChatListComponentStub
 import com.tokopedia.topchat.stub.chatlist.di.module.ChatListNetworkModuleStub
 import com.tokopedia.topchat.stub.chatlist.di.module.ChatListQueryModuleStub
+import com.tokopedia.topchat.stub.chatlist.usecase.GetChatNotificationUseCaseStub
 import com.tokopedia.user.session.UserSessionInterface
 
 class ChatTabListFragmentStub : ChatTabListFragment() {
 
     lateinit var userSessionStub: UserSessionInterface
     lateinit var chatListUseCaseStub: GraphqlUseCase<ChatListPojo>
+    lateinit var chatNotificationUseCaseStub: GetChatNotificationUseCaseStub
 
     override fun initInjector() {
         DaggerChatListComponentStub
@@ -23,7 +25,7 @@ class ChatTabListFragmentStub : ChatTabListFragment() {
                 .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
                 .chatListContextModule(ChatListContextModule(context!!))
                 .chatListNetworkModuleStub(ChatListNetworkModuleStub(userSessionStub))
-                .chatListQueryModuleStub(ChatListQueryModuleStub(chatListUseCaseStub))
+                .chatListQueryModuleStub(ChatListQueryModuleStub(chatListUseCaseStub, chatNotificationUseCaseStub))
                 .build()
                 .inject(this)
     }
@@ -32,7 +34,8 @@ class ChatTabListFragmentStub : ChatTabListFragment() {
         return ChatListFragmentStub.createFragment(
                 ChatListQueriesConstant.PARAM_TAB_SELLER,
                 userSessionStub,
-                chatListUseCaseStub
+                chatListUseCaseStub,
+                chatNotificationUseCaseStub
         )
     }
 
@@ -40,7 +43,8 @@ class ChatTabListFragmentStub : ChatTabListFragment() {
         return ChatListFragmentStub.createFragment(
                 ChatListQueriesConstant.PARAM_TAB_USER,
                 userSessionStub,
-                chatListUseCaseStub
+                chatListUseCaseStub,
+                chatNotificationUseCaseStub
         )
     }
 
@@ -55,11 +59,13 @@ class ChatTabListFragmentStub : ChatTabListFragment() {
     companion object {
         fun create(
                 userSessionInterface: UserSessionInterface,
-                chatListUseCase: GraphqlUseCase<ChatListPojo>
+                chatListUseCase: GraphqlUseCase<ChatListPojo>,
+                chatNotificationUseCase: GetChatNotificationUseCaseStub
         ): ChatTabListFragmentStub {
             return ChatTabListFragmentStub().apply {
                 userSessionStub = userSessionInterface
                 chatListUseCaseStub = chatListUseCase
+                chatNotificationUseCaseStub = chatNotificationUseCase
             }
         }
     }
