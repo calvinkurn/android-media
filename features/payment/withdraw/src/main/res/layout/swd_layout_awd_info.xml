@@ -44,6 +44,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:tickerShapeType="loose"
+        app:closeButtonVisibility="gone"
         app:tickerType="announcement" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

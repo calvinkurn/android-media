@@ -24,29 +24,7 @@
         android:textColor="@color/white"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cod_header_container"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_5"
-        tools:visibility="visible" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/cod_header_container"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/bg_cod_half_rounded"
-        android:drawablePadding="@dimen/dp_8"
-        android:paddingStart="@dimen/dp_16"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingTop="@dimen/dp_8"
-        android:paddingEnd="@dimen/dp_24"
-        android:paddingRight="@dimen/dp_24"
-        android:paddingBottom="@dimen/dp_8"
-        android:text="@string/title_cod"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toTopOf="@+id/discount_timer_holder"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tradein_header_container"
         app:typographyType="heading_5"
         tools:visibility="visible" />
 
@@ -61,7 +39,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cod_header_container"
+        app:layout_constraintTop_toBottomOf="@+id/tradein_header_container"
         tools:visibility="visible">
 
         <androidx.constraintlayout.widget.ConstraintLayout

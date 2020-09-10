@@ -91,6 +91,7 @@ public class ShopPageTrackingConstant {
     public static final String CLICK_OK_TOASTER_NOTIFY_ME = "click ok on toaster notify me";
     public static final String CLICK_SEE_ALL_CAMPAIGN_NPL_WIDGET = "click see all - %1s";
     public static final String CLICK_SHARE_DETAIL = "click share detail";
+    public static final String CLICK_PRODUCT_LIST_TOGGLE = "click product list toggle";
 
     //label
     public static final String CLICK_TAB = "click tab";
