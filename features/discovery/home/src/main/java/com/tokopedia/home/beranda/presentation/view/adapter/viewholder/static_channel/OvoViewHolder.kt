@@ -110,7 +110,6 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener?) : Abstr
         val tokocashProgressBar = itemView.findViewById<View>(R.id.progress_bar_tokocash)
         scanHolder.setOnClickListener { goToScanner() }
         tvBalanceTokocash.setTextColor(itemView.context.getResColor(R.color.font_black_disabled_38))
-        tvActionTokocash.setTypeface(tvActionTokocash.getTypeface(), Typeface.BOLD)
 
         if (element.homeHeaderWalletActionData == null && element.isWalletDataError) {
             tokoCashHolder.setOnClickListener {
@@ -119,7 +118,6 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener?) : Abstr
             }
             tvTitleTokocash.setText(R.string.home_header_tokocash_unable_to_load_label)
             tvActionTokocash.setText(R.string.home_header_tokocash_refresh_label)
-            tvActionTokocash.setTypeface(tvActionTokocash.getTypeface(), Typeface.NORMAL)
             tvTitleTokocash.visibility = View.VISIBLE
             tvActionTokocash.visibility = View.VISIBLE
             tvBalanceTokocash.visibility = View.GONE
