@@ -26,6 +26,7 @@ import com.tokopedia.home.environment.InstrumentationHomeTestActivity
 import com.tokopedia.home.mock.HomeMockResponseConfig
 import com.tokopedia.home_component.viewholders.MixLeftComponentViewHolder
 import com.tokopedia.home_component.viewholders.MixTopComponentViewHolder
+import com.tokopedia.home_component.viewholders.ProductHighlightComponentViewHolder
 import com.tokopedia.home_component.viewholders.RecommendationListCarouselViewHolder
 import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
@@ -44,6 +45,7 @@ private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_HOMEPAGE_SCREEN = "tracker/
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_TICKER = "tracker/home/ticker.json"
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_LIST_CAROUSEL = "tracker/home/list_carousel.json"
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_POPULAR_KEYWORD = "tracker/home/popular_keyword.json"
+private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_PRODUCT_HIGHLIGHT = "tracker/home/product_highlight.json"
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MIX_LEFT = "tracker/home/mix_left.json"
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MIX_TOP = "tracker/home/mix_top.json"
 private const val TAG = "DynamicChannelComponentAnalyticsTest"
@@ -114,19 +116,21 @@ class DynamicChannelComponentAnalyticsTest {
 //                hasAllSuccess())
 //        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_HOMEPAGE_BANNER),
 //                hasAllSuccess())
+        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_PRODUCT_HIGHLIGHT),
+                hasAllSuccess())
 //        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_LIST_CAROUSEL),
 //                hasAllSuccess())
         //cant mock occ response
 
         //worked
-        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_TICKER),
-                hasAllSuccess())
-        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_POPULAR_KEYWORD),
-                hasAllSuccess())
-        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MIX_LEFT),
-                hasAllSuccess())
-        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MIX_TOP),
-                hasAllSuccess())
+//        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_TICKER),
+//                hasAllSuccess())
+//        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_POPULAR_KEYWORD),
+//                hasAllSuccess())
+//        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MIX_LEFT),
+//                hasAllSuccess())
+//        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MIX_TOP),
+//                hasAllSuccess())
     }
 
     private fun onFinishTest() {
@@ -176,6 +180,11 @@ class DynamicChannelComponentAnalyticsTest {
                 clickItemAddToCartListCarousel(viewholder.itemView, R.id.recycleList, holderName)
                 clickOnEachItemRecyclerView(viewholder.itemView, R.id.recycleList, holderName)
                 clickCloseOnListCarousel(viewholder.itemView, holderName, i)
+            }
+            is ProductHighlightComponentViewHolder -> {
+                val holderName = "ProductHighlightComponentViewHolder"
+                logTestMessage("VH $holderName")
+                clickOnProductHighlightItem(viewholder.itemView, holderName, i)
             }
         }
     }
@@ -326,6 +335,17 @@ class DynamicChannelComponentAnalyticsTest {
                 e.printStackTrace()
                 logTestMessage("Click FAILED close $viewComponent")
             }
+        }
+    }
+
+    private fun clickOnProductHighlightItem(view: View, viewComponent: String, itemPos: Int) {
+        try {
+            Espresso.onView(firstView(ViewMatchers.withId(R.id.deals_product_card)))
+                    .perform(ViewActions.click())
+            logTestMessage("Click SUCCESS item $viewComponent")
+        } catch (e: PerformException) {
+            e.printStackTrace()
+            logTestMessage("Click FAILED item $viewComponent")
         }
     }
 

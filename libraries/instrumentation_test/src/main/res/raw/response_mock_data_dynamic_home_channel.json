@@ -603,6 +603,102 @@
                     }
                 },
                 {
+                    "id": 33459,
+                    "group_id": 151,
+                    "galaxy_attribution": "PG",
+                    "persona": "",
+                    "brand_id": "",
+                    "category_persona": "",
+                    "name": "Product Highlight Test",
+                    "layout": "product_highlight",
+                    "type": "inspiration",
+                    "showPromoBadge": true,
+                    "categoryID": "{}",
+                    "perso_type": 1,
+                    "campaignCode": "",
+                    "has_close_button": false,
+                    "isAutoRefreshAfterExpired": false,
+                    "header": {
+                        "id": 33698,
+                        "name": "Product Highlight Test",
+                        "subtitle": "",
+                        "url": "",
+                        "applink": "",
+                        "serverTime": 0,
+                        "expiredTime": "",
+                        "backColor": "red",
+                        "backImage": "",
+                        "textColor": "#000000"
+                    },
+                    "grids": [
+                        {
+                            "id": 1013183943,
+                            "back_color": "",
+                            "name": "[Sanghai stripe RO] blouse wanita katun stirpe navy dan hitam - Biru",
+                            "url": "https://www.tokopedia.com/fashionista-yus/sanghai-stripe-ro-blouse-wanita-katun-stirpe-navy-dan-hitam-biru",
+                            "applink": "tokopedia://product/1013183943",
+                            "price": "Rp 50.000",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2017/10/16/12186374/12186374_6f64f01a-e1fd-4cd0-99dd-f24b8f58f931_720_738.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category=1771&event=click&experimentVersion=v1.4&page=0&page_name=terlaris_no_ads&pid=1013183943&pos=1&recommendation=best_seller&rectype=best_seller&redirect=https://www.tokopedia.com/fashionista-yus/sanghai-stripe-ro-blouse-wanita-katun-stirpe-navy-dan-hitam-biru?catid1771=%26ref=terlaris_no_ads_pa0_po1%26src=r3best_seller&tid=qn_Y_62VQfdw5cSkOhBiQd9tyNM=&uid=3660643&unique_id=&utime=1599702306&widget=r3_widget&xdevice=android-3.90",
+                            "impression": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2017/10/16/12186374/12186374_6f64f01a-e1fd-4cd0-99dd-f24b8f58f931_720_738.jpg",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": true,
+                                "imageUrl": "https://ecs7-p.tokopedia.net/img/ic_bebas_ongkir.png"
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 7475,
+                            "minOrder": 1,
+                            "shop": {
+                                "shopID": 86242
+                            },
+                            "labelGroup": [
+                                {
+                                    "title": "Cashback",
+                                    "position": "promo",
+                                    "type": "lightGreen"
+                                }
+                            ],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "textColor": ""
+                        }
+                    ],
+                    "banner": {
+                        "id": 3911,
+                        "title": "",
+                        "description": "",
+                        "url": "",
+                        "back_color": "#ffffff",
+                        "cta": {
+                            "type": "",
+                            "mode": "",
+                            "text": "",
+                            "coupon_code": ""
+                        },
+                        "applink": "",
+                        "text_color": "#ffffff",
+                        "image_url": "",
+                        "attribution": "",
+                        "gradient_color": [
+                            "#c97de3",
+                            "#4e9985"
+                        ]
+                    }
+                },
+                {
                 "id": 34022,
                 "group_id": 206,
                 "galaxy_attribution": "PG",
