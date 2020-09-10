@@ -3,12 +3,14 @@ package com.tokopedia.sellerhome.settings.view.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.sellerhome.common.coroutine.SellerHomeCoroutineDispatcher
 import com.tokopedia.sellerhome.common.viewmodel.NonNullLiveData
 import com.tokopedia.sellerhome.settings.domain.entity.OthersBalance
 import com.tokopedia.sellerhome.settings.domain.usecase.GetAllShopInfoUseCase
 import com.tokopedia.sellerhome.settings.view.uimodel.base.ShopType
 import com.tokopedia.sellerhome.settings.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType
 import com.tokopedia.sellerhome.settings.view.uimodel.shopinfo.ShopBadgeUiModel
+import com.tokopedia.sellerhome.utils.SellerHomeCoroutineDispatcherTest
 import com.tokopedia.sellerhome.utils.observeOnce
 import com.tokopedia.shop.common.domain.interactor.GetShopFreeShippingInfoUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -22,9 +24,9 @@ import io.mockk.spyk
 import junit.framework.Assert.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineDispatcher
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -50,12 +52,14 @@ class OtherMenuViewModelTest {
     val rule = InstantTaskExecutorRule()
 
     private lateinit var mViewModel: OtherMenuViewModel
-    private lateinit var testCoroutineDispatcher: TestCoroutineDispatcher
+    private lateinit var testCoroutineDispatcher: SellerHomeCoroutineDispatcher
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        testCoroutineDispatcher = TestCoroutineDispatcher()
+        testCoroutineDispatcher = SellerHomeCoroutineDispatcherTest
+
+
         mViewModel =
                 OtherMenuViewModel(
                         testCoroutineDispatcher,
@@ -64,11 +68,6 @@ class OtherMenuViewModelTest {
                         userSession,
                         remoteConfig
                 )
-    }
-
-    @After
-    fun cleanup() {
-        testCoroutineDispatcher.cleanupTestCoroutines()
     }
 
     @Test
@@ -132,16 +131,8 @@ class OtherMenuViewModelTest {
             mockViewModel["checkDelayErrorResponseTrigger"]()
         }
 
-        testCoroutineDispatcher.pauseDispatcher()
-
         mockViewModel.isToasterAlreadyShown.observeOnce {
             assertTrue(it)
-        }
-
-        testCoroutineDispatcher.resumeDispatcher()
-
-        mockViewModel.isToasterAlreadyShown.observeOnce {
-            assertFalse(it)
         }
     }
 
