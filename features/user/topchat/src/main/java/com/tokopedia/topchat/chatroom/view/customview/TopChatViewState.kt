@@ -17,8 +17,7 @@ interface TopChatViewState : BaseChatViewState {
 
     fun onCheckChatBlocked(opponentRole: String,
                            opponentName: String,
-                           blockedStatus: BlockedStatus,
-                           onUnblockChatClicked: () -> Unit)
+                           blockedStatus: BlockedStatus)
 
     fun showAttachmentPreview(attachmentPreview: ArrayList<SendablePreview>)
 
@@ -29,5 +28,11 @@ interface TopChatViewState : BaseChatViewState {
     fun onStickerOpened()
 
     fun onStickerClosed()
+
+    fun setChatBlockStatus(isBlocked: Boolean)
+
+    fun setChatPromoBlockStatus(isBlocked: Boolean, due: String = "")
+
+    fun showConfirmationBlockChat()
 
 }

@@ -179,8 +179,8 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         stepperModel?.selectedKeywords = getSelectedKeyword()
         stepperModel?.selectedSuggestBid = getSelectedBid()
         stepperModel?.manualKeywords = getManualKeywords()
-        stepperListener?.goToNextPage(stepperModel)
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_PILIH_KEYWORD, getSelectedKeyword().joinToString("::"))
+        stepperListener?.goToNextPage(stepperModel)
     }
 
     private fun getSelectedKeyword(): MutableList<String> {

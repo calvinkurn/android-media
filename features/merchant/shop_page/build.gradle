@@ -33,8 +33,10 @@ dependencies {
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation project(rootProject.ext.libraries.permissionchecker)
     implementation project(rootProject.ext.libraries.webview)
     implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.shopEtalasePicker)
     implementation project(rootProject.ext.features.goldMerchantCommon)
@@ -46,6 +48,7 @@ dependencies {
     implementation project(rootProject.ext.features.kolCommon)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.atc_common)
+    implementation project(rootProject.ext.features.reputation)
     implementation project(rootProject.ext.libraries.remoteResourceRequest)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.features.stickyLogin)
@@ -57,6 +60,9 @@ dependencies {
 
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation project(rootProject.ext.libraries.youtubeutil)
+    implementation project(rootProject.ext.libraries.videoplayer)
+
+    implementation rootProject.ext.networkDependencies.glide
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
@@ -96,6 +102,8 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
+    implementation (rootProject.ext.firebase.crashlytics) {
+        transitive = true	        }
 
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
@@ -103,6 +111,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.track)
     implementation rootProject.ext.unifyDependencies.components
     implementation project(rootProject.ext.features.productCard)
+    implementation project(rootProject.ext.libraries.imagePreview)
+    implementation rootProject.ext.networkDependencies.glide
 
     // UI Test
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
@@ -110,6 +120,7 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
+    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
 }
 
 project.ext {

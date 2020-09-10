@@ -13,11 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.picker.gallery.model.MediaItem;
-import com.tokopedia.utils.image.ImageUtil;
 
 import java.util.ArrayList;
-
-import kotlin.Pair;
 
 /**
  * Created by hangnadi on 5/29/17.
@@ -72,10 +69,9 @@ public class MediaGrid extends SquareFrameLayout implements View.OnClickListener
     }
 
     private void setImage() {
-        Pair<Integer, Integer> widthHeight = ImageUtil.getWidthAndHeight(mMedia.getContentUri());
-        int width = widthHeight.getFirst();
-        int height = widthHeight.getSecond();
-        int min, max;
+        long width = mMedia.getWidth();
+        long height = mMedia.getHeight();
+        long min, max;
         if (width > height) {
             min = height;
             max = width;
@@ -113,7 +109,7 @@ public class MediaGrid extends SquareFrameLayout implements View.OnClickListener
     }
 
     private void setSelection(ArrayList<String> selectionIdList) {
-        if (selectionIdList.contains(mMedia.getRealPath())) {
+        if (selectionIdList.contains(mMedia.getPath())) {
             ivCheck.setVisibility(View.VISIBLE);
         } else {
             ivCheck.setVisibility(View.GONE);

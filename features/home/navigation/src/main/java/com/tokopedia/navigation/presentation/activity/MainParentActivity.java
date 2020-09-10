@@ -27,6 +27,13 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import androidx.annotation.RestrictTo;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import com.airbnb.lottie.LottieDrawable;
 import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -91,12 +98,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import androidx.annotation.RestrictTo;
-import androidx.core.app.NotificationManagerCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import dagger.Lazy;
 
 import static com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_SOURCE;
@@ -363,7 +364,7 @@ public class MainParentActivity extends BaseActivity implements
     private int getTabPositionFromIntent() {
         int position = getIntent().getExtras().getInt(ARGS_TAB_POSITION, -1);
         if (position != -1) return position;
-        
+
         try {
             String posString = getIntent().getExtras().getString(ARGS_TAB_POSITION);
             return Integer.parseInt(posString);
@@ -688,7 +689,7 @@ public class MainParentActivity extends BaseActivity implements
                 intent.putExtra(PARAM_BROADCAST_NEW_FEED, notification.getHaveNewFeed());
                 LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
             } else {
-                bottomNavigation.setBadge(0, FEED_MENU, View.VISIBLE);
+                bottomNavigation.setBadge(0, FEED_MENU, View.GONE);
             }
         }
         if (currentFragment != null)
@@ -909,6 +910,8 @@ public class MainParentActivity extends BaseActivity implements
                     boolean isHaveNewFeed = intent.getBooleanExtra(PARAM_BROADCAST_NEW_FEED_CLICKED, false);
                     if (isHaveNewFeed) {
                         bottomNavigation.setBadge(0, FEED_MENU, View.VISIBLE);
+                    } else {
+                        bottomNavigation.setBadge(0, FEED_MENU, View.GONE);
                     }
                 }
             }
@@ -1099,16 +1102,16 @@ public class MainParentActivity extends BaseActivity implements
 
     @Override
     public void stopOfficialStorePerformanceMonitoring() {
-        if(getOfficialStorePageLoadTimePerformanceInterface() != null){
-            getOfficialStorePageLoadTimePerformanceInterface().stopRenderPerformanceMonitoring();
-            getOfficialStorePageLoadTimePerformanceInterface().stopMonitoring();
+        if (officialStorePageLoadTimePerformanceCallback != null) {
+            officialStorePageLoadTimePerformanceCallback.stopRenderPerformanceMonitoring();
+            officialStorePageLoadTimePerformanceCallback.stopMonitoring();
             officialStorePageLoadTimePerformanceCallback = null;
         }
     }
 
     @Override
     public void startOfficialStorePerformanceMonitoring() {
-        if(officialStorePageLoadTimePerformanceCallback == null) {
+        if (officialStorePageLoadTimePerformanceCallback == null) {
             officialStorePageLoadTimePerformanceCallback = new PageLoadTimePerformanceCallback(
                     OFFICIAL_STORE_PERFORMANCE_MONITORING_PREPARE_METRICS,
                     OFFICIAL_STORE_PERFORMANCE_MONITORING_NETWORK_METRICS,
@@ -1119,8 +1122,8 @@ public class MainParentActivity extends BaseActivity implements
                     0,
                     null
             );
-            getOfficialStorePageLoadTimePerformanceInterface().startMonitoring(OFFICIAL_STORE_PERFORMANCE_MONITORING_KEY);
-            getOfficialStorePageLoadTimePerformanceInterface().startPreparePagePerformanceMonitoring();
+            officialStorePageLoadTimePerformanceCallback.startMonitoring(OFFICIAL_STORE_PERFORMANCE_MONITORING_KEY);
+            officialStorePageLoadTimePerformanceCallback.startPreparePagePerformanceMonitoring();
         }
     }
 

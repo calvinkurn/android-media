@@ -13,9 +13,11 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
-import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
+import com.tokopedia.oneclickcheckout.common.interceptor.GET_PREFERENCE_LIST_CHANGED_RESPONSE
+import com.tokopedia.oneclickcheckout.common.interceptor.OneClickCheckoutInterceptor
+import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -37,16 +39,12 @@ class PreferenceListActivityTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private var idlingResource: IdlingResource? = null
-    private val interceptor = PreferenceListInterceptor.interceptor
-
-    private fun setupGraphqlMockResponse() {
-        val testInterceptors = listOf(interceptor)
-        GraphqlClient.reInitRetrofitWithInterceptors(testInterceptors, context)
-    }
+    private val interceptor = OneClickCheckoutInterceptor.preferenceInterceptor
 
     @Before
     fun setupIdlingResource() {
-        setupGraphqlMockResponse()
+        OneClickCheckoutInterceptor.resetAllCustomResponse()
+        OneClickCheckoutInterceptor.setupGraphqlMockResponse(context)
         idlingResource = OccIdlingResource.getIdlingResource()
         IdlingRegistry.getInstance().register(idlingResource)
     }
@@ -72,9 +70,6 @@ class PreferenceListActivityTest {
 
     @Test
     fun getPreferenceListSuccess() {
-        interceptor.customGetPreferenceListThrowable = null
-        interceptor.customGetPreferenceListResponseString = null
-
         activityRule.launchActivity(null)
 
         onView(withId(R.id.main_content)).check(matches(isDisplayed()))
@@ -130,15 +125,11 @@ class PreferenceListActivityTest {
 
     @Test
     fun changeDefaultProfileSuccess() {
-        interceptor.customGetPreferenceListThrowable = null
-        interceptor.customGetPreferenceListResponseString = null
         activityRule.launchActivity(null)
 
         onView(withId(R.id.main_content)).check(matches(isDisplayed()))
         onView(withId(R.id.rv_preference_list)).check { view, _ -> (view as RecyclerView).adapter!!.itemCount > 1 }
 
-        interceptor.customSetDefaultPreferenceThrowable = null
-        interceptor.customSetDefaultPreferenceResponseString = null
         interceptor.customGetPreferenceListResponseString = GET_PREFERENCE_LIST_CHANGED_RESPONSE
 
         onView(withId(R.id.rv_preference_list)).perform(actionOnItemAtPosition<PreferenceListViewHolder>(0, SetDefaultProfileAction()))
@@ -148,8 +139,6 @@ class PreferenceListActivityTest {
 
     @Test
     fun changeDefaultProfileFailed() {
-        interceptor.customGetPreferenceListThrowable = null
-        interceptor.customGetPreferenceListResponseString = null
         activityRule.launchActivity(null)
 
         onView(withId(R.id.main_content)).check(matches(isDisplayed()))

@@ -40,8 +40,8 @@ dependencies {
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.networkDependencies.glide
-    implementation project(rootProject.ext.libraries.playCore)
-    implementation (rootProject.ext.serviceDependencies.crashlytics) {
+    implementation rootProject.ext.playServicesDependencies.core
+    implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true
     }
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar

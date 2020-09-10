@@ -1,7 +1,7 @@
 package com.tokopedia.tkpd.tkpdreputation.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.fragment.CreateReviewFragment;
+import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.fragment.CreateReviewFragmentOld;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.ImageUploadPreviewFragment;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationDetailFragment;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationFilterFragment;
@@ -33,7 +33,7 @@ public interface ReputationComponent {
 
     void inject(ReviewShopFragment shopReviewFragment);
 
-    void inject(CreateReviewFragment createReviewFragment);
+    void inject(CreateReviewFragmentOld createReviewFragmentOld);
 
     void inject(InboxReputationFilterFragment inboxReputationFilterFragment);
 

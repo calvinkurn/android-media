@@ -61,7 +61,6 @@ dependencies {
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.loyaltyCommon)
     implementation project(rootProject.ext.features.navigationCommon)
-    implementation project(rootProject.ext.features.phoneVerification)
     implementation project(rootProject.ext.features.playCommon)
     implementation project(rootProject.ext.features.productCard)
     implementation project(rootProject.ext.features.promoGamificationCommon)
@@ -131,9 +130,7 @@ dependencies {
         }
     }
 
-    implementation(rootProject.ext.serviceDependencies.crashlytics) {
-        transitive = true
-    }
+    implementation rootProject.ext.firebase.crashlytics
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants

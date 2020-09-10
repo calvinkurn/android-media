@@ -6,7 +6,7 @@ import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.*
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.search.result.domain.model.SearchProductModel
+import com.tokopedia.search.result.domain.model.*
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.topads.sdk.domain.TopAdsParams
 import com.tokopedia.usecase.RequestParams
@@ -17,37 +17,34 @@ import java.util.*
 
 class SearchProductFirstPageGqlUseCase(
         private val graphqlUseCase: GraphqlUseCase,
-        private val searchProductModelMapper: Func1<GraphqlResponse, SearchProductModel>
+        private val searchProductModelMapper: Func1<GraphqlResponse?, SearchProductModel?>
 ): UseCase<SearchProductModel>() {
 
-    private val graphqlRequest = GraphqlRequest(GQL_QUERY, SearchProductModel::class.java)
-
     override fun createObservable(requestParams: RequestParams): Observable<SearchProductModel> {
-        val variables = createParametersForQuery(requestParams.parameters)
+        val query = getQueryFromParameters(requestParams.parameters)
+        val params = UrlParamUtils.generateUrlParamString(requestParams.parameters)
+        val headlineParams = createHeadlineParams(requestParams.parameters)
 
-        graphqlRequest.variables = variables
+        val graphqlRequestList = listOf(
+                createAceSearchProductRequest(params = params),
+                createQuickFilterRequest(query = query, params = params),
+                createTopAdsProductRequest(params = params),
+                createHeadlineAdsRequest(headlineParams = headlineParams),
+                createGlobalSearchNavigationRequest(query = query, params = params),
+                createSearchInspirationCarouselRequest(params = params),
+                createSearchInspirationWidgetRequest(params = params)
+        )
 
         graphqlUseCase.clearRequest()
-        graphqlUseCase.addRequest(graphqlRequest)
+        graphqlUseCase.addRequests(graphqlRequestList)
 
         return graphqlUseCase
                 .createObservable(RequestParams.EMPTY)
                 .map(searchProductModelMapper)
     }
 
-    private fun createParametersForQuery(parameters: Map<String, Any>): Map<String, Any> {
-        val variables = mutableMapOf<String, Any>()
-
-        variables[GQL.KEY_QUERY] = getQueryFromParameters(parameters)
-        variables[GQL.KEY_PARAMS] = UrlParamUtils.generateUrlParamString(parameters)
-        variables[GQL.KEY_HEADLINE_PARAMS] = createHeadlineParams(parameters)
-
-        return variables
-    }
-
-    private fun getQueryFromParameters(parameters: Map<String, Any>): Any {
-        val query = parameters[SearchApiConst.Q]
-        return query ?: ""
+    private fun getQueryFromParameters(parameters: Map<String, Any>): String {
+        return parameters[SearchApiConst.Q]?.toString() ?: ""
     }
 
     private fun createHeadlineParams(parameters: Map<String, Any>): String {
@@ -60,121 +57,47 @@ class SearchProductFirstPageGqlUseCase(
 
         return UrlParamUtils.generateUrlParamString(headlineParams)
     }
-    
+
+    private fun createQuickFilterRequest(query: String, params: String) =
+            GraphqlRequest(
+                    QUICK_FILTER_QUERY,
+                    QuickFilterModel::class.java,
+                    mapOf(GQL.KEY_QUERY to query, GQL.KEY_PARAMS to params)
+            )
+
+    private fun createHeadlineAdsRequest(headlineParams: String) =
+            GraphqlRequest(
+                    HEADLINE_ADS_QUERY,
+                    HeadlineAdsModel::class.java,
+                    mapOf(GQL.KEY_HEADLINE_PARAMS to headlineParams)
+            )
+
+    private fun createGlobalSearchNavigationRequest(query: String, params: String) =
+            GraphqlRequest(
+                    GLOBAL_NAV_GQL_QUERY,
+                    GlobalSearchNavigationModel::class.java,
+                    mapOf(GQL.KEY_QUERY to query, GQL.KEY_PARAMS to params)
+            )
+
+    private fun createSearchInspirationCarouselRequest(params: String) =
+            GraphqlRequest(
+                    SEARCH_INSPIRATION_CAROUSEL_QUERY,
+                    SearchInspirationCarouselModel::class.java,
+                    mapOf(GQL.KEY_PARAMS to params)
+            )
+
+    private fun createSearchInspirationWidgetRequest(params: String) =
+            GraphqlRequest(
+                    SEARCH_INSPIRATION_WIDGET_QUERY,
+                    SearchInspirationWidgetModel::class.java,
+                    mapOf(GQL.KEY_PARAMS to params)
+            )
+
     companion object {
         private const val HEADLINE_PRODUCT_COUNT = 3
 
-        private const val GQL_QUERY = """
-            query SearchProduct(
-                    ${'$'}params: String!,
-                    ${'$'}query: String!,
-                    ${'$'}headline_params: String
-            ) {
-                ace_search_product_v4(params: ${'$'}params) {
-                    header {
-                        totalData
-                        totalDataText
-                        defaultView
-                        responseCode
-                        errorMessage
-                        additionalParams
-                        keywordProcess
-                    }
-                    data {
-                        isQuerySafe
-                        autocompleteApplink
-                        redirection {
-                            redirectApplink
-                        }
-                        ticker {
-                            text
-                            query
-                            typeId
-                        }
-                        related {
-                            relatedKeyword
-                            otherRelated {
-                                keyword
-                                url
-                                applink
-                                product {
-                                    id
-                                    name
-                                    price
-                                    imageUrl
-                                    rating
-                                    countReview
-                                    url
-                                    applink
-                                    priceStr
-                                    wishlist
-                                    shop {
-                                        city
-                                    }
-                                    badges {
-                                        imageUrl
-                                        show
-                                    }
-                                    freeOngkir {
-                                        isActive
-                                        imgUrl
-                                    }
-                                }
-                            }
-                        }
-                        suggestion {
-                            suggestion
-                            query
-                            text
-                        }
-                        products {
-                            id
-                            name
-                            ads {
-                                id
-                                productClickUrl
-                                productWishlistUrl
-                                productViewUrl
-                            }
-                            shop {
-                                id
-                                name
-                                city
-                            }
-                            freeOngkir {
-                                isActive
-                                imgUrl
-                            }
-                            imageUrl
-                            imageUrl300
-                            imageUrl700
-                            price
-                            priceInt
-                            priceRange
-                            categoryBreadcrumb
-                            rating
-                            ratingAverage
-                            countReview
-                            priceInt
-                            originalPrice
-                            discountPercentage
-                            warehouseIdDefault
-                            boosterList
-                            source_engine
-                            labelGroups {
-                                title
-                                position
-                                type
-                            }
-                            badges {
-                                title
-                                imageUrl
-                                show
-                            }
-                            wishlist
-                        }
-                    }
-                }
+        private const val QUICK_FILTER_QUERY = """
+            query QuickFilter(${'$'}query: String!, ${'$'}params: String!) {
                 quick_filter(query: ${'$'}query, extraParams: ${'$'}params) {
                     filter {
                         options {
@@ -207,99 +130,11 @@ class SearchProductFirstPageGqlUseCase(
                         }
                     }
                 }
-            
-                productAds: displayAdsV3(displayParams: ${'$'}params) {
-                    status {
-                        error_code
-                        message
-                    }
-                    header {
-                        process_time
-                        total_data
-                    }
-                    data{
-                        id
-                        ad_ref_key
-                        redirect
-                        sticker_id
-                        sticker_image
-                        product_click_url
-                        product_wishlist_url
-                        shop_click_url
-                        product {
-                            id
-                            name
-                            category_breadcrumb
-                            wishlist
-                            image {
-                                m_url
-                                s_url
-                                xs_url
-                                m_ecs
-                                s_ecs
-                                xs_ecs
-                            }
-                            uri
-                            relative_uri
-                            price_format
-                            wholesale_price {
-                                price_format
-                                quantity_max_format
-                                quantity_min_format
-                            }
-                            count_talk_format
-                            count_review_format
-                            category {
-                                id
-                            }
-                            product_preorder
-                            product_wholesale
-                            free_return
-                            product_cashback
-                            product_new_label
-                            product_cashback_rate
-                            product_rating
-                            product_rating_format
-                            free_ongkir {
-                              is_active
-                              img_url
-                            }
-                            campaign {
-                                original_price
-                                discount_percentage
-                            }
-                            label_group {
-                                position
-                                type
-                                title
-                            }
-                        }
-                        shop{
-                            id
-                            name
-                            domain
-                            location
-                            city
-                            gold_shop
-                            gold_shop_badge
-                            lucky_shop
-                            uri
-                            owner_id
-                            is_owner
-                            shop_is_official
-                            badges {
-                                title
-                                image_url
-                                show
-                            }
-                        }
-                        applinks
-                    }
-                    template {
-                        is_ad
-                    }
-                }
-            
+            }
+        """
+
+        private const val HEADLINE_ADS_QUERY = """
+            query HeadlineAds(${'$'}headline_params: String!) {
                 headlineAds: displayAdsV3(displayParams: ${'$'}headline_params) {
                     status {
                         error_code
@@ -375,7 +210,11 @@ class SearchProductFirstPageGqlUseCase(
                         applinks
                     }
                 }
-            
+            }
+        """
+
+        private const val GLOBAL_NAV_GQL_QUERY = """
+            query GlobalSearchNavigation(${'$'}query: String!, ${'$'}params: String!) {
                 global_search_navigation(keyword:${'$'}query, device:"android", size:5, params:${'$'}params) {
                     data {
                         source
@@ -400,12 +239,17 @@ class SearchProductFirstPageGqlUseCase(
                         }
                     }
                 }
-            
+            }
+        """
+
+        private const val SEARCH_INSPIRATION_CAROUSEL_QUERY = """
+            query SearchInspirationCarousel(${'$'}params: String!) {
                 searchInspirationCarousel(params: ${'$'}params) {
                     data {
                         title
                         type
                         position
+                        layout
                         options {
                             title
                             url
@@ -420,11 +264,16 @@ class SearchProductFirstPageGqlUseCase(
                                 count_review
                                 url
                                 applink
+                                description
                             }
                         }
                     }
                 }
-                
+            }
+        """
+
+        private const val SEARCH_INSPIRATION_WIDGET_QUERY = """
+            query SearchInspirationWidget(${'$'}params: String!) {
                 searchInspirationWidget(params:${'$'}params){
                     data {
                         title
@@ -439,6 +288,7 @@ class SearchProductFirstPageGqlUseCase(
                         }
                     }
                 }
-            }"""
+            }
+        """
     }
 }

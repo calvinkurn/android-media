@@ -67,7 +67,7 @@ class MainValidatorFragment : Fragment() {
         val mode = testQuery["mode"] as? String
 
         val value = testQuery["query"]
-        viewModel.run(value as List<Map<String, Any>>, mode ?: "subset")
+        viewModel.run(value as List<Map<String, Any>>, mode ?: "exact")
         with(rv) {
             layoutManager = LinearLayoutManager(context)
             addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))

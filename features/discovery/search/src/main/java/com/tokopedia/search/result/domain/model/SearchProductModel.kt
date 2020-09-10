@@ -26,7 +26,7 @@ data class SearchProductModel(
 
         @SerializedName("global_search_navigation")
         @Expose
-        val globalNavModel: GlobalNavModel = GlobalNavModel(),
+        val globalSearchNavigation: GlobalSearchNavigation = GlobalSearchNavigation(),
 
         @SerializedName("searchInspirationCarousel")
         @Expose
@@ -34,7 +34,7 @@ data class SearchProductModel(
 
         @SerializedName("searchInspirationWidget")
         @Expose
-        val searchInspirationCard: SearchInspirationCard = SearchInspirationCard()
+        val searchInspirationWidget: SearchInspirationWidget = SearchInspirationWidget()
 ) {
 
     data class SearchProduct (
@@ -131,6 +131,10 @@ data class SearchProductModel(
             @SerializedName("relatedKeyword")
             @Expose
             val relatedKeyword: String = "",
+
+            @SerializedName("position")
+            @Expose
+            val position: Int = 0,
 
             @SerializedName("otherRelated")
             @Expose
@@ -424,7 +428,7 @@ data class SearchProductModel(
             val isShown: Boolean = false
     )
 
-    data class GlobalNavModel(
+    data class GlobalSearchNavigation(
             @SerializedName("data")
             @Expose
             val data: GlobalNavData = GlobalNavData()
@@ -529,6 +533,10 @@ data class SearchProductModel(
             @Expose
             val position: Int = 0,
 
+            @SerializedName("layout")
+            @Expose
+            val layout: String = "",
+
             @SerializedName("options")
             @Expose
             val inspirationCarouselOptions: List<InspirationCarouselOption> = listOf()
@@ -591,10 +599,14 @@ data class SearchProductModel(
 
             @SerializedName("applink")
             @Expose
-            val applink: String = ""
+            val applink: String = "",
+
+            @SerializedName("description")
+            @Expose
+            val description: List<String> = listOf()
     )
 
-    data class SearchInspirationCard(
+    data class SearchInspirationWidget(
             @SerializedName("data")
             @Expose
             val data: List<InspirationCardData> = listOf()

@@ -66,6 +66,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         InAppManager.InAppMessageListener {
 
     public static final String ANDROID_ROBUST_ENABLE = "android_sellerapp_robust_enable";
+    private static final String ADD_BROTLI_INTERCEPTOR = "android_add_brotli_interceptor";
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -164,14 +165,14 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
         InAppManager.getInstance().setInAppListener(this);
         initCacheApi();
-        GraphqlClient.init(this);
+        GraphqlClient.init(this, remoteConfig.getBoolean(ADD_BROTLI_INTERCEPTOR, false));
         NetworkClient.init(this);
         initializeAbTestVariant();
 
         initAppNotificationReceiver();
         registerActivityLifecycleCallbacks();
         initBlockCanary();
-//        TokoPatch.init(this);
+        TokoPatch.init(this);
     }
 
     private void initBugsnag() {

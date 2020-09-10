@@ -39,6 +39,7 @@
 
             <TextView
                 android:id="@+id/et_search"
+                android:contentDescription="@string/content_desc_et_search"
                 android:gravity="center_vertical"
                 android:layout_marginLeft="@dimen/dp_4"
                 android:layout_marginStart="@dimen/dp_4"
@@ -58,6 +59,7 @@
 
         <ImageView
             android:id="@+id/btn_wishlist"
+            android:contentDescription="@string/content_desc_btn_wishlist"
             android:layout_centerVertical="true"
             android:layout_width="@dimen/icon_toolbar"
             android:layout_height="@dimen/icon_toolbar"
@@ -67,6 +69,7 @@
 
         <ImageView
             android:id="@+id/btn_inbox"
+            android:contentDescription="@string/content_desc_btn_inbox"
             android:layout_centerVertical="true"
             android:layout_width="@dimen/icon_toolbar"
             android:layout_height="@dimen/icon_toolbar"
@@ -76,6 +79,7 @@
 
         <ImageView
             android:id="@+id/btn_notification"
+            android:contentDescription="@string/content_desc_btn_notification"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"

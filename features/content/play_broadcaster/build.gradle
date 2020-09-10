@@ -57,9 +57,8 @@ dependencies {
     implementation (rootProject.ext.miscDependencies.ucrop){
         exclude group: 'com.android.support'
     }
-    implementation (rootProject.ext.serviceDependencies.crashlytics) {
-        transitive = true
-    }
+    implementation (rootProject.ext.firebase.crashlytics) {
+        transitive = true	        }
 
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.coroutineAndroid

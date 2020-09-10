@@ -7,8 +7,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-
-import com.crashlytics.android.Crashlytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.moengage.pushbase.push.MoEngageNotificationUtils;
@@ -95,7 +94,7 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
     private void executeLogOnMessageReceived(Bundle data) {
         if (!BuildConfig.DEBUG) {
             String logMessage = generateLogMessage(data);
-            Crashlytics.logException(new Exception(logMessage));
+            FirebaseCrashlytics.getInstance().recordException(new Exception(logMessage));
             Timber.w(
                     "P2#LOG_PUSH_NOTIF#'%s';data='%s'",
                     "BaseMessagingService::onMessageReceived",
