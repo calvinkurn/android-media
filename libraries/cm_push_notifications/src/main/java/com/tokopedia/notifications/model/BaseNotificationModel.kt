@@ -144,7 +144,7 @@ data class BaseNotificationModel(
         var notificationProductType: String? = null,
 
         @ColumnInfo(name = "is_amplification")
-        var isAmplification: Boolean? = false
+        var isAmplification: Boolean = false
 
 ) : Parcelable {
 
