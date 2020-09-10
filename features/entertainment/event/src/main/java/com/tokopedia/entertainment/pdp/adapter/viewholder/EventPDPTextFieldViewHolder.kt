@@ -32,7 +32,7 @@ class EventPDPTextFieldViewHolder(val view: View,
 
     fun bind(element: Form, position: Int) {
         with(itemView) {
-            keyActiveBottomSheet = textFormListener.getKeyActive()
+            keyActiveBottomSheet = getKeyActive(element)
             positionActiveForm = position
             if (position > 0) txtValue.setMargin(0, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3), context.resources.displayMetrics).toInt(), 0, 0)
 
@@ -134,6 +134,13 @@ class EventPDPTextFieldViewHolder(val view: View,
     fun LinkedHashMap<String, String>.getValueByPosition(position: Int) =
             this.values.toTypedArray()[position]
 
+    fun getKeyActive(form:Form):String{
+        return if(!textFormListener.getKeyActive().isNullOrEmpty()){
+            textFormListener.getKeyActive()
+        } else if (!form.valuePosition.isNullOrEmpty()){
+            form.valuePosition
+        } else ""
+    }
     interface TextFormListener {
         fun getKeyActive(): String
     }

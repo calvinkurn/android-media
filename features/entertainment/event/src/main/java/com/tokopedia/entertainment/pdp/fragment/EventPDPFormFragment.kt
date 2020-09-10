@@ -175,7 +175,10 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener, EventPDP
 
         if (eventCheckoutAdditionalData.additionalType != AdditionalType.NULL_DATA) {
             hideProgressBar()
-            requestData(eventCheckoutAdditionalData)
+            if (eventCheckoutAdditionalData.additionalType == AdditionalType.ITEM_FILLED ||
+                    eventCheckoutAdditionalData.additionalType == AdditionalType.PACKAGE_FILLED){
+                renderList(eventCheckoutAdditionalData.listForm.toMutableList())
+            } else requestData(eventCheckoutAdditionalData)
             showData()
         }
 
