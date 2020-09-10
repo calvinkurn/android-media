@@ -17,7 +17,6 @@ import com.tokopedia.developer_options.api.*
 import com.tokopedia.developer_options.presentation.feedbackpage.dialog.LoadingDialog
 import com.tokopedia.developer_options.presentation.preference.Preferences
 import com.tokopedia.screenshot_observer.Screenshot
-import com.tokopedia.screenshot_observer.ScreenshotData
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import okhttp3.MediaType
@@ -80,15 +79,18 @@ class FeedbackPageFragment: Fragment() {
         myPreferences = Preferences(context)
         loadingDialog = context?.let { LoadingDialog(it) }
 
+        uriImage = arguments?.getParcelable("EXTRA_URI_IMAGE")
+        imageView.setImageURI(uriImage)
 
-        screenshot = context?.contentResolver?.let {
+
+        /*screenshot = context?.contentResolver?.let {
             Screenshot(it, object : Screenshot.Listener {
                 override fun onScreenShotTaken(screenshotData: ScreenshotData?) {
                     uriImage = Uri.parse(screenshotData?.path)
                     imageView.setImageURI(uriImage)
                 }
             })
-        }!!
+        }!!*/
 
         context?.let { ArrayAdapter.createFromResource(it,
                 R.array.bug_type_array,
@@ -304,5 +306,16 @@ class FeedbackPageFragment: Fragment() {
                         name = affectedVersion
                 ))
         ))
+    }
+
+    companion object {
+        @JvmStatic
+        fun newInstance(extra: Bundle) : FeedbackPageFragment {
+            return FeedbackPageFragment().apply {
+                arguments = Bundle().apply {
+                    putParcelable("EXTRA_URI_IMAGE", extra.getParcelable("EXTRA_URI_IMAGE"))
+                }
+            }
+        }
     }
 }

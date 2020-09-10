@@ -7,18 +7,20 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.screenshot_observer.Screenshot
 
 class FeedbackPageActivity : BaseSimpleActivity() {
-
-    private lateinit var screenshot: Screenshot
 
     private val requiredPermissions: Array<String>
         get() = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.READ_EXTERNAL_STORAGE)
 
     override fun getNewFragment(): Fragment? {
-        return FeedbackPageFragment()
+        var fragment: FeedbackPageFragment? = null
+        if (intent.extras != null) {
+            val bundle = intent.extras
+            fragment = FeedbackPageFragment.newInstance(bundle?: Bundle())
+        }
+        return fragment
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
