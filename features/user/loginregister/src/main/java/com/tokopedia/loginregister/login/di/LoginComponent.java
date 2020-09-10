@@ -16,8 +16,7 @@ import dagger.Component;
         LoginModule.class,
         LoginQueryModule.class,
         LoginUseCaseModule.class,
-        SeamlessSellerViewModelModule.class,
-        DeviceFingerprintModule.class
+        SeamlessSellerViewModelModule.class
 }, dependencies = LoginRegisterComponent.class)
 public interface LoginComponent {
 

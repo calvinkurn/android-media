@@ -54,7 +54,6 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                                                    private val statusPinUseCase: StatusPinUseCase,
                                                    private val dynamicBannerUseCase: DynamicBannerUseCase,
                                                    private val statusFingerprintUseCase: StatusFingerprintUseCase,
-                                                   private val submitDeviceInfoUseCase: SubmitDeviceInfoUseCase,
                                                    private val fingerprintPreferenceHelper: FingerprintSetting,
                                                    private var cryptographyUtils: Cryptography?,
                                                    @Named(SESSION_MODULE)
@@ -339,9 +338,4 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
         tickerInfoUseCase.unsubscribe()
     }
 
-    fun submitDeviceInfo() {
-        GlobalScope.launch {
-            submitDeviceInfoUseCase.executeOnBackground()
-        }
-    }
 }
