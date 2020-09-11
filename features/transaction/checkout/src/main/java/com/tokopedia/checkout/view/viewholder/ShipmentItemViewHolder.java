@@ -159,7 +159,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private Typography tvChooseDurationTradeIn;
     private Typography textVariant;
     private Typography textCashback;
-    private Typography textWholesale;
     private Typography textLabelIncidentProductLevel;
 
     private TextView tvTradeInLabel;
@@ -289,7 +288,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         textLabelIncidentShopLevel = itemView.findViewById(R.id.text_label_incident_shop_level);
         textVariant = itemView.findViewById(R.id.text_variant);
         textCashback = itemView.findViewById(R.id.text_cashback);
-        textWholesale = itemView.findViewById(R.id.text_wholesale);
         textLabelIncidentProductLevel = itemView.findViewById(R.id.text_label_incident_product_level);
 
         //priority
@@ -543,7 +541,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private void renderProductProperties(CartItemModel cartItemModel) {
         // Render from the last information label
         renderProductPropertyIncidentLabel(cartItemModel);
-        renderProductPropertyWholesalePrice(cartItemModel);
         renderProductPropertyCashback(cartItemModel);
     }
 
@@ -556,22 +553,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         }
     }
 
-    private void renderProductPropertyWholesalePrice(CartItemModel cartItemModel) {
-        if (cartItemModel.isWholesalePrice()) {
-            if (textLabelIncidentProductLevel.getVisibility() == View.VISIBLE) {
-                textWholesale.setText("Harga Grosir" + ", ");
-            } else {
-                textWholesale.setText("Harga Grosir");
-            }
-            textWholesale.setVisibility(View.VISIBLE);
-        } else {
-            textWholesale.setVisibility(View.GONE);
-        }
-    }
-
     private void renderProductPropertyCashback(CartItemModel cartItemModel) {
         if (!TextUtils.isEmpty(cartItemModel.getCashback())) {
-            if (textLabelIncidentProductLevel.getVisibility() == View.VISIBLE || textWholesale.getVisibility() == View.VISIBLE) {
+            if (textLabelIncidentProductLevel.getVisibility() == View.VISIBLE) {
                 textCashback.setText("Cashback " + cartItemModel.getCashback() + ", ");
             } else {
                 textCashback.setText("Cashback " + cartItemModel.getCashback());

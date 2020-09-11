@@ -188,19 +188,6 @@
                 tools:visibility="visible" />
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/text_wholesale"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/dp_4"
-                android:layout_marginRight="@dimen/dp_4"
-                android:gravity="center_vertical"
-                android:paddingTop="@dimen/dp_4"
-                android:textColor="@color/Neutral_N700_68"
-                app:typographyType="small"
-                tools:text="Harga Grosir,"
-                tools:visibility="visible" />
-
-            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/text_label_incident_product_level"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
