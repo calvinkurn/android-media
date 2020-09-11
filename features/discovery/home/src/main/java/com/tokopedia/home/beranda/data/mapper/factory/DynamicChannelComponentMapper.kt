@@ -11,6 +11,8 @@ object DynamicChannelComponentMapper {
                 groupId = channel.groupId,
                 type = channel.type,
                 verticalPosition = verticalPosition,
+                contextualInfo = channel.contextualInfo,
+                widgetParam = channel.widgetParam,
                 channelHeader = ChannelHeader(
                         channel.header.id,
                         channel.header.name,

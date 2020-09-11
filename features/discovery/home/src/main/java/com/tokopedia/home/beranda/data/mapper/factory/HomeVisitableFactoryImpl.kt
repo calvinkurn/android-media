@@ -144,7 +144,12 @@ class HomeVisitableFactoryImpl(
         } else {
             dynamicChannelList = homeData?.dynamicHomeChannel?.channels as MutableList<DynamicHomeChannel.Channels>
         }
-
+        createFeaturedShopComponent(DynamicHomeChannel.Channels(
+                id="19320",
+                contextualInfo = 1,
+                header = DynamicHomeChannel.Header(name = "Toko Pilihan", applink = "http://tokopedia.com"),
+                banner = DynamicHomeChannel.Banner(title = "Toko Kecantikan", description = "Dari pembelian di kategori yang sering kamu beli", gradientColor = arrayListOf("#411C3B"), textColor = "#ffffff")
+        ), 1, isCache)
         dynamicChannelList.forEachIndexed { index, channel ->
             val position = index+1
             setDynamicChannelPromoName(position, channel)

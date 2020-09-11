@@ -84,7 +84,7 @@ class GetDisplayHeadlineAds @Inject constructor(
         graphqlUseCase.clearCache()
         graphqlUseCase.setGraphqlQuery(query)
         graphqlUseCase.setRequestParams(params)
-        return graphqlUseCase.executeOnBackground().data
+        return graphqlUseCase.executeOnBackground().displayAds.data
     }
 
 }

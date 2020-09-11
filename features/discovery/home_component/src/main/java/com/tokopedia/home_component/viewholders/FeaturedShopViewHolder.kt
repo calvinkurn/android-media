@@ -1,23 +1,18 @@
 package com.tokopedia.home_component.viewholders
 
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
+import android.graphics.Color
 import android.view.View
-import android.view.ViewGroup
 import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.listener.FeaturedShopListener
 import com.tokopedia.home_component.listener.HomeComponentListener
-import com.tokopedia.home_component.model.ChannelCtaData
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselEmptyCardDataModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselFeaturedShopCardDataModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselSeeMorePdpDataModel
 import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProductCardCarouselListener
@@ -25,7 +20,6 @@ import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCa
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.viewholders.adapter.FeaturedShopAdapter
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
-import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.home_component_lego_banner.view.home_component_header_view
 import kotlinx.android.synthetic.main.home_featured_shop.view.*
 
@@ -68,7 +62,6 @@ class FeaturedShopViewHolder(
     private fun initItems(element: FeaturedShopDataModel) {
         val typeFactoryImpl = CommonCarouselProductCardTypeFactoryImpl(element.channelModel)
         val listData = mutableListOf<Visitable<*>>()
-        listData.add(CarouselEmptyCardDataModel(element.channelModel, adapterPosition, this))
         val productDataList = convertDataToProductData(element.channelModel)
         listData.addAll(productDataList)
 
@@ -79,10 +72,17 @@ class FeaturedShopViewHolder(
     }
 
     private fun setHeaderComponent(element: FeaturedShopDataModel) {
-        val ctaData = element.channelModel.channelBanner.cta
+        var textColor = ContextCompat.getColor(itemView.context, R.color.Neutral_N50)
+        if(element.channelModel.channelBanner.textColor.isNotEmpty()){
+            try {
+                textColor = Color.parseColor(element.channelModel.channelBanner.textColor)
+            } catch (e: IllegalArgumentException) { }
+        }
         itemView.featured_shop_background.setGradientBackground(element.channelModel.channelBanner.gradientColor)
         itemView.banner_title?.text = element.channelModel.channelBanner.title
         itemView.banner_description?.text = element.channelModel.channelBanner.description
+        itemView.banner_title?.setTextColor(textColor)
+        itemView.banner_description?.setTextColor(textColor)
         itemView.home_component_header_view.setChannel(element.channelModel, object : HeaderListener {
             override fun onSeeAllClick(link: String) {
                 listener.onSeeAllClicked(element.channelModel, adapterPosition)

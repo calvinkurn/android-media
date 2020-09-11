@@ -1245,6 +1245,7 @@ open class HomeViewModel @Inject constructor(
                         )
                 )))
             }){
+                it.printStackTrace()
             }
         }
     }
@@ -1263,10 +1264,11 @@ open class HomeViewModel @Inject constructor(
                             isGoldMerchant = it.headline.shop.goldShop,
                             isOfficialStore = it.headline.shop.shopIsOfficialStore
                     ),
-                    countReviewFormat = it.headline.shop.product.review,
-                    rating = it.headline.shop.product.rating,
+                    countReviewFormat = it.headline.shop.products.firstOrNull()?.review ?: "",
+                    rating = it.headline.shop.products.firstOrNull()?.rating ?: 0,
                     impression = it.headline.image.url,
-                    productClickUrl = it.adClickUrl
+                    productClickUrl = it.adClickUrl,
+                    imageUrl = it.headline.shop.products.firstOrNull()?.imageProduct?.imageUrl ?: ""
             )
         }
     }

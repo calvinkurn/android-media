@@ -39,10 +39,11 @@
         android:textSize="@dimen/sp_18"
         android:maxLines="1"
         android:ellipsize="end"
+
         app:layout_constraintBottom_toTopOf="@+id/banner_description"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/background"
+        app:layout_constraintTop_toTopOf="@+id/featured_shop_background"
         app:layout_constraintVertical_chainStyle="spread"
         app:typographyType="heading_3"
         tools:text="Gratis Ongkir"
@@ -73,7 +74,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/dc_banner_rv"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="240dp"
         android:layout_marginTop="@dimen/dp_4"
         android:orientation="horizontal"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"

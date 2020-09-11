@@ -2,6 +2,7 @@ package com.tokopedia.home_component.productcardgridcarousel.viewHolder
 
 import android.view.View
 import androidx.annotation.DrawableRes
+import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.model.ChannelModel
@@ -61,6 +62,7 @@ class CarouselFeaturedShopViewHolder (
     }
 
     private fun setImageShop(imageUrl:String){
+        itemView.featured_shop_product_image?.show()
         itemView.featured_shop_product_image?.loadImageNoRounded(imageUrl, R.drawable.placeholder_grey)
     }
 
@@ -69,15 +71,25 @@ class CarouselFeaturedShopViewHolder (
     }
 
     private fun setShopLogo(imageUrl: String){
-        itemView.featured_shop_product_logo_shop?.loadImage(imageUrl, R.drawable.placeholder_grey)
+        itemView.featured_shop_product_logo_shop?.shouldShowWithAction(imageUrl.isNotBlank()){
+            Glide.with(itemView)
+                    .load(imageUrl)
+                    .circleCrop()
+                    .placeholder(R.drawable.placeholder_grey)
+                    .into(itemView.featured_shop_product_logo_shop)
+        }
     }
 
     private fun setShopBadge(imageUrl: String){
-        itemView.featured_shop_product_shop_badge?.loadImage(imageUrl, R.drawable.placeholder_grey)
+        itemView.featured_shop_product_shop_badge?.shouldShowWithAction(imageUrl.isNotBlank()){
+            itemView.featured_shop_product_shop_badge?.loadImage(imageUrl, R.drawable.placeholder_grey)
+        }
     }
 
     private fun setShopName(shopName: String){
-        itemView.featured_shop_product_shop_name.text = shopName
+        itemView.featured_shop_product_shop_name.shouldShowWithAction(shopName.isNotBlank()){
+            itemView.featured_shop_product_shop_name.text = shopName
+        }
     }
 
     private fun setContextualInfo(contextualInfo: Int, dataModel: CarouselFeaturedShopCardDataModel){

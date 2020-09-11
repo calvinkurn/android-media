@@ -27,7 +27,7 @@ object FeaturedShopTracking : BaseTracking() {
                 Promotion(
                         id = channelModel.id + "_" + channelGrid.id + "_" + channelModel.trackingAttributionModel.persoType+ "_" + channelModel.trackingAttributionModel.categoryId,
                         name = PROMOTION_NAME_SHOP.format(widgetPosition, DYNAMIC_CHANNEL_SHOP, channelModel.channelHeader.name),
-                        creative = channelGrid.shop.id + "-" + channelGrid.shopBadgeUrl,
+                        creative = channelGrid.shop.id + "-" + channelGrid.shop.shopBadgeUrl,
                         position = position.toString()
                 )
             )
@@ -48,7 +48,7 @@ object FeaturedShopTracking : BaseTracking() {
                     Promotion(
                             id = channelModel.id + "_" + channelGrid.id + "_" + channelModel.trackingAttributionModel.persoType+ "_" + channelModel.trackingAttributionModel.categoryId,
                             name = PROMOTION_NAME_SHOP.format(widgetPosition, DYNAMIC_CHANNEL_SHOP, channelModel.channelHeader.name),
-                            creative = channelModel.trackingAttributionModel.categoryId + "-" + channelGrid.shopBadgeUrl,
+                            creative = channelModel.trackingAttributionModel.categoryId + "-" + channelGrid.shop.shopBadgeUrl,
                             position = position.toString()
                     )
             ),

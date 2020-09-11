@@ -13,7 +13,7 @@ data class FeaturedShopDataModel(
 ) : HomeComponentVisitable {
     override fun visitableId(): String = channelModel.id
 
-    override fun equalsWith(b: Any?): Boolean = b is FeaturedShopDataModel && b.channelModel.id == channelModel.id
+    override fun equalsWith(b: Any?): Boolean = b is FeaturedShopDataModel && b.channelModel.channelGrids == channelModel.channelGrids
 
     override fun getChangePayloadFrom(b: Any?): Bundle? = Bundle()
 

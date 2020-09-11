@@ -7,8 +7,11 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class DisplayHeadlineAdsEntity(
-        @SerializedName("data") val data: List<DisplayHeadlineAds> = listOf()
+        @SerializedName("displayAdsV3") val displayAds: DisplayAds = DisplayAds()
 ){
+    data class DisplayAds(
+            @SerializedName("data") val data: List<DisplayHeadlineAds> = listOf()
+    )
     data class DisplayHeadlineAds(
             @SerializedName("id") val id: String = "",
             @SerializedName("ad_ref_key") val adRefKey: String = "",
@@ -52,11 +55,11 @@ data class DisplayHeadlineAdsEntity(
                 @SerializedName("shop_is_official") val shopIsOfficialStore: Boolean = false,
                 @SerializedName("is_followed") val isFollowed: Boolean = false,
                 @SerializedName("image_shop") val imageShop: ImageShop = ImageShop(),
-                @SerializedName("product") val product: Product = Product()
+                @SerializedName("product") val products: List<Product> = listOf()
 
         ){
             data class ImageShop(
-                    @SerializedName("cover") val cover: String = ""
+                    @SerializedName("s_url") val cover: String = ""
             )
         }
 
