@@ -130,6 +130,9 @@ public class Product {
     @SerializedName("variant_description_detail")
     @Expose
     private VariantDescriptionDetail variantDescriptionDetail;
+    @SerializedName("product_alert_message")
+    @Expose
+    private String productAlertMessage;
 
     public String getProductCategory() {
         return productCategory;
@@ -289,5 +292,9 @@ public class Product {
 
     public VariantDescriptionDetail getVariantDescriptionDetail() {
         return variantDescriptionDetail;
+    }
+
+    public String getProductAlertMessage() {
+        return productAlertMessage;
     }
 }

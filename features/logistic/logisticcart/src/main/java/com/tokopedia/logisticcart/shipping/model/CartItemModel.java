@@ -65,6 +65,9 @@ public class CartItemModel implements Parcelable {
     private int newDevicePrice;
     private int oldDevicePrice;
 
+    private String productAlertMessage;
+    private boolean isWholesalePrice;
+
     public String getPreOrderInfo() {
         return preOrderInfo;
     }
@@ -419,6 +422,22 @@ public class CartItemModel implements Parcelable {
         this.variant = variant;
     }
 
+    public String getProductAlertMessage() {
+        return productAlertMessage;
+    }
+
+    public void setProductAlertMessage(String productAlertMessage) {
+        this.productAlertMessage = productAlertMessage;
+    }
+
+    public boolean isWholesalePrice() {
+        return isWholesalePrice;
+    }
+
+    public void setWholesalePrice(boolean wholesalePrice) {
+        isWholesalePrice = wholesalePrice;
+    }
+
     public CartItemModel() {
     }
 
@@ -539,6 +558,8 @@ public class CartItemModel implements Parcelable {
         dest.writeString(this.freeShippingBadgeUrl);
         dest.writeByte(this.showTicker ? (byte) 1: (byte) 0);
         dest.writeString(this.tickerMessage);
+        dest.writeString(this.productAlertMessage);
+        dest.writeByte(this.isWholesalePrice ? (byte) 1: (byte) 0);
     }
 
     protected CartItemModel(Parcel in) {
@@ -578,6 +599,8 @@ public class CartItemModel implements Parcelable {
         this.freeShippingBadgeUrl = in.readString();
         this.showTicker = in.readByte() != 0;
         this.tickerMessage = in.readString();
+        this.productAlertMessage = in.readString();
+        this.isWholesalePrice = in.readByte() != 0;
     }
 
     public static final Creator<CartItemModel> CREATOR = new Creator<CartItemModel>() {

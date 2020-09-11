@@ -276,8 +276,10 @@ public class ShipmentDataConverter {
         cartItemModel.setCurrency(product.getProductPriceCurrency());
         if (product.getProductWholesalePrice() != 0) {
             cartItemModel.setPrice(product.getProductWholesalePrice());
+            cartItemModel.setWholesalePrice(true);
         } else {
             cartItemModel.setPrice(product.getProductPrice());
+            cartItemModel.setWholesalePrice(false);
         }
         cartItemModel.setOriginalPrice(product.getProductOriginalPrice());
         cartItemModel.setQuantity(product.getProductQuantity());
@@ -301,6 +303,7 @@ public class ShipmentDataConverter {
         cartItemModel.setShowTicker(product.isShowTicker());
         cartItemModel.setTickerMessage(product.getTickerMessage());
         cartItemModel.setVariant(product.getVariant());
+        cartItemModel.setProductAlertMessage(product.getProductAlertMessage());
 
         if (product.getTradeInInfoData() != null && product.getTradeInInfoData().isValidTradeIn()) {
             cartItemModel.setValidTradeIn(true);

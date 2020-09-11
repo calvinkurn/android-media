@@ -57,6 +57,7 @@ public class Product implements Parcelable {
     private boolean showTicker;
     private String tickerMessage;
     private String variant;
+    private String productAlertMessage;
 
     private AnalyticsProductCheckoutData analyticsProductCheckoutData;
 
@@ -412,6 +413,14 @@ public class Product implements Parcelable {
         this.variant = variant;
     }
 
+    public String getProductAlertMessage() {
+        return productAlertMessage;
+    }
+
+    public void setProductAlertMessage(String productAlertMessage) {
+        this.productAlertMessage = productAlertMessage;
+    }
+
     public Product() {
     }
 
@@ -465,6 +474,7 @@ public class Product implements Parcelable {
         dest.writeByte(this.showTicker ? (byte) 1 : (byte) 0);
         dest.writeString(this.tickerMessage);
         dest.writeString(this.variant);
+        dest.writeString(this.productAlertMessage);
     }
 
     protected Product(Parcel in) {
@@ -511,6 +521,7 @@ public class Product implements Parcelable {
         this.showTicker = in.readByte() != 0;
         this.tickerMessage = in.readString();
         this.variant = in.readString();
+        this.productAlertMessage = in.readString();
     }
 
     public static final Creator<Product> CREATOR = new Creator<Product>() {

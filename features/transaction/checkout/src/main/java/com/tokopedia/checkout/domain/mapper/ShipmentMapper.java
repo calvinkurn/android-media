@@ -687,6 +687,8 @@ public class ShipmentMapper implements IShipmentMapper {
                                         productResult.setVariant(product.getVariantDescriptionDetail().getVariantDescription());
                                     }
 
+                                    productResult.setProductAlertMessage(product.getProductAlertMessage());
+
                                     if (!UtilsKt.isNullOrEmpty(product.getProductShipment())) {
                                         List<ProductShipment> productShipmentListResult = new ArrayList<>();
                                         for (com.tokopedia.checkout.data.model.response.shipment_address_form.ProductShipment

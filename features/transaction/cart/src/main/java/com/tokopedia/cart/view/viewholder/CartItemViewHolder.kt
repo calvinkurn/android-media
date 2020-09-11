@@ -19,7 +19,6 @@ import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_DELE
 import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_NOTES
 import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_WISHLIST
 import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_WISHLISTED
-import com.tokopedia.cart.view.*
 import com.tokopedia.cart.view.adapter.CartItemAdapter
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.design.utils.CurrencyFormatUtil
@@ -44,7 +43,6 @@ import rx.subscriptions.CompositeSubscription
 import java.text.NumberFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
-import kotlin.math.roundToInt
 
 /**
  * @author anggaprasetiyo on 13/03/18.
@@ -324,10 +322,10 @@ class CartItemViewHolder constructor(itemView: View,
 
     private fun renderProductProperties(data: CartItemHolderData) {
         // Render from the last information label
-        renderProductPropertiesIncidentLabel(data)
-        renderProductPropertiesWholesalePrice(data)
-        renderProductPropertiesPriceDrop(data)
-        renderProductPropertiesCashback(data)
+        renderProductPropertyIncidentLabel(data)
+        renderProductPropertyWholesalePrice(data)
+        renderProductPropertyPriceDrop(data)
+        renderProductPropertyCashback(data)
 
         sendAnalyticsShowInformation(informationLabel, data.cartItemData?.originData?.productId
                 ?: "")
@@ -338,7 +336,7 @@ class CartItemViewHolder constructor(itemView: View,
         actionListener?.onCartItemShowInformationLabel(productId, informations)
     }
 
-    private fun renderProductPropertiesIncidentLabel(data: CartItemHolderData) {
+    private fun renderProductPropertyIncidentLabel(data: CartItemHolderData) {
         if (data.cartItemData?.originData?.productAlertMessage?.isNotEmpty() == true) {
             textIncidentLabel.text = data.cartItemData?.originData?.productAlertMessage
             textIncidentLabel.show()
@@ -347,7 +345,7 @@ class CartItemViewHolder constructor(itemView: View,
         }
     }
 
-    private fun renderProductPropertiesWholesalePrice(data: CartItemHolderData) {
+    private fun renderProductPropertyWholesalePrice(data: CartItemHolderData) {
         if (data.cartItemData?.originData?.wholesalePrice ?: 0 > 0) {
             if (textIncidentLabel.visibility == View.VISIBLE) {
                 textWholesalePrice.text = "Harga Grosir, "
@@ -361,7 +359,7 @@ class CartItemViewHolder constructor(itemView: View,
         }
     }
 
-    private fun renderProductPropertiesPriceDrop(data: CartItemHolderData) {
+    private fun renderProductPropertyPriceDrop(data: CartItemHolderData) {
         if (data.cartItemData?.originData?.initialPriceBeforeDrop ?: 0 > 0 &&
                 data.cartItemData?.originData?.initialPriceBeforeDrop ?: 0 > data.cartItemData?.originData?.pricePlan?.toInt() ?: 0) {
             if (textIncidentLabel.visibility == View.VISIBLE || textWholesalePrice.visibility == View.VISIBLE) {
@@ -376,7 +374,7 @@ class CartItemViewHolder constructor(itemView: View,
         }
     }
 
-    private fun renderProductPropertiesCashback(data: CartItemHolderData) {
+    private fun renderProductPropertyCashback(data: CartItemHolderData) {
         if (data.cartItemData?.originData?.productCashBack?.isNotBlank() == true) {
             if (textIncidentLabel.visibility == View.VISIBLE || textWholesalePrice.visibility == View.VISIBLE || textPriceDrop.visibility == View.VISIBLE) {
                 textCashback.text = "${data.cartItemData?.originData?.cashBackInfo ?: ""}, "

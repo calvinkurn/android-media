@@ -158,6 +158,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private Typography labelChooseDurationTradeIn;
     private Typography tvChooseDurationTradeIn;
     private Typography textVariant;
+    private Typography textCashback;
+    private Typography textWholesale;
+    private Typography textLabelIncidentProductLevel;
 
     private TextView tvTradeInLabel;
 
@@ -285,6 +288,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         labelPreOrder = itemView.findViewById(R.id.label_pre_order);
         textLabelIncidentShopLevel = itemView.findViewById(R.id.text_label_incident_shop_level);
         textVariant = itemView.findViewById(R.id.text_variant);
+        textCashback = itemView.findViewById(R.id.text_cashback);
+        textWholesale = itemView.findViewById(R.id.text_wholesale);
+        textLabelIncidentProductLevel = itemView.findViewById(R.id.text_label_incident_product_level);
 
         //priority
         llPrioritas = itemView.findViewById(R.id.ll_prioritas);
@@ -531,22 +537,65 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         renderNotesForSeller(cartItemModel);
         renderPurchaseProtection(cartItemModel);
         renderProductTicker(cartItemModel);
+        renderProductProperties(cartItemModel);
+    }
+
+    private void renderProductProperties(CartItemModel cartItemModel) {
+        // Render from the last information label
+        renderProductPropertyIncidentLabel(cartItemModel);
+        renderProductPropertyWholesalePrice(cartItemModel);
+        renderProductPropertyCashback(cartItemModel);
+    }
+
+    private void renderProductPropertyIncidentLabel(CartItemModel cartItemModel) {
+        if (!TextUtils.isEmpty(cartItemModel.getProductAlertMessage())) {
+            textLabelIncidentProductLevel.setText(cartItemModel.getProductAlertMessage());
+            textLabelIncidentProductLevel.setVisibility(View.VISIBLE);
+        } else {
+            textLabelIncidentProductLevel.setVisibility(View.GONE);
+        }
+    }
+
+    private void renderProductPropertyWholesalePrice(CartItemModel cartItemModel) {
+        if (cartItemModel.isWholesalePrice()) {
+            if (textLabelIncidentProductLevel.getVisibility() == View.VISIBLE) {
+                textWholesale.setText("Harga Grosir" + ", ");
+            } else {
+                textWholesale.setText("Harga Grosir");
+            }
+            textWholesale.setVisibility(View.VISIBLE);
+        } else {
+            textWholesale.setVisibility(View.GONE);
+        }
+    }
+
+    private void renderProductPropertyCashback(CartItemModel cartItemModel) {
+        if (!TextUtils.isEmpty(cartItemModel.getCashback())) {
+            if (textLabelIncidentProductLevel.getVisibility() == View.VISIBLE || textWholesale.getVisibility() == View.VISIBLE) {
+                textCashback.setText("Cashback " + cartItemModel.getCashback() + ", ");
+            } else {
+                textCashback.setText("Cashback " + cartItemModel.getCashback());
+            }
+            textCashback.setVisibility(View.VISIBLE);
+        } else {
+            textCashback.setVisibility(View.GONE);
+        }
     }
 
     private void renderProductPrice(CartItemModel cartItemModel) {
         tvProductPrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(
                 (long) cartItemModel.getPrice(), false)));
+        int dp4 = tvProductPrice.getResources().getDimensionPixelOffset(R.dimen.dp_4);
+        int dp10 = tvProductPrice.getResources().getDimensionPixelOffset(R.dimen.dp_10);
         if (cartItemModel.getOriginalPrice() > 0) {
-            tvProductPrice.setPadding(tvProductPrice.getResources().getDimensionPixelOffset(R.dimen.dp_4),
-                    tvProductPrice.getResources().getDimensionPixelOffset(R.dimen.dp_4), 0, 0);
+            tvProductPrice.setPadding(dp4, dp4, 0, 0);
             tvProductOriginalPrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(
                     cartItemModel.getOriginalPrice(), false
             )));
             tvProductOriginalPrice.setPaintFlags(tvProductOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             tvProductOriginalPrice.setVisibility(View.VISIBLE);
         } else {
-            tvProductPrice.setPadding(tvProductPrice.getResources().getDimensionPixelOffset(R.dimen.dp_10),
-                    tvProductPrice.getResources().getDimensionPixelOffset(R.dimen.dp_4), 0, 0);
+            tvProductPrice.setPadding(dp10, dp4, 0, 0);
             tvProductOriginalPrice.setVisibility(View.GONE);
         }
     }

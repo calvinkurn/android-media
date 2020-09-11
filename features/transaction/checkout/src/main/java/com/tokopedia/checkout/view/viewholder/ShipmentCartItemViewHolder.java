@@ -52,6 +52,9 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
     private TextView tvErrorShipmentItemDescription;
     private Ticker productTicker;
     private Typography mTextVariant;
+    private Typography mTextCashback;
+    private Typography mTextWholesale;
+    private Typography mTextLabelIncidentProductLevel;
 
     public ShipmentCartItemViewHolder(View itemView) {
         super(itemView);
@@ -74,6 +77,9 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
         tvErrorShipmentItemDescription = itemView.findViewById(R.id.tv_error_shipment_item_description);
         productTicker = itemView.findViewById(R.id.product_ticker);
         mTextVariant = itemView.findViewById(R.id.text_variant);
+        mTextCashback = itemView.findViewById(R.id.text_cashback);
+        mTextWholesale = itemView.findViewById(R.id.text_wholesale);
+        mTextLabelIncidentProductLevel = itemView.findViewById(R.id.text_label_incident_product_level);
     }
 
     public void bindViewHolder(CartItemModel cartItem, ShipmentItemListener listener) {
@@ -100,6 +106,49 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
         renderNotesToSeller(cartItem);
         renderPurchaseProtection(cartItem);
         renderProductTicker(cartItem);
+        renderProductProperties(cartItem);
+    }
+
+    private void renderProductProperties(CartItemModel cartItemModel) {
+        // Render from the last information label
+        renderProductPropertyIncidentLabel(cartItemModel);
+        renderProductPropertyWholesalePrice(cartItemModel);
+        renderProductPropertyCashback(cartItemModel);
+    }
+
+    private void renderProductPropertyIncidentLabel(CartItemModel cartItemModel) {
+        if (!TextUtils.isEmpty(cartItemModel.getProductAlertMessage())) {
+            mTextLabelIncidentProductLevel.setText(cartItemModel.getProductAlertMessage());
+            mTextLabelIncidentProductLevel.setVisibility(View.VISIBLE);
+        } else {
+            mTextLabelIncidentProductLevel.setVisibility(View.GONE);
+        }
+    }
+
+    private void renderProductPropertyWholesalePrice(CartItemModel cartItemModel) {
+        if (cartItemModel.isWholesalePrice()) {
+            if (mTextLabelIncidentProductLevel.getVisibility() == View.VISIBLE) {
+                mTextWholesale.setText("Harga Grosir" + ", ");
+            } else {
+                mTextWholesale.setText("Harga Grosir");
+            }
+            mTextWholesale.setVisibility(View.VISIBLE);
+        } else {
+            mTextWholesale.setVisibility(View.GONE);
+        }
+    }
+
+    private void renderProductPropertyCashback(CartItemModel cartItemModel) {
+        if (!TextUtils.isEmpty(cartItemModel.getCashback())) {
+            if (mTextLabelIncidentProductLevel.getVisibility() == View.VISIBLE || mTextWholesale.getVisibility() == View.VISIBLE) {
+                mTextCashback.setText("Cashback " + cartItemModel.getCashback() + ", ");
+            } else {
+                mTextCashback.setText("Cashback " + cartItemModel.getCashback());
+            }
+            mTextCashback.setVisibility(View.VISIBLE);
+        } else {
+            mTextCashback.setVisibility(View.GONE);
+        }
     }
 
     private void renderProductPrice(CartItemModel cartItem) {
