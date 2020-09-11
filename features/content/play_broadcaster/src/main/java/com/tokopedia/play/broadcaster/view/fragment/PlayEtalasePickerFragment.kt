@@ -214,9 +214,7 @@ class PlayEtalasePickerFragment @Inject constructor(
 
             override fun onNewKeyword(view: PlaySearchBar, keyword: String) {
                 val currFragment = currentFragment
-                if (currFragment is PlaySearchSuggestionsFragment) {
-                    currFragment.searchKeyword(keyword)
-                }
+                if (currFragment is PlaySearchSuggestionsFragment) currFragment.searchKeyword(keyword)
             }
 
             override fun onSearchButtonClicked(view: PlaySearchBar, keyword: String) {
