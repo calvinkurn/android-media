@@ -160,7 +160,7 @@ abstract class BaseTrackerConst {
                     PROMO_VIEW, getPromotionsMap(promotions))
         }
 
-        fun getEcommerceObjectPromoView(promotions: List<Any>?): Map<String, Any>? {
+        fun getEcommerceObjectPromoView(promotions: List<Any>?): Map<String, Any> {
             return DataLayer.mapOf(
                     PROMO_VIEW,
                     DataLayer.mapOf(PROMOTIONS, DataLayer.listOf(
