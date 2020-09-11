@@ -9,7 +9,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.troubleshooter.notification.R
 import com.tokopedia.troubleshooter.notification.ui.listener.FooterListener
 import com.tokopedia.troubleshooter.notification.ui.uiview.FooterUIView
-import com.tokopedia.troubleshooter.notification.util.ClearCacheUtil.showClearCache
 import com.tokopedia.troubleshooter.notification.util.gotoDeviceSettings
 import com.tokopedia.unifycomponents.UnifyButton
 
@@ -50,11 +49,11 @@ class FooterViewHolder(
     }
 
     private fun onActionClicked(isDndMode: Boolean) {
-        if (!isDndMode) showClearCache(context) else dndMode()
-    }
-
-    private fun dndMode() {
-        context?.gotoDeviceSettings()
+        if (!isDndMode) {
+            listener.onClearCacheClicked()
+        } else {
+            context?.gotoDeviceSettings()
+        }
     }
 
     companion object {
