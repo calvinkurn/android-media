@@ -25,6 +25,7 @@ import junit.framework.Assert.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -56,7 +57,6 @@ class OtherMenuViewModelTest {
     fun setup() {
         MockKAnnotations.init(this)
         testCoroutineDispatcher = SellerHomeCoroutineTestDispatcher
-
 
         mViewModel =
                 OtherMenuViewModel(
@@ -131,6 +131,12 @@ class OtherMenuViewModelTest {
 
         mockViewModel.isToasterAlreadyShown.observeOnce {
             assertTrue(it)
+        }
+
+        (testCoroutineDispatcher.io() as TestCoroutineDispatcher).advanceTimeBy(5000L)
+
+        mockViewModel.isToasterAlreadyShown.observeOnce {
+            assertFalse(it)
         }
     }
 
