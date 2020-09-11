@@ -10,11 +10,13 @@ import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.domain.CheckoutOccUseCase
 import com.tokopedia.oneclickcheckout.order.domain.GetOccCartUseCase
 import com.tokopedia.oneclickcheckout.order.domain.UpdateCartOccUseCase
+import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageCartProcessor
+import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageCheckoutProcessor
+import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageLogisticProcessor
+import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePromoProcessor
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.editaddress.domain.usecase.EditAddressUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
-import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
-import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.MockK
@@ -63,8 +65,6 @@ open class BaseOrderSummaryPageViewModelTest {
 
     val testDispatchers: TestDispatchers = TestDispatchers
 
-    private val testSchedulers: ExecutorSchedulers = TestSchedulers
-
     lateinit var helper: OrderSummaryPageViewModelTestHelper
 
     lateinit var orderSummaryPageViewModel: OrderSummaryPageViewModel
@@ -73,9 +73,11 @@ open class BaseOrderSummaryPageViewModelTest {
     fun setUp() {
         MockKAnnotations.init(this)
         helper = OrderSummaryPageViewModelTestHelper()
-        orderSummaryPageViewModel = OrderSummaryPageViewModel(testDispatchers, testSchedulers, addToCartOccExternalUseCase,
-                getOccCartUseCase, ratesUseCase, getPreferenceListUseCase, updateCartOccUseCase, ratesResponseStateConverter,
-                editAddressUseCase, checkoutOccUseCase, clearCacheAutoApplyStackUseCase,
-                validateUsePromoRevampUseCase, userSessionInterface, orderSummaryAnalytics)
+        orderSummaryPageViewModel = OrderSummaryPageViewModel(testDispatchers, getPreferenceListUseCase,
+                OrderSummaryPageCartProcessor(addToCartOccExternalUseCase, getOccCartUseCase, updateCartOccUseCase, orderSummaryAnalytics, testDispatchers),
+                OrderSummaryPageLogisticProcessor(ratesUseCase, ratesResponseStateConverter, editAddressUseCase, userSessionInterface, orderSummaryAnalytics, testDispatchers),
+                OrderSummaryPageCheckoutProcessor(checkoutOccUseCase, orderSummaryAnalytics, testDispatchers),
+                OrderSummaryPagePromoProcessor(validateUsePromoRevampUseCase, clearCacheAutoApplyStackUseCase, orderSummaryAnalytics, testDispatchers),
+                userSessionInterface, orderSummaryAnalytics)
     }
 }
