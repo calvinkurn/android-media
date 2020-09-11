@@ -41,7 +41,6 @@ class DigitalProductBottomSheet : BottomSheetUnify() {
             productPrice = view.findViewById(R.id.telco_product_price)
             selectItemBtn = view.findViewById(R.id.telco_button_select_item)
             productPromoPrice = view.findViewById(R.id.telco_product_promo_price)
-            productPromoPrice.visibility = View.GONE
 
             arguments?.let {
                 setTitle(it.getString(TITLE, ""))
