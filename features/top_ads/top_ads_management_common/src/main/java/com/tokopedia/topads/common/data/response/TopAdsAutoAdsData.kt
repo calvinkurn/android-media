@@ -1,4 +1,4 @@
-package com.tokopedia.topads.auto.data.entity
+package com.tokopedia.topads.common.data.response
 
 import com.google.gson.annotations.SerializedName
 

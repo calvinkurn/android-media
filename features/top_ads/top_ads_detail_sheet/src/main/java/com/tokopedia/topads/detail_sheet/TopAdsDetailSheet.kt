@@ -5,15 +5,16 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Switch
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.topads.auto.view.widget.AutoAdsWidget
+import com.tokopedia.topads.common.data.internal.AutoAdsStatus
 import com.tokopedia.topads.common.data.response.nongroupItem.WithoutGroupDataItem
 import com.tokopedia.topads.detail_sheet.data.AdData
 import com.tokopedia.topads.detail_sheet.di.DaggerTopAdsSheetComponent
@@ -35,6 +36,8 @@ class TopAdsDetailSheet : BottomSheetUnify() {
     private var adId: String = "0"
     private var category: Int = 0
     private var adType: String = "1"
+    private var adPriceBid: Int = 0
+    private var currentAutoAdsStatus = 100
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -50,9 +53,23 @@ class TopAdsDetailSheet : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getComponent(context!!).inject(this)
+        context?.let {
+            getComponent(it).inject(this)
+        }
         viewModel = ViewModelProviders.of(context as BaseSimpleActivity, viewModelFactory).get(TopAdsSheetViewModel::class.java)
         setFragment()
+        viewModel.autoAdsData.observe(viewLifecycleOwner, Observer {
+            currentAutoAdsStatus = it.status
+            if (category == TYPE_AUTO || isInProgress()) {
+                if ((adId.isNotEmpty() && adId.toInt() > 0 && adType == AD_TYPE_PRODUCT) || isInProgress()) {
+                    editAd?.text = getString(R.string.topads_detail_sheet_auto)
+                } else {
+                    editAd?.text = getString(R.string.topads_detail_sheet_dashboard)
+                    tickerInfo?.visibility = View.VISIBLE
+                    adInfo?.visibility = View.GONE
+                }
+            }
+        })
         bottomSheetBehaviorKnob(view, true)
     }
 
@@ -84,11 +101,12 @@ class TopAdsDetailSheet : BottomSheetUnify() {
 
 
     private fun setFragment() {
+        viewModel.getAutoAdsStatus(userSession.shopId, resources)
         viewModel.getGroupId(userSession.shopId, adId, ::onSuccessGroupId)
         viewModel.getProductStats(resources, listOf(adId), ::onsuccessProductStats)
         when (category) {
             TYPE_MANUAL -> {
-                autoads_widget?.visibility = View.GONE
+                autoAdsWidget?.visibility = View.GONE
             }
             TYPE_AUTO -> {
                 imgProduct?.visibility = View.GONE
@@ -96,23 +114,24 @@ class TopAdsDetailSheet : BottomSheetUnify() {
                 txtBudget?.visibility = View.GONE
                 btn_switch?.visibility = View.GONE
                 autoAdsWidget?.loadData(LOAD_DATA_SHEET)
-                if (adId.isNotEmpty() && adId.toInt() > 0 && adType == "1") {
-                    editAd?.text = getString(R.string.topads_detail_sheet_auto)
-                } else {
-                    editAd?.text = getString(R.string.topads_detail_sheet_dashboard)
-                    tickerInfo?.visibility = View.VISIBLE
-                    adInfo?.visibility = View.GONE
-                }
-                autoads_widget.visibility = View.VISIBLE
+                autoAdsWidget?.visibility = View.VISIBLE
             }
         }
 
         editAd.setOnClickListener {
             if (category == TYPE_MANUAL) {
-                val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS)?.apply {
-                    putExtra(GROUPID, groupId)
+                val intent = if (groupId == SINGE_AD) {
+                    RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_WITHOUT_GROUP).apply {
+                        putExtra(GROUPID, adId.toInt())
+                        putExtra(PRICEBID, adPriceBid)
+                    }
+                } else {
+                    RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS)?.apply {
+                        putExtra(GROUPID, groupId)
+                    }
                 }
                 startActivity(intent)
+
             } else if (category == TYPE_AUTO) {
                 if (adId.toInt() > 0 && adType == AD_TYPE_PRODUCT) {
                     val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_AUTOADS)
@@ -137,13 +156,24 @@ class TopAdsDetailSheet : BottomSheetUnify() {
         }
     }
 
+    private fun isInProgress(): Boolean {
+        return (currentAutoAdsStatus == AutoAdsStatus.STATUS_IN_PROGRESS_ACTIVE ||
+                currentAutoAdsStatus == AutoAdsStatus.STATUS_IN_PROGRESS_INACTIVE)
+    }
+
     private fun onSuccessGroupId(data: List<AdData>) {
-        groupId = data[0].groupID
-        btn_switch?.isChecked = data[0].status == STATUS_ACTIVE || data[0].status == STATUS_TIDAK_TAMPIL
-        txtBudget?.text = String.format(getString(R.string.topads_detail_budget), data[0].priceBid)
+        data.firstOrNull().let {
+            groupId = it?.groupID ?: SINGE_AD
+            btn_switch?.isChecked = it?.status == STATUS_ACTIVE || it?.status == STATUS_TIDAK_TAMPIL
+            txtBudget?.text = String.format(getString(R.string.topads_detail_budget), it?.priceBid)
+            adPriceBid = it?.priceBid ?: 0
+
+        }
+
         viewModel.getGroupProductData(resources, groupId.toInt(), ::onSuccessProductInfo)
         if (groupId == SINGE_AD && category != TYPE_AUTO) {
             singleAd.visibility = View.VISIBLE
+            txtBudget.visibility = View.GONE
             createGroup.setOnClickListener {
                 RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_CREATE_ADS)
             }
@@ -162,11 +192,13 @@ class TopAdsDetailSheet : BottomSheetUnify() {
     }
 
     private fun onsuccessProductStats(data: List<WithoutGroupDataItem>) {
-        tampil_count.text = data[0].statTotalImpression
-        klik_count.text = data[0].statTotalClick
-        persentase_klik_count.text = data[0].statTotalCtr
-        pengeluaran_count.text = data[0].statTotalSpent
-        produk_terjual_count.text = data[0].statTotalConversion
+        data.firstOrNull().let {
+            tampil_count.text = it?.statTotalImpression
+            klik_count.text = it?.statTotalClick
+            persentase_klik_count.text = it?.statTotalCtr
+            pengeluaran_count.text = it?.statTotalSpent
+            produk_terjual_count.text = it?.statTotalConversion
+        }
     }
 
     companion object {
@@ -180,6 +212,7 @@ class TopAdsDetailSheet : BottomSheetUnify() {
         private const val SINGE_AD = "0"
         private const val TYPE_MANUAL = 3
         private const val TYPE_AUTO = 4
+        private const val PRICEBID = "price_bid"
         private const val TOPADS_BOTTOM_SHEET_TAG = "SORT_FILTER_BOTTOM_SHEET_TAG"
         fun newInstance(): TopAdsDetailSheet = TopAdsDetailSheet()
 

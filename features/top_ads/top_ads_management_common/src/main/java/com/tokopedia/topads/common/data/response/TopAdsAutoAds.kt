@@ -1,17 +1,16 @@
-package com.tokopedia.topads.auto.data.network.response
+package com.tokopedia.topads.common.data.response
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.topads.auto.data.entity.TopAdsAutoAdsData
 
 /**
  * Author errysuprayogi on 15,May,2019
  */
 data class TopAdsAutoAds (
 
-    @SerializedName("data")
+        @SerializedName("data")
     val data: TopAdsAutoAdsData = TopAdsAutoAdsData(),
-    @SerializedName("errors")
-    val error: List<ErrorResponse> = listOf(ErrorResponse())
+        @SerializedName("errors")
+    val error: List<Error> = listOf()
 
 ) {
     data class Response(

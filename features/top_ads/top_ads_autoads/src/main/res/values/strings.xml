@@ -79,6 +79,7 @@
 
     <!-- Auto ads status widget-->
     <string name="autoads_inprogress_desc">Tunggu ya, proses pembuatan iklanmu membutuhkan waktu.</string>
+    <string name="autoads_inprogress_deactivate_desc">Tunggu ya, Iklan Otomatis kamu akan dinonaktifkan sesaat lagi.</string>
     <string name="autoads_outofstock_desc">Iklan tidak tampil karena stok barang habis.</string>
     <string name="autoads_outofcredit_desc">Iklan tidak tampil karena kredit kurang.</string>
     <string name="autoads_merchant_closed_desc">Iklan tidak tampil karena toko sedang tutup.</string>

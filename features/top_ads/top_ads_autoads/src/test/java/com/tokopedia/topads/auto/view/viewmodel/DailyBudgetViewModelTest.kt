@@ -5,10 +5,10 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.topads.auto.data.entity.BidInfoData
-import com.tokopedia.topads.auto.data.entity.TopAdsAutoAdsData
+import com.tokopedia.topads.common.data.response.TopAdsAutoAdsData
 import com.tokopedia.topads.auto.data.network.param.AutoAdsParam
 import com.tokopedia.topads.auto.data.network.response.EstimationResponse
-import com.tokopedia.topads.auto.data.network.response.TopAdsAutoAds
+import com.tokopedia.topads.common.data.response.TopAdsAutoAds
 import com.tokopedia.topads.auto.data.network.response.TopAdsDepositResponse
 import com.tokopedia.topads.auto.data.network.response.TopadsBidInfo
 import com.tokopedia.topads.auto.di.AutoAdsDispatcherProvider

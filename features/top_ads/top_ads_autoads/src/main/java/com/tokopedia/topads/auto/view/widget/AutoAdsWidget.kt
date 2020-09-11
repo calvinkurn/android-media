@@ -54,6 +54,8 @@ private const val CLICK_TOP_UP_KREDIT = "click - top up kredit"
 private const val CLICK_CEK_STATUS = "click - cek status"
 private const val CLICK_TINGA_KATLAN = "click - tingkatkan"
 private const val CLICK_SETTING_ICON = "click - settings icon"
+private const val ENTRY_FROM_DETAIL_SHEET = 2
+private const val ENTRY_FROM_EDIT_PAGE = 1
 
 class AutoAdsWidget(context: Context, attrs: AttributeSet?) : CardUnify(context, attrs) {
 
@@ -111,7 +113,7 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet?) : CardUnify(context,
             AutoAdsStatus.STATUS_ACTIVE -> setActive(dailyUsage)
             AutoAdsStatus.STATUS_IN_PROGRESS_ACTIVE -> setInProgress()
             AutoAdsStatus.STATUS_IN_PROGRESS_AUTOMANAGE -> setInProgress()
-            AutoAdsStatus.STATUS_IN_PROGRESS_INACTIVE -> setInProgress()
+            AutoAdsStatus.STATUS_IN_PROGRESS_INACTIVE -> setInProgressInactive()
         }
     }
 
@@ -218,7 +220,7 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet?) : CardUnify(context,
         val setting = view.findViewById<ImageView>(R.id.setting)
         switch.isChecked = true
         when (entryPoint) {
-            1 -> {
+            ENTRY_FROM_EDIT_PAGE -> {
                 setting.visibility = View.GONE
                 switch.visibility = View.VISIBLE
                 switch.setOnClickListener {
@@ -227,7 +229,7 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet?) : CardUnify(context,
                     manual.dismissed = { switch.isChecked = true }
                 }
             }
-            2 -> {
+            ENTRY_FROM_DETAIL_SHEET -> {
                 switch.visibility = View.INVISIBLE
                 setting.visibility = View.INVISIBLE
 
@@ -253,7 +255,7 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet?) : CardUnify(context,
         getDrwableforNotDeliverd(view)
         val desc = view.findViewById<TextView>(R.id.status_desc)
         view.let {
-            if (entryPoint == 1)
+            if (entryPoint == ENTRY_FROM_EDIT_PAGE)
                 desc.text = resources.getString(R.string.autoads_outofcredit_desc_edit)
             else
                 desc.text = resources.getString(R.string.autoads_outofcredit_desc)
@@ -270,6 +272,20 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet?) : CardUnify(context,
         )
         val imgBg = view.findViewById<ConstraintLayout>(R.id.auto_ad_status_image)
         imgBg.background = AppCompatResources.getDrawable(context, R.drawable.topads_blue_bg)
+        baseLayout?.removeAllViews()
+        baseLayout?.addView(view)
+    }
+
+    private fun setInProgressInactive() {
+        val view = LayoutInflater.from(context).inflate(
+                R.layout.topads_auto_edit_status_progress_widget,
+                this,
+                false
+        )
+        val imgBg = view.findViewById<ConstraintLayout>(R.id.auto_ad_status_image)
+        imgBg.background = AppCompatResources.getDrawable(context, R.drawable.topads_blue_bg)
+        view.findViewById<TextView>(R.id.status_desc).
+        text = context.getString(R.string.autoads_inprogress_deactivate_desc)
         baseLayout?.removeAllViews()
         baseLayout?.addView(view)
     }
@@ -295,7 +311,7 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet?) : CardUnify(context,
             }
             it.btn_switch.isChecked = true
             when (entryPoint) {
-                1 -> {
+                ENTRY_FROM_EDIT_PAGE -> {
                     setting.visibility = View.GONE
                     it.btn_switch.visibility = View.VISIBLE
                     it.btn_switch.setOnClickListener {
@@ -304,7 +320,7 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet?) : CardUnify(context,
                         man.dismissed = { it.btn_switch.isChecked = true }
                     }
                 }
-                2 -> {
+                ENTRY_FROM_DETAIL_SHEET -> {
                     it.setting.visibility = View.INVISIBLE
                     it.btn_switch.visibility = View.INVISIBLE
                 }
@@ -344,7 +360,7 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet?) : CardUnify(context,
             getComponent(context).inject(this)
             View.inflate(context, R.layout.topads_autoads_edit_base_widget, this)
             baseLayout = findViewById(R.id.base_layout)
-        }catch(e:Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }

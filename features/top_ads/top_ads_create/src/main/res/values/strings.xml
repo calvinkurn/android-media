@@ -101,8 +101,8 @@
     <string name="select_ad_creation_option_manual">Pilih produk, kata kunci, dan atur biaya iklanmu sendiri secara manual</string>
     <string name="ticker_title">Iklan Otomatis akan dinonaktifkan</string>
     <string name="ticker_desc">Proses menonaktifkan Iklan Otomatis butuh waktu. Cek beberapa saat lagi, ya</string>
-    <string name= "topads_create_onboarding_button1">Lanjut</string>
-    <string name= "topads_create_onboarding_button2">Yuk, Mulai Beriklan</string>
+    <string name="topads_create_onboarding_button1">Lanjut</string>
+    <string name="topads_create_onboarding_button2">Yuk, Mulai Beriklan</string>
     <string name="topads_create_onboarding_action_text">Lewati</string>
     <string name="topads_create_onboarding_title">Mulai Beriklan</string>
     <string name="topads_create_onboarding_screen_title1">Terdepan dengan TopAds</string>
