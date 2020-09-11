@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.troubleshooter.notification.R
 import com.tokopedia.troubleshooter.notification.ui.adapter.TickerAdapter
 import com.tokopedia.troubleshooter.notification.ui.adapter.factory.TickerItemFactory
@@ -21,10 +22,15 @@ class TickerViewHolder(view: View): AbstractViewHolder<TickerUIView>(view) {
 
     override fun bind(element: TickerUIView?) {
         if (element == null) return
+
         if (adapter == null) {
             adapter = TickerAdapter(TickerItemFactory())
             lstTicker?.layoutManager = LinearLayoutManager(context)
             lstTicker?.adapter = adapter
+        }
+
+        if (element.tickers.isNotEmpty()) {
+            txtTitle?.show()
         }
 
         txtTitle?.text = context.getString(R.string.notif_ticker_title)

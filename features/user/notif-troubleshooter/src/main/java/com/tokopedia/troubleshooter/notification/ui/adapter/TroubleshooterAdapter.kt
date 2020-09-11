@@ -11,6 +11,7 @@ import com.tokopedia.troubleshooter.notification.ui.state.ConfigState.Ringtone
 import com.tokopedia.troubleshooter.notification.ui.state.ConfigUIView
 import com.tokopedia.troubleshooter.notification.ui.state.StatusState
 import com.tokopedia.troubleshooter.notification.util.getWithIndex
+import com.tokopedia.troubleshooter.notification.util.isNotNull
 
 internal open class TroubleshooterAdapter(
         factory: TroubleshooterItemFactory
@@ -40,7 +41,9 @@ internal open class TroubleshooterAdapter(
         notifyDataSetChanged()
     }
 
-    fun addWarningTicker(ticker: Visitable<*>) {
+    fun addWarningTicker(ticker: TickerUIView) {
+        if (ticker.tickers.isEmpty()) return
+
         visitables.removeAll { it is TickerUIView }
         visitables.add(visitables.size - 1, ticker)
         notifyDataSetChanged()
