@@ -537,20 +537,16 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tvProductPrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(
                 (long) cartItemModel.getPrice(), false)));
         if (cartItemModel.getOriginalPrice() > 0) {
-            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) tvProductPrice.getLayoutParams();
-            layoutParams.setMargins(tvProductPrice.getResources().getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_10), 0, 0, 0);
-            tvProductPrice.setLayoutParams(layoutParams);
-
+            tvProductPrice.setPadding(tvProductPrice.getResources().getDimensionPixelOffset(R.dimen.dp_4),
+                    tvProductPrice.getResources().getDimensionPixelOffset(R.dimen.dp_4), 0, 0);
             tvProductOriginalPrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(
                     cartItemModel.getOriginalPrice(), false
             )));
             tvProductOriginalPrice.setPaintFlags(tvProductOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             tvProductOriginalPrice.setVisibility(View.VISIBLE);
         } else {
-            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) tvProductPrice.getLayoutParams();
-            layoutParams.setMargins(tvProductPrice.getResources().getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_10), 0, 0, 0);
-            tvProductPrice.setLayoutParams(layoutParams);
-
+            tvProductPrice.setPadding(tvProductPrice.getResources().getDimensionPixelOffset(R.dimen.dp_10),
+                    tvProductPrice.getResources().getDimensionPixelOffset(R.dimen.dp_4), 0, 0);
             tvProductOriginalPrice.setVisibility(View.GONE);
         }
     }
