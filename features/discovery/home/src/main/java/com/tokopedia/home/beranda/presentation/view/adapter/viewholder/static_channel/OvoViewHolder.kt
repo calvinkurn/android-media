@@ -118,7 +118,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener?) : Abstr
             }
             tvTitleTokocash.setTextColor(ContextCompat.getColor(itemView.context, R.color.font_black_primary_70))
             tvTitleTokocash.setText(R.string.home_header_tokocash_unable_to_load_label)
-            tvTitleTokocash.setTextColor(ContextCompat.getColor(itemView.context, R.color.tkpd_main_green))
+            tvActionTokocash.setTextColor(ContextCompat.getColor(itemView.context, R.color.tkpd_main_green))
             tvActionTokocash.setText(R.string.home_header_tokocash_refresh_label)
             tvTitleTokocash.visibility = View.VISIBLE
             tvActionTokocash.visibility = View.VISIBLE
