@@ -215,7 +215,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     }
 
 
-    private fun addRewardIntroObserver() = mPresenter.rewardIntroData.observe(this, Observer {
+    private fun addRewardIntroObserver() = mPresenter.rewardIntroData.observe(viewLifecycleOwner, Observer {
         it?.let {
             when (it) {
                 is Success -> {
@@ -225,7 +225,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         }
     })
 
-    private fun addTokopointDetailObserver() = mPresenter.tokopointDetailLiveData.observe(this, androidx.lifecycle.Observer {
+    private fun addTokopointDetailObserver() = mPresenter.tokopointDetailLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
         it?.let {
             when (it) {
                 is Loading -> showLoading()
@@ -246,7 +246,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         }
     })
 
-    private fun addRedeemCouponObserver() = mPresenter.onRedeemCouponLiveData.observe(this, androidx.lifecycle.Observer {
+    private fun addRedeemCouponObserver() = mPresenter.onRedeemCouponLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
         it?.let { RouteManager.route(context, it) }
     })
 
@@ -426,15 +426,15 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                 AnalyticsTrackerUtil.sendEvent(context,
                         AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                         AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                        AnalyticsTrackerUtil.ActionKeys.CLICK_MEMBERSHIP, "")
+                        AnalyticsTrackerUtil.ActionKeys.CLICK_MEMBERSHIP, mValueMembershipDescription)
             }
         }
 
         ImageHandler.loadImageCircle2(activityContext, mImgEgg, data?.profilePicture)
-        mTextMembershipValueBottom?.text = mValueMembershipDescription
         data?.backgroundImageURLMobileV2?.let { mImgBackground?.loadImage(it) }
         if (data?.tier != null) {
-            mTextMembershipValue?.text = data.tier.nameDesc
+            mValueMembershipDescription = data.tier.nameDesc
+            mTextMembershipValue?.text = mValueMembershipDescription
         }
 
         renderDynamicActionList(data?.dynamicActionList)
