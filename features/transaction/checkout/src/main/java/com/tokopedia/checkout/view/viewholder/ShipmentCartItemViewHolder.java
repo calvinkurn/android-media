@@ -154,19 +154,15 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
     private void renderProductPrice(CartItemModel cartItem) {
         mTvProductPrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(
                 (long) cartItem.getPrice(), false)));
+        int dp4 = mTvProductPrice.getResources().getDimensionPixelOffset(R.dimen.dp_4);
+        int dp10 = mTvProductPrice.getResources().getDimensionPixelOffset(R.dimen.dp_10);
         if (cartItem.getOriginalPrice() > 0) {
-            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mTvProductPrice.getLayoutParams();
-            layoutParams.setMargins(mTvProductPrice.getResources().getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_10), 0, 0, 0);
-            mTvProductPrice.setLayoutParams(layoutParams);
-
+            mTvProductPrice.setPadding(dp4, dp4, 0, 0);
             mTvProductOriginalPrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat((long) cartItem.getOriginalPrice(), false)));
             mTvProductOriginalPrice.setPaintFlags(mTvProductOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             mTvProductOriginalPrice.setVisibility(View.VISIBLE);
         } else {
-            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mTvProductPrice.getLayoutParams();
-            layoutParams.setMargins(mTvProductPrice.getResources().getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_10), 0, 0, 0);
-            mTvProductPrice.setLayoutParams(layoutParams);
-
+            mTvProductPrice.setPadding(dp10, dp4, 0, 0);
             mTvProductOriginalPrice.setVisibility(View.GONE);
         }
     }
