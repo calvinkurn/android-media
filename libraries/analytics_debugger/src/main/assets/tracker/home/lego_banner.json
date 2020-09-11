@@ -7,7 +7,7 @@
         "creative_name": "{{.*}}",
         "creative_slot": "{{.*}}",
         "item_id": "{{.*}}",
-        "item_name": "{{/ - .*}}"
+        "item_name": "{{/ - .* - lego banner 4 image - .*}}"
       }],
       "eventCategory": "homepage",
       "event": "view_item",
@@ -57,7 +57,7 @@
         "creative_name": "{{.*}}",
         "creative_slot": "{{.*}}",
         "item_id": "{{.*}}",
-        "item_name": "{{/ - .* - .*}}"
+        "item_name": "{{/ - .* - lego banner 4 image - .*}}"
       }],
       "eventCategory": "homepage",
       "event": "view_item",
