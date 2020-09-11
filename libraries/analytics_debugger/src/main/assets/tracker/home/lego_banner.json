@@ -7,7 +7,7 @@
         "creative_name": "{{.*}}",
         "creative_slot": "{{.*}}",
         "item_id": "{{.*}}",
-        "item_name": "{{/ - .* - lego banner 4 image - .*}}"
+        "item_name": "{{/ - .* - .* - .*}}"
       }],
       "eventCategory": "homepage",
       "event": "view_item",
@@ -57,19 +57,6 @@
         "creative_name": "{{.*}}",
         "creative_slot": "{{.*}}",
         "item_id": "{{.*}}",
-        "item_name": "{{/ - .* - lego banner 4 image - .*}}"
-      }],
-      "eventCategory": "homepage",
-      "event": "view_item",
-      "eventAction": "home banner impression",
-      "sessionIris": "{{.*}}",
-      "eventLabel": "{{.*}}"
-    },
-    {
-      "promotions": [{
-        "creative_name": "{{.*}}",
-        "creative_slot": "{{.*}}",
-        "item_id": "{{.*}}",
         "item_name": "{{.*}}",
         "creative_url": "{{.*}}"
       }],
@@ -101,19 +88,6 @@
       "categoryId": "{{.*}}",
       "channelId": "{{.*}}",
       "campaignCode": "{{.*}}"
-    },
-    {
-      "promotions": [{
-        "creative_name": "{{.*}}",
-        "creative_slot": "{{.*}}",
-        "item_id": "{{.*}}",
-        "item_name": "{{/ - .* - .* - .*}}"
-      }],
-      "eventCategory": "homepage",
-      "event": "view_item",
-      "eventAction": "home banner impression",
-      "sessionIris": "{{.*}}",
-      "eventLabel": "{{.*}}"
     },
     {
       "promotions": [{
