@@ -35,6 +35,8 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
     private String shopBadge;
     private int orderNumber;
     private String preOrderInfo;
+    private String freeShippingBadgeUrl;
+    private String shopLocation;
 
     // Cart item state
     private String cartString;
@@ -76,7 +78,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
 
     private boolean isFulfillment;
     private int fulfillmentId;
-    private String fulfillmentName;
 
     // promo stacking
     private boolean hasPromoList;
@@ -111,6 +112,8 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         shopId = in.readInt();
         shopName = in.readString();
         preOrderInfo = in.readString();
+        freeShippingBadgeUrl = in.readString();
+        shopLocation = in.readString();
         isGoldMerchant = in.readByte() != 0;
         isOfficialStore = in.readByte() != 0;
         shopBadge = in.readString();
@@ -142,7 +145,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         blackboxInfo = in.readString();
         isFulfillment = in.readByte() != 0;
         fulfillmentId = in.readInt();
-        fulfillmentName = in.readString();
         hasPromoList = in.readByte() != 0;
         voucherLogisticItemUiModel = in.readParcelable(VoucherLogisticItemUiModel.class.getClassLoader());
         isLeasingProduct = in.readByte() != 0;
@@ -164,6 +166,8 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         dest.writeInt(shopId);
         dest.writeString(shopName);
         dest.writeString(preOrderInfo);
+        dest.writeString(freeShippingBadgeUrl);
+        dest.writeString(shopLocation);
         dest.writeByte((byte) (isGoldMerchant ? 1 : 0));
         dest.writeByte((byte) (isOfficialStore ? 1 : 0));
         dest.writeString(shopBadge);
@@ -195,7 +199,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         dest.writeString(blackboxInfo);
         dest.writeByte((byte) (isFulfillment ? 1 : 0));
         dest.writeInt(fulfillmentId);
-        dest.writeString(fulfillmentName);
         dest.writeByte((byte) (hasPromoList ? 1 : 0));
         dest.writeParcelable(voucherLogisticItemUiModel, flags);
         dest.writeByte((byte) (isLeasingProduct ? 1 : 0));
@@ -261,7 +264,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         newShipmentCartItemModel.setAddressId(shipmentCartItemModel.getAddressId());
         newShipmentCartItemModel.setFulfillment(shipmentCartItemModel.isFulfillment);
         newShipmentCartItemModel.setFulfillmentId(shipmentCartItemModel.getFulfillmentId());
-        newShipmentCartItemModel.setFulfillmentName(shipmentCartItemModel.getFulfillmentName());
         newShipmentCartItemModel.setBlackboxInfo(shipmentCartItemModel.getBlackboxInfo());
         newShipmentCartItemModel.setHasPromoList(shipmentCartItemModel.getHasPromoList());
         newShipmentCartItemModel.setVoucherLogisticItemUiModel(shipmentCartItemModel.getVoucherLogisticItemUiModel());
@@ -570,14 +572,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         this.fulfillmentId = fulfillmentId;
     }
 
-    public String getFulfillmentName() {
-        return fulfillmentName;
-    }
-
-    public void setFulfillmentName(String fulfillmentName) {
-        this.fulfillmentName = fulfillmentName;
-    }
-
     public String getBlackboxInfo() { return blackboxInfo; }
 
     public void setBlackboxInfo(String blackboxInfo) { this.blackboxInfo = blackboxInfo; }
@@ -682,6 +676,22 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
 
     public void setPreOrderInfo(String preOrderInfo) {
         this.preOrderInfo = preOrderInfo;
+    }
+
+    public String getFreeShippingBadgeUrl() {
+        return freeShippingBadgeUrl;
+    }
+
+    public void setFreeShippingBadgeUrl(String freeShippingBadgeUrl) {
+        this.freeShippingBadgeUrl = freeShippingBadgeUrl;
+    }
+
+    public String getShopLocation() {
+        return shopLocation;
+    }
+
+    public void setShopLocation(String shopLocation) {
+        this.shopLocation = shopLocation;
     }
 
     @Override

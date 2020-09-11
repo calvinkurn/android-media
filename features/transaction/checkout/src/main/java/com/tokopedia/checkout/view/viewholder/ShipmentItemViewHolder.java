@@ -408,9 +408,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
     private void renderFulfillment(ShipmentCartItemModel model) {
         labelFulfillment.setVisibility(model.isFulfillment() ? View.VISIBLE : View.GONE);
-        if (!TextUtils.isEmpty(model.getFulfillmentName())) {
+        if (!TextUtils.isEmpty(model.getShopLocation())) {
             tvFulfillName.setVisibility(View.VISIBLE);
-            tvFulfillName.setText(model.getFulfillmentName());
+            tvFulfillName.setText(model.getShopLocation());
         } else {
             tvFulfillName.setVisibility(View.GONE);
         }
@@ -461,12 +461,23 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
     private void renderShop(ShipmentCartItemModel shipmentCartItemModel) {
         textOrderNumber.setText("Pesanan " + shipmentCartItemModel.getOrderNumber());
+
         if (!TextUtils.isEmpty(shipmentCartItemModel.getPreOrderInfo())) {
             labelPreOrder.setText(shipmentCartItemModel.getPreOrderInfo());
             labelPreOrder.setVisibility(View.VISIBLE);
         } else {
             labelPreOrder.setVisibility(View.GONE);
         }
+
+        if (!TextUtils.isEmpty(shipmentCartItemModel.getFreeShippingBadgeUrl())) {
+            ImageHandler.loadImageWithoutPlaceholderAndError(
+                    imgFreeShipping, shipmentCartItemModel.getFreeShippingBadgeUrl()
+            );
+            imgFreeShipping.setVisibility(View.VISIBLE);
+        } else {
+            imgFreeShipping.setVisibility(View.GONE);
+        }
+
         boolean hasTradeInItem = false;
         for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
             if (cartItemModel.isValidTradeIn()) {

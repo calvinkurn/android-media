@@ -2,6 +2,9 @@ package com.tokopedia.checkout.domain.mapper;
 
 import android.text.TextUtils;
 
+import com.tokopedia.checkout.domain.model.cartshipmentform.FreeShippingData;
+import com.tokopedia.checkout.domain.model.cartshipmentform.PreorderData;
+import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentInformationData;
 import com.tokopedia.logisticcart.shipping.model.AnalyticsProductCheckoutData;
 import com.tokopedia.logisticcart.shipping.model.CodModel;
 import com.tokopedia.logisticcart.shipping.model.ShipProd;
@@ -454,6 +457,24 @@ public class ShipmentMapper implements IShipmentMapper {
                             if (groupShop.getWarehouse() != null) {
                                 groupShopResult.setFulfillmentId(groupShop.getWarehouse().getWarehouseId());
                                 groupShopResult.setFulfillmentName(groupShop.getWarehouse().getCityName());
+                            }
+
+                            if (groupShop.getShipmentInformation() != null) {
+                                FreeShippingData freeShippingData = new FreeShippingData();
+                                freeShippingData.setBadgeUrl(groupShop.getShipmentInformation().getFreeShipping().getBadgeUrl());
+                                freeShippingData.setEligible(groupShop.getShipmentInformation().getFreeShipping().getEligible());
+
+                                PreorderData preorderData = new PreorderData();
+                                preorderData.setDuration(groupShop.getShipmentInformation().getPreorder().getDuration());
+                                preorderData.setPreorder(groupShop.getShipmentInformation().getPreorder().isPreorder());
+
+                                ShipmentInformationData shipmentInformationData = new ShipmentInformationData();
+                                shipmentInformationData.setEstimation(groupShop.getShipmentInformation().getEstimation());
+                                shipmentInformationData.setShopLocation(groupShop.getShipmentInformation().getShopLocation());
+                                shipmentInformationData.setFreeShipping(freeShippingData);
+                                shipmentInformationData.setPreorder(preorderData);
+
+                                groupShopResult.setShipmentInformationData(shipmentInformationData);
                             }
 
                             if (groupShop.getShop() != null) {

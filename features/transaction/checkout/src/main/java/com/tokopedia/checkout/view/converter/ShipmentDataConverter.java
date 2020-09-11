@@ -185,7 +185,6 @@ public class ShipmentDataConverter {
                     String.valueOf(cartShipmentAddressFormData.getKeroUnixTime()), hasTradeInDropOffAddress, groupShopList.indexOf(groupShop) + 1);
             shipmentCartItemModel.setFulfillment(groupShop.isFulfillment());
             shipmentCartItemModel.setFulfillmentId(groupShop.getFulfillmentId());
-            shipmentCartItemModel.setFulfillmentName(groupShop.getFulfillmentName());
             setCartItemModelError(shipmentCartItemModel);
             shipmentCartItemModel.setEligibleNewShippingExperience(cartShipmentAddressFormData.isEligibleNewShippingExperience());
             shipmentCartItemModels.add(shipmentCartItemModel);
@@ -214,6 +213,13 @@ public class ShipmentDataConverter {
         }
         shipmentCartItemModel.setErrorTitle(groupShop.getErrorMessage());
         shipmentCartItemModel.setOrderNumber(orderIndex);
+        if (groupShop.getShipmentInformationData().getPreorder().isPreorder()) {
+            shipmentCartItemModel.setPreOrderInfo(groupShop.getShipmentInformationData().getPreorder().getDuration());
+        }
+        if (groupShop.getShipmentInformationData().getFreeShipping().getEligible()) {
+            shipmentCartItemModel.setFreeShippingBadgeUrl(groupShop.getShipmentInformationData().getFreeShipping().getBadgeUrl());
+        }
+        shipmentCartItemModel.setShopLocation(groupShop.getShipmentInformationData().getShopLocation());
 
         Shop shop = groupShop.getShop();
         shipmentCartItemModel.setShopId(shop.getShopId());
