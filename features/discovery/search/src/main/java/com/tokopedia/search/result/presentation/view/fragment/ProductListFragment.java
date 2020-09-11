@@ -641,7 +641,7 @@ public class ProductListFragment
     }
 
     private void trackAddToCartSuccess(ProductCardOptionsModel.AddToCartResult addToCartResult) {
-        if (presenter == null) return;
+        if (presenter == null || !addToCartResult.isSuccess()) return;
 
         ProductItemViewModel productItemViewModel = presenter.getThreeDotsProduct();
 
