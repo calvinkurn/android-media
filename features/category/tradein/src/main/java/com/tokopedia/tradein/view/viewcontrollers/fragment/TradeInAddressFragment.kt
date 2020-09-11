@@ -33,6 +33,7 @@ import javax.inject.Inject
 private const val PINPOINT_ACTIVITY_REQUEST_CODE = 1302
 private const val KERO_TOKEN = "token"
 private const val EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW"
+private const val TRADEIN_INITIAL_PRICE = "tokopedia://category/tradein_initial_price"
 
 class TradeInAddressFragment : BaseViewModelFragment<TradeInAddressViewModel>() {
     @Inject
@@ -85,7 +86,7 @@ class TradeInAddressFragment : BaseViewModelFragment<TradeInAddressViewModel>() 
                     btn_continue.apply {
                         isEnabled = true
                         setOnClickListener {
-                            //redirect to initial price page
+                            RouteManager.route(context, TRADEIN_INITIAL_PRICE)
                         }
                     }
                 }
@@ -145,6 +146,12 @@ class TradeInAddressFragment : BaseViewModelFragment<TradeInAddressViewModel>() 
         }
     }
 
+    fun setPermissionDeniedUI(){
+        btn_continue.text = getString(R.string.tradein_return)
+        btn_continue.setOnClickListener {
+            activity?.finish()
+        }
+    }
 
     private fun onResultFromRequestCodeAddressOptions(resultCode: Int, data: Intent?) {
         if (resultCode == CheckoutConstant.RESULT_CODE_ACTION_SELECT_ADDRESS) {

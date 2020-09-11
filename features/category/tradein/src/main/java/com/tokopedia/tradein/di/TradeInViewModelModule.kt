@@ -20,8 +20,8 @@ abstract class TradeInViewModelModule {
     @Binds
     @IntoMap
     @TradeInScope
-    @ViewModelKey(MoneyInHomeViewModel::class)
-    internal abstract fun moneyInHomeViewModel(viewModel: MoneyInHomeViewModel): ViewModel
+    @ViewModelKey(TradeInHomeViewModel::class)
+    internal abstract fun tradeInHomeViewModel(viewModel: TradeInHomeViewModel): ViewModel
 
     @Binds
     @IntoMap
@@ -38,13 +38,13 @@ abstract class TradeInViewModelModule {
     @Binds
     @IntoMap
     @TradeInScope
-    @ViewModelKey(TradeInHomeViewModel::class)
-    internal abstract fun tradeInHomeViewModel(viewModel: TradeInHomeViewModel): ViewModel
+    @ViewModelKey(TradeInAddressViewModel::class)
+    internal abstract fun tradeInAddressViewModel(viewModel: TradeInAddressViewModel): ViewModel
 
     @Binds
     @IntoMap
     @TradeInScope
-    @ViewModelKey(TradeInAddressViewModel::class)
-    internal abstract fun tradeInAddressViewModel(viewModel: TradeInAddressViewModel): ViewModel
+    @ViewModelKey(TradeInInitialPriceViewModel::class)
+    internal abstract fun tradeInInitialPriceViewModel(viewModel: TradeInInitialPriceViewModel): ViewModel
 
 }

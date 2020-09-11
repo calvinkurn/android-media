@@ -9,7 +9,7 @@ import com.tokopedia.webview.BaseSessionWebViewFragment
 import kotlinx.android.synthetic.main.layout_activity_tradein_info.*
 
 const val tradeInTNCUrl = "https://www.tokopedia.com/help/article/syarat-dan-ketentuan-tukar-tambah"
-const val blackMarketUrl = ""
+const val blackMarketUrl = "https://www.tokopedia.com/help/article/syarat-dan-ketentuan-tukar-tambah"
 const val tradeInTNCSegment = "tradein_tnc"
 const val blackMarketSegment = "tradein_black_market"
 
