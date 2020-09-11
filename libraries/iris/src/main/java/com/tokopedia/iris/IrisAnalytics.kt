@@ -138,7 +138,7 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
         if (WhiteList.REALTIME_EVENT_LIST.contains(eventName) && trackingRepository.getRemoteConfig().getBoolean(KEY_REMOTE_CONFIG_SEND_REALTIME, false)) {
             sendEvent(map)
         } else {
-            trackingRepository.saveEvent(resultEvent.toString(), session, eventName, eventCategory, eventAction)
+            trackingRepository.saveEvent(resultEvent.toString(), session)
             setAlarm(true, force = false)
         }
     }

@@ -1,7 +1,6 @@
 package com.tokopedia.iris.data
 
 import android.content.Context
-import android.content.Intent
 import android.net.ConnectivityManager
 import android.util.Log
 import com.tokopedia.analyticsdebugger.debugger.IrisLogger
@@ -13,7 +12,6 @@ import com.tokopedia.iris.data.db.mapper.TrackingMapper
 import com.tokopedia.iris.data.db.table.Tracking
 import com.tokopedia.iris.data.network.ApiService
 import com.tokopedia.iris.util.*
-import com.tokopedia.iris.worker.IrisService
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSession
@@ -52,8 +50,7 @@ class TrackingRepository(
     private fun getLineDBSend() = getRemoteConfig().getLong(REMOTE_CONFIG_IRIS_DB_SEND, 400)
     private fun getBatchPerPeriod()= getRemoteConfig().getLong(REMOTE_CONFIG_IRIS_BATCH_SEND, 5)
 
-    suspend fun saveEvent(data: String, session: Session,
-                          eventName: String?, eventCategory: String?, eventAction: String?) =
+    suspend fun saveEvent(data: String, session: Session) =
         withContext(Dispatchers.IO) {
             try {
                 val tracking = Tracking(data, userSession.userId, userSession.deviceId,
@@ -105,10 +102,12 @@ class TrackingRepository(
             val isSuccessFul = response.isSuccessful
             if (!isSuccessFul) {
                 Timber.e("P1#IRIS_REALTIME_ERROR#not_success;data='${data.take(ERROR_MAX_LENGTH).trim()}'")
+                saveEvent(data, session)
             }
             return isSuccessFul
         } catch (e: Exception) {
             Timber.e("P1#IRIS_REALTIME_ERROR#exception;data='${data.take(ERROR_MAX_LENGTH).trim()}';err='${Log.getStackTraceString(e).take(ERROR_MAX_LENGTH).trim()}'")
+            saveEvent(data, session)
             return false
         }
     }
