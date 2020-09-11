@@ -133,7 +133,7 @@ class OtherMenuViewModelTest {
             assertTrue(it)
         }
 
-        (testCoroutineDispatcher.io() as TestCoroutineDispatcher).advanceTimeBy(5000L)
+        (testCoroutineDispatcher.io() as? TestCoroutineDispatcher)?.advanceTimeBy(5000L)
 
         mockViewModel.isToasterAlreadyShown.observeOnce {
             assertFalse(it)
