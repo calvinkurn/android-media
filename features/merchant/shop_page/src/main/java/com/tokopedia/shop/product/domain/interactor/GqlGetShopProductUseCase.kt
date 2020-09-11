@@ -14,6 +14,9 @@ class GqlGetShopProductUseCase (val gqlQuery: String,
 
     var params = mapOf<String, Any>()
     var isFromCacheFirst: Boolean = true
+    val request by lazy {
+        GraphqlRequest(gqlQuery, ShopProduct.Response::class.java, params)
+    }
 
     override suspend fun executeOnBackground(): ShopProduct.GetShopProduct {
         gqlUseCase.clearRequest()
