@@ -10,7 +10,7 @@ import com.tokopedia.sellerhome.settings.domain.usecase.GetAllShopInfoUseCase
 import com.tokopedia.sellerhome.settings.view.uimodel.base.ShopType
 import com.tokopedia.sellerhome.settings.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType
 import com.tokopedia.sellerhome.settings.view.uimodel.shopinfo.ShopBadgeUiModel
-import com.tokopedia.sellerhome.utils.SellerHomeCoroutineDispatcherTest
+import com.tokopedia.sellerhome.utils.SellerHomeCoroutineTestDispatcher
 import com.tokopedia.sellerhome.utils.observeOnce
 import com.tokopedia.shop.common.domain.interactor.GetShopFreeShippingInfoUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -26,7 +26,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -57,7 +56,7 @@ class OtherMenuViewModelTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        testCoroutineDispatcher = SellerHomeCoroutineDispatcherTest
+        testCoroutineDispatcher = SellerHomeCoroutineTestDispatcher
 
 
         mViewModel =
@@ -133,6 +132,12 @@ class OtherMenuViewModelTest {
 
         mockViewModel.isToasterAlreadyShown.observeOnce {
             assertTrue(it)
+        }
+
+        delay(5000L)
+
+        mockViewModel.isToasterAlreadyShown.observeOnce {
+            assertFalse(it)
         }
     }
 

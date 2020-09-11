@@ -8,7 +8,7 @@ import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.domain.usecase.GetShopLocationUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetStatusShopUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetTickerUseCase
-import com.tokopedia.sellerhome.utils.SellerHomeCoroutineDispatcherTest
+import com.tokopedia.sellerhome.utils.SellerHomeCoroutineTestDispatcher
 import com.tokopedia.sellerhome.view.model.TickerUiModel
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.domain.usecase.*
@@ -88,7 +88,7 @@ class SellerHomeViewModelTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        testDispatcher = SellerHomeCoroutineDispatcherTest
+        testDispatcher = SellerHomeCoroutineTestDispatcher
 
         viewModel = SellerHomeViewModel(
                 dagger.Lazy { getShopStatusUseCase },

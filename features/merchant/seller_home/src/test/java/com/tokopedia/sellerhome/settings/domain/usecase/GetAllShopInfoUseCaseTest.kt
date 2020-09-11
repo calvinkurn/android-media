@@ -4,7 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.sellerhome.settings.domain.entity.OthersBalance
 import com.tokopedia.sellerhome.settings.view.uimodel.base.PowerMerchantStatus
 import com.tokopedia.sellerhome.settings.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType
-import com.tokopedia.sellerhome.utils.SellerHomeCoroutineDispatcherTest
+import com.tokopedia.sellerhome.utils.SellerHomeCoroutineTestDispatcher
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -59,7 +59,7 @@ class GetAllShopInfoUseCaseTest {
                 shopStatusTypeUseCase,
                 topAdsAutoTypeUseCase,
                 topAdsDashboardDepositUseCase,
-                SellerHomeCoroutineDispatcherTest
+                SellerHomeCoroutineTestDispatcher
         )
     }
 

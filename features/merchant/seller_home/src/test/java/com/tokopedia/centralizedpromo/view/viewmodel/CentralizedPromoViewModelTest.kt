@@ -13,7 +13,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.common.coroutine.SellerHomeCoroutineDispatcher
-import com.tokopedia.sellerhome.utils.SellerHomeCoroutineDispatcherTest
+import com.tokopedia.sellerhome.utils.SellerHomeCoroutineTestDispatcher
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -22,7 +22,6 @@ import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -86,7 +85,7 @@ class CentralizedPromoViewModelTest {
         } returns "Tingkatkan penjualan dengan kirim pesan promosi ke pembeli"
     }
 
-    private val testCoroutineDispatcher: SellerHomeCoroutineDispatcher = SellerHomeCoroutineDispatcherTest
+    private val testCoroutineDispatcher: SellerHomeCoroutineDispatcher = SellerHomeCoroutineTestDispatcher
 
     private val viewModel : CentralizedPromoViewModel by lazy {
         CentralizedPromoViewModel(

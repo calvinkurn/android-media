@@ -10,7 +10,7 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
  * Created By @ilhamsuaib on 10/09/20
  */
 
-object SellerHomeCoroutineDispatcherTest : SellerHomeCoroutineDispatcher {
+object SellerHomeCoroutineTestDispatcher : SellerHomeCoroutineDispatcher {
 
     override fun io(): CoroutineDispatcher = Dispatchers.Unconfined
 
