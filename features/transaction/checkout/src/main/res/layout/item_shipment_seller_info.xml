@@ -55,19 +55,6 @@
         tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.Label
-        android:id="@+id/label_pre_order"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_8"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:gravity="center_vertical"
-        app:labelType="general_light_grey"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_fulfill_district"
-        app:layout_constraintStart_toEndOf="@+id/tv_fulfill_district"
-        app:layout_constraintTop_toTopOf="@+id/tv_fulfill_district"
-        tools:labelTitle="Pre Order 8 Hari" />
-
-    <com.tokopedia.unifycomponents.Label
         android:id="@+id/label_fulfillment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -92,34 +79,66 @@
         tools:text="Toko Adidas"
         tools:visibility="visible" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_fulfill_district"
-        android:layout_width="wrap_content"
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/layout_product_info"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_shop_name"
-        android:layout_marginTop="@dimen/dp_8"
-        android:gravity="center_vertical"
-        android:paddingStart="@dimen/dp_6"
-        android:paddingLeft="@dimen/dp_6"
+        android:layout_marginTop="@dimen/dp_4"
+        android:foregroundGravity="center_vertical"
+        app:flexWrap="wrap"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_shop_name"
-        app:typographyType="small"
-        app:typographyWeight="reguler"
-        tools:text="Tangerang Selatan"
-        tools:visibility="visible" />
+        tools:visibility="visible">
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/img_free_shipping"
-        android:layout_width="@dimen/dp_100"
-        android:layout_height="@dimen/dp_20"
-        android:layout_marginStart="@dimen/dp_8"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:gravity="center_vertical"
-        android:scaleType="fitStart"
-        app:layout_constraintBottom_toBottomOf="@+id/label_pre_order"
-        app:layout_constraintStart_toEndOf="@+id/label_pre_order"
-        app:layout_constraintTop_toTopOf="@+id/label_pre_order"
-        app:unify_image_type="rect"
-        tools:src="@color/unify_G500" />
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_fulfill_district"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_shop_name"
+            android:gravity="center_vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_shop_name"
+            app:typographyType="small"
+            app:typographyWeight="reguler"
+            tools:text="Tangerang Selatan"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/label_pre_order"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:gravity="center_vertical"
+            app:labelType="general_light_grey"
+            tools:labelTitle="Pre Order 8 Hari" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/img_free_shipping"
+            android:layout_width="@dimen/dp_100"
+            android:layout_height="@dimen/dp_20"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:gravity="center_vertical"
+            android:scaleType="fitStart"
+            app:unify_image_type="rect"
+            tools:src="@color/unify_G500" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_label_incident_shop_level"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_shop_name"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8"
+            android:gravity="center_vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_shop_name"
+            app:typographyType="small"
+            app:typographyWeight="reguler"
+            tools:text="Lebel Incident"
+            tools:visibility="visible" />
+
+    </com.google.android.flexbox.FlexboxLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

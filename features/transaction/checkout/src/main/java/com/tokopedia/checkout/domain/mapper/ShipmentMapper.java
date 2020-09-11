@@ -506,6 +506,7 @@ public class ShipmentMapper implements IShipmentMapper {
                                 shopResult.setProvinceId(groupShop.getShop().getProvinceId());
                                 shopResult.setCityId(groupShop.getShop().getCityId());
                                 shopResult.setCityName(groupShop.getShop().getCityName());
+                                shopResult.setShopAlertMessage(groupShop.getShop().getShopAlertMessage());
 
                                 groupShopResult.setShop(shopResult);
                             }

@@ -37,6 +37,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
     private String preOrderInfo;
     private String freeShippingBadgeUrl;
     private String shopLocation;
+    private String shopAlertMessage;
 
     // Cart item state
     private String cartString;
@@ -114,6 +115,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         preOrderInfo = in.readString();
         freeShippingBadgeUrl = in.readString();
         shopLocation = in.readString();
+        shopAlertMessage = in.readString();
         isGoldMerchant = in.readByte() != 0;
         isOfficialStore = in.readByte() != 0;
         shopBadge = in.readString();
@@ -168,6 +170,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         dest.writeString(preOrderInfo);
         dest.writeString(freeShippingBadgeUrl);
         dest.writeString(shopLocation);
+        dest.writeString(shopAlertMessage);
         dest.writeByte((byte) (isGoldMerchant ? 1 : 0));
         dest.writeByte((byte) (isOfficialStore ? 1 : 0));
         dest.writeString(shopBadge);
@@ -692,6 +695,14 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
 
     public void setShopLocation(String shopLocation) {
         this.shopLocation = shopLocation;
+    }
+
+    public String getShopAlertMessage() {
+        return shopAlertMessage;
+    }
+
+    public void setShopAlertMessage(String shopAlertMessage) {
+        this.shopAlertMessage = shopAlertMessage;
     }
 
     @Override

@@ -227,6 +227,7 @@ public class ShipmentDataConverter {
         shipmentCartItemModel.setOfficialStore(shop.isOfficial());
         shipmentCartItemModel.setGoldMerchant(shop.isGold());
         shipmentCartItemModel.setShopBadge(shop.getShopBadge());
+        shipmentCartItemModel.setShopAlertMessage(shop.getShopAlertMessage());
 
         shipmentCartItemModel.setCartString(groupShop.getCartString());
         shipmentCartItemModel.setShippingId(groupShop.getShippingId());

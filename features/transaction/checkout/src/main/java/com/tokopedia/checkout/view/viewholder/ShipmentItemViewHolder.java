@@ -150,7 +150,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private LinearLayout llCourierRecommendationTradeInDropOffStateLoading;
     private TextView tvErrorShipmentItemTitle;
     private TextView tvErrorShipmentItemDescription;
-    private RelativeLayout rlProductInfo;
     private FrameLayout flDisableContainer;
     private Ticker productTicker;
     private ConstraintLayout layoutTradeInShippingInfo;
@@ -171,10 +170,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private ImageView imgFreeShipping;
     private Typography textOrderNumber;
     private Label labelPreOrder;
+    private Typography textLabelIncidentShopLevel;
 
     // order prioritas
     private CheckBox checkBoxPriority;
-    private ImageView imgPriority;
     private TextView tvPrioritasTicker;
     private LinearLayout llPrioritasTicker;
     private RelativeLayout llPrioritas;
@@ -274,7 +273,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         llCourierRecommendationTradeInDropOffStateLoading = itemView.findViewById(R.id.ll_courier_recommendation_Trade_in_drop_off_state_loading);
         tvErrorShipmentItemTitle = itemView.findViewById(R.id.tv_error_shipment_item_title);
         tvErrorShipmentItemDescription = itemView.findViewById(R.id.tv_error_shipment_item_description);
-        rlProductInfo = itemView.findViewById(R.id.rl_product_info);
         flDisableContainer = itemView.findViewById(R.id.fl_disable_container);
         imgFreeShipping = itemView.findViewById(R.id.img_free_shipping);
         layoutTradeInShippingInfo = itemView.findViewById(R.id.layout_trade_in_shipping_info);
@@ -285,11 +283,11 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         productTicker = itemView.findViewById(R.id.product_ticker);
         textOrderNumber = itemView.findViewById(R.id.text_order_number);
         labelPreOrder = itemView.findViewById(R.id.label_pre_order);
+        textLabelIncidentShopLevel = itemView.findViewById(R.id.text_label_incident_shop_level);
         textVariant = itemView.findViewById(R.id.text_variant);
 
         //priority
         llPrioritas = itemView.findViewById(R.id.ll_prioritas);
-        imgPriority = itemView.findViewById(R.id.img_prioritas_info);
         checkBoxPriority = itemView.findViewById(R.id.cb_prioritas);
         llPrioritasTicker = itemView.findViewById(R.id.ll_prioritas_ticker);
         tvPrioritasTicker = itemView.findViewById(R.id.tv_prioritas_ticker);
@@ -476,6 +474,13 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             imgFreeShipping.setVisibility(View.VISIBLE);
         } else {
             imgFreeShipping.setVisibility(View.GONE);
+        }
+
+        if (!TextUtils.isEmpty(shipmentCartItemModel.getShopAlertMessage())) {
+            textLabelIncidentShopLevel.setText(shipmentCartItemModel.getShopAlertMessage());
+            textLabelIncidentShopLevel.setVisibility(View.VISIBLE);
+        } else {
+            textLabelIncidentShopLevel.setVisibility(View.GONE);
         }
 
         boolean hasTradeInItem = false;
