@@ -10,13 +10,13 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.logisticcart.domain.executor.MainScheduler
 import com.tokopedia.logisticcart.domain.executor.SchedulerProvider
-import com.tokopedia.oneclickcheckout.common.dispatchers.DefaultDispatchers
-import com.tokopedia.oneclickcheckout.common.dispatchers.ExecutorDispatchers
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationConverter
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
+import com.tokopedia.oneclickcheckout.common.dispatchers.DefaultDispatchers
+import com.tokopedia.oneclickcheckout.common.dispatchers.ExecutorDispatchers
 import com.tokopedia.oneclickcheckout.common.domain.GetPreferenceListUseCase
-import com.tokopedia.oneclickcheckout.common.domain.mapper.PreferenceModelMapper
 import com.tokopedia.oneclickcheckout.common.domain.GetPreferenceListUseCaseImpl
+import com.tokopedia.oneclickcheckout.common.domain.mapper.PreferenceModelMapper
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.data.checkout.CheckoutOccGqlResponse
 import com.tokopedia.oneclickcheckout.order.data.get.GetOccCartGqlResponse
@@ -25,14 +25,10 @@ import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformNetworkModule
 import com.tokopedia.purchase_platform.common.feature.editaddress.di.PeopleAddressNetworkModule
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
-import com.tokopedia.purchase_platform.common.schedulers.DefaultSchedulers
-import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import javax.inject.Named
 
 @Module(includes = [PeopleAddressNetworkModule::class, PurchasePlatformNetworkModule::class])
@@ -44,19 +40,11 @@ class OrderSummaryPageModule(private val activity: Activity) {
 
     @OrderSummaryPageScope
     @Provides
-    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
-
-    @OrderSummaryPageScope
-    @Provides
     fun provideExecutorDispatchers(): ExecutorDispatchers = DefaultDispatchers
 
     @OrderSummaryPageScope
     @Provides
     fun provideSchedulerProvider(): SchedulerProvider = MainScheduler()
-
-    @OrderSummaryPageScope
-    @Provides
-    fun provideExecutorSchedulers(): ExecutorSchedulers = DefaultSchedulers
 
     @OrderSummaryPageScope
     @Provides
