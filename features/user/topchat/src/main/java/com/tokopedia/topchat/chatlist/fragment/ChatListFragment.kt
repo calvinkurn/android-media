@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -31,8 +32,11 @@ import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Menus
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.getParamString
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller_migration_common.presentation.fragment.bottomsheet.SellerMigrationCommunicationBottomSheet
@@ -59,7 +63,6 @@ import com.tokopedia.topchat.chatlist.model.IncomingChatWebSocketModel
 import com.tokopedia.topchat.chatlist.model.IncomingTypingWebSocketModel
 import com.tokopedia.topchat.chatlist.pojo.ChatChangeStateResponse
 import com.tokopedia.topchat.chatlist.pojo.ChatListDataPojo
-import com.tokopedia.topchat.chatlist.pojo.ItemChatAttributesPojo
 import com.tokopedia.topchat.chatlist.pojo.ItemChatListPojo
 import com.tokopedia.topchat.chatlist.viewmodel.ChatItemListViewModel
 import com.tokopedia.topchat.chatlist.viewmodel.ChatItemListViewModel.Companion.arrayFilterParam
@@ -110,6 +113,7 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
     private var filterChecked = 0
     private var filterMenu = FilterMenu()
     private var chatBannedSellerTicker: Ticker? = null
+    private var rv: RecyclerView? = null
     private lateinit var broadCastButton: FloatingActionButton
 
     private val sellerMigrationStaticCommunicationBottomSheet by lazy {
@@ -207,7 +211,7 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
 
     private fun setupChatSellerBannedStatus() {
         if (!isTabSeller()) return
-        chatItemListViewModel.chatBannedSellerStatus.observe(this, Observer {
+        chatItemListViewModel.chatBannedSellerStatus.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> updateChatBannedSellerStatus(it.data)
             }
@@ -291,6 +295,7 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
         showLoading()
         broadCastButton = view.findViewById(R.id.fab_broadcast)
         chatBannedSellerTicker = view.findViewById(R.id.ticker_ban_status)
+        rv = view.findViewById(R.id.recycler_view)
     }
 
     private fun setUpRecyclerView(view: View) {
@@ -352,55 +357,13 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
                     return
                 }
                 //not found on list
-                index == -1 -> {
-                    if (adapter.hasEmptyModel()) {
-                        adapter.clearAllElements()
-                    }
-                    val attributes = ItemChatAttributesPojo(newChat.message, newChat.time, newChat.contact)
-                    val item = ItemChatListPojo(newChat.messageId, attributes, "")
-                    adapter.list.add(0, item)
-                    adapter.notifyItemInserted(0)
+                index == RecyclerView.NO_POSITION -> {
+                    adapter.onNewItemChatMessage(newChat, chatItemListViewModel.pinnedMsgId)
                     increaseNotificationCounter()
-                    animateWhenOnTop()
                 }
                 //found on list, not the first
-                index > 0 -> {
-                    updateChatPojo(index, newChat, readStatus)
-                    adapter.list.goToFirst(index)
-                    adapter.notifyItemMoved(index, 0)
-                    adapter.notifyItemChanged(0)
-                    animateWhenOnTop()
-                }
-                //found on list, and the first item
-                else -> {
-                    updateChatPojo(index, newChat, readStatus)
-                    adapter.notifyItemChanged(0)
-                }
-            }
-        }
-    }
-
-    private fun updateChatPojo(
-            index: Int,
-            newChat: IncomingChatWebSocketModel,
-            readStatus: Int
-    ) {
-        adapter?.let { adapter ->
-            if (index >= adapter.list.size) return
-            adapter.list[index].apply {
-                if (this is ItemChatListPojo) {
-                    if (
-                            attributes?.readStatus == ChatItemListViewHolder.STATE_CHAT_READ &&
-                            readStatus == ChatItemListViewHolder.STATE_CHAT_UNREAD
-                    ) {
-                        increaseNotificationCounter()
-                    }
-                    attributes?.lastReplyMessage = newChat.message
-                    attributes?.unreads = attributes?.unreads.toZeroIfNull() + 1
-                    attributes?.unreadReply = attributes?.unreadReply.toZeroIfNull() + 1
-                    attributes?.readStatus = readStatus
-                    attributes?.lastReplyTimeStr = newChat.time
-                    attributes?.isReplyByTopbot = newChat.contact?.isAutoReply ?: false
+                index >= 0 -> {
+                    adapter.onNewIncomingChatMessage(index, newChat, readStatus, chatItemListViewModel.pinnedMsgId)
                 }
             }
         }
@@ -474,7 +437,7 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory> {
-        return ChatListAdapter(adapterTypeFactory)
+        return ChatListAdapter(this, adapterTypeFactory)
     }
 
     override fun getAdapter(): ChatListAdapter? {
@@ -514,6 +477,8 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
 
     override fun loadInitialData() {
         super.loadInitialData()
+        chatItemListViewModel.clearPinUnpinData()
+        chatItemListViewModel.resetState()
         if (isTabSeller()) {
             chatItemListViewModel.loadTopBotWhiteList()
             chatItemListViewModel.loadChatBannedSellerStatus()
@@ -711,6 +676,55 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
         return childFragmentManager
     }
 
+    override fun pinUnpinChat(element: ItemChatListPojo, position: Int, isPinChat: Boolean) {
+        val msgId = element.msgId
+        chatItemListViewModel.pinUnpinChat(msgId, isPinChat,
+                {
+                    element.updatePinStatus(isPinChat)
+                    if (isPinChat) {
+                        // chat pinned.
+                        onSuccessPinChat(element, position)
+                    } else if (!isPinChat && chatItemListViewModel.unpinnedMsgId.contains(element.msgId)) {
+                        // chat unpinned and can be restored to current list.
+                        onSuccessUnpinPreviouslyLoadedChat(element, position)
+                    } else {
+                        // check if it can be repositioned in the middle or append at the end when
+                        // hasNext is false. else chat unpinned and can not be restored
+                        // to current list, just remove the item.
+                        onSuccessUnpinChat(element, position)
+                    }
+                },
+                {
+                    showSnackbarError(it)
+                }
+        )
+    }
+
+    private fun onSuccessUnpinChat(element: ItemChatListPojo, position: Int) {
+        adapter?.unpinChatItem(
+                element,
+                position,
+                chatItemListViewModel.pinnedMsgId.size,
+                chatItemListViewModel.chatListHasNext,
+                chatItemListViewModel.unpinnedMsgId
+        )
+        chatItemListViewModel.pinnedMsgId.remove(element.msgId)
+        showToaster(R.string.title_success_unpin_chat)
+    }
+
+    private fun onSuccessPinChat(element: ItemChatListPojo, position: Int) {
+        adapter?.pinChatItem(element, position)
+        rv?.scrollToPosition(0)
+        chatItemListViewModel.pinnedMsgId.add(element.msgId)
+        showToaster(R.string.title_success_pin_chat)
+    }
+
+    private fun onSuccessUnpinPreviouslyLoadedChat(element: ItemChatListPojo, position: Int) {
+        adapter?.putToOriginalPosition(element, position, chatItemListViewModel.pinnedMsgId.size)
+        chatItemListViewModel.pinnedMsgId.remove(element.msgId)
+        showToaster(R.string.title_success_unpin_chat)
+    }
+
     private fun showToaster(message: String) {
         view?.let {
             Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
@@ -722,6 +736,13 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
         view?.let {
             Toaster.build(it, it.context.getString(message), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
                     .show()
+        }
+    }
+
+    private fun showSnackbarError(throwable: Throwable) {
+        view?.let {
+            val errorMsg = ErrorHandler.getErrorMessage(it.context, throwable)
+            Toaster.make(it, errorMsg, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
         }
     }
 
