@@ -48,18 +48,18 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
           is_fulfillment_service
           cart_string
           has_promo_list
-#          shipment_information {
-#            shop_location
-#            estimation
-#            free_shipping {
-#              eligible
-#              badge_url
-#            }
-#            preorder {
-#              is_preorder
-#              duration
-#            }
-#          }
+          shipment_information {
+            shop_location
+            estimation
+            free_shipping {
+              eligible
+              badge_url
+            }
+            preorder {
+              is_preorder
+              duration
+            }
+          }
           save_state_flag
           promo_codes
           vehicle_leasing {
@@ -97,7 +97,7 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
               is_official
               os_logo_url
             }
-#            shop_alert_message
+            shop_alert_message
           }
           shop_shipments {
             ship_id
@@ -200,12 +200,12 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
               show_ticker
               message
             }
-#            variant_description_detail {
-#              variant_name
-#              variant_description
-#            }
-#            product_alert_message
-#            product_information
+            variant_description_detail {
+              variant_name
+              variant_description
+            }
+            product_alert_message
+            product_information
           }
           warehouse {
             warehouse_id
