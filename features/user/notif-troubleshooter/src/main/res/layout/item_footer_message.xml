@@ -10,6 +10,7 @@
         android:id="@+id/view"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_8"
         android:background="@color/bg_big_divider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
