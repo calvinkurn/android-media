@@ -1,4 +1,4 @@
-package com.tokopedia.discovery2.data.productcardcarousel
+package com.tokopedia.discovery2.data.productcarditem
 
 
 import com.google.gson.annotations.SerializedName
