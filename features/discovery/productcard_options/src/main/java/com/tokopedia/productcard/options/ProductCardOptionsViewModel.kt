@@ -46,26 +46,13 @@ internal class ProductCardOptionsViewModel(
     private val shareProductEventLiveData = MutableLiveData<Event<ProductData>>()
 
     init {
-        initSeeSimilarProductsOption()
         initWishlistOption()
         initAddToCartOption()
         initVisitShopOption()
         initShareProductOption()
+        initSeeSimilarProductsOption()
 
         postOptionListLiveData()
-    }
-
-    private fun initSeeSimilarProductsOption() {
-        if (productCardOptionsModel?.hasSimilarSearch == true) {
-            productCardOptionsItemList.addOption(SEE_SIMILAR_PRODUCTS) { onSeeSimilarProductsOptionClicked() }
-            productCardOptionsItemList.addDivider()
-        }
-    }
-
-    private fun onSeeSimilarProductsOptionClicked() {
-        trackingSeeSimilarProductEventLiveData.postValue(Event(true))
-        routeToSimilarProductsEventLiveData.postValue(Event(true))
-        closeProductCardOptionsEventLiveData.postValue(Event(true))
     }
 
     private fun MutableList<Visitable<*>>.addOption(title: String, onClick: () -> Unit) {
@@ -74,6 +61,10 @@ internal class ProductCardOptionsViewModel(
 
     private fun MutableList<Visitable<*>>.addDivider() {
         this.add(ProductCardOptionsItemDivider())
+    }
+
+    private fun postOptionListLiveData() {
+        productCardOptionsItemListLiveData.postValue(productCardOptionsItemList)
     }
 
     private fun initWishlistOption() {
@@ -316,8 +307,17 @@ internal class ProductCardOptionsViewModel(
         }
     }
 
-    private fun postOptionListLiveData() {
-        productCardOptionsItemListLiveData.postValue(productCardOptionsItemList)
+    private fun initSeeSimilarProductsOption() {
+        if (productCardOptionsModel?.hasSimilarSearch == true) {
+            productCardOptionsItemList.addOption(SEE_SIMILAR_PRODUCTS) { onSeeSimilarProductsOptionClicked() }
+            productCardOptionsItemList.addDivider()
+        }
+    }
+
+    private fun onSeeSimilarProductsOptionClicked() {
+        trackingSeeSimilarProductEventLiveData.postValue(Event(true))
+        routeToSimilarProductsEventLiveData.postValue(Event(true))
+        closeProductCardOptionsEventLiveData.postValue(Event(true))
     }
 
     fun getOptionsListLiveData(): LiveData<List<Visitable<*>>> = productCardOptionsItemListLiveData
