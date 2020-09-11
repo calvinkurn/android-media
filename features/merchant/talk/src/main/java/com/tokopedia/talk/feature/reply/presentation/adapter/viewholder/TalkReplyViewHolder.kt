@@ -8,6 +8,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.text.HtmlCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
@@ -52,7 +53,7 @@ class TalkReplyViewHolder(view: View,
             showDisplayName(userName, userId, isSeller, element.shopId)
             showDate(createTimeFormatted)
             showLabelWithCondition(isSeller, element.isMyQuestion)
-            showAnswer(content, state.isMasked, maskedContent)
+            showAnswer(content, state.isMasked, maskedContent, state.allowUnmask)
             showAttachedProducts(attachedProducts.toMutableList())
             showKebabWithConditions(answerID, state.allowReport, state.allowDelete, onKebabClickedListener)
             showUnmaskCardWithCondition(state.allowUnmask, answerID)
@@ -121,13 +122,12 @@ class TalkReplyViewHolder(view: View,
         return String.format(itemView.context.getString(R.string.talk_formatted_date), date)
     }
 
-    private fun showAnswer(answer: String, isMasked: Boolean, maskedContent: String) {
+    private fun showAnswer(answer: String, isMasked: Boolean, maskedContent: String, allowUnmask: Boolean) {
         if(isMasked) {
             itemView.replyMessage.apply {
-                text = maskedContent
+                text = if(allowUnmask) HtmlCompat.fromHtml(answer, HtmlCompat.FROM_HTML_MODE_LEGACY).toString() else maskedContent
                 setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_32))
                 show()
-                isEnabled = false
             }
             return
         }

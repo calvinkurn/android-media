@@ -140,9 +140,10 @@ class TalkReplyHeaderViewHolder(view: View,
                     text = maskedContent
                     return
                 }
-                text = question
+                text = HtmlLinkHelper(context, question).spannedString
                 setType(Typography.HEADING_4)
                 setWeight(Typography.BOLD)
+                return
             }
             text = HtmlLinkHelper(context, question).spannedString
             setType(Typography.HEADING_4)
