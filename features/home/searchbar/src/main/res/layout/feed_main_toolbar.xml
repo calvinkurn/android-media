@@ -78,6 +78,7 @@
 
         <ImageView
             android:id="@+id/btn_wishlist"
+            android:contentDescription="@string/content_desc_btn_wishlist"
             android:layout_centerVertical="true"
             android:layout_width="@dimen/icon_toolbar"
             android:layout_height="@dimen/icon_toolbar"
@@ -88,6 +89,7 @@
 
         <ImageView
             android:id="@+id/btn_inbox"
+            android:contentDescription="@string/content_desc_btn_inbox"
             android:layout_centerVertical="true"
             android:layout_width="@dimen/icon_toolbar"
             android:layout_height="@dimen/icon_toolbar"
@@ -98,6 +100,7 @@
 
         <ImageView
             android:id="@+id/btn_notification"
+            android:contentDescription="@string/content_desc_btn_notification"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
