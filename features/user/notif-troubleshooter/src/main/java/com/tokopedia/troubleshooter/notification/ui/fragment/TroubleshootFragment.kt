@@ -30,7 +30,6 @@ import com.tokopedia.troubleshooter.notification.ui.listener.FooterListener
 import com.tokopedia.troubleshooter.notification.ui.state.*
 import com.tokopedia.troubleshooter.notification.ui.uiview.*
 import com.tokopedia.troubleshooter.notification.ui.state.ConfigState.*
-import com.tokopedia.troubleshooter.notification.ui.state.DeviceSettingState.Companion.isPriorityNormalOrHigh
 import com.tokopedia.troubleshooter.notification.ui.state.RingtoneState.Normal
 import com.tokopedia.troubleshooter.notification.ui.uiview.TickerItemUIView.Companion.ticker
 import com.tokopedia.troubleshooter.notification.ui.viewmodel.TroubleshootViewModel
@@ -80,6 +79,7 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
         super.onViewCreated(view, savedInstanceState)
         initView()
         initObservable()
+        troubleshooterStatus()
 
         /*
         * adding interval to request
@@ -104,6 +104,10 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
     }
 
     private fun initObservable() {
+        viewModel.notificationStatus.observe(viewLifecycleOwner, Observer { status ->
+            if (status) activity?.finish()
+        })
+
         viewModel.token.observe(viewLifecycleOwner, Observer { newToken ->
             setUpdateTokenStatus(newToken)
             TroubleshooterTimber.token(newToken)
@@ -129,7 +133,9 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
         viewModel.dndMode.observe(viewLifecycleOwner, Observer {
             adapter.footerMessage(it)
         })
+    }
 
+    private fun troubleshooterStatus() {
         combineFourth(
                 viewModel.token,
                 viewModel.notificationSetting,
@@ -195,7 +201,6 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
 
     private fun deviceSetting(result: Result<DeviceSettingState>) {
         when (result) {
-            is Fail -> activity?.finish()
             is Success -> {
                 if (result.data == DeviceSettingState.High) {
                     adapter.updateStatus(Device, StatusState.Success)
@@ -207,6 +212,14 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
                             buttonText = R.string.btn_notif_choose
                     )
                 }
+            }
+            is Fail -> {
+                updateConfigStatus(
+                        type = Device,
+                        status = StatusState.Error,
+                        message = getString(R.string.notif_dv_none_ticker_warning),
+                        buttonText = R.string.btn_notif_activation
+                )
             }
         }
     }

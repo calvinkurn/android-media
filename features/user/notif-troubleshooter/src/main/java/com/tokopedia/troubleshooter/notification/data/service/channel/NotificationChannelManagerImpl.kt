@@ -29,6 +29,14 @@ class NotificationChannelManagerImpl(
         }
     }
 
+    override fun isNotificationChannelEnabled(): Boolean {
+        return if (hasNotificationChannel()) {
+            getNotificationChannel() == NotificationManager.IMPORTANCE_NONE
+        } else {
+            false
+        }
+    }
+
     companion object {
         private const val CHANNEL_ID = "ANDROID_GENERAL_CHANNEL"
     }

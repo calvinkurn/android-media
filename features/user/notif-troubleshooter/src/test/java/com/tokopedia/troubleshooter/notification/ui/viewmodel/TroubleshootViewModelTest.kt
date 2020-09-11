@@ -160,8 +160,21 @@ class TroubleshootViewModelTest {
         viewModel.deviceSetting isEqualsTo expectedValue
     }
 
-    @Test fun `it should get normal importance notification channel`() {
-        val expectedValue = Success(DeviceSettingState.Normal)
+    @Test fun `it should get off status of notification channel`() {
+        val expectedValue = Fail(Throwable(""))
+
+        every { notificationCompat.isNotificationEnabled() } returns true
+        every { notificationChannel.hasNotificationChannel() } returns true
+        every { notificationChannel.isNotificationChannelEnabled() } returns false
+
+        viewModel.deviceSetting()
+
+        verify { deviceSetting.onChanged(expectedValue) }
+        assertThat(viewModel.deviceSetting.value, instanceOf(Fail::class.java))
+    }
+
+    @Test fun `it should get none of notification channel`() {
+        val expectedValue = Success(DeviceSettingState.None)
 
         every { notificationCompat.isNotificationEnabled() } returns true
         every { notificationChannel.hasNotificationChannel() } returns false

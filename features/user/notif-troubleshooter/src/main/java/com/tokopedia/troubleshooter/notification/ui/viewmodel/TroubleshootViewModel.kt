@@ -36,6 +36,7 @@ interface TroubleshootContract {
     fun getNewToken()
     fun updateToken(newToken: String)
     fun isDndModeEnabled()
+    fun isNotificationEnabled()
 }
 
 class TroubleshootViewModel @Inject constructor(
@@ -48,6 +49,9 @@ class TroubleshootViewModel @Inject constructor(
         private val ringtoneMode: RingtoneModeService,
         private val dispatcher: DispatcherProvider
 ) : BaseViewModel(dispatcher.io()), TroubleshootContract, LifecycleObserver {
+
+    private val _notificationStatus = MutableLiveData<Boolean>()
+    val notificationStatus: LiveData<Boolean> get() = _notificationStatus
 
     private val _notificationSetting = MutableLiveData<Result<UserSettingUIView>>()
     val notificationSetting: LiveData<Result<UserSettingUIView>> get() = _notificationSetting
@@ -83,6 +87,11 @@ class TroubleshootViewModel @Inject constructor(
 
     override fun removeTickers() {
         _tickerItems.clear()
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    override fun isNotificationEnabled() {
+        _notificationStatus.value = notificationCompat.isNotificationEnabled()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
@@ -131,19 +140,20 @@ class TroubleshootViewModel @Inject constructor(
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     override fun deviceSetting() {
-        if (!notificationCompat.isNotificationEnabled()) {
-            _deviceSetting.value = Fail(Throwable(""))
-            return
-        }
-
         if (notificationChannel.hasNotificationChannel()) {
+            // check status
+            if (notificationChannel.isNotificationChannelEnabled()) {
+                _deviceSetting.value = Fail(Throwable(""))
+            }
+
+            // check importance
             if (notificationChannel.isImportanceChannel()) {
                 _deviceSetting.value = Success(DeviceSettingState.High)
             } else {
                 _deviceSetting.value = Success(DeviceSettingState.Low)
             }
         } else {
-            _deviceSetting.value = Success(DeviceSettingState.Normal)
+            _deviceSetting.value = Success(DeviceSettingState.None)
         }
     }
 
