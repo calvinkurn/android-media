@@ -9,7 +9,7 @@ class RechargeHomepageReminderWidgetCallback(val listener: RechargeHomepageItemL
     }
 
     override fun onReminderWidgetDeclineClickListener(reminderData: ReminderWidgetModel, toggleTracking: Boolean) {
-        listener.onRechargeReminderWidgetClosed(reminderData.visitableId()?.toIntOrNull() ?: -1)
+        listener.onRechargeReminderWidgetClosed(reminderData.visitableId()?.toIntOrNull() ?: -1, toggleTracking)
     }
 
     override fun onReminderWidgetImpressionListener(reminderData: ReminderWidgetModel) {
