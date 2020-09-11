@@ -46,7 +46,7 @@ class RSA {
         return encrypt(message, stringToPublicKey(key), encoder)
     }
 
-    private fun stringToPublicKey(keyInString: String): PublicKey {
+    fun stringToPublicKey(keyInString: String): PublicKey {
         val publicBytes: ByteArray = Base64.decode(keyInString, Base64.DEFAULT)
         val keySpec = X509EncodedKeySpec(publicBytes)
         val keyFactory: KeyFactory = KeyFactory.getInstance("RSA")
