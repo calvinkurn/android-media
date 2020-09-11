@@ -34,6 +34,7 @@ import com.tokopedia.digital.home.presentation.viewmodel.RechargeHomepageViewMod
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.view_recharge_home.*
 import javax.inject.Inject
 
@@ -43,13 +44,13 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         SearchInputView.FocusChangeListener {
 
     @Inject
-    lateinit var trackingUtil: RechargeHomepageAnalytics
-
+    lateinit var userSession: UserSessionInterface
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-
     @Inject
     lateinit var viewModel: RechargeHomepageViewModel
+    @Inject
+    lateinit var rechargeHomepageAnalytics: RechargeHomepageAnalytics
 
     lateinit var adapter: RechargeHomepageAdapter
 
@@ -110,7 +111,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         }
 
         digital_homepage_order_list.setOnClickListener {
-            trackingUtil.eventClickOrderList()
+            rechargeHomepageAnalytics.eventClickOrderList()
             RouteManager.route(activity, ApplinkConst.DIGITAL_ORDER)
         }
 
@@ -225,13 +226,13 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
             homeComponentsData.find { it.id == sectionID }?.items?.find { it.id == itemID }?.tracking?.find {
                 it.action == RechargeHomepageAnalytics.ACTION_CLICK
             }?.run {
-                trackingUtil.rechargeEnhanceEcommerceEvent(data)
+                rechargeHomepageAnalytics.rechargeEnhanceEcommerceEvent(data)
             }
         }
     }
 
     override fun onRechargeBannerAllItemClicked(section: RechargeHomepageSections.Section) {
-        trackingUtil.eventClickAllBanners()
+        rechargeHomepageAnalytics.eventClickAllBanners()
         RouteManager.route(context, section.applink)
     }
 
@@ -240,7 +241,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
             homeComponentsData.find { it.id == sectionID }?.items?.firstOrNull()?.tracking?.find {
                 it.action == RechargeHomepageAnalytics.ACTION_CLICK
             }?.run {
-                trackingUtil.rechargeEnhanceEcommerceEvent(data)
+                rechargeHomepageAnalytics.rechargeEnhanceEcommerceEvent(data)
             }
         }
     }
@@ -276,13 +277,13 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
 
     override fun onRechargeSectionItemImpression(element: RechargeHomepageSections.Section) {
         element.tracking.find { it.action == RechargeHomepageAnalytics.ACTION_IMPRESSION }?.run {
-            trackingUtil.rechargeEnhanceEcommerceEvent(data)
+            rechargeHomepageAnalytics.rechargeEnhanceEcommerceEvent(data)
         }
     }
 
     override fun onRechargeSectionItemClicked(element: RechargeHomepageSections.Item) {
         element.tracking.find { it.action == RechargeHomepageAnalytics.ACTION_CLICK }?.run {
-            trackingUtil.rechargeEnhanceEcommerceEvent(data)
+            rechargeHomepageAnalytics.rechargeEnhanceEcommerceEvent(data)
         }
 
         RouteManager.route(context, element.applink)
@@ -290,7 +291,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
 
     override fun onRechargeBannerImpression(element: RechargeHomepageSections.Section) {
         element.tracking.find { it.action == RechargeHomepageAnalytics.ACTION_IMPRESSION }?.run {
-            trackingUtil.rechargeEnhanceEcommerceEvent(data)
+            rechargeHomepageAnalytics.rechargeEnhanceEcommerceEvent(data)
         }
     }
 
@@ -299,7 +300,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
             homeComponentsData.find { it.id == sectionID }?.tracking?.find {
                 it.action == RechargeHomepageAnalytics.ACTION_IMPRESSION
             }?.run {
-                trackingUtil.rechargeEnhanceEcommerceEvent(data)
+                rechargeHomepageAnalytics.rechargeEnhanceEcommerceEvent(data)
             }
         }
     }
@@ -309,7 +310,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
             homeComponentsData.find { it.id == sectionID }?.tracking?.find {
                 it.action == RechargeHomepageAnalytics.ACTION_IMPRESSION
             }?.run {
-                trackingUtil.rechargeEnhanceEcommerceEvent(data)
+                rechargeHomepageAnalytics.rechargeEnhanceEcommerceEvent(data)
             }
         }
     }
@@ -332,13 +333,13 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
     override fun onFocusChanged(hasFocus: Boolean) {
         if (hasFocus) {
             digital_homepage_search_view.searchTextView.clearFocus()
-            trackingUtil.eventClickSearchBox()
+            rechargeHomepageAnalytics.eventClickSearchBox(userSession.userId)
             context?.let { context -> startActivity(DigitalHomePageSearchActivity.getCallingIntent(context)) }
         }
     }
 
     fun onBackPressed() {
-        trackingUtil.eventClickBackButton()
+        rechargeHomepageAnalytics.eventClickBackButton()
     }
 
     private fun hideLoading() {
