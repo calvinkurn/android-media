@@ -28,7 +28,7 @@
 
             <include
                 layout="@layout/item_cart_product"
-                tools:visibility="visible" />
+                tools:visibility="gone" />
 
             <include
                 layout="@layout/item_shipment_other_product"
@@ -47,7 +47,7 @@
             <!--Shipping: Option (Insurance, dropshipper, etc)-->
             <include
                 layout="@layout/item_shipment_shipping_options"
-                tools:visibility="visible" />
+                tools:visibility="gone" />
 
             <include
                 layout="@layout/item_shipment_subtotal"
