@@ -2,6 +2,7 @@ package com.tokopedia.entertainment.pdp.activity
 
 import android.os.Bundle
 import android.os.PersistableBundle
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -14,6 +15,8 @@ import com.tokopedia.entertainment.pdp.fragment.EventPDPFormFragment
 class EventPDPFormActivity: BaseSimpleActivity(), HasComponent<EventPDPComponent>{
     private var urlPDP = ""
 
+    lateinit var toolbarForm : Toolbar
+
     override fun onCreate(savedInstanceState: Bundle?) {
         val uri = intent.data
         if(uri != null){
@@ -22,6 +25,11 @@ class EventPDPFormActivity: BaseSimpleActivity(), HasComponent<EventPDPComponent
             urlPDP = savedInstanceState.getString(EXTRA_URL_PDP,"")
         }
         super.onCreate(savedInstanceState)
+        toolbarForm = toolbar
+    }
+
+    fun onChangeTitle(title: String){
+            toolbar.title = title
     }
 
     override fun getNewFragment(): Fragment?  = EventPDPFormFragment.newInstance(urlPDP)

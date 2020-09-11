@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.common.util.EventQuery
 import com.tokopedia.entertainment.common.util.EventQuery.eventContentById
+import com.tokopedia.entertainment.pdp.activity.EventPDPFormActivity
 import com.tokopedia.entertainment.pdp.activity.EventPDPFormActivity.Companion.EXTRA_ADDITIONAL_DATA
 import com.tokopedia.entertainment.pdp.di.EventPDPComponent
 import com.tokopedia.entertainment.pdp.viewmodel.EventPDPFormViewModel
@@ -40,14 +41,14 @@ import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventFormMapper.setL
 import com.tokopedia.entertainment.pdp.listener.OnClickFormListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottom_sheet_event_list_form.view.*
-import kotlinx.android.synthetic.main.ent_layout_viewholder_category.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.Serializable
 
-class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener, EventPDPTextFieldViewHolder.TextFormListener {
+class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener,
+        EventPDPTextFieldViewHolder.TextFormListener {
 
     private var urlPDP = ""
     private var keyActiveData = ""
@@ -60,7 +61,7 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener, EventPDP
 
     lateinit var formAdapter: EventPDPFormAdapter
 
-    override fun getScreenName(): String = String.format(resources.getString(R.string.ent_pdp_title_form))
+    override fun getScreenName(): String = ""
 
     override fun initInjector() {
         getComponent(EventPDPComponent::class.java).inject(this)
@@ -182,6 +183,7 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener, EventPDP
             showData()
         }
 
+        (activity as EventPDPFormActivity).toolbarForm.title = getTitle()
     }
 
     private fun requestData(eventCheckoutAdditionalData: EventCheckoutAdditionalData) {
@@ -200,7 +202,7 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener, EventPDP
         bottomSheets.apply {
             isFullpage = true
             setChild(view)
-            setTitle("Pilih " + title)
+            setTitle(getString(R.string.ent_form_data_bottomsheet,title))
             setCloseClickListener { bottomSheets.dismiss() }
         }
 
@@ -254,10 +256,24 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener, EventPDP
         }
     }
 
+    private fun getTitle():String {
+        return if(eventCheckoutAdditionalData.additionalType.equals(AdditionalType.NULL_DATA)) {
+            String.format(resources.getString(R.string.ent_pdp_title_form))
+        } else if(eventCheckoutAdditionalData.additionalType.equals(AdditionalType.ITEM_FILLED)
+                || eventCheckoutAdditionalData.additionalType.equals(AdditionalType.ITEM_UNFILL)) {
+             eventCheckoutAdditionalData.titleItem
+        } else if(eventCheckoutAdditionalData.additionalType.equals(AdditionalType.PACKAGE_FILLED)
+                || eventCheckoutAdditionalData.additionalType.equals(AdditionalType.PACKAGE_UNFILL)) {
+            String.format(resources.getString(R.string.ent_checkout_data_tambahan_title))
+        } else {
+            String.format(resources.getString(R.string.ent_pdp_title_form))
+        }
+
+    }
+
     override fun getKeyActive(): String {
         return keyActiveData
     }
-
 
     companion object {
         fun newInstance(url: String) = EventPDPFormFragment().also {
