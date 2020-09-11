@@ -24,7 +24,6 @@ import io.mockk.spyk
 import junit.framework.Assert.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
@@ -132,12 +131,6 @@ class OtherMenuViewModelTest {
 
         mockViewModel.isToasterAlreadyShown.observeOnce {
             assertTrue(it)
-        }
-
-        delay(5000L)
-
-        mockViewModel.isToasterAlreadyShown.observeOnce {
-            assertFalse(it)
         }
     }
 
