@@ -48,7 +48,7 @@ object SomAnalytics {
     private const val CUSTOM_DIMENSION_USER_ID = "userId"
     private const val CUSTOM_DIMENSION_SHOP_ID = "shopId"
     private const val AWAITING_PAYMENT = "awaiting payment"
-    private const val WAITING_FOR_PAYMENT = "awaiting payment"
+    private const val WAITING_FOR_PAYMENT = "waiting for payment"
 
     @JvmStatic
     fun sendScreenName(activity: Activity, screenName: String) {
