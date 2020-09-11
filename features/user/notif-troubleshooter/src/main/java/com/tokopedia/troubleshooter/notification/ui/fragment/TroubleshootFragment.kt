@@ -104,8 +104,8 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
     }
 
     private fun initObservable() {
-        viewModel.notificationStatus.observe(viewLifecycleOwner, Observer { status ->
-            if (status) activity?.finish()
+        viewModel.notificationStatus.observe(viewLifecycleOwner, Observer {
+            isNotificationEnabled -> if (!isNotificationEnabled) activity?.finish()
         })
 
         viewModel.token.observe(viewLifecycleOwner, Observer { newToken ->
