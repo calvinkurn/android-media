@@ -113,6 +113,16 @@
             app:labelType="general_light_grey"
             tools:labelTitle="Pre Order 8 Hari" />
 
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/label_incident_shop_level"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:gravity="center_vertical"
+            app:labelType="general_light_grey"
+            tools:labelTitle="Label Incident" />
+
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/img_free_shipping"
             android:layout_width="@dimen/dp_100"
@@ -123,21 +133,6 @@
             android:scaleType="fitStart"
             app:unify_image_type="rect"
             tools:src="@color/unify_G500" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/text_label_incident_shop_level"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_shop_name"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginStart="@dimen/dp_8"
-            android:gravity="center_vertical"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_shop_name"
-            app:typographyType="small"
-            app:typographyWeight="reguler"
-            tools:text="Lebel Incident"
-            tools:visibility="visible" />
 
     </com.google.android.flexbox.FlexboxLayout>
 

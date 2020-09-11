@@ -172,7 +172,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private ImageView imgFreeShipping;
     private Typography textOrderNumber;
     private Label labelPreOrder;
-    private Typography textLabelIncidentShopLevel;
+    private Label labelIncidentShopLevel;
 
     // order prioritas
     private CheckBox checkBoxPriority;
@@ -285,7 +285,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         productTicker = itemView.findViewById(R.id.product_ticker);
         textOrderNumber = itemView.findViewById(R.id.text_order_number);
         labelPreOrder = itemView.findViewById(R.id.label_pre_order);
-        textLabelIncidentShopLevel = itemView.findViewById(R.id.text_label_incident_shop_level);
+        labelIncidentShopLevel = itemView.findViewById(R.id.label_incident_shop_level);
         textVariant = itemView.findViewById(R.id.text_variant);
         textCashback = itemView.findViewById(R.id.text_cashback);
         textLabelIncidentProductLevel = itemView.findViewById(R.id.text_label_incident_product_level);
@@ -481,10 +481,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         }
 
         if (!TextUtils.isEmpty(shipmentCartItemModel.getShopAlertMessage())) {
-            textLabelIncidentShopLevel.setText(shipmentCartItemModel.getShopAlertMessage());
-            textLabelIncidentShopLevel.setVisibility(View.VISIBLE);
+            labelIncidentShopLevel.setText(shipmentCartItemModel.getShopAlertMessage());
+            labelIncidentShopLevel.setVisibility(View.VISIBLE);
         } else {
-            textLabelIncidentShopLevel.setVisibility(View.GONE);
+            labelIncidentShopLevel.setVisibility(View.GONE);
         }
 
         boolean hasTradeInItem = false;
