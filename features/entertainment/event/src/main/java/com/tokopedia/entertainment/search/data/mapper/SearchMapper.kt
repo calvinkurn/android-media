@@ -43,7 +43,8 @@ object SearchMapper {
                 image_url = event.imageApp,
                 isLiked = event.isLiked,
                 app_url = event.appUrl,
-                category = event.childCategoryIds
+                category = event.childCategoryIds,
+                sales_price = event.salesPrice
         )
     }
 

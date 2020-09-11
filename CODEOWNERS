@@ -40,6 +40,8 @@
 /features/discovery/carousel_productcard                @tokopedia/android-miniondave-dev
 /features/discovery/productcard_options                 @tokopedia/android-miniondave-dev
 /features/discovery/home_page_banner                    @tokopedia/android-miniondave-dev
+/features/merchant/official_store/                      @tokopedia/android-miniondave-dev
+/features/merchant/brandlist/                           @tokopedia/android-miniondave-dev
 
 /features/common/developer_options                  	@tokopedia/android-core-dev
 /features/common/nps                                	@tokopedia/android-core-dev
@@ -49,12 +51,10 @@
 /features/discovery/category_common/                	@tokopedia/android-minionstuart-dev
 
 /features/merchant/atc_variant/                         @tokopedia/android-minionstuart-dev
-/features/merchant/brandlist/                           @tokopedia/android-minionstuart-dev
 /features/merchant/inbox_reputation/                    @tokopedia/android-minionstuart-dev
 /features/merchant/gold_merchant/                       @tokopedia/android-minionstuart-dev
 /features/merchant/gold_merchant_common/                @tokopedia/android-minionstuart-dev
 /features/merchant/gold_merchant_subscribe/             @tokopedia/android-minionstuart-dev
-/features/merchant/official_store/                      @tokopedia/android-minionstuart-dev
 /features/merchant/power_merchant_subscribe/            @tokopedia/android-minionstuart-dev
 /features/merchant/product_detail/                      @tokopedia/android-minionstuart-dev
 /features/merchant/product_detail_common/               @tokopedia/android-minionstuart-dev
@@ -272,6 +272,7 @@
 /libraries/image_preview/								@tokopedia/android-core-dev
 /libraries/imageuploader/								@tokopedia/android-core-dev
 /libraries/inappupdate/									@tokopedia/android-core-dev
+/libraries/instrumentation_test                         @tokopedia/android-core-dev
 /libraries/iris/										@tokopedia/android-gatekeeperanalytic-dev
 /libraries/iris_session/	                            @tokopedia/android-gatekeeperanalytic-dev
 /libraries/kotlin_extensions/							@tokopedia/android-core-dev

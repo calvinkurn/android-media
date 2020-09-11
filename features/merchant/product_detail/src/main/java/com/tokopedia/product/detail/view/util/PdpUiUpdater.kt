@@ -20,6 +20,7 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.variant_common.model.VariantCategory
 import kotlin.math.roundToLong
 
@@ -120,6 +121,9 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
     val productByMeMap: ProductGeneralInfoDataModel?
         get() = mapOfData[ProductDetailConstant.KEY_BYME] as? ProductGeneralInfoDataModel
 
+    val topAdsImageData: TopAdsImageDataModel?
+        get() = mapOfData[ProductDetailConstant.KEY_TOP_ADS] as? TopAdsImageDataModel
+
     fun updateDataP1(context: Context?, dataP1: DynamicProductInfoP1?) {
         dataP1?.let {
             basicContentMap?.run {
@@ -209,8 +213,8 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
 
     fun updateDataTradein(context: Context?, tradeinResponse: ValidateTradeIn) {
         productTradeinMap?.run {
-            basicContentMap?.shouldShowTradein = true
-            snapShotMap?.shouldShowTradein = true
+            basicContentMap?.shouldShowTradein = tradeinResponse.isEligible
+            snapShotMap?.shouldShowTradein = tradeinResponse.isEligible
 
             data.first().subtitle = if (tradeinResponse.usedPrice.toIntOrZero() > 0) {
                 context?.getString(R.string.text_price_holder, CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeinResponse.usedPrice.toIntOrZero(), true))
@@ -242,11 +246,6 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
     fun updateWishlistData(isWishlisted: Boolean) {
         basicContentMap?.isWishlisted = isWishlisted
         snapShotMap?.isWishlisted = isWishlisted
-    }
-
-    fun updateBasicContentCodData(isCod: Boolean) {
-        snapShotMap?.shouldShowCod = isCod
-        basicContentMap?.shouldShowCod = isCod
     }
 
     fun updateFulfillmentData(context: Context?, isFullfillment: Boolean) {
@@ -475,5 +474,9 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
             dataModel.recomWidgetData = recom
             dataModel.cardModel = mapToCardModel(recom)
         }
+    }
+
+    fun updateTopAdsImageData(data: ArrayList<TopAdsImageViewModel>) {
+        topAdsImageData?.data = data
     }
 }

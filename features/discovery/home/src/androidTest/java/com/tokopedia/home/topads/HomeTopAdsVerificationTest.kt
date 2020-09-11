@@ -1,8 +1,10 @@
 package com.tokopedia.home.topads
 
+import android.Manifest
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.rule.ActivityTestRule
+import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelSprintViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
@@ -13,6 +15,8 @@ import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInte
 import com.tokopedia.test.application.espresso_component.CommonActions.clickOnEachItemRecyclerView
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
+import com.tokopedia.test.application.util.InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser
+import com.tokopedia.test.application.util.setupTopAdsDetector
 import org.junit.*
 
 /**
@@ -26,7 +30,16 @@ class HomeTopAdsVerificationTest {
     private var topAdsAssertion: TopAdsAssertion? = null
 
     @get:Rule
-    var activityRule: ActivityTestRule<InstrumentationHomeTestActivity> = ActivityTestRule(InstrumentationHomeTestActivity::class.java)
+    var grantPermissionRule: GrantPermissionRule = GrantPermissionRule.grant(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+
+    @get:Rule
+    var activityRule = object: ActivityTestRule<InstrumentationHomeTestActivity>(InstrumentationHomeTestActivity::class.java) {
+        override fun beforeActivityLaunched() {
+            super.beforeActivityLaunched()
+            loginInstrumentationTestTopAdsUser()
+            setupTopAdsDetector()
+        }
+    }
 
     @Before
     fun setTopAdsAssertion() {
@@ -43,16 +56,16 @@ class HomeTopAdsVerificationTest {
 
     @Test
     fun testTopAdsHome() {
-//        waitForData()
-//
-//        val homeRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)
-//        val itemCount = homeRecyclerView.adapter?.itemCount?:0
-//
-//        for (i in 0 until itemCount) {
-//            scrollHomeRecyclerViewToPosition(homeRecyclerView, i)
-//            checkProductOnDynamicChannel(homeRecyclerView, i)
-//        }
-//        topAdsAssertion?.assert()
+        waitForData()
+
+        val homeRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)
+        val itemCount = homeRecyclerView.adapter?.itemCount?:0
+
+        for (i in 0 until itemCount) {
+            scrollHomeRecyclerViewToPosition(homeRecyclerView, i)
+            checkProductOnDynamicChannel(homeRecyclerView, i)
+        }
+        topAdsAssertion?.assert()
     }
 
     private fun checkProductOnDynamicChannel(homeRecyclerView: RecyclerView, i: Int) {

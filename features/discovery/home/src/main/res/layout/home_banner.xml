@@ -31,32 +31,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="@+id/circular_view_pager"
         tools:background="@android:color/holo_blue_bright" />
-    <androidx.cardview.widget.CardView
+    <com.tokopedia.unifycomponents.Label
         app:cardCornerRadius="@dimen/dp_4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="@+id/circular_view_pager"
-        android:backgroundTint="@color/banner_see_more_bg"
+        android:id="@+id/see_more_label"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_8"
         android:layout_marginRight="@dimen/dp_16"
+        android:text="@string/home_banner_see_all"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-        <TextView
-            android:id="@+id/see_all_promo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_4"
-            android:layout_marginBottom="@dimen/dp_4"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:clickable="true"
-            android:focusable="true"
-            android:background="?attr/selectableItemBackground"
-            android:focusableInTouchMode="false"
-            android:text="@string/home_banner_see_all"
-            android:textColor="@color/white"
-            android:fontFamily="sans-serif-medium"
-            android:textSize="12sp"
-            android:lineSpacingExtra="3sp"/>
-    </androidx.cardview.widget.CardView>
+        android:layout_height="wrap_content"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

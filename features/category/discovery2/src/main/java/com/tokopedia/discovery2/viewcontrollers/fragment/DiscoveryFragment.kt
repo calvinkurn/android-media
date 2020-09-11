@@ -25,11 +25,16 @@ import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.analytics.DiscoveryAnalytics
 import com.tokopedia.discovery2.data.AdditionalInfo
+import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.END_POINT
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PINNED_ACTIVE_TAB
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PINNED_COMPONENT_ID
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PINNED_COMP_ID
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PRODUCT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.SOURCE_QUERY
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
@@ -55,7 +60,9 @@ import javax.inject.Inject
 
 private const val LOGIN_REQUEST_CODE = 35769
 private const val MOBILE_VERIFICATION_REQUEST_CODE = 35770
+const val PAGE_REFRESH_LOGIN = 35771
 private const val SCROLL_TOP_DIRECTION = -1
+private const val DEFAULT_SCROLL_POSITION = 0
 
 class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshListener, View.OnClickListener {
 
@@ -70,35 +77,42 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     private lateinit var discoveryAdapter: DiscoveryRecycleAdapter
     private val analytics: DiscoveryAnalytics by lazy {
         DiscoveryAnalytics(trackingQueue = trackingQueue, pagePath = discoveryViewModel.pagePath, pageType = discoveryViewModel.pageType,
-                pageIdentifier = discoveryViewModel.pageIdentifier, campaignCode = discoveryViewModel.campaignCode, sourceIdentifier = arguments?.getString(SOURCE_QUERY, "") ?: "")
+                pageIdentifier = discoveryViewModel.pageIdentifier, campaignCode = discoveryViewModel.campaignCode, sourceIdentifier = arguments?.getString(SOURCE_QUERY, "")
+                ?: "")
     }
     private lateinit var mSwipeRefreshLayout: SwipeRefreshLayout
     private lateinit var mProgressBar: ProgressBar
     var pageEndPoint = ""
     private var componentPosition: Int? = null
     private var openScreenStatus = false
+    private var pinnedAlreadyScrolled = false
 
-    @JvmField
-    @Inject
     var pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface? = null
 
     @Inject
     lateinit var trackingQueue: TrackingQueue
 
     companion object {
-        fun getInstance(endPoint: String?, queryParameter: String?): Fragment {
+        fun getInstance(endPoint: String?, queryParameterMap: Map<String, String?>?): DiscoveryFragment {
             val bundle = Bundle()
             val fragment = DiscoveryFragment()
             if (!endPoint.isNullOrEmpty()) {
                 bundle.putString(END_POINT, endPoint)
             }
-            bundle.putString(SOURCE_QUERY, queryParameter)
+            queryParameterMap?.let {
+                bundle.putString(SOURCE_QUERY, queryParameterMap[SOURCE_QUERY])
+                bundle.putString(PINNED_COMPONENT_ID, queryParameterMap[PINNED_COMPONENT_ID])
+                bundle.putString(PINNED_ACTIVE_TAB, queryParameterMap[PINNED_ACTIVE_TAB])
+                bundle.putString(PINNED_COMP_ID, queryParameterMap[PINNED_COMP_ID])
+                bundle.putString(PRODUCT_ID, queryParameterMap[PRODUCT_ID])
+            }
             fragment.arguments = bundle
             return fragment
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_discovery, container, false)
     }
 
@@ -108,7 +122,8 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
 
     override fun initInjector() {
         DaggerDiscoveryComponent.builder()
-                .baseAppComponent((context?.applicationContext as BaseMainApplication).baseAppComponent)
+                .baseAppComponent((context?.applicationContext
+                        as BaseMainApplication).baseAppComponent)
                 .build()
                 .inject(this)
     }
@@ -119,7 +134,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     }
 
     private fun initView(view: View) {
-        mDiscoveryFab = view.findViewById(R.id.fab)
+//        mDiscoveryFab = view.findViewById(R.id.fab)
         typographyHeader = view.findViewById(R.id.typography_header)
         ivShare = view.findViewById(R.id.iv_share)
         ivSearch = view.findViewById(R.id.iv_search)
@@ -147,7 +162,8 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                if (!recyclerView.canScrollVertically(SCROLL_TOP_DIRECTION) && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                if (!recyclerView.canScrollVertically(SCROLL_TOP_DIRECTION)
+                        && newState == RecyclerView.SCROLL_STATE_IDLE) {
                     ivToTop.hide()
                 }
             }
@@ -163,11 +179,12 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         setAdapter()
         discoveryViewModel.pageIdentifier = arguments?.getString(END_POINT, "") ?: ""
         pageEndPoint = discoveryViewModel.pageIdentifier
-        discoveryViewModel.getDiscoveryData()
+        fetchDiscoveryPageData()
         setUpObserver()
     }
 
-    fun setAdapter() {
+
+    private fun setAdapter() {
         recyclerView.apply {
             setLayoutManager(StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL))
             discoveryAdapter = DiscoveryRecycleAdapter(this@DiscoveryFragment).also {
@@ -177,7 +194,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     }
 
     fun reSync() {
-        discoveryViewModel.getDiscoveryData()
+        fetchDiscoveryPageData()
     }
 
     private fun setUpObserver() {
@@ -187,6 +204,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                     it.data.let { listComponent ->
                         if (mSwipeRefreshLayout.isRefreshing) setAdapter()
                         discoveryAdapter.addDataList(listComponent)
+                        scrollToPinnedComponent(listComponent)
                     }
                     mProgressBar.hide()
                     stopDiscoveryPagePerformanceMonitoring()
@@ -233,11 +251,28 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                     globalError.show()
                     globalError.setOnClickListener {
                         globalError.hide()
-                        discoveryViewModel.getDiscoveryData()
+                        fetchDiscoveryPageData()
                     }
                 }
             }
         })
+    }
+
+    private fun fetchDiscoveryPageData() {
+        discoveryViewModel.getDiscoveryData(discoveryViewModel.getQueryParameterMapFromBundle(arguments))
+    }
+
+    private fun scrollToPinnedComponent(listComponent: List<ComponentsItem>) {
+        if (!pinnedAlreadyScrolled) {
+            val pinnedComponentId = arguments?.getString(PINNED_COMPONENT_ID, "")
+            if (!pinnedComponentId.isNullOrEmpty()) {
+                val position = discoveryViewModel.scrollToPinnedComponent(listComponent, pinnedComponentId)
+                if (position >= 0) {
+                    recyclerView.smoothScrollToPosition(position)
+                }
+            }
+            pinnedAlreadyScrolled = true
+        }
     }
 
     private fun setPageInfo(data: PageInfo?) {
@@ -295,10 +330,14 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     }
 
     override fun onRefresh() {
+        refreshPage()
+    }
+
+    private fun refreshPage() {
         trackingQueue.sendAll()
         getDiscoveryAnalytics().clearProductViewIds()
         discoveryViewModel.clearPageData()
-        discoveryViewModel.getDiscoveryData()
+        fetchDiscoveryPageData()
         getDiscoveryAnalytics().clearProductViewIds()
     }
 
@@ -331,6 +370,11 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                     discoveryBaseViewModel?.isPhoneVerificationSuccess(false)
                 }
             }
+            PAGE_REFRESH_LOGIN -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    refreshPage()
+                }
+            }
         }
     }
 
@@ -358,7 +402,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     override fun onClick(view: View?) {
         when (view) {
             ivToTop -> {
-                recyclerView.smoothScrollToTop()
+                recyclerView.smoothScrollToPosition(DEFAULT_SCROLL_POSITION)
                 ivToTop.hide()
             }
         }

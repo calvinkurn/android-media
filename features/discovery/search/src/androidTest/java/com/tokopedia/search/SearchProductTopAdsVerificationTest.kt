@@ -1,5 +1,6 @@
 package com.tokopedia.search
 
+import android.Manifest
 import android.app.Activity
 import android.app.Instrumentation
 import androidx.recyclerview.widget.RecyclerView
@@ -16,18 +17,23 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel
 import com.tokopedia.search.result.presentation.view.activity.SearchActivity
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ProductItemViewHolder
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
+import com.tokopedia.test.application.util.InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
 internal class SearchProductTopAdsVerficationTest {
+
+    @get:Rule
+    var grantPermissionRule: GrantPermissionRule = GrantPermissionRule.grant(Manifest.permission.WRITE_EXTERNAL_STORAGE)
 
     @get:Rule
     val activityRule = IntentsTestRule(SearchActivity::class.java, false, false)
@@ -41,6 +47,8 @@ internal class SearchProductTopAdsVerficationTest {
 
     @Before
     fun setUp() {
+        loginInstrumentationTestTopAdsUser()
+
         disableOnBoarding(context)
 
         activityRule.launchActivity(createIntent())
@@ -69,7 +77,7 @@ internal class SearchProductTopAdsVerficationTest {
     @Test
     fun testTopAdsUrlTracking() {
         performUserJourney()
-//        topAdsAssertion.assert()
+        topAdsAssertion.assert()
     }
 
     private fun performUserJourney() {

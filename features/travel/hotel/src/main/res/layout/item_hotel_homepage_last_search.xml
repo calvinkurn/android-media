@@ -60,7 +60,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/hotel_14dp"
             android:textColor="@color/Neutral_N700_44"
-            app:layout_constraintTop_toBottomOf="@id/tg_hotel_homepage_subtitle_last_search"
+            app:layout_constraintTop_toBottomOf="@+id/tg_hotel_homepage_subtitle_last_search"
             app:layout_constraintLeft_toLeftOf="parent"
             app:typographyType="body_3"
             tools:text="1 Kamar, 2 Tamu" />

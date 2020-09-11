@@ -3,6 +3,7 @@ package com.tokopedia.test.application.util
 import android.app.Application
 import android.content.Context
 import androidx.test.espresso.idling.CountingIdlingResource
+import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.test.application.environment.InstrumentationTestApp
@@ -15,6 +16,50 @@ import rx.schedulers.Schedulers
 import java.util.*
 
 object InstrumentationAuthHelper {
+
+    fun loginInstrumentationTestUser1() {
+        userSession {
+            userId = "108956738"
+            email = "erick.samuel+testingtokenandroid1@tokopedia.com"
+            accessTokenBearer = "ghSZU8GxoVSK3qkEqgFUrlHt3pFSS+Xtmb5peuCDaca/R0LwyqhTqwTJVcupIX78E5xicw3oliW9AdyRWr4Apg=="
+        }
+    }
+
+    fun loginInstrumentationTestUser2() {
+        userSession {
+            userId = "108956738"
+            email = "erick.samuel+testingtokenandroid1@tokopedia.com"
+            accessTokenBearer = "kdxPYUwtF5yYMOuwZFxnFqFZea7GUpoX6m1eL1IGJ1pwB3crhQCTvKdMoYV6wIpiHgE5Xlghd0WAKPXW+yMp5w=="
+        }
+    }
+
+    fun loginInstrumentationTestTopAdsUser() {
+        userSession {
+            userId = "24095631"
+            email = "jaka.pitana+akuntestprod@tokopedia.com"
+            accessTokenBearer = "xZoJ168b+Z+KmXg68ctzDQc4vYbCy+Iawwzy4K/eSSiMZ2PaUHC+bs+S1qREufaU"
+        }
+    }
+
+    private fun userSession(
+            context: Context = InstrumentationRegistry.getInstrumentation().targetContext,
+            action: UserSession.() -> Unit
+    ) {
+        try {
+            val userSession = UserSession(context)
+
+            userSession.setIsLogin(true)
+            userSession.action()
+        }
+        catch (throwable: Throwable) {
+            throwable.printStackTrace()
+        }
+    }
+
+    private var UserSession.accessTokenBearer: String
+        get() = accessToken
+        set(bearerToken) = setToken(bearerToken, "Bearer")
+
     fun loginToAnUser(application: Application, idlingResource: CountingIdlingResource? = null) {
         idlingResource?.increment()
         val userSession = UserSession(application)

@@ -1,6 +1,8 @@
 package com.tokopedia.shop.home.view.adapter.viewholder
 
+import android.content.res.Resources
 import android.view.View
+import android.view.ViewGroup
 
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -20,17 +22,16 @@ import com.tokopedia.shop.home.view.model.BannerType
 import com.tokopedia.shop.home.view.model.ShopHomeNewProductLaunchCampaignUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.config.GlobalConfig
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.shop.home.view.model.ShopHomeNewProductLaunchCampaignUiModel.Companion.TOTAL_NOTIFY_WORDING_FORMAT_FOR_REPLACED
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_shop_home_new_product_launch_campaign.view.*
 import kotlinx.android.synthetic.main.layout_shop_home_npl_remind_me.view.*
 import kotlinx.android.synthetic.main.layout_shop_home_npl_timer.view.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.math.RoundingMode
-import java.util.*
 
 /**
  * @author by alvarisi on 12/12/17.
@@ -48,6 +49,9 @@ class ShopHomeNplCampaignViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_shop_home_new_product_launch_campaign
+        private const val TITLE_MARGIN_FIRST_ITEM = 16
+        private const val DURATION_TO_HIDE_REMIND_ME_WORDING = 5000L
+        private const val PADDING_LEFT_PERCENTAGE = 0.47f
     }
 
     private var productListCampaignAdapter: ShopCampaignCarouselProductAdapter? = null
@@ -68,7 +72,8 @@ class ShopHomeNplCampaignViewHolder(
         this.model = model
         setHeader(model)
         setTimer(model)
-        setRemindMe(model)
+        if (!GlobalConfig.isSellerApp())
+            setRemindMe(model)
         setBannerImage(model)
         setProductCarousel(model)
         setWidgetImpressionListener(model)
@@ -84,6 +89,8 @@ class ShopHomeNplCampaignViewHolder(
                 )
         )
         itemView.rv_product_carousel?.apply {
+            val paddingLeftBasedOnScreen = (getScreenWidth() *  PADDING_LEFT_PERCENTAGE).toInt()
+            setPadding(paddingLeftBasedOnScreen, paddingTop, paddingRight, paddingBottom)
             launch {
                 try {
                     val rvState = model.data?.firstOrNull()?.rvState
@@ -133,14 +140,7 @@ class ShopHomeNplCampaignViewHolder(
             it.bannerType.equals(selectedBannerType, true)
         }?.imageUrl.orEmpty()
         itemView.banner_background?.apply {
-            layoutParams.height = if (isStatusCampaignFinished(statusCampaign)) {
-                adjustViewBounds = true
-                ConstraintLayout.LayoutParams.WRAP_CONTENT
-            } else {
-                adjustViewBounds = false
-                0
-            }
-            setImageUrl(bannerUrl)
+            setImageUrl(bannerUrl, heightRatio = 1f)
         }
     }
 
@@ -164,6 +164,7 @@ class ShopHomeNplCampaignViewHolder(
                 ))
                 itemView.text_remind_me?.hide()
             } else {
+                val isHideRemindMeTextAfterXSeconds = model.data?.firstOrNull()?.isHideRemindMeTextAfterXSeconds ?: false
                 itemView.layout_remind_me?.background = MethodChecker.getDrawable(
                         itemView.context,
                         R.drawable.bg_rounded_rect_shop_home_npl_remind_me_false
@@ -172,7 +173,16 @@ class ShopHomeNplCampaignViewHolder(
                         itemView.context,
                         R.drawable.ic_npl_remind_me_false
                 ))
-                itemView.text_remind_me?.show()
+                if(isHideRemindMeTextAfterXSeconds){
+                    itemView.text_remind_me?.hide()
+                }else{
+                    itemView.text_remind_me?.show()
+                    launchCatchError(block = {
+                        delay(DURATION_TO_HIDE_REMIND_ME_WORDING)
+                        model.data.firstOrNull()?.isHideRemindMeTextAfterXSeconds = true
+                        itemView.text_remind_me?.hide()
+                    }) {}
+                }
             }
             checkRemindMeLoading(model)
         }
@@ -314,8 +324,18 @@ class ShopHomeNplCampaignViewHolder(
             itemView.text_title?.hide()
             itemView.image_tnc?.hide()
         } else {
-            itemView.text_title?.text = title
-            itemView.text_title?.show()
+            itemView.text_title?.apply {
+                (layoutParams as? ViewGroup.MarginLayoutParams)?.apply {
+                    val topMargin = if (adapterPosition == 0) {
+                        TITLE_MARGIN_FIRST_ITEM.toPx()
+                    } else {
+                        this.topMargin
+                    }
+                    setMargins(leftMargin, topMargin, rightMargin, bottomMargin)
+                }
+                text = title
+                show()
+            }
             itemView.image_tnc?.show()
         }
     }

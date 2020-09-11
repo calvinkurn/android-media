@@ -1,18 +1,18 @@
 package com.tokopedia.logisticcart.shipping.features.shippingcourier.view;
 
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tokopedia.logisticcart.R;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.OntimeDeliveryGuarantee;
+import com.tokopedia.unifycomponents.Label;
 
 /**
  * Created by Irfan Khoirul on 06/08/18.
@@ -25,13 +25,11 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
 
     private TextView tvCourier;
     private TextView tvPrice;
-    private TextView tvCod;
-    private TextView tvOtd;
-    private ImageView ivOtd;
-    private View viewOtd;
     private ImageView imgCheck;
     private TextView tvPromoPotency;
     private View separator;
+    private Label codLabel;
+    private Label otdLabel;
 
     private int cartPosition;
 
@@ -41,13 +39,11 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
 
         tvCourier = itemView.findViewById(R.id.tv_courier);
         tvPrice = itemView.findViewById(R.id.tv_price);
-        tvCod = itemView.findViewById(R.id.tv_cod_availability);
-        tvOtd = itemView.findViewById(R.id.tv_otd);
-        ivOtd = itemView.findViewById(R.id.iv_icon_otd);
-        viewOtd = itemView.findViewById(R.id.otdelivery);
         imgCheck = itemView.findViewById(R.id.img_check);
         tvPromoPotency = itemView.findViewById(R.id.tv_promo_potency);
         separator = itemView.findViewById(R.id.separator);
+        codLabel = itemView.findViewById(R.id.lbl_cod_available);
+        otdLabel = itemView.findViewById(R.id.lbl_otd_available);
     }
 
     public void bindData(ShippingCourierUiModel shippingCourierUiModel,
@@ -68,18 +64,16 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
         }
 
         if (shippingCourierUiModel.getProductData().getCodProductData() != null) {
-            tvCod.setText(shippingCourierUiModel.getProductData().getCodProductData().getCodText());
-            tvCod.setVisibility(shippingCourierUiModel.getProductData().getCodProductData()
-                    .getIsCodAvailable() == COD_ENABLE_VALUE ? View.VISIBLE : View.GONE);
+            /*cod label*/
+            codLabel.setVisibility(shippingCourierUiModel.getProductData().getCodProductData().
+                    getIsCodAvailable() == COD_ENABLE_VALUE? View.VISIBLE : View.GONE );
         }
 
         if (shippingCourierUiModel.getProductData().getFeatures() != null &&
                 shippingCourierUiModel.getProductData().getFeatures().getOntimeDeliveryGuarantee() != null) {
             OntimeDeliveryGuarantee otd = shippingCourierUiModel
                     .getProductData().getFeatures().getOntimeDeliveryGuarantee();
-            viewOtd.setVisibility(otd.getAvailable() ? View.VISIBLE : View.GONE);
-            tvOtd.setText(otd.getTextLabel());
-            ImageHandler.LoadImage(ivOtd, otd.getIconUrl());
+            otdLabel.setVisibility(otd.getAvailable()? View.VISIBLE : View.GONE);
         }
 
         tvCourier.setText(shippingCourierUiModel.getProductData().getShipperName());

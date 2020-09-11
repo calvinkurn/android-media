@@ -98,6 +98,9 @@ object DynamicProductDetailMapper {
                         listOfComponent.add(it)
                     }
                 }
+                ProductDetailConstant.TOP_ADS -> {
+                    listOfComponent.add(TopAdsImageDataModel(type = component.type, name = component.componentName))
+                }
             }
         }
         return listOfComponent
@@ -171,7 +174,7 @@ object DynamicProductDetailMapper {
 
             VariantChildCommon(productId = it.productId.toIntOrZero(), price = it.price, priceFmt = it.priceFmt, sku = it.sku, stock = stock,
                     optionIds = it.optionIds, name = it.name, url = it.url, picture = Picture(original = it.picture?.original, thumbnail = it.picture?.thumbnail),
-                    campaign = campaign, isCod = it.isCod)
+                    campaign = campaign)
         }
 
         return ProductVariantCommon(

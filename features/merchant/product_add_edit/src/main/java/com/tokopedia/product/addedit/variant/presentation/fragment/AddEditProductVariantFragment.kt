@@ -188,7 +188,7 @@ class AddEditProductVariantFragment :
         observeSizechartVisibility()
         observeVariantPhotosVisibility()
         observeIsEditMode()
-        observeIsSelectedVariantUnitValuesEmpty()
+        observeisRemovingVariant()
 
         cardSizechart.setOnClickListener {
             onSizechartClicked()
@@ -229,10 +229,13 @@ class AddEditProductVariantFragment :
         // button save on click listener
         buttonSave.setOnClickListener {
             // perform the save button function
-            val variantPhotos = variantPhotoAdapter?.getData().orEmpty()
-            val selectedVariantDetails = variantTypeAdapter?.getSelectedItems().orEmpty()
-            viewModel.updateVariantInputModel(variantPhotos)
-            startAddEditProductVariantDetailActivity()
+            if (viewModel.isRemovingVariant.value == true) {
+                submitVariantInput()
+            } else {
+                val variantPhotos = variantPhotoAdapter?.getData().orEmpty()
+                viewModel.updateVariantInputModel(variantPhotos)
+                startAddEditProductVariantDetailActivity()
+            }
         }
 
         setupToolbarActions()
@@ -245,6 +248,9 @@ class AddEditProductVariantFragment :
             if (isEditMode) ProductEditVariantTracking.selectVariantType(variantTypeName, shopId)
             else ProductAddVariantTracking.selectVariantType(variantTypeName, shopId)
         }
+
+        // disable removing variant state, means it's back to add/edit-ing state
+        viewModel.disableRemovingVariant()
 
         if (viewModel.isVariantUnitValuesLayoutEmpty()) {
             // get selected variant unit values for variant level 1
@@ -350,12 +356,7 @@ class AddEditProductVariantFragment :
     }
 
     fun onBackPressed() {
-        // if removing all variants then save the changes
-        if (viewModel.isSelectedVariantUnitValuesEmpty.value == true) {
-            submitVariantInput()
-        } else {
-            showExitConfirmationDialog()
-        }
+        showExitConfirmationDialog()
     }
 
     private fun deselectVariantType(layoutPosition: Int, adapterPosition: Int, variantDetail: VariantDetail) {
@@ -384,7 +385,7 @@ class AddEditProductVariantFragment :
             }
         }
         viewModel.hideProductVariantPhotos(variantDetail)
-        viewModel.updateSizechartFieldVisibility(variantDetail, false)
+        viewModel.updateSizechartFieldVisibility()
     }
 
     private fun setupCancellationDialog(layoutPosition: Int, adapterPosition: Int, variantDetail: VariantDetail) {
@@ -717,7 +718,7 @@ class AddEditProductVariantFragment :
     }
 
     private fun onSizechartClicked() {
-        if (viewModel.variantSizechart.value?.filePath.isNullOrEmpty()) {
+        if (viewModel.variantSizechart.value?.urlOriginal.isNullOrEmpty()) {
             showSizechartPicker()
         } else {
             val fm = this@AddEditProductVariantFragment.childFragmentManager
@@ -777,7 +778,7 @@ class AddEditProductVariantFragment :
 
     private fun observeSizechartUrl() {
         viewModel.variantSizechart.observe(this, Observer {
-            if (it.filePath.isEmpty()) {
+            if (it.urlOriginal.isEmpty()) {
                 ivSizechartAddSign.visible()
                 ivSizechartEditSign.gone()
                 ivSizechart.gone()
@@ -790,17 +791,18 @@ class AddEditProductVariantFragment :
             }
 
             // display sizechart image (use server image if exist)
-            if (it.urlThumbnail.isNotEmpty()) {
-                ivSizechart.setImage(it.urlThumbnail, 0F)
-            } else {
-                ivSizechart.setImage(it.filePath, 0F)
-            }
+            ivSizechart.setImage(it.urlOriginal, 0F)
         })
     }
 
     private fun observeInputStatus() {
         viewModel.isInputValid.observe(this, Observer {
-            buttonSave.isEnabled = it
+            tvDeleteAll?.isEnabled = it
+            if (viewModel.isRemovingVariant.value == true) {
+                buttonSave.isEnabled = true // always enable save button if removing variant activated
+            } else {
+                buttonSave.isEnabled = it
+            }
         })
     }
 
@@ -809,13 +811,6 @@ class AddEditProductVariantFragment :
             // track the screen
             if (isEditMode) ProductEditVariantTracking.trackScreen(isLoggedin, userId)
             else ProductAddVariantTracking.trackScreen(isLoggedin, userId)
-        })
-    }
-
-    private fun observeIsSelectedVariantUnitValuesEmpty() {
-        viewModel.isSelectedVariantUnitValuesEmpty.observe(this, Observer { isSelectedVariantUnitValuesEmpty ->
-            // hide reset button if selected variant unit values exist
-            tvDeleteAll?.visibility = if (!isSelectedVariantUnitValuesEmpty) View.VISIBLE else View.GONE
         })
     }
 
@@ -832,16 +827,34 @@ class AddEditProductVariantFragment :
         })
     }
 
+    private fun observeisRemovingVariant() {
+        viewModel.isRemovingVariant.observe(this, Observer {
+            buttonSave.text =  if (it) {
+                getString(com.tokopedia.product.addedit.R.string.action_variant_save)
+            } else {
+                getString(com.tokopedia.product.addedit.R.string.action_variant_next)
+            }
+        })
+    }
+
     private fun setupAddEditVariantPage(variantDataList: List<VariantDetail>, selectedVariantDetails: List<VariantDetail>) {
         // setup variant type section view
         variantTypeAdapter?.setData(variantDataList)
         variantTypeAdapter?.setMaxSelectedItems(MAX_SELECTED_VARIANT_TYPE)
         // set selected variant types
         variantTypeAdapter?.setSelectedItems(selectedVariantDetails)
+        // if editing old variant data (given data is reversed) then you should reverse
+        // selectedVariantDetails data first
+        viewModel.updateIsOldVariantData(variantTypeAdapter?.getSelectedItems().orEmpty(), selectedVariantDetails)
+        val displayedVariantDetail = if (viewModel.isOldVariantData) {
+            selectedVariantDetails.reversed()
+        } else {
+            selectedVariantDetails
+        }
         // update variant selection state
         if (selectedVariantDetails.size == 1) viewModel.isSingleVariantTypeIsSelected = true
         // set selected variant unit and values
-        selectedVariantDetails.forEachIndexed { index, variantDetail ->
+        displayedVariantDetail.forEachIndexed { index, variantDetail ->
 
             val selectedVariantUnit = variantDetail.units.firstOrNull()
                     ?: Unit()
@@ -997,7 +1010,7 @@ class AddEditProductVariantFragment :
     }
 
     private fun removeSizechart() {
-        val url = viewModel.variantSizechart.value?.filePath.orEmpty()
+        val url = viewModel.variantSizechart.value?.urlOriginal.orEmpty()
         viewModel.updateSizechart("")
         FileUtils.deleteFileInTokopediaFolder(url)
     }
@@ -1011,15 +1024,7 @@ class AddEditProductVariantFragment :
     }
 
     private fun showEditorSizechartPicker() {
-        val urlOrPath = viewModel.variantSizechart.value?.run {
-            if (urlOriginal.isNotEmpty()) {
-                // if sizechart image is from server, then use image url
-                urlOriginal
-            } else {
-                // if sizechart image is from device, then use file path
-                filePath
-            }
-        }.orEmpty()
+        val urlOrPath = viewModel.variantSizechart.value?.urlOriginal
 
         context?.apply {
             val isEditMode = viewModel.isEditMode.value ?: false
@@ -1110,6 +1115,8 @@ class AddEditProductVariantFragment :
             }
             actionTextView?.text = getString(R.string.action_variant_delete)
             tvDeleteAll = actionTextView
+            tvDeleteAll?.isEnabled = false
+            tvDeleteAll?.visible()
         }
     }
 }
