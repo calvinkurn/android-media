@@ -12,10 +12,13 @@ import com.tokopedia.talk.feature.reply.data.model.delete.talk.TalkDeleteTalkRes
 import com.tokopedia.talk.feature.reply.data.model.discussion.AttachedProduct
 import com.tokopedia.talk.feature.reply.data.model.discussion.DiscussionDataByQuestionIDResponseWrapper
 import com.tokopedia.talk.feature.reply.data.model.follow.TalkFollowUnfollowTalkResponseWrapper
+import com.tokopedia.talk.feature.reply.data.model.report.TalkReportCommentResponseWrapper
+import com.tokopedia.talk.feature.reply.data.model.report.TalkReportTalkResponseWrapper
 import com.tokopedia.talk.feature.reply.data.model.unmask.TalkMarkCommentNotFraudResponseWrapper
 import com.tokopedia.talk.feature.reply.data.model.unmask.TalkMarkCommentNotFraudSuccess
 import com.tokopedia.talk.feature.reply.data.model.unmask.TalkMarkNotFraudResponseWrapper
 import com.tokopedia.talk.feature.reply.domain.usecase.*
+import com.tokopedia.talk_old.reporttalk.domain.ReportTalkUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.withContext
@@ -31,6 +34,8 @@ class TalkReplyViewModel @Inject constructor(
         private val talkCreateNewCommentUseCase: TalkCreateNewCommentUseCase,
         private val talkMarkNotFraudUseCase: TalkMarkNotFraudUseCase,
         private val talkMarkCommentNotFraudUseCase: TalkMarkCommentNotFraudUseCase,
+        private val talkReportTalkUseCase: TalkReportTalkUseCase,
+        private val talkReportCommentUseCase: TalkReportCommentUseCase,
         private val userSession: UserSessionInterface,
         private val dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.main) {
@@ -75,6 +80,14 @@ class TalkReplyViewModel @Inject constructor(
     private val _markNotFraudResult = MutableLiveData<Result<TalkMarkNotFraudResponseWrapper>>()
     val markNotFraudResult: LiveData<Result<TalkMarkNotFraudResponseWrapper>>
         get() = _markNotFraudResult
+
+    private val _reportTalkResult = MutableLiveData<Result<TalkReportTalkResponseWrapper>>()
+    val reportTalkResult: LiveData<Result<TalkReportTalkResponseWrapper>>
+        get() = _reportTalkResult
+
+    private val _reportCommentResult = MutableLiveData<Result<TalkReportCommentResponseWrapper>>()
+    val reportCommentResult: LiveData<Result<TalkReportCommentResponseWrapper>>
+        get() = _reportCommentResult
 
     private var isFollowing: Boolean = false
 
@@ -187,6 +200,24 @@ class TalkReplyViewModel @Inject constructor(
             }
         }) {
             _markNotFraudResult.postValue(Fail(it))
+        }
+    }
+
+    fun reportTalk(questionId: String) {
+        launchCatchError(block = {
+            talkReportTalkUseCase.setParams(questionId.toIntOrZero())
+            val response = talkReportTalkUseCase.executeOnBackground()
+        }) {
+
+        }
+    }
+
+    fun reportComment(commentId: String) {
+        launchCatchError(block = {
+            talkReportCommentUseCase.setParams(commentId.toIntOrZero())
+            val response = talkReportTalkUseCase.executeOnBackground()
+        }) {
+
         }
     }
 

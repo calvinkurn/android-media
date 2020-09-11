@@ -54,7 +54,7 @@ class TalkReplyHeaderViewHolder(view: View,
         if(isMarkNotFraud) {
             threadListener.onUnmaskCommentOptionSelected(commentId)
         } else {
-            threadListener.onDismissUnmaskCard()
+            threadListener.onDismissUnmaskCard(commentId)
             itemView.replyUnmaskCard.hide()
         }
     }

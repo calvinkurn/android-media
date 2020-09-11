@@ -145,6 +145,8 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         observeAttachedProducts()
         observeUnmaskComment()
         observeUnmaskQuestion()
+        observeReportComment()
+        observeReportTalk()
         super.onViewCreated(view, savedInstanceState)
         getDiscussionData()
     }
@@ -198,6 +200,8 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         removeObservers(viewModel.attachedProducts)
         removeObservers(viewModel.markCommentNotFraudResult)
         removeObservers(viewModel.markNotFraudResult)
+        removeObservers(viewModel.reportCommentResult)
+        removeObservers(viewModel.reportTalkResult)
         super.onDestroy()
     }
 
@@ -278,8 +282,12 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         viewModel.markQuestionNotFraud(questionId)
     }
 
-    override fun onDismissUnmaskCard() {
-        onHideReportedContent()
+    override fun onDismissUnmaskCard(commentId: String) {
+        if(commentId.isNotBlank()) {
+            viewModel.reportComment(commentId)
+            return
+        }
+        viewModel.reportTalk(questionId)
     }
 
     override fun onProductClicked() {
@@ -475,6 +483,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     private fun onHideReportedContent() {
+        getDiscussionData()
         showSuccessToaster(getString(R.string.reply_unmask_toaster_negative), resources.getBoolean(R.bool.reply_adjust_toaster_height))
     }
 
@@ -595,6 +604,24 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         viewModel.markNotFraudResult.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Success -> onSuccessUnmaskQuestion()
+                is Fail -> onFailUnmaskCommentOrQuestion()
+            }
+        })
+    }
+
+    private fun observeReportComment() {
+        viewModel.reportCommentResult.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is Success -> onHideReportedContent()
+                is Fail -> onFailUnmaskCommentOrQuestion()
+            }
+        })
+    }
+
+    private fun observeReportTalk() {
+        viewModel.reportTalkResult.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is Success -> onHideReportedContent()
                 is Fail -> onFailUnmaskCommentOrQuestion()
             }
         })
