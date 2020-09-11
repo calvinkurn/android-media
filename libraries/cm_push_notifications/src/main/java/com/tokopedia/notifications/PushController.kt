@@ -28,7 +28,7 @@ class PushController(val context: Context) : CoroutineScope {
     private val isOfflinePushEnabled
         get() = (context.applicationContext as CMRouter).getBooleanRemoteConfig(CMConstant.RemoteKeys.KEY_IS_OFFLINE_PUSH_ENABLE, false)
 
-    fun handleNotificationBundle(bundle: Bundle) {
+    fun handleNotificationBundle(bundle: Bundle, isAmplification: Boolean = false) {
         try {
             //todo event notification received offline
             launchCatchError(
@@ -36,6 +36,7 @@ class PushController(val context: Context) : CoroutineScope {
                         Log.d("PUSHController", "Code update")
 
                         val baseNotificationModel = PayloadConverter.convertToBaseModel(bundle)
+                        if (isAmplification) baseNotificationModel.isAmplification = true
                         if (baseNotificationModel.notificationMode == NotificationMode.OFFLINE) {
                             if (isOfflinePushEnabled)
                                 onOfflinePushPayloadReceived(baseNotificationModel)
@@ -56,12 +57,10 @@ class PushController(val context: Context) : CoroutineScope {
                 val model = Gson().fromJson(
                         payloadJson,
                         BaseNotificationModel::class.java
-                ).apply {
-                    isAmplification = true
-                }
+                )
                 if (!isOfflineNotificationActive(model.notificationId)) {
                     val bundle = jsonToBundle(payloadJson)
-                    handleNotificationBundle(bundle)
+                    handleNotificationBundle(bundle, true)
                 }
             }, onError = {})
         } catch (e: Exception) { }
