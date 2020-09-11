@@ -286,7 +286,10 @@ public class GTMAnalytics extends ContextAnalytics {
 
     @Override
     public void sendEnhanceEcommerceEvent(String eventName, Bundle value) {
-        pushEventV5(eventName, addWrapperValue(value), context);
+        Bundle bundle =  addWrapperValue(value);
+        pushEventV5(eventName, bundle, context);
+        logV5(getContext(), eventName, bundle);
+        pushIris(eventName, bundle);
     }
 
     @SuppressWarnings("unchecked")
@@ -1113,6 +1116,17 @@ public class GTMAnalytics extends ContextAnalytics {
         if (iris != null) {
             if (!eventName.isEmpty()) {
                 values.put("event", eventName);
+            }
+            if (values.get("event") != null && !String.valueOf(values.get("event")).equals("")) {
+                iris.saveEvent(values);
+            }
+        }
+    }
+
+    private void pushIris(String eventName, Bundle values) {
+        if (iris != null) {
+            if (!eventName.isEmpty()) {
+                values.putString("event", eventName);
             }
             if (values.get("event") != null && !String.valueOf(values.get("event")).equals("")) {
                 iris.saveEvent(values);
