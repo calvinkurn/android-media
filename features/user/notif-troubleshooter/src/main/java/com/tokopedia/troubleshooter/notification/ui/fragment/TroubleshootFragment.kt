@@ -161,8 +161,8 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
                 TroubleshooterTimber.notificationSetting(result.data)
             }
             is Fail -> {
-                showToastError(result.throwable)
                 adapter.updateStatus(Notification, StatusState.Error)
+                showToastError()
             }
         }
     }
@@ -231,8 +231,8 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
                 adapter.updateStatus(PushNotification, isSuccess)
             }
             is Fail -> {
-                showToastError(result.throwable)
                 adapter.updateStatus(PushNotification, StatusState.Error)
+                showToastError()
             }
         }
     }
@@ -265,10 +265,10 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
         }
     }
 
-    private fun showToastError(e: Throwable?) {
+    private fun showToastError() {
         view?.let {
-            val errorMessage = ErrorHandler.getErrorMessage(it.context, e)
-            Toaster.showError(it, errorMessage, Snackbar.LENGTH_LONG)
+            val errorMessage = getString(R.string.notif_network_issue)
+            Toaster.make(it, errorMessage, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
         }
     }
 

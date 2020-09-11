@@ -75,4 +75,6 @@
     <string name="notif_label_clear_cache_ok">Lakukan</string>
     <string name="notif_label_clear_cache_cancel">Batal</string>
 
+    <string name="notif_network_issue">Ada gangguan dalam proses pemeriksaan, coba restart aplikasimu dan lakukan pemeriksaan ulang.</string>
+
 </resources>
