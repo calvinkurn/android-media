@@ -77,7 +77,7 @@
     <string name="ent_event_checkout_summary_tnc_click">syarat dan ketentuan</string>
     <string name="ent_event_checkout_summary_tnc_bottom_sheet">Syarat dan Ketentuan</string>
     <string name="ent_event_checkout_footer_button">Pilih Pembayaran</string>
-    <string name="ent_event_checkout_submit_name">Isi data pemesan dulu ya, biar kamu bisa lanjut pesan tiket ini.</string>
+    <string name="ent_event_checkout_submit_name">Isi %s dulu ya, biar kamu bisa lanjut pesan tiket ini.</string>
     <string name="ent_event_checkout_submit_login">Anda Belum Login</string>
     <string name="ent_event_checkout_passenger_new_title">Rincian Kontak</string>
 

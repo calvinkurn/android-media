@@ -354,7 +354,11 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
                     if (!userSessionInterface.isLoggedIn) {
                         Toaster.make(view, it.getString(R.string.ent_event_checkout_submit_login), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error))
                     } else if (forms.isEmpty()) {
-                        Toaster.make(view, it.getString(R.string.ent_event_checkout_submit_name), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error))
+                        Toaster.make(view, it.getString(R.string.ent_event_checkout_submit_name, it.getString(R.string.ent_event_checkout_passenger_title).toLowerCase()), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error))
+                    } else if (eventCheckoutAdditionalDataPackage.listForm.isEmpty()) {
+                        Toaster.make(view, it.getString(R.string.ent_event_checkout_submit_name, it.getString(R.string.ent_checkout_data_tambahan_title).toLowerCase()), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error))
+                    } else if(isAdditionalItemFormNull()){
+                        Toaster.make(view, it.getString(R.string.ent_event_checkout_submit_name, it.getString(R.string.ent_checkout_data_pengunjung_title).toLowerCase()), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error))
                     } else {
                         progressDialog.show()
                         eventPDPTracking.onClickCheckoutButton(getPackage(productDetailData, packageID), productDetailData, amount)
@@ -475,6 +479,17 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
             intent.putExtra(EXTRA_ADDITIONAL_DATA,additonal)
             startActivityForResult(intent, codeAdditional)
         }
+    }
+
+    private fun isAdditionalItemFormNull():Boolean {
+        var status = false
+        loop@ for(i in 0..listAdditionalItem.size){
+            if(listAdditionalItem.get(i).listForm.isNullOrEmpty()){
+                 status = true
+                 break@loop
+            }
+        }
+        return status
     }
 
     override fun onDestroyView() {
