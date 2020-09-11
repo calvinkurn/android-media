@@ -1,7 +1,7 @@
 package com.tokopedia.topchat.chatlist.fragment
 
-import android.graphics.Color
 import android.content.Context
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,6 +13,7 @@ import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -453,7 +454,11 @@ class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListContract
     }
 
     override fun showSearchOnBoardingTooltip() {
-        if (chatNotifCounterViewModel.isSearchOnBoardingTooltipHasShown() || !isFinishShowingCoachMarkOnBoarding) return
+        if (
+                chatNotifCounterViewModel.isSearchOnBoardingTooltipHasShown() ||
+                !isFinishShowingCoachMarkOnBoarding ||
+                activity?.lifecycle?.currentState?.isAtLeast(Lifecycle.State.STARTED) == false
+        ) return
         val toolbar = chatTabListListener?.getActivityToolbar()
         toolbar?.post {
             val searchView = toolbar.findViewById<View>(R.id.menu_chat_search)
