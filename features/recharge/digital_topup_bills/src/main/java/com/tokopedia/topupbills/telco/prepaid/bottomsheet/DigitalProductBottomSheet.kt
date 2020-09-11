@@ -1,5 +1,6 @@
 package com.tokopedia.topupbills.telco.prepaid.bottomsheet
 
+import android.graphics.Paint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +14,7 @@ class DigitalProductBottomSheet : BottomSheetUnify() {
 
     private lateinit var details: TextView
     private lateinit var productPrice: TextView
+    private lateinit var productPromoPrice: TextView
     private lateinit var selectItemBtn: UnifyButton
     private lateinit var listener: ActionListener
 
@@ -38,11 +40,22 @@ class DigitalProductBottomSheet : BottomSheetUnify() {
             details = view.findViewById(R.id.telco_details)
             productPrice = view.findViewById(R.id.telco_product_price)
             selectItemBtn = view.findViewById(R.id.telco_button_select_item)
+            productPromoPrice = view.findViewById(R.id.telco_product_promo_price)
+            productPromoPrice.visibility = View.GONE
 
             arguments?.let {
                 setTitle(it.getString(TITLE, ""))
+                val promo_price = it.getString(PROMO_PRICE)
+                val price = it.getString(PRICE)
                 details.text = it.getString(DETAILS)
-                productPrice.text = it.getString(PRICE)
+                productPrice.text = price
+
+                if(!promo_price.isNullOrEmpty()){
+                    productPrice.text = promo_price
+                    productPromoPrice.text = price
+                    productPromoPrice.paintFlags = productPromoPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                    productPromoPrice.visibility = View.VISIBLE
+                }
 
                 selectItemBtn.setOnClickListener {
                     listener.onClickOnProduct()
@@ -61,13 +74,15 @@ class DigitalProductBottomSheet : BottomSheetUnify() {
         private const val TITLE = "title"
         private const val DETAILS = "details"
         private const val PRICE = "price"
+        private const val PROMO_PRICE = "promo_price"
 
-        fun newInstance(title: String, details: String, price: String): DigitalProductBottomSheet {
+        fun newInstance(title: String, details: String, price: String, promoPrice : String?): DigitalProductBottomSheet {
             val fragment = DigitalProductBottomSheet()
             val bundle = Bundle()
             bundle.putString(DETAILS, details)
             bundle.putString(PRICE, price)
             bundle.putString(TITLE, title)
+            bundle.putString(PROMO_PRICE, promoPrice)
             fragment.arguments = bundle
             return fragment
         }
