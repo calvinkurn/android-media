@@ -205,7 +205,28 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
     }
 
     private fun deviceSetting(result: Result<DeviceSettingState>) {
-        adapter.updateStatus(Device, StatusState.Success)
+        when (result) {
+            is Fail -> {
+                updateConfigStatus(
+                        type = Device,
+                        status = StatusState.Error,
+                        message = getString(R.string.notif_dv_none_ticker_warning),
+                        buttonText = R.string.btn_notif_activation
+                )
+            }
+            is Success -> {
+                if (result.data == DeviceSettingState.High) {
+                    adapter.updateStatus(Device, StatusState.Success)
+                } else {
+                    updateConfigStatus(
+                            type = Device,
+                            status = StatusState.Warning,
+                            message = getString(R.string.notif_dv_low_ticker_warning),
+                            buttonText = R.string.btn_notif_choose
+                    )
+                }
+            }
+        }
     }
 
     private fun ringtoneSetting(status: Pair<Uri?, RingtoneState>) {
@@ -265,7 +286,7 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
     private fun showToastError() {
         view?.let {
             val errorMessage = getString(R.string.notif_network_issue)
-            Toaster.make(it, errorMessage, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
+            Toaster.make(it, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
         }
     }
 
