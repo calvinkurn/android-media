@@ -167,7 +167,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     var getDynamicProductInfoP1: DynamicProductInfoP1? = null
     var tradeInParams: TradeInParams = TradeInParams()
     var enableCaching: Boolean = true
-    var enableCachingP2: Boolean = false
     var variantData: ProductVariantCommon? = null
     var listOfParentMedia: MutableList<Media>? = null
     var buttonActionType: Int = 0
@@ -227,6 +226,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         addToCartOcsUseCase.unsubscribe()
         toggleNotifyMeUseCase.cancelJobs()
         discussionMostHelpfulUseCase.cancelJobs()
+    }
+
+    fun clearCacheP2Data() {
+        getProductInfoP2DataUseCase.clearCache()
     }
 
     fun getShopInfo(): ShopInfo {
@@ -725,7 +728,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     private fun getProductInfoP2DataAsync(productId: String, pdpSession: String): Deferred<ProductInfoP2UiData> {
         return async {
-            getProductInfoP2DataUseCase.executeOnBackground(GetProductInfoP2DataUseCase.createParams(productId, generatePdpSessionWithDeviceId(pdpSession)), forceRefresh, enableCachingP2)
+            getProductInfoP2DataUseCase.executeOnBackground(GetProductInfoP2DataUseCase.createParams(productId, generatePdpSessionWithDeviceId(pdpSession)), forceRefresh)
         }
     }
 

@@ -196,6 +196,7 @@
 
     //Variant section
     <string name="add_to_cart_error_variant">Oops, kamu wajib pilih varian.</string>
+    <string name="add_to_cart_error_variant_builder">Oops, pilih %s dulu, ya</string>
     <string name="variant_failed_load">Varian gagal ditampilkan</string>
     <string name="variant_failed_load_description">Klik ikon di samping untuk coba lagi.</string>
     <string name="product_refresh">Refresh</string>

@@ -127,7 +127,7 @@ class ProductTabFragment : BaseDaggerFragment() {
         layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         recyclerviewScrollListener = onRecyclerViewListener()
         recyclerView.adapter = adapter
-        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.layoutManager = layoutManager
         recyclerView.addOnScrollListener(recyclerviewScrollListener)
     }
 
@@ -313,7 +313,9 @@ class ProductTabFragment : BaseDaggerFragment() {
     private fun onProductFetch(response: NonGroupResponse.TopadsDashboardGroupProducts) {
         totalCount = response.meta.page.total
         totalPage = (totalCount / response.meta.page.perPage)  + 1
+        recyclerviewScrollListener.updateStateAfterGetData()
         loader.visibility = View.GONE
+        recyclerviewScrollListener.updateStateAfterGetData()
         if (searchBar?.searchBarTextField?.text.toString().isEmpty()
                 && groupFilterSheet.getSelectedSortId() == ""
                 && groupFilterSheet.getSelectedStatusId() == null) {

@@ -41,6 +41,7 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewA
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode.AutocompleteBottomSheetFragment
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.location_info.LocationInfoBottomSheetFragment
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
+import com.tokopedia.logisticaddaddress.utils.SimpleIdlingResource
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticdata.data.entity.address.Token
 import com.tokopedia.logisticdata.data.entity.response.Data
@@ -297,7 +298,9 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
 
     override fun showAutoComplete(lat: Double, long: Double) {
         if (isShowingAutocomplete) {
+            SimpleIdlingResource.increment()
             handler.postDelayed({
+                SimpleIdlingResource.decrement()
                 showAutocompleteGeocodeBottomSheet(lat, long, "")
             }, 500)
         }

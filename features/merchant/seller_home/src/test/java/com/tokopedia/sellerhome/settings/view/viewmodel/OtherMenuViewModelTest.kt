@@ -102,7 +102,7 @@ class OtherMenuViewModelTest {
     }
 
     @Test
-    fun `error get setting shop info data`() {
+    fun `error get setting shop info data`() = runBlocking {
         val throwable = ResponseErrorException()
 
         coEvery {
@@ -110,6 +110,8 @@ class OtherMenuViewModelTest {
         } throws throwable
 
         mViewModel.getAllSettingShopInfo()
+
+        coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
             getAllShopInfoUseCase.executeOnBackground()
