@@ -8,6 +8,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/filterTitleTextView"
+        android:contentDescription="@string/content_desc_filterTitleTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/Neutral_N700_96"
@@ -19,6 +20,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/filterSeeAll"
+        android:contentDescription="@string/content_desc_filterSeeAll"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/light_G500"
