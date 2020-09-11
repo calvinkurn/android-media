@@ -33,14 +33,16 @@ object EventMetaDataMapper {
 
         for (itemMap in metaDataResponse.itemMap) {
             itemMap.passengerForms.add(passengerForm)
-            for (listAdditionalItem in listAdditionalDataItems){
-                if(itemMap.id.equals(listAdditionalItem.idItemMap)){
-                    val passengerInformationItem = listAdditionalItem.listForm.map {
-                        val value = getValueForm(it)
-                        PassengerInformation(it.name, value, it.title)
-                    }.toMutableList()
-                    val passengerFormItem = PassengerForm(passengerInformationItem)
-                    itemMap.passengerForms.add(passengerFormItem)
+            if (!listAdditionalDataItems.isNullOrEmpty()) {
+                for (additionalItem in listAdditionalDataItems) {
+                    if (itemMap.id.equals(additionalItem.idItemMap) && additionalItem.additionalType.equals(AdditionalType.ITEM_FILLED)) {
+                        val passengerInformationItem = additionalItem.listForm.map {
+                            val value = getValueForm(it)
+                            PassengerInformation(it.name, value, it.title)
+                        }.toMutableList()
+                        val passengerFormItem = PassengerForm(passengerInformationItem)
+                        itemMap.passengerForms.add(passengerFormItem)
+                    }
                 }
             }
         }

@@ -6,13 +6,16 @@ import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.text.*
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.TextView
+import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -97,6 +100,8 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
     private var listAdditionalItem: MutableList<EventCheckoutAdditionalData> = mutableListOf()
     private var eventCheckoutAdditionalDataPackage: EventCheckoutAdditionalData = EventCheckoutAdditionalData()
     private val adapterAdditional = EventCheckoutAdditionalAdapter(this)
+    private var isPackageFormActive = false
+    private var isItemFormActive = false
 
     lateinit var performanceMonitoring: PerformanceMonitoring
 
@@ -299,6 +304,7 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
     private fun renderAdditionalItem() {
         listAdditionalItem = getAdditionalList(metadata.itemMap)
         if (!listAdditionalItem.isNullOrEmpty()) {
+            isItemFormActive = true
             adapterAdditional.setList(listAdditionalItem)
             rv_event_checkout_additional.apply {
                 layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
@@ -314,6 +320,7 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
         if (eventCheckoutAdditionalDataPackage.additionalType.equals(AdditionalType.NULL_DATA)) {
             partial_event_checkout_additional_package.gone()
         } else {
+            isPackageFormActive = true
             item_checkout_event_data_tambahan_package.setOnClickListener {
                 clickAdditional(eventCheckoutAdditionalDataPackage, REQUEST_CODE_ADDITIONAL_PACKAGE)
             }
@@ -355,10 +362,16 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
                         Toaster.make(view, it.getString(R.string.ent_event_checkout_submit_login), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error))
                     } else if (forms.isEmpty()) {
                         Toaster.make(view, it.getString(R.string.ent_event_checkout_submit_name, it.getString(R.string.ent_event_checkout_passenger_title).toLowerCase()), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error))
-                    } else if (eventCheckoutAdditionalDataPackage.listForm.isEmpty()) {
+                        scroll_view_event_checkout.focusOnView(partial_event_checkout_passenger)
+                        widget_event_checkout_pessangers.startAnimationWiggle()
+                    } else if (eventCheckoutAdditionalDataPackage.listForm.isEmpty() && isPackageFormActive) {
                         Toaster.make(view, it.getString(R.string.ent_event_checkout_submit_name, it.getString(R.string.ent_checkout_data_tambahan_title).toLowerCase()), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error))
-                    } else if(isAdditionalItemFormNull()){
+                        scroll_view_event_checkout.focusOnView(partial_event_checkout_additional_package)
+                        item_checkout_event_data_tambahan_package.startAnimationWiggle()
+                    } else if(isAdditionalItemFormNull() && isItemFormActive){
                         Toaster.make(view, it.getString(R.string.ent_event_checkout_submit_name, it.getString(R.string.ent_checkout_data_pengunjung_title).toLowerCase()), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error))
+                        scroll_view_event_checkout.focusOnView(partial_event_checkout_additional_item)
+                        getRecycleViewWidgetAnimator()
                     } else {
                         progressDialog.show()
                         eventPDPTracking.onClickCheckoutButton(getPackage(productDetailData, packageID), productDetailData, amount)
@@ -481,9 +494,14 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
         }
     }
 
+    private fun getRecycleViewWidgetAnimator(){
+        val itemView = rv_event_checkout_additional.layoutManager?.findViewByPosition(positionAdditionalItemFormNull())
+        itemView?.startAnimationWiggle()
+    }
+
     private fun isAdditionalItemFormNull():Boolean {
         var status = false
-        loop@ for(i in 0..listAdditionalItem.size){
+        loop@ for(i in 0..listAdditionalItem.size-1){
             if(listAdditionalItem.get(i).listForm.isNullOrEmpty()){
                  status = true
                  break@loop
@@ -492,9 +510,30 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
         return status
     }
 
+    private fun positionAdditionalItemFormNull():Int {
+        var position = 0
+        loop@ for(i in 0..listAdditionalItem.size-1){
+            if(listAdditionalItem.get(i).listForm.isNullOrEmpty()){
+                position = i
+                break@loop
+            }
+        }
+        return position
+    }
+
     override fun onDestroyView() {
         performanceMonitoring.stopTrace()
         super.onDestroyView()
+    }
+
+    private fun View.startAnimationWiggle(){
+        this.startAnimation(AnimationUtils.loadAnimation(context,R.anim.anim_event_checkout_wiggle))
+    }
+
+    private fun NestedScrollView.focusOnView(toView: View){
+        Handler().post(Runnable {
+            this.smoothScrollTo(0, toView.y.toInt())
+        })
     }
 
 
