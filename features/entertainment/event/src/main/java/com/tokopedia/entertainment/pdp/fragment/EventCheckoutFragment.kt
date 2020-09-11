@@ -245,7 +245,7 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
         container_checkout.show()
 
         renderDesc(eventProductDetailEntity.eventProductDetail.productDetailData)
-        renderPassenger()
+        renderPassenger(eventProductDetailEntity.eventProductDetail.productDetailData)
         renderSummary(eventProductDetailEntity.eventProductDetail.productDetailData)
         renderAdditionalItem()
         renderAdditionalPackage(eventProductDetailEntity.eventProductDetail.productDetailData)
@@ -260,7 +260,7 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
         iv_event_checkout_image.loadImageRounded(pdp.imageApp, 25f)
     }
 
-    private fun renderPassenger() {
+    private fun renderPassenger(pdp: ProductDetailData) {
         ticker_event_checkout.setTextDescription(resources.getString(R.string.ent_event_checkout_pessanger_ticker))
         btn_event_checkout_passenger.setOnClickListener {
             goToPageForm()
@@ -375,8 +375,6 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
                     } else {
                         progressDialog.show()
                         eventPDPTracking.onClickCheckoutButton(getPackage(productDetailData, packageID), productDetailData, amount)
-                        if (name.isEmpty()) name = userSessionInterface.name
-                        if (email.isEmpty()) email = userSessionInterface.email
                         metadata = getPassengerMetaData(metadata, forms, listAdditionalItem, eventCheckoutAdditionalDataPackage)
                         eventCheckoutViewModel.checkoutEvent(EventQuery.mutationEventCheckoutV2(),
                                 getCheckoutParam(metadata, productDetailData, getPackage(productDetailData, packageID)))
@@ -464,22 +462,6 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
 
     private fun setPassengerData(list: List<Form>) {
         widget_event_checkout_pessanger.renderRecycleView(list)
-
-        for (item in list) {
-            when (item.title) {
-                PASSENGER_NAME -> {
-                    item.value.let {
-                        name = it
-                    }
-                }
-
-                PASSENGER_EMAIL -> {
-                    item.value.let {
-                        email = it
-                    }
-                }
-            }
-        }
     }
 
     override fun onClickAdditional(additonal: EventCheckoutAdditionalData) {
@@ -548,6 +530,12 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
 
         const val PASSENGER_NAME = "fullname"
         const val PASSENGER_EMAIL = "email"
+        const val PASSENGER_FIRST_NAME = "first_name"
+        const val PASSENGER_FAMILY_NAME = "family_name"
+        const val PASSENGER_GENDER = "gender"
+        const val PASSENGER_DATE_BIRTH = "date_of_birth"
+        const val PASSENGER_PHONE = "phone"
+        const val PASSENGER_MOBILE = "mobile"
 
         const val ENT_CHECKOUT_PERFORMANCE = "et_event_checkout"
 

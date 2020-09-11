@@ -74,7 +74,12 @@ class EventPDPFormAdapter(val userSession: UserSessionInterface,
     companion object{
         const val FULLNAME_TYPE = "fullname"
         const val EMAIL_TYPE = "email"
-        const val PHONE_TYPE = "no-telp"
+        const val FIRST_NAME_TYPE = "first_name"
+        const val FAMILY_NAME_TYPE = "family_name"
+        const val GENDER_TYPE = "gender"
+        const val DATE_BIRTH_TYPE = "date_of_birth"
+        const val PHONE_TYPE = "phone"
+        const val MOBILE_TYPE = "mobile"
         const val EMPTY_TYPE = 1
         const val REGEX_TYPE = 2
 

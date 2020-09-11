@@ -7,10 +7,14 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.entertainment.R
+import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.DATE_BIRTH_TYPE
 import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.ELEMENT_LIST
 import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.ELEMENT_TEXT
 import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.EMAIL_TYPE
+import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.FIRST_NAME_TYPE
 import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.FULLNAME_TYPE
+import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.GENDER_TYPE
+import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.MOBILE_TYPE
 import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.PHONE_TYPE
 import com.tokopedia.entertainment.pdp.data.Form
 import com.tokopedia.entertainment.pdp.listener.OnClickFormListener
@@ -61,7 +65,7 @@ class EventPDPTextFieldViewHolder(val view: View,
             if (userSession.isLoggedIn) {
                 if (element.name == FULLNAME_TYPE) txtValue.textFieldInput.setText(userSession.name)
                 else if (element.name == EMAIL_TYPE) txtValue.textFieldInput.setText(userSession.email)
-                else if (element.name == PHONE_TYPE) txtValue.textFieldInput.setText(userSession.phoneNumber)
+                else if (element.name == PHONE_TYPE || element.name == MOBILE_TYPE) txtValue.textFieldInput.setText(userSession.phoneNumber)
             }
 
             if (element.value.isNotBlank()) {

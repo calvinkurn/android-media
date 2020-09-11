@@ -202,7 +202,7 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener,
         bottomSheets.apply {
             isFullpage = true
             setChild(view)
-            setTitle(getString(R.string.ent_form_data_bottomsheet,title))
+            setTitle(title)
             setCloseClickListener { bottomSheets.dismiss() }
         }
 
