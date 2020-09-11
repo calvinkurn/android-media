@@ -29,7 +29,7 @@ open class ShopHomeProductViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_shop_home_product_card
+        val LAYOUT = R.layout.item_shop_home_product_card_small_grid
     }
 
     private fun findViews(view: View) {

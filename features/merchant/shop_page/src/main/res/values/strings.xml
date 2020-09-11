@@ -261,6 +261,7 @@
 
     <string name="shop_home_npl_remind_me">Ingatkan</string>
     <string name="shop_string_ok">OK</string>
+    <string name="shop_change_grid_section_total_product">%s Produk</string>
 
     <!-- shop share -->
     <string name="shop_page_share_to_social_media_text">Bagikan ke media sosial</string>
