@@ -686,6 +686,9 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         somListViewModel.orderListResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> {
+                    if (!onLoadMore) {
+                        renderWaitingForPaymentCard()
+                    }
                     orderList = it.data
                     nextOrderId = orderList.cursorOrderId
                     if (orderList.orders.isNotEmpty()) {
@@ -731,7 +734,6 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
         if (!onLoadMore) {
             somListItemAdapter.addList(orderList.orders)
-            renderWaitingForPaymentCard()
         } else {
             somListItemAdapter.appendList(orderList.orders)
             scrollListener.updateStateAfterGetData()
