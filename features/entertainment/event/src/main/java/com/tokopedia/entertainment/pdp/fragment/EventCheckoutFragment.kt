@@ -243,13 +243,14 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
     private fun renderLayout(eventProductDetailEntity: EventProductDetailEntity) {
         pg_event_checkout.gone()
         container_checkout.show()
-
-        renderDesc(eventProductDetailEntity.eventProductDetail.productDetailData)
-        renderPassenger(eventProductDetailEntity.eventProductDetail.productDetailData)
-        renderSummary(eventProductDetailEntity.eventProductDetail.productDetailData)
-        renderAdditionalItem()
-        renderAdditionalPackage(eventProductDetailEntity.eventProductDetail.productDetailData)
-        renderFooter(eventProductDetailEntity.eventProductDetail.productDetailData)
+        eventProductDetailEntity.eventProductDetail.productDetailData.apply {
+            renderDesc(this)
+            renderPassenger(this)
+            renderSummary(this)
+            renderAdditionalItem(this)
+            renderAdditionalPackage(this)
+            renderFooter(this)
+        }
 
     }
 
@@ -301,8 +302,8 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
         eventPDPTracking.onViewCheckoutPage(getPackage(pdp, packageID), pdp, amount)
     }
 
-    private fun renderAdditionalItem() {
-        listAdditionalItem = getAdditionalList(metadata.itemMap)
+    private fun renderAdditionalItem(pdp: ProductDetailData) {
+        listAdditionalItem = getAdditionalList(metadata.itemMap, pdp, packageID)
         if (!listAdditionalItem.isNullOrEmpty()) {
             isItemFormActive = true
             adapterAdditional.setList(listAdditionalItem)
