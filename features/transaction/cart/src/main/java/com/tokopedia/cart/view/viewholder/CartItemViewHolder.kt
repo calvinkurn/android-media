@@ -199,7 +199,6 @@ class CartItemViewHolder constructor(itemView: View,
         renderWarningAndError(data)
         renderSelection(data, parentPosition)
         renderQuantity(data, parentPosition, viewHolderListener)
-        renderErrorFormItemValidation(data)
         renderDefaultActionState()
         renderProductAction(data, viewHolderListener)
     }
@@ -665,39 +664,6 @@ class CartItemViewHolder constructor(itemView: View,
         }
     }
 
-    private fun renderErrorFormItemValidation(data: CartItemHolderData) {
-        val noteCounter = String.format(tvNoteCharCounter.context.getString(R.string.note_counter_format),
-                data.cartItemData?.updatedData?.remark?.length,
-                data.cartItemData?.updatedData?.maxCharRemark)
-        tvNoteCharCounter.text = noteCounter
-        if (data.getErrorFormItemValidationTypeValue() == CartItemHolderData.ERROR_EMPTY) {
-            this.tvErrorFormValidation.text = ""
-            this.tvErrorFormValidation.visibility = View.GONE
-            this.tvErrorFormRemarkValidation.visibility = View.GONE
-            this.tvErrorFormRemarkValidation.text = ""
-        } else {
-            if (data.getErrorFormItemValidationTypeValue() == CartItemHolderData.ERROR_FIELD_MAX_CHAR) {
-                if (TextUtils.isEmpty(data.errorFormItemValidationMessage)) {
-                    this.tvErrorFormValidation.text = ""
-                    this.tvErrorFormValidation.visibility = View.GONE
-                }
-                this.tvErrorFormRemarkValidation.visibility = View.VISIBLE
-                this.tvErrorFormRemarkValidation.text = data.errorFormItemValidationMessage ?: ""
-                this.tvNoteCharCounter.visibility = View.GONE
-            } else {
-                this.tvErrorFormValidation.text = data.errorFormItemValidationMessage ?: ""
-                this.tvErrorFormValidation.visibility = View.VISIBLE
-                this.tvErrorFormRemarkValidation.visibility = View.GONE
-                this.tvErrorFormRemarkValidation.text = ""
-                if (data.isStateNotesOnFocuss && data.cartItemData?.originData?.originalRemark != data.cartItemData?.updatedData?.remark) {
-                    this.tvNoteCharCounter.visibility = View.VISIBLE
-                } else {
-                    this.tvNoteCharCounter.visibility = View.GONE
-                }
-            }
-        }
-    }
-
     private fun renderErrorItemHeader(data: CartItemHolderData) {
         if (data.cartItemData?.isError == true) {
             flCartItemContainer.foreground = ContextCompat.getDrawable(flCartItemContainer.context, R.drawable.fg_disabled_item)
@@ -780,29 +746,23 @@ class CartItemViewHolder constructor(itemView: View,
         }
     }
 
-    private fun validateWithAvailableQuantity(data: CartItemHolderData, qty: Int) {
-        if (qty > data.cartItemData?.originData?.maxOrder ?: 0) {
-            val errorMessage = data.cartItemData?.messageErrorData?.errorProductMaxQuantity
-            val numberFormat = NumberFormat.getNumberInstance(Locale.US)
-            val numberAsString = numberFormat.format(data.cartItemData?.originData?.maxOrder?.toLong())
-            val maxValue = numberAsString.replace(",", ".")
-            tvErrorFormValidation.text = errorMessage?.replace("{{value}}", maxValue)
-            tvErrorFormValidation.visibility = View.VISIBLE
-        } else if (qty < data.cartItemData?.originData?.minOrder ?: 0) {
-            val errorMessage = data.cartItemData?.messageErrorData?.errorProductMinQuantity
-            tvErrorFormValidation.text = errorMessage?.replace("{{value}}",
-                    data.cartItemData?.originData?.minOrder.toString())
-            tvErrorFormValidation.visibility = View.VISIBLE
-        } else {
-            tvErrorFormValidation.visibility = View.GONE
+    private fun validateWithAvailableQuantity(data: CartItemHolderData, qty: Int): Boolean {
+        val maxOrder = data.cartItemData?.originData?.maxOrder ?: 0
+        val minOrder = data.cartItemData?.originData?.minOrder ?: 0
+        if (qty > maxOrder) {
+            etQty.setText(maxOrder.toString())
+            return false
+        } else if (qty < minOrder) {
+            etQty.setText(minOrder.toString())
+            return false
         }
-        actionListener?.onCartItemAfterErrorChecked()
+
+        return true
     }
 
     private fun itemNoteTextWatcherAction(editable: Editable) {
         if (cartItemHolderData != null) {
             cartItemHolderData?.cartItemData?.updatedData?.remark = editable.toString()
-            renderErrorFormItemValidation(cartItemHolderData!!)
         }
     }
 
@@ -848,7 +808,8 @@ class CartItemViewHolder constructor(itemView: View,
 
             checkQtyMustDisabled(cartItemHolderData!!, qty)
             cartItemHolderData!!.cartItemData!!.updatedData!!.quantity = qty
-            validateWithAvailableQuantity(cartItemHolderData!!, qty)
+            val tmpNeedToUpdateView = validateWithAvailableQuantity(cartItemHolderData!!, qty)
+            if (!tmpNeedToUpdateView) needToUpdateView = tmpNeedToUpdateView
             if (needToUpdateView) {
                 actionListener?.onCartItemQuantityChangedThenHitUpdateCartAndValidateUse()
                 handleRefreshType(cartItemHolderData!!, viewHolderListener, parentPosition)
