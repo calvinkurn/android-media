@@ -84,5 +84,10 @@
     <string name="search_inspiration_card_title">Mungkin maksud kamu ini?</string>
     <string name="search_inspiration_card_option">putih</string>
 
+    <string name="content_desc_searchTextView">edit text search</string>
+    <string name="content_desc_search_home_button">button home</string>
+    <string name="content_desc_search_cart_button">button keranjang</string>
+    <string name="content_desc_search_change_grid_button">button ganti layout</string>
+
     <string name="search_add_to_cart_success">Sukses menambah ke keranjang</string>
 </resources>
