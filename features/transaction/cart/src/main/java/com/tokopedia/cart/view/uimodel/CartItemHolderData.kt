@@ -21,7 +21,6 @@ data class CartItemHolderData(
         var isStateNotesOnFocuss: Boolean = false,
         var isSelected: Boolean = false,
         var actionsData: List<ActionData> = emptyList(),
-        var selectedUnavailableActionId: Int = 0,
         var errorType: String = ""
 ) : Parcelable {
 

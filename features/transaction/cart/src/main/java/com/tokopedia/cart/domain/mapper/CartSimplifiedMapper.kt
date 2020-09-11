@@ -1,7 +1,6 @@
 package com.tokopedia.cart.domain.mapper
 
 import android.content.Context
-import android.text.TextUtils
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.cart.R
 import com.tokopedia.cart.data.model.response.promo.*
@@ -206,7 +205,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
                                           errorType: String): MutableList<CartItemHolderData> {
         val cartItemHolderDataList = arrayListOf<CartItemHolderData>()
         cartDetails?.forEach {
-            val cartItemData = mapCartItemData(it, shopGroup, shopGroupData, cartDataListResponse, isDisabledAllProduct)
+            val cartItemData = mapCartItemData(it, shopGroup, shopGroupData, cartDataListResponse, isDisabledAllProduct, selectedUnavailableActionId)
             val cartItemHolderData = CartItemHolderData(
                     cartItemData = cartItemData,
                     errorFormItemValidationType = 0,
@@ -219,7 +218,6 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
                         cartItemData.originData?.isCheckboxState ?: true
                     },
                     actionsData = actionsData,
-                    selectedUnavailableActionId = selectedUnavailableActionId,
                     errorType = errorType
             )
             validateQty(cartItemHolderData)
@@ -234,7 +232,8 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
                                 shopGroup: Any,
                                 shopGroupData: Any,
                                 cartDataListResponse: CartDataListResponse,
-                                isDisabledAllProduct: Boolean): CartItemData {
+                                isDisabledAllProduct: Boolean,
+                                selectedUnavailableActionId: Int): CartItemData {
         return CartItemData().let {
             it.originData = mapOriginData(cartDetail, shopGroup)
             it.updatedData = mapUpdatedData(cartDetail, cartDataListResponse)
@@ -259,6 +258,8 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
                     it.isParentHasErrorOrWarning = !(!shopGroupData.isError && !shopGroupData.isWarning)
                 }
                 is ShopGroupWithErrorData -> {
+                    it.selectedUnavailableActionId = selectedUnavailableActionId
+                    it.selectedUnavailableActionLink = cartDetail.selectedUnavailableActionLink
                     it.isParentHasErrorOrWarning = !(!shopGroupData.isError && !shopGroupData.isWarning)
                 }
             }
@@ -294,12 +295,6 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
         if (cartDetail.errors.isNotEmpty()) {
             it.isError = true
             it.errorMessageTitle = cartDetail.errors[0]
-            it.similarProductUrl = cartDetail.similarProductUrl
-            val nicotineLiteMessage = cartDetail.nicotineLiteMessage
-            if (nicotineLiteMessage != null && !TextUtils.isEmpty(nicotineLiteMessage.text) && !TextUtils.isEmpty(nicotineLiteMessage.url)) {
-                it.nicotineLiteMessageData = NicotineLiteMessageData(nicotineLiteMessage.text, nicotineLiteMessage.url)
-            }
-
             if (cartDetail.errors.size > 1) {
                 it.errorMessageDescription = cartDetail.errors.subList(1, cartDetail.errors.size - 1).joinToString()
             }

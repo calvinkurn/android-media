@@ -287,15 +287,6 @@ fun getQueryCartRevamp(): String {
                     errors
                     messages
                     checkbox_state
-                    similar_product_url
-                    similar_product {
-                      text
-                      url
-                    }
-                    nicotine_lite_message {
-                      text
-                      url
-                    }
                   }
                   total_cart_details_error
                   total_cart_price
@@ -569,15 +560,6 @@ fun getQueryCartRevamp(): String {
                     errors
                     messages
                     checkbox_state
-                    similar_product_url
-                    similar_product {
-                      text
-                      url
-                    }
-                    nicotine_lite_message {
-                      text
-                      url
-                    }
                   }
                   total_cart_details_error
                   total_cart_price

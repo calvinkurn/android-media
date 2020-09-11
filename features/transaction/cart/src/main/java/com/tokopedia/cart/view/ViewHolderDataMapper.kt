@@ -44,12 +44,11 @@ class ViewHolderDataMapper @Inject constructor() {
                         ?: 0.toDouble(),
                 isWishlisted = cartItemHolderData.cartItemData?.originData?.isWishlisted ?: false,
                 tickerMessage = cartItemHolderData.cartItemData?.warningMessageTitle,
-                similarProductUrl = cartItemHolderData.cartItemData?.similarProductUrl ?: "",
-                nicotineLiteMessageData = cartItemHolderData.cartItemData?.nicotineLiteMessageData,
                 showDivider = showDivider,
                 data = cartItemHolderData.cartItemData,
                 actionsData = cartItemHolderData.actionsData,
-                selectedUnavailableActionId = cartItemHolderData.selectedUnavailableActionId,
+                selectedUnavailableActionId = cartItemHolderData.cartItemData?.selectedUnavailableActionId ?: 0,
+                selectedUnavailableActionLink = cartItemHolderData.cartItemData?.selectedUnavailableActionLink ?: "",
                 errorType = cartItemHolderData.errorType
         )
     }

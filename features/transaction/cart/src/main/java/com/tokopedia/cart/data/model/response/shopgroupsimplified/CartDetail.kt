@@ -1,6 +1,5 @@
 package com.tokopedia.cart.data.model.response.shopgroupsimplified
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import java.util.*
 
@@ -19,8 +18,6 @@ data class CartDetail(
     val product: Product = Product(),
     @SerializedName("checkbox_state")
     val isCheckboxState: Boolean = false,
-    @SerializedName("similar_product_url")
-    val similarProductUrl: String = "",
-    @SerializedName("nicotine_lite_message")
-    val nicotineLiteMessage: NicotineLiteMessage? = null
+    @SerializedName("selected_unavailable_action_link")
+    val selectedUnavailableActionLink: String = ""
 )

@@ -13,11 +13,10 @@ data class DisabledCartItemHolderData(
         var productPrice: Double = 0.0,
         var isWishlisted: Boolean = false,
         var tickerMessage: String? = null,
-        var similarProductUrl: String = "",
-        var nicotineLiteMessageData: NicotineLiteMessageData? = null,
         var showDivider: Boolean = true,
         var data: CartItemData? = CartItemData(),
         var actionsData: List<ActionData> = emptyList(),
         var selectedUnavailableActionId: Int = 0,
+        var selectedUnavailableActionLink: String = "",
         var errorType: String = ""
 )

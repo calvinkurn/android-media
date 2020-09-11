@@ -20,10 +20,10 @@ data class CartItemData(
         var warningMessageDescription: String? = null,
         var errorMessageTitle: String? = null,
         var errorMessageDescription: String? = null,
-        var similarProductUrl: String = "",
-        var nicotineLiteMessageData: NicotineLiteMessageData? = null,
         var isDisableAllProducts: Boolean = false,
-        var isFulfillment: Boolean = false
+        var isFulfillment: Boolean = false,
+        var selectedUnavailableActionId: Int = 0,
+        var selectedUnavailableActionLink: String = ""
 ) : Parcelable {
 
     @Parcelize

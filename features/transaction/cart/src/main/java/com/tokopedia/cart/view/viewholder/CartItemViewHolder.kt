@@ -18,6 +18,7 @@ import com.tokopedia.cart.domain.model.cartlist.ActionData
 import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_DELETE
 import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_NOTES
 import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_WISHLIST
+import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_WISHLISTED
 import com.tokopedia.cart.view.*
 import com.tokopedia.cart.view.adapter.CartItemAdapter
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
@@ -218,7 +219,7 @@ class CartItemViewHolder constructor(itemView: View,
                     ACTION_NOTES -> {
                         renderActionNotes(data, parentPosition, viewHolderListener)
                     }
-                    ACTION_WISHLIST -> {
+                    ACTION_WISHLIST, ACTION_WISHLISTED -> {
                         renderActionWishlist(it, data)
                     }
                     ACTION_DELETE -> {
@@ -642,12 +643,11 @@ class CartItemViewHolder constructor(itemView: View,
     }
 
     private fun renderActionWishlist(action: ActionData, data: CartItemHolderData) {
-        if (data.cartItemData?.originData?.isWishlisted == true) {
-            textMoveToWishlist.text = "Sudah ada di wishlist"
+        if (data.cartItemData?.originData?.isWishlisted == true && action.id == ACTION_WISHLISTED) {
+            textMoveToWishlist.text = action.message
             textMoveToWishlist.setTextColor(ContextCompat.getColor(itemView.context, R.color.Neutral_N700_32))
             textMoveToWishlist.setOnClickListener { }
-        } else {
-            textMoveToWishlist.text = action.message
+        } else if (data.cartItemData?.originData?.isWishlisted == false && action.id == ACTION_WISHLIST) {
             textMoveToWishlist.setTextColor(ContextCompat.getColor(itemView.context, R.color.Neutral_N700_68))
             textMoveToWishlist.setOnClickListener {
                 actionListener?.onWishlistCheckChanged(data.cartItemData?.originData?.productId, data.cartItemData?.originData?.cartId

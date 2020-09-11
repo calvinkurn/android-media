@@ -19,6 +19,8 @@ data class ActionData(
         const val ACTION_CHECKOUTBROWSER = 6
         const val ACTION_SHOWLESS = 7
         const val ACTION_SHOWMORE = 8
+        const val ACTION_VERIFICATION = 9
+        const val ACTION_WISHLISTED = 10
     }
 
 }

@@ -45,6 +45,7 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.cart.R
 import com.tokopedia.cart.data.model.response.recentview.RecentView
 import com.tokopedia.cart.domain.model.cartlist.*
+import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_CHECKOUTBROWSER
 import com.tokopedia.cart.view.CartActivity.Companion.INVALID_PRODUCT_ID
 import com.tokopedia.cart.view.adapter.CartAdapter
 import com.tokopedia.cart.view.adapter.CartItemAdapter
@@ -3040,7 +3041,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         val allCartItemDataList = cartAdapter.allCartItemData
 
         for (cartItemData in allDisabledCartItemDataList) {
-            if (cartItemData.nicotineLiteMessageData != null) {
+            if (cartItemData.selectedUnavailableActionId == ACTION_CHECKOUTBROWSER) {
                 cartPageAnalytics.eventClickHapusButtonOnProductContainTobacco()
                 break
             }
@@ -3071,7 +3072,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun onDeleteDisabledItem(data: DisabledCartItemHolderData) {
         data.data?.let {
             cartPageAnalytics.eventClickDeleteProductOnUnavailableSection(userSession.userId, data.productId, data.errorType)
-            if (data.nicotineLiteMessageData != null) {
+            if (data.data?.selectedUnavailableActionId ?: 0 == ACTION_CHECKOUTBROWSER) {
                 cartPageAnalytics.eventClickTrashIconButtonOnProductContainTobacco()
             } else {
                 sendAnalyticsOnClickRemoveIconCartItem()

@@ -10,7 +10,8 @@ import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_CHEC
 import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_DELETE
 import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_SIMILARPRODUCT
 import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_WISHLIST
-import com.tokopedia.cart.view.*
+import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_WISHLISTED
+import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.uimodel.DisabledCartItemHolderData
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.gone
@@ -90,7 +91,7 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
         if (data.actionsData.isNotEmpty()) {
             data.actionsData.forEach {
                 when (it.id) {
-                    ACTION_WISHLIST -> {
+                    ACTION_WISHLIST, ACTION_WISHLISTED -> {
                         renderActionWishlist(it, data)
                     }
                     ACTION_CHECKOUTBROWSER, ACTION_SIMILARPRODUCT -> {
@@ -123,7 +124,9 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
     private fun renderActionSimilarProduct(it: ActionData, data: DisabledCartItemHolderData) {
         itemView.tv_product_unavailable_action.text = it.message
         itemView.tv_product_unavailable_action.setOnClickListener {
-            actionListener?.onSimilarProductUrlClicked(data.similarProductUrl)
+            if (data.selectedUnavailableActionLink.isNotBlank()) {
+                actionListener?.onSimilarProductUrlClicked(data.selectedUnavailableActionLink)
+            }
         }
         actionListener?.onShowActionSeeOtherProduct(data.productId, data.errorType)
         itemView.tv_product_unavailable_action.show()
@@ -132,28 +135,26 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
     private fun renderActionCheckoutInBrowser(actionData: ActionData, data: DisabledCartItemHolderData) {
         itemView.tv_product_unavailable_action.text = actionData.message
         itemView.tv_product_unavailable_action.setOnClickListener {
-            data.nicotineLiteMessageData?.url?.let {
-                actionListener?.onTobaccoLiteUrlClicked(it, data, actionData)
+            if (data.selectedUnavailableActionLink.isNotBlank()) {
+                actionListener?.onTobaccoLiteUrlClicked(data.selectedUnavailableActionLink, data, actionData)
             }
         }
         actionListener?.onShowTickerTobacco()
         itemView.tv_product_unavailable_action.show()
     }
 
-    private fun renderActionWishlist(it: ActionData, data: DisabledCartItemHolderData) {
-        if (data.isWishlisted) {
-            itemView.text_move_to_wishlist.text = "Sudah ada di Wishlist"
+    private fun renderActionWishlist(actionData: ActionData, data: DisabledCartItemHolderData) {
+        if (data.isWishlisted && actionData.id == ACTION_WISHLISTED) {
+            itemView.text_move_to_wishlist.text = actionData.message
             itemView.text_move_to_wishlist.setTextColor(ContextCompat.getColor(itemView.context, R.color.Neutral_N700_32))
             itemView.text_move_to_wishlist.setOnClickListener { }
-        } else {
-            itemView.text_move_to_wishlist.text = it.message
+        } else if (!data.isWishlisted && actionData.id == ACTION_WISHLIST) {
+            itemView.text_move_to_wishlist.text = actionData.message
             itemView.text_move_to_wishlist.setTextColor(ContextCompat.getColor(itemView.context, R.color.Neutral_N700_68))
             itemView.text_move_to_wishlist.setOnClickListener {
                 actionListener?.onAddDisabledItemToWishlist(data)
             }
-
         }
-
         itemView.text_move_to_wishlist.show()
     }
 
