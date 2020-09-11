@@ -90,7 +90,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
                 }).toBlocking().single()
                 return@withContext response to OccGlobalEvent.Loading
             } catch (t: Throwable) {
-                return@withContext null to OccGlobalEvent.TriggerRefresh(throwable = t)
+                return@withContext null to OccGlobalEvent.TriggerRefresh(throwable = t.cause ?: t)
             }
         }
         OccIdlingResource.decrement()
@@ -105,7 +105,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
                 clearCacheAutoApplyStackUseCase.createObservable(RequestParams.EMPTY).toBlocking().single()
                 return@withContext true to OccGlobalEvent.Loading
             } catch (t: Throwable) {
-                return@withContext false to OccGlobalEvent.Error(t)
+                return@withContext false to OccGlobalEvent.Error(t.cause ?: t)
             }
         }
         OccIdlingResource.decrement()

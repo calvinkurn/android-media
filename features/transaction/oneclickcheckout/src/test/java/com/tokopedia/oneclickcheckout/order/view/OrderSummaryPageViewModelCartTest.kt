@@ -343,7 +343,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.updateCart()
 
         // Then
-        verify(inverse = true) { updateCartOccUseCase.execute(any(), any(), any()) }
+        coVerify(inverse = true) { updateCartOccUseCase.executeSuspend(any()) }
     }
 
     @Test
@@ -357,7 +357,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.updateCart()
 
         // Then
-        verify(inverse = true) { updateCartOccUseCase.execute(any(), any(), any()) }
+        coVerify(inverse = true) { updateCartOccUseCase.executeSuspend(any()) }
     }
 
     @Test
@@ -365,9 +365,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         // Given
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
-        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
-            (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
-        }
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc()))
 
         // When
         orderSummaryPageViewModel.updatePreference(ProfilesItemModel())

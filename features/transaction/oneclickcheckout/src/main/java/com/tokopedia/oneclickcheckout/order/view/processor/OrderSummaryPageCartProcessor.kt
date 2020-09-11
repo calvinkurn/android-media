@@ -39,12 +39,7 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccExtern
                     OccGlobalEvent.AtcSuccess(response.data.message.firstOrNull() ?: "")
                 }
             } catch (t: Throwable) {
-                val cause = t.cause
-                if (cause != null) {
-                    OccGlobalEvent.AtcError(cause)
-                } else {
-                    OccGlobalEvent.AtcError(t)
-                }
+                OccGlobalEvent.AtcError(t.cause ?: t)
             }
         }
         OccIdlingResource.decrement()

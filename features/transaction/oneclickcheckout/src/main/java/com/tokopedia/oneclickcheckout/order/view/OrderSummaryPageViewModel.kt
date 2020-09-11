@@ -136,43 +136,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 sendViewOspEe()
             }
         }
-//        getOccCartUseCase.execute({ orderData: OrderData ->
-//            orderCart = orderData.cart
-//            _orderPreference = OrderPreference(orderData.ticker, orderData.onboarding, orderData.profileIndex, orderData.profileRecommendation, orderData.preference, true)
-//            orderPreference.value = OccState.FirstLoad(_orderPreference)
-//            if (isFullRefresh) {
-//                _orderShipment = OrderShipment()
-//                orderShipment.value = _orderShipment
-//            }
-//            _orderPayment = orderData.payment
-//            orderPayment.value = _orderPayment
-//            validateUsePromoRevampUiModel = null
-//            lastValidateUsePromoRequest = null
-//            orderPromo.value = orderData.promo.copy(state = ButtonBayarState.NORMAL)
-//            if (orderData.prompt.shouldShowPrompt()) {
-//                globalEvent.value = OccGlobalEvent.Prompt(orderData.prompt)
-//            }
-//            if (orderProduct.productId > 0 && orderData.preference.shipment.serviceId > 0) {
-//                orderTotal.value = orderTotal.value.copy(buttonState = ButtonBayarState.LOADING)
-//                getRates()
-//            } else {
-//                orderTotal.value = orderTotal.value.copy(buttonState = ButtonBayarState.DISABLE)
-//                sendViewOspEe()
-//            }
-//            OccIdlingResource.decrement()
-//        }, { throwable: Throwable ->
-//            Timber.d(throwable)
-//            _orderPreference = OrderPreference()
-//            orderCart = OrderCart()
-//            validateUsePromoRevampUiModel = null
-//            lastValidateUsePromoRequest = null
-//            orderPreference.value = OccState.Failed(Failure(throwable))
-//            _orderShipment = OrderShipment()
-//            orderShipment.value = _orderShipment
-//            _orderPayment = OrderPayment()
-//            orderPayment.value = _orderPayment
-//            OccIdlingResource.decrement()
-//        }, getOccCartUseCase.createRequestParams(source))
     }
 
     fun updateProduct(product: OrderProduct, shouldReloadRates: Boolean = true) {
@@ -576,10 +539,10 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                     updatePromoState(resultValidateUse.promoUiModel)
                     if (checkIneligiblePromo()) {
                         doCheckout(product, shop, pref, onSuccessCheckout)
-                        return@launch
                     }
-                    globalEvent.value = newGlobalEvent
+                    return@launch
                 }
+                globalEvent.value = newGlobalEvent
             }
         } else {
             doCheckout(product, shop, pref, onSuccessCheckout)

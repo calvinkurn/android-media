@@ -3,7 +3,6 @@ package com.tokopedia.oneclickcheckout.order.view
 import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.STATUS_OK
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
-import com.tokopedia.oneclickcheckout.order.data.checkout.*
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartDataOcc
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccGqlResponse
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccResponse
@@ -19,10 +18,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyVoucherOrdersItemUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.*
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata
-import io.mockk.Runs
-import io.mockk.every
-import io.mockk.just
-import io.mockk.verify
+import io.mockk.*
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import rx.Observable
@@ -116,9 +112,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
-        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
-            (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
-        }
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc()))
 
         // When
         orderSummaryPageViewModel.updateCartPromo { validateUsePromoRequest, promoRequest, bboCodes ->
@@ -143,9 +137,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
                 PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
         )), status = "OK"))
         orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
-        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
-            (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
-        }
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc()))
 
         // When
         orderSummaryPageViewModel.updateCartPromo { validateUsePromoRequest, promoRequest, bboCodes ->
@@ -169,9 +161,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
         val response = Throwable()
-        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
-            (thirdArg() as ((Throwable) -> Unit)).invoke(response)
-        }
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } throws response
 
         // When
         orderSummaryPageViewModel.updateCartPromo { _, _, _ -> }
@@ -294,19 +284,17 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(response)
         orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(codes = mutableListOf(promoCode))
         orderSummaryPageViewModel.validateUsePromoRevampUiModel = response.copy(promoUiModel = response.promoUiModel.copy(messageUiModel = MessageUiModel(state = "green")))
-        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
-            (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
-        }
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc()))
 
         // When
         orderSummaryPageViewModel.finalUpdate({ }, false)
 
         // Then
-        verify {
-            checkoutOccUseCase.execute(match {
+        coVerify {
+            checkoutOccUseCase.executeSuspend(match {
                 val globalCode = it.carts.promos.first()
                 globalCode.code == promoCode && globalCode.type == "global" && it.carts.data.first().shopProducts.first().promos.isEmpty()
-            }, any(), any())
+            })
         }
     }
 
@@ -323,19 +311,17 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(response)
         orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(codes = mutableListOf(promoCode))
         orderSummaryPageViewModel.validateUsePromoRevampUiModel = response.copy(promoUiModel = response.promoUiModel.copy(messageUiModel = MessageUiModel(state = "green")))
-        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
-            (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
-        }
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc()))
 
         // When
         orderSummaryPageViewModel.finalUpdate({ }, false)
 
         // Then
-        verify {
-            checkoutOccUseCase.execute(match {
+        coVerify {
+            checkoutOccUseCase.executeSuspend(match {
                 val voucherCode = it.carts.data.first().shopProducts.first().promos.first()
                 voucherCode.code == promoCode && voucherCode.type == promoType && it.carts.promos.isEmpty()
-            }, any(), any())
+            })
         }
     }
 
@@ -351,9 +337,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(response)
         orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(codes = mutableListOf(promoCode))
         orderSummaryPageViewModel.validateUsePromoRevampUiModel = response.copy(promoUiModel = response.promoUiModel.copy(messageUiModel = MessageUiModel(state = "green")))
-        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
-            (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
-        }
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc()))
 
         // When
         orderSummaryPageViewModel.finalUpdate({ }, false)
@@ -379,9 +363,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(response)
         orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(codes = mutableListOf(promoCode))
         orderSummaryPageViewModel.validateUsePromoRevampUiModel = response.copy(promoUiModel = response.promoUiModel.copy(messageUiModel = MessageUiModel(state = "green")))
-        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
-            (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
-        }
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc()))
 
         // When
         orderSummaryPageViewModel.finalUpdate({ }, false)
@@ -408,9 +390,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(response)
         orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest()
         orderSummaryPageViewModel.validateUsePromoRevampUiModel = response.copy(promoUiModel = response.promoUiModel.copy(messageUiModel = MessageUiModel(state = "green")))
-        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
-            (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
-        }
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc()))
 
         // When
         orderSummaryPageViewModel.finalUpdate({ }, false)
@@ -435,9 +415,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(response)
         orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest()
         orderSummaryPageViewModel.validateUsePromoRevampUiModel = response.copy(promoUiModel = response.promoUiModel.copy(messageUiModel = MessageUiModel(state = "green")))
-        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
-            (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
-        }
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc()))
 
         // When
         orderSummaryPageViewModel.finalUpdate({ }, false)
@@ -462,9 +440,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(response)
         orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest()
         orderSummaryPageViewModel.validateUsePromoRevampUiModel = response.copy(promoUiModel = response.promoUiModel.copy(messageUiModel = MessageUiModel(state = "green")))
-        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
-            (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
-        }
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc()))
 
         // When
         orderSummaryPageViewModel.finalUpdate({ }, false)
@@ -484,12 +460,8 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         every { clearCacheAutoApplyStackUseCase.setParams(any(), any(), any()) } just Runs
         every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(ClearPromoUiModel())
-        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
-            (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
-        }
-        every { checkoutOccUseCase.execute(any(), any(), any()) } answers {
-            (secondArg() as ((CheckoutOccData) -> Unit)).invoke(CheckoutOccData(status = STATUS_OK, result = CheckoutOccResult(success = 1, paymentParameter = CheckoutOccPaymentParameter(redirectParam = CheckoutOccRedirectParam(url = "testurl")))))
-        }
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc()))
+        coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(status = STATUS_OK, result = CheckoutOccResult(success = 1, paymentParameter = CheckoutOccPaymentParameter(redirectParam = CheckoutOccRedirectParam(url = "testurl"))))
 
         // When
         var isSuccess = false
@@ -510,12 +482,8 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         every { clearCacheAutoApplyStackUseCase.setParams(any(), any(), any()) } just Runs
         val response = Throwable()
         every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.error(response)
-        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
-            (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
-        }
-        every { checkoutOccUseCase.execute(any(), any(), any()) } answers {
-            (secondArg() as ((CheckoutOccGqlResponse) -> Unit)).invoke(CheckoutOccGqlResponse(CheckoutOccResponse(status = STATUS_OK, data = Data(success = 1, paymentParameter = PaymentParameter(redirectParam = RedirectParam(url = "testurl"))))))
-        }
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc()))
+        coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(status = STATUS_OK, result = CheckoutOccResult(success = 1, paymentParameter = CheckoutOccPaymentParameter(redirectParam = CheckoutOccRedirectParam(url = "testurl"))))
 
         // When
         var isSuccess = false
