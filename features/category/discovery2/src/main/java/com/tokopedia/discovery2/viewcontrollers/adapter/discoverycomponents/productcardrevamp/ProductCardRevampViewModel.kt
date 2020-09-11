@@ -32,9 +32,9 @@ class ProductCardRevampViewModel(val application: Application, val components: C
     init {
         initDaggerInject()
         components.lihatSemua?.run {
-            val lihatSemuaDataItem = DataItem(title = header, subtitle = subheader, btnApplink = applink,
+            val lihatSemuaDataItem = DataItem(title = header, subtitle = subheader, btnApplink = applink)
+            val lihatSemuaComponentData = ComponentsItem(name = ComponentsList.ProductCardCarousel.componentName, data = listOf(lihatSemuaDataItem),
                     creativeName = components.creativeName)
-            val lihatSemuaComponentData = ComponentsItem(name = ComponentsList.ProductCardCarousel.componentName, data = listOf(lihatSemuaDataItem))
             productCarouselHeaderData.value = lihatSemuaComponentData
         }
     }
