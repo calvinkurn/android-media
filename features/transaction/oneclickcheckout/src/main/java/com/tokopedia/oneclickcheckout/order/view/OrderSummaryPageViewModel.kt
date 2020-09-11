@@ -1041,32 +1041,44 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     private fun finalValidateUse(product: OrderProduct, shop: OrderShop, pref: OrderPreference, onSuccessCheckout: (CheckoutOccResult) -> Unit, skipCheckIneligiblePromo: Boolean) {
         if (!skipCheckIneligiblePromo) {
-            val requestParams = RequestParams.create()
-            requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, generateValidateUsePromoRequest())
-            OccIdlingResource.increment()
-            compositeSubscription.add(
-                    validateUsePromoRevampUseCase.createObservable(requestParams)
-                            .subscribeOn(executorSchedulers.io)
-                            .observeOn(executorSchedulers.main)
-                            .subscribe(object : Observer<ValidateUsePromoRevampUiModel> {
-                                override fun onError(e: Throwable) {
-                                    globalEvent.value = OccGlobalEvent.TriggerRefresh(throwable = e)
-                                    OccIdlingResource.decrement()
-                                }
-
-                                override fun onNext(t: ValidateUsePromoRevampUiModel) {
-                                    validateUsePromoRevampUiModel = t
-                                    updatePromoState(t.promoUiModel)
-                                    if (checkIneligiblePromo()) {
-                                        doCheckout(product, shop, pref, onSuccessCheckout)
-                                    }
-                                }
-
-                                override fun onCompleted() {
-                                    OccIdlingResource.decrement()
-                                }
-                            })
-            )
+            launch(executorDispatchers.main) {
+                val (resultValidateUse, newGlobalEvent) = promoProcessor.finalValidateUse(generateValidateUsePromoRequest())
+                if (resultValidateUse != null) {
+                    validateUsePromoRevampUiModel = resultValidateUse
+                    updatePromoState(resultValidateUse.promoUiModel)
+                    if (checkIneligiblePromo()) {
+                        doCheckout(product, shop, pref, onSuccessCheckout)
+                        return@launch
+                    }
+                    globalEvent.value = newGlobalEvent
+                }
+            }
+//            val requestParams = RequestParams.create()
+//            requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, generateValidateUsePromoRequest())
+//            OccIdlingResource.increment()
+//            compositeSubscription.add(
+//                    validateUsePromoRevampUseCase.createObservable(requestParams)
+//                            .subscribeOn(executorSchedulers.io)
+//                            .observeOn(executorSchedulers.main)
+//                            .subscribe(object : Observer<ValidateUsePromoRevampUiModel> {
+//                                override fun onError(e: Throwable) {
+//                                    globalEvent.value = OccGlobalEvent.TriggerRefresh(throwable = e)
+//                                    OccIdlingResource.decrement()
+//                                }
+//
+//                                override fun onNext(t: ValidateUsePromoRevampUiModel) {
+//                                    validateUsePromoRevampUiModel = t
+//                                    updatePromoState(t.promoUiModel)
+//                                    if (checkIneligiblePromo()) {
+//                                        doCheckout(product, shop, pref, onSuccessCheckout)
+//                                    }
+//                                }
+//
+//                                override fun onCompleted() {
+//                                    OccIdlingResource.decrement()
+//                                }
+//                            })
+//            )
         } else {
             doCheckout(product, shop, pref, onSuccessCheckout)
         }

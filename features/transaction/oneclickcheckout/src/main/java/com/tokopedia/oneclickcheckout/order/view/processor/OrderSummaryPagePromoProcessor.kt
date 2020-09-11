@@ -80,4 +80,22 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         OccIdlingResource.decrement()
         return resultValidateUse
     }
+
+    suspend fun finalValidateUse(validateUsePromoRequest: ValidateUsePromoRequest): Pair<ValidateUsePromoRevampUiModel?, OccGlobalEvent> {
+        OccIdlingResource.increment()
+        val resultValidateUse = withContext(executorDispatchers.io) {
+            try {
+                val response = validateUsePromoRevampUseCase.createObservable(RequestParams.create().apply {
+                    putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, validateUsePromoRequest)
+                }).toBlocking().single()
+                return@withContext response to OccGlobalEvent.Loading
+            } catch (t: Throwable) {
+                return@withContext null to OccGlobalEvent.TriggerRefresh(throwable = t)
+            }
+        }
+        OccIdlingResource.decrement()
+        return resultValidateUse
+    }
+
+
 }
