@@ -242,7 +242,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         mContainerMain?.displayedChild = CONTAINER_DATA
         addDynamicToolbar(data?.dynamicActionList)
         // renderToolbarWithHeader(data)
-        renderSections(sections, data)
+        renderExploreSectionTab(sections, data)
     }
 
     override fun onError(error: String, hasInternet: Boolean) {
@@ -306,7 +306,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                     toolbarItemList.add(this.notif_dynamic)
                     setOnClickListener {
                         RouteManager.route(context, item.cta?.appLink)
-                        hideNotification(index,dynamicActionList)
+                        hideNotification(index, dynamicActionList)
 
                         AnalyticsTrackerUtil.sendEvent(context,
                                 AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
@@ -319,28 +319,10 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         }
     }
 
-    private fun hideNotification(index: Int ,dynamicActionList: List<DynamicActionListItem?>?) {
+    private fun hideNotification(index: Int, dynamicActionList: List<DynamicActionListItem?>?) {
         toolbarItemList[index].hide()
-        dynamicActionList?.get(index)?.counter?.isShowCounter=false
+        dynamicActionList?.get(index)?.counter?.isShowCounter = false
         adapter?.notifyItemChanged(0)
-    }
-
-
-    override fun renderSections(sections: List<SectionContent>, data: TokopediaRewardTopSection?) {
-        if (sections == null) { //TODO hide all section container
-            return
-        }
-        val exploreSectionItem: MutableList<SectionContent> = ArrayList()
-        for (sectionContent in sections) {
-            when (sectionContent.layoutType) {
-                CommonConstant.SectionLayoutType.TICKER -> exploreSectionItem.add(sectionContent)
-                CommonConstant.SectionLayoutType.COUPON, CommonConstant.SectionLayoutType.CATALOG, CommonConstant.SectionLayoutType.BANNER,
-                CommonConstant.SectionLayoutType.TOPADS, CommonConstant.SectionLayoutType.CATEGORY -> exploreSectionItem.add(sectionContent)
-                else -> {
-                }
-            }
-        }
-        renderExploreSectionTab(exploreSectionItem, data)
     }
 
     override fun renderExploreSectionTab(sections: List<SectionContent>, data: TokopediaRewardTopSection?) {
@@ -349,11 +331,11 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         }
         if (adapter == null) {
 
-            val topSectionViewBinder = TopSectionViewBinder(data, this, toolbarItemList,adapter)
+            val topSectionViewBinder = TopSectionViewBinder(data, this, toolbarItemList)
 
             @Suppress("UNCHECKED_CAST")
             viewBinders.put(
-                    "topheader",
+                    CommonConstant.SectionLayoutType.TOPHEADER,
                     topSectionViewBinder as SectionItemBinder)
             data?.let { sectionList.add(0, it) }
 
@@ -502,8 +484,6 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
             if (mPagerPromos?.adapter == null) {
                 mPagerPromos?.adapter = adapter
             }
-            (mPagerPromos?.adapter as SectionAdapter)
-
         }
     }
 

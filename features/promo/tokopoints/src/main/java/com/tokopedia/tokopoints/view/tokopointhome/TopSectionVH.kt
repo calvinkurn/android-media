@@ -23,7 +23,7 @@ import com.tokopedia.tokopoints.view.model.rewardtopsection.TokopediaRewardTopSe
 import com.tokopedia.tokopoints.view.util.CommonConstant
 import com.tokopedia.unifycomponents.NotificationUnify
 
-class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHeightListener, val toolbarItemList: Any?, val adapter: SectionAdapter?) : RecyclerView.ViewHolder(itemView) {
+class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHeightListener, val toolbarItemList: Any?) : RecyclerView.ViewHolder(itemView) {
 
     lateinit var cardTierInfo: ConstraintLayout
     private var dynamicAction: DynamicItemActionView? = null

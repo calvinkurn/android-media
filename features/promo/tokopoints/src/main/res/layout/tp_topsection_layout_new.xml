@@ -134,13 +134,4 @@
         android:background="@color/white"
         android:orientation="vertical"
         android:visibility="visible" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/view_pager_promos"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/categoryParent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-
 </RelativeLayout>

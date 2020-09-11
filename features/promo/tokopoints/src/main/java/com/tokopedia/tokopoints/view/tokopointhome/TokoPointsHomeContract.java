@@ -24,8 +24,6 @@ public interface TokoPointsHomeContract {
 
         void showLoading();
 
-        void renderSections(List<SectionContent> sections , TokopediaRewardTopSection tokopediaRewardTopSection);
-
         void renderExploreSectionTab(List<SectionContent> sections , TokopediaRewardTopSection tokopediaRewardTopSection);
 
         void onSuccessResponse(TokopediaRewardTopSection data, List<SectionContent> sections );

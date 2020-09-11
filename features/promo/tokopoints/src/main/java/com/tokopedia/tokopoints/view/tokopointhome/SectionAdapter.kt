@@ -15,29 +15,17 @@ class SectionAdapter(private val viewBinders: Map<String, SectionItemBinder>,
     private fun getViewBinder(viewType: Int): SectionItemBinder = viewTypeToBinders.getValue(viewType)
 
     override fun getItemViewType(position: Int): Int {
-        when {
+        return when {
             position == 0 -> {
-                return viewBinders.getValue(CommonConstant.SectionLayoutType.TOPHEADER).getSectionItemType()
+                viewBinders.getValue(CommonConstant.SectionLayoutType.TOPHEADER).getSectionItemType()
             }
             (sectionList[position] as SectionContent).layoutType == CommonConstant.SectionLayoutType.BANNER -> {
-                when ((sectionList[position] as SectionContent).layoutBannerAttr.bannerType) {
-                    CommonConstant.BannerType.BANNER_3_1,
-                    CommonConstant.BannerType.BANNER_2_1,
-                    CommonConstant.BannerType.BANNER_1_1,
-                    CommonConstant.BannerType.COLUMN_3_1_BY_1,
-                    CommonConstant.BannerType.COLUMN_2_1_BY_1,
-                    CommonConstant.BannerType.COLUMN_2_3_BY_4,
-                    CommonConstant.BannerType.CAROUSEL_1_1,
-                    CommonConstant.BannerType.CAROUSEL_2_1,
-                    CommonConstant.BannerType.CAROUSEL_3_1 ->
-                        return viewBinders.getValue((sectionList[position] as SectionContent).layoutBannerAttr.bannerType).getSectionItemType()
-                }
+                viewBinders.getValue((sectionList[position] as SectionContent).layoutBannerAttr.bannerType).getSectionItemType()
             }
             else -> {
-                return viewBinders.getValue((sectionList[position] as SectionContent).layoutType).getSectionItemType()
+                viewBinders.getValue((sectionList[position] as SectionContent).layoutType).getSectionItemType()
             }
         }
-        return 0
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
