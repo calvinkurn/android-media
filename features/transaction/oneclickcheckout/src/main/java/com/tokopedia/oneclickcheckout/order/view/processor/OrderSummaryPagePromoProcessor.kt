@@ -97,5 +97,18 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         return resultValidateUse
     }
 
-
+    suspend fun cancelIneligiblePromoCheckout(promoCodeList: ArrayList<String>): Pair<Boolean, OccGlobalEvent> {
+        OccIdlingResource.increment()
+        val result = withContext(executorDispatchers.io) {
+            try {
+                clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, promoCodeList, true)
+                clearCacheAutoApplyStackUseCase.createObservable(RequestParams.EMPTY).toBlocking().single()
+                return@withContext true to OccGlobalEvent.Loading
+            } catch (t: Throwable) {
+                return@withContext false to OccGlobalEvent.Error(t)
+            }
+        }
+        OccIdlingResource.decrement()
+        return result
+    }
 }

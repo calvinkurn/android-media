@@ -23,15 +23,12 @@ import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryPageEnhanceECo
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccCartRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccProfileRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest
-import com.tokopedia.oneclickcheckout.order.domain.UpdateCartOccUseCase
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageCartProcessor
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageCheckoutProcessor
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageLogisticProcessor
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePromoProcessor
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase.Companion.PARAM_VALUE_MARKETPLACE
-import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.PARAM_CHECKOUT
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.PARAM_OCC
@@ -41,7 +38,6 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.promoli
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.OrdersItem
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ProductDetailsItem
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
-import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastApplyUiMapper
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
@@ -51,30 +47,24 @@ import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligib
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata.Companion.TYPE_ICON_POWER_MERCHANT
 import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import rx.Observer
 import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
 import kotlin.math.ceil
 
 class OrderSummaryPageViewModel @Inject constructor(private val executorDispatchers: ExecutorDispatchers,
                                                     private val executorSchedulers: ExecutorSchedulers,
+                                                    val getPreferenceListUseCase: GetPreferenceListUseCase,
                                                     private val cartProcessor: OrderSummaryPageCartProcessor,
                                                     private val logisticProcessor: OrderSummaryPageLogisticProcessor,
-                                                    val getPreferenceListUseCase: GetPreferenceListUseCase,
-                                                    private val updateCartOccUseCase: UpdateCartOccUseCase,
-//                                                    private val ratesResponseStateConverter: RatesResponseStateConverter,
-//                                                    private val editAddressUseCase: EditAddressUseCase,
                                                     private val checkoutProcessor: OrderSummaryPageCheckoutProcessor,
                                                     private val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
                                                     private val promoProcessor: OrderSummaryPagePromoProcessor,
-                                                    private val validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase,
                                                     private val userSessionInterface: UserSessionInterface,
                                                     private val orderSummaryAnalytics: OrderSummaryAnalytics) : BaseViewModel(executorDispatchers.main) {
 
@@ -1242,28 +1232,35 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     fun cancelIneligiblePromoCheckout(notEligiblePromoHolderdataList: ArrayList<NotEligiblePromoHolderdata>, onSuccessCheckout: (CheckoutOccResult) -> Unit) {
         globalEvent.value = OccGlobalEvent.Loading
-        val promoCodeList = ArrayList(notEligiblePromoHolderdataList.map { it.promoCode })
-        clearCacheAutoApplyStackUseCase.setParams(PARAM_VALUE_MARKETPLACE, promoCodeList, true)
-        compositeSubscription.add(
-                clearCacheAutoApplyStackUseCase.createObservable(RequestParams.EMPTY)
-                        .subscribeOn(executorSchedulers.io)
-                        .observeOn(executorSchedulers.main)
-                        .subscribe(object : Observer<ClearPromoUiModel?> {
-                            override fun onError(e: Throwable?) {
-                                globalEvent.value = OccGlobalEvent.Error(e)
-                            }
-
-                            override fun onNext(t: ClearPromoUiModel?) {
-                                if (_orderPreference.isValid) {
-                                    finalUpdate(onSuccessCheckout, true)
-                                }
-                            }
-
-                            override fun onCompleted() {
-                                //do nothing
-                            }
-                        })
-        )
+        launch {
+            val (isSuccess, newGlobalEvent) = promoProcessor.cancelIneligiblePromoCheckout(ArrayList(notEligiblePromoHolderdataList.map { it.promoCode }))
+            if (isSuccess && _orderPreference.isValid) {
+                finalUpdate(onSuccessCheckout, true)
+                return@launch
+            }
+            globalEvent.value = newGlobalEvent
+        }
+//        clearCacheAutoApplyStackUseCase.setParams(PARAM_VALUE_MARKETPLACE, promoCodeList, true)
+//        compositeSubscription.add(
+//                clearCacheAutoApplyStackUseCase.createObservable(RequestParams.EMPTY)
+//                        .subscribeOn(executorSchedulers.io)
+//                        .observeOn(executorSchedulers.main)
+//                        .subscribe(object : Observer<ClearPromoUiModel?> {
+//                            override fun onError(e: Throwable?) {
+//                                globalEvent.value = OccGlobalEvent.Error(e)
+//                            }
+//
+//                            override fun onNext(t: ClearPromoUiModel?) {
+//                                if (_orderPreference.isValid) {
+//                                    finalUpdate(onSuccessCheckout, true)
+//                                }
+//                            }
+//
+//                            override fun onCompleted() {
+//                                //do nothing
+//                            }
+//                        })
+//        )
     }
 
     fun updateCartPromo(onSuccess: (ValidateUsePromoRequest, PromoRequest, ArrayList<String>) -> Unit) {
