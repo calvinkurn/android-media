@@ -57,6 +57,7 @@ internal class ProductCardOptionsFragment: TkpdBaseV4Fragment() {
         observeAddToCartEventLiveData()
         observeRouteToShopPageEvent()
         observeShareProductEvent()
+        observeIsLoadingEvent()
     }
 
     private fun observeOptionListLiveData() {
@@ -146,8 +147,7 @@ internal class ProductCardOptionsFragment: TkpdBaseV4Fragment() {
 
     private fun observeShareProductEvent() {
         productCardOptionsViewModel?.getShareProductEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
-            productCardOptionsRecyclerView?.visibility = View.INVISIBLE
-            productCardOptionsLoading?.visible()
+            showLoading()
 
             activity?.let { activity ->
                 ProductShare(activity).share(it, {
@@ -155,6 +155,17 @@ internal class ProductCardOptionsFragment: TkpdBaseV4Fragment() {
                     sendProductCardOptionsResult(PRODUCT_CARD_OPTIONS_RESULT_CODE_SHARE_PRODUCT)
                 })
             }
+        })
+    }
+
+    private fun showLoading() {
+        productCardOptionsRecyclerView?.visibility = View.INVISIBLE
+        productCardOptionsLoading?.visible()
+    }
+
+    private fun observeIsLoadingEvent() {
+        productCardOptionsViewModel?.getIsLoadingEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
+            showLoading()
         })
     }
 }

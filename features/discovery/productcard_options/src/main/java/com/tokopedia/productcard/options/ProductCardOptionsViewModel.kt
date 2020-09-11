@@ -44,6 +44,7 @@ internal class ProductCardOptionsViewModel(
     private val addToCartEventLiveData = MutableLiveData<Event<Boolean>>()
     private val routeToShopPageEventLiveData = MutableLiveData<Event<Boolean>>()
     private val shareProductEventLiveData = MutableLiveData<Event<ProductData>>()
+    private val isLoadingEventLiveData = MutableLiveData<Event<Boolean>>()
 
     init {
         initWishlistOption()
@@ -96,6 +97,8 @@ internal class ProductCardOptionsViewModel(
     private fun doWishlistAction(isAddWishlist: Boolean) {
         val wishListActionListener = createWishlistActionListener()
 
+        postLoadingEvent()
+
         if (!isAddWishlist) removeWishlist(wishListActionListener)
         else addWishlist(wishListActionListener)
     }
@@ -130,6 +133,10 @@ internal class ProductCardOptionsViewModel(
     private fun onSuccessAddWishlist() {
         productCardOptionsModel?.wishlistResult = WishlistResult(isUserLoggedIn = true, isSuccess = true, isAddWishlist = true)
         wishlistEventLiveData.postValue(Event(true))
+    }
+
+    private fun postLoadingEvent() {
+        isLoadingEventLiveData.postValue(Event(true))
     }
 
     private fun removeWishlist(wishListActionListener: WishListActionListener) {
@@ -209,6 +216,8 @@ internal class ProductCardOptionsViewModel(
 
     private fun executeAddToCart() {
         if (userSession.isLoggedIn) {
+            postLoadingEvent()
+
             addToCartUseCase.unsubscribe()
             addToCartUseCase.execute(createAddToCartRequestParams(), createAddToCartSubscriber())
         }
@@ -335,4 +344,6 @@ internal class ProductCardOptionsViewModel(
     fun getRouteToShopPageEventLiveData(): LiveData<Event<Boolean>> = routeToShopPageEventLiveData
 
     fun getShareProductEventLiveData(): LiveData<Event<ProductData>> = shareProductEventLiveData
+
+    fun getIsLoadingEventLiveData(): LiveData<Event<Boolean>> = isLoadingEventLiveData
 }
