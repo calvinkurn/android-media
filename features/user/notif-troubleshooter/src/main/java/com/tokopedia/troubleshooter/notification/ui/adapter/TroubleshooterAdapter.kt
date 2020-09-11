@@ -42,8 +42,6 @@ internal open class TroubleshooterAdapter(
     }
 
     fun addWarningTicker(ticker: TickerUIView) {
-        if (ticker.tickers.isEmpty()) return
-
         visitables.removeAll { it is TickerUIView }
         visitables.add(visitables.size - 1, ticker)
         notifyDataSetChanged()
