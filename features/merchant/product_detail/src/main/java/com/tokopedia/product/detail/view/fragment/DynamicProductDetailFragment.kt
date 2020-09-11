@@ -206,8 +206,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private var productId: String? = null
     private var productKey: String? = null
     private var shopDomain: String? = null
-    private var shouldShowCodP1 = false
-    private var shouldShowCodP3 = false
     private var isAffiliate = false
     private var affiliateString: String? = null
     private var deeplinkUrl: String = ""
@@ -934,6 +932,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         if (usedPrice > 0) {
             goToHargaFinal()
         } else {
+            viewModel.clearCacheP2Data()
             goToTradeInHome()
         }
     }
@@ -1492,7 +1491,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             renderVariant(viewModel.variantData)
             et_search.hint = String.format(getString(R.string.pdp_search_hint), productInfo.basic.category.name)
             pdpUiUpdater?.updateDataP1(context, productInfo)
-            shouldShowCodP1 = productInfo.data.isCOD
             actionButtonView.setButtonP1(productInfo.data.preOrder, productInfo.basic.isLeasing)
 
             if (productInfo.basic.category.isAdult) {
@@ -1610,9 +1608,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun onSuccessGetDataP3(it: ProductInfoP3) {
-        shouldShowCodP3 = it.userCod
-        pdpUiUpdater?.updateBasicContentCodData(shouldShowCodP1 && shouldShowCodP3)
-
         if (it.ratesModel == null || it.ratesModel?.getServicesSize() == 0) {
             dynamicAdapter.removeComponentSection(pdpUiUpdater?.productShipingInfoMap)
         }
@@ -1623,8 +1618,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
         pdpUiUpdater?.updateDataP3(context, it)
         dynamicAdapter.notifyItemComponentSections(pdpUiUpdater?.tickerInfoMap, pdpUiUpdater?.productShipingInfoMap)
-        dynamicAdapter.notifyBasicContentWithPayloads(pdpUiUpdater?.basicContentMap, ProductDetailConstant.PAYLOAD_P3)
-        dynamicAdapter.notifySnapshotWithPayloads(pdpUiUpdater?.snapShotMap, ProductDetailConstant.PAYLOAD_P3)
     }
 
     private fun logException(t: Throwable) {

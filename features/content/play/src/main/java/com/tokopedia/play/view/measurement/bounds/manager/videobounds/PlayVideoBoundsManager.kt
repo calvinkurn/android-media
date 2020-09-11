@@ -1,4 +1,4 @@
-package com.tokopedia.play.view.measurement.bounds.manager
+package com.tokopedia.play.view.measurement.bounds.manager.videobounds
 
 import android.view.View
 import android.view.ViewGroup

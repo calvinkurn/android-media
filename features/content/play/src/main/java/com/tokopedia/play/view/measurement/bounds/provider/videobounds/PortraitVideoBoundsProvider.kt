@@ -1,4 +1,4 @@
-package com.tokopedia.play.view.measurement.bounds.provider
+package com.tokopedia.play.view.measurement.bounds.provider.videobounds
 
 import android.view.View
 import android.view.ViewGroup
@@ -57,7 +57,7 @@ class PortraitVideoBoundsProvider(
         }
 
         val chatListViewTotalHeight = run {
-            val height = container.resources.getDimensionPixelSize(R.dimen.play_chat_max_height)
+            val height = container.resources.getDimensionPixelSize(R.dimen.play_chat_vertical_max_height)
             val marginLp = chatListView.layoutParams as ViewGroup.MarginLayoutParams
             height + marginLp.bottomMargin + marginLp.topMargin
         }

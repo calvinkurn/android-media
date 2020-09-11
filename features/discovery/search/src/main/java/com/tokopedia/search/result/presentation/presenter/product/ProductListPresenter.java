@@ -658,10 +658,8 @@ final class ProductListPresenter
     }
 
     private void getViewToRedirectSearch(SearchProductModel searchProductModel) {
-        if (searchProductModel.getSearchProduct().getHeader().getResponseCode().equals("9")) {
-            ProductViewModel productViewModel = createProductViewModelWithPosition(searchProductModel);
-            getViewToSendTrackingSearchAttempt(productViewModel);
-        }
+        ProductViewModel productViewModel = createProductViewModelWithPosition(searchProductModel);
+        getViewToSendTrackingSearchAttempt(productViewModel);
 
         String applink = searchProductModel.getSearchProduct().getData().getRedirection().getRedirectApplink();
         getView().redirectSearchToAnotherPage(applink);
@@ -1188,7 +1186,7 @@ final class ProductListPresenter
     private GeneralSearchTrackingModel createGeneralSearchTrackingModel(ProductViewModel productViewModel, String query, Set<String> categoryIdMapping, Set<String> categoryNameMapping) {
         return new GeneralSearchTrackingModel(
                 createGeneralSearchTrackingEventLabel(productViewModel, query),
-                !productViewModel.getProductList().isEmpty(),
+                Boolean.toString(!productViewModel.getProductList().isEmpty()),
                 StringUtils.join(categoryIdMapping, ","),
                 StringUtils.join(categoryNameMapping, ","),
                 createGeneralSearchTrackingRelatedKeyword(productViewModel)
