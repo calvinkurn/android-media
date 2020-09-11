@@ -47,6 +47,11 @@ internal open class TroubleshooterAdapter(
         notifyDataSetChanged()
     }
 
+    fun removeTickers() {
+        visitables.removeAll { it is TickerUIView }
+        notifyDataSetChanged()
+    }
+
     fun status(state: StatusState) {
         if (visitables.isNotEmpty() && visitables.first() is StatusUIView) {
             visitables.removeAt(INDEX_STATUS)

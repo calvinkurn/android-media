@@ -149,7 +149,12 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
 
             if (token.isNotNull() && notification.isNotNull() && device.isNotNull() && ringtone.isNotNull()) {
                 TroubleshooterTimber.combine(token, notification, device)
-                adapter.addWarningTicker(TickerUIView(viewModel.tickerItems))
+
+                if (viewModel.tickerItems.isNotEmpty()) {
+                    adapter.addWarningTicker(TickerUIView(viewModel.tickerItems))
+                } else {
+                    adapter.removeTickers()
+                }
 
                 if (notification.isTrue() && device.isTrue() && !isSilent(ringtone)) {
                     adapter.status(StatusState.Success)
@@ -200,28 +205,7 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
     }
 
     private fun deviceSetting(result: Result<DeviceSettingState>) {
-        when (result) {
-            is Success -> {
-                if (result.data == DeviceSettingState.High) {
-                    adapter.updateStatus(Device, StatusState.Success)
-                } else {
-                    updateConfigStatus(
-                            type = Device,
-                            status = StatusState.Warning,
-                            message = getString(R.string.notif_dv_low_ticker_warning),
-                            buttonText = R.string.btn_notif_choose
-                    )
-                }
-            }
-            is Fail -> {
-                updateConfigStatus(
-                        type = Device,
-                        status = StatusState.Error,
-                        message = getString(R.string.notif_dv_none_ticker_warning),
-                        buttonText = R.string.btn_notif_activation
-                )
-            }
-        }
+        adapter.updateStatus(Device, StatusState.Success)
     }
 
     private fun ringtoneSetting(status: Pair<Uri?, RingtoneState>) {
