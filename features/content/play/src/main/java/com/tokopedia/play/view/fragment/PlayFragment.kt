@@ -31,6 +31,7 @@ import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.extensions.isAnyBottomSheetsShown
 import com.tokopedia.play.extensions.isKeyboardShown
 import com.tokopedia.play.util.PlaySensorOrientationManager
+import com.tokopedia.play.util.event.EventObserver
 import com.tokopedia.play.util.keyboard.KeyboardWatcher
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.view.activity.PlayActivity
@@ -340,6 +341,7 @@ class PlayFragment @Inject constructor(
 
     private fun setupObserve() {
         observeGetChannelInfo()
+        observeStateChannel()
         observeSocketInfo()
         observeEventUserInfo()
         observeVideoMeta()
@@ -370,6 +372,12 @@ class PlayFragment @Inject constructor(
                     if (!hasFetchedChannelInfo) fragmentErrorViewOnStateChanged(shouldShow = true)
                 }
             }
+        })
+    }
+
+    private fun observeStateChannel() {
+        playViewModel.observableStateChannelInfo.observe(viewLifecycleOwner, EventObserver {
+            resetMonitoring()
         })
     }
 
@@ -465,6 +473,10 @@ class PlayFragment @Inject constructor(
     fun stopRenderMonitoring() {
         pageMonitoring.stopRenderPerformanceMonitoring()
         stopPageMonitoring()
+    }
+
+    private fun resetMonitoring() {
+        pageMonitoring.invalidate()
     }
 
     private fun stopPageMonitoring() {
