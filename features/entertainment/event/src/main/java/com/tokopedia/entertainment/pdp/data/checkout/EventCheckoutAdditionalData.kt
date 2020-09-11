@@ -6,6 +6,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class EventCheckoutAdditionalData(
+        val idItemMap : String = "",
         val idPackage : String = "",
         val idItem : String = "",
         val titleItem : String = "",

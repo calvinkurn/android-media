@@ -360,7 +360,7 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
                         eventPDPTracking.onClickCheckoutButton(getPackage(productDetailData, packageID), productDetailData, amount)
                         if (name.isEmpty()) name = userSessionInterface.name
                         if (email.isEmpty()) email = userSessionInterface.email
-                        metadata = getPassengerMetaData(metadata, forms)
+                        metadata = getPassengerMetaData(metadata, forms, listAdditionalItem, eventCheckoutAdditionalDataPackage)
                         eventCheckoutViewModel.checkoutEvent(EventQuery.mutationEventCheckoutV2(),
                                 getCheckoutParam(metadata, productDetailData, getPackage(productDetailData, packageID)))
                     }

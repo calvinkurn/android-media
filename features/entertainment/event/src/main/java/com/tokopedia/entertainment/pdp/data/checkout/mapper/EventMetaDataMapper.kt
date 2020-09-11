@@ -12,18 +12,45 @@ import com.tokopedia.entertainment.pdp.data.pdp.PassengerInformation
 
 object EventMetaDataMapper {
 
-    fun getPassengerMetaData(metaDataResponse: MetaDataResponse, forms: List<Form>): MetaDataResponse {
+    fun getPassengerMetaData(metaDataResponse: MetaDataResponse, forms: List<Form>,
+                             listAdditionalDataItems: List<EventCheckoutAdditionalData>,
+                             additionalDataPackage: EventCheckoutAdditionalData): MetaDataResponse {
+
         val passengerInformation = forms.map {
-            PassengerInformation(it.name, it.value, it.title)
+            val value = getValueForm(it)
+            PassengerInformation(it.name, value, it.title)
+        }.toMutableList()
+
+        if(additionalDataPackage.listForm.isNotEmpty() &&
+                additionalDataPackage.additionalType.equals(AdditionalType.PACKAGE_FILLED)){
+            additionalDataPackage.listForm.map {
+                val value = getValueForm(it)
+                passengerInformation.add(PassengerInformation(it.name, value, it.title))
+            }
         }
+
         val passengerForm = PassengerForm(passengerInformation)
 
         for (itemMap in metaDataResponse.itemMap) {
-            itemMap.passengerForms.add(0, passengerForm)
+            itemMap.passengerForms.add(passengerForm)
+            for (listAdditionalItem in listAdditionalDataItems){
+                if(itemMap.id.equals(listAdditionalItem.idItemMap)){
+                    val passengerInformationItem = listAdditionalItem.listForm.map {
+                        val value = getValueForm(it)
+                        PassengerInformation(it.name, value, it.title)
+                    }.toMutableList()
+                    val passengerFormItem = PassengerForm(passengerInformationItem)
+                    itemMap.passengerForms.add(passengerFormItem)
+                }
+            }
         }
+
         return metaDataResponse
     }
 
+    private fun getValueForm(form: Form):String{
+        return if(form.elementType.equals("list")) form.valuePosition else form.value
+    }
 
     fun getCheckoutParam(metaDataResponse: MetaDataResponse, productDetailData: ProductDetailData, packageV3: PackageV3): CheckoutGeneralV2Params {
         val gson = Gson()

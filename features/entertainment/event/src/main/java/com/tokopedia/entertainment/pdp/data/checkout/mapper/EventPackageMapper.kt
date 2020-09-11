@@ -58,7 +58,7 @@ object EventPackageMapper {
         if(!itemMaps.isNullOrEmpty()){
             itemMaps.map {
                 for(i in 1..it.quantity) {
-                    additionalList.add(EventCheckoutAdditionalData(idPackage = it.packageId,idItem = it.id, titleItem = it.name+" "+i, additionalType = AdditionalType.ITEM_UNFILL))
+                    additionalList.add(EventCheckoutAdditionalData(idItemMap = it.id,idPackage = it.packageId,idItem = it.id, titleItem = it.name+" "+i, additionalType = AdditionalType.ITEM_UNFILL))
                 }
             }
         }
