@@ -1,5 +1,6 @@
 package com.tokopedia.activation.domain
 
+import com.tokopedia.activation.domain.mapper.UpdateShopFeatureMapper
 import com.tokopedia.activation.model.UpdateFeatureModel
 import com.tokopedia.activation.model.response.UpdateShopFeatureResponse
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase

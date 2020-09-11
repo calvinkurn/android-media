@@ -1,4 +1,4 @@
-package com.tokopedia.activation.domain
+package com.tokopedia.activation.domain.mapper
 
 import com.tokopedia.activation.model.UpdateFeatureModel
 import com.tokopedia.activation.model.response.UpdateShopFeature
