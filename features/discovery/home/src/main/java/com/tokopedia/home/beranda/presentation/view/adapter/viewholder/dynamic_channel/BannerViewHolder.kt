@@ -38,7 +38,8 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
         indicatorView.activeColor = ContextCompat.getColor(itemView.context, R.color.home_hpb_indicator_active)
         indicatorView.inactiveColor = ContextCompat.getColor(itemView.context, R.color.home_hpb_indicator_inactive)
         seeAllPromo.unlockFeature = true
-        seeAllPromo.setLabelType("#9031353b")
+        seeAllPromo.setLabelType("#31353b")
+        seeAllPromo.opacityLevel = 0.9f
     }
 
     override fun bind(element: HomepageBannerDataModel) {
