@@ -118,69 +118,61 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                 }
                 val shippingDurationUiModels: MutableList<ShippingDurationUiModel> = shippingRecommendationData.shippingDurationViewModels
                 if (shippingDurationUiModels.isEmpty()) {
-                    return@withContext ResultRates(
-                            OrderShipment(serviceName = curShip.serviceName, serviceDuration = curShip.serviceDuration, serviceErrorMessage = OrderSummaryPageViewModel.NO_COURIER_SUPPORTED_ERROR_MESSAGE, shippingRecommendationData = null),
-                            currPromo,
-                            null, null, null
-                    )
-                }
-                if (shipping.serviceId != null && shipping.shipperProductId != null) {
+                    shipping = OrderShipment(serviceName = curShip.serviceName, serviceDuration = curShip.serviceDuration, serviceErrorMessage = OrderSummaryPageViewModel.NO_COURIER_SUPPORTED_ERROR_MESSAGE, shippingRecommendationData = null)
+                } else if (shipping.serviceId != null && shipping.shipperProductId != null) {
                     shippingDurationUiModels.forEach {
                         it.isSelected = it.serviceData.serviceId == shipping.serviceId
                     }
                     val selectedShippingDurationUiModel = shippingDurationUiModels.firstOrNull { it.isSelected }
                     if (selectedShippingDurationUiModel == null) {
                         orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_DURATION_UNAVAILABLE)
-                        return@withContext ResultRates(
-                                OrderShipment(serviceName = shipping.serviceName, serviceDuration = shipping.serviceDuration, serviceErrorMessage = OrderSummaryPageViewModel.NO_DURATION_AVAILABLE, shippingRecommendationData = shippingRecommendationData),
-                                currPromo,
-                                null, null, null
-                        )
-                    }
-                    val durationError: ErrorServiceData? = selectedShippingDurationUiModel.serviceData.error
-                    if (durationError?.errorId?.isNotBlank() == true && durationError.errorMessage?.isNotBlank() == true) {
-                        shippingErrorId = durationError.errorId
-                        shipping = OrderShipment(
-                                serviceId = selectedShippingDurationUiModel.serviceData.serviceId,
-                                serviceDuration = selectedShippingDurationUiModel.serviceData.serviceName,
-                                serviceName = selectedShippingDurationUiModel.serviceData.serviceName,
-                                needPinpoint = durationError.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED,
-                                serviceErrorMessage = durationError.errorMessage,
-                                shippingRecommendationData = shippingRecommendationData)
+                        shipping = OrderShipment(serviceName = shipping.serviceName, serviceDuration = shipping.serviceDuration, serviceErrorMessage = OrderSummaryPageViewModel.NO_DURATION_AVAILABLE, shippingRecommendationData = shippingRecommendationData)
                     } else {
-                        val shippingCourierViewModelList: MutableList<ShippingCourierUiModel> = selectedShippingDurationUiModel.shippingCourierViewModelList
-                        shippingCourierViewModelList.forEach {
-                            it.isSelected = it.productData.shipperProductId == shipping.shipperProductId
-                        }
-                        val selectedShippingCourierUiModel = shippingCourierViewModelList.firstOrNull { it.isSelected }
-                                ?: shippingCourierViewModelList.first()
-                        var flagNeedToSetPinpoint = false
-                        var errorMessage: String? = null
-                        val courierError: ErrorProductData? = selectedShippingCourierUiModel.productData.error
-                        if (courierError?.errorMessage?.isNotBlank() == true && courierError.errorId != null) {
-                            shippingErrorId = courierError.errorId
-                            errorMessage = courierError.errorMessage
-                            if (courierError.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
-                                flagNeedToSetPinpoint = true
+                        val durationError: ErrorServiceData? = selectedShippingDurationUiModel.serviceData.error
+                        if (durationError?.errorId?.isNotBlank() == true && durationError.errorMessage?.isNotBlank() == true) {
+                            shippingErrorId = durationError.errorId
+                            shipping = OrderShipment(
+                                    serviceId = selectedShippingDurationUiModel.serviceData.serviceId,
+                                    serviceDuration = selectedShippingDurationUiModel.serviceData.serviceName,
+                                    serviceName = selectedShippingDurationUiModel.serviceData.serviceName,
+                                    needPinpoint = durationError.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED,
+                                    serviceErrorMessage = durationError.errorMessage,
+                                    shippingRecommendationData = shippingRecommendationData)
+                        } else {
+                            val shippingCourierViewModelList: MutableList<ShippingCourierUiModel> = selectedShippingDurationUiModel.shippingCourierViewModelList
+                            shippingCourierViewModelList.forEach {
+                                it.isSelected = it.productData.shipperProductId == shipping.shipperProductId
                             }
+                            val selectedShippingCourierUiModel = shippingCourierViewModelList.firstOrNull { it.isSelected }
+                                    ?: shippingCourierViewModelList.first()
+                            var flagNeedToSetPinpoint = false
+                            var errorMessage: String? = null
+                            val courierError: ErrorProductData? = selectedShippingCourierUiModel.productData.error
+                            if (courierError?.errorMessage?.isNotBlank() == true && courierError.errorId != null) {
+                                shippingErrorId = courierError.errorId
+                                errorMessage = courierError.errorMessage
+                                if (courierError.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
+                                    flagNeedToSetPinpoint = true
+                                }
+                            }
+                            shipping = shipping.copy(shipperProductId = selectedShippingCourierUiModel.productData.shipperProductId,
+                                    shipperId = selectedShippingCourierUiModel.productData.shipperId,
+                                    ratesId = selectedShippingCourierUiModel.ratesId,
+                                    ut = selectedShippingCourierUiModel.productData.unixTime,
+                                    checksum = selectedShippingCourierUiModel.productData.checkSum,
+                                    shipperName = selectedShippingCourierUiModel.productData.shipperName,
+                                    needPinpoint = flagNeedToSetPinpoint,
+                                    serviceErrorMessage = if (flagNeedToSetPinpoint) OrderSummaryPageViewModel.NEED_PINPOINT_ERROR_MESSAGE else errorMessage,
+                                    insuranceData = selectedShippingCourierUiModel.productData.insurance,
+                                    serviceId = selectedShippingDurationUiModel.serviceData.serviceId,
+                                    serviceDuration = selectedShippingDurationUiModel.serviceData.serviceName,
+                                    serviceName = selectedShippingDurationUiModel.serviceData.serviceName,
+                                    shippingPrice = selectedShippingCourierUiModel.productData.price.price,
+                                    isApplyLogisticPromo = false,
+                                    logisticPromoViewModel = null,
+                                    logisticPromoShipping = null,
+                                    shippingRecommendationData = shippingRecommendationData)
                         }
-                        shipping = shipping.copy(shipperProductId = selectedShippingCourierUiModel.productData.shipperProductId,
-                                shipperId = selectedShippingCourierUiModel.productData.shipperId,
-                                ratesId = selectedShippingCourierUiModel.ratesId,
-                                ut = selectedShippingCourierUiModel.productData.unixTime,
-                                checksum = selectedShippingCourierUiModel.productData.checkSum,
-                                shipperName = selectedShippingCourierUiModel.productData.shipperName,
-                                needPinpoint = flagNeedToSetPinpoint,
-                                serviceErrorMessage = if (flagNeedToSetPinpoint) OrderSummaryPageViewModel.NEED_PINPOINT_ERROR_MESSAGE else errorMessage,
-                                insuranceData = selectedShippingCourierUiModel.productData.insurance,
-                                serviceId = selectedShippingDurationUiModel.serviceData.serviceId,
-                                serviceDuration = selectedShippingDurationUiModel.serviceData.serviceName,
-                                serviceName = selectedShippingDurationUiModel.serviceData.serviceName,
-                                shippingPrice = selectedShippingCourierUiModel.productData.price.price,
-                                isApplyLogisticPromo = false,
-                                logisticPromoViewModel = null,
-                                logisticPromoShipping = null,
-                                shippingRecommendationData = shippingRecommendationData)
                     }
                 } else {
                     shippingDurationUiModels.forEach {
@@ -189,54 +181,51 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                     val selectedShippingDurationUiModel: ShippingDurationUiModel? = shippingDurationUiModels.firstOrNull { it.isSelected }
                     if (selectedShippingDurationUiModel == null) {
                         orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_DURATION_UNAVAILABLE)
-                        return@withContext ResultRates(
-                                OrderShipment(serviceName = curShip.serviceName, serviceDuration = curShip.serviceDuration, serviceErrorMessage = OrderSummaryPageViewModel.NO_DURATION_AVAILABLE, shippingRecommendationData = shippingRecommendationData),
-                                currPromo,
-                                null, null, null
-                        )
-                    }
-                    val durationError: ErrorServiceData? = selectedShippingDurationUiModel.serviceData.error
-                    if (durationError?.errorId?.isNotBlank() == true && durationError.errorMessage?.isNotBlank() == true) {
-                        shippingErrorId = durationError.errorId
-                        shipping = OrderShipment(
-                                serviceId = selectedShippingDurationUiModel.serviceData.serviceId,
-                                serviceDuration = selectedShippingDurationUiModel.serviceData.serviceName,
-                                serviceName = selectedShippingDurationUiModel.serviceData.serviceName,
-                                needPinpoint = durationError.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED,
-                                serviceErrorMessage = durationError.errorMessage,
-                                shippingRecommendationData = shippingRecommendationData)
+                        shipping = OrderShipment(serviceName = curShip.serviceName, serviceDuration = curShip.serviceDuration, serviceErrorMessage = OrderSummaryPageViewModel.NO_DURATION_AVAILABLE, shippingRecommendationData = shippingRecommendationData)
                     } else {
-                        val shippingCourierViewModelList: MutableList<ShippingCourierUiModel> = selectedShippingDurationUiModel.shippingCourierViewModelList
-                        val selectedShippingCourierUiModel = shippingCourierViewModelList.firstOrNull { it.isSelected }
-                                ?: shippingCourierViewModelList.first()
-                        selectedShippingCourierUiModel.isSelected = true
-                        var flagNeedToSetPinpoint = false
-                        var errorMessage: String? = null
-                        val courierError: ErrorProductData? = selectedShippingCourierUiModel.productData.error
-                        if (courierError?.errorMessage?.isNotBlank() == true && courierError.errorId != null) {
-                            shippingErrorId = courierError.errorId
-                            errorMessage = courierError.errorMessage
-                            if (courierError.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
-                                flagNeedToSetPinpoint = true
+                        val durationError: ErrorServiceData? = selectedShippingDurationUiModel.serviceData.error
+                        if (durationError?.errorId?.isNotBlank() == true && durationError.errorMessage?.isNotBlank() == true) {
+                            shippingErrorId = durationError.errorId
+                            shipping = OrderShipment(
+                                    serviceId = selectedShippingDurationUiModel.serviceData.serviceId,
+                                    serviceDuration = selectedShippingDurationUiModel.serviceData.serviceName,
+                                    serviceName = selectedShippingDurationUiModel.serviceData.serviceName,
+                                    needPinpoint = durationError.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED,
+                                    serviceErrorMessage = durationError.errorMessage,
+                                    shippingRecommendationData = shippingRecommendationData)
+                        } else {
+                            val shippingCourierViewModelList: MutableList<ShippingCourierUiModel> = selectedShippingDurationUiModel.shippingCourierViewModelList
+                            val selectedShippingCourierUiModel = shippingCourierViewModelList.firstOrNull { it.isSelected }
+                                    ?: shippingCourierViewModelList.first()
+                            selectedShippingCourierUiModel.isSelected = true
+                            var flagNeedToSetPinpoint = false
+                            var errorMessage: String? = null
+                            val courierError: ErrorProductData? = selectedShippingCourierUiModel.productData.error
+                            if (courierError?.errorMessage?.isNotBlank() == true && courierError.errorId != null) {
+                                shippingErrorId = courierError.errorId
+                                errorMessage = courierError.errorMessage
+                                if (courierError.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
+                                    flagNeedToSetPinpoint = true
+                                }
                             }
-                        }
-                        shipping = OrderShipment(shipperProductId = selectedShippingCourierUiModel.productData.shipperProductId,
-                                shipperId = selectedShippingCourierUiModel.productData.shipperId,
-                                ratesId = selectedShippingCourierUiModel.ratesId,
-                                ut = selectedShippingCourierUiModel.productData.unixTime,
-                                checksum = selectedShippingCourierUiModel.productData.checkSum,
-                                shipperName = selectedShippingCourierUiModel.productData.shipperName,
-                                needPinpoint = flagNeedToSetPinpoint,
-                                serviceErrorMessage = if (flagNeedToSetPinpoint) OrderSummaryPageViewModel.NEED_PINPOINT_ERROR_MESSAGE else errorMessage,
-                                insuranceData = selectedShippingCourierUiModel.productData.insurance,
-                                serviceId = selectedShippingDurationUiModel.serviceData.serviceId,
-                                serviceDuration = selectedShippingDurationUiModel.serviceData.serviceName,
-                                serviceName = selectedShippingDurationUiModel.serviceData.serviceName,
-                                shippingPrice = selectedShippingCourierUiModel.productData.price.price,
-                                shippingRecommendationData = shippingRecommendationData)
+                            shipping = OrderShipment(shipperProductId = selectedShippingCourierUiModel.productData.shipperProductId,
+                                    shipperId = selectedShippingCourierUiModel.productData.shipperId,
+                                    ratesId = selectedShippingCourierUiModel.ratesId,
+                                    ut = selectedShippingCourierUiModel.productData.unixTime,
+                                    checksum = selectedShippingCourierUiModel.productData.checkSum,
+                                    shipperName = selectedShippingCourierUiModel.productData.shipperName,
+                                    needPinpoint = flagNeedToSetPinpoint,
+                                    serviceErrorMessage = if (flagNeedToSetPinpoint) OrderSummaryPageViewModel.NEED_PINPOINT_ERROR_MESSAGE else errorMessage,
+                                    insuranceData = selectedShippingCourierUiModel.productData.insurance,
+                                    serviceId = selectedShippingDurationUiModel.serviceData.serviceId,
+                                    serviceDuration = selectedShippingDurationUiModel.serviceData.serviceName,
+                                    serviceName = selectedShippingDurationUiModel.serviceData.serviceName,
+                                    shippingPrice = selectedShippingCourierUiModel.productData.price.price,
+                                    shippingRecommendationData = shippingRecommendationData)
 
-                        if (shipping.serviceErrorMessage.isNullOrEmpty()) {
-                            preselectedSpId = selectedShippingCourierUiModel.productData.shipperProductId.toString()
+                            if (shipping.serviceErrorMessage.isNullOrEmpty()) {
+                                preselectedSpId = selectedShippingCourierUiModel.productData.shipperProductId.toString()
+                            }
                         }
                     }
                 }
@@ -327,7 +316,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                 }
                 return@withContext OccGlobalEvent.Error(errorMessage = messageError)
             } catch (t: Throwable) {
-                return@withContext OccGlobalEvent.Error(t)
+                return@withContext OccGlobalEvent.Error(t.cause ?: t)
             }
         }
         OccIdlingResource.decrement()

@@ -263,7 +263,10 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             orderPromo.value = orderPromo.value.copy(state = OccButtonState.LOADING)
             val (isApplied, resultValidateUse, newGlobalEvent) = promoProcessor.validateUseLogisticPromo(generateValidateUsePromoRequestWithBbo(logisticPromoUiModel, oldCode), logisticPromoUiModel.promoCode)
             if (isApplied && resultValidateUse != null) {
-                onApplyBbo(shipping, logisticPromoUiModel, resultValidateUse)
+                if (!onApplyBbo(shipping, logisticPromoUiModel, resultValidateUse)) {
+                    updatePromoState(resultValidateUse.promoUiModel)
+                    globalEvent.value = OccGlobalEvent.Error(errorMessage = FAIL_APPLY_BBO_ERROR_MESSAGE)
+                }
                 return@launch
             }
             if (resultValidateUse != null) {
@@ -421,7 +424,10 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 globalEvent.value = OccGlobalEvent.Loading
                 val (isApplied, resultValidateUse, newGlobalEvent) = promoProcessor.validateUseLogisticPromo(generateValidateUsePromoRequestWithBbo(logisticPromoUiModel), logisticPromoUiModel.promoCode)
                 if (isApplied && resultValidateUse != null) {
-                    onApplyBbo(shipping, logisticPromoUiModel, resultValidateUse)
+                    if (!onApplyBbo(shipping, logisticPromoUiModel, resultValidateUse)) {
+                        updatePromoState(resultValidateUse.promoUiModel)
+                        globalEvent.value = OccGlobalEvent.Error(errorMessage = FAIL_APPLY_BBO_ERROR_MESSAGE)
+                    }
                     return@launch
                 }
                 resultValidateUse?.let {
