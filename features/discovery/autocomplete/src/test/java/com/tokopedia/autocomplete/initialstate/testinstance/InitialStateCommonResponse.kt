@@ -42,23 +42,6 @@ private val initialStateCommonJSON = """
           "title": "samsung",
           "label": "keyword",
           "shortcut_url": "https://shortcut"
-        },
-        {
-          "template": "list_single_line",
-          "applink": "tokopedia://search?q=iphone&source=universe&st=product",
-          "url": "/search?q=iphone&source=universe&st=product",
-          "title": "iphone",
-          "label": "keyword",
-          "shortcut_url": "https://shortcut"
-        },
-        {
-          "template": "list_double_line",
-          "applink": "tokopedia://shop/8384142?source=universe&st=product",
-          "url": "/mizanbookc?source=universe&st=product",
-          "title": "MizanBookCorner",
-          "label": "Toko",
-          "shortcut_url": "https://shortcut",
-          "type": "shop"
         }
       ]
     },

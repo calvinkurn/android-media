@@ -1,7 +1,9 @@
 package com.tokopedia.autocomplete.initialstate
 
+import com.tokopedia.autocomplete.initialstate.data.InitialStateUniverse
 import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchTitleViewModel
 import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchViewModel
+import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchSeeMoreViewModel
 import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchTitleViewModel
 import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchViewModel
 import com.tokopedia.autocomplete.initialstate.recentview.RecentViewViewModel
@@ -9,6 +11,7 @@ import com.tokopedia.autocomplete.initialstate.recentview.ReecentViewTitleViewMo
 import com.tokopedia.autocomplete.initialstate.testinstance.initialStateCommonResponse
 import com.tokopedia.autocomplete.initialstate.testinstance.initialStateEmptyDataResponse
 import com.tokopedia.autocomplete.initialstate.testinstance.popularSearchCommonResponse
+import com.tokopedia.autocomplete.jsonToObject
 import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.verify
@@ -16,16 +19,70 @@ import org.junit.Assert
 import org.junit.Test
 import rx.Subscriber
 
+private const val initialStateWithSeeMoreRecentSearch = "autocomplete/initialstate/with-show-more-recent-search.json"
+
 internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
     private val isSuccessful = true
 
+    private fun `Test Initial State Data`(list: List<InitialStateData>) {
+        `Given initial state use case capture request params`(list)
+        `When presenter get initial state data`()
+        `Then verify initial state API is called`()
+        `Then verify initial state view will call showInitialStateResult behavior`()
+    }
+
+    private fun `When presenter get initial state data`() {
+        initialStatePresenter.getInitialStateData()
+    }
+
+    private fun `Then verify initial state API is called`() {
+        verify { getInitialStateUseCase.execute(any(), any()) }
+    }
+
+    private fun `Then verify initial state view will call showInitialStateResult behavior`() {
+        verify {
+            initialStateView.showInitialStateResult(capture(slotVisitableList))
+        }
+    }
+
     @Test
-    fun `test get initial state data`() {
-        `given initial state use case capture request params`()
-        `when presenter get initial state data`()
-        `then verify initial state API is called`()
-        `then verify initial state view will call showInitialStateResult behavior`()
-        `then verify visitable list`()
+    fun `Test get initial state data without Show More Recent Search`() {
+        `Test Initial State Data`(initialStateCommonData)
+
+        `Then verify visitable list has no RecentSearchSeeMoreViewModel`()
+    }
+
+    private fun `Then verify visitable list has no RecentSearchSeeMoreViewModel`() {
+        val visitableList = slotVisitableList.captured
+
+        Assert.assertTrue(visitableList[0] is ReecentViewTitleViewModel)
+        Assert.assertTrue(visitableList[1] is RecentViewViewModel)
+        Assert.assertTrue(visitableList[2] is RecentSearchTitleViewModel)
+        Assert.assertTrue(visitableList[3] is RecentSearchViewModel)
+        Assert.assertTrue(visitableList[4] is PopularSearchTitleViewModel)
+        Assert.assertTrue(visitableList[5] is PopularSearchViewModel)
+        Assert.assertTrue(visitableList.size == 6)
+    }
+
+    @Test
+    fun `Test get initial state data with Show More Recent Search`() {
+        val initialStateData = initialStateWithSeeMoreRecentSearch.jsonToObject<InitialStateUniverse>().data
+        `Test Initial State Data`(initialStateData)
+
+        `Then verify visitable list has RecentSearchSeeMoreViewModel`()
+    }
+
+    private fun `Then verify visitable list has RecentSearchSeeMoreViewModel`() {
+        val visitableList = slotVisitableList.captured
+
+        Assert.assertTrue(visitableList[0] is ReecentViewTitleViewModel)
+        Assert.assertTrue(visitableList[1] is RecentViewViewModel)
+        Assert.assertTrue(visitableList[2] is RecentSearchTitleViewModel)
+        Assert.assertTrue(visitableList[3] is RecentSearchViewModel)
+        Assert.assertTrue(visitableList[4] is RecentSearchSeeMoreViewModel)
+        Assert.assertTrue(visitableList[5] is PopularSearchTitleViewModel)
+        Assert.assertTrue(visitableList[6] is PopularSearchViewModel)
+        Assert.assertTrue(visitableList.size == 7)
     }
 
     private fun `given initial state use case capture request params`() {
@@ -39,33 +96,11 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
         initialStatePresenter.getInitialStateData()
     }
 
-    private fun `then verify initial state API is called`() {
-        verify { getInitialStateUseCase.execute(any(), any()) }
-    }
-
-    private fun `then verify initial state view will call showInitialStateResult behavior`() {
-        verify {
-            initialStateView.showInitialStateResult(capture(slotVisitableList))
-        }
-    }
-
-    private fun `then verify visitable list`() {
-        val visitableList = slotVisitableList.captured
-
-        Assert.assertTrue(visitableList[0] is RecentSearchTitleViewModel)
-        Assert.assertTrue(visitableList[1] is RecentSearchViewModel)
-        Assert.assertTrue(visitableList[2] is ReecentViewTitleViewModel)
-        Assert.assertTrue(visitableList[3] is RecentViewViewModel)
-        Assert.assertTrue(visitableList[4] is PopularSearchTitleViewModel)
-        Assert.assertTrue(visitableList[5] is PopularSearchViewModel)
-        Assert.assertTrue(visitableList.size == 6)
-    }
-
     @Test
     fun `test fail to get initial state data`() {
         `given initial state API will return error`()
         `when presenter get initial state data`()
-        `then verify initial state API is called`()
+        `Then verify initial state API is called`()
         `then verify initial state view do nothing behavior`()
     }
 
@@ -314,7 +349,7 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
     fun `test get initial state impression`() {
         `given initial state use case capture request params`()
         `when presenter get initial state data`()
-        `then verify initial state API is called`()
+        `Then verify initial state API is called`()
         `then verify initial state impression is called`()
         `then verify list impression data`()
     }
@@ -365,8 +400,8 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
     fun `test initial state impression with empty items`() {
         `given initial state use case get empty data response`()
         `when presenter get initial state data`()
-        `then verify initial state API is called`()
-        `then verify initial state view will call showInitialStateResult behavior`()
+        `Then verify initial state API is called`()
+        `Then verify initial state view will call showInitialStateResult behavior`()
         `then verify initial state view do nothing behavior`()
     }
 
