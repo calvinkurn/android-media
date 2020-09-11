@@ -683,6 +683,10 @@ public class ShipmentMapper implements IShipmentMapper {
                                         productResult.setFreeReturnLogo(product.getFreeReturns().getFreeReturnsLogo());
                                     }
 
+                                    if (product.getVariantDescriptionDetail() != null) {
+                                        productResult.setVariant(product.getVariantDescriptionDetail().getVariantDescription());
+                                    }
+
                                     if (!UtilsKt.isNullOrEmpty(product.getProductShipment())) {
                                         List<ProductShipment> productShipmentListResult = new ArrayList<>();
                                         for (com.tokopedia.checkout.data.model.response.shipment_address_form.ProductShipment

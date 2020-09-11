@@ -127,6 +127,9 @@ public class Product {
     @SerializedName("product_ticker")
     @Expose
     private ProductTicker productTicker;
+    @SerializedName("variant_description_detail")
+    @Expose
+    private VariantDescriptionDetail variantDescriptionDetail;
 
     public String getProductCategory() {
         return productCategory;
@@ -284,4 +287,7 @@ public class Product {
         return productTicker;
     }
 
+    public VariantDescriptionDetail getVariantDescriptionDetail() {
+        return variantDescriptionDetail;
+    }
 }

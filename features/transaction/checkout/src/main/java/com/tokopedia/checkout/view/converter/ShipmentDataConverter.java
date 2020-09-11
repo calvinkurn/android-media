@@ -300,6 +300,7 @@ public class ShipmentDataConverter {
         cartItemModel.setFreeShippingBadgeUrl(product.getFreeShippingBadgeUrl());
         cartItemModel.setShowTicker(product.isShowTicker());
         cartItemModel.setTickerMessage(product.getTickerMessage());
+        cartItemModel.setVariant(product.getVariant());
 
         if (product.getTradeInInfoData() != null && product.getTradeInInfoData().isValidTradeIn()) {
             cartItemModel.setValidTradeIn(true);
