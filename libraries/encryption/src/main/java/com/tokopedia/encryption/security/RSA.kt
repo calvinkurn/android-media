@@ -20,30 +20,14 @@ class RSA {
         this.publicKey = kp.public
     }
 
-    fun encrypt(message: String, key: PublicKey,
+    fun encrypt(message: String,
+                key: PublicKey,
+                algorithm: String = Constants.RSA_ALGORITHM,
                 encoder: ((ByteArray) -> (String))): String {
-        val cipher: Cipher = Cipher.getInstance(Constants.RSA_ALGORITHM)
+        val cipher: Cipher = Cipher.getInstance(algorithm)
         cipher.init(Cipher.ENCRYPT_MODE, key)
         val encryptedBytes = cipher.doFinal(message.toByteArray(Charsets.UTF_8))
         return encoder(encryptedBytes)
-    }
-
-    fun encrypt(message: ByteArray, key: PublicKey,
-                encoder: ((ByteArray) -> (String))): String {
-        val cipher: Cipher = Cipher.getInstance(Constants.RSA_ALGORITHM)
-        cipher.init(Cipher.ENCRYPT_MODE, key)
-        val encryptedBytes = cipher.doFinal(message)
-        return encoder(encryptedBytes)
-    }
-
-    fun encrypt(message: ByteArray, key: String,
-                encoder: ((ByteArray) -> (String))): String? {
-        return encrypt(message, stringToPublicKey(key), encoder)
-    }
-
-    fun encrypt(message: String, key: String,
-                encoder: ((ByteArray) -> (String))): String? {
-        return encrypt(message, stringToPublicKey(key), encoder)
     }
 
     fun stringToPublicKey(keyInString: String): PublicKey {

@@ -15,10 +15,6 @@ class AESEncryptorCBC(private val spec16ByteString: String) : BaseEncryptor() {
         return SecretKeySpec(key.toByteArray(Charsets.UTF_8), Constants.AES_METHOD)
     }
 
-    fun generateKey(key: ByteArray): SecretKey {
-        return SecretKeySpec(key, Constants.AES_METHOD)
-    }
-
     override fun encrypt(message: String, secretKey: SecretKey,
                          encoder: ((ByteArray) -> (String))): String {
         val cipher = Cipher.getInstance(CBC_ALGORITHM)
