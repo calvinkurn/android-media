@@ -202,7 +202,10 @@ class PlayEtalasePickerFragment @Inject constructor(
         psbSearch.setListener(object : PlaySearchBar.Listener {
 
             override fun onEditStateChanged(view: PlaySearchBar, isEditing: Boolean) {
-                if (isEditing) openSearchPage(view.text)
+                if (isEditing) {
+                    openSearchPage(view.text)
+                    analytic.clickSearchBar(view.text)
+                }
             }
 
             override fun onCanceled(view: PlaySearchBar) {
@@ -213,12 +216,14 @@ class PlayEtalasePickerFragment @Inject constructor(
                 val currFragment = currentFragment
                 if (currFragment is PlaySearchSuggestionsFragment) {
                     currFragment.searchKeyword(keyword)
-                    analytic.clickSearchBar(keyword)
                 }
             }
 
             override fun onSearchButtonClicked(view: PlaySearchBar, keyword: String) {
-                if (keyword.isNotEmpty()) openProductSearchPage(keyword)
+                if (keyword.isNotEmpty()) {
+                    openProductSearchPage(keyword)
+                    analytic.clickSearchBar(view.text)
+                }
                 else psbSearch.cancel()
             }
         })

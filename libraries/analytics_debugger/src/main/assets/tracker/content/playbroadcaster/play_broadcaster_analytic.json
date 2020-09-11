@@ -87,7 +87,7 @@
       "eventAction": "click search bar",
       "event": "clickSellerBroadcast",
       "eventCategory": "seller broadcast",
-      "eventLabel": "{{\\d+ - .+}}",
+      "eventLabel": "{{\\d+ -.(|.)+}}",
       "sessionIris": "{{.*}}",
       "currentSite": "{{.*}}",
       "shopId": "{{.*}}",
