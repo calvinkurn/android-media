@@ -682,34 +682,47 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
                 {
                     element.updatePinStatus(isPinChat)
                     if (isPinChat) {
-                        // chat pinned
-                        adapter?.pinChatItem(element, position)
-                        rv?.scrollToPosition(0)
-                        chatItemListViewModel.pinnedMsgId.add(element.msgId)
-                        showToaster(R.string.title_success_pin_chat)
+                        // chat pinned.
+                        onSuccessPinChat(element, position)
                     } else if (!isPinChat && chatItemListViewModel.unpinnedMsgId.contains(element.msgId)) {
-                        // chat unpinned and can be restored to current list
-                        adapter?.putToOriginalPosition(element, position, chatItemListViewModel.pinnedMsgId.size)
-                        chatItemListViewModel.pinnedMsgId.remove(element.msgId)
-                        showToaster(R.string.title_success_unpin_chat)
+                        // chat unpinned and can be restored to current list.
+                        onSuccessUnpinPreviouslyLoadedChat(element, position)
                     } else {
-                        // check if it can be repositioned in the  middle. else
-                        // chat unpinned and can not be restored to current list, just remove the item
-                        adapter?.unpinChatItem(
-                                element,
-                                position,
-                                chatItemListViewModel.pinnedMsgId.size,
-                                chatItemListViewModel.chatListHasNext,
-                                chatItemListViewModel.unpinnedMsgId
-                        )
-                        chatItemListViewModel.pinnedMsgId.remove(element.msgId)
-                        showToaster(R.string.title_success_unpin_chat)
+                        // check if it can be repositioned in the middle or append at the end when
+                        // hasNext is false. else chat unpinned and can not be restored
+                        // to current list, just remove the item.
+                        onSuccessUnpinChat(element, position)
                     }
                 },
                 {
                     showSnackbarError(it)
                 }
         )
+    }
+
+    private fun onSuccessUnpinChat(element: ItemChatListPojo, position: Int) {
+        adapter?.unpinChatItem(
+                element,
+                position,
+                chatItemListViewModel.pinnedMsgId.size,
+                chatItemListViewModel.chatListHasNext,
+                chatItemListViewModel.unpinnedMsgId
+        )
+        chatItemListViewModel.pinnedMsgId.remove(element.msgId)
+        showToaster(R.string.title_success_unpin_chat)
+    }
+
+    private fun onSuccessPinChat(element: ItemChatListPojo, position: Int) {
+        adapter?.pinChatItem(element, position)
+        rv?.scrollToPosition(0)
+        chatItemListViewModel.pinnedMsgId.add(element.msgId)
+        showToaster(R.string.title_success_pin_chat)
+    }
+
+    private fun onSuccessUnpinPreviouslyLoadedChat(element: ItemChatListPojo, position: Int) {
+        adapter?.putToOriginalPosition(element, position, chatItemListViewModel.pinnedMsgId.size)
+        chatItemListViewModel.pinnedMsgId.remove(element.msgId)
+        showToaster(R.string.title_success_unpin_chat)
     }
 
     private fun showToaster(message: String) {
