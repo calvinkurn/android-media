@@ -7,7 +7,7 @@
         "creative_name": "{{.*}}",
         "creative_slot": "{{.*}}",
         "item_id": "{{.*}}",
-        "item_name": "{{/ - .* - lego banner 3 image - .*}}"
+        "item_name": "{{/ - .*}}"
       }],
       "eventCategory": "homepage",
       "event": "view_item",
@@ -26,6 +26,7 @@
       "eventCategory": "homepage",
       "affinityLabel": "{{.*}}",
       "attribution": "{{.*}}",
+      "shopId" : "{{.*}}",
       "event": "select_content",
       "eventAction": "lego banner 3 image click",
       "sessionIris": "{{.*}}",
@@ -56,7 +57,7 @@
         "creative_name": "{{.*}}",
         "creative_slot": "{{.*}}",
         "item_id": "{{.*}}",
-        "item_name": "{{/ - .* - lego banner 4 image - .*}}"
+        "item_name": "{{/ - .* - .*}}"
       }],
       "eventCategory": "homepage",
       "event": "view_item",
@@ -75,6 +76,7 @@
       "eventCategory": "homepage",
       "affinityLabel": "{{.*}}",
       "attribution": "{{.*}}",
+      "shopId" : "{{.*}}",
       "event": "select_content",
       "eventAction": "lego banner 4 image click",
       "sessionIris": "{{.*}}",
@@ -105,7 +107,7 @@
         "creative_name": "{{.*}}",
         "creative_slot": "{{.*}}",
         "item_id": "{{.*}}",
-        "item_name": "{{/ - .* - lego banner - .*}}"
+        "item_name": "{{/ - .* - .* - .*}}"
       }],
       "eventCategory": "homepage",
       "event": "view_item",
@@ -124,6 +126,7 @@
       "eventCategory": "homepage",
       "affinityLabel": "{{.*}}",
       "attribution": "{{.*}}",
+      "shopId" : "{{.*}}",
       "event": "select_content",
       "eventAction": "lego banner click",
       "sessionIris": "{{.*}}",
