@@ -168,6 +168,24 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccExtern
         OccIdlingResource.decrement()
         return result
     }
+
+    suspend fun finalUpdateCart(param: UpdateCartOccRequest): Pair<Boolean, OccGlobalEvent> {
+        OccIdlingResource.increment()
+        val result = withContext(executorDispatchers.io) {
+            try {
+                updateCartOccUseCase.executeSuspend(param)
+                return@withContext true to OccGlobalEvent.Loading
+            } catch (t: Throwable) {
+                if (t is MessageErrorException) {
+                    return@withContext false to OccGlobalEvent.TriggerRefresh(errorMessage = t.message
+                            ?: DEFAULT_ERROR_MESSAGE)
+                }
+                return@withContext false to OccGlobalEvent.TriggerRefresh(throwable = t)
+            }
+        }
+        OccIdlingResource.decrement()
+        return result
+    }
 }
 
 class ResultGetOccCart(

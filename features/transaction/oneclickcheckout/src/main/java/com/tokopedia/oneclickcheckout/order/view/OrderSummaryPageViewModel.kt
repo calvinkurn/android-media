@@ -9,8 +9,6 @@ import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData.ERROR_DISTANCE_LIMIT_EXCEEDED
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData.ERROR_WEIGHT_LIMIT_EXCEEDED
-import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.dispatchers.ExecutorDispatchers
 import com.tokopedia.oneclickcheckout.common.domain.GetPreferenceListUseCase
@@ -1012,19 +1010,27 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 val param = generateUpdateCartParam()
                 if (param != null) {
                     if (validateSelectedTerm()) {
-                        OccIdlingResource.increment()
-                        updateCartOccUseCase.execute(param, {
-                            finalValidateUse(product, shop, pref, onSuccessCheckout, skipCheckIneligiblePromo)
-                            OccIdlingResource.decrement()
-                        }, { throwable: Throwable ->
-                            if (throwable is MessageErrorException && throwable.message != null) {
-                                globalEvent.value = OccGlobalEvent.TriggerRefresh(errorMessage = throwable.message
-                                        ?: DEFAULT_ERROR_MESSAGE)
-                            } else {
-                                globalEvent.value = OccGlobalEvent.TriggerRefresh(throwable = throwable)
+                        launch(executorDispatchers.main) {
+                            val (isSuccess, errorGlobalEvent) = cartProcessor.finalUpdateCart(param)
+                            if (isSuccess) {
+                                finalValidateUse(product, shop, pref, onSuccessCheckout, skipCheckIneligiblePromo)
+                                return@launch
                             }
-                            OccIdlingResource.decrement()
-                        })
+                            globalEvent.value = errorGlobalEvent
+                        }
+//                        OccIdlingResource.increment()
+//                        updateCartOccUseCase.execute(param, {
+//                            finalValidateUse(product, shop, pref, onSuccessCheckout, skipCheckIneligiblePromo)
+//                            OccIdlingResource.decrement()
+//                        }, { throwable: Throwable ->
+//                            if (throwable is MessageErrorException && throwable.message != null) {
+//                                globalEvent.value = OccGlobalEvent.TriggerRefresh(errorMessage = throwable.message
+//                                        ?: DEFAULT_ERROR_MESSAGE)
+//                            } else {
+//                                globalEvent.value = OccGlobalEvent.TriggerRefresh(throwable = throwable)
+//                            }
+//                            OccIdlingResource.decrement()
+//                        })
                     }
                     return
                 }
