@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -613,7 +612,7 @@ public class ProductListFragment
             AdultManager.handleActivityResult(getActivity(), requestCode, resultCode, data);
             ProductCardOptionsManager.handleProductCardOptionsActivityResult(
                     requestCode, resultCode, data,
-                    this::handleWishlistAction, this::handleAddToCartAction
+                    this::handleWishlistAction, this::handleAddToCartAction, this::handleVisitShopAction, this::handleShareProductAction
             );
         }
     }
@@ -668,6 +667,14 @@ public class ProductListFragment
         }
 
         Toaster.make(getView(), message, Toaster.LENGTH_SHORT, toasterType);
+    }
+
+    private void handleVisitShopAction(ProductCardOptionsModel productCardOptionsModel) {
+
+    }
+
+    private void handleShareProductAction(ProductCardOptionsModel productCardOptionsModel) {
+
     }
 
     @Override
