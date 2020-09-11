@@ -223,6 +223,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener?) : Abstr
         val tokopointActionContainer = itemView.findViewById<View>(R.id.container_action_tokopoint)
         val mTextCouponCount = itemView.findViewById<TextView>(R.id.text_coupon_count)
         ivLogoTokoPoint.setImageResource(R.drawable.ic_product_fintech_tokopoint_green_24)
+        mTextCouponCount.setTextColor(ContextCompat.getColor(itemView.context, R.color.font_black_disabled_38))
         if (element.tokopointsDrawerHomeData == null && element.isTokoPointDataError) {
             tokoPointHolder.setOnClickListener {
                 tokopointProgressBarLayout.visibility = View.VISIBLE
@@ -235,6 +236,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener?) : Abstr
             tvActionTokopoint.setTextColor(ContextCompat.getColor(itemView.context, R.color.font_black_primary_70))
             mTextCouponCount.setText(R.string.home_header_tokopoint_refresh_label)
             mTextCouponCount.visibility = View.VISIBLE
+            mTextCouponCount.setTextColor(ContextCompat.getColor(itemView.context, R.color.tkpd_main_green))
             tokopointProgressBarLayout.visibility = View.GONE
             tokopointActionContainer.visibility = View.VISIBLE
             ivLogoTokoPoint.setImageResource(R.drawable.ic_product_fintech_tokopoint_normal_24)
