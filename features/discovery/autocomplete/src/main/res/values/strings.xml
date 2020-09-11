@@ -38,5 +38,6 @@
     <string name="content_desc_doubleLineTitle">text title double line</string>
     <string name="content_desc_doubleLineSubtitle">text subtitle double line</string>
     <string name="content_desc_dl_iconImage">image double line</string>
-
+    <string name="autocomplete_see_more_recent_search">Lihat Lebih Banyak</string>
+    <string name="autocomplete_see_less_recent_search">Tampilkan Sedikit</string>
 </resources>

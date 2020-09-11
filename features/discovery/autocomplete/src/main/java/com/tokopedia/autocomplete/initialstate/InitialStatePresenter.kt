@@ -6,10 +6,7 @@ import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchTitleV
 import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchViewModel
 import com.tokopedia.autocomplete.initialstate.popularsearch.RefreshPopularSearchUseCase
 import com.tokopedia.autocomplete.initialstate.popularsearch.convertPopularSearchToVisitableList
-import com.tokopedia.autocomplete.initialstate.recentsearch.DeleteRecentSearchUseCase
-import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchTitleViewModel
-import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchViewModel
-import com.tokopedia.autocomplete.initialstate.recentsearch.convertRecentSearchToVisitableList
+import com.tokopedia.autocomplete.initialstate.recentsearch.*
 import com.tokopedia.autocomplete.initialstate.recentview.ReecentViewTitleViewModel
 import com.tokopedia.autocomplete.initialstate.recentview.convertRecentViewSearchToVisitableList
 import com.tokopedia.autocomplete.util.getShopIdFromApplink
@@ -146,7 +143,9 @@ class InitialStatePresenter @Inject constructor(
             when (initialStateData.id) {
                 InitialStateData.INITIAL_STATE_RECENT_SEARCH -> {
                     data.addAll(
-                            initialStateData.convertRecentSearchToVisitableList().insertTitleWithDeleteAll(initialStateData.header, initialStateData.labelAction)
+                            initialStateData.convertRecentSearchToVisitableList()
+                                .insertRecentSearchSeeMoreButton(initialStateData.items)
+                                .insertTitleWithDeleteAll(initialStateData.header, initialStateData.labelAction)
                     )
                 }
                 InitialStateData.INITIAL_STATE_RECENT_VIEW -> {
@@ -176,6 +175,14 @@ class InitialStatePresenter @Inject constructor(
         titleSearch.title = title
         titleSearch.labelAction = labelAction
         this.add(0, titleSearch)
+        return this
+    }
+
+    private fun MutableList<Visitable<*>>.insertRecentSearchSeeMoreButton(items: List<InitialStateItem>): MutableList<Visitable<*>> {
+        if (items.size < 5) return this
+
+        val viewModel = RecentSearchSeeMoreViewModel()
+        this.add(viewModel)
         return this
     }
 
@@ -268,6 +275,7 @@ class InitialStatePresenter @Inject constructor(
         override fun onNext(isSuccess: Boolean) {
             if (isSuccess) {
                 var needDelete = false
+                var totalSize = 0
                 listVistable.forEachIndexed { _, visitable ->
                     if (visitable is RecentSearchViewModel) {
                         if (visitable.list.size == 1) {
@@ -275,13 +283,19 @@ class InitialStatePresenter @Inject constructor(
                         } else {
                             val deleted = visitable.list.find { it.title == keyword }
                             visitable.list.remove(deleted)
+                            totalSize = visitable.list.size
                         }
                     }
                 }
+
                 if (needDelete) {
                     removeRecentSearchTitle()
                     removeRecentSearch()
                 }
+
+                val seeMore = totalSize < 5
+                if (seeMore) removeSeeMoreRecentSearch()
+
                 view.deleteRecentSearch(listVistable)
             }
         }
@@ -295,6 +309,11 @@ class InitialStatePresenter @Inject constructor(
     private fun removeRecentSearch() {
         val recentSearchViewModel = listVistable.filterIsInstance<RecentSearchViewModel>()
         listVistable.removeAll(recentSearchViewModel)
+    }
+
+    private fun removeSeeMoreRecentSearch() {
+        val viewModel = listVistable.filterIsInstance<RecentSearchSeeMoreViewModel>()
+        listVistable.removeAll(viewModel)
     }
 
     override fun deleteAllRecentSearch() {
@@ -319,6 +338,7 @@ class InitialStatePresenter @Inject constructor(
             if (isSuccess) {
                 removeRecentSearchTitle()
                 removeRecentSearch()
+                removeSeeMoreRecentSearch()
                 view.deleteRecentSearch(listVistable)
             }
         }
@@ -358,5 +378,9 @@ class InitialStatePresenter @Inject constructor(
 
     override fun attachView(view: InitialStateContract.View) {
         super.attachView(view)
+    }
+
+    override fun recentSearchSeeMoreClicked(seeMore: Boolean) {
+        view.renderRecentSearch(seeMore)
     }
 }

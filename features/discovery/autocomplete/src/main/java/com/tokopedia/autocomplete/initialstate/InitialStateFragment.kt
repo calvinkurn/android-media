@@ -19,6 +19,7 @@ import com.tokopedia.autocomplete.analytics.AutocompleteTracking
 import com.tokopedia.autocomplete.initialstate.di.DaggerInitialStateComponent
 import com.tokopedia.autocomplete.initialstate.di.InitialStateComponent
 import com.tokopedia.autocomplete.initialstate.di.InitialStateContextModule
+import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchSeeMoreViewModel
 import com.tokopedia.autocomplete.util.getModifiedApplink
 import com.tokopedia.iris.Iris
 import kotlinx.android.synthetic.main.fragment_initial_state.*
@@ -149,6 +150,16 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
 
     override fun onRecentSearchItemClicked(item: BaseItemInitialStateSearch, adapterPosition: Int) {
         presenter.onRecentSearchItemClicked(item, adapterPosition)
+    }
+
+    override fun onRecentSearchSeeMoreClicked(item: RecentSearchSeeMoreViewModel) {
+        item.seeMore = !item.seeMore
+        adapter.setSeeMoreButton(item)
+        presenter.recentSearchSeeMoreClicked(!item.seeMore)
+    }
+
+    override fun renderRecentSearch(seeMore: Boolean) {
+        adapter.renderRecentSearch(seeMore)
     }
 
     override fun route(applink: String, searchParameter: Map<String, String>) {

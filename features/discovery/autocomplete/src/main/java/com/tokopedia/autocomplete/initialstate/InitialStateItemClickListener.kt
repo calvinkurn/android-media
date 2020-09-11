@@ -1,5 +1,7 @@
 package com.tokopedia.autocomplete.initialstate
 
+import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchSeeMoreViewModel
+
 interface InitialStateItemClickListener {
     fun onDeleteRecentSearchItem(item: BaseItemInitialStateSearch)
 
@@ -10,4 +12,6 @@ interface InitialStateItemClickListener {
     fun onItemClicked(applink: String, webUrl: String)
 
     fun onRecentSearchItemClicked(item: BaseItemInitialStateSearch, adapterPosition: Int)
+
+    fun onRecentSearchSeeMoreClicked(item: RecentSearchSeeMoreViewModel)
 }

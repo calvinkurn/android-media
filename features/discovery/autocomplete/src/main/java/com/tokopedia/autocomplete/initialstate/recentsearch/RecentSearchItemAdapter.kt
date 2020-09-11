@@ -13,13 +13,15 @@ class RecentSearchItemAdapter(private val listener: InitialStateItemClickListene
         private const val TEMPLATE_ONE_LINE = "list_single_line"
         private const val TYPE_ONE_LINE = 1
         private const val TYPE_TWO_LINE = 2
+        private const val DEFAULT_SHOWN_SEE_MORE = 4
     }
 
-
     private var data: List<BaseItemInitialStateSearch> = ArrayList()
+    private var seeMore: Boolean = false
 
-    fun setData(data: List<BaseItemInitialStateSearch>) {
+    fun setData(data: List<BaseItemInitialStateSearch>, seeMore: Boolean) {
         this.data = data
+        this.seeMore = seeMore
         notifyDataSetChanged()
     }
 
@@ -54,6 +56,8 @@ class RecentSearchItemAdapter(private val listener: InitialStateItemClickListene
     }
 
     override fun getItemCount(): Int {
-        return data.size
+        return if (seeMore) data.size
+        else if (data.size < 5) data.size
+        else DEFAULT_SHOWN_SEE_MORE
     }
 }

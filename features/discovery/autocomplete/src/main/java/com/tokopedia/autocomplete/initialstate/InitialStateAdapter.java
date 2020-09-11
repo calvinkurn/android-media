@@ -5,15 +5,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchSeeMoreViewModel;
+import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchViewModel;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.tokopedia.autocomplete.initialstate.InitialStateConstantKt.PAYLOAD_SEE_LESS_RECENT_SEARCH;
+import static com.tokopedia.autocomplete.initialstate.InitialStateConstantKt.PAYLOAD_SEE_MORE_RECENT_SEARCH;
 
 public class InitialStateAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
@@ -57,5 +63,32 @@ public class InitialStateAdapter extends RecyclerView.Adapter<AbstractViewHolder
         int size = this.list.size();
         this.list.clear();
         notifyItemRangeRemoved(0, size);
+    }
+
+    @Override
+    public void onBindViewHolder(@NotNull AbstractViewHolder holder, int position, @NonNull List<Object> payloads) {
+        if (!payloads.isEmpty()) {
+            holder.bind(list.get(position), payloads);
+        } else {
+            super.onBindViewHolder(holder, position, payloads);
+        }
+    }
+
+    public void setSeeMoreButton(RecentSearchSeeMoreViewModel item) {
+        int index = list.indexOf(item);
+        notifyItemChanged(index, PAYLOAD_SEE_MORE_RECENT_SEARCH);
+    }
+
+    public void renderRecentSearch(boolean seeMore) {
+        if (seeMore)
+            notifyItemChanged(getRecentSearchViewModelIndex(), PAYLOAD_SEE_MORE_RECENT_SEARCH);
+        else notifyItemChanged(getRecentSearchViewModelIndex(), PAYLOAD_SEE_LESS_RECENT_SEARCH);
+    }
+
+    private int getRecentSearchViewModelIndex() {
+        for (Visitable item: list) {
+            if (item instanceof RecentSearchViewModel) return list.indexOf(item);
+        }
+        return -1;
     }
 }
