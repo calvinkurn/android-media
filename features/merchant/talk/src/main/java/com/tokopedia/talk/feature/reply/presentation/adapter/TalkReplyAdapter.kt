@@ -20,38 +20,18 @@ class TalkReplyAdapter(talkReplyAdapterTypeFactory: TalkReplyAdapterTypeFactory)
 
     fun showProductHeader(talkReplyProductHeaderModel: TalkReplyProductHeaderModel) {
         visitables.add(talkReplyProductHeaderModel)
+        notifyDataSetChanged()
     }
 
     fun showHeader(talkReplyHeaderModel: TalkReplyHeaderModel) {
         visitables.add(talkReplyHeaderModel)
+        notifyDataSetChanged()
     }
 
     fun setIsFollowingButton(isFollowing: Boolean) {
         visitables.forEachIndexed { index, visitable ->
             if (visitable is TalkReplyHeaderModel) {
                 visitables[index] = visitable.copy(isFollowed = isFollowing)
-                notifyItemChanged(index)
-                return
-            }
-        }
-    }
-
-    fun unmaskQuestion() {
-        visitables.forEachIndexed { index, visitable ->
-            if (visitable is TalkReplyHeaderModel) {
-                visitables[index] = visitable.copy(maskedContent = "", isMasked = false, allowUnmask = false)
-                notifyItemChanged(index)
-                return
-            }
-        }
-    }
-
-    fun unmaskComment() {
-        visitables.forEachIndexed { index, visitable ->
-            if (visitable is TalkReplyUiModel) {
-                val state = visitable.answer.state.copy(isMasked = false, allowUnmask = false)
-                val answer = visitable.answer.copy(maskedContent = "", state = state)
-                visitables[index] = visitable.copy(answer = answer)
                 notifyItemChanged(index)
                 return
             }

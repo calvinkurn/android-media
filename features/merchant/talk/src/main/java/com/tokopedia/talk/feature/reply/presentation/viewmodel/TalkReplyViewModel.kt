@@ -207,17 +207,27 @@ class TalkReplyViewModel @Inject constructor(
         launchCatchError(block = {
             talkReportTalkUseCase.setParams(questionId.toIntOrZero())
             val response = talkReportTalkUseCase.executeOnBackground()
+            if(response.talkReportTalk.data.isSuccess == MUTATION_SUCCESS) {
+                _reportTalkResult.postValue(Success(response))
+            } else {
+                _reportTalkResult.postValue(Fail(Throwable(response.talkReportTalk.messageError.first())))
+            }
         }) {
-
+            _reportTalkResult.postValue(Fail(it))
         }
     }
 
     fun reportComment(commentId: String) {
         launchCatchError(block = {
             talkReportCommentUseCase.setParams(commentId.toIntOrZero())
-            val response = talkReportTalkUseCase.executeOnBackground()
+            val response = talkReportCommentUseCase.executeOnBackground()
+            if(response.talkReportComment.data.isSuccess == MUTATION_SUCCESS) {
+                _reportCommentResult.postValue(Success(response))
+            } else {
+                _reportCommentResult.postValue(Fail(Throwable(response.talkReportComment.messageError.first())))
+            }
         }) {
-
+            _reportCommentResult.postValue(Fail(it))
         }
     }
 

@@ -10,6 +10,10 @@ class TalkReportTalkUseCase @Inject constructor(graphqlRepository: GraphqlReposi
 
     companion object {
         const val PARAM_TALK_ID = "talk_id"
+        const val PARAM_REASON = "reason"
+        const val SELLER_REPORT_REASON = "seller dismiss unmask"
+        const val PARAM_REPORT_TYPE = "report_type"
+        const val OTHER_REPORT_TYPE = 3
         private val query by lazy {
             """
                 mutation talkReportTalk(${'$'}talk_id: Int, ${'$'}reason: String, ${'$'}report_type: Int) {
@@ -34,6 +38,8 @@ class TalkReportTalkUseCase @Inject constructor(graphqlRepository: GraphqlReposi
     fun setParams(talkId: Int) {
         val requestParams = RequestParams()
         requestParams.putInt(PARAM_TALK_ID, talkId)
+        requestParams.putString(PARAM_REASON, SELLER_REPORT_REASON)
+        requestParams.putInt(PARAM_REPORT_TYPE, OTHER_REPORT_TYPE)
         setRequestParams(requestParams.parameters)
     }
 }

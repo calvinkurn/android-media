@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
@@ -35,7 +36,7 @@ class TalkReplyHeaderViewHolder(view: View,
 
     override fun bind(element: TalkReplyHeaderModel) {
         with(element) {
-            showQuestionWithCondition(isMasked, question, maskedContent)
+            showQuestionWithCondition(isMasked, question, maskedContent, allowUnmask)
             showKebabWithConditions(allowReport, allowDelete, onKebabClickedListener)
             showFollowWithCondition(allowFollow, isFollowed, talkReplyHeaderListener)
             showProfilePictureAndNameWithCondition(element.userThumbnail, element.userId.toString())
@@ -129,16 +130,24 @@ class TalkReplyHeaderViewHolder(view: View,
         labelMyQuestion.hide()
     }
 
-    private fun showQuestionWithCondition(isMasked: Boolean, question: String, maskedContent: String) {
+    private fun showQuestionWithCondition(isMasked: Boolean, question: String, maskedContent: String, allowUnmask: Boolean) {
         itemView.replyHeaderMessage.apply {
             if (isMasked) {
-                setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_32))
-                text = maskedContent
-                isEnabled = false
-                return
+                setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_32))
+                if(!allowUnmask) {
+                    setType(Typography.BODY_2)
+                    setWeight(Typography.REGULAR)
+                    text = maskedContent
+                    return
+                }
+                text = question
+                setType(Typography.HEADING_4)
+                setWeight(Typography.BOLD)
             }
-            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_96))
             text = HtmlLinkHelper(context, question).spannedString
+            setType(Typography.HEADING_4)
+            setWeight(Typography.BOLD)
+            setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_96))
             setCustomMovementMethod(fun(link: String): Boolean { return threadListener.onUrlClicked(link) })
         }
     }
@@ -151,6 +160,8 @@ class TalkReplyHeaderViewHolder(view: View,
                 }
                 show()
             }
+        } else {
+            itemView.replyHeaderKebab.hide()
         }
     }
 
@@ -169,6 +180,8 @@ class TalkReplyHeaderViewHolder(view: View,
                 }
                 show()
             }
+        } else {
+            itemView.replyHeaderFollowButton.hide()
         }
     }
 }

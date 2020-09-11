@@ -95,7 +95,6 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     private var shopId = ""
     private var productId = ""
     private var source = ""
-    private var didUserWriteQuestion = false
     private var hideSuccessToaster = false
     private var adapter: TalkReplyAdapter? = null
     private var attachedProductAdapter: TalkReplyAttachedProductAdapter? = null
@@ -275,6 +274,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     override fun onUnmaskCommentOptionSelected(commentId: String) {
+        showPageLoading()
         if(commentId.isNotBlank()) {
             viewModel.markCommentNotFraud(questionId, commentId)
             return
@@ -283,6 +283,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     override fun onDismissUnmaskCard(commentId: String) {
+        showPageLoading()
         if(commentId.isNotBlank()) {
             viewModel.reportComment(commentId)
             return
@@ -424,7 +425,6 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         showSuccessToaster(getString(R.string.delete_toaster_success), resources.getBoolean(R.bool.reply_adjust_toaster_height))
         adapter?.clearAllElements()
         getDiscussionData()
-        didUserWriteQuestion = true
     }
 
     private fun onFailDeleteComment() {
@@ -458,7 +458,6 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         adapter?.clearAllElements()
         getDiscussionData()
         showPageLoading()
-        didUserWriteQuestion = true
     }
 
     private fun onFailCreateComment(errorMessage: String?) {
@@ -472,22 +471,24 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     private fun onSuccessUnmaskQuestion() {
         showSuccessToaster(getString(R.string.reply_unmask_toaster_positive), resources.getBoolean(R.bool.reply_adjust_toaster_height))
+        adapter?.clearAllElements()
         getDiscussionData()
-        showPageLoading()
     }
 
-    private fun onSuccessUnmaskComment(commentId: String) {
+    private fun onSuccessUnmaskComment() {
         showSuccessToaster(getString(R.string.reply_unmask_toaster_positive), resources.getBoolean(R.bool.reply_adjust_toaster_height))
+        adapter?.clearAllElements()
         getDiscussionData()
-        showPageLoading()
     }
 
     private fun onHideReportedContent() {
+        adapter?.clearAllElements()
         getDiscussionData()
         showSuccessToaster(getString(R.string.reply_unmask_toaster_negative), resources.getBoolean(R.bool.reply_adjust_toaster_height))
     }
 
     private fun onFailUnmaskCommentOrQuestion() {
+        hidePageLoading()
         showErrorToaster(getString(R.string.reply_unmask_toaster_error), resources.getBoolean(R.bool.reply_adjust_toaster_height))
     }
 
@@ -594,7 +595,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     private fun observeUnmaskComment() {
         viewModel.markCommentNotFraudResult.observe(viewLifecycleOwner, Observer {
             when(it) {
-                is Success -> onSuccessUnmaskComment(it.data.commentId)
+                is Success -> onSuccessUnmaskComment()
                 is Fail -> onFailUnmaskCommentOrQuestion()
             }
         })
@@ -805,7 +806,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     fun getDidUserWriteQuestion(): Boolean {
-        return didUserWriteQuestion || isFromWrite()
+        return isFromWrite()
     }
 
     fun goToReading() {
