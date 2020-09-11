@@ -497,6 +497,7 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
         super.onDestroyView()
     }
 
+
     companion object {
         const val DATE_FORMAT = "EEE, d MMM yyyy"
         const val REQUEST_CODE_FORM = 100
