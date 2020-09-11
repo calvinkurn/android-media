@@ -53,11 +53,9 @@ class UohBottomSheetOptionAdapter(private var listener: ActionListener): Recycle
             selectItem(position, keyMap, valueMap)
         }
 
-        // holder.itemView.rb_option.setOnCheckedChangeListener(null)
-
         if (!isReset) {
             if (selectedKey.isEmpty() && selectedRadio == -1) {
-                if (filterType == UohConsts.TYPE_FILTER_DATE && position == 2) {
+                if (filterType == UohConsts.TYPE_FILTER_DATE && keyMap == "0") {
                     holder.itemView.rb_option.isChecked = true
                 } else if (filterType == UohConsts.TYPE_FILTER_STATUS && keyMap.equals(ALL_TRANSACTIONS, true)) {
                     holder.itemView.rb_option.isChecked = true
@@ -94,34 +92,6 @@ class UohBottomSheetOptionAdapter(private var listener: ActionListener): Recycle
                 }
             }
         }
-
-        /*if ((filterType == UohConsts.TYPE_FILTER_DATE && position == 2 && selectedRadio == -1 && selectedKey.isEmpty() && !isReset)) {
-            holder.itemView.rb_option.isChecked = true
-        } else if (arrayKeys[position].equals(selectedKey, true) && selectedRadio == -1 && !isReset) {
-            holder.itemView.rb_option.isChecked = true
-        } else if (isReset) {
-            if (filterType == UohConsts.TYPE_FILTER_DATE) {
-                if (position == 0) {
-                    holder.itemView.rb_option.isChecked = true
-                }
-            } else if (filterType == UohConsts.TYPE_FILTER_STATUS) {
-                if (arrayValues[position] == UohConsts.ALL_TRANSACTIONS && selectedRadio == -1) {
-                    holder.itemView.rb_option.isChecked = true
-                }
-            } else if (filterType == UohConsts.TYPE_FILTER_CATEGORY) {
-                if (arrayValues[position] == UohConsts.ALL_CATEGORIES_TRANSACTION && selectedRadio == -1) {
-                    holder.itemView.rb_option.isChecked = true
-                }
-            }
-        } else if (filterType == UohConsts.TYPE_FILTER_CATEGORY && arrayValues[position] == UohConsts.ALL_CATEGORIES_TRANSACTION && selectedRadio == -1) {
-            holder.itemView.rb_option.isChecked = true
-
-        } else {
-            holder.itemView.rb_option.isChecked = position == selectedRadio
-        }
-        holder.itemView.rb_option.setOnCheckedChangeListener { _, _ ->
-            selectItem(position, arrayKeys, arrayValues, holder)
-        }*/
     }
 
     private fun selectItem(position: Int, keyMap: String, valueMap: String) {

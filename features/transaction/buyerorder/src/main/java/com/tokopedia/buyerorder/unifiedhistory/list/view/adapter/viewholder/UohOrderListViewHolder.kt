@@ -1,6 +1,7 @@
 package com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.viewholder
 
 import android.view.View
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.buyerorder.R
@@ -29,7 +30,7 @@ class UohOrderListViewHolder(itemView: View, private val actionListener: UohItem
     override fun bind(item: UohTypeData, position: Int) {
         if (item.dataObject is UohListOrder.Data.UohOrders.Order) {
             itemView.cl_data_product.visible()
-            itemView.ic_uoh_vertical?.loadImage(item.dataObject.metadata.verticalLogo)
+            ImageHandler.loadImage(itemView.context, itemView.ic_uoh_vertical, item.dataObject.metadata.verticalLogo, null)
             itemView.tv_uoh_categories?.text = item.dataObject.metadata.verticalLabel
             itemView.tv_uoh_date?.text = item.dataObject.metadata.paymentDateStr
             itemView.label_uoh_order?.text = item.dataObject.metadata.status.label
@@ -98,7 +99,8 @@ class UohOrderListViewHolder(itemView: View, private val actionListener: UohItem
                 itemView.tv_uoh_product_name?.text = item.dataObject.metadata.products.first().title
                 itemView.tv_uoh_product_desc?.text = item.dataObject.metadata.products.first().inline1.label
                 if (item.dataObject.metadata.products.first().imageURL.isNotEmpty()) {
-                    itemView.iv_uoh_product?.loadImage(item.dataObject.metadata.products.first().imageURL)
+                    itemView.cv_uoh_product?.visible()
+                    ImageHandler.loadImage(itemView.context, itemView.iv_uoh_product, item.dataObject.metadata.products.first().imageURL, null)
                 } else {
                     itemView.cv_uoh_product?.gone()
                 }

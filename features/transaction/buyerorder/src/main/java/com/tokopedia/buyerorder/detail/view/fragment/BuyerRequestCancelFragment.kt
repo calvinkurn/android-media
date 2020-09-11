@@ -454,9 +454,9 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                     showToaster(getString(R.string.toaster_manual_max), Toaster.TYPE_ERROR)
                 }
                 else -> {
-                    val subReasonLainnya = tf_choose_sub_reason_editable.textFieldInput.text.trimStart()
+                    val subReasonLainnya = tf_choose_sub_reason_editable.textFieldInput.text.toString().trimStart()
                     if (subReasonLainnya.isNotEmpty() && !isCancelAlreadyClicked) {
-                        reasonCancel = java.lang.String.valueOf(subReasonLainnya)
+                        reasonCancel = subReasonLainnya
                         isCancelAlreadyClicked = true
                     }
                     if (isEligibleInstantCancel) submitInstantCancel()

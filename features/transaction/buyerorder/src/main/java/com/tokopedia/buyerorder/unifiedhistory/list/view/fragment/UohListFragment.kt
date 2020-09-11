@@ -27,9 +27,11 @@ import com.tokopedia.buyerorder.common.util.BuyerConsts.TICKER_URL
 import com.tokopedia.buyerorder.unifiedhistory.common.di.UohComponentInstance
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_CATEGORIES
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_STATUS
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_TRANSACTIONS
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.APP_LINK_TYPE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.CATEGORY_BELANJA
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.CTA_ATC
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.EE_PRODUCT_ID
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.EE_PRODUCT_PRICE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.EE_QUANTITY
@@ -183,6 +185,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         userSession = UserSession(context)
+        setInitialValue()
         if (arguments?.getString(SOURCE_FILTER) != null) {
             filterStatus = arguments?.getString(SOURCE_FILTER).toString()
             if (filterStatus.isNotEmpty()) {
@@ -200,7 +203,6 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     }
                     PARAM_SEMUA_TRANSAKSI -> {
                         status = SEMUA_TRANSAKSI
-                        setInitialValue()
                     }
                 }
                 paramUohOrder.status = status
@@ -232,7 +234,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     private fun setInitialValue() {
-        if (filterStatus.isEmpty() || filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true)) {
+        if (filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true)) {
             setDefaultDate()
         }
         paramUohOrder.page = 1
@@ -435,7 +437,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 is Success -> {
                     val msg = StringUtils.convertListToStringDelimiter(it.data.atcMulti.buyAgainData.message, ",")
                     if (it.data.atcMulti.buyAgainData.success == 1) {
-                        showToaster(msg, Toaster.TYPE_NORMAL)
+                        showToasterAtc(msg, Toaster.TYPE_NORMAL)
                     } else {
                         showToaster(msg, Toaster.TYPE_ERROR)
                     }
@@ -855,10 +857,11 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                         currFilterStatusLabel = tempFilterStatusLabel
                         if (tempFilterStatusKey != ALL_TRANSACTIONS) {
                             filter2?.type = ChipsUnify.TYPE_SELECTED
+                            filter2?.title = currFilterStatusLabel
                         } else {
                             filter2?.type = ChipsUnify.TYPE_NORMAL
+                            filter2?.title = ALL_STATUS
                         }
-                        filter2?.title = currFilterStatusLabel
                         userSession?.userId?.let { it1 -> UohAnalytics.clickTerapkanOnStatusFilterChips(currFilterStatusLabel, it1) }
                     }
                     UohConsts.TYPE_FILTER_CATEGORY -> {
@@ -1150,6 +1153,15 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         val toasterSuccess = Toaster
         view?.let { v ->
             toasterSuccess.make(v, message, Toaster.LENGTH_SHORT, type, "")
+        }
+    }
+
+    private fun showToasterAtc(message: String, type: Int) {
+        val toasterSuccess = Toaster
+        view?.let { v ->
+            toasterSuccess.make(v, message, Toaster.LENGTH_SHORT, type, CTA_ATC, View.OnClickListener {
+                RouteManager.route(context, ApplinkConst.CART)
+            })
         }
     }
 

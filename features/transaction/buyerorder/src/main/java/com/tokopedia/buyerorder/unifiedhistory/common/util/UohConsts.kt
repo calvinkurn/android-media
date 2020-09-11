@@ -79,6 +79,7 @@ object UohConsts {
     const val LS_LACAK_MWEB = "m.tokopedia.com/order-details/lsprint/{order_id}?track=1"
     const val WRONG_FORMAT_EMAIL = "Format email salah"
     const val EMAIL_MUST_NOT_BE_EMPTY = "E-mail harus diisi"
+    const val CTA_ATC = "Lihat"
 
     const val FLIGHT_GQL_PARAM_INVOICE_ID = "invoiceID"
     const val FLIGHT_GQL_PARAM_EMAIL_ID = "email"
