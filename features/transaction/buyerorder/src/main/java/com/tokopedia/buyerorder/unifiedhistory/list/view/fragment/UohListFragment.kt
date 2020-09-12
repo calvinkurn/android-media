@@ -625,7 +625,11 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             }
             uohBottomSheetOptionAdapter.uohItemMapKeyList = arrayListMap
             uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_CATEGORY
-            uohBottomSheetOptionAdapter.selectedKey = currFilterCategoryKey
+            if (filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true)) {
+                uohBottomSheetOptionAdapter.selectedKey = CATEGORY_BELANJA
+            } else {
+                uohBottomSheetOptionAdapter.selectedKey = currFilterCategoryKey
+            }
             uohBottomSheetOptionAdapter.isReset = isReset
             uohBottomSheetOptionAdapter.notifyDataSetChanged()
         }
