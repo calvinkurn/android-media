@@ -10,14 +10,14 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.fcmcommon.FirebaseMessagingManager
 import com.tokopedia.fcmcommon.di.DaggerFcmComponent
 import com.tokopedia.fcmcommon.di.FcmModule
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.settingnotif.usersetting.util.CacheManager.saveLastCheckedDate
 import com.tokopedia.troubleshooter.notification.R
+import com.tokopedia.troubleshooter.notification.analytics.TroubleshooterAnalytics.trackClearCacheClicked
+import com.tokopedia.troubleshooter.notification.analytics.TroubleshooterAnalytics.trackImpression
 import com.tokopedia.troubleshooter.notification.analytics.TroubleshooterTimber
 import com.tokopedia.troubleshooter.notification.data.entity.NotificationSendTroubleshoot
 import com.tokopedia.troubleshooter.notification.di.DaggerTroubleshootComponent
@@ -28,25 +28,32 @@ import com.tokopedia.troubleshooter.notification.ui.adapter.factory.Troubleshoot
 import com.tokopedia.troubleshooter.notification.ui.listener.ConfigItemListener
 import com.tokopedia.troubleshooter.notification.ui.listener.FooterListener
 import com.tokopedia.troubleshooter.notification.ui.state.*
-import com.tokopedia.troubleshooter.notification.ui.uiview.*
 import com.tokopedia.troubleshooter.notification.ui.state.ConfigState.*
+import com.tokopedia.troubleshooter.notification.ui.state.RingtoneState.Companion.isSilent
 import com.tokopedia.troubleshooter.notification.ui.state.RingtoneState.Normal
 import com.tokopedia.troubleshooter.notification.ui.uiview.TickerItemUIView.Companion.ticker
+import com.tokopedia.troubleshooter.notification.ui.uiview.TickerUIView
+import com.tokopedia.troubleshooter.notification.ui.uiview.UserSettingUIView
 import com.tokopedia.troubleshooter.notification.ui.viewmodel.TroubleshootViewModel
-import com.tokopedia.troubleshooter.notification.util.*
+import com.tokopedia.troubleshooter.notification.util.ClearCacheUtil.showClearCache
 import com.tokopedia.troubleshooter.notification.util.TroubleshooterDialog.showInformationDialog
+import com.tokopedia.troubleshooter.notification.util.combineFourth
+import com.tokopedia.troubleshooter.notification.util.isNotNull
+import com.tokopedia.troubleshooter.notification.util.isTrue
+import com.tokopedia.troubleshooter.notification.util.prefixToken
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_notif_troubleshooter.*
 import javax.inject.Inject
-import com.tokopedia.troubleshooter.notification.ui.state.RingtoneState.Companion.isSilent as isSilent
 
 class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterListener {
 
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject lateinit var fcmManager: FirebaseMessagingManager
+    @Inject lateinit var userSession: UserSessionInterface
 
     private lateinit var viewModel: TroubleshootViewModel
 
@@ -88,6 +95,9 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
         Handler().postDelayed({
             viewModel.troubleshoot()
         }, REQ_DELAY)
+
+        // impression tracker
+        trackImpression(userSession.userId, userSession.shopId)
     }
 
     override fun onResume() {
@@ -315,6 +325,14 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
 
     override fun onInfoClicked() {
         showInformationDialog(TEST_SCREEN_NAME)
+    }
+
+    override fun onClearCacheClicked() {
+        showClearCache(context)
+        trackClearCacheClicked(
+                userSession.userId,
+                userSession.shopId
+        )
     }
 
     override fun onRingtoneTest(uri: Uri) {

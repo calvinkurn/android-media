@@ -21,6 +21,8 @@ import com.tokopedia.troubleshooter.notification.di.TroubleshootContext
 import com.tokopedia.troubleshooter.notification.di.TroubleshootScope
 import com.tokopedia.troubleshooter.notification.util.dispatchers.AppDispatcherProvider
 import com.tokopedia.troubleshooter.notification.util.dispatchers.DispatcherProvider
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 
@@ -30,6 +32,14 @@ import dagger.Provides
     @TroubleshootContext
     fun provideContext(): Context {
         return context
+    }
+
+    @Provides
+    @TroubleshootScope
+    fun provideUserSession(
+            @TroubleshootContext context: Context
+    ): UserSessionInterface {
+        return UserSession(context)
     }
 
     @Provides
