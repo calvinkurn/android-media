@@ -25,6 +25,7 @@ import com.tokopedia.digital.home.presentation.adapter.viewholder.DigitalHomePag
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.digital.home.presentation.viewmodel.DigitalHomePageSearchViewModel
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.view_recharge_home_search.*
 import javax.inject.Inject
 
@@ -33,7 +34,9 @@ class DigitalHomePageSearchFragment: BaseSearchListFragment<DigitalHomePageSearc
         SearchInputView.ResetListener{
 
     @Inject
-    lateinit var trackingUtil: RechargeHomepageAnalytics
+    lateinit var userSession: UserSessionInterface
+    @Inject
+    lateinit var rechargeHomepageAnalytics: RechargeHomepageAnalytics
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject
@@ -115,7 +118,7 @@ class DigitalHomePageSearchFragment: BaseSearchListFragment<DigitalHomePageSearc
 
     override fun onSearchSubmitted(text: String?) {
         text?.run {
-            if (this.isNotEmpty()) trackingUtil.eventClickSearch(this)
+            if (this.isNotEmpty()) rechargeHomepageAnalytics.eventClickSearch(this)
         }
     }
 
@@ -132,12 +135,12 @@ class DigitalHomePageSearchFragment: BaseSearchListFragment<DigitalHomePageSearc
     }
 
     override fun onSearchCategoryClicked(category: DigitalHomePageSearchCategoryModel, position: Int) {
-        trackingUtil.eventSearchResultPageClick(category, position)
+        rechargeHomepageAnalytics.eventSearchResultPageClick(category, position, userSession.userId)
         RouteManager.route(context, category.applink)
     }
 
     private fun trackSearchResultCategories(list: List<DigitalHomePageSearchCategoryModel>) {
-        trackingUtil.eventSearchResultPageImpression(list)
+        rechargeHomepageAnalytics.eventSearchResultPageImpression(list, userSession.userId)
     }
 
     companion object {

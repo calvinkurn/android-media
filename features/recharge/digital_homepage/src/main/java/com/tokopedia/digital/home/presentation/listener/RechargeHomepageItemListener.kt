@@ -9,7 +9,7 @@ interface RechargeHomepageItemListener {
     fun onRechargeSectionItemClicked(element: RechargeHomepageSections.Item)
     fun onRechargeBannerAllItemClicked(section: RechargeHomepageSections.Section)
     fun onRechargeReminderWidgetClicked(sectionID: Int)
-    fun onRechargeReminderWidgetClosed(sectionID: Int)
+    fun onRechargeReminderWidgetClosed(sectionID: Int, toggleTracking: Boolean)
     fun onRechargeFavoriteAllItemClicked(section: RechargeHomepageSections.Section)
     fun onRechargeLegoBannerItemClicked(sectionID: Int, itemID: Int, itemPosition: Int)
     fun onRechargeProductBannerClosed(section: RechargeHomepageSections.Section)
