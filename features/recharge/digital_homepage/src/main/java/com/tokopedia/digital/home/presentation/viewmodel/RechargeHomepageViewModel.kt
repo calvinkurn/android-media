@@ -3,8 +3,6 @@ package com.tokopedia.digital.home.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.digital.home.domain.DigitalHomePageUseCase
-import com.tokopedia.digital.home.model.DigitalHomePageItemModel
 import com.tokopedia.digital.home.model.RechargeHomepageSectionAction
 import com.tokopedia.digital.home.model.RechargeHomepageSectionSkeleton
 import com.tokopedia.digital.home.model.RechargeHomepageSections
@@ -20,7 +18,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -128,13 +125,13 @@ class RechargeHomepageViewModel @Inject constructor(
             itemObjectId: String
     ): Map<String, Any> {
         return mapOf(
-                PARAM_RECHARGE_HOMEPAGE_SECTION__ID to sectionId,
+                PARAM_RECHARGE_HOMEPAGE_SECTION_ID to sectionId,
                 PARAM_RECHARGE_HOMEPAGE_SECTION_ACTION to String.format("%s:%s:%s", actionName, sectionObjectId, itemObjectId)
         )
     }
 
     companion object {
-        const val PARAM_RECHARGE_HOMEPAGE_SECTION__ID = "sectionID"
+        const val PARAM_RECHARGE_HOMEPAGE_SECTION_ID = "sectionID"
         const val PARAM_RECHARGE_HOMEPAGE_SECTION_ACTION = "action"
         const val PARAM_RECHARGE_HOMEPAGE_SECTIONS_PLATFORM_ID = "platformID"
         const val PARAM_RECHARGE_HOMEPAGE_SECTIONS_SECTION_IDS = "sectionIDs"
