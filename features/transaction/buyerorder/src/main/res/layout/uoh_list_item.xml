@@ -22,8 +22,7 @@
             android:layout_height="@dimen/dp_24"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/divider_uoh_order_1"
-            android:contentDescription="@string/icon_placeholder" />
+            android:contentDescription="@string/icon_placeholder"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_uoh_categories"
@@ -56,7 +55,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/divider_uoh_order_1"
+            app:layout_constraintBottom_toBottomOf="@id/tv_uoh_date"
             app:srcCompat="@drawable/ic_kebab"
             android:contentDescription="@string/icon_placeholder" />
 
@@ -70,8 +69,7 @@
             app:labelType="general_dark_orange"
             tools:text="Butuh Revisi"
             android:textStyle="bold"
-            android:layout_marginEnd="@dimen/dp_4"
-            android:layout_marginRight="@dimen/dp_4"/>
+            android:layout_marginEnd="@dimen/dp_12"/>
         
         <View
             android:id="@+id/divider_uoh_order_1"

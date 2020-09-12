@@ -27,6 +27,7 @@ import com.tokopedia.buyerorder.common.util.BuyerConsts.TICKER_URL
 import com.tokopedia.buyerorder.unifiedhistory.common.di.UohComponentInstance
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_CATEGORIES
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_DATE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_STATUS
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_TRANSACTIONS
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.APP_LINK_TYPE
@@ -856,7 +857,12 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             }
                         } else {
                             dateOption = currFilterDateLabel
-                            filter1?.title = currFilterDateLabel
+
+                            if (currFilterDateKey == "0") {
+                                filter1?.title = ALL_DATE
+                            } else {
+                                filter1?.title = currFilterDateLabel
+                            }
                         }
                         userSession?.userId?.let { it1 -> UohAnalytics.clickTerapkanOnDateFilterChips(dateOption, it1) }
                     }
