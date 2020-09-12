@@ -185,7 +185,6 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         userSession = UserSession(context)
-        setInitialValue()
         if (arguments?.getString(SOURCE_FILTER) != null) {
             filterStatus = arguments?.getString(SOURCE_FILTER).toString()
             if (filterStatus.isNotEmpty()) {
@@ -211,6 +210,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 currFilterStatusLabel = status
             }
         }
+        setInitialValue()
         loadOrderHistoryList("")
     }
 
