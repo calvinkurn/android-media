@@ -567,7 +567,11 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             }
             uohBottomSheetOptionAdapter.uohItemMapKeyList = arrayListMap
             uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_DATE
-            uohBottomSheetOptionAdapter.selectedKey = currFilterDateKey
+            if (filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true) && !isReset) {
+                uohBottomSheetOptionAdapter.selectedKey = "2"
+            } else {
+                uohBottomSheetOptionAdapter.selectedKey = currFilterDateKey
+            }
             uohBottomSheetOptionAdapter.isReset = isReset
             uohBottomSheetOptionAdapter.notifyDataSetChanged()
         }
@@ -873,10 +877,11 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                         currFilterCategoryLabel = tempFilterCategoryLabel
                         if (tempFilterCategoryKey != ALL_CATEGORIES) {
                             filter3?.type = ChipsUnify.TYPE_SELECTED
+                            filter3?.title = currFilterCategoryLabel
                         } else {
                             filter3?.type = ChipsUnify.TYPE_NORMAL
+                            filter3?.title = ALL_CATEGORIES
                         }
-                        filter3?.title = currFilterCategoryLabel
                         userSession?.userId?.let { it1 -> UohAnalytics.clickTerapkanOnCategoryFilterChips(currFilterCategoryLabel, it1) }
                     }
                 }
