@@ -242,6 +242,10 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
     private fun showInitialPage(pageType: Int) {
         setCurrentFragmentType(pageType)
         sahBottomNav.currentItem = pageType
+
+        if (pageType == FragmentType.OTHER) {
+            hideToolbarAndStatusBar()
+        }
         navigator?.start(pageType, supportFragmentManager)
     }
 
@@ -363,11 +367,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
     }
 
     private fun showOtherSettingsFragment() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            statusBarBackground?.hide()
-            statusBarCallback?.setStatusBar()
-        }
-        sahToolbar?.hide()
+        hideToolbarAndStatusBar()
 
         val type = FragmentType.OTHER
         setCurrentFragmentType(type)
@@ -431,6 +431,14 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
             this.requestStatusBarDark()
             statusBarBackground?.show()
         }
+    }
+
+    private fun hideToolbarAndStatusBar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            statusBarBackground?.hide()
+            statusBarCallback?.setStatusBar()
+        }
+        sahToolbar?.hide()
     }
 
     private fun initPerformanceMonitoring(){
