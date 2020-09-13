@@ -193,6 +193,12 @@ class DynamicChannelComponentAnalyticsTest {
                 clickLihatSemuaButtonIfAvailable(viewholder.itemView, holderName, i)
                 clickOnEachItemRecyclerView(viewholder.itemView, R.id.recycleList, holderName)
             }
+            is Lego4AutoBannerViewHolder -> {
+                val holderName = "Lego4AutoBannerViewHolder"
+                logTestMessage("VH $holderName")
+                clickLihatSemuaButtonIfAvailable(viewholder.itemView, holderName, i)
+                clickOnEachItemRecyclerView(viewholder.itemView, R.id.recycleList, holderName)
+            }
         }
     }
 

@@ -2759,8 +2759,8 @@
                     "id": 29781,
                     "name": "Spesial Promo Untukmu",
                     "subtitle": "",
-                    "url": "",
-                    "applink": "",
+                    "url": "https://www.tokopedia.com/discovery/produk-baru?source=homepage.list_carousel.0.25744",
+                    "applink": "tokopedia://discovery/produk-baru?source=homepage.list_carousel.0.25744",
                     "serverTime": 0,
                     "expiredTime": "",
                     "backColor": "red",
@@ -2799,7 +2799,8 @@
                     "has_buy_button": false,
                     "rating": 0,
                     "count_review": 0
-                }, {
+                },
+                    {
                     "id": 158588,
                     "back_color": "",
                     "name": "",
@@ -2831,7 +2832,8 @@
                     "has_buy_button": false,
                     "rating": 0,
                     "count_review": 0
-                }, {
+                },
+                    {
                     "id": 158589,
                     "back_color": "",
                     "name": "",
@@ -2863,7 +2865,8 @@
                     "has_buy_button": false,
                     "rating": 0,
                     "count_review": 0
-                }, {
+                },
+                    {
                     "id": 158590,
                     "back_color": "",
                     "name": "",
