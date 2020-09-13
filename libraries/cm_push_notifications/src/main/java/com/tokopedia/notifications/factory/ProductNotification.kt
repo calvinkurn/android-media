@@ -163,6 +163,13 @@ internal class ProductNotification(
             remoteView.setTextViewText(R.id.txt_count_review, "99")
         }
 
+        if (product.actionButton.size > 1) {
+            remoteView.setViewVisibility(R.id.view_button, View.VISIBLE)
+            remoteView.setViewVisibility(R.id.tv_productButton, View.GONE)
+            // btn_checkout
+            // btn_buy
+        }
+
         // action button
         remoteView.setOnClickPendingIntent(R.id.tv_productButton, getButtonPendingIntent(actionButton))
         remoteView.setOnClickPendingIntent(R.id.iv_productImage, getProductPendingIntent(product))
