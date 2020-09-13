@@ -336,7 +336,11 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     private fun loadOrderHistoryList(uuid: String) {
-        if (uuid.isNotEmpty()) paramUohOrder.uUID = uuid
+        if (uuid.isNotEmpty()) {
+            paramUohOrder.uUID = uuid
+        } else {
+            paramUohOrder.uUID = ""
+        }
         paramUohOrder.page = currPage
         uohListViewModel.loadOrderList(GraphqlHelper.loadRawString(resources, R.raw.uoh_get_order_history), paramUohOrder)
     }
