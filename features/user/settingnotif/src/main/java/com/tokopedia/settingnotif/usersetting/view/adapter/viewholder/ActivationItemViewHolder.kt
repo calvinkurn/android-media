@@ -6,7 +6,6 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_EMAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_PHONE
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PUSH_NOTIFICATION_TROUBLESHOOTER
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.settingnotif.R
@@ -18,6 +17,7 @@ import com.tokopedia.settingnotif.usersetting.util.CacheManager.getLastCheckedDa
 import com.tokopedia.settingnotif.usersetting.util.intent
 import com.tokopedia.settingnotif.usersetting.util.notificationSetting
 import com.tokopedia.settingnotif.usersetting.util.toLastCheckFormat
+import com.tokopedia.settingnotif.usersetting.view.listener.ActivationItemListener
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.settingnotif.usersetting.state.NotificationItemState.Troubleshooter as Troubleshooter
@@ -26,6 +26,7 @@ import java.util.concurrent.TimeUnit.DAYS as DAYS
 import java.util.concurrent.TimeUnit.MILLISECONDS as MILLISECONDS
 
 class ActivationItemViewHolder(
+        private val listener: ActivationItemListener,
         itemView: View?
 ): AbstractViewHolder<NotificationActivation>(itemView) {
 
@@ -45,9 +46,7 @@ class ActivationItemViewHolder(
             if (data.type == Troubleshooter) {
                 showTroubleshooter()
                 itemView.setOnClickListener {
-                    context?.let {
-                        it.startActivity(it.intent(PUSH_NOTIFICATION_TROUBLESHOOTER))
-                    }
+                    listener.onTroubleshooterClicked()
                 }
             } else {
                 hideTroubleshooter()
