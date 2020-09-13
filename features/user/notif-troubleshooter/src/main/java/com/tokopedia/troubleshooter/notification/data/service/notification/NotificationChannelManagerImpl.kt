@@ -1,4 +1,4 @@
-package com.tokopedia.troubleshooter.notification.data.service.channel
+package com.tokopedia.troubleshooter.notification.data.service.notification
 
 import android.annotation.SuppressLint
 import android.app.NotificationManager

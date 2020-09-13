@@ -9,8 +9,8 @@ import com.tokopedia.settingnotif.usersetting.base.SettingRepository
 import com.tokopedia.settingnotif.usersetting.domain.GetUserSettingUseCase
 import com.tokopedia.troubleshooter.notification.R
 import com.tokopedia.troubleshooter.notification.data.domain.TroubleshootStatusUseCase
-import com.tokopedia.troubleshooter.notification.data.service.channel.NotificationChannelManager
-import com.tokopedia.troubleshooter.notification.data.service.channel.NotificationChannelManagerImpl
+import com.tokopedia.troubleshooter.notification.data.service.notification.NotificationChannelManager
+import com.tokopedia.troubleshooter.notification.data.service.notification.NotificationChannelManagerImpl
 import com.tokopedia.troubleshooter.notification.data.service.fcm.FirebaseInstanceManager
 import com.tokopedia.troubleshooter.notification.data.service.fcm.FirebaseInstanceManagerImpl
 import com.tokopedia.troubleshooter.notification.data.service.notification.NotificationCompatManager

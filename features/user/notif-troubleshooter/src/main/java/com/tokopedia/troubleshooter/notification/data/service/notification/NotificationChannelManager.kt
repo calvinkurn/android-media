@@ -1,4 +1,4 @@
-package com.tokopedia.troubleshooter.notification.data.service.channel
+package com.tokopedia.troubleshooter.notification.data.service.notification
 
 interface NotificationChannelManager {
     fun getNotificationChannel(): Int?

@@ -9,7 +9,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.settingnotif.usersetting.domain.GetUserSettingUseCase
 import com.tokopedia.troubleshooter.notification.data.domain.TroubleshootStatusUseCase
 import com.tokopedia.troubleshooter.notification.data.entity.NotificationSendTroubleshoot
-import com.tokopedia.troubleshooter.notification.data.service.channel.NotificationChannelManager
+import com.tokopedia.troubleshooter.notification.data.service.notification.NotificationChannelManager
 import com.tokopedia.troubleshooter.notification.data.service.fcm.FirebaseInstanceManager
 import com.tokopedia.troubleshooter.notification.data.service.notification.NotificationCompatManager
 import com.tokopedia.troubleshooter.notification.data.service.ringtone.RingtoneModeService
