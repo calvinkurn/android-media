@@ -31,6 +31,7 @@ internal class ProductNotification(
         baseNotificationModel: BaseNotificationModel
 ) : BaseNotification(applicationContext, baseNotificationModel) {
 
+    private var hasReviews = true
     private val userSession by lazy { UserSession(context) }
 
     override fun createNotification(): Notification? {
@@ -110,7 +111,7 @@ internal class ProductNotification(
         // expand
         remoteView.setOnClickPendingIntent(R.id.ll_expandedProductView, getProductPendingIntent(product))
         remoteView.setTextViewText(R.id.tv_productButton, spanStr(product.productButtonMessage))
-        remoteView.setTextViewText(R.id.tv_productMessage, spanStr(product.productMessage))
+        remoteView.setTextViewText(R.id.tv_stock, spanStr(product.productMessage))
 
         // visibility
         when {
@@ -136,11 +137,7 @@ internal class ProductNotification(
     private fun productDetailCard(remoteView: RemoteViews, product: ProductInfo) {
         //tracker
         ProductAnalytics.impression(userSession.userId, baseNotificationModel, product)
-        ProductAnalytics.impressionExpanded(
-                userSession.userId,
-                baseNotificationModel,
-                product
-        )
+        ProductAnalytics.impressionExpanded(userSession.userId, baseNotificationModel, product)
 
         // collapse
         remoteView.setOnClickPendingIntent(R.id.collapseMainView, getProductPendingIntent(product))
@@ -157,10 +154,14 @@ internal class ProductNotification(
             }
         }
 
-        // visibility
-        remoteView.setViewVisibility(R.id.tv_productMessage, View.GONE)
-        remoteView.setViewVisibility(R.id.ivArrowLeft, View.GONE)
-        remoteView.setViewVisibility(R.id.ivArrowRight, View.GONE)
+        // custom widget
+        // remoteView.setViewVisibility(R.id.tv_stock, View.GONE)
+        remoteView.setTextViewText(R.id.tv_stock, spanStr(product.productMessage))
+        if (hasReviews) {
+            remoteView.setViewVisibility(R.id.widget_review, View.VISIBLE)
+            remoteView.setTextViewText(R.id.txt_review, "555")
+            remoteView.setTextViewText(R.id.txt_count_review, "99")
+        }
 
         // action button
         remoteView.setOnClickPendingIntent(R.id.tv_productButton, getButtonPendingIntent(actionButton))

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/status_bar_latest_event_content"
     android:layout_width="match_parent"
@@ -42,10 +43,21 @@
                 android:layout_weight="5">
 
                 <TextView
+                    android:id="@+id/tv_stock"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_5"
+                    android:textColor="@color/cm_sisa_ongkir"
+                    android:layout_alignParentTop="true"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    tools:text="Sisa 2" />
+
+                <TextView
                     android:id="@+id/tv_productTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
+                    android:layout_below="@+id/tv_stock"
                     android:ellipsize="end"
                     android:maxLines="2"
                     android:textColor="@color/black_39"
@@ -94,21 +106,53 @@
                     android:textStyle="bold"
                     tools:text="Rp1500000" />
 
-                <TextView
-                    android:id="@+id/tv_productMessage"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/widget_review"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/tv_currentPrice"
-                    android:layout_marginTop="@dimen/dp_5"
-                    android:textColor="@color/deep_orange_500"
-                    android:textSize="12sp"
-                    tools:text="Stok sisa 2" />
+                    android:visibility="gone"
+                    tools:visibility="visible"
+                    android:layout_marginTop="@dimen/dp_6"
+                    android:layout_below="@id/img_campaign">
+
+                    <ImageView
+                        android:id="@+id/img_star"
+                        android:layout_width="@dimen/dp_16"
+                        android:layout_height="@dimen/dp_16"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/cm_ic_star_review" />
+
+                    <TextView
+                        android:id="@+id/txt_review"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        android:textColor="@color/cm_review"
+                        android:textSize="@dimen/sp_12"
+                        android:layout_marginStart="@dimen/dp_4"
+                        app:layout_constraintStart_toEndOf="@+id/img_star"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="4.5" />
+
+                    <TextView
+                        android:id="@+id/txt_count_review"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/sp_12"
+                        android:textColor="@color/cm_count_review"
+                        android:layout_marginStart="@dimen/dp_4"
+                        app:layout_constraintStart_toEndOf="@+id/txt_review"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="(60)" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <ImageView
                     android:id="@+id/img_campaign"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/dp_20"
-                    android:layout_below="@+id/tv_productMessage"
+                    android:layout_below="@+id/tv_currentPrice"
                     android:layout_marginTop="@dimen/dp_6"
                     android:scaleType="fitStart"
                     android:visibility="gone"
