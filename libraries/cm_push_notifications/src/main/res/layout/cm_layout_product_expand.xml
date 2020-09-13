@@ -108,10 +108,11 @@
                     android:textStyle="bold"
                     tools:text="Rp1500000" />
 
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <LinearLayout
                     android:id="@+id/widget_review"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:orientation="horizontal"
                     android:visibility="gone"
                     tools:visibility="visible"
                     android:layout_marginTop="@dimen/dp_6"
@@ -133,8 +134,6 @@
                         android:textColor="@color/cm_review"
                         android:textSize="@dimen/sp_12"
                         android:layout_marginStart="@dimen/dp_4"
-                        app:layout_constraintStart_toEndOf="@+id/img_star"
-                        app:layout_constraintTop_toTopOf="parent"
                         tools:text="4.5" />
 
                     <TextView
@@ -144,11 +143,9 @@
                         android:textSize="@dimen/sp_12"
                         android:textColor="@color/cm_count_review"
                         android:layout_marginStart="@dimen/dp_4"
-                        app:layout_constraintStart_toEndOf="@+id/txt_review"
-                        app:layout_constraintTop_toTopOf="parent"
                         tools:text="(60)" />
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                </LinearLayout>
 
                 <ImageView
                     android:id="@+id/img_campaign"
