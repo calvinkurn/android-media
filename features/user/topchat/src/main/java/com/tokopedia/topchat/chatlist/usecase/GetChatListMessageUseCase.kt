@@ -11,7 +11,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class GetChatListMessageUseCase @Inject constructor(
+open class GetChatListMessageUseCase @Inject constructor(
         private val gqlUseCase: GraphqlUseCase<ChatListPojo>,
         private val mapper: GetChatListMessageMapper,
         private var dispatchers: TopchatCoroutineContextProvider
@@ -21,7 +21,7 @@ class GetChatListMessageUseCase @Inject constructor(
 
     override val coroutineContext: CoroutineContext get() = dispatchers.Main + SupervisorJob()
 
-    fun getChatList(
+    open fun getChatList(
             page: Int,
             filter: String,
             tab: String,

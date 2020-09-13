@@ -50,7 +50,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
 import javax.inject.Inject
 
-class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListContract.TabFragment {
+open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListContract.TabFragment {
 
     override fun getScreenName(): String = "chat-tab-list"
 
@@ -89,7 +89,6 @@ class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListContract
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         bindView(view)
-        initInjector()
         initViewModel()
         initTabList()
         initViewPagerAdapter()
@@ -135,12 +134,50 @@ class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListContract
         searchToolTip?.dismiss()
     }
 
-    private fun initToolTip() {
+    /**
+     * set to `protected open` so that it can be disabled on UI test
+     */
+    protected open fun initToolTip() {
         searchToolTip = ToolTipSearchPopupWindow(context, chatNotifCounterViewModel)
     }
 
+    protected open fun isOnBoardingAlreadyShown(): Boolean {
+        return context?.let { CoachMarkPreference.hasShown(it, TAG_ONBOARDING) } ?: true
+    }
+
+    override fun initInjector() {
+        DaggerChatListComponent.builder()
+                .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+                .chatListContextModule(context?.let { ChatListContextModule(it) })
+                .build()
+                .inject(this)
+    }
+
+    override fun notifyViewCreated() {
+        if (!fragmentViewCreated) {
+            webSocketViewModel.connectWebSocket()
+            fragmentViewCreated = true
+        }
+    }
+
+    override fun increaseUserNotificationCounter() {
+        increaseNotificationCounter(R.drawable.ic_chat_icon_account)
+    }
+
+    override fun increaseSellerNotificationCounter() {
+        increaseNotificationCounter(R.drawable.ic_chat_icon_shop)
+    }
+
+    override fun decreaseUserNotificationCounter() {
+        decreaseNotificationCounter(R.drawable.ic_chat_icon_account)
+    }
+
+    override fun decreaseSellerNotificationCounter() {
+        decreaseNotificationCounter(R.drawable.ic_chat_icon_shop)
+    }
+
     private fun initChatCounterObserver() {
-        chatNotifCounterViewModel.chatNotifCounter.observe(this,
+        chatNotifCounterViewModel.chatNotifCounter.observe(viewLifecycleOwner,
                 Observer { result ->
                     when (result) {
                         is Success -> {
@@ -158,14 +195,6 @@ class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListContract
     private fun bindView(view: View) {
         tabLayout = view.findViewById(R.id.tl_chat_list)
         viewPager = view.findViewById(R.id.vp_chat_list)
-    }
-
-    override fun initInjector() {
-        DaggerChatListComponent.builder()
-                .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                .chatListContextModule(context?.let { ChatListContextModule(it) })
-                .build()
-                .inject(this)
     }
 
     private fun initTabList() {
@@ -303,8 +332,7 @@ class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListContract
     }
 
     private fun addSellerTabFragment() {
-        val sellerFragment =
-                ChatListFragment.createFragment(ChatListQueriesConstant.PARAM_TAB_SELLER)
+        val sellerFragment = createSellerTabFragment()
         val sellerTabFragment = ChatListPagerAdapter.ChatListTab(
                 userSession.shopName,
                 sellerFragment,
@@ -313,14 +341,22 @@ class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListContract
         tabList.add(sellerTabFragment)
     }
 
+    protected open fun createSellerTabFragment(): ChatListFragment {
+        return ChatListFragment.createFragment(ChatListQueriesConstant.PARAM_TAB_SELLER)
+    }
+
     private fun addBuyerTabFragment() {
-        val buyerFragment = ChatListFragment.createFragment(ChatListQueriesConstant.PARAM_TAB_USER)
+        val buyerFragment = createBuyerTabFragment()
         val buyerTabFragment = ChatListPagerAdapter.ChatListTab(
                 userSession.name,
                 buyerFragment,
                 R.drawable.ic_chat_icon_account
         )
         tabList.add(buyerTabFragment)
+    }
+
+    open protected fun createBuyerTabFragment(): ChatListFragment {
+        return ChatListFragment.createFragment(ChatListQueriesConstant.PARAM_TAB_USER)
     }
 
     private fun initViewPagerAdapter() {
@@ -430,29 +466,6 @@ class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListContract
         chatNotifCounterViewModel.queryGetNotifCounter()
     }
 
-    override fun notifyViewCreated() {
-        if (!fragmentViewCreated) {
-            webSocketViewModel.connectWebSocket()
-            fragmentViewCreated = true
-        }
-    }
-
-    override fun increaseUserNotificationCounter() {
-        increaseNotificationCounter(R.drawable.ic_chat_icon_account)
-    }
-
-    override fun increaseSellerNotificationCounter() {
-        increaseNotificationCounter(R.drawable.ic_chat_icon_shop)
-    }
-
-    override fun decreaseUserNotificationCounter() {
-        decreaseNotificationCounter(R.drawable.ic_chat_icon_account)
-    }
-
-    override fun decreaseSellerNotificationCounter() {
-        decreaseNotificationCounter(R.drawable.ic_chat_icon_shop)
-    }
-
     override fun showSearchOnBoardingTooltip() {
         if (
                 chatNotifCounterViewModel.isSearchOnBoardingTooltipHasShown() ||
@@ -497,7 +510,7 @@ class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListContract
     }
 
     private fun initOnBoarding() {
-        if (!userSession.hasShop()){
+        if (!userSession.hasShop()) {
             isFinishShowingCoachMarkOnBoarding = true
             return
         }
@@ -511,10 +524,6 @@ class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListContract
                 }
             }
         })
-    }
-
-    private fun isOnBoardingAlreadyShown(): Boolean {
-        return context?.let { CoachMarkPreference.hasShown(it, TAG_ONBOARDING) } ?: true
     }
 
     private fun showOnBoarding() {
@@ -547,7 +556,7 @@ class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListContract
 
 
     private fun stopLiveDataObserver() {
-        if(::chatNotifCounterViewModel.isInitialized) {
+        if (::chatNotifCounterViewModel.isInitialized) {
             chatNotifCounterViewModel.chatNotifCounter.removeObservers(this)
         }
     }

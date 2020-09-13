@@ -1,4 +1,4 @@
-package com.tokopedia.topchat.chatlist.di
+package com.tokopedia.topchat.stub.chatlist.di.module
 
 import android.content.Context
 import android.content.res.Resources
@@ -15,9 +15,11 @@ import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
+import com.tokopedia.topchat.chatlist.di.ChatListScope
 import com.tokopedia.topchat.common.chat.api.ChatApi
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import com.tokopedia.topchat.common.network.XUserIdInterceptor
+import com.tokopedia.topchat.stub.common.UserSessionStub
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -28,12 +30,10 @@ import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
 import javax.inject.Named
 
-/**
- * @author : Steven 2019-08-07
- */
-
 @Module
-class ChatListNetworkModule {
+class ChatListNetworkModuleStub(
+        private val userSessionInterface: UserSessionInterface
+) {
 
     private val NET_READ_TIMEOUT = 60
     private val NET_WRITE_TIMEOUT = 60
@@ -43,12 +43,6 @@ class ChatListNetworkModule {
     @ChatListScope
     @Provides
     fun provideChatRetrofit(@ApplicationContext context: Context, userSession: UserSession): Retrofit {
-        if ((context is NetworkRouter).not()) {
-            throw IllegalStateException("Application must implement "
-                    .plus(NetworkRouter::class.java.simpleName)
-            )
-        }
-
         return CommonNetwork.createRetrofit(
                 context,
                 ChatUrl.TOPCHAT,
@@ -61,7 +55,7 @@ class ChatListNetworkModule {
     @ChatListScope
     @Provides
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
-        return UserSession(context)
+        return userSessionInterface
     }
 
     @ChatListScope

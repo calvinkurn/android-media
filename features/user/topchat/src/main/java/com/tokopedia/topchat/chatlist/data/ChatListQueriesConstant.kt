@@ -5,7 +5,6 @@ package com.tokopedia.topchat.chatlist.data
  */
 object ChatListQueriesConstant {
 
-    const val QUERY_CHAT_NOTIFICATION = "chat_notification"
     const val QUERY_DELETE_CHAT_MESSAGE = "delete_chat_message"
     const val MUTATION_MARK_CHAT_AS_READ = "mark_chat_as_read"
     const val MUTATION_MARK_CHAT_AS_UNREAD = "mark_chat_as_unread"
