@@ -1,6 +1,5 @@
 package com.tokopedia.troubleshooter.notification.analytics
 
-import android.os.Bundle
 import com.tokopedia.track.TrackApp
 
 object TroubleshooterAnalytics {
@@ -12,29 +11,29 @@ object TroubleshooterAnalytics {
     private const val EVENT_ACTION_CLICK_CACHE_BTN = "click on bersihkan cache on troubleshooter"
 
     fun trackImpression(userId: String, shopId: String) {
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                EVENT_VIEW_NC,
-                Bundle().apply {
-                    putString("eventCategory", EVENT_CATEGORY)
-                    putString("eventAction", EVENT_ACTION_VIEW_TS_PAGE)
-                    putString("eventLabel", "")
-                    putString("userId", userId)
-                    putString("shopId", shopId)
-                }
+        val data = mapOf(
+                "event" to EVENT_VIEW_NC,
+                "eventCategory" to EVENT_CATEGORY,
+                "eventAction" to EVENT_ACTION_VIEW_TS_PAGE,
+                "eventLabel" to "",
+                "userId" to userId,
+                "shopId" to shopId
         )
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(data)
     }
 
     fun trackClearCacheClicked(userId: String, shopId: String) {
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                EVENT_CLICK_NC,
-                Bundle().apply {
-                    putString("eventCategory", EVENT_CATEGORY)
-                    putString("eventAction", EVENT_ACTION_CLICK_CACHE_BTN)
-                    putString("eventLabel", "")
-                    putString("userId", userId)
-                    putString("shopId", shopId)
-                }
+        val data = mapOf(
+                "event" to EVENT_CLICK_NC,
+                "eventCategory" to EVENT_CATEGORY,
+                "eventAction" to EVENT_ACTION_CLICK_CACHE_BTN,
+                "eventLabel" to "",
+                "userId" to userId,
+                "shopId" to shopId
         )
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(data)
     }
 
 }
