@@ -144,6 +144,7 @@ class TroubleshootViewModel @Inject constructor(
             // check status
             if (notificationChannel.isNotificationChannelEnabled()) {
                 _deviceSetting.value = Fail(Throwable(""))
+                return
             }
 
             // check importance
