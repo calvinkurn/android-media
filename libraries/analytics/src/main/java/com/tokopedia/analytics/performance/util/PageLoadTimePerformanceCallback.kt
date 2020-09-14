@@ -1,8 +1,12 @@
 package com.tokopedia.analytics.performance.util
 
 import android.os.Build
+import android.os.Debug
 import android.os.Trace
+import android.util.Log
+import androidx.annotation.RequiresApi
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.config.GlobalConfig
 
 open class PageLoadTimePerformanceCallback(
         val tagPrepareDuration: String,
@@ -38,6 +42,7 @@ open class PageLoadTimePerformanceCallback(
         performanceMonitoring = PerformanceMonitoring()
         performanceMonitoring?.startTrace(traceName)
         if (overallDuration == 0L) overallDuration = System.currentTimeMillis()
+        startMethodTracing(traceName);
     }
 
     override fun stopMonitoring() {
@@ -47,6 +52,7 @@ open class PageLoadTimePerformanceCallback(
 
         performanceMonitoring?.stopTrace()
         overallDuration = System.currentTimeMillis() - overallDuration
+        stopMethodTracing(traceName);
     }
 
     override fun startPreparePagePerformanceMonitoring() {
@@ -97,15 +103,36 @@ open class PageLoadTimePerformanceCallback(
         }
     }
 
+    override fun invalidate() {
+        performanceMonitoring = null
+        isPrepareDone = true
+        isNetworkDone = true
+        isRenderDone = true
+    }
+
     private fun beginSystraceSection(sectionName: String) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2 && GlobalConfig.DEBUG) {
             Trace.beginSection(sectionName)
         }
     }
 
     private fun endSystraceSection() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2 && GlobalConfig.DEBUG) {
             Trace.endSection()
+        }
+    }
+
+    private fun startMethodTracing(traceName: String){
+        if(GlobalConfig.ENABLE_DEBUG_TRACE && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            Log.i("PageLoadTimePerformanceCallback" , "startMethodTracing ==> "+traceName)
+            Debug.startMethodTracingSampling(traceName , 50 * 1024 * 1024 , 500);
+        }
+    }
+
+    private fun stopMethodTracing(traceName: String){
+        if(GlobalConfig.ENABLE_DEBUG_TRACE && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            Log.i("PageLoadTimePerformanceCallback" , "stopMethodTracing ==> "+traceName)
+            Debug.stopMethodTracing();
         }
     }
 }
