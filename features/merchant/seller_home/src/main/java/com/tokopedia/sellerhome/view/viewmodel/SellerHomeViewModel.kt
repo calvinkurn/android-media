@@ -7,6 +7,7 @@ import com.tokopedia.sellerhome.domain.model.GetShopStatusResponse
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.domain.usecase.GetShopLocationUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetStatusShopUseCase
+import com.tokopedia.sellerhomecommon.common.const.DateFilterType
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.domain.usecase.*
 import com.tokopedia.sellerhomecommon.presentation.model.*
@@ -57,7 +58,8 @@ class SellerHomeViewModel @Inject constructor(
         return@lazy DynamicParameterModel(
                 startDate = DateTimeUtil.format(startDateMillis, DATE_FORMAT),
                 endDate = DateTimeUtil.format(endDateMillis, DATE_FORMAT),
-                pageSource = SELLER_HOME_PAGE_NAME
+                pageSource = SELLER_HOME_PAGE_NAME,
+                dateType = DateFilterType.DATE_TYPE_DAY
         )
     }
 
