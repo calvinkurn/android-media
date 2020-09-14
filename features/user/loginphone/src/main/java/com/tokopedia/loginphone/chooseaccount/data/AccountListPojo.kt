@@ -48,7 +48,7 @@ data class UserDetail(
         var msisdn_verified: Boolean = false,
         @SerializedName("challenge_2fa")
         @Expose
-        var challenge_2fa: Boolean = true,
+        var challenge_2fa: Boolean = false,
         @SerializedName("user_id_enc")
         @Expose
         var user_id_enc: String = "",
