@@ -35,6 +35,7 @@ import com.tokopedia.notifcenter.presentation.presenter.NotificationActivityPres
 import com.tokopedia.notifcenter.util.CacheManager
 import com.tokopedia.notifcenter.widget.NotificationTabLayout
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 /**
@@ -49,6 +50,7 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
 
     @Inject lateinit var presenter: NotificationActivityPresenter
     @Inject lateinit var analytics: NotificationUpdateAnalytics
+    @Inject lateinit var userSession: UserSessionInterface
     @Inject lateinit var cacheManager: CacheManager
 
     private var fragmentAdapter: NotificationFragmentAdapter? = null
@@ -283,7 +285,10 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         return when (item?.itemId) {
-            R.id.notif_settting -> openNotificationSettingPage()
+            R.id.notif_settting -> {
+                analytics.trackTroubleshooterGearClicked(userSession.userId, userSession.shopId)
+                openNotificationSettingPage()
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }

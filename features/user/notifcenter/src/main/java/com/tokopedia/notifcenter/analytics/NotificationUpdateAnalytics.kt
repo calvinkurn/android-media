@@ -51,6 +51,7 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
         const val EVENT_ACTION_CLICK_FILTER_REQ = "click on filter request"
         const val EVENT_ACTION_SCROLL_TO_BOTTOM = "scroll to bottom"
         const val EVENT_ACTION_MARK_ALL_AS_READ = "mark all as read"
+        const val EVENT_ACTION_TS_NC = "click on notif setting from notif center"
 
         // Label
         const val EVENT_LABEL = "eventLabel"
@@ -63,6 +64,17 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
 
         // Other
         const val ECOMMERCE = "ecommerce"
+    }
+
+    fun trackTroubleshooterGearClicked(userId: String, shopId: String) {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(mapOf(
+                "event" to EVENT_NAME_CLICK_NOTIF_CENTER,
+                "eventCategory" to CATEGORY_NOTIF_CENTER,
+                "eventAction" to EVENT_ACTION_TS_NC,
+                "eventLabel" to "",
+                "userId" to userId,
+                "shopId" to shopId
+        ))
     }
 
     // #11A
