@@ -12,6 +12,7 @@ import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
+import com.tokopedia.promocheckout.common.domain.deals.PromoCheckoutListDealsUseCase
 import com.tokopedia.promocheckout.common.domain.digital.DigitalCheckVoucherUseCase
 import com.tokopedia.promocheckout.common.domain.event.network_api.EventCheckoutApi
 import com.tokopedia.promocheckout.common.domain.event.network_api.EventCheckoutApi.Companion.BASE_URL_EVENT
@@ -19,12 +20,9 @@ import com.tokopedia.promocheckout.common.domain.event.repository.EventCheckRepo
 import com.tokopedia.promocheckout.common.domain.event.repository.EventCheckRepositoryImpl
 import com.tokopedia.promocheckout.common.domain.flight.FlightCheckVoucherUseCase
 import com.tokopedia.promocheckout.common.domain.hotel.HotelCheckVoucherUseCase
-import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
-import com.tokopedia.promocheckout.common.domain.mapper.DigitalCheckVoucherMapper
-import com.tokopedia.promocheckout.common.domain.mapper.FlightCheckVoucherMapper
-import com.tokopedia.promocheckout.common.domain.mapper.HotelCheckVoucherMapper
-import com.tokopedia.promocheckout.common.domain.mapper.UmrahCheckPromoMapper
+import com.tokopedia.promocheckout.common.domain.mapper.*
 import com.tokopedia.promocheckout.common.domain.umroh.UmrahCheckPromoUseCase
+import com.tokopedia.promocheckout.detail.di.PromoCheckoutDetailScope
 import com.tokopedia.promocheckout.list.view.presenter.*
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -58,6 +56,12 @@ class PromoCheckoutListModule {
     @Provides
     fun provideDigitalCheckVoucherUseCase(@ApplicationContext context: Context): DigitalCheckVoucherUseCase {
         return DigitalCheckVoucherUseCase(context, GraphqlUseCase())
+    }
+
+    @PromoCheckoutListScope
+    @Provides
+    fun providePromoCheckoutListDealsUseCase(@ApplicationContext context: Context): PromoCheckoutListDealsUseCase {
+        return PromoCheckoutListDealsUseCase(context, GraphqlUseCase())
     }
 
     @PromoCheckoutListScope
@@ -102,6 +106,12 @@ class PromoCheckoutListModule {
     fun provideHotelPresenter(hotelCheckVoucherUseCase: HotelCheckVoucherUseCase,
                               hotelCheckVoucherMapper: HotelCheckVoucherMapper) : PromoCheckoutListHotelPresenter {
         return PromoCheckoutListHotelPresenter(hotelCheckVoucherUseCase, hotelCheckVoucherMapper)
+    }
+
+    @PromoCheckoutListScope
+    @Provides
+    fun provideDealsPresenter(promoCheckoutListDealsUseCase: PromoCheckoutListDealsUseCase, dealsCheckoutMapper: DealsCheckoutMapper): PromoCheckoutListDealsPresenter {
+        return PromoCheckoutListDealsPresenter(promoCheckoutListDealsUseCase, dealsCheckoutMapper)
     }
 
     @PromoCheckoutListScope
