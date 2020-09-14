@@ -1,9 +1,0 @@
-query {
-     ChatGetGearList {
-          isSuccess
-          list {
-               alias
-               link
-          }
-     }
-}

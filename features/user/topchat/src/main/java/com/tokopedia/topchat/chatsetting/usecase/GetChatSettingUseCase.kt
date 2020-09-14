@@ -1,25 +1,22 @@
 package com.tokopedia.topchat.chatsetting.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant
+import com.tokopedia.topchat.chatsetting.data.ChatGearChatListResponse
 import com.tokopedia.topchat.chatsetting.data.GetChatSettingResponse
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
-import javax.inject.Named
 
 class GetChatSettingUseCase @Inject constructor(
-        @Named(ChatListQueriesConstant.QUERY_GET_CHAT_SETTING)
-        private val gqlQuery: String,
-        private val gqlUseCase: GraphqlUseCase<GetChatSettingResponse>
+        private val gqlUseCase: GraphqlUseCase<ChatGearChatListResponse>
 ) {
 
     private val params = RequestParams.EMPTY
 
-    fun get(onSuccess: (GetChatSettingResponse) -> Unit, onError: (Throwable) -> Unit) {
+    fun get(onSuccess: (ChatGearChatListResponse) -> Unit, onError: (Throwable) -> Unit) {
         gqlUseCase.apply {
-            setTypeClass(GetChatSettingResponse::class.java)
+            setTypeClass(ChatGearChatListResponse::class.java)
             setRequestParams(params.parameters)
-            setGraphqlQuery(gqlQuery)
+            setGraphqlQuery(query)
             execute({ result ->
                 onSuccess(result)
             }, { error ->
@@ -28,4 +25,32 @@ class GetChatSettingUseCase @Inject constructor(
         }
     }
 
+    private val query = """
+        query chatGearChatList{
+            chatGearChatList{
+              isSuccess
+              listBuyer{
+                alias
+                description
+                link
+                label
+                typeLabel
+              }
+              listSeller{
+                alias
+                description
+                link
+                label
+                typeLabel
+              }
+              listUtils{
+                alias
+                description
+                link
+                label
+                typeLabel
+              }
+            }
+        }
+    """.trimIndent()
 }

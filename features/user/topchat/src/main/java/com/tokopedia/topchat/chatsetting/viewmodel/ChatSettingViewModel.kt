@@ -1,9 +1,11 @@
 package com.tokopedia.topchat.chatsetting.viewmodel
 
 import android.os.Bundle
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.topchat.chatsetting.data.ChatGearChatListResponse
 import com.tokopedia.topchat.chatsetting.data.ChatSetting
 import com.tokopedia.topchat.chatsetting.data.GetChatSettingResponse
 import com.tokopedia.topchat.chatsetting.usecase.GetChatSettingUseCase
@@ -40,10 +42,11 @@ class ChatSettingViewModel @Inject constructor(
         isSeller = arguments.getBoolean(TemplateChatActivity.PARAM_IS_SELLER, false)
     }
 
-    private fun onSuccessGetChatSetting(): (GetChatSettingResponse) -> Unit {
+    private fun onSuccessGetChatSetting(): (ChatGearChatListResponse) -> Unit {
         return { response ->
-            val chatSettings = response.chatGetGearList.list
-            _chatSettings.postValue(Success(chatSettings))
+            Log.d("asd", "asd")
+//            val chatSettings = response.chatGetGearList.list
+//            _chatSettings.postValue(Success(chatSettings))
         }
     }
 
