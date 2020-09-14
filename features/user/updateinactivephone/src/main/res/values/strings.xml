@@ -71,7 +71,7 @@
     <string name="text_onboarding_false">Salah</string>
     <string name="text_onboarding_title">Mau mengubah nomor HP?</string>
     <string name="text_onboarding_description">Kamu bisa mengajukan perubahan nomor HP dan akan diminta upload kartu identitas untuk verifikasi data diri</string>
-    <string name="text_onboarding_protected">Tokopedia menjamin keamanan &amp; privasi datamu.</string>
+    <string name="text_onboarding_protected">Tokopedia menjamin keamanan datamu.</string>
     <string name="text_onboarding_id_card_description_title">Ikuti cara ini agar kartumu berhasil diverifikasi:</string>
     <string name="text_onboarding_id_card_description_1">Siapkan kartu identitas (KTP, SIM, kartu pelajar, atau paspor).</string>
     <string name="text_onboarding_id_card_description_2">Pastikan kartu identitas sesuai dengan data di akun Tokopedia kamu.</string>

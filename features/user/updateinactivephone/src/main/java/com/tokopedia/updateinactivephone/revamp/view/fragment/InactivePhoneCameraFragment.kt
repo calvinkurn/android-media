@@ -95,7 +95,7 @@ class InactivePhoneCameraFragment : BaseDaggerFragment() {
                 showCamera()
             }
             CameraViewMode.SELFIE.id -> {
-                cameraView?.facing = Facing.BACK
+                cameraView?.facing = Facing.FRONT
                 updateTitle(getString(R.string.text_title_selfie))
                 updateDescription(getString((R.string.text_camera_description_selfie)))
                 showCamera()

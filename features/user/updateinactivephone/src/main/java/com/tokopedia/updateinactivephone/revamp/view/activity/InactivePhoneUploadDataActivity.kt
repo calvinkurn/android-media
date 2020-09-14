@@ -38,7 +38,7 @@ class InactivePhoneUploadDataActivity : BaseSimpleActivity() {
             setSecondaryCTAText(getString(R.string.text_exit_cta_secondary))
             setPrimaryCTAClickListener {
                 this.dismiss()
-                gotoHome()
+                gotoOnboardingPage()
             }
             setSecondaryCTAClickListener {
                 this.dismiss()
@@ -48,9 +48,8 @@ class InactivePhoneUploadDataActivity : BaseSimpleActivity() {
         }.show()
     }
 
-    private fun gotoHome() {
-        val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
-        startActivity(intent)
+    private fun gotoOnboardingPage() {
+        startActivity(InactivePhoneOnboardingActivity.getIntent(this))
     }
 
     companion object {
