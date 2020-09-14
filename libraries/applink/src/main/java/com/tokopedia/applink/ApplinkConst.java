@@ -317,7 +317,7 @@ public interface ApplinkConst {
 
     String SELLER_MIGRATION = "tokopedia://seller/seller-migration";
 
-    String MERCHANT_SHOP_SHOWCASE_LIST = "tokopedia://shop-showcase/list";
+    String ETALASE_LIST = "tokopedia://shop/{shop_id}/etalase-list";
 
     interface Discovery {
         String CATEGORY = "tokopedia://category";
