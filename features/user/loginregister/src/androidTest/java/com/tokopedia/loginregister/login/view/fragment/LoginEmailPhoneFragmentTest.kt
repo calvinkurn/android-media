@@ -42,7 +42,7 @@ class LoginEmailPhoneFragmentTest {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDBSource = GtmLogDBSource(context)
     var idlingResource: TkpdIdlingResource? = null
-    val email = "rahul.lohra@tokopedia.com"
+    val email = "fernanda.panca+qc8@tokopedia.com"
 
     @Before
     fun setup() {
@@ -53,12 +53,12 @@ class LoginEmailPhoneFragmentTest {
 
     @Test
     fun check_login_events_after_email_password_login() {
-        val password = "rahul12345"
+        val password = "nopassword"
         Espresso.onView(ViewMatchers.withId(R.id.register_btn))
                 .perform(click())
 
         Espresso.onView(ViewMatchers.withId(R.id.password))
-                .perform(ViewActions.typeText("rahul12345"))
+                .perform(ViewActions.typeText("nopassword"))
 
         Espresso.onView(ViewMatchers.withId(R.id.password))
                 .check(matches(withText(password)))
