@@ -737,6 +737,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         } else {
             // Has not select shipping
             boolean isTradeInDropOff = mActionListener.isTradeInByDropOff();
+
             layoutStateHasSelectedFreeShipping.setVisibility(View.GONE);
             layoutStateHasSelectedNormalShipping.setVisibility(View.GONE);
             llShippingOptionsContainer.setVisibility(View.GONE);
@@ -745,7 +746,15 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 tvTradeInShippingPriceTitle.setVisibility(View.VISIBLE);
                 tvTradeInShippingPriceDetail.setVisibility(View.VISIBLE);
                 layoutTradeInShippingInfo.setVisibility(View.VISIBLE);
-                layoutStateNoSelectedShipping.setVisibility(View.GONE);
+                boolean hasSelectTradeInLocation = mActionListener.hasSelectTradeInLocation();
+                if (hasSelectTradeInLocation) {
+                    layoutStateNoSelectedShipping.setVisibility(View.VISIBLE);
+                    layoutStateNoSelectedShipping.setOnClickListener(
+                            getOnChangeDurationClickListener(shipmentCartItemModel, currentAddress)
+                    );
+                } else {
+                    layoutStateNoSelectedShipping.setVisibility(View.GONE);
+                }
             } else {
                 tvTradeInShippingPriceTitle.setVisibility(View.GONE);
                 tvTradeInShippingPriceDetail.setVisibility(View.GONE);

@@ -2669,6 +2669,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
+    public boolean hasSelectTradeInLocation() {
+        RecipientAddressModel recipientAddressModel = shipmentAdapter.getAddressShipmentData();
+        if (recipientAddressModel == null) return false;
+        return recipientAddressModel.getLocationDataModel() != null;
+    }
+
+    @Override
     public void onTradeInAddressTabChanged(int shipmentItemTradeInPosition) {
         onNeedUpdateViewItem(shipmentItemTradeInPosition);
         RecipientAddressModel recipientAddressModel = shipmentAdapter.getAddressShipmentData();

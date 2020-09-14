@@ -103,6 +103,8 @@ public interface ShipmentAdapterActionListener {
 
     boolean isTradeInByDropOff();
 
+    boolean hasSelectTradeInLocation();
+
     void onTradeInAddressTabChanged(int position);
 
     void onClickPromoCheckout(LastApplyUiModel lastApplyUiModel);
