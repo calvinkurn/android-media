@@ -128,14 +128,14 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
             wishlistCrossfader.resetTransition()
             notifCrossfader.resetTransition()
             inboxCrossfader.resetTransition()
-        } else if (toolbarType == TOOLBAR_LIGHT_TYPE) {
-            wishlistCrossfader.resetTransition()
-            notifCrossfader.resetTransition()
-            inboxCrossfader.resetTransition()
 
             wishlistCrossfader.reverseTransition(0)
             notifCrossfader.reverseTransition(0)
             inboxCrossfader.reverseTransition(0)
+        } else if (toolbarType == TOOLBAR_LIGHT_TYPE) {
+            wishlistCrossfader.resetTransition()
+            notifCrossfader.resetTransition()
+            inboxCrossfader.resetTransition()
         }
     }
 
