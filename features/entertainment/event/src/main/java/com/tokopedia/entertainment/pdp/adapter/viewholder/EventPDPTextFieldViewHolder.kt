@@ -145,6 +145,7 @@ class EventPDPTextFieldViewHolder(val view: View,
             form.valuePosition
         } else ""
     }
+
     interface TextFormListener {
         fun getKeyActive(): String
     }
