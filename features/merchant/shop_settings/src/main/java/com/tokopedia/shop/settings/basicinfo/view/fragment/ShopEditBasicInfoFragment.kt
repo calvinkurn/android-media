@@ -553,7 +553,7 @@ class ShopEditBasicInfoFragment: Fragment() {
 
     private fun onErrorUpdateShopBasicData(throwable: Throwable) {
         hideSubmitLoading()
-        if (throwable is UnknownHostException || throwable is UnknownServiceException) {
+        if (throwable.cause is UnknownHostException || throwable.cause is UnknownServiceException) {
             showGlobalError()
         } else {
             showSnackBarErrorSubmitEdit(throwable)
@@ -628,7 +628,7 @@ class ShopEditBasicInfoFragment: Fragment() {
     }
 
     private fun onErrorUploadShopImage(throwable: Throwable) {
-        if (throwable is UnknownHostException || throwable is UnknownServiceException) {
+        if (throwable.cause is UnknownHostException || throwable.cause is UnknownServiceException) {
             showGlobalError()
         } else {
             showSnackBarErrorSubmitEdit(throwable)
@@ -672,6 +672,7 @@ class ShopEditBasicInfoFragment: Fragment() {
             setSecondaryCTAText(getString(R.string.shop_edit_dialog_secondary_cta))
             setPrimaryCTAClickListener {
                 onSaveButtonClicked()
+                dismiss()
                 ShopSettingsTracking.clickConfirmChangeShopName(userSession.shopId, getShopType())
             }
             setSecondaryCTAClickListener {
