@@ -52,7 +52,6 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 
 /**
  * @author okasurya on 7/16/18.
@@ -486,7 +485,7 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
         return recommendationList
     }
 
-    private fun getRemoteConfig(): AbTestPlatform {
+    private fun getRemoteConfig(): RemoteConfig {
         return RemoteConfigInstance.getInstance().abTestPlatform
     }
 
