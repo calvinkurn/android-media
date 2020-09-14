@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.topchat.chatsetting.data.ChatSetting
 import com.tokopedia.topchat.chatsetting.usecase.GetChatSettingUseCase
 import com.tokopedia.topchat.chatsetting.view.adapter.ChatSettingTypeFactory
 import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity
@@ -28,12 +27,6 @@ class ChatSettingViewModel @Inject constructor(
 
     init {
         getChatSettingUseCase.get(onSuccessGetChatSetting(), onErrorGetChatSetting())
-    }
-
-    fun filterSettings(filter: (setting: ChatSetting) -> Boolean, chatSettings: List<ChatSetting>): List<ChatSetting> {
-        return chatSettings.filter { setting ->
-            filter(setting)
-        }
     }
 
     fun initArguments(arguments: Bundle?) {

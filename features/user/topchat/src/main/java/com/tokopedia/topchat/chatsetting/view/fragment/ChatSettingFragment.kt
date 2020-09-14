@@ -17,7 +17,6 @@ import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import com.tokopedia.topchat.chatsetting.analytic.ChatSettingAnalytic
-import com.tokopedia.topchat.chatsetting.data.ChatSetting
 import com.tokopedia.topchat.chatsetting.data.uimodel.ItemChatSettingUiModel
 import com.tokopedia.topchat.chatsetting.di.ChatSettingComponent
 import com.tokopedia.topchat.chatsetting.view.adapter.ChatSettingTypeFactory
@@ -105,10 +104,6 @@ class ChatSettingFragment : BaseListFragment<Visitable<*>, ChatSettingTypeFactor
 
     private fun successLoadChatSetting(data: List<Visitable<ChatSettingTypeFactory>>) {
         renderList(data)
-    }
-
-    private fun isSupportAppLink(chatSetting: ChatSetting): Boolean {
-        return RouteManager.isSupportApplink(context, chatSetting.link)
     }
 
     override fun getAdapterTypeFactory(): ChatSettingTypeFactory {
