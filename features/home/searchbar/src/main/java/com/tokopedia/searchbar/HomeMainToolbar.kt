@@ -119,10 +119,24 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
         wishlistCrossfader.startTransition(0)
         notifCrossfader.startTransition(0)
         inboxCrossfader.startTransition(0)
+
         btnWishlist.setImageDrawable(wishlistCrossfader)
         btnNotification.setImageDrawable(notifCrossfader)
         btnInbox.setImageDrawable(inboxCrossfader)
-        switchToLightToolbar()
+
+        if (toolbarType == TOOLBAR_DARK_TYPE) {
+            wishlistCrossfader.resetTransition()
+            notifCrossfader.resetTransition()
+            inboxCrossfader.resetTransition()
+        } else if (toolbarType == TOOLBAR_LIGHT_TYPE) {
+            wishlistCrossfader.resetTransition()
+            notifCrossfader.resetTransition()
+            inboxCrossfader.resetTransition()
+
+            wishlistCrossfader.reverseTransition(0)
+            notifCrossfader.reverseTransition(0)
+            inboxCrossfader.reverseTransition(0)
+        }
     }
 
     fun hideShadow() {
@@ -207,6 +221,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
             toolbarType = TOOLBAR_DARK_TYPE
         } else if (!crossfaderIsInitialized()) {
             initToolbarIcon()
+            toolbarType = TOOLBAR_DARK_TYPE
         }
     }
 
@@ -245,6 +260,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
             toolbarType = TOOLBAR_LIGHT_TYPE
         } else if (!crossfaderIsInitialized()) {
             initToolbarIcon()
+            toolbarType = TOOLBAR_LIGHT_TYPE
         }
     }
 
