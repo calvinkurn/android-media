@@ -11,12 +11,11 @@
         android:isScrollContainer="true"
         android:orientation="vertical">
 
-        <ImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/imageView7"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
-            app:srcCompat="@drawable/ill_header"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -48,7 +47,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/title" />
 
-        <androidx.cardview.widget.CardView
+        <com.tokopedia.unifycomponents.CardUnify
             android:id="@+id/card1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -60,11 +59,11 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/subtitle">
 
-            <ImageView
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/top_corner_bg1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end|top"
-                app:srcCompat="@drawable/topads_create_bg_top_corner" />
+                android:layout_gravity="end|top" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -93,25 +92,23 @@
                     app:typographyType="body_3"
                     tools:layout_editor_absoluteX="16dp" />
 
-                <ImageView
+                <com.tokopedia.unifycomponents.ImageUnify
                     android:id="@+id/icon1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     app:layout_constraintBottom_toBottomOf="@+id/typography8"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/typography4"
-                    app:srcCompat="@drawable/topads_create_ic_thumb_up" />
+                    app:layout_constraintTop_toTopOf="@+id/typography4" />
 
-                <ImageView
+                <com.tokopedia.unifycomponents.ImageUnify
                     android:id="@+id/icon2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     app:layout_constraintBottom_toBottomOf="@+id/typography7"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/typography"
-                    app:srcCompat="@drawable/topads_create_ic_iklan_otomatis_1" />
+                    app:layout_constraintTop_toTopOf="@+id/typography" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/typography"
@@ -129,15 +126,14 @@
                     app:typographyType="heading_5" />
 
 
-                <ImageView
+                <com.tokopedia.unifycomponents.ImageUnify
                     android:id="@+id/icon3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     app:layout_constraintBottom_toBottomOf="@+id/typography6"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/typography2"
-                    app:srcCompat="@drawable/topads_create_ic_iklan_otomatis_2" />
+                    app:layout_constraintTop_toTopOf="@+id/typography2" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/typography2"
@@ -178,15 +174,14 @@
                     app:layout_constraintTop_toBottomOf="@+id/typography2"
                     app:typographyType="body_3" />
 
-                <ImageView
+                <com.tokopedia.unifycomponents.ImageUnify
                     android:id="@+id/icon4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     app:layout_constraintBottom_toBottomOf="@+id/typography5"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/typography3"
-                    app:srcCompat="@drawable/topads_create_ic_iklan_otomatis_3" />
+                    app:layout_constraintTop_toTopOf="@+id/typography3" />
 
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -218,13 +213,14 @@
                     app:typographyType="body_3" />
 
 
-                <Button
+                <com.tokopedia.unifycomponents.UnifyButton
                     android:id="@+id/btn_start_auto_ads"
-                    style="@style/Button.Submit.Green.Full"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_16"
                     android:text="@string/mulai_iklan_otomatis"
+                    app:unifyButtonVariant="filled"
+                    app:unifyButtonType="main"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -233,9 +229,9 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </androidx.cardview.widget.CardView>
+        </com.tokopedia.unifycomponents.CardUnify>
 
-        <androidx.cardview.widget.CardView
+        <com.tokopedia.unifycomponents.CardUnify
             android:id="@+id/card2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -248,11 +244,11 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/card1">
 
-            <ImageView
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/top_corner_bg2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end|top"
-                app:srcCompat="@drawable/topads_create_bg_top_corner" />
+                android:layout_gravity="end|top" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -284,25 +280,23 @@
                     app:layout_constraintTop_toBottomOf="@id/typography9"
                     app:typographyType="body_3" />
 
-                <ImageView
+                <com.tokopedia.unifycomponents.ImageUnify
                     android:id="@+id/icon5"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     app:layout_constraintBottom_toBottomOf="@+id/typography10"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/typography9"
-                    app:srcCompat="@drawable/topads_create_ic_gear" />
+                    app:layout_constraintTop_toTopOf="@+id/typography9" />
 
-                <ImageView
+                <com.tokopedia.unifycomponents.ImageUnify
                     android:id="@+id/icon6"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     app:layout_constraintBottom_toBottomOf="@+id/typography14"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/typography11"
-                    app:srcCompat="@drawable/topads_create_ic_iklan_manual_1" />
+                    app:layout_constraintTop_toTopOf="@+id/typography11" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/typography11"
@@ -348,15 +342,14 @@
                     app:layout_constraintTop_toBottomOf="@+id/typography16"
                     app:typographyType="heading_5" />
 
-                <ImageView
+                <com.tokopedia.unifycomponents.ImageUnify
                     android:id="@+id/icon7"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     app:layout_constraintBottom_toBottomOf="@+id/typography16"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/typography15"
-                    app:srcCompat="@drawable/topads_create_ic_iklan_manual_2" />
+                    app:layout_constraintTop_toTopOf="@+id/typography15" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/typography15"
@@ -397,25 +390,25 @@
                     app:layout_constraintTop_toBottomOf="@+id/typography13"
                     app:typographyType="body_3" />
 
-                <ImageView
+                <com.tokopedia.unifycomponents.ImageUnify
                     android:id="@+id/icon8"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     app:layout_constraintBottom_toBottomOf="@+id/typography17"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/typography13"
-                    app:srcCompat="@drawable/topads_create_ic_iklan_manual_3" />
+                    app:layout_constraintTop_toTopOf="@+id/typography13" />
 
 
-                <com.tokopedia.design.component.ButtonCompat
+                <com.tokopedia.unifycomponents.UnifyButton
                     android:id="@+id/btn_start_manual_ads"
-                    style="@style/Button.Submit.Green.Full"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_16"
                     android:text="@string/mulai_iklan_manual"
-                    app:buttonCompatType="ghost"
+                    app:unifyButtonType="main"
+                    app:unifyButtonVariant="ghost"
+                    android:gravity="center"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -424,7 +417,7 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </androidx.cardview.widget.CardView>
+        </com.tokopedia.unifycomponents.CardUnify>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

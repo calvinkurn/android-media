@@ -9,7 +9,7 @@
     android:orientation="vertical">
 
 
-    <com.tokopedia.design.text.SearchInputView
+    <com.tokopedia.unifycomponents.SearchBarUnify
         android:id="@+id/searchInputView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -21,21 +21,23 @@
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:siv_search_hint="@string/cari_produk"
-        app:siv_search_icon="@drawable/topads_ic_search" />
+        app:search_bar_placeholder="@string/cari_produk"
+        app:search_bar_show_icon="@drawable/topads_ic_search" />
 
-    <ImageButton
+    <com.tokopedia.unifycomponents.UnifyImageButton
         android:id="@+id/btn_sort"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackgroundBorderless"
         android:padding="@dimen/dp_10"
         app:layout_constraintBottom_toBottomOf="@+id/searchInputView"
         app:layout_constraintEnd_toStartOf="@+id/view3"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/searchInputView"
         app:layout_constraintTop_toTopOf="@+id/searchInputView"
-        app:srcCompat="@drawable/topads_ic_sort" />
+        app:srcCompat="@drawable/topads_ic_sort"
+        app:unifyImageButtonSize="medium"
+        app:unifyImageButtonType="main"
+        app:unifyImageButtonVariant="image" />
 
 
     <View
@@ -49,55 +51,66 @@
         app:layout_constraintStart_toEndOf="@+id/btn_sort"
         app:layout_constraintTop_toTopOf="@+id/btn_sort" />
 
-    <ImageButton
+    <com.tokopedia.unifycomponents.UnifyImageButton
         android:id="@+id/btn_filter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
         android:padding="@dimen/dp_10"
         app:layout_constraintBottom_toBottomOf="@+id/view3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/view3"
         app:layout_constraintTop_toTopOf="@+id/view3"
-        app:srcCompat="@drawable/topads_ic_filter" />
+        app:srcCompat="@drawable/topads_ic_filter"
+        app:unifyImageButtonType="main"
+        app:unifyImageButtonVariant="image" />
 
-    <RadioGroup
+    <LinearLayout
         android:id="@+id/promotedGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
+        android:layout_marginTop="@dimen/dp_16"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:orientation="horizontal"
+        android:weightSum="1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/searchInputView">
 
-        <RadioButton
+
+        <com.tokopedia.unifycomponents.ChipsUnify
             android:id="@+id/not_promoted"
-            style="@style/TopadsProductFilterRadioButtonStyle"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginRight="@dimen/dp_4"
-            android:layout_weight="1"
-            android:text="@string/belum_diiklankan" />
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_weight="0.5"
+            app:centerText="true"
+            app:chipSize="medium"
+            app:chipText="@string/belum_diiklankan"
+            app:chipType="normal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <RadioButton
+        <com.tokopedia.unifycomponents.ChipsUnify
             android:id="@+id/promoted"
-            style="@style/TopadsProductFilterRadioButtonStyle"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_4"
-            android:layout_marginRight="@dimen/dp_8"
-            android:layout_weight="1"
-            android:text="@string/sudah_diiklankan" />
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_weight="0.5"
+            app:centerText="true"
+            app:chipSize="medium"
+            app:chipText="@string/sudah_diiklankan"
+            app:chipType="normal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    </RadioGroup>
+    </LinearLayout>
 
     <View
         android:id="@+id/view5"
@@ -130,17 +143,11 @@
 
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
-    <com.tokopedia.design.component.RoundFloatingButton
+    <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
         android:id="@+id/tip_btn"
-        style="@style/TextView.Micro.Green"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:backgroundTint="#FFFCF5"
-        android:text="@string/tip_memilih_produk"
-        android:textAllCaps="false"
-        app:buttonCompatSize="medium"
-        app:buttonDrawableLeftCompat="@drawable/topads_ic_tips"
+        app:fbType="group"
         app:layout_constraintBottom_toTopOf="@+id/shadow_bottom"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -156,9 +163,8 @@
         app:layout_constraintStart_toStartOf="parent"
         tools:visibility="visible" />
 
-    <com.tokopedia.design.component.ButtonCompat
+    <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_next"
-        style="@style/Button.Submit.Green"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
@@ -167,11 +173,12 @@
         android:layout_weight="1"
         android:enabled="false"
         android:text="@string/lanjutkan"
-        app:buttonCompatType="primary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/select_product_info"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="filled"
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography

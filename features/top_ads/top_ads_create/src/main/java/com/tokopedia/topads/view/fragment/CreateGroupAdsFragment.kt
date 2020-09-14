@@ -11,6 +11,7 @@ import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.create.R
@@ -20,7 +21,11 @@ import com.tokopedia.topads.di.CreateAdsComponent
 import com.tokopedia.topads.view.activity.StepperActivity
 import com.tokopedia.topads.view.model.CreateGroupAdsViewModel
 import com.tokopedia.topads.view.sheet.InfoSheetGroupList
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifyprinciples.Typography
+import kotlinx.android.synthetic.main.topads_create_fragment_budget_list.*
 import kotlinx.android.synthetic.main.topads_create_fragment_group_list.*
+import kotlinx.android.synthetic.main.topads_create_fragment_group_list.tip_btn
 import javax.inject.Inject
 
 /**
@@ -31,6 +36,8 @@ private const val CLICK_TIPS_GRUP_IKLAN = "click-tips grup iklan"
 private const val CLICK_BUAT_GRUP_IKLAN = "click-buat grup iklan"
 class CreateGroupAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
 
+    private var tvToolTipText: Typography? = null
+    private var imgTooltipIcon: ImageUnify? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -62,7 +69,7 @@ class CreateGroupAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
 
     override fun gotoNextPage() {
         stepperModel = CreateManualAdsStepperModel()
-        stepperModel?.groupName = group_name_input.text.toString()
+        stepperModel?.groupName = group_name_input.textFieldInput.text.toString()
         stepperListener?.goToNextPage(stepperModel)
     }
 
@@ -87,13 +94,23 @@ class CreateGroupAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         super.onViewCreated(view, savedInstanceState)
         btn_submit?.isEnabled = false
         btn_submit?.setOnClickListener {
-            validateGroup(group_name_input.text.toString())
+            validateGroup(group_name_input.textFieldInput.text.toString())
         }
+        val tooltipView = layoutInflater.inflate(com.tokopedia.topads.common.R.layout.tooltip_custom_view, null).apply {
+            tvToolTipText = this.findViewById(R.id.tooltip_text)
+            tvToolTipText?.text = getString(R.string.apa_itu_group_iklan)
+
+            imgTooltipIcon = this.findViewById(R.id.tooltip_icon)
+            imgTooltipIcon?.setImageDrawable(view.context.getResDrawable(R.drawable.topads_ic_tips))
+        }
+
+        tip_btn?.addItem(tooltipView)
         tip_btn?.setOnClickListener {
-            InfoSheetGroupList.newInstance(it.context).show()
+            val sheet = InfoSheetGroupList.newInstance()
+            sheet.show(fragmentManager!!, "")
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_TIPS_GRUP_IKLAN, "")
         }
-        group_name_input?.addTextChangedListener(object : TextWatcher {
+        group_name_input?.textFieldInput?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
             }
 
@@ -102,18 +119,11 @@ class CreateGroupAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 error_text?.visibility = View.GONE
-                descTxt?.visibility = View.VISIBLE
-                if (s.toString().trim().isEmpty()) {
-                    title?.visibility = View.INVISIBLE
-                    btn_submit?.isEnabled = false
-                } else {
-                    title?.visibility = View.VISIBLE
-                    btn_submit?.isEnabled = true
-                }
+                btn_submit?.isEnabled = !s.toString().trim().isEmpty()
             }
 
         })
-        group_name_input?.setOnEditorActionListener { v, actionId, _ ->
+        group_name_input?.textFieldInput?.setOnEditorActionListener { v, actionId, _ ->
             when (actionId) {
                 EditorInfo.IME_ACTION_SEARCH -> validateGroup(v?.text.toString())
             }
@@ -145,11 +155,9 @@ class CreateGroupAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     private fun errorTextVisibility(visible: Boolean) {
         if (visible) {
             error_text?.visibility = View.VISIBLE
-            descTxt?.visibility = View.GONE
             btn_submit?.isEnabled = false
         } else {
             error_text?.visibility = View.GONE
-            descTxt?.visibility = View.VISIBLE
             btn_submit?.isEnabled = true
         }
     }

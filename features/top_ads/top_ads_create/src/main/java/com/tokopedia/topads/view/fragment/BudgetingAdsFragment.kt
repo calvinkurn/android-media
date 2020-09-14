@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.design.text.watcher.NumberTextWatcher
+import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.view.sheet.TopAdsEditKeywordBidSheet
 import com.tokopedia.topads.create.R
@@ -25,6 +26,8 @@ import com.tokopedia.topads.view.adapter.bidinfo.viewModel.BidInfoEmptyViewModel
 import com.tokopedia.topads.view.adapter.bidinfo.viewModel.BidInfoItemViewModel
 import com.tokopedia.topads.view.model.BudgetingAdsViewModel
 import com.tokopedia.topads.view.sheet.TipSheetBudgetList
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.topads_create_fragment_budget_list.*
 import java.util.*
@@ -54,6 +57,8 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     private var isEnable = false
     private var userID:String = ""
     private var shopID = ""
+    private var tvToolTipText: Typography? = null
+    private var imgTooltipIcon: ImageUnify? = null
     companion object {
         private const val MAX_BID = "max"
         private const val MIN_BID = "min"
@@ -239,9 +244,18 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         btn_next?.setOnClickListener {
             gotoNextPage()
         }
+        val tooltipView = layoutInflater.inflate(com.tokopedia.topads.common.R.layout.tooltip_custom_view, null).apply {
+            tvToolTipText = this.findViewById(R.id.tooltip_text)
+            tvToolTipText?.text = getString(R.string.tip_biaya_iklan)
 
+            imgTooltipIcon = this.findViewById(R.id.tooltip_icon)
+            imgTooltipIcon?.setImageDrawable(view.context.getResDrawable(R.drawable.topads_ic_tips))
+        }
+
+        tip_btn?.addItem(tooltipView)
         tip_btn?.setOnClickListener {
-            TipSheetBudgetList.newInstance(it.context).show()
+            var tipSheetBugList = TipSheetBudgetList.newInstance()
+            tipSheetBugList.show(fragmentManager!!, "")
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_TIPS_BIAYA_IKLAN, shopID,userID)
         }
 

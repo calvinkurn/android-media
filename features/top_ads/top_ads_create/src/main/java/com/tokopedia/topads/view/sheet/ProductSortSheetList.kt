@@ -1,60 +1,118 @@
 package com.tokopedia.topads.view.sheet
 
 import android.content.Context
+import android.os.Build
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import android.widget.FrameLayout
+import android.widget.ListView
 import android.widget.RadioGroup
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.response.ResponseEtalase
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.list.ListItemUnify
+import com.tokopedia.unifycomponents.list.ListUnify
 import kotlinx.android.synthetic.main.topads_create_fragment_product_list_sheet_sort.*
+import kotlinx.android.synthetic.main.topads_create_fragment_product_list_sheet_sort.view.*
+import java.util.ArrayList
 
 /**
  * Author errysuprayogi on 07,May,2019
  */
-class ProductSortSheetList {
+class ProductSortSheetList : BottomSheetUnify() {
 
-    private var dialog: BottomSheetDialog? = null
     var onItemClick: ((sortId: String) -> Unit)? = null
+    var selectedSortText = 0
+    var positionSort = 0
 
-    private fun setupView(context: Context) {
-        dialog?.let {
-            it.setOnShowListener { dialogInterface ->
-                val dialog = dialogInterface as BottomSheetDialog
-                val frameLayout = dialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
-                if (frameLayout != null) {
-                    val behavior = BottomSheetBehavior.from(frameLayout)
-                    behavior.isHideable = false
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        var contentView = View.inflate(context, R.layout.topads_create_fragment_product_list_sheet_sort, null)
+        setChild(contentView)
+        setTitle(getString(R.string.urutkan))
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val sortListItems: Array<String> = resources.getStringArray(R.array.sort_product_list_array)
+
+        val sortListItemUnify = mapToItemUnifyList(sortListItems)
+
+        view.sortList.setData(sortListItemUnify)
+
+        view.sortList?.let {
+            it.onLoadFinish {
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    it.setSelectedFilterOrSort(sortListItemUnify, positionSort.orZero())
+                }
+
+                it.setOnItemClickListener { adapterView, view, index, l ->
+                    onItemSortClickedBottomSheet(index, sortListItemUnify, it)
+                }
+                sortListItemUnify.forEachIndexed { index, listItemUnify ->
+                    listItemUnify.listRightRadiobtn?.setOnClickListener { _ ->
+                        onItemSortClickedBottomSheet(index, sortListItemUnify, it)
+                    }
                 }
             }
-            it.btn_close.setOnClickListener {
-                dismissDialog()
+        }
+    }
+
+
+    private fun onItemSortClickedBottomSheet(position: Int, sortListItemUnify: ArrayList<ListItemUnify>, sortListUnify: ListUnify) {
+        try {
+            positionSort = position
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                sortListUnify.setSelectedFilterOrSort(sortListItemUnify, position)
             }
-            it.rb_group.setOnCheckedChangeListener ( object: RadioGroup.OnCheckedChangeListener{
-                override fun onCheckedChanged(group: RadioGroup?, checkedId: Int) {
-                    onItemClick?.invoke(checkedId.toString())
-                    dismissDialog()
-                }
-            })
+            selectedSortText = position
+            sortListUnify.setSelectedFilterOrSort(sortListItemUnify, position)
+            onItemClick?.invoke(sortListItemUnify[position].listTitleText)
+            dismiss()
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
     fun getSelectedSortId(): String {
-        return when(dialog?.rb_group?.checkedRadioButtonId){
-            R.id.rb_terbaru -> TERBARU
-            R.id.rb_terendah -> TERENDAH
-            R.id.rb_terlaris -> TERLARIS
-            R.id.rb_tertinggi -> TERTINGGI
+        return when(selectedSortText){
+            1 -> TERBARU
+            3 -> TERENDAH
+            0 -> TERLARIS
+            2 -> TERTINGGI
             else -> TERBARU
         }
     }
 
-    fun show() {
-        dialog!!.show()
+
+    private fun ListUnify.setSelectedFilterOrSort(items: List<ListItemUnify>, position: Int) {
+        val clickedItem = this.getItemAtPosition(position) as ListItemUnify
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            when (choiceMode) {
+                ListView.CHOICE_MODE_SINGLE -> {
+                    items.filter {
+                        it.listRightRadiobtn?.isChecked ?: false
+                    }.filterNot { it == clickedItem }.onEach { it.listRightRadiobtn?.isChecked = false }
+
+                    clickedItem.listRightRadiobtn?.isChecked = true
+                }
+            }
+        }
     }
 
-    fun dismissDialog() {
-        dialog!!.dismiss()
+    private fun mapToItemUnifyList(list: Array<String>): ArrayList<ListItemUnify> {
+        val itemUnifyList: ArrayList<ListItemUnify> = arrayListOf()
+        list.map {
+            val data = ListItemUnify(title = it, description = "")
+            data.setVariant(rightComponent = ListItemUnify.RADIO_BUTTON)
+            itemUnifyList.add(data)
+        }
+        return itemUnifyList
     }
 
     companion object {
@@ -63,12 +121,8 @@ class ProductSortSheetList {
         val TERLARIS = "most_sales"
         val TERTINGGI = "most_expensive"
 
-        fun newInstance(context: Context): ProductSortSheetList {
-            val fragment = ProductSortSheetList()
-            fragment.dialog = BottomSheetDialog(context, R.style.CreateAdsBottomSheetDialogTheme)
-            fragment.dialog!!.setContentView(R.layout.topads_create_fragment_product_list_sheet_sort)
-            fragment.setupView(context)
-            return fragment
+        fun newInstance(): ProductSortSheetList {
+            return ProductSortSheetList()
         }
     }
 }

@@ -11,8 +11,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.design.text.SearchInputView
+import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
 import com.tokopedia.topads.data.response.ResponseEtalase
@@ -29,7 +30,14 @@ import com.tokopedia.topads.view.model.ProductAdsListViewModel
 import com.tokopedia.topads.view.sheet.InfoSheetProductList
 import com.tokopedia.topads.view.sheet.ProductFilterSheetList
 import com.tokopedia.topads.view.sheet.ProductSortSheetList
+import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifyprinciples.Typography
+import kotlinx.android.synthetic.main.topads_create_fragment_budget_list.*
 import kotlinx.android.synthetic.main.topads_create_fragment_product_list.*
+import kotlinx.android.synthetic.main.topads_create_fragment_product_list.btn_next
+import kotlinx.android.synthetic.main.topads_create_fragment_product_list.tip_btn
+import kotlinx.android.synthetic.main.topads_create_keyword_search_layout.*
 import javax.inject.Inject
 
 /**
@@ -44,6 +52,8 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     private lateinit var sortProductList: ProductSortSheetList
     private lateinit var filterSheetProductList: ProductFilterSheetList
     private lateinit var productListAdapter: ProductListAdapter
+    private var tvToolTipText: Typography? = null
+    private var imgTooltipIcon: ImageUnify? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -154,37 +164,46 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         context?.let {
-            sortProductList = ProductSortSheetList.newInstance(it)
-            filterSheetProductList = ProductFilterSheetList.newInstance(it)
+            sortProductList = ProductSortSheetList.newInstance()
+            filterSheetProductList = ProductFilterSheetList.newInstance()
         }
         btn_next.setOnClickListener {
             gotoNextPage()
         }
+        val tooltipView = layoutInflater.inflate(com.tokopedia.topads.common.R.layout.tooltip_custom_view, null).apply {
+            tvToolTipText = this.findViewById(R.id.tooltip_text)
+            tvToolTipText?.text = getString(R.string.tip_biaya_iklan)
+
+            imgTooltipIcon = this.findViewById(R.id.tooltip_icon)
+            imgTooltipIcon?.setImageDrawable(view.context.getResDrawable(R.drawable.topads_ic_tips))
+        }
+
+        tip_btn?.addItem(tooltipView)
         tip_btn.setOnClickListener {
             InfoSheetProductList.newInstance(it.context).show()
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_TIPS_PRODUCT_IKLAN, "")
         }
         btn_sort.setOnClickListener {
-            sortProductList.show()
+            sortProductList.show(fragmentManager!!, "")
         }
         btn_filter.setOnClickListener {
             if (filterSheetProductList.getSelectedFilter().isBlank()) {
                 fetchEtalase()
             }
-            filterSheetProductList.show()
+            filterSheetProductList.show(fragmentManager!!, "filterList")
         }
         filterSheetProductList.onItemClick = { refreshProduct() }
         sortProductList.onItemClick = { refreshProduct() }
-        not_promoted.setOnClickListener { refreshProduct() }
-        promoted.setOnClickListener { refreshProduct() }
-        searchInputView.setListener(object : SearchInputView.Listener {
-            override fun onSearchSubmitted(text: String?) {
-                refreshProduct()
-            }
-
-            override fun onSearchTextChanged(text: String?) {
-            }
-        })
+        not_promoted.setOnClickListener {
+            not_promoted.chipType = ChipsUnify.TYPE_SELECTED
+            promoted.chipType = ChipsUnify.TYPE_NORMAL
+            refreshProduct()
+        }
+        promoted.setOnClickListener {
+            not_promoted.chipType = ChipsUnify.TYPE_NORMAL
+            promoted.chipType = ChipsUnify.TYPE_SELECTED
+            refreshProduct() }
+        Utils.setSearchListener(searchInputView, context, linearLayout10, ::refreshProduct)
         swipe_refresh_layout.setOnRefreshListener {
             refreshProduct()
         }
@@ -210,7 +229,7 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        not_promoted.isChecked = true
+        not_promoted.chipType = ChipsUnify.TYPE_SELECTED
         refreshProduct()
     }
 
@@ -218,14 +237,14 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
 
     private fun getSelectedSortId() = sortProductList.getSelectedSortId()
 
-    private fun getKeyword() = searchInputView.searchText
+    private fun getKeyword() = searchInputView.searchBarTextField.text.toString()
 
     private fun getPromoted(): String {
         return ALL
     }
 
     private fun onProductListSelected() {
-        if (promotedGroup.checkedRadioButtonId == R.id.promoted) {
+        if (promoted.chipType == ChipsUnify.TYPE_SELECTED) {
             stepperModel?.selectedPromo = getSelectedProduct()
             stepperModel?.adIdsPromo = getSelectedProductAdId()
             stepperModel?.selectedProductIds = (getSelectedProduct() + stepperModel?.selectedNonPromo!!).toMutableList()
@@ -259,7 +278,7 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         prepareForNextFetch(eof)
         btn_next.isEnabled = false
         data.forEach { result ->
-            if (promotedGroup.checkedRadioButtonId == R.id.promoted) {
+            if (promoted.chipType == ChipsUnify.TYPE_SELECTED) {
                 if (result.adID > 0)
                     productListAdapter.items.add(ProductItemViewModel(result))
 

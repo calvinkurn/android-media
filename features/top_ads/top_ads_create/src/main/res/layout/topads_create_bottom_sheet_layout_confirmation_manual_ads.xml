@@ -7,19 +7,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/topads_bg_top_round">
 
-    <ImageView
-        android:id="@+id/btn_close"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="17dp"
-        android:layout_marginTop="17dp"
-        android:padding="@dimen/dp_2"
-        app:layout_constraintBottom_toTopOf="@id/ic_ilustration"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/topads_create_ic_group_close" />
-
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/ic_ilustration"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_210"
@@ -28,7 +16,6 @@
         android:layout_marginEnd="20dp"
         android:layout_marginRight="20dp"
         android:contentDescription="@string/ilustration"
-        app:srcCompat="@drawable/topads_create_manual_confirmation"
         app:layout_constraintBottom_toTopOf="@+id/title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -67,9 +54,8 @@
         app:layout_constraintTop_toBottomOf="@+id/title"
         app:typographyType="body_2" />
 
-    <com.tokopedia.design.component.ButtonCompat
+    <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_start_manual_ads"
-        style="@style/Button.Submit.Green"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="50dp"
@@ -80,15 +66,16 @@
         android:paddingLeft="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16"
         android:text="@string/gunakan_iklan_manual"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="filled"
         app:layout_constraintBottom_toTopOf="@id/cancel_btn_start_manual_ads"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/subtitle" />
 
-    <com.tokopedia.design.component.ButtonCompat
+    <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/cancel_btn_start_manual_ads"
-        style="@style/Button.Submit.White"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="50dp"
@@ -99,6 +86,9 @@
         android:paddingLeft="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16"
         android:text="@string/cancel_btn"
+        app:unifyButtonVariant="text"
+        app:unifyButtonType="alternate"
+        android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
