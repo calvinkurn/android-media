@@ -2,6 +2,7 @@ package com.tokopedia.seller_migration_common.presentation.util
 
 import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Parcelable
@@ -10,6 +11,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
+import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller_migration_common.R
@@ -152,3 +158,37 @@ private fun FragmentActivity.openSellerMigrationBottomSheet(bottomSheet: SellerM
     bottomSheet?.show(supportFragmentManager, SellerMigrationCommunicationBottomSheet::class.java.name)
 }
 
+fun Context.getMigrationIntentWithoutApplink(@SellerMigrationFeatureName featureName: String): Intent? {
+    val appLinks: ArrayList<String> =
+            when(featureName) {
+                SellerMigrationFeatureName.FEATURE_CHAT_SETTING -> {
+                    arrayListOf(
+                            ApplinkConstInternalSellerapp.SELLER_HOME_CHAT,
+                            ApplinkConstInternalMarketplace.CHAT_SETTING)
+                }
+                else -> arrayListOf()
+            }
+
+    if (appLinks.isNotEmpty()) {
+        val parameterizedFirstAppLink = Uri.parse(appLinks.firstOrNull().orEmpty())
+                .buildUpon()
+                .appendQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, featureName)
+                .build()
+                .toString()
+
+        val sellerAppSeamlessLoginAppLink = Uri.parse(ApplinkConstInternalGlobal.SEAMLESS_LOGIN).buildUpon()
+                .appendQueryParameter(ApplinkConstInternalGlobal.KEY_REDIRECT_SEAMLESS_APPLINK, parameterizedFirstAppLink)
+                .appendQueryParameter(RouteManager.KEY_REDIRECT_TO_SELLER_APP, "true")
+                .appendQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_IS_AUTO_LOGIN, "true")
+                .build()
+                .toString()
+
+        return RouteManager.getIntent(this, sellerAppSeamlessLoginAppLink)?.apply {
+            putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, appLinks)
+            putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, featureName)
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+        }
+    } else {
+        return null
+    }
+}
