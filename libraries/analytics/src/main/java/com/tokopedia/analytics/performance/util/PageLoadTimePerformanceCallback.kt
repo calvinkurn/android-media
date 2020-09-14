@@ -112,6 +112,8 @@ open class PageLoadTimePerformanceCallback(
     fun endAsyncSystraceSection(methodName: String, cookie: Int) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && GlobalConfig.DEBUG) {
             Trace.endAsyncSection(methodName, cookie)
+        }
+    }
 
     override fun invalidate() {
         performanceMonitoring = null
