@@ -743,21 +743,18 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             llShippingOptionsContainer.setVisibility(View.GONE);
 
             if (isTradeInDropOff) {
-                tvTradeInShippingPriceTitle.setVisibility(View.VISIBLE);
-                tvTradeInShippingPriceDetail.setVisibility(View.VISIBLE);
-                layoutTradeInShippingInfo.setVisibility(View.VISIBLE);
                 boolean hasSelectTradeInLocation = mActionListener.hasSelectTradeInLocation();
                 if (hasSelectTradeInLocation) {
+                    layoutTradeInShippingInfo.setVisibility(View.GONE);
                     layoutStateNoSelectedShipping.setVisibility(View.VISIBLE);
                     layoutStateNoSelectedShipping.setOnClickListener(
                             getOnChangeDurationClickListener(shipmentCartItemModel, currentAddress)
                     );
                 } else {
+                    layoutTradeInShippingInfo.setVisibility(View.VISIBLE);
                     layoutStateNoSelectedShipping.setVisibility(View.GONE);
                 }
             } else {
-                tvTradeInShippingPriceTitle.setVisibility(View.GONE);
-                tvTradeInShippingPriceDetail.setVisibility(View.GONE);
                 layoutTradeInShippingInfo.setVisibility(View.GONE);
                 layoutStateNoSelectedShipping.setVisibility(View.VISIBLE);
                 layoutStateNoSelectedShipping.setOnClickListener(
