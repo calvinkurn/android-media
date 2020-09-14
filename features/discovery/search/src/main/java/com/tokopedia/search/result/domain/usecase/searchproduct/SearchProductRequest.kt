@@ -104,6 +104,8 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                     price
                     priceInt
                     priceRange
+                    categoryId
+                    categoryName
                     categoryBreadcrumb
                     rating
                     ratingAverage

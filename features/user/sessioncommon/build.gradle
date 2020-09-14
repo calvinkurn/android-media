@@ -41,6 +41,8 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.global_error
 
     //Test
+    androidTestImplementation project(rootProject.ext.libraries.tkpddesign)
+    testImplementation project(rootProject.ext.libraries.tkpddesign)
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.kotlinMockito
     testImplementation rootProject.ext.testDependencies.spekApi
