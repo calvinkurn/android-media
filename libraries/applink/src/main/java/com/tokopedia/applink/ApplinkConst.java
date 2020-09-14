@@ -37,6 +37,7 @@ public interface ApplinkConst {
     String SHOP_HOME = "tokopedia://shop/{shop_id}/home";
     String SHOP_PRODUCT = "tokopedia://shop/{shop_id}/product";
     String SHOP_FEED = "tokopedia://shop/{shop_id}/feed";
+    String SHOP_ETALASE_LIST = "tokopedia://shop/{shop_id}/etalase-list";
 
     String SHOP_SETTINGS_NOTE = "tokopedia://setting/shop/note";
     String PRODUCT_INFO = "tokopedia://product/{product_id}";
@@ -316,8 +317,6 @@ public interface ApplinkConst {
     String OCC = "tokopedia://occ";
 
     String SELLER_MIGRATION = "tokopedia://seller/seller-migration";
-
-    String ETALASE_LIST = "tokopedia://shop/{shop_id}/etalase-list";
 
     interface Discovery {
         String CATEGORY = "tokopedia://category";
