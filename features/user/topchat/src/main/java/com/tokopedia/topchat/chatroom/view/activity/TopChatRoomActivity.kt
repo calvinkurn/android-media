@@ -16,7 +16,7 @@ import com.tokopedia.topchat.chatroom.view.fragment.TopChatRoomFragment
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 
-class TopChatRoomActivity : BaseChatToolbarActivity() {
+open class TopChatRoomActivity : BaseChatToolbarActivity() {
 
     override fun getScreenName(): String {
         return "/${TopChatAnalytics.Category.CHAT_DETAIL}"
@@ -30,8 +30,10 @@ class TopChatRoomActivity : BaseChatToolbarActivity() {
             bundle.putAll(intent.extras)
         }
 
-        return TopChatRoomFragment.createInstance(bundle)
+        return createChatRoomFragment(bundle)
     }
+
+    protected open fun createChatRoomFragment(bundle: Bundle) = TopChatRoomFragment.createInstance(bundle)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(null)
