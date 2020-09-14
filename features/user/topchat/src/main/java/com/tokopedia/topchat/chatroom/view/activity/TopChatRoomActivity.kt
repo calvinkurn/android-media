@@ -1,58 +1,22 @@
 package com.tokopedia.topchat.chatroom.view.activity
 
-import android.accounts.NetworkErrorException
-import android.app.Activity
-import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import com.google.android.material.snackbar.Snackbar
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel.Companion.MODE_DEFAULT_GET_CHAT
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toZeroStringIfNull
-import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant
-import com.tokopedia.product.manage.common.feature.list.model.ProductViewModel
-import com.tokopedia.product.manage.common.feature.quickedit.stock.data.model.EditStockResult
-import com.tokopedia.product.manage.common.feature.quickedit.stock.presentation.fragment.ProductManageQuickEditStockFragment
-import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
-import com.tokopedia.product.manage.common.feature.variant.presentation.ui.QuickEditVariantStockBottomSheet
-import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
-import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
-import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
 import com.tokopedia.topchat.chatroom.view.fragment.TopChatRoomFragment
-import com.tokopedia.topchat.chatroom.view.viewmodel.QuickEditTopChatViewModel
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
-import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSessionInterface
-import javax.inject.Inject
 
-class TopChatRoomActivity : BaseChatToolbarActivity(), ProductManageQuickEditStockFragment.OnFinishedListener {
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    @Inject
-    lateinit var userSession: UserSessionInterface
-
-    private val mViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(QuickEditTopChatViewModel::class.java)
-    }
+class TopChatRoomActivity : BaseChatToolbarActivity() {
 
     override fun getScreenName(): String {
         return "/${TopChatAnalytics.Category.CHAT_DETAIL}"
@@ -69,57 +33,11 @@ class TopChatRoomActivity : BaseChatToolbarActivity(), ProductManageQuickEditSto
         return TopChatRoomFragment.createInstance(bundle)
     }
 
-    override fun onNewIntent(intent: Intent?) {
-        super.onNewIntent(intent)
-        handleNewIntent(intent)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(null)
         useLightNotificationBar()
-        initInjector()
         initWindowBackground()
         initTopchatToolbar()
-        observeEditStock()
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        intent?.let {
-            when(requestCode) {
-                ProductManageCommonConstant.REQUEST_CODE_CAMPAIGN_STOCK ->
-                    when(resultCode) {
-                        Activity.RESULT_OK -> {
-                            val productName = it.getStringExtra(ProductManageCommonConstant.EXTRA_PRODUCT_NAME)
-                            val successMessage = getString(R.string.product_manage_campaign_stock_success_toast, productName)
-                            Toaster.build(
-                                    findViewById<View>(R.id.parent_view),
-                                    successMessage,
-                                    Snackbar.LENGTH_SHORT,
-                                    Toaster.TYPE_NORMAL)
-                                    .show()
-                        }
-                        Activity.RESULT_CANCELED -> {
-                            val errorMessage = it.getStringExtra(ProductManageCommonConstant.EXTRA_UPDATE_MESSAGE) ?: getString(R.string.product_manage_campaign_stock_error_toast)
-                            Toaster.build(
-                                    findViewById<View>(R.id.parent_view),
-                                    errorMessage,
-                                    Snackbar.LENGTH_SHORT,
-                                    Toaster.TYPE_ERROR)
-                                    .show()
-                        }
-                        else -> {}
-                    }
-                else -> super.onActivityResult(requestCode, resultCode, data)
-            }
-        }
-    }
-
-    private fun initInjector() {
-        val chatComponent = DaggerChatComponent.builder()
-                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                .chatRoomContextModule(ChatRoomContextModule(this))
-                .build()
-        chatComponent.inject(this)
     }
 
     private fun initWindowBackground() {
@@ -140,14 +58,6 @@ class TopChatRoomActivity : BaseChatToolbarActivity(), ProductManageQuickEditSto
     override fun setupToolbar() {
         super.setupToolbar()
         decreaseToolbarElevation()
-    }
-
-    override fun onFinishEditStock(modifiedProduct: ProductViewModel) {
-        //No op. This should not be run if it is from top chat page
-    }
-
-    override fun onFinishEditStock(productId: String, productName: String, productStatus: ProductStatus, stock: Int) {
-        mViewModel.editStock(userSession.shopId, productId, stock, productName, productStatus)
     }
 
     private fun decreaseToolbarElevation() {
@@ -214,127 +124,12 @@ class TopChatRoomActivity : BaseChatToolbarActivity(), ProductManageQuickEditSto
         }
     }
 
-    private fun observeEditStock() {
-        mViewModel.editStockResult.observe(this, Observer {
-            when(it) {
-                is Success -> showSuccessStockEditToaster(it.data.productName)
-                is Fail -> showErrorStockEditToaster(it.throwable as EditStockResult)
-            }
-        })
-        mViewModel.editVariantStockResult.observe(this, Observer {
-            when(it) {
-                is Success -> showSuccessStockEditToaster(it.data.productName)
-                is Fail -> showErrorStockEditToaster(it.throwable as EditStockResult)
-            }
-        })
-    }
-
-    private fun showSuccessStockEditToaster(productName: String) {
-        Toaster.make(findViewById<View>(R.id.parent_view), getString(
-                R.string.product_manage_quick_edit_stock_success, productName),
-                Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
-    }
-
-    private fun showErrorStockEditToaster(editStockResult: EditStockResult) {
-        val message = if(editStockResult.error is NetworkErrorException) {
-            getString(editStockResult.error?.message.toIntOrZero())
-        } else {
-            editStockResult.error?.message
-        }
-        message?.let {
-            val retryMessage = getString(R.string.product_manage_snack_bar_retry)
-            showErrorToast(it, retryMessage) {
-                mViewModel.editStock(userSession.shopId, editStockResult.productId, editStockResult.stock, editStockResult.productName, editStockResult.status)
-            }
-        }
-    }
-
-    private fun showErrorToast(
-            message: String = getString(R.string.product_manage_snack_bar_fail),
-            actionLabel: String = getString(com.tokopedia.abstraction.R.string.close),
-            listener: () -> Unit = {}
-    ) {
-        findViewById<View>(R.id.parent_view)?.let {
-            val onClickActionLabel = View.OnClickListener { listener.invoke() }
-            Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, actionLabel, onClickActionLabel)
-        }
-    }
-
-    private fun handleNewIntent(intent: Intent?) {
-        intent?.data?.run {
-            when {
-                pathSegments.contains(ApplinkConst.Chat.PATH_STOCK) -> handleStockQuickEditUri()
-                pathSegments.contains(ApplinkConst.Chat.PATH_VARIANT) -> handleVariantStockQuickEditUri()
-                else -> {}
-            }
-        }
-    }
-
-    private fun Uri.handleStockQuickEditUri() {
-        getQueryParameter(ApplinkConst.Chat.QUICKEDIT_PRODUCT_ID)?.let { productId ->
-            getQueryParameter(ApplinkConst.Chat.QUICKEDIT_PRODUCT_NAME)?.let { productName ->
-                getQueryParameter(ApplinkConst.Chat.QUICKEDIT_PRODUCT_STATUS)?.let { productStatus ->
-                    getQueryParameter(ApplinkConst.Chat.QUICKEDIT_STOCK)?.toIntOrNull()?.let { productStock ->
-                        getQueryParameter(ApplinkConst.Chat.QUICKEDIT_HAS_RESERVED)?.toBoolean()?.let { hasReservedStock ->
-                            openStockQuickEdit(productId, productName, productStatus, productStock, hasReservedStock)
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private fun Uri.handleVariantStockQuickEditUri() {
-        getQueryParameter(ApplinkConst.Chat.QUICKEDIT_PRODUCT_ID)?.let { productId ->
-            getQueryParameter(ApplinkConst.Chat.QUICKEDIT_HAS_RESERVED)?.toBoolean()?.let { hasReservedStock ->
-                openVariantStockQuickEdit(productId, hasReservedStock)
-            }
-        }
-    }
-
-    private fun openStockQuickEdit(productId: String,
-                                   productName: String,
-                                   productStatus: String,
-                                   productStock: Int,
-                                   hasReservedStock: Boolean) {
-        if (hasReservedStock) {
-            RouteManager.getIntent(this, ApplinkConstInternalMarketplace.RESERVED_STOCK, productId, userSession.shopId).let { intent ->
-                startActivityForResult(intent, ProductManageCommonConstant.REQUEST_CODE_CAMPAIGN_STOCK)
-            }
-        } else {
-            ProductManageQuickEditStockFragment.createInstance(
-                    productId,
-                    productName,
-                    productStatus,
-                    productStock,
-                    this).show(supportFragmentManager, QUICKEDIT_STOCK_TAG)
-        }
-    }
-
-    private fun openVariantStockQuickEdit(productId: String,
-                                          hasReservedStock: Boolean) {
-        if (hasReservedStock) {
-            RouteManager.getIntent(this, ApplinkConstInternalMarketplace.RESERVED_STOCK, productId, userSession.shopId).let { intent ->
-                startActivityForResult(intent, ProductManageCommonConstant.REQUEST_CODE_CAMPAIGN_STOCK)
-            }
-        } else {
-            QuickEditVariantStockBottomSheet.createInstance(productId,::onSaveVariantStock).show(supportFragmentManager, QUICKEDIT_VARIANT_TAG)
-        }
-    }
-
-    private fun onSaveVariantStock(editVariantResult: EditVariantResult) {
-        mViewModel.editVariantsStock(userSession.shopId, editVariantResult)
-    }
-
     companion object {
         val REQUEST_CODE_CHAT_IMAGE = 2325
         val LABEL_USER = "Pengguna"
         val LABEL_SELLER = "Penjual"
         val ROLE_SELLER = "shop"
         val ROLE_USER = "user"
-
-        private const val QUICKEDIT_STOCK_TAG = "quickedit_stock"
-        private const val QUICKEDIT_VARIANT_TAG = "quickedit_variant"
     }
 
 }

@@ -102,9 +102,6 @@ public interface ApplinkConst {
             "={customMessage}&source={source}&opponent_name={opponent_name}&avatar={avatar}";
     String TOPCHAT_ASKBUYER = "tokopedia://topchat/askbuyer/{toUserId}?customMessage" +
             "={customMessage}&source={source}&opponent_name={opponent_name}&avatar={avatar}";
-    String TOPCHAT_QUICKEDIT_STOCK = "tokopedia://topchat/stock/{message_id}?shop_id={shop_id}&product_id={product_id}" +
-            "&product_name={product_name}&product_status={product_status}&stock={stock}&has_reserved={has_reserved}";
-    String TOPCHAT_QUICKEDIT_VARIANT = "tokopedia://topchat/variant/{message_id}?product_id={product_id}&has_reserved={has_reserved}";
     String CHATBOT = "tokopedia://chatbot/{message_id}";
     String CHAT_BOT = "tokopedia://chatbot";
     String GROUPCHAT_LIST = "tokopedia://groupchat";
@@ -438,16 +435,8 @@ public interface ApplinkConst {
         String INVOICE_STATUS = "invoice_status";
         String INVOICE_TOTAL_AMOUNT = "invoice_total_amount";
 
-        String QUICKEDIT_PRODUCT_ID = "product_id";
-        String QUICKEDIT_PRODUCT_NAME = "product_name";
-        String QUICKEDIT_PRODUCT_STATUS = "product_status";
-        String QUICKEDIT_STOCK = "stock";
-        String QUICKEDIT_HAS_RESERVED = "has_reserved";
-
         String PATH_ASK_SELLER = "askseller";
         String PATH_ASK_BUYER = "askbuyer";
-        String PATH_STOCK = "stock";
-        String PATH_VARIANT = "variant";
 
         String SOURCE_ASK_SELLER = "tx_ask_seller";
         String SOURCE_PAGE = "source_page";

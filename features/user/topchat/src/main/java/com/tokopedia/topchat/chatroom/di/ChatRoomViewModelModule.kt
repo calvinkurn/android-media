@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.topchat.chatroom.view.viewmodel.QuickEditTopChatViewModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.StickerViewModel
 import dagger.Binds
 import dagger.Module
@@ -22,10 +21,5 @@ abstract class ChatRoomViewModelModule {
     @IntoMap
     @ViewModelKey(StickerViewModel::class)
     internal abstract fun getStickerViewModel(viewModel: StickerViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(QuickEditTopChatViewModel::class)
-    internal abstract fun getQuickEditTopChatViewModel(viewModel: QuickEditTopChatViewModel): ViewModel
 
 }
