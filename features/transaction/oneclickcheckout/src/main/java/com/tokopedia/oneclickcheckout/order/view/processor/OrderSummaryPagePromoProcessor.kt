@@ -102,7 +102,8 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
                 val (isSuccess, newGlobalEvent) = checkIneligiblePromo(response, orderCart)
                 return@withContext Triple(response, isSuccess, newGlobalEvent)
             } catch (t: Throwable) {
-                return@withContext Triple(null, false, OccGlobalEvent.TriggerRefresh(throwable = t.cause ?: t))
+                return@withContext Triple(null, false, OccGlobalEvent.TriggerRefresh(throwable = t.cause
+                        ?: t))
             }
         }
         OccIdlingResource.decrement()
@@ -124,7 +125,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         return result
     }
 
-    fun generatePromoRequest(orderCart: OrderCart, _orderShipment: OrderShipment, lastValidateUsePromoRequest: ValidateUsePromoRequest?, orderPromo: OrderPromo): PromoRequest {
+    fun generatePromoRequest(orderCart: OrderCart, shipping: OrderShipment, lastValidateUsePromoRequest: ValidateUsePromoRequest?, orderPromo: OrderPromo): PromoRequest {
         val promoRequest = PromoRequest()
 
         val ordersItem = Order()
@@ -133,7 +134,6 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         ordersItem.product_details = listOf(ProductDetail(orderCart.product.productId.toLong(), orderCart.product.quantity.orderQuantity))
         ordersItem.isChecked = true
 
-        val shipping = _orderShipment
         ordersItem.shippingId = shipping.getRealShipperId()
         ordersItem.spId = shipping.getRealShipperProductId()
 
@@ -143,16 +143,14 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
             ordersItem.isInsurancePrice = 0
         }
 
-        val lastRequest = lastValidateUsePromoRequest
-
-        ordersItem.codes = generateOrderPromoCodes(lastRequest, ordersItem.uniqueId, shipping, orderPromo)
+        ordersItem.codes = generateOrderPromoCodes(lastValidateUsePromoRequest, ordersItem.uniqueId, shipping, orderPromo)
 
         promoRequest.orders = listOf(ordersItem)
         promoRequest.state = CheckoutConstant.PARAM_CHECKOUT
         promoRequest.cartType = CheckoutConstant.PARAM_OCC
 
-        if (lastRequest != null) {
-            promoRequest.codes = ArrayList(lastRequest.codes.filterNotNull())
+        if (lastValidateUsePromoRequest != null) {
+            promoRequest.codes = ArrayList(lastValidateUsePromoRequest.codes.filterNotNull())
         } else {
             val globalCodes = orderPromo.lastApply?.codes ?: emptyList()
             promoRequest.codes = ArrayList(globalCodes)
@@ -177,16 +175,14 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         }
 
         if (shouldAddLogisticPromo && shipping.isApplyLogisticPromo && shipping.logisticPromoViewModel != null && shipping.logisticPromoShipping != null && !codes.contains(shipping.logisticPromoViewModel.promoCode)) {
-//            if (!codes.contains(shipping.logisticPromoViewModel.promoCode)) {
-                codes.add(shipping.logisticPromoViewModel.promoCode)
-//            }
+            codes.add(shipping.logisticPromoViewModel.promoCode)
         } else if (shipping.logisticPromoViewModel?.promoCode?.isNotEmpty() == true) {
             codes.remove(shipping.logisticPromoViewModel.promoCode)
         }
         return codes
     }
 
-    fun generateValidateUsePromoRequest(shouldAddLogisticPromo: Boolean = true, lastValidateUsePromoRequest: ValidateUsePromoRequest?, orderCart: OrderCart, _orderShipment: OrderShipment, orderPromo: OrderPromo): ValidateUsePromoRequest {
+    fun generateValidateUsePromoRequest(shouldAddLogisticPromo: Boolean, lastValidateUsePromoRequest: ValidateUsePromoRequest?, orderCart: OrderCart, shipping: OrderShipment, orderPromo: OrderPromo): ValidateUsePromoRequest {
         val validateUsePromoRequest = lastValidateUsePromoRequest ?: ValidateUsePromoRequest()
 
         val ordersItem = OrdersItem()
@@ -195,20 +191,17 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
 
         ordersItem.productDetails = listOf(ProductDetailsItem(orderCart.product.quantity.orderQuantity, orderCart.product.productId))
 
-        val shipping = _orderShipment
         ordersItem.shippingId = shipping.getRealShipperId()
         ordersItem.spId = shipping.getRealShipperProductId()
 
-        val lastRequest = lastValidateUsePromoRequest
-
-        ordersItem.codes = generateOrderPromoCodes(lastRequest, ordersItem.uniqueId, shipping, orderPromo, shouldAddLogisticPromo)
+        ordersItem.codes = generateOrderPromoCodes(lastValidateUsePromoRequest, ordersItem.uniqueId, shipping, orderPromo, shouldAddLogisticPromo)
 
         validateUsePromoRequest.orders = listOf(ordersItem)
         validateUsePromoRequest.state = CheckoutConstant.PARAM_CHECKOUT
         validateUsePromoRequest.cartType = CheckoutConstant.PARAM_OCC
 
-        if (lastRequest != null) {
-            validateUsePromoRequest.codes = lastRequest.codes
+        if (lastValidateUsePromoRequest != null) {
+            validateUsePromoRequest.codes = lastValidateUsePromoRequest.codes
         } else {
             val globalCodes = orderPromo.lastApply?.codes ?: emptyList()
             validateUsePromoRequest.codes = globalCodes.toMutableList()
@@ -219,7 +212,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         return validateUsePromoRequest
     }
 
-    fun generateValidateUsePromoRequestWithBbo(logisticPromoUiModel: LogisticPromoUiModel, oldCode: String? = null, lastValidateUsePromoRequest: ValidateUsePromoRequest?, orderCart: OrderCart, _orderShipment: OrderShipment, orderPromo: OrderPromo): ValidateUsePromoRequest {
+    fun generateValidateUsePromoRequestWithBbo(logisticPromoUiModel: LogisticPromoUiModel, oldCode: String?, lastValidateUsePromoRequest: ValidateUsePromoRequest?, orderCart: OrderCart, _orderShipment: OrderShipment, orderPromo: OrderPromo): ValidateUsePromoRequest {
         return generateValidateUsePromoRequest(false, lastValidateUsePromoRequest, orderCart, _orderShipment, orderPromo).apply {
             orders[0]?.apply {
                 shippingId = logisticPromoUiModel.shipperId
