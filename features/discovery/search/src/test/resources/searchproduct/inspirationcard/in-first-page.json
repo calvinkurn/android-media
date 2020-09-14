@@ -1211,6 +1211,20 @@
         ]
       },
       {
+        "title": "",
+        "type": "curated",
+        "position": 18,
+        "options": [
+          {
+            "text": "Print",
+            "img": "https://ecs7.tokopedia.net/img/autocomplete/localserviceprinting.png",
+            "url": "https://www.tokopedia.com/jasa/print",
+            "color": "",
+            "applink": "tokopedia://discovery/print"
+          }
+        ]
+      },
+      {
         "title": "Coba tambahin kata kunci di pencarianmu:",
         "type": "guided",
         "position": 20,

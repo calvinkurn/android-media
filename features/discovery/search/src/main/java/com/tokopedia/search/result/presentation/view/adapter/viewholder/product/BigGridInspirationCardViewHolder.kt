@@ -33,7 +33,7 @@ class BigGridInspirationCardViewHolder(
     }
 
     private fun bindTitle(element: InspirationCardViewModel) {
-        itemView.bigGridCardViewInspirationCard?.shouldShowWithAction(element.title.isNotEmpty()) {
+        itemView.bigGridCardViewInspirationCard?.inspirationCardTitle?.shouldShowWithAction(element.title.isNotEmpty()) {
             itemView.bigGridCardViewInspirationCard?.inspirationCardTitle?.text = element.title
         }
     }

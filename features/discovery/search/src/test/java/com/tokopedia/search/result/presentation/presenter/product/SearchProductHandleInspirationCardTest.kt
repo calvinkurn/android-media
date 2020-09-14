@@ -139,15 +139,16 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
         // 2 -> inspiration card (position 16)
         // 3 -> product
         // 4 -> product
-        // 5 -> product
+        // 5 -> inspiration card (position 18)
         // 6 -> product
-        // 7 -> inspiration card (position 20)
-        // 8 -> product
+        // 7 -> product
+        // 8 -> inspiration card (position 20)
         // 9 -> product
-        visitableList.size shouldBe 10
+        // 10 -> product
+        visitableList.size shouldBe 11
 
         visitableList.forEachIndexed { index, visitable ->
-            if (index == 2 || index == 7) {
+            if (index == 2 || index == 5 || index == 8) {
                 visitable.shouldBeInstanceOf<InspirationCardViewModel>(
                         "visitable list at index $index should be InspirationCardViewModel"
                 )
