@@ -246,7 +246,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         if (pageType == FragmentType.OTHER) {
             hideToolbarAndStatusBar()
         }
-        navigator?.start(pageType, supportFragmentManager)
+        navigator?.start(pageType)
     }
 
     private fun handleAppLink(intent: Intent?) {
@@ -261,7 +261,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
             showToolbar(pageType)
             setCurrentFragmentType(pageType)
             sahBottomNav.currentItem = pageType
-            navigator?.navigateFromAppLink(page, supportFragmentManager)
+            navigator?.navigateFromAppLink(page)
         }
     }
 
@@ -285,7 +285,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
     }
 
     private fun setupNavigator() {
-        navigator = SellerHomeNavigator(this, sellerHomeRouter)
+        navigator = SellerHomeNavigator(this, supportFragmentManager, sellerHomeRouter)
     }
 
     private fun setupBottomNav() {
@@ -334,7 +334,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         setCurrentFragmentType(pageType)
         resetPages(page)
 
-        navigator?.showPage(pageType, supportFragmentManager)
+        navigator?.showPage(pageType)
         trackClickBottomNavigation(trackingAction)
     }
 
@@ -371,7 +371,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
 
         val type = FragmentType.OTHER
         setCurrentFragmentType(type)
-        navigator?.showPage(type, supportFragmentManager)
+        navigator?.showPage(type)
 
         trackClickBottomNavigation(TrackingConstant.CLICK_OTHERS)
     }
