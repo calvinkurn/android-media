@@ -107,16 +107,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         return shipmentAddressListFragment;
     }
 
-    public static ShipmentAddressListFragment newInstance(RecipientAddressModel currentAddress,
-                                                          boolean isDisableCorner) {
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(EXTRA_CURRENT_ADDRESS, currentAddress);
-        bundle.putInt(ARGUMENT_ORIGIN_DIRECTION_TYPE, ORIGIN_DIRECTION_TYPE_DEFAULT);
-        ShipmentAddressListFragment shipmentAddressListFragment = new ShipmentAddressListFragment();
-        shipmentAddressListFragment.setArguments(bundle);
-        return shipmentAddressListFragment;
-    }
-
     public static ShipmentAddressListFragment newInstanceFromMultipleAddressForm
             (RecipientAddressModel currentAddress) {
         Bundle bundle = new Bundle();
