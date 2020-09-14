@@ -485,12 +485,12 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
         return recommendationList
     }
 
-    private fun getRemoteConfig(): RemoteConfig {
+    private fun getAbTestingRemoteConfig(): RemoteConfig {
         return RemoteConfigInstance.getInstance().abTestPlatform
     }
 
     private fun useUoh(): Boolean {
-        val remoteConfigValue = getRemoteConfig().getString(UOH_AB_TEST_KEY, "")
+        val remoteConfigValue = getAbTestingRemoteConfig().getString(UOH_AB_TEST_KEY, "")
         return remoteConfigValue == UOH_AB_TEST_VALUE
     }
 
