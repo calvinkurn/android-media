@@ -317,6 +317,8 @@ public interface ApplinkConst {
 
     String SELLER_MIGRATION = "tokopedia://seller/seller-migration";
 
+    String MERCHANT_SHOP_SHOWCASE_LIST = "tokopedia://shop-showcase/list";
+
     interface Discovery {
         String CATEGORY = "tokopedia://category";
     }
@@ -391,6 +393,8 @@ public interface ApplinkConst {
         String CREATE_VOUCHER = "sellerapp://create-voucher";
         String SELLER_SEARCH = "sellerapp://seller-search";
         String PLAY_BROADCASTER = "sellerapp://play-broadcaster";
+        String CENTRALIZED_PROMO = "sellerapp://centralized-promo";
+        String SHOP_SETTING_MENU = "sellerapp://menu-setting";
     }
 
     interface Query {
