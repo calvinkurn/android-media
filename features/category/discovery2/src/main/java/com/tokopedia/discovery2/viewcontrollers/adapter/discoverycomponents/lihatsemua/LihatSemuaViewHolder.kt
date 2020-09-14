@@ -10,7 +10,9 @@ import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifyprinciples.Typography
 
 class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {
@@ -32,10 +34,10 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
             componentItem.data?.firstOrNull()?.let { data ->
                 lihatTitleTextView.setTextAndCheckShow(data.title)
                 lihatSubTitleTextView.setTextAndCheckShow(data.subtitle)
-                lihatTextView.visibility = if (data.btnApplink.isNullOrEmpty()) {
-                    View.GONE
+                if (data.btnApplink.isNullOrEmpty()) {
+                    lihatTextView.hide()
                 } else {
-                    View.VISIBLE
+                    lihatTextView.show()
                 }
                 lihatTextView.setOnClickListener {
                     navigateToAppLink(data)

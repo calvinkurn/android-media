@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/dp_16"
+    android:paddingTop="@dimen/spacing_lvl4"
     android:paddingBottom="@dimen/dp_6">
 
     <com.tokopedia.unifyprinciples.Typography
@@ -12,7 +12,7 @@
         android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_20"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginEnd="@dimen/dp_20"
         android:textColor="@color/clr_f531353b"
         android:visibility="gone"
@@ -30,9 +30,9 @@
         android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_20"
-        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_marginEnd="@dimen/dp_20"
-        android:layout_marginBottom="@dimen/dp_4"
+        android:layout_marginBottom="@dimen/spacing_lvl2"
         android:textColor="@color/product_card_location_text_color"
         android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@id/lihat_semua_tv"
@@ -47,7 +47,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_20"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginEnd="@dimen/dp_20"
         android:clickable="true"
         android:focusable="true"
