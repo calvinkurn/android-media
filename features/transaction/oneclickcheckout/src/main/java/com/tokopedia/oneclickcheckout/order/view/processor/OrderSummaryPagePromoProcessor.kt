@@ -20,6 +20,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.validat
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
+import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata
 import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -91,16 +92,17 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         return resultValidateUse
     }
 
-    suspend fun finalValidateUse(validateUsePromoRequest: ValidateUsePromoRequest): Pair<ValidateUsePromoRevampUiModel?, OccGlobalEvent> {
+    suspend fun finalValidateUse(validateUsePromoRequest: ValidateUsePromoRequest, orderCart: OrderCart): Triple<ValidateUsePromoRevampUiModel?, Boolean, OccGlobalEvent> {
         OccIdlingResource.increment()
         val resultValidateUse = withContext(executorDispatchers.io) {
             try {
                 val response = validateUsePromoRevampUseCase.createObservable(RequestParams.create().apply {
                     putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, validateUsePromoRequest)
                 }).toBlocking().single()
-                return@withContext response to OccGlobalEvent.Loading
+                val (isSuccess, newGlobalEvent) = checkIneligiblePromo(response, orderCart)
+                return@withContext Triple(response, isSuccess, newGlobalEvent)
             } catch (t: Throwable) {
-                return@withContext null to OccGlobalEvent.TriggerRefresh(throwable = t.cause ?: t)
+                return@withContext Triple(null, false, OccGlobalEvent.TriggerRefresh(throwable = t.cause ?: t))
             }
         }
         OccIdlingResource.decrement()
@@ -237,5 +239,61 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
             return arrayListOf(shipping.logisticPromoViewModel.promoCode)
         }
         return ArrayList()
+    }
+
+    private fun checkIneligiblePromo(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel, orderCart: OrderCart): Pair<Boolean, OccGlobalEvent> {
+        var notEligiblePromoHolderdataList = ArrayList<NotEligiblePromoHolderdata>()
+        notEligiblePromoHolderdataList = addIneligibleGlobalPromo(validateUsePromoRevampUiModel, notEligiblePromoHolderdataList)
+        notEligiblePromoHolderdataList = addIneligibleVoucherPromo(validateUsePromoRevampUiModel, notEligiblePromoHolderdataList, orderCart)
+
+        if (notEligiblePromoHolderdataList.size > 0) {
+            return false to OccGlobalEvent.PromoClashing(notEligiblePromoHolderdataList)
+        }
+        return true to OccGlobalEvent.Loading
+    }
+
+    private fun addIneligibleGlobalPromo(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel, notEligiblePromoHolderdataList: ArrayList<NotEligiblePromoHolderdata>): ArrayList<NotEligiblePromoHolderdata> {
+        if (validateUsePromoRevampUiModel.promoUiModel.messageUiModel.state == "red") {
+            val notEligiblePromoHolderdata = NotEligiblePromoHolderdata()
+            notEligiblePromoHolderdata.promoTitle = validateUsePromoRevampUiModel.promoUiModel.titleDescription
+            if (validateUsePromoRevampUiModel.promoUiModel.codes.isNotEmpty()) {
+                notEligiblePromoHolderdata.promoCode = validateUsePromoRevampUiModel.promoUiModel.codes[0]
+            }
+            notEligiblePromoHolderdata.shopName = "Kode promo"
+            notEligiblePromoHolderdata.iconType = NotEligiblePromoHolderdata.TYPE_ICON_GLOBAL
+            notEligiblePromoHolderdata.showShopSection = true
+            notEligiblePromoHolderdata.errorMessage = validateUsePromoRevampUiModel.promoUiModel.messageUiModel.text
+            notEligiblePromoHolderdataList.add(notEligiblePromoHolderdata)
+        }
+        return notEligiblePromoHolderdataList
+    }
+
+    private fun addIneligibleVoucherPromo(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel, notEligiblePromoHolderdataList: ArrayList<NotEligiblePromoHolderdata>, orderCart: OrderCart): ArrayList<NotEligiblePromoHolderdata> {
+        val voucherOrdersItemUiModels = validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels
+        for (i in voucherOrdersItemUiModels.indices) {
+            val voucherOrdersItemUiModel = voucherOrdersItemUiModels[i]
+            if (voucherOrdersItemUiModel != null && voucherOrdersItemUiModel.messageUiModel.state == "red") {
+                val notEligiblePromoHolderdata = NotEligiblePromoHolderdata()
+                notEligiblePromoHolderdata.promoTitle = voucherOrdersItemUiModel.titleDescription
+                notEligiblePromoHolderdata.promoCode = voucherOrdersItemUiModel.titleDescription
+                if (orderCart.cartString == voucherOrdersItemUiModel.uniqueId) {
+                    notEligiblePromoHolderdata.shopName = orderCart.shop.shopName
+                    if (orderCart.shop.isOfficial == 1) {
+                        notEligiblePromoHolderdata.iconType = NotEligiblePromoHolderdata.TYPE_ICON_OFFICIAL_STORE
+                    } else if (orderCart.shop.isGold == 1) {
+                        notEligiblePromoHolderdata.iconType = NotEligiblePromoHolderdata.TYPE_ICON_POWER_MERCHANT
+                    }
+                }
+                if (i == 0) {
+                    notEligiblePromoHolderdata.showShopSection = true
+                } else {
+                    notEligiblePromoHolderdata.showShopSection = voucherOrdersItemUiModels[i - 1]?.uniqueId != voucherOrdersItemUiModel.uniqueId
+                }
+
+                notEligiblePromoHolderdata.errorMessage = voucherOrdersItemUiModel.messageUiModel.text
+                notEligiblePromoHolderdataList.add(notEligiblePromoHolderdata)
+            }
+        }
+        return notEligiblePromoHolderdataList
     }
 }

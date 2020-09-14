@@ -34,9 +34,6 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastAppl
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata
-import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata.Companion.TYPE_ICON_GLOBAL
-import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata.Companion.TYPE_ICON_OFFICIAL_STORE
-import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata.Companion.TYPE_ICON_POWER_MERCHANT
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -487,14 +484,14 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     private fun finalValidateUse(product: OrderProduct, shop: OrderShop, pref: OrderPreference, onSuccessCheckout: (CheckoutOccResult) -> Unit, skipCheckIneligiblePromo: Boolean) {
         if (!skipCheckIneligiblePromo) {
             launch(executorDispatchers.main) {
-                val (resultValidateUse, newGlobalEvent) = promoProcessor.finalValidateUse(generateValidateUsePromoRequest())
+                val (resultValidateUse, isSuccess, newGlobalEvent) = promoProcessor.finalValidateUse(generateValidateUsePromoRequest(), orderCart)
                 if (resultValidateUse != null) {
                     validateUsePromoRevampUiModel = resultValidateUse
                     updatePromoState(resultValidateUse.promoUiModel)
-                    if (checkIneligiblePromo()) {
+                    if (isSuccess) {
                         doCheckout(product, shop, pref, onSuccessCheckout)
+                        return@launch
                     }
-                    return@launch
                 }
                 globalEvent.value = newGlobalEvent
             }
@@ -512,66 +509,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 globalEvent.value = globalEventResult
             }
         }
-    }
-
-    private fun checkIneligiblePromo(): Boolean {
-        var notEligiblePromoHolderdataList = ArrayList<NotEligiblePromoHolderdata>()
-        val validateUsePromoRevampUiModel = validateUsePromoRevampUiModel
-        if (validateUsePromoRevampUiModel != null) {
-            notEligiblePromoHolderdataList = addIneligibleGlobalPromo(validateUsePromoRevampUiModel, notEligiblePromoHolderdataList)
-            notEligiblePromoHolderdataList = addIneligibleVoucherPromo(validateUsePromoRevampUiModel, notEligiblePromoHolderdataList)
-        }
-
-        if (notEligiblePromoHolderdataList.size > 0) {
-            globalEvent.value = OccGlobalEvent.PromoClashing(notEligiblePromoHolderdataList)
-            return false
-        }
-        return true
-    }
-
-    private fun addIneligibleGlobalPromo(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel, notEligiblePromoHolderdataList: ArrayList<NotEligiblePromoHolderdata>): ArrayList<NotEligiblePromoHolderdata> {
-        if (validateUsePromoRevampUiModel.promoUiModel.messageUiModel.state == "red") {
-            val notEligiblePromoHolderdata = NotEligiblePromoHolderdata()
-            notEligiblePromoHolderdata.promoTitle = validateUsePromoRevampUiModel.promoUiModel.titleDescription
-            if (validateUsePromoRevampUiModel.promoUiModel.codes.isNotEmpty()) {
-                notEligiblePromoHolderdata.promoCode = validateUsePromoRevampUiModel.promoUiModel.codes[0]
-            }
-            notEligiblePromoHolderdata.shopName = "Kode promo"
-            notEligiblePromoHolderdata.iconType = TYPE_ICON_GLOBAL
-            notEligiblePromoHolderdata.showShopSection = true
-            notEligiblePromoHolderdata.errorMessage = validateUsePromoRevampUiModel.promoUiModel.messageUiModel.text
-            notEligiblePromoHolderdataList.add(notEligiblePromoHolderdata)
-        }
-        return notEligiblePromoHolderdataList
-    }
-
-    private fun addIneligibleVoucherPromo(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel, notEligiblePromoHolderdataList: ArrayList<NotEligiblePromoHolderdata>): ArrayList<NotEligiblePromoHolderdata> {
-        val voucherOrdersItemUiModels = validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels
-        for (i in voucherOrdersItemUiModels.indices) {
-            val voucherOrdersItemUiModel = voucherOrdersItemUiModels[i]
-            if (voucherOrdersItemUiModel != null && voucherOrdersItemUiModel.messageUiModel.state == "red") {
-                val notEligiblePromoHolderdata = NotEligiblePromoHolderdata()
-                notEligiblePromoHolderdata.promoTitle = voucherOrdersItemUiModel.titleDescription
-                notEligiblePromoHolderdata.promoCode = voucherOrdersItemUiModel.titleDescription
-                if (orderCart.cartString == voucherOrdersItemUiModel.uniqueId) {
-                    notEligiblePromoHolderdata.shopName = orderShop.shopName
-                    if (orderShop.isOfficial == 1) {
-                        notEligiblePromoHolderdata.iconType = TYPE_ICON_OFFICIAL_STORE
-                    } else if (orderShop.isGold == 1) {
-                        notEligiblePromoHolderdata.iconType = TYPE_ICON_POWER_MERCHANT
-                    }
-                }
-                if (i == 0) {
-                    notEligiblePromoHolderdata.showShopSection = true
-                } else {
-                    notEligiblePromoHolderdata.showShopSection = voucherOrdersItemUiModels[i - 1]?.uniqueId != voucherOrdersItemUiModel.uniqueId
-                }
-
-                notEligiblePromoHolderdata.errorMessage = voucherOrdersItemUiModel.messageUiModel.text
-                notEligiblePromoHolderdataList.add(notEligiblePromoHolderdata)
-            }
-        }
-        return notEligiblePromoHolderdataList
     }
 
     fun cancelIneligiblePromoCheckout(notEligiblePromoHolderdataList: ArrayList<NotEligiblePromoHolderdata>, onSuccessCheckout: (CheckoutOccResult) -> Unit) {
