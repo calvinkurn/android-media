@@ -208,21 +208,25 @@ class ChooseAccountFragment : BaseDaggerFragment(),
 
     override fun onSelectedAccount(account: UserDetail, phone: String) {
         if(account.challenge_2fa){
-            selectedAccount = account
-            selectedPhoneNo = phone
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, 148)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phone)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, account.email)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_USER_ID_ENC, account.user_id_enc)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_USER_ACCESS_TOKEN, viewModel.accessToken)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_USER_ID, account.userId)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, false)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, false)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_REQUEST_OTP_MODE, OtpConstant.OtpMode.PIN);
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA, true);
-            startActivityForResult(intent, REQUEST_CODE_PIN_CHALLENGE)
+            open2FA(account, phone)
         }else loginToken(account, phone)
+    }
+
+    private fun open2FA(account: UserDetail, phone: String){
+        selectedAccount = account
+        selectedPhoneNo = phone
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, 148)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phone)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, account.email)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_USER_ID_ENC, account.user_id_enc)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_USER_ACCESS_TOKEN, viewModel.accessToken)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_USER_ID, account.userId)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, false)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, false)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_REQUEST_OTP_MODE, OtpConstant.OtpMode.PIN);
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA, true);
+        startActivityForResult(intent, REQUEST_CODE_PIN_CHALLENGE)
     }
 
     private fun getAccountList() {
@@ -381,7 +385,9 @@ class ChooseAccountFragment : BaseDaggerFragment(),
         if (accountList.userDetails.size == 1 && accountList.msisdn.isNotEmpty()) {
             adapter.setList(accountList.userDetails, accountList.msisdn)
             val userDetail = accountList.userDetails[0]
-            loginToken(userDetail, accountList.msisdn)
+            if(userDetail.challenge_2fa) {
+                open2FA(userDetail, accountList.msisdn)
+            }else loginToken(userDetail, accountList.msisdn)
         } else {
             dismissLoadingProgress()
             adapter.setList(accountList.userDetails, accountList.msisdn)
