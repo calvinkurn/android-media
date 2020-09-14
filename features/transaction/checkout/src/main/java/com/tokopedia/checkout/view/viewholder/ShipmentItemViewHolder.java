@@ -147,7 +147,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private ImageView imgShopBadge;
     private LinearLayout llShippingOptionsContainer;
     private LinearLayout layoutWarningAndError;
-    private LinearLayout llCourierRecommendationTradeInDropOffStateLoading;
     private TextView tvErrorShipmentItemTitle;
     private TextView tvErrorShipmentItemDescription;
     private FrameLayout flDisableContainer;
@@ -155,8 +154,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private ConstraintLayout layoutTradeInShippingInfo;
     private Typography tvTradeInShippingPriceTitle;
     private Typography tvTradeInShippingPriceDetail;
-    private Typography labelChooseDurationTradeIn;
-    private Typography tvChooseDurationTradeIn;
     private Typography textVariant;
     private Typography textCashback;
     private Typography textLabelIncidentProductLevel;
@@ -272,7 +269,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         imgShopBadge = itemView.findViewById(R.id.img_shop_badge);
         llShippingOptionsContainer = itemView.findViewById(R.id.ll_shipping_options_container);
         layoutWarningAndError = itemView.findViewById(R.id.layout_warning_and_error);
-        llCourierRecommendationTradeInDropOffStateLoading = itemView.findViewById(R.id.ll_courier_recommendation_Trade_in_drop_off_state_loading);
         tvErrorShipmentItemTitle = itemView.findViewById(R.id.tv_error_shipment_item_title);
         tvErrorShipmentItemDescription = itemView.findViewById(R.id.tv_error_shipment_item_description);
         flDisableContainer = itemView.findViewById(R.id.fl_disable_container);
@@ -280,8 +276,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         layoutTradeInShippingInfo = itemView.findViewById(R.id.layout_trade_in_shipping_info);
         tvTradeInShippingPriceTitle = itemView.findViewById(R.id.tv_trade_in_shipping_price_title);
         tvTradeInShippingPriceDetail = itemView.findViewById(R.id.tv_trade_in_shipping_price_detail);
-        labelChooseDurationTradeIn = itemView.findViewById(R.id.label_choose_duration_trade_in);
-        tvChooseDurationTradeIn = itemView.findViewById(R.id.tv_choose_duration_trade_in);
         productTicker = itemView.findViewById(R.id.product_ticker);
         textOrderNumber = itemView.findViewById(R.id.text_order_number);
         labelPreOrder = itemView.findViewById(R.id.label_pre_order);
@@ -425,19 +419,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             layoutWarningAndError.setVisibility(View.GONE);
         }
         renderError(shipmentCartItemModel);
-    }
-
-    private void renderShipping(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel recipientAddressModel, RatesDataConverter ratesDataConverter) {
-        boolean isTradeInDropOff = mActionListener.isTradeInByDropOff();
-
-        RecipientAddressModel currentAddress;
-        if (recipientAddressModel == null) {
-            currentAddress = shipmentCartItemModel.getRecipientAddressModel();
-        } else {
-            currentAddress = recipientAddressModel;
-        }
-
-        renderShippingExperience(shipmentCartItemModel, currentAddress, ratesDataConverter);
     }
 
     private void renderCartItem(ShipmentCartItemModel shipmentCartItemModel) {
@@ -638,9 +619,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         }
     }
 
-    private void renderShippingExperience(ShipmentCartItemModel shipmentCartItemModel,
-                                          RecipientAddressModel currentAddress,
-                                          RatesDataConverter ratesDataConverter) {
+    private void renderShipping(ShipmentCartItemModel shipmentCartItemModel,
+                                RecipientAddressModel currentAddress,
+                                RatesDataConverter ratesDataConverter) {
         layoutTradeInShippingInfo.setVisibility(View.GONE);
         llShippingExperienceContainer.setVisibility(View.VISIBLE);
 
@@ -755,13 +736,25 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             }
         } else {
             // Has not select shipping
-            llShippingOptionsContainer.setVisibility(View.GONE);
-            layoutStateHasSelectedNormalShipping.setVisibility(View.GONE);
+            boolean isTradeInDropOff = mActionListener.isTradeInByDropOff();
             layoutStateHasSelectedFreeShipping.setVisibility(View.GONE);
-            layoutStateNoSelectedShipping.setVisibility(View.VISIBLE);
-            layoutStateNoSelectedShipping.setOnClickListener(
-                    getOnChangeDurationClickListener(shipmentCartItemModel, currentAddress)
-            );
+            layoutStateHasSelectedNormalShipping.setVisibility(View.GONE);
+            llShippingOptionsContainer.setVisibility(View.GONE);
+
+            if (isTradeInDropOff) {
+                tvTradeInShippingPriceTitle.setVisibility(View.VISIBLE);
+                tvTradeInShippingPriceDetail.setVisibility(View.VISIBLE);
+                layoutTradeInShippingInfo.setVisibility(View.VISIBLE);
+                layoutStateNoSelectedShipping.setVisibility(View.GONE);
+            } else {
+                tvTradeInShippingPriceTitle.setVisibility(View.GONE);
+                tvTradeInShippingPriceDetail.setVisibility(View.GONE);
+                layoutTradeInShippingInfo.setVisibility(View.GONE);
+                layoutStateNoSelectedShipping.setVisibility(View.VISIBLE);
+                layoutStateNoSelectedShipping.setOnClickListener(
+                        getOnChangeDurationClickListener(shipmentCartItemModel, currentAddress)
+                );
+            }
 
             loadCourierState(shipmentCartItemModel, currentAddress, ratesDataConverter, SHIPPING_SAVE_STATE_TYPE_SHIPPING_EXPERIENCE);
         }
@@ -791,9 +784,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         if (shipmentCartItemModel.isStateLoadingCourierState()) {
             switch (saveStateType) {
                 case SHIPPING_SAVE_STATE_TYPE_TRADE_IN_DROP_OFF:
-                    llCourierRecommendationTradeInDropOffStateLoading.setVisibility(View.VISIBLE);
-                    labelChooseDurationTradeIn.setVisibility(View.GONE);
-                    tvChooseDurationTradeIn.setVisibility(View.GONE);
                     tvTradeInShippingPriceTitle.setVisibility(View.GONE);
                     tvTradeInShippingPriceDetail.setVisibility(View.GONE);
                     break;
@@ -807,7 +797,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             switch (saveStateType) {
                 case SHIPPING_SAVE_STATE_TYPE_TRADE_IN_DROP_OFF:
                     hasLoadCourier = shipmentDetailData != null && shipmentDetailData.getSelectedCourierTradeInDropOff() != null;
-                    llCourierRecommendationTradeInDropOffStateLoading.setVisibility(View.GONE);
                     break;
                 case SHIPPING_SAVE_STATE_TYPE_SHIPPING_EXPERIENCE:
                     hasLoadCourier = shipmentDetailData != null && shipmentDetailData.getSelectedCourier() != null;
@@ -844,9 +833,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                             switch (saveStateType) {
                                 case SHIPPING_SAVE_STATE_TYPE_TRADE_IN_DROP_OFF:
                                     shipmentCartItemModel.setStateHasLoadCourierTradeInDropOffState(true);
-                                    llCourierRecommendationTradeInDropOffStateLoading.setVisibility(View.VISIBLE);
-                                    labelChooseDurationTradeIn.setVisibility(View.GONE);
-                                    tvChooseDurationTradeIn.setVisibility(View.GONE);
                                     tvTradeInShippingPriceTitle.setVisibility(View.GONE);
                                     tvTradeInShippingPriceDetail.setVisibility(View.GONE);
                                     break;
@@ -860,9 +846,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     } else {
                         switch (saveStateType) {
                             case SHIPPING_SAVE_STATE_TYPE_TRADE_IN_DROP_OFF:
-                                llCourierRecommendationTradeInDropOffStateLoading.setVisibility(View.GONE);
-                                labelChooseDurationTradeIn.setVisibility(View.VISIBLE);
-                                tvChooseDurationTradeIn.setVisibility(View.VISIBLE);
                                 tvTradeInShippingPriceTitle.setVisibility(View.GONE);
                                 tvTradeInShippingPriceDetail.setVisibility(View.GONE);
                                 break;
@@ -876,9 +859,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             } else {
                 switch (saveStateType) {
                     case SHIPPING_SAVE_STATE_TYPE_TRADE_IN_DROP_OFF:
-                        llCourierRecommendationTradeInDropOffStateLoading.setVisibility(View.GONE);
-                        labelChooseDurationTradeIn.setVisibility(View.VISIBLE);
-                        tvChooseDurationTradeIn.setVisibility(View.VISIBLE);
                         tvTradeInShippingPriceTitle.setVisibility(View.GONE);
                         tvTradeInShippingPriceDetail.setVisibility(View.GONE);
                         break;

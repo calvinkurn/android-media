@@ -30,6 +30,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <!--Shipping: Trade In Pickup-->
+            <include
+                layout="@layout/item_shipment_trade_in_pickup"
+                tools:visibility="visible" />
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layout_state_no_selected_shipping"
                 android:layout_width="match_parent"
