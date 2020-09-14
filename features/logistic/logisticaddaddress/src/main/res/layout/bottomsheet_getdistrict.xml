@@ -105,7 +105,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_detail_address"
-                android:contentDescription="@string/content_desc_et_detail_address2"
+                android:contentDescription="@string/content_desc_et_detail_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:enabled="true"

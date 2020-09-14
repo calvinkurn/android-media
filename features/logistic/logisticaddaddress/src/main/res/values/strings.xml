@@ -124,7 +124,6 @@
     <string name="content_desc_et_search">input cari</string>
     <string name="content_desc_place_name">text nama tempat</string>
     <string name="content_desc_et_detail_address">input detail alamat</string>
-    <string name="content_desc_et_detail_address2">input detail alamat2</string>
     <string name="content_desc_btn_choose_location">button pilih lokasi ini</string>
     <string name="content_desc_address_type">input simpan alamat sebagai</string>
     <string name="content_desc_et_label_address">input label alamat</string>
