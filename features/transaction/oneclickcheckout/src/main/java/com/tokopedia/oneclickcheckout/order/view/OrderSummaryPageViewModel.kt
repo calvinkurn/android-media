@@ -243,46 +243,14 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
     }
 
-    fun chooseCourier(choosenShippingCourierViewModel: ShippingCourierUiModel) {
-        val shipping = _orderShipment
-        val shippingRecommendationData = shipping.shippingRecommendationData
-        if (shippingRecommendationData != null) {
-            val shippingDurationViewModels = shippingRecommendationData.shippingDurationViewModels
+    fun chooseCourier(chosenShippingCourierViewModel: ShippingCourierUiModel) {
+        val newOrderShipment = logisticProcessor.chooseCourier(chosenShippingCourierViewModel, _orderShipment)
+        newOrderShipment?.let {
             clearBboIfExist()
-            shippingRecommendationData.logisticPromo = shippingRecommendationData.logisticPromo?.copy(isApplied = false)
-            for (shippingDurationViewModel in shippingDurationViewModels) {
-                if (shippingDurationViewModel.serviceData.serviceId == shipping.serviceId) {
-                    shippingDurationViewModel.isSelected = true
-                    val shippingCourierViewModelList = shippingDurationViewModel.shippingCourierViewModelList
-                    var selectedShippingCourierUiModel: ShippingCourierUiModel? = null
-                    for (shippingCourierUiModel in shippingCourierViewModelList) {
-                        if (shippingCourierUiModel.productData.shipperProductId == choosenShippingCourierViewModel.productData.shipperProductId) {
-                            selectedShippingCourierUiModel = shippingCourierUiModel
-                        } else {
-                            shippingCourierUiModel.isSelected = false
-                        }
-                    }
-                    if (selectedShippingCourierUiModel != null) {
-                        selectedShippingCourierUiModel.isSelected = true
-                        _orderShipment = shipping.copy(
-                                shipperProductId = selectedShippingCourierUiModel.productData.shipperProductId,
-                                ratesId = selectedShippingCourierUiModel.ratesId,
-                                ut = selectedShippingCourierUiModel.productData.unixTime,
-                                checksum = selectedShippingCourierUiModel.productData.checkSum,
-                                shipperId = selectedShippingCourierUiModel.productData.shipperId,
-                                shipperName = selectedShippingCourierUiModel.productData.shipperName,
-                                insuranceData = selectedShippingCourierUiModel.productData.insurance,
-                                shippingPrice = selectedShippingCourierUiModel.productData.price.price,
-                                shippingRecommendationData = shippingRecommendationData,
-                                logisticPromoShipping = null,
-                                isApplyLogisticPromo = false)
-                        orderShipment.value = _orderShipment
-                        calculateTotal()
-                        validateUsePromo()
-                        return
-                    }
-                }
-            }
+            _orderShipment = it
+            orderShipment.value = _orderShipment
+            calculateTotal()
+            validateUsePromo()
         }
     }
 
@@ -294,52 +262,13 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     fun chooseDuration(selectedServiceId: Int, selectedShippingCourierUiModel: ShippingCourierUiModel, flagNeedToSetPinpoint: Boolean) {
-        val shipping = _orderShipment
-        val shippingRecommendationData = shipping.shippingRecommendationData
-        if (shippingRecommendationData != null) {
-            val shippingDurationViewModels = shippingRecommendationData.shippingDurationViewModels
-            var selectedShippingDurationViewModel = shippingDurationViewModels[0]
-            for (shippingDurationViewModel in shippingDurationViewModels) {
-                if (shippingDurationViewModel.serviceData.serviceId == selectedServiceId) {
-                    shippingDurationViewModel.isSelected = true
-                    selectedShippingDurationViewModel = shippingDurationViewModel
-                } else {
-                    shippingDurationViewModel.isSelected = false
-                }
-            }
+        val newOrderShipment = logisticProcessor.chooseDuration(selectedServiceId, selectedShippingCourierUiModel, flagNeedToSetPinpoint, _orderShipment)
+        newOrderShipment?.let {
             clearBboIfExist()
-            shippingRecommendationData.logisticPromo = shippingRecommendationData.logisticPromo?.copy(isApplied = false)
-            var newShipping = shipping.copy(
-                    needPinpoint = flagNeedToSetPinpoint,
-                    serviceErrorMessage = if (flagNeedToSetPinpoint) NEED_PINPOINT_ERROR_MESSAGE else selectedShippingCourierUiModel.productData.error?.errorMessage,
-                    isServicePickerEnable = !flagNeedToSetPinpoint,
-                    serviceId = selectedShippingDurationViewModel.serviceData.serviceId,
-                    serviceDuration = selectedShippingDurationViewModel.serviceData.serviceName,
-                    serviceName = selectedShippingDurationViewModel.serviceData.serviceName,
-                    shipperProductId = selectedShippingCourierUiModel.productData.shipperProductId,
-                    ratesId = selectedShippingCourierUiModel.ratesId,
-                    ut = selectedShippingCourierUiModel.productData.unixTime,
-                    checksum = selectedShippingCourierUiModel.productData.checkSum,
-                    shipperId = selectedShippingCourierUiModel.productData.shipperId,
-                    shipperName = selectedShippingCourierUiModel.productData.shipperName,
-                    insuranceData = selectedShippingCourierUiModel.productData.insurance,
-                    shippingPrice = selectedShippingCourierUiModel.productData.price.price,
-                    shippingRecommendationData = shippingRecommendationData,
-                    logisticPromoTickerMessage = null,
-                    logisticPromoViewModel = null,
-                    logisticPromoShipping = null,
-                    isApplyLogisticPromo = false)
-
-            if (newShipping.serviceErrorMessage.isNullOrEmpty()) {
-                val logisticPromo: LogisticPromoUiModel? = shippingRecommendationData.logisticPromo
-                if (logisticPromo != null && !logisticPromo.disabled) {
-                    newShipping = newShipping.copy(logisticPromoTickerMessage = "Tersedia ${logisticPromo.title}", logisticPromoViewModel = logisticPromo, logisticPromoShipping = null)
-                }
-            }
-            _orderShipment = newShipping
+            _orderShipment = it
             orderShipment.value = _orderShipment
             sendPreselectedCourierOption(selectedShippingCourierUiModel.productData.shipperProductId.toString())
-            if (newShipping.serviceErrorMessage.isNullOrEmpty()) {
+            if (it.serviceErrorMessage.isNullOrEmpty()) {
                 validateUsePromo()
             } else {
                 orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
