@@ -31,6 +31,7 @@ import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.extensions.isAnyBottomSheetsShown
 import com.tokopedia.play.extensions.isKeyboardShown
 import com.tokopedia.play.util.PlaySensorOrientationManager
+import com.tokopedia.play.util.event.EventObserver
 import com.tokopedia.play.util.keyboard.KeyboardWatcher
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.view.activity.PlayActivity
@@ -39,8 +40,8 @@ import com.tokopedia.play.view.contract.PlayNewChannelInteractor
 import com.tokopedia.play.view.contract.PlayOrientationListener
 import com.tokopedia.play.view.measurement.ScreenOrientationDataSource
 import com.tokopedia.play.view.measurement.bounds.BoundsKey
-import com.tokopedia.play.view.measurement.bounds.manager.PlayVideoBoundsManager
-import com.tokopedia.play.view.measurement.bounds.manager.VideoBoundsManager
+import com.tokopedia.play.view.measurement.bounds.manager.videobounds.PlayVideoBoundsManager
+import com.tokopedia.play.view.measurement.bounds.manager.videobounds.VideoBoundsManager
 import com.tokopedia.play.view.measurement.scaling.PlayVideoScalingManager
 import com.tokopedia.play.view.measurement.scaling.VideoScalingManager
 import com.tokopedia.play.view.type.*
@@ -66,7 +67,8 @@ class PlayFragment @Inject constructor(
         PlayOrientationListener,
         PlayFragmentContract,
         FragmentVideoViewComponent.Listener,
-        FragmentYouTubeViewComponent.Listener {
+        FragmentYouTubeViewComponent.Listener,
+        PlayVideoScalingManager.Listener {
 
     private lateinit var ivClose: ImageView
     private lateinit var loaderPage: LoaderUnify
@@ -207,6 +209,13 @@ class PlayFragment @Inject constructor(
         else hideAllInsets()
     }
 
+    /**
+     * Video Scaling Manager Listener
+     */
+    override fun onFinalBottomMostBoundsScalingCalculated(bottomMostBounds: Int) {
+        fragmentUserInteractionView.setScaledVideoBottomBounds(bottomMostBounds)
+    }
+
     fun onFirstTopBoundsCalculated() {
         isFirstTopBoundsCalculated = true
         if (playViewModel.videoPlayer.isYouTube) {
@@ -269,14 +278,14 @@ class PlayFragment @Inject constructor(
 
     private fun getVideoScalingManager(): VideoScalingManager = synchronized(this) {
         if (videoScalingManager == null) {
-            videoScalingManager = PlayVideoScalingManager(requireView() as ViewGroup)
+            videoScalingManager = PlayVideoScalingManager(requireView() as ViewGroup, this)
         }
         return videoScalingManager!!
     }
 
     private fun getVideoBoundsManager(): VideoBoundsManager = synchronized(this) {
         if (videoBoundsManager == null) {
-            videoBoundsManager = PlayVideoBoundsManager(requireView() as ViewGroup, object: ScreenOrientationDataSource {
+            videoBoundsManager = PlayVideoBoundsManager(requireView() as ViewGroup, object : ScreenOrientationDataSource {
                 override fun getScreenOrientation(): ScreenOrientation {
                     return orientation
                 }
@@ -332,6 +341,7 @@ class PlayFragment @Inject constructor(
 
     private fun setupObserve() {
         observeGetChannelInfo()
+        observeStateChannel()
         observeSocketInfo()
         observeEventUserInfo()
         observeVideoMeta()
@@ -362,6 +372,12 @@ class PlayFragment @Inject constructor(
                     if (!hasFetchedChannelInfo) fragmentErrorViewOnStateChanged(shouldShow = true)
                 }
             }
+        })
+    }
+
+    private fun observeStateChannel() {
+        playViewModel.observableStateChannelInfo.observe(viewLifecycleOwner, EventObserver {
+            resetMonitoring()
         })
     }
 
@@ -457,6 +473,10 @@ class PlayFragment @Inject constructor(
     fun stopRenderMonitoring() {
         pageMonitoring.stopRenderPerformanceMonitoring()
         stopPageMonitoring()
+    }
+
+    private fun resetMonitoring() {
+        pageMonitoring.invalidate()
     }
 
     private fun stopPageMonitoring() {
