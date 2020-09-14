@@ -130,6 +130,10 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
         }
     }
 
+    fun changeTitleLastSeen() {
+        promo_checkout_list_last_seen_label.text = resources.getString(R.string.promo_title_for_this_category)
+    }
+
     abstract fun onPromoCodeUse(promoCode: String)
 
     override fun onClickItemLastSeen(promoCheckoutLastSeenModel: PromoCheckoutLastSeenModel) {
