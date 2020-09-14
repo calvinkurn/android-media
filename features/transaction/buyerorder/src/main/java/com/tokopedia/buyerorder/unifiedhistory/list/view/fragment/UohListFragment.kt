@@ -239,11 +239,6 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             setDefaultDate()
         }
         paramUohOrder.page = 1
-
-        if (filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true) && !isReset) {
-            paramUohOrder.verticalCategory = CATEGORY_BELANJA
-        }
-
         arrayFilterDate = resources.getStringArray(R.array.filter_date)
     }
 
@@ -613,13 +608,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         }
         filter2?.let { chips.add(it) }
 
-        val typeCategory = if (filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true)) {
-            ChipsUnify.TYPE_SELECTED
-        } else {
-            ChipsUnify.TYPE_NORMAL
-        }
-
-        filter3 = SortFilterItem(ALL_CATEGORIES, typeCategory, ChipsUnify.SIZE_SMALL)
+        filter3 = SortFilterItem(ALL_CATEGORIES, ChipsUnify.TYPE_NORMAL, ChipsUnify.SIZE_SMALL)
         filter3?.listener = {
             uohBottomSheetOptionAdapter = UohBottomSheetOptionAdapter(this)
             showBottomSheetFilterOptions(UohConsts.CHOOSE_CATEGORIES)
@@ -634,11 +623,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             }
             uohBottomSheetOptionAdapter.uohItemMapKeyList = arrayListMap
             uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_CATEGORY
-            if (filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true)) {
-                uohBottomSheetOptionAdapter.selectedKey = CATEGORY_BELANJA
-            } else {
-                uohBottomSheetOptionAdapter.selectedKey = currFilterCategoryKey
-            }
+            uohBottomSheetOptionAdapter.selectedKey = currFilterCategoryKey
             uohBottomSheetOptionAdapter.isReset = isReset
             uohBottomSheetOptionAdapter.notifyDataSetChanged()
         }
