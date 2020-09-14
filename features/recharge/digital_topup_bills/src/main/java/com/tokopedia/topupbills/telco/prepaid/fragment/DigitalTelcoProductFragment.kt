@@ -171,7 +171,8 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
                 val seeMoreBottomSheet = DigitalProductBottomSheet.newInstance(
                         itemProduct.attributes.desc,
                         MethodChecker.fromHtml(itemProduct.attributes.detail).toString(),
-                        itemProduct.attributes.price)
+                        itemProduct.attributes.price,
+                        itemProduct.attributes.productPromo?.newPrice)
                 seeMoreBottomSheet.setOnDismissListener {
                     topupAnalytics.eventCloseDetailProduct(itemProduct.attributes.categoryId)
                 }

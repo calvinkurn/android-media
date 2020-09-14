@@ -273,6 +273,7 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         inputLayoutModelMap.forEach {
             it.value.isSkuFieldVisible = isVisible
         }
+        refreshCollapsedVariantDetailField()
     }
 
     fun getCurrentHeaderPosition(headerPosition: Int): Int {
@@ -293,10 +294,14 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
             if (!it.value) expandedHeaderPositions.add(it.key)
         }
         val filteredMap = inputLayoutModelMap.filterValues { expandedHeaderPositions.contains(it.headerPosition) }
-        if (collapsedFields != 0) {
+        if (collapsedFields > 0) {
             val fieldsMap = mutableMapOf<Int, VariantDetailInputLayoutModel>()
             filteredMap.forEach {
-                val newFieldPosition = it.key - collapsedFields
+                val newFieldPosition = if (it.key <= collapsedFields) {
+                    it.key
+                } else {
+                    it.key - collapsedFields
+                }
                 fieldsMap[newFieldPosition] = it.value
             }
             return fieldsMap
@@ -429,6 +434,17 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
                 unitValueLabel = unitValueLabel,
                 isPrimary = isPrimary,
                 combination = combination)
+    }
+
+    private fun refreshCollapsedVariantDetailField() {
+        updateProductInputModel() // save the last input
+        // reset collapsed variables
+        collapsedFields = 0
+        headerStatusMap.forEach {
+            headerStatusMap[it.key] = false
+        }
+        // do refresh
+        productInputModel.value = productInputModel.value // force invoke livedata notify observer
     }
 
 }

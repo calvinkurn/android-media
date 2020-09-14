@@ -20,28 +20,12 @@ import com.tokopedia.track.TrackAppUtils
 
 class DigitalTopupAnalytics {
 
-    fun eventOpenScreen(userId: String, categoryId: Int) {
-        val categoryName = getCategoryName(categoryId)
-        val stringScreenName = StringBuilder(DigitalTopupEventTracking.Additional.DIGITAL_SCREEN_NAME)
-        stringScreenName.append(categoryName.toLowerCase())
-
-        val mapOpenScreen = HashMap<String, String>()
-        mapOpenScreen[DigitalTopupEventTracking.Additional.IS_LOGIN_STATUS] = if (userId.isEmpty())  "false" else "true"
-        mapOpenScreen[DigitalTopupEventTracking.Additional.BUSINESS_UNIT] = DigitalTopupEventTracking.Additional.BUSINESS_UNIT_RECHARGE
-        mapOpenScreen[DigitalTopupEventTracking.Additional.CURRENT_SITE] = DigitalTopupEventTracking.Additional.CURRENT_SITE_RECHARGE
-        mapOpenScreen[DigitalTopupEventTracking.Additional.USER_ID] = userId
-        mapOpenScreen[DigitalTopupEventTracking.Additional.CATEGORY] = categoryName
-        mapOpenScreen[DigitalTopupEventTracking.Additional.CATEGORY_ID] = categoryId.toString()
-
-        TrackApp.getInstance().gtm.sendScreenAuthenticated(stringScreenName.toString(), mapOpenScreen)
-    }
-
     fun eventInputNumberManual(categoryId: Int, operatorName: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 DigitalTopupEventTracking.Event.CLICK_HOMEPAGE,
                 DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
                 DigitalTopupEventTracking.Action.INPUT_MANUAL_NUMBER,
-                "${getCategoryName(categoryId)} - $operatorName"
+                "${getTrackingCategoryName(categoryId)} - $operatorName"
         ))
     }
 
@@ -50,7 +34,7 @@ class DigitalTopupAnalytics {
                 DigitalTopupEventTracking.Event.CLICK_HOMEPAGE,
                 DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
                 DigitalTopupEventTracking.Action.INPUT_FROM_CONTACT,
-                "${getCategoryName(categoryId)} - $operatorName"
+                "${getTrackingCategoryName(categoryId)} - $operatorName"
         ))
     }
 
@@ -69,7 +53,7 @@ class DigitalTopupAnalytics {
                 DigitalTopupEventTracking.Event.CLICK_HOMEPAGE,
                 DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
                 DigitalTopupEventTracking.Action.INPUT_FROM_WIDGET,
-                "${getCategoryName(categoryId)} - $operatorName"
+                "${getTrackingCategoryName(categoryId)} - $operatorName"
         ))
     }
 
@@ -78,7 +62,7 @@ class DigitalTopupAnalytics {
                 DigitalTopupEventTracking.Event.CLICK_HOMEPAGE,
                 DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
                 DigitalTopupEventTracking.Action.INPUT_FROM_FAVORITE_NUMBER,
-                "${getCategoryName(categoryId)} - $operatorName"
+                "${getTrackingCategoryName(categoryId)} - $operatorName"
         ))
     }
 
@@ -96,7 +80,7 @@ class DigitalTopupAnalytics {
                 DigitalTopupEventTracking.Event.CLICK_HOMEPAGE,
                 DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
                 DigitalTopupEventTracking.Action.CLICK_BACK_BUTTON,
-                getCategoryName(categoryId)
+                getTrackingCategoryName(categoryId)
         ))
     }
 
@@ -105,7 +89,7 @@ class DigitalTopupAnalytics {
                 DigitalTopupEventTracking.Event.CLICK_HOMEPAGE,
                 DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
                 DigitalTopupEventTracking.Action.CLICK_SEE_MORE,
-                getCategoryName(categoryId)
+                getTrackingCategoryName(categoryId)
         ))
     }
 
@@ -114,7 +98,7 @@ class DigitalTopupAnalytics {
                 DigitalTopupEventTracking.Event.CLICK_HOMEPAGE,
                 DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
                 DigitalTopupEventTracking.Action.CLOSE_DETAIL_PRODUCT,
-                getCategoryName(categoryId)
+                getTrackingCategoryName(categoryId)
         ))
     }
 
@@ -141,7 +125,7 @@ class DigitalTopupAnalytics {
                 DigitalTopupEventTracking.Event.CLICK_HOMEPAGE,
                 DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
                 DigitalTopupEventTracking.Action.CLICK_CHECK_TAGIHAN,
-                "${getCategoryName(categoryId)} - $operatorName")
+                "${getTrackingCategoryName(categoryId)} - $operatorName")
         sendGeneralEvent(mapEvent, userId)
     }
 
@@ -150,7 +134,7 @@ class DigitalTopupAnalytics {
                 DigitalTopupEventTracking.Event.CLICK_HOMEPAGE,
                 DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
                 action,
-                "${getCategoryName(categoryId)}")
+                "${getTrackingCategoryName(categoryId)}")
         sendGeneralEvent(mapEvent, userId)
     }
 
@@ -159,7 +143,7 @@ class DigitalTopupAnalytics {
                 DigitalTopupEventTracking.Event.CLICK_HOMEPAGE,
                 DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
                 DigitalTopupEventTracking.Action.CLICK_DOTS_MENU,
-                "${getCategoryName(categoryId.toInt())}")
+                "${getTrackingCategoryName(categoryId.toInt())}")
         sendGeneralEvent(mapEvent, userId)
     }
 
@@ -168,7 +152,7 @@ class DigitalTopupAnalytics {
                 DigitalTopupEventTracking.Event.CLICK_HOMEPAGE,
                 DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
                 DigitalTopupEventTracking.Action.CLICK_QUICK_FILTER,
-                "${getCategoryName(categoryId)} - ${filterCluster.toLowerCase()}")
+                "${getTrackingCategoryName(categoryId)} - ${filterCluster.toLowerCase()}")
         sendGeneralEvent(mapEvent, userId)
     }
 
@@ -177,7 +161,7 @@ class DigitalTopupAnalytics {
                 DigitalTopupEventTracking.Event.CLICK_HOMEPAGE,
                 DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
                 DigitalTopupEventTracking.Action.CLICK_SAVE_QUICK_FILTER,
-                "${getCategoryName(categoryId)} - ${filterCluster.toLowerCase()} - $valuesFilter")
+                "${getTrackingCategoryName(categoryId)} - ${filterCluster.toLowerCase()} - $valuesFilter")
         sendGeneralEvent(mapEvent, userId)
     }
 
@@ -186,7 +170,7 @@ class DigitalTopupAnalytics {
                 DigitalTopupEventTracking.Event.CLICK_HOMEPAGE,
                 DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
                 DigitalTopupEventTracking.Action.CLICK_RESET_QUICK_FILTER,
-                "${getCategoryName(categoryId)} - ${filterCluster.toLowerCase()}")
+                "${getTrackingCategoryName(categoryId)} - ${filterCluster.toLowerCase()}")
         sendGeneralEvent(mapEvent, userId)
     }
 
@@ -195,7 +179,7 @@ class DigitalTopupAnalytics {
                 DigitalTopupEventTracking.Event.CLICK_HOMEPAGE,
                 DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
                 DigitalTopupEventTracking.Action.CLICK_RESET_FILTER_CLUSTER,
-                "${getCategoryName(categoryId)}")
+                "${getTrackingCategoryName(categoryId)}")
         sendGeneralEvent(mapEvent, userId)
     }
 
@@ -232,9 +216,9 @@ class DigitalTopupAnalytics {
                     putString(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_ITEM_ID, element.itemProduct.id)
                     putInt(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_PRICE, element.itemProduct.attributes.pricePlain)
                     putString(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_ITEM_BRAND, "none / others")
-                    putString(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_ITEM_CATEGORY, getCategoryName(element.itemProduct.attributes.categoryId))
+                    putString(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_ITEM_CATEGORY, getTrackingCategoryName(element.itemProduct.attributes.categoryId))
                     putString(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_ITEM_VARIANT, "none / others")
-                    putString(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_DIMENSION, "${getCategoryName(element.itemProduct.attributes.categoryId)} - " +
+                    putString(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_DIMENSION, "${getTrackingCategoryName(element.itemProduct.attributes.categoryId)} - " +
                     "product ${element.position} - ${element.itemProduct.attributes.desc}")
                     putInt(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_INDEX, element.position)
             })
@@ -244,7 +228,7 @@ class DigitalTopupAnalytics {
             putString(TrackAppUtils.EVENT, DigitalTopupEventTracking.Event.VIEW_ITEM_LIST)
             putString(TrackAppUtils.EVENT_CATEGORY, DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE)
             putString(TrackAppUtils.EVENT_ACTION, DigitalTopupEventTracking.Action.PRODUCT_CARD_IMPRESSION)
-            putString(TrackAppUtils.EVENT_LABEL, "${getCategoryName(digitalTrackProductTelcoList[0].itemProduct.attributes.categoryId)} - $operatorName")
+            putString(TrackAppUtils.EVENT_LABEL, "${getTrackingCategoryName(digitalTrackProductTelcoList[0].itemProduct.attributes.categoryId)} - $operatorName")
             putString(DigitalTopupEventTracking.Additional.CURRENT_SITE, DigitalTopupEventTracking.Additional.CURRENT_SITE_RECHARGE)
             putString(DigitalTopupEventTracking.Additional.USER_ID, userId)
             putString(DigitalTopupEventTracking.Additional.BUSINESS_UNIT, DigitalTopupEventTracking.Additional.BUSINESS_UNIT_RECHARGE)
@@ -262,7 +246,7 @@ class DigitalTopupAnalytics {
             putString(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_ITEM_ID, itemProduct.id)
             putInt(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_PRICE, itemProduct.attributes.pricePlain)
             putString(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_ITEM_BRAND, operatorName)
-            putString(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_ITEM_CATEGORY, getCategoryName(itemProduct.attributes.categoryId))
+            putString(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_ITEM_CATEGORY, getTrackingCategoryName(itemProduct.attributes.categoryId))
             putString(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_ITEM_VARIANT, "none / others")
             putString(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_DIMENSION, "${itemProduct.attributes.desc}")
             putInt(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_INDEX, position)
@@ -272,7 +256,7 @@ class DigitalTopupAnalytics {
             putString(TrackAppUtils.EVENT, DigitalTopupEventTracking.Event.SELECT_CONTENT)
             putString(TrackAppUtils.EVENT_CATEGORY, DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE)
             putString(TrackAppUtils.EVENT_ACTION, DigitalTopupEventTracking.Action.CLICK_PRODUCT_CARD)
-            putString(TrackAppUtils.EVENT_LABEL, "${getCategoryName(itemProduct.attributes.categoryId)} - $operatorName - ${itemProduct.attributes.desc}")
+            putString(TrackAppUtils.EVENT_LABEL, "${getTrackingCategoryName(itemProduct.attributes.categoryId)} - $operatorName - ${itemProduct.attributes.desc}")
             putString(DigitalTopupEventTracking.Additional.CURRENT_SITE, DigitalTopupEventTracking.Additional.CURRENT_SITE_RECHARGE)
             putString(DigitalTopupEventTracking.Additional.USER_ID, userId)
             putString(DigitalTopupEventTracking.Additional.BUSINESS_UNIT, DigitalTopupEventTracking.Additional.BUSINESS_UNIT_RECHARGE)
@@ -290,7 +274,7 @@ class DigitalTopupAnalytics {
             putString(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_ITEM_ID, itemProduct.id)
             putInt(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_PRICE, itemProduct.attributes.pricePlain)
             putString(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_ITEM_BRAND, operatorName)
-            putString(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_ITEM_CATEGORY, getCategoryName(itemProduct.attributes.categoryId))
+            putString(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_ITEM_CATEGORY, getTrackingCategoryName(itemProduct.attributes.categoryId))
             putString(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_ITEM_VARIANT, "none / others")
             putInt(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_QUANTITY, 1)
         })
@@ -299,8 +283,8 @@ class DigitalTopupAnalytics {
             putString(TrackAppUtils.EVENT, DigitalTopupEventTracking.Event.ADD_TO_CART)
             putString(TrackAppUtils.EVENT_CATEGORY, DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE)
             putString(TrackAppUtils.EVENT_ACTION, DigitalTopupEventTracking.Action.CLICK_DETAIL_CLUSTER)
-            putString(TrackAppUtils.EVENT_LABEL, "${getCategoryName(itemProduct.attributes.categoryId)} - $operatorName - ${itemProduct.attributes.desc}")
-            putString(DigitalTopupEventTracking.Additional.SCREEN_NAME, getCategoryName(itemProduct.attributes.categoryId))
+            putString(TrackAppUtils.EVENT_LABEL, "${getTrackingCategoryName(itemProduct.attributes.categoryId)} - $operatorName - ${itemProduct.attributes.desc}")
+            putString(DigitalTopupEventTracking.Additional.SCREEN_NAME, getTrackingCategoryName(itemProduct.attributes.categoryId))
             putString(DigitalTopupEventTracking.Additional.CURRENT_SITE, DigitalTopupEventTracking.Additional.CURRENT_SITE_RECHARGE)
             putString(DigitalTopupEventTracking.Additional.USER_ID, userId)
             putString(DigitalTopupEventTracking.Additional.BUSINESS_UNIT, DigitalTopupEventTracking.Additional.BUSINESS_UNIT_RECHARGE)
@@ -317,8 +301,8 @@ class DigitalTopupAnalytics {
                     DigitalTopupEventTracking.EnhanceEccomerce.ID, "none",
                     DigitalTopupEventTracking.EnhanceEccomerce.PRICE, "0",
                     DigitalTopupEventTracking.EnhanceEccomerce.BRAND, "none",
-                    DigitalTopupEventTracking.EnhanceEccomerce.CATEGORY, getCategoryName(element.categoryId),
-                    DigitalTopupEventTracking.EnhanceEccomerce.LIST, "category ${getCategoryName(element.categoryId)} - " +
+                    DigitalTopupEventTracking.EnhanceEccomerce.CATEGORY, getTrackingCategoryName(element.categoryId),
+                    DigitalTopupEventTracking.EnhanceEccomerce.LIST, "category ${getTrackingCategoryName(element.categoryId)} - " +
                     "product ${element.position} - " +
                     "${element.itemRecent.clientNumber} - ${element.itemRecent.title}",
                     DigitalTopupEventTracking.EnhanceEccomerce.POSITION, element.position))
@@ -348,7 +332,7 @@ class DigitalTopupAnalytics {
                 DigitalTopupEventTracking.EnhanceEccomerce.ID, "none",
                 DigitalTopupEventTracking.EnhanceEccomerce.PRICE, "0",
                 DigitalTopupEventTracking.EnhanceEccomerce.BRAND, operatorName,
-                DigitalTopupEventTracking.EnhanceEccomerce.CATEGORY, getCategoryName(itemRecent.categoryId),
+                DigitalTopupEventTracking.EnhanceEccomerce.CATEGORY, getTrackingCategoryName(itemRecent.categoryId),
                 DigitalTopupEventTracking.EnhanceEccomerce.POSITION, position))
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
@@ -356,7 +340,7 @@ class DigitalTopupAnalytics {
                         "event", DigitalTopupEventTracking.Event.PRODUCT_CLICK,
                         "eventCategory", DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
                         "eventAction", DigitalTopupEventTracking.Action.CLICK_RECENT_ICON,
-                        "eventLabel", "${getCategoryName(itemRecent.categoryId)} - $position",
+                        "eventLabel", "${getTrackingCategoryName(itemRecent.categoryId)} - $position",
                         "ecommerce", DataLayer.mapOf(
                         "click", DataLayer.mapOf(
                         "actionField", DataLayer.mapOf(
@@ -428,12 +412,16 @@ class DigitalTopupAnalytics {
         )
     }
 
-    private fun getCategoryName(categoryId: Int): String {
+    private fun getTrackingCategoryName(categoryId: Int): String {
+        return getCategoryName(categoryId).toLowerCase()
+    }
+
+    fun getCategoryName(categoryId: Int): String {
         return when (categoryId) {
-            TelcoCategoryType.CATEGORY_PULSA -> TelcoComponentName.PRODUCT_PULSA.toLowerCase()
-            TelcoCategoryType.CATEGORY_PAKET_DATA -> TelcoComponentName.PRODUCT_PAKET_DATA.toLowerCase()
-            TelcoCategoryType.CATEGORY_ROAMING -> TelcoComponentName.PRODUCT_ROAMING.toLowerCase()
-            else -> TelcoComponentName.PRODUCT_PASCABAYAR.toLowerCase()
+            TelcoCategoryType.CATEGORY_PULSA -> TelcoComponentName.PRODUCT_PULSA
+            TelcoCategoryType.CATEGORY_PAKET_DATA -> TelcoComponentName.PRODUCT_PAKET_DATA
+            TelcoCategoryType.CATEGORY_ROAMING -> TelcoComponentName.PRODUCT_ROAMING
+            else -> TelcoComponentName.PRODUCT_PASCABAYAR
         }
     }
 }
