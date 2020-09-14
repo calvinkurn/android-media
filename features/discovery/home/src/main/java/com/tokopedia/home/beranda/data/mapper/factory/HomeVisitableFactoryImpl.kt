@@ -148,6 +148,7 @@ class HomeVisitableFactoryImpl(
                 id="19320",
                 contextualInfo = 1,
                 header = DynamicHomeChannel.Header(name = "Toko Pilihan", applink = "http://tokopedia.com"),
+                widgetParam = "page=1&ep=cpm&item=10&src=homepage&device=desktop&template_id=3&user_id=8909923&headline_product_count=3",
                 banner = DynamicHomeChannel.Banner(title = "Toko Kecantikan", description = "Dari pembelian di kategori yang sering kamu beli", gradientColor = arrayListOf("#411C3B"), textColor = "#ffffff")
         ), 1, isCache)
         dynamicChannelList.forEachIndexed { index, channel ->
