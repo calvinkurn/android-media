@@ -38,7 +38,8 @@ class BuyerAccountMapper @Inject constructor(
     private val LABEL_BLOCKED = "Layanan Terblokir"
     private val LABEL_DEACTIVATED = "Dinonaktifkan"
     private val LABEL_KYC_PENDING = "Selesaikan Pengajuan Aplikasimu"
-    private val UOH_AB_TEST_KEY = "UOH_android"
+    private val UOH_AB_TEST_KEY = "uoh_android"
+    private val UOH_AB_TEST_VALUE = "uoh_android"
 
     override fun call(t: AccountDataModel): BuyerViewModel {
         return getBuyerModel(t)
@@ -243,11 +244,7 @@ class BuyerAccountMapper @Inject constructor(
     }
 
     private fun useUoh(): Boolean? {
-        val remoteConfigValue = getABTestRemoteConfig().getString(UOH_AB_TEST_KEY)
-        return remoteConfigValue.isNotEmpty()
-    }
-
-    private fun getABTestRemoteConfig(): RemoteConfig {
-        return RemoteConfigInstance.getInstance().abTestPlatform
+        val remoteConfigValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(UOH_AB_TEST_KEY, "")
+        return remoteConfigValue == UOH_AB_TEST_VALUE
     }
 }

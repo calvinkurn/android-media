@@ -52,6 +52,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 
 /**
  * @author okasurya on 7/16/18.
@@ -73,7 +74,8 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
             DEFAULT_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
 
     private var shouldRefreshOnResume = true
-    private var UOH_AB_TEST_KEY = "UOH_android"
+    private var UOH_AB_TEST_KEY = "uoh_android"
+    private var UOH_AB_TEST_VALUE = "uoh_android"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -236,9 +238,7 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
         } else {
             context?.let {
                 adapter.clearAllElements()
-                useUoh()?.let { newFlow ->
-                    adapter.setElement(StaticBuyerModelGenerator.getModel(it, null, getRemoteConfig(), newFlow))
-                }
+                adapter.setElement(StaticBuyerModelGenerator.getModel(it, null, getRemoteConfig(), useUoh()))
             }
         }
 
@@ -486,13 +486,13 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
         return recommendationList
     }
 
-    private fun getABTestRemoteConfig(): RemoteConfig? {
+    private fun getRemoteConfig(): AbTestPlatform {
         return RemoteConfigInstance.getInstance().abTestPlatform
     }
 
-    private fun useUoh(): Boolean? {
-        val remoteConfigValue = getABTestRemoteConfig()?.getString(UOH_AB_TEST_KEY)
-        return remoteConfigValue?.isNotEmpty()
+    private fun useUoh(): Boolean {
+        val remoteConfigValue = getRemoteConfig().getString(UOH_AB_TEST_KEY, "")
+        return remoteConfigValue == UOH_AB_TEST_VALUE
     }
 
     companion object {

@@ -14,7 +14,8 @@ import com.tokopedia.remoteconfig.RemoteConfigInstance
  * Created by fwidjaja on 27/08/20.
  */
 object DeeplinkMapperUohOrder {
-    private var UOH_AB_TEST_KEY = "UOH_android"
+    private var UOH_AB_TEST_KEY = "uoh_android"
+    private var UOH_AB_TEST_VALUE = "uoh_android"
 
     fun getRegisteredNavigationUohOrder(deeplink: String): String {
         var returnedDeeplink = ""
@@ -23,25 +24,17 @@ object DeeplinkMapperUohOrder {
                 || deeplink.startsWith(ApplinkConst.FLIGHT_ORDER) || deeplink.startsWith(ApplinkConst.GIFT_CARDS_ORDER)
                 || deeplink.startsWith(ApplinkConst.INSURANCE_ORDER) || deeplink.startsWith(ApplinkConst.MODAL_TOKO_ORDER)
                 || deeplink.startsWith(ApplinkConst.HOTEL_ORDER)) {
-            useUoh()?.let { newFlow ->
-                returnedDeeplink = if (newFlow) ApplinkConstInternalOrder.UNIFY_ORDER
-                else deeplink
-            }
+            returnedDeeplink = if (useUoh()) ApplinkConstInternalOrder.UNIFY_ORDER
+            else deeplink
         } else if (deeplink.startsWith(ApplinkConst.MARKETPLACE_ORDER_SUB)) {
-            useUoh()?.let { newFlow ->
-                returnedDeeplink = if (newFlow) ApplinkConstInternalOrder.UNIFY_ORDER_IN_PROCESS
-                else deeplink
-            }
+            returnedDeeplink = if (useUoh()) ApplinkConstInternalOrder.UNIFY_ORDER_IN_PROCESS
+            else deeplink
         }
         return returnedDeeplink
     }
 
-    private fun getABTestRemoteConfig(): RemoteConfig? {
-        return RemoteConfigInstance.getInstance().abTestPlatform
-    }
-
-    private fun useUoh(): Boolean? {
-        val remoteConfigValue = getABTestRemoteConfig()?.getString(UOH_AB_TEST_KEY)
-        return remoteConfigValue?.isNotEmpty()
+    private fun useUoh(): Boolean {
+        val remoteConfigValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(UOH_AB_TEST_KEY, "")
+        return remoteConfigValue == UOH_AB_TEST_VALUE
     }
 }

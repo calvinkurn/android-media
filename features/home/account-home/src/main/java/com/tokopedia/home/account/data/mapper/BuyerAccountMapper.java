@@ -53,7 +53,8 @@ public class BuyerAccountMapper implements Func1<AccountDataModel, BuyerViewMode
     private static final String LABEL_BLOCKED = "Layanan Terblokir";
     private static final String LABEL_DEACTIVATED = "Dinonaktifkan";
     private static final String LABEL_KYC_PENDING = "Selesaikan Pengajuan Aplikasimu";
-    private static final String UOH_AB_TEST_KEY = "UOH_android";
+    private static final String UOH_AB_TEST_KEY = "uoh_android";
+    private static final String UOH_AB_TEST_VALUE = "uoh_android";
     private Context context;
     private RemoteConfig remoteConfig;
     private UserSession userSession;
@@ -255,12 +256,8 @@ public class BuyerAccountMapper implements Func1<AccountDataModel, BuyerViewMode
         return buyerCardViewModel;
     }
 
-    private RemoteConfig getABTestRemoteConfig() {
-        return RemoteConfigInstance.getInstance().getABTestPlatform();
-    }
-
     private Boolean useUoh() {
-        String remoteConfigValue = getABTestRemoteConfig().getString(UOH_AB_TEST_KEY);
-        return !remoteConfigValue.isEmpty();
+        String remoteConfigValue = RemoteConfigInstance.getInstance().getABTestPlatform().getString(UOH_AB_TEST_KEY, "");
+        return remoteConfigValue.equalsIgnoreCase(UOH_AB_TEST_VALUE);
     }
 }
