@@ -17,6 +17,8 @@ import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.MOB
 import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.PHONE_TYPE
 import com.tokopedia.entertainment.pdp.data.Form
 import com.tokopedia.entertainment.pdp.data.checkout.AdditionalType
+import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventFormMapper.getFirstName
+import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventFormMapper.getLastName
 import com.tokopedia.entertainment.pdp.listener.OnClickFormListener
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.user.session.UserSessionInterface
@@ -65,15 +67,9 @@ class EventPDPTextFieldViewHolder(val view: View,
             if (element.value.isNullOrEmpty() &&
                     userSession.isLoggedIn &&
                     textFormListener.getAdditionalType().equals(AdditionalType.NULL_DATA)) {
-                val splittedName = userSession.name.split(" ")
-                val splittedLast =  userSession.name.substringBeforeLast(" ")
                 if (element.name == FULLNAME_TYPE) txtValue.textFieldInput.setText(userSession.name)
-                else if (element.name == FAMILY_NAME_TYPE) {
-                    if(!splittedName.isNullOrEmpty()) txtValue.textFieldInput.setText(splittedName.get(splittedName.size-1))
-                }
-                else if(element.name == FIRST_NAME_TYPE){
-                    if(!splittedLast.isNullOrEmpty()) txtValue.textFieldInput.setText(splittedLast)
-                }
+                else if (element.name == FAMILY_NAME_TYPE) txtValue.textFieldInput.setText(getFirstName(userSession.name))
+                else if(element.name == FIRST_NAME_TYPE) txtValue.textFieldInput.setText(getLastName(userSession.name))
                 else if (element.name == EMAIL_TYPE) txtValue.textFieldInput.setText(userSession.email)
                 else if (element.name == PHONE_TYPE || element.name == MOBILE_TYPE) txtValue.textFieldInput.setText(userSession.phoneNumber)
             }
