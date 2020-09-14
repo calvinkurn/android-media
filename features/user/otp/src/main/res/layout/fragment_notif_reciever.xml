@@ -1,189 +1,187 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <ImageView
-        android:id="@+id/btn_back"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:id="@+id/image_phone_bell"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/ic_toolbar_back_otp"/>
-
-    <ImageView
-        android:id="@+id/image_phone_bell"
-        app:layout_constraintTop_toTopOf="@id/btn_back"
+        android:layout_marginTop="@dimen/otp_dp_14"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="@dimen/spacing_lvl5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:srcCompat="@drawable/ic_phone_bell"/>
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_phone_bell" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_title"
-        app:layout_constraintTop_toBottomOf="@id/image_phone_bell"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="36dp"
-        android:layout_marginRight="36dp"
-        android:textAlignment="center"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:text="Apakah kamu berusaha untuk login dengan perangkat lain?"
+        android:textAlignment="center"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/image_phone_bell"
         app:typographyType="heading_2"
-        app:typographyWeight="bold"
-        android:text="Apakah kamu berusaha untuk login dengan perangkat lain?"/>
+        app:typographyWeight="bold" />
 
     <ImageView
         android:id="@+id/image_phone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        app:layout_constraintBottom_toBottomOf="@+id/text_device"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="@id/text_device_title"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
-        app:srcCompat="@drawable/ic_phone_otp"/>
+        app:srcCompat="@drawable/ic_phone_otp" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_device_title"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/otp_dp_14"
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:text="Perangkat"
         app:layout_constraintLeft_toRightOf="@id/image_phone"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text_title"
-        android:layout_marginLeft="@dimen/otp_dp_14"
-        android:layout_marginTop="@dimen/spacing_lvl5"
         app:typographyType="heading_5"
-        app:typographyWeight="bold"
-        android:text="Perangkat"/>
+        app:typographyWeight="bold" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_device"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/otp_dp_14"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:text="Samsung Galaxy Note 9 (Aplikasi)"
         app:layout_constraintLeft_toRightOf="@id/image_phone"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text_device_title"
-        android:layout_marginLeft="@dimen/otp_dp_14"
         app:typographyType="body_2"
-        app:typographyWeight="reguler"
-        android:text="Samsung Galaxy Note 9 (Aplikasi)"/>
+        app:typographyWeight="reguler" />
 
     <ImageView
         android:id="@+id/image_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_device"
         android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl5"
-        app:srcCompat="@drawable/ic_time_otp"/>
+        app:layout_constraintBottom_toBottomOf="@+id/text_time"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/text_time_title"
+        app:srcCompat="@drawable/ic_time_otp" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_time_title"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/otp_dp_14"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:text="Waktu"
         app:layout_constraintLeft_toRightOf="@id/image_time"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/image_time"
-        android:layout_marginLeft="@dimen/otp_dp_14"
+        app:layout_constraintTop_toBottomOf="@+id/text_device"
         app:typographyType="heading_5"
-        app:typographyWeight="bold"
-        android:text="Waktu"/>
+        app:typographyWeight="bold" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_time"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/otp_dp_14"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:text="Senin 4 Februari 2019, 13:03 WIB"
         app:layout_constraintLeft_toRightOf="@id/image_phone"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text_time_title"
-        android:layout_marginLeft="@dimen/otp_dp_14"
         app:typographyType="body_2"
-        app:typographyWeight="reguler"
-        android:text="Senin 4 Februari 2019, 13:03 WIB"/>
+        app:typographyWeight="reguler" />
 
     <ImageView
         android:id="@+id/image_location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_time"
         android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl5"
-        app:srcCompat="@drawable/ic_location_otp"/>
+        app:layout_constraintBottom_toBottomOf="@+id/text_location"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/text_location_title"
+        app:srcCompat="@drawable/ic_location_otp" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_location_title"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/otp_dp_14"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:text="Lokasi"
         app:layout_constraintLeft_toRightOf="@id/image_location"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/image_location"
-        android:layout_marginLeft="@dimen/otp_dp_14"
+        app:layout_constraintTop_toBottomOf="@+id/text_time"
         app:typographyType="heading_5"
-        app:typographyWeight="bold"
-        android:text="Lokasi"/>
+        app:typographyWeight="bold" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_location"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintLeft_toRightOf="@id/image_phone"
-        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginStart="@dimen/otp_dp_14"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:text="Jakarta, ID • 201.141.663.888"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/image_location"
         app:layout_constraintTop_toBottomOf="@id/text_location_title"
-        android:layout_marginLeft="@dimen/otp_dp_14"
         app:typographyType="body_2"
-        app:typographyWeight="reguler"
-        android:text="Jakarta, ID • 201.141.663.888"/>
+        app:typographyWeight="reguler" />
 
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_subtitle_desc"
-        app:layout_constraintTop_toBottomOf="@id/text_location"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:layout_marginRight="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl5"
-        app:typographyType="body_2"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:text="Jika ini bukan kamu, akunmu sedang dalam bahaya. Laporkan sekarang dengan klik tombol di bawah."
         android:textColor="@color/otp_grey_text"
-        android:text="Jika ini bukan kamu, akunmu sedang dalam bahaya. Laporkan sekarang dengan klik tombol di bawah."/>
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_location"
+        app:typographyType="body_2" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_no"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:layout_marginRight="@dimen/otp_dp_6"
         android:layout_marginTop="@dimen/spacing_lvl5"
-        app:layout_constraintTop_toBottomOf="@id/text_subtitle_desc"
+        android:layout_marginRight="@dimen/otp_dp_6"
+        android:text="Tolak Akses"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/btn_yes"
-        app:unifyButtonType="alternate"
-        app:unifyButtonVariant="ghost"
+        app:layout_constraintTop_toBottomOf="@id/text_subtitle_desc"
         app:unifyButtonSize="large"
-        android:text="Ini Bukan Saya"/>
+        app:unifyButtonType="alternate"
+        app:unifyButtonVariant="ghost" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_yes"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/spacing_lvl4"
         android:layout_marginLeft="@dimen/otp_dp_6"
         android:layout_marginTop="@dimen/spacing_lvl5"
-        app:layout_constraintTop_toBottomOf="@id/text_subtitle_desc"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:text="Terima Akses"
         app:layout_constraintLeft_toRightOf="@+id/btn_no"
         app:layout_constraintRight_toRightOf="parent"
-        app:unifyButtonVariant="ghost"
+        app:layout_constraintTop_toBottomOf="@id/text_subtitle_desc"
         app:unifyButtonSize="large"
-        android:text="Ya, Ini saya"/>
+        app:unifyButtonVariant="ghost" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
