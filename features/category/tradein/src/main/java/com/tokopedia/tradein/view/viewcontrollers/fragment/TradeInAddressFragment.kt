@@ -56,7 +56,7 @@ class TradeInAddressFragment : BaseViewModelFragment<TradeInAddressViewModel>() 
         getAddress()
     }
 
-    fun getAddress(){
+    private fun getAddress() {
         arguments?.apply {
             tradeInAddressViewModel.getAddress(getString(EXTRA_ORIGIN, ""), getInt(EXTRA_WEIGHT))
         }
@@ -64,6 +64,13 @@ class TradeInAddressFragment : BaseViewModelFragment<TradeInAddressViewModel>() 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.tradein_address_fragment, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        iv_back.setOnClickListener {
+            activity?.onBackPressed()
+        }
     }
 
     private fun setUpObservers() {
@@ -146,7 +153,7 @@ class TradeInAddressFragment : BaseViewModelFragment<TradeInAddressViewModel>() 
         }
     }
 
-    fun setPermissionDeniedUI(){
+    fun setPermissionDeniedUI() {
         btn_continue.text = getString(R.string.tradein_return)
         btn_continue.setOnClickListener {
             activity?.finish()

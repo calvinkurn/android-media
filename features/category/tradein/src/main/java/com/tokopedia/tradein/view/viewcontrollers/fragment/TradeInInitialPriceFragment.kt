@@ -60,11 +60,20 @@ class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceVie
             ImageHandler.loadImageWithoutPlaceholder(product_image, getString(EXTRA_PRODUCT_IMAGE))
             tradeInInitialPriceViewModel.checkAndroid10(getString(EXTRA_DEVICE_ID))
             no_imei_value.text = getString(EXTRA_DEVICE_ID)
+            setMaxPrice(getString(EXTRA_MAX_PRICE, "-"))
+            if (getBoolean(EXTRA_IS_ELIGIBLE, false)) {
+                isElligible()
+            } else {
+                notElligible(getString(EXTRA_NOT_ELIGIBLE_MESSAGE, ""))
+            }
         }
         model_value.text = StringBuilder().append(Build.MANUFACTURER).append(" ").append(Build.MODEL).toString()
         typography_imei_help.setOnClickListener {
             val tradeInImeiHelpBottomSheet = newInstance()
             tradeInImeiHelpBottomSheet.show(childFragmentManager, "")
+        }
+        iv_back.setOnClickListener {
+            activity?.onBackPressed()
         }
     }
 
@@ -118,12 +127,12 @@ class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceVie
         tradeInInitialPriceViewModel = viewModel as TradeInInitialPriceViewModel
     }
 
-    fun notElligible(notEligibleText: String, maxPrice: String) {
+    fun notElligible(notEligibleText: String) {
         progress_bar_layout.hide()
         btn_continue.isEnabled = false
+        save_upto.hide()
         phone_valid_ticker.show()
         phone_valid_ticker.setTextDescription(notEligibleText)
-        setMaxPrice(maxPrice)
     }
 
     private fun setMaxPrice(maxPrice: String) {
@@ -133,10 +142,9 @@ class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceVie
         save_upto.text = spannableString
     }
 
-    fun isElligible(maxPrice: String) {
+    fun isElligible() {
         progress_bar_layout.hide()
         btn_continue.isEnabled = true
-        setMaxPrice(maxPrice)
     }
 
     interface TradeInInitialPriceClick {
@@ -148,14 +156,20 @@ class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceVie
         private const val EXTRA_PRODUCT_IMAGE = "EXTRA_PRODUCT_IMAGE"
         private const val EXTRA_PRODUCT_PRICE = "EXTRA_PRODUCT_PRICE"
         private const val EXTRA_DEVICE_ID = "EXTRA_DEVICE_ID"
+        private const val EXTRA_MAX_PRICE = "EXTRA_MAX_PRICE"
+        private const val EXTRA_IS_ELIGIBLE = "EXTRA_IS_ELIGIBLE"
+        private const val EXTRA_NOT_ELIGIBLE_MESSAGE = "EXTRA_NOT_ELIGIBLE_MESSAGE"
 
-        fun getFragmentInstance(productName: String, productImage: String, productPrice: String, deviceId: String?): Fragment {
+        fun getFragmentInstance(productName: String, productImage: String, productPrice: String, deviceId: String?, maxPrice: String, isEligible: Boolean, notEligibleMessage: String): Fragment {
             val fragment = TradeInInitialPriceFragment()
             val bundle = Bundle()
             bundle.putString(EXTRA_PRODUCT_NAME, productName)
             bundle.putString(EXTRA_PRODUCT_IMAGE, productImage)
             bundle.putString(EXTRA_PRODUCT_PRICE, productPrice)
             bundle.putString(EXTRA_DEVICE_ID, deviceId)
+            bundle.putString(EXTRA_MAX_PRICE, maxPrice)
+            bundle.putString(EXTRA_NOT_ELIGIBLE_MESSAGE, notEligibleMessage)
+            bundle.putBoolean(EXTRA_IS_ELIGIBLE, isEligible)
             fragment.arguments = bundle
             return fragment
         }

@@ -17,14 +17,16 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dp_16">
+            android:layout_margin="@dimen/spacing_lvl4">
 
-            <ImageView
+            <com.tkpd.remoteresourcerequest.view.DeferredImageView
                 android:id="@+id/deferred_image_view"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_200"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/bg_not_eligible_location" />
+                android:scaleType="fitCenter"
+                app:imageDpiSupportType="singleDpi"
+                app:remoteFileName="not_eligible_location.png" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/heading"
