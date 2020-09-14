@@ -46,6 +46,7 @@ class WaitingPaymentOrdersViewHolder(
                         listener.toggleCollapse(element)
                     }
                 }
+                icLoadMoreDropDown.showWithCondition(element.productUiModels.size > MAX_ORDER_WHEN_COLLAPSED)
                 rvWaitingPaymentOrderProducts.apply {
                     if (adapter == null) {
                         isNestedScrollingEnabled = false

@@ -5,8 +5,8 @@
     android:id="@+id/waitingPaymentOrderContainer"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/layout_lvl2"
-    android:animateLayoutChanges="true">
+    android:animateLayoutChanges="true"
+    android:paddingTop="@dimen/layout_lvl2">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvLabelPaymentDeadline"
@@ -87,13 +87,22 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl1"
         android:paddingStart="@dimen/layout_lvl2"
-        android:paddingEnd="@dimen/layout_lvl2"
+        android:paddingEnd="@dimen/layout_lvl1"
         android:textColor="@color/Green_G500"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rvWaitingPaymentOrderProducts"
         app:typographyType="body_2"
         tool:text="Tampilkan Lebih Banyak" />
+
+    <ImageView
+        android:id="@+id/icLoadMoreDropDown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_3"
+        app:layout_constraintBottom_toBottomOf="@id/tvToggleCollapseMoreProducts"
+        app:layout_constraintStart_toEndOf="@id/tvToggleCollapseMoreProducts"
+        app:layout_constraintTop_toTopOf="@id/tvToggleCollapseMoreProducts"
+        app:srcCompat="@drawable/ic_arrow_dropdown" />
 
     <View
         android:layout_width="match_parent"

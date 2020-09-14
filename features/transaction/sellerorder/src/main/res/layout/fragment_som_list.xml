@@ -63,16 +63,24 @@
 
         </LinearLayout>
 
-        <include
+        <androidx.cardview.widget.CardView
             android:id="@+id/somWaitingPaymentButton"
-            layout="@layout/partial_som_list_waiting_payment"
-            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_10"
             android:layout_marginTop="@dimen/dp_3"
             android:layout_marginEnd="@dimen/dp_10"
-            app:layout_constraintTop_toBottomOf="@id/rl_search_filter" />
+            android:visibility="gone"
+            app:cardCornerRadius="@dimen/layout_lvl1"
+            app:cardElevation="@dimen/layout_lvl0"
+            app:layout_constraintTop_toBottomOf="@id/rl_search_filter">
+
+            <include
+                layout="@layout/partial_som_list_waiting_payment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </androidx.cardview.widget.CardView>
 
         <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
             android:id="@+id/swipe_refresh_layout"
