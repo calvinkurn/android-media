@@ -68,13 +68,13 @@ class ShopHomeViewModel @Inject constructor(
         const val ALL_SHOWCASE_ID = "etalase"
     }
 
-    val initialProductListData: LiveData<Result<Pair<Boolean, List<ShopHomeProductViewModel>>>>
+    val initialProductListData: LiveData<Result<GetShopHomeProductUiModel>>
         get() = _initialProductListData
-    private val _initialProductListData = MutableLiveData<Result<Pair<Boolean, List<ShopHomeProductViewModel>>>>()
+    private val _initialProductListData = MutableLiveData<Result<GetShopHomeProductUiModel>>()
 
-    val newProductListData: LiveData<Result<Pair<Boolean, List<ShopHomeProductViewModel>>>>
+    val newProductListData: LiveData<Result<GetShopHomeProductUiModel>>
         get() = _newProductListData
-    private val _newProductListData = MutableLiveData<Result<Pair<Boolean, List<ShopHomeProductViewModel>>>>()
+    private val _newProductListData = MutableLiveData<Result<GetShopHomeProductUiModel>>()
 
     val shopHomeLayoutData: LiveData<Result<ShopPageHomeLayoutUiModel>>
         get() = _shopHomeLayoutData
@@ -287,7 +287,7 @@ class ShopHomeViewModel @Inject constructor(
             shopId: String,
             sortId: Int,
             page: Int
-    ): Pair<Boolean, List<ShopHomeProductViewModel>> {
+    ): GetShopHomeProductUiModel {
         getShopProductUseCase.params = GqlGetShopProductUseCase.createParams(
                 shopId,
                 ShopProductFilterInput().apply {
@@ -298,14 +298,17 @@ class ShopHomeViewModel @Inject constructor(
         )
         val productListResponse = getShopProductUseCase.executeOnBackground()
         val isHasNextPage = ShopUtil.isHasNextPage(page, ShopPageConstant.DEFAULT_PER_PAGE, productListResponse.totalData)
-        return Pair(
+        val productListUiModelData = productListResponse.data.map {
+            ShopPageHomeMapper.mapToHomeProductViewModelForAllProduct(
+                    it,
+                    ShopUtil.isMyShop(shopId, userSessionShopId)
+            )
+        }
+        val totalProductListData = productListResponse.totalData
+        return GetShopHomeProductUiModel(
                 isHasNextPage,
-                productListResponse.data.map {
-                    ShopPageHomeMapper.mapToHomeProductViewModelForAllProduct(
-                            it,
-                            ShopUtil.isMyShop(shopId, userSessionShopId)
-                    )
-                }
+                productListUiModelData,
+                totalProductListData
         )
     }
 

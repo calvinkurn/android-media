@@ -18,12 +18,6 @@ public class AffiliateModule {
 
     @AffiliateScope
     @Provides
-    CheckQuotaUseCase provideCheckQuotaUseCase(@ApplicationContext Context context) {
-        return new CheckQuotaUseCase(context);
-    }
-
-    @AffiliateScope
-    @Provides
     UserSessionInterface provideUserSession(@ApplicationContext Context context) {
         return new UserSession(context);
     }

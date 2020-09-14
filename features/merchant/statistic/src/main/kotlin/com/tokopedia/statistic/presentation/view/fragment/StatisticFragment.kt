@@ -30,6 +30,7 @@ import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.sellerhomecommon.utils.Utils
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.analytics.StatisticTracker
+import com.tokopedia.statistic.common.utils.DateFilterFormatUtil
 import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTraceNameConst.BAR_CHART_WIDGET_TRACE
 import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTraceNameConst.CARD_WIDGET_TRACE
 import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTraceNameConst.CAROUSEL_WIDGET_TRACE
@@ -90,8 +91,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private val mLayoutManager by lazy { StatisticLayoutManager(context, 2) }
     private val recyclerView by lazy { super.getRecyclerView(view) }
     private val dateFilterBottomSheet by lazy { DateFilterBottomSheet.newInstance() }
-    private val defaultStartDate = Date(DateTimeUtil.getNPastDaysTimestamp(DEFAULT_START_DAYS))
-    private val defaultEndDate = Date()
+    private val defaultStartDate by lazy { Date(DateTimeUtil.getNPastDaysTimestamp(DEFAULT_START_DAYS)) }
+    private val defaultEndDate by lazy { Date() }
     private val job = Job()
     private val coroutineScope by lazy { CoroutineScope(Dispatchers.Unconfined + job) }
     private val tickerWidget: TickerWidgetUiModel by getTickerWidget()
@@ -134,6 +135,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         observeWidgetData(mViewModel.tableWidgetData, WidgetType.TABLE)
         observeWidgetData(mViewModel.pieChartWidgetData, WidgetType.PIE_CHART)
         observeWidgetData(mViewModel.barChartWidgetData, WidgetType.BAR_CHART)
+        observeTickers()
     }
 
     override fun onResume() {
@@ -312,9 +314,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     private fun setDefaultRange() = view?.run {
         val headerSubTitle: String = context.getString(R.string.stc_last_n_days_cc, DEFAULT_START_DAYS.plus(1))
-        val startDateStr: String = DateTimeUtil.format(defaultStartDate.time, "dd")
-        val endDateStr: String = DateTimeUtil.format(defaultEndDate.time, "dd MMM yyyy")
-        val subTitle = "$headerSubTitle ($startDateStr - $endDateStr)"
+        val startEndDateFmt = DateFilterFormatUtil.getDateRangeStr(defaultStartDate, defaultEndDate)
+        val subTitle = "$headerSubTitle ($startEndDateFmt)"
 
         setHeaderSubTitle(subTitle)
     }
@@ -685,10 +686,12 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     private fun notifyWidgetChanged(widget: BaseWidgetUiModel<*>) {
-        val widgetPosition = adapter.data.indexOf(widget)
-        if (widgetPosition > -1) {
-            adapter.notifyItemChanged(widgetPosition)
-            view?.swipeRefreshStc?.isRefreshing = false
+        recyclerView.post {
+            val widgetPosition = adapter.data.indexOf(widget)
+            if (widgetPosition != RecyclerView.NO_POSITION) {
+                adapter.notifyItemChanged(widgetPosition)
+                view?.swipeRefreshStc?.isRefreshing = false
+            }
         }
     }
 
@@ -710,11 +713,22 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     private fun observeUserRole() {
         mViewModel.userRole.observe(viewLifecycleOwner, Observer {
-            if (it is Success) {
-                checkUserRole(it.data)
+            when (it) {
+                is Success -> checkUserRole(it.data)
+                is Fail -> StatisticLogger.logToCrashlytics(it.throwable, StatisticLogger.ERROR_SELLER_ROLE)
             }
         })
         mViewModel.getUserRole()
+    }
+
+    private fun observeTickers() {
+        mViewModel.tickers.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> showTickers(it.data)
+                is Fail -> StatisticLogger.logToCrashlytics(it.throwable, StatisticLogger.ERROR_TICKER)
+            }
+        })
+        mViewModel.getTickers()
     }
 
     private inline fun <reified D : BaseDataUiModel> observeWidgetData(liveData: LiveData<Result<List<D>>>, type: String) {
@@ -755,12 +769,13 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         toastCountDown.start()
     }
 
+    private fun showTickers(tickers: List<TickerItemUiModel>) {
+        tickerWidget.data?.tickers = tickers
+        notifyWidgetChanged(tickerWidget)
+    }
+
     private fun getTickerWidget(): Lazy<TickerWidgetUiModel> = lazy {
-        val tickerUrl = "https://docs.google.com/forms/d/1t-KeapZJwOeYOBnbXDEmzRJiUqMBicE9cQIauc40qMU"
-        val title = context?.getString(R.string.stc_ticker_title).orEmpty()
-        val message = context?.getString(R.string.stc_ticker_message, tickerUrl).orEmpty()
-        val tickerItems = listOf(TickerItemUiModel(title = title, message = message, redirectUrl = tickerUrl))
-        val tickerData = TickerDataUiModel(tickers = tickerItems, dataKey = TICKER_NAME)
+        val tickerData = TickerDataUiModel(tickers = emptyList(), dataKey = TICKER_NAME)
         return@lazy TickerWidgetUiModel(data = tickerData, title = TICKER_NAME, dataKey = TICKER_NAME)
     }
 

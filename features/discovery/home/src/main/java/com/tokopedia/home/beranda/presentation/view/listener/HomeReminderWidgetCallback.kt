@@ -11,8 +11,8 @@ class HomeReminderWidgetCallback(
         val salamListener: SalamWidgetListener
 ) : ReminderWidgetListener {
 
-    override fun getReminderWidget(reminderEnum: ReminderEnum) {
-        when (reminderEnum) {
+    override fun getReminderWidgetData(reminderData: ReminderWidgetModel) {
+        when (reminderData.source) {
             ReminderEnum.RECHARGE -> {
                 rechargeListener.getRechargeRecommendation()
             }

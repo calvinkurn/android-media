@@ -7,8 +7,6 @@ import com.tokopedia.sellerhome.domain.model.GetShopStatusResponse
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.domain.usecase.GetShopLocationUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetStatusShopUseCase
-import com.tokopedia.sellerhome.domain.usecase.GetTickerUseCase
-import com.tokopedia.sellerhome.view.model.TickerUiModel
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.domain.usecase.*
 import com.tokopedia.sellerhomecommon.presentation.model.*
@@ -49,6 +47,7 @@ class SellerHomeViewModel @Inject constructor(
     companion object {
         private const val DATE_FORMAT = "dd-MM-yyyy"
         private const val SELLER_HOME_PAGE_NAME = "seller-home"
+        private const val TICKER_PAGE_NAME = "seller"
     }
 
     private val shopId: String by lazy { userSession.get().shopId }
@@ -62,7 +61,7 @@ class SellerHomeViewModel @Inject constructor(
         )
     }
 
-    private val _homeTicker = MutableLiveData<Result<List<TickerUiModel>>>()
+    private val _homeTicker = MutableLiveData<Result<List<TickerItemUiModel>>>()
     private val _shopStatus = MutableLiveData<Result<GetShopStatusResponse>>()
     private val _widgetLayout = MutableLiveData<Result<List<BaseWidgetUiModel<*>>>>()
     private val _shopLocation = MutableLiveData<Result<ShippingLoc>>()
@@ -75,7 +74,7 @@ class SellerHomeViewModel @Inject constructor(
     private val _pieChartWidgetData = MutableLiveData<Result<List<PieChartDataUiModel>>>()
     private val _barChartWidgetData = MutableLiveData<Result<List<BarChartDataUiModel>>>()
 
-    val homeTicker: LiveData<Result<List<TickerUiModel>>>
+    val homeTicker: LiveData<Result<List<TickerItemUiModel>>>
         get() = _homeTicker
     val shopStatus: LiveData<Result<GetShopStatusResponse>>
         get() = _shopStatus
@@ -102,8 +101,9 @@ class SellerHomeViewModel @Inject constructor(
 
     fun getTicker() {
         launchCatchError(block = {
-            val result: Success<List<TickerUiModel>> = Success(withContext(Dispatchers.IO) {
-                getTickerUseCase.get().executeOnBackground()
+            val result: Success<List<TickerItemUiModel>> = Success(withContext(Dispatchers.IO) {
+                getTickerUseCase.get().params = GetTickerUseCase.createParams(TICKER_PAGE_NAME)
+                return@withContext getTickerUseCase.get().executeOnBackground()
             })
             _homeTicker.postValue(result)
         }, onError = {
