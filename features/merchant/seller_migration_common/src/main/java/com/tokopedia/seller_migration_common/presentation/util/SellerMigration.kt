@@ -3,7 +3,6 @@ package com.tokopedia.seller_migration_common.presentation.util
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
-import android.os.Parcelable
 import android.view.View
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
@@ -21,7 +20,6 @@ import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.parcel.Parcelize
 
 fun Fragment.goToSellerApp(trackGoToSellerApp: () -> Unit = {},
                            trackGoToPlayStore: () -> Unit = {}) {
@@ -49,9 +47,6 @@ fun Fragment.goToInformationWebview(link: String,
     return RouteManager.route(activity, "${ApplinkConst.WEBVIEW}?url=${link}")
 }
 
-@Parcelize
-data class BenefitPoints(val benefitPointsList: List<CharSequence>) : Parcelable
-
 fun Fragment.initializeSellerMigrationAccountSettingTicker(ticker: Ticker?) {
     ticker?.run {
         if (isSellerMigrationEnabled(requireContext())) {
@@ -59,7 +54,9 @@ fun Fragment.initializeSellerMigrationAccountSettingTicker(ticker: Ticker?) {
             setHtmlDescription(requireContext().getString(AccountSettingData.descRes))
             setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    RouteManager.route(requireContext(), ApplinkConstInternalSellerapp.SELLER_MENU)
+                    val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalSellerapp.SELLER_MENU)
+                    intent.putExtra(SellerMigrationConstants.SELLER_MIGRATION_KEY_AUTO_ANCHOR_ACCOUNT_SHOP, true)
+                    startActivity(intent)
                 }
 
                 override fun onDismiss() {}

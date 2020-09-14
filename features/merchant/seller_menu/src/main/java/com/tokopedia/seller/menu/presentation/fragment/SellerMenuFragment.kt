@@ -1,14 +1,11 @@
 package com.tokopedia.seller.menu.presentation.fragment
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
@@ -21,6 +18,7 @@ import com.tokopedia.seller.menu.R
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
+import com.tokopedia.seller.menu.common.view.uimodel.SellerFeatureUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState.SettingError
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState.SettingLoading
@@ -33,6 +31,7 @@ import com.tokopedia.seller.menu.di.component.DaggerSellerMenuComponent
 import com.tokopedia.seller.menu.presentation.adapter.SellerMenuAdapter
 import com.tokopedia.seller.menu.presentation.util.SellerMenuList
 import com.tokopedia.seller.menu.presentation.viewmodel.SellerMenuViewModel
+import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -84,6 +83,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
         setupMenuList()
         setupSwipeRefresh()
         observeViewModel()
+        setupScrollToShopSetting()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -243,5 +243,22 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
 
     private fun showShopInfoLoading() {
         adapter.showShopInfoLoading()
+    }
+
+    private fun setupScrollToShopSetting() {
+        val isAnchorToShopSetting = activity?.intent?.getBooleanExtra(SellerMigrationConstants.SELLER_MIGRATION_KEY_AUTO_ANCHOR_ACCOUNT_SHOP, false) ?: false
+        if(isAnchorToShopSetting) {
+            val shopAccountData = adapter.data.firstOrNull { it is SellerFeatureUiModel }
+            if (shopAccountData != null) {
+                val positionShopAccount = adapter.data.indexOf(shopAccountData)
+                val smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(context) {
+                    override fun getVerticalSnapPreference(): Int {
+                        return SNAP_TO_END
+                    }
+                }
+                smoothScroller.targetPosition = positionShopAccount
+                listMenu?.layoutManager?.startSmoothScroll(smoothScroller)
+            }
+        }
     }
 }
