@@ -626,12 +626,13 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         llShippingExperienceContainer.setVisibility(View.VISIBLE);
 
         CourierItemData selectedCourierItemData = null;
+        boolean isTradeInDropOff = mActionListener.isTradeInByDropOff();
 
         if (shipmentCartItemModel.getSelectedShipmentDetailData() != null) {
-            if (shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
-                selectedCourierItemData = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier();
-            } else if (shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff() != null) {
+            if (isTradeInDropOff && shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff() != null) {
                 selectedCourierItemData = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff();
+            } else if (!isTradeInDropOff && shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
+                selectedCourierItemData = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier();
             }
         }
 
@@ -736,8 +737,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             }
         } else {
             // Has not select shipping
-            boolean isTradeInDropOff = mActionListener.isTradeInByDropOff();
-
             layoutStateHasSelectedFreeShipping.setVisibility(View.GONE);
             layoutStateHasSelectedNormalShipping.setVisibility(View.GONE);
             llShippingOptionsContainer.setVisibility(View.GONE);
