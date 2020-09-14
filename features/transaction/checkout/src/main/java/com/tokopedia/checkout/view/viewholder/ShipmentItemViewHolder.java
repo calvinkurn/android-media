@@ -437,11 +437,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             currentAddress = recipientAddressModel;
         }
 
-        if (isTradeInDropOff) {
-            renderRobinhoodV2(shipmentCartItemModel, currentAddress, ratesDataConverter);
-        } else {
-            renderShippingExperience(shipmentCartItemModel, currentAddress, ratesDataConverter);
-        }
+        renderShippingExperience(shipmentCartItemModel, currentAddress, ratesDataConverter);
     }
 
     private void renderCartItem(ShipmentCartItemModel shipmentCartItemModel) {
@@ -648,11 +644,18 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         layoutTradeInShippingInfo.setVisibility(View.GONE);
         llShippingExperienceContainer.setVisibility(View.VISIBLE);
 
-        boolean isCourierSelected = shipmentCartItemModel.getSelectedShipmentDetailData() != null
-                && shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null;
-        if (isCourierSelected) {
+        CourierItemData selectedCourierItemData = null;
+
+        if (shipmentCartItemModel.getSelectedShipmentDetailData() != null) {
+            if (shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
+                selectedCourierItemData = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier();
+            } else if (shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff() != null) {
+                selectedCourierItemData = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff();
+            }
+        }
+
+        if (selectedCourierItemData != null) {
             // Has select shipping
-            CourierItemData selectedCourierItemData = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier();
             llShippingOptionsContainer.setVisibility(View.VISIBLE);
             layoutStateNoSelectedShipping.setVisibility(View.GONE);
 
@@ -778,41 +781,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 mActionListener.onChangeShippingDuration(shipmentCartItemModel, currentAddress, getAdapterPosition());
             }
         };
-    }
-
-    private void renderRobinhoodV2(ShipmentCartItemModel shipmentCartItemModel,
-                                   RecipientAddressModel currentAddress,
-                                   RatesDataConverter ratesDataConverter) {
-        llShippingExperienceContainer.setVisibility(View.GONE);
-
-        ShipmentDetailData shipmentDetailData = shipmentCartItemModel.getSelectedShipmentDetailData();
-        tvChooseDurationTradeIn.setOnClickListener(view -> {
-            if (getAdapterPosition() != RecyclerView.NO_POSITION) {
-                mActionListener.onChooseShipmentDuration(
-                        shipmentCartItemModel, currentAddress, getAdapterPosition()
-                );
-            }
-        });
-        layoutTradeInShippingInfo.setVisibility(View.VISIBLE);
-        llCourierRecommendationTradeInDropOffStateLoading.setVisibility(View.GONE);
-        boolean isCourierTradeInDropOffSelected = shipmentDetailData != null
-                && shipmentDetailData.getSelectedCourierTradeInDropOff() != null;
-        if (isCourierTradeInDropOffSelected) {
-            tvTradeInShippingPriceDetail.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                    shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff().getShipperPrice(), false)));
-            tvTradeInShippingPriceDetail.setVisibility(View.VISIBLE);
-            tvTradeInShippingPriceTitle.setVisibility(View.VISIBLE);
-            labelChooseDurationTradeIn.setVisibility(View.GONE);
-            tvChooseDurationTradeIn.setVisibility(View.GONE);
-            llShippingOptionsContainer.setVisibility(View.VISIBLE);
-        } else {
-            llShippingOptionsContainer.setVisibility(View.GONE);
-            if (shipmentCartItemModel.isHasSetDropOffLocation()) {
-                loadCourierState(shipmentCartItemModel, currentAddress, ratesDataConverter, SHIPPING_SAVE_STATE_TYPE_TRADE_IN_DROP_OFF);
-            } else {
-                tvTradeInShippingPriceDetail.setText(R.string.label_trade_in_shipping_price);
-            }
-        }
     }
 
     private void loadCourierState(ShipmentCartItemModel shipmentCartItemModel,
