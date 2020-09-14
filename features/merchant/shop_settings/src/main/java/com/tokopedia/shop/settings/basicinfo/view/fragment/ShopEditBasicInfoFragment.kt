@@ -688,6 +688,7 @@ class ShopEditBasicInfoFragment: Fragment() {
             setType(GlobalError.NO_CONNECTION)
             setActionClickListener {
                 onSaveButtonClicked()
+                hide()
             }
         }.show()
     }
