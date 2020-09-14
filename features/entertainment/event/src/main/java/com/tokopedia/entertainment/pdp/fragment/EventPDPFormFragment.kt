@@ -275,6 +275,10 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener,
         return keyActiveData
     }
 
+    override fun getAdditionalType(): AdditionalType {
+        return eventCheckoutAdditionalData.additionalType
+    }
+
     companion object {
         fun newInstance(url: String) = EventPDPFormFragment().also {
             it.arguments = Bundle().apply {

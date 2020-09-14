@@ -7,16 +7,16 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.entertainment.R
-import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.DATE_BIRTH_TYPE
 import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.ELEMENT_LIST
 import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.ELEMENT_TEXT
 import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.EMAIL_TYPE
+import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.FAMILY_NAME_TYPE
 import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.FIRST_NAME_TYPE
 import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.FULLNAME_TYPE
-import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.GENDER_TYPE
 import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.MOBILE_TYPE
 import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.PHONE_TYPE
 import com.tokopedia.entertainment.pdp.data.Form
+import com.tokopedia.entertainment.pdp.data.checkout.AdditionalType
 import com.tokopedia.entertainment.pdp.listener.OnClickFormListener
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.user.session.UserSessionInterface
@@ -30,7 +30,7 @@ class EventPDPTextFieldViewHolder(val view: View,
                                   val addOrRemoveData: (Int, String, String) -> Unit,
                                   val userSession: UserSessionInterface,
                                   val formListener: OnClickFormListener,
-                                  val textFormListener: TextFormListener) : RecyclerView.ViewHolder(view) {
+                                  private val textFormListener: TextFormListener) : RecyclerView.ViewHolder(view) {
     var positionActiveForm = 0
     var keyActiveBottomSheet = ""
 
@@ -62,8 +62,18 @@ class EventPDPTextFieldViewHolder(val view: View,
                 })
             }
 
-            if (userSession.isLoggedIn) {
+            if (element.value.isNullOrEmpty() &&
+                    userSession.isLoggedIn &&
+                    textFormListener.getAdditionalType().equals(AdditionalType.NULL_DATA)) {
+                val splittedName = userSession.name.split(" ")
+                val splittedLast =  userSession.name.substringBeforeLast(" ")
                 if (element.name == FULLNAME_TYPE) txtValue.textFieldInput.setText(userSession.name)
+                else if (element.name == FAMILY_NAME_TYPE) {
+                    if(!splittedName.isNullOrEmpty()) txtValue.textFieldInput.setText(splittedName.get(splittedName.size-1))
+                }
+                else if(element.name == FIRST_NAME_TYPE){
+                    if(!splittedLast.isNullOrEmpty()) txtValue.textFieldInput.setText(splittedLast)
+                }
                 else if (element.name == EMAIL_TYPE) txtValue.textFieldInput.setText(userSession.email)
                 else if (element.name == PHONE_TYPE || element.name == MOBILE_TYPE) txtValue.textFieldInput.setText(userSession.phoneNumber)
             }
@@ -148,6 +158,7 @@ class EventPDPTextFieldViewHolder(val view: View,
 
     interface TextFormListener {
         fun getKeyActive(): String
+        fun getAdditionalType(): AdditionalType
     }
 
     companion object {
