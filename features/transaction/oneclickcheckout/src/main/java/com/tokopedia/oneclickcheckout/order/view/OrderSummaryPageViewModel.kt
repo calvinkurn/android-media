@@ -20,7 +20,6 @@ import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.common.view.model.preference.ProfilesItemModel
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryPageEnhanceECommerce
-import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccCartRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccProfileRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest
 import com.tokopedia.oneclickcheckout.order.view.model.*
@@ -188,7 +187,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
     }
 
-
     fun generateShippingParam(): ShippingParam {
         return logisticProcessor.generateShippingParam(orderCart, _orderPreference)
     }
@@ -232,18 +230,16 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 }
                 return@launch
             }
+            _orderShipment = shipping.copy(logisticPromoTickerMessage = if (shipping.serviceErrorMessage.isNullOrEmpty()) "Tersedia ${logisticPromoUiModel.title}" else null, isApplyLogisticPromo = false, logisticPromoShipping = null)
+            orderShipment.value = _orderShipment
             if (resultValidateUse != null) {
                 validateUsePromoRevampUiModel = resultValidateUse
-                _orderShipment = shipping.copy(logisticPromoTickerMessage = if (shipping.serviceErrorMessage.isNullOrEmpty()) "Tersedia ${logisticPromoUiModel.title}" else null, isApplyLogisticPromo = false, logisticPromoShipping = null)
-                orderShipment.value = _orderShipment
                 globalEvent.value = OccGlobalEvent.Normal
                 updatePromoState(resultValidateUse.promoUiModel)
                 return@launch
             }
             orderPromo.value = orderPromo.value.copy(state = OccButtonState.DISABLE)
             globalEvent.value = newGlobalEvent
-            _orderShipment = shipping.copy(logisticPromoTickerMessage = if (shipping.serviceErrorMessage.isNullOrEmpty()) "Tersedia ${logisticPromoUiModel.title}" else null, isApplyLogisticPromo = false, logisticPromoShipping = null)
-            orderShipment.value = _orderShipment
             orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
             calculateTotal()
         }
@@ -442,48 +438,12 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     fun generateUpdateCartParam(): UpdateCartOccRequest? {
-        val op = orderProduct
-        val quantity = op.quantity
-        val pref = _orderPreference
-        if (pref.isValid && pref.preference.profileId > 0) {
-            val cart = UpdateCartOccCartRequest(
-                    orderCart.cartId.toString(),
-                    quantity.orderQuantity,
-                    op.notes,
-                    op.productId.toString(),
-                    _orderShipment.getRealShipperId(),
-                    _orderShipment.getRealShipperProductId()
-            )
-            var metadata = pref.preference.payment.metadata
-            val selectedTerm = _orderPayment.creditCard.selectedTerm
-            if (selectedTerm != null) {
-                try {
-                    val parse = JsonParser().parse(metadata)
-                    val expressCheckoutParams = parse.asJsonObject.getAsJsonObject(UpdateCartOccProfileRequest.EXPRESS_CHECKOUT_PARAM)
-                    if (expressCheckoutParams.get(UpdateCartOccProfileRequest.INSTALLMENT_TERM) == null) {
-                        throw Exception()
-                    }
-                    expressCheckoutParams.addProperty(UpdateCartOccProfileRequest.INSTALLMENT_TERM, selectedTerm.term.toString())
-                    metadata = parse.toString()
-                } catch (e: Exception) {
-                    return null
-                }
-            }
-            val profile = UpdateCartOccProfileRequest(
-                    pref.preference.profileId.toString(),
-                    pref.preference.payment.gatewayCode,
-                    metadata,
-                    pref.preference.shipment.serviceId,
-                    pref.preference.address.addressId.toString()
-            )
-            return UpdateCartOccRequest(arrayListOf(cart), profile)
-        }
-        return null
+        return cartProcessor.generateUpdateCartParam(orderCart, _orderPreference, _orderShipment, _orderPayment)
     }
 
     fun updatePreference(preference: ProfilesItemModel) {
         launch(executorDispatchers.main) {
-            var param = generateUpdateCartParam()
+            var param = cartProcessor.generateUpdateCartParam(orderCart, _orderPreference, _orderShipment, _orderPayment)
             if (param == null) {
                 globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
                 return@launch
@@ -511,7 +471,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             val shop = orderShop
             val pref = _orderPreference
             if (pref.isValid && _orderShipment.getRealShipperProductId() > 0) {
-                val param = generateUpdateCartParam()
+                val param = cartProcessor.generateUpdateCartParam(orderCart, _orderPreference, _orderShipment, _orderPayment)
                 if (param != null) {
                     if (validateSelectedTerm()) {
                         launch(executorDispatchers.main) {
@@ -634,7 +594,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     fun updateCartPromo(onSuccess: (ValidateUsePromoRequest, PromoRequest, ArrayList<String>) -> Unit) {
         launch(executorDispatchers.main) {
-            val param = generateUpdateCartParam()
+            val param = cartProcessor.generateUpdateCartParam(orderCart, _orderPreference, _orderShipment, _orderPayment)
             if (param == null) {
                 globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
                 return@launch
@@ -907,7 +867,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     fun chooseInstallment(selectedInstallmentTerm: OrderPaymentInstallmentTerm) {
         launch(executorDispatchers.main) {
-            var param = generateUpdateCartParam()
+            var param = cartProcessor.generateUpdateCartParam(orderCart, _orderPreference, _orderShipment, _orderPayment)
             val creditCard = _orderPayment.creditCard
             if (param == null) {
                 globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
@@ -946,7 +906,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     fun updateCreditCard(metadata: String) {
         launch(executorDispatchers.main) {
-            var param = generateUpdateCartParam()
+            var param = cartProcessor.generateUpdateCartParam(orderCart, _orderPreference, _orderShipment, _orderPayment)
             if (param == null) {
                 globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
                 return@launch
