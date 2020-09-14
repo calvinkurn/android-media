@@ -131,8 +131,8 @@ public class AccountAnalytics {
                 EVENT_CATEGORY, CATEGORY_NOTIF_CENTER,
                 EVENT_ACTION, EVENT_ACTION_TS_USR_MENU,
                 EVENT_LABEL, EMPTY,
-                FIELD_USER_ID, userSessionInterface.userId,
-                FIELD_SHOP_ID, userSessionInterface.shopId
+                FIELD_USER_ID, userSessionInterface.getUserId(),
+                FIELD_SHOP_ID, userSessionInterface.getShopId()
 
         );
 
