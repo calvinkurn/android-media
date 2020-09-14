@@ -299,7 +299,7 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
             )
         }
 
-        eventPDPTracking.onViewCheckoutPage(getPackage(pdp, packageID), pdp, amount)
+        eventPDPTracking.onViewCheckoutPage(pdp, metadata.itemMap)
     }
 
     private fun renderAdditionalItem(pdp: ProductDetailData) {
@@ -375,7 +375,7 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
                         getRecycleViewWidgetAnimator()
                     } else {
                         progressDialog.show()
-                        eventPDPTracking.onClickCheckoutButton(getPackage(productDetailData, packageID), productDetailData, amount)
+                        eventPDPTracking.onClickCheckoutButton(productDetailData, metadata.itemMap)
                         metadata = getPassengerMetaData(metadata, forms, listAdditionalItem, eventCheckoutAdditionalDataPackage)
                         eventCheckoutViewModel.checkoutEvent(EventQuery.mutationEventCheckoutV2(),
                                 getCheckoutParam(metadata, productDetailData, getPackage(productDetailData, packageID)))

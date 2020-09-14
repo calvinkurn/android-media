@@ -1,12 +1,9 @@
 package com.tokopedia.travelcalendar.di
 
-import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.travelcalendar.R
+import com.tokopedia.travelcalendar.data.TravelCalendarGQLQuery
 import com.tokopedia.travelcalendar.domain.TravelCalendarProvider
 import com.tokopedia.travelcalendar.domain.TravelCalendarScheduler
 import dagger.Module
@@ -38,7 +35,5 @@ class TravelCalendarModule {
 
     @Provides
     @Named("travel_calendar_holiday_query")
-    fun provideTravelCalendarHolidayQuery(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.query_get_travel_calendar_holiday)
-    }
+    fun provideTravelCalendarHolidayQuery(): String = TravelCalendarGQLQuery.GET_TRAVEL_CALENDAR_HOLIDAY
 }

@@ -163,7 +163,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         OccIdlingResource.increment()
         getOccCartUseCase.execute({ orderData: OrderData ->
             orderCart = orderData.cart
-            _orderPreference = OrderPreference(orderData.onboarding, orderData.profileIndex, orderData.profileRecommendation, orderData.preference, true)
+            _orderPreference = OrderPreference(orderData.ticker, orderData.onboarding, orderData.profileIndex, orderData.profileRecommendation, orderData.preference, true)
             orderPreference.value = OccState.FirstLoad(_orderPreference)
             if (isFullRefresh) {
                 _orderShipment = OrderShipment()
@@ -749,6 +749,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         val shipping = _orderShipment
         val shippingRecommendationData = _orderShipment.shippingRecommendationData
         if (shippingRecommendationData != null) {
+            OccIdlingResource.increment()
             globalEvent.value = OccGlobalEvent.Loading
             val requestParams = RequestParams.create()
             requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, generateValidateUsePromoRequestWithBbo(logisticPromoUiModel))
@@ -759,6 +760,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                             .subscribe(object : Observer<ValidateUsePromoRevampUiModel> {
                                 override fun onError(e: Throwable) {
                                     globalEvent.value = OccGlobalEvent.Error(e)
+                                    OccIdlingResource.decrement()
                                 }
 
                                 override fun onNext(response: ValidateUsePromoRevampUiModel) {
@@ -770,7 +772,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                                 }
 
                                 override fun onCompleted() {
-                                    //no op
+                                    OccIdlingResource.decrement()
                                 }
                             })
             )

@@ -13,7 +13,7 @@ public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbac
 
     static String TAG = CMActivityLifeCycle.class.getSimpleName();
 
-    CMInAppManager cmInAppManager;
+    private CMInAppManager cmInAppManager;
 
 
     public CMActivityLifeCycle(CMInAppManager cmInAppManager){
