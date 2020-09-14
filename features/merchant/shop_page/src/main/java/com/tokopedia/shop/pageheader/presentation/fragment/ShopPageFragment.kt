@@ -419,7 +419,6 @@ class ShopPageFragment :
             observeLiveData(this)
             startPltNetworkPerformanceMonitoring()
             getInitialData()
-            setShopName()
         }
     }
 
@@ -715,6 +714,7 @@ class ShopPageFragment :
             shopDomain = shopPageP1Data.shopDomain
             avatar = shopPageP1Data.shopAvatar
         }
+        setShopName()
         customDimensionShopPage.updateCustomDimensionData(
                 shopId,
                 shopPageHeaderDataModel?.isOfficial ?: false,
@@ -1254,7 +1254,7 @@ class ShopPageFragment :
 
     private fun setShopName() {
         val userSession = UserSession(context)
-        if(ShopUtil.isMyShop(shopId, userSession.shopId)) {
+        if(isMyShop) {
             shopPageHeaderDataModel?.shopName = userSession.shopName
             shopPageFragmentHeaderViewHolder.setShopName(userSession.shopName)
         }
