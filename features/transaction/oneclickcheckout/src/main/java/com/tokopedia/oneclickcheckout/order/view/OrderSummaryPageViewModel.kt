@@ -23,26 +23,19 @@ import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryPageEnhanceECo
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccProfileRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest
 import com.tokopedia.oneclickcheckout.order.view.model.*
-import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageCartProcessor
-import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageCheckoutProcessor
-import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageLogisticProcessor
-import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePromoProcessor
-import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel
+import com.tokopedia.oneclickcheckout.order.view.processor.*
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastApplyUiMapper
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata
-import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.math.ceil
 
 class OrderSummaryPageViewModel @Inject constructor(private val executorDispatchers: ExecutorDispatchers,
                                                     val getPreferenceListUseCase: GetPreferenceListUseCase,
@@ -50,6 +43,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                                                     private val logisticProcessor: OrderSummaryPageLogisticProcessor,
                                                     private val checkoutProcessor: OrderSummaryPageCheckoutProcessor,
                                                     private val promoProcessor: OrderSummaryPagePromoProcessor,
+                                                    private val calculator: OrderSummaryPageCalculator,
                                                     private val userSessionInterface: UserSessionInterface,
                                                     private val orderSummaryAnalytics: OrderSummaryAnalytics) : BaseViewModel(executorDispatchers.main) {
 
@@ -514,117 +508,10 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     fun calculateTotal() {
-        val quantity = orderProduct.quantity
-        var payment = _orderPayment
-        if (quantity.orderQuantity <= 0 || !_orderPreference.isValid) {
-            orderTotal.value = orderTotal.value.copy(orderCost = OrderCost(), buttonState = OccButtonState.DISABLE)
-            return
-        }
-        val totalProductPrice = quantity.orderQuantity * orderProduct.getPrice().toDouble()
-        val shipping = _orderShipment
-        val totalShippingPrice = shipping.getRealOriginalPrice().toDouble()
-        val insurancePrice = shipping.getRealInsurancePrice().toDouble()
-        val (productDiscount, shippingDiscount, cashbacks) = calculatePromo()
-        var subtotal = totalProductPrice + totalShippingPrice + insurancePrice
-        payment = calculateInstallmentDetails(payment, subtotal, if (orderShop.isOfficial == 1) subtotal - productDiscount - shippingDiscount else 0.0, productDiscount + shippingDiscount)
-        val fee = payment.getRealFee()
-        subtotal += fee
-        subtotal -= productDiscount
-        subtotal -= shippingDiscount
-        val orderCost = OrderCost(subtotal, totalProductPrice, totalShippingPrice, insurancePrice, fee, shippingDiscount, productDiscount, cashbacks)
-
-        var currentState = orderTotal.value.buttonState
-        if (currentState == OccButtonState.NORMAL && (!shouldButtonStateEnable(shipping))) {
-            currentState = OccButtonState.DISABLE
-        }
-        if (payment.errorTickerMessage.isNotEmpty()) {
-            _orderPayment = payment.copy(isCalculationError = false)
-            orderPayment.value = _orderPayment
-            orderTotal.value = orderTotal.value.copy(orderCost = orderCost, paymentErrorMessage = payment.errorTickerMessage, buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
-        } else if (payment.errorMessage.message.isNotEmpty() && payment.errorMessage.button.text.isNotEmpty()) {
-            if (currentState == OccButtonState.NORMAL) {
-                currentState = OccButtonState.DISABLE
-            }
-            _orderPayment = payment.copy(isCalculationError = false)
-            orderPayment.value = _orderPayment
-            orderTotal.value = orderTotal.value.copy(orderCost = orderCost, paymentErrorMessage = null, buttonType = OccButtonType.PAY, buttonState = currentState)
-        } else if (payment.minimumAmount > subtotal) {
-            orderTotal.value = orderTotal.value.copy(orderCost = orderCost,
-                    paymentErrorMessage = "Belanjaanmu kurang dari min. transaksi ${payment.gatewayName} (${CurrencyFormatUtil.convertPriceValueToIdrFormat(payment.minimumAmount, false).removeDecimalSuffix()}). Silahkan pilih pembayaran lain.",
-                    buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
-            _orderPayment = payment.copy(isCalculationError = true)
-            orderPayment.value = _orderPayment
-        } else if (payment.maximumAmount > 0 && payment.maximumAmount < subtotal) {
-            orderTotal.value = orderTotal.value.copy(orderCost = orderCost,
-                    paymentErrorMessage = "Belanjaanmu melebihi limit transaksi ${payment.gatewayName} (${CurrencyFormatUtil.convertPriceValueToIdrFormat(payment.maximumAmount, false).removeDecimalSuffix()}). Silahkan pilih pembayaran lain.",
-                    buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
-            _orderPayment = payment.copy(isCalculationError = true)
-            orderPayment.value = _orderPayment
-        } else if (payment.gatewayCode.contains(OVO_GATEWAY_CODE) && subtotal > payment.walletAmount) {
-            orderTotal.value = orderTotal.value.copy(orderCost = orderCost,
-                    paymentErrorMessage = OVO_INSUFFICIENT_ERROR_MESSAGE,
-                    buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
-            _orderPayment = payment.copy(isCalculationError = true)
-            orderPayment.value = _orderPayment
-            orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_PAYMENT_OVO_BALANCE)
-        } else {
-            if (payment.creditCard.selectedTerm?.isError == true && currentState == OccButtonState.NORMAL) {
-                currentState = OccButtonState.DISABLE
-            }
-            _orderPayment = payment.copy(isCalculationError = false)
-            orderPayment.value = _orderPayment
-            orderTotal.value = orderTotal.value.copy(orderCost = orderCost, paymentErrorMessage = null, buttonType = OccButtonType.PAY, buttonState = currentState)
-        }
-    }
-
-    private fun calculatePromo(): Triple<Int, Int, ArrayList<Pair<String, String>>> {
-        var productDiscount = 0
-        var shippingDiscount = 0
-        val cashbacks = ArrayList<Pair<String, String>>()
-        val summaries = validateUsePromoRevampUiModel?.promoUiModel?.benefitSummaryInfoUiModel?.summaries
-                ?: emptyList()
-        for (summary in summaries) {
-            if (summary.type == SummariesUiModel.TYPE_DISCOUNT) {
-                for (detail in summary.details) {
-                    if (detail.type == SummariesUiModel.TYPE_SHIPPING_DISCOUNT) {
-                        shippingDiscount += detail.amount
-                    }
-                    if (detail.type == SummariesUiModel.TYPE_PRODUCT_DISCOUNT) {
-                        productDiscount += detail.amount
-                    }
-                }
-            }
-            if (summary.type == SummariesUiModel.TYPE_CASHBACK) {
-                cashbacks.addAll(summary.details.map { it.description to it.amountStr })
-            }
-        }
-        return Triple(productDiscount, shippingDiscount, cashbacks)
-    }
-
-    private fun calculateMdrFee(subTotal: Double, mdr: Float, subsidize: Double, mdrSubsidize: Float): Double {
-        return ceil(subTotal * (mdr / 100.0) - subsidize * (mdrSubsidize / 100.0))
-    }
-
-    private fun calculateInstallmentDetails(payment: OrderPayment, subTotal: Double, subsidize: Double, discount: Int): OrderPayment {
-        if (payment.creditCard.selectedTerm == null) {
-            return payment
-        }
-        val installments = payment.creditCard.availableTerms
-        var selectedInstallmentTerm: OrderPaymentInstallmentTerm? = null
-        for (i in installments.lastIndex downTo 0) {
-            val installment = installments[i]
-            installment.isEnable = installment.minAmount <= (subTotal - discount)
-            if (installment.isError) {
-                installment.isError = !installment.isEnable
-            }
-            installment.fee = calculateMdrFee(subTotal, installment.mdr, subsidize, installment.mdrSubsidize)
-            val total = subTotal + installment.fee - discount
-            installment.monthlyAmount = if (installment.term > 0) ceil(total / installment.term) else total
-            if (installment.isSelected) {
-                selectedInstallmentTerm = installment
-            }
-        }
-        return payment.copy(creditCard = payment.creditCard.copy(availableTerms = installments, selectedTerm = selectedInstallmentTerm))
+        val (newOrderPayment, newOrderTotal) = calculator.calculateTotal(orderCart, _orderPreference, _orderShipment, validateUsePromoRevampUiModel, _orderPayment, orderTotal.value)
+        _orderPayment = newOrderPayment
+        orderPayment.value = _orderPayment
+        orderTotal.value = newOrderTotal
     }
 
     fun chooseInstallment(selectedInstallmentTerm: OrderPaymentInstallmentTerm) {

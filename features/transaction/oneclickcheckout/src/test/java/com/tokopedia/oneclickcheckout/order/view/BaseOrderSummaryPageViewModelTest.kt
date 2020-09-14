@@ -10,10 +10,7 @@ import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.domain.CheckoutOccUseCase
 import com.tokopedia.oneclickcheckout.order.domain.GetOccCartUseCase
 import com.tokopedia.oneclickcheckout.order.domain.UpdateCartOccUseCase
-import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageCartProcessor
-import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageCheckoutProcessor
-import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageLogisticProcessor
-import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePromoProcessor
+import com.tokopedia.oneclickcheckout.order.view.processor.*
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.editaddress.domain.usecase.EditAddressUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
@@ -78,6 +75,7 @@ open class BaseOrderSummaryPageViewModelTest {
                 OrderSummaryPageLogisticProcessor(ratesUseCase, ratesResponseStateConverter, editAddressUseCase, userSessionInterface, orderSummaryAnalytics, testDispatchers),
                 OrderSummaryPageCheckoutProcessor(checkoutOccUseCase, orderSummaryAnalytics, testDispatchers),
                 OrderSummaryPagePromoProcessor(validateUsePromoRevampUseCase, clearCacheAutoApplyStackUseCase, orderSummaryAnalytics, testDispatchers),
+                OrderSummaryPageCalculator(orderSummaryAnalytics),
                 userSessionInterface, orderSummaryAnalytics)
     }
 }
