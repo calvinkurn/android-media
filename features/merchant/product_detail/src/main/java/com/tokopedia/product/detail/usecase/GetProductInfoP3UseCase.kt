@@ -80,6 +80,7 @@ class GetProductInfoP3UseCase @Inject constructor(private val rawQueries: Map<St
             if (response.getError(StickyLoginTickerPojo.TickerResponse::class.java)?.isNotEmpty() != true) {
                 response.doActionIfNotNull<StickyLoginTickerPojo.TickerResponse> {
                     productInfoP3.tickerInfo = DynamicProductDetailMapper.getTickerInfoData(it)
+                    productInfoP3.tickerStickyLogin = DynamicProductDetailMapper.getStickyLoginData(it)
                 }
             }
             //endregion
