@@ -6,21 +6,25 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatsetting.data.ChatSetting
+import com.tokopedia.topchat.chatsetting.data.uimodel.ItemChatSettingUiModel
 import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_chat_setting.view.*
 
-class ChatSettingViewHolder(itemView: View?, val listener: ChatSettingListener)
-    : AbstractViewHolder<ChatSetting>(itemView) {
+class ChatSettingViewHolder(
+        itemView: View?,
+        val listener: ChatSettingListener
+) : AbstractViewHolder<ItemChatSettingUiModel>(itemView) {
+
+    private val description: Typography? = itemView?.findViewById(R.id.tvDesc)
 
     interface ChatSettingListener {
         fun isTabSeller(): Boolean
-        fun eventClickChatSetting(element: ChatSetting)
+        fun eventClickChatSetting(element: ItemChatSettingUiModel)
         fun goToSellerMigrationPage()
     }
 
-    override fun bind(element: ChatSetting?) {
-        if (element == null) return
+    override fun bind(element: ItemChatSettingUiModel) {
         with(itemView) {
             tvTitle?.text = element.alias
             labelSellerMigration.showWithCondition(!GlobalConfig.isSellerApp() && isSellerTabTemplateChat(element.alias))

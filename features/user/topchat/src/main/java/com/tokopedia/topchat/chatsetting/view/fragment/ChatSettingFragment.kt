@@ -18,6 +18,7 @@ import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import com.tokopedia.topchat.chatsetting.analytic.ChatSettingAnalytic
 import com.tokopedia.topchat.chatsetting.data.ChatSetting
+import com.tokopedia.topchat.chatsetting.data.uimodel.ItemChatSettingUiModel
 import com.tokopedia.topchat.chatsetting.di.ChatSettingComponent
 import com.tokopedia.topchat.chatsetting.view.adapter.ChatSettingTypeFactory
 import com.tokopedia.topchat.chatsetting.view.adapter.ChatSettingTypeFactoryImpl
@@ -102,9 +103,8 @@ class ChatSettingFragment : BaseListFragment<Visitable<*>, ChatSettingTypeFactor
         }
     }
 
-    private fun successLoadChatSetting(data: List<ChatSetting>) {
-        val filteredSettings = viewModel.filterSettings(::isSupportAppLink, data)
-        renderList(filteredSettings)
+    private fun successLoadChatSetting(data: List<Visitable<ChatSettingTypeFactory>>) {
+        renderList(data)
     }
 
     private fun isSupportAppLink(chatSetting: ChatSetting): Boolean {
@@ -127,7 +127,7 @@ class ChatSettingFragment : BaseListFragment<Visitable<*>, ChatSettingTypeFactor
         return viewModel.isSeller
     }
 
-    override fun eventClickChatSetting(element: ChatSetting) {
+    override fun eventClickChatSetting(element: ItemChatSettingUiModel) {
         analytic.eventClickChatSetting(element)
     }
 
