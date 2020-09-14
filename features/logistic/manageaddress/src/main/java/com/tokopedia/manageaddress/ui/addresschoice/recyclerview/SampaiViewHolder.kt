@@ -1,3 +1,4 @@
+/*
 package com.tokopedia.manageaddress.ui.addresschoice.recyclerview
 
 import android.view.View
@@ -10,9 +11,11 @@ import com.tokopedia.design.component.Tooltip
 import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.domain.model.addressoptions.CornerAddressModel
 
+*/
 /**
  * Created by fajarnuha on 2019-05-21.
- */
+ *//*
+
 class SampaiViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     private var mButton: Button = itemView.findViewById(R.id.button_tkpd_corner)
@@ -51,4 +54,4 @@ class SampaiViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         @JvmStatic
         val TYPE: Int = R.layout.item_sampai
     }
-}
+}*/

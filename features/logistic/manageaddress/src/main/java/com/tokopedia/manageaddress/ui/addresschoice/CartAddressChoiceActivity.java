@@ -19,8 +19,6 @@ import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeA
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutActivity;
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant;
 
-import org.jetbrains.annotations.NotNull;
-
 import static com.tokopedia.logisticdata.data.constant.LogisticConstant.INSTANCE_TYPE_EDIT_ADDRESS_FROM_SINGLE_CHECKOUT;
 import static com.tokopedia.purchase_platform.common.constant.CartConstant.SCREEN_NAME_CART_NEW_USER;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_REF;
@@ -32,7 +30,7 @@ import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.K
  * Fajar U N
  */
 public class CartAddressChoiceActivity extends BaseCheckoutActivity
-        implements ShipmentAddressListFragment.ICartAddressChoiceActivityListener, CornerListFragment.ActionListener {
+        implements ShipmentAddressListFragment.ICartAddressChoiceActivityListener {
 
     // Attention !!
     // If these constants will be used on other module, please move into CheckoutConstant.kt class on package purchase_platform_common
@@ -45,12 +43,12 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     private String PARAM_ADDRESS_MODEL = "EDIT_PARAM";
     private CheckoutAnalyticsChangeAddress mAnalytics = new CheckoutAnalyticsChangeAddress();
 
-    @Override
+ /*   @Override
     public void onAttachFragment(Fragment fragment) {
         if (fragment instanceof CornerListFragment) {
             ((CornerListFragment) fragment).setCornerListener(this);
         }
-    }
+    }*/
 
     @Override
     protected void initInjector() {
@@ -147,7 +145,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
         }
     }
 
-    @Override
+ /*   @Override
     public void requestCornerList() {
         updateTitle(getString(R.string.button_choose_corner));
         getSupportFragmentManager().beginTransaction()
@@ -155,15 +153,15 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
                 .replace(com.tokopedia.abstraction.R.id.parent_view, CornerListFragment.newInstance(), TAG_CORNER_FRAGMENT)
                 .addToBackStack(null)
                 .commit();
-    }
+    }*/
 
-    @Override
+   /* @Override
     public void onCornerChosen(@NotNull RecipientAddressModel corner) {
         updateTitle(getString(R.string.checkout_module_title_activity_shipping_address));
         getSupportFragmentManager().popBackStack();
         ((ShipmentAddressListFragment) getFragment()).onChooseCorner(corner);
     }
-
+*/
     @Override
     protected Fragment getNewFragment() {
         RecipientAddressModel currentAddress = getIntent().getParcelableExtra(CheckoutConstant.EXTRA_CURRENT_ADDRESS);

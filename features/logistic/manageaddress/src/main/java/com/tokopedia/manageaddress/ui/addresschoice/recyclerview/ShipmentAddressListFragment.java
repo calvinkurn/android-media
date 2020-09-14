@@ -239,13 +239,13 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
         mRvRecipientAddressList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRvRecipientAddressList.setAdapter(mAdapter);
-        if (!mAdapter.isHavingCornerAddress()) {
-            RecipientAddressModel cached = mPresenter.getLastCorner();
-            if (cached != null) {
-                mAdapter.setCorner(cached);
-            }
-        }
-        if (isDisableCorner) mAdapter.hideCornerOption();
+//        if (!mAdapter.isHavingCornerAddress()) {
+//            RecipientAddressModel cached = mPresenter.getLastCorner();
+//            if (cached != null) {
+//                mAdapter.setCorner(cached);
+//            }
+//        }
+//        if (isDisableCorner) mAdapter.hideCornerOption();
 
         initSearchView();
         onSearchReset();
@@ -266,7 +266,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         llNetworkErrorView.setVisibility(View.GONE);
         llNoResult.setVisibility(View.GONE);
     }
-
+/*
     @Override
     public void onChooseCorner(@NotNull RecipientAddressModel cornerAddressModel) {
         mCurrentAddress = cornerAddressModel;
@@ -274,7 +274,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
         // Immediately choose the corner then go to shipment page
         onCornerAddressClicked(cornerAddressModel, 0);
-    }
+    }*/
 
     @Override
     public void navigateToCheckoutPage(@NotNull RecipientAddressModel recipientAddressModel) {
@@ -368,7 +368,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         }
     }
 
-    @Override
+ /*   @Override
     public void onCornerAddressClicked(RecipientAddressModel addressModel, int position) {
         mPresenter.saveLastCorner(addressModel);
         mAdapter.updateSelected(position);
@@ -379,7 +379,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
             // Show error in case of unexpected behaviour
             this.showError(new Throwable());
         }
-    }
+    }*/
 
     @Override
     public void onEditClick(RecipientAddressModel model) {
@@ -469,11 +469,11 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
             startActivityForResult(intent, LogisticConstant.ADD_NEW_ADDRESS_CREATED);
         }
     }
-
+/*
     @Override
     public void onCornerButtonClicked() {
         mActivityListener.requestCornerList();
-    }
+    }*/
 
     private void openSoftKeyboard() {
         if (mInputMethodManager != null) {
@@ -517,7 +517,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     public interface ICartAddressChoiceActivityListener {
         void finishAndSendResult(RecipientAddressModel selectedAddressResult);
 
-        void requestCornerList();
+//        void requestCornerList();
     }
 
 }

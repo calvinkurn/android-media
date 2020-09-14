@@ -8,7 +8,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
-import com.tokopedia.manageaddress.domain.model.addressoptions.CornerAddressModel;
 import com.tokopedia.manageaddress.ui.addresschoice.RecipientAddressViewHolder;
 
 import java.util.ArrayList;
@@ -20,14 +19,14 @@ import java.util.List;
 
 public class ShipmentAddressListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private CornerAddressModel mCornerData;
+//    private CornerAddressModel mCornerData;
     private List<RecipientAddressModel> mAddressModelList;
     private ActionListener mActionListener;
 
     public ShipmentAddressListAdapter(ActionListener actionListener) {
         mActionListener = actionListener;
         mAddressModelList = new ArrayList<>();
-        mCornerData = new CornerAddressModel();
+//        mCornerData = new CornerAddressModel();
     }
 
     @NonNull
@@ -35,32 +34,34 @@ public class ShipmentAddressListAdapter extends RecyclerView.Adapter<RecyclerVie
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(viewType, parent, false);
-        if (viewType == SampaiViewHolder.getTYPE()) return new SampaiViewHolder(view);
+//        if (viewType == SampaiViewHolder.getTYPE()) return new SampaiViewHolder(view);
         return new RecipientAddressViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        if (getItemViewType(position) == SampaiViewHolder.getTYPE()) {
-            SampaiViewHolder sampaiViewHolder = (SampaiViewHolder) holder;
-            sampaiViewHolder.bind(mCornerData, mActionListener, position);
-        } else {
-            int addressPosition = position - getExtraCount();
-            RecipientAddressViewHolder addressHolder = (RecipientAddressViewHolder) holder;
-            RecipientAddressModel address = mAddressModelList.get(addressPosition);
-            addressHolder.bind(address, mActionListener, position);
-        }
+        int addressPosition = position;
+        RecipientAddressViewHolder addressHolder = (RecipientAddressViewHolder) holder;
+        RecipientAddressModel address = mAddressModelList.get(addressPosition);
+        addressHolder.bind(address, mActionListener, position);
+//        if (getItemViewType(position) == SampaiViewHolder.getTYPE()) {
+//            SampaiViewHolder sampaiViewHolder = (SampaiViewHolder) holder;
+//            sampaiViewHolder.bind(mCornerData, mActionListener, position);
+//        } else {
+//
+//        }
     }
 
     @Override
     public int getItemCount() {
-        return mAddressModelList.size() + getExtraCount();
+        return mAddressModelList.size();
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (position == 0 && mCornerData != null) return SampaiViewHolder.getTYPE();
-        else return RecipientAddressViewHolder.TYPE;
+        return RecipientAddressViewHolder.TYPE;
+   /*     if (position == 0 && mCornerData != null) return SampaiViewHolder.getTYPE();
+        else return RecipientAddressViewHolder.TYPE;*/
     }
 
     public void setAddressList(List<RecipientAddressModel> addressModelList, String selectedId) {
@@ -69,9 +70,9 @@ public class ShipmentAddressListAdapter extends RecyclerView.Adapter<RecyclerVie
                 addressModel.setSelected(true);
             } else addressModel.setSelected(false);
         }
-        if (mCornerData != null && mCornerData.getCornerModel() != null) {
+       /* if (mCornerData != null && mCornerData.getCornerModel() != null) {
             mCornerData.setSelected(mCornerData.getCornerModel().getId().equals(selectedId));
-        }
+        }*/
         mAddressModelList.clear();
         mAddressModelList.addAll(addressModelList);
         updateHeaderAndFooterPosition();
@@ -83,43 +84,43 @@ public class ShipmentAddressListAdapter extends RecyclerView.Adapter<RecyclerVie
         updateHeaderAndFooterPosition();
         notifyDataSetChanged();
     }
-
-    public void hideCornerOption() {
-        mCornerData = null;
-        notifyDataSetChanged();
-    }
-
-    public void setCorner(RecipientAddressModel cornerAddressModel) {
-        mCornerData.setCornerModel(cornerAddressModel);
-        notifyDataSetChanged();
-    }
+//
+//    public void hideCornerOption() {
+//        mCornerData = null;
+//        notifyDataSetChanged();
+//    }
+//
+//    public void setCorner(RecipientAddressModel cornerAddressModel) {
+//        mCornerData.setCornerModel(cornerAddressModel);
+//        notifyDataSetChanged();
+//    }
 
     public void updateSelected(int position) {
-        if (getItemViewType(position) == SampaiViewHolder.getTYPE()) {
+        /*if (getItemViewType(position) == SampaiViewHolder.getTYPE()) {
             mCornerData.setSelected(true);
             for (RecipientAddressModel addressModel : mAddressModelList) {
                 addressModel.setSelected(false);
             }
-        } else {
+        } else {*/
             for (int i = 0; i < mAddressModelList.size(); i++) {
-                if (position - getExtraCount() == i) {
+                if (position == i) {
                     mAddressModelList.get(i).setSelected(true);
                 } else {
                     mAddressModelList.get(i).setSelected(false);
                 }
             }
-            if (mCornerData != null) mCornerData.setSelected(false);
-        }
+//            if (mCornerData != null) mCornerData.setSelected(false);
+//        }
         notifyDataSetChanged();
     }
 
-    public Boolean isHavingCornerAddress() {
+  /*  public Boolean isHavingCornerAddress() {
         return (mCornerData != null && mCornerData.getCornerModel() != null);
     }
 
     private int getExtraCount() {
         return mCornerData != null ? 1 : 0;
-    }
+    }*/
 
     private void updateHeaderAndFooterPosition() {
         for (int i = 0; i < mAddressModelList.size(); i++) {
@@ -132,13 +133,13 @@ public class ShipmentAddressListAdapter extends RecyclerView.Adapter<RecyclerVie
 
         void onAddressContainerClicked(RecipientAddressModel model, int position);
 
-        void onCornerAddressClicked(RecipientAddressModel addressModel, int position);
+//        void onCornerAddressClicked(RecipientAddressModel addressModel, int position);
 
         void onEditClick(RecipientAddressModel model);
 
         void onAddAddressButtonClicked();
 
-        void onCornerButtonClicked();
+//        void onCornerButtonClicked();
     }
 
 }

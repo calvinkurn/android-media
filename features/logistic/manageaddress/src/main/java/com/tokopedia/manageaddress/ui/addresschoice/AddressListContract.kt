@@ -12,7 +12,7 @@ interface AddressListContract {
 
         fun showList(list: MutableList<RecipientAddressModel>)
 
-        fun onChooseCorner(cornerAddressModel: RecipientAddressModel)
+//        fun onChooseCorner(cornerAddressModel: RecipientAddressModel)
 
         fun updateList(list: MutableList<RecipientAddressModel>)
 
