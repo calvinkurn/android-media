@@ -190,6 +190,9 @@ class HomeUseCaseModule {
             "          layout\n" +
             "          type\n" +
             "          showPromoBadge\n" +
+            "          categoryID\n" +
+            "          perso_type\n" +
+            "          campaignCode\n" +
             "          has_close_button\n" +
             "          isAutoRefreshAfterExpired\n" +
             "          token\n" +
@@ -203,14 +206,7 @@ class HomeUseCaseModule {
             "            expiredTime\n" +
             "            backColor\n" +
             "            backImage\n" +
-            "          }\n" +
-            "          hero {\n" +
-            "            id\n" +
-            "            name\n" +
-            "            url\n" +
-            "            applink\n" +
-            "            imageUrl\n" +
-            "            attribution\n" +
+            "            textColor\n" +
             "          }\n" +
             "           grids {\n" +
             "             id\n" +
@@ -270,6 +266,7 @@ class HomeUseCaseModule {
             "            text_color\n" +
             "            image_url\n" +
             "            attribution\n" +
+            "            gradient_color\n" +
             "\n" +
             "          }\n" +
             "        }\n" +
