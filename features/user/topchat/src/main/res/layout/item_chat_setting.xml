@@ -9,7 +9,7 @@
     android:paddingStart="@dimen/spacing_lvl4"
     android:paddingTop="@dimen/dp_topchat_12"
     android:paddingEnd="@dimen/spacing_lvl4"
-    android:paddingBottom="@dimen/dp_topchat_12">
+    android:paddingBottom="@dimen/dp_topchat_28">
 
     <ImageView
         android:id="@+id/ivChevron"
@@ -45,11 +45,10 @@
         tools:text="Akses fitur Template Chat, Balasan Otomatis, dan Pengumuman toko di Tokopedia Seller" />
 
     <com.tokopedia.unifycomponents.Label
-        android:id="@+id/labelSellerMigration"
+        android:id="@+id/label_chat_setting"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl1"
-        android:layout_marginLeft="@dimen/layout_lvl1"
         android:text="@string/seller_migration_label_seller_app_only"
         android:visibility="gone"
         app:labelType="general_light_green"
