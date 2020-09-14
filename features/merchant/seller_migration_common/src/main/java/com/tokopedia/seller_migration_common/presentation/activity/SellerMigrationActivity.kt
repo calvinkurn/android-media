@@ -22,7 +22,7 @@ import com.tokopedia.seller_migration_common.analytics.SellerMigrationTrackingCo
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTrackingConstants.USER_REDIRECTION_EVENT_NAME
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
 import com.tokopedia.seller_migration_common.presentation.fragment.SellerMigrationFragment
-import com.tokopedia.seller_migration_common.presentation.util.getMigrationIntentWithoutApplink
+import com.tokopedia.seller_migration_common.presentation.util.getRegisteredMigrationApplinks
 import com.tokopedia.user.session.UserSession
 
 
@@ -55,7 +55,9 @@ class SellerMigrationActivity : BaseSimpleActivity() {
                 uri.getQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME)?.let { feature ->
                     featureName = feature
                 }
-                val appLinks = ArrayList<String>(intent.extras?.getStringArrayList(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA).orEmpty())
+                val appLinks = ArrayList<String>(intent.extras?.getStringArrayList(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA)
+                        ?: getRegisteredMigrationApplinks(featureName))
+
                 if (appLinks.isNotEmpty()) {
                     val firstAppLink = appLinks.firstOrNull().orEmpty()
                     val parameterizedFirstAppLink = Uri.parse(firstAppLink)
@@ -75,11 +77,6 @@ class SellerMigrationActivity : BaseSimpleActivity() {
                         putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, featureName)
                         flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                         startActivity(this)
-                        finish()
-                    }
-                } else {
-                    getMigrationIntentWithoutApplink(featureName)?.let { intent ->
-                        startActivity(intent)
                         finish()
                     }
                 }
