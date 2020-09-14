@@ -1,15 +1,11 @@
 package tokopedia.applink.deeplinkdf
 
-import com.tokopedia.applink.DFP
 import com.tokopedia.applink.DeeplinkDFMapper
 import io.mockk.mockkObject
-import io.mockk.unmockkAll
+import io.mockk.unmockkObject
 import org.junit.After
+import org.junit.Assert.assertEquals
 import org.junit.Before
-import java.io.BufferedReader
-import java.io.FileNotFoundException
-import java.io.InputStream
-import java.io.InputStreamReader
 
 abstract class DeepLinkDFMapperTestFixture {
 
@@ -20,37 +16,20 @@ abstract class DeepLinkDFMapperTestFixture {
 
     @After
     fun finish() {
-        unmockkAll()
+        unmockkObject(DeeplinkDFMapper)
     }
 
-    protected fun getDeepLinkIdFromDeepLink(dfpList: List<DFP>?, path: InputStream?): List<DFP>? {
-        val turnedOnDfSet = path?.let { getDFFilterMap(it) }
-        if (turnedOnDfSet == null || turnedOnDfSet.isEmpty()) {
-            return listOf()
+    protected fun assertEqualDeepLinkCustomerApp(appLink: String, moduleId: String) {
+        val expectedResult = DeeplinkDFMapper.deeplinkDFPatternListCustomerApp.firstOrNull {
+            it.logic(appLink)
         }
-        val resultList = mutableListOf<DFP>()
-        dfpList?.forEach {
-            if (turnedOnDfSet.contains(it.moduleId)) {
-                resultList.add(it)
-            }
-        }
-        return resultList
+        assertEquals(expectedResult?.moduleId, moduleId)
     }
 
-    private fun getDFFilterMap(path: InputStream): Set<String>? {
-        return try {
-            val set: HashSet<String> = hashSetOf()
-            val reader = BufferedReader(InputStreamReader(path))
-            var line: String? = reader.readLine()
-            while (line != null) {
-                if (line.isNotEmpty()) {
-                    set.add(line)
-                }
-                line = reader.readLine()
-            }
-            set
-        } catch (e: FileNotFoundException) {
-            null
+    protected fun assertEqualDeepLinkSellerApp(appLink: String, moduleId: String) {
+        val expectedResult = DeeplinkDFMapper.deeplinkDFPatternListSellerApp.firstOrNull {
+            it.logic(appLink)
         }
+        assertEquals(expectedResult?.moduleId, moduleId)
     }
 }
