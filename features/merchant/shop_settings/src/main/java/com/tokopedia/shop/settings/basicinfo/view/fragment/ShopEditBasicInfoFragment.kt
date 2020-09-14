@@ -20,6 +20,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.design.text.watcher.AfterTextWatcher
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef
@@ -47,6 +48,8 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_shop_edit_basic_info.*
 import kotlinx.android.synthetic.main.partial_toolbar_save_button.*
+import java.net.UnknownHostException
+import java.net.UnknownServiceException
 import javax.inject.Inject
 
 class ShopEditBasicInfoFragment: Fragment() {
@@ -550,7 +553,11 @@ class ShopEditBasicInfoFragment: Fragment() {
 
     private fun onErrorUpdateShopBasicData(throwable: Throwable) {
         hideSubmitLoading()
-        showSnackBarErrorSubmitEdit(throwable)
+        if (throwable is UnknownHostException || throwable is UnknownServiceException) {
+            showGlobalError()
+        } else {
+            showSnackBarErrorSubmitEdit(throwable)
+        }
         tvSave.isEnabled = true
     }
 
@@ -621,7 +628,11 @@ class ShopEditBasicInfoFragment: Fragment() {
     }
 
     private fun onErrorUploadShopImage(throwable: Throwable) {
-        showSnackBarErrorSubmitEdit(throwable)
+        if (throwable is UnknownHostException || throwable is UnknownServiceException) {
+            showGlobalError()
+        } else {
+            showSnackBarErrorSubmitEdit(throwable)
+        }
     }
 
     private fun showSnackBarErrorSubmitEdit(throwable: Throwable) {
@@ -666,6 +677,15 @@ class ShopEditBasicInfoFragment: Fragment() {
             setSecondaryCTAClickListener {
                 dismiss()
                 ShopSettingsTracking.clickCancelChangeShopName(userSession.shopId, getShopType())
+            }
+        }.show()
+    }
+
+    private fun showGlobalError() {
+        globalError.apply {
+            setType(GlobalError.NO_CONNECTION)
+            setActionClickListener {
+                onSaveButtonClicked()
             }
         }.show()
     }
