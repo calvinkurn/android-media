@@ -36,7 +36,8 @@ class OtherMenuAdapterTypeFactory(
             ShopInfoLoadingViewHolder.LAYOUT -> ShopInfoLoadingViewHolder(parent)
             ShopInfoErrorViewHolder.LAYOUT -> ShopInfoErrorViewHolder(parent, shopInfoErrorListener)
             ShopOrderViewHolder.LAYOUT -> ShopOrderViewHolder(parent, sellerMenuTracker)
-            SellerMenuTitleViewHolder.LAYOUT -> SellerMenuTitleViewHolder(parent, sellerMenuTracker)
+            SellerMenuTitleViewHolder.SECTION_WITH_CTA_LAYOUT -> SellerMenuTitleViewHolder(parent, sellerMenuTracker)
+            SellerMenuTitleViewHolder.SECTION_OTHER_LAYOUT -> SellerMenuTitleViewHolder(parent, sellerMenuTracker)
             ShopProductViewHolder.LAYOUT -> ShopProductViewHolder(parent, sellerMenuTracker)
             SellerFeatureViewHolder.LAYOUT -> SellerFeatureViewHolder(parent, sellerMenuTracker)
             SellerSettingsTitleViewHolder.LAYOUT -> SellerSettingsTitleViewHolder(parent)
@@ -61,7 +62,7 @@ class OtherMenuAdapterTypeFactory(
     }
 
     override fun type(sectionTitleUiModel: SectionTitleUiModel): Int {
-        return SellerMenuTitleViewHolder.LAYOUT
+        return SellerMenuTitleViewHolder.getLayout(sectionTitleUiModel.type)
     }
 
     override fun type(shopProductUiModel: ShopProductUiModel): Int {

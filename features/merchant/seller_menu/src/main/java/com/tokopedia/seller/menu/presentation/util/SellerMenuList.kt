@@ -9,6 +9,7 @@ import com.tokopedia.seller.menu.common.analytics.SettingTrackingConstant
 import com.tokopedia.seller.menu.common.constant.MenuItemType
 import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
 import com.tokopedia.seller.menu.common.view.uimodel.*
+import com.tokopedia.seller.menu.common.view.uimodel.SectionTitleUiModel.SectionTitleType.*
 import com.tokopedia.seller.menu.common.view.uimodel.base.DividerType
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopInfoLoadingUiModel
@@ -49,7 +50,7 @@ object SellerMenuList {
             SellerBaseUrl.HOSTNAME, SellerBaseUrl.RESO_INBOX_SELLER)
 
         return listOf(
-                SettingTitleUiModel(sectionTitle),
+                SettingTitleUiModel(sectionTitle, R.dimen.spacing_lvl4),
                 SellerMenuItemUiModel(
                         context.getString(R.string.setting_menu_review),
                         R.drawable.ic_star_setting,
@@ -81,13 +82,13 @@ object SellerMenuList {
     }
 
     private fun createOtherInfoMenu(context: Context): List<SettingUiModel> {
-        val sectionTitle = context.getString(R.string.setting_menu_other_info)
+        val sectionTitle = SectionTitleUiModel(title = R.string.setting_menu_other_info, type = OTHER_SECTION_TITLE)
         val sellerEduApplink = String.format(APPLINK_FORMAT, ApplinkConst.WEBVIEW,
             SellerBaseUrl.SELLER_HOSTNAME, SellerBaseUrl.SELLER_EDU)
 
         return listOf(
                 DividerUiModel(),
-                SettingTitleUiModel(sectionTitle),
+                sectionTitle,
                 SellerMenuItemUiModel(
                         context.getString(R.string.setting_menu_seller_education_center),
                         R.drawable.ic_seller_edu,

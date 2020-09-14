@@ -27,6 +27,8 @@
         app:typographyWeight="bold"
         app:layout_constraintStart_toEndOf="@id/settingTitleIcon"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/settingTitleIcon"
+        app:layout_constraintBottom_toBottomOf="@id/settingTitleIcon"
         tools:text="Akun Toko"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

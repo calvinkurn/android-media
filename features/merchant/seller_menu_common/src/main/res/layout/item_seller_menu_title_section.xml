@@ -26,5 +26,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3"
         app:typographyWeight="bold"
-        tools:text="Lihat riwayat" />
+        tools:text="Lihat riwayat"
+        android:visibility="gone"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

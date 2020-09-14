@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingTop="@dimen/setting_divider_thin_padding"
-    android:paddingBottom="@dimen/setting_divider_thin_padding"
+    android:paddingBottom="@dimen/spacing_lvl2"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.tokopedia.unifycomponents.DividerUnify

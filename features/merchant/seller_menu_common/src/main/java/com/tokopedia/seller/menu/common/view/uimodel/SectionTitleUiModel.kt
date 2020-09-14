@@ -7,7 +7,7 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiType
 
 open class SectionTitleUiModel(
     @StringRes val title: Int,
-    @StringRes val ctaText: Int,
+    @StringRes val ctaText: Int? = null,
     val type: SectionTitleType
 ): SettingUiModel {
 
@@ -22,6 +22,7 @@ open class SectionTitleUiModel(
 
     enum class SectionTitleType {
         ORDER_SECTION_TITLE,
-        PRODUCT_SECTION_TITLE
+        PRODUCT_SECTION_TITLE,
+        OTHER_SECTION_TITLE
     }
 }

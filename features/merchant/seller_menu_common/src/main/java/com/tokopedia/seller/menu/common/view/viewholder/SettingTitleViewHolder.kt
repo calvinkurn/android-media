@@ -17,6 +17,11 @@ class SettingTitleViewHolder(itemView: View) : AbstractViewHolder<SettingTitleUi
     override fun bind(element: SettingTitleUiModel) {
         itemView.settingTitle.text = element.title
 
+        element.verticalSpacing?.let {
+            val paddingTop = itemView.context.resources.getDimensionPixelSize(it)
+            val paddingBottom = itemView.context.resources.getDimensionPixelSize(R.dimen.setting_title_padding_bottom)
+            itemView.settingTitle.setPadding(0, paddingTop, 0, paddingBottom)
+        }
     }
 
 
