@@ -16,8 +16,6 @@
 
     <include layout="@layout/setting_balance_loading" />
 
-    <include layout="@layout/setting_balance_loading" />
-
     <com.tokopedia.unifycomponents.DividerUnify
         android:layout_width="match_parent"
         android:layout_height="@dimen/setting_divider_thick" />
