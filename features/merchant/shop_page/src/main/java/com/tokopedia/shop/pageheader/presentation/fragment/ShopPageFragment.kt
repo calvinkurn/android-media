@@ -419,6 +419,7 @@ class ShopPageFragment :
             observeLiveData(this)
             startPltNetworkPerformanceMonitoring()
             getInitialData()
+            setShopName()
         }
     }
 
