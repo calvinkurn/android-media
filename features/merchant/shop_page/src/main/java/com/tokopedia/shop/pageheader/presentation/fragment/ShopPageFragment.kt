@@ -531,6 +531,7 @@ class ShopPageFragment :
         super.onResume()
         removeTemporaryShopImage(shopImageFilePath)
         updateStickyState()
+        shopPageFragmentHeaderViewHolder.setShopName(UserSession(context).shopName)
     }
 
     private fun setViewState(viewState: Int) {
@@ -777,6 +778,7 @@ class ShopPageFragment :
                     shopPageHeaderContentData.shopOperationalHourStatus,
                     isMyShop
             )
+            shopPageFragmentHeaderViewHolder.setShopName(UserSession(context).shopName)
             view?.let { onToasterNoUploadProduct(it, getString(R.string.shop_page_product_no_upload_product), isFirstCreateShop) }
         }
     }
