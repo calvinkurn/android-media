@@ -2,31 +2,42 @@ package com.tokopedia.play.util.video.state
 
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.tokopedia.play.di.PlayScope
+import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play_common.player.PlayVideoManager
 import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.play_common.util.ExoPlaybackExceptionParser
+import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
 /**
  * Created by jegul on 28/08/20
  */
 class PlayViewerVideoStateProcessor(
-        playVideoManager: PlayVideoManager,
+        private val playVideoManager: PlayVideoManager,
         private val exoPlaybackExceptionParser: ExoPlaybackExceptionParser,
-        private val channelTypeSource: () -> PlayChannelType
+        private val channelTypeSource: () -> PlayChannelType,
+        private val dispatcher: CoroutineDispatcherProvider,
+        private val scope: CoroutineScope
 ) {
 
     @PlayScope
     class Factory @Inject constructor(
             private val playVideoManager: PlayVideoManager,
-            private val exoPlaybackExceptionParser: ExoPlaybackExceptionParser
+            private val exoPlaybackExceptionParser: ExoPlaybackExceptionParser,
+            private val dispatcher: CoroutineDispatcherProvider
     ) {
-        fun create(channelTypeSource: () -> PlayChannelType): PlayViewerVideoStateProcessor {
+        fun create(scope: CoroutineScope, channelTypeSource: () -> PlayChannelType): PlayViewerVideoStateProcessor {
             return PlayViewerVideoStateProcessor(
                     playVideoManager = playVideoManager,
                     exoPlaybackExceptionParser = exoPlaybackExceptionParser,
-                    channelTypeSource = channelTypeSource
+                    channelTypeSource = channelTypeSource,
+                    dispatcher = dispatcher,
+                    scope = scope
             )
         }
     }
@@ -37,38 +48,44 @@ class PlayViewerVideoStateProcessor(
     private val goodStates = arrayOf(PlayVideoState.Playing, PlayVideoState.Pause, PlayVideoState.Ended)
 
     init {
-        playVideoManager.addListener(object : PlayVideoManager.Listener {
-            override fun onPlayerStateChanged(state: PlayVideoState) {
-                if (state in goodStates) isFirstTime = false
+        scope.launch(dispatcher.immediate) {
+            getVideoStateFlow()
+                    .collectLatest { state ->
+                        if (state in goodStates) isFirstTime = false
 
-                when (state) {
-                    is PlayVideoState.Error -> error = state.error
-                    PlayVideoState.Buffering -> {
-                        val bufferSource = getBufferSourceFromError(error)
-                        val isLive = channelTypeSource().isLive
-                        broadcastState(
-                                if (isWaitingState(bufferSource, isLive)) PlayViewerVideoState.Waiting
-                                else PlayViewerVideoState.Buffer(
-                                        if (isLive) bufferSource
-                                        else BufferSource.Viewer
+                        when (state) {
+                            is PlayVideoState.Error -> error = state.error
+                            PlayVideoState.Buffering -> {
+                                if (error == null) broadcastState(PlayViewerVideoState.Buffer(BufferSource.Unknown))
+
+                                val bufferSource = getBufferSourceFromError(error)
+                                val isLive = channelTypeSource().isLive
+                                broadcastState(
+                                        if (isWaitingState(bufferSource, isLive)) {
+                                            yield()
+                                            PlayViewerVideoState.Waiting
+                                        }
+                                        else PlayViewerVideoState.Buffer(
+                                                if (isLive) bufferSource
+                                                else BufferSource.Viewer
+                                        )
                                 )
-                        )
+                            }
+                            PlayVideoState.Playing -> {
+                                error = null
+                                broadcastState(PlayViewerVideoState.Play)
+                            }
+                            PlayVideoState.Pause -> {
+                                error = null
+                                broadcastState(PlayViewerVideoState.Pause)
+                            }
+                            PlayVideoState.Ended -> {
+                                error = null
+                                broadcastState(PlayViewerVideoState.End)
+                            }
+                        }
                     }
-                    PlayVideoState.Playing -> {
-                        error = null
-                        broadcastState(PlayViewerVideoState.Play)
-                    }
-                    PlayVideoState.Pause -> {
-                        error = null
-                        broadcastState(PlayViewerVideoState.Pause)
-                    }
-                    PlayVideoState.Ended -> {
-                        error = null
-                        broadcastState(PlayViewerVideoState.End)
-                    }
-                }
-            }
-        })
+        }
     }
 
     private val mListeners = mutableListOf<PlayViewerVideoStateListener>()
@@ -80,6 +97,19 @@ class PlayViewerVideoStateProcessor(
     fun removeStateListener(listener: PlayViewerVideoStateListener) {
         mListeners.remove(listener)
     }
+
+    private fun getVideoStateFlow() = callbackFlow<PlayVideoState> {
+        val listener = object : PlayVideoManager.Listener {
+            override fun onPlayerStateChanged(state: PlayVideoState) {
+                offer(state)
+            }
+        }
+
+        playVideoManager.addListener(listener)
+
+        awaitClose { playVideoManager.removeListener(listener) }
+
+    }.flowOn(dispatcher.immediate)
 
     private fun getBufferSourceFromError(error: Throwable?): BufferSource {
         if (error == null || error !is ExoPlaybackException) return BufferSource.Unknown
@@ -93,7 +123,16 @@ class PlayViewerVideoStateProcessor(
         mListeners.forEach { it.onStateChanged(state) }
     }
 
-    private fun isWaitingState(bufferSource: BufferSource, isLive: Boolean): Boolean {
-        return isFirstTime && bufferSource == BufferSource.Broadcaster && isLive
+    private suspend fun isWaitingState(bufferSource: BufferSource, isLive: Boolean): Boolean = withContext(dispatcher.io) {
+        return@withContext when (bufferSource) {
+            BufferSource.Broadcaster -> {
+                isFirstTime && isLive
+            }
+            BufferSource.Unknown -> {
+                delay(2000)
+                isFirstTime && isLive
+            }
+            else -> false
+        }
     }
 }

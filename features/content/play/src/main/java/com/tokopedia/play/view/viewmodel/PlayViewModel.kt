@@ -222,7 +222,7 @@ class PlayViewModel @Inject constructor(
         override fun onChanged(t: Unit?) {}
     }
 
-    private val videoStateProcessor = videoStateProcessorFactory.create { channelType }
+    private val videoStateProcessor = videoStateProcessorFactory.create(scope) { channelType }
 
     init {
         playVideoManager.addListener(videoManagerListener)
