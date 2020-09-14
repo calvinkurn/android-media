@@ -8,6 +8,8 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.TransitionDrawable
 import android.os.Build
+import android.os.Bundle
+import android.os.Parcelable
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.View
@@ -34,6 +36,7 @@ import kotlin.text.Charsets.UTF_8
 
 class HomeMainToolbar : MainToolbar, CoroutineScope {
 
+    private var KEY_BUNDLE_TOOLBAR_TYPE: String = "key_bundle_toolbar_type"
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main
 
@@ -178,6 +181,22 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
         toolbar!!.background = drawable
     }
 
+    override fun onSaveInstanceState(): Parcelable? {
+        super.onSaveInstanceState()
+        val bundle = Bundle()
+        bundle.putInt(KEY_BUNDLE_TOOLBAR_TYPE, toolbarType)
+        return bundle
+    }
+
+    override fun onRestoreInstanceState(state: Parcelable?) {
+        super.onRestoreInstanceState(state)
+        if (state is Bundle) // implicit null check
+        {
+            val bundle = state
+            this.toolbarType = bundle.getInt(KEY_BUNDLE_TOOLBAR_TYPE) // ... load stuff
+        }
+        super.onRestoreInstanceState(state)
+    }
 
     fun switchToDarkToolbar() {
         if (toolbarType != TOOLBAR_DARK_TYPE && crossfaderIsInitialized()) {
