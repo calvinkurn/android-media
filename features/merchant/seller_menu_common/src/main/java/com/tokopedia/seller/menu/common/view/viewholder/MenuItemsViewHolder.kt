@@ -75,6 +75,7 @@ class MenuItemsViewHolder(
             MenuItemType.LOCATION -> sellerMenuTracker?.sendEventClickLocation()
             MenuItemType.SHIPPING -> sellerMenuTracker?.sendEventClickShipping()
             MenuItemType.NOTIFICATION -> sellerMenuTracker?.sendEventClickNotificationSettings()
+            MenuItemType.SHOP_SETTINGS -> sellerMenuTracker?.sendEventClickShopSettings()
         }
     }
 }
