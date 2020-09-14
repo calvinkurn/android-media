@@ -10,9 +10,10 @@ class BidInfoAdapter(private val typeFactory: BindInfoAdapterTypeFactory) : Recy
 
     var items: MutableList<BidInfoViewModel> = mutableListOf()
     val typeList :MutableList<Int> = mutableListOf()
+    var minBid :Int = 0
 
     override fun onBindViewHolder(holder: BidInfoViewHolder<BidInfoViewModel>, position: Int) {
-        holder.bind(items[position],typeList)
+        holder.bind(items[position],typeList,minBid)
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -30,6 +31,11 @@ class BidInfoAdapter(private val typeFactory: BindInfoAdapterTypeFactory) : Recy
 
     fun setType(list:MutableList<Int>){
         typeList.addAll(list)
+        notifyDataSetChanged()
+    }
+
+    fun setMinimumBid(bid:Int){
+        minBid = bid
         notifyDataSetChanged()
     }
 

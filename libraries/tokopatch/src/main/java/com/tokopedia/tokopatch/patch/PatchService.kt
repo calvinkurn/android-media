@@ -90,12 +90,8 @@ class PatchService : JobIntentService() {
         val bufferedOutputStream = BufferedOutputStream(FileOutputStream(file))
         try {
             val decodedBytes = Decoder.decrypt(result.signature, result.data)
-            bufferedOutputStream.write(decodedBytes)
-        } catch (e: IOException) {
-            e.printStackTrace()
-        } finally {
-            try {
-                bufferedOutputStream.close()
+            decodedBytes?.let {
+                bufferedOutputStream.write(decodedBytes)
                 val p = Patch()
                 p.version = result.versionName
                 p.name = result.description
@@ -103,6 +99,12 @@ class PatchService : JobIntentService() {
                 p.patchesInfoImplClassFullName = PATCHES_CLASS_FULL_NAME
                 p.tempPath = file.absolutePath
                 patchList.add(p)
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
+        } finally {
+            try {
+                bufferedOutputStream.close()
             } catch (e: IOException) {
                 e.printStackTrace()
             }

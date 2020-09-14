@@ -749,6 +749,7 @@ open class HomeFragment : BaseDaggerFragment(),
             } else if (status === Result.Status.ERROR) {
                 hideLoading()
                 showToaster(getString(R.string.home_error_connection), TYPE_ERROR)
+                pageLoadTimeCallback?.invalidate()
             } else {
                 showLoading()
             }
