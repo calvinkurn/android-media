@@ -3,9 +3,9 @@ package com.tokopedia.otp.verification.view.viewbinding
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.Toolbar
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.otp.R
+import com.tokopedia.otp.common.abstraction.BaseOtpViewBinding
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
@@ -13,7 +13,7 @@ import com.tokopedia.unifyprinciples.Typography
  * Created by Ade Fulki on 28/04/20.
  */
 
-class OnboardingMisscallViewBinding : BaseVerificationViewBinding() {
+class OnboardingMisscallViewBinding : BaseOtpViewBinding() {
 
     override val layoutResId: Int = R.layout.fragment_miscall_onboarding
 

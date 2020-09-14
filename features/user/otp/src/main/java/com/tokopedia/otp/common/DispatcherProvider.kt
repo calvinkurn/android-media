@@ -1,4 +1,4 @@
-package com.tokopedia.otp.verification.common
+package com.tokopedia.otp.common
 
 import kotlinx.coroutines.CoroutineDispatcher
 

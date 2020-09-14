@@ -1,4 +1,4 @@
-package com.tokopedia.otp.common.util
+package com.tokopedia.otp.verification.common.util
 
 import android.content.BroadcastReceiver
 import android.content.Context

@@ -16,7 +16,7 @@
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/ic_cancel_grey"/>
+        app:srcCompat="@drawable/ic_cancel_grey_otp"/>
 
     <ImageView
         android:id="@+id/main_image"
@@ -28,7 +28,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/success_image"/>
+        app:srcCompat="@drawable/success_image_otp"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_title"

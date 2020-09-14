@@ -1,4 +1,4 @@
-package com.tokopedia.otp.verification.common.di
+package com.tokopedia.otp.common.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -14,12 +14,12 @@ import dagger.multibindings.IntoMap
  * ade.hadian@tokopedia.com
  */
 
-@VerificationScope
+@OtpScope
 @Module
-abstract class VerificationViewModelModule{
+abstract class OtpViewModelModule{
 
     @Binds
-    @VerificationScope
+    @OtpScope
     internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
     @Binds

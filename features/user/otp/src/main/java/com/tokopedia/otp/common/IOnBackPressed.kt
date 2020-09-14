@@ -1,4 +1,4 @@
-package com.tokopedia.otp.verification.common
+package com.tokopedia.otp.common
 
 /**
  * Created by Ade Fulki on 2020-01-11.

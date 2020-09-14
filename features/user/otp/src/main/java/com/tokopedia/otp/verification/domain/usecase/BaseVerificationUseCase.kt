@@ -1,6 +1,6 @@
 package com.tokopedia.otp.verification.domain.usecase
 
-import com.tokopedia.otp.verification.common.DispatcherProvider
+import com.tokopedia.otp.common.DispatcherProvider
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlin.coroutines.CoroutineContext

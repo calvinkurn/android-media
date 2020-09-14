@@ -1,4 +1,4 @@
-package com.tokopedia.otp.verification.common.di
+package com.tokopedia.otp.common.di
 
 import android.content.Context
 import com.google.android.gms.auth.api.phone.SmsRetriever
@@ -6,7 +6,7 @@ import com.google.android.gms.auth.api.phone.SmsRetrieverClient
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.otp.verification.common.DispatcherProvider
+import com.tokopedia.otp.common.DispatcherProvider
 import com.tokopedia.otp.verification.view.viewbinding.OnboardingMisscallViewBinding
 import com.tokopedia.otp.verification.view.viewbinding.VerificationMethodViewBinding
 import com.tokopedia.otp.verification.view.viewbinding.VerificationViewBinding
@@ -17,20 +17,15 @@ import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
-/**
- * Created by Ade Fulki on 2019-10-20.
- * ade.hadian@tokopedia.com
- */
-
-@VerificationScope
+@OtpScope
 @Module
-class VerificationModule{
+class OtpModule {
 
-    @VerificationScope
+    @OtpScope
     @Provides
     fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
 
-    @VerificationScope
+    @OtpScope
     @Provides
     fun provideDispatcherProvider(): DispatcherProvider = object : DispatcherProvider {
         override fun ui(): CoroutineDispatcher = Dispatchers.Main
@@ -38,23 +33,23 @@ class VerificationModule{
         override fun io(): CoroutineDispatcher = Dispatchers.IO
     }
 
-    @VerificationScope
+    @OtpScope
     @Provides
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface = UserSession(context)
 
-    @VerificationScope
+    @OtpScope
     @Provides
     fun provideOnboardingMisscallViewBinding() = OnboardingMisscallViewBinding()
 
-    @VerificationScope
+    @OtpScope
     @Provides
     fun provideVerificationViewBinding() = VerificationViewBinding()
 
-    @VerificationScope
+    @OtpScope
     @Provides
     fun provideVerificationMethodViewBinding() = VerificationMethodViewBinding()
 
-    @VerificationScope
+    @OtpScope
     @Provides
     fun provideSmsRetriever(@ApplicationContext context: Context): SmsRetrieverClient = SmsRetriever.getClient(context)
 }

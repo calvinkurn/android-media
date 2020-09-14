@@ -1,18 +1,13 @@
 package com.tokopedia.otp.verification.domain.usecase
 
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.otp.verification.common.DispatcherProvider
-import com.tokopedia.otp.verification.domain.data.OtpModeListPojo
+import com.tokopedia.otp.common.DispatcherProvider
 import com.tokopedia.otp.verification.domain.data.OtpRequestPojo
-import com.tokopedia.otp.verification.domain.query.OtpModeListQuery
 import com.tokopedia.otp.verification.domain.query.OtpRequestQuery
-import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.coroutines.UseCase
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 

@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.otp.R
+import com.tokopedia.otp.common.abstraction.BaseOtpViewBinding
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
 
@@ -13,7 +14,7 @@ import com.tokopedia.unifyprinciples.Typography
  * ade.hadian@tokopedia.com
  */
 
-class VerificationMethodViewBinding : BaseVerificationViewBinding() {
+class VerificationMethodViewBinding : BaseOtpViewBinding() {
 
     override val layoutResId: Int = R.layout.fragment_verification_method
 

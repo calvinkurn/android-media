@@ -5,7 +5,7 @@ package com.tokopedia.otp.common.analytics
  * ade.hadian@tokopedia.com
  */
 
-object TrackingValidatorConstant{
+object TrackingOtpConstant{
 
     object Screen{
         const val SCREEN_COTP = "Input OTP "
