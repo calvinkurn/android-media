@@ -19,7 +19,7 @@ object DeeplinkMapperUohOrder {
 
     fun getRegisteredNavigationUohOrder(deeplink: String): String {
         var returnedDeeplink = ""
-        if (deeplink.startsWith(ApplinkConst.BELANJA_ORDER) || deeplink.startsWith(ApplinkConst.DIGITAL_ORDER)
+        if (deeplink.startsWith(ApplinkConst.DIGITAL_ORDER)
                 || deeplink.startsWith(ApplinkConst.EVENTS_ORDER) || deeplink.startsWith(ApplinkConst.DEALS_ORDER)
                 || deeplink.startsWith(ApplinkConst.FLIGHT_ORDER) || deeplink.startsWith(ApplinkConst.GIFT_CARDS_ORDER)
                 || deeplink.startsWith(ApplinkConst.INSURANCE_ORDER) || deeplink.startsWith(ApplinkConst.MODAL_TOKO_ORDER)
@@ -28,6 +28,9 @@ object DeeplinkMapperUohOrder {
             else deeplink
         } else if (deeplink.startsWith(ApplinkConst.MARKETPLACE_ORDER_SUB)) {
             returnedDeeplink = if (useUoh()) ApplinkConstInternalOrder.UNIFY_ORDER_IN_PROCESS
+            else deeplink
+        } else if (deeplink.startsWith(ApplinkConst.BELANJA_ORDER)) {
+            returnedDeeplink = if (useUoh()) ApplinkConstInternalOrder.UNIFY_ORDER_MARKETPLACE
             else deeplink
         }
         return returnedDeeplink

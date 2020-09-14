@@ -204,6 +204,10 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     PARAM_SEMUA_TRANSAKSI -> {
                         status = SEMUA_TRANSAKSI
                     }
+                    PARAM_MARKETPLACE -> {
+                        status = SEMUA_TRANSAKSI
+                        paramUohOrder.verticalCategory = PARAM_MARKETPLACE
+                    }
                 }
                 paramUohOrder.status = status
                 currFilterType = UohConsts.TYPE_FILTER_STATUS
@@ -235,7 +239,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     private fun setInitialValue() {
-        if (filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true)) {
+        if (filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true) || filterStatus.equals(PARAM_MARKETPLACE, true)) {
             setDefaultDate()
         }
         paramUohOrder.page = 1
@@ -567,7 +571,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             }
             uohBottomSheetOptionAdapter.uohItemMapKeyList = arrayListMap
             uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_DATE
-            if (filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true) && !isReset) {
+            if ((filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true) || filterStatus.equals(PARAM_MARKETPLACE, true)) && !isReset) {
                 uohBottomSheetOptionAdapter.selectedKey = "2"
             } else {
                 uohBottomSheetOptionAdapter.selectedKey = currFilterDateKey
@@ -575,14 +579,15 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             uohBottomSheetOptionAdapter.isReset = isReset
             uohBottomSheetOptionAdapter.notifyDataSetChanged()
         }
-        if (filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true) && !isReset) {
+        if ((filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true) || filterStatus.equals(PARAM_MARKETPLACE, true)) && !isReset) {
             filter1?.title = arrayFilterDate[2]
         }
         filter1?.let {
             chips.add(it)
         }
 
-        val typeStatus = if (filterStatus.isEmpty() || filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true)) {
+        val typeStatus = if (filterStatus.isEmpty() || filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true)
+                || filterStatus.equals(PARAM_MARKETPLACE, true)) {
             ChipsUnify.TYPE_NORMAL
         } else {
             ChipsUnify.TYPE_SELECTED
@@ -628,6 +633,9 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             uohBottomSheetOptionAdapter.notifyDataSetChanged()
         }
         if (filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true) && !isReset) {
+            filter3?.title = ALL_CATEGORIES
+
+        } else if (filterStatus.equals(PARAM_MARKETPLACE, true) && !isReset) {
             filter3?.title = orderList.categories.first().label
         }
         filter3?.let { chips.add(it) }
