@@ -55,8 +55,11 @@ class DeleteWidgetCommand(private val visitable: Visitable<*>?, private val posi
 }
 
 class HomeCommandProcessor (dispatchers: CoroutineDispatcher): CoroutineScope{
+    companion object{
+        private const val CAPACITY_QUEUE = 10
+    }
     private val masterJob = SupervisorJob()
-    private var channel = Channel<SubmitCommand>(10)
+    private var channel = Channel<SubmitCommand>(CAPACITY_QUEUE)
     override val coroutineContext: CoroutineContext = dispatchers + masterJob
 
     init {
@@ -66,34 +69,32 @@ class HomeCommandProcessor (dispatchers: CoroutineDispatcher): CoroutineScope{
     fun sendWithQueueMethod(orderCommand: SubmitCommand) {
         launchCatchError(coroutineContext, block = {
             if (channel.isClosedForSend) {
-                channel = Channel(10)
+                channel = Channel(CAPACITY_QUEUE)
                 channel.send(orderCommand)
                 processCommands()
             } else {
                 channel.send(orderCommand)
             }
         }) {
-            channel = Channel(10)
+            channel = Channel(CAPACITY_QUEUE)
             channel.send(orderCommand)
             processCommands()
-            it.printStackTrace()
         }
     }
 
     fun sendWithQueueMethod(orderCommands: List<SubmitCommand>){
         launchCatchError(coroutineContext, block = {
             if (channel.isClosedForSend) {
-                channel = Channel(10)
+                channel = Channel(CAPACITY_QUEUE)
                 orderCommands.forEach { channel.send(it) }
                 processCommands()
             } else {
                 orderCommands.forEach { channel.send(it) }
             }
         }) {
-            channel = Channel(10)
+            channel = Channel(CAPACITY_QUEUE)
             orderCommands.forEach { channel.send(it) }
             processCommands()
-            it.printStackTrace()
         }
     }
 
@@ -103,7 +104,6 @@ class HomeCommandProcessor (dispatchers: CoroutineDispatcher): CoroutineScope{
                 it.send()
             }
         }){
-            it.printStackTrace()
         }
     }
 

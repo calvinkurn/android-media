@@ -94,6 +94,6 @@ class HomeModule {
 
     @HomeScope
     @Provides
-    fun provideHomeProcessor(homeDispatcher: HomeDispatcherProvider): HomeCommandProcessor = HomeCommandProcessor(homeDispatcher.ui())
+    fun provideHomeProcessor(homeDispatcher: HomeDispatcherProvider): HomeCommandProcessor = HomeCommandProcessor(homeDispatcher.io())
 
 }
