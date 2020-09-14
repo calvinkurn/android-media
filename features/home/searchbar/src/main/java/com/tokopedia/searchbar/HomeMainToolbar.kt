@@ -136,6 +136,10 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
             wishlistCrossfader.resetTransition()
             notifCrossfader.resetTransition()
             inboxCrossfader.resetTransition()
+
+            wishlistCrossfader.startTransition(0)
+            notifCrossfader.startTransition(0)
+            inboxCrossfader.startTransition(0)
         }
     }
 
