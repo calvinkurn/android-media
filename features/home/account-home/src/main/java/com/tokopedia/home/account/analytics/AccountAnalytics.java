@@ -36,6 +36,7 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.ACTION_CLICK
 import static com.tokopedia.home.account.AccountConstants.Analytics.ACTION_FIELD;
 import static com.tokopedia.home.account.AccountConstants.Analytics.AKUN_SAYA;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CATEGORY_ACCOUNT_SELL;
+import static com.tokopedia.home.account.AccountConstants.Analytics.CATEGORY_NOTIF_CENTER;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK_ACCOUNT;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK_FINTECH_MICROSITE;
@@ -58,10 +59,12 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_ACTION
 import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_ACTION_ACCOUNT_PROMOTION_IMPRESSION;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_ACTION_CLICK_PRODUCT_RECOMMENDATION;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_ACTION_IMPRESSION_PRODUCT_RECOMMENDATION;
+import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_ACTION_TS_USR_MENU;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_CATEGORY;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_CATEGORY_ACCOUNT_PAGE_BUYER;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_CATEGORY_AKUN_PEMBELI;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_CLICK_ACCOUNT;
+import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_NAME_CLICK_NOTIF_CENTER;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_LABEL;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_PRODUCT_CLICK;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_PRODUCT_VIEW;
@@ -72,6 +75,8 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.FIELD_CREATI
 import static com.tokopedia.home.account.AccountConstants.Analytics.FIELD_ID;
 import static com.tokopedia.home.account.AccountConstants.Analytics.FIELD_NAME;
 import static com.tokopedia.home.account.AccountConstants.Analytics.FIELD_POSITION;
+import static com.tokopedia.home.account.AccountConstants.Analytics.FIELD_SHOP_ID;
+import static com.tokopedia.home.account.AccountConstants.Analytics.FIELD_USER_ID;
 import static com.tokopedia.home.account.AccountConstants.Analytics.IDR;
 import static com.tokopedia.home.account.AccountConstants.Analytics.IMPRESSIONS;
 import static com.tokopedia.home.account.AccountConstants.Analytics.INBOX;
@@ -116,6 +121,22 @@ public class AccountAnalytics {
     public AccountAnalytics(Context context) {
         this.context = context;
         userSessionInterface = new UserSession(context);
+    }
+
+    public void eventTroubleshooterClicked() {
+        Analytics analytics = TrackApp.getInstance().getGTM();
+
+        Map<String, Object> map = DataLayer.mapOf(
+                EVENT, EVENT_NAME_CLICK_NOTIF_CENTER,
+                EVENT_CATEGORY, CATEGORY_NOTIF_CENTER,
+                EVENT_ACTION, EVENT_ACTION_TS_USR_MENU,
+                EVENT_LABEL, EMPTY,
+                FIELD_USER_ID, userSessionInterface.userId,
+                FIELD_SHOP_ID, userSessionInterface.shopId
+
+        );
+
+        analytics.sendEnhanceEcommerceEvent(map);
     }
 
     public void eventTokopediaPayClick(String event, String category, String action, String label) {
@@ -588,8 +609,8 @@ public class AccountAnalytics {
             ""
         );
 
-        event.put(AccountConstants.Analytics.FIELD_USER_ID, userSessionInterface.getUserId());
-        event.put(AccountConstants.Analytics.FIELD_SHOP_ID, userSessionInterface.getShopId());
+        event.put(FIELD_USER_ID, userSessionInterface.getUserId());
+        event.put(FIELD_SHOP_ID, userSessionInterface.getShopId());
         event.put(AccountConstants.Analytics.FIELD_SHOP_TYPE, getShopType());
 
         analytics.sendGeneralEvent(event);
