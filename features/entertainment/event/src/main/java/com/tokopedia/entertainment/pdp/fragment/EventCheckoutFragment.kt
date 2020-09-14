@@ -50,6 +50,8 @@ import com.tokopedia.entertainment.pdp.data.Form
 import com.tokopedia.entertainment.pdp.data.ProductDetailData
 import com.tokopedia.entertainment.pdp.data.checkout.AdditionalType
 import com.tokopedia.entertainment.pdp.data.checkout.EventCheckoutAdditionalData
+import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventFormMapper.initialListForm
+import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventFormMapper.isEmptyForms
 import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventFormMapper.mapFormToString
 import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventMetaDataMapper.getCheckoutParam
 import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventMetaDataMapper.getPassengerMetaData
@@ -262,6 +264,10 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
     }
 
     private fun renderPassenger(pdp: ProductDetailData) {
+        forms = initialListForm(pdp.forms,userSessionInterface, getString(R.string.ent_checkout_data_nullable_form))
+        if(!forms.isNullOrEmpty()){
+            setPassengerData(forms)
+        }
         ticker_event_checkout.setTextDescription(resources.getString(R.string.ent_event_checkout_pessanger_ticker))
         btn_event_checkout_passenger.setOnClickListener {
             goToPageForm()
@@ -362,6 +368,10 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
                     if (!userSessionInterface.isLoggedIn) {
                         Toaster.make(view, it.getString(R.string.ent_event_checkout_submit_login), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error))
                     } else if (forms.isEmpty()) {
+                        Toaster.make(view, it.getString(R.string.ent_event_checkout_submit_name, it.getString(R.string.ent_event_checkout_passenger_title).toLowerCase()), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error))
+                        scroll_view_event_checkout.focusOnView(partial_event_checkout_passenger)
+                        widget_event_checkout_pessangers.startAnimationWiggle()
+                    } else if (!forms.isNullOrEmpty() && isEmptyForms(forms,getString(R.string.ent_checkout_data_nullable_form))){
                         Toaster.make(view, it.getString(R.string.ent_event_checkout_submit_name, it.getString(R.string.ent_event_checkout_passenger_title).toLowerCase()), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error))
                         scroll_view_event_checkout.focusOnView(partial_event_checkout_passenger)
                         widget_event_checkout_pessangers.startAnimationWiggle()

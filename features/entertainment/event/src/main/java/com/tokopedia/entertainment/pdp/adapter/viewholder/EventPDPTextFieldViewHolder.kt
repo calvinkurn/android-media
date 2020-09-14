@@ -17,8 +17,8 @@ import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.MOB
 import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.PHONE_TYPE
 import com.tokopedia.entertainment.pdp.data.Form
 import com.tokopedia.entertainment.pdp.data.checkout.AdditionalType
+import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventFormMapper.getFamilyName
 import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventFormMapper.getFirstName
-import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventFormMapper.getLastName
 import com.tokopedia.entertainment.pdp.listener.OnClickFormListener
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.user.session.UserSessionInterface
@@ -68,13 +68,14 @@ class EventPDPTextFieldViewHolder(val view: View,
                     userSession.isLoggedIn &&
                     textFormListener.getAdditionalType().equals(AdditionalType.NULL_DATA)) {
                 if (element.name == FULLNAME_TYPE) txtValue.textFieldInput.setText(userSession.name)
-                else if (element.name == FAMILY_NAME_TYPE) txtValue.textFieldInput.setText(getFirstName(userSession.name))
-                else if(element.name == FIRST_NAME_TYPE) txtValue.textFieldInput.setText(getLastName(userSession.name))
+                else if (element.name == FAMILY_NAME_TYPE) txtValue.textFieldInput.setText(getFamilyName(userSession.name))
+                else if(element.name == FIRST_NAME_TYPE) txtValue.textFieldInput.setText(getFirstName(userSession.name))
                 else if (element.name == EMAIL_TYPE) txtValue.textFieldInput.setText(userSession.email)
                 else if (element.name == PHONE_TYPE || element.name == MOBILE_TYPE) txtValue.textFieldInput.setText(userSession.phoneNumber)
             }
 
-            if (element.value.isNotBlank()) {
+
+            if (element.value.isNotBlank() && !element.value.equals(resources.getString(R.string.ent_checkout_data_nullable_form))) {
                 if (element.elementType.equals(ELEMENT_TEXT)) txtValue.textFieldInput.setText(element.value)
                 if (element.elementType.equals(ELEMENT_LIST)) {
                     val list = getList(element.value)
