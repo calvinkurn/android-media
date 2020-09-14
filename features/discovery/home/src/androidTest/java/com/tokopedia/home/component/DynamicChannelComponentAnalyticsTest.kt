@@ -118,8 +118,7 @@ class DynamicChannelComponentAnalyticsTest {
         //cant mock occ response
 
         //ontesting
-        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_LEGO_BANNER),
-                hasAllSuccess())
+
 
         //worked
         assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_PRODUCT_HIGHLIGHT),
@@ -131,6 +130,8 @@ class DynamicChannelComponentAnalyticsTest {
         assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MIX_LEFT),
                 hasAllSuccess())
         assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MIX_TOP),
+                hasAllSuccess())
+        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_LEGO_BANNER),
                 hasAllSuccess())
     }
 
@@ -191,13 +192,13 @@ class DynamicChannelComponentAnalyticsTest {
                 val holderName = "DynamicLegoBannerViewHolder"
                 logTestMessage("VH $holderName")
                 clickLihatSemuaButtonIfAvailable(viewholder.itemView, holderName, i)
-                clickOnEachItemRecyclerView(viewholder.itemView, R.id.recycleList, holderName)
+                clickSingleItemOnRecyclerView(viewholder.itemView, R.id.recycleList, holderName)
             }
             is Lego4AutoBannerViewHolder -> {
                 val holderName = "Lego4AutoBannerViewHolder"
                 logTestMessage("VH $holderName")
                 clickLihatSemuaButtonIfAvailable(viewholder.itemView, holderName, i)
-                clickOnEachItemRecyclerView(viewholder.itemView, R.id.recycleList, holderName)
+                clickSingleItemOnRecyclerView(viewholder.itemView, R.id.recycleList, holderName)
             }
         }
     }
@@ -229,20 +230,18 @@ class DynamicChannelComponentAnalyticsTest {
 
     private fun clickHomeBannerItemAndViewAll(view: View, itemPos: Int) {
         val childView = view
-        val seeAllButton = childView.findViewById<View>(R.id.see_all_promo)
+        val seeAllButton = childView.findViewById<View>(R.id.see_more_label)
 
         //banner item click
         val bannerViewPager = childView.findViewById<CircularViewPager>(R.id.circular_view_pager)
         val itemCount = bannerViewPager.getViewPager().adapter?.itemCount ?: 0
-        for (i in 0 until itemCount) {
-            try {
-                Espresso.onView(firstView(ViewMatchers.withId(R.id.circular_view_pager)))
-                        .perform(ViewActions.click())
-                logTestMessage("Click SUCCESS banner item "  + i)
-            } catch (e: PerformException) {
-                e.printStackTrace()
-                logTestMessage("Click FAILED banner item "  + i) }
-
+        try {
+            Espresso.onView(firstView(ViewMatchers.withId(R.id.circular_view_pager)))
+                    .perform(ViewActions.click())
+            logTestMessage("Click SUCCESS banner item "  + 0)
+        } catch (e: PerformException) {
+            e.printStackTrace()
+            logTestMessage("Click FAILED banner item "  + 0)
         }
         //see all promo button click
         if (seeAllButton.visibility == View.VISIBLE) {
@@ -322,6 +321,21 @@ class DynamicChannelComponentAnalyticsTest {
                 e.printStackTrace()
                 logTestMessage("Click FAILED $viewComponent child pos: " + j)
             }
+        }
+    }
+
+    private fun clickSingleItemOnRecyclerView(view: View, recyclerViewId: Int, viewComponent: String) {
+        val childView = view
+        val childRecyclerView = childView.findViewById<RecyclerView>(recyclerViewId)
+        val childItemCount = childRecyclerView.adapter?.itemCount ?: 0
+        logTestMessage("ChildCount $viewComponent: " + childItemCount + " item")
+        try {
+            Espresso.onView(firstView(ViewMatchers.withId(recyclerViewId)))
+                    .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0, ViewActions.click()))
+            logTestMessage("Click SUCCESS $viewComponent child pos: " + 0)
+        } catch (e: PerformException) {
+            e.printStackTrace()
+            logTestMessage("Click FAILED $viewComponent child pos: " + 0)
         }
     }
 
