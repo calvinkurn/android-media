@@ -740,7 +740,7 @@ class AddEditProductVariantFragment :
     }
 
     private fun observeGetCategoryVariantCombinationResult() {
-        viewModel.getCategoryVariantCombinationResult.observe(this, Observer { result ->
+        viewModel.getCategoryVariantCombinationResult.observe(viewLifecycleOwner, Observer { result ->
             // clear adapter before rendering
             variantTypeAdapter?.setData(emptyList())
             when (result) {
@@ -763,7 +763,7 @@ class AddEditProductVariantFragment :
     }
 
     private fun observeProductInputModel() {
-        viewModel.productInputModel.observe(this, Observer { productInputModel ->
+        viewModel.productInputModel.observe(viewLifecycleOwner, Observer { productInputModel ->
             // extract selected variant details
             val selectedVariantDetails = viewModel.extractSelectedVariantDetails(productInputModel)
             // set selected variant details
@@ -775,7 +775,7 @@ class AddEditProductVariantFragment :
     }
 
     private fun observeSizechartUrl() {
-        viewModel.variantSizechart.observe(this, Observer {
+        viewModel.variantSizechart.observe(viewLifecycleOwner, Observer {
             if (it.urlOriginal.isEmpty()) {
                 ivSizechartAddSign.visible()
                 ivSizechartEditSign.gone()
@@ -794,13 +794,13 @@ class AddEditProductVariantFragment :
     }
 
     private fun observeInputStatus() {
-        viewModel.isInputValid.observe(this, Observer {
+        viewModel.isInputValid.observe(viewLifecycleOwner, Observer {
             buttonSave.isEnabled = it
         })
     }
 
     private fun observeIsEditMode() {
-        viewModel.isEditMode.observe(this, Observer { isEditMode ->
+        viewModel.isEditMode.observe(viewLifecycleOwner, Observer { isEditMode ->
             // track the screen
             if (isEditMode) ProductEditVariantTracking.trackScreen(isLoggedin, userId)
             else ProductAddVariantTracking.trackScreen(isLoggedin, userId)
@@ -808,21 +808,21 @@ class AddEditProductVariantFragment :
     }
 
     private fun observeIsSelectedVariantUnitValuesEmpty() {
-        viewModel.isSelectedVariantUnitValuesEmpty.observe(this, Observer { isSelectedVariantUnitValuesEmpty ->
+        viewModel.isSelectedVariantUnitValuesEmpty.observe(viewLifecycleOwner, Observer { isSelectedVariantUnitValuesEmpty ->
             // hide reset button if selected variant unit values exist
             tvDeleteAll?.visibility = if (!isSelectedVariantUnitValuesEmpty) View.VISIBLE else View.GONE
         })
     }
 
     private fun observeVariantPhotosVisibility() {
-        viewModel.isVariantPhotosVisible.observe(this, Observer { isVisible ->
+        viewModel.isVariantPhotosVisible.observe(viewLifecycleOwner, Observer { isVisible ->
             if (isVisible) variantPhotoLayout.show()
             else variantPhotoLayout.hide()
         })
     }
 
     private fun observeSizechartVisibility() {
-        viewModel.isVariantSizechartVisible.observe(this, Observer {
+        viewModel.isVariantSizechartVisible.observe(viewLifecycleOwner, Observer {
             layoutSizechart.visibility = if (it) View.VISIBLE else View.GONE
         })
     }

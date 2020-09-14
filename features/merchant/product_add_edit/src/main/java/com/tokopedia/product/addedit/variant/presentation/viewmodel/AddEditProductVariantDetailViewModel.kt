@@ -99,11 +99,11 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         currentHeaderPositionMap[headerPosition] = visitablePosition
     }
 
-    fun collapseHeader(collapsedHeaderPosition: Int) {
-        val firstHeaderPosition = currentHeaderPositionMap.minBy { it.value } ?: 0
-        val lastHeaderPosition = currentHeaderPositionMap.maxBy { it.value }?.value ?: 0
+    fun collapseHeader(collapsedHeaderPosition: Int, currentHeaderPosition: Int) {
+        val firstHeaderPosition = currentHeaderPositionMap.minBy { it.key } ?: 0
+        val lastCurrentHeaderPosition = currentHeaderPositionMap.maxBy { it.value }?.value ?: 0
         // collapsing last header position creates no impact
-        if (collapsedHeaderPosition == lastHeaderPosition) return
+        if (currentHeaderPosition == lastCurrentHeaderPosition) return
         else {
             currentHeaderPositionMap.forEach {
                 val headerPosition = it.key
@@ -111,19 +111,19 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
                 if (headerPosition != firstHeaderPosition) {
                     // only affecting the header position after the collapsing one
                     if (headerPosition > collapsedHeaderPosition) {
-                        val currentHeaderPosition = it.value - inputFieldSize
-                        currentHeaderPositionMap[headerPosition] = currentHeaderPosition
+                        val newHeaderPosition = it.value - inputFieldSize
+                        currentHeaderPositionMap[headerPosition] = newHeaderPosition
                     }
                 }
             }
         }
     }
 
-    fun expandHeader(expandedHeaderPosition: Int) {
-        val firstHeaderPosition = currentHeaderPositionMap.minBy { it.value } ?: 0
-        val lastHeaderPosition = currentHeaderPositionMap.maxBy { it.value }?.value ?: 0
+    fun expandHeader(expandedHeaderPosition: Int, currentHeaderPosition: Int) {
+        val firstHeaderPosition = currentHeaderPositionMap.minBy { it.key } ?: 0
+        val lastCurrentHeaderPosition = currentHeaderPositionMap.maxBy { it.value }?.value ?: 0
         // expanding last header position creates no impact
-        if (expandedHeaderPosition == lastHeaderPosition) return
+        if (currentHeaderPosition == lastCurrentHeaderPosition) return
         else {
             currentHeaderPositionMap.forEach {
                 val headerPosition = it.key
@@ -131,8 +131,8 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
                 if (headerPosition != firstHeaderPosition) {
                     // only affecting the header position after the expanding one
                     if (headerPosition > expandedHeaderPosition) {
-                        val currentHeaderPosition = it.value + inputFieldSize
-                        currentHeaderPositionMap[headerPosition] = currentHeaderPosition
+                        val newHeaderPosition = it.value + inputFieldSize
+                        currentHeaderPositionMap[headerPosition] = newHeaderPosition
                     }
                 }
             }

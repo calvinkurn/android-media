@@ -80,7 +80,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         val saveInstanceCacheManager = SaveInstanceCacheManager(requireContext(), cacheManagerId)
 
         cacheManagerId?.run {
-             val productInputModel= saveInstanceCacheManager.get(EXTRA_PRODUCT_INPUT_MODEL,
+            val productInputModel = saveInstanceCacheManager.get(EXTRA_PRODUCT_INPUT_MODEL,
                     ProductInputModel::class.java) ?: ProductInputModel()
             viewModel.updateProductInputModel(productInputModel)
         }
@@ -138,20 +138,21 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         setupToolbarActions()
     }
 
-    override fun onHeaderClicked(headerPosition:Int): Boolean {
+    override fun onHeaderClicked(headerPosition: Int): Boolean {
         val currentHeaderPosition = viewModel.getCurrentHeaderPosition(headerPosition)
         val isCollapsed = viewModel.isVariantDetailHeaderCollapsed(headerPosition)
         if (!isCollapsed) {
             variantDetailFieldsAdapter?.collapseUnitValueHeader(currentHeaderPosition, viewModel.getInputFieldSize())
             viewModel.increaseCollapsedFields(viewModel.getInputFieldSize())
             viewModel.updateVariantDetailHeaderMap(headerPosition, true)
-            viewModel.collapseHeader(headerPosition)
+            viewModel.collapseHeader(headerPosition, currentHeaderPosition)
         } else {
             variantDetailFieldsAdapter?.expandDetailFields(currentHeaderPosition, viewModel.getVariantDetailHeaderData(headerPosition))
-            recyclerViewVariantDetailFields.scrollToPosition(headerPosition)
+            val layoutManager: LinearLayoutManager = recyclerViewVariantDetailFields?.layoutManager as LinearLayoutManager
+            layoutManager.scrollToPositionWithOffset(currentHeaderPosition, 0)
             viewModel.decreaseCollapsedFields(viewModel.getInputFieldSize())
             viewModel.updateVariantDetailHeaderMap(headerPosition, false)
-            viewModel.expandHeader(headerPosition)
+            viewModel.expandHeader(headerPosition, currentHeaderPosition)
         }
         return viewModel.isVariantDetailHeaderCollapsed(headerPosition)
     }
@@ -207,7 +208,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
     }
 
     private fun observeSelectedVariantSize() {
-        viewModel.selectedVariantSize.observe(this, Observer { size ->
+        viewModel.selectedVariantSize.observe(viewLifecycleOwner, Observer { size ->
             // clear old elements before rendering new elements
             variantDetailFieldsAdapter?.clearAllElements()
             // have 2 selected variant detail
@@ -225,14 +226,14 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
     }
 
     private fun observeHasWholesale() {
-        viewModel.hasWholesale.observe(this, Observer {
+        viewModel.hasWholesale.observe(viewLifecycleOwner, Observer {
             variantDetailFieldsAdapter?.updatePriceEditingStatus(viewModel.getAvailableFields(), !it)
             tickerVariantWholesale.visibility = if (it) View.VISIBLE else View.GONE
         })
     }
 
     private fun observeInputStatus() {
-        viewModel.errorCounter.observe(this, Observer {
+        viewModel.errorCounter.observe(viewLifecycleOwner, Observer {
             buttonSave.isEnabled = it.orZero() <= 0
         })
     }
