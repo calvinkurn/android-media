@@ -683,6 +683,7 @@ class ShopEditBasicInfoFragment: Fragment() {
     }
 
     private fun showGlobalError() {
+        globalError.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Neutral_N0 ))
         globalError.apply {
             setType(GlobalError.NO_CONNECTION)
             setActionClickListener {
