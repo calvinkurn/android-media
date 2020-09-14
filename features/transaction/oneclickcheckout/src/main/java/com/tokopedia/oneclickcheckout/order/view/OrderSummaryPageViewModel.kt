@@ -28,13 +28,7 @@ import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageCheck
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageLogisticProcessor
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePromoProcessor
 import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel
-import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.PARAM_CHECKOUT
-import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.PARAM_OCC
-import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.Order
-import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.ProductDetail
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
-import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.OrdersItem
-import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ProductDetailsItem
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastApplyUiMapper
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
@@ -609,121 +603,23 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     fun generatePromoRequest(): PromoRequest {
-        val promoRequest = PromoRequest()
-
-        val ordersItem = Order()
-        ordersItem.shopId = orderShop.shopId.toLong()
-        ordersItem.uniqueId = orderCart.cartString
-        ordersItem.product_details = listOf(ProductDetail(orderProduct.productId.toLong(), orderProduct.quantity.orderQuantity))
-        ordersItem.isChecked = true
-
-        val shipping = _orderShipment
-        ordersItem.shippingId = shipping.getRealShipperId()
-        ordersItem.spId = shipping.getRealShipperProductId()
-
-        if (shipping.isCheckInsurance && shipping.insuranceData != null) {
-            ordersItem.isInsurancePrice = 1
-        } else {
-            ordersItem.isInsurancePrice = 0
-        }
-
-        val lastRequest = lastValidateUsePromoRequest
-
-        ordersItem.codes = generateOrderPromoCodes(lastRequest, ordersItem.uniqueId, shipping)
-
-        promoRequest.orders = listOf(ordersItem)
-        promoRequest.state = PARAM_CHECKOUT
-        promoRequest.cartType = PARAM_OCC
-
-        if (lastRequest != null) {
-            promoRequest.codes = ArrayList(lastRequest.codes.filterNotNull())
-        } else {
-            val globalCodes = orderPromo.value.lastApply?.codes ?: emptyList()
-            promoRequest.codes = ArrayList(globalCodes)
-        }
-        return promoRequest
-    }
-
-    private fun generateOrderPromoCodes(lastRequest: ValidateUsePromoRequest?, uniqueId: String, shipping: OrderShipment, shouldAddLogisticPromo: Boolean = true): MutableList<String> {
-        var codes: MutableList<String> = ArrayList()
-        val lastRequestOrderCodes = lastRequest?.orders?.firstOrNull()?.codes
-        if (lastRequestOrderCodes != null) {
-            codes = lastRequestOrderCodes
-        } else {
-            val voucherOrders = orderPromo.value.lastApply?.voucherOrders ?: emptyList()
-            for (voucherOrder in voucherOrders) {
-                if (voucherOrder.uniqueId.equals(uniqueId, true)) {
-                    if (!codes.contains(voucherOrder.code)) {
-                        codes.add(voucherOrder.code)
-                    }
-                }
-            }
-        }
-
-        if (shouldAddLogisticPromo && shipping.isApplyLogisticPromo && shipping.logisticPromoViewModel != null && shipping.logisticPromoShipping != null) {
-            if (!codes.contains(shipping.logisticPromoViewModel.promoCode)) {
-                codes.add(shipping.logisticPromoViewModel.promoCode)
-            }
-        } else if (shipping.logisticPromoViewModel?.promoCode?.isNotEmpty() == true) {
-            codes.remove(shipping.logisticPromoViewModel.promoCode)
-        }
-        return codes
+        return promoProcessor.generatePromoRequest(orderCart, _orderShipment, lastValidateUsePromoRequest, orderPromo.value)
     }
 
     fun generateValidateUsePromoRequest(shouldAddLogisticPromo: Boolean = true): ValidateUsePromoRequest {
-        val validateUsePromoRequest = lastValidateUsePromoRequest ?: ValidateUsePromoRequest()
-
-        val ordersItem = OrdersItem()
-        ordersItem.shopId = orderShop.shopId
-        ordersItem.uniqueId = orderCart.cartString
-
-        ordersItem.productDetails = listOf(ProductDetailsItem(orderProduct.quantity.orderQuantity, orderProduct.productId))
-
-        val shipping = _orderShipment
-        ordersItem.shippingId = shipping.getRealShipperId()
-        ordersItem.spId = shipping.getRealShipperProductId()
-
-        val lastRequest = lastValidateUsePromoRequest
-
-        ordersItem.codes = generateOrderPromoCodes(lastRequest, ordersItem.uniqueId, shipping, shouldAddLogisticPromo)
-
-        validateUsePromoRequest.orders = listOf(ordersItem)
-        validateUsePromoRequest.state = PARAM_CHECKOUT
-        validateUsePromoRequest.cartType = PARAM_OCC
-
-        if (lastRequest != null) {
-            validateUsePromoRequest.codes = lastRequest.codes
-        } else {
-            val globalCodes = orderPromo.value.lastApply?.codes ?: emptyList()
-            validateUsePromoRequest.codes = globalCodes.toMutableList()
-        }
-        validateUsePromoRequest.skipApply = 0
-        validateUsePromoRequest.isSuggested = 0
-
+        val validateUsePromoRequest = promoProcessor.generateValidateUsePromoRequest(shouldAddLogisticPromo, lastValidateUsePromoRequest, orderCart, _orderShipment, orderPromo.value)
         lastValidateUsePromoRequest = validateUsePromoRequest
-
         return validateUsePromoRequest
     }
 
     private fun generateValidateUsePromoRequestWithBbo(logisticPromoUiModel: LogisticPromoUiModel, oldCode: String? = null): ValidateUsePromoRequest {
-        return generateValidateUsePromoRequest(false).apply {
-            orders[0]?.apply {
-                shippingId = logisticPromoUiModel.shipperId
-                spId = logisticPromoUiModel.shipperProductId
-                if (oldCode != null) {
-                    codes.remove(oldCode)
-                }
-                codes.add(logisticPromoUiModel.promoCode)
-            }
-        }
+        val validateUsePromoRequest = promoProcessor.generateValidateUsePromoRequestWithBbo(logisticPromoUiModel, oldCode, lastValidateUsePromoRequest, orderCart, _orderShipment, orderPromo.value)
+        lastValidateUsePromoRequest = validateUsePromoRequest
+        return validateUsePromoRequest
     }
 
     fun generateBboPromoCodes(): ArrayList<String> {
-        val shipping = _orderShipment
-        if (shipping.isApplyLogisticPromo && shipping.logisticPromoViewModel != null && shipping.logisticPromoShipping != null) {
-            return arrayListOf(shipping.logisticPromoViewModel.promoCode)
-        }
-        return ArrayList()
+        return promoProcessor.generateBboPromoCodes(_orderShipment)
     }
 
     fun validateUsePromo() {
