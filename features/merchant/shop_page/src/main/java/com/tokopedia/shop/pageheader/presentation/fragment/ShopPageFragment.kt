@@ -54,6 +54,7 @@ import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.TrackShopTypeDef
 import com.tokopedia.shop.common.constant.ShopHomeType
 import com.tokopedia.shop.common.constant.ShopPageConstant
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.view.bottomsheet.ShopShareBottomSheet
 import com.tokopedia.shop.common.view.bottomsheet.listener.ShopShareBottomsheetListener
 import com.tokopedia.shop.common.view.model.ShopShareModel
@@ -531,7 +532,10 @@ class ShopPageFragment :
         super.onResume()
         removeTemporaryShopImage(shopImageFilePath)
         updateStickyState()
-        shopPageFragmentHeaderViewHolder.setShopName(UserSession(context).shopName)
+        val userSession = UserSession(context)
+        if(ShopUtil.isMyShop(shopId, userSession.shopId)) {
+            shopPageFragmentHeaderViewHolder.setShopName(userSession.shopName)
+        }
     }
 
     private fun setViewState(viewState: Int) {
@@ -778,7 +782,10 @@ class ShopPageFragment :
                     shopPageHeaderContentData.shopOperationalHourStatus,
                     isMyShop
             )
-            shopPageFragmentHeaderViewHolder.setShopName(UserSession(context).shopName)
+            val userSession = UserSession(context)
+            if(ShopUtil.isMyShop(shopId, userSession.shopId)) {
+                shopPageFragmentHeaderViewHolder.setShopName(userSession.shopName)
+            }
             view?.let { onToasterNoUploadProduct(it, getString(R.string.shop_page_product_no_upload_product), isFirstCreateShop) }
         }
     }
