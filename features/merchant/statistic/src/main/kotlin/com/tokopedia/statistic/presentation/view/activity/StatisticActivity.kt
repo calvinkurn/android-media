@@ -20,6 +20,7 @@ import com.tokopedia.statistic.presentation.view.fragment.StatisticFragment
 
 class StatisticActivity : BaseActivity(), StatisticPerformanceMonitoringListener {
 
+    private val statisticFragment by lazy { StatisticFragment.newInstance() }
     private val performanceMonitoring: StatisticPerformanceMonitoringInterface by lazy {
         StatisticPerformanceMonitoring()
     }
@@ -47,8 +48,8 @@ class StatisticActivity : BaseActivity(), StatisticPerformanceMonitoringListener
 
     private fun showFragment() {
         supportFragmentManager.beginTransaction()
-                .replace(R.id.parent_view_stc, StatisticFragment.newInstance())
-                .commitNowAllowingStateLoss()
+                .replace(R.id.parent_view_stc, statisticFragment)
+                .commit()
     }
 
     private fun setWhiteStatusBar() {
