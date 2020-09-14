@@ -451,7 +451,7 @@ object DeeplinkDFMapper : CoroutineScope {
                         it.startsWith(SHOP_HOME) ||
                         it.startsWith(SHOP_SETTINGS_NOTE)
             }, DF_BASE_SELLER_APP, R.string.title_shop_page))
-            add(DFP({ it.startsWith(MERCHANT_STATISTIC_DASHBOARD)}, DF_BASE, R.string.title_statistic))
+            add(DFP({ it.startsWith(MERCHANT_STATISTIC_DASHBOARD)}, DF_BASE_SELLER_APP, R.string.title_statistic))
         }
     }
 

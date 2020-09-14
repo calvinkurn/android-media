@@ -340,7 +340,7 @@ class DeepLinkDFMapperSellerAppTest: DeepLinkDFMapperTestFixture() {
         val expectedResult = getDeepLinkIdFromDeepLink(DeeplinkDFMapper.deeplinkDFPatternListSellerApp, dfSellerAppPath)?.firstOrNull {
             it.logic(appLink)
         }
-        assertEquals(expectedResult?.moduleId, DeeplinkDFMapper.DF_BASE)
+        assertEquals(expectedResult?.moduleId, DeeplinkDFMapper.DF_BASE_SELLER_APP)
     }
 
 }
