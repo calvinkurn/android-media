@@ -532,10 +532,7 @@ class ShopPageFragment :
         super.onResume()
         removeTemporaryShopImage(shopImageFilePath)
         updateStickyState()
-        val userSession = UserSession(context)
-        if(ShopUtil.isMyShop(shopId, userSession.shopId)) {
-            shopPageFragmentHeaderViewHolder.setShopName(userSession.shopName)
-        }
+        setShopName()
     }
 
     private fun setViewState(viewState: Int) {
@@ -782,10 +779,7 @@ class ShopPageFragment :
                     shopPageHeaderContentData.shopOperationalHourStatus,
                     isMyShop
             )
-            val userSession = UserSession(context)
-            if(ShopUtil.isMyShop(shopId, userSession.shopId)) {
-                shopPageFragmentHeaderViewHolder.setShopName(userSession.shopName)
-            }
+            setShopName()
             view?.let { onToasterNoUploadProduct(it, getString(R.string.shop_page_product_no_upload_product), isFirstCreateShop) }
         }
     }
@@ -1254,6 +1248,14 @@ class ShopPageFragment :
         if (isFirstCreateShop) {
             Toaster.make(view, message, actionText = getString(R.string.shop_page_product_action_no_upload_product), type = Toaster.TYPE_NORMAL)
             this.isFirstCreateShop = false
+        }
+    }
+
+    private fun setShopName() {
+        val userSession = UserSession(context)
+        if(ShopUtil.isMyShop(shopId, userSession.shopId)) {
+            shopPageHeaderDataModel?.shopName = userSession.shopName
+            shopPageFragmentHeaderViewHolder.setShopName(userSession.shopName)
         }
     }
 
