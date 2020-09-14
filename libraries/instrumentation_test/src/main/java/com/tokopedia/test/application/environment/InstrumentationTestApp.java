@@ -89,6 +89,8 @@ public class InstrumentationTestApp extends BaseMainApplication
         LinkerManager.initLinkerManager(getApplicationContext()).setGAClientId(TrackingUtils.getClientID(getApplicationContext()));
         TrackApp.getInstance().initializeAllApis();
         NetworkClient.init(this);
+        GlobalConfig.DEBUG = true;
+        GlobalConfig.VERSION_NAME = "3.90";
         GraphqlClient.init(this);
         com.tokopedia.config.GlobalConfig.DEBUG = true;
         RemoteConfigInstance.initAbTestPlatform(this);
