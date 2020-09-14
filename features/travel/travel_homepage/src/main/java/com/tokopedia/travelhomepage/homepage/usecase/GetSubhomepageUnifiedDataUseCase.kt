@@ -30,9 +30,9 @@ class GetSubhomepageUnifiedDataUseCase @Inject constructor(val useCase: MultiReq
             if (errors != null && errors.isNotEmpty() && errors[0].extensions != null) {
                 throw Throwable()
             } else {
-                val hotelAddToCartData =
+                val unifiedData =
                         graphqlResponse.getData<TravelUnifiedSubhomepageData.Response>(type)
-                hotelAddToCartData.response
+                unifiedData.response
             }
         } catch (throwable: Throwable) {
             throw throwable
