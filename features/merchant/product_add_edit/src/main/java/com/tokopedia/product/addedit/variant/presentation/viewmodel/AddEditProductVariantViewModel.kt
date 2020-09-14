@@ -405,7 +405,7 @@ class AddEditProductVariantViewModel @Inject constructor(
         var level = 0
 
         // init unitValueList and variantIdList
-        variantUnitValuesMap.toSortedMap().forEach {
+        variantUnitValuesMap.forEach {
             if (it.value.isNotEmpty()) {
                 unitValueList.add(it.value)
                 variantDetails.getOrNull(level)?.let { variantDetail ->
