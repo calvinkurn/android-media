@@ -17,6 +17,7 @@ import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOpti
 
 class SellerHomeNavigator(
     private val context: Context,
+    private val fm: FragmentManager,
     private val sellerHomeRouter: SellerHomeRouter?
 ) {
 
@@ -34,32 +35,26 @@ class SellerHomeNavigator(
         initFragments()
     }
 
-    fun start(@FragmentType page: Int,
-              fm: FragmentManager) {
+    fun start(@FragmentType page: Int) {
         val transaction = fm.beginTransaction()
         val fragment = getPageFragment(page)
-        fm.fragments.forEach {
-            transaction.remove(it)
-        }
         addAllPages(fragment, transaction)
 
         fragment?.let {
-            showFragment(it, fm, transaction, true)
+            showFragment(it, transaction)
             setSelectedPage(page)
         }
 
         updateFragmentVisibilityHint(fragment)
     }
 
-    fun showPage(@FragmentType page: Int,
-                 fm: FragmentManager) {
+    fun showPage(@FragmentType page: Int) {
         if(isActivityResumed()) {
             val transaction = fm.beginTransaction()
             val fragment = getPageFragment(page)
 
             fragment?.let {
-                hideCurrentPage(transaction)
-                showFragment(it, fm, transaction)
+                showFragment(it, transaction)
                 setSelectedPage(page)
             }
 
@@ -67,8 +62,7 @@ class SellerHomeNavigator(
         }
     }
 
-    fun navigateFromAppLink(page: PageFragment,
-                            fm: FragmentManager) {
+    fun navigateFromAppLink(page: PageFragment) {
         val type = page.type
 
         getPageFragment(type)?.let { currentPage ->
@@ -82,18 +76,17 @@ class SellerHomeNavigator(
                 when {
                     fragments.isEmpty() -> {
                         addAllPages(selectedPage, transaction)
-                        showFragment(selectedPage, fm, transaction, true)
+                        showFragment(selectedPage, transaction)
                     }
                     currentPage != selectedPage -> {
+                        hideAllPages(transaction)
+
                         transaction
                             .remove(currentPage)
                             .add(R.id.sahContainer, selectedPage, tag)
                             .commit()
                     }
-                    else -> {
-                        hideCurrentPage(transaction)
-                        showFragment(fragment, fm, transaction)
-                    }
+                    else -> showFragment(fragment, transaction)
                 }
 
                 setSelectedPage(type)
@@ -144,7 +137,9 @@ class SellerHomeNavigator(
         return currentSelectedPage == FragmentType.HOME
     }
 
-    fun getCurrentSelectedPage() = currentSelectedPage ?: FragmentType.HOME
+    fun getCurrentSelectedPage(): Int {
+        return currentSelectedPage ?: FragmentType.HOME
+    }
 
     private fun initFragments() {
         homeFragment = SellerHomeFragment.newInstance()
@@ -169,50 +164,30 @@ class SellerHomeNavigator(
                 if(it != selectedPage) {
                     transaction.setMaxLifecycle(it, Lifecycle.State.CREATED)
                 }
-
-                transaction.hide(it)
             }
         }
     }
 
-    private fun showFragment(fragment: Fragment,
-                             fm: FragmentManager,
-                             transaction: FragmentTransaction,
-                             isFromStart: Boolean = false) {
-        val currentState = fragment.lifecycle.currentState
+    private fun showFragment(fragment: Fragment, transaction: FragmentTransaction) {
+        val tag = fragment::class.java.simpleName
+        val fragmentByTag = fm.findFragmentByTag(tag)
+        val selectedFragment = fragmentByTag ?: fragment
+        val currentState = selectedFragment.lifecycle.currentState
         val isFragmentNotResumed = !currentState.isAtLeast(Lifecycle.State.RESUMED)
 
-        if(isFragmentNotResumed && fragment.fragmentManager == fm) {
+        if(isFragmentNotResumed) {
             try {
-                transaction.setMaxLifecycle(fragment, Lifecycle.State.RESUMED)
+                transaction.setMaxLifecycle(selectedFragment, Lifecycle.State.RESUMED)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
 
-        transaction.showDesignatedFragment(fragment, fm, isFromStart)
-    }
+        hideAllPages(transaction)
 
-    private fun FragmentTransaction.showDesignatedFragment(fragment: Fragment, fm: FragmentManager, isFromStart: Boolean) {
-        if (isFromStart) {
-            show(fragment)
-        } else {
-            if (fragment.isAdded) {
-                show(fragment)
-            } else {
-                add(R.id.sahContainer, fragment)
-            }
-        }
-
-        if (!isFromStart) {
-            fm.fragments.forEach {
-                if (it != fragment && it.isAdded) {
-                    hide(it)
-                }
-            }
-        }
-
-        commit()
+        transaction
+            .show(selectedFragment)
+            .commit()
     }
 
     private fun getPageFragment(@FragmentType type: Int): Fragment? {
@@ -221,7 +196,8 @@ class SellerHomeNavigator(
             FragmentType.PRODUCT -> productManageFragment
             FragmentType.CHAT -> chatFragment
             FragmentType.ORDER -> somListFragment
-            else -> otherSettingsFragment
+            FragmentType.OTHER -> otherSettingsFragment
+            else -> null
         }
     }
 
@@ -266,12 +242,8 @@ class SellerHomeNavigator(
         fragment?.let { pages[it] = title }
     }
 
-    private fun hideCurrentPage(transaction: FragmentTransaction) {
-        currentSelectedPage?.let {
-            getPageFragment(it)?.let { currentPage ->
-                transaction.hide(currentPage)
-            }
-        }
+    private fun hideAllPages(transaction: FragmentTransaction) {
+        fm.fragments.forEach { transaction.hide(it) }
     }
 
     private fun setSelectedPage(@FragmentType page: Int) {
