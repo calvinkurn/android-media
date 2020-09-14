@@ -1338,7 +1338,7 @@ open class HomeViewModel @Inject constructor(
                 newList[it.index] = visitable
             }
         }
-        _homeLiveData.value = _homeLiveData.value?.copy(list = newList)
+        _homeLiveData.postValue(_homeLiveData.value?.copy(list = newList))
     }
 
     override fun addWidget(visitable: Visitable<*>, position: Int) {
@@ -1346,7 +1346,7 @@ open class HomeViewModel @Inject constructor(
         logChannelUpdate("Update channel: (Add widget ${visitable.javaClass.simpleName})")
         if(position == -1 || position > newList.size) newList.add(visitable)
         else newList.add(position, visitable)
-        _homeLiveData.value = _homeLiveData.value?.copy(list = newList)
+        _homeLiveData.postValue(_homeLiveData.value?.copy(list = newList))
     }
 
     override fun deleteWidget(visitable: Visitable<*>, position: Int) {
@@ -1356,14 +1356,14 @@ open class HomeViewModel @Inject constructor(
                 && getVisitableId(it) == getVisitableId(visitable)}?.let {
             newList.remove(it)
         }
-        _homeLiveData.value = _homeLiveData.value?.copy(list = newList)
+        _homeLiveData.postValue(_homeLiveData.value?.copy(list = newList))
     }
 
     override fun updateHomeData(homeDataModel: HomeDataModel) {
         logChannelUpdate("Update channel: (Update all home data) data: ${homeDataModel.list.map { it.javaClass.simpleName }}")
         var newHomeDataModel = evaluateGeolocationComponent(homeDataModel)
         newHomeDataModel = evaluateAvailableComponent(newHomeDataModel)
-        _homeLiveData.value = newHomeDataModel
+        _homeLiveData.postValue(newHomeDataModel)
     }
 
     private fun getVisitableId(visitable: Visitable<*>): Any?{
