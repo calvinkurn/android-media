@@ -230,34 +230,25 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        tools:visibility="gone">
+                        tools:visibility="visible">
 
                         <com.tokopedia.unifyprinciples.Typography
                             android:id="@+id/tv_remark"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:maxLength="20"
                             android:maxLines="1"
+                            android:ellipsize="end"
                             android:textColor="@color/light_N700_96"
                             app:typographyType="body_3"
                             app:typographyWeight="reguler"
-                            tools:text="12345123451234512345123 sdkjf skdjbfg jksdg kjsdbg jksdbg!"
+                            tools:text="sdkjf skdjbfg jksdg kjsdbg sfdsf jksdbg!"
                             tools:visibility="visible" />
 
                         <com.tokopedia.unifyprinciples.Typography
-                            android:id="@+id/tv_ellipsize"
+                            android:id="@+id/tv_label_remark_option"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/dp_2"
-                            android:text="@string/label_ellipsize"
-                            app:typographyType="body_3"
-                            app:typographyWeight="reguler" />
-
-                        <com.tokopedia.unifyprinciples.Typography
-                            android:id="@+id/tv_label_remark_option"
-                            android:layout_width="@dimen/dp_0"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="2"
+                            tools:text="Ubah"
                             android:text="@string/label_button_add_note"
                             android:textColor="@color/Neutral_N700_68"
                             app:typographyType="body_3"
@@ -285,8 +276,8 @@
                         android:textStyle="normal"
                         app:backgroundTint="@color/tkpd_main_green"
                         tools:ignore="TextFields"
-                        tools:text="Saya pesan warna merah yah min.. jangan sampai salah kirim
-barangnya gan!" />
+                        tools:text="Saya pesan warna merah yah min, jangan sampai salah kirim
+barangnya gan! coy coy coy" />
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_error_form_remark_validation"
