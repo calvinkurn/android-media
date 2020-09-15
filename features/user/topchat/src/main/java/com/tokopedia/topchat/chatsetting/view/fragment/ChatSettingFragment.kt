@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -19,10 +20,11 @@ import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrati
 import com.tokopedia.topchat.chatsetting.analytic.ChatSettingAnalytic
 import com.tokopedia.topchat.chatsetting.data.uimodel.ItemChatSettingUiModel
 import com.tokopedia.topchat.chatsetting.di.ChatSettingComponent
+import com.tokopedia.topchat.chatsetting.view.adapter.ChatSettingListAdapter
 import com.tokopedia.topchat.chatsetting.view.adapter.ChatSettingTypeFactory
 import com.tokopedia.topchat.chatsetting.view.adapter.ChatSettingTypeFactoryImpl
+import com.tokopedia.topchat.chatsetting.view.adapter.decoration.ChatSettingDividerItemDecoration
 import com.tokopedia.topchat.chatsetting.view.adapter.viewholder.ChatSettingViewHolder
-import com.tokopedia.topchat.chatsetting.view.widget.ChatSettingItemDecoration
 import com.tokopedia.topchat.chatsetting.viewmodel.ChatSettingViewModel
 import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity.PARAM_IS_SELLER
 import com.tokopedia.usecase.coroutines.Success
@@ -36,6 +38,7 @@ class ChatSettingFragment : BaseListFragment<Visitable<*>, ChatSettingTypeFactor
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+    private var rVadapter: ChatSettingListAdapter? = null
     private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val viewModel by lazy { viewModelFragmentProvider.get(ChatSettingViewModel::class.java) }
     private var shouldMoveToChatTemplate: Boolean = false
@@ -80,6 +83,11 @@ class ChatSettingFragment : BaseListFragment<Visitable<*>, ChatSettingTypeFactor
         }
     }
 
+    override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, ChatSettingTypeFactory> {
+        rVadapter = ChatSettingListAdapter(adapterTypeFactory)
+        return rVadapter as ChatSettingListAdapter
+    }
+
     private fun setupObserver() {
         viewModel.chatSettings.observe(viewLifecycleOwner, Observer { response ->
             when (response) {
@@ -90,7 +98,7 @@ class ChatSettingFragment : BaseListFragment<Visitable<*>, ChatSettingTypeFactor
 
     private fun setupRecyclerView(view: View) {
         val list = getRecyclerView(view)
-        val decoration = ChatSettingItemDecoration(context)
+        val decoration = ChatSettingDividerItemDecoration(context)
         removeAllItemDecoration(list)
         list.addItemDecoration(decoration)
     }
@@ -135,6 +143,10 @@ class ChatSettingFragment : BaseListFragment<Visitable<*>, ChatSettingTypeFactor
                     appLinks = arrayListOf(ApplinkConstInternalSellerapp.SELLER_HOME_CHAT, ApplinkConstInternalMarketplace.CHAT_SETTING_TEMPLATE))
             startActivity(intent)
         }
+    }
+
+    override fun isNextItemDivider(position: Int): Boolean {
+        return rVadapter?.isNextItemDivider(position) ?: false
     }
 
     companion object {
