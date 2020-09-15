@@ -7,8 +7,10 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.screenshot_observer.Screenshot
+import com.tokopedia.screenshot_observer.ScreenshotData
 
-class FeedbackPageActivity : BaseSimpleActivity() {
+class FeedbackPageActivity : BaseSimpleActivity(), Screenshot.Listener {
 
     private val requiredPermissions: Array<String>
         get() = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -42,5 +44,11 @@ class FeedbackPageActivity : BaseSimpleActivity() {
     companion object {
 
         private const val PERMISSIONS_REQUEST_CODE = 5111
+    }
+
+    override fun onScreenShotTaken(screenshotData: ScreenshotData?) {
+        if(!allPermissionsGranted()) {
+            ActivityCompat.requestPermissions(this, requiredPermissions, PERMISSIONS_REQUEST_CODE)
+        }
     }
 }
