@@ -27,6 +27,7 @@ class ProductHighlightComponentViewHolder(
         private val productHighlightListener: ProductHighlightListener?
 ): AbstractViewHolder<ProductHighlightDataModel>(view) {
 
+    private var isCacheData = false
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.layout_product_highlight
@@ -108,8 +109,10 @@ class ProductHighlightComponentViewHolder(
     }
 
     private fun setDealsProductCard(channel: ChannelModel, grid: ChannelGrid) {
-        itemView.deals_product_card.addOnImpressionListener(channel) {
-            productHighlightListener?.onProductCardImpressed(channel, grid, adapterPosition)
+        if (!isCacheData) {
+            itemView.deals_product_card.addOnImpressionListener(channel) {
+                productHighlightListener?.onProductCardImpressed(channel, grid, adapterPosition)
+            }
         }
         itemView.deals_product_card.setOnClickListener {
             productHighlightListener?.onProductCardClicked(channel, grid, adapterPosition, grid.applink)

@@ -65,6 +65,8 @@ class MixLeftComponentViewHolder (itemView: View,
 
     private lateinit var layoutManager: LinearLayoutManager
 
+    private var isCacheData = false
+
 
     companion object {
         @LayoutRes
@@ -73,6 +75,7 @@ class MixLeftComponentViewHolder (itemView: View,
     }
 
     override fun bind(element: MixLeftDataModel) {
+        isCacheData = element.isCache
         initVar()
         setupBackground(element.channelModel)
         setupList(element.channelModel)
@@ -80,7 +83,8 @@ class MixLeftComponentViewHolder (itemView: View,
         setHeaderComponent(element)
 
         itemView.addOnImpressionListener(element.channelModel)  {
-            mixLeftComponentListener?.onMixLeftImpressed(element.channelModel, adapterPosition)
+            if (!isCacheData)
+                mixLeftComponentListener?.onMixLeftImpressed(element.channelModel, adapterPosition)
         }
     }
 
@@ -89,7 +93,8 @@ class MixLeftComponentViewHolder (itemView: View,
     }
 
     override fun onProductCardImpressed(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
-        mixLeftComponentListener?.onProductCardImpressed(channelModel, channelGrid, position)
+        if (!isCacheData)
+            mixLeftComponentListener?.onProductCardImpressed(channelModel, channelGrid, position)
     }
 
     override fun onProductCardClicked(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, applink: String) {
@@ -116,7 +121,8 @@ class MixLeftComponentViewHolder (itemView: View,
         if (channel.channelBanner.imageUrl.isNotEmpty()) {
             loadingBackground.show()
             image.addOnImpressionListener(channel){
-                mixLeftComponentListener?.onImageBannerImpressed(channel, adapterPosition)
+                if (!isCacheData)
+                    mixLeftComponentListener?.onImageBannerImpressed(channel, adapterPosition)
             }
             image.loadImage(channel.channelBanner.imageUrl, FPM_MIX_LEFT, object : ImageHandler.ImageLoaderStateListener{
                 override fun successLoad() {

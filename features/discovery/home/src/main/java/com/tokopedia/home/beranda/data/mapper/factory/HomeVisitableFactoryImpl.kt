@@ -412,7 +412,8 @@ class HomeVisitableFactoryImpl(
                                                   isCache: Boolean,
                                                   verticalPosition: Int): Visitable<*> {
         val viewModel = DynamicLegoBannerDataModel(
-                DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition)
+                channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition),
+                isCache = isCache
         )
         if (!isCache) {
             HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(
@@ -440,7 +441,8 @@ class HomeVisitableFactoryImpl(
                                                   isCache: Boolean,
                                                   verticalPosition: Int): Visitable<*> {
         val viewModel = ProductHighlightDataModel(
-                DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition)
+                channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition),
+                isCache = isCache
         )
         return viewModel
     }
@@ -449,7 +451,8 @@ class HomeVisitableFactoryImpl(
                                         isCache: Boolean,
                                         verticalPosition: Int): Visitable<*> {
         return MixLeftDataModel(
-                DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition)
+                channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition),
+                isCache = isCache
         )
     }
 
@@ -457,7 +460,8 @@ class HomeVisitableFactoryImpl(
                                         isCache: Boolean,
                                         verticalPosition: Int): Visitable<*> {
         return MixTopDataModel(
-                DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition)
+                channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition),
+                isCache = isCache
         )
     }
 
@@ -465,7 +469,8 @@ class HomeVisitableFactoryImpl(
                                         isCache: Boolean,
                                         verticalPosition: Int): Visitable<*> {
         return Lego4AutoDataModel(
-                DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition)
+                channelModel =  DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition),
+                isCache = isCache
         )
     }
 

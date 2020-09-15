@@ -38,6 +38,8 @@ class RecommendationListCarouselViewHolder(itemView: View,
 
     private val masterJob = SupervisorJob()
 
+    private var isCacheData = false
+
     override val coroutineContext = masterJob + Dispatchers.Main
 
     override fun bind(element: RecommendationListCarouselDataModel, payloads: MutableList<Any>) {
@@ -137,7 +139,7 @@ class RecommendationListCarouselViewHolder(itemView: View,
                         throwable.printStackTrace()
                     }
                 }
-                adapter = RecommendationListAdapter(newList, listCarouselListener)
+                adapter = RecommendationListAdapter(newList, listCarouselListener, isCacheData)
                 setRecycledViewPool(parentRecycledViewPool)
                 clearItemRecyclerViewDecoration(this)
                 if (channel.channelGrids.size > 1) {
@@ -175,8 +177,10 @@ class RecommendationListCarouselViewHolder(itemView: View,
 
 
     private fun setViewportImpression(element: RecommendationListCarouselDataModel) {
-        itemView.addOnImpressionListener(element.channelModel) {
-            listCarouselListener?.onRecommendationCarouselChannelImpression(element.channelModel, adapterPosition)
+        if (!isCacheData) {
+            itemView.addOnImpressionListener(element.channelModel) {
+                listCarouselListener?.onRecommendationCarouselChannelImpression(element.channelModel, adapterPosition)
+            }
         }
     }
 
@@ -197,22 +201,25 @@ class RecommendationListCarouselViewHolder(itemView: View,
 
     class HomeRecommendationListViewHolder(
             itemView: View,
-            val listCarouselListener: RecommendationListCarouselListener?
+            val listCarouselListener: RecommendationListCarouselListener?,
+            val isCacheData: Boolean
     ): RecommendationListCarouselItem(itemView) {
         private val recommendationCard = itemView.findViewById<ProductCardListView>(R.id.productCardView)
 
         override fun bind(recommendation: HomeRecommendationListCarousel) {
             recommendationCard.applyCarousel()
             if(recommendation is HomeRecommendationListData) {
-                itemView.addOnImpressionListener(recommendation) {
-                    listCarouselListener?.onRecommendationCarouselGridImpression(
-                            recommendation.channelModel,
-                            recommendation.grid,
-                            adapterPosition,
-                            recommendation.parentPosition,
-                            false
-                    )
-                }
+                if (!isCacheData) {
+                    itemView.addOnImpressionListener(recommendation) {
+                        listCarouselListener?.onRecommendationCarouselGridImpression(
+                                recommendation.channelModel,
+                                recommendation.grid,
+                                adapterPosition,
+                                recommendation.parentPosition,
+                                false
+                        )
+                    }
+            }
                 recommendationCard.setProductModel(
                         ProductCardModel(
                                 productImageUrl = recommendation.recommendationImageUrl,
@@ -292,7 +299,10 @@ class RecommendationListCarouselViewHolder(itemView: View,
             val parentPosition: Int
     ): HomeRecommendationListCarousel()
 
-    class RecommendationListAdapter(private val recommendationList: List<HomeRecommendationListCarousel>, private val listener: RecommendationListCarouselListener?): RecyclerView.Adapter<RecommendationListCarouselItem>() {
+    class RecommendationListAdapter(
+            private val recommendationList: List<HomeRecommendationListCarousel>,
+            private val listener: RecommendationListCarouselListener?,
+            private val isCacheData: Boolean): RecyclerView.Adapter<RecommendationListCarouselItem>() {
         companion object{
             private const val LAYOUT_TYPE_CAROUSEL = 87
             private const val LAYOUT_TYPE_NON_CAROUSEL = 90
@@ -302,9 +312,9 @@ class RecommendationListCarouselViewHolder(itemView: View,
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecommendationListCarouselItem {
             val inflater = LayoutInflater.from(parent.context)
             return when (viewType) {
-                LAYOUT_TYPE_CAROUSEL -> HomeRecommendationListViewHolder(inflater.inflate(R.layout.layout_dynamic_recommendation_list_card_carousel, parent, false), listener)
+                LAYOUT_TYPE_CAROUSEL -> HomeRecommendationListViewHolder(inflater.inflate(R.layout.layout_dynamic_recommendation_list_card_carousel, parent, false), listener, isCacheData)
                 LAYOUT_SEE_ALL_BUTTON -> HomeRecommendationSeeMoreViewHolder(inflater.inflate(R.layout.layout_dynamic_recommendation_list_see_more, parent, false))
-                else -> HomeRecommendationListViewHolder(inflater.inflate(R.layout.layout_dynamic_recommendation_list_card, parent, false), listener)
+                else -> HomeRecommendationListViewHolder(inflater.inflate(R.layout.layout_dynamic_recommendation_list_card, parent, false), listener, isCacheData)
             }
         }
 
