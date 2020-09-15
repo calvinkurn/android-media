@@ -8,9 +8,17 @@ class ChatSettingListAdapter(
         baseListAdapterTypeFactory: ChatSettingTypeFactory?
 ) : BaseListAdapter<Visitable<*>, ChatSettingTypeFactory>(baseListAdapterTypeFactory) {
 
-    fun isNextItemDivider(position: Int): Boolean {
+    fun shouldDrawDivider(position: Int): Boolean {
+        return !isNextItemDivider(position) || isLastItem(position)
+    }
+
+    private fun isNextItemDivider(position: Int): Boolean {
         val item = visitables.getOrNull(position + 1) ?: return false
         return item is ChatSettingDividerUiModel
+    }
+
+    private fun isLastItem(position: Int): Boolean {
+        return position == visitables.lastIndex
     }
 
 }

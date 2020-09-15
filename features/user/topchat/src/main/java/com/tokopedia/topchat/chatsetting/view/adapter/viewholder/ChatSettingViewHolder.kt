@@ -8,7 +8,6 @@ import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatsetting.data.uimodel.ItemChatSettingUiModel
-import com.tokopedia.topchat.chatsetting.view.adapter.decoration.ChatSettingDividerItemDecoration
 import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
@@ -16,7 +15,7 @@ import com.tokopedia.unifyprinciples.Typography
 class ChatSettingViewHolder constructor(
         itemView: View?,
         val listener: ChatSettingListener
-) : AbstractViewHolder<ItemChatSettingUiModel>(itemView), ChatSettingDividerItemDecoration.Listener {
+) : AbstractViewHolder<ItemChatSettingUiModel>(itemView) {
 
     private val title: Typography? = itemView?.findViewById(R.id.tvTitle)
     private val description: Typography? = itemView?.findViewById(R.id.tvDesc)
@@ -26,7 +25,6 @@ class ChatSettingViewHolder constructor(
         fun isTabSeller(): Boolean
         fun eventClickChatSetting(element: ItemChatSettingUiModel)
         fun goToSellerMigrationPage()
-        fun isNextItemDivider(position: Int): Boolean
     }
 
     override fun bind(element: ItemChatSettingUiModel) {
@@ -65,10 +63,6 @@ class ChatSettingViewHolder constructor(
     }
 
     private fun isSellerTabTemplateChat(alias: String): Boolean = listener.isTabSeller() && alias == TEMPLATE_CHAT_TITLE
-
-    override fun shouldDrawDivider(): Boolean {
-        return !listener.isNextItemDivider(adapterPosition)
-    }
 
     companion object {
         const val TEMPLATE_CHAT_TITLE = "Template Chat"
